@@ -1,0 +1,7 @@
+@import '@leapmotor/design/packages/theme/index.scss';
+
+:root {
+  --themColor: #{$--color-primary};
+  --themLightColor: #{$--color-primary-light};
+  --aisDefaultTextColor: #3B3E3B;
+}
