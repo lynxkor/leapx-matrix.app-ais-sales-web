@@ -1,22 +1,68 @@
 <template>
   <div class="page-common m-{{{nameKebabCase}}}-list">
-    <div>
-      <el-form
-        :inline="true"
-        :model="form"
-        size="small"
-        label-position="right"
-        label-width="150px"
-        class="ais-search-form"
-      >
-      {{{#top2SearchList}}}
+    <el-form
+      :inline="true"
+      :model="form"
+      size="small"
+      label-position="right"
+      label-width="150px"
+      class="ais-search-form"
+    >
+    {{{#top2SearchList}}}
+    {{{#isDate}}}
+      <el-form-item label="{{{description}}}：">
+        <el-date-picker
+          v-model="form.{{{key}}}"
+          type="daterange"
+          :picker-options="pickerOptions"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          align="right"
+        />
+      </el-form-item>
+    {{{/isDate}}}
+    {{{#isSelect}}}
+      <el-form-item label="{{{description}}}：">
+        <fetch-select
+          :request="() => fetchOptions('xxx')"
+          v-model="form.{{{key}}}"
+          placeholder="请选择"
+          clearable
+          multiple
+        />
+      </el-form-item>
+    {{{/isSelect}}}
+    {{{#isBoolean}}}
+      <el-form-item label="{{{description}}}：">
+        <fetch-select
+          :options="yes_no_enum"
+          v-model="form.{{{key}}}"
+          placeholder="请选择"
+          clearable
+          multiple
+        />
+      </el-form-item>
+    {{{/isBoolean}}}
+    {{{#isNormal}}}
+      <el-form-item label="{{{description}}}：">
+        <el-input
+          placeholder="请输入"
+          v-model="form.{{{key}}}"
+          clearable
+        />
+      </el-form-item>
+    {{{/isNormal}}}
+    {{{/top2SearchList}}}
+      <span v-show="show">
+      {{{#lastSearchList}}}
       {{{#isDate}}}
         <el-form-item label="{{{description}}}：">
           <el-date-picker
             v-model="form.{{{key}}}"
             type="daterange"
             :picker-options="pickerOptions"
-            value-format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             align="right"
@@ -54,71 +100,23 @@
           />
         </el-form-item>
       {{{/isNormal}}}
-      {{{/top2SearchList}}}
-        <span v-show="show">
-        {{{#lastSearchList}}}
-        {{{#isDate}}}
-          <el-form-item label="{{{description}}}：">
-            <el-date-picker
-              v-model="form.{{{key}}}"
-              type="daterange"
-              :picker-options="pickerOptions"
-              value-format="yyyy-MM-dd"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              align="right"
-            />
-          </el-form-item>
-        {{{/isDate}}}
-        {{{#isSelect}}}
-          <el-form-item label="{{{description}}}：">
-            <fetch-select
-              :request="() => fetchOptions('xxx')"
-              v-model="form.{{{key}}}"
-              placeholder="请选择"
-              clearable
-              multiple
-            />
-          </el-form-item>
-        {{{/isSelect}}}
-        {{{#isBoolean}}}
-          <el-form-item label="{{{description}}}：">
-            <fetch-select
-              :options="yes_no_enum"
-              v-model="form.{{{key}}}"
-              placeholder="请选择"
-              clearable
-              multiple
-            />
-          </el-form-item>
-        {{{/isBoolean}}}
-        {{{#isNormal}}}
-          <el-form-item label="{{{description}}}：">
-            <el-input
-              placeholder="请输入"
-              v-model="form.{{{key}}}"
-              clearable
-            />
-          </el-form-item>
-        {{{/isNormal}}}
-        {{{/lastSearchList}}}
-        </span>
-        <page-search-action
-          v-model="show"
-          is-expandable
-          :loading="loading"
-          @submit="onSubmit"
-          @reset="onReset"
-        />
-      </el-form>
-      <div class="ais-actions">
-        <el-button size="small" @click="handleAdd">新增</el-button>
-        <el-button size="small" @click="handleImport">导入</el-button>
-        <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-        <el-button size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-        <el-button size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-        <el-button size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
-      </div>
+      {{{/lastSearchList}}}
+      </span>
+      <page-search-action
+        v-model="show"
+        is-expandable
+        :loading="loading"
+        @submit="onSubmit"
+        @reset="onReset"
+      />
+    </el-form>
+    <div class="ais-actions">
+      <el-button size="small" type="primary" icon="el-icon-plus" @click="handleAdd">新增</el-button>
+      <el-button size="small" @click="handleImport">导入</el-button>
+      <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <el-button size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <el-button size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
+      <el-button size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -237,7 +235,7 @@ export default {
                   }
                 });
               },
-              type: 'primary'
+              type: 'info'
             }, {
               name: '删除',
               popconfirmTitle: '此操作将永久删除, 是否继续?',
@@ -341,6 +339,7 @@ export default {
     },
     getData () {
       this.loading = true;
+      this.selectionList = [];
 
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
@@ -395,11 +394,11 @@ export default {
         }
       });
 
-      if (this.form.nextDate) {
-        delete data.nextDate;
-        if (this.form.nextDate.length > 1) {
-          data.nextDateStart = this.form.nextDate[0];
-          data.nextDateEnd = this.form.nextDate[1];
+      if (this.form.createTime) {
+        delete data.createTime;
+        if (this.form.createTime.length > 1) {
+          data.createTimeStart = this.form.createTime[0];
+          data.createTimeEnd = this.form.createTime[1];
         }
       }
 
