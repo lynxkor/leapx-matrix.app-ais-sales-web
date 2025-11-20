@@ -32,7 +32,7 @@ const moduleDir = nameParts.join('/'); // 剩余部分作为目录路径
 
 // 准备模板数据
 const colsData = generateJson.list.filter(item => {
-  return (item.format === 'date-time' || item.description);
+  return (item.format === 'date-time' || item.type === 'array' || item.description);
 }).map((el, index) => {
   const key = el.key.toLowerCase();
   const isDate = el.format === 'date-time' || !!key.match(/time/);
@@ -137,7 +137,7 @@ async function insertRoute () {
                   recast.types.builders.property(
                     'init',
                     recast.types.builders.identifier('path'),
-                    recast.types.builders.stringLiteral(`/${data.modulePath.toLowerCase()}`)
+                    recast.types.builders.stringLiteral(`/${data.modulePath}`)
                   ),
                   recast.types.builders.property(
                     'init',
