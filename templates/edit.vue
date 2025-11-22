@@ -174,10 +174,10 @@ export default {
     }
   },
   components: {
-    FetchSelect,
     {{{#isProForm}}}
-    EditTable
+    EditTable,
     {{{/isProForm}}}
+    FetchSelect
   },
   data () {
     return {
@@ -229,12 +229,12 @@ export default {
       {{{#cols}}}
       {{{#isDate}}}
         {{{key}}}: [
-          { required: true, message: '请选择{{{description}}}', trigger: 'change' }
+          { required: true, message: '请选择{{{description}}}', trigger: 'blur' }
         ],
       {{{/isDate}}}
       {{{#isSelect}}}
         {{{key}}}: [
-          { required: true, message: '请选择{{{description}}}', trigger: 'change' }
+          { required: true, message: '请选择{{{description}}}', trigger: 'blur' }
         ],
       {{{/isSelect}}}
       {{{#isNormal}}}

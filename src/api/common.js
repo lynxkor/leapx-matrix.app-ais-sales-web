@@ -1,7 +1,7 @@
 // 车辆保养
 import api from '@/axios';
 
-const prefix = '/datacenter/';
+const prefix = '/datacenter/web/common/';
 
 /**
  * 查询table配置
@@ -41,4 +41,44 @@ export function getEnum (code) {
  */
 export function getUserByNameOrNo (data) {
   return api.jsonPost('/accountService/user/listByNameOrEmpNo', data);
+}
+
+/**
+ * 门店模糊搜索
+ * @param {*} data
+ */
+export function listOrgStoreInfo (data) {
+  return api.jsonPost('/network/portal/store/page', data);
+}
+
+/**
+ * 门店模糊搜索
+ * @param {*} data
+ */
+// export function listOrgStoreInfo (data) {
+//   return api.get('/accountService/orgInfo/listOrgStoreInfo', data);
+// }
+
+/**
+ * 车型模糊搜索
+ * @param {*} data
+ */
+export function listVehicleModel (data) {
+  return api.jsonPost('/datacenter/web/materials/vehicleModel/list', data);
+}
+
+/**
+ * 年款模糊搜索
+ * @param {*} data
+ */
+export function listVehicleYearType (data) {
+  return api.jsonPost('/datacenter/web/materials/vehicleYearType/list', data);
+}
+
+/**
+ * 维修类型模糊搜索
+ * @param {*} data
+ */
+export function repairItemType (data) {
+  return api.jsonPost('/maintain/web/basic/repairItemType/list', data);
 }
