@@ -15,7 +15,7 @@ import '@/libs/assets/iconfont/iconfont.css';
 import {
   VxeUi,
   VxeTooltip,
-  VxeButton,
+  VxeButton
 } from 'vxe-pc-ui';
 
 import {
@@ -102,6 +102,7 @@ export async function mount (props) {
 export async function unmount () {
   console.log('子应用卸载');
   instance.$destroy();
+  instance.$el.innerHTML = '';
   instance = null;
   router = null;
 };
