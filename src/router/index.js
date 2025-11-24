@@ -48,6 +48,32 @@ const routes = [
       redirect: '/home',
       name: 'index',
       component: () => import('@/views/home.vue')
+    }, {
+      path: '/vehicleinventory/basic/regionNoticeDirectory',
+      name: 'regionNoticeDirectory',
+      component: () => import('@/views/vehicleinventory/basic/regionNoticeDirectory/index.vue'),
+
+      meta: {
+        name: '地区对应公告目录'
+      }
+    }, {
+      path: '/vehicleinventory/basic/regionnoticedirectory/detail',
+      name: 'regionNoticeDirectoryDetail',
+      component: () => import('@/views/vehicleinventory/basic/regionNoticeDirectory/detail.vue'),
+
+      meta: {
+        name: '地区对应公告目录详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehicleinventory/basic/regionnoticedirectory/edit',
+      name: 'regionNoticeDirectoryEdit',
+      component: () => import('@/views/vehicleinventory/basic/regionNoticeDirectory/edit.vue'),
+
+      meta: {
+        name: '地区对应公告目录详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
