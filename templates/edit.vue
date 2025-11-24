@@ -27,7 +27,8 @@
             {{{#isSelect}}}
               <el-form-item label="{{{description}}}：" prop="{{{key}}}">
                 <fetch-select
-                  :request="() => fetchOptions('xxx')"
+                  :request="fetchOptions"
+                  enumCode="xxx"
                   v-model="form.{{{key}}}"
                   placeholder="请选择"
                   clearable
@@ -109,7 +110,8 @@
             {{{#isSelect}}}
               <el-form-item label="{{{description}}}：" prop="{{{key}}}">
                 <fetch-select
-                  :request="() => fetchOptions('xxx')"
+                  :request="fetchOptions"
+                  enumCode="xxx"
                   v-model="form.{{{key}}}"
                   placeholder="请选择"
                   clearable
@@ -174,10 +176,10 @@ export default {
     }
   },
   components: {
+    FetchSelect,
     {{{#isProForm}}}
-    EditTable,
+    EditTable
     {{{/isProForm}}}
-    FetchSelect
   },
   data () {
     return {
@@ -229,12 +231,12 @@ export default {
       {{{#cols}}}
       {{{#isDate}}}
         {{{key}}}: [
-          { required: true, message: '请选择{{{description}}}', trigger: 'blur' }
+          { required: true, message: '请选择{{{description}}}', trigger: 'change' }
         ],
       {{{/isDate}}}
       {{{#isSelect}}}
         {{{key}}}: [
-          { required: true, message: '请选择{{{description}}}', trigger: 'blur' }
+          { required: true, message: '请选择{{{description}}}', trigger: 'change' }
         ],
       {{{/isSelect}}}
       {{{#isNormal}}}
