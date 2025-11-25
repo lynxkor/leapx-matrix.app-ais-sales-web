@@ -32,7 +32,7 @@ export function exportTable (data) {
  * @param {*} data
  */
 export function getEnum (code) {
-  return api.get(`/maintain/web/common/enum/${code}`);
+  return api.jsonPost('/datacenter/web/common/commonDictValue/get', { dictType: code });
 }
 
 /**
