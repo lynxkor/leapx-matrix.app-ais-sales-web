@@ -12,33 +12,31 @@
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
               <el-form-item label="年款名称" prop="yearTypeName">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
+                <el-input
+                  placeholder="请输入"
                   v-model="form.yearTypeName"
-                  placeholder="请选择"
                   clearable
-                  filterable
                 />
               </el-form-item>
               <el-form-item label="状态" prop="status">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="xxx"
+                  enumCode="StatusEnum"
                   v-model="form.status"
                   placeholder="请选择"
                   clearable
                   filterable
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="备注（说明）" prop="remark">
+              <!-- <el-form-item label="说明" prop="remark">
                 <el-input
                   placeholder="请输入"
                   v-model="form.remark"
                   clearable
                 />
-              </el-form-item>
-              <el-form-item label="创建者名称" prop="creatorName">
+              </el-form-item> -->
+              <el-form-item label="创建人" prop="creatorName">
                 <el-input
                   placeholder="请输入"
                   v-model="form.creatorName"
@@ -46,23 +44,20 @@
                 />
               </el-form-item>
               <el-form-item label="创建时间" prop="createTime">
-                <el-date-picker
-                  v-model="form.createTime"
-                  :picker-options="pickerOptions"
+                <el-date-picker v-model="form.createTime"
                   value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
                   align="right"
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="主键" prop="id">
+              <!-- <el-form-item label="主键" prop="id">
                 <el-input
                   placeholder="请输入"
                   v-model="form.id"
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="创建者" prop="creator">
+              <el-form-item label="创建人" prop="creator">
                 <el-input
                   placeholder="请输入"
                   v-model="form.creator"
@@ -76,14 +71,14 @@
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="修改者名称" prop="modifierName">
+              <el-form-item label="更改人" prop="modifierName">
                 <el-input
                   placeholder="请输入"
                   v-model="form.modifierName"
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="修改时间" prop="updateTime">
+              <el-form-item label="更改时间" prop="updateTime">
                 <el-date-picker
                   v-model="form.updateTime"
                   :picker-options="pickerOptions"
@@ -97,12 +92,12 @@
                 <fetch-select
                   :request="fetchOptions"
                   enumCode="xxx"
-                  v-model="form.statusDesc"
+                  v-model="form.statusIncludeListDesc"
                   placeholder="请选择"
                   clearable
                   filterable
                 />
-              </el-form-item>
+              </el-form-item> -->
             </el-form>
           </div>
         </section>
@@ -122,7 +117,7 @@ import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
-
+import moment from 'moment';
 const defaultForm = {
   // 多选时字段有变化，自行修复
   yearTypeName: '',
@@ -152,12 +147,13 @@ export default {
     FetchSelect,
   },
   data () {
+    const form = this.getDefautlForm();
     return {
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
-      form: { ...defaultForm },
-      originalForm: { ...defaultForm },
+      form: { ...form },
+      originalForm: { ...form },
       rules: {
         yearTypeName: [
           { required: true, message: '请选择年款名称', trigger: 'change' }
@@ -166,10 +162,10 @@ export default {
           { required: true, message: '请选择状态', trigger: 'change' }
         ],
         remark: [
-          { required: true, message: '请输入备注（说明）', trigger: 'blur' }
+          { required: true, message: '请输入说明', trigger: 'blur' }
         ],
         creatorName: [
-          { required: true, message: '请输入创建者名称', trigger: 'blur' }
+          { required: true, message: '请输入创建人', trigger: 'blur' }
         ],
         createTime: [
           { required: true, message: '请选择创建时间', trigger: 'change' }
@@ -178,16 +174,16 @@ export default {
           { required: true, message: '请输入主键', trigger: 'blur' }
         ],
         creator: [
-          { required: true, message: '请输入创建者', trigger: 'blur' }
+          { required: true, message: '请输入创建人', trigger: 'blur' }
         ],
         modifier: [
           { required: true, message: '请输入修改者', trigger: 'blur' }
         ],
         modifierName: [
-          { required: true, message: '请输入修改者名称', trigger: 'blur' }
+          { required: true, message: '请输入更改人', trigger: 'blur' }
         ],
         updateTime: [
-          { required: true, message: '请选择修改时间', trigger: 'change' }
+          { required: true, message: '请选择更改时间', trigger: 'change' }
         ],
         statusDesc: [
           { required: true, message: '请选择状态变更描述', trigger: 'change' }
@@ -280,6 +276,16 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    getDefautlForm () {
+      const userInfo = this.$store.state.user.userInfo;
+      return {
+        ...defaultForm,
+        ownerId: userInfo.userId,
+        creatorName: userInfo.userName,
+        status: 1,
+        createTime: moment().format('YYYY-MM-DD HH:mm:ss')
+      };
     }
   }
 };

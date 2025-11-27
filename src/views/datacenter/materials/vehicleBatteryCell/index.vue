@@ -16,18 +16,22 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="电芯材料枚举：1：三元锂:2：硫酸铁锂">
-        <el-input
-          placeholder="请输入"
+      <el-form-item label="电芯材料">
+         <fetch-select
+          :request="fetchOptions"
+          enumCode="dc_batteryCellMaterials"
           v-model="form.cellMaterials"
+          placeholder="请选择"
           clearable
+          multiple
+          filterable
         />
       </el-form-item>
       <el-form-item label="状态"  v-show="this.visibleCount === 3 || show">
         <fetch-select
           :request="fetchOptions"
           enumCode="xxx"
-          v-model="form.status"
+          v-model="form.statusIncludeList"
           placeholder="请选择"
           clearable
           multiple
@@ -148,11 +152,11 @@ export default {
           },
           { props: 'cellMaterials', label: '电芯材料枚举：1：三元锂:2：硫酸铁锂', visible: true, width: 200 },
           { props: 'status', label: '状态', visible: true, width: 200 },
-          { props: 'remark', label: '备注（说明）', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
+          { props: 'remark', label: '说明', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
-          { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
+          { props: 'modifierName', label: '更改人', visible: true, width: 200 },
+          { props: 'updateTime', label: '更改时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',

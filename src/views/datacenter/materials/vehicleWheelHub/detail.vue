@@ -17,35 +17,35 @@
               {{ info.wheelHubName  }}
             </el-form-item>
             <el-form-item label="状态：" prop="status">
-              {{ info.status  }}
+              {{ info.statusLabel  }}
             </el-form-item>
-            <el-form-item label="备注（说明）：" prop="remark">
+            <!-- <el-form-item label="说明：" prop="remark">
               {{ info.remark  }}
-            </el-form-item>
-            <el-form-item label="创建者名称：" prop="creatorName">
+            </el-form-item> -->
+            <el-form-item label="创建人：" prop="creatorName">
               {{ info.creatorName  }}
             </el-form-item>
             <el-form-item label="创建时间：" prop="createTime">
               {{ info.createTime  }}
             </el-form-item>
-            <el-form-item label="主键：" prop="id">
+            <!-- <el-form-item label="主键：" prop="id">
               {{ info.id  }}
             </el-form-item>
-            <el-form-item label="创建者：" prop="creator">
+            <el-form-item label="创建人：" prop="creator">
               {{ info.creator  }}
             </el-form-item>
             <el-form-item label="修改者：" prop="modifier">
               {{ info.modifier  }}
             </el-form-item>
-            <el-form-item label="修改者名称：" prop="modifierName">
+            <el-form-item label="更改人：" prop="modifierName">
               {{ info.modifierName  }}
             </el-form-item>
-            <el-form-item label="修改时间：" prop="updateTime">
+            <el-form-item label="更改时间：" prop="updateTime">
               {{ info.updateTime  }}
             </el-form-item>
             <el-form-item label="状态变更描述：" prop="statusDesc">
               {{ info.statusDesc  }}
-            </el-form-item>
+            </el-form-item> -->
           </el-form>
         </div>
       </section>

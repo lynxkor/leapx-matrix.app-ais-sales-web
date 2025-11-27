@@ -20,7 +20,7 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="xxx"
-          v-model="form.status"
+          v-model="form.statusIncludeList"
           placeholder="请选择"
           clearable
           multiple
@@ -122,7 +122,7 @@ export default {
         dataProp: [
           {
             props: 'creator',
-            label: '创建者',
+            label: '创建人',
             visible: false,
             width: 200,
             fixed: 'left',
@@ -140,11 +140,11 @@ export default {
           },
           { props: 'drivingRangeName', label: '续航里程名称', visible: true, width: 200 },
           { props: 'status', label: '状态', visible: true, width: 200 },
-          { props: 'remark', label: '备注（说明）', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
+          { props: 'remark', label: '说明', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
-          { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
+          { props: 'modifierName', label: '更改人', visible: true, width: 200 },
+          { props: 'updateTime', label: '更改时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',

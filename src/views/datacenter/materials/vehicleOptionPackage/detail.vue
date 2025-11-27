@@ -3,7 +3,7 @@
     <el-skeleton v-if="loading" :rows="6" animated />
     <template v-else>
       <section class="common-title">
-        <h2>创建者：{{ info.creator }}</h2>
+        <h2>创建人：{{ info.creator }}</h2>
         <el-button size="small" @click="handleEdit"><i class="iconfont icon-lxppc-edit"></i>编辑</el-button>
       </section>
       <section class="common-section">
@@ -13,28 +13,25 @@
         <div class="common-section-body">
           <el-form :inline="true" ref="ruleForm" label-width="120px">
             <!-- TIPS: 根据实际情况调整展示字段 -->
-            <el-form-item label="创建者：" prop="creator">
-              {{ info.creator  }}
-            </el-form-item>
             <el-form-item label="选装包名称：" prop="optionPackageName">
               {{ info.optionPackageName  }}
             </el-form-item>
             <el-form-item label="状态：" prop="status">
-              {{ info.status  }}
+              {{ info.statusLabel  }}
             </el-form-item>
-            <el-form-item label="备注（说明）：" prop="remark">
+            <!-- <el-form-item label="说明：" prop="remark">
               {{ info.remark  }}
-            </el-form-item>
-            <el-form-item label="创建者名称：" prop="creatorName">
+            </el-form-item> -->
+            <el-form-item label="创建人：" prop="creatorName">
               {{ info.creatorName  }}
             </el-form-item>
             <el-form-item label="创建时间：" prop="createTime">
               {{ info.createTime  }}
             </el-form-item>
-            <el-form-item label="修改者名称：" prop="modifierName">
+            <!-- <el-form-item label="更改人：" prop="modifierName">
               {{ info.modifierName  }}
             </el-form-item>
-            <el-form-item label="修改时间：" prop="updateTime">
+            <el-form-item label="更改时间：" prop="updateTime">
               {{ info.updateTime  }}
             </el-form-item>
             <el-form-item label="主键：" prop="id">
@@ -45,7 +42,7 @@
             </el-form-item>
             <el-form-item label="状态变更描述：" prop="statusDesc">
               {{ info.statusDesc  }}
-            </el-form-item>
+            </el-form-item> -->
           </el-form>
         </div>
       </section>

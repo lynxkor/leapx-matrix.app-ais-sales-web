@@ -16,31 +16,31 @@
             <el-form-item label="电池电芯名称：" prop="batteryCellName">
               {{ info.batteryCellName  }}
             </el-form-item>
-            <el-form-item label="电芯材料枚举：1：三元锂:2：硫酸铁锂：" prop="cellMaterials">
-              {{ info.cellMaterials  }}
+            <el-form-item label="电芯材料" prop="cellMaterials">
+              {{ info.cellMaterialsLabel  }}
             </el-form-item>
             <el-form-item label="状态：" prop="status">
               {{ info.status  }}
             </el-form-item>
-            <el-form-item label="备注（说明）：" prop="remark">
+            <el-form-item label="说明：" prop="remark">
               {{ info.remark  }}
             </el-form-item>
-            <el-form-item label="创建者名称：" prop="creatorName">
+            <el-form-item label="创建人：" prop="creatorName">
               {{ info.creatorName  }}
             </el-form-item>
             <el-form-item label="创建时间：" prop="createTime">
               {{ info.createTime  }}
             </el-form-item>
-            <el-form-item label="修改者名称：" prop="modifierName">
+            <el-form-item label="更改人：" prop="modifierName">
               {{ info.modifierName  }}
             </el-form-item>
-            <el-form-item label="修改时间：" prop="updateTime">
+            <el-form-item label="更改时间：" prop="updateTime">
               {{ info.updateTime  }}
             </el-form-item>
             <el-form-item label="主键：" prop="id">
               {{ info.id  }}
             </el-form-item>
-            <el-form-item label="创建者：" prop="creator">
+            <el-form-item label="创建人：" prop="creator">
               {{ info.creator  }}
             </el-form-item>
             <el-form-item label="修改者：" prop="modifier">

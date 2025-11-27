@@ -19,15 +19,15 @@
       <el-form-item label="状态">
         <fetch-select
           :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.status"
+          enumCode="StatusEnum"
+          v-model="form.statusIncludeList"
           placeholder="请选择"
           clearable
           multiple
           filterable
         />
       </el-form-item>
-      <el-form-item label="备注（说明）"  v-show="this.visibleCount === 3 || show">
+      <!-- <el-form-item label="说明"  v-show="this.visibleCount === 3 || show">
         <el-input
           placeholder="请输入"
           v-model="form.remark"
@@ -35,14 +35,14 @@
         />
       </el-form-item>
       <span v-show="show">
-        <el-form-item label="创建者名称">
+        <el-form-item label="创建人">
           <el-input
             placeholder="请输入"
             v-model="form.creatorName"
             clearable
           />
-        </el-form-item>
-        <el-form-item label="创建时间">
+        </el-form-item> -->
+        <!-- <el-form-item label="创建时间">
           <el-date-picker
             v-model="form.createTime"
             type="daterange"
@@ -54,14 +54,14 @@
             align="right"
           />
         </el-form-item>
-        <el-form-item label="修改者名称">
+        <el-form-item label="更改人">
           <el-input
             placeholder="请输入"
             v-model="form.modifierName"
             clearable
           />
         </el-form-item>
-        <el-form-item label="修改时间">
+        <el-form-item label="更改时间">
           <el-date-picker
             v-model="form.updateTime"
             type="daterange"
@@ -72,8 +72,8 @@
             end-placeholder="结束日期"
             align="right"
           />
-        </el-form-item>
-      </span>
+        </el-form-item> -->
+      <!-- </span> -->
       <page-search-action
         v-model="show"
         is-expandable
@@ -87,7 +87,7 @@
       <el-button size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <el-button size="small" @click="handleImport">导入</el-button>
       <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <!-- <el-button size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
       <el-button size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
     </div>
@@ -171,9 +171,9 @@ export default {
         },
         dataProp: [
           {
-            props: 'creator',
-            label: '创建者',
-            visible: false,
+            props: 'optionPackageName',
+            label: '选装包名称',
+            visible: true,
             width: 200,
             fixed: 'left',
             buttons: [{
@@ -188,13 +188,12 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'optionPackageName', label: '选装包名称', visible: true, width: 200 },
-          { props: 'status', label: '状态', visible: true, width: 200 },
-          { props: 'remark', label: '备注（说明）', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'remark', label: '说明', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
-          { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
+          { props: 'modifierName', label: '更改人', visible: true, width: 200 },
+          { props: 'updateTime', label: '更改时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
@@ -212,24 +211,6 @@ export default {
                 });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],
@@ -377,7 +358,6 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
-
       return data;
     },
     async fetchOptions (code) {

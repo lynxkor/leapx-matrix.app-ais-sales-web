@@ -27,7 +27,7 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="statusEnum"
-          v-model="form.status"
+          v-model="form.statusIncludeList"
           placeholder="请选择"
           clearable
           multiple
@@ -92,7 +92,7 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <!-- <el-button size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
       <el-button size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
         <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
@@ -197,11 +197,11 @@ export default {
           },
           { props: 'brandName', label: '品牌名称', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'remark', label: '备注（说明）', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
+          { props: 'remark', label: '说明', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
-          { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
+          { props: 'modifierName', label: '更改人', visible: true, width: 200 },
+          { props: 'updateTime', label: '更改时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
@@ -219,24 +219,6 @@ export default {
                 });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],

@@ -31,16 +31,16 @@
             <el-form-item label="创建时间：" prop="createTime">
               {{ info.createTime  }}
             </el-form-item>
-            <!-- <el-form-item label="修改者名称：" prop="modifierName">
+            <!-- <el-form-item label="更改人：" prop="modifierName">
               {{ info.modifierName  }}
             </el-form-item>
-            <el-form-item label="修改时间：" prop="updateTime">
+            <el-form-item label="更改时间：" prop="updateTime">
               {{ info.updateTime  }}
             </el-form-item>
             <el-form-item label="主键：" prop="id">
               {{ info.id  }}
             </el-form-item>
-            <el-form-item label="创建者：" prop="creator">
+            <el-form-item label="创建人：" prop="creator">
               {{ info.creator  }}
             </el-form-item>
             <el-form-item label="修改者：" prop="modifier">

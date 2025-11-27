@@ -50,7 +50,7 @@
                 <fetch-select :options="batteryCellList" v-model="form.batteryCellId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
               </el-form-item>
               <el-form-item label="状态：" prop="status">
-                <fetch-select :request="fetchOptions" enumCode="StatusEnum" v-model="form.status" placeholder="请选择" clearable />
+                <fetch-select :request="fetchOptions" enumCode="StatusEnum" v-model="form.statusIncludeList" placeholder="请选择" clearable />
               </el-form-item>
             </el-form>
           </div>
@@ -137,7 +137,7 @@ import { getDetail, addOrUpdate } from '@/api/datacenter/materials/vehicleMateri
 import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum, vehicleSeriesList, vehicleModelList, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleRoof, vehicleDrivingRange, vehicleRangePower } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
-
+import moment from 'moment';
 const defaultForm = {
   // 多选时字段有变化，自行修复
   price: '',
@@ -238,16 +238,16 @@ export default {
           { required: true, message: '请选择状态', trigger: 'change' }
         ],
         modifierId: [
-          { required: true, message: '请输入修改者名称', trigger: 'blur' }
+          { required: true, message: '请输入更改人', trigger: 'blur' }
         ],
         updateTime: [
-          { required: true, message: '请选择修改时间', trigger: 'change' }
+          { required: true, message: '请选择更改时间', trigger: 'change' }
         ],
         id: [
           { required: true, message: '请输入主键', trigger: 'blur' }
         ],
         creator: [
-          { required: true, message: '请输入创建者', trigger: 'blur' }
+          { required: true, message: '请输入创建人', trigger: 'blur' }
         ],
         modifier: [
           { required: true, message: '请输入修改者', trigger: 'blur' }

@@ -25,17 +25,18 @@
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="状态" prop="status">
+              <el-form-item label="状态" prop="statusLabel">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="statusEnum"
-                  v-model="form.status"
+                  enumCode="StatusEnum"
+                  v-model="form.statusIncludeList"
                   placeholder="请选择"
                   clearable
                   filterable
+                  disabled
                 />
               </el-form-item>
-              <!-- <el-form-item label="备注（说明）" prop="remark">
+              <!-- <el-form-item label="说明" prop="remark">
                 <el-input
                   placeholder="请输入"
                   v-model="form.remark"
@@ -47,6 +48,7 @@
                   placeholder="请输入"
                   v-model="form.creatorName"
                   clearable
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="创建时间" prop="createTime">
@@ -56,17 +58,18 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
+                  disabled
                   align="right"
                 />
               </el-form-item>
-              <!-- <el-form-item label="修改者名称" prop="modifierName">
+              <!-- <el-form-item label="更改人" prop="modifierName">
                 <el-input
                   placeholder="请输入"
                   v-model="form.modifierName"
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="修改时间" prop="updateTime">
+              <el-form-item label="更改时间" prop="updateTime">
                 <el-date-picker
                   v-model="form.updateTime"
                   :picker-options="pickerOptions"
@@ -83,7 +86,7 @@
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="创建者" prop="creator">
+              <el-form-item label="创建人" prop="creator">
                 <el-input
                   placeholder="请输入"
                   v-model="form.creator"
@@ -101,7 +104,7 @@
                 <fetch-select
                   :request="fetchOptions"
                   enumCode="xxx"
-                  v-model="form.statusDesc"
+                  v-model="form.statusIncludeListDesc"
                   placeholder="请选择"
                   clearable
                   filterable
@@ -133,7 +136,7 @@ import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
-
+import moment from 'moment';
 const defaultForm = {
   // 多选时字段有变化，自行修复
   modelLineName: '',
@@ -182,25 +185,25 @@ export default {
           { required: true, message: '请选择状态', trigger: 'change' }
         ],
         remark: [
-          { required: true, message: '请输入备注（说明）', trigger: 'blur' }
+          { required: true, message: '请输入说明', trigger: 'blur' }
         ],
         creatorName: [
-          { required: true, message: '请输入创建者名称', trigger: 'blur' }
+          { required: true, message: '请输入创建人', trigger: 'blur' }
         ],
         createTime: [
           { required: true, message: '请选择创建时间', trigger: 'change' }
         ],
         modifierName: [
-          { required: true, message: '请输入修改者名称', trigger: 'blur' }
+          { required: true, message: '请输入更改人', trigger: 'blur' }
         ],
         updateTime: [
-          { required: true, message: '请选择修改时间', trigger: 'change' }
+          { required: true, message: '请选择更改时间', trigger: 'change' }
         ],
         id: [
           { required: true, message: '请输入主键', trigger: 'blur' }
         ],
         creator: [
-          { required: true, message: '请输入创建者', trigger: 'blur' }
+          { required: true, message: '请输入创建人', trigger: 'blur' }
         ],
         modifier: [
           { required: true, message: '请输入修改者', trigger: 'blur' }
@@ -299,6 +302,16 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    getDefautlForm () {
+      const userInfo = this.$store.state.user.userInfo;
+      return {
+        ...defaultForm,
+        ownerId: userInfo.userId,
+        creatorName: userInfo.userName,
+        status: 1,
+        createTime: moment().format('YYYY-MM-DD HH:mm:ss')
+      };
     }
   }
 };

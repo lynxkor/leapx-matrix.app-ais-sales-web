@@ -19,8 +19,8 @@
       <el-form-item label="状态">
         <fetch-select
           :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.status"
+          enumCode="statusEnum"
+          v-model="form.statusIncludeList"
           placeholder="请选择"
           clearable
           multiple
@@ -121,11 +121,10 @@ export default {
         },
         dataProp: [
           {
-            props: 'modifier',
-            label: '修改者',
-            visible: false,
+            props: 'roofName',
+            label: '车顶名称',
+            visible: true,
             width: 200,
-            fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
@@ -138,13 +137,10 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'roofName', label: '车顶名称', visible: true, width: 200 },
-          { props: 'status', label: '状态', visible: true, width: 200 },
-          { props: 'remark', label: '备注（说明）', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'remark', label: '说明', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
-          { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
@@ -162,24 +158,6 @@ export default {
                 });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],
