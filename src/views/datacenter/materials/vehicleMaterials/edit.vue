@@ -14,46 +14,43 @@
               <el-form-item label="物料描述：" prop="materialsDesc">
                 <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
               </el-form-item>
-              <el-form-item label="车系：" prop="modelName">
-                <el-input placeholder="请输入" v-model="form.modelName" clearable />
+              <el-form-item label="车系：" prop="seriesId">
+                <fetch-select :options="seriesList" v-model="form.seriesId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable
+          @change="seriesListChange" />
               </el-form-item>
-              <el-form-item label="车型：" prop="modelName">
-                <el-input placeholder="请输入" v-model="form.modelName" clearable />
+              <el-form-item label="车型：" prop="modelId">
+                <fetch-select :options="modelList" v-model="form.modelId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable
+            @change="modelListChange" />
               </el-form-item>
-              <el-form-item label="年款：" prop="modelName">
-                <el-input placeholder="请输入" v-model="form.modelName" clearable />
+              <el-form-item label="年款：" prop="yearTypeId">
+                <fetch-select :options="yearModelList" v-model="form.yearTypeId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
               </el-form-item>
-              <el-form-item label="外观：" prop="exteriorName">
-                <el-input placeholder="请输入" v-model="form.exteriorName" clearable />
+              <el-form-item label="外观：" prop="exteriorId">
+                <fetch-select :options="exteriorList" v-model="form.exteriorId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
               </el-form-item>
-              <el-form-item label="内饰：" prop="interiorName">
-                <el-input placeholder="请输入" v-model="form.interiorName" clearable />
+              <el-form-item label="内饰：" prop="interiorId">
+                <fetch-select :options="interiorList" v-model="form.interiorId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
               </el-form-item>
-              <el-form-item label="车顶：" prop="roofName">
-                <el-input placeholder="请输入" v-model="form.roofName" clearable />
+              <el-form-item label="车顶：" prop="roofId">
+                <fetch-select :options="roofList" v-model="form.roofId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
               </el-form-item>
-              <el-form-item label="轮毂：" prop="wheelHubName">
-                <el-input placeholder="请输入" v-model="form.wheelHubName" clearable />
+              <el-form-item label="轮毂：" prop="wheelHubId">
+                <fetch-select :options="wheelHubList" v-model="form.wheelHubId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
               </el-form-item>
-              <el-form-item label="续航里程：" prop="drivingRangeName">
-                <el-input placeholder="请输入" v-model="form.drivingRangeName" clearable />
+              <el-form-item label="续航里程：" prop="drivingRangeId">
+                <fetch-select :options="drivingRangeList" v-model="form.drivingRangeId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
               </el-form-item>
-              <el-form-item label="续配动力：" prop="rangePowerName">
-                <el-input placeholder="请输入" v-model="form.rangePowerName" clearable />
+              <el-form-item label="选配动力：" prop="rangePowerId">
+                <fetch-select :options="rangePowerList" v-model="form.rangePowerId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
               </el-form-item>
-
-              <el-form-item label="选配动力：" prop="optionPackageName">
-                <el-input placeholder="请输入" v-model="form.optionPackageName" clearable />
+              <el-form-item label="选装包：" prop="optionPackageId">
+                <fetch-select :options="optionPackageList" v-model="form.optionPackageId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
               </el-form-item>
-              <el-form-item label="选装包：" prop="optionPackageName">
-                <el-input placeholder="请输入" v-model="form.optionPackageName" clearable />
-              </el-form-item>
-              <el-form-item label="电池电芯：" prop="batteryCellName">
-                <el-input placeholder="请输入" v-model="form.batteryCellName" clearable />
+              <el-form-item label="电池电芯：" prop="batteryCellId">
+                <fetch-select :options="batteryCellList" v-model="form.batteryCellId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
               </el-form-item>
               <el-form-item label="状态：" prop="status">
-                <fetch-select :request="fetchOptions" enumCode="StatusEnum" v-model="form.status" placeholder="请选择"
-                  clearable multiple />
+                <fetch-select :request="fetchOptions" enumCode="StatusEnum" v-model="form.status" placeholder="请选择" clearable />
               </el-form-item>
             </el-form>
           </div>
@@ -138,7 +135,7 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/datacenter/materials/vehicleMaterials/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import { getEnum } from '@/api/common';
+import { getEnum, vehicleSeriesList, vehicleModelList, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleRoof, vehicleDrivingRange, vehicleRangePower } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 
 const defaultForm = {
@@ -184,6 +181,7 @@ const defaultForm = {
   rangePowerId: '',
   rangePowerName: '',
   currencyCode: '',
+
 };
 
 export default {
@@ -215,31 +213,31 @@ export default {
         materialsDesc: [
           { required: true, message: '请输入物料描述', trigger: 'blur' }
         ],
-        modelName: [
+        modelId: [
           { required: true, message: '请输入车型名称', trigger: 'blur' }
         ],
-        exteriorName: [
+        exteriorId: [
           { required: true, message: '请输入外观名称', trigger: 'blur' }
         ],
-        interiorName: [
+        interiorId: [
           { required: true, message: '请输入内饰名称', trigger: 'blur' }
         ],
-        wheelHubName: [
+        wheelHubId: [
           { required: true, message: '请输入轮毂名称', trigger: 'blur' }
         ],
-        roofName: [
+        roofId: [
           { required: true, message: '请输入车顶名称', trigger: 'blur' }
         ],
-        optionPackageName: [
+        optionPackageId: [
           { required: true, message: '请输入选装包名称', trigger: 'blur' }
         ],
-        batteryCellName: [
+        batteryCellId: [
           { required: true, message: '请输入电池电芯名称', trigger: 'blur' }
         ],
         status: [
           { required: true, message: '请选择状态', trigger: 'change' }
         ],
-        modifierName: [
+        modifierId: [
           { required: true, message: '请输入修改者名称', trigger: 'blur' }
         ],
         updateTime: [
@@ -260,10 +258,10 @@ export default {
         cellMaterials: [
           { required: true, message: '请输入电芯材料枚举：', trigger: 'blur' }
         ],
-        drivingRangeName: [
+        drivingRangeId: [
           { required: true, message: '请输入续航里程名称', trigger: 'blur' }
         ],
-        rangePowerName: [
+        rangePowerId: [
           { required: true, message: '请输入续配动力名称', trigger: 'blur' }
         ],
         currencyCode: [
@@ -296,10 +294,22 @@ export default {
             picker.$emit('pick', [start, end]);
           }
         }]
-      }
+      },
+      seriesList: [],
+      modelList: [],
+      yearModelList: [],
+      exteriorList: [],
+      interiorList: [],
+      wheelHubList: [],
+      optionPackageList: [],
+      batteryCellList: [],
+      roofList: [],
+      drivingRangeList: [],
+      rangePowerList: [],
     };
   },
   mounted () {
+    this.initVehicleData();
     this.getDetailData();
   },
   beforeRouteLeave (to, from, next) {
@@ -318,6 +328,17 @@ export default {
     }
   },
   methods: {
+    initVehicleData () {
+      this.getVehicleSeriesList();
+      this.getVehicleExteriorList();
+      this.getVehicleInteriorList();
+      this.getVehicleWheelHubList();
+      this.getVehicleOptionPackageList();
+      this.getVehicleBatteryCellList();
+      this.geVehicleRoofList();
+      this.getVehicleDrivingRange();
+      this.getVehicleRangePower();
+    },
     handleBack () {
       this.$router.back();
     },
@@ -327,6 +348,7 @@ export default {
       if (id) {
         getDetail(id).then(res => {
           this.loading = false;
+          res.status = res.status.toString();
           Object.assign(this.form, res);
           Object.assign(this.originalForm, res);
         });
@@ -372,6 +394,159 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+
+    seriesListChange (val, selectedOption) {
+      console.log('seriesListChange', val, selectedOption);
+      if (val.length) {
+        this.getVehicleModelList(val);
+      } else {
+        this.modelList = [];
+        this.form.modelId = [];
+        this.yearModelList = [];
+        this.form.yearTypeId = [];
+      }
+    },
+    modelListChange (val, selectedOption) {
+      console.log('modelListChange', val, selectedOption);
+      if (val.length) {
+        this.getModelYearTypeRelationsList(val);
+      } else {
+        this.yearModelList = [];
+        this.form.yearTypeIdSet = [];
+      }
+    },
+    async getVehicleSeriesList () {
+      const res = await vehicleSeriesList({ size: 1000 });
+      console.log('vehicleSeries', res);
+      if (res.length) {
+        const vehicleSeriesData = res.map(item => {
+          return {
+            ...item,
+            label: item.seriesName,
+            value: item.id
+          };
+        });
+        this.seriesList = vehicleSeriesData;
+      }
+    },
+
+    async getVehicleModelList (val) {
+      const res = await vehicleModelList({ seriesIdList: val, size: 1000 });
+      console.log('vehicleModelList', res);
+      if (res.length) {
+        const vehicleModelData = res.map(item => {
+          return {
+            ...item,
+            label: item.modelName,
+            value: item.id
+          };
+        });
+        this.modelList = vehicleModelData;
+      }
+    },
+
+    async getModelYearTypeRelationsList (val) {
+      if (val.length) {
+        this.yearModelList = val.map(item => {
+          return {
+            ...item,
+            label: item.yearTypeName,
+            value: item.yearTypeId
+          };
+        });
+      } else {
+        this.yearModelList = [];
+        this.form.yearTypeId = [];
+      }
+    },
+
+    async getVehicleExteriorList () {
+      const res = await vehicleExterior({ size: 1000 });
+      this.exteriorList = res.map(item => {
+        return {
+          ...item,
+          label: item.exteriorName,
+          value: item.id
+        };
+      });
+    },
+
+    async getVehicleInteriorList () {
+      const res = await vehicleInterior({ size: 1000 });
+      this.interiorList = res.map(item => {
+        return {
+          ...item,
+          label: item.interiorName,
+          value: item.id
+        };
+      });
+    },
+
+    async getVehicleWheelHubList () {
+      const res = await vehicleWheelHub({ size: 1000 });
+      this.wheelHubList = res.map(item => {
+        return {
+          ...item,
+          label: item.wheelHubName,
+          value: item.id
+        };
+      });
+    },
+
+    async getVehicleOptionPackageList () {
+      const res = await vehicleOptionPackage({ size: 1000 });
+      this.optionPackageList = res.map(item => {
+        return {
+          ...item,
+          label: item.optionPackageName,
+          value: item.id
+        };
+      });
+    },
+
+    async getVehicleBatteryCellList () {
+      const res = await vehicleBatteryCell({ size: 1000 });
+      this.batteryCellList = res.map(item => {
+        return {
+          ...item,
+          label: item.batteryCellName,
+          value: item.id
+        };
+      });
+    },
+
+    async geVehicleRoofList () {
+      const res = await vehicleRoof({ size: 1000 });
+      this.roofList = res.map(item => {
+        return {
+          ...item,
+          label: item.roofName,
+          value: item.id
+        };
+      });
+    },
+
+    async getVehicleDrivingRange () {
+      const res = await vehicleDrivingRange({ size: 1000 });
+      this.drivingRangeList = res.map(item => {
+        return {
+          ...item,
+          label: item.drivingRangeName,
+          value: item.id
+        };
+      });
+    },
+
+    async getVehicleRangePower () {
+      const res = await vehicleRangePower({ size: 1000 });
+      this.rangePowerList = res.map(item => {
+        return {
+          ...item,
+          label: item.rangePowerName,
+          value: item.id
+        };
+      });
     }
   }
 };

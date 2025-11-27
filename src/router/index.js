@@ -49,29 +49,55 @@ const routes = [
       name: 'index',
       component: () => import('@/views/home.vue')
     }, {
-      path: '/vehicleinventory/basic/regionNoticeDirectory',
+      path: '/vehstock/basic/regionNoticeDirectory',
       name: 'regionNoticeDirectory',
-      component: () => import('@/views/vehicleinventory/basic/regionNoticeDirectory/index.vue'),
+      component: () => import('@/views/vehstock/basic/regionNoticeDirectory/index.vue'),
 
       meta: {
         name: '地区对应公告目录'
       }
     }, {
-      path: '/vehicleinventory/basic/regionnoticedirectory/detail',
+      path: '/vehstock/basic/regionNoticeDirectory/detail',
       name: 'regionNoticeDirectoryDetail',
-      component: () => import('@/views/vehicleinventory/basic/regionNoticeDirectory/detail.vue'),
+      component: () => import('@/views/vehstock/basic/regionNoticeDirectory/detail.vue'),
 
       meta: {
         name: '地区对应公告目录详情',
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehicleinventory/basic/regionnoticedirectory/edit',
+      path: '/vehstock/basic/regionNoticeDirectory/edit',
       name: 'regionNoticeDirectoryEdit',
-      component: () => import('@/views/vehicleinventory/basic/regionNoticeDirectory/edit.vue'),
+      component: () => import('@/views/vehstock/basic/regionNoticeDirectory/edit.vue'),
 
       meta: {
         name: '地区对应公告目录详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/basic/vehicleInventoryStock',
+      name: 'vehicleInventoryStock',
+      component: () => import('@/views/vehstock/basic/vehicleInventoryStock/index.vue'),
+
+      meta: {
+        name: '整车库存存量定义'
+      }
+    }, {
+      path: '/vehstock/basic/vehicleInventoryStock/detail',
+      name: 'vehicleInventoryStockDetail',
+      component: () => import('@/views/vehstock/basic/vehicleInventoryStock/detail.vue'),
+
+      meta: {
+        name: '整车库存存量定义详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/basic/vehicleInventoryStock/edit',
+      name: 'vehicleInventoryStockEdit',
+      component: () => import('@/views/vehstock/basic/vehicleInventoryStock/edit.vue'),
+
+      meta: {
+        name: '整车库存存量定义详情',
         noResourceUrl: 'true'
       }
     }]
@@ -116,8 +142,8 @@ export function getRouter () {
         return;
       }
       // 开发阶段先跳过权限验证
-      if (localStorage.getItem('sourceUrl').includes(to.path) || to.meta.noResourceUrl) {
-      // if (true) {
+      // if (localStorage.getItem('sourceUrl').includes(to.path) || to.meta.noResourceUrl) {
+      if (true) {
         next();
       } else {
         window.alert('你没有访问该页面的权限');

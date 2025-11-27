@@ -1,7 +1,7 @@
 <template>
   <div class="page-common m-vehicle-materials-list">
     <!--  TIPS: 自行调整如下label-width，满足label不换行  -->
-    <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
+    <el-form :inline="true" :model="form" size="small" label-position="right" label-width="160px"
       class="ais-search-form">
       <el-form-item label="物料编码">
         <el-input placeholder="请输入" v-model="form.materialsCode" clearable />
@@ -10,34 +10,34 @@
         <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
       </el-form-item>
       <el-form-item label="车系" v-show="this.visibleCount === 3 || show">
-        <fetch-select :options="seriesList" v-model="form.seriesIds" placeholder="请选择" clearable multiple
+        <fetch-select :options="seriesList" v-model="form.seriesIds" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable
           @change="seriesListChange" />
       </el-form-item>
       <span v-show="show">
         <el-form-item label="车型">
-          <fetch-select :options="modelList" v-model="form.modelIdSet" placeholder="请选择" clearable multiple
+          <fetch-select :options="modelList" v-model="form.modelIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable
             @change="modelListChange" />
         </el-form-item>
         <el-form-item label="年款">
-          <fetch-select :options="yearModelList" v-model="form.yearTypeIdSet" placeholder="请选择" clearable multiple />
+          <fetch-select :options="yearModelList" v-model="form.yearTypeIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
         </el-form-item>
-        <el-form-item label="外观名称">
-          <el-input placeholder="请输入" v-model="form.exteriorName" clearable />
+        <el-form-item label="外观">
+          <fetch-select :options="exteriorList" v-model="form.exteriorIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
         </el-form-item>
-        <el-form-item label="内饰名称">
-          <el-input placeholder="请输入" v-model="form.interiorName" clearable />
+        <el-form-item label="内饰">
+          <fetch-select :options="interiorList" v-model="form.interiorIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
         </el-form-item>
-        <el-form-item label="轮毂名称">
-          <el-input placeholder="请输入" v-model="form.wheelHubName" clearable />
+        <el-form-item label="轮毂">
+          <fetch-select :options="wheelHubList" v-model="form.wheelHubIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
         </el-form-item>
-        <el-form-item label="车顶名称">
-          <el-input placeholder="请输入" v-model="form.roofName" clearable />
+        <el-form-item label="选装包">
+          <fetch-select :options="optionPackageList" v-model="form.optionPackageIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
         </el-form-item>
-        <el-form-item label="选装包名称">
-          <el-input placeholder="请输入" v-model="form.optionPackageName" clearable />
+        <el-form-item label="电池电芯">
+          <fetch-select :options="batteryCellList" v-model="form.batteryCellIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
         </el-form-item>
-        <el-form-item label="电池电芯名称">
-          <el-input placeholder="请输入" v-model="form.batteryCellName" clearable />
+        <el-form-item label="车顶">
+          <fetch-select :options="roofList" v-model="form.roofIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
         </el-form-item>
         <el-form-item label="是否允许现车批售">
           <fetch-select :options="yes_no_enum" v-model="form.allowWholesale" placeholder="请选择" clearable multiple />
@@ -57,16 +57,19 @@
         <el-form-item label="是否允许企业客户销售	">
           <fetch-select :options="yes_no_enum" v-model="form.allowCustomerSales" placeholder="请选择" clearable multiple />
         </el-form-item>
-        <el-form-item label="是否允许批售确认">
-          <fetch-select :options="yes_no_enum" v-model="form.allowWholesaleConfirm" placeholder="请选择" clearable
-            multiple />
-        </el-form-item>
         <el-form-item label="是否允许改配">
           <fetch-select :options="yes_no_enum" v-model="form.allowConfigurationModify" placeholder="请选择" clearable
             multiple />
         </el-form-item>
+        <el-form-item label="是否允许批售确认">
+          <fetch-select :options="yes_no_enum" v-model="form.allowWholesaleConfirm" placeholder="请选择" clearable
+            multiple />
+        </el-form-item>
         <el-form-item label="停产状态">
           <fetch-select :options="yes_no_enum" v-model="form.discontinueStatus" placeholder="请选择" clearable multiple />
+        </el-form-item>
+        <el-form-item label="状态">
+          <fetch-select :request="fetchOptions" enumCode="StatusEnum" v-model="form.status" placeholder="请选择" clearable />
         </el-form-item>
       </span>
       <page-search-action v-model="show" is-expandable :loading="loading" @submit="onSubmit" @reset="onReset" />
@@ -94,7 +97,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/datacenter/materials/vehicleMaterials/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelList, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleRoof } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -154,11 +157,23 @@ export default {
         },
         dataProp: [
           {
+            props: 'modelLineName',
+            label: '系列名称',
+            visible: true,
+            width: 200,
+            fixed: 'left',
+          },
+          {
+            props: 'seriesName',
+            label: '车系名称',
+            visible: true,
+            width: 200,
+          },
+          {
             props: 'price',
             label: '整车价格',
             visible: true,
             width: 200,
-            fixed: 'left',
           },
           {
             props: 'materialsCode',
@@ -179,12 +194,13 @@ export default {
           },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           { props: 'modelName', label: '车型名称', visible: true, width: 200 },
+          { props: 'yearTypeName', label: '年款名称', visible: true, width: 200 },
           { props: 'exteriorName', label: '外观名称', visible: true, width: 200 },
           { props: 'interiorName', label: '内饰名称', visible: true, width: 200 },
           { props: 'wheelHubName', label: '轮毂名称', visible: true, width: 200 },
-          { props: 'roofName', label: '车顶名称', visible: true, width: 200 },
           { props: 'optionPackageName', label: '选装包名称', visible: true, width: 200 },
           { props: 'batteryCellName', label: '电池电芯名称', visible: true, width: 200 },
+          { props: 'roofName', label: '车顶名称', visible: true, width: 200 },
           { props: 'allowWholesaleLabel', label: '是否允许现车批售', visible: true, width: 200 },
           { props: 'allowProductionScheduleLabel', label: '是否允许排产申请', visible: true, width: 200 },
           { props: 'allowDisplayVehicleWholesaleLabel', label: '是否允许展车批售', visible: true, width: 200 },
@@ -193,12 +209,12 @@ export default {
           { props: 'allowWholesaleConfirmLabel', label: '是否允许批售确认', visible: true, width: 200 },
           { props: 'allowConfigurationModifyLabel', label: '是否允许改配', visible: true, width: 200 },
           { props: 'discontinueStatusLabel', label: '停产状态', visible: true, width: 200 },
-          { props: 'status', label: '状态', visible: true, width: 200 },
-          { props: 'remark', label: '备注（说明）', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'remark', label: '说明', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
-          { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
+          { props: 'modifierName', label: '更新人', visible: true, width: 200 },
+          { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
@@ -266,21 +282,27 @@ export default {
           }
         }]
       },
-      seriesList: [{
-        message: '车型1',
-        code: 1
-      },
-      {
-        message: '车型2',
-        code: 0
-      }],
+      seriesList: [],
       modelList: [],
-      yearModelList: []
+      yearModelList: [],
+      exteriorList: [],
+      interiorList: [],
+      wheelHubList: [],
+      optionPackageList: [],
+      batteryCellList: [],
+      roofList: [],
     };
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车主数据-整车物料管理']);
     this.getData();
+    this.getVehicleSeriesList();
+    this.getVehicleExteriorList();
+    this.getVehicleInteriorList();
+    this.getVehicleWheelHubList();
+    this.getVehicleOptionPackageList();
+    this.getVehicleBatteryCellList();
+    this.geVehicleRoofList();
   },
   methods: {
     handleImport () {
@@ -454,10 +476,135 @@ export default {
     },
     seriesListChange (val, selectedOption) {
       console.log('seriesListChange', val, selectedOption);
+      if (val.length) {
+        this.getVehicleModelList(val);
+      } else {
+        this.modelList = [];
+        this.form.modelIdSet = [];
+        this.yearModelList = [];
+        this.form.yearTypeIdSet = [];
+      }
     },
     modelListChange (val, selectedOption) {
       console.log('modelListChange', val, selectedOption);
-    }
+      if (val.length) {
+        this.getModelYearTypeRelationsList(val);
+      } else {
+        this.yearModelList = [];
+        this.form.yearTypeIdSet = [];
+      }
+    },
+    async getVehicleSeriesList () {
+      const res = await vehicleSeriesList({ size: 1000 });
+      console.log('vehicleSeries', res);
+      if (res.length) {
+        const vehicleSeriesData = res.map(item => {
+          return {
+            ...item,
+            label: item.seriesName,
+            value: item.id
+          };
+        });
+        this.seriesList = vehicleSeriesData;
+      }
+    },
+
+    async getVehicleModelList (val) {
+      const res = await vehicleModelList({ seriesIdList: val, size: 1000 });
+      console.log('vehicleModelList', res);
+      if (res.length) {
+        const vehicleModelData = res.map(item => {
+          return {
+            ...item,
+            label: item.modelName,
+            value: item.id
+          };
+        });
+        this.modelList = vehicleModelData;
+      }
+    },
+
+    async getModelYearTypeRelationsList (val) {
+      if (val.length) {
+        this.yearModelList = val.map(item => {
+          return {
+            ...item,
+            label: item.yearTypeName,
+            value: item.yearTypeId
+          };
+        });
+      } else {
+        this.yearModelList = [];
+        this.form.yearTypeIdSet = [];
+      }
+    },
+
+    async getVehicleExteriorList () {
+      const res = await vehicleExterior({ size: 1000 });
+      this.exteriorList = res.map(item => {
+        return {
+          ...item,
+          label: item.exteriorName,
+          value: item.id
+        };
+      });
+    },
+
+    async getVehicleInteriorList () {
+      const res = await vehicleInterior({ size: 1000 });
+      this.interiorList = res.map(item => {
+        return {
+          ...item,
+          label: item.interiorName,
+          value: item.id
+        };
+      });
+    },
+
+    async getVehicleWheelHubList () {
+      const res = await vehicleWheelHub({ size: 1000 });
+      this.wheelHubList = res.map(item => {
+        return {
+          ...item,
+          label: item.wheelHubName,
+          value: item.id
+        };
+      });
+    },
+
+    async getVehicleOptionPackageList () {
+      const res = await vehicleOptionPackage({ size: 1000 });
+      this.optionPackageList = res.map(item => {
+        return {
+          ...item,
+          label: item.optionPackageName,
+          value: item.id
+        };
+      });
+    },
+
+    async getVehicleBatteryCellList () {
+      const res = await vehicleBatteryCell({ size: 1000 });
+      this.batteryCellList = res.map(item => {
+        return {
+          ...item,
+          label: item.batteryCellName,
+          value: item.id
+        };
+      });
+    },
+
+    async geVehicleRoofList () {
+      const res = await vehicleRoof({ size: 1000 });
+      this.roofList = res.map(item => {
+        return {
+          ...item,
+          label: item.roofName,
+          value: item.id
+        };
+      });
+    },
+
   }
 };
 </script>
