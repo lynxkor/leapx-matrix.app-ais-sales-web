@@ -98,3 +98,83 @@ export function cityPage (data) {
 export function vehicleSalesVersionList (data) {
   return api.jsonPost('/datacenter/web/materials/vehicleRegisteredModel/list', data);
 }
+
+/**
+ * 整车主数据-车系列表查询
+ * @param {*} data
+ */
+export function vehicleSeriesList (data) {
+  return api.jsonPost('/datacenter/web/materials/vehicleSeries/list', data);
+}
+
+/**
+ * 整车主数据-车型列表查询
+ * @param {*} data
+ */
+export function vehicleModelList (data) {
+  return api.jsonPost('/datacenter/web/materials/vehicleModel/list', data);
+}
+
+/**
+ * 整车主数据-外观列表查询
+ * @param {*} data
+ */
+export function vehicleExterior (data) {
+  return api.jsonPost('/datacenter/web/materials/vehicleExterior/list', data);
+}
+
+/**
+ * 整车主数据-内饰列表查询
+ * @param {*} data
+ */
+export function vehicleInterior (data) {
+  return api.jsonPost('/datacenter/web/materials/vehicleInterior/list', data);
+}
+
+/**
+ * 整车主数据-轮毂列表查询
+ * @param {*} data
+ */
+export function vehicleWheelHub (data) {
+  return api.jsonPost('/datacenter/web/materials/vehicleWheelHub/list', data);
+}
+
+/**
+ * 整车主数据-选装包列表查询
+ * @param {*} data
+ */
+export function vehicleOptionPackage (data) {
+  return api.jsonPost('/datacenter/web/materials/vehicleOptionPackage/list', data);
+}
+
+/**
+ * 整车主数据-电池电芯列表查询
+ * @param {*} data
+ */
+export function vehicleBatteryCell (data) {
+  return api.jsonPost('/datacenter/web/materials/vehicleBatteryCell/list', data);
+}
+
+/**
+ * 整车主数据-车顶列表查询
+ * @param {*} data
+ */
+export function vehicleRoof (data) {
+  return api.jsonPost('/datacenter/web/materials/vehicleRoof/list', data);
+}
+
+/**
+ * 整车主数据-续航里程管理
+ * @param {*} data
+ */
+export function vehicleDrivingRange (data) {
+  return api.jsonPost('/datacenter/web/materials/vehicleDrivingRange/list', data);
+}
+
+/**
+ * 整车主数据-续配动力列表查询
+ * @param {*} data
+ */
+export function vehicleRangePower (data) {
+  return api.jsonPost('/datacenter/web/materials/vehicleRangePower/list', data);
+}
