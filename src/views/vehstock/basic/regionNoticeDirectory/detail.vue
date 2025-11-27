@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { getDetail } from '@/api/vehicleinventory/basic/regionNoticeDirectory/index';
+import { getDetail } from '@/api/vehstock/basic/regionNoticeDirectory/index';
 import { YES_NO_ENUM_MAP } from '@/libs/constants';
 export default {
   name: 'regionNoticeDirectoryDetail',
@@ -61,13 +61,13 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['新页面', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['地区对应公告目录', '详情']);
     this.getData();
   },
   methods: {
     handleEdit () {
       this.$router.push({
-        path: '/vehicleinventory/basic/regionNoticeDirectory/edit',
+        path: '/vehstock/basic/regionNoticeDirectory/edit',
         query: {
           id: this.$route.query.id
         }
