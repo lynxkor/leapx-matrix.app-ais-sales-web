@@ -74,6 +74,318 @@ const routes = [
         name: '地区对应公告目录详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/datacenter/materials/vehicleBrand',
+      name: 'vehicleBrand',
+      component: () => import('@/views/datacenter/materials/vehicleBrand/index.vue'),
+
+      meta: {
+        name: '整车主数据-品牌管理'
+      }
+    }, {
+      path: '/datacenter/materials/vehiclebrand/detail',
+      name: 'vehicleBrandDetail',
+      component: () => import('@/views/datacenter/materials/vehicleBrand/detail.vue'),
+
+      meta: {
+        name: '整车主数据-品牌管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehiclebrand/edit',
+      name: 'vehicleBrandEdit',
+      component: () => import('@/views/datacenter/materials/vehicleBrand/edit.vue'),
+
+      meta: {
+        name: '整车主数据-品牌管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleModelLine',
+      name: 'vehicleModelLine',
+      component: () => import('@/views/datacenter/materials/vehicleModelLine/index.vue'),
+
+      meta: {
+        name: '整车主数据-系列管理'
+      }
+    }, {
+      path: '/datacenter/materials/vehiclemodelline/detail',
+      name: 'vehicleModelLineDetail',
+      component: () => import('@/views/datacenter/materials/vehicleModelLine/detail.vue'),
+
+      meta: {
+        name: '整车主数据-系列管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehiclemodelline/edit',
+      name: 'vehicleModelLineEdit',
+      component: () => import('@/views/datacenter/materials/vehicleModelLine/edit.vue'),
+
+      meta: {
+        name: '整车主数据-系列管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleOptionPackage',
+      name: 'vehicleOptionPackage',
+      component: () => import('@/views/datacenter/materials/vehicleOptionPackage/index.vue'),
+
+      meta: {
+        name: '整车主数据-选装包管理'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleoptionpackage/detail',
+      name: 'vehicleOptionPackageDetail',
+      component: () => import('@/views/datacenter/materials/vehicleOptionPackage/detail.vue'),
+
+      meta: {
+        name: '整车主数据-选装包管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleoptionpackage/edit',
+      name: 'vehicleOptionPackageEdit',
+      component: () => import('@/views/datacenter/materials/vehicleOptionPackage/edit.vue'),
+
+      meta: {
+        name: '整车主数据-选装包管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleRegisteredModel',
+      name: 'vehicleRegisteredModel',
+      component: () => import('@/views/datacenter/materials/vehicleRegisteredModel/index.vue'),
+
+      meta: {
+        name: '整车主数据-公告车型管理'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleregisteredmodel/detail',
+      name: 'vehicleRegisteredModelDetail',
+      component: () => import('@/views/datacenter/materials/vehicleRegisteredModel/detail.vue'),
+
+      meta: {
+        name: '整车主数据-公告车型管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleregisteredmodel/edit',
+      name: 'vehicleRegisteredModelEdit',
+      component: () => import('@/views/datacenter/materials/vehicleRegisteredModel/edit.vue'),
+
+      meta: {
+        name: '整车主数据-公告车型管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleRoof',
+      name: 'vehicleRoof',
+      component: () => import('@/views/datacenter/materials/vehicleRoof/index.vue'),
+
+      meta: {
+        name: '整车主数据-车顶管理'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleroof/detail',
+      name: 'vehicleRoofDetail',
+      component: () => import('@/views/datacenter/materials/vehicleRoof/detail.vue'),
+
+      meta: {
+        name: '整车主数据-车顶管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleroof/edit',
+      name: 'vehicleRoofEdit',
+      component: () => import('@/views/datacenter/materials/vehicleRoof/edit.vue'),
+
+      meta: {
+        name: '整车主数据-车顶管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleBatteryCell',
+      name: 'vehicleBatteryCell',
+      component: () => import('@/views/datacenter/materials/vehicleBatteryCell/index.vue'),
+
+      meta: {
+        name: '整车主数据-电池电芯管理'
+      }
+    }, {
+      path: '/datacenter/materials/vehiclebatterycell/detail',
+      name: 'vehicleBatteryCellDetail',
+      component: () => import('@/views/datacenter/materials/vehicleBatteryCell/detail.vue'),
+
+      meta: {
+        name: '整车主数据-电池电芯管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehiclebatterycell/edit',
+      name: 'vehicleBatteryCellEdit',
+      component: () => import('@/views/datacenter/materials/vehicleBatteryCell/edit.vue'),
+
+      meta: {
+        name: '整车主数据-电池电芯管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleYearType',
+      name: 'vehicleYearType',
+      component: () => import('@/views/datacenter/materials/vehicleYearType/index.vue'),
+
+      meta: {
+        name: '整车主数据-年款管理'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleyeartype/detail',
+      name: 'vehicleYearTypeDetail',
+      component: () => import('@/views/datacenter/materials/vehicleYearType/detail.vue'),
+
+      meta: {
+        name: '整车主数据-年款管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleyeartype/edit',
+      name: 'vehicleYearTypeEdit',
+      component: () => import('@/views/datacenter/materials/vehicleYearType/edit.vue'),
+
+      meta: {
+        name: '整车主数据-年款管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleRangePower',
+      name: 'vehicleRangePower',
+      component: () => import('@/views/datacenter/materials/vehicleRangePower/index.vue'),
+
+      meta: {
+        name: '整车主数据-续配动力管理'
+      }
+    }, {
+      path: '/datacenter/materials/vehiclerangepower/detail',
+      name: 'vehicleRangePowerDetail',
+      component: () => import('@/views/datacenter/materials/vehicleRangePower/detail.vue'),
+
+      meta: {
+        name: '整车主数据-续配动力管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehiclerangepower/edit',
+      name: 'vehicleRangePowerEdit',
+      component: () => import('@/views/datacenter/materials/vehicleRangePower/edit.vue'),
+
+      meta: {
+        name: '整车主数据-续配动力管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleWheelHub',
+      name: 'vehicleWheelHub',
+      component: () => import('@/views/datacenter/materials/vehicleWheelHub/index.vue'),
+
+      meta: {
+        name: '整车主数据-轮毂管理'
+      }
+    }, {
+      path: '/datacenter/materials/vehiclewheelhub/detail',
+      name: 'vehicleWheelHubDetail',
+      component: () => import('@/views/datacenter/materials/vehicleWheelHub/detail.vue'),
+
+      meta: {
+        name: '整车主数据-轮毂管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehiclewheelhub/edit',
+      name: 'vehicleWheelHubEdit',
+      component: () => import('@/views/datacenter/materials/vehicleWheelHub/edit.vue'),
+
+      meta: {
+        name: '整车主数据-轮毂管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleExterior',
+      name: 'vehicleExterior',
+      component: () => import('@/views/datacenter/materials/vehicleExterior/index.vue'),
+
+      meta: {
+        name: '整车主数据-外观管理'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleexterior/detail',
+      name: 'vehicleExteriorDetail',
+      component: () => import('@/views/datacenter/materials/vehicleExterior/detail.vue'),
+
+      meta: {
+        name: '整车主数据-外观管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleexterior/edit',
+      name: 'vehicleExteriorEdit',
+      component: () => import('@/views/datacenter/materials/vehicleExterior/edit.vue'),
+
+      meta: {
+        name: '整车主数据-外观管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleInterior',
+      name: 'vehicleInterior',
+      component: () => import('@/views/datacenter/materials/vehicleInterior/index.vue'),
+
+      meta: {
+        name: '整车主数据-内饰管理'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleinterior/detail',
+      name: 'vehicleInteriorDetail',
+      component: () => import('@/views/datacenter/materials/vehicleInterior/detail.vue'),
+
+      meta: {
+        name: '整车主数据-内饰管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleinterior/edit',
+      name: 'vehicleInteriorEdit',
+      component: () => import('@/views/datacenter/materials/vehicleInterior/edit.vue'),
+
+      meta: {
+        name: '整车主数据-内饰管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleDrivingRange',
+      name: 'vehicleDrivingRange',
+      component: () => import('@/views/datacenter/materials/vehicleDrivingRange/index.vue'),
+
+      meta: {
+        name: '整车主数据-续航里程管理'
+      }
+    }, {
+      path: '/datacenter/materials/vehicledrivingrange/detail',
+      name: 'vehicleDrivingRangeDetail',
+      component: () => import('@/views/datacenter/materials/vehicleDrivingRange/detail.vue'),
+
+      meta: {
+        name: '整车主数据-续航里程管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehicledrivingrange/edit',
+      name: 'vehicleDrivingRangeEdit',
+      component: () => import('@/views/datacenter/materials/vehicleDrivingRange/edit.vue'),
+
+      meta: {
+        name: '整车主数据-续航里程管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
