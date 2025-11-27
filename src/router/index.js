@@ -74,6 +74,32 @@ const routes = [
         name: '地区对应公告目录详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/datacenter/materials/vehicleMaterials',
+      name: 'vehicleMaterials',
+      component: () => import('@/views/datacenter/materials/vehicleMaterials/index.vue'),
+
+      meta: {
+        name: '整车主数据-整车物料管理'
+      }
+    }, {
+      path: '/datacenter/materials/vehiclematerials/detail',
+      name: 'vehicleMaterialsDetail',
+      component: () => import('@/views/datacenter/materials/vehicleMaterials/detail.vue'),
+
+      meta: {
+        name: '整车主数据-整车物料管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehiclematerials/edit',
+      name: 'vehicleMaterialsEdit',
+      component: () => import('@/views/datacenter/materials/vehicleMaterials/edit.vue'),
+
+      meta: {
+        name: '整车主数据-整车物料管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];

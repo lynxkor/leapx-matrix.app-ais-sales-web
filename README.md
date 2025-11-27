@@ -1,8 +1,8 @@
-# app-ais-presale-front 新销服-售中服务子应用
+# app-ais-sales-front 新销服-售中服务子应用
 ## 项目初始化
 ``` bash
 # 克隆项目命令
-git clone -b develop --recurse-submodules http://git-external.leapmotor.com/business-front/webx/lxp-front-matrix/app-ais-presale-front.git
+git clone -b develop --recurse-submodules http://git-external.leapmotor.com/business-front/webx/lxp-front-matrix/app-ais-sales-front.git
 ```
 其余步骤参考[PC端子应用开发流程](https://wiki-intra.leapmotor.com/pages/viewpage.action?pageId=97819126)
 
