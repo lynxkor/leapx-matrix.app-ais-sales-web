@@ -16,7 +16,7 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="库存存量类型"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="库存存量类型">
         <fetch-select
           :request="fetchOptions"
           enumCode="vehstock_stock_Type"
@@ -39,7 +39,6 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button size="small" @click="handleImport">导入</el-button>
       <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
@@ -61,12 +60,6 @@
         @handleSelect="handleSelectionChange"
       />
     </div>
-    <Upload
-      :visible="uploadDialogVisible"
-      templateUrl=""
-      uploadUrl=""
-      @close="handleUploadDialogClose"
-    />
   </div>
 </template>
 
@@ -77,7 +70,6 @@ import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/basic/vehicleInventoryStock/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
-import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 
@@ -100,8 +92,7 @@ export default {
   components: {
     PageSearchAction,
     LPVxeTable,
-    FetchSelect,
-    Upload
+    FetchSelect
   },
   data () {
     return {
@@ -145,10 +136,6 @@ export default {
           { props: 'stockTypeLabel', label: '库存存量类型', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
-          { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
@@ -244,9 +231,11 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        dataFetchPath: '/datacenter/vehstock/basic/vehicleInventoryStock/page',
+        businessType: '整车库存存量定义',
+        dataFetchPath: '/vehstock/web/basic/vehicleInventoryStock/page',
         reqParams: this.getFormData(),
-        titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols())
+        titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
+        httpMethod: 'POST'
       }).then(res => {
         if (res) {
           if (res.excelUrl) {

@@ -286,9 +286,11 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        dataFetchPath: '/datacenter/vehstock/basic/regionNoticeDirectory/page',
+        businessType: '地区对应公告目录',
+        dataFetchPath: '/vehstock/web/basic/regionNoticeDirectory/page',
         reqParams: this.getFormData(),
-        titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols())
+        titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
+        httpMethod: 'POST'
       }).then(res => {
         if (res) {
           if (res.excelUrl) {

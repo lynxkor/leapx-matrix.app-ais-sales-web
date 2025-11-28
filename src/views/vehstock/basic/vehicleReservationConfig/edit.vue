@@ -81,13 +81,6 @@
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="备注" prop="remark">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.remark"
-                  clearable
-                />
-              </el-form-item>
               <el-form-item label="状态" prop="status">
                 <fetch-select
                   :request="fetchOptions"
@@ -96,6 +89,16 @@
                   placeholder="请选择"
                   clearable
                   filterable
+                />
+              </el-form-item>
+              <el-form-item label="备注" prop="remark">
+                <el-input
+                  type="textarea"
+                  placeholder="请输入"
+                  v-model="form.remark"
+                  clearable
+                  maxLength="500"
+                  show-word-limit
                 />
               </el-form-item>
             </el-form>

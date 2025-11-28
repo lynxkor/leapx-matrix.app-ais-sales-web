@@ -60,8 +60,8 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button size="small" @click="handleImport">导入</el-button>
-      <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <!-- <el-button size="small" @click="handleImport">导入</el-button>
+      <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button> -->
       <el-button size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
@@ -268,9 +268,11 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        dataFetchPath: '/datacenter/vehstock/basic/warehouseVehicleRelation/page',
+        businessType: '仓库配车关系',
+        dataFetchPath: '/vehstock/web/basic/warehouseVehicleRelation/page',
         reqParams: this.getFormData(),
-        titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols())
+        titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
+        httpMethod: 'POST'
       }).then(res => {
         if (res) {
           if (res.excelUrl) {

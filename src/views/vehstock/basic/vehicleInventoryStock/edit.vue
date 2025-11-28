@@ -15,10 +15,10 @@
                 <el-input placeholder="系统自动创建" v-model="form.code" clearable disabled />
               </el-form-item>
               <el-form-item label="最小值" prop="quantityMin">
-                <el-input placeholder="请输入" v-model="form.quantityMin" clearable />
+                <el-input type="number" placeholder="请输入" v-model="form.quantityMin" clearable />
               </el-form-item>
               <el-form-item label="最大值" prop="quantityMax">
-                <el-input placeholder="请输入" v-model="form.quantityMax" clearable />
+                <el-input type="number" placeholder="请输入" v-model="form.quantityMax" clearable />
               </el-form-item>
               <el-form-item label="库存存量类型" prop="stockType">
                 <fetch-select :request="fetchOptions" enumCode="vehstock_stock_Type" v-model="form.stockType"
@@ -60,14 +60,6 @@ const defaultForm = {
   stockType: '',
   status: '',
   remark: '',
-  creatorName: '',
-  createTime: '',
-  modifierName: '',
-  updateTime: '',
-  id: '',
-  creator: '',
-  modifier: '',
-  statusDesc: '',
 };
 
 export default {

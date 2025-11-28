@@ -149,8 +149,7 @@ export default {
           { props: 'bizCode', label: '业务编号', visible: true, width: 200 },
           { props: 'reserveNum', label: '需预留数', visible: true, width: 200 },
           { props: 'reservedNum', label: '已预留数', visible: true, width: 200 },
-          { props: 'reserveStartPos', label: '截取预留起始位', visible: true, width: 200 },
-          { props: 'reserveEndPos', label: '截取预留截止位', visible: true, width: 200 },
+          { props: 'reserveRange', label: '截取预留位数', visible: true, width: 200 },
           { props: 'reserveCutValue', label: '截取预留值', visible: true, width: 200 },
           { props: 'isRelatedMatchLabel', label: '是否映射其他物料', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
@@ -254,9 +253,11 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        dataFetchPath: '/datacenter/vehstock/basic/vehicleReservationConfig/page',
+        businessType: '车辆预留配置',
+        dataFetchPath: '/vehstock/web/basic/vehicleReservationConfig/page',
         reqParams: this.getFormData(),
-        titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols())
+        titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
+        httpMethod: 'POST'
       }).then(res => {
         if (res) {
           if (res.excelUrl) {
@@ -287,6 +288,7 @@ export default {
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item,
+              reserveRange: `${item.reserveStartPos || ''}${item.reserveEndPos || ''}`,
               deleteLoading: false
             };
           });

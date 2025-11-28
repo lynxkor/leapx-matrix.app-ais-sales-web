@@ -49,7 +49,7 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <!-- <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button> -->
       <el-button size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
     </div>
     <div
@@ -83,7 +83,6 @@ import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/basic/vehicleReservationDetail/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
-import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -106,7 +105,6 @@ export default {
   components: {
     PageSearchAction,
     LPVxeTable,
-    FetchSelect,
     Upload
   },
   data () {
@@ -235,9 +233,11 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        dataFetchPath: '/datacenter/vehstock/basic/vehicleReservationDetail/page',
+        businessType: '车辆预留明细',
+        dataFetchPath: '/vehstock/web/basic/vehicleReservationDetail/page',
         reqParams: this.getFormData(),
-        titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols())
+        titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
+        httpMethod: 'POST'
       }).then(res => {
         if (res) {
           if (res.excelUrl) {
