@@ -101,6 +101,75 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
+      path: '/vehstock/basic/vehicleReservationConfig',
+      name: 'vehicleReservationConfig',
+      component: () => import('@/views/vehstock/basic/vehicleReservationConfig/index.vue'),
+
+      meta: {
+        name: '车辆预留配置'
+      }
+    }, {
+      path: '/vehstock/basic/vehiclereservationconfig/detail',
+      name: 'vehicleReservationConfigDetail',
+      component: () => import('@/views/vehstock/basic/vehicleReservationConfig/detail.vue'),
+
+      meta: {
+        name: '车辆预留配置详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/basic/vehiclereservationconfig/edit',
+      name: 'vehicleReservationConfigEdit',
+      component: () => import('@/views/vehstock/basic/vehicleReservationConfig/edit.vue'),
+
+      meta: {
+        name: '车辆预留配置详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/basic/vehicleReservationDetail',
+      name: 'vehicleReservationDetail',
+      component: () => import('@/views/vehstock/basic/vehicleReservationDetail/index.vue'),
+
+      meta: {
+        name: '车辆预留明细'
+      }
+    }, {
+      path: '/vehstock/basic/vehiclereservationdetail/detail',
+      name: 'vehicleReservationDetailDetail',
+      component: () => import('@/views/vehstock/basic/vehicleReservationDetail/detail.vue'),
+
+      meta: {
+        name: '车辆预留明细详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/basic/warehouseVehicleRelation',
+      name: 'warehouseVehicleRelation',
+      component: () => import('@/views/vehstock/basic/warehouseVehicleRelation/index.vue'),
+
+      meta: {
+        name: '仓库配车关系'
+      }
+    }, {
+      path: '/vehstock/basic/warehousevehiclerelation/detail',
+      name: 'warehouseVehicleRelationDetail',
+      component: () => import('@/views/vehstock/basic/warehouseVehicleRelation/detail.vue'),
+
+      meta: {
+        name: '仓库配车关系详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/basic/warehousevehiclerelation/edit',
+      name: 'warehouseVehicleRelationEdit',
+      component: () => import('@/views/vehstock/basic/warehouseVehicleRelation/edit.vue'),
+
+      meta: {
+        name: '仓库配车关系详情',
+        noResourceUrl: 'true'
+      }
+    }, {
       path: '/datacenter/materials/vehicleBrand',
       name: 'vehicleBrand',
       component: () => import('@/views/datacenter/materials/vehicleBrand/index.vue'),

@@ -5,7 +5,7 @@
       <section class="common-title">
       {{{#top1List}}}
         <h2>{{{description}}}：{{ info.{{{key}}} }}</h2>
-        <el-button size="small" @click="handleEdit"><i class="iconfont icon-lxppc-edit"></i>编辑</el-button>
+        <el-button v-if="canAddOrUpdate" size="small" @click="handleEdit"><i class="iconfont icon-lxppc-edit"></i>编辑</el-button>
       {{{/top1List}}}
       </section>
       <section class="common-section">
@@ -56,8 +56,11 @@ import { YES_NO_ENUM_MAP } from '@/libs/constants';
 {{{#isProForm}}}
 import EditTable from '@/libs/components/EditTable';
 {{{/isProForm}}}
+import permissions from '@/libs/mixins/permissions';
+
 export default {
   name: '{{{nameCamelCase}}}Detail',
+  mixins: [permissions],
   components: {
     {{{#isProForm}}}
     EditTable
@@ -65,6 +68,8 @@ export default {
   },
   data () {
     return {
+      // TIPS: 权限前缀 AISMC，根据实际情况修改
+      moduleKey: 'AISMC-{{{name}}}',
       loading: true,
       info: {},
       {{{#isProForm}}}
