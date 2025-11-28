@@ -69,7 +69,7 @@
           <fetch-select :options="yes_no_enum" v-model="form.discontinueStatus" placeholder="请选择" clearable multiple />
         </el-form-item>
         <el-form-item label="状态">
-          <fetch-select :request="fetchOptions" enumCode="StatusEnum" v-model="form.status" placeholder="请选择" clearable />
+          <fetch-select :request="fetchOptions" enumCode="StatusEnum" v-model="form.statusIncludeList" placeholder="请选择" clearable />
         </el-form-item>
       </span>
       <page-search-action v-model="show" is-expandable :loading="loading" @submit="onSubmit" @reset="onReset" />

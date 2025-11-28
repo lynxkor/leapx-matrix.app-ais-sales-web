@@ -1,5 +1,6 @@
 <template>
-  <div class="page-common m-region-notice-directory-list">
+  <div class="page-common m-vehicle-option-package-list">
+    <!--  TIPS: 自行调整如下label-width，满足label不换行  -->
     <el-form
       :inline="true"
       :model="form"
@@ -8,36 +9,14 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="城市：">
-        <el-select v-model="form.cityCodeList" filterable multiple placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="销售公告车型名称：">
-        <el-select
-          v-model="form.vehicleRegisteredModelId"
-          filterable
+      <el-form-item label="选装包名称">
+        <el-input
+          placeholder="请输入"
+          v-model="form.optionPackageName"
           clearable
-          remote
-          reserve-keyword
-          placeholder="请选择"
-          :remote-method="serchModel"
-          collapse-tags
-          >
-          <el-option
-            v-for="item in modelOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
+        />
       </el-form-item>
-      <el-form-item label="状态：">
+      <el-form-item label="状态">
         <fetch-select
           :request="fetchOptions"
           enumCode="StatusEnum"
@@ -45,28 +24,56 @@
           placeholder="请选择"
           clearable
           multiple
+          filterable
+        />
+      </el-form-item>
+      <!-- <el-form-item label="说明"  v-show="this.visibleCount === 3 || show">
+        <el-input
+          placeholder="请输入"
+          v-model="form.remark"
+          clearable
         />
       </el-form-item>
       <span v-show="show">
-        <el-form-item label="地区公告编号：">
-        <el-input
-          placeholder="请输入"
-          v-model="form.code"
-          clearable
-        />
-        </el-form-item>
-        <el-form-item label="创建时间：">
+        <el-form-item label="创建人">
+          <el-input
+            placeholder="请输入"
+            v-model="form.creatorName"
+            clearable
+          />
+        </el-form-item> -->
+        <!-- <el-form-item label="创建时间">
           <el-date-picker
             v-model="form.createTime"
             type="daterange"
             :picker-options="pickerOptions"
+            range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             align="right"
           />
         </el-form-item>
-      </span>
+        <el-form-item label="更改人">
+          <el-input
+            placeholder="请输入"
+            v-model="form.modifierName"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="更改时间">
+          <el-date-picker
+            v-model="form.updateTime"
+            type="daterange"
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            align="right"
+          />
+        </el-form-item> -->
+      <!-- </span> -->
       <page-search-action
         v-model="show"
         is-expandable
@@ -76,16 +83,16 @@
       />
     </el-form>
     <div class="ais-actions">
-      <el-button size="small" type="primary" icon="el-icon-plus" @click="handleAdd">新增</el-button>
+      <!--  TIPS:根据产品增删功能按钮  -->
+      <el-button size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <el-button size="small" @click="handleImport">导入</el-button>
       <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <!-- <el-button size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
       <el-button size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
     </div>
     <div
       class="ais-table-c"
-      :class="{ 'z-form-show': show }"
     >
       <LPVxeTable
         ref="tableRef"
@@ -113,20 +120,22 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehicleinventory/basic/regionNoticeDirectory/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, cityPage, vehicleSalesVersionList } from '@/api/common';
+import { getList, deleteItem, enableItem } from '@/api/datacenter/materials/vehicleOptionPackage/index';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 
 const defaultForm = {
-  // 多选时字段有变化，自行修复
-  code: '',
-  cityCodeList: '',
-  vehicleRegisteredModelId: '',
-  statusIncludeList: '',
+  // TIPS:多选时字段名称会有变化，自行校对
+  optionPackageName: '',
+  status: '',
+  remark: '',
+  creatorName: '',
   createTime: '',
+  modifierName: '',
+  updateTime: '',
 };
 
 const pageSize = 20;
@@ -153,10 +162,8 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
-      options: [],
-      modelOptions: [],
       optionObj: {
-        id: 'regionNoticeDirectoryTable',
+        id: 'vehicleOptionPackageTable',
         dataList: [],
         form: {
           page: 1,
@@ -164,15 +171,15 @@ export default {
         },
         dataProp: [
           {
-            props: 'code',
-            label: '地区公告编号',
+            props: 'optionPackageName',
+            label: '选装包名称',
             visible: true,
             width: 200,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehicleinventory/basic/regionNoticeDirectory/detail',
+                  path: '/datacenter/materials/vehicleOptionPackage/detail',
                   query: {
                     id: row.id
                   }
@@ -181,14 +188,12 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'cityName', label: '城市', visible: true, width: 200 },
-          { props: 'registeredModelName', label: '销售公告车型名称', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'remark', label: '备注', visible: true, width: 200 },
+          { props: 'remark', label: '说明', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '更新人', visible: true, width: 200 },
-          { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
+          { props: 'modifierName', label: '更改人', visible: true, width: 200 },
+          { props: 'updateTime', label: '更改时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
@@ -199,31 +204,13 @@ export default {
               name: '编辑',
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehicleinventory/basic/regionNoticeDirectory/edit',
+                  path: '/datacenter/materials/vehicleOptionPackage/edit',
                   query: {
                     id: row.id
                   }
                 });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],
@@ -259,10 +246,8 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['新页面']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车主数据-选装包管理']);
     this.getData();
-    this.getCity();
-    this.getModel();
   },
   methods: {
     handleImport () {
@@ -273,7 +258,7 @@ export default {
     },
     handleAdd () {
       this.$router.push({
-        path: '/vehicleinventory/basic/regionNoticeDirectory/edit'
+        path: '/datacenter/materials/vehicleOptionPackage/edit'
       });
     },
     onSubmit () {
@@ -286,7 +271,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        dataFetchPath: '/datacenter/vehicleinventory/basic/regionNoticeDirectory/page',
+        dataFetchPath: '/datacenter/datacenter/materials/vehicleOptionPackage/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols())
       }).then(res => {
@@ -326,31 +311,6 @@ export default {
         }).finally(() => {
           this.loading = false;
         });
-    },
-    // 城市下拉
-    async getCity () {
-      const params = {
-        page: 1,
-        size: -1
-      };
-      const res = await cityPage(params);
-      const list = res.records || [];
-      this.options = list.map(item => {
-        return {
-          label: item.areaName,
-          value: item.areaCode
-        };
-      });
-    },
-    // 公告销售车型
-    async serchModel (query) {
-      const res = await vehicleSalesVersionList({ name: query, size: 100 });
-      this.modelOptions = res?.map(item => {
-        return {
-          label: item.registeredModelName,
-          value: item.registeredModelCode
-        };
-      });
     },
     // 需要防抖场景时使用
     debouncedGetData: debounce(function () {
@@ -398,7 +358,6 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
-
       return data;
     },
     async fetchOptions (code) {
@@ -459,6 +418,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.m-region-notice-directory-list {
+.m-vehicle-option-package-list {
 }
 </style>
