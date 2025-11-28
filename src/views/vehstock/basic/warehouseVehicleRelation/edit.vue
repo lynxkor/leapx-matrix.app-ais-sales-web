@@ -19,11 +19,19 @@
                   disabled
                 />
               </el-form-item>
-              <el-form-item label="整车仓库" prop="warehouseCode">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.warehouseCode"
+              <el-form-item label="整车仓库" prop="warehouseName">
+                <fetch-select
+                  v-model="form.warehouseName"
+                  filterable
                   clearable
+                  remote
+                  reserve-keyword
+                  :options="warehouseOptions"
+                  placeholder="请选择"
+                  :remote-method="serchWarehouse"
+                  @change="warehouseType"
+                  value-key="id"
+                  label-key="warehouseName"
                 />
               </el-form-item>
               <el-form-item label="仓库分类" prop="warehouseType">
@@ -38,21 +46,30 @@
                 />
               </el-form-item>
               <el-form-item label="省" prop="provinceCode">
-                <el-input
-                  placeholder="请输入"
+                <fetch-select
                   v-model="form.provinceCode"
-                  clearable
+                  placeholder="请选择"
+                  :request="getProvince"
+                  value-key="code"
+                  label-key="name"
+                  filterable
+                  @change="handleChangeProvince"
                 />
               </el-form-item>
               <el-form-item label="市" prop="cityCode">
-                <el-input
-                  placeholder="请输入"
+                <fetch-select
                   v-model="form.cityCode"
-                  clearable
+                  placeholder="请选择"
+                  :options="cityOptions"
+                  value-key="code"
+                  label-key="name"
+                  filterable
+                  @change="handleChangeCity"
                 />
               </el-form-item>
               <el-form-item label="配车优先级" prop="priority">
                 <el-input
+                  type="number"
                   placeholder="请输入"
                   v-model="form.priority"
                   clearable
@@ -84,21 +101,14 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehstock/basic/warehouseVehicleRelation/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import { getEnum } from '@/api/common';
+import { getEnum, pageWithPermission, getProvinceTree } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
   id: '',
-  creator: '',
-  creatorName: '',
-  createTime: '',
-  modifier: '',
-  modifierName: '',
-  updateTime: '',
   remark: '',
-  statusDesc: '',
   warehouseCode: '',
   provinceCode: '',
   cityCode: '',
@@ -131,6 +141,9 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       form: { ...defaultForm },
       originalForm: { ...defaultForm },
+      warehouseOptions: [], // 整车仓库
+      provinceOptions: [], // 省
+      cityOptions: [], // 市
       rules: {
         code: [
           { required: false, message: '请输入仓库配车编号', trigger: 'blur' }
@@ -207,6 +220,7 @@ export default {
           this.loading = false;
           Object.assign(this.form, res);
           Object.assign(this.originalForm, res);
+          console.log('this.form', this.provinceOptions);
         });
       }
     },
@@ -235,6 +249,49 @@ export default {
       this.$refs[formName].resetFields();
       this.tableData = [];
       this.form = { ...defaultForm };
+    },
+    // 选择仓库以后带出信息
+    warehouseType (val, selectedOption) {
+      console.log(val, selectedOption);
+      this.form.warehouseCode = selectedOption?.warehouseCode || '';
+      this.form.warehouseName = selectedOption?.warehouseName || '';
+      this.form.warehouseType = selectedOption?.warehouseType || '';
+    },
+    // 搜索仓库
+    async serchWarehouse (query) {
+      const res = await pageWithPermission({ warehouseName: query, page: 1, size: 100 });
+      this.warehouseOptions = res?.records?.map(item => {
+        return {
+          ...item,
+          label: item.warehouseName,
+          value: item.warehouseCode,
+        };
+      });
+    },
+    // 查询所有省市区
+    async getProvince () {
+      const res = await getProvinceTree();
+      const list = res || [];
+      if (this.$route.query.id) { // 编辑时对应上相对应的省 把市赋值上 直接反显
+        this.cityOptions = list.find(item => item.code === this.form.provinceCode)?.child || [];
+      };
+      return list;
+    },
+    // 选择省以后带出市信息
+    handleChangeProvince (val, selectedOption) {
+      if (val) {
+        this.form.provinceCode = selectedOption?.code || '';
+        this.form.provinceName = selectedOption?.name || '';
+        this.cityOptions = selectedOption?.child || []; // 选择省以后带出市信息
+        this.form.cityCode = '';
+        this.form.cityName = '';
+      }
+    },
+    handleChangeCity (val, selectedOption) {
+      if (val) {
+        this.form.cityCode = selectedOption?.code || '';
+        this.form.cityName = selectedOption?.name || '';
+      }
     },
     // handleJumpAuditLog () {
     //   this.$router.push({
