@@ -141,12 +141,12 @@ export default {
       modelOptions: [],
       rules: {
         code: [
-          { required: true, message: '请输入地区公告编号', trigger: 'blur' }
+          { required: false, message: '请输入地区公告编号', trigger: 'blur' }
         ],
-        cityName: [
-          { required: true, message: '请输入城市名称', trigger: 'blur' }
+        cityCode: [
+          { required: true, message: '请选择城市', trigger: 'change' }
         ],
-        vehicleSalesVersionName: [
+        registeredModelName: [
           { required: true, message: '请输入销售公告车型名称', trigger: 'blur' }
         ],
         status: [
