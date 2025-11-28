@@ -84,6 +84,14 @@ export function repairItemType (data) {
 }
 
 /**
+ * 省模糊搜索
+ * @param {*}
+ */
+export function getProvinceTree () {
+  return api.get('/area/tree');
+}
+
+/**
  * 城市模糊搜索
  * @param {*} data
  */
@@ -177,4 +185,12 @@ export function vehicleDrivingRange (data) {
  */
 export function vehicleRangePower (data) {
   return api.jsonPost('/datacenter/web/materials/vehicleRangePower/list', data);
+}
+
+/**
+ * 仓库名称查询
+ * @param {*} data
+ */
+export function pageWithPermission (data) {
+  return api.jsonPost('/zcwms/base/headquartersWarehouse/pageWithPermission', data);
 }
