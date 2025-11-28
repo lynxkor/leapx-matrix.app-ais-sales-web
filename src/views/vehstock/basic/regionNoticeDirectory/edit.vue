@@ -102,7 +102,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehicleinventory/basic/regionNoticeDirectory/index';
+import { getDetail, addOrUpdate } from '@/api/vehstock/basic/regionNoticeDirectory/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum, cityPage, vehicleSalesVersionList } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -210,7 +210,7 @@ export default {
     },
     getDetailData () {
       const id = this.id || this.$route.query.id;
-      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['新页面', `${id ? '编辑' : '新建'}`]);
+      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['地区对应公告目录', `${id ? '编辑' : '新建'}`]);
       if (id) {
         getDetail(id).then(async res => {
           this.loading = false;
