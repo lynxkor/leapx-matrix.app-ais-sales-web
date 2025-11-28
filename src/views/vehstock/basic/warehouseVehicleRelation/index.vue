@@ -34,17 +34,17 @@
         />
       </el-form-item>
       <span v-show="show">
-        <el-form-item label="省编码">
+        <el-form-item label="省">
           <el-input
             placeholder="请输入"
-            v-model="form.provinceCode"
+            v-model="form.provinceName"
             clearable
           />
         </el-form-item>
-        <el-form-item label="市编码">
+        <el-form-item label="市">
           <el-input
             placeholder="请输入"
-            v-model="form.cityCode"
+            v-model="form.cityName"
             clearable
           />
         </el-form-item>
@@ -107,8 +107,8 @@ const defaultForm = {
   code: '',
   warehouseName: '',
   warehouseType: '',
-  provinceCode: '',
-  cityCode: '',
+  provinceName: '',
+  cityName: '',
   priority: '',
   status: '',
 };

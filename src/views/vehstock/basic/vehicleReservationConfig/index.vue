@@ -288,7 +288,7 @@ export default {
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item,
-              reserveRange: `${item.reserveStartPos || ''}${item.reserveEndPos || ''}`,
+              reserveRange: `${item.reserveStartPos || ''}-${item.reserveEndPos || ''}`,
               deleteLoading: false
             };
           });
