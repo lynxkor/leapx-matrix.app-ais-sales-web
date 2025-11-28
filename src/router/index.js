@@ -143,6 +143,32 @@ const routes = [
         name: '车辆预留明细详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehstock/basic/warehouseVehicleRelation',
+      name: 'warehouseVehicleRelation',
+      component: () => import('@/views/vehstock/basic/warehouseVehicleRelation/index.vue'),
+
+      meta: {
+        name: '仓库配车关系'
+      }
+    }, {
+      path: '/vehstock/basic/warehousevehiclerelation/detail',
+      name: 'warehouseVehicleRelationDetail',
+      component: () => import('@/views/vehstock/basic/warehouseVehicleRelation/detail.vue'),
+
+      meta: {
+        name: '仓库配车关系详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/basic/warehousevehiclerelation/edit',
+      name: 'warehouseVehicleRelationEdit',
+      component: () => import('@/views/vehstock/basic/warehouseVehicleRelation/edit.vue'),
+
+      meta: {
+        name: '仓库配车关系详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
