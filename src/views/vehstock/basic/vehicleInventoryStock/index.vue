@@ -136,6 +136,10 @@ export default {
           { props: 'stockTypeLabel', label: '库存存量类型', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
+          { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',

@@ -346,7 +346,7 @@ export default {
     },
     // 公告销售车型
     async serchModel (query) {
-      const res = await vehicleSalesVersionList({ name: query, size: 100 });
+      const res = await vehicleSalesVersionList({ registeredModelName: query, size: 100 });
       this.modelOptions = res?.map(item => {
         return {
           label: item.registeredModelName,
