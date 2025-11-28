@@ -3,7 +3,7 @@
     <el-skeleton v-if="loading" :rows="6" animated />
     <template v-else>
       <section class="common-title">
-        <h2>物料编码：{{ info.materialsCode }}</h2>
+        <h2>物料编码：{{ info.materialsCode || '' }}</h2>
         <el-button size="small" @click="handleEdit"><i class="iconfont icon-lxppc-edit"></i>编辑</el-button>
       </section>
       <section class="common-section">
@@ -14,58 +14,97 @@
           <el-form :inline="true" ref="ruleForm" label-width="120px">
             <!-- TIPS: 根据实际情况调整展示字段 -->
             <el-form-item label="物料编码：" prop="materialsCode">
-              {{ info.materialsCode  }}
+              {{ info.materialsCode || ''  }}
             </el-form-item>
             <el-form-item label="物料名称：" prop="materialsDesc">
-              {{ info.materialsDesc  }}
+              {{ info.materialsCode || ''  }}
             </el-form-item>
-            <el-form-item label="可配物料编码：" prop="matchMaterialsCode">
-              {{ info.matchMaterialsCode  }}
+            <el-form-item label="车系：" prop="materialsCode">
+              {{ info.materialsCode || ''  }}
             </el-form-item>
-            <el-form-item label="可配物料名称：" prop="matchMaterialsDesc">
-              {{ info.matchMaterialsDesc  }}
+            <el-form-item label="车型：" prop="materialsCode">
+              {{ info.materialsCode || ''  }}
             </el-form-item>
-            <el-form-item label="状态：" prop="status">
-              {{ info.status  }}
+            <el-form-item label="年款：" prop="materialsCode">
+              {{ info.materialsCode || ''  }}
             </el-form-item>
-            <el-form-item label="备注（说明）：" prop="remark">
-              {{ info.remark  }}
+            <el-form-item label="外观：" prop="materialsCode">
+              {{ info.materialsCode || ''  }}
             </el-form-item>
-            <el-form-item label="创建者：" prop="creator">
-              {{ info.creator  }}
+            <el-form-item label="内饰：" prop="materialsCode">
+              {{ info.materialsCode || ''  }}
             </el-form-item>
-            <el-form-item label="创建者名称：" prop="creatorName">
-              {{ info.creatorName  }}
+            <el-form-item label="车顶：" prop="materialsCode">
+              {{ info.materialsCode || ''  }}
             </el-form-item>
-            <el-form-item label="修改者：" prop="modifier">
-              {{ info.modifier  }}
+            <el-form-item label="轮毂：" prop="materialsCode">
+              {{ info.materialsCode || ''  }}
             </el-form-item>
-            <el-form-item label="修改者名称：" prop="modifierName">
-              {{ info.modifierName  }}
+            <el-form-item label="选装包：" prop="materialsCode">
+              {{ info.materialsCode || ''  }}
             </el-form-item>
-            <el-form-item label="主键：" prop="id">
-              {{ info.id  }}
+            <el-form-item label="电池电芯：" prop="materialsCode">
+              {{ info.materialsCode || ''  }}
             </el-form-item>
-            <el-form-item label="创建时间：" prop="createTime">
-              {{ info.createTime  }}
-            </el-form-item>
-            <el-form-item label="修改时间：" prop="updateTime">
-              {{ info.updateTime  }}
-            </el-form-item>
-            <el-form-item label="状态变更描述：" prop="statusDesc">
-              {{ info.statusDesc  }}
-            </el-form-item>
-            <el-form-item label="记录单号：" prop="matchCode">
-              {{ info.matchCode  }}
-            </el-form-item>
-            <el-form-item label="物料ID：" prop="materialsId">
-              {{ info.materialsId  }}
-            </el-form-item>
-            <el-form-item label="可配物料ID：" prop="matchMaterialsId">
-              {{ info.matchMaterialsId  }}
-            </el-form-item>
+
           </el-form>
         </div>
+      </section>
+
+      <section class="common-section">
+        <div class="common-section-header">
+          <h2>可配物料信息</h2>
+        </div>
+        <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" inline>
+          <el-form-item label="可配物料编码：" prop="matchMaterialsCode">
+            {{ info.matchMaterialsCode  }}
+          </el-form-item>
+
+          <el-form-item label="车系：" prop="materialsCode">
+            {{ info.materialsCode || ''  }}
+          </el-form-item>
+          <el-form-item label="内饰：" prop="materialsCode">
+            {{ info.materialsCode || ''  }}
+          </el-form-item>
+          <el-form-item label="外观：" prop="materialsCode">
+            {{ info.materialsCode || ''  }}
+          </el-form-item>
+          <el-form-item label="年款：" prop="materialsCode">
+            {{ info.materialsCode || ''  }}
+          </el-form-item>
+          <el-form-item label="电池电芯：" prop="materialsCode">
+            {{ info.materialsCode || ''  }}
+          </el-form-item>
+
+          <el-form-item label="可配物料名称：" prop="matchmaterialsCode">
+            {{ info.matchmaterialsCode  }}
+          </el-form-item>
+
+          <el-form-item label="车型：" prop="materialsCode">
+            {{ info.materialsCode || ''  }}
+          </el-form-item>
+          <el-form-item label="轮毂：" prop="materialsCode">
+            {{ info.materialsCode || ''  }}
+          </el-form-item>
+          <el-form-item label="选装包：" prop="materialsCode">
+            {{ info.materialsCode || ''  }}
+          </el-form-item>
+          <el-form-item label="电池电芯：" prop="materialsCode">
+            {{ info.materialsCode || ''  }}
+          </el-form-item>
+
+        </el-form>
+      </section>
+
+      <section class="common-section">
+        <div class="common-section-header">
+          <h2>属性信息</h2>
+        </div>
+        <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" inline>
+          <el-form-item label="状态：" prop="status">
+            {{ info.status || ''  }}
+          </el-form-item>
+        </el-form>
       </section>
     </template>
   </div>
