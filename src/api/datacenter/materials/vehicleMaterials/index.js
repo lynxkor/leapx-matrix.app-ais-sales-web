@@ -50,3 +50,11 @@ export function enableItem (data) {
 export function batchUpdateProps (data) {
   return api.jsonPost(prefix + 'batchUpdateProps', data);
 }
+
+/**
+ * 查询列表
+ * @param {Object} data
+ */
+export function vehicleMaterialsList (data) {
+  return api.jsonPost(prefix + 'list', data);
+}

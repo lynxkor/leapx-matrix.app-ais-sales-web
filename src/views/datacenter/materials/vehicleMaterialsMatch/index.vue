@@ -41,7 +41,7 @@
         <el-form-item label="状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
+            enumCode="StatusEnum"
             v-model="form.status"
             placeholder="请选择"
             clearable
@@ -165,12 +165,12 @@ export default {
           { props: 'materialsDesc', label: '物料名称', visible: true, width: 200 },
           { props: 'matchMaterialsCode', label: '可配物料编码', visible: true, width: 200 },
           { props: 'matchMaterialsDesc', label: '可配物料名称', visible: true, width: 200 },
-          { props: 'status', label: '状态', visible: true, width: 200 },
-          { props: 'remark', label: '备注（说明）', visible: true, width: 200 },
-          { props: 'creator', label: '创建者', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
-          { props: 'modifier', label: '修改者', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'remark', label: '说明', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'modifierName', label: '更新人', visible: true, width: 200 },
+          { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
