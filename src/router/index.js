@@ -126,6 +126,23 @@ const routes = [
         name: '车辆预留配置详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehstock/basic/vehicleReservationDetail',
+      name: 'vehicleReservationDetail',
+      component: () => import('@/views/vehstock/basic/vehicleReservationDetail/index.vue'),
+
+      meta: {
+        name: '车辆预留明细'
+      }
+    }, {
+      path: '/vehstock/basic/vehiclereservationdetail/detail',
+      name: 'vehicleReservationDetailDetail',
+      component: () => import('@/views/vehstock/basic/vehicleReservationDetail/detail.vue'),
+
+      meta: {
+        name: '车辆预留明细详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
