@@ -60,7 +60,7 @@
         <section class="common-section">
           <div class="common-section-header">
             <h2>区块标题</h2>
-            <el-button size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>添加</el-button>
+            <el-button v-if="canAddOrUpdate" size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>添加</el-button>
           </div>
           <div class="common-section-body">
             <div class="common-section-table">
@@ -71,13 +71,14 @@
                 :defaultNewRow="defaultNewRow"
                 :show-toolbar="false"
                 :options="options"
+                :auth="{edit: canAddOrUpdate, delete: canDelete}"
               />
             </div>
           </div>
         </section>
       </el-main>
       <el-footer height="60px">
-        <el-button size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
+        <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
         <el-button size="small" type="primary" @click="submitForm('ruleForm', true)">保存并下一个</el-button>
         <!-- <el-button size="small" @click="resetForm('ruleForm')">重置</el-button>
         <el-button size="small" @click="handleJumpAuditLog">审核日志</el-button> -->
@@ -145,7 +146,7 @@
         </section>
       </el-main>
       <el-footer height="60px">
-        <el-button size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
+        <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
         <el-button size="small" @click="handleBack">取消</el-button>
         <!-- <el-button size="small" @click="handleJumpAuditLog">审核日志</el-button> -->
       </el-footer>
@@ -163,6 +164,7 @@ import EditTable from '@/libs/components/EditTable';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
+import permissions from '@/libs/mixins/permissions';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -180,7 +182,7 @@ export default {
       default: null
     }
   },
-  mixins: [routeGuard],
+  mixins: [routeGuard, permissions],
   components: {
     FetchSelect,
     {{{#isProForm}}}
@@ -190,6 +192,8 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
+      // TIPS: 权限前缀 AISMC，根据实际情况修改
+      moduleKey: 'AISMC-{{{name}}}',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,

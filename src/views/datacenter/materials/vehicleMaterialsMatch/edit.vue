@@ -1,6 +1,6 @@
 <template>
   <!-- TIPS: 如果填写项大于15项，使用类名page-common-edit替换page-common-add -->
-  <div class="page-common-add">
+  <div class="page-common-edit">
     <el-container>
       <el-main>
         <section class="common-section">
@@ -10,140 +10,199 @@
           <div class="common-section-body">
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-            <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
+            <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" inline>
+              <!-- B1087R1TCNLJHAG0292 -->
               <el-form-item label="物料编码" prop="materialsCode">
+                <fetch-select :options="materialsList" v-model="form.vehicleMaterials.materialsCode" placeholder="请选择" labelKey="label" valueKey="value" :remoteMethod="materialsCodeRemoteMethod" remote clearable filterable/>
+              </el-form-item>
+              <el-form-item label="物料描述">
                 <el-input
                   placeholder="请输入"
-                  v-model="form.materialsCode"
-                  clearable
+                  v-model="form.vehicleMaterials.materialsDesc"
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="物料名称" prop="materialsDesc">
+
+              <el-form-item label="车系">
                 <el-input
                   placeholder="请输入"
-                  v-model="form.materialsDesc"
-                  clearable
+                  v-model="form.vehicleMaterials.seriesName"
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="可配物料编码" prop="matchMaterialsCode">
+
+              <el-form-item label="车型">
                 <el-input
                   placeholder="请输入"
-                  v-model="form.matchMaterialsCode"
-                  clearable
+                  v-model="form.vehicleMaterials.modelName"
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="可配物料名称" prop="matchMaterialsDesc">
+
+              <el-form-item label="年款">
                 <el-input
                   placeholder="请输入"
-                  v-model="form.matchMaterialsDesc"
-                  clearable
+                  v-model="form.vehicleMaterials.yearTypeName"
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="状态" prop="status">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.status"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                />
-              </el-form-item>
-              <el-form-item label="备注（说明）" prop="remark">
+              <el-form-item label="外观">
                 <el-input
                   placeholder="请输入"
-                  v-model="form.remark"
-                  clearable
+                  v-model="form.vehicleMaterials.exteriorName"
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="创建者" prop="creator">
+              <el-form-item label="内饰">
                 <el-input
                   placeholder="请输入"
-                  v-model="form.creator"
-                  clearable
+                  v-model="form.vehicleMaterials.interiorName"
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="创建者名称" prop="creatorName">
+              <el-form-item label="车顶">
                 <el-input
                   placeholder="请输入"
-                  v-model="form.creatorName"
-                  clearable
+                  v-model="form.vehicleMaterials.roofName"
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="修改者" prop="modifier">
+              <el-form-item label="轮毂">
                 <el-input
                   placeholder="请输入"
-                  v-model="form.modifier"
-                  clearable
+                  v-model="form.vehicleMaterials.wheelHubName"
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="修改者名称" prop="modifierName">
+              <el-form-item label="选装包">
                 <el-input
                   placeholder="请输入"
-                  v-model="form.modifierName"
-                  clearable
+                  v-model="form.vehicleMaterials.optionPackageName"
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="主键" prop="id">
+              <el-form-item label="电池电芯">
                 <el-input
                   placeholder="请输入"
-                  v-model="form.id"
-                  clearable
+                  v-model="form.vehicleMaterials.batteryCellName"
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="创建时间" prop="createTime">
-                <el-date-picker
-                  v-model="form.createTime"
-                  :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  align="right"
-                />
-              </el-form-item>
-              <el-form-item label="修改时间" prop="updateTime">
-                <el-date-picker
-                  v-model="form.updateTime"
-                  :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  align="right"
-                />
-              </el-form-item>
-              <el-form-item label="状态变更描述" prop="statusDesc">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.statusDesc"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                />
-              </el-form-item>
-              <el-form-item label="记录单号" prop="matchCode">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.matchCode"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="物料ID" prop="materialsId">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.materialsId"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="可配物料ID" prop="matchMaterialsId">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.matchMaterialsId"
-                  clearable
-                />
-              </el-form-item>
+
             </el-form>
           </div>
+        </section>
+
+        <section class="common-section">
+          <div class="common-section-header">
+            <h2>可配物料信息</h2>
+          </div>
+          <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" inline>
+            <el-form-item label="可配物料编码" prop="matchMaterialsCode">
+              <el-input
+                placeholder="请输入"
+                v-model="form.matchMaterialsCode"
+                clearable
+              />
+            </el-form-item>
+
+            <el-form-item label="车系">
+              <el-input
+                placeholder="请输入"
+                v-model="form.materialsDesc"
+                disabled
+              />
+            </el-form-item>
+            <el-form-item label="内饰">
+              <el-input
+                placeholder="请输入"
+                v-model="form.materialsDesc"
+                disabled
+              />
+            </el-form-item>
+
+            <el-form-item label="外观">
+              <el-input
+                placeholder="请输入"
+                v-model="form.materialsDesc"
+                disabled
+              />
+            </el-form-item>
+
+            <el-form-item label="年款">
+              <el-input
+                placeholder="请输入"
+                v-model="form.materialsDesc"
+                disabled
+              />
+            </el-form-item>
+
+            <el-form-item label="电池电芯">
+              <el-input
+                placeholder="请输入"
+                v-model="form.materialsDesc"
+                disabled
+              />
+            </el-form-item>
+
+            <el-form-item label="可配物料描述">
+              <el-input
+                placeholder="请输入"
+                v-model="form.matchMaterialsDesc"
+                clearable
+              />
+            </el-form-item>
+
+            <el-form-item label="车型">
+              <el-input
+                placeholder="请输入"
+                v-model="form.materialsDesc"
+                disabled
+              />
+            </el-form-item>
+
+            <el-form-item label="轮毂">
+              <el-input
+                placeholder="请输入"
+                v-model="form.materialsDesc"
+                disabled
+              />
+            </el-form-item>
+
+            <el-form-item label="选装包">
+              <el-input
+                placeholder="请输入"
+                v-model="form.materialsDesc"
+                disabled
+              />
+            </el-form-item>
+            <el-form-item label="电池电芯">
+              <el-input
+                placeholder="请输入"
+                v-model="form.materialsDesc"
+                disabled
+              />
+            </el-form-item>
+
+          </el-form>
+        </section>
+
+        <section class="common-section">
+          <div class="common-section-header">
+            <h2>属性信息</h2>
+          </div>
+          <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" inline>
+            <el-form-item label="状态" prop="status">
+              <fetch-select
+                :request="fetchOptions"
+                enumCode="StatusEnum"
+                v-model="form.status"
+                placeholder="请选择"
+                clearable
+                filterable
+              />
+            </el-form-item>
+          </el-form>
         </section>
       </el-main>
       <el-footer height="60px">
@@ -156,7 +215,8 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/datacenter/materials/vehicleMaterialsMatch/index';
+import { getDetail, addOrUpdate, vehicleMaterialsMatchList } from '@/api/datacenter/materials/vehicleMaterialsMatch/index';
+import { getDetail as materialsDetail } from '@/api/datacenter/materials/vehicleMaterials/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -164,23 +224,7 @@ import routeGuard from '@/libs/mixins/routeGuard';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
-  materialsCode: '',
-  materialsDesc: '',
-  matchMaterialsCode: '',
-  matchMaterialsDesc: '',
-  status: '',
-  remark: '',
-  creator: '',
-  creatorName: '',
-  modifier: '',
-  modifierName: '',
-  id: '',
-  createTime: '',
-  updateTime: '',
-  statusDesc: '',
-  matchCode: '',
-  materialsId: '',
-  matchMaterialsId: '',
+  materialsId: ''
 };
 
 export default {
@@ -283,7 +327,8 @@ export default {
             picker.$emit('pick', [start, end]);
           }
         }]
-      }
+      },
+      materialsList: []
     };
   },
   mounted () {
@@ -333,8 +378,24 @@ export default {
     getDefautlForm () {
       // TIPS: 此处可添加表单默认值，如当前用户信息等
       // const userInfo = this.$store.state.user.userInfo;
+      const vehicleMaterials = {
+        materialsId: '',
+        materialsCode: '',
+        materialsDesc: '',
+        modelName: '',
+        seriesName: '',
+        yearTypeName: '',
+        exteriorName: '',
+        interiorName: '',
+        wheelHubName: '',
+        roofName: '',
+        optionPackageName: '',
+        batteryCellName: ''
+      };
+
       return {
-        ...defaultForm
+        ...defaultForm,
+        vehicleMaterials
         // ownerId: userInfo.userId,
         // ownerName: userInfo.userName,
       };
@@ -353,7 +414,16 @@ export default {
         return getEnum(code);
       }
       return [];
-    }
+    },
+    async materialsCodeRemoteMethod (query) {
+      const res = await materialsDetail(query);
+      console.log('materialsCodeRemoteMethod', res);
+      Object.assign(this.form.vehicleMaterials, res);
+    },
+    async materialsMatchCodeRemoteMethod (query) {
+      console.log('query', query);
+      const res = await vehicleMaterialsMatchList({ size: 10000, materialsCode: query });
+    },
   }
 };
 </script>

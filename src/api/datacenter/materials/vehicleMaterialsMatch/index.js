@@ -42,3 +42,11 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 物料配车关系管理列表
+ * @param {Object} data
+ */
+export function vehicleMaterialsMatchList (data) {
+  return api.jsonPost(prefix + 'list', data);
+}
