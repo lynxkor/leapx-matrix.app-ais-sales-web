@@ -100,6 +100,32 @@ const routes = [
         name: '整车库存存量定义详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehstock/basic/vehicleReservationConfig',
+      name: 'vehicleReservationConfig',
+      component: () => import('@/views/vehstock/basic/vehicleReservationConfig/index.vue'),
+
+      meta: {
+        name: '车辆预留配置'
+      }
+    }, {
+      path: '/vehstock/basic/vehiclereservationconfig/detail',
+      name: 'vehicleReservationConfigDetail',
+      component: () => import('@/views/vehstock/basic/vehicleReservationConfig/detail.vue'),
+
+      meta: {
+        name: '车辆预留配置详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/basic/vehiclereservationconfig/edit',
+      name: 'vehicleReservationConfigEdit',
+      component: () => import('@/views/vehstock/basic/vehicleReservationConfig/edit.vue'),
+
+      meta: {
+        name: '车辆预留配置详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
