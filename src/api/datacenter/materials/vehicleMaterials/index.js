@@ -42,3 +42,11 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 批量设置属性
+ * @param {Object} data
+ */
+export function batchUpdateProps (data) {
+  return api.jsonPost(prefix + 'batchUpdateProps', data);
+}

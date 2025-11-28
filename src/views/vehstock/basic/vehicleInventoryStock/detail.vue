@@ -45,19 +45,19 @@ export default {
   name: 'vehicleInventoryStockDetail',
   components: {
   },
-  data() {
+  data () {
     return {
       loading: true,
       info: {},
       yes_no_enum_map: YES_NO_ENUM_MAP
     };
   },
-  created() {
+  created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车库存存量定义', '详情']);
     this.getData();
   },
   methods: {
-    handleEdit() {
+    handleEdit () {
       this.$router.push({
         path: '/vehstock/basic/vehicleInventoryStock/edit',
         query: {
@@ -65,7 +65,7 @@ export default {
         }
       });
     },
-    getData() {
+    getData () {
       getDetail(this.$route.query.id).then(res => {
         this.loading = false;
         this.info = res;
