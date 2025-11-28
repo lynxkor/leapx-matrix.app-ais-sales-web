@@ -77,11 +77,14 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button size="small" @click="handleImport">导入</el-button>
-      <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button size="small" @click="handleBatchSetAttr()" :disabled="selectionList.length === 0">批量设置属性</el-button>
+      <el-button size="small" @click="handleImport">导入物料</el-button>
+      <el-button size="small" @click="handleImport">导入价格</el-button>
+      <el-button size="small" @click="handleImport">导入属性</el-button>
+      <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div class="ais-table-c">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed :option-obj="optionObj"
@@ -89,6 +92,49 @@
         @handleSelect="handleSelectionChange" />
     </div>
     <Upload :visible="uploadDialogVisible" templateUrl="" uploadUrl="" @close="handleUploadDialogClose" />
+
+    <el-dialog title="批量设置属性信息" width="30%" :visible.sync="batchSetAttrVisible">
+      <div class="batchSetAttr">
+        <el-row :gutter="20">
+          <el-col :span="8">是否允许现车批售</el-col>
+          <el-col :span="16">
+            <el-radio-group v-model="allowWholesale">
+              <el-radio :label="true">是</el-radio>
+              <el-radio :label="false">否</el-radio>
+            </el-radio-group>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="8">是否允许排产申请</el-col>
+          <el-col :span="16">
+            <el-radio-group v-model="allowProductionSchedule">
+              <el-radio :label="1">是</el-radio>
+              <el-radio :label="0">否</el-radio>
+            </el-radio-group>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="8">是否允许批售确认</el-col>
+          <el-col :span="16">
+            <el-radio-group v-model="allowWholesaleConfirm">
+              <el-radio :label="1">是</el-radio>
+              <el-radio :label="0">否</el-radio>
+            </el-radio-group>
+          </el-col>
+        </el-row>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="batchSetAttrVisible = false">取 消</el-button>
+        <el-button type="primary" @click="confirmSetAttr">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <Upload
+      :visible="uploadDialogVisible"
+      :id="uploadDialogId"
+      @close="handleUploadDialogClose"
+    />
+
   </div>
 </template>
 
@@ -96,7 +142,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/datacenter/materials/vehicleMaterials/index';
+import { getList, deleteItem, enableItem, batchUpdateProps } from '@/api/datacenter/materials/vehicleMaterials/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelList, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleRoof } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -121,7 +167,7 @@ const defaultForm = {
   allowCustomerSales: '',
   allowWholesaleConfirm: '',
   allowConfigurationModify: '',
-  discontinueStatus: '',
+  discontinueStatus: ''
 };
 
 const pageSize = 20;
@@ -291,6 +337,10 @@ export default {
       optionPackageList: [],
       batteryCellList: [],
       roofList: [],
+      batchSetAttrVisible: false,
+      allowWholesale: '',
+      allowProductionSchedule: '',
+      allowWholesaleConfirm: '',
     };
   },
   created () {
@@ -451,28 +501,43 @@ export default {
     },
     // 批量启用停用
     handleBatchEnable (status) {
+      console.log('status', status);
+      const isDifferenStatus = this.selectionList.find(item => item.status === status);
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm(`此操作将${status ? '启用' : '停用'}选中项，是否继续?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        enableItem({
-          idSet: ids,
-          status
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '操作成功!'
-          });
-          this.getData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '操作失败!'
+      if (isDifferenStatus) {
+        this.$message({
+          message: `存在不是${status ? '启用' : '停用'}的数据，请确认`,
+          type: 'warning'
+        });
+      } else {
+        this.$prompt(`此操作将${status ? '启用' : '停用'}选中项，是否继续?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          inputPlaceholder: `请输入${status ? '启用' : '停用'}说明`
+        }).then(({ value }) => {
+          console.log('value', value);
+          enableItem({
+            idSet: ids,
+            status,
+            statusDesc: value
+          }).then(() => {
+            this.$message({
+              type: 'success',
+              message: '操作成功!'
+            });
+            this.getData();
+          }).catch(() => {
+            this.$message({
+              type: 'error',
+              message: '操作失败!'
+            });
           });
         });
-      });
+      }
+    },
+    handleBatchSetAttr () {
+      this.batchSetAttrVisible = true;
     },
     seriesListChange (val, selectedOption) {
       console.log('seriesListChange', val, selectedOption);
@@ -605,10 +670,36 @@ export default {
       });
     },
 
+    async confirmSetAttr () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      const params = {
+        ids,
+        allowWholesale: this.allowWholesale,
+        allowProductionSchedule: this.allowProductionSchedule,
+        allowWholesaleConfirm: this.allowWholesaleConfirm
+      };
+      const res = await batchUpdateProps(params);
+      console.log('batchUpdateProps res', res);
+      // if(res.){
+      //   this.$message({
+      //         type: 'success',
+      //         message: '操作成功!'
+      //       });
+      //       this.getData();
+      // }
+    }
   }
 };
 </script>
 
 <style lang="scss" scoped>
 .m-vehicle-materials-list {}
+::v-deep .batchSetAttr{
+  .el-row{
+    margin-bottom: 20px;
+    &:last-child{
+      margin-bottom: 0;
+    }
+  }
+}
 </style>

@@ -101,6 +101,75 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
+      path: '/vehstock/basic/vehicleReservationConfig',
+      name: 'vehicleReservationConfig',
+      component: () => import('@/views/vehstock/basic/vehicleReservationConfig/index.vue'),
+
+      meta: {
+        name: '车辆预留配置'
+      }
+    }, {
+      path: '/vehstock/basic/vehiclereservationconfig/detail',
+      name: 'vehicleReservationConfigDetail',
+      component: () => import('@/views/vehstock/basic/vehicleReservationConfig/detail.vue'),
+
+      meta: {
+        name: '车辆预留配置详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/basic/vehiclereservationconfig/edit',
+      name: 'vehicleReservationConfigEdit',
+      component: () => import('@/views/vehstock/basic/vehicleReservationConfig/edit.vue'),
+
+      meta: {
+        name: '车辆预留配置详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/basic/vehicleReservationDetail',
+      name: 'vehicleReservationDetail',
+      component: () => import('@/views/vehstock/basic/vehicleReservationDetail/index.vue'),
+
+      meta: {
+        name: '车辆预留明细'
+      }
+    }, {
+      path: '/vehstock/basic/vehiclereservationdetail/detail',
+      name: 'vehicleReservationDetailDetail',
+      component: () => import('@/views/vehstock/basic/vehicleReservationDetail/detail.vue'),
+
+      meta: {
+        name: '车辆预留明细详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/basic/warehouseVehicleRelation',
+      name: 'warehouseVehicleRelation',
+      component: () => import('@/views/vehstock/basic/warehouseVehicleRelation/index.vue'),
+
+      meta: {
+        name: '仓库配车关系'
+      }
+    }, {
+      path: '/vehstock/basic/warehousevehiclerelation/detail',
+      name: 'warehouseVehicleRelationDetail',
+      component: () => import('@/views/vehstock/basic/warehouseVehicleRelation/detail.vue'),
+
+      meta: {
+        name: '仓库配车关系详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/basic/warehousevehiclerelation/edit',
+      name: 'warehouseVehicleRelationEdit',
+      component: () => import('@/views/vehstock/basic/warehouseVehicleRelation/edit.vue'),
+
+      meta: {
+        name: '仓库配车关系详情',
+        noResourceUrl: 'true'
+      }
+    }, {
       path: '/datacenter/materials/vehicleBrand',
       name: 'vehicleBrand',
       component: () => import('@/views/datacenter/materials/vehicleBrand/index.vue'),
@@ -410,6 +479,58 @@ const routes = [
 
       meta: {
         name: '整车主数据-续航里程管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleMaterials',
+      name: 'vehicleMaterials',
+      component: () => import('@/views/datacenter/materials/vehicleMaterials/index.vue'),
+
+      meta: {
+        name: '整车主数据-整车物料管理'
+      }
+    }, {
+      path: '/datacenter/materials/vehiclematerials/detail',
+      name: 'vehicleMaterialsDetail',
+      component: () => import('@/views/datacenter/materials/vehicleMaterials/detail.vue'),
+
+      meta: {
+        name: '整车主数据-整车物料管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehiclematerials/edit',
+      name: 'vehicleMaterialsEdit',
+      component: () => import('@/views/datacenter/materials/vehicleMaterials/edit.vue'),
+
+      meta: {
+        name: '整车主数据-整车物料管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleMaterialsMatch',
+      name: 'vehicleMaterialsMatch',
+      component: () => import('@/views/datacenter/materials/vehicleMaterialsMatch/index.vue'),
+
+      meta: {
+        name: '整车主数据-物料配车关系管理'
+      }
+    }, {
+      path: '/datacenter/materials/vehiclematerialsmatch/detail',
+      name: 'vehicleMaterialsMatchDetail',
+      component: () => import('@/views/datacenter/materials/vehicleMaterialsMatch/detail.vue'),
+
+      meta: {
+        name: '整车主数据-物料配车关系管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehiclematerialsmatch/edit',
+      name: 'vehicleMaterialsMatchEdit',
+      component: () => import('@/views/datacenter/materials/vehicleMaterialsMatch/edit.vue'),
+
+      meta: {
+        name: '整车主数据-物料配车关系管理详情',
         noResourceUrl: 'true'
       }
     }]
