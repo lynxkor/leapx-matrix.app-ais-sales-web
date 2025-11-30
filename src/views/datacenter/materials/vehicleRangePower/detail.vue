@@ -13,7 +13,7 @@
         <div class="common-section-body">
           <el-form :inline="true" ref="ruleForm" label-width="120px">
             <!-- TIPS: 根据实际情况调整展示字段 -->
-            <el-form-item label="续配动力名称：" prop="rangePowerName">
+            <el-form-item label="选配动力名称：" prop="rangePowerName">
               {{ info.rangePowerName  }}
             </el-form-item>
             <el-form-item label="状态：" prop="status">
@@ -65,7 +65,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车主数据-续配动力管理', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车主数据-选配动力管理', '详情']);
     this.getData();
   },
   methods: {

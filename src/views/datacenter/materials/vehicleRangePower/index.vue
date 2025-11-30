@@ -9,7 +9,7 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="续配动力名称">
+      <el-form-item label="选配动力名称">
         <el-input
           placeholder="请输入"
           v-model="form.rangePowerName"
@@ -172,7 +172,7 @@ export default {
         dataProp: [
           {
             props: 'rangePowerName',
-            label: '续配动力名称',
+            label: '选配动力名称',
             visible: true,
             width: 200,
             fixed: 'left',
@@ -246,7 +246,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车主数据-续配动力管理']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车主数据-选配动力管理']);
     this.getData();
   },
   methods: {
