@@ -9,11 +9,11 @@
       <el-form-item label="物料描述">
         <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
       </el-form-item>
-      <el-form-item label="车系" v-show="this.visibleCount === 3 || show">
+      <template v-if="show">
+        <el-form-item label="车系">
         <fetch-select :options="seriesList" v-model="form.seriesIds" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable
           @change="seriesListChange" />
       </el-form-item>
-      <span v-show="show">
         <el-form-item label="车型">
           <fetch-select :options="modelList" v-model="form.modelIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable
             @change="modelListChange" />
@@ -71,7 +71,7 @@
         <el-form-item label="状态">
           <fetch-select :request="fetchOptions" enumCode="StatusEnum" v-model="form.statusIncludeList" placeholder="请选择" clearable />
         </el-form-item>
-      </span>
+      </template>
       <page-search-action v-model="show" is-expandable :loading="loading" @submit="onSubmit" @reset="onReset" />
     </el-form>
     <div class="ais-actions">

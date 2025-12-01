@@ -100,9 +100,9 @@
         <div class="common-section-header">
           <h2>属性信息</h2>
         </div>
-        <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" inline>
+        <el-form :model="form" :rules="rules" ref="ruleForm" label-width="120px" inline>
           <el-form-item label="状态：" prop="status">
-            {{ info.status || ''  }}
+            {{ info.status === 1 ? '启用' : '停用'  }}
           </el-form-item>
         </el-form>
       </section>

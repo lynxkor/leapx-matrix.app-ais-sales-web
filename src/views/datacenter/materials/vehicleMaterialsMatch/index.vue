@@ -23,14 +23,14 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="可配物料编码"  v-show="this.visibleCount === 3 || show">
+      <template v-if="show">
+        <el-form-item label="可配物料编码">
         <el-input
           placeholder="请输入"
           v-model="form.matchMaterialsCode"
           clearable
         />
       </el-form-item>
-      <span v-show="show">
         <el-form-item label="可配物料名称">
           <el-input
             placeholder="请输入"
@@ -49,7 +49,7 @@
             filterable
           />
         </el-form-item>
-      </span>
+      </template>
       <page-search-action
         v-model="show"
         is-expandable

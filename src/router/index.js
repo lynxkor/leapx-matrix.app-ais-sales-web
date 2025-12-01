@@ -575,8 +575,8 @@ export function getRouter () {
         return;
       }
       // 开发阶段先跳过权限验证
-//      if (localStorage.getItem('sourceUrl').includes(to.path) || to.meta.noResourceUrl) {
-       if (true) {
+      if (localStorage.getItem('sourceUrl').includes(to.path) || to.meta.noResourceUrl) {
+      // if (true) {
         next();
       } else {
         window.alert('你没有访问该页面的权限');

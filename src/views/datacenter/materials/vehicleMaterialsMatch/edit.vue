@@ -12,10 +12,10 @@
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" inline>
               <!-- B1087R1TCNLJHAG0292 -->
-              <el-form-item label="物料编码" prop="materialsCode">
+              <el-form-item label="物料编码：" prop="materialsCode">
                 <fetch-select :options="materialsList" v-model="form.vehicleMaterials.materialsCode" placeholder="请选择" labelKey="label" valueKey="value" :remoteMethod="materialsCodeRemoteMethod" remote clearable filterable/>
               </el-form-item>
-              <el-form-item label="物料名称">
+              <el-form-item label="物料名称：">
                 <el-input
                   placeholder="请输入"
                   v-model="form.vehicleMaterials.materialsDesc"
@@ -23,7 +23,7 @@
                 />
               </el-form-item>
 
-              <el-form-item label="车系">
+              <el-form-item label="车系：">
                 <el-input
                   placeholder="请输入"
                   v-model="form.vehicleMaterials.seriesName"
@@ -31,7 +31,7 @@
                 />
               </el-form-item>
 
-              <el-form-item label="车型">
+              <el-form-item label="车型：">
                 <el-input
                   placeholder="请输入"
                   v-model="form.vehicleMaterials.modelName"
@@ -39,49 +39,49 @@
                 />
               </el-form-item>
 
-              <el-form-item label="年款">
+              <el-form-item label="年款：">
                 <el-input
                   placeholder="请输入"
                   v-model="form.vehicleMaterials.yearTypeName"
                   disabled
                 />
               </el-form-item>
-              <el-form-item label="外观">
+              <el-form-item label="外观：">
                 <el-input
                   placeholder="请输入"
                   v-model="form.vehicleMaterials.exteriorName"
                   disabled
                 />
               </el-form-item>
-              <el-form-item label="内饰">
+              <el-form-item label="内饰：">
                 <el-input
                   placeholder="请输入"
                   v-model="form.vehicleMaterials.interiorName"
                   disabled
                 />
               </el-form-item>
-              <el-form-item label="车顶">
+              <el-form-item label="车顶：">
                 <el-input
                   placeholder="请输入"
                   v-model="form.vehicleMaterials.roofName"
                   disabled
                 />
               </el-form-item>
-              <el-form-item label="轮毂">
+              <el-form-item label="轮毂：">
                 <el-input
                   placeholder="请输入"
                   v-model="form.vehicleMaterials.wheelHubName"
                   disabled
                 />
               </el-form-item>
-              <el-form-item label="选装包">
+              <el-form-item label="选装包：">
                 <el-input
                   placeholder="请输入"
                   v-model="form.vehicleMaterials.optionPackageName"
                   disabled
                 />
               </el-form-item>
-              <el-form-item label="电池电芯">
+              <el-form-item label="电池电芯：">
                 <el-input
                   placeholder="请输入"
                   v-model="form.vehicleMaterials.batteryCellName"
@@ -98,7 +98,7 @@
             <h2>可配物料信息</h2>
           </div>
           <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" inline>
-            <el-form-item label="可配物料编码" prop="matchMaterialsCode">
+            <el-form-item label="可配物料编码：" prop="matchMaterialsCode">
               <el-input
                 placeholder="请输入"
                 v-model="form.matchMaterialsCode"
@@ -106,22 +106,14 @@
               />
             </el-form-item>
 
-            <el-form-item label="车系">
+            <el-form-item label="车系：">
               <el-input
                 placeholder="请输入"
                 v-model="form.materialsDesc"
                 disabled
               />
             </el-form-item>
-            <el-form-item label="内饰">
-              <el-input
-                placeholder="请输入"
-                v-model="form.materialsDesc"
-                disabled
-              />
-            </el-form-item>
-
-            <el-form-item label="外观">
+            <el-form-item label="内饰：">
               <el-input
                 placeholder="请输入"
                 v-model="form.materialsDesc"
@@ -129,7 +121,7 @@
               />
             </el-form-item>
 
-            <el-form-item label="年款">
+            <el-form-item label="外观：">
               <el-input
                 placeholder="请输入"
                 v-model="form.materialsDesc"
@@ -137,7 +129,7 @@
               />
             </el-form-item>
 
-            <el-form-item label="电池电芯">
+            <el-form-item label="年款：">
               <el-input
                 placeholder="请输入"
                 v-model="form.materialsDesc"
@@ -145,7 +137,15 @@
               />
             </el-form-item>
 
-            <el-form-item label="可配物料描述">
+            <el-form-item label="电池电芯：">
+              <el-input
+                placeholder="请输入"
+                v-model="form.materialsDesc"
+                disabled
+              />
+            </el-form-item>
+
+            <el-form-item label="可配物料描述：">
               <el-input
                 placeholder="请输入"
                 v-model="form.matchMaterialsDesc"
@@ -153,7 +153,7 @@
               />
             </el-form-item>
 
-            <el-form-item label="车型">
+            <el-form-item label="车型：">
               <el-input
                 placeholder="请输入"
                 v-model="form.materialsDesc"
@@ -161,7 +161,7 @@
               />
             </el-form-item>
 
-            <el-form-item label="轮毂">
+            <el-form-item label="轮毂：">
               <el-input
                 placeholder="请输入"
                 v-model="form.materialsDesc"
@@ -169,14 +169,14 @@
               />
             </el-form-item>
 
-            <el-form-item label="选装包">
+            <el-form-item label="选装包：">
               <el-input
                 placeholder="请输入"
                 v-model="form.materialsDesc"
                 disabled
               />
             </el-form-item>
-            <el-form-item label="电池电芯">
+            <el-form-item label="电池电芯：">
               <el-input
                 placeholder="请输入"
                 v-model="form.materialsDesc"
@@ -192,7 +192,7 @@
             <h2>属性信息</h2>
           </div>
           <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" inline>
-            <el-form-item label="状态" prop="status">
+            <el-form-item label="状态：" prop="status">
               <fetch-select
                 :request="fetchOptions"
                 enumCode="StatusEnum"
