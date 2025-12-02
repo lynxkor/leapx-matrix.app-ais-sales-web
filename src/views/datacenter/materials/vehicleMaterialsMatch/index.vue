@@ -12,7 +12,7 @@
       <el-form-item label="物料编码">
         <el-input
           placeholder="请输入"
-          v-model="form.materialsCode"
+          v-model="form.materialsCodeLike"
           clearable
         />
       </el-form-item>
@@ -42,7 +42,7 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="StatusEnum"
-            v-model="form.status"
+            v-model="form.statusIncludeList"
             placeholder="请选择"
             clearable
             multiple

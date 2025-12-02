@@ -4,10 +4,10 @@
     <el-form :inline="true" :model="form" size="small" label-position="right" label-width="160px"
       class="ais-search-form">
       <el-form-item label="物料编码">
-        <el-input placeholder="请输入" v-model="form.materialsCode" clearable />
+        <el-input placeholder="请输入" v-model="form.materialsCodeLike" clearable />
       </el-form-item>
       <el-form-item label="物料描述">
-        <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
+        <el-input placeholder="请输入" v-model="form.materialsDescLike" clearable />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="车系">
@@ -69,7 +69,15 @@
           <fetch-select :options="yes_no_enum" v-model="form.discontinueStatus" placeholder="请选择" clearable multiple />
         </el-form-item>
         <el-form-item label="状态">
-          <fetch-select :request="fetchOptions" enumCode="StatusEnum" v-model="form.statusIncludeList" placeholder="请选择" clearable />
+           <fetch-select
+          :request="fetchOptions"
+          enumCode="StatusEnum"
+          v-model="form.statusIncludeList"
+          placeholder="请选择"
+          clearable
+          multiple
+          filterable
+        />
         </el-form-item>
       </template>
       <page-search-action v-model="show" is-expandable :loading="loading" @submit="onSubmit" @reset="onReset" />
@@ -195,7 +203,7 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
-      moduleKey: 'AISMC-vehicleTag',
+      moduleKey: 'AISDC-vehicleTag',
       optionObj: {
         id: 'vehicleMaterialsTable',
         dataList: [],
@@ -258,7 +266,7 @@ export default {
           { props: 'allowConfigurationModifyLabel', label: '是否允许改配', visible: true, width: 200 },
           { props: 'discontinueStatusLabel', label: '停产状态', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'remark', label: '说明', visible: true, width: 200 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'modifierName', label: '更新人', visible: true, width: 200 },

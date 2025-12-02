@@ -10,20 +10,16 @@
       class="ais-search-form"
     >
       <el-form-item label="年款名称">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.yearTypeName"
-          placeholder="请选择"
+         <el-input
+          placeholder="请输入"
+          v-model="form.yearTypeNameLike"
           clearable
-          multiple
-          filterable
         />
       </el-form-item>
       <el-form-item label="状态">
         <fetch-select
           :request="fetchOptions"
-          enumCode="xxx"
+          enumCode="StatusEnum"
           v-model="form.statusIncludeList"
           placeholder="请选择"
           clearable
@@ -143,7 +139,7 @@ export default {
             }]
           },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'remark', label: '说明', visible: true, width: 200 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {

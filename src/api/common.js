@@ -127,6 +127,14 @@ export function cityPage (data) {
 }
 
 /**
+ * 整车主数据-品牌模糊搜索
+ * @param {*} data
+ */
+export function vehicleBrandNameList (data) {
+  return api.jsonPost('/datacenter/web/materials/vehicleBrand/list', data);
+}
+
+/**
  * 销售公告车型模糊搜索
  * @param {*} data
  */
@@ -135,11 +143,19 @@ export function vehicleSalesVersionList (data) {
 }
 
 /**
- * 整车主数据-车系列表查询
+ * 整车主数据-车系-列表查询
  * @param {*} data
  */
 export function vehicleSeriesList (data) {
   return api.jsonPost('/datacenter/web/materials/vehicleSeries/list', data);
+}
+
+/**
+ * 整车主数据-系列-列表查询
+ * @param {*} data
+ */
+export function vehicleModelLineList (data) {
+  return api.jsonPost('/datacenter/web/materials/vehicleModelLine/list', data);
 }
 
 /**

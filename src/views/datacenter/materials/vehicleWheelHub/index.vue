@@ -12,7 +12,7 @@
       <el-form-item label="轮毂名称">
         <el-input
           placeholder="请输入"
-          v-model="form.wheelHubName"
+          v-model="form.wheelHubNameLike"
           clearable
         />
       </el-form-item>

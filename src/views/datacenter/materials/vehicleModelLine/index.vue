@@ -6,22 +6,19 @@
       :model="form"
       size="small"
       label-position="right"
-      label-width="150px"
+      label-width="80px"
       class="ais-search-form"
     >
       <el-form-item label="系列名称">
         <el-input
           placeholder="请输入"
-          v-model="form.modelLineName"
+          v-model="form.modelLineNameLike"
           clearable
         />
       </el-form-item>
       <el-form-item label="品牌名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.brandName"
-          clearable
-        />
+        <fetch-select :options="brandNameList"
+         v-model="form.brandIdList" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
       </el-form-item>
       <el-form-item label="状态"  v-show="this.visibleCount === 3 || show">
         <fetch-select
@@ -35,7 +32,7 @@
         />
       </el-form-item>
       <span v-show="show">
-        <el-form-item label="说明">
+        <!-- <el-form-item label="说明">
           <el-input
             placeholder="请输入"
             v-model="form.remark"
@@ -79,7 +76,7 @@
             end-placeholder="结束日期"
             align="right"
           />
-        </el-form-item>
+        </el-form-item> -->
       </span>
       <page-search-action
         v-model="show"
@@ -127,7 +124,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/datacenter/materials/vehicleModelLine/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleBrandNameList } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -136,7 +133,7 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   modelLineName: '',
-  brandName: '',
+  brandIdList: '',
   status: '',
   remark: '',
   creatorName: '',
@@ -197,7 +194,7 @@ export default {
           },
           { props: 'brandName', label: '品牌名称', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'remark', label: '说明', visible: true, width: 200 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'modifierName', label: '更改人', visible: true, width: 200 },
@@ -250,7 +247,8 @@ export default {
             picker.$emit('pick', [start, end]);
           }
         }]
-      }
+      },
+      brandNameList: []
     };
   },
   created () {
@@ -305,6 +303,8 @@ export default {
     getData () {
       this.loading = true;
       this.selectionList = [];
+
+      this.getBrandNameList();
 
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
@@ -399,29 +399,52 @@ export default {
     },
     // 批量启用停用
     handleBatchEnable (status) {
+      const isDifferentStatus = this.selectionList.find(item => item.status === status);
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm(`此操作将${status ? '启用' : '停用'}选中项，是否继续?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        enableItem({
-          idSet: ids,
-          status
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '操作成功!'
-          });
-          this.getData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '操作失败!'
+      if (isDifferentStatus) {
+        this.$message({
+          type: 'warning',
+          message: `存在不是${status ? '启用' : '停用'}的数据，请确认!`
+        });
+      } else {
+        this.$prompt(`此操作将${status ? '启用' : '停用'}选中项，是否继续?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          inputPlaceholder: `请输入${status ? '启用' : '停用'}说明`
+        }).then(({ value }) => {
+          enableItem({
+            idSet: ids,
+            status,
+            statusDesc: value
+          }).then(() => {
+            this.$message({
+              type: 'success',
+              message: '操作成功!'
+            });
+            this.getData();
+          }).catch(() => {
+            this.$message({
+              type: 'error',
+              message: '操作失败!'
+            });
           });
         });
-      });
-    }
+      }
+    },
+
+    async getBrandNameList (val) {
+      const res = await vehicleBrandNameList({ size: 1000 });
+      if (res.length) {
+        const brandNameList = res.map(item => {
+          return {
+            label: item.brandName,
+            value: item.id
+          };
+        });
+        this.brandNameList = brandNameList;
+      }
+    },
   }
 };
 </script>
