@@ -76,15 +76,15 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button size="small" type="primary" v-if="canAddOrUpdate" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
+      <el-button size="small" v-if="canDelete" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <el-button size="small" v-if="canEnableOrDisable" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
+      <el-button size="small" v-if="canEnableOrDisable" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
       <el-button size="small" @click="handleBatchSetAttr()" :disabled="selectionList.length === 0">批量设置属性</el-button>
       <el-button size="small" @click="handleImport">导入物料</el-button>
       <el-button size="small" @click="handleImport">导入价格</el-button>
       <el-button size="small" @click="handleImport">导入属性</el-button>
-      <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <el-button :loading="exportLoading" size="small" v-if="canExport" @click="exportExcel">导出</el-button>
     </div>
     <div class="ais-table-c">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed :option-obj="optionObj"
@@ -148,6 +148,7 @@ import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
+import permissions from '@/libs/mixins/permissions';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -176,7 +177,7 @@ const mockConfig = {
 };
 
 export default {
-  mixins: [responsiveSearchForm],
+  mixins: [responsiveSearchForm, permissions],
   components: {
     PageSearchAction,
     LPVxeTable,
@@ -194,6 +195,7 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      moduleKey: 'AISMC-vehicleTag',
       optionObj: {
         id: 'vehicleMaterialsTable',
         dataList: [],
