@@ -34,6 +34,16 @@
         />
       </el-form-item>
       <span v-show="show">
+      <el-form-item label="是否预留完成">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="BooleanEnum"
+          v-model="form.isCompleted"
+          placeholder="请选择"
+          clearable
+          filterable
+        />
+      </el-form-item>
       </span>
       <page-search-action
         v-model="show"
@@ -93,6 +103,7 @@ const defaultForm = {
   bizCode: '',
   type: '',
   code: '',
+  isCompleted: '',
 };
 
 const pageSize = 20;
@@ -149,6 +160,7 @@ export default {
           { props: 'bizCode', label: '业务编号', visible: true, width: 200 },
           { props: 'reserveNum', label: '需预留数', visible: true, width: 200 },
           { props: 'reservedNum', label: '已预留数', visible: true, width: 200 },
+          { props: 'isCompletedLabel', label: '是否预留完成', visible: true, width: 200 },
           { props: 'reserveRange', label: '截取预留位数', visible: true, width: 200 },
           { props: 'reserveCutValue', label: '截取预留值', visible: true, width: 200 },
           { props: 'isRelatedMatchLabel', label: '是否映射其他物料', visible: true, width: 200 },
