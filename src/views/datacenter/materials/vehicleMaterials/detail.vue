@@ -55,7 +55,7 @@
         </div>
       </section>
 
-      <section class="common-section">
+      <section class="common-section" v-permission="moduleKey+'-checkPrice'">
           <div class="common-section-header">
             <h2>价格信息</h2>
           </div>
@@ -66,7 +66,7 @@
           </el-form>
         </section>
 
-        <section class="common-section">
+        <section class="common-section" v-permission="moduleKey+'-checkProperties'">
           <div class="common-section-header">
             <h2>属性信息</h2>
           </div>
@@ -115,7 +115,8 @@ export default {
     return {
       loading: true,
       info: {},
-      yes_no_enum_map: YES_NO_ENUM_MAP
+      yes_no_enum_map: YES_NO_ENUM_MAP,
+      moduleKey: 'AISDC-vehicleMaterials',
     };
   },
   created () {
