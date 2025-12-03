@@ -124,7 +124,7 @@
         </section>
       </el-main>
       <el-footer height="60px">
-        <el-button size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
+        <el-button size="small" type="primary" v-if="canAddOrUpdate" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
         <el-button size="small" @click="handleBack">取消</el-button>
         <!-- <el-button size="small" @click="handleJumpAuditLog">审核日志</el-button> -->
       </el-footer>
@@ -137,7 +137,9 @@ import { getDetail, addOrUpdate } from '@/api/datacenter/materials/vehicleMateri
 import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum, vehicleSeriesList, vehicleModelList, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleRoof, vehicleDrivingRange, vehicleRangePower } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
-import moment from 'moment';
+import routeGuard from '@/libs/mixins/routeGuard';
+import permissions from '@/libs/mixins/permissions';
+
 const defaultForm = {
   // 多选时字段有变化，自行修复
   price: '',
@@ -196,6 +198,7 @@ export default {
   components: {
     FetchSelect,
   },
+  mixins: [routeGuard, permissions],
   data () {
     return {
       loading: false,

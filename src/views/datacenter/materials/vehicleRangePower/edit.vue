@@ -11,7 +11,7 @@
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
-              <el-form-item label="续配动力名称" prop="rangePowerName">
+              <el-form-item label="选配动力名称" prop="rangePowerName">
                 <el-input
                   placeholder="请输入"
                   v-model="form.rangePowerName"
@@ -157,7 +157,7 @@ export default {
           { required: true, message: '请输入修改者', trigger: 'blur' }
         ],
         rangePowerName: [
-          { required: true, message: '请输入续配动力名称', trigger: 'blur' }
+          { required: true, message: '请输入选配动力名称', trigger: 'blur' }
         ],
         status: [
           { required: true, message: '请选择状态', trigger: 'change' }
@@ -225,7 +225,7 @@ export default {
     },
     getDetailData () {
       const id = this.id || this.$route.query.id;
-      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车主数据-续配动力管理', `${id ? '编辑' : '新建'}`]);
+      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车主数据-选配动力管理', `${id ? '编辑' : '新建'}`]);
       if (id) {
         getDetail(id).then(res => {
           this.loading = false;

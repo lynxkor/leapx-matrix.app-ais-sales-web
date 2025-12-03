@@ -12,7 +12,7 @@
       <el-form-item label="物料编码">
         <el-input
           placeholder="请输入"
-          v-model="form.materialsCode"
+          v-model="form.materialsCodeLike"
           clearable
         />
       </el-form-item>
@@ -23,14 +23,14 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="可配物料编码"  v-show="this.visibleCount === 3 || show">
+      <template v-if="show">
+        <el-form-item label="可配物料编码">
         <el-input
           placeholder="请输入"
           v-model="form.matchMaterialsCode"
           clearable
         />
       </el-form-item>
-      <span v-show="show">
         <el-form-item label="可配物料名称">
           <el-input
             placeholder="请输入"
@@ -42,14 +42,14 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="StatusEnum"
-            v-model="form.status"
+            v-model="form.statusIncludeList"
             placeholder="请选择"
             clearable
             multiple
             filterable
           />
         </el-form-item>
-      </span>
+      </template>
       <page-search-action
         v-model="show"
         is-expandable

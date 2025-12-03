@@ -20,6 +20,33 @@ export function tableAddOrUpdate (data) {
 }
 
 /**
+ * 列表下载模板
+ * @param {*} data
+ */
+export function getTemplateUrl (data) {
+  return api.jsonPost('/data/commonDataProcessExcelModelMap/get', data);
+}
+
+/**
+ * 列表模板确认
+ * @param {*} data
+ */
+export function importExcelConfirmFile (formData, config = {}) {
+  // 查询参数需要放在 config 或 URL 中
+  return api.postExport('/data/ExcelManage/importExcelConfirm', formData, {
+    params: { // 查询参数放在 config 中
+      id: config.id,
+      token: config.token
+    },
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      ...config.headers
+    },
+    ...config
+  });
+}
+
+/**
  * 列表导出
  * @param {*} data
  */
@@ -100,6 +127,14 @@ export function cityPage (data) {
 }
 
 /**
+ * 整车主数据-品牌模糊搜索
+ * @param {*} data
+ */
+export function vehicleBrandNameList (data) {
+  return api.jsonPost('/datacenter/web/materials/vehicleBrand/list', data);
+}
+
+/**
  * 销售公告车型模糊搜索
  * @param {*} data
  */
@@ -108,11 +143,19 @@ export function vehicleSalesVersionList (data) {
 }
 
 /**
- * 整车主数据-车系列表查询
+ * 整车主数据-车系-列表查询
  * @param {*} data
  */
 export function vehicleSeriesList (data) {
   return api.jsonPost('/datacenter/web/materials/vehicleSeries/list', data);
+}
+
+/**
+ * 整车主数据-系列-列表查询
+ * @param {*} data
+ */
+export function vehicleModelLineList (data) {
+  return api.jsonPost('/datacenter/web/materials/vehicleModelLine/list', data);
 }
 
 /**

@@ -533,6 +533,84 @@ const routes = [
         name: '整车主数据-物料配车关系管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/datacenter/materials/vehicleSeries',
+      name: 'vehicleSeries',
+      component: () => import('@/views/datacenter/materials/vehicleSeries/index.vue'),
+
+      meta: {
+        name: '整车主数据-车系管理'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleseries/detail',
+      name: 'vehicleSeriesDetail',
+      component: () => import('@/views/datacenter/materials/vehicleSeries/detail.vue'),
+
+      meta: {
+        name: '整车主数据-车系管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleseries/edit',
+      name: 'vehicleSeriesEdit',
+      component: () => import('@/views/datacenter/materials/vehicleSeries/edit.vue'),
+
+      meta: {
+        name: '整车主数据-车系管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleModel',
+      name: 'vehicleModel',
+      component: () => import('@/views/datacenter/materials/vehicleModel/index.vue'),
+
+      meta: {
+        name: '整车主数据-车型管理'
+      }
+    }, {
+      path: '/datacenter/materials/vehiclemodel/detail',
+      name: 'vehicleModelDetail',
+      component: () => import('@/views/datacenter/materials/vehicleModel/detail.vue'),
+
+      meta: {
+        name: '整车主数据-车型管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehiclemodel/edit',
+      name: 'vehicleModelEdit',
+      component: () => import('@/views/datacenter/materials/vehicleModel/edit.vue'),
+
+      meta: {
+        name: '整车主数据-车型管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehicleModel',
+      name: 'vehicleModel',
+      component: () => import('@/views/datacenter/materials/vehicleModel/index.vue'),
+
+      meta: {
+        name: '新页面'
+      }
+    }, {
+      path: '/datacenter/materials/vehiclemodel/detail',
+      name: 'vehicleModelDetail',
+      component: () => import('@/views/datacenter/materials/vehicleModel/detail.vue'),
+
+      meta: {
+        name: '新页面详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/vehiclemodel/edit',
+      name: 'vehicleModelEdit',
+      component: () => import('@/views/datacenter/materials/vehicleModel/edit.vue'),
+
+      meta: {
+        name: '新页面详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];

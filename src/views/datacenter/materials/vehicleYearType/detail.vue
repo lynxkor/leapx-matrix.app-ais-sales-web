@@ -17,18 +17,18 @@
               {{ info.yearTypeName  }}
             </el-form-item>
             <el-form-item label="状态：" prop="status">
-              {{ info.status  }}
+              {{ info.statusLabel  }}
             </el-form-item>
-            <el-form-item label="说明：" prop="remark">
+            <!-- <el-form-item label="说明：" prop="remark">
               {{ info.remark  }}
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="创建人：" prop="creatorName">
               {{ info.creatorName  }}
             </el-form-item>
             <el-form-item label="创建时间：" prop="createTime">
               {{ info.createTime  }}
             </el-form-item>
-            <el-form-item label="主键：" prop="id">
+            <!-- <el-form-item label="主键：" prop="id">
               {{ info.id  }}
             </el-form-item>
             <el-form-item label="创建人：" prop="creator">
@@ -45,7 +45,7 @@
             </el-form-item>
             <el-form-item label="状态变更描述：" prop="statusDesc">
               {{ info.statusDesc  }}
-            </el-form-item>
+            </el-form-item> -->
           </el-form>
         </div>
       </section>

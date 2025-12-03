@@ -149,7 +149,7 @@ export default {
           { props: 'registeredModelCode', label: '公告车型代码', visible: true, width: 200 },
           { props: 'originPlace', label: '产地', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'remark', label: '说明', visible: true, width: 200 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
@@ -349,28 +349,38 @@ export default {
     },
     // 批量启用停用
     handleBatchEnable (status) {
+      const isDifferentStatus = this.selectionList.find(item => item.status === status);
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm(`此操作将${status ? '启用' : '停用'}选中项，是否继续?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        enableItem({
-          idSet: ids,
-          status
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '操作成功!'
-          });
-          this.getData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '操作失败!'
+      if (isDifferentStatus) {
+        this.$message({
+          type: 'warning',
+          message: `存在不是${status ? '启用' : '停用'}的数据，请确认!`
+        });
+      } else {
+        this.$prompt(`此操作将${status ? '启用' : '停用'}选中项，是否继续?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          inputPlaceholder: `请输入${status ? '启用' : '停用'}说明`
+        }).then(({ value }) => {
+          enableItem({
+            idSet: ids,
+            status,
+            statusDesc: value
+          }).then(() => {
+            this.$message({
+              type: 'success',
+              message: '操作成功!'
+            });
+            this.getData();
+          }).catch(() => {
+            this.$message({
+              type: 'error',
+              message: '操作失败!'
+            });
           });
         });
-      });
+      }
     }
   }
 };

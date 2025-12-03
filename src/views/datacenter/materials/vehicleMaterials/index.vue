@@ -4,16 +4,16 @@
     <el-form :inline="true" :model="form" size="small" label-position="right" label-width="160px"
       class="ais-search-form">
       <el-form-item label="物料编码">
-        <el-input placeholder="请输入" v-model="form.materialsCode" clearable />
+        <el-input placeholder="请输入" v-model="form.materialsCodeLike" clearable />
       </el-form-item>
       <el-form-item label="物料描述">
-        <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
+        <el-input placeholder="请输入" v-model="form.materialsDescLike" clearable />
       </el-form-item>
-      <el-form-item label="车系" v-show="this.visibleCount === 3 || show">
+      <template v-if="show">
+        <el-form-item label="车系">
         <fetch-select :options="seriesList" v-model="form.seriesIds" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable
           @change="seriesListChange" />
       </el-form-item>
-      <span v-show="show">
         <el-form-item label="车型">
           <fetch-select :options="modelList" v-model="form.modelIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable
             @change="modelListChange" />
@@ -69,22 +69,30 @@
           <fetch-select :options="yes_no_enum" v-model="form.discontinueStatus" placeholder="请选择" clearable multiple />
         </el-form-item>
         <el-form-item label="状态">
-          <fetch-select :request="fetchOptions" enumCode="StatusEnum" v-model="form.statusIncludeList" placeholder="请选择" clearable />
+           <fetch-select
+          :request="fetchOptions"
+          enumCode="StatusEnum"
+          v-model="form.statusIncludeList"
+          placeholder="请选择"
+          clearable
+          multiple
+          filterable
+        />
         </el-form-item>
-      </span>
+      </template>
       <page-search-action v-model="show" is-expandable :loading="loading" @submit="onSubmit" @reset="onReset" />
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button size="small" type="primary" v-if="canAddOrUpdate" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
+      <el-button size="small" v-if="canDelete" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <el-button size="small" v-if="canEnableOrDisable" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
+      <el-button size="small" v-if="canEnableOrDisable" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
       <el-button size="small" @click="handleBatchSetAttr()" :disabled="selectionList.length === 0">批量设置属性</el-button>
       <el-button size="small" @click="handleImport">导入物料</el-button>
       <el-button size="small" @click="handleImport">导入价格</el-button>
       <el-button size="small" @click="handleImport">导入属性</el-button>
-      <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <el-button :loading="exportLoading" size="small" v-if="canExport" @click="exportExcel">导出</el-button>
     </div>
     <div class="ais-table-c">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed :option-obj="optionObj"
@@ -148,6 +156,7 @@ import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
+import permissions from '@/libs/mixins/permissions';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -176,7 +185,7 @@ const mockConfig = {
 };
 
 export default {
-  mixins: [responsiveSearchForm],
+  mixins: [responsiveSearchForm, permissions],
   components: {
     PageSearchAction,
     LPVxeTable,
@@ -194,6 +203,7 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      moduleKey: 'AISDC-vehicleTag',
       optionObj: {
         id: 'vehicleMaterialsTable',
         dataList: [],
@@ -256,7 +266,7 @@ export default {
           { props: 'allowConfigurationModifyLabel', label: '是否允许改配', visible: true, width: 200 },
           { props: 'discontinueStatusLabel', label: '停产状态', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'remark', label: '说明', visible: true, width: 200 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'modifierName', label: '更新人', visible: true, width: 200 },

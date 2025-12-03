@@ -93,7 +93,7 @@
         </section>
       </el-main>
       <el-footer height="60px">
-        <el-button size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
+        <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
         <el-button size="small" @click="handleBack">取消</el-button>
         <!-- <el-button size="small" @click="handleJumpAuditLog">审核日志</el-button> -->
       </el-footer>
@@ -106,6 +106,7 @@ import { getDetail, addOrUpdate } from '@/api/vehstock/basic/regionNoticeDirecto
 import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum, cityPage, vehicleSalesVersionList } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
+import permissions from '@/libs/mixins/permissions';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -120,6 +121,7 @@ const defaultForm = {
 
 export default {
   name: 'regionNoticeDirectoryEdit',
+  mixins: [permissions],
   // 集中视图预留
   props: {
     id: {
@@ -238,7 +240,7 @@ export default {
     },
     // 公告销售车型
     async serchModel (query) {
-      const res = await vehicleSalesVersionList({ name: query, size: 100 });
+      const res = await vehicleSalesVersionList({ registeredModelNameLike: query, size: 100 });
       this.modelOptions = res?.map(item => {
         return {
           ...item,

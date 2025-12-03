@@ -104,11 +104,13 @@
 <script>
 import { getDetail } from '@/api/datacenter/materials/vehicleMaterials/index';
 import { YES_NO_ENUM_MAP } from '@/libs/constants';
+import permissions from '@/libs/mixins/permissions';
 
 export default {
   name: 'vehicleMaterialsDetail',
   components: {
   },
+  mixins: [permissions],
   data () {
     return {
       loading: true,

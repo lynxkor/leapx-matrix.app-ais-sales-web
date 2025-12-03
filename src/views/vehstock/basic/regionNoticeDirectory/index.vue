@@ -9,7 +9,7 @@
       class="ais-search-form"
     >
       <el-form-item label="城市：">
-        <el-select v-model="form.cityCodeList" filterable multiple placeholder="请选择">
+        <el-select v-model="form.cityCodeList" clearable filterable multiple placeholder="请选择">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -37,23 +37,23 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="状态：">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="StatusEnum"
-          v-model="form.statusIncludeList"
-          placeholder="请选择"
-          clearable
-          multiple
-        />
-      </el-form-item>
-      <span v-show="show">
+      <el-form-item label="状态：" v-if="visibleCount === 3 || show">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="StatusEnum"
+            v-model="form.statusIncludeList"
+            placeholder="请选择"
+            clearable
+            multiple
+          />
+        </el-form-item>
+      <template v-if="show">
         <el-form-item label="地区公告编号：">
-        <el-input
-          placeholder="请输入"
-          v-model="form.code"
-          clearable
-        />
+          <el-input
+            placeholder="请输入"
+            v-model="form.code"
+            clearable
+          />
         </el-form-item>
         <el-form-item label="创建时间：">
           <el-date-picker
@@ -66,7 +66,7 @@
             align="right"
           />
         </el-form-item>
-      </span>
+      </template>
       <page-search-action
         v-model="show"
         is-expandable
@@ -76,12 +76,12 @@
       />
     </el-form>
     <div class="ais-actions">
-      <el-button size="small" type="primary" icon="el-icon-plus" @click="handleAdd">新增</el-button>
-      <el-button size="small" @click="handleImport">导入</el-button>
-      <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" type="primary" icon="el-icon-plus" @click="handleAdd">新增</el-button>
+      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -119,6 +119,8 @@ import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
+import permissions from '@/libs/mixins/permissions';
+import { handleBatchStatusChange, getEndOfDayString } from '@/libs/utils';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -135,7 +137,7 @@ const mockConfig = {
 };
 
 export default {
-  mixins: [responsiveSearchForm],
+  mixins: [responsiveSearchForm, permissions],
   components: {
     PageSearchAction,
     LPVxeTable,
@@ -149,6 +151,7 @@ export default {
       },
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
+      moduleKey: 'AISVS-regionNoticeDirectory',
       show: false,
       loading: false,
       exportLoading: false,
@@ -346,7 +349,7 @@ export default {
     },
     // 公告销售车型
     async serchModel (query) {
-      const res = await vehicleSalesVersionList({ name: query, size: 100 });
+      const res = await vehicleSalesVersionList({ registeredModelNameLike: query, size: 100 });
       this.modelOptions = res?.map(item => {
         return {
           label: item.registeredModelName,
@@ -397,7 +400,7 @@ export default {
         delete data.createTime;
         if (this.form.createTime.length > 1) {
           data.createTimeStart = this.form.createTime[0];
-          data.createTimeEnd = this.form.createTime[1];
+          data.createTimeEnd = getEndOfDayString(this.form.createTime[1]);
         }
       }
 
@@ -433,29 +436,17 @@ export default {
     },
     // 批量启用停用
     handleBatchEnable (status) {
-      const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm(`此操作将${status ? '启用' : '停用'}选中项，是否继续?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        enableItem({
-          idSet: ids,
-          status
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '操作成功!'
-          });
-          this.getData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '操作失败!'
-          });
-        });
+      handleBatchStatusChange.call(this, {
+        selectionList: this.selectionList,
+        targetStatus: status,
+        apiFunc: enableItem,
+        refreshFunc: this.getData,
+        options: {
+          statusName: 'status',
+          requireInput: true
+        }
       });
-    }
+    },
   }
 };
 </script>
