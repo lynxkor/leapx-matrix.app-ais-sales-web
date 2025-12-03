@@ -37,8 +37,7 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <template v-if="this.visibleCount === 3 || show">
-        <el-form-item label="状态：">
+      <el-form-item label="状态：" v-if="visibleCount === 3 || show">
           <fetch-select
             :request="fetchOptions"
             enumCode="StatusEnum"
@@ -48,6 +47,7 @@
             multiple
           />
         </el-form-item>
+      <template v-if="show">
         <el-form-item label="地区公告编号：">
           <el-input
             placeholder="请输入"
@@ -76,12 +76,12 @@
       />
     </el-form>
     <div class="ais-actions">
-      <el-button size="small" type="primary" icon="el-icon-plus" @click="handleAdd">新增</el-button>
-      <el-button size="small" @click="handleImport">导入</el-button>
-      <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" type="primary" icon="el-icon-plus" @click="handleAdd">新增</el-button>
+      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -119,7 +119,8 @@ import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
-import { handleBatchStatusChange } from '@/libs/utils';
+import permissions from '@/libs/mixins/permissions';
+import { handleBatchStatusChange, getEndOfDayString } from '@/libs/utils';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -136,7 +137,7 @@ const mockConfig = {
 };
 
 export default {
-  mixins: [responsiveSearchForm],
+  mixins: [responsiveSearchForm, permissions],
   components: {
     PageSearchAction,
     LPVxeTable,
@@ -150,6 +151,7 @@ export default {
       },
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
+      moduleKey: 'AISVS-regionNoticeDirectory',
       show: false,
       loading: false,
       exportLoading: false,
@@ -398,7 +400,7 @@ export default {
         delete data.createTime;
         if (this.form.createTime.length > 1) {
           data.createTimeStart = this.form.createTime[0];
-          data.createTimeEnd = this.form.createTime[1];
+          data.createTimeEnd = getEndOfDayString(this.form.createTime[1]);
         }
       }
 

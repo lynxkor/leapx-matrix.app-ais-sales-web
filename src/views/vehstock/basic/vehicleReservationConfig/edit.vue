@@ -106,7 +106,7 @@
         </section>
       </el-main>
       <el-footer height="60px">
-        <el-button size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
+        <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
         <el-button size="small" @click="handleBack">取消</el-button>
         <!-- <el-button size="small" @click="handleJumpAuditLog">审核日志</el-button> -->
       </el-footer>
@@ -120,6 +120,7 @@ import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
+import permissions from '@/libs/mixins/permissions';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -153,7 +154,7 @@ export default {
       default: null
     }
   },
-  mixins: [routeGuard],
+  mixins: [routeGuard, permissions],
   components: {
     FetchSelect,
   },
@@ -178,16 +179,54 @@ export default {
           { required: false, message: '请输入业务编号', trigger: 'blur' }
         ],
         reserveNum: [
-          { required: true, message: '请输入需预留数', trigger: 'blur' }
+          {
+            required: true,
+            validator: (rule, value, callback) => {
+              if (value === '' || value === null || value === undefined) {
+                callback(new Error('需预留数不能为空'));
+              } else if (value < 0) {
+                callback(new Error('需预留数不能小于0'));
+              } else if (value > 99999999) {
+                callback(new Error('需预留数不能大于99999999'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur'
+          }
         ],
         reservedNum: [
           { required: false, message: '请输入已预留数', trigger: 'blur' }
         ],
         reserveStartPos: [
-          { required: false, message: '请输入截取预留起始位', trigger: 'blur' }
+          {
+            required: false,
+            validator: (rule, value, callback) => {
+              if (value < 1) {
+                callback(new Error('截取预留起始位不能小于1'));
+              } else if (value > 50) {
+                callback(new Error('截取预留起始位不能大于50'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur'
+          }
         ],
         reserveEndPos: [
-          { required: false, message: '请输入截取预留截止位', trigger: 'blur' }
+          {
+            required: false,
+            validator: (rule, value, callback) => {
+              if (value < 1) {
+                callback(new Error('截取预留截止位不能小于1'));
+              } else if (value > 50) {
+                callback(new Error('截取预留截止位不能大于50'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur'
+          }
         ],
         reserveCutValue: [
           { required: false, message: '请输入截取预留值', trigger: 'blur' }

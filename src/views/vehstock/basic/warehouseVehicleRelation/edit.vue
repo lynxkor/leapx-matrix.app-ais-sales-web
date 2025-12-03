@@ -90,7 +90,7 @@
         </section>
       </el-main>
       <el-footer height="60px">
-        <el-button size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
+        <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
         <el-button size="small" @click="handleBack">取消</el-button>
         <!-- <el-button size="small" @click="handleJumpAuditLog">审核日志</el-button> -->
       </el-footer>
@@ -104,6 +104,7 @@ import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum, pageWithPermission, getProvinceTree } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
+import permissions from '@/libs/mixins/permissions';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -130,7 +131,7 @@ export default {
       default: null
     }
   },
-  mixins: [routeGuard],
+  mixins: [routeGuard, permissions],
   components: {
     FetchSelect,
   },
@@ -170,7 +171,21 @@ export default {
           { required: false, message: '请输入市名称', trigger: 'blur' }
         ],
         priority: [
-          { required: true, message: '请输入配车优先级', trigger: 'blur' }
+          {
+            required: true,
+            validator: (rule, value, callback) => {
+              if (value === '' || value === null || value === undefined) {
+                callback(new Error('配车优先级不能为空'));
+              } else if (value < 0) {
+                callback(new Error('配车优先级不能小于0'));
+              } else if (value > 99999999) {
+                callback(new Error('配车优先级不能大于99999999'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur'
+          }
         ],
         status: [
           { required: true, message: '请选择状态', trigger: 'change' }

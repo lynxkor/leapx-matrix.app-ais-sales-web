@@ -4,7 +4,7 @@
     <template v-else>
       <section class="common-title">
         <h2>地区公告编号：{{ info.code }}</h2>
-        <el-button size="small" @click="handleEdit" icon="el-icon-edit">编辑</el-button>
+        <el-button v-if="canAddOrUpdate" size="small" @click="handleEdit" icon="el-icon-edit">编辑</el-button>
       </section>
       <section class="common-section">
         <div class="common-section-header">
@@ -49,10 +49,13 @@
 <script>
 import { getDetail } from '@/api/vehstock/basic/regionNoticeDirectory/index';
 import { YES_NO_ENUM_MAP } from '@/libs/constants';
+import permissions from '@/libs/mixins/permissions';
+
 export default {
   name: 'regionNoticeDirectoryDetail',
   components: {
   },
+  mixins: [permissions],
   data () {
     return {
       loading: true,
