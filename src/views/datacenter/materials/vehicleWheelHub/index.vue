@@ -138,7 +138,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'status', label: '状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'remark', label: '说明', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
@@ -219,7 +219,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        dataFetchPath: '/datacenter/datacenter/materials/vehicleWheelHub/page',
+        dataFetchPath: '/datacenter/web/materials/vehicleWheelHub/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols())
       }).then(res => {

@@ -219,9 +219,10 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        dataFetchPath: '/datacenter/datacenter/materials/vehicleExterior/page',
+        dataFetchPath: '/datacenter/web/materials/vehicleExterior/page',
         reqParams: this.getFormData(),
-        titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols())
+        titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
+        httpMethod: 'POST'
       }).then(res => {
         if (res) {
           if (res.excelUrl) {

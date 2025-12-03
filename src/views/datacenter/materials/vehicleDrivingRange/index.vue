@@ -240,7 +240,8 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        dataFetchPath: '/datacenter/datacenter/materials/vehicleDrivingRange/page',
+        httpMethod: 'POST',
+        dataFetchPath: '/datacenter/web/materials/vehicleDrivingRange/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols())
       }).then(res => {
