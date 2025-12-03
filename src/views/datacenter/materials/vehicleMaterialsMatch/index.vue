@@ -23,14 +23,14 @@
           clearable
         />
       </el-form-item>
-      <template v-if="show">
-        <el-form-item label="可配物料编码">
+        <el-form-item label="可配物料编码" >
         <el-input
           placeholder="请输入"
           v-model="form.matchMaterialsCode"
           clearable
         />
       </el-form-item>
+      <template v-if="show">
         <el-form-item label="可配物料名称">
           <el-input
             placeholder="请输入"
@@ -127,6 +127,7 @@ export default {
   },
   data () {
     return {
+      moduleKey: 'AISDC-vehicleMaterials',
       form: {
         ...defaultForm
       },

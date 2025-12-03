@@ -9,11 +9,11 @@
       <el-form-item label="物料描述">
         <el-input placeholder="请输入" v-model="form.materialsDescLike" clearable />
       </el-form-item>
+        <el-form-item label="车系" v-show="visibleCount === 3 || show">
+          <fetch-select :options="seriesList" v-model="form.seriesIds" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable
+            @change="seriesListChange" />
+        </el-form-item>
       <template v-if="show">
-        <el-form-item label="车系">
-        <fetch-select :options="seriesList" v-model="form.seriesIds" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable
-          @change="seriesListChange" />
-      </el-form-item>
         <el-form-item label="车型">
           <fetch-select :options="modelList" v-model="form.modelIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable
             @change="modelListChange" />
@@ -157,6 +157,7 @@ import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
+import { handleBatchStatusChange } from '@/libs/utils';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -194,6 +195,7 @@ export default {
   },
   data () {
     return {
+      moduleKey: 'AISDC-vehicleMaterials',
       form: {
         ...defaultForm
       },
@@ -203,7 +205,6 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
-      moduleKey: 'AISDC-vehicleTag',
       optionObj: {
         id: 'vehicleMaterialsTable',
         dataList: [],
@@ -511,40 +512,16 @@ export default {
     },
     // 批量启用停用
     handleBatchEnable (status) {
-      console.log('status', status);
-      const isDifferenStatus = this.selectionList.find(item => item.status === status);
-      const ids = this.selectionList.map(item => item.id) || [];
-      if (isDifferenStatus) {
-        this.$message({
-          message: `存在不是${status ? '启用' : '停用'}的数据，请确认`,
-          type: 'warning'
-        });
-      } else {
-        this.$prompt(`此操作将${status ? '启用' : '停用'}选中项，是否继续?`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-          inputPlaceholder: `请输入${status ? '启用' : '停用'}说明`
-        }).then(({ value }) => {
-          console.log('value', value);
-          enableItem({
-            idSet: ids,
-            status,
-            statusDesc: value
-          }).then(() => {
-            this.$message({
-              type: 'success',
-              message: '操作成功!'
-            });
-            this.getData();
-          }).catch(() => {
-            this.$message({
-              type: 'error',
-              message: '操作失败!'
-            });
-          });
-        });
-      }
+      handleBatchStatusChange.call(this, {
+        selectionList: this.selectionList,
+        targetStatus: status,
+        apiFunc: enableItem,
+        refreshFunc: this.getData,
+        options: {
+          statusName: 'status',
+          requireInput: true
+        }
+      });
     },
     handleBatchSetAttr () {
       this.batchSetAttrVisible = true;
