@@ -12,7 +12,7 @@
                 <el-input placeholder="请输入" v-model="form.materialsCode" clearable />
               </el-form-item>
               <el-form-item label="物料描述：" prop="materialsDesc">
-                <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
+                <el-input placeholder="请输入" v-model="form.materialsDesc" clearable disabled/>
               </el-form-item>
               <el-form-item label="车系：" prop="seriesId">
                 <fetch-select :options="seriesList" v-model="form.seriesId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable
@@ -56,7 +56,7 @@
           </div>
         </section>
 
-        <section class="common-section">
+        <section class="common-section" v-permission="moduleKey+'-checkPrice'">
           <div class="common-section-header">
             <h2>价格信息</h2>
           </div>
@@ -67,7 +67,7 @@
           </el-form>
         </section>
 
-        <section class="common-section">
+        <section class="common-section" v-permission="moduleKey+'-checkProperties'">
           <div class="common-section-header">
             <h2>属性信息</h2>
           </div>
@@ -201,6 +201,7 @@ export default {
   mixins: [routeGuard, permissions],
   data () {
     return {
+      moduleKey: 'AISDC-vehicleMaterials',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,

@@ -152,9 +152,9 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'cellMaterials', label: '电芯材料枚举：1：三元锂:2：硫酸铁锂', visible: true, width: 200 },
-          { props: 'status', label: '状态', visible: true, width: 200 },
-          { props: 'remark', label: '说明', visible: true, width: 200 },
+          { props: 'cellMaterialsLabel', label: '电芯材料', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'modifierName', label: '更改人', visible: true, width: 200 },
@@ -176,24 +176,6 @@ export default {
                 });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],
@@ -254,7 +236,8 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        dataFetchPath: '/datacenter/datacenter/materials/vehicleBatteryCell/page',
+        httpMethod: 'POST',
+        dataFetchPath: '/datacenter/web/materials/vehicleBatteryCell/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols())
       }).then(res => {

@@ -273,7 +273,8 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        dataFetchPath: '/datacenter/datacenter/materials/vehicleOptionPackage/page',
+        httpMethod: 'POST',
+        dataFetchPath: '/datacenter/web/materials/vehicleOptionPackage/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols())
       }).then(res => {

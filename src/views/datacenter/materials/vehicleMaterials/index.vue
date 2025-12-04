@@ -88,10 +88,10 @@
       <el-button size="small" v-if="canDelete" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button size="small" v-if="canEnableOrDisable" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button size="small" v-if="canEnableOrDisable" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
-      <el-button size="small" @click="handleBatchSetAttr()" :disabled="selectionList.length === 0">批量设置属性</el-button>
-      <el-button size="small" @click="handleImport">导入物料</el-button>
-      <el-button size="small" @click="handleImport">导入价格</el-button>
-      <el-button size="small" @click="handleImport">导入属性</el-button>
+      <el-button size="small" v-permission="''" @click="handleBatchSetAttr()" :disabled="selectionList.length === 0">批量设置属性</el-button>
+      <el-button size="small" v-permission="moduleKey + '-importMaterials'" @click="handleImport">导入物料</el-button>
+      <el-button size="small" v-permission="moduleKey + '-importPrice'" @click="handleImport">导入价格</el-button>
+      <el-button size="small" v-permission="moduleKey + '-importProperties'" @click="handleImport">导入属性</el-button>
       <el-button :loading="exportLoading" size="small" v-if="canExport" @click="exportExcel">导出</el-button>
     </div>
     <div class="ais-table-c">
@@ -421,11 +421,11 @@ export default {
 
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
-          console.log(res);
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item,
-              deleteLoading: false
+              allowWholesaleLabel: item.props?.allowWholesaleLabel,
+              deleteLoading: false,
             };
           });
           this.optionObj.total = res.total;

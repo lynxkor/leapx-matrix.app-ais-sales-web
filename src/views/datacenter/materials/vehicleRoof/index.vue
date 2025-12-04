@@ -221,7 +221,8 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        dataFetchPath: '/datacenter/datacenter/materials/vehicleRoof/page',
+        httpMethod: 'POST',
+        dataFetchPath: '/datacenter/web/materials/vehicleRoof/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols())
       }).then(res => {

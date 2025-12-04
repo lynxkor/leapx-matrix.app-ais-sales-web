@@ -285,8 +285,8 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '整车主数据-车系管理',
-        dataFetchPath: '/datacenter/datacenter/materials/vehicleSeries/page',
+        businessType: '车系管理',
+        dataFetchPath: '/datacenter/web/materials/vehicleSeries/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
