@@ -427,7 +427,7 @@ export default {
         const vehicleSeriesData = res.map(item => {
           return {
             ...item,
-            label: item.seriesName,
+            label: item.name,
             value: item.id
           };
         });
@@ -442,7 +442,7 @@ export default {
         const vehicleModelData = res.map(item => {
           return {
             ...item,
-            label: item.modelName,
+            label: item.name,
             value: item.id
           };
         });
@@ -455,7 +455,7 @@ export default {
         this.yearModelList = val.map(item => {
           return {
             ...item,
-            label: item.yearTypeName,
+            label: item.name,
             value: item.yearTypeId
           };
         });

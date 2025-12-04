@@ -139,7 +139,7 @@
 
     <Upload
       :visible="uploadDialogVisible"
-      :id="uploadDialogId"
+      id=""
       @close="handleUploadDialogClose"
     />
 
@@ -151,7 +151,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchUpdateProps } from '@/api/datacenter/materials/vehicleMaterials/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelList, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleRoof } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelList, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleRoof, vehicleModelYearTypeRelation } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -553,7 +553,7 @@ export default {
         const vehicleSeriesData = res.map(item => {
           return {
             ...item,
-            label: item.seriesName,
+            label: item.name,
             value: item.id
           };
         });
@@ -568,7 +568,7 @@ export default {
         const vehicleModelData = res.map(item => {
           return {
             ...item,
-            label: item.modelName,
+            label: item.name,
             value: item.id
           };
         });
@@ -577,18 +577,15 @@ export default {
     },
 
     async getModelYearTypeRelationsList (val) {
-      if (val.length) {
-        this.yearModelList = val.map(item => {
-          return {
-            ...item,
-            label: item.yearTypeName,
-            value: item.yearTypeId
-          };
-        });
-      } else {
-        this.yearModelList = [];
-        this.form.yearTypeIdSet = [];
-      }
+      const res = await vehicleModelYearTypeRelation({ modelIdList: val, size: 1000 });
+      console.log('getModelYearTypeRelationsList:', res);
+      this.yearModelList = res.map(item => {
+        return {
+          ...item,
+          label: item.name,
+          value: item.id
+        };
+      });
     },
 
     async getVehicleExteriorList () {

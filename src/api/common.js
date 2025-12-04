@@ -245,3 +245,11 @@ export function vehicleRangePower (data) {
 export function pageWithPermission (data) {
   return api.jsonPost('/zcwms/base/headquartersWarehouse/pageWithPermission', data);
 }
+
+/**
+ * 车型-年款-关联关系表列表查询
+ * @param {*} data
+ */
+export function vehicleModelYearTypeRelation (data) {
+  return api.jsonPost('/datacenter/web/materials/vehicleModelYearTypeRelation/list', data);
+}
