@@ -102,8 +102,7 @@
     </div>
     <Upload
       :visible="uploadDialogVisible"
-      templateUrl=""
-      uploadUrl=""
+      :id="'IMPORT-202512031408158510'"
       @close="handleUploadDialogClose"
     />
   </div>

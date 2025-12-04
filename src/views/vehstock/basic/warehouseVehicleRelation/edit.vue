@@ -140,6 +140,7 @@ export default {
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
+      moduleKey: 'AISVS-warehouseVehicleRelation',
       form: { ...defaultForm },
       originalForm: { ...defaultForm },
       warehouseOptions: [], // 整车仓库
