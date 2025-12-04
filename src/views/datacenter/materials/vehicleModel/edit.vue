@@ -195,10 +195,11 @@
 import { getDetail, addOrUpdate } from '@/api/datacenter/materials/vehicleModel/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
-import { getEnum } from '@/api/common';
+import { getEnum, vehicleModelYearTypeRelation } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
+import { log } from 'vxe-pc-ui';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -252,9 +253,6 @@ export default {
       tableData: [],
       options: {
         yearTypeName: [
-          { label: '2024', value: '2024' },
-          { label: '2025', value: '2025' },
-          { label: '2026', value: '2026' }
         ]
         // 对应表格里选型枚举
         // 如 type: [{label: 'xxx', value: 'xxx'}]
@@ -339,6 +337,18 @@ export default {
     this.getDetailData();
   },
   methods: {
+    vehicleModelYearTypeRelation () {
+      vehicleModelYearTypeRelation({ modelIdList: [this.id || this.$route.query.id] }).then(res => {
+        console.log('vehicleModelYearTypeRelation:', res);
+        this.options.yearTypeName = res.map(item => {
+          return {
+            ...item,
+            label: item.name,
+            value: item.id
+          };
+        });
+      });
+    },
     handleBack () {
       this.$router.back();
     },
@@ -351,7 +361,8 @@ export default {
           Object.assign(this.form, res);
           Object.assign(this.originalForm, res);
           this.tableData = res.modelYearTypeRelations;
-        });
+          this.vehicleModelYearTypeRelation();
+        }).catch(() => {});
       }
     },
     async submitForm (formName, rest = false) {

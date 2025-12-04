@@ -582,8 +582,8 @@ export default {
       this.yearModelList = res.map(item => {
         return {
           ...item,
-          label: item.yearTypeName,
-          value: item.yearTypeId
+          label: item.name,
+          value: item.id
         };
       });
     },

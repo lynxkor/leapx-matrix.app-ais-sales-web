@@ -417,7 +417,7 @@ export default {
         const data = res.map(item => {
           return {
             ...item,
-            label: item.seriesName,
+            label: item.name,
             value: item.id
           };
         });
@@ -430,7 +430,7 @@ export default {
         const data = res.map(item => {
           return {
             ...item,
-            label: item.modelLineName,
+            label: item.name,
             value: item.id
           };
         });
