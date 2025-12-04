@@ -1,6 +1,6 @@
 <template>
   <!-- TIPS: 如果填写项小于15项，使用类名page-common-add替换page-common-edit -->
-  <div class="page-common-edit">
+  <div class="page-common-add">
     <el-container>
       <el-main>
         <section class="common-section">
@@ -10,7 +10,7 @@
           <div class="common-section-body">
             <!-- TIPS: 如果填写项小于15项，去掉 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-            <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="80px">
+            <el-form  :model="form" :rules="rules" ref="ruleForm" label-width="80px">
               <el-form-item label="车型名称" prop="modelName">
                 <el-input
                   placeholder="请输入"
@@ -251,6 +251,11 @@ export default {
       },
       tableData: [],
       options: {
+        yearTypeName: [
+          { label: '2024', value: '2024' },
+          { label: '2025', value: '2025' },
+          { label: '2026', value: '2026' }
+        ]
         // 对应表格里选型枚举
         // 如 type: [{label: 'xxx', value: 'xxx'}]
       },
@@ -259,24 +264,28 @@ export default {
         {
           field: 'yearTypeName',
           title: '年型名称',
-          width: '33%',
+          width: '20%',
           editable: true,
-          editRender: { name: 'ElInput' },
+          editRender: { name: 'ElSelect' },
           rules: [
-            { required: true, message: '年型名称不能为空', trigger: 'blur' }
+            {
+              required: true,
+              message: '年型名称不能为空',
+              trigger: 'blur'
+            }
           ]
         },
         {
           field: 'creatorName',
           title: '创建人',
           editable: false,
-          width: '33%',
+          width: '30%',
           editRender: { name: 'ElInput', props: { type: 'number' } }
         },
         {
           field: 'createTime',
           title: '创建时间',
-          width: '33%',
+          // width: '33%',
           editRender: { name: 'ElInput' }
         },
       ],
@@ -341,6 +350,7 @@ export default {
           this.loading = false;
           Object.assign(this.form, res);
           Object.assign(this.originalForm, res);
+          this.tableData = res.modelYearTypeRelations;
         });
       }
     },
