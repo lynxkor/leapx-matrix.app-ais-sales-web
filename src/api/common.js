@@ -28,6 +28,14 @@ export function getTemplateUrl (data) {
 }
 
 /**
+ * 列表下载模板 code
+ * @param {*} data
+ */
+export function getTemplateCode (data) {
+  return api.jsonPost('/data/commonDataProcessExcelModelMap/code', data);
+}
+
+/**
  * 列表模板确认
  * @param {*} data
  */
