@@ -60,7 +60,8 @@ export default {
     return {
       loading: true,
       info: {},
-      yes_no_enum_map: YES_NO_ENUM_MAP
+      yes_no_enum_map: YES_NO_ENUM_MAP,
+      moduleKey: 'AISVS-regionNoticeDirectory'
     };
   },
   created () {

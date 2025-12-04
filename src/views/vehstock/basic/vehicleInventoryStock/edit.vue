@@ -81,6 +81,7 @@ export default {
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
+      moduleKey: 'AISVS-vehicleInventoryStock',
       form: { ...defaultForm },
       originalForm: { ...defaultForm },
       rules: {

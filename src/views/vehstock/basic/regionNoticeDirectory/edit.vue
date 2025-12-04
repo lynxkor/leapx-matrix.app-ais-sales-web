@@ -137,6 +137,7 @@ export default {
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
+      moduleKey: 'AISVS-regionNoticeDirectory',
       form: { ...defaultForm },
       originalForm: { ...defaultForm },
       options: [],
