@@ -16,25 +16,25 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="物料名称">
+      <el-form-item label="物料描述">
         <el-input
           placeholder="请输入"
-          v-model="form.materialsDesc"
+          v-model="form.materialsDescLike"
           clearable
         />
       </el-form-item>
         <el-form-item label="可配物料编码" >
         <el-input
           placeholder="请输入"
-          v-model="form.matchMaterialsCode"
+          v-model="form.matchMaterialsCodeLike"
           clearable
         />
       </el-form-item>
       <template v-if="show">
-        <el-form-item label="可配物料名称">
+        <el-form-item label="可配物料描述">
           <el-input
             placeholder="请输入"
-            v-model="form.matchMaterialsDesc"
+            v-model="form.matchMaterialsDescLike"
             clearable
           />
         </el-form-item>
@@ -163,9 +163,9 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'materialsDesc', label: '物料名称', visible: true, width: 200 },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           { props: 'matchMaterialsCode', label: '可配物料编码', visible: true, width: 200 },
-          { props: 'matchMaterialsDesc', label: '可配物料名称', visible: true, width: 200 },
+          { props: 'matchMaterialsDesc', label: '可配物料描述', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'remark', label: '说明', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 200 },

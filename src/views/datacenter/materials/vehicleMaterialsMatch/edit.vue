@@ -15,7 +15,7 @@
               <el-form-item label="物料编码：" prop="materialsCode">
                 <fetch-select :options="materialsList" v-model="form.vehicleMaterials.materialsCode" placeholder="请选择" labelKey="label" valueKey="value" :remoteMethod="materialsCodeRemoteMethod" remote clearable filterable/>
               </el-form-item>
-              <el-form-item label="物料名称：">
+              <el-form-item label="物料描述：">
                 <el-input
                   placeholder="请输入"
                   v-model="form.vehicleMaterials.materialsDesc"
