@@ -195,7 +195,7 @@
 import { getDetail, addOrUpdate } from '@/api/datacenter/materials/vehicleModel/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
-import { getEnum, vehicleModelYearTypeRelation } from '@/api/common';
+import { getEnum, listVehicleYearType } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -336,9 +336,9 @@ export default {
     this.getDetailData();
   },
   methods: {
-    vehicleModelYearTypeRelation () {
-      vehicleModelYearTypeRelation({ modelIdList: [this.id || this.$route.query.id] }).then(res => {
-        console.log('vehicleModelYearTypeRelation:', res);
+    listVehicleYearType () {
+      listVehicleYearType({ modelIdList: [this.id || this.$route.query.id] }).then(res => {
+        console.log('listVehicleYearType:', res);
         this.options.yearTypeName = res.map(item => {
           return {
             ...item,
@@ -360,7 +360,7 @@ export default {
           Object.assign(this.form, res);
           Object.assign(this.originalForm, res);
           this.tableData = res.modelYearTypeRelations;
-          this.vehicleModelYearTypeRelation();
+          this.listVehicleYearType();
         }).catch(() => {});
       }
     },

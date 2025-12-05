@@ -72,28 +72,28 @@
           </div>
           <el-form ref="ruleForm" label-width="170px" inline>
             <el-form-item label="是否允许现车批售：">
-              {{ yes_no_enum_map[info.allowWholesale] }}
+              {{ info.props.allowWholesaleLabel }}
             </el-form-item>
-            <el-form-item label="是否允许排产申请：" prop="allowProductionSchedule">
-              {{ yes_no_enum_map[info.allowProductionSchedule] }}
+            <el-form-item label="是否允许排产申请：">
+              {{ info.props.allowProductionScheduleLabel }}
             </el-form-item>
-            <el-form-item label="是否允许展车批售：" prop="allowDisplayVehicleWholesale">
-              {{ yes_no_enum_map[info.allowDisplayVehicleWholesale] }}
+            <el-form-item label="是否允许展车批售：">
+              {{ info.props.allowDisplayVehicleWholesaleLabel }}
             </el-form-item>
-            <el-form-item label="是否允许试驾车批售：" prop="allowTestDriveVehicleWholesale">
-              {{ yes_no_enum_map[info.allowTestDriveVehicleWholesale] }}
+            <el-form-item label="是否允许试驾车批售：">
+              {{ info.props.allowTestDriveVehicleWholesaleLabel }}
             </el-form-item>
-            <el-form-item label="是否允许企业客户销售：" prop="allowCustomerSales">
-              {{ yes_no_enum_map[info.allowCustomerSales] }}
+            <el-form-item label="是否允许企业客户销售：">
+              {{ info.props.allowCustomerSalesLabel }}
             </el-form-item>
-            <el-form-item label="是否允许批售确认：" prop="allowWholesaleConfirm">
-              {{ yes_no_enum_map[info.allowWholesaleConfirm] }}
+            <el-form-item label="是否允许批售确认：">
+              {{ info.props.allowWholesaleConfirmLabel }}
             </el-form-item>
-            <el-form-item label="是否允许改配：" prop="allowConfigurationModify">
-              {{ yes_no_enum_map[info.allowConfigurationModify] }}
+            <el-form-item label="是否允许改配：">
+              {{ info.props.allowConfigurationModifyLabel }}
             </el-form-item>
             <el-form-item label="停产状态：">
-              {{ yes_no_enum_map[info.discontinueStatus] }}
+              {{ info.props.discontinueStatusLabel }}
             </el-form-item>
           </el-form>
         </section>
