@@ -371,7 +371,7 @@ export default {
           if (valid) {
             this.submitLoading = true;
             // TIPS: customKey 根据接口格式修改
-            addOrUpdate({ ...this.form, customKey: tableData }).then(res => {
+            addOrUpdate({ ...this.form, yearTypeIdList: tableData }).then(res => {
               this.$message({
                 message: '保存成功',
                 type: 'success'
