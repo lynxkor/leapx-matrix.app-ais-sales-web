@@ -425,6 +425,13 @@ export default {
             return {
               ...item,
               allowWholesaleLabel: item.props?.allowWholesaleLabel,
+              allowProductionScheduleLabel: item.props?.allowProductionScheduleLabel,
+              allowDisplayVehicleWholesaleLabel: item.props?.allowDisplayVehicleWholesaleLabel,
+              allowTestDriveVehicleWholesaleLabel: item.props?.allowTestDriveVehicleWholesaleLabel,
+              allowCustomerSalesLabel: item.props?.allowCustomerSalesLabel,
+              allowWholesaleConfirmLabel: item.props?.allowWholesaleConfirmLabel,
+              allowConfigurationModifyLabel: item.props?.allowConfigurationModifyLabel,
+              discontinueStatusLabel: item.props?.discontinueStatusLabel,
               deleteLoading: false,
             };
           });

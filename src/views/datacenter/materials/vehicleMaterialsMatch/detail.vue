@@ -55,7 +55,7 @@
         <div class="common-section-header">
           <h2>可配物料信息</h2>
         </div>
-        <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" inline>
+        <el-form label-width="150px" inline>
           <el-form-item label="可配物料编码：" prop="matchMaterialsCode">
             {{ info.matchMaterialsCode  }}
           </el-form-item>
@@ -100,7 +100,7 @@
         <div class="common-section-header">
           <h2>属性信息</h2>
         </div>
-        <el-form :model="form" :rules="rules" ref="ruleForm" label-width="120px" inline>
+        <el-form label-width="120px" inline>
           <el-form-item label="状态：" prop="status">
             {{ info.status === 1 ? '启用' : '停用'  }}
           </el-form-item>
@@ -139,6 +139,7 @@ export default {
     },
     getData () {
       getDetail(this.$route.query.id).then(res => {
+        console.log('getDetailres:', res);
         this.loading = false;
         this.info = res;
       }).catch(() => {
