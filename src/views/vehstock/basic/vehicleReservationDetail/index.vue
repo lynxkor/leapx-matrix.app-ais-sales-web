@@ -10,11 +10,7 @@
       class="ais-search-form"
     >
       <el-form-item label="车辆预留编号">
-        <el-input
-          placeholder="请输入"
-          v-model="form.code"
-          clearable
-        />
+        <tag-input v-model="form.code" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="业务编号">
         <el-input
@@ -24,11 +20,7 @@
         />
       </el-form-item>
       <el-form-item label="VIN"  v-show="visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.vinLike"
-          clearable
-        />
+        <tag-input v-model="form.vinLike" placeholder="请输入" />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="备注">
@@ -95,6 +87,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
+import TagInput from '@/libs/components/TagInput';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/basic/vehicleReservationDetail/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import Upload from '@/libs/components/UploadDialog';
@@ -123,7 +116,8 @@ export default {
   components: {
     PageSearchAction,
     LPVxeTable,
-    Upload
+    Upload,
+    TagInput
   },
   data () {
     return {
