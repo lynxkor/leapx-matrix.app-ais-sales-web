@@ -106,7 +106,7 @@
         </section>
       </el-main>
       <el-footer height="60px">
-        <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
+        <el-button  size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
         <el-button size="small" @click="handleBack">取消</el-button>
         <!-- <el-button size="small" @click="handleJumpAuditLog">审核日志</el-button> -->
       </el-footer>
@@ -203,6 +203,13 @@ export default {
           {
             required: false,
             validator: (rule, value, callback) => {
+              // 如果值为空，直接通过验证
+              if (value === '' || value === null || value === undefined) {
+                callback();
+                return;
+              }
+
+              // 如果有值，再进行验证
               if (value < 1) {
                 callback(new Error('截取预留起始位不能小于1'));
               } else if (value > 50) {
@@ -218,6 +225,13 @@ export default {
           {
             required: false,
             validator: (rule, value, callback) => {
+              // 如果值为空，直接通过验证
+              if (value === '' || value === null || value === undefined) {
+                callback();
+                return;
+              }
+
+              // 如果有值，再进行验证
               if (value < 1) {
                 callback(new Error('截取预留截止位不能小于1'));
               } else if (value > 50) {
