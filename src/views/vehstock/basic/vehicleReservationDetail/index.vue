@@ -10,7 +10,7 @@
       class="ais-search-form"
     >
       <el-form-item label="车辆预留编号">
-        <tag-input v-model="form.code" placeholder="请输入" />
+        <tag-input v-model="form.codeList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="业务编号">
         <el-input
@@ -20,7 +20,7 @@
         />
       </el-form-item>
       <el-form-item label="VIN"  v-show="visibleCount === 3 || show">
-        <tag-input v-model="form.vinLike" placeholder="请输入" />
+        <tag-input v-model="form.vinList" placeholder="请输入" />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="备注">
@@ -98,9 +98,9 @@ import { handleBatchStatusChange, getEndOfDayString } from '@/libs/utils';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  code: '',
+  codeList: [],
   bizCode: '',
-  vinLike: '',
+  vinList: [],
   remarkLike: '',
   createByName: '',
   updateByName: '',
