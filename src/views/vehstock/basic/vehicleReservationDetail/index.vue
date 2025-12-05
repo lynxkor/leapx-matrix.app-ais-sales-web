@@ -38,6 +38,20 @@
             clearable
           />
         </el-form-item>
+        <el-form-item label="创建人">
+          <el-input
+            placeholder="请输入"
+            v-model="form.createByName"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="更新人">
+          <el-input
+            placeholder="请输入"
+            v-model="form.updateByName"
+            clearable
+          />
+        </el-form-item>
       </template>
       <page-search-action
         v-model="show"
@@ -95,6 +109,8 @@ const defaultForm = {
   bizCode: '',
   vinLike: '',
   remarkLike: '',
+  createByName: '',
+  updateByName: '',
 };
 
 const pageSize = 20;
