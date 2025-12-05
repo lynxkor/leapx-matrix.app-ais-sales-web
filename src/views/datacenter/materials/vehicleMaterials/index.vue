@@ -414,10 +414,10 @@ export default {
       this.loading = true;
       this.selectionList = [];
 
-      const trueFalseMap = {
-        true: '是',
-        false: '否'
-      };
+      // const trueFalseMap = {
+      //   true: '是',
+      //   false: '否'
+      // };
 
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {

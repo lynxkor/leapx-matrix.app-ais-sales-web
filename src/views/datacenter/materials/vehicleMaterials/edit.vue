@@ -72,52 +72,25 @@
             <h2>属性信息</h2>
           </div>
           <el-form :model="form" :rules="rules" ref="ruleForm" label-width="170px" inline>
-            <el-form-item label="是否允许现车批售：" prop="allowWholesale">
-              <el-radio-group v-model="form.allowWholesale">
-                <el-radio v-for="item in yes_no_enum" :key="item.code" :label="item.code">{{ item.message
-                }}</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="是否允许排产申请：" prop="allowProductionSchedule">
-              <el-radio-group v-model="form.allowProductionSchedule">
-                <el-radio v-for="item in yes_no_enum" :key="item.code" :label="item.code">{{ item.message
-                }}</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="是否允许展车批售：" prop="allowDisplayVehicleWholesale">
-              <el-radio-group v-model="form.allowDisplayVehicleWholesale">
-                <el-radio v-for="item in yes_no_enum" :key="item.code" :label="item.code">{{ item.message
-                }}</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="是否允许试驾车批售：" prop="allowTestDriveVehicleWholesale">
-              <el-radio-group v-model="form.allowTestDriveVehicleWholesale">
-                <el-radio v-for="item in yes_no_enum" :key="item.code" :label="item.code">{{ item.message
-                }}</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="是否允许企业客户销售	：" prop="allowCustomerSales">
-              <el-radio-group v-model="form.allowCustomerSales">
-                <el-radio v-for="item in yes_no_enum" :key="item.code" :label="item.code">{{ item.message
-                }}</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="是否允许批售确认：" prop="allowWholesaleConfirm">
-              <el-radio-group v-model="form.allowWholesaleConfirm">
-                <el-radio v-for="item in yes_no_enum" :key="item.code" :label="item.code">{{ item.message
-                }}</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="是否允许改配：" prop="allowConfigurationModify">
-              <el-radio-group v-model="form.allowConfigurationModify">
-                <el-radio v-for="item in yes_no_enum" :key="item.code" :label="item.code">{{ item.message
-                }}</el-radio>
+            <el-form-item
+              v-for="(item, index) in formItems"
+              :key="index"
+              :label="item.label"
+              :prop="item.prop"
+            >
+              <el-radio-group v-model="form.props[item.prop]">
+                <el-radio
+                  v-for="option in yes_no_enum"
+                  :key="option.code"
+                  :label="option.code"
+                >
+                  {{ option.message }}
+                </el-radio>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="停产状态：" prop="discontinueStatus">
-              <el-radio-group v-model="form.discontinueStatus">
-                <el-radio v-for="item in yes_no_enum" :key="item.code" :label="item.code">{{ item.message
-                }}</el-radio>
+              <el-radio-group v-model="form.props.discontinueStatus">
+                <el-radio v-for="(option, index) in discontinueStatusList" :key="index" :label="option.code">{{ option.message }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-form>
@@ -135,10 +108,11 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/datacenter/materials/vehicleMaterials/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import { getEnum, vehicleSeriesList, vehicleModelList, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleRoof, vehicleDrivingRange, vehicleRangePower } from '@/api/common';
-import { YES_NO_ENUM } from '@/libs/constants';
+import { getEnum, vehicleSeriesList, vehicleModelList, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleRoof, vehicleDrivingRange, vehicleRangePower, vehicleModelYearTypeRelation } from '@/api/common';
+// import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
+import { fetchAndFormatData } from '@/libs/utils';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -183,7 +157,16 @@ const defaultForm = {
   rangePowerId: '',
   rangePowerName: '',
   currencyCode: '',
-
+  props: {
+    allowWholesale: '',
+    allowProductionSchedule: '',
+    allowDisplayVehicleWholesale: '',
+    allowTestDriveVehicleWholesale: '',
+    allowCustomerSales: '',
+    allowWholesaleConfirm: '',
+    allowConfigurationModify: '',
+    discontinueStatus: ''
+  }
 };
 
 export default {
@@ -202,9 +185,23 @@ export default {
   data () {
     return {
       moduleKey: 'AISDC-vehicleMaterials',
+      discontinueStatusList: [],
+      // 表单项配置
+      formItems: [
+        { label: '是否允许现车批售：', prop: 'allowWholesale' },
+        { label: '是否允许排产申请：', prop: 'allowProductionSchedule' },
+        { label: '是否允许展车批售：', prop: 'allowDisplayVehicleWholesale' },
+        { label: '是否允许试驾车批售：', prop: 'allowTestDriveVehicleWholesale' },
+        { label: '是否允许企业客户销售：', prop: 'allowCustomerSales' },
+        { label: '是否允许批售确认：', prop: 'allowWholesaleConfirm' },
+        { label: '是否允许改配：', prop: 'allowConfigurationModify' }
+      ],
       loading: false,
       submitLoading: false,
-      yes_no_enum: YES_NO_ENUM,
+      yes_no_enum: [
+        { message: '是', code: true },
+        { message: '否', code: false }
+      ],
       form: { ...defaultForm },
       originalForm: { ...defaultForm },
       rules: {
@@ -314,6 +311,7 @@ export default {
   },
   mounted () {
     this.initVehicleData();
+    this.fetchDiscontinueStatusOptions();
     this.getDetailData();
   },
   beforeRouteLeave (to, from, next) {
@@ -332,16 +330,50 @@ export default {
     }
   },
   methods: {
-    initVehicleData () {
-      this.getVehicleSeriesList();
-      this.getVehicleExteriorList();
-      this.getVehicleInteriorList();
-      this.getVehicleWheelHubList();
-      this.getVehicleOptionPackageList();
-      this.getVehicleBatteryCellList();
-      this.geVehicleRoofList();
-      this.getVehicleDrivingRange();
-      this.getVehicleRangePower();
+    async fetchDiscontinueStatusOptions () {
+      try {
+        const enumData = this.$store.getters['enum/getEnum']('dc_discontinue_statusEnum');
+        if (enumData) {
+          this.discontinueStatusList = enumData.map(item => {
+            return {
+              ...item,
+              code: Number(item.code)
+            };
+          }) || [];
+          return;
+        } else {
+          const response = await getEnum('dc_discontinue_statusEnum');
+          this.discontinueStatusList = response.map(item => {
+            return {
+              ...item,
+              code: Number(item.code)
+            };
+          });
+          if (response) {
+            // 缓存枚举数据
+            this.$store.dispatch('enum/setEnum', { code: 'dc_discontinue_statusEnum', data: response });
+          }
+        }
+      } catch (error) {
+        this.$message.error('加载停产状态选项失败，请稍后重试！');
+      }
+    },
+    async initVehicleData () {
+      const apiConfigs = [
+        { api: vehicleSeriesList, params: { size: 1000 }, target: 'seriesList' },
+        { api: vehicleExterior, params: { size: 1000 }, target: 'exteriorList' },
+        { api: vehicleInterior, params: { size: 1000 }, target: 'interiorList' },
+        { api: vehicleWheelHub, params: { size: 1000 }, target: 'wheelHubList' },
+        { api: vehicleOptionPackage, params: { size: 1000 }, target: 'optionPackageList' },
+        { api: vehicleBatteryCell, params: { size: 1000 }, target: 'batteryCellList' },
+        { api: vehicleRoof, params: { size: 1000 }, target: 'roofList' },
+        { api: vehicleDrivingRange, params: { size: 1000 }, target: 'drivingRangeList' },
+        { api: vehicleRangePower, params: { size: 1000 }, target: 'rangePowerList' }
+      ];
+      // 并发调用所有接口
+      await Promise.all(apiConfigs.map(config =>
+        fetchAndFormatData(this, config.api, config.params, config.target)
+      ));
     },
     handleBack () {
       this.$router.back();
@@ -400,10 +432,9 @@ export default {
       return [];
     },
 
-    seriesListChange (val, selectedOption) {
-      console.log('seriesListChange', val, selectedOption);
+    seriesListChange (val) {
       if (val.length) {
-        this.getVehicleModelList(val);
+        fetchAndFormatData(this, vehicleModelList, { seriesIdList: [val], size: 1000 }, 'modelList');
       } else {
         this.modelList = [];
         this.form.modelId = [];
@@ -411,146 +442,14 @@ export default {
         this.form.yearTypeId = [];
       }
     },
-    modelListChange (val, selectedOption) {
-      console.log('modelListChange', val, selectedOption);
+
+    modelListChange (val) {
       if (val.length) {
-        this.getModelYearTypeRelationsList(val);
+        fetchAndFormatData(this, vehicleModelYearTypeRelation, { modelIdList: [val], size: 1000 }, 'yearModelList', { label: 'yearTypeName', value: 'id' });
       } else {
         this.yearModelList = [];
         this.form.yearTypeIdSet = [];
       }
-    },
-    async getVehicleSeriesList () {
-      const res = await vehicleSeriesList({ size: 1000 });
-      console.log('vehicleSeries', res);
-      if (res.length) {
-        const vehicleSeriesData = res.map(item => {
-          return {
-            ...item,
-            label: item.name,
-            value: item.id
-          };
-        });
-        this.seriesList = vehicleSeriesData;
-      }
-    },
-
-    async getVehicleModelList (val) {
-      const res = await vehicleModelList({ seriesIdList: val, size: 1000 });
-      console.log('vehicleModelList', res);
-      if (res.length) {
-        const vehicleModelData = res.map(item => {
-          return {
-            ...item,
-            label: item.name,
-            value: item.id
-          };
-        });
-        this.modelList = vehicleModelData;
-      }
-    },
-
-    async getModelYearTypeRelationsList (val) {
-      if (val.length) {
-        this.yearModelList = val.map(item => {
-          return {
-            ...item,
-            label: item.name,
-            value: item.yearTypeId
-          };
-        });
-      } else {
-        this.yearModelList = [];
-        this.form.yearTypeId = [];
-      }
-    },
-
-    async getVehicleExteriorList () {
-      const res = await vehicleExterior({ size: 1000 });
-      this.exteriorList = res.map(item => {
-        return {
-          ...item,
-          label: item.exteriorName,
-          value: item.id
-        };
-      });
-    },
-
-    async getVehicleInteriorList () {
-      const res = await vehicleInterior({ size: 1000 });
-      this.interiorList = res.map(item => {
-        return {
-          ...item,
-          label: item.interiorName,
-          value: item.id
-        };
-      });
-    },
-
-    async getVehicleWheelHubList () {
-      const res = await vehicleWheelHub({ size: 1000 });
-      this.wheelHubList = res.map(item => {
-        return {
-          ...item,
-          label: item.wheelHubName,
-          value: item.id
-        };
-      });
-    },
-
-    async getVehicleOptionPackageList () {
-      const res = await vehicleOptionPackage({ size: 1000 });
-      this.optionPackageList = res.map(item => {
-        return {
-          ...item,
-          label: item.optionPackageName,
-          value: item.id
-        };
-      });
-    },
-
-    async getVehicleBatteryCellList () {
-      const res = await vehicleBatteryCell({ size: 1000 });
-      this.batteryCellList = res.map(item => {
-        return {
-          ...item,
-          label: item.batteryCellName,
-          value: item.id
-        };
-      });
-    },
-
-    async geVehicleRoofList () {
-      const res = await vehicleRoof({ size: 1000 });
-      this.roofList = res.map(item => {
-        return {
-          ...item,
-          label: item.roofName,
-          value: item.id
-        };
-      });
-    },
-
-    async getVehicleDrivingRange () {
-      const res = await vehicleDrivingRange({ size: 1000 });
-      this.drivingRangeList = res.map(item => {
-        return {
-          ...item,
-          label: item.drivingRangeName,
-          value: item.id
-        };
-      });
-    },
-
-    async getVehicleRangePower () {
-      const res = await vehicleRangePower({ size: 1000 });
-      this.rangePowerList = res.map(item => {
-        return {
-          ...item,
-          label: item.rangePowerName,
-          value: item.id
-        };
-      });
     }
   }
 };
