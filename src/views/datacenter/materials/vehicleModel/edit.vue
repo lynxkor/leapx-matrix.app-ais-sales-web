@@ -367,11 +367,12 @@ export default {
     async submitForm (formName, rest = false) {
       try {
         const tableData = await this.handleSaveTable();
+        console.log('tableData:', tableData);
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.submitLoading = true;
             // TIPS: customKey 根据接口格式修改
-            addOrUpdate({ ...this.form, yearTypeIdList: tableData }).then(res => {
+            addOrUpdate({ ...this.form, yearTypeIds: tableData }).then(res => {
               this.$message({
                 message: '保存成功',
                 type: 'success'
