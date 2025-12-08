@@ -23,7 +23,7 @@
             @change="modelListChange" />
               </el-form-item>
               <el-form-item label="年款：" prop="yearTypeId">
-                <fetch-select :options="yearModelList" v-model="form.yearTypeId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
+                <fetch-select :options="yearTypeList" v-model="form.yearTypeId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
               </el-form-item>
               <el-form-item label="外观：" prop="exteriorId">
                 <fetch-select :options="exteriorList" v-model="form.exteriorId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
@@ -31,7 +31,7 @@
               <el-form-item label="内饰：" prop="interiorId">
                 <fetch-select :options="interiorList" v-model="form.interiorId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
               </el-form-item>
-              <el-form-item label="车顶：" prop="roofId">
+              <el-form-item label="车顶：" >
                 <fetch-select :options="roofList" v-model="form.roofId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
               </el-form-item>
               <el-form-item label="轮毂：" prop="wheelHubId">
@@ -43,14 +43,14 @@
               <el-form-item label="选配动力：" prop="rangePowerId">
                 <fetch-select :options="rangePowerList" v-model="form.rangePowerId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
               </el-form-item>
-              <el-form-item label="选装包：" prop="optionPackageId">
+              <el-form-item label="选装包：" >
                 <fetch-select :options="optionPackageList" v-model="form.optionPackageId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
               </el-form-item>
               <el-form-item label="电池电芯：" prop="batteryCellId">
                 <fetch-select :options="batteryCellList" v-model="form.batteryCellId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
               </el-form-item>
               <el-form-item label="状态：" prop="status">
-                <fetch-select :request="fetchOptions" enumCode="StatusEnum" v-model="form.statusIncludeList" placeholder="请选择" clearable />
+                <fetch-select :request="fetchOptions" enumCode="StatusEnum" v-model="form.status" placeholder="请选择" clearable disabled/>
               </el-form-item>
             </el-form>
           </div>
@@ -62,7 +62,8 @@
           </div>
           <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" inline>
             <el-form-item label="整车价格：" prop="price">
-              <el-input placeholder="请输入" v-model="form.price" clearable />
+              <el-input-number placeholder="请输入" v-model="form.price" clearable :controls="false"
+                :precision="2" :min="0.01" :step="0.01"/>
             </el-form-item>
           </el-form>
         </section>
@@ -108,7 +109,7 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/datacenter/materials/vehicleMaterials/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import { getEnum, vehicleSeriesList, vehicleModelList, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleRoof, vehicleDrivingRange, vehicleRangePower, vehicleModelYearTypeRelation } from '@/api/common';
+import { getEnum, vehicleSeriesList, vehicleModelList, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleRoof, vehicleDrivingRange, vehicleRangePower, vehicleModelYearTypeRelation, listVehicleYearType } from '@/api/common';
 // import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -211,9 +212,9 @@ export default {
         materialsCode: [
           { required: true, message: '请输入物料编码', trigger: 'blur' }
         ],
-        // materialsDesc: [
-        //   { required: true, message: '请输入物料描述', trigger: 'blur' }
-        // ],
+        yearTypeId: [
+          { required: true, message: '请选择年款', trigger: 'blur' }
+        ],
         modelId: [
           { required: true, message: '请输入车型名称', trigger: 'blur' }
         ],
@@ -298,6 +299,7 @@ export default {
       },
       seriesList: [],
       modelList: [],
+      yearTypeList: [],
       yearModelList: [],
       exteriorList: [],
       interiorList: [],
