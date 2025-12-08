@@ -16,6 +16,7 @@
                   placeholder="请输入"
                   v-model="form.modelName"
                   clearable
+                  maxlength="30"
                 />
               </el-form-item>
               <!-- <el-form-item label="年型名称" prop="yearTypeName">
@@ -54,6 +55,7 @@
                   placeholder="请输入"
                   v-model="form.remark"
                   clearable
+                  maxlength="500"
                 />
               </el-form-item>
               <el-form-item label="状态" prop="status">
@@ -145,7 +147,7 @@ const defaultForm = {
   seriesName: '',
   modelLineName: '',
   remark: '',
-  status: '',
+  status: '1',
   statusDesc: '',
   creatorName: '',
   createTime: '',
@@ -285,15 +287,13 @@ export default {
   },
   methods: {
     handleModelChange (val, record) {
-      console.log('val:', val);
-      console.log('record:', record);
       if (record) {
         this.form.modelLineName = record.modelLineName;
         this.form.modelLineId = record.modelLineId;
       }
     },
     async modelSearch (query) {
-      return vehicleSeriesListFull({ seriesNameLike: query });
+      return vehicleSeriesListFull({ seriesNameLike: query, status: 1 });
     },
     querySearchYear (name) {
       listVehicleYearType({ modelIdList: this.$route.query.id ? [this.$route.query.id] : [], yearTypeNameLike: name, status: 1 }).then(res => {
@@ -339,10 +339,30 @@ export default {
         }).catch(() => {});
       }
     },
+    checkDuplicateYearTypeId (tableData) {
+      const yearTypeIdSet = new Set();
+      for (const row of tableData) {
+        if (row.yearTypeId) {
+          if (yearTypeIdSet.has(row.yearTypeId)) {
+            return true; // 发现重复值
+          }
+          yearTypeIdSet.add(row.yearTypeId); // 添加到集合中
+        }
+      }
+      return false; // 没有重复值
+    },
     async submitForm (formName, rest = false) {
       try {
         const tableData = await this.handleSaveTable();
-        console.log('tableData:', tableData);
+        console.log('tableData:', tableData);// 校验 tableData 中的 yearTypeId 是否有重复
+        const isDuplicate = this.checkDuplicateYearTypeId(tableData);
+        if (isDuplicate) {
+          this.$message({
+            message: '该年款信息已存在，请确认',
+            type: 'error'
+          });
+          return;
+        };
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.submitLoading = true;
