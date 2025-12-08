@@ -146,7 +146,7 @@ export default {
         { label: '电池电芯：', key: 'batteryCellName', disabled: true }
       ],
       formFields1: [
-        { label: '物料描述：', key: 'materialsDesc', disabled: false },
+        { label: '物料描述：', key: 'materialsDesc', disabled: true },
         { label: '车系：', key: 'seriesName', disabled: true },
         { label: '车型：', key: 'modelName', disabled: true },
         { label: '年款：', key: 'yearTypeName', disabled: true },
@@ -279,6 +279,7 @@ export default {
         if (valid) {
           this.submitLoading = true;
           let params = {
+            id: this.form.id,
             materialsId: this.form.materials.id,
             matchMaterialsId: this.form.matchMaterials.id,
             status: this.form.status
@@ -326,7 +327,8 @@ export default {
         wheelHubName: '',
         roofName: '',
         optionPackageName: '',
-        batteryCellName: ''
+        batteryCellName: '',
+        status: 1
       };
 
       return {

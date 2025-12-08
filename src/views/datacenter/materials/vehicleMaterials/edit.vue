@@ -211,9 +211,9 @@ export default {
         materialsCode: [
           { required: true, message: '请输入物料编码', trigger: 'blur' }
         ],
-        materialsDesc: [
-          { required: true, message: '请输入物料描述', trigger: 'blur' }
-        ],
+        // materialsDesc: [
+        //   { required: true, message: '请输入物料描述', trigger: 'blur' }
+        // ],
         modelId: [
           { required: true, message: '请输入车型名称', trigger: 'blur' }
         ],
