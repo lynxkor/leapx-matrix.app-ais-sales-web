@@ -445,13 +445,15 @@ export default {
       }
     },
 
-    modelListChange (val) {
-      if (val.length) {
-        fetchAndFormatData(this, vehicleModelYearTypeRelation, { modelIdList: [val], size: 1000 }, 'yearModelList', { label: 'yearTypeName', value: 'id' });
-      } else {
-        this.yearModelList = [];
-        this.form.yearTypeIdSet = [];
-      }
+    async modelListChange (val) {
+      const res = await vehicleModelYearTypeRelation({ modelIdList: [val], size: 1000 });
+      this.yearTypeList = res.map(item => {
+        return {
+          ...item,
+          label: item.yearTypeName,
+          value: item.yearTypeId
+        };
+      });
     }
   }
 };

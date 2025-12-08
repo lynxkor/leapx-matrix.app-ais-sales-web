@@ -569,12 +569,11 @@ export default {
 
     async getModelYearTypeRelationsList (val) {
       const res = await vehicleModelYearTypeRelation({ modelIdList: val, size: 1000 });
-      console.log('getModelYearTypeRelationsList:', res);
       this.yearModelList = res.map(item => {
         return {
           ...item,
-          label: item.name,
-          value: item.id
+          label: item.yearTypeName,
+          value: item.yearTypeId
         };
       });
     },
