@@ -11,27 +11,27 @@
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
-              <el-form-item label="创建人" prop="creator">
+              <!-- <el-form-item label="创建人" prop="creator">
                 <el-input placeholder="请输入" v-model="form.creator" clearable />
-              </el-form-item>
+              </el-form-item> -->
               <el-form-item label="续航里程名称" prop="drivingRangeName">
                 <el-input placeholder="请输入" v-model="form.drivingRangeName" clearable />
               </el-form-item>
               <el-form-item label="状态" prop="status">
-                <fetch-select :request="fetchOptions" enumCode="xxx" v-model="form.statusIncludeList" placeholder="请选择"
-                  clearable filterable />
+                <fetch-select :request="fetchOptions" enumCode="StatusEnum" v-model="form.status" placeholder="请选择"
+                  clearable filterable disabled />
               </el-form-item>
-              <el-form-item label="说明" prop="remark">
+              <!-- <el-form-item label="说明" prop="remark">
                 <el-input placeholder="请输入" v-model="form.remark" clearable />
-              </el-form-item>
+              </el-form-item> -->
               <el-form-item label="创建人" prop="creatorName">
-                <el-input placeholder="请输入" v-model="form.creatorName" clearable />
+                <el-input placeholder="请输入" v-model="form.creatorName" clearable  disabled/>
               </el-form-item>
               <el-form-item label="创建时间" prop="createTime">
                 <el-date-picker v-model="form.createTime" :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期" end-placeholder="结束日期" align="right" />
+                  value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期" end-placeholder="结束日期" align="right" disabled />
               </el-form-item>
-              <el-form-item label="更改人" prop="modifierName">
+              <!-- <el-form-item label="更改人" prop="modifierName">
                 <el-input placeholder="请输入" v-model="form.modifierName" clearable />
               </el-form-item>
               <el-form-item label="更改时间" prop="updateTime">
@@ -47,7 +47,7 @@
               <el-form-item label="状态变更描述" prop="statusDesc">
                 <fetch-select :request="fetchOptions" enumCode="xxx" v-model="form.statusIncludeListDesc"
                   placeholder="请选择" clearable filterable />
-              </el-form-item>
+              </el-form-item> -->
             </el-form>
           </div>
         </section>

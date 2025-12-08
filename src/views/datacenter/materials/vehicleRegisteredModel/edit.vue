@@ -252,6 +252,7 @@ export default {
       this.$router.back();
     },
     getDetailData () {
+      this.form = this.getDefautlForm();
       const id = this.id || this.$route.query.id;
       this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-公告车型', `${id ? '编辑' : '新建'}`]);
       if (id) {
