@@ -352,7 +352,7 @@ export default {
       this.modelOptions = res?.map(item => {
         return {
           label: item.registeredModelName,
-          value: item.registeredModelCode
+          value: item.id
         };
       });
     },

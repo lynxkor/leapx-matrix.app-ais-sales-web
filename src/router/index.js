@@ -54,7 +54,8 @@ const routes = [
       component: () => import('@/views/vehstock/basic/regionNoticeDirectory/index.vue'),
 
       meta: {
-        name: '地区对应公告目录'
+        name: '地区对应公告目录',
+        keepAlive: true
       }
     }, {
       path: '/vehstock/basic/regionNoticeDirectory/detail',
@@ -80,7 +81,8 @@ const routes = [
       component: () => import('@/views/vehstock/basic/vehicleInventoryStock/index.vue'),
 
       meta: {
-        name: '整车库存存量定义'
+        name: '整车库存存量定义',
+        keepAlive: true
       }
     }, {
       path: '/vehstock/basic/vehicleInventoryStock/detail',
@@ -106,7 +108,8 @@ const routes = [
       component: () => import('@/views/vehstock/basic/vehicleReservationConfig/index.vue'),
 
       meta: {
-        name: '车辆预留配置'
+        name: '车辆预留配置',
+        keepAlive: true
       }
     }, {
       path: '/vehstock/basic/vehiclereservationconfig/detail',
@@ -132,7 +135,8 @@ const routes = [
       component: () => import('@/views/vehstock/basic/vehicleReservationDetail/index.vue'),
 
       meta: {
-        name: '车辆预留明细'
+        name: '车辆预留明细',
+        keepAlive: true
       }
     }, {
       path: '/vehstock/basic/vehiclereservationdetail/detail',
@@ -149,7 +153,8 @@ const routes = [
       component: () => import('@/views/vehstock/basic/warehouseVehicleRelation/index.vue'),
 
       meta: {
-        name: '仓库配车关系'
+        name: '仓库配车关系',
+        keepAlive: true
       }
     }, {
       path: '/vehstock/basic/warehousevehiclerelation/detail',
@@ -175,7 +180,8 @@ const routes = [
       component: () => import('@/views/datacenter/materials/vehicleBrand/index.vue'),
 
       meta: {
-        name: '整车主数据-品牌管理'
+        name: '整车主数据-品牌管理',
+        keepAlive: true
       }
     }, {
       path: '/datacenter/materials/vehiclebrand/detail',
@@ -201,7 +207,8 @@ const routes = [
       component: () => import('@/views/datacenter/materials/vehicleModelLine/index.vue'),
 
       meta: {
-        name: '整车主数据-系列管理'
+        name: '整车主数据-系列管理',
+        keepAlive: true
       }
     }, {
       path: '/datacenter/materials/vehiclemodelline/detail',
@@ -227,7 +234,8 @@ const routes = [
       component: () => import('@/views/datacenter/materials/vehicleOptionPackage/index.vue'),
 
       meta: {
-        name: '整车主数据-选装包管理'
+        name: '整车主数据-选装包管理',
+        keepAlive: true
       }
     }, {
       path: '/datacenter/materials/vehicleoptionpackage/detail',
@@ -253,7 +261,8 @@ const routes = [
       component: () => import('@/views/datacenter/materials/vehicleRegisteredModel/index.vue'),
 
       meta: {
-        name: '整车主数据-公告车型管理'
+        name: '整车主数据-公告车型管理',
+        keepAlive: true
       }
     }, {
       path: '/datacenter/materials/vehicleregisteredmodel/detail',
@@ -279,7 +288,8 @@ const routes = [
       component: () => import('@/views/datacenter/materials/vehicleRoof/index.vue'),
 
       meta: {
-        name: '整车主数据-车顶管理'
+        name: '整车主数据-车顶管理',
+        keepAlive: true
       }
     }, {
       path: '/datacenter/materials/vehicleroof/detail',
@@ -305,7 +315,8 @@ const routes = [
       component: () => import('@/views/datacenter/materials/vehicleBatteryCell/index.vue'),
 
       meta: {
-        name: '整车主数据-电池电芯管理'
+        name: '整车主数据-电池电芯管理',
+        keepAlive: true
       }
     }, {
       path: '/datacenter/materials/vehiclebatterycell/detail',
@@ -331,7 +342,8 @@ const routes = [
       component: () => import('@/views/datacenter/materials/vehicleYearType/index.vue'),
 
       meta: {
-        name: '整车主数据-年款管理'
+        name: '整车主数据-年款管理',
+        keepAlive: true
       }
     }, {
       path: '/datacenter/materials/vehicleyeartype/detail',
@@ -357,7 +369,8 @@ const routes = [
       component: () => import('@/views/datacenter/materials/vehicleRangePower/index.vue'),
 
       meta: {
-        name: '整车主数据-续配动力管理'
+        name: '整车主数据-续配动力管理',
+        keepAlive: true
       }
     }, {
       path: '/datacenter/materials/vehiclerangepower/detail',
@@ -383,7 +396,8 @@ const routes = [
       component: () => import('@/views/datacenter/materials/vehicleWheelHub/index.vue'),
 
       meta: {
-        name: '整车主数据-轮毂管理'
+        name: '整车主数据-轮毂管理',
+        keepAlive: true
       }
     }, {
       path: '/datacenter/materials/vehiclewheelhub/detail',
@@ -409,7 +423,8 @@ const routes = [
       component: () => import('@/views/datacenter/materials/vehicleExterior/index.vue'),
 
       meta: {
-        name: '整车主数据-外观管理'
+        name: '整车主数据-外观管理',
+        keepAlive: true
       }
     }, {
       path: '/datacenter/materials/vehicleexterior/detail',
@@ -435,7 +450,8 @@ const routes = [
       component: () => import('@/views/datacenter/materials/vehicleInterior/index.vue'),
 
       meta: {
-        name: '整车主数据-内饰管理'
+        name: '整车主数据-内饰管理',
+        keepAlive: true
       }
     }, {
       path: '/datacenter/materials/vehicleinterior/detail',
@@ -461,7 +477,8 @@ const routes = [
       component: () => import('@/views/datacenter/materials/vehicleDrivingRange/index.vue'),
 
       meta: {
-        name: '整车主数据-续航里程管理'
+        name: '整车主数据-续航里程管理',
+        keepAlive: true
       }
     }, {
       path: '/datacenter/materials/vehicledrivingrange/detail',
@@ -487,7 +504,8 @@ const routes = [
       component: () => import('@/views/datacenter/materials/vehicleMaterials/index.vue'),
 
       meta: {
-        name: '整车主数据-整车物料管理'
+        name: '整车主数据-整车物料管理',
+        keepAlive: true
       }
     }, {
       path: '/datacenter/materials/vehiclematerials/detail',
@@ -513,7 +531,8 @@ const routes = [
       component: () => import('@/views/datacenter/materials/vehicleMaterialsMatch/index.vue'),
 
       meta: {
-        name: '整车主数据-物料配车关系管理'
+        name: '整车主数据-物料配车关系管理',
+        keepAlive: true
       }
     }, {
       path: '/datacenter/materials/vehiclematerialsmatch/detail',
@@ -539,7 +558,8 @@ const routes = [
       component: () => import('@/views/datacenter/materials/vehicleSeries/index.vue'),
 
       meta: {
-        name: '整车主数据-车系管理'
+        name: '整车主数据-车系管理',
+        keepAlive: true
       }
     }, {
       path: '/datacenter/materials/vehicleseries/detail',
@@ -565,7 +585,8 @@ const routes = [
       component: () => import('@/views/datacenter/materials/vehicleModel/index.vue'),
 
       meta: {
-        name: '整车主数据-车型管理'
+        name: '整车主数据-车型管理',
+        keepAlive: true
       }
     }, {
       path: '/datacenter/materials/vehiclemodel/detail',
@@ -591,7 +612,8 @@ const routes = [
       component: () => import('@/views/datacenter/materials/vehicleModel/index.vue'),
 
       meta: {
-        name: '新页面'
+        name: '新页面',
+        keepAlive: true
       }
     }, {
       path: '/datacenter/materials/vehiclemodel/detail',

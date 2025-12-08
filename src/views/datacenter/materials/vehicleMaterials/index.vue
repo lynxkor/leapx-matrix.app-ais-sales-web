@@ -290,24 +290,6 @@ export default {
                 });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],
@@ -587,12 +569,11 @@ export default {
 
     async getModelYearTypeRelationsList (val) {
       const res = await vehicleModelYearTypeRelation({ modelIdList: val, size: 1000 });
-      console.log('getModelYearTypeRelationsList:', res);
       this.yearModelList = res.map(item => {
         return {
           ...item,
-          label: item.name,
-          value: item.id
+          label: item.yearTypeName,
+          value: item.yearTypeId
         };
       });
     },
