@@ -191,6 +191,7 @@ export default {
   },
   data () {
     return {
+      vehicleModelImport: '',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISDC-vehicleModel',
       form: {
