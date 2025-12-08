@@ -230,8 +230,9 @@ export default {
       this.$router.back();
     },
     getDetailData () {
+      this.form = this.getDefautlForm();
       const id = this.id || this.$route.query.id;
-      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车主数据-轮毂管理', `${id ? '编辑' : '新建'}`]);
+      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-轮毂', `${id ? '编辑' : '新建'}`]);
       if (id) {
         getDetail(id).then(res => {
           this.loading = false;
@@ -288,6 +289,7 @@ export default {
         ownerId: userInfo.userId,
         creatorName: userInfo.userName,
         status: 1,
+        statusLabel: '可用',
         createTime: moment().format('YYYY-MM-DD HH:mm:ss')
       };
     }

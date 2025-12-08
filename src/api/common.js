@@ -159,6 +159,14 @@ export function vehicleSeriesList (data) {
 }
 
 /**
+ * 整车主数据-车系-列表查询
+ * @param {*} data
+ */
+export function vehicleSeriesListFull (data) {
+  return api.jsonPost('/datacenter/web/materials/vehicleSeries/listFull', data);
+}
+
+/**
  * 整车主数据-系列-列表查询
  * @param {*} data
  */

@@ -28,11 +28,17 @@
                   filterable
                 />
               </el-form-item> -->
-              <el-form-item label="车系名称" prop="seriesName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.seriesName"
+              <el-form-item label="车系名称" prop="seriesId">
+                <fetch-select
+                  filterable
                   clearable
+                  remote
+                  v-model="form.seriesId"
+                  :remote-method="modelSearch"
+                  @change="handleModelChange"
+                  value-key="id"
+                  label-key="seriesName"
+
                 />
               </el-form-item>
               <el-form-item label="系列名称" prop="modelLineName">
@@ -40,6 +46,7 @@
                   placeholder="请输入"
                   v-model="form.modelLineName"
                   clearable
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="备注" prop="remark">
@@ -57,6 +64,7 @@
                   placeholder="请选择"
                   clearable
                   filterable
+                  disabled
                 />
               </el-form-item>
               <!-- <el-form-item label="状态变更描述" prop="statusDesc">
@@ -74,6 +82,7 @@
                   placeholder="请输入"
                   v-model="form.creatorName"
                   clearable
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="创建时间" prop="createTime">
@@ -84,80 +93,9 @@
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
                   align="right"
+                  disabled
                 />
               </el-form-item>
-              <!-- <el-form-item label="修改者名称" prop="modifierName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modifierName"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="修改时间" prop="updateTime">
-                <el-date-picker
-                  v-model="form.updateTime"
-                  :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  align="right"
-                />
-              </el-form-item>
-              <el-form-item label="主键" prop="id">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.id"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="创建者" prop="creator">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.creator"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="修改者" prop="modifier">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modifier"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="车系ID" prop="seriesId">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.seriesId"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="系列ID" prop="modelLineId">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modelLineId"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="年型ID" prop="yearTypeId">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.yearTypeId"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                />
-              </el-form-item>
-              <el-form-item label="年款-车型-关系列表" prop="modelYearTypeRelations">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.modelYearTypeRelations"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                />
-              </el-form-item> -->
             </el-form>
           </div>
         </section>
@@ -195,7 +133,7 @@
 import { getDetail, addOrUpdate } from '@/api/datacenter/materials/vehicleModel/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
-import { getEnum, vehicleModelYearTypeRelation } from '@/api/common';
+import { getEnum, listVehicleYearType, vehicleSeriesListFull } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -247,7 +185,7 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       defaultNewRow: {
-        name: '',
+        yearTypeName: ''
       },
       tableData: [],
       options: {
@@ -263,7 +201,17 @@ export default {
           title: '年型名称',
           width: '20%',
           editable: true,
-          editRender: { name: 'ElSelect' },
+          editRender: {
+            name: 'ElSelect',
+            props: {
+              clearable: true,
+              filterable: true,
+              remote: true,
+              'suffix-icon': 'el-icon-search',
+              placeholder: '请选择年款',
+              'remote-method': this.querySearchYear
+            }
+          },
           rules: [
             {
               required: true,
@@ -336,14 +284,41 @@ export default {
     this.getDetailData();
   },
   methods: {
-    vehicleModelYearTypeRelation () {
-      vehicleModelYearTypeRelation({ modelIdList: [this.id || this.$route.query.id] }).then(res => {
-        console.log('vehicleModelYearTypeRelation:', res);
+    handleModelChange (val, record) {
+      console.log('val:', val);
+      console.log('record:', record);
+      if (record) {
+        this.form.modelLineName = record.modelLineName;
+        this.form.modelLineId = record.modelLineId;
+      }
+    },
+    async modelSearch (query) {
+      return vehicleSeriesListFull({ seriesNameLike: query });
+    },
+    querySearchYear (name) {
+      listVehicleYearType({ modelIdList: this.$route.query.id ? [this.$route.query.id] : [], yearTypeNameLike: name, status: 1 }).then(res => {
+        const list = res?.map(item => {
+          return {
+            ...item,
+            value: item.id,
+            label: item.name,
+            yearTypeId: item.id,
+            yearTypeName: item.name
+          };
+        }) || [];
+        this.options.yearTypeName = list;
+      });
+    },
+    listVehicleYearType () {
+      listVehicleYearType({ modelIdList: this.$route.query.id ? [this.$route.query.id] : [], status: 1 }).then(res => {
+        console.log('listVehicleYearType:', res);
         this.options.yearTypeName = res.map(item => {
           return {
             ...item,
             label: item.name,
-            value: item.id
+            value: item.id,
+            yearTypeId: item.id,
+            yearTypeName: item.name
           };
         });
       });
@@ -354,24 +329,25 @@ export default {
     getDetailData () {
       const id = this.id || this.$route.query.id;
       this.$store.commit('SET_ACTIVE_BREADCRUMB', ['新页面', `${id ? '编辑' : '新建'}`]);
+      this.listVehicleYearType();
       if (id) {
         getDetail(id).then(res => {
           this.loading = false;
           Object.assign(this.form, res);
           Object.assign(this.originalForm, res);
           this.tableData = res.modelYearTypeRelations;
-          this.vehicleModelYearTypeRelation();
         }).catch(() => {});
       }
     },
     async submitForm (formName, rest = false) {
       try {
         const tableData = await this.handleSaveTable();
+        console.log('tableData:', tableData);
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.submitLoading = true;
             // TIPS: customKey 根据接口格式修改
-            addOrUpdate({ ...this.form, customKey: tableData }).then(res => {
+            addOrUpdate({ ...this.form, yearTypeIds: tableData }).then(res => {
               this.$message({
                 message: '保存成功',
                 type: 'success'

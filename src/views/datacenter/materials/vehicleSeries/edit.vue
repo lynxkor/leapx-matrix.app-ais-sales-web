@@ -18,12 +18,11 @@
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="系列名称" prop="modelLineName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modelLineName"
-                  clearable
-                />
+              <el-form-item label="系列名称" prop="modelLineId">
+                   <fetch-select remote
+                   :params="form.modelLineName"
+                   :remote-method="getVehicleModelLineList"
+         v-model="form.modelLineId" placeholder="请选择" value-key="id" label-key="name" clearable  collapseTags filterable/>
               </el-form-item>
               <el-form-item label="状态" prop="status">
                 <fetch-select
@@ -41,6 +40,7 @@
                   placeholder="请输入"
                   v-model="form.creatorName"
                   clearable
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="创建时间" prop="createTime">
@@ -51,6 +51,7 @@
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
                   align="right"
+                  disabled
                 />
               </el-form-item>
               <!-- <el-form-item label="修改者名称" prop="modifierName">
@@ -124,7 +125,7 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/datacenter/materials/vehicleSeries/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import { getEnum } from '@/api/common';
+import { getEnum, vehicleModelLineList } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -164,7 +165,7 @@ export default {
     const form = this.getDefautlForm();
     return {
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-vehicleSeries',
+      moduleKey: 'AISDC-vehicleSeries',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
@@ -174,9 +175,9 @@ export default {
         seriesName: [
           { required: true, message: '请输入车系名称', trigger: 'blur' }
         ],
-        modelLineName: [
-          { required: true, message: '请输入系列名称', trigger: 'blur' }
-        ],
+        // modelLineId: [
+        //   { required: true, message: '请输入系列名称', trigger: 'blur' }
+        // ],
         status: [
           { required: true, message: '请选择状态', trigger: 'change' }
         ],
@@ -211,6 +212,7 @@ export default {
           { required: true, message: '请输入系列ID', trigger: 'blur' }
         ],
       },
+      vehicleModelLineList: [],
       pickerOptions: {
         shortcuts: [{
           text: '最近一周',
@@ -248,8 +250,9 @@ export default {
       this.$router.back();
     },
     getDetailData () {
+      this.getVehicleModelLineList();
       const id = this.id || this.$route.query.id;
-      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车主数据-车系管理', `${id ? '编辑' : '新建'}`]);
+      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-系列', `${id ? '编辑' : '新建'}`]);
       if (id) {
         getDetail(id).then(res => {
           this.loading = false;
@@ -309,7 +312,11 @@ export default {
         return getEnum(code);
       }
       return [];
-    }
+    },
+    async getVehicleModelLineList (val) {
+      const res = await vehicleModelLineList({ size: 1000, status: 1, modelLineNameLike: val });
+      return res;
+    },
   }
 };
 </script>

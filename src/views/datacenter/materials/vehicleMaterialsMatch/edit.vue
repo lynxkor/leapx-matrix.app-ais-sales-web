@@ -13,82 +13,30 @@
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" inline>
               <!-- B1087R1TCNLJHAG0292 -->
               <el-form-item label="物料编码：" prop="materialsCode">
-                <fetch-select :options="materialsList" v-model="form.vehicleMaterials.materialsCode" placeholder="请选择" labelKey="label" valueKey="value" :remoteMethod="materialsCodeRemoteMethod" remote clearable filterable/>
+                <fetch-select
+                :options="materialsList"
+                v-model="form.materials.materialsCode"
+                placeholder="请选择"
+                optionKey="id"
+                labelKey="materialsCode"
+                valueKey="materialsCode"
+                :remoteMethod="debouncedMaterialsMethod"
+                @change="materialsSelect"
+                remote
+                clearable
+                filterable/>
               </el-form-item>
-              <el-form-item label="物料名称：">
+              <el-form-item
+                v-for="(field, index) in formFields"
+                :key="index"
+                :label="field.label"
+              >
                 <el-input
                   placeholder="请输入"
-                  v-model="form.vehicleMaterials.materialsDesc"
-                  disabled
+                  v-model="form.materials[field.key]"
+                  :disabled="field.disabled"
                 />
               </el-form-item>
-
-              <el-form-item label="车系：">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.vehicleMaterials.seriesName"
-                  disabled
-                />
-              </el-form-item>
-
-              <el-form-item label="车型：">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.vehicleMaterials.modelName"
-                  disabled
-                />
-              </el-form-item>
-
-              <el-form-item label="年款：">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.vehicleMaterials.yearTypeName"
-                  disabled
-                />
-              </el-form-item>
-              <el-form-item label="外观：">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.vehicleMaterials.exteriorName"
-                  disabled
-                />
-              </el-form-item>
-              <el-form-item label="内饰：">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.vehicleMaterials.interiorName"
-                  disabled
-                />
-              </el-form-item>
-              <el-form-item label="车顶：">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.vehicleMaterials.roofName"
-                  disabled
-                />
-              </el-form-item>
-              <el-form-item label="轮毂：">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.vehicleMaterials.wheelHubName"
-                  disabled
-                />
-              </el-form-item>
-              <el-form-item label="选装包：">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.vehicleMaterials.optionPackageName"
-                  disabled
-                />
-              </el-form-item>
-              <el-form-item label="电池电芯：">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.vehicleMaterials.batteryCellName"
-                  disabled
-                />
-              </el-form-item>
-
             </el-form>
           </div>
         </section>
@@ -99,91 +47,30 @@
           </div>
           <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" inline>
             <el-form-item label="可配物料编码：" prop="matchMaterialsCode">
-              <el-input
-                placeholder="请输入"
-                v-model="form.matchMaterialsCode"
+              <fetch-select
+                :options="matchMaterialsList"
+                v-model="form.matchMaterials.materialsCode"
+                placeholder="请选择"
+                optionKey="id"
+                labelKey="materialsCode"
+                valueKey="materialsCode"
+                :remoteMethod="debouncedMatchMaterialsMethod"
+                @change="matchMaterialsSelect"
+                remote
                 clearable
-              />
+                filterable/>
             </el-form-item>
-
-            <el-form-item label="车系：">
+            <el-form-item
+              v-for="(field, index) in formFields1"
+              :key="index"
+              :label="field.label"
+            >
               <el-input
                 placeholder="请输入"
-                v-model="form.materialsDesc"
-                disabled
+                v-model="form.matchMaterials[field.key]"
+                :disabled="field.disabled"
               />
             </el-form-item>
-            <el-form-item label="内饰：">
-              <el-input
-                placeholder="请输入"
-                v-model="form.materialsDesc"
-                disabled
-              />
-            </el-form-item>
-
-            <el-form-item label="外观：">
-              <el-input
-                placeholder="请输入"
-                v-model="form.materialsDesc"
-                disabled
-              />
-            </el-form-item>
-
-            <el-form-item label="年款：">
-              <el-input
-                placeholder="请输入"
-                v-model="form.materialsDesc"
-                disabled
-              />
-            </el-form-item>
-
-            <el-form-item label="电池电芯：">
-              <el-input
-                placeholder="请输入"
-                v-model="form.materialsDesc"
-                disabled
-              />
-            </el-form-item>
-
-            <el-form-item label="可配物料描述：">
-              <el-input
-                placeholder="请输入"
-                v-model="form.matchMaterialsDesc"
-                clearable
-              />
-            </el-form-item>
-
-            <el-form-item label="车型：">
-              <el-input
-                placeholder="请输入"
-                v-model="form.materialsDesc"
-                disabled
-              />
-            </el-form-item>
-
-            <el-form-item label="轮毂：">
-              <el-input
-                placeholder="请输入"
-                v-model="form.materialsDesc"
-                disabled
-              />
-            </el-form-item>
-
-            <el-form-item label="选装包：">
-              <el-input
-                placeholder="请输入"
-                v-model="form.materialsDesc"
-                disabled
-              />
-            </el-form-item>
-            <el-form-item label="电池电芯：">
-              <el-input
-                placeholder="请输入"
-                v-model="form.materialsDesc"
-                disabled
-              />
-            </el-form-item>
-
           </el-form>
         </section>
 
@@ -200,6 +87,7 @@
                 placeholder="请选择"
                 clearable
                 filterable
+                disabled
               />
             </el-form-item>
           </el-form>
@@ -216,11 +104,12 @@
 
 <script>
 import { getDetail, addOrUpdate, vehicleMaterialsMatchList } from '@/api/datacenter/materials/vehicleMaterialsMatch/index';
-import { getDetail as materialsDetail } from '@/api/datacenter/materials/vehicleMaterials/index';
+import { getList } from '@/api/datacenter/materials/vehicleMaterials/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
+import { debounce } from '@/libs/utils/index';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -244,6 +133,30 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
+      formFields: [
+        { label: '物料描述：', key: 'materialsDesc', disabled: true },
+        { label: '车系：', key: 'seriesName', disabled: true },
+        { label: '车型：', key: 'modelName', disabled: true },
+        { label: '年款：', key: 'yearTypeName', disabled: true },
+        { label: '外观：', key: 'exteriorName', disabled: true },
+        { label: '内饰：', key: 'interiorName', disabled: true },
+        { label: '车顶：', key: 'roofName', disabled: true },
+        { label: '轮毂：', key: 'wheelHubName', disabled: true },
+        { label: '选装包：', key: 'optionPackageName', disabled: true },
+        { label: '电池电芯：', key: 'batteryCellName', disabled: true }
+      ],
+      formFields1: [
+        { label: '物料描述：', key: 'materialsDesc', disabled: true },
+        { label: '车系：', key: 'seriesName', disabled: true },
+        { label: '车型：', key: 'modelName', disabled: true },
+        { label: '年款：', key: 'yearTypeName', disabled: true },
+        { label: '外观：', key: 'exteriorName', disabled: true },
+        { label: '内饰：', key: 'interiorName', disabled: true },
+        { label: '车顶：', key: 'roofName', disabled: true },
+        { label: '轮毂：', key: 'wheelHubName', disabled: true },
+        { label: '选装包：', key: 'optionPackageName', disabled: true },
+        { label: '电池电芯：', key: 'batteryCellName', disabled: true }
+      ],
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
@@ -329,8 +242,19 @@ export default {
           }
         }]
       },
-      materialsList: []
+      materialsList: [],
+      matchMaterialsList: []
     };
+  },
+  created () {
+    // 使用 debounce 包装原始方法
+    this.debouncedMaterialsMethod = debounce(this.materialsMethod, 300);
+    this.debouncedMatchMaterialsMethod = debounce(this.matchMaterialsMethod, 300);
+  },
+  beforeDestroy () {
+    // 清除防抖函数，避免内存泄漏
+    this.debouncedMaterialsMethod.cancel();
+    this.debouncedMatchMaterialsMethod.cancel();
   },
   mounted () {
     this.getDetailData();
@@ -341,7 +265,7 @@ export default {
     },
     getDetailData () {
       const id = this.id || this.$route.query.id;
-      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车主数据-物料配车关系管理', `${id ? '编辑' : '新建'}`]);
+      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-物料配车关系', `${id ? '编辑' : '新建'}`]);
       if (id) {
         getDetail(id).then(res => {
           this.loading = false;
@@ -354,7 +278,13 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.submitLoading = true;
-          addOrUpdate({ ...this.form }).then(res => {
+          let params = {
+            id: this.form.id,
+            materialsId: this.form.materials.id,
+            matchMaterialsId: this.form.matchMaterials.id,
+            status: this.form.status
+          };
+          addOrUpdate(params).then(res => {
             this.$message({
               message: '保存成功',
               type: 'success'
@@ -380,6 +310,12 @@ export default {
       // TIPS: 此处可添加表单默认值，如当前用户信息等
       // const userInfo = this.$store.state.user.userInfo;
       const vehicleMaterials = {
+        matchMaterials: {
+          materialsCode: ''
+        },
+        materials: {
+          materialsCode: ''
+        },
         materialsId: '',
         materialsCode: '',
         materialsDesc: '',
@@ -391,12 +327,13 @@ export default {
         wheelHubName: '',
         roofName: '',
         optionPackageName: '',
-        batteryCellName: ''
+        batteryCellName: '',
+        status: 1
       };
 
       return {
         ...defaultForm,
-        vehicleMaterials
+        ...vehicleMaterials
         // ownerId: userInfo.userId,
         // ownerName: userInfo.userName,
       };
@@ -416,15 +353,35 @@ export default {
       }
       return [];
     },
-    async materialsCodeRemoteMethod (query) {
-      const res = await materialsDetail(query);
+    async materialsMethod (query) {
+      const res = await getList({ materialsCodeLike: query, size: 20, statusIncludeList: ['1'] });
+      this.materialsList = res.records;
       console.log('materialsCodeRemoteMethod', res);
-      Object.assign(this.form.vehicleMaterials, res);
+    },
+    async matchMaterialsMethod (query) {
+      const res = await getList({ materialsCodeLike: query, size: 20, statusIncludeList: ['1'] });
+      this.matchMaterialsList = res.records;
+      console.log('matchMaterialsMethod', res);
     },
     async materialsMatchCodeRemoteMethod (query) {
       console.log('query', query);
       const res = await vehicleMaterialsMatchList({ size: 10000, materialsCode: query });
+      console.log('res', res);
     },
+    materialsSelect (val, query) {
+      if (val) {
+        this.form.materials = query;
+      } else {
+        this.materialsCode = [];
+      }
+    },
+    matchMaterialsSelect (val, query) {
+      if (val) {
+        this.form.matchMaterials = query;
+      } else {
+        this.matchMaterialsList = [];
+      }
+    }
   }
 };
 </script>

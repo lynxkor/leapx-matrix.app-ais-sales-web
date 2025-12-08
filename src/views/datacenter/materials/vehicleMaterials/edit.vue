@@ -211,9 +211,9 @@ export default {
         materialsCode: [
           { required: true, message: '请输入物料编码', trigger: 'blur' }
         ],
-        materialsDesc: [
-          { required: true, message: '请输入物料描述', trigger: 'blur' }
-        ],
+        // materialsDesc: [
+        //   { required: true, message: '请输入物料描述', trigger: 'blur' }
+        // ],
         modelId: [
           { required: true, message: '请输入车型名称', trigger: 'blur' }
         ],
@@ -380,7 +380,7 @@ export default {
     },
     getDetailData () {
       const id = this.id || this.$route.query.id;
-      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车主数据-整车物料管理', `${id ? '编辑' : '新建'}`]);
+      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-整车物料', `${id ? '编辑' : '新建'}`]);
       if (id) {
         getDetail(id).then(res => {
           this.loading = false;

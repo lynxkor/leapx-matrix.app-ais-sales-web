@@ -89,9 +89,9 @@
       <el-button size="small" v-if="canEnableOrDisable" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button size="small" v-if="canEnableOrDisable" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
       <el-button size="small" v-permission="''" @click="handleBatchSetAttr()" :disabled="selectionList.length === 0">批量设置属性</el-button>
-      <el-button size="small" v-permission="moduleKey + '-importMaterials'" @click="handleImport">导入物料</el-button>
-      <el-button size="small" v-permission="moduleKey + '-importPrice'" @click="handleImport">导入价格</el-button>
-      <el-button size="small" v-permission="moduleKey + '-importProperties'" @click="handleImport">导入属性</el-button>
+      <el-button size="small" v-permission="moduleKey + '-importMaterials'" @click="handleImport('vehicleMaterialsImport')">导入物料</el-button>
+      <el-button size="small" v-permission="moduleKey + '-importPrice'" @click="handleImport('vehicleMaterialsImportPrice')">导入价格</el-button>
+      <el-button size="small" v-permission="moduleKey + '-importProperties'" @click="handleImport('vehicleMaterialsImportProps')">导入属性</el-button>
       <el-button :loading="exportLoading" size="small" v-if="canExport" @click="exportExcel">导出</el-button>
     </div>
     <div class="ais-table-c">
@@ -139,7 +139,7 @@
 
     <Upload
       :visible="uploadDialogVisible"
-      id=""
+      :id="importId"
       @close="handleUploadDialogClose"
     />
 
@@ -205,6 +205,7 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      importId: '',
       optionObj: {
         id: 'vehicleMaterialsTable',
         dataList: [],
@@ -355,7 +356,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车主数据-整车物料管理']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-整车物料']);
     this.getData();
     this.getVehicleSeriesList();
     this.getVehicleExteriorList();
@@ -366,7 +367,8 @@ export default {
     this.geVehicleRoofList();
   },
   methods: {
-    handleImport () {
+    handleImport (importId) {
+      this.importId = importId;
       this.uploadDialogVisible = true;
     },
     handleUploadDialogClose () {
