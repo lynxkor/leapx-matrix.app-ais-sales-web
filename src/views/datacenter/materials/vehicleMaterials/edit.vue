@@ -374,6 +374,10 @@ export default {
           res.status = res.status.toString();
           Object.assign(this.form, res);
           Object.assign(this.originalForm, res);
+          if (id) {
+            this.modelList = [{ label: res.modelName, value: res.modelId }];
+            this.yearTypeList = [{ label: res.yearTypeName, value: res.yearTypeId }];
+          }
         });
       }
     },
