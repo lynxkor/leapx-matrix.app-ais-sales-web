@@ -10,33 +10,49 @@
       class="ais-search-form"
     >
      <el-form-item label="系列名称">
-          <fetch-select
-            :options="vehicleModelLineList"
-            v-model="form.modelLineIdList"
-            placeholder="请选择"
-            labelKey="label"
-            valueKey="value"
-            clearable
-            multiple
-            collapseTags
-            filterable
-            remote
-            :remote-method="remoteMethod('modelLineIdList')"
-          />
-        </el-form-item>
-      <el-form-item label="车系名称" >
-          <fetch-select
-            :options="vehicleSeriesList"
-            v-model="form.seriesIdList"
-            placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
-      </el-form-item>
-      <el-form-item label="车型名称" v-if="visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.modelNameLike"
-          clearable
-        />
-      </el-form-item>
+      <fetch-select
+        :options="vehicleModelList"
+        v-model="form.modelLineIdList"
+        placeholder="请选择"
+        labelKey="name"
+        valueKey="id"
+        clearable
+        multiple
+        collapseTags
+        filterable
+        @change="modelLineIdChange"
+      />
+    </el-form-item>
+    <el-form-item label="车系名称">
+      <fetch-select
+        :options="vehicleSeriesIdList"
+        v-model="form.seriesIdList"
+        placeholder="请选择"
+        labelKey="name"
+        valueKey="id"
+        clearable
+        multiple
+        collapseTags
+        filterable
+        remote
+        @change="seriesIdChange"
+      />
+    </el-form-item>
+    <el-form-item label="车型名称" v-if="visibleCount === 3 || show">
+      <fetch-select
+        :options="listVehicleModelList"
+        v-model="form.modelNameList"
+        placeholder="请选择"
+        labelKey="name"
+        valueKey="id"
+        clearable
+        multiple
+        collapseTags
+        filterable
+        remote
+        :remote-method="modelNameSearch"
+      />
+    </el-form-item>
       <!-- <el-form-item label="年型名称">
         <fetch-select
           :request="fetchOptions"
@@ -107,7 +123,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="vehicleModelImport"
+      :id="'vehicleModelImport'"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -118,7 +134,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/datacenter/materials/vehicleModel/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelLineList } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelLineList, listVehicleModel } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -127,6 +143,9 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange } from '@/libs/utils';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  modelLineIdList: [],
+  seriesIdList: [],
+  modelNameList: [],
   modelName: '',
   yearTypeName: '',
   seriesName: '',
@@ -155,7 +174,6 @@ export default {
   },
   data () {
     return {
-      vehicleModelImport: '',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISDC-vehicleModel',
       form: {
@@ -252,8 +270,9 @@ export default {
           }
         }]
       },
-      vehicleModelLineList: [],
-      vehicleSeriesList: []
+      vehicleModelList: [],
+      vehicleSeriesIdList: [],
+      listVehicleModelList: []
     };
   },
   created () {
@@ -261,8 +280,65 @@ export default {
     this.getData();
   },
   methods: {
-    remoteMethod (type) {
-      console.log('type:', type);
+    modelLineIdChange (query) {
+      if (query && query.length) {
+        let params = {
+          modelLineIds: query,
+          size: 100
+        };
+        vehicleSeriesList(params).then(res => {
+          this.vehicleSeriesIdList = res;
+        }).catch(() => {});
+      } else {
+        this.form.seriesIdList = [];
+        this.form.modelNameList = [];
+        this.vehicleSeriesIdList = [];
+        this.listVehicleModelList = [];
+      }
+    },
+    seriesIdChange (query) {
+      if (query && query.length) {
+        let params = {
+          seriesIdList: query,
+          size: 100
+        };
+        listVehicleModel(params).then(res => {
+          this.listVehicleModelList = res;
+        }).catch(() => {});
+      } else {
+        this.form.modelNameList = [];
+        this.listVehicleModelList = [];
+      }
+    },
+    async remoteMethod (query, api, targetKey) {
+      try {
+        let apiResult = {};
+        if (targetKey === 'vehicleModelList') {
+          apiResult.modelLineNameLike = query;
+        } else if (targetKey === 'vehicleSeriesIdList') {
+          apiResult.seriesNameLike = query;
+          apiResult.modelLineIds = this.form.modelLineIdList;
+        } else if (targetKey === 'listVehicleModelList') {
+          apiResult.modelNameLike = query;
+          apiResult.modelLineIdList = this.form.modelLineIdList;
+          apiResult.seriesIdList = this.form.seriesIdList;
+        }
+        const res = await api({ size: 100, ...apiResult });
+        // 映射新数据
+        if (res && Array.isArray(res)) {
+          this[targetKey] = res.map(item => ({
+            ...item,
+            label: item.name || item.label,
+            value: item.id || item.value
+          }));
+        }
+
+        console.log('Mapped data:', this[targetKey]);
+        return this[targetKey];
+      } catch (error) {
+        console.error('Error in remoteMethod:', error);
+        return [];
+      }
     },
     handleImport () {
       this.uploadDialogVisible = true;
@@ -314,7 +390,6 @@ export default {
       this.loading = true;
       this.selectionList = [];
       this.getVehicleModelLineList();
-      this.getVehicleSeriesList();
 
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
@@ -379,30 +454,11 @@ export default {
 
       return data;
     },
-    async getVehicleSeriesList (val) {
-      const res = await vehicleSeriesList({ size: 1000 });
-      if (res.length) {
-        const data = res.map(item => {
-          return {
-            ...item,
-            label: item.name,
-            value: item.id
-          };
-        });
-        this.vehicleSeriesList = data;
-      }
-    },
     async getVehicleModelLineList (val) {
       const res = await vehicleModelLineList({ size: 1000 });
       if (res.length) {
-        const data = res.map(item => {
-          return {
-            ...item,
-            label: item.name,
-            value: item.id
-          };
-        });
-        this.vehicleModelLineList = data;
+        const data = res;
+        this.vehicleModelList = data;
       }
     },
     async fetchOptions (code) {

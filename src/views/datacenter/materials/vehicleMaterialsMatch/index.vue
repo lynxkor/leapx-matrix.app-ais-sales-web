@@ -86,7 +86,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="vehicleMaterialsMatchImport"
+      :id="'vehicleMaterialsMatchImport'"
       @close="handleUploadDialogClose"
     />
   </div>
