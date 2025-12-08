@@ -316,21 +316,6 @@ export default {
     this.fetchDiscontinueStatusOptions();
     this.getDetailData();
   },
-  beforeRouteLeave (to, from, next) {
-    if (JSON.stringify(this.form) === JSON.stringify(this.originalForm)) {
-      next();
-    } else {
-      this.$confirm('确定要放弃修改吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        next();
-      }).catch(() => {
-        next(false);
-      });
-    }
-  },
   methods: {
     async fetchDiscontinueStatusOptions () {
       try {

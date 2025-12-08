@@ -85,10 +85,10 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button size="small" type="primary" v-if="canAddOrUpdate" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button size="small" v-if="canDelete" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <!-- <el-button size="small" v-if="canDelete" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
       <el-button size="small" v-if="canEnableOrDisable" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button size="small" v-if="canEnableOrDisable" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
-      <el-button size="small" v-permission="''" @click="handleBatchSetAttr()" :disabled="selectionList.length === 0">批量设置属性</el-button>
+      <el-button size="small" v-permission="moduleKey+'-batchSetProperties'" @click="handleBatchSetAttr()" :disabled="selectionList.length === 0">批量设置属性</el-button>
       <el-button size="small" v-permission="moduleKey + '-importMaterials'" @click="handleImport('vehicleMaterialsImport')">导入物料</el-button>
       <el-button size="small" v-permission="moduleKey + '-importPrice'" @click="handleImport('vehicleMaterialsImportPrice')">导入价格</el-button>
       <el-button size="small" v-permission="moduleKey + '-importProperties'" @click="handleImport('vehicleMaterialsImportProps')">导入属性</el-button>
@@ -583,7 +583,7 @@ export default {
       this.exteriorList = res.map(item => {
         return {
           ...item,
-          label: item.exteriorName,
+          label: item.name,
           value: item.id
         };
       });
@@ -594,7 +594,7 @@ export default {
       this.interiorList = res.map(item => {
         return {
           ...item,
-          label: item.interiorName,
+          label: item.name,
           value: item.id
         };
       });
@@ -605,7 +605,7 @@ export default {
       this.wheelHubList = res.map(item => {
         return {
           ...item,
-          label: item.wheelHubName,
+          label: item.name,
           value: item.id
         };
       });
@@ -616,7 +616,7 @@ export default {
       this.optionPackageList = res.map(item => {
         return {
           ...item,
-          label: item.optionPackageName,
+          label: item.name,
           value: item.id
         };
       });
@@ -627,7 +627,7 @@ export default {
       this.batteryCellList = res.map(item => {
         return {
           ...item,
-          label: item.batteryCellName,
+          label: item.name,
           value: item.id
         };
       });
@@ -638,7 +638,7 @@ export default {
       this.roofList = res.map(item => {
         return {
           ...item,
-          label: item.roofName,
+          label: item.name,
           value: item.id
         };
       });
@@ -651,16 +651,17 @@ export default {
         allowWholesale: this.allowWholesale,
         allowProductionSchedule: this.allowProductionSchedule,
         allowWholesaleConfirm: this.allowWholesaleConfirm
-      };
-      const res = await batchUpdateProps(params);
-      console.log('batchUpdateProps res', res);
-      // if(res.){
-      //   this.$message({
-      //         type: 'success',
-      //         message: '操作成功!'
-      //       });
-      //       this.getData();
-      // }
+      }; batchUpdateProps(params).then(res => {
+        this.$message({
+          type: 'success',
+          message: '操作成功!'
+        });
+
+        this.batchSetAttrVisible = false;
+      }).catch(() => {
+        this.batchSetAttrVisible = false;
+      });
+      this.getData();
     }
   }
 };
