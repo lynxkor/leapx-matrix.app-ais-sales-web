@@ -19,17 +19,14 @@
                 />
               </el-form-item>
               <el-form-item label="品牌名称" prop="brandName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.brandName"
-                  clearable
-                />
+                 <fetch-select :options="brandNameList"
+         v-model="form.brandId" placeholder="请选择" labelKey="label" valueKey="value" clearable collapseTags filterable/>
               </el-form-item>
-              <el-form-item label="状态" prop="statusLabel">
+              <el-form-item label="状态" prop="status">
                 <fetch-select
                   :request="fetchOptions"
                   enumCode="StatusEnum"
-                  v-model="form.statusIncludeList"
+                  v-model="form.status"
                   placeholder="请选择"
                   clearable
                   filterable
@@ -133,7 +130,7 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/datacenter/materials/vehicleModelLine/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import { getEnum } from '@/api/common';
+import { getEnum, vehicleBrandNameList } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import moment from 'moment';
@@ -178,7 +175,7 @@ export default {
         modelLineName: [
           { required: true, message: '请输入系列名称', trigger: 'blur' }
         ],
-        brandName: [
+        brandId: [
           { required: true, message: '请输入品牌名称', trigger: 'blur' }
         ],
         status: [
@@ -211,9 +208,6 @@ export default {
         statusDesc: [
           { required: true, message: '请选择状态变更描述', trigger: 'change' }
         ],
-        brandId: [
-          { required: true, message: '请输入品牌ID', trigger: 'blur' }
-        ],
       },
       pickerOptions: {
         shortcuts: [{
@@ -241,7 +235,8 @@ export default {
             picker.$emit('pick', [start, end]);
           }
         }]
-      }
+      },
+      brandNameList: []
     };
   },
   mounted () {
@@ -252,8 +247,10 @@ export default {
       this.$router.back();
     },
     getDetailData () {
+      this.getBrandNameList();
+      this.form = this.getDefautlForm();
       const id = this.id || this.$route.query.id;
-      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车主数据-系列管理', `${id ? '编辑' : '新建'}`]);
+      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-系列', `${id ? '编辑' : '新建'}`]);
       if (id) {
         getDetail(id).then(res => {
           this.loading = false;
@@ -310,9 +307,22 @@ export default {
         ownerId: userInfo.userId,
         creatorName: userInfo.userName,
         status: 1,
+        statusLabel: '可用',
         createTime: moment().format('YYYY-MM-DD HH:mm:ss')
       };
-    }
+    },
+    async getBrandNameList (val) {
+      const res = await vehicleBrandNameList({ size: 1000, status: 1 });
+      if (res.length) {
+        const brandNameList = res.map(item => {
+          return {
+            label: item.brandName,
+            value: item.id
+          };
+        });
+        this.brandNameList = brandNameList;
+      }
+    },
   }
 };
 </script>

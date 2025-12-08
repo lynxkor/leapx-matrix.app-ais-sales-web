@@ -18,35 +18,40 @@
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="电芯材料枚举：1：三元锂:2：硫酸铁锂" prop="cellMaterials">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.cellMaterials"
-                  clearable
-                />
+              <el-form-item label="电芯材料" prop="cellMaterials">
+                <fetch-select
+                :request="fetchOptions"
+                enumCode="dc_batteryCellMaterials"
+                v-model="form.cellMaterials"
+                placeholder="请选择"
+                clearable
+                filterable
+              />
               </el-form-item>
               <el-form-item label="状态" prop="status">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.statusIncludeList"
+                  enumCode="StatusEnum"
+                  v-model="form.status"
                   placeholder="请选择"
                   clearable
                   filterable
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="说明" prop="remark">
+              <!-- <el-form-item label="说明" prop="remark">
                 <el-input
                   placeholder="请输入"
                   v-model="form.remark"
                   clearable
                 />
-              </el-form-item>
+              </el-form-item> -->
               <el-form-item label="创建人" prop="creatorName">
                 <el-input
                   placeholder="请输入"
                   v-model="form.creatorName"
                   clearable
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="创建时间" prop="createTime">
@@ -57,9 +62,10 @@
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
                   align="right"
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="更改人" prop="modifierName">
+              <!-- <el-form-item label="更改人" prop="modifierName">
                 <el-input
                   placeholder="请输入"
                   v-model="form.modifierName"
@@ -106,7 +112,7 @@
                   clearable
                   filterable
                 />
-              </el-form-item>
+              </el-form-item> -->
             </el-form>
           </div>
         </section>
@@ -169,7 +175,7 @@ export default {
           { required: true, message: '请输入电池电芯名称', trigger: 'blur' }
         ],
         cellMaterials: [
-          { required: true, message: '请输入电芯材料枚举：1：三元锂:2：硫酸铁锂', trigger: 'blur' }
+          { required: true, message: '请输入电芯材料', trigger: 'blur' }
         ],
         status: [
           { required: true, message: '请选择状态', trigger: 'change' }
@@ -240,7 +246,7 @@ export default {
     },
     getDetailData () {
       const id = this.id || this.$route.query.id;
-      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车主数据-电池电芯管理', `${id ? '编辑' : '新建'}`]);
+      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-电池电芯', `${id ? '编辑' : '新建'}`]);
       if (id) {
         getDetail(id).then(res => {
           this.loading = false;

@@ -87,6 +87,7 @@
                 placeholder="请选择"
                 clearable
                 filterable
+                disabled
               />
             </el-form-item>
           </el-form>
@@ -145,7 +146,7 @@ export default {
         { label: '电池电芯：', key: 'batteryCellName', disabled: true }
       ],
       formFields1: [
-        { label: '物料描述：', key: 'materialsDesc', disabled: false },
+        { label: '物料描述：', key: 'materialsDesc', disabled: true },
         { label: '车系：', key: 'seriesName', disabled: true },
         { label: '车型：', key: 'modelName', disabled: true },
         { label: '年款：', key: 'yearTypeName', disabled: true },
@@ -264,7 +265,7 @@ export default {
     },
     getDetailData () {
       const id = this.id || this.$route.query.id;
-      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车主数据-物料配车关系管理', `${id ? '编辑' : '新建'}`]);
+      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-物料配车关系', `${id ? '编辑' : '新建'}`]);
       if (id) {
         getDetail(id).then(res => {
           this.loading = false;
@@ -277,7 +278,13 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.submitLoading = true;
-          addOrUpdate({ ...this.form }).then(res => {
+          let params = {
+            id: this.form.id,
+            materialsId: this.form.materials.id,
+            matchMaterialsId: this.form.matchMaterials.id,
+            status: this.form.status
+          };
+          addOrUpdate(params).then(res => {
             this.$message({
               message: '保存成功',
               type: 'success'
@@ -320,7 +327,8 @@ export default {
         wheelHubName: '',
         roofName: '',
         optionPackageName: '',
-        batteryCellName: ''
+        batteryCellName: '',
+        status: 1
       };
 
       return {
