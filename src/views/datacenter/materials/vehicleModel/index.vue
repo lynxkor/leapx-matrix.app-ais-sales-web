@@ -10,12 +10,25 @@
       class="ais-search-form"
     >
      <el-form-item label="系列名称">
-          <fetch-select :options="vehicleModelLineList"
-         v-model="form.modelLineIdList" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
+          <fetch-select
+            :options="vehicleModelLineList"
+            v-model="form.modelLineIdList"
+            placeholder="请选择"
+            labelKey="label"
+            valueKey="value"
+            clearable
+            multiple
+            collapseTags
+            filterable
+            remote
+            :remote-method="remoteMethod('modelLineIdList')"
+          />
         </el-form-item>
       <el-form-item label="车系名称" >
-          <fetch-select :options="vehicleSeriesList"
-         v-model="form.seriesIdList" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
+          <fetch-select
+            :options="vehicleSeriesList"
+            v-model="form.seriesIdList"
+            placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
       </el-form-item>
       <el-form-item label="车型名称" v-if="visibleCount === 3 || show">
         <el-input
@@ -56,55 +69,6 @@
             filterable
           />
         </el-form-item>
-        <!-- <el-form-item label="状态变更描述">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.statusDesc"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
-          />
-        </el-form-item>
-        <el-form-item label="创建者名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.creatorName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="创建时间">
-          <el-date-picker
-            v-model="form.createTime"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            align="right"
-          />
-        </el-form-item>
-        <el-form-item label="修改者名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.modifierName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="修改时间">
-          <el-date-picker
-            v-model="form.updateTime"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            align="right"
-          />
-        </el-form-item> -->
       </template>
       <page-search-action
         v-if="canList"
@@ -297,6 +261,9 @@ export default {
     this.getData();
   },
   methods: {
+    remoteMethod (type) {
+      console.log('type:', type);
+    },
     handleImport () {
       this.uploadDialogVisible = true;
     },

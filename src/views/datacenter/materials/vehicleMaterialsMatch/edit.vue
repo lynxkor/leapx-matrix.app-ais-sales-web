@@ -87,6 +87,7 @@
                 placeholder="请选择"
                 clearable
                 filterable
+                disabled
               />
             </el-form-item>
           </el-form>
@@ -277,7 +278,12 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.submitLoading = true;
-          addOrUpdate({ ...this.form }).then(res => {
+          let params = {
+            materialsId: this.form.materials.id,
+            matchMaterialsId: this.form.matchMaterials.id,
+            status: this.form.status
+          };
+          addOrUpdate(params).then(res => {
             this.$message({
               message: '保存成功',
               type: 'success'
