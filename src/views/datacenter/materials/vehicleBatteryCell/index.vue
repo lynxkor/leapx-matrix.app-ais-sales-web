@@ -6,13 +6,13 @@
       :model="form"
       size="small"
       label-position="right"
-      label-width="150px"
+      label-width="100px"
       class="ais-search-form"
     >
       <el-form-item label="电池电芯名称">
         <el-input
           placeholder="请输入"
-          v-model="form.batteryCellName"
+          v-model="form.batteryCellNameLike"
           clearable
         />
       </el-form-item>
@@ -30,7 +30,7 @@
       <el-form-item label="状态"  v-show="this.visibleCount === 3 || show">
         <fetch-select
           :request="fetchOptions"
-          enumCode="xxx"
+          enumCode="StatusEnum"
           v-model="form.statusIncludeList"
           placeholder="请选择"
           clearable
@@ -51,7 +51,7 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <!-- <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button> -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
@@ -211,7 +211,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车主数据-电池电芯管理']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-电池电芯']);
     this.getData();
   },
   methods: {

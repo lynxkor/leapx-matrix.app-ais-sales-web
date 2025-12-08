@@ -217,7 +217,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车主数据-续航里程管理']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-续航里程']);
     this.getData();
   },
   methods: {

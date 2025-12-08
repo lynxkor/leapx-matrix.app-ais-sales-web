@@ -20,18 +20,18 @@
               {{ info.cellMaterialsLabel  }}
             </el-form-item>
             <el-form-item label="状态：" prop="status">
-              {{ info.status  }}
+              {{ info.statusLabel  }}
             </el-form-item>
-            <el-form-item label="说明：" prop="remark">
+            <!-- <el-form-item label="说明：" prop="remark">
               {{ info.remark  }}
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="创建人：" prop="creatorName">
               {{ info.creatorName  }}
             </el-form-item>
             <el-form-item label="创建时间：" prop="createTime">
               {{ info.createTime  }}
             </el-form-item>
-            <el-form-item label="更改人：" prop="modifierName">
+            <!-- <el-form-item label="更改人：" prop="modifierName">
               {{ info.modifierName  }}
             </el-form-item>
             <el-form-item label="更改时间：" prop="updateTime">
@@ -48,7 +48,7 @@
             </el-form-item>
             <el-form-item label="状态变更描述：" prop="statusDesc">
               {{ info.statusDesc  }}
-            </el-form-item>
+            </el-form-item> -->
           </el-form>
         </div>
       </section>
@@ -71,7 +71,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车主数据-电池电芯管理', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-电池电芯', '详情']);
     this.getData();
   },
   methods: {

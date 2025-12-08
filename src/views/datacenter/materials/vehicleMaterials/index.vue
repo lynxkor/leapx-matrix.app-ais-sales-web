@@ -356,7 +356,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车主数据-整车物料管理']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-整车物料']);
     this.getData();
     this.getVehicleSeriesList();
     this.getVehicleExteriorList();

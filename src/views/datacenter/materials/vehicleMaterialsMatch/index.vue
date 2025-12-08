@@ -242,7 +242,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车主数据-物料配车关系管理']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-物料配车关系']);
     this.getData();
   },
   methods: {
@@ -267,7 +267,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '整车主数据-物料配车关系管理',
+        businessType: '销服-业务主数据-配置主数据-物料配车关系',
         dataFetchPath: '/datacenter/datacenter/materials/vehicleMaterialsMatch/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
