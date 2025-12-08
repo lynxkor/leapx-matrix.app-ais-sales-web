@@ -109,7 +109,7 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/datacenter/materials/vehicleMaterials/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import { getEnum, vehicleSeriesList, vehicleModelList, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleRoof, vehicleDrivingRange, vehicleRangePower, vehicleModelYearTypeRelation, listVehicleYearType } from '@/api/common';
+import { getEnum, vehicleSeriesList, vehicleModelList, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleRoof, vehicleDrivingRange, vehicleRangePower, vehicleModelYearTypeRelation } from '@/api/common';
 // import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';

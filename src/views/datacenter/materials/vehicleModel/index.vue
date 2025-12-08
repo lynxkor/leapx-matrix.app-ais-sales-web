@@ -34,7 +34,6 @@
         multiple
         collapseTags
         filterable
-        remote
         @change="seriesIdChange"
       />
     </el-form-item>
@@ -49,7 +48,6 @@
         multiple
         collapseTags
         filterable
-        remote
         :remote-method="modelNameSearch"
       />
     </el-form-item>
