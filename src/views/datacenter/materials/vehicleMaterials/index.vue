@@ -152,7 +152,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchUpdateProps } from '@/api/datacenter/materials/vehicleMaterials/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelList, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleRoof, vehicleModelYearTypeRelation } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelList, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleRoof, vehicleModelYearTypeRelationDistinctYeayType } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -569,7 +569,7 @@ export default {
     },
 
     async getModelYearTypeRelationsList (val) {
-      const res = await vehicleModelYearTypeRelation({ modelIdList: val, size: 1000 });
+      const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList: val, size: 1000 });
       this.yearModelList = res.map(item => {
         return {
           ...item,

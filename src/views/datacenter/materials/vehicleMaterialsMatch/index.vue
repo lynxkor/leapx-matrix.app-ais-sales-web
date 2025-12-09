@@ -257,7 +257,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '销服-业务主数据-配置主数据-物料配车关系',
-        dataFetchPath: '/datacenter/datacenter/materials/vehicleMaterialsMatch/page',
+        dataFetchPath: '/datacenter/web/materials/vehicleMaterialsMatch/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
