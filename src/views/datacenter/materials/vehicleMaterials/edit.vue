@@ -9,10 +9,10 @@
           <div class="common-section-body">
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" inline>
               <el-form-item label="物料编码：" prop="materialsCode">
-                <el-input placeholder="请输入" v-model="form.materialsCode" clearable />
+                <el-input placeholder="请输入" v-model="form.materialsCode" clearable maxlength="30" />
               </el-form-item>
               <el-form-item label="物料描述：" prop="materialsDesc">
-                <el-input placeholder="请输入" v-model="form.materialsDesc" clearable disabled/>
+                <el-input placeholder="请输入" v-model="form.materialsDesc" clearable disabled  maxlength="100" />
               </el-form-item>
               <el-form-item label="车系：" prop="seriesId">
                 <fetch-select :options="seriesList" v-model="form.seriesId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable
@@ -117,6 +117,7 @@ import { fetchAndFormatData } from '@/libs/utils';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
+  yearTypeId: '',
   price: '',
   materialsCode: '',
   materialsDesc: '',
@@ -135,7 +136,7 @@ const defaultForm = {
   allowWholesaleConfirm: '',
   allowConfigurationModify: '',
   discontinueStatus: '',
-  status: '',
+  status: 1,
   remark: '',
   creatorName: '',
   createTime: '',
@@ -159,14 +160,14 @@ const defaultForm = {
   rangePowerName: '',
   currencyCode: '',
   props: {
-    allowWholesale: '',
-    allowProductionSchedule: '',
-    allowDisplayVehicleWholesale: '',
-    allowTestDriveVehicleWholesale: '',
-    allowCustomerSales: '',
-    allowWholesaleConfirm: '',
-    allowConfigurationModify: '',
-    discontinueStatus: ''
+    allowWholesale: false,
+    allowProductionSchedule: false,
+    allowDisplayVehicleWholesale: false,
+    allowTestDriveVehicleWholesale: false,
+    allowCustomerSales: false,
+    allowWholesaleConfirm: false,
+    allowConfigurationModify: false,
+    discontinueStatus: 1
   }
 };
 
