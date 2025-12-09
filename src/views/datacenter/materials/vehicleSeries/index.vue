@@ -16,13 +16,12 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="系列名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.modelLineName"
-          clearable
-        />
-      </el-form-item>
+      <el-form-item label="系列名称" prop="modelLineIds">
+                   <fetch-select remote
+                   :params="form.modelLineName"
+                   :remote-method="getVehicleModelLineList"
+         v-model="form.modelLineIds" placeholder="请选择" value-key="id" label-key="name" multiple clearable  collapseTags filterable/>
+        </el-form-item>
       <el-form-item label="状态" v-if="visibleCount === 3 || show">
         <fetch-select
           :request="fetchOptions"
@@ -129,7 +128,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/datacenter/materials/vehicleSeries/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleModelLineList } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -417,7 +416,12 @@ export default {
           requireInput: true
         }
       });
-    }
+    },
+
+    async getVehicleModelLineList (val) {
+      const res = await vehicleModelLineList({ size: 1000, modelLineNameLike: val });
+      return res;
+    },
   },
 };
 </script>

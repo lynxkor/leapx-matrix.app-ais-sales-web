@@ -371,7 +371,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        dataFetchPath: '/datacenter/datacenter/materials/vehicleMaterials/page',
+        dataFetchPath: '/datacenter/web/materials/vehicleMaterials/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols())
       }).then(res => {
