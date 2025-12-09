@@ -177,13 +177,38 @@ export default {
             validator: (rule, value, callback) => {
               if (value === '' || value === null || value === undefined) {
                 callback(new Error('配车优先级不能为空'));
-              } else if (value < 0) {
-                callback(new Error('配车优先级不能小于0'));
-              } else if (value > 99999999) {
-                callback(new Error('配车优先级不能大于99999999'));
-              } else {
-                callback();
+                return;
               }
+
+              // 转换为数字
+              const numValue = Number(value);
+              const strValue = value.toString();
+
+              // 检查是否是有效数字
+              if (isNaN(numValue)) {
+                callback(new Error('配车优先级必须为数字'));
+                return;
+              }
+
+              // 检查输入字符串和转换后的数字是否一致（防止"01"这样的输入）
+              if (numValue.toString() !== strValue) {
+                callback(new Error('配车优先级不能包含前导零'));
+                return;
+              }
+
+              // 检查是否是正整数
+              if (!Number.isInteger(numValue) || numValue <= 0) {
+                callback(new Error('配车优先级必须为正整数'));
+                return;
+              }
+
+              // 检查范围
+              if (numValue > 99999999) {
+                callback(new Error('配车优先级不能大于99999999'));
+                return;
+              }
+
+              callback();
             },
             trigger: 'blur'
           }
