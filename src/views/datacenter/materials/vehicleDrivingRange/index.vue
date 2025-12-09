@@ -82,7 +82,7 @@ import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import { handleBatchStatusChange } from '@/libs/utils';
+import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   drivingRangeName: '',
@@ -230,14 +230,21 @@ export default {
         dataFetchPath: '/datacenter/web/materials/vehicleDrivingRange/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols())
-      }).then(res => {
+      }).then(async res => {
         if (res) {
           if (res.excelUrl) {
-            window.location.href = res.excelUrl;
+            try {
+              await downloadExcel(res.excelUrl, '配置主数据-续航里程.xlsx');
+            } catch (error) {
+              this.$message({
+                type: 'error',
+                message: '文件导出失败'
+              });
+            }
           } else {
             this.$message({
               type: 'error',
-              message: '导出失败'
+              message: '文件导出失败'
             });
           }
         } else {
