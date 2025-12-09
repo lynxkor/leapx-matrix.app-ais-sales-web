@@ -135,6 +135,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange } from '@/libs/utils';
+import commonMixins from '@/libs/mixins/commonMixins';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -154,7 +155,7 @@ const mockConfig = {
 };
 
 export default {
-  mixins: [responsiveSearchForm, permissions],
+  mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
     PageSearchAction,
     LPVxeTable,
@@ -163,6 +164,8 @@ export default {
   },
   data () {
     return {
+      pageTitle: '销服-业务主数据-配置主数据-系列',
+      pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISDC-vehicleSeries',
       form: {
@@ -259,11 +262,8 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-系列']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
-  },
-  activated () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-系列']);
   },
   methods: {
     handleImport () {

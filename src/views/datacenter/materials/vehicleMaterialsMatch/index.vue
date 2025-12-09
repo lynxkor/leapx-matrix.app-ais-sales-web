@@ -103,6 +103,8 @@ import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import { handleBatchStatusChange } from '@/libs/utils';
+import commonMixins from '@/libs/mixins/commonMixins';
+import permissions from '@/libs/mixins/permissions';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -119,7 +121,7 @@ const mockConfig = {
 };
 
 export default {
-  mixins: [responsiveSearchForm],
+  mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
     PageSearchAction,
     LPVxeTable,
@@ -128,6 +130,8 @@ export default {
   },
   data () {
     return {
+      pageTitle: '销服-业务主数据-配置主数据-物料配车关系',
+      pageType: 'list',
       moduleKey: 'AISDC-vehicleMaterials',
       form: {
         ...defaultForm
@@ -231,11 +235,8 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-物料配车关系']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
-  },
-  activated () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-物料配车关系']);
   },
   methods: {
     handleImport () {
