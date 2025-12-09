@@ -19,8 +19,8 @@
             <el-form-item label="品牌名称：" prop="brandName">
               {{ info.brandName  }}
             </el-form-item>
-            <el-form-item label="状态：" prop="statusLabel">
-              {{ info.status  }}
+            <el-form-item label="状态：" prop="status">
+              {{ info.statusLabel  }}
             </el-form-item>
             <el-form-item label="说明：" prop="remark">
               {{ info.remark  }}

@@ -236,7 +236,6 @@ export default {
           this.loading = false;
           Object.assign(this.form, res);
           Object.assign(this.originalForm, res);
-          console.log('this.form', this.provinceOptions);
         });
       }
     },
@@ -289,7 +288,12 @@ export default {
       const res = await getProvinceTree();
       const list = res || [];
       if (this.$route.query.id) { // 编辑时对应上相对应的省 把市赋值上 直接反显
-        this.cityOptions = list.find(item => item.code === this.form.provinceCode)?.child || [];
+        const province = list.find(item => item.code === this.form.provinceCode);
+        // 确保 cityOptions 中的每个市都有 code 和 name 字段
+        this.cityOptions = province?.child?.map(city => ({
+          code: city.code, // 确保有 code 字段
+          name: city.name // 确保有 name 字段
+        })) || [];
       };
       return list;
     },

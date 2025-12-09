@@ -261,3 +261,11 @@ export function pageWithPermission (data) {
 export function vehicleModelYearTypeRelation (data) {
   return api.jsonPost('/datacenter/web/materials/vehicleModelYearTypeRelation/list', data);
 }
+
+/**
+ * 车型-年款-关联关系表列表查询
+ * @param {*} data
+ */
+export function vehicleModelYearTypeRelationDistinctYeayType (data) {
+  return api.jsonPost('/datacenter/web/materials/vehicleModelYearTypeRelation/listDistinctYearType', data);
+}

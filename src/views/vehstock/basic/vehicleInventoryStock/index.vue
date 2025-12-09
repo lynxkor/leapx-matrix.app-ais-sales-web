@@ -214,6 +214,9 @@ export default {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车库存存量定义']);
     this.getData();
   },
+  activated () {
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车库存存量定义']);
+  },
   methods: {
     handleImport () {
       this.uploadDialogVisible = true;
@@ -362,11 +365,7 @@ export default {
         selectionList: this.selectionList,
         targetStatus: status,
         apiFunc: enableItem,
-        refreshFunc: this.getData,
-        options: {
-          statusName: 'status',
-          requireInput: true
-        }
+        refreshFunc: this.getData
       });
     },
   }

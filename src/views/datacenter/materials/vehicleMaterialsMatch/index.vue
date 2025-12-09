@@ -234,6 +234,9 @@ export default {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-物料配车关系']);
     this.getData();
   },
+  activated () {
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-物料配车关系']);
+  },
   methods: {
     handleImport () {
       this.uploadDialogVisible = true;
@@ -257,7 +260,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '销服-业务主数据-配置主数据-物料配车关系',
-        dataFetchPath: '/datacenter/datacenter/materials/vehicleMaterialsMatch/page',
+        dataFetchPath: '/datacenter/web/materials/vehicleMaterialsMatch/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

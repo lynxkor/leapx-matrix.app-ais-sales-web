@@ -215,6 +215,7 @@ import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
+import commonMixins from '@/libs/mixins/commonMixins';
 import { handleBatchStatusChange, getEndOfDayString } from '@/libs/utils';
 
 const defaultForm = {
@@ -230,7 +231,7 @@ const mockConfig = {
 };
 
 export default {
-  mixins: [responsiveSearchForm, permissions],
+  mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
     PageSearchAction,
     LPVxeTable,
@@ -239,6 +240,8 @@ export default {
   },
   data () {
     return {
+      pageTitle: '{{{title}}}',
+      pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISMC-{{{name}}}',
       form: {
@@ -355,7 +358,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['{{{title}}}']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
   },
   methods: {
@@ -506,11 +509,7 @@ export default {
         selectionList: this.selectionList,
         targetStatus: status,
         apiFunc: enableItem,
-        refreshFunc: this.getData,
-        options: {
-          statusName: 'status',
-          requireInput: true
-        }
+        refreshFunc: this.getData
       });
       // const ids = this.selectionList.map(item => item.id) || [];
       // this.$confirm(`此操作将${status ? '启用' : '停用'}选中项，是否继续?`, '提示', {

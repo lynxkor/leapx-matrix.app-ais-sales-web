@@ -245,6 +245,9 @@ export default {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', ['车辆预留配置']);
     this.getData();
   },
+  activated () {
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['车辆预留配置']);
+  },
   methods: {
     handleImport () {
       this.uploadDialogVisible = true;
@@ -394,11 +397,7 @@ export default {
         selectionList: this.selectionList,
         targetStatus: status,
         apiFunc: enableItem,
-        refreshFunc: this.getData,
-        options: {
-          statusName: 'status',
-          requireInput: true
-        }
+        refreshFunc: this.getData
       });
     },
   }
