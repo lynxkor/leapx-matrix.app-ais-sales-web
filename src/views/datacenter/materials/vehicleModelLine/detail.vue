@@ -23,7 +23,7 @@
               {{ info.statusLabel  }}
             </el-form-item>
             <el-form-item label="说明：" prop="remark">
-              {{ info.remark  }}
+              {{ info.statusDesc  }}
             </el-form-item>
             <el-form-item label="创建人：" prop="creatorName">
               {{ info.creatorName  }}
