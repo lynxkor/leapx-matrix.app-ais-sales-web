@@ -18,11 +18,11 @@
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="状态" prop="statusLabel">
+              <el-form-item label="状态" prop="status">
                 <fetch-select
                   :request="fetchOptions"
                   enumCode="StatusEnum"
-                  v-model="form.statusIncludeList"
+                  v-model="form.status"
                   placeholder="请选择"
                   clearable
                   filterable
