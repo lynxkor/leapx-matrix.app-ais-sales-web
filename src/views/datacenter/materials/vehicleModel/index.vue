@@ -360,7 +360,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '新页面',
-        dataFetchPath: '/datacenter/datacenter/materials/vehicleModel/page',
+        dataFetchPath: '/datacenter/web/materials/vehicleModel/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

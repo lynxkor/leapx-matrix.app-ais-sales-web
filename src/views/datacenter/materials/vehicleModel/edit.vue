@@ -35,6 +35,7 @@
                   clearable
                   remote
                   v-model="form.seriesId"
+                  :params="form.seriesName"
                   :remote-method="modelSearch"
                   @change="handleModelChange"
                   value-key="id"
