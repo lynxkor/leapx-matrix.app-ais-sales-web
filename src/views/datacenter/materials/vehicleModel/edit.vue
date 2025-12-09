@@ -329,7 +329,7 @@ export default {
     },
     getDetailData () {
       const id = this.id || this.$route.query.id;
-      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['新页面', `${id ? '编辑' : '新建'}`]);
+      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-车型', `${id ? '编辑' : '新建'}`]);
       this.listVehicleYearType();
       if (id) {
         getDetail(id).then(res => {
