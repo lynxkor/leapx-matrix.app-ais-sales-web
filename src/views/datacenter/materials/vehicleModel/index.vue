@@ -34,13 +34,12 @@
         multiple
         collapseTags
         filterable
-        @change="seriesIdChange"
       />
     </el-form-item>
     <el-form-item label="车型名称" v-if="visibleCount === 3 || show">
+      <!-- <el-ipnuit v-model=""></el-ipnuit> -->
       <fetch-select
-        :options="listVehicleModelList"
-        v-model="form.modelNameList"
+        v-model="form.idSet"
         placeholder="请选择"
         labelKey="name"
         valueKey="id"
@@ -48,6 +47,8 @@
         multiple
         collapseTags
         filterable
+        remote
+        reserve-keyword
         :remote-method="modelNameSearch"
       />
     </el-form-item>
@@ -143,7 +144,7 @@ const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   modelLineIdList: [],
   seriesIdList: [],
-  modelNameList: [],
+  idSet: [],
   modelName: '',
   yearTypeName: '',
   seriesName: '',
@@ -278,6 +279,9 @@ export default {
     this.getData();
   },
   methods: {
+    modelNameSearch (query) {
+      return listVehicleModel({ modelNameLike: query, size: 100 });
+    },
     modelLineIdChange (query) {
       if (query && query.length) {
         let params = {
@@ -289,22 +293,22 @@ export default {
         }).catch(() => {});
       } else {
         this.form.seriesIdList = [];
-        this.form.modelNameList = [];
+        // this.form.idSet = [];
         this.vehicleSeriesIdList = [];
-        this.listVehicleModelList = [];
+        // this.listVehicleModelList = [];
       }
     },
-    seriesIdChange (query) {
-      if (query && query.length) {
+    seriesIdChange (val) {
+      if (val && val.length) {
         let params = {
-          seriesIdList: query,
+          seriesIdList: val,
           size: 100
         };
         listVehicleModel(params).then(res => {
           this.listVehicleModelList = res;
         }).catch(() => {});
       } else {
-        this.form.modelNameList = [];
+        this.form.idSet = [];
         this.listVehicleModelList = [];
       }
     },
@@ -330,11 +334,8 @@ export default {
             value: item.id || item.value
           }));
         }
-
-        console.log('Mapped data:', this[targetKey]);
         return this[targetKey];
       } catch (error) {
-        console.error('Error in remoteMethod:', error);
         return [];
       }
     },
@@ -360,7 +361,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '新页面',
-        dataFetchPath: '/datacenter/datacenter/materials/vehicleModel/page',
+        dataFetchPath: '/datacenter/web/materials/vehicleModel/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

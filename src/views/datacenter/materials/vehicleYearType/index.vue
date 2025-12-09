@@ -82,6 +82,7 @@ import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import { handleBatchStatusChange } from '@/libs/utils';
+import permissions from '@/libs/mixins/permissions';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -95,7 +96,7 @@ const mockConfig = {
 };
 
 export default {
-  mixins: [responsiveSearchForm],
+  mixins: [responsiveSearchForm, permissions],
   components: {
     PageSearchAction,
     LPVxeTable,

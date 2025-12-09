@@ -147,8 +147,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'materialsCode',
-            label: '物料编码',
+            props: 'matchCode',
+            label: '记录单号',
             visible: true,
             width: 200,
             fixed: 'left',
@@ -163,6 +163,12 @@ export default {
               },
               type: 'primary'
             }]
+          },
+          {
+            props: 'materialsCode',
+            label: '物料编码',
+            visible: true,
+            width: 200,
           },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           { props: 'matchMaterialsCode', label: '可配物料编码', visible: true, width: 200 },

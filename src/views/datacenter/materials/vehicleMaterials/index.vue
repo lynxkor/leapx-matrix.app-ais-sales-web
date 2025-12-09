@@ -93,6 +93,7 @@
       <el-button size="small" v-permission="moduleKey + '-importPrice'" @click="handleImport('vehicleMaterialsImportPrice')">导入价格</el-button>
       <el-button size="small" v-permission="moduleKey + '-importProperties'" @click="handleImport('vehicleMaterialsImportProps')">导入属性</el-button>
       <el-button :loading="exportLoading" size="small" v-if="canExport" @click="exportExcel">导出</el-button>
+      <!-- <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button> -->
     </div>
     <div class="ais-table-c">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed :option-obj="optionObj"
@@ -371,7 +372,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        dataFetchPath: '/datacenter/datacenter/materials/vehicleMaterials/page',
+        dataFetchPath: '/datacenter/web/materials/vehicleMaterials/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols())
       }).then(res => {
