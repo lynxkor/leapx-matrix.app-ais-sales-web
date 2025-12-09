@@ -239,6 +239,7 @@ export default {
   },
   data () {
     return {
+      pageTitle: '{{{title}}}',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISMC-{{{name}}}',
       form: {
@@ -355,8 +356,11 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['{{{title}}}']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
+  },
+  activated () {
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
   },
   methods: {
     handleImport () {
@@ -506,11 +510,7 @@ export default {
         selectionList: this.selectionList,
         targetStatus: status,
         apiFunc: enableItem,
-        refreshFunc: this.getData,
-        options: {
-          statusName: 'status',
-          requireInput: true
-        }
+        refreshFunc: this.getData
       });
       // const ids = this.selectionList.map(item => item.id) || [];
       // this.$confirm(`此操作将${status ? '启用' : '停用'}选中项，是否继续?`, '提示', {
