@@ -354,12 +354,12 @@ export default {
       return [];
     },
     async materialsMethod (query) {
-      const res = await getList({ materialsCodeLike: query, size: 20, statusIncludeList: ['1'] });
+      const res = await getList({ materialsCodeLike: query, size: 20, status: 1, statusIncludeList: ['1'] });
       this.materialsList = res.records;
       console.log('materialsCodeRemoteMethod', res);
     },
     async matchMaterialsMethod (query) {
-      const res = await getList({ materialsCodeLike: query, size: 20, statusIncludeList: ['1'] });
+      const res = await getList({ materialsCodeLike: query, size: 20, status: 1, statusIncludeList: ['1'] });
       this.matchMaterialsList = res.records;
       console.log('matchMaterialsMethod', res);
     },

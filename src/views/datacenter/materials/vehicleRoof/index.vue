@@ -82,7 +82,7 @@ import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import { handleBatchStatusChange } from '@/libs/utils';
+import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 
 const defaultForm = {
@@ -228,14 +228,21 @@ export default {
         dataFetchPath: '/datacenter/web/materials/vehicleRoof/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols())
-      }).then(res => {
+      }).then(async res => {
         if (res) {
           if (res.excelUrl) {
-            window.location.href = res.excelUrl;
+            try {
+              await downloadExcel(res.excelUrl, '配置主数据-车顶.xlsx');
+            } catch (error) {
+              this.$message({
+                type: 'error',
+                message: '文件导出失败'
+              });
+            }
           } else {
             this.$message({
               type: 'error',
-              message: '导出失败'
+              message: '文件导出失败'
             });
           }
         } else {

@@ -81,7 +81,7 @@ import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
-import { handleBatchStatusChange } from '@/libs/utils';
+import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 
@@ -229,10 +229,17 @@ export default {
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
-      }).then(res => {
+      }).then(async res => {
         if (res) {
           if (res.excelUrl) {
-            window.location.href = res.excelUrl;
+            try {
+              await downloadExcel(res.excelUrl, '配置主数据-年款.xlsx');
+            } catch (error) {
+              this.$message({
+                type: 'error',
+                message: '文件导出失败'
+              });
+            }
           } else {
             this.$message({
               type: 'error',

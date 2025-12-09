@@ -134,7 +134,7 @@ import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import { handleBatchStatusChange } from '@/libs/utils';
+import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 
 const defaultForm = {
@@ -164,7 +164,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-系列',
+      pageTitle: '销服-业务主数据-配置主数据-车系',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISDC-vehicleSeries',
@@ -292,14 +292,21 @@ export default {
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
-      }).then(res => {
+      }).then(async res => {
         if (res) {
           if (res.excelUrl) {
-            window.location.href = res.excelUrl;
+            try {
+              await downloadExcel(res.excelUrl, '配置主数据-车系.xlsx');
+            } catch (error) {
+              this.$message({
+                type: 'error',
+                message: '文件导出失败'
+              });
+            }
           } else {
             this.$message({
               type: 'error',
-              message: '导出失败'
+              message: '文件导出失败'
             });
           }
         } else {
