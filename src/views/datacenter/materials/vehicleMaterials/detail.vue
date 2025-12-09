@@ -45,7 +45,7 @@
             <el-form-item label="选装包：" prop="optionPackageName">
               {{ info.optionPackageName  }}
             </el-form-item>
-            <el-form-item label="电池电芯：" prop="batteryCellName">
+            <el-form-item label="电池电芯：" prop="batteryCellName" v-permission="moduleKey+'-checkBatteryCell'">
               {{ info.batteryCellName  }}
             </el-form-item>
             <el-form-item label="状态：" prop="status">

@@ -46,7 +46,7 @@
               <el-form-item label="选装包：" >
                 <fetch-select :options="optionPackageList" v-model="form.optionPackageId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
               </el-form-item>
-              <el-form-item label="电池电芯：" prop="batteryCellId">
+              <el-form-item label="电池电芯：" prop="batteryCellId" v-permission="moduleKey+'-checkBatteryCell'">
                 <fetch-select :options="batteryCellList" v-model="form.batteryCellId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
               </el-form-item>
               <el-form-item label="状态：" prop="status">
