@@ -19,8 +19,14 @@
                 />
               </el-form-item>
               <el-form-item label="品牌名称" prop="brandName">
-                 <fetch-select :options="brandNameList"
-         v-model="form.brandId" placeholder="请选择" labelKey="label" valueKey="value" clearable collapseTags filterable/>
+                 <fetch-select
+                  :params="form.brandName"
+                  v-model="form.brandId"
+                  placeholder="请选择"
+                  :remote-method="repairItemSearch"
+                  remote
+                  value-key="id"
+                  label-key="brandName" clearable collapseTags filterable/>
               </el-form-item>
               <el-form-item label="状态" prop="status">
                 <fetch-select
@@ -247,7 +253,7 @@ export default {
       this.$router.back();
     },
     getDetailData () {
-      this.getBrandNameList();
+      // this.getBrandNameList();
       this.form = this.getDefautlForm();
       const id = this.id || this.$route.query.id;
       this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-系列', `${id ? '编辑' : '新建'}`]);
@@ -310,6 +316,9 @@ export default {
         statusLabel: '可用',
         createTime: moment().format('YYYY-MM-DD HH:mm:ss')
       };
+    },
+    async repairItemSearch (query) {
+      return vehicleBrandNameList({ size: 1000, status: 1, brandNameLike: query });
     },
     async getBrandNameList (val) {
       const res = await vehicleBrandNameList({ size: 1000, status: 1 });

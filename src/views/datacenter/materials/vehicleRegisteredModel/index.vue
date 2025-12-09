@@ -210,6 +210,9 @@ export default {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-公告车型']);
     this.getData();
   },
+  activated () {
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-公告车型']);
+  },
   methods: {
     handleImport () {
       this.uploadDialogVisible = true;

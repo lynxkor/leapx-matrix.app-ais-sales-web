@@ -77,7 +77,7 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="StatusEnum"
-            v-model="form.status"
+            v-model="form.statusIncludeList"
             placeholder="请选择"
             clearable
             multiple
@@ -275,8 +275,11 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['新页面']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-车型']);
     this.getData();
+  },
+  activated () {
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-车型']);
   },
   methods: {
     modelNameSearch (query) {

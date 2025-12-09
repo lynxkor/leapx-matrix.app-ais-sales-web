@@ -229,6 +229,9 @@ export default {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', ['车辆预留明细']);
     this.getData();
   },
+  activated () {
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['车辆预留明细']);
+  },
   methods: {
     handleImport () {
       this.uploadDialogVisible = true;
