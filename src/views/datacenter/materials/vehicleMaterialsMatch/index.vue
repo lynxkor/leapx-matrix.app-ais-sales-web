@@ -234,6 +234,9 @@ export default {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-物料配车关系']);
     this.getData();
   },
+  activated () {
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-物料配车关系']);
+  },
   methods: {
     handleImport () {
       this.uploadDialogVisible = true;

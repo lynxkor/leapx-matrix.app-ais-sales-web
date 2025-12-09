@@ -349,6 +349,9 @@ export default {
     this.getVehicleBatteryCellList();
     this.geVehicleRoofList();
   },
+  activated () {
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-整车物料']);
+  },
   methods: {
     handleImport (importId) {
       this.importId = importId;

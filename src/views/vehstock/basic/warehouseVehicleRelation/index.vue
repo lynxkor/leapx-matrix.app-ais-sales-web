@@ -249,6 +249,9 @@ export default {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', ['仓库配车关系']);
     this.getData();
   },
+  activated () {
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['仓库配车关系']);
+  },
   methods: {
     handleImport () {
       this.uploadDialogVisible = true;

@@ -278,6 +278,9 @@ export default {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', ['新页面']);
     this.getData();
   },
+  activated () {
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['新页面']);
+  },
   methods: {
     modelNameSearch (query) {
       return listVehicleModel({ modelNameLike: query, size: 100 });

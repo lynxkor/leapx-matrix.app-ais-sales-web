@@ -266,6 +266,9 @@ export default {
     this.getCity();
     this.getModel();
   },
+  activated () {
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['地区对应公告目录']);
+  },
   methods: {
     handleImport () {
       this.uploadDialogVisible = true;
