@@ -9,13 +9,6 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="仓库配车编号">
-        <el-input
-          placeholder="请输入"
-          v-model="form.code"
-          clearable
-        />
-      </el-form-item>
       <el-form-item label="整车仓库名称">
         <el-input
           placeholder="请输入"
@@ -23,7 +16,7 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="仓库分类"  v-show="visibleCount === 3 || show">
+      <el-form-item label="仓库分类">
         <fetch-select
           :request="fetchOptions"
           enumCode="vehstock_warehouse_type"
@@ -33,14 +26,14 @@
           filterable
         />
       </el-form-item>
-      <template v-if="show">
-        <el-form-item label="省">
+      <el-form-item label="省" v-show="visibleCount === 3 || show">
           <el-input
             placeholder="请输入"
             v-model="form.provinceName"
             clearable
           />
         </el-form-item>
+      <template v-if="show">
         <el-form-item label="市">
           <el-input
             placeholder="请输入"
