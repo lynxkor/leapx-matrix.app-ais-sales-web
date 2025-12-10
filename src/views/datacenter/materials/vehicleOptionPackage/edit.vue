@@ -16,6 +16,7 @@
                   placeholder="请输入"
                   v-model="form.optionPackageName"
                   clearable
+                  maxlength="30"
                 />
               </el-form-item>
               <el-form-item label="状态" prop="status">

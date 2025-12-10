@@ -16,6 +16,7 @@
                   placeholder="请输入"
                   v-model="form.seriesName"
                   clearable
+                  maxlength="30"
                 />
               </el-form-item>
               <el-form-item label="系列名称" prop="modelLineId">
@@ -252,7 +253,7 @@ export default {
     getDetailData () {
       this.getVehicleModelLineList();
       const id = this.id || this.$route.query.id;
-      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-系列', `${id ? '编辑' : '新建'}`]);
+      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-车系', `${id ? '编辑' : '新建'}`]);
       if (id) {
         getDetail(id).then(res => {
           this.loading = false;

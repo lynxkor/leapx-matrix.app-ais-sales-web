@@ -85,6 +85,7 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button size="small" type="primary" v-if="canAddOrUpdate" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
+      <el-button :loading="exportLoading" size="small" v-if="canExport" @click="exportExcel">导出</el-button>
       <!-- <el-button size="small" v-if="canDelete" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
       <el-button size="small" v-if="canEnableOrDisable" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button size="small" v-if="canEnableOrDisable" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
@@ -92,7 +93,6 @@
       <el-button size="small" v-permission="moduleKey + '-importMaterials'" @click="handleImport('vehicleMaterialsImport')">导入物料</el-button>
       <el-button size="small" v-permission="moduleKey + '-importPrice'" @click="handleImport('vehicleMaterialsImportPrice')">导入价格</el-button>
       <el-button size="small" v-permission="moduleKey + '-importProperties'" @click="handleImport('vehicleMaterialsImportProps')">导入属性</el-button>
-      <el-button :loading="exportLoading" size="small" v-if="canExport" @click="exportExcel">导出</el-button>
       <!-- <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button> -->
     </div>
     <div class="ais-table-c">

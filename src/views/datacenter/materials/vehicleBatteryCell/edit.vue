@@ -16,6 +16,7 @@
                   placeholder="请输入"
                   v-model="form.batteryCellName"
                   clearable
+                  maxlength="30"
                 />
               </el-form-item>
               <el-form-item label="电芯材料" prop="cellMaterials">

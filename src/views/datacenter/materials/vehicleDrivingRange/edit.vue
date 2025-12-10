@@ -15,7 +15,7 @@
                 <el-input placeholder="请输入" v-model="form.creator" clearable />
               </el-form-item> -->
               <el-form-item label="续航里程名称" prop="drivingRangeName">
-                <el-input placeholder="请输入" v-model="form.drivingRangeName" clearable />
+                <el-input placeholder="请输入" v-model="form.drivingRangeName" clearable maxlength="30" />
               </el-form-item>
               <el-form-item label="状态" prop="status">
                 <fetch-select :request="fetchOptions" enumCode="StatusEnum" v-model="form.status" placeholder="请选择"
