@@ -16,6 +16,7 @@
                   placeholder="请输入"
                   v-model="form.modelLineName"
                   clearable
+                  maxlength="30"
                 />
               </el-form-item>
               <el-form-item label="品牌名称" prop="brandName">

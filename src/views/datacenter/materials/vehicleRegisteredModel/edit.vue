@@ -16,6 +16,7 @@
                   placeholder="请输入"
                   v-model="form.registeredModelName"
                   clearable
+                  maxlength="30"
                 />
               </el-form-item>
               <el-form-item label="公告车型代码" prop="registeredModelCode">
@@ -23,6 +24,7 @@
                   placeholder="请输入"
                   v-model="form.registeredModelCode"
                   clearable
+                  maxlength="30"
                 />
               </el-form-item>
               <el-form-item label="产地" prop="originPlace">
@@ -30,6 +32,7 @@
                   placeholder="请输入"
                   v-model="form.originPlace"
                   clearable
+                  maxlength="30"
                 />
               </el-form-item>
               <el-form-item label="状态" prop="status">

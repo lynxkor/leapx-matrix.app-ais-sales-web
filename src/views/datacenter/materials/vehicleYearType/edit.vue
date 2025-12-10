@@ -16,6 +16,7 @@
                   placeholder="请输入"
                   v-model="form.yearTypeName"
                   clearable
+                  maxlength="10"
                 />
               </el-form-item>
               <el-form-item label="状态" prop="status">
