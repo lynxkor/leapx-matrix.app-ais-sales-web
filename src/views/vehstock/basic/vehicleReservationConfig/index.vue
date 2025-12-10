@@ -166,7 +166,7 @@ export default {
           { props: 'reserveNum', label: '需预留数', visible: true, width: 200 },
           { props: 'reservedNum', label: '已预留数', visible: true, width: 200 },
           { props: 'isCompletedLabel', label: '是否预留完成', visible: true, width: 200 },
-          { props: 'reserveRange', label: '截取预留位数', visible: true, width: 200 },
+          { props: 'reservePos', label: '截取预留位数', visible: true, width: 200 },
           { props: 'reserveCutValue', label: '截取预留值', visible: true, width: 200 },
           { props: 'isRelatedMatchLabel', label: '是否映射其他物料', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
