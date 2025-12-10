@@ -38,6 +38,7 @@
               </el-form-item>
               <el-form-item label="需预留数" prop="reserveNum">
                 <el-input
+                  type="number"
                   placeholder="请输入"
                   v-model="form.reserveNum"
                   clearable
@@ -45,6 +46,7 @@
               </el-form-item>
               <el-form-item label="已预留数" prop="reservedNum">
                 <el-input
+                  type="number"
                   placeholder="请输入"
                   v-model="form.reservedNum"
                   clearable
@@ -62,6 +64,7 @@
               </el-form-item>
               <el-form-item label="截取预留起始位" prop="reserveStartPos">
                 <el-input
+                  type="number"
                   placeholder="请输入"
                   v-model="form.reserveStartPos"
                   clearable
@@ -69,6 +72,7 @@
               </el-form-item>
               <el-form-item label="截取预留截止位" prop="reserveEndPos">
                 <el-input
+                  type="number"
                   placeholder="请输入"
                   v-model="form.reserveEndPos"
                   clearable
@@ -189,6 +193,10 @@ export default {
                 callback(new Error('需预留数不能小于0'));
               } else if (value > 99999999) {
                 callback(new Error('需预留数不能大于99999999'));
+              } else if (isNaN(Number(value))) {
+                callback(new Error('输入有效的数字'));
+              } else if (Math.floor(Number(value)) !== Number(value)) {
+                callback(new Error('需预留数必须为整数'));
               } else {
                 callback();
               }
@@ -197,7 +205,24 @@ export default {
           }
         ],
         reservedNum: [
-          { required: false, message: '请输入已预留数', trigger: 'blur' }
+          { required: false, message: '请输入已预留数', trigger: 'blur' },
+          {
+            required: false,
+            validator: (rule, value, callback) => {
+              if (value === '' || value === null || value === undefined) {
+                callback();
+              } else if (value < 0) {
+                callback(new Error('已预留数不能小于0'));
+              } else if (isNaN(Number(value))) {
+                callback(new Error('输入有效的数字'));
+              } else if (Math.floor(Number(value)) !== Number(value)) {
+                callback(new Error('已预留数必须为整数'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur'
+          }
         ],
         reserveStartPos: [
           {
@@ -214,6 +239,8 @@ export default {
                 callback(new Error('截取预留起始位不能小于1'));
               } else if (value > 50) {
                 callback(new Error('截取预留起始位不能大于50'));
+              } else if (Math.floor(Number(value)) !== Number(value)) {
+                callback(new Error('截取预留起始位必须为整数'));
               } else {
                 callback();
               }
@@ -236,6 +263,8 @@ export default {
                 callback(new Error('截取预留截止位不能小于1'));
               } else if (value > 50) {
                 callback(new Error('截取预留截止位不能大于50'));
+              } else if (Math.floor(Number(value)) !== Number(value)) {
+                callback(new Error('截取预留截止位必须为整数'));
               } else {
                 callback();
               }
