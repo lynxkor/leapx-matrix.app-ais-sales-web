@@ -119,6 +119,7 @@ import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
+import commonMixins from '@/libs/mixins/commonMixins';
 import { handleBatchStatusChange, getEndOfDayString, downloadExcel } from '@/libs/utils';
 
 const defaultForm = {
@@ -136,7 +137,7 @@ const mockConfig = {
 };
 
 export default {
-  mixins: [responsiveSearchForm, permissions],
+  mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
     PageSearchAction,
     LPVxeTable,
@@ -145,6 +146,8 @@ export default {
   },
   data () {
     return {
+      pageTitle: '地区对应公告目录',
+      pageType: 'list',
       form: {
         ...defaultForm
       },
@@ -261,13 +264,10 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['地区对应公告目录']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
     this.getCity();
     this.getModel();
-  },
-  activated () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['地区对应公告目录']);
   },
   methods: {
     handleImport () {
