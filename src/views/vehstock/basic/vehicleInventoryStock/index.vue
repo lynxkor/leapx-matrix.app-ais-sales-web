@@ -97,7 +97,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-轮毂',
+      pageTitle: '整车库存存量定义',
       pageType: 'list',
       form: {
         ...defaultForm
