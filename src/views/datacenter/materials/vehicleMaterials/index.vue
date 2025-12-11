@@ -1,7 +1,7 @@
 <template>
   <div class="page-common m-vehicle-materials-list">
     <!--  TIPS: 自行调整如下label-width，满足label不换行  -->
-    <el-form :inline="true" :model="form" size="small" label-position="right" label-width="160px"
+    <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
       class="ais-search-form">
       <el-form-item label="物料编码">
         <el-input placeholder="请输入" v-model="form.materialsCodeLike" clearable />
@@ -236,6 +236,8 @@ export default {
             label: '整车价格',
             visible: true,
             width: 200,
+            align: 'right',
+            headerAlign: 'right'
           },
           {
             props: 'materialsCode',
