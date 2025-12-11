@@ -50,6 +50,7 @@
                   placeholder="请输入"
                   v-model="form.reservedNum"
                   clearable
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="是否映射其他物料" prop="isRelatedMatch">
