@@ -215,8 +215,8 @@ export default {
             }]
           },
           { props: 'yearTypeName', label: '年款名称', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
           { props: 'modelLineName', label: '系列名称', visible: true, width: 200 },
+          { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },
@@ -281,6 +281,7 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
+    this.getVehicleModelLineList();
   },
   methods: {
     modelNameSearch (query) {
@@ -399,7 +400,7 @@ export default {
     getData () {
       this.loading = true;
       this.selectionList = [];
-      this.getVehicleModelLineList();
+      // this.getVehicleModelLineList();
 
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
