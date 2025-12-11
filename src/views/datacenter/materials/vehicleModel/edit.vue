@@ -356,6 +356,14 @@ export default {
       try {
         const tableData = await this.handleSaveTable();
         console.log('tableData:', tableData);// 校验 tableData 中的 yearTypeId 是否有重复
+        // 增加空值判断：如果 tableData 为空或空数组，禁止提交
+        if (!tableData || (Array.isArray(tableData) && tableData.length === 0)) {
+          this.$message({
+            message: '请至少添加一条年款信息',
+            type: 'error'
+          });
+          return;
+        }
         const isDuplicate = this.checkDuplicateYearTypeId(tableData);
         if (isDuplicate) {
           this.$message({
