@@ -102,6 +102,11 @@
       <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <!-- 审批节点 -->
+       <!-- <el-button size="small" @click="batchAuditSubmit()" :disabled="selectionList.length === 0">提交草稿</el-button>
+       <el-button size="small" @click="batchAuditWithdraw()" :disabled="selectionList.length === 0">撤回流程</el-button>
+       <el-button size="small" @click="batchAudit()" :disabled="selectionList.length === 0">审核</el-button>
+       <el-button size="small" @click="batchReverseAudit()" :disabled="selectionList.length === 0">反审核</el-button> -->
     </div>
     <div
       class="ais-table-c"
@@ -125,6 +130,8 @@
       :id="'vehicleModelImport'"
       @close="handleUploadDialogClose"
     />
+    <!-- 审核记录 -->
+    <!-- <audit-dialog ref="auditRef" @audit="auditFun" /> -->
   </div>
 </template>
 
@@ -139,8 +146,10 @@ import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
+// import { handleBatchStatusChange, downloadExcel, batchAuditHandler } from '@/libs/utils';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+// import auditDialog from '@/libs/components/auditDialog';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -168,6 +177,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    // auditDialog,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
@@ -284,6 +294,63 @@ export default {
     this.getVehicleModelLineList();
   },
   methods: {
+    // /**
+    //  * 审核操作
+    //  * @param remark 审核说明
+    //  */
+    // auditFun (auditForm) {
+    //   const params = {
+    //     ids: this.selection.map((item) => item.id),
+    //     ...auditForm
+    //   };
+    //   listVehicleModel(8, params).then(() => {
+    //     this.$message.success('审核成功');
+    //     this.getData();
+    //   });
+    // },
+    // batchAuditSubmit () {
+    //   batchAuditHandler(
+    //     this.selectionList,
+    //     this.$message.error,
+    //     this.$confirm,
+    //     {
+    //       expectedStatus: 1, // 草稿状态
+    //       errorMessage: '请选择审核状态数据',
+    //       successMessage: '提交成功',
+    //       confirmMessage: '确认撤回中的记录？'
+    //     }
+    //   );
+    // },
+    // batchAuditWithdraw () {
+    //   batchAuditHandler(
+    //     this.selectionList,
+    //     this.$message.error,
+    //     this.$confirm,
+    //     {
+    //       expectedStatus: 1, // 草稿状态
+    //       errorMessage: '请选择审核状态数据',
+    //       successMessage: '撤回成功',
+    //       confirmMessage: '确认撤回中的记录？'
+    //     }
+    //   );
+    // },
+    // batchAudit () {
+    //   if (
+    //     !this.selectionList ||
+    //     this.selectionList.length === 0
+    //   ) {
+    //     this.$message.error('请选择审核记录');
+    //     return;
+    //   }
+    //   if (
+    //     this.selectionList.find((item) => item.status !== 1)
+    //   ) {
+    //     this.$message.error('请选择审核中的记录');
+    //     return;
+    //   }
+    //   this.$refs.auditRef.show();
+    // },
+    // batchReverseAudit () {},
     modelNameSearch (query) {
       return listVehicleModel({ modelNameLike: query, size: 100 });
     },
