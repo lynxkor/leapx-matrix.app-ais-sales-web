@@ -6,7 +6,7 @@
       :model="form"
       size="small"
       label-position="right"
-      label-width="100px"
+      label-width="150px"
       class="ais-search-form"
     >
       <el-form-item label="电池电芯名称">

@@ -1,7 +1,7 @@
 <template>
   <div class="page-common m-vehicle-materials-list">
     <!--  TIPS: 自行调整如下label-width，满足label不换行  -->
-    <el-form :inline="true" :model="form" size="small" label-position="right" label-width="160px"
+    <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
       class="ais-search-form">
       <el-form-item label="物料编码">
         <el-input placeholder="请输入" v-model="form.materialsCodeLike" clearable />
@@ -102,29 +102,29 @@
     </div>
     <Upload :visible="uploadDialogVisible" templateUrl="" uploadUrl="" @close="handleUploadDialogClose" />
 
-    <el-dialog title="批量设置属性信息" width="30%" :visible.sync="batchSetAttrVisible">
+    <el-dialog title="批量设置属性信息" width="400px" :visible.sync="batchSetAttrVisible">
       <div class="batchSetAttr">
-        <el-row :gutter="20">
-          <el-col :span="8">是否允许现车批售</el-col>
-          <el-col :span="16">
+        <el-row>
+          <el-col :span="9">是否允许现车批售</el-col>
+          <el-col :span="15">
             <el-radio-group v-model="allowWholesale">
               <el-radio :label="true">是</el-radio>
               <el-radio :label="false">否</el-radio>
             </el-radio-group>
           </el-col>
         </el-row>
-        <el-row :gutter="20">
-          <el-col :span="8">是否允许排产申请</el-col>
-          <el-col :span="16">
+        <el-row>
+          <el-col :span="9">是否允许排产申请</el-col>
+          <el-col :span="15">
             <el-radio-group v-model="allowProductionSchedule">
               <el-radio :label="1">是</el-radio>
               <el-radio :label="0">否</el-radio>
             </el-radio-group>
           </el-col>
         </el-row>
-        <el-row :gutter="20">
-          <el-col :span="8">是否允许批售确认</el-col>
-          <el-col :span="16">
+        <el-row>
+          <el-col :span="9">是否允许批售确认</el-col>
+          <el-col :span="15">
             <el-radio-group v-model="allowWholesaleConfirm">
               <el-radio :label="1">是</el-radio>
               <el-radio :label="0">否</el-radio>
@@ -133,8 +133,8 @@
         </el-row>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="batchSetAttrVisible = false">取 消</el-button>
-        <el-button type="primary" @click="confirmSetAttr">确 定</el-button>
+        <el-button size="small" @click="batchSetAttrVisible = false">取 消</el-button>
+        <el-button size="small" type="primary" @click="confirmSetAttr">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -236,6 +236,8 @@ export default {
             label: '整车价格',
             visible: true,
             width: 200,
+            align: 'right',
+            headerAlign: 'right'
           },
           {
             props: 'materialsCode',
