@@ -633,6 +633,195 @@ const routes = [
         name: '新页面详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehwholesale/fund/dealerFundAccount',
+      name: 'dealerFundAccount',
+      component: () => import('@/views/vehwholesale/fund/dealerFundAccount/index.vue'),
+
+      meta: {
+        name: '账户管理-整车资金-整车资金账户管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/fund/dealerFundAccount/detail',
+      name: 'dealerFundAccountDetail',
+      component: () => import('@/views/vehwholesale/fund/dealerFundAccount/detail.vue'),
+
+      meta: {
+        name: '账户管理-整车资金-整车资金账户管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/fund/dealerFundAccount/edit',
+      name: 'accountEdit',
+      component: () => import('@/views/vehwholesale/fund/dealerFundAccount/edit.vue'),
+
+      meta: {
+        name: '账户管理-整车资金-整车资金账户管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/fund/dealerFundAccountTransLog',
+      name: 'dealerFundAccountTransLog',
+      component: () => import('@/views/vehwholesale/fund/dealerFundAccountTransLog/index.vue'),
+
+      meta: {
+        name: '账户管理-整车资金-整车资金账户交易流水管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/fund/dealerFundAccountTransLog/detail',
+      name: 'accountTranslogDetail',
+      component: () => import('@/views/vehwholesale/fund/dealerFundAccountTransLog/detail.vue'),
+
+      meta: {
+        name: '账户管理-整车资金-整车资金账户交易流水管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/fund/dealerFundAccountTransLog/edit',
+      name: 'accountTranslogEdit',
+      component: () => import('@/views/vehwholesale/fund/dealerFundAccountTransLog/edit.vue'),
+
+      meta: {
+        name: '账户管理-整车资金-整车资金账户交易流水管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/fund/fundBudgetItem',
+      name: 'fundBudgetItem',
+      component: () => import('@/views/vehwholesale/fund/fundBudgetItem/index.vue'),
+
+      meta: {
+        name: '账户管理-基础配置-预算科目管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/fund/fundbudgetitem/detail',
+      name: 'fundBudgetItemDetail',
+      component: () => import('@/views/vehwholesale/fund/fundBudgetItem/detail.vue'),
+
+      meta: {
+        name: '账户管理-基础配置-预算科目管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/fund/fundbudgetitem/edit',
+      name: 'fundBudgetItemEdit',
+      component: () => import('@/views/vehwholesale/fund/fundBudgetItem/edit.vue'),
+
+      meta: {
+        name: '账户管理-基础配置-预算科目管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/fund/fundFeeSupportType',
+      name: 'fundFeeSupportType',
+      component: () => import('@/views/vehwholesale/fund/fundFeeSupportType/index.vue'),
+
+      meta: {
+        name: '账户管理-基础配置-费用支持类型管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/fund/fundfeesupporttype/detail',
+      name: 'fundFeeSupportTypeDetail',
+      component: () => import('@/views/vehwholesale/fund/fundFeeSupportType/detail.vue'),
+
+      meta: {
+        name: '账户管理-基础配置-费用支持类型管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/fund/fundfeesupporttype/edit',
+      name: 'fundFeeSupportTypeEdit',
+      component: () => import('@/views/vehwholesale/fund/fundFeeSupportType/edit.vue'),
+
+      meta: {
+        name: '账户管理-基础配置-费用支持类型管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/fund/fundRebateReturnConfig',
+      name: 'fundRebateReturnConfig',
+      component: () => import('@/views/vehwholesale/fund/fundRebateReturnConfig/index.vue'),
+
+      meta: {
+        name: '账户管理-基础配置-返利自动返还设置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/fund/fundrebatereturnconfig/detail',
+      name: 'fundRebateReturnConfigDetail',
+      component: () => import('@/views/vehwholesale/fund/fundRebateReturnConfig/detail.vue'),
+
+      meta: {
+        name: '账户管理-基础配置-返利自动返还设置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/fund/fundrebatereturnconfig/edit',
+      name: 'fundRebateReturnConfigEdit',
+      component: () => import('@/views/vehwholesale/fund/fundRebateReturnConfig/edit.vue'),
+
+      meta: {
+        name: '账户管理-基础配置-返利自动返还设置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/fund/fundFinancialOrganization',
+      name: 'fundFinancialOrganization',
+      component: () => import('@/views/vehwholesale/fund/fundFinancialOrganization/index.vue'),
+
+      meta: {
+        name: '账户管理-基础配置-金融机构管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/fund/fundfinancialorganization/detail',
+      name: 'fundFinancialOrganizationDetail',
+      component: () => import('@/views/vehwholesale/fund/fundFinancialOrganization/detail.vue'),
+
+      meta: {
+        name: '账户管理-基础配置-金融机构管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/fund/fundfinancialorganization/edit',
+      name: 'fundFinancialOrganizationEdit',
+      component: () => import('@/views/vehwholesale/fund/fundFinancialOrganization/edit.vue'),
+
+      meta: {
+        name: '账户管理-基础配置-金融机构管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/fund/fundSaleCompany',
+      name: 'fundSaleCompany',
+      component: () => import('@/views/vehwholesale/fund/fundSaleCompany/index.vue'),
+
+      meta: {
+        name: '账户管理-基础配置-销售公司管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/fund/fundsalecompany/detail',
+      name: 'fundSaleCompanyDetail',
+      component: () => import('@/views/vehwholesale/fund/fundSaleCompany/detail.vue'),
+
+      meta: {
+        name: '账户管理-基础配置-销售公司管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/fund/fundsalecompany/edit',
+      name: 'fundSaleCompanyEdit',
+      component: () => import('@/views/vehwholesale/fund/fundSaleCompany/edit.vue'),
+
+      meta: {
+        name: '账户管理-基础配置-销售公司管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
