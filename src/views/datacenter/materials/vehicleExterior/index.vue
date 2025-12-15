@@ -12,7 +12,7 @@
       <el-form-item label="外观名称">
         <el-input
           placeholder="请输入"
-          v-model="form.exteriorName"
+          v-model="form.exteriorNameLike"
           clearable
         />
       </el-form-item>
@@ -233,7 +233,7 @@ export default {
         if (res) {
           if (res.excelUrl) {
             try {
-              await downloadExcel(res.excelUrl, '配置主数据-车型.xlsx');
+              await downloadExcel(res.excelUrl, '配置主数据-外观.xlsx');
             } catch (error) {
               this.$message({
                 type: 'error',
