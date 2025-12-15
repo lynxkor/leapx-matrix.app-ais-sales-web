@@ -99,7 +99,8 @@ import { handleBatchStatusChange, getEndOfDayString } from '@/libs/utils';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  codeList: [],
+  codeLike: '', // 模糊查询
+  codeList: [], // 精确查询
   bizCode: '',
   vinList: [],
   remarkLike: '',
@@ -339,6 +340,11 @@ export default {
         }
       }
 
+      // 判断是模糊查询还是精确查询，不能同时使用
+      if (Array.isArray(this.form.codeList) && this.form.codeList.length <= 1) {
+        delete data.codeList;
+        data.codeLike = this.form.codeList[0] || '';
+      }
       return data;
     },
     async fetchOptions (code) {
