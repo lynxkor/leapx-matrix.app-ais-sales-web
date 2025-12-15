@@ -219,8 +219,8 @@ export default {
     return {
       pageTitle: '账户管理-基础配置-金融机构管理',
       pageType: 'edit',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-fundFinancialOrganization',
+      // TIPS: 权限前缀 AISWH，根据实际情况修改
+      moduleKey: 'AISWH-fundFinancialOrganization',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,

@@ -327,8 +327,8 @@ export default {
     return {
       pageTitle: '账户管理-整车资金-整车资金账户交易流水管理',
       pageType: 'edit',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-accountTranslog',
+      // TIPS: 权限前缀 AISWH，根据实际情况修改
+      moduleKey: 'AISWH-accountTranslog',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
