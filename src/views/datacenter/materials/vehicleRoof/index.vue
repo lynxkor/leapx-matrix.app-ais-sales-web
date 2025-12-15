@@ -10,11 +10,12 @@
       class="ais-search-form"
     >
       <el-form-item label="车顶名称">
-        <el-input
+        <tag-input v-model="form.roofNames" placeholder="请输入" />
+        <!-- <el-input
           placeholder="请输入"
           v-model="form.roofName"
           clearable
-        />
+        /> -->
       </el-form-item>
       <el-form-item label="状态">
         <fetch-select
@@ -84,9 +85,12 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  roofNames: [],
+  roofNameLike: '',
   roofName: '',
   status: '',
 };
@@ -99,6 +103,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
@@ -318,6 +323,10 @@ export default {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
+      }
+      if (Array.isArray(this.form.roofNames) && this.form.roofNames.length <= 1) {
+        delete data.roofNames;
+        data.roofNameLike = this.form.roofNames[0] || '';
       }
 
       return data;

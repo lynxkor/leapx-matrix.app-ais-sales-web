@@ -10,11 +10,12 @@
       class="ais-search-form"
     >
       <el-form-item label="年款名称">
-         <el-input
+        <tag-input v-model="form.yearTypeNames" placeholder="请输入" />
+         <!-- <el-input
           placeholder="请输入"
           v-model="form.yearTypeNameLike"
           clearable
-        />
+        /> -->
       </el-form-item>
       <el-form-item label="状态">
         <fetch-select
@@ -84,10 +85,13 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  yearTypeNames: [],
   yearTypeName: '',
+  yearTypeNameLike: '',
   status: '',
 };
 
@@ -99,6 +103,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
@@ -319,6 +324,10 @@ export default {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
+      }
+      if (Array.isArray(this.form.yearTypeNames) && this.form.yearTypeNames.length <= 1) {
+        delete data.yearTypeNames;
+        data.yearTypeNameLike = this.form.yearTypeNames[0] || '';
       }
 
       return data;
