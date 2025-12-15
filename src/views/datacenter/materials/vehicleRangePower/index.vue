@@ -27,31 +27,35 @@
           filterable
         />
       </el-form-item>
-      <el-form-item label="备注（说明）"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="创建时间" v-show="this.visibleCount === 3 || show">
+        <dateranges
+          :form="createTime"
+          ref="createTime"
+          @changeNewTime="(value) => changeNewTime(value, 'createTime')"/>
+        <!-- <el-date-picker
+          v-model="form.createTime"
+          type="daterange"
+          :picker-options="pickerOptions"
+          range-separator="至"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          align="right"
+        /> -->
+      </el-form-item>
+      <!-- <el-form-item label="备注（说明）"  v-show="this.visibleCount === 3 || show">
         <el-input
           placeholder="请输入"
           v-model="form.remark"
           clearable
         />
-      </el-form-item>
-      <span v-show="show">
+      </el-form-item> -->
+      <!-- <template v-if="show">
         <el-form-item label="创建者名称">
           <el-input
             placeholder="请输入"
             v-model="form.creatorName"
             clearable
-          />
-        </el-form-item>
-        <el-form-item label="创建时间">
-          <el-date-picker
-            v-model="form.createTime"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            align="right"
           />
         </el-form-item>
         <el-form-item label="修改者名称">
@@ -73,7 +77,7 @@
             align="right"
           />
         </el-form-item>
-      </span>
+      </template> -->
       <page-search-action
         v-model="show"
         is-expandable
@@ -129,6 +133,7 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+import dateranges from '@/libs/components/dateranges';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -149,6 +154,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    dateranges,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
@@ -156,6 +162,7 @@ export default {
   },
   data () {
     return {
+      createTime: [],
       pageTitle: '销服-业务主数据-配置主数据-选配动力',
       pageType: 'list',
       moduleKey: 'AISDC-vehicleRangePower',
@@ -256,6 +263,15 @@ export default {
     this.getData();
   },
   methods: {
+    changeNewTime (value, key) {
+      if (value) {
+        this.form[`${key}Start`] = value[0];
+        this.form[`${key}End`] = value[1];
+      } else {
+        this.form[`${key}Start`] = '';
+        this.form[`${key}End`] = '';
+      }
+    },
     handleImport () {
       this.uploadDialogVisible = true;
     },
@@ -272,6 +288,8 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
+      this.createTime = [];
+      this.$refs.createTime.clearTime();
       this.getData();
     },
     exportExcel () {
@@ -365,13 +383,13 @@ export default {
         }
       });
 
-      if (this.form.createTime) {
-        delete data.createTime;
-        if (this.form.createTime.length > 1) {
-          data.createTimeStart = this.form.createTime[0];
-          data.createTimeEnd = this.form.createTime[1];
-        }
-      }
+      // if (this.form.createTime) {
+      //   delete data.createTime;
+      //   if (this.form.createTime.length > 1) {
+      //     data.createTimeStart = this.form.createTime[0];
+      //     data.createTimeEnd = this.form.createTime[1];
+      //   }
+      // }
 
       return data;
     },
