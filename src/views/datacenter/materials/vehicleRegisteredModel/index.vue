@@ -26,7 +26,7 @@
       <el-form-item label="状态"  v-show="this.visibleCount === 3 || show">
         <fetch-select
           :request="fetchOptions"
-          enumCode="xxx"
+          enumCode="StatusEnum"
           v-model="form.statusIncludeList"
           placeholder="请选择"
           clearable
