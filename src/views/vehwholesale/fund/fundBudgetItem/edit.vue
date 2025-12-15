@@ -23,19 +23,21 @@
                   placeholder="请输入"
                   v-model="form.budgetItemCode"
                   clearable
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="状态" prop="status">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="xxx"
+                  enumCode="StatusEnum"
                   v-model="form.status"
                   placeholder="请选择"
                   clearable
                   filterable
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="状态变更描述" prop="statusDesc">
+              <!-- <el-form-item label="状态变更描述" prop="statusDesc">
                 <fetch-select
                   :request="fetchOptions"
                   enumCode="xxx"
@@ -44,12 +46,13 @@
                   clearable
                   filterable
                 />
-              </el-form-item>
-              <el-form-item label="创建者名称" prop="creatorName">
+              </el-form-item> -->
+              <el-form-item label="创建人" prop="creatorName">
                 <el-input
                   placeholder="请输入"
                   v-model="form.creatorName"
                   clearable
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="创建时间" prop="createTime">
@@ -61,9 +64,10 @@
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
                   align="right"
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="修改者名称" prop="modifierName">
+              <!-- <el-form-item label="修改者名称" prop="modifierName">
                 <el-input
                   placeholder="请输入"
                   v-model="form.modifierName"
@@ -108,7 +112,7 @@
                   v-model="form.remark"
                   clearable
                 />
-              </el-form-item>
+              </el-form-item> -->
             </el-form>
           </div>
         </section>
@@ -165,8 +169,8 @@ export default {
     return {
       pageTitle: '账户管理-基础配置-预算科目管理',
       pageType: 'edit',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-fundBudgetItem',
+      // TIPS: 权限前缀 AISWH，根据实际情况修改
+      moduleKey: 'AISWH-fundBudgetItem',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
@@ -258,11 +262,12 @@ export default {
     },
     getDefautlForm () {
       // TIPS: 此处可添加表单默认值，如当前用户信息等
-      // const userInfo = this.$store.state.user.userInfo;
+      const userInfo = this.$store.state.user.userInfo;
       return {
-        ...defaultForm
-        // ownerId: userInfo.userId,
-        // ownerName: userInfo.userName,
+        ...defaultForm,
+        // creatorId: userInfo.userId,
+        creatorName: userInfo.userName,
+        status: 1,
       };
     },
     // handleJumpAuditLog () {

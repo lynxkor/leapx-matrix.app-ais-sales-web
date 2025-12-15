@@ -173,8 +173,8 @@ export default {
     return {
       pageTitle: '账户管理-基础配置-销售公司管理',
       pageType: 'edit',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-fundSaleCompany',
+      // TIPS: 权限前缀 AISWH，根据实际情况修改
+      moduleKey: 'AISWH-fundSaleCompany',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,

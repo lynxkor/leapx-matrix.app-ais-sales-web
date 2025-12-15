@@ -89,8 +89,8 @@ export default {
     return {
       pageTitle: '账户管理-基础配置-返利自动返还设置管理',
       pageType: 'detail',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-fundRebateReturnConfig',
+      // TIPS: 权限前缀 AISWH，根据实际情况修改
+      moduleKey: 'AISWH-fundRebateReturnConfig',
       loading: true,
       info: {},
       yes_no_enum_map: YES_NO_ENUM_MAP

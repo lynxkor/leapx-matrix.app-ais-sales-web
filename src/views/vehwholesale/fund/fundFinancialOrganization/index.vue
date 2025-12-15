@@ -117,7 +117,7 @@ export default {
     return {
       pageTitle: '账户管理-基础配置-金融机构管理',
       pageType: 'list',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
+      // TIPS: 权限前缀 AISWH，根据实际情况修改
       moduleKey: 'AISWH-fundFinancialOrganization',
       form: {
         ...defaultForm
@@ -234,7 +234,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '账户管理-基础配置-金融机构管理',
-        dataFetchPath: 'vehwholesale/web/fund/fundFinancialOrganization/page',
+        dataFetchPath: 'vw/web/fund/fundFinancialOrganization/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
