@@ -145,7 +145,7 @@ export default {
             }]
           },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'remark', label: '说明', visible: true, width: 200 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
