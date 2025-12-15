@@ -122,8 +122,8 @@ export default {
     return {
       pageTitle: '账户管理-整车资金-整车资金账户管理',
       pageType: 'detail',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-account',
+      // TIPS: 权限前缀 AISWH，根据实际情况修改
+      moduleKey: 'AISWH-account',
       loading: true,
       info: {},
       yes_no_enum_map: YES_NO_ENUM_MAP
