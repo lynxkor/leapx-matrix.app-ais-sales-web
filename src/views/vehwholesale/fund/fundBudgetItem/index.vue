@@ -125,8 +125,8 @@ export default {
     return {
       pageTitle: '账户管理-基础配置-预算科目管理',
       pageType: 'list',
-      // TIPS: 权限前缀 AISWH，根据实际情况修改
-      moduleKey: 'AISWH-fundBudgetItem',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-fundBudgetItem',
       form: {
         ...defaultForm
       },
@@ -165,9 +165,9 @@ export default {
           { props: 'budgetItemCode', label: '预算科目编码', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
+          { props: 'modifierName', label: '修改人', visible: true, width: 200 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
             props: 'operate',

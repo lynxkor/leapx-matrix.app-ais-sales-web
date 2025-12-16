@@ -6,21 +6,21 @@
       :model="form"
       size="small"
       label-position="right"
-      label-width="150px"
+      label-width="100px"
       class="ais-search-form"
     >
-      <el-form-item label="编码">
+      <!-- <el-form-item label="编码">
         <el-input
           placeholder="请输入"
           v-model="form.rebateReturnConfigCode"
           clearable
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="返利类型">
         <fetch-select
           :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.rebateType"
+          enumCode="vw_rebate_type"
+          v-model="form.rebateTypes"
           placeholder="请选择"
           clearable
           multiple
@@ -28,36 +28,47 @@
         />
       </el-form-item>
       <el-form-item label="车系名称"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.vehicleSeriesName"
-          clearable
+        <fetch-select
+        filterable
+        clearable
+        remote
+        v-model="form.vehicleSeriesIds"
+        :remote-method="getVehicleSeriesList"
+        value-key="id"
+        label-key="name"
+        multiple
         />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="预算科目">
-          <el-input
-            placeholder="请输入"
-            v-model="form.budgetItemId"
+          <fetch-select
+            filterable
             clearable
-          />
+            remote
+            v-model="form.budgetItemIds"
+            :remote-method="getFundBudgetItemList"
+            value-key="id"
+            label-key="name"
+            multiple
+        />
         </el-form-item>
         <el-form-item label="费用支持类型">
           <fetch-select
-            :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.feeSupportTypeId"
-            placeholder="请选择"
-            clearable
-            multiple
             filterable
-          />
+            clearable
+            remote
+            v-model="form.feeSupportTypeIds"
+            :remote-method="getFeeSuportTypeList"
+            value-key="id"
+            label-key="name"
+            multiple
+        />
         </el-form-item>
         <el-form-item label="状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.status"
+            enumCode="StatusEnum"
+            v-model="form.statusIncludeList"
             placeholder="请选择"
             clearable
             multiple
@@ -113,7 +124,9 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/fund/fundRebateReturnConfig/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { listIdNames as fundBudgetItemList } from '@/api/vehwholesale/fund/fundBudgetItem/index';
+import { listIdNames as fundFeeSuportTypeList } from '@/api/vehwholesale/fund/fundFeeSupportType/index';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -149,8 +162,8 @@ export default {
     return {
       pageTitle: '账户管理-基础配置-返利自动返还设置管理',
       pageType: 'list',
-      // TIPS: 权限前缀 AISWH，根据实际情况修改
-      moduleKey: 'AISWH-fundRebateReturnConfig',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-fundRebateReturnConfig',
       form: {
         ...defaultForm
       },
@@ -186,16 +199,16 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'rebateType', label: '返利类型', visible: true, width: 200 },
+          { props: 'rebateTypeLabel', label: '返利类型', visible: true, width: 200 },
           { props: 'vehicleSeriesName', label: '车系名称', visible: true, width: 200 },
-          { props: 'budgetItemId', label: '预算科目', visible: true, width: 200 },
-          { props: 'feeSupportTypeId', label: '费用支持类型', visible: true, width: 200 },
+          { props: 'budgetItemName', label: '预算科目', visible: true, width: 200 },
+          { props: 'feeSupportTypeName', label: '费用支持类型', visible: true, width: 200 },
           { props: 'effectiveStartTime', label: '有效开始日期', visible: true, width: 200 },
-          { props: 'effectiveEndTime', label: '有效结束日期（包含，可为空，表示长期有效）', visible: true, width: 200 },
-          { props: 'remark', label: '备注（说明）', visible: true, width: 200 },
-          { props: 'status', label: '状态', visible: true, width: 200 },
-          { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
+          { props: 'effectiveEndTime', label: '有效结束日期', visible: true, width: 200 },
+          { props: 'remark', label: '备注', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',
@@ -214,24 +227,6 @@ export default {
                 });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],
@@ -363,6 +358,18 @@ export default {
       }
       return [];
     },
+
+    async getVehicleSeriesList (params) {
+      return vehicleSeriesList({ seriesNameLike: params });
+    },
+
+    async getFundBudgetItemList (params) {
+      return fundBudgetItemList({ budgetItemNameLike: params });
+    },
+    async getFeeSuportTypeList (params) {
+      return fundFeeSuportTypeList({ budgetItemNameLike: params });
+    },
+
     // 批量删除
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];

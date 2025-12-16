@@ -74,8 +74,8 @@ export default {
     return {
       pageTitle: '账户管理-基础配置-销售公司管理',
       pageType: 'detail',
-      // TIPS: 权限前缀 AISWH，根据实际情况修改
-      moduleKey: 'AISWH-fundSaleCompany',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-fundSaleCompany',
       loading: true,
       info: {},
       yes_no_enum_map: YES_NO_ENUM_MAP

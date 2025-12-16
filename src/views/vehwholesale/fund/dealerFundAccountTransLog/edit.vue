@@ -60,7 +60,6 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  align="right"
                 />
               </el-form-item>
               <el-form-item label="交易凭证号" prop="transactionReceiptCode">
@@ -134,7 +133,6 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  align="right"
                 />
               </el-form-item>
               <el-form-item label="主键" prop="id">
@@ -180,7 +178,6 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  align="right"
                 />
               </el-form-item>
               <el-form-item label="状态" prop="status">
@@ -327,8 +324,8 @@ export default {
     return {
       pageTitle: '账户管理-整车资金-整车资金账户交易流水管理',
       pageType: 'edit',
-      // TIPS: 权限前缀 AISWH，根据实际情况修改
-      moduleKey: 'AISWH-accountTranslog',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-accountTranslog',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,

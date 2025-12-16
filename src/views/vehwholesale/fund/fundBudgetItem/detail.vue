@@ -19,19 +19,18 @@
             <el-form-item label="预算科目编码：" prop="budgetItemCode">
               {{ info.budgetItemCode  }}
             </el-form-item>
-            <el-form-item label="状态：" prop="status">
-              {{ info.status  }}
+            <el-form-item label="状态：" prop="statusLabel">
             </el-form-item>
-            <el-form-item label="状态变更描述：" prop="statusDesc">
+            <!-- <el-form-item label="状态变更描述：" prop="statusDesc">
               {{ info.statusDesc  }}
-            </el-form-item>
-            <el-form-item label="创建者名称：" prop="creatorName">
+            </el-form-item> -->
+            <el-form-item label="创建人：" prop="creatorName">
               {{ info.creatorName  }}
             </el-form-item>
             <el-form-item label="创建时间：" prop="createTime">
               {{ info.createTime  }}
             </el-form-item>
-            <el-form-item label="修改者名称：" prop="modifierName">
+            <!-- <el-form-item label="修改者名称：" prop="modifierName">
               {{ info.modifierName  }}
             </el-form-item>
             <el-form-item label="修改时间：" prop="updateTime">
@@ -48,7 +47,7 @@
             </el-form-item>
             <el-form-item label="备注（说明）：" prop="remark">
               {{ info.remark  }}
-            </el-form-item>
+            </el-form-item> -->
           </el-form>
         </div>
       </section>
@@ -71,8 +70,8 @@ export default {
     return {
       pageTitle: '账户管理-基础配置-预算科目管理',
       pageType: 'detail',
-      // TIPS: 权限前缀 AISWH，根据实际情况修改
-      moduleKey: 'AISWH-fundBudgetItem',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-fundBudgetItem',
       loading: true,
       info: {},
       yes_no_enum_map: YES_NO_ENUM_MAP

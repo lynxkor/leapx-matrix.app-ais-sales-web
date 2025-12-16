@@ -21,7 +21,7 @@
         <div class="common-section-header">
           <h2>可配物料信息</h2>
         </div>
-        <el-form label-width="150px" inline>
+        <el-form label-width="120px" inline>
           <el-form-item v-for="(item, index) in materialsLabel" :key="index" :label="item.label" :class="item.class">{{ info.matchMaterials[item.prop] || '' }}</el-form-item>
         </el-form>
       </section>

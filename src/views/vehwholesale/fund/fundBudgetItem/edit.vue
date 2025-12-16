@@ -23,7 +23,7 @@
                   placeholder="请输入"
                   v-model="form.budgetItemCode"
                   clearable
-                  disabled
+                  :disabled="id"
                 />
               </el-form-item>
               <el-form-item label="状态" prop="status">
@@ -63,7 +63,6 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  align="right"
                   disabled
                 />
               </el-form-item>
@@ -82,7 +81,6 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  align="right"
                 />
               </el-form-item>
               <el-form-item label="主键" prop="id">
@@ -134,6 +132,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import moment from 'moment';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -154,12 +153,12 @@ const defaultForm = {
 export default {
   name: 'fundBudgetItemEdit',
   // 集中视图预留
-  props: {
-    id: {
-      type: [String, Number],
-      default: null
-    }
-  },
+  // props: {
+  //   id: {
+  //     type: [String, Number],
+  //     default: null
+  //   }
+  // },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
     FetchSelect,
@@ -167,10 +166,11 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
+      id: this.$route.query.id,
       pageTitle: '账户管理-基础配置-预算科目管理',
       pageType: 'edit',
-      // TIPS: 权限前缀 AISWH，根据实际情况修改
-      moduleKey: 'AISWH-fundBudgetItem',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-fundBudgetItem',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
@@ -268,6 +268,7 @@ export default {
         // creatorId: userInfo.userId,
         creatorName: userInfo.userName,
         status: 1,
+        createTime: moment().format('YYYY-MM-DD HH:mm:ss')
       };
     },
     // handleJumpAuditLog () {

@@ -102,7 +102,8 @@ const defaultForm = {
   codeLike: '', // 模糊查询
   codeList: [], // 精确查询
   bizCode: '',
-  vinList: [],
+  vinLike: '', // 模糊查询
+  vinList: [], // 精确查询
   remarkLike: '',
   createByName: '',
   updateByName: '',
@@ -345,6 +346,11 @@ export default {
         delete data.codeList;
         data.codeLike = this.form.codeList[0] || '';
       }
+      if (Array.isArray(this.form.vinList) && this.form.vinList.length <= 1) {
+        delete data.vinList;
+        data.vinLike = this.form.vinList[0] || '';
+      }
+
       return data;
     },
     async fetchOptions (code) {

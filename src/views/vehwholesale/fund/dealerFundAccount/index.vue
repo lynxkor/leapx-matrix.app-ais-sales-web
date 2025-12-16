@@ -147,8 +147,8 @@ export default {
     return {
       pageTitle: '账户管理-整车资金-整车资金账户管理',
       pageType: 'list',
-      // TIPS: 权限前缀 AISWH，根据实际情况修改
-      moduleKey: 'AISWH-dealerFundAccount',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-dealerFundAccount',
       form: {
         ...defaultForm
       },
