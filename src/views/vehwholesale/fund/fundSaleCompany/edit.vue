@@ -137,7 +137,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-
+import moment from 'moment';
 const defaultForm = {
   // 多选时字段有变化，自行修复
   companyCode: '',
@@ -173,8 +173,8 @@ export default {
     return {
       pageTitle: '账户管理-基础配置-销售公司管理',
       pageType: 'edit',
-      // TIPS: 权限前缀 AISWH，根据实际情况修改
-      moduleKey: 'AISWH-fundSaleCompany',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-fundSaleCompany',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
@@ -269,11 +269,12 @@ export default {
     },
     getDefautlForm () {
       // TIPS: 此处可添加表单默认值，如当前用户信息等
-      // const userInfo = this.$store.state.user.userInfo;
+      const userInfo = this.$store.state.user.userInfo;
       return {
-        ...defaultForm
+        ...defaultForm,
         // ownerId: userInfo.userId,
-        // ownerName: userInfo.userName,
+        creatorName: userInfo.userName,
+        createTime: moment().format('YYYY-MM-DD HH:mm:ss')
       };
     },
     // handleJumpAuditLog () {

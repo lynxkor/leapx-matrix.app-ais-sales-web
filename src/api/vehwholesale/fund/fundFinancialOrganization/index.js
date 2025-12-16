@@ -42,3 +42,10 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+/**
+ *  下拉框查询
+ * @param {Object} data
+ */
+export function listIdNames (data) {
+  return api.jsonPost(prefix + 'list', data);
+}

@@ -25,10 +25,10 @@
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="资金结算类型，仅包含：现金、融资、赊销-零跑" prop="settleFundType">
+              <el-form-item label="结算资金类型" prop="settleFundType">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="xxx"
+                  enumCode="vw_fundtype"
                   v-model="form.settleFundType"
                   placeholder="请选择"
                   clearable
@@ -36,27 +36,30 @@
                 />
               </el-form-item>
               <el-form-item label="SAP资金类型编码" prop="sapFundType">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
+               <el-input
+                  placeholder="请输入"
                   v-model="form.sapFundType"
+                  clearable
+                />
+              </el-form-item>
+              <el-form-item label="合格证发运方式" prop="certificateShippingWay">
+                 <fetch-select
+                  :request="fetchOptions"
+                  enumCode="vw_deliverytype"
+                  v-model="form.certificateShippingWay"
                   placeholder="请选择"
                   clearable
                   filterable
                 />
               </el-form-item>
-              <el-form-item label="合格证发运方式" prop="certificateShippingWay">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.certificateShippingWay"
-                  clearable
-                />
-              </el-form-item>
               <el-form-item label="是否开启银企直连" prop="enableBankDirectConnection">
-                <el-input
-                  placeholder="请输入"
+                 <fetch-select
+                  :request="fetchOptions"
+                  enumCode="BooleanEnum"
                   v-model="form.enableBankDirectConnection"
+                  placeholder="请选择"
                   clearable
+                  filterable
                 />
               </el-form-item>
               <el-form-item label="开启返利使用额度" prop="rebateUsageQuota">
@@ -67,23 +70,27 @@
                 />
               </el-form-item>
               <el-form-item label="是否是否生成采购记录" prop="createPurchaseRecord">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.createPurchaseRecord"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="状态" prop="status">
-                <fetch-select
+                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.status"
+                  enumCode="BooleanEnum"
+                  v-model="form.createPurchaseRecord"
                   placeholder="请选择"
                   clearable
                   filterable
                 />
               </el-form-item>
-              <el-form-item label="状态变更描述" prop="statusDesc">
+              <el-form-item label="状态" prop="status">
+                <fetch-select
+                  :request="fetchOptions"
+                  enumCode="StatusEnum"
+                  v-model="form.status"
+                  placeholder="请选择"
+                  clearable
+                  filterable
+                  disabled
+                />
+              </el-form-item>
+              <!-- <el-form-item label="状态变更描述" prop="statusDesc">
                 <fetch-select
                   :request="fetchOptions"
                   enumCode="xxx"
@@ -92,12 +99,13 @@
                   clearable
                   filterable
                 />
-              </el-form-item>
-              <el-form-item label="创建者名称" prop="creatorName">
+              </el-form-item> -->
+              <el-form-item label="创建人" prop="creatorName">
                 <el-input
                   placeholder="请输入"
                   v-model="form.creatorName"
                   clearable
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="创建时间" prop="createTime">
@@ -109,9 +117,10 @@
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
                   align="right"
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="主键" prop="id">
+              <!-- <el-form-item label="主键" prop="id">
                 <el-input
                   placeholder="请输入"
                   v-model="form.id"
@@ -156,7 +165,7 @@
                   v-model="form.remark"
                   clearable
                 />
-              </el-form-item>
+              </el-form-item> -->
             </el-form>
           </div>
         </section>
@@ -178,7 +187,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-
+import moment from 'moment';
 const defaultForm = {
   // 多选时字段有变化，自行修复
   organizationName: '',
@@ -219,8 +228,8 @@ export default {
     return {
       pageTitle: '账户管理-基础配置-金融机构管理',
       pageType: 'edit',
-      // TIPS: 权限前缀 AISWH，根据实际情况修改
-      moduleKey: 'AISWH-fundFinancialOrganization',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-fundFinancialOrganization',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
@@ -330,11 +339,13 @@ export default {
     },
     getDefautlForm () {
       // TIPS: 此处可添加表单默认值，如当前用户信息等
-      // const userInfo = this.$store.state.user.userInfo;
+      const userInfo = this.$store.state.user.userInfo;
       return {
-        ...defaultForm
-        // ownerId: userInfo.userId,
-        // ownerName: userInfo.userName,
+        ...defaultForm,
+        ownerId: userInfo.userId,
+        status: 1,
+        creatorName: userInfo.userName,
+        createTime: moment().format('YYYY-MM-DD HH:mm:ss')
       };
     },
     // handleJumpAuditLog () {

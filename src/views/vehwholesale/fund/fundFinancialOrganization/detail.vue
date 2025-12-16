@@ -11,7 +11,7 @@
           <h2>基础信息</h2>
         </div>
         <div class="common-section-body">
-          <el-form :inline="true" ref="ruleForm" label-width="120px">
+          <el-form :inline="true" ref="ruleForm" label-width="150px">
             <!-- TIPS: 根据实际情况调整展示字段 -->
             <el-form-item label="金融机构名称：" prop="organizationName">
               {{ info.organizationName  }}
@@ -19,37 +19,37 @@
             <el-form-item label="金融机构编码：" prop="organizationCode">
               {{ info.organizationCode  }}
             </el-form-item>
-            <el-form-item label="资金结算类型，仅包含：现金、融资、赊销-零跑：" prop="settleFundType">
-              {{ info.settleFundType  }}
+            <el-form-item label="结算资金类型：" prop="settleFundType">
+              {{ info.settleFundTypeLabel  }}
             </el-form-item>
             <el-form-item label="SAP资金类型编码：" prop="sapFundType">
               {{ info.sapFundType  }}
             </el-form-item>
             <el-form-item label="合格证发运方式：" prop="certificateShippingWay">
-              {{ info.certificateShippingWay  }}
+              {{ info.certificateShippingWayLabel  }}
             </el-form-item>
             <el-form-item label="是否开启银企直连：" prop="enableBankDirectConnection">
-              {{ info.enableBankDirectConnection  }}
+              {{ info.enableBankDirectConnectionLabel  }}
             </el-form-item>
             <el-form-item label="开启返利使用额度：" prop="rebateUsageQuota">
               {{ info.rebateUsageQuota  }}
             </el-form-item>
             <el-form-item label="是否是否生成采购记录：" prop="createPurchaseRecord">
-              {{ info.createPurchaseRecord  }}
+              {{ info.createPurchaseRecordLabel  }}
             </el-form-item>
             <el-form-item label="状态：" prop="status">
-              {{ info.status  }}
+              {{ info.statusLabel  }}
             </el-form-item>
-            <el-form-item label="状态变更描述：" prop="statusDesc">
+            <!-- <el-form-item label="状态变更描述：" prop="statusDesc">
               {{ info.statusDesc  }}
-            </el-form-item>
-            <el-form-item label="创建者名称：" prop="creatorName">
+            </el-form-item> -->
+            <el-form-item label="创建人：" prop="creatorName">
               {{ info.creatorName  }}
             </el-form-item>
             <el-form-item label="创建时间：" prop="createTime">
               {{ info.createTime  }}
             </el-form-item>
-            <el-form-item label="主键：" prop="id">
+            <!-- <el-form-item label="主键：" prop="id">
               {{ info.id  }}
             </el-form-item>
             <el-form-item label="创建者：" prop="creator">
@@ -66,7 +66,7 @@
             </el-form-item>
             <el-form-item label="备注（说明）：" prop="remark">
               {{ info.remark  }}
-            </el-form-item>
+            </el-form-item> -->
           </el-form>
         </div>
       </section>
@@ -89,8 +89,8 @@ export default {
     return {
       pageTitle: '账户管理-基础配置-金融机构管理',
       pageType: 'detail',
-      // TIPS: 权限前缀 AISWH，根据实际情况修改
-      moduleKey: 'AISWH-fundFinancialOrganization',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-fundFinancialOrganization',
       loading: true,
       info: {},
       yes_no_enum_map: YES_NO_ENUM_MAP
