@@ -29,14 +29,14 @@
               </el-form-item>
               <el-form-item label="创建时间" prop="createTime">
                 <el-date-picker v-model="form.createTime" :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期" end-placeholder="结束日期" align="right" disabled />
+                  value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期" end-placeholder="结束日期" disabled />
               </el-form-item>
               <!-- <el-form-item label="更改人" prop="modifierName">
                 <el-input placeholder="请输入" v-model="form.modifierName" clearable />
               </el-form-item>
               <el-form-item label="更改时间" prop="updateTime">
                 <el-date-picker v-model="form.updateTime" :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期" end-placeholder="结束日期" align="right" />
+                  value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期" end-placeholder="结束日期" />
               </el-form-item>
               <el-form-item label="主键" prop="id">
                 <el-input placeholder="请输入" v-model="form.id" clearable />

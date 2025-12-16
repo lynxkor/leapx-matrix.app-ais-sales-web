@@ -63,7 +63,6 @@
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            align="right"
           />
         </el-form-item>
         <el-form-item label="交易凭证号">
@@ -139,7 +138,6 @@
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            align="right"
           />
         </el-form-item>
       </template>

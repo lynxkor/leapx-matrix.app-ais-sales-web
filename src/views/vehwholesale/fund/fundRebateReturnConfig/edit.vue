@@ -60,7 +60,6 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  align="right"
                 />
               </el-form-item>
               <el-form-item label="有效结束日期（包含，可为空，表示长期有效）" prop="effectiveEndTime">
@@ -71,7 +70,6 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  align="right"
                 />
               </el-form-item>
               <el-form-item label="备注（说明）" prop="remark">
@@ -116,7 +114,6 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  align="right"
                 />
               </el-form-item>
               <el-form-item label="主键" prop="id">
@@ -155,7 +152,6 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  align="right"
                 />
               </el-form-item>
               <el-form-item label="车系ID" prop="vehicleSeriesId">
