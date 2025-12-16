@@ -12,36 +12,31 @@
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
               <el-form-item label="费用支持类型名称" prop="feeSupportTypeName">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
+                <el-input
+                  placeholder="请输入"
                   v-model="form.feeSupportTypeName"
-                  placeholder="请选择"
                   clearable
-                  filterable
                 />
               </el-form-item>
               <el-form-item label="费用支持类型编码" prop="feeSupportTypeCode">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
+                <el-input
+                  placeholder="请输入"
                   v-model="form.feeSupportTypeCode"
-                  placeholder="请选择"
                   clearable
-                  filterable
+                  :disabled="id"
                 />
               </el-form-item>
               <el-form-item label="部门类型" prop="departmentType">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="xxx"
+                  enumCode="vw_department_type"
                   v-model="form.departmentType"
                   placeholder="请选择"
                   clearable
                   filterable
                 />
               </el-form-item>
-              <el-form-item label="备注（说明）" prop="remark">
+              <el-form-item label="备注" prop="remark">
                 <el-input
                   placeholder="请输入"
                   v-model="form.remark"
@@ -51,14 +46,15 @@
               <el-form-item label="状态" prop="status">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="xxx"
+                  enumCode="StatusEnum"
                   v-model="form.status"
                   placeholder="请选择"
                   clearable
                   filterable
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="状态变更描述" prop="statusDesc">
+              <!-- <el-form-item label="状态变更描述" prop="statusDesc">
                 <fetch-select
                   :request="fetchOptions"
                   enumCode="xxx"
@@ -67,12 +63,13 @@
                   clearable
                   filterable
                 />
-              </el-form-item>
-              <el-form-item label="创建者名称" prop="creatorName">
+              </el-form-item> -->
+              <el-form-item label="创建人" prop="creatorName">
                 <el-input
                   placeholder="请输入"
                   v-model="form.creatorName"
                   clearable
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="创建时间" prop="createTime">
@@ -83,10 +80,10 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  align="right"
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="主键" prop="id">
+              <!-- <el-form-item label="主键" prop="id">
                 <el-input
                   placeholder="请输入"
                   v-model="form.id"
@@ -122,9 +119,8 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  align="right"
                 />
-              </el-form-item>
+              </el-form-item> -->
             </el-form>
           </div>
         </section>
@@ -146,7 +142,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-
+import moment from 'moment';
 const defaultForm = {
   // 多选时字段有变化，自行修复
   feeSupportTypeName: '',
@@ -167,12 +163,12 @@ const defaultForm = {
 export default {
   name: 'fundFeeSupportTypeEdit',
   // 集中视图预留
-  props: {
-    id: {
-      type: [String, Number],
-      default: null
-    }
-  },
+  // props: {
+  //   id: {
+  //     type: [String, Number],
+  //     default: null
+  //   }
+  // },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
     FetchSelect,
@@ -180,10 +176,11 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
+      id: this.$route.query.id,
       pageTitle: '账户管理-基础配置-费用支持类型管理',
       pageType: 'edit',
-      // TIPS: 权限前缀 AISWH，根据实际情况修改
-      moduleKey: 'AISWH-fundFeeSupportType',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-fundFeeSupportType',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
@@ -278,11 +275,13 @@ export default {
     },
     getDefautlForm () {
       // TIPS: 此处可添加表单默认值，如当前用户信息等
-      // const userInfo = this.$store.state.user.userInfo;
+      const userInfo = this.$store.state.user.userInfo;
       return {
-        ...defaultForm
+        ...defaultForm,
+        status: 1,
         // ownerId: userInfo.userId,
-        // ownerName: userInfo.userName,
+        creatorName: userInfo.userName,
+        createTime: moment().format('YYYY-MM-DD HH:mm:ss')
       };
     },
     // handleJumpAuditLog () {

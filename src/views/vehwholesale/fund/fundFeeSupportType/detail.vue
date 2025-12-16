@@ -11,7 +11,7 @@
           <h2>基础信息</h2>
         </div>
         <div class="common-section-body">
-          <el-form :inline="true" ref="ruleForm" label-width="120px">
+          <el-form :inline="true" ref="ruleForm" label-width="150px">
             <!-- TIPS: 根据实际情况调整展示字段 -->
             <el-form-item label="费用支持类型名称：" prop="feeSupportTypeName">
               {{ info.feeSupportTypeName  }}
@@ -19,25 +19,25 @@
             <el-form-item label="费用支持类型编码：" prop="feeSupportTypeCode">
               {{ info.feeSupportTypeCode  }}
             </el-form-item>
-            <el-form-item label="部门类型：" prop="departmentType">
-              {{ info.departmentType  }}
+            <el-form-item label="部门：" prop="departmentType">
+              {{ info.departmentTypeLabel  }}
             </el-form-item>
-            <el-form-item label="备注（说明）：" prop="remark">
+            <el-form-item label="备注：" prop="remark">
               {{ info.remark  }}
             </el-form-item>
             <el-form-item label="状态：" prop="status">
-              {{ info.status  }}
+              {{ info.statusLabel  }}
             </el-form-item>
-            <el-form-item label="状态变更描述：" prop="statusDesc">
+            <!-- <el-form-item label="状态变更描述：" prop="statusDesc">
               {{ info.statusDesc  }}
-            </el-form-item>
-            <el-form-item label="创建者名称：" prop="creatorName">
+            </el-form-item> -->
+            <el-form-item label="创建人：" prop="creatorName">
               {{ info.creatorName  }}
             </el-form-item>
             <el-form-item label="创建时间：" prop="createTime">
               {{ info.createTime  }}
             </el-form-item>
-            <el-form-item label="主键：" prop="id">
+            <!-- <el-form-item label="主键：" prop="id">
               {{ info.id  }}
             </el-form-item>
             <el-form-item label="创建者：" prop="creator">
@@ -51,7 +51,7 @@
             </el-form-item>
             <el-form-item label="修改时间：" prop="updateTime">
               {{ info.updateTime  }}
-            </el-form-item>
+            </el-form-item> -->
           </el-form>
         </div>
       </section>
@@ -74,8 +74,8 @@ export default {
     return {
       pageTitle: '账户管理-基础配置-费用支持类型管理',
       pageType: 'detail',
-      // TIPS: 权限前缀 AISWH，根据实际情况修改
-      moduleKey: 'AISWH-fundFeeSupportType',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-fundFeeSupportType',
       loading: true,
       info: {},
       yes_no_enum_map: YES_NO_ENUM_MAP

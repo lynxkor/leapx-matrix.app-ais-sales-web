@@ -10,11 +10,12 @@
       class="ais-search-form"
     >
       <el-form-item label="系列名称">
-        <el-input
+        <tag-input v-model="form.modelLineNameList" placeholder="请输入" />
+        <!-- <el-input
           placeholder="请输入"
           v-model="form.modelLineNameLike"
           clearable
-        />
+        /> -->
       </el-form-item>
       <el-form-item label="品牌名称">
         <fetch-select :options="brandNameList"
@@ -55,7 +56,6 @@
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            align="right"
           />
         </el-form-item>
         <el-form-item label="更改人">
@@ -74,7 +74,6 @@
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            align="right"
           />
         </el-form-item> -->
       </span>
@@ -132,10 +131,13 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import { downloadExcel } from '@/libs/utils';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   modelLineName: '',
+  modelLineNameList: [],
+  modelLineNameLike: '',
   brandIdList: '',
   status: '',
   remark: '',
@@ -153,6 +155,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
@@ -379,6 +382,10 @@ export default {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
+      }
+      if (Array.isArray(this.form.modelLineNameList) && this.form.modelLineNameList.length <= 1) {
+        delete data.modelLineNameList;
+        data.modelLineNameLike = this.form.modelLineNameList[0] || '';
       }
 
       return data;

@@ -10,10 +10,11 @@
       class="ais-search-form"
     >
       <el-form-item label="系列名称" prop="modelLineIds">
-        <fetch-select remote
+        <tag-input v-model="form.seriesNameList" placeholder="请输入" />
+        <!-- <fetch-select remote
         :params="form.modelLineName"
         :remote-method="getVehicleModelLineList"
-         v-model="form.modelLineIds" placeholder="请选择" value-key="id" label-key="name" multiple clearable collapseTags filterable/>
+         v-model="form.modelLineIds" placeholder="请选择" value-key="id" label-key="name" multiple clearable collapseTags filterable/> -->
         </el-form-item>
       <el-form-item label="车系名称">
         <el-input
@@ -57,7 +58,6 @@
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            align="right"
           />
         </el-form-item>
         <el-form-item label="修改者名称">
@@ -76,7 +76,6 @@
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            align="right"
           />
         </el-form-item> -->
       </template>
@@ -136,9 +135,12 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  seriesNameList: [],
+  seriesNameLike: '',
   seriesName: '',
   modelLineName: '',
   status: '',
@@ -157,6 +159,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
@@ -382,6 +385,10 @@ export default {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
+      }
+      if (Array.isArray(this.form.seriesNameList) && this.form.seriesNameList.length <= 1) {
+        delete data.seriesNameList;
+        data.seriesNameLike = this.form.seriesNameList[0] || '';
       }
 
       return data;

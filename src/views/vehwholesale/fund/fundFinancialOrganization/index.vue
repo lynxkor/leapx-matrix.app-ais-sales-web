@@ -12,7 +12,7 @@
       <el-form-item label="金融机构名称">
         <el-input
           placeholder="请输入"
-          v-model="form.organizationName"
+          v-model="form.organizationNameLike"
           clearable
         />
       </el-form-item>
@@ -26,8 +26,8 @@
       <el-form-item label="状态"  v-show="this.visibleCount === 3 || show">
         <fetch-select
           :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.status"
+          enumCode="statusEnum"
+          v-model="form.statusIncludeList"
           placeholder="请选择"
           clearable
           multiple
@@ -48,9 +48,9 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <!-- <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button> -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
     </div>
@@ -117,8 +117,8 @@ export default {
     return {
       pageTitle: '账户管理-基础配置-金融机构管理',
       pageType: 'list',
-      // TIPS: 权限前缀 AISWH，根据实际情况修改
-      moduleKey: 'AISWH-fundFinancialOrganization',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-fundFinancialOrganization',
       form: {
         ...defaultForm
       },
@@ -155,15 +155,15 @@ export default {
             }]
           },
           { props: 'organizationCode', label: '金融机构编码', visible: true, width: 200 },
-          { props: 'settleFundType', label: '资金结算类型，仅包含：现金、融资、赊销-零跑', visible: true, width: 200 },
+          { props: 'settleFundTypeLabel', label: '资金结算类型', visible: true, width: 200 },
           { props: 'sapFundType', label: 'SAP资金类型编码', visible: true, width: 200 },
-          { props: 'certificateShippingWay', label: '合格证发运方式', visible: true, width: 200 },
-          { props: 'enableBankDirectConnection', label: '是否开启银企直连', visible: true, width: 200 },
+          { props: 'certificateShippingWayLabel', label: '合格证发运方式', visible: true, width: 200 },
+          { props: 'enableBankDirectConnectionLabel', label: '是否开启银企直连', visible: true, width: 200 },
           { props: 'rebateUsageQuota', label: '开启返利使用额度', visible: true, width: 200 },
-          { props: 'createPurchaseRecord', label: '是否是否生成采购记录', visible: true, width: 200 },
-          { props: 'status', label: '状态', visible: true, width: 200 },
-          { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
+          { props: 'createPurchaseRecordLabel', label: '是否是否生成采购记录', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',
@@ -182,24 +182,6 @@ export default {
                 });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],

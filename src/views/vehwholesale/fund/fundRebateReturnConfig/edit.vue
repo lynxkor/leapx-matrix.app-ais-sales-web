@@ -60,7 +60,6 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  align="right"
                 />
               </el-form-item>
               <el-form-item label="有效结束日期（包含，可为空，表示长期有效）" prop="effectiveEndTime">
@@ -71,7 +70,6 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  align="right"
                 />
               </el-form-item>
               <el-form-item label="备注（说明）" prop="remark">
@@ -116,7 +114,6 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  align="right"
                 />
               </el-form-item>
               <el-form-item label="主键" prop="id">
@@ -155,7 +152,6 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  align="right"
                 />
               </el-form-item>
               <el-form-item label="车系ID" prop="vehicleSeriesId">
@@ -186,7 +182,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-
+import moment from 'moment';
 const defaultForm = {
   // 多选时字段有变化，自行修复
   rebateReturnConfigCode: '',
@@ -227,8 +223,8 @@ export default {
     return {
       pageTitle: '账户管理-基础配置-返利自动返还设置管理',
       pageType: 'edit',
-      // TIPS: 权限前缀 AISWH，根据实际情况修改
-      moduleKey: 'AISWH-fundRebateReturnConfig',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-fundRebateReturnConfig',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
@@ -338,11 +334,12 @@ export default {
     },
     getDefautlForm () {
       // TIPS: 此处可添加表单默认值，如当前用户信息等
-      // const userInfo = this.$store.state.user.userInfo;
+      const userInfo = this.$store.state.user.userInfo;
       return {
-        ...defaultForm
+        ...defaultForm,
         // ownerId: userInfo.userId,
-        // ownerName: userInfo.userName,
+        creatorName: userInfo.userName,
+        createTime: moment().format('YYYY-MM-DD HH:mm:ss')
       };
     },
     // handleJumpAuditLog () {

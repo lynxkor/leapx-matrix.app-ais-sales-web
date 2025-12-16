@@ -37,8 +37,8 @@
       />
     </el-form-item>
     <el-form-item label="车型名称" v-if="visibleCount === 3 || show">
-      <!-- <el-ipnuit v-model=""></el-ipnuit> -->
-      <fetch-select
+        <tag-input v-model="form.modelNameList" placeholder="请输入" />
+      <!-- <fetch-select
         v-model="form.idSet"
         placeholder="请选择"
         labelKey="name"
@@ -50,7 +50,7 @@
         remote
         reserve-keyword
         :remote-method="modelNameSearch"
-      />
+      /> -->
     </el-form-item>
       <!-- <el-form-item label="年型名称">
         <fetch-select
@@ -150,9 +150,12 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 // import auditDialog from '@/libs/components/auditDialog';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  modelNameLike: '',
+  modelNameList: [],
   modelLineIdList: [],
   seriesIdList: [],
   idSet: [],
@@ -178,6 +181,7 @@ export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
     // auditDialog,
+    TagInput,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
@@ -528,6 +532,10 @@ export default {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
+      }
+      if (Array.isArray(this.form.modelNameList) && this.form.modelNameList.length <= 1) {
+        delete data.modelNameList;
+        data.modelNameLike = this.form.modelNameList[0] || '';
       }
 
       return data;

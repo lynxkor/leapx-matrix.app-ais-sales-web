@@ -121,7 +121,6 @@
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            align="right"
           />
         </el-form-item>
         <el-form-item label="销售公司">
@@ -141,7 +140,6 @@
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            align="right"
           />
         </el-form-item> -->
       </template>
@@ -239,8 +237,8 @@ export default {
     return {
       pageTitle: '账户管理-整车资金-整车资金账户管理',
       pageType: 'list',
-      // TIPS: 权限前缀 AISWH，根据实际情况修改
-      moduleKey: 'AISWH-dealerFundAccount',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-dealerFundAccount',
       form: {
         ...defaultForm
       },
