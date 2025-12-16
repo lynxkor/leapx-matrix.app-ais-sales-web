@@ -155,7 +155,7 @@ export default {
             }]
           },
           { props: 'feeSupportTypeCode', label: '费用支持类型编码', visible: true, width: 200 },
-          { props: 'departmentType', label: '部门', visible: true, width: 200 },
+          { props: 'departmentTypeLabel', label: '部门', visible: true, width: 200 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },

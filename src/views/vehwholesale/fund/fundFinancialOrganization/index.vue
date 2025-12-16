@@ -157,7 +157,7 @@ export default {
           { props: 'organizationCode', label: '金融机构编码', visible: true, width: 200 },
           { props: 'settleFundTypeLabel', label: '资金结算类型', visible: true, width: 200 },
           { props: 'sapFundType', label: 'SAP资金类型编码', visible: true, width: 200 },
-          { props: 'certificateShippingWay', label: '合格证发运方式', visible: true, width: 200 },
+          { props: 'certificateShippingWayLabel', label: '合格证发运方式', visible: true, width: 200 },
           { props: 'enableBankDirectConnectionLabel', label: '是否开启银企直连', visible: true, width: 200 },
           { props: 'rebateUsageQuota', label: '开启返利使用额度', visible: true, width: 200 },
           { props: 'createPurchaseRecordLabel', label: '是否是否生成采购记录', visible: true, width: 200 },
