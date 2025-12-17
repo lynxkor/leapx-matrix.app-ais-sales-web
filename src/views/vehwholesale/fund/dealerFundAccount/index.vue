@@ -95,6 +95,7 @@
         @handleSelect="handleSelectionChange"
       />
     </div>
+    <setEntOrderSettleFlag ref="setEntOrderSettleFlag" />
   </div>
 </template>
 
@@ -110,6 +111,7 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+import setEntOrderSettleFlag from '@/views/vehwholesale/fund/dealerFundAccount/components/setEntOrderSettleFlag.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -139,6 +141,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    setEntOrderSettleFlag,
     PageSearchAction,
     LPVxeTable,
     FetchSelect
@@ -187,11 +190,16 @@ export default {
             props: 'dealerCompanyCode',
             label: '母公司编码',
             visible: true,
-            width: 200,
-            mask: true,
-            getValue: row => new Promise((resolve) => {
-              resolve(row.dealerCompanyName);
-            })
+            width: 200
+            // mask: true,
+            // getValue: row => new Promise((resolve) => {
+            //   getList({ fundAccountCode: row.fundAccountCode, pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
+            //     .then(res => {
+            //       console.log('dealerCompanyCode:', res);
+            //     }).finally(() => {
+            //       this.loading = false;
+            //     });
+            // })
           },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           { props: 'fundType', label: '资金类型', visible: true, width: 200 },
@@ -254,7 +262,9 @@ export default {
     this.getData();
   },
   methods: {
-    setEntOrderSettleFlag () {},
+    setEntOrderSettleFlag () {
+      this.$refs.setEntOrderSettleFlag.dialogshow();
+    },
     setRebateFlag () {},
     setSettleSort () {},
     onSubmit () {

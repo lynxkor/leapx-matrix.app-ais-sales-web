@@ -10,7 +10,18 @@
         <el-input placeholder="请输入" v-model="form.materialsDescLike" clearable />
       </el-form-item>
         <el-form-item label="车系" v-show="visibleCount === 3 || show">
-          <fetch-select :options="seriesList" v-model="form.seriesIds" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable
+          <fetch-select
+            :remote-method="seriesSearch"
+            remote
+            reserve-keyword
+            v-model="form.seriesIds"
+            placeholder="请选择"
+            labelKey="name"
+            valueKey="id"
+            clearable
+            multiple
+            collapseTags
+            filterable
             @change="seriesListChange" />
         </el-form-item>
       <template v-if="show">
@@ -346,7 +357,7 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
-    this.getVehicleSeriesList();
+    // this.getVehicleSeriesList();
     this.getVehicleExteriorList();
     this.getVehicleInteriorList();
     this.getVehicleWheelHubList();
@@ -355,6 +366,7 @@ export default {
     this.geVehicleRoofList();
   },
   methods: {
+    seriesSearch (query) { return vehicleSeriesList({ seriesNameLike: query, status: 1 }); },
     handleImport (importId) {
       this.importId = importId;
       this.uploadDialogVisible = true;
@@ -550,20 +562,20 @@ export default {
         this.form.yearTypeIdSet = [];
       }
     },
-    async getVehicleSeriesList () {
-      const res = await vehicleSeriesList({ size: 1000 });
-      console.log('vehicleSeries', res);
-      if (res.length) {
-        const vehicleSeriesData = res.map(item => {
-          return {
-            ...item,
-            label: item.name,
-            value: item.id
-          };
-        });
-        this.seriesList = vehicleSeriesData;
-      }
-    },
+    // async getVehicleSeriesList () {
+    //   const res = await vehicleSeriesList({ size: 1000 });
+    //   console.log('vehicleSeries', res);
+    //   if (res.length) {
+    //     const vehicleSeriesData = res.map(item => {
+    //       return {
+    //         ...item,
+    //         label: item.name,
+    //         value: item.id
+    //       };
+    //     });
+    //     this.seriesList = vehicleSeriesData;
+    //   }
+    // },
 
     async getVehicleModelList (val) {
       const res = await vehicleModelList({ seriesIdList: val, size: 1000 });

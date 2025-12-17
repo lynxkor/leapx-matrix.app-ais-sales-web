@@ -15,8 +15,18 @@
                 <el-input placeholder="请输入" v-model="form.materialsDesc" clearable disabled  maxlength="100" />
               </el-form-item>
               <el-form-item label="车系：" prop="seriesId">
-                <fetch-select :options="seriesList" v-model="form.seriesId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable
-          @change="seriesListChange" />
+                <fetch-select
+                  :remote-method="repairItemSearch"
+                  :params="form.seriesName"
+                  remote
+                  reserve-keyword
+                  v-model="form.seriesId"
+                  placeholder="请选择"
+                  labelKey="name"
+                  valueKey="id"
+                  clearable
+                  filterable
+                  @change="seriesListChange" />
               </el-form-item>
               <el-form-item label="车型：" prop="modelId">
                 <fetch-select :options="modelList" v-model="form.modelId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable
@@ -298,7 +308,7 @@ export default {
           }
         }]
       },
-      seriesList: [],
+      // seriesList: [],
       modelList: [],
       yearTypeList: [],
       yearModelList: [],
@@ -318,6 +328,7 @@ export default {
     this.getDetailData();
   },
   methods: {
+    repairItemSearch (query) { return vehicleSeriesList({ seriesNameLike: query, status: 1 }); },
     async fetchDiscontinueStatusOptions () {
       try {
         const enumData = this.$store.getters['enum/getEnum']('dc_discontinue_statusEnum');
@@ -348,7 +359,7 @@ export default {
     },
     async initVehicleData () {
       const apiConfigs = [
-        { api: vehicleSeriesList, params: { size: 1000 }, target: 'seriesList' },
+        // { api: vehicleSeriesList, params: { size: 1000 }, target: 'seriesList' },
         { api: vehicleExterior, params: { size: 1000 }, target: 'exteriorList' },
         { api: vehicleInterior, params: { size: 1000 }, target: 'interiorList' },
         { api: vehicleWheelHub, params: { size: 1000 }, target: 'wheelHubList' },
