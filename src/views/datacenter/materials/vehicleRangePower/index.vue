@@ -10,11 +10,7 @@
       class="ais-search-form"
     >
       <el-form-item label="选配动力名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.rangePowerName"
-          clearable
-        />
+           <tag-input v-model="form.rangePowerNameList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="状态">
         <fetch-select
@@ -132,7 +128,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import dateranges from '@/libs/components/dateranges';
-
+import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   rangePowerName: '',
@@ -152,6 +148,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     dateranges,
     PageSearchAction,
     LPVxeTable,
@@ -380,6 +377,11 @@ export default {
           delete data[key];
         }
       });
+
+      if (Array.isArray(this.form.rangePowerNameList) && this.form.rangePowerNameList.length <= 1) {
+        delete data.rangePowerNameList;
+        data.rangePowerNameLike = this.form.rangePowerNameList[0] || '';
+      }
 
       // if (this.form.createTime) {
       //   delete data.createTime;

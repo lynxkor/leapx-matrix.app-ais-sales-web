@@ -10,11 +10,7 @@
       class="ais-search-form"
     >
       <el-form-item label="选装包名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.optionPackageName"
-          clearable
-        />
+         <tag-input v-model="form.optionPackageNames" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="状态">
         <fetch-select
@@ -127,6 +123,7 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   optionPackageName: '',
@@ -146,6 +143,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
@@ -368,6 +366,11 @@ export default {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
+      }
+
+      if (Array.isArray(this.form.optionPackageNames) && this.form.optionPackageNames.length <= 1) {
+        delete data.optionPackageNames;
+        data.optionPackageNameLike = this.form.optionPackageNames[0] || '';
       }
       return data;
     },

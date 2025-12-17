@@ -10,33 +10,37 @@
       class="ais-search-form"
     >
       <el-form-item label="物料编码">
-        <el-input
+        <!-- <el-input
           placeholder="请输入"
-          v-model="form.materialsCodeLike"
+          v-model="form.materialsCodes"
           clearable
-        />
+        /> -->
+         <tag-input v-model="form.materialsCodes" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="物料描述">
-        <el-input
+        <!-- <el-input
           placeholder="请输入"
-          v-model="form.materialsDescLike"
+          v-model="form.materialsCodes"
           clearable
-        />
+        /> -->
+        <tag-input v-model="form.materialsDescs" placeholder="请输入" />
       </el-form-item>
         <el-form-item label="可配物料编码" >
-        <el-input
+        <!-- <el-input
           placeholder="请输入"
-          v-model="form.matchMaterialsCodeLike"
+          v-model="form.matchMaterialsDescs"
           clearable
-        />
+        /> -->
+         <tag-input v-model="form.matchMaterialsCodes" placeholder="请输入" />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="可配物料描述">
-          <el-input
+             <tag-input v-model="form.matchMaterialsDescs" placeholder="请输入" />
+          <!-- <el-input
             placeholder="请输入"
-            v-model="form.matchMaterialsDescLike"
+            v-model="form.matchMaterialsDescs"
             clearable
-          />
+          /> -->
         </el-form-item>
         <el-form-item label="状态">
           <fetch-select
@@ -105,6 +109,7 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import permissions from '@/libs/mixins/permissions';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -123,6 +128,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
@@ -357,6 +363,25 @@ export default {
         }
       }
 
+      if (Array.isArray(this.form.materialsDescs) && this.form.materialsDescs.length <= 1) {
+        delete data.materialsDescs;
+        data.materialsDescLike = this.form.materialsDescs[0] || '';
+      }
+
+      if (Array.isArray(this.form.materialsCodes) && this.form.materialsCodes.length <= 1) {
+        delete data.materialsCodes;
+        data.materialsCodeLike = this.form.materialsCodes[0] || '';
+      }
+
+      if (Array.isArray(this.form.matchMaterialsCodes) && this.form.matchMaterialsCodes.length <= 1) {
+        delete data.matchMaterialsCodes;
+        data.matchMaterialsCodeLike = this.form.matchMaterialsCodes[0] || '';
+      }
+
+      if (Array.isArray(this.form.matchMaterialsDescs) && this.form.matchMaterialsDescs.length <= 1) {
+        delete data.matchMaterialsDescs;
+        data.matchMaterialsDescLike = this.form.matchMaterialsDescs[0] || '';
+      }
       return data;
     },
     async fetchOptions (code) {
