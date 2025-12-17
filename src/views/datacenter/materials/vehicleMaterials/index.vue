@@ -246,14 +246,6 @@ export default {
             width: 200,
           },
           {
-            props: 'price',
-            label: '整车价格',
-            visible: true,
-            width: 200,
-            align: 'right',
-            headerAlign: 'right'
-          },
-          {
             props: 'materialsCode',
             label: '物料编码',
             visible: true,
@@ -273,6 +265,14 @@ export default {
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           { props: 'modelName', label: '车型名称', visible: true, width: 200 },
           { props: 'yearTypeName', label: '年款名称', visible: true, width: 200 },
+          {
+            props: 'price',
+            label: '整车价格',
+            visible: true,
+            width: 200,
+            align: 'right',
+            headerAlign: 'right'
+          },
           { props: 'exteriorName', label: '外观名称', visible: true, width: 200 },
           { props: 'interiorName', label: '内饰名称', visible: true, width: 200 },
           { props: 'wheelHubName', label: '轮毂名称', visible: true, width: 200 },

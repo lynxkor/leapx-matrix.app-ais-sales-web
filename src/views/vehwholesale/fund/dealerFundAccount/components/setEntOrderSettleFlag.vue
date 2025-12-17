@@ -36,8 +36,8 @@
       </el-form>
       <div class="ais-actions">
         <!--  TIPS:根据产品增删功能按钮  -->
-        <el-button size="small" @click="handleBatchEnable(1)">批量开启</el-button>
-        <el-button size="small" @click="handleBatchEnable(0)">批量关闭</el-button>
+        <el-button :disabled="selectionList.length === 0" size="small" @click="handleBatchEnable(1)">批量开启</el-button>
+        <el-button :disabled="selectionList.length === 0" size="small" @click="handleBatchEnable(0)">批量关闭</el-button>
         <el-button size="small" @click="setSettleSort">系数调整</el-button>
       </div>
       <section class="common-section">

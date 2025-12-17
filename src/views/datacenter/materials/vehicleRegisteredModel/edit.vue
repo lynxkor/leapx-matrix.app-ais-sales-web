@@ -11,19 +11,20 @@
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
-              <el-form-item label="公告车型名称" prop="registeredModelName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.registeredModelName"
-                  clearable
-                  maxlength="30"
-                />
-              </el-form-item>
               <el-form-item label="公告车型代码" prop="registeredModelCode">
                 <el-input
                   placeholder="请输入"
                   v-model="form.registeredModelCode"
                   clearable
+                  maxlength="30"
+                />
+              </el-form-item>
+              <el-form-item label="公告车型名称" prop="registeredModelCode">
+                <el-input
+                  placeholder="请输入"
+                  v-model="form.registeredModelCode"
+                  clearable
+                  disabled
                   maxlength="30"
                 />
               </el-form-item>
