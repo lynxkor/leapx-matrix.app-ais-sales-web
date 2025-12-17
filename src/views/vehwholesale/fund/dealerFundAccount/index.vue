@@ -6,16 +6,9 @@
       :model="form"
       size="small"
       label-position="right"
-      label-width="100px"
+      label-width="150px"
       class="ais-search-form"
     >
-      <!-- <el-form-item label="账户编号">
-        <el-input
-          placeholder="请输入"
-          v-model="form.fundAccountCode"
-          clearable
-        />
-      </el-form-item> -->
       <el-form-item label="母公司编码">
         <el-input
           placeholder="请输入"
@@ -49,13 +42,6 @@
             clearable
           />
         </el-form-item>
-        <!-- <el-form-item label="资金结算顺序">
-          <el-input
-            placeholder="请输入"
-            v-model="form.settleSort"
-            clearable
-          />
-        </el-form-item> -->
         <el-form-item label="是否允许使用返利">
            <fetch-select
             :request="fetchOptions"
@@ -76,72 +62,6 @@
             filterable
           />
         </el-form-item>
-        <!-- <el-form-item label="企业订单额度系数">
-          <el-input
-            placeholder="请输入"
-            v-model="form.entOrderQuota"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="可用余额">
-          <el-input
-            placeholder="请输入"
-            v-model="form.availableBalance"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="冻结余额">
-          <el-input
-            placeholder="请输入"
-            v-model="form.frozenBalance"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="累计充值金额">
-          <el-input
-            placeholder="请输入"
-            v-model="form.totalRechargeAmount"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="累计结算金额">
-          <el-input
-            placeholder="请输入"
-            v-model="form.totalSettleAmount"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="最近交易时间">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.lastTradeTime"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
-        </el-form-item>
-        <el-form-item label="销售公司">
-          <el-input
-            placeholder="请输入"
-            v-model="form.saleCompanyId"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="创建时间">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.createTime"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
-        </el-form-item> -->
       </template>
       <page-search-action
         v-if="canList"
@@ -154,12 +74,10 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-permission="moduleKey+'-setEntOrderSettleFlag'" size="small" @click="setEntOrderSettleFlag">设置企业订单结算</el-button>
+      <el-button v-permission="moduleKey+'-setRebateFlag'" size="small" @click="setRebateFlag">设置使用返利</el-button>
+      <el-button v-permission="moduleKey+'-setSettleSort'" size="small" @click="setSettleSort">设置结算顺序</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -177,12 +95,6 @@
         @handleSelect="handleSelectionChange"
       />
     </div>
-    <!-- TIPS: 填入项目id即可 -->
-    <Upload
-      :visible="uploadDialogVisible"
-      :id="1"
-      @close="handleUploadDialogClose"
-    />
   </div>
 </template>
 
@@ -190,14 +102,13 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehwholesale/fund/account/index';
+import { getList, deleteItem } from '@/api/vehwholesale/fund/account/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
-import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
+import { downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 
 const defaultForm = {
@@ -230,8 +141,7 @@ export default {
   components: {
     PageSearchAction,
     LPVxeTable,
-    FetchSelect,
-    Upload
+    FetchSelect
   },
   data () {
     return {
@@ -247,7 +157,6 @@ export default {
       show: false,
       loading: false,
       exportLoading: false,
-      uploadDialogVisible: false,
       optionObj: {
         id: 'accountTable',
         dataList: [],
@@ -274,13 +183,22 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200 },
+          {
+            props: 'dealerCompanyCode',
+            label: '母公司编码',
+            visible: true,
+            width: 200,
+            mask: true,
+            getValue: row => new Promise((resolve) => {
+              resolve(row.dealerCompanyName);
+            })
+          },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           { props: 'fundType', label: '资金类型', visible: true, width: 200 },
           { props: 'financialOrganizationName', label: '金融机构名称', visible: true, width: 200 },
           { props: 'settleSort', label: '资金结算顺序', visible: true, width: 200 },
-          { props: 'allowUseRebate', label: '是否允许客户使用返利,1:允许，0不允许', visible: true, width: 200 },
-          { props: 'allowEntOrderSettle', label: '是否允许企业订单结算,1:允许，0不允许', visible: true, width: 200 },
+          { props: 'allowUseRebate', label: '是否允许客户使用返利', visible: true, width: 200 },
+          { props: 'allowEntOrderSettle', label: '是否允许企业订单结算', visible: true, width: 200 },
           { props: 'entOrderQuota', label: '企业订单额度系数', visible: true, width: 200 },
           { props: 'availableBalance', label: '可用余额', visible: true, width: 200 },
           { props: 'frozenBalance', label: '冻结余额', visible: true, width: 200 },
@@ -336,17 +254,9 @@ export default {
     this.getData();
   },
   methods: {
-    handleImport () {
-      this.uploadDialogVisible = true;
-    },
-    handleUploadDialogClose () {
-      this.uploadDialogVisible = false;
-    },
-    handleAdd () {
-      this.$router.push({
-        path: '/vehwholesale/fund/dealerFundAccount/edit'
-      });
-    },
+    setEntOrderSettleFlag () {},
+    setRebateFlag () {},
+    setSettleSort () {},
     onSubmit () {
       this.getData();
     },
@@ -454,59 +364,6 @@ export default {
         return getEnum(code);
       }
       return [];
-    },
-    // 批量删除
-    handleBatchDelete () {
-      const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        deleteItem(ids).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-          this.getData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '删除失败!'
-          });
-        });
-      }).catch(() => {});
-    },
-    // 批量启用停用
-    handleBatchEnable (status) {
-      handleBatchStatusChange.call(this, {
-        selectionList: this.selectionList,
-        targetStatus: status,
-        apiFunc: enableItem,
-        refreshFunc: this.getData
-      });
-      // const ids = this.selectionList.map(item => item.id) || [];
-      // this.$confirm(`此操作将${status ? '启用' : '停用'}选中项，是否继续?`, '提示', {
-      //   confirmButtonText: '确定',
-      //   cancelButtonText: '取消',
-      //   type: 'warning'
-      // }).then(() => {
-      //   enableItem({
-      //     idSet: ids,
-      //     status
-      //   }).then(() => {
-      //     this.$message({
-      //       type: 'success',
-      //       message: '操作成功!'
-      //     });
-      //     this.getData();
-      //   }).catch(() => {
-      //     this.$message({
-      //       type: 'error',
-      //       message: '操作失败!'
-      //     });
-      //   });
-      // });
     }
   }
 };
