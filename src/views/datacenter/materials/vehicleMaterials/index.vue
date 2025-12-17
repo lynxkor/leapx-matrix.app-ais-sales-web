@@ -4,10 +4,12 @@
     <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
       class="ais-search-form">
       <el-form-item label="物料编码">
-        <el-input placeholder="请输入" v-model="form.materialsCodeLike" clearable />
+         <tag-input v-model="form.materialsCodeSet" placeholder="请输入" />
+        <!-- <el-input placeholder="请输入" v-model="form.materialsCodeLike" clearable /> -->
       </el-form-item>
       <el-form-item label="物料描述">
-        <el-input placeholder="请输入" v-model="form.materialsDescLike" clearable />
+        <tag-input v-model="form.materialsDescSet" placeholder="请输入" />
+        <!-- <el-input placeholder="请输入" v-model="form.materialsDescLike" clearable /> -->
       </el-form-item>
         <el-form-item label="车系" v-show="visibleCount === 3 || show">
           <fetch-select :options="seriesList" v-model="form.seriesIds" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable
@@ -40,33 +42,33 @@
           <fetch-select :options="roofList" v-model="form.roofIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
         </el-form-item>
         <el-form-item label="是否允许现车批售">
-          <fetch-select :options="yes_no_enum" v-model="form.allowWholesale" placeholder="请选择" clearable multiple />
+          <fetch-select :options="yes_no_enum" v-model="form.allowWholesale" placeholder="请选择" clearable  />
         </el-form-item>
         <el-form-item label="是否允许排产申请">
           <fetch-select :options="yes_no_enum" v-model="form.allowProductionSchedule" placeholder="请选择" clearable
-            multiple />
+             />
         </el-form-item>
         <el-form-item label="是否允许展车批售">
           <fetch-select :options="yes_no_enum" v-model="form.allowDisplayVehicleWholesale" placeholder="请选择" clearable
-            multiple />
+             />
         </el-form-item>
         <el-form-item label="是否允许试驾车批售">
           <fetch-select :options="yes_no_enum" v-model="form.allowTestDriveVehicleWholesale" placeholder="请选择" clearable
-            multiple />
+             />
         </el-form-item>
         <el-form-item label="是否允许企业客户销售	">
           <fetch-select :options="yes_no_enum" v-model="form.allowCustomerSales" placeholder="请选择" clearable multiple />
         </el-form-item>
         <el-form-item label="是否允许改配">
           <fetch-select :options="yes_no_enum" v-model="form.allowConfigurationModify" placeholder="请选择" clearable
-            multiple />
+             />
         </el-form-item>
         <el-form-item label="是否允许批售确认">
           <fetch-select :options="yes_no_enum" v-model="form.allowWholesaleConfirm" placeholder="请选择" clearable
-            multiple />
+             />
         </el-form-item>
         <el-form-item label="停产状态">
-          <fetch-select :options="yes_no_enum" v-model="form.discontinueStatus" placeholder="请选择" clearable multiple />
+          <fetch-select :options="yes_no_enum" v-model="form.discontinueStatus" placeholder="请选择" clearable  />
         </el-form-item>
         <el-form-item label="状态">
            <fetch-select
@@ -160,7 +162,7 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
-
+import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   materialsCode: '',
@@ -190,6 +192,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
@@ -482,6 +485,16 @@ export default {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
+      }
+
+      if (Array.isArray(this.form.materialsDescSet) && this.form.materialsDescSet.length <= 1) {
+        delete data.materialsDescSet;
+        data.materialsDescLike = this.form.materialsDescSet[0] || '';
+      }
+
+      if (Array.isArray(this.form.materialsCodeSet) && this.form.materialsCodeSet.length <= 1) {
+        delete data.materialsCodeSet;
+        data.materialsCodeLike = this.form.materialsCodeSet[0] || '';
       }
 
       return data;
