@@ -5,11 +5,9 @@
       class="ais-search-form">
       <el-form-item label="物料编码">
          <tag-input v-model="form.materialsCodeSet" placeholder="请输入" />
-        <!-- <el-input placeholder="请输入" v-model="form.materialsCodeLike" clearable /> -->
       </el-form-item>
       <el-form-item label="物料描述">
         <tag-input v-model="form.materialsDescSet" placeholder="请输入" />
-        <!-- <el-input placeholder="请输入" v-model="form.materialsDescLike" clearable /> -->
       </el-form-item>
         <el-form-item label="车系" v-show="visibleCount === 3 || show">
           <fetch-select
@@ -28,7 +26,11 @@
         </el-form-item>
       <template v-if="show">
         <el-form-item label="车型">
-          <fetch-select :options="modelList" v-model="form.modelIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable
+          <fetch-select
+            :remote-method="modelSearch"
+            remote
+            reserve-keyword
+            :options="modelList" v-model="form.modelIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable
             @change="modelListChange" />
         </el-form-item>
         <el-form-item label="年款">
@@ -176,6 +178,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  seriesIds: [],
   materialsCode: '',
   materialsDesc: '',
   modelName: '',
@@ -370,7 +373,28 @@ export default {
     this.geVehicleRoofList();
   },
   methods: {
-    seriesSearch (query) { return vehicleSeriesList({ seriesNameLike: query, status: 1 }); },
+    seriesSearch (query) { return vehicleSeriesList({ seriesNameLike: query }); },
+    async modelSearch (query) {
+      if (query) {
+        let params = {
+          modelNameLike: query || '',
+          seriesIdList: this.form.seriesIds || []
+        };
+        let res = await vehicleModelList(params);
+        if (res.length) {
+          const vehicleModelData = res.map(item => {
+            return {
+              ...item,
+              label: item.name,
+              value: item.id
+            };
+          });
+          this.modelList = vehicleModelData;
+        } else {
+          this.modelList = [];
+        }
+      }
+    },
     handleImport (importId) {
       this.importId = importId;
       this.uploadDialogVisible = true;
@@ -594,7 +618,7 @@ export default {
     // },
 
     async getVehicleModelList (val) {
-      const res = await vehicleModelList({ seriesIdList: val, size: 1000 });
+      const res = await vehicleModelList({ seriesIdList: val || [], size: 1000 });
       console.log('vehicleModelList', res);
       if (res.length) {
         const vehicleModelData = res.map(item => {
