@@ -360,7 +360,8 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
-    // this.getVehicleSeriesList();
+    this.getVehicleModelList();
+    this.getModelYearTypeRelationsList();
     this.getVehicleExteriorList();
     this.getVehicleInteriorList();
     this.getVehicleWheelHubList();
@@ -563,6 +564,8 @@ export default {
         this.form.modelIdSet = [];
         this.yearModelList = [];
         this.form.yearTypeIdSet = [];
+        this.getVehicleModelList();
+        this.getModelYearTypeRelationsList();
       }
     },
     modelListChange (val, selectedOption) {
@@ -570,6 +573,7 @@ export default {
       if (val.length) {
         this.getModelYearTypeRelationsList(val);
       } else {
+        this.getModelYearTypeRelationsList();
         this.yearModelList = [];
         this.form.yearTypeIdSet = [];
       }
