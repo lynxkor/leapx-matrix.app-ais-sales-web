@@ -92,22 +92,6 @@
           filterable
         />
         </el-form-item>
-        <el-form-item label="111">
-<div>{{ value  }}</div>
-  <el-select v-model="value" placeholder="请选择" multiple>
-    <el-option-group
-      v-for="group in options"
-      :key="group.label"
-      :label="group.label">
-      <el-option
-        v-for="item in group.options"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value">
-      </el-option>
-    </el-option-group>
-  </el-select>
-        </el-form-item>
       </template>
       <page-search-action v-model="show" is-expandable :loading="loading" @submit="onSubmit" @reset="onReset" />
     </el-form>
@@ -227,32 +211,6 @@ export default {
   },
   data () {
     return {
-      options: [{
-        label: '热门城市',
-        options: [{
-          value: 'Shanghai',
-          label: '上海'
-        }, {
-          value: 'Beijing',
-          label: '北京'
-        }]
-      }, {
-        label: '城市名',
-        options: [{
-          value: 'Chengdu',
-          label: '成都'
-        }, {
-          value: 'Shenzhen',
-          label: '深圳'
-        }, {
-          value: 'Guangzhou',
-          label: '广州'
-        }, {
-          value: 'Dalian',
-          label: '大连'
-        }]
-      }],
-      value: '',
       pageTitle: '销服-业务主数据-配置主数据-整车物料',
       pageType: 'list',
       moduleKey: 'AISDC-vehicleMaterials',
