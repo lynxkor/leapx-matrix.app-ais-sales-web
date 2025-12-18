@@ -11,13 +11,28 @@
         class="ais-search-form"
       >
         <el-form-item label="母公司名称：">
-          <el-input v-model="form.allowProductionSchedule"></el-input>
+        <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="是否允许企业订单结算：" class="long_text">
-          <el-input v-model="form.allowProductionSchedule"></el-input>
+           <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.allowUseRebate"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
         </el-form-item>
         <el-form-item label="资金类型：">
-          <el-input v-model="form.allowProductionSchedule"></el-input>
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vw_fundtype"
+            v-model="form.fundTypes"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
         </el-form-item>
         <el-form-item label="金融机构：">
           <el-input v-model="form.allowProductionSchedule"></el-input>
@@ -36,8 +51,8 @@
       </el-form>
       <div class="ais-actions">
         <!--  TIPS:根据产品增删功能按钮  -->
-        <el-button :disabled="selectionList.length === 0" size="small" @click="handleBatchEnable(1)">批量开启</el-button>
-        <el-button :disabled="selectionList.length === 0" size="small" @click="handleBatchEnable(0)">批量关闭</el-button>
+        <el-button v-permission="moduleKey+'-setSettleSort'" :disabled="selectionList.length === 0" size="small" @click="handleBatchEnable(1)">批量开启</el-button>
+        <el-button v-permission="moduleKey+'-setSettleSort'" :disabled="selectionList.length === 0" size="small" @click="handleBatchEnable(0)">批量关闭</el-button>
         <el-button size="small" @click="setSettleSort">系数调整</el-button>
       </div>
       <section class="common-section">
@@ -72,19 +87,44 @@ import debounce from 'lodash.debounce';
 import EditTable from '@/libs/components/EditTable';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList } from '@/api/vehwholesale/fund/account/index';
+import { getEnum } from '@/api/common';
+import FetchSelect from '@/libs/components/FetchSelect';
+import permissions from '@/libs/mixins/permissions';
+import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  iallowWholesaleConfirmd: ''
+  dealerCompanyNames: [],
+  dealerCompanyNameLike: '',
+  fundAccountCode: '',
+  dealerCompanyCode: '',
+  dealerCompanyName: '',
+  fundType: '',
+  financialOrganizationName: '',
+  settleSort: '',
+  allowUseRebate: '',
+  allowEntOrderSettle: '',
+  entOrderQuota: '',
+  availableBalance: '',
+  frozenBalance: '',
+  totalRechargeAmount: '',
+  totalSettleAmount: '',
+  lastTradeTime: '',
+  saleCompanyId: '',
+  createTime: ''
 };
 const pageSize = 20;
 export default {
   name: 'setEntOrderSettleFlag',
+  mixins: [permissions],
   components: {
+    TagInput,
+    FetchSelect,
     EditTable,
     PageSearchAction
   },
   data () {
     return {
+      moduleKey: 'AISVW-dealerFundAccount',
       total: 0,
       loading: false,
       show: false,
@@ -139,6 +179,10 @@ export default {
           delete data[key];
         }
       });
+      if (Array.isArray(this.form.dealerCompanyNames) && this.form.dealerCompanyNames.length <= 1) {
+        delete data.dealerCompanyNames;
+        data.dealerCompanyNameLike = this.form.dealerCompanyNames[0] || '';
+      };
       return data;
     },
     getData () {
@@ -159,6 +203,7 @@ export default {
     }, 300),
     // 多选框选中数据
     handleSelectionChange (selection) {
+      console.log('handleSelectionChange：', selection);
       this.selectionList = selection;
     },
 
@@ -169,6 +214,12 @@ export default {
     confirm () {
       this.dialogVisible = true;
       this.$emit('confirm', this.form);
+    },
+    async fetchOptions (code) {
+      if (code) {
+        return getEnum(code);
+      }
+      return [];
     }
   }
 };

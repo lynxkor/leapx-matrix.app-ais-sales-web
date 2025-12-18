@@ -38,7 +38,7 @@
           <fetch-select :options="exteriorList" v-model="form.exteriorIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
         </el-form-item>
         <el-form-item label="内饰">
-          <fetch-select :options="interiorList" v-model="form.interiorIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
+          <fetch-select :options="interiorList" v-model="form.interiorIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags/>
         </el-form-item>
         <el-form-item label="轮毂">
           <fetch-select :options="wheelHubList" v-model="form.wheelHubIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
@@ -68,7 +68,7 @@
              />
         </el-form-item>
         <el-form-item label="是否允许企业客户销售	">
-          <fetch-select :options="yes_no_enum" v-model="form.allowCustomerSales" placeholder="请选择" clearable multiple />
+          <fetch-select :options="yes_no_enum" v-model="form.allowCustomerSales" placeholder="请选择" clearable />
         </el-form-item>
         <el-form-item label="是否允许改配">
           <fetch-select :options="yes_no_enum" v-model="form.allowConfigurationModify" placeholder="请选择" clearable
@@ -91,6 +91,22 @@
           multiple
           filterable
         />
+        </el-form-item>
+        <el-form-item label="111">
+<div>{{ value  }}</div>
+  <el-select v-model="value" placeholder="请选择" multiple>
+    <el-option-group
+      v-for="group in options"
+      :key="group.label"
+      :label="group.label">
+      <el-option
+        v-for="item in group.options"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value">
+      </el-option>
+    </el-option-group>
+  </el-select>
         </el-form-item>
       </template>
       <page-search-action v-model="show" is-expandable :loading="loading" @submit="onSubmit" @reset="onReset" />
@@ -211,6 +227,32 @@ export default {
   },
   data () {
     return {
+      options: [{
+        label: '热门城市',
+        options: [{
+          value: 'Shanghai',
+          label: '上海'
+        }, {
+          value: 'Beijing',
+          label: '北京'
+        }]
+      }, {
+        label: '城市名',
+        options: [{
+          value: 'Chengdu',
+          label: '成都'
+        }, {
+          value: 'Shenzhen',
+          label: '深圳'
+        }, {
+          value: 'Guangzhou',
+          label: '广州'
+        }, {
+          value: 'Dalian',
+          label: '大连'
+        }]
+      }],
+      value: '',
       pageTitle: '销服-业务主数据-配置主数据-整车物料',
       pageType: 'list',
       moduleKey: 'AISDC-vehicleMaterials',
@@ -556,7 +598,6 @@ export default {
       this.batchSetAttrVisible = true;
     },
     seriesListChange (val, selectedOption) {
-      console.log('seriesListChange', val, selectedOption);
       if (val.length) {
         this.getVehicleModelList(val);
       } else {

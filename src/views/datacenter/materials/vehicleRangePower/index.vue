@@ -19,8 +19,6 @@
           v-model="form.status"
           placeholder="请选择"
           clearable
-          multiple
-          filterable
         />
       </el-form-item>
       <el-form-item label="创建时间" v-show="this.visibleCount === 3 || show">
