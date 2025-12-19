@@ -259,9 +259,7 @@ export default {
             props: 'price',
             label: '整车价格',
             visible: true,
-            width: 200,
-            align: 'right',
-            headerAlign: 'right'
+            width: 200
           },
           { props: 'batteryCellName', label: '电池电芯名称', visible: true, width: 200 },
           { props: 'modelName', label: '车型名称', visible: true, width: 200 },
@@ -271,6 +269,7 @@ export default {
           { props: 'allowWholesaleConfirmLabel', label: '是否允许批售确认', visible: true, width: 200 },
           // { props: 'allowTestDriveVehicleWholesaleLabel', label: '是否允许试驾车批售', visible: true, width: 200 },
           { props: 'allowConfigurationModifyLabel', label: '是否允许改配', visible: true, width: 200 },
+          { props: 'allowTestDriveVehicleWholesaleLabel', label: '是否允许采购试驾车', visible: true, width: 200 },
           { props: 'allowCustomerSalesLabel', label: '是否允许企业客户销售	', visible: true, width: 200 },
           { props: 'modelLineName', label: '系列名称', visible: true, width: 200 },
           { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
