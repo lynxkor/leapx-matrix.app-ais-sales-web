@@ -42,3 +42,11 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 设置企业订单结算
+ * @param {Object} data
+ */
+export function setEntOrderSettleFlag (data) {
+  return api.jsonPost(prefix + 'setEntOrderSettleFlag', data);
+}

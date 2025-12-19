@@ -11,7 +11,7 @@
         class="ais-search-form"
       >
         <el-form-item label="母公司名称：">
-        <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
+          <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="是否允许企业订单结算：" class="long_text">
            <fetch-select
@@ -35,7 +35,19 @@
           />
         </el-form-item>
         <el-form-item label="金融机构：">
-          <el-input v-model="form.allowProductionSchedule"></el-input>
+          <fetch-select
+            :remote-method="repairItemSearch"
+            remote
+            reserve-keyword
+            labelKey="name"
+            valueKey="id"
+            v-model="form.financialOrganizationIds"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
+          <!-- <el-input v-model="form.allowProductionSchedule"></el-input> -->
         </el-form-item>
         <page-search-action
           v-model="show"
@@ -51,9 +63,15 @@
       </el-form>
       <div class="ais-actions">
         <!--  TIPS:根据产品增删功能按钮  -->
-        <el-button v-permission="moduleKey+'-setSettleSort'" :disabled="selectionList.length === 0" size="small" @click="handleBatchEnable(1)">批量开启</el-button>
-        <el-button v-permission="moduleKey+'-setSettleSort'" :disabled="selectionList.length === 0" size="small" @click="handleBatchEnable(0)">批量关闭</el-button>
-        <el-button size="small" @click="setSettleSort">系数调整</el-button>
+          <span v-show="pageTpye === 'setEntOrderSettleFlag'">
+            <el-button v-permission="moduleKey+'-setSettleSort'" :disabled="selectionList.length === 0" size="small" @click="setSettleSort">批量开启</el-button>
+            <el-button v-permission="moduleKey+'-setSettleSort'" :disabled="selectionList.length === 0" size="small" @click="handleBatchEnable(0)">批量关闭</el-button>
+            <el-button v-permission="moduleKey+'-setSettleSort'" :disabled="selectionList.length === 0" size="small" @click="setSettleSort">系数调整</el-button>
+          </span>
+          <span v-show="pageTpye === 'setRebateFlag'">
+            <el-button v-permission="moduleKey+'-setRebateFlag'" :disabled="selectionList.length === 0" size="small" @click="setSettleSort">批量启用</el-button>
+            <el-button v-permission="moduleKey+'-setRebateFlag'" :disabled="selectionList.length === 0" size="small" @click="handleBatchEnable(0)">批量停用</el-button>
+          </span>
       </div>
       <section class="common-section">
         <div class="common-section-body">
@@ -66,7 +84,7 @@
               :show-pagination="true"
               :checkbox="true"
               :total="total"
-              @handleSelect="handleSelectionChange"
+              @checkboxChange="checkboxChange"
               @current-page-change="pageChange"
               @page-size-change="sizeChange"
             />
@@ -78,6 +96,28 @@
         <el-button size="small" type="primary" @click="confirm">确 定</el-button>
       </div>
     </div>
+     <el-dialog
+      width="300px"
+      title="请输入调整后系数"
+      :visible.sync="innerVisible"
+      append-to-body>
+        <div class="centered-input">
+          <el-input-number
+            placeholder="请输入"
+            v-model="entOrderQuota"
+            :min="0"
+            :max="1"
+            :step="0.01"
+            :precision="2"
+            :controls="false"
+            @change="validateInput"
+          />
+        </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" @click="entOrderQuotaCLose">取消</el-button>
+        <el-button size="small" type="primary" @click="entOrderQuotaSubmit">确定</el-button>
+      </div>
+    </el-dialog>
   </el-dialog>
 </template>
 
@@ -86,14 +126,17 @@
 import debounce from 'lodash.debounce';
 import EditTable from '@/libs/components/EditTable';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList } from '@/api/vehwholesale/fund/account/index';
+import { getList, setEntOrderSettleFlag } from '@/api/vehwholesale/fund/account/index';
+import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import { getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import permissions from '@/libs/mixins/permissions';
 import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  setRebateFlagQuery: true,
   dealerCompanyNames: [],
+  financialOrganizationIds: [],
   dealerCompanyNameLike: '',
   fundAccountCode: '',
   dealerCompanyCode: '',
@@ -115,6 +158,12 @@ const defaultForm = {
 const pageSize = 20;
 export default {
   name: 'setEntOrderSettleFlag',
+  props: {
+    pageTpye: {
+      type: String,
+      default: ''
+    }
+  },
   mixins: [permissions],
   components: {
     TagInput,
@@ -124,17 +173,21 @@ export default {
   },
   data () {
     return {
+      entOrderQuota: null,
       moduleKey: 'AISVW-dealerFundAccount',
       total: 0,
       loading: false,
       show: false,
       dialogVisible: false,
+      innerVisible: false,
       form: {
         ...defaultForm
       },
-      columns: [
+      columns: [],
+      columns1: [
         { field: 'dealerCompanyName', title: '母公司名称', width: '30%' },
         { field: 'fundType', title: '资金类型', width: 120 },
+        { field: 'entOrderQuota', title: '企业订单额度系数', width: 200 },
         { field: 'financialOrganizationName', title: '金融机构', width: 120 },
         { field: 'availableBalance', title: '可用余额', width: 200 },
         { field: 'rebateAvailableBalance', title: '返利账户可用余额', width: 200 },
@@ -142,6 +195,15 @@ export default {
         { field: 'fundAccountCode', title: '账户编号', width: 200 },
         { field: 'lastTradeTime', title: '最近交易时间', width: 200 },
         { field: 'createTime', title: '创建时间', width: 200 },
+      ],
+      columns2: [
+        { field: 'dealerCompanyName', title: '母公司名称', width: '30%' },
+        { field: 'fundType', title: '资金类型', width: 120 },
+        { field: 'financialOrganizationName', title: '金融机构', width: 120 },
+        { field: 'availableBalance', title: '可用余额', width: 200 },
+        { field: 'rebateAvailableBalance', title: '返利账户可用余额', width: 200 },
+        { field: 'allowUseRebate', title: '是否允许使用返利', width: 200 },
+        { field: 'fundAccountCode', title: '账户编号', width: 200 },
       ],
       optionObj: {
         form: {
@@ -155,6 +217,31 @@ export default {
     };
   },
   methods: {
+    repairItemSearch (query) { return listIdNames({ seriesNameLike: query, status: 1 }); },
+    entOrderQuotaSubmit () {
+      let params = {
+        ids: this.selectionList.map(item => item.id),
+        allowEntOrderSettle: 1,
+        entOrderQuota: this.entOrderQuota
+      };
+      setEntOrderSettleFlag(params).then(res => {
+        this.$message.success('调整系数修改成功');
+        this.getData();
+        this.innerVisible = false;
+        this.entOrderQuota = null;
+      }).catch(() => {
+        this.innerVisible = false;
+      });
+    },
+    entOrderQuotaCLose () {
+      this.innerVisible = false;
+    },
+    validateInput (value) {
+      if (value > 1 || value < 0) {
+        this.$message.error('请输入介于 0 和 1 之间的数值，且最多保留两位小数');
+        this.form.settleSort = null; // 清空非法输入
+      }
+    },
     pageChange (page) {
       this.optionObj.form.page = page;
       this.debouncedGetData();
@@ -163,8 +250,25 @@ export default {
       this.optionObj.form.size = size;
       this.debouncedGetData();
     },
-    handleBatchEnable () {},
-    setSettleSort () {},
+    handleBatchEnable (val) {
+      let params = {
+        ids: this.selectionList.map(item => item.id),
+        allowEntOrderSettle: val
+      };
+      setEntOrderSettleFlag(params).then(res => {
+        this.$message.success('批量关闭成功');
+        this.getData();
+      }).catch(() => {});
+    },
+    setSettleSort () {
+      console.log('this.selectionList:', this.selectionList);
+      // const allZero = this.selectionList.every(item => item.allowEntOrderSettle === 0);
+      // if (allZero) {
+      this.innerVisible = true;
+      // } else {
+      //   this.$message.error('请选择【是否允许企业订单结算】为否的账户');
+      // }
+    },
     onSubmit () {
       this.getData();
     },
@@ -202,17 +306,22 @@ export default {
       this.getData();
     }, 300),
     // 多选框选中数据
-    handleSelectionChange (selection) {
-      console.log('handleSelectionChange：', selection);
+    checkboxChange (selection) {
       this.selectionList = selection;
     },
 
     dialogshow () {
       this.dialogVisible = true;
+      if (this.pageTpye === 'setEntOrderSettleFlag') {
+        this.columns = this.columns1;
+      } else {
+        this.columns = this.columns2;
+      }
       this.getData();
     },
     confirm () {
       this.dialogVisible = true;
+      this.$refs.editTable.clearSelection();
       this.$emit('confirm', this.form);
     },
     async fetchOptions (code) {
@@ -235,5 +344,11 @@ export default {
   padding-top: 20px;
   display: flex;
   justify-content: flex-end;
+}
+/* 输入框居中样式 */
+.centered-input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
