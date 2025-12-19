@@ -10,11 +10,7 @@
       class="ais-search-form"
     >
       <el-form-item label="电池电芯名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.batteryCellNameLike"
-          clearable
-        />
+        <tag-input v-model="form.batteryCellNameList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="电芯材料">
          <fetch-select
@@ -95,7 +91,7 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import { downloadExcel } from '@/libs/utils';
-
+import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   batteryCellName: '',
@@ -111,6 +107,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
@@ -334,6 +331,11 @@ export default {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
+      }
+
+      if (Array.isArray(this.form.batteryCellNameList) && this.form.batteryCellNameList.length <= 1) {
+        delete data.batteryCellNameList;
+        data.batteryCellNameLike = this.form.batteryCellNameList[0] || '';
       }
 
       return data;

@@ -10,18 +10,20 @@
       class="ais-search-form"
     >
       <el-form-item label="公告车型名称">
-        <el-input
+         <tag-input v-model="form.registeredModelNameList" placeholder="请输入" />
+        <!-- <el-input
           placeholder="请输入"
           v-model="form.registeredModelName"
           clearable
-        />
+        /> -->
       </el-form-item>
       <el-form-item label="车型代码">
-        <el-input
+         <tag-input v-model="form.registeredModelCodeList" placeholder="请输入" />
+        <!-- <el-input
           placeholder="请输入"
           v-model="form.registeredModelCode"
           clearable
-        />
+        /> -->
       </el-form-item>
       <el-form-item label="状态"  v-show="this.visibleCount === 3 || show">
         <fetch-select
@@ -47,7 +49,7 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <!-- <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button> -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
@@ -91,7 +93,7 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
-
+import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   registeredModelName: '',
@@ -107,6 +109,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
@@ -331,6 +334,15 @@ export default {
         }
       }
 
+      if (Array.isArray(this.form.registeredModelNameList) && this.form.registeredModelNameList.length <= 1) {
+        delete data.registeredModelNameList;
+        data.registeredModelNameLike = this.form.registeredModelNameList[0] || '';
+      }
+
+      if (Array.isArray(this.form.registeredModelCodeList) && this.form.registeredModelCodeList.length <= 1) {
+        delete data.registeredModelCodeList;
+        data.registeredModelCodeLike = this.form.registeredModelCodeList[0] || '';
+      }
       return data;
     },
     async fetchOptions (code) {

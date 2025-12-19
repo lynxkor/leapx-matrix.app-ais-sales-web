@@ -10,21 +10,15 @@
       class="ais-search-form"
     >
       <el-form-item label="选配动力名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.rangePowerName"
-          clearable
-        />
+           <tag-input v-model="form.rangePowerNameList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="状态">
         <fetch-select
           :request="fetchOptions"
-          enumCode="xxx"
+          enumCode="StatusEnum"
           v-model="form.status"
           placeholder="请选择"
           clearable
-          multiple
-          filterable
         />
       </el-form-item>
       <el-form-item label="创建时间" v-show="this.visibleCount === 3 || show">
@@ -87,7 +81,7 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <!-- <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button> -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
@@ -132,7 +126,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import dateranges from '@/libs/components/dateranges';
-
+import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   rangePowerName: '',
@@ -152,6 +146,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     dateranges,
     PageSearchAction,
     LPVxeTable,
@@ -380,6 +375,11 @@ export default {
           delete data[key];
         }
       });
+
+      if (Array.isArray(this.form.rangePowerNameList) && this.form.rangePowerNameList.length <= 1) {
+        delete data.rangePowerNameList;
+        data.rangePowerNameLike = this.form.rangePowerNameList[0] || '';
+      }
 
       // if (this.form.createTime) {
       //   delete data.createTime;

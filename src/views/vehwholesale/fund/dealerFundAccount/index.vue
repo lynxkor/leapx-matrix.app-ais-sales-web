@@ -36,10 +36,17 @@
           />
         </el-form-item>
         <el-form-item label="金融机构名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.financialOrganizationName"
+          <fetch-select
+            :remote-method="repairItemSearch"
+            remote
+            reserve-keyword
+            labelKey="name"
+            valueKey="id"
+            v-model="form.financialOrganizationIds"
+            placeholder="请选择"
             clearable
+            multiple
+            filterable
           />
         </el-form-item>
         <el-form-item label="是否允许使用返利">
@@ -74,8 +81,8 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-permission="moduleKey+'-setEntOrderSettleFlag'" size="small" @click="setEntOrderSettleFlag">设置企业订单结算</el-button>
-      <el-button v-permission="moduleKey+'-setRebateFlag'" size="small" @click="setRebateFlag">设置使用返利</el-button>
+      <el-button v-permission="moduleKey+'-setEntOrderSettleFlag'" size="small" @click="componentsDialogChange('setEntOrderSettleFlag')">设置企业订单结算</el-button>
+      <el-button v-permission="moduleKey+'-setRebateFlag'" size="small" @click="componentsDialogChange('setRebateFlag')">设置使用返利</el-button>
       <el-button v-permission="moduleKey+'-setSettleSort'" size="small" @click="setSettleSort">设置结算顺序</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
@@ -95,6 +102,7 @@
         @handleSelect="handleSelectionChange"
       />
     </div>
+    <components-dialog ref="componentsDialog" :page-tpye="dialogTpye" />
   </div>
 </template>
 
@@ -110,6 +118,8 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+import componentsDialog from '@/views/vehwholesale/fund/dealerFundAccount/components/componentsDialog.vue';
+import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -117,7 +127,7 @@ const defaultForm = {
   dealerCompanyCode: '',
   dealerCompanyName: '',
   fundType: '',
-  financialOrganizationName: '',
+  financialOrganizationIds: [],
   settleSort: '',
   allowUseRebate: '',
   allowEntOrderSettle: '',
@@ -139,12 +149,14 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    componentsDialog,
     PageSearchAction,
     LPVxeTable,
     FetchSelect
   },
   data () {
     return {
+      dialogTpye: '',
       pageTitle: '账户管理-整车资金-整车资金账户管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
@@ -187,11 +199,16 @@ export default {
             props: 'dealerCompanyCode',
             label: '母公司编码',
             visible: true,
-            width: 200,
-            mask: true,
-            getValue: row => new Promise((resolve) => {
-              resolve(row.dealerCompanyName);
-            })
+            width: 200
+            // mask: true,
+            // getValue: row => new Promise((resolve) => {
+            //   getList({ fundAccountCode: row.fundAccountCode, pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
+            //     .then(res => {
+            //       console.log('dealerCompanyCode:', res);
+            //     }).finally(() => {
+            //       this.loading = false;
+            //     });
+            // })
           },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           { props: 'fundType', label: '资金类型', visible: true, width: 200 },
@@ -254,7 +271,11 @@ export default {
     this.getData();
   },
   methods: {
-    setEntOrderSettleFlag () {},
+    repairItemSearch (query) { return listIdNames({ seriesNameLike: query, status: 1 }); },
+    componentsDialogChange (type) {
+      this.dialogTpye = type;
+      this.$refs.componentsDialog.dialogshow();
+    },
     setRebateFlag () {},
     setSettleSort () {},
     onSubmit () {

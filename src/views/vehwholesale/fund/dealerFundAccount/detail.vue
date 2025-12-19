@@ -31,10 +31,10 @@
             <el-form-item label="资金结算顺序：" prop="settleSort">
               {{ info.settleSort  }}
             </el-form-item>
-            <el-form-item label="是否允许客户使用返利,1:允许，0不允许：" prop="allowUseRebate">
+            <el-form-item label="是否允许客户使用返利：" prop="allowUseRebate">
               {{ info.allowUseRebate  }}
             </el-form-item>
-            <el-form-item label="是否允许企业订单结算,1:允许，0不允许：" prop="allowEntOrderSettle">
+            <el-form-item label="是否允许企业订单结算：" prop="allowEntOrderSettle">
               {{ info.allowEntOrderSettle  }}
             </el-form-item>
             <el-form-item label="企业订单额度系数：" prop="entOrderQuota">
