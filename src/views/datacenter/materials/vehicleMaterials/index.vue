@@ -167,7 +167,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchUpdateProps } from '@/api/datacenter/materials/vehicleMaterials/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelList, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleRoof, vehicleModelYearTypeRelationDistinctYeayType } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelList, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleRoof, vehicleModelYearTypeRelationDistinctYeayType, listVehicleYearType } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -356,7 +356,7 @@ export default {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
     this.getVehicleModelList();
-    this.getModelYearTypeRelationsList();
+    this.listVehicleYearType();
     this.getVehicleExteriorList();
     this.getVehicleInteriorList();
     this.getVehicleWheelHubList();
@@ -581,7 +581,7 @@ export default {
         this.yearModelList = [];
         this.form.yearTypeIdSet = [];
         this.getVehicleModelList();
-        this.getModelYearTypeRelationsList();
+        this.listVehicleYearType();
       }
     },
     modelListChange (val, selectedOption) {
@@ -589,7 +589,7 @@ export default {
       if (val.length) {
         this.getModelYearTypeRelationsList(val);
       } else {
-        this.getModelYearTypeRelationsList();
+        this.listVehicleYearType();
         this.yearModelList = [];
         this.form.yearTypeIdSet = [];
       }
@@ -623,7 +623,17 @@ export default {
         this.modelList = vehicleModelData;
       }
     },
-
+    async listVehicleYearType () {
+      const res = await listVehicleYearType({ size: 50 });
+      console.log('listVehicleYearType', res);
+      this.yearModelList = res.map(item => {
+        return {
+          ...item,
+          label: item.name,
+          value: item.id
+        };
+      });
+    },
     async getModelYearTypeRelationsList (val) {
       const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList: val, size: 1000 });
       this.yearModelList = res.map(item => {
