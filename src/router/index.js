@@ -822,6 +822,60 @@ const routes = [
         name: '账户管理-基础配置-销售公司管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehwholesale/basic/wholesaleTestDrivePurchaseConf',
+      name: 'wholesaleTestDrivePurchaseConf',
+      component: () => import('@/views/vehwholesale/basic/wholesaleTestDrivePurchaseConf/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-试驾车采购配置管理',
+        // keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaletestdrivepurchaseconf/detail',
+      name: 'wholesaleTestDrivePurchaseConfDetail',
+      component: () => import('@/views/vehwholesale/basic/wholesaleTestDrivePurchaseConf/detail.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-试驾车采购配置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaletestdrivepurchaseconf/edit',
+      name: 'wholesaleTestDrivePurchaseConfEdit',
+      component: () => import('@/views/vehwholesale/basic/wholesaleTestDrivePurchaseConf/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-试驾车采购配置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesale_dealer_test_drive_quota',
+      name: 'wholesale_dealer_test_drive_quota',
+      component: () => import('@/views/vehwholesale/basic/wholesale_dealer_test_drive_quota/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-门店试驾车配额管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesale_dealer_test_drive_quota/detail',
+      name: 'wholesale_dealer_test_drive_quotaDetail',
+      component: () => import('@/views/vehwholesale/basic/wholesale_dealer_test_drive_quota/detail.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-门店试驾车配额管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesale_dealer_test_drive_quota/edit',
+      name: 'wholesale_dealer_test_drive_quotaEdit',
+      component: () => import('@/views/vehwholesale/basic/wholesale_dealer_test_drive_quota/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-门店试驾车配额管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
