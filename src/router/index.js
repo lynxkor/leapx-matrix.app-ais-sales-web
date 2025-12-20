@@ -822,6 +822,33 @@ const routes = [
         name: '账户管理-基础配置-销售公司管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehstock/vdc/vehiclePo',
+      name: '',
+      component: () => import('@/views/vehstock/vdc/vehiclePo/index.vue'),
+
+      meta: {
+        name: '整车采购订单',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/vdc/vehiclePo/detail',
+      name: 'Detail',
+      component: () => import('@/views/vehstock/vdc/vehiclePo/detail.vue'),
+
+      meta: {
+        name: '整车采购订单详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/vdc/vehiclePo/edit',
+      name: 'Edit',
+      component: () => import('@/views/vehstock/vdc/vehiclePo/edit.vue'),
+
+      meta: {
+        name: '整车采购订单详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
