@@ -5,6 +5,7 @@ import user from './modules/user';
 import menu from './modules/menu';
 import pageSource from './modules/page-source';
 import enumModule from '@/libs/store/enum';
+import businessData from './modules/businessData';
 
 Vue.use(Vuex);
 
@@ -13,6 +14,7 @@ export default new Vuex.Store({
     user,
     menu,
     pageSource,
-    enum: enumModule
+    enum: enumModule,
+    businessData
   }
 });
