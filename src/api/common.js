@@ -269,3 +269,11 @@ export function vehicleModelYearTypeRelation (data) {
 export function vehicleModelYearTypeRelationDistinctYeayType (data) {
   return api.jsonPost('/datacenter/web/materials/vehicleModelYearTypeRelation/listDistinctYearType', data);
 }
+
+/**
+ * 用户登录信息查询
+ * @param {*} data
+ */
+export function loginUserGet (data) {
+  return api.jsonPost('/datacenter/web/common/loginUser/get', data);
+}

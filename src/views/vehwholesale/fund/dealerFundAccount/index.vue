@@ -81,9 +81,10 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-permission="moduleKey+'-setEntOrderSettleFlag'" size="small" @click="componentsDialogChange('setEntOrderSettleFlag')">设置企业订单结算</el-button>
-      <el-button v-permission="moduleKey+'-setRebateFlag'" size="small" @click="componentsDialogChange('setRebateFlag')">设置使用返利</el-button>
-      <el-button v-permission="moduleKey+'-setSettleSort'" size="small" @click="setSettleSort">设置结算顺序</el-button>
+      <el-button v-permission="moduleKey+'-setEntOrderSettleFlag'" v-show="accountFlag === true" size="small" @click="componentsDialogChange('setEntOrderSettleFlag')">设置企业订单结算</el-button>
+      <el-button v-permission="moduleKey+'-setRebateFlag'" v-show="accountFlag === false" size="small" @click="componentsDialogChange('setRebateFlag')">设置使用返利</el-button>
+      <el-button v-permission="moduleKey+'-setSettleSort'" v-show="accountFlag === true" size="small" @click="setSettleSort">设置结算顺序</el-button>
+      <el-button size="small" @click="setSettleSort">设置结算顺序</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
@@ -103,6 +104,7 @@
       />
     </div>
     <components-dialog ref="componentsDialog" :page-tpye="dialogTpye" />
+    <setSettleSort ref="setSettleSort" :parentOrg="parentOrg" />
   </div>
 </template>
 
@@ -111,7 +113,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem } from '@/api/vehwholesale/fund/account/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, loginUserGet } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -119,6 +121,7 @@ import permissions from '@/libs/mixins/permissions';
 import { downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import componentsDialog from '@/views/vehwholesale/fund/dealerFundAccount/components/componentsDialog.vue';
+import setSettleSort from '@/views/vehwholesale/fund/dealerFundAccount/components/setSettleSort.vue';
 import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
@@ -149,6 +152,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    setSettleSort,
     componentsDialog,
     PageSearchAction,
     LPVxeTable,
@@ -156,6 +160,8 @@ export default {
   },
   data () {
     return {
+      accountFlag: null, // 账户标识 true:厂端 false:店端
+      parentOrg: {}, // 账户标识 true:厂端 false:店端
       dialogTpye: '',
       pageTitle: '账户管理-整车资金-整车资金账户管理',
       pageType: 'list',
@@ -269,15 +275,24 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
+    this.loginUserGet();
   },
   methods: {
+    loginUserGet () {
+      loginUserGet().then(res => {
+        console.log('loginUserGet:', res);
+        this.accountFlag = res.accountFlag;
+        this.parentOrg = res.parentOrg;
+      }).catch(() => {});
+    },
     repairItemSearch (query) { return listIdNames({ seriesNameLike: query, status: 1 }); },
     componentsDialogChange (type) {
       this.dialogTpye = type;
       this.$refs.componentsDialog.dialogshow();
     },
-    setRebateFlag () {},
-    setSettleSort () {},
+    setSettleSort () {
+      this.$refs.setSettleSort.dialogshow();
+    },
     onSubmit () {
       this.getData();
     },
@@ -319,7 +334,6 @@ export default {
 
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
-          console.log(res);
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item,
