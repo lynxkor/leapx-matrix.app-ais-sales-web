@@ -123,6 +123,7 @@ import { getEnum, vehicleSeriesList, vehicleModelList, vehicleExterior, vehicleI
 // import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
+import commonMixins from '@/libs/mixins/commonMixins';
 import { fetchAndFormatData } from '@/libs/utils';
 
 const defaultForm = {
@@ -193,10 +194,11 @@ export default {
   components: {
     FetchSelect,
   },
-  mixins: [routeGuard, permissions],
+  mixins: [routeGuard, permissions, commonMixins],
   data () {
     return {
       moduleKey: 'AISDC-vehicleMaterials',
+      pageType: 'edit',
       discontinueStatusList: [],
       // 表单项配置
       formItems: [
