@@ -179,7 +179,7 @@ export default {
   mixins: [permissions, commonMixins],
   components: {
   },
-  data() {
+  data () {
     return {
       pageTitle: '整车采购订单',
       pageType: 'detail',
@@ -190,12 +190,12 @@ export default {
       yes_no_enum_map: YES_NO_ENUM_MAP
     };
   },
-  created() {
+  created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车采购订单', '详情']);
     this.getData();
   },
   methods: {
-    handleEdit() {
+    handleEdit () {
       this.$router.push({
         path: '/vehstock/vdc/vehiclePo/edit',
         query: {
@@ -203,7 +203,7 @@ export default {
         }
       });
     },
-    getData() {
+    getData () {
       getDetail(this.$route.query.id).then(res => {
         this.loading = false;
         this.info = res;
