@@ -6,6 +6,7 @@ import store from './store';
 import ElementUI from 'element-ui';
 import Vuex from 'vuex';
 import '@/libs/directive/permissions.js';
+import AuditLogPlugin from '@/libs/plugins/auditLog.js';
 import '@/common/css/element-variables.scss';
 import '@/common/css/base.css';
 import '@/common/css/base.scss';
@@ -47,6 +48,9 @@ Vue.config.productionTip = false;
 
 Vue.use(ElementUI);
 Vue.use(Vuex);
+
+/* -------------------- 注册插件 ----------------- */
+Vue.use(AuditLogPlugin);
 
 // 监听全局分辨率
 const onResize = () => {
