@@ -165,8 +165,8 @@ export default {
   },
   data () {
     return {
-      accountFlag: '', // 账户标识 true:厂端 false:店端
-      parentOrg: {}, // 账户标识 true:厂端 false:店端
+      accountFlag: null, // 账户标识  true: 是店端账号；false: 厂端账号
+      parentOrg: {}, // 父级组织
       dialogTpye: '',
       pageTitle: '账户管理-整车资金-整车资金账户管理',
       pageType: 'list',
@@ -222,7 +222,7 @@ export default {
             // })
           },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
-          { props: 'fundType', label: '资金类型', visible: true, width: 200 },
+          { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 200 },
           { props: 'financialOrganizationName', label: '金融机构名称', visible: true, width: 200 },
           { props: 'settleSort', label: '资金结算顺序', visible: true, width: 200 },
           { props: 'allowUseRebateLabel', label: '是否允许客户使用返利', visible: true, width: 200 },
@@ -272,7 +272,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '账户管理-整车资金-整车资金账户管理',
-        dataFetchPath: 'vehwholesale/web/fund/dealerFundAccount/page',
+        dataFetchPath: '/vw/web/fund/dealerFundAccount/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

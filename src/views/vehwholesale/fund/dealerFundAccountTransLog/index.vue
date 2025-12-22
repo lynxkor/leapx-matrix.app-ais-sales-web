@@ -272,13 +272,13 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'fundType', label: '资金类型', visible: true, width: 200 },
-          { props: 'financialOrganizationId', label: '金融机构ID', visible: true, width: 200 },
-          { props: 'transactionType', label: '交易类型', visible: true, width: 200 },
+          { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 200 },
+          { props: 'financialOrganizationName', label: '金融机构ID', visible: true, width: 200 },
+          { props: 'transactionTypeLabel', label: '交易类型', visible: true, width: 200 },
           { props: 'transactionAmount', label: '交易金额', visible: true, width: 200 },
-          { props: 'transactionTime', label: '过账时间（交易时间）', visible: true, width: 200 },
+          { props: 'transactionTime', label: '过账时间', visible: true, width: 200 },
           { props: 'transactionReceiptCode', label: '交易凭证号', visible: true, width: 200 },
-          { props: 'remark', label: '备注（说明）', visible: true, width: 200 },
+          { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'vin', label: '整车VIN编码', visible: true, width: 200 },
           { props: 'wholesaleOrderId', label: '批售订单ID', visible: true, width: 200 },
           { props: 'deliveryOrderId', label: '交车单ID', visible: true, width: 200 },
@@ -356,7 +356,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '账户管理-整车资金-整车资金账户交易流水管理',
-        dataFetchPath: 'vehwholesale/web/fund/dealerFundAccountTransLog/page',
+        dataFetchPath: '/vw/web/fund/dealerFundAccountTransLog/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
