@@ -81,10 +81,9 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-permission="moduleKey+'-setEntOrderSettleFlag'" v-show="accountFlag === true" size="small" @click="componentsDialogChange('setEntOrderSettleFlag')">设置企业订单结算</el-button>
-      <el-button v-permission="moduleKey+'-setRebateFlag'" v-show="accountFlag === false" size="small" @click="componentsDialogChange('setRebateFlag')">设置使用返利</el-button>
-      <el-button v-permission="moduleKey+'-setSettleSort'" v-show="accountFlag === true" size="small" @click="setSettleSort">设置结算顺序</el-button>
-      <el-button size="small" @click="setSettleSort">设置结算顺序</el-button>
+      <el-button v-permission="moduleKey+'-setEntOrderSettleFlag'" v-show="!accountFlag" size="small" @click="componentsDialogChange('setEntOrderSettleFlag')">设置企业订单结算</el-button>
+      <el-button v-permission="moduleKey+'-setRebateFlag'" v-show="!accountFlag" size="small" @click="componentsDialogChange('setRebateFlag')">设置使用返利</el-button>
+      <el-button v-permission="moduleKey+'-setSettleSort'" v-show="accountFlag" size="small" @click="setSettleSort">设置结算顺序</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
@@ -160,7 +159,7 @@ export default {
   },
   data () {
     return {
-      accountFlag: null, // 账户标识 true:厂端 false:店端
+      accountFlag: '', // 账户标识 true:厂端 false:店端
       parentOrg: {}, // 账户标识 true:厂端 false:店端
       dialogTpye: '',
       pageTitle: '账户管理-整车资金-整车资金账户管理',
