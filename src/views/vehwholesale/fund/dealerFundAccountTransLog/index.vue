@@ -9,135 +9,111 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="流水编号">
+      <el-form-item label="过账时间">
+        <dateranges
+          v-model="form.transactionTime"
+          :limtNum="3"
+          ref="createTime"/>
+        <!-- <el-date-picker
+         :default-time="['00:00:00', '23:59:59']"
+          v-model="form.transactionTime"
+          type="daterange"
+          :picker-options="pickerOptions"
+          range-separator="至"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        /> -->
+      </el-form-item>
+      <el-form-item label="母公司名称">
+        <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
+        <!-- <el-input
+          placeholder="请输入"
+          v-model="form.dealerCompanyName"
+          clearable
+        /> -->
+      </el-form-item>
+      <!-- <el-form-item label="流水编号">
         <el-input
           placeholder="请输入"
           v-model="form.transLogCode"
           clearable
         />
-      </el-form-item>
-      <el-form-item label="资金类型">
+      </el-form-item> -->
+      <el-form-item label="资金类型"  v-show="this.visibleCount === 3 || show">
         <fetch-select
           :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.fundType"
+          enumCode="vw_fundtype"
+          v-model="form.fundTypes"
           placeholder="请选择"
           clearable
           multiple
           filterable
         />
       </el-form-item>
-      <el-form-item label="金融机构ID"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.financialOrganizationId"
-          clearable
-        />
-      </el-form-item>
       <template v-if="show">
+        <el-form-item label="金融机构">
+          <fetch-select
+            :remote-method="repairItemSearch"
+            remote
+            reserve-keyword
+            labelKey="name"
+            valueKey="id"
+            v-model="form.financialOrganizationId"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="母公司编码">
+          <tag-input v-model="form.dealerComapnyCode" placeholder="请输入" />
+          <!-- <el-input
+            placeholder="请输入"
+            v-model="form.dealerComapnyCode"
+            clearable
+          /> -->
+        </el-form-item>
         <el-form-item label="交易类型">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.transactionType"
+            enumCode="vw_transaction_type"
+            v-model="form.transactionTypes"
             placeholder="请选择"
             clearable
             multiple
             filterable
           />
         </el-form-item>
-        <el-form-item label="交易金额">
-          <el-input
+        <el-form-item label="VIN号">
+          <tag-input v-model="form.vins" placeholder="请输入" />
+          <!-- <el-input
             placeholder="请输入"
-            v-model="form.transactionAmount"
+            v-model="form.vin"
             clearable
-          />
+          /> -->
         </el-form-item>
-        <el-form-item label="过账时间（交易时间）">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.transactionTime"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
-        </el-form-item>
-        <el-form-item label="交易凭证号">
-          <el-input
+        <el-form-item label="整车批售订单">
+          <tag-input v-model="form.wholesaleOrderIds" placeholder="请输入" />
+          <!-- <el-input
             placeholder="请输入"
-            v-model="form.transactionReceiptCode"
+            v-model="form.wholesaleOrderIds"
             clearable
-          />
+          /> -->
+        </el-form-item>
+        <el-form-item label="企业客户整车订单">
+          <tag-input v-model="form.entVehorderIds" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="交车单">
+          <tag-input v-model="form.deliveryOrderIds" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="入账凭证号">
+          <tag-input v-model="form.transactionReceiptCodes" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="备注（说明）">
           <el-input
             placeholder="请输入"
             v-model="form.remark"
             clearable
-          />
-        </el-form-item>
-        <el-form-item label="整车VIN编码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.vin"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="批售订单ID">
-          <el-input
-            placeholder="请输入"
-            v-model="form.wholesaleOrderId"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="交车单ID">
-          <el-input
-            placeholder="请输入"
-            v-model="form.deliveryOrderId"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="门店名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.dealerName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="母公司名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.dealerCompanyName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="母公司编码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.dealerComapnyCode"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="整车资金账户ID">
-          <el-input
-            placeholder="请输入"
-            v-model="form.fundAccountId"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="创建时间">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.createTime"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
           />
         </el-form-item>
       </template>
@@ -152,12 +128,11 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button> -->
     </div>
     <div
       class="ais-table-c"
@@ -175,12 +150,6 @@
         @handleSelect="handleSelectionChange"
       />
     </div>
-    <!-- TIPS: 填入项目id即可 -->
-    <Upload
-      :visible="uploadDialogVisible"
-      :id="1"
-      @close="handleUploadDialogClose"
-    />
   </div>
 </template>
 
@@ -191,24 +160,34 @@ import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/fund/accountTranslog/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
-import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+import dateranges from '@/libs/components/dateranges';
+import TagInput from '@/libs/components/TagInput';
+import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  dealerCompanyNames: [],
+  dealerComapnyCodes: [],
   transLogCode: '',
-  fundType: '',
+  fundTypes: [],
   financialOrganizationId: '',
-  transactionType: '',
+  transactionTypes: [],
   transactionAmount: '',
-  transactionTime: '',
+  transactionTime: [],
   transactionReceiptCode: '',
   remark: '',
   vin: '',
+  vins: [],
+  transactionReceiptCodes: [],
+  deliveryOrderIds: [],
+  entVehorderIds: [],
+  wholesaleOrderIds: [],
+  // vins: [],
   wholesaleOrderId: '',
   deliveryOrderId: '',
   dealerName: '',
@@ -226,10 +205,11 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
+    dateranges,
     PageSearchAction,
     LPVxeTable,
-    FetchSelect,
-    Upload
+    FetchSelect
   },
   data () {
     return {
@@ -245,7 +225,6 @@ export default {
       show: false,
       loading: false,
       exportLoading: false,
-      uploadDialogVisible: false,
       optionObj: {
         id: 'accountTranslogTable',
         dataList: [],
@@ -272,13 +251,13 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'fundType', label: '资金类型', visible: true, width: 200 },
-          { props: 'financialOrganizationId', label: '金融机构ID', visible: true, width: 200 },
-          { props: 'transactionType', label: '交易类型', visible: true, width: 200 },
+          { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 200 },
+          { props: 'financialOrganizationName', label: '金融机构ID', visible: true, width: 200 },
+          { props: 'transactionTypeLabel', label: '交易类型', visible: true, width: 200 },
           { props: 'transactionAmount', label: '交易金额', visible: true, width: 200 },
-          { props: 'transactionTime', label: '过账时间（交易时间）', visible: true, width: 200 },
+          { props: 'transactionTime', label: '过账时间', visible: true, width: 200 },
           { props: 'transactionReceiptCode', label: '交易凭证号', visible: true, width: 200 },
-          { props: 'remark', label: '备注（说明）', visible: true, width: 200 },
+          { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'vin', label: '整车VIN编码', visible: true, width: 200 },
           { props: 'wholesaleOrderId', label: '批售订单ID', visible: true, width: 200 },
           { props: 'deliveryOrderId', label: '交车单ID', visible: true, width: 200 },
@@ -329,17 +308,25 @@ export default {
       }
     };
   },
-  created () {
+  async created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
+    await this.transactionTypes();
     this.getData();
   },
   methods: {
-    handleImport () {
-      this.uploadDialogVisible = true;
+    async transactionTypes () {
+      try {
+        const res = await getEnum('vw_transaction_type');
+        console.log('transactionTypes:', res);
+        const codes = res
+          .map(item => item.code)
+          .filter(code => code !== '2' && code !== '5');
+        this.form.transactionTypes = codes;
+      } catch (error) {
+        console.log('transactionTypes error:', error);
+      }
     },
-    handleUploadDialogClose () {
-      this.uploadDialogVisible = false;
-    },
+    repairItemSearch (query) { return listIdNames({ seriesNameLike: query, status: 1 }); },
     handleAdd () {
       this.$router.push({
         path: '/vehwholesale/fund/dealerFundAccountTransLog/edit'
@@ -350,13 +337,14 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
+      this.$refs.createTime.clearTime();
       this.getData();
     },
     exportExcel () {
       this.exportLoading = true;
       exportTable({
         businessType: '账户管理-整车资金-整车资金账户交易流水管理',
-        dataFetchPath: 'vehwholesale/web/fund/dealerFundAccountTransLog/page',
+        dataFetchPath: '/vw/web/fund/dealerFundAccountTransLog/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

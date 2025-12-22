@@ -26,23 +26,27 @@
                 />
               </el-form-item>
               <el-form-item label="批售专用" prop="wholesaleOnly">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.wholesaleOnly"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="状态" prop="status">
-                <fetch-select
+                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.status"
+                  enumCode="BooleanEnum"
+                  v-model="form.wholesaleOnly"
                   placeholder="请选择"
                   clearable
                   filterable
                 />
               </el-form-item>
-              <el-form-item label="状态变更描述" prop="statusDesc">
+              <el-form-item label="状态" prop="status">
+                <fetch-select
+                  :request="fetchOptions"
+                  enumCode="StatusEnum"
+                  v-model="form.status"
+                  placeholder="请选择"
+                  clearable
+                  filterable
+                  disabled
+                />
+              </el-form-item>
+              <!-- <el-form-item label="状态变更描述" prop="statusDesc">
                 <fetch-select
                   :request="fetchOptions"
                   enumCode="xxx"
@@ -51,12 +55,13 @@
                   clearable
                   filterable
                 />
-              </el-form-item>
-              <el-form-item label="创建者名称" prop="creatorName">
+              </el-form-item> -->
+              <el-form-item label="创建人" prop="creatorName">
                 <el-input
                   placeholder="请输入"
                   v-model="form.creatorName"
                   clearable
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="创建时间" prop="createTime">
@@ -67,9 +72,10 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="修改者名称" prop="modifierName">
+              <!-- <el-form-item label="修改者名称" prop="modifierName">
                 <el-input
                   placeholder="请输入"
                   v-model="form.modifierName"
@@ -113,7 +119,7 @@
                   v-model="form.remark"
                   clearable
                 />
-              </el-form-item>
+              </el-form-item> -->
             </el-form>
           </div>
         </section>
@@ -271,6 +277,7 @@ export default {
       return {
         ...defaultForm,
         // ownerId: userInfo.userId,
+        status: 1,
         creatorName: userInfo.userName,
         createTime: moment().format('YYYY-MM-DD HH:mm:ss')
       };

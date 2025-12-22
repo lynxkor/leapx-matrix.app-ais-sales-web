@@ -607,24 +607,6 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/datacenter/materials/vehicleModel',
-      name: 'vehicleModel',
-      component: () => import('@/views/datacenter/materials/vehicleModel/index.vue'),
-
-      meta: {
-        name: '新页面',
-        keepAlive: true
-      }
-    }, {
-      path: '/datacenter/materials/vehiclemodel/detail',
-      name: 'vehicleModelDetail',
-      component: () => import('@/views/datacenter/materials/vehicleModel/detail.vue'),
-
-      meta: {
-        name: '新页面详情',
-        noResourceUrl: 'true'
-      }
-    }, {
       path: '/datacenter/materials/vehiclemodel/edit',
       name: 'vehicleModelEdit',
       component: () => import('@/views/datacenter/materials/vehicleModel/edit.vue'),
@@ -847,6 +829,87 @@ const routes = [
 
       meta: {
         name: '整车采购订单详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaleTestDrivePurchaseConf',
+      name: 'wholesaleTestDrivePurchaseConf',
+      component: () => import('@/views/vehwholesale/basic/wholesaleTestDrivePurchaseConf/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-试驾车采购配置管理',
+        // keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaletestdrivepurchaseconf/detail',
+      name: 'wholesaleTestDrivePurchaseConfDetail',
+      component: () => import('@/views/vehwholesale/basic/wholesaleTestDrivePurchaseConf/detail.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-试驾车采购配置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaletestdrivepurchaseconf/edit',
+      name: 'wholesaleTestDrivePurchaseConfEdit',
+      component: () => import('@/views/vehwholesale/basic/wholesaleTestDrivePurchaseConf/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-试驾车采购配置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesale_dealer_test_drive_quota',
+      name: 'wholesale_dealer_test_drive_quota',
+      component: () => import('@/views/vehwholesale/basic/wholesale_dealer_test_drive_quota/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-门店试驾车配额管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesale_dealer_test_drive_quota/detail',
+      name: 'wholesale_dealer_test_drive_quotaDetail',
+      component: () => import('@/views/vehwholesale/basic/wholesale_dealer_test_drive_quota/detail.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-门店试驾车配额管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesale_dealer_test_drive_quota/edit',
+      name: 'wholesale_dealer_test_drive_quotaEdit',
+      component: () => import('@/views/vehwholesale/basic/wholesale_dealer_test_drive_quota/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-门店试驾车配额管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/vdc/vehicleVdcInventoryLedger',
+      name: 'vehicleVdcInventoryLedger',
+      component: () => import('@/views/vehstock/vdc/vehicleVdcInventoryLedger/index.vue'),
+
+      meta: {
+        name: 'VDC库存台账',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/vdc/vehiclevdcinventoryledger/detail',
+      name: 'vehicleVdcInventoryLedgerDetail',
+      component: () => import('@/views/vehstock/vdc/vehicleVdcInventoryLedger/detail.vue'),
+
+      meta: {
+        name: 'VDC库存台账详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/vdc/vehiclevdcinventoryledger/edit',
+      name: 'vehicleVdcInventoryLedgerEdit',
+      component: () => import('@/views/vehstock/vdc/vehicleVdcInventoryLedger/edit.vue'),
+
+      meta: {
+        name: 'VDC库存台账详情',
         noResourceUrl: 'true'
       }
     }]

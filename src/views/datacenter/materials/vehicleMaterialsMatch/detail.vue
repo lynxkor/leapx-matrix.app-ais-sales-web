@@ -3,7 +3,7 @@
     <el-skeleton v-if="loading" :rows="6" animated />
     <template v-else>
       <section class="common-title">
-        <h2>可配置物关系</h2>
+        <h2>记录单号: {{ info.matchCode }}</h2>
         <el-button size="small" @click="handleEdit"><i class="iconfont icon-lxppc-edit"></i>编辑</el-button>
       </section>
       <section class="common-section">

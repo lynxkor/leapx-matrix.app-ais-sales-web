@@ -10,18 +10,20 @@
       class="ais-search-form"
     >
       <el-form-item label="母公司编码">
-        <el-input
+        <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
+        <!-- <el-input
           placeholder="请输入"
           v-model="form.dealerCompanyCode"
           clearable
-        />
+        /> -->
       </el-form-item>
       <el-form-item label="母公司名称"  v-show="this.visibleCount === 3 || show">
-        <el-input
+        <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
+        <!-- <el-input
           placeholder="请输入"
           v-model="form.dealerCompanyName"
           clearable
-        />
+        /> -->
       </el-form-item>
       <template v-if="show">
         <el-form-item label="资金类型">
@@ -81,10 +83,9 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-permission="moduleKey+'-setEntOrderSettleFlag'" v-show="accountFlag === true" size="small" @click="componentsDialogChange('setEntOrderSettleFlag')">设置企业订单结算</el-button>
-      <el-button v-permission="moduleKey+'-setRebateFlag'" v-show="accountFlag === false" size="small" @click="componentsDialogChange('setRebateFlag')">设置使用返利</el-button>
-      <el-button v-permission="moduleKey+'-setSettleSort'" v-show="accountFlag === true" size="small" @click="setSettleSort">设置结算顺序</el-button>
-      <el-button size="small" @click="setSettleSort">设置结算顺序</el-button>
+      <el-button v-permission="moduleKey+'-setEntOrderSettleFlag'" v-show="!accountFlag" size="small" @click="componentsDialogChange('setEntOrderSettleFlag')">设置企业订单结算</el-button>
+      <el-button v-permission="moduleKey+'-setRebateFlag'" v-show="!accountFlag" size="small" @click="componentsDialogChange('setRebateFlag')">设置使用返利</el-button>
+      <el-button v-permission="moduleKey+'-setSettleSort'" v-show="accountFlag" size="small" @click="setSettleSort">设置结算顺序</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
@@ -112,7 +113,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem } from '@/api/vehwholesale/fund/account/index';
+import { getList } from '@/api/vehwholesale/fund/account/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, loginUserGet } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -123,11 +124,14 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import componentsDialog from '@/views/vehwholesale/fund/dealerFundAccount/components/componentsDialog.vue';
 import setSettleSort from '@/views/vehwholesale/fund/dealerFundAccount/components/setSettleSort.vue';
 import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   fundAccountCode: '',
   dealerCompanyCode: '',
+  dealerCompanyNames: [],
+  dealerCompanyCodes: [],
   dealerCompanyName: '',
   fundType: '',
   financialOrganizationIds: [],
@@ -152,6 +156,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     setSettleSort,
     componentsDialog,
     PageSearchAction,
@@ -160,8 +165,8 @@ export default {
   },
   data () {
     return {
-      accountFlag: null, // 账户标识 true:厂端 false:店端
-      parentOrg: {}, // 账户标识 true:厂端 false:店端
+      accountFlag: null, // 账户标识  true: 是店端账号；false: 厂端账号
+      parentOrg: {}, // 父级组织
       dialogTpye: '',
       pageTitle: '账户管理-整车资金-整车资金账户管理',
       pageType: 'list',
@@ -206,67 +211,21 @@ export default {
             label: '母公司编码',
             visible: true,
             width: 200
-            // mask: true,
-            // getValue: row => new Promise((resolve) => {
-            //   getList({ fundAccountCode: row.fundAccountCode, pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
-            //     .then(res => {
-            //       console.log('dealerCompanyCode:', res);
-            //     }).finally(() => {
-            //       this.loading = false;
-            //     });
-            // })
           },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
-          { props: 'fundType', label: '资金类型', visible: true, width: 200 },
-          { props: 'financialOrganizationName', label: '金融机构名称', visible: true, width: 200 },
+          { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 200 },
+          { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 200 },
           { props: 'settleSort', label: '资金结算顺序', visible: true, width: 200 },
-          { props: 'allowUseRebate', label: '是否允许客户使用返利', visible: true, width: 200 },
-          { props: 'allowEntOrderSettle', label: '是否允许企业订单结算', visible: true, width: 200 },
+          { props: 'allowUseRebateLabel', label: '是否允许使用返利', visible: true, width: 200 },
+          { props: 'allowEntOrderSettleLabel', label: '是否允许企业订单结算', visible: true, width: 200 },
           { props: 'entOrderQuota', label: '企业订单额度系数', visible: true, width: 200 },
           { props: 'availableBalance', label: '可用余额', visible: true, width: 200 },
           { props: 'frozenBalance', label: '冻结余额', visible: true, width: 200 },
           { props: 'totalRechargeAmount', label: '累计充值金额', visible: true, width: 200 },
           { props: 'totalSettleAmount', label: '累计结算金额', visible: true, width: 200 },
           { props: 'lastTradeTime', label: '最近交易时间', visible: true, width: 200 },
-          { props: 'saleCompanyId', label: '销售公司', visible: true, width: 200 },
+          { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          {
-            props: 'operate',
-            label: '操作',
-            type: 'operate',
-            visible: true,
-            fixed: 'right',
-            buttons: [{
-              name: '编辑',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/fund/dealerFundAccount/edit',
-                  query: {
-                    id: row.id
-                  }
-                });
-              },
-              type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
-            }]
-          }
         ],
         total: 0
       }
@@ -304,7 +263,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '账户管理-整车资金-整车资金账户管理',
-        dataFetchPath: 'vehwholesale/web/fund/dealerFundAccount/page',
+        dataFetchPath: '/vw/web/fund/dealerFundAccount/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

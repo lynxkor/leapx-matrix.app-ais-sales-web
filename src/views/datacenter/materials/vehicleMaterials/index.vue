@@ -366,25 +366,25 @@ export default {
   methods: {
     seriesSearch (query) { return vehicleSeriesList({ seriesNameLike: query }); },
     async modelSearch (query) {
-      if (query) {
-        let params = {
-          modelNameLike: query || '',
-          seriesIdList: this.form.seriesIds || []
-        };
-        let res = await vehicleModelList(params);
-        if (res.length) {
-          const vehicleModelData = res.map(item => {
-            return {
-              ...item,
-              label: item.name,
-              value: item.id
-            };
-          });
-          this.modelList = vehicleModelData;
-        } else {
-          this.modelList = [];
-        }
+      // if (query) {
+      let params = {
+        modelNameLike: query || '',
+        seriesIdList: this.form.seriesIds || []
+      };
+      let res = await vehicleModelList(params);
+      if (res.length) {
+        const vehicleModelData = res.map(item => {
+          return {
+            ...item,
+            label: item.name,
+            value: item.id
+          };
+        });
+        this.modelList = vehicleModelData;
+      } else {
+        this.modelList = [];
       }
+      // }
     },
     handleImport (importId) {
       this.importId = importId;

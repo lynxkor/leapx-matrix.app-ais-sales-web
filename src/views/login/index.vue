@@ -48,7 +48,7 @@
 </template>
 <script>
 import {
-  login
+  login, getAreaTree
   // loginUserCenter
   // getMiddlePlatformMapping
 } from '@/api/user';
@@ -113,7 +113,10 @@ export default {
         this.iskey = false;
         this.$store.commit('SET_LOGIN_INFO', res);
         this.$store.commit('SET_PAGE_RESOURCE', res.resources);
-
+        getAreaTree().then(res => {
+          localStorage.getItem('areaTree', JSON.stringify(res));
+          this.$store.commit('SET_AREATREE', res);
+        }).catch(() => {});
         if (!!this.$route.query.id && !!this.$route.query.url) {
           this.$store.commit('SET_ACTIVE_MENU', this.$route.query.url);
           this.$router.push('/' + this.$route.query.url + '?id=' + this.$route.query.id);
