@@ -83,7 +83,7 @@ export default {
         ...defaultForm
       },
       columns: [
-        { field: 'fundType', title: '资金类型', width: 120 },
+        { field: 'fundTypeLabel', title: '资金类型', width: 120 },
         { field: 'financialOrganizationName', title: '金融机构', width: 120 },
         { field: 'availableBalance', title: '可用余额', width: 160 },
         { field: 'dealerCompanyName', title: '母公司名称', width: 260 },
@@ -199,7 +199,7 @@ export default {
             settleSort: index
           };
         });
-        setSettleSort(settleSortItems).then(res => {
+        setSettleSort({ settleSortItems: settleSortItems }).then(res => {
           this.$message({
             message: '保存成功',
             type: 'success'
