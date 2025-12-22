@@ -385,7 +385,7 @@
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="发运方式 vehstock_ship_via ；公路：1，铁路：2，水路：3，救援车：4；" prop="shipVia">
+              <el-form-item label="发运方式" prop="shipVia">
                 <el-input
                   placeholder="请输入"
                   v-model="form.shipVia"
@@ -889,7 +889,7 @@ export default {
           { required: true, message: '请输入绑定零售单 BooleanEnum（0:否,1:是）', trigger: 'blur' }
         ],
         shipVia: [
-          { required: true, message: '请输入发运方式 vehstock_ship_via ；公路：1，铁路：2，水路：3，救援车：4；', trigger: 'blur' }
+          { required: true, message: '请输入发运方式', trigger: 'blur' }
         ],
         retailOrderId: [
           { required: true, message: '请输入整车订单ID', trigger: 'blur' }
