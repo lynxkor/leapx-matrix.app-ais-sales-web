@@ -903,6 +903,33 @@ const routes = [
         name: '整车批售-批售主数据-门店试驾车配额管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehstock/vdc/vehicleVdcInventoryLedger',
+      name: 'vehicleVdcInventoryLedger',
+      component: () => import('@/views/vehstock/vdc/vehicleVdcInventoryLedger/index.vue'),
+
+      meta: {
+        name: 'VDC库存台账',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/vdc/vehiclevdcinventoryledger/detail',
+      name: 'vehicleVdcInventoryLedgerDetail',
+      component: () => import('@/views/vehstock/vdc/vehicleVdcInventoryLedger/detail.vue'),
+
+      meta: {
+        name: 'VDC库存台账详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/vdc/vehiclevdcinventoryledger/edit',
+      name: 'vehicleVdcInventoryLedgerEdit',
+      component: () => import('@/views/vehstock/vdc/vehicleVdcInventoryLedger/edit.vue'),
+
+      meta: {
+        name: 'VDC库存台账详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
