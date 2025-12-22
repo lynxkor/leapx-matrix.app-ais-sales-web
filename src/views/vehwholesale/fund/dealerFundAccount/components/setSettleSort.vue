@@ -1,7 +1,7 @@
 <template>
   <el-dialog :title="title" width="1000px" :visible.sync="dialogVisible">
     <div class="page-common m-account-list">
-      <h3 class="header-title">母公司名称:</h3>
+      <h3 class="header-title">母公司名称:{{ parentOrg.orgName }}</h3>
       <section class="common-section">
         <div class="common-section-body">
           <div class="common-section-table">

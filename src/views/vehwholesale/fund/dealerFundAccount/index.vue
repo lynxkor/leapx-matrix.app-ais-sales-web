@@ -10,18 +10,20 @@
       class="ais-search-form"
     >
       <el-form-item label="母公司编码">
-        <el-input
+        <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
+        <!-- <el-input
           placeholder="请输入"
           v-model="form.dealerCompanyCode"
           clearable
-        />
+        /> -->
       </el-form-item>
       <el-form-item label="母公司名称"  v-show="this.visibleCount === 3 || show">
-        <el-input
+        <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
+        <!-- <el-input
           placeholder="请输入"
           v-model="form.dealerCompanyName"
           clearable
-        />
+        /> -->
       </el-form-item>
       <template v-if="show">
         <el-form-item label="资金类型">
@@ -122,11 +124,14 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import componentsDialog from '@/views/vehwholesale/fund/dealerFundAccount/components/componentsDialog.vue';
 import setSettleSort from '@/views/vehwholesale/fund/dealerFundAccount/components/setSettleSort.vue';
 import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   fundAccountCode: '',
   dealerCompanyCode: '',
+  dealerCompanyNames: [],
+  dealerCompanyCodes: [],
   dealerCompanyName: '',
   fundType: '',
   financialOrganizationIds: [],
@@ -151,6 +156,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     setSettleSort,
     componentsDialog,
     PageSearchAction,
@@ -205,21 +211,12 @@ export default {
             label: '母公司编码',
             visible: true,
             width: 200
-            // mask: true,
-            // getValue: row => new Promise((resolve) => {
-            //   getList({ fundAccountCode: row.fundAccountCode, pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
-            //     .then(res => {
-            //       console.log('dealerCompanyCode:', res);
-            //     }).finally(() => {
-            //       this.loading = false;
-            //     });
-            // })
           },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 200 },
-          { props: 'financialOrganizationName', label: '金融机构名称', visible: true, width: 200 },
+          { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 200 },
           { props: 'settleSort', label: '资金结算顺序', visible: true, width: 200 },
-          { props: 'allowUseRebateLabel', label: '是否允许客户使用返利', visible: true, width: 200 },
+          { props: 'allowUseRebateLabel', label: '是否允许使用返利', visible: true, width: 200 },
           { props: 'allowEntOrderSettleLabel', label: '是否允许企业订单结算', visible: true, width: 200 },
           { props: 'entOrderQuota', label: '企业订单额度系数', visible: true, width: 200 },
           { props: 'availableBalance', label: '可用余额', visible: true, width: 200 },

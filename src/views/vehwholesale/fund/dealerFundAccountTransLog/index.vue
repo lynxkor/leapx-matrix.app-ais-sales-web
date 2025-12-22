@@ -9,13 +9,29 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="流水编号">
+      <el-form-item label="过账时间">
+        <dateranges
+          v-model="form.transactionTime"
+          :limtNum="1"
+          ref="createTime"/>
+        <!-- <el-date-picker
+         :default-time="['00:00:00', '23:59:59']"
+          v-model="form.transactionTime"
+          type="daterange"
+          :picker-options="pickerOptions"
+          range-separator="至"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        /> -->
+      </el-form-item>
+      <!-- <el-form-item label="流水编号">
         <el-input
           placeholder="请输入"
           v-model="form.transLogCode"
           clearable
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="资金类型">
         <fetch-select
           :request="fetchOptions"
@@ -51,18 +67,6 @@
             placeholder="请输入"
             v-model="form.transactionAmount"
             clearable
-          />
-        </el-form-item>
-        <el-form-item label="过账时间（交易时间）">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.transactionTime"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
           />
         </el-form-item>
         <el-form-item label="交易凭证号">
@@ -152,12 +156,11 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button> -->
     </div>
     <div
       class="ais-table-c"
@@ -175,12 +178,6 @@
         @handleSelect="handleSelectionChange"
       />
     </div>
-    <!-- TIPS: 填入项目id即可 -->
-    <Upload
-      :visible="uploadDialogVisible"
-      :id="1"
-      @close="handleUploadDialogClose"
-    />
   </div>
 </template>
 
@@ -191,12 +188,12 @@ import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/fund/accountTranslog/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
-import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+import dateranges from '@/libs/components/dateranges';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -205,7 +202,7 @@ const defaultForm = {
   financialOrganizationId: '',
   transactionType: '',
   transactionAmount: '',
-  transactionTime: '',
+  transactionTime: [],
   transactionReceiptCode: '',
   remark: '',
   vin: '',
@@ -226,10 +223,10 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    dateranges,
     PageSearchAction,
     LPVxeTable,
-    FetchSelect,
-    Upload
+    FetchSelect
   },
   data () {
     return {
@@ -245,7 +242,6 @@ export default {
       show: false,
       loading: false,
       exportLoading: false,
-      uploadDialogVisible: false,
       optionObj: {
         id: 'accountTranslogTable',
         dataList: [],
@@ -334,12 +330,6 @@ export default {
     this.getData();
   },
   methods: {
-    handleImport () {
-      this.uploadDialogVisible = true;
-    },
-    handleUploadDialogClose () {
-      this.uploadDialogVisible = false;
-    },
     handleAdd () {
       this.$router.push({
         path: '/vehwholesale/fund/dealerFundAccountTransLog/edit'
@@ -350,6 +340,7 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
+      this.$refs.createTime.clearTime();
       this.getData();
     },
     exportExcel () {
