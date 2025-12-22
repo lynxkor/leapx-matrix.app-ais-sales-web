@@ -220,53 +220,16 @@ export default {
           { props: 'fundType', label: '资金类型', visible: true, width: 200 },
           { props: 'financialOrganizationName', label: '金融机构名称', visible: true, width: 200 },
           { props: 'settleSort', label: '资金结算顺序', visible: true, width: 200 },
-          { props: 'allowUseRebate', label: '是否允许客户使用返利', visible: true, width: 200 },
-          { props: 'allowEntOrderSettle', label: '是否允许企业订单结算', visible: true, width: 200 },
+          { props: 'allowUseRebateLabel', label: '是否允许客户使用返利', visible: true, width: 200 },
+          { props: 'allowEntOrderSettleLabel', label: '是否允许企业订单结算', visible: true, width: 200 },
           { props: 'entOrderQuota', label: '企业订单额度系数', visible: true, width: 200 },
           { props: 'availableBalance', label: '可用余额', visible: true, width: 200 },
           { props: 'frozenBalance', label: '冻结余额', visible: true, width: 200 },
           { props: 'totalRechargeAmount', label: '累计充值金额', visible: true, width: 200 },
           { props: 'totalSettleAmount', label: '累计结算金额', visible: true, width: 200 },
           { props: 'lastTradeTime', label: '最近交易时间', visible: true, width: 200 },
-          { props: 'saleCompanyId', label: '销售公司', visible: true, width: 200 },
+          { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          {
-            props: 'operate',
-            label: '操作',
-            type: 'operate',
-            visible: true,
-            fixed: 'right',
-            buttons: [{
-              name: '编辑',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/fund/dealerFundAccount/edit',
-                  query: {
-                    id: row.id
-                  }
-                });
-              },
-              type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
-            }]
-          }
         ],
         total: 0
       }
