@@ -92,7 +92,6 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
-
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   companyCode: '',
@@ -213,7 +212,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '账户管理-基础配置-销售公司管理',
-        dataFetchPath: 'vw/web/fund/fundSaleCompany/page',
+        dataFetchPath: '/vw/web/fund/fundSaleCompany/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
