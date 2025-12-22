@@ -12,7 +12,7 @@
       <el-form-item label="过账时间">
         <dateranges
           v-model="form.transactionTime"
-          :limtNum="1"
+          :limtNum="3"
           ref="createTime"/>
         <!-- <el-date-picker
          :default-time="['00:00:00', '23:59:59']"
