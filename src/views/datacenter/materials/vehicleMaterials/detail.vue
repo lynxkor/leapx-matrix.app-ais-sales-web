@@ -2,6 +2,10 @@
   <div class="page-common-detail m-vehicle-materials-detail">
     <el-skeleton v-if="loading" :rows="6" animated />
     <template v-else>
+      <section class="common-title">
+        <h2>物料编码: {{ info.materialsCode }}</h2>
+        <el-button size="small" @click="handleEdit"><i class="iconfont icon-lxppc-edit"></i>编辑</el-button>
+      </section>
       <section class="common-section">
         <div class="common-section-header">
           <h2>基础信息</h2>
