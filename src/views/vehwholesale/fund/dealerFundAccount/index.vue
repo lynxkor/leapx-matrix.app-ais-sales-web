@@ -10,18 +10,20 @@
       class="ais-search-form"
     >
       <el-form-item label="母公司编码">
-        <el-input
+        <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
+        <!-- <el-input
           placeholder="请输入"
           v-model="form.dealerCompanyCode"
           clearable
-        />
+        /> -->
       </el-form-item>
       <el-form-item label="母公司名称"  v-show="this.visibleCount === 3 || show">
-        <el-input
+        <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
+        <!-- <el-input
           placeholder="请输入"
           v-model="form.dealerCompanyName"
           clearable
-        />
+        /> -->
       </el-form-item>
       <template v-if="show">
         <el-form-item label="资金类型">
@@ -122,11 +124,14 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import componentsDialog from '@/views/vehwholesale/fund/dealerFundAccount/components/componentsDialog.vue';
 import setSettleSort from '@/views/vehwholesale/fund/dealerFundAccount/components/setSettleSort.vue';
 import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   fundAccountCode: '',
   dealerCompanyCode: '',
+  dealerCompanyNames: [],
+  dealerCompanyCodes: [],
   dealerCompanyName: '',
   fundType: '',
   financialOrganizationIds: [],
@@ -151,6 +156,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     setSettleSort,
     componentsDialog,
     PageSearchAction,
