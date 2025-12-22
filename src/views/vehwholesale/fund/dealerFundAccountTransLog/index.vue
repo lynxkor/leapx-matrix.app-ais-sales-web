@@ -25,6 +25,14 @@
           end-placeholder="结束日期"
         /> -->
       </el-form-item>
+      <el-form-item label="母公司名称">
+        <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
+        <!-- <el-input
+          placeholder="请输入"
+          v-model="form.dealerCompanyName"
+          clearable
+        /> -->
+      </el-form-item>
       <!-- <el-form-item label="流水编号">
         <el-input
           placeholder="请输入"
@@ -32,25 +40,39 @@
           clearable
         />
       </el-form-item> -->
-      <el-form-item label="资金类型">
+      <el-form-item label="资金类型"  v-show="this.visibleCount === 3 || show">
         <fetch-select
           :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.fundType"
+          enumCode="vw_fundtype"
+          v-model="form.fundTypes"
           placeholder="请选择"
           clearable
           multiple
           filterable
         />
       </el-form-item>
-      <el-form-item label="金融机构ID"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.financialOrganizationId"
-          clearable
-        />
-      </el-form-item>
       <template v-if="show">
+        <el-form-item label="金融机构">
+          <fetch-select
+            :remote-method="repairItemSearch"
+            remote
+            reserve-keyword
+            labelKey="name"
+            valueKey="id"
+            v-model="form.financialOrganizationId"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="母公司编码">
+          <tag-input v-model="form.dealerComapnyCode" placeholder="请输入" />
+          <!-- <el-input
+            placeholder="请输入"
+            v-model="form.dealerComapnyCode"
+            clearable
+          /> -->
+        </el-form-item>
         <el-form-item label="交易类型">
           <fetch-select
             :request="fetchOptions"
@@ -108,20 +130,6 @@
           <el-input
             placeholder="请输入"
             v-model="form.dealerName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="母公司名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.dealerCompanyName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="母公司编码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.dealerComapnyCode"
             clearable
           />
         </el-form-item>
@@ -194,11 +202,15 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import dateranges from '@/libs/components/dateranges';
+import TagInput from '@/libs/components/TagInput';
+import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  dealerCompanyNames: [],
+  dealerComapnyCodes: [],
   transLogCode: '',
-  fundType: '',
+  fundTypes: [],
   financialOrganizationId: '',
   transactionType: '',
   transactionAmount: '',
@@ -223,6 +235,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     dateranges,
     PageSearchAction,
     LPVxeTable,
@@ -330,6 +343,7 @@ export default {
     this.getData();
   },
   methods: {
+    repairItemSearch (query) { return listIdNames({ seriesNameLike: query, status: 1 }); },
     handleAdd () {
       this.$router.push({
         path: '/vehwholesale/fund/dealerFundAccountTransLog/edit'
