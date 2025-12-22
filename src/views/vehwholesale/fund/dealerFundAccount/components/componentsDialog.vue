@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="设置企业订单结算" width="1200px" :visible.sync="dialogVisible">
+  <el-dialog :title="title" width="1200px" :visible.sync="dialogVisible">
     <div class="page-common m-account-list">
       <el-form
         ref="form"
@@ -10,10 +10,23 @@
         label-position="right"
         class="ais-search-form"
       >
+      <el-form-item label="返利余额下限（万元）：" class="long_text" v-show="pageTpye === 'setRebateFlag'">
+        <el-input-number v-model="form.rebateBalanceMin" :controls="false" placeholder="请选择" clearable />
+      </el-form-item>
+        <el-form-item label="资金类型：" v-show="pageTpye === 'setRebateFlag'">
+          <fetch-select
+            :options="fundTypeList"
+            v-model="form.fundTypes"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
+        </el-form-item>
         <el-form-item label="母公司名称：">
           <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="是否允许企业订单结算：" class="long_text">
+        <el-form-item label="是否允许企业订单结算：" class="long_text" v-show="pageTpye === 'setEntOrderSettleFlag'">
            <fetch-select
             :request="fetchOptions"
             enumCode="BooleanEnum"
@@ -23,14 +36,23 @@
             filterable
           />
         </el-form-item>
-        <el-form-item label="资金类型：">
+        <el-form-item label="资金类型：" v-show="pageTpye === 'setEntOrderSettleFlag'">
           <fetch-select
-            :request="fetchOptions"
-            enumCode="vw_fundtype"
+            :options="fundTypeList"
             v-model="form.fundTypes"
             placeholder="请选择"
             clearable
             multiple
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="是否允许使用返利：" class="long_text" v-show="pageTpye === 'setRebateFlag'">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.allowUseRebate"
+            placeholder="请选择"
+            clearable
             filterable
           />
         </el-form-item>
@@ -41,10 +63,9 @@
             reserve-keyword
             labelKey="name"
             valueKey="id"
-            v-model="form.financialOrganizationIds"
+            v-model="form.financialOrganizationId"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
           <!-- <el-input v-model="form.allowProductionSchedule"></el-input> -->
@@ -65,11 +86,11 @@
         <!--  TIPS:根据产品增删功能按钮  -->
           <span v-show="pageTpye === 'setEntOrderSettleFlag'">
             <el-button v-permission="moduleKey+'-setSettleSort'" :disabled="selectionList.length === 0" size="small" @click="setSettleSort">批量开启</el-button>
-            <el-button v-permission="moduleKey+'-setSettleSort'" :disabled="selectionList.length === 0" size="small" @click="handleBatchEnable(0)">批量关闭</el-button>
+            <el-button v-permission="moduleKey+'-setSettleSort'" :disabled="selectionList.length === 0" size="small" @click="setEntOrderSettleFlag(0)">批量关闭</el-button>
             <el-button v-permission="moduleKey+'-setSettleSort'" :disabled="selectionList.length === 0" size="small" @click="setSettleSort">系数调整</el-button>
           </span>
           <span v-show="pageTpye === 'setRebateFlag'">
-            <el-button v-permission="moduleKey+'-setRebateFlag'" :disabled="selectionList.length === 0" size="small" @click="setSettleSort">批量启用</el-button>
+            <el-button v-permission="moduleKey+'-setRebateFlag'" :disabled="selectionList.length === 0" size="small" @click="handleBatchEnable(1)">批量启用</el-button>
             <el-button v-permission="moduleKey+'-setRebateFlag'" :disabled="selectionList.length === 0" size="small" @click="handleBatchEnable(0)">批量停用</el-button>
           </span>
       </div>
@@ -91,10 +112,10 @@
           </div>
         </div>
       </section>
-      <div slot="footer" class="dialog-footer">
+      <!-- <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="dialogVisible = false">取 消</el-button>
         <el-button size="small" type="primary" @click="confirm">确 定</el-button>
-      </div>
+      </div> -->
     </div>
      <el-dialog
       width="300px"
@@ -126,7 +147,7 @@
 import debounce from 'lodash.debounce';
 import EditTable from '@/libs/components/EditTable';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, setEntOrderSettleFlag } from '@/api/vehwholesale/fund/account/index';
+import { getList, setEntOrderSettleFlag, setRebateFlag } from '@/api/vehwholesale/fund/account/index';
 import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import { getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
@@ -136,7 +157,7 @@ const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   setRebateFlagQuery: true,
   dealerCompanyNames: [],
-  financialOrganizationIds: [],
+  financialOrganizationId: '',
   dealerCompanyNameLike: '',
   fundAccountCode: '',
   dealerCompanyCode: '',
@@ -157,7 +178,7 @@ const defaultForm = {
 };
 const pageSize = 20;
 export default {
-  name: 'setEntOrderSettleFlag',
+  name: 'componentsDialog',
   props: {
     pageTpye: {
       type: String,
@@ -173,6 +194,7 @@ export default {
   },
   data () {
     return {
+      title: '',
       entOrderQuota: null,
       moduleKey: 'AISVW-dealerFundAccount',
       total: 0,
@@ -211,8 +233,8 @@ export default {
           size: pageSize
         }
       },
-      tableData: [
-      ],
+      tableData: [],
+      fundTypeList: [],
       selectionList: []
     };
   },
@@ -251,6 +273,17 @@ export default {
       this.debouncedGetData();
     },
     handleBatchEnable (val) {
+      let params = {
+        ids: this.selectionList.map(item => item.id),
+        allowEntOrderSettle: val
+      };
+      setRebateFlag(params).then(res => {
+        let message = val ? '批量启用成功' : '批量关闭成功';
+        this.$message.success(message);
+        this.getData();
+      }).catch(() => {});
+    },
+    setEntOrderSettleFlag (val) {
       let params = {
         ids: this.selectionList.map(item => item.id),
         allowEntOrderSettle: val
@@ -312,10 +345,13 @@ export default {
 
     dialogshow () {
       this.dialogVisible = true;
+      this.fundTypesList();
       if (this.pageTpye === 'setEntOrderSettleFlag') {
         this.columns = this.columns1;
+        this.title = '设置企业订单结算';
       } else {
         this.columns = this.columns2;
+        this.title = '设置使用返利';
       }
       this.getData();
     },
@@ -323,6 +359,15 @@ export default {
       this.dialogVisible = true;
       this.$refs.editTable.clearSelection();
       this.$emit('confirm', this.form);
+    },
+    fundTypesList () {
+      getEnum('vw_fundtype').then(res => {
+        const filteredRes = res.filter(item => item.code !== '1020');
+        this.fundTypeList = filteredRes || [];
+      }).catch(() => {
+        this.fundTypeList = [];
+        this.$message.error('获取资金类型失败');
+      });
     },
     async fetchOptions (code) {
       if (code) {
@@ -338,6 +383,9 @@ export default {
 .long_text {
   ::v-deep .el-form-item__label {
     line-height: 20px;
+  }
+  ::v-deep .el-input-number--small {
+    width: 100%;
   }
 }
 ::v-deep .dialog-footer {

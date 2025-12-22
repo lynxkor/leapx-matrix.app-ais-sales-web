@@ -10,11 +10,7 @@
       class="ais-search-form"
     >
       <el-form-item label="预算科目名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.budgetItemNameLike"
-          clearable
-        />
+         <tag-input v-model="form.budgetItemNames" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="预算科目编码">
         <el-input
@@ -99,7 +95,7 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
-
+import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   budgetItemName: '',
@@ -116,6 +112,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
@@ -220,7 +217,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '账户管理-基础配置-预算科目管理',
-        dataFetchPath: 'vw/web/fund/fundBudgetItem/page',
+        dataFetchPath: '/vw/web/fund/fundBudgetItem/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

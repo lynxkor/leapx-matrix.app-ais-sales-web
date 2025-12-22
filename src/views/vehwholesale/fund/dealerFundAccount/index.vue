@@ -81,9 +81,10 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-permission="moduleKey+'-setEntOrderSettleFlag'" size="small" @click="componentsDialogChange('setEntOrderSettleFlag')">设置企业订单结算</el-button>
-      <el-button v-permission="moduleKey+'-setRebateFlag'" size="small" @click="componentsDialogChange('setRebateFlag')">设置使用返利</el-button>
-      <el-button v-permission="moduleKey+'-setSettleSort'" size="small" @click="setSettleSort">设置结算顺序</el-button>
+      <el-button v-permission="moduleKey+'-setEntOrderSettleFlag'" v-show="accountFlag === true" size="small" @click="componentsDialogChange('setEntOrderSettleFlag')">设置企业订单结算</el-button>
+      <el-button v-permission="moduleKey+'-setRebateFlag'" v-show="accountFlag === false" size="small" @click="componentsDialogChange('setRebateFlag')">设置使用返利</el-button>
+      <el-button v-permission="moduleKey+'-setSettleSort'" v-show="accountFlag === true" size="small" @click="setSettleSort">设置结算顺序</el-button>
+      <el-button size="small" @click="setSettleSort">设置结算顺序</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
@@ -103,6 +104,7 @@
       />
     </div>
     <components-dialog ref="componentsDialog" :page-tpye="dialogTpye" />
+    <setSettleSort ref="setSettleSort" :parentOrg="parentOrg" />
   </div>
 </template>
 
@@ -111,7 +113,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem } from '@/api/vehwholesale/fund/account/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, loginUserGet } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -119,6 +121,7 @@ import permissions from '@/libs/mixins/permissions';
 import { downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import componentsDialog from '@/views/vehwholesale/fund/dealerFundAccount/components/componentsDialog.vue';
+import setSettleSort from '@/views/vehwholesale/fund/dealerFundAccount/components/setSettleSort.vue';
 import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
@@ -149,6 +152,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    setSettleSort,
     componentsDialog,
     PageSearchAction,
     LPVxeTable,
@@ -156,6 +160,8 @@ export default {
   },
   data () {
     return {
+      accountFlag: null, // 账户标识 true:厂端 false:店端
+      parentOrg: {}, // 账户标识 true:厂端 false:店端
       dialogTpye: '',
       pageTitle: '账户管理-整车资金-整车资金账户管理',
       pageType: 'list',
@@ -214,53 +220,16 @@ export default {
           { props: 'fundType', label: '资金类型', visible: true, width: 200 },
           { props: 'financialOrganizationName', label: '金融机构名称', visible: true, width: 200 },
           { props: 'settleSort', label: '资金结算顺序', visible: true, width: 200 },
-          { props: 'allowUseRebate', label: '是否允许客户使用返利', visible: true, width: 200 },
-          { props: 'allowEntOrderSettle', label: '是否允许企业订单结算', visible: true, width: 200 },
+          { props: 'allowUseRebateLabel', label: '是否允许客户使用返利', visible: true, width: 200 },
+          { props: 'allowEntOrderSettleLabel', label: '是否允许企业订单结算', visible: true, width: 200 },
           { props: 'entOrderQuota', label: '企业订单额度系数', visible: true, width: 200 },
           { props: 'availableBalance', label: '可用余额', visible: true, width: 200 },
           { props: 'frozenBalance', label: '冻结余额', visible: true, width: 200 },
           { props: 'totalRechargeAmount', label: '累计充值金额', visible: true, width: 200 },
           { props: 'totalSettleAmount', label: '累计结算金额', visible: true, width: 200 },
           { props: 'lastTradeTime', label: '最近交易时间', visible: true, width: 200 },
-          { props: 'saleCompanyId', label: '销售公司', visible: true, width: 200 },
+          { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          {
-            props: 'operate',
-            label: '操作',
-            type: 'operate',
-            visible: true,
-            fixed: 'right',
-            buttons: [{
-              name: '编辑',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/fund/dealerFundAccount/edit',
-                  query: {
-                    id: row.id
-                  }
-                });
-              },
-              type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
-            }]
-          }
         ],
         total: 0
       }
@@ -269,15 +238,24 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
+    this.loginUserGet();
   },
   methods: {
+    loginUserGet () {
+      loginUserGet().then(res => {
+        console.log('loginUserGet:', res);
+        this.accountFlag = res.accountFlag;
+        this.parentOrg = res.parentOrg;
+      }).catch(() => {});
+    },
     repairItemSearch (query) { return listIdNames({ seriesNameLike: query, status: 1 }); },
     componentsDialogChange (type) {
       this.dialogTpye = type;
       this.$refs.componentsDialog.dialogshow();
     },
-    setRebateFlag () {},
-    setSettleSort () {},
+    setSettleSort () {
+      this.$refs.setSettleSort.dialogshow();
+    },
     onSubmit () {
       this.getData();
     },
@@ -319,7 +297,6 @@ export default {
 
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
-          console.log(res);
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item,

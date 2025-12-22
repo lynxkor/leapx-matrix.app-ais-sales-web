@@ -216,7 +216,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '账户管理-基础配置-金融机构管理',
-        dataFetchPath: 'vw/web/fund/fundFinancialOrganization/page',
+        dataFetchPath: '/vw/web/fund/fundFinancialOrganization/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

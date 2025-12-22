@@ -50,3 +50,19 @@ export function enableItem (data) {
 export function setEntOrderSettleFlag (data) {
   return api.jsonPost(prefix + 'setEntOrderSettleFlag', data);
 }
+
+/**
+ * 设置结算结算顺序
+ * @param {Object} data
+ */
+export function setSettleSort (data) {
+  return api.jsonPost(prefix + 'setSettleSort', data);
+}
+
+/**
+ * 设置使用返利
+ * @param {Object} data
+ */
+export function setRebateFlag (data) {
+  return api.jsonPost(prefix + 'setRebateFlag', data);
+}

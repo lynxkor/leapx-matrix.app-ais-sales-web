@@ -266,6 +266,12 @@ export default {
             const id = this.$route.query.id;
             if (rest || !id) {
               this.resetForm(formName);
+              // 获取新增的 id
+              const currentPath = this.$route.path;
+              this.$router.push({
+                path: currentPath,
+                query: { id: res }
+              });
             } else {
               this.getDetailData();
             }

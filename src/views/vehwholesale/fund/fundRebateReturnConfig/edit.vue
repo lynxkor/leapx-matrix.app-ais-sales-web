@@ -11,68 +11,91 @@
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
-              <el-form-item label="编码" prop="rebateReturnConfigCode">
+              <!-- <el-form-item label="编码" prop="rebateReturnConfigCode">
                 <el-input
                   placeholder="请输入"
                   v-model="form.rebateReturnConfigCode"
                   clearable
                 />
-              </el-form-item>
+              </el-form-item> -->
               <el-form-item label="返利类型" prop="rebateType">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="xxx"
+                  enumCode="vw_rebate_type"
                   v-model="form.rebateType"
                   placeholder="请选择"
                   clearable
                   filterable
+                  :disabled="!!id"
                 />
               </el-form-item>
-              <el-form-item label="车系名称" prop="vehicleSeriesName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.vehicleSeriesName"
+              <el-form-item label="车系名称" prop="vehicleSeriesId">
+                 <fetch-select
+                  filterable
                   clearable
-                />
+                  remote
+                  v-model="form.vehicleSeriesId"
+                  :params="form.vehicleSeriesName"
+                  :remote-method="getVehicleSeriesList"
+                  value-key="id"
+                  label-key="name"
+                  :disabled="!!id"
+              />
               </el-form-item>
               <el-form-item label="预算科目" prop="budgetItemId">
-                <el-input
+                <!-- <el-input
                   placeholder="请输入"
                   v-model="form.budgetItemId"
                   clearable
-                />
+                /> -->
+                <fetch-select
+                  filterable
+                  clearable
+                  remote
+                  v-model="form.budgetItemId"
+                  :params="form.budgetItemName"
+                  :remote-method="getFundBudgetItemList"
+                  value-key="id"
+                  label-key="name"
+              />
               </el-form-item>
               <el-form-item label="费用支持类型" prop="feeSupportTypeId">
                 <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.feeSupportTypeId"
-                  placeholder="请选择"
-                  clearable
                   filterable
-                />
+                  clearable
+                  remote
+                  v-model="form.feeSupportTypeId"
+                  :remote-method="getFeeSuportTypeList"
+                  value-key="id"
+                  label-key="name"
+              />
               </el-form-item>
               <el-form-item label="有效开始日期" prop="effectiveStartTime">
-                <el-date-picker
+                  <el-date-picker
+                    type="date"
+                    v-model="form.effectiveStartTime"
+                    value-format="yyyy-MM-dd"
+                    placeholder="请选择有效开始日期"
+                  />
+                <!-- <el-date-picker
                   :default-time="['00:00:00', '23:59:59']"
                   v-model="form.effectiveStartTime"
                   :picker-options="pickerOptions"
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                />
+                /> -->
+
               </el-form-item>
-              <el-form-item label="有效结束日期（包含，可为空，表示长期有效）" prop="effectiveEndTime">
-                <el-date-picker
-                  :default-time="['00:00:00', '23:59:59']"
-                  v-model="form.effectiveEndTime"
-                  :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                />
+              <el-form-item label="有效截止日期" prop="effectiveEndTime">
+                 <el-date-picker
+                    type="date"
+                    v-model="form.effectiveEndTime"
+                    value-format="yyyy-MM-dd"
+                    placeholder="请选择有效截止日期"
+                  />
               </el-form-item>
-              <el-form-item label="备注（说明）" prop="remark">
+              <el-form-item label="备注" prop="remark">
                 <el-input
                   placeholder="请输入"
                   v-model="form.remark"
@@ -82,14 +105,15 @@
               <el-form-item label="状态" prop="status">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="xxx"
+                  enumCode="StatusEnum"
                   v-model="form.status"
                   placeholder="请选择"
                   clearable
                   filterable
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="状态变更描述" prop="statusDesc">
+              <!-- <el-form-item label="状态变更描述" prop="statusDesc">
                 <fetch-select
                   :request="fetchOptions"
                   enumCode="xxx"
@@ -98,12 +122,13 @@
                   clearable
                   filterable
                 />
-              </el-form-item>
+              </el-form-item> -->
               <el-form-item label="创建者名称" prop="creatorName">
                 <el-input
                   placeholder="请输入"
                   v-model="form.creatorName"
                   clearable
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="创建时间" prop="createTime">
@@ -114,9 +139,10 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="主键" prop="id">
+              <!-- <el-form-item label="主键" prop="id">
                 <el-input
                   placeholder="请输入"
                   v-model="form.id"
@@ -160,7 +186,7 @@
                   v-model="form.vehicleSeriesId"
                   clearable
                 />
-              </el-form-item>
+              </el-form-item> -->
             </el-form>
           </div>
         </section>
@@ -177,12 +203,15 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehwholesale/fund/fundRebateReturnConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import { getEnum } from '@/api/common';
+import { getEnum, vehicleSeriesList } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import moment from 'moment';
+import { listIdNames as fundBudgetItemList } from '@/api/vehwholesale/fund/fundBudgetItem/index';
+import { listIdNames as fundFeeSuportTypeList } from '@/api/vehwholesale/fund/fundFeeSupportType/index';
+
 const defaultForm = {
   // 多选时字段有变化，自行修复
   rebateReturnConfigCode: '',
@@ -209,10 +238,10 @@ export default {
   name: 'fundRebateReturnConfigEdit',
   // 集中视图预留
   props: {
-    id: {
-      type: [String, Number],
-      default: null
-    }
+    // id: {
+    //   type: [String, Number],
+    //   default: null
+    // }
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
@@ -220,7 +249,40 @@ export default {
   },
   data () {
     const form = this.getDefautlForm();
+    const validateDateRange = (rule, value, callback) => {
+      const { effectiveStartTime, effectiveEndTime } = this.form;
+      // 1. 校验截止日期必填
+      if (!effectiveEndTime) {
+        return callback(new Error('请选择截止日期'));
+      }
+
+      // 2. 转换为时间戳（兼容日期/日期时间格式）
+      const getTimeStamp = (dateStr) => {
+        if (!dateStr) return 0;
+        return new Date(dateStr).getTime();
+      };
+      const startTime = getTimeStamp(effectiveStartTime);
+      const endTime = getTimeStamp(effectiveEndTime);
+      // 当日时间戳（23:59:59）：避免选当日提示超限
+      const todayEnd = new Date();
+      todayEnd.setHours(0, 0, 0, 0);
+      const todayEndTime = todayEnd.getTime();
+
+      // 3. 校验开始日期 ≤ 截止日期
+      if (effectiveStartTime && startTime > endTime) {
+        return callback(new Error('开始日期不能晚于截止日期'));
+      }
+
+      // 4. 校验截止日期 ≤ 当日
+      if (endTime < todayEndTime) {
+        return callback(new Error('截止日期不能晚于当日'));
+      }
+
+      // 所有校验通过
+      callback();
+    };
     return {
+      id: this.$route.query.id,
       pageTitle: '账户管理-基础配置-返利自动返还设置管理',
       pageType: 'edit',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
@@ -250,10 +312,11 @@ export default {
           { required: true, message: '请选择有效开始日期', trigger: 'change' }
         ],
         effectiveEndTime: [
-          { required: true, message: '请选择有效结束日期（包含，可为空，表示长期有效）', trigger: 'change' }
+          { required: true, message: '请选择有效结束日期', trigger: 'change' },
+          { validator: validateDateRange, trigger: 'change' }
         ],
         remark: [
-          { required: true, message: '请输入备注（说明）', trigger: 'blur' }
+          { required: false, message: '请输入备注（说明）', trigger: 'blur' }
         ],
         status: [
           { required: true, message: '请选择状态', trigger: 'change' }
@@ -338,6 +401,7 @@ export default {
       return {
         ...defaultForm,
         // ownerId: userInfo.userId,
+        status: 1,
         creatorName: userInfo.userName,
         createTime: moment().format('YYYY-MM-DD HH:mm:ss')
       };
@@ -356,7 +420,17 @@ export default {
         return getEnum(code);
       }
       return [];
-    }
+    },
+    async getFundBudgetItemList (params) {
+      return fundBudgetItemList({ budgetItemNameLike: params, status: 1 });
+    },
+    async getVehicleSeriesList (params) {
+      return vehicleSeriesList({ seriesNameLike: params, status: 1 });
+    },
+    async getFeeSuportTypeList (params) {
+      return fundFeeSuportTypeList({ budgetItemNameLike: params, status: 1 });
+    },
+
   }
 };
 </script>

@@ -109,6 +109,8 @@ import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
+import permissions from '@/libs/mixins/permissions';
+import commonMixins from '@/libs/mixins/commonMixins';
 import { debounce } from '@/libs/utils/index';
 
 const defaultForm = {
@@ -126,13 +128,14 @@ export default {
       default: null
     }
   },
-  mixins: [routeGuard],
+  mixins: [routeGuard, permissions, commonMixins],
   components: {
     FetchSelect,
   },
   data () {
     const form = this.getDefautlForm();
     return {
+      pageType: 'edit',
       formFields: [
         { label: '物料描述：', key: 'materialsDesc', disabled: true },
         { label: '车系：', key: 'seriesName', disabled: true },
@@ -292,6 +295,11 @@ export default {
             const id = this.$route.query.id;
             if (rest || !id) {
               this.resetForm(formName);
+              const currentPath = this.$route.path;
+              this.$router.push({
+                path: currentPath,
+                query: { id: res }
+              });
             } else {
               this.getDetailData();
             }

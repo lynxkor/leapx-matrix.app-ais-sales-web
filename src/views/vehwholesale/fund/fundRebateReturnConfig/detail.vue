@@ -13,43 +13,44 @@
         <div class="common-section-body">
           <el-form :inline="true" ref="ruleForm" label-width="120px">
             <!-- TIPS: 根据实际情况调整展示字段 -->
-            <el-form-item label="编码：" prop="rebateReturnConfigCode">
-              {{ info.rebateReturnConfigCode  }}
-            </el-form-item>
+
             <el-form-item label="返利类型：" prop="rebateType">
-              {{ info.rebateType  }}
+              {{ info.rebateTypeLabel  }}
             </el-form-item>
-            <el-form-item label="车系名称：" prop="vehicleSeriesName">
+            <el-form-item label="车系：" prop="vehicleSeriesName">
               {{ info.vehicleSeriesName  }}
             </el-form-item>
             <el-form-item label="预算科目：" prop="budgetItemId">
-              {{ info.budgetItemId  }}
+              {{ info.budgetItemName}}
             </el-form-item>
             <el-form-item label="费用支持类型：" prop="feeSupportTypeId">
-              {{ info.feeSupportTypeId  }}
+              {{ info.feeSupportTypeName}}
             </el-form-item>
             <el-form-item label="有效开始日期：" prop="effectiveStartTime">
-              {{ info.effectiveStartTime  }}
+              {{ info.effectiveStartTime}}
             </el-form-item>
-            <el-form-item label="有效结束日期（包含，可为空，表示长期有效）：" prop="effectiveEndTime">
+            <el-form-item label="有效截止日期：" prop="effectiveEndTime">
               {{ info.effectiveEndTime  }}
             </el-form-item>
-            <el-form-item label="备注（说明）：" prop="remark">
+            <el-form-item label="备注：" prop="remark">
               {{ info.remark  }}
             </el-form-item>
             <el-form-item label="状态：" prop="status">
-              {{ info.status  }}
+              {{ info.statusLabel  }}
             </el-form-item>
-            <el-form-item label="状态变更描述：" prop="statusDesc">
+            <!-- <el-form-item label="编码：" prop="rebateReturnConfigCode">
+              {{ info.rebateReturnConfigCode  }}
+            </el-form-item> -->
+            <!-- <el-form-item label="状态变更描述：" prop="statusDesc">
               {{ info.statusDesc  }}
-            </el-form-item>
-            <el-form-item label="创建者名称：" prop="creatorName">
+            </el-form-item> -->
+            <el-form-item label="创建人：" prop="creatorName">
               {{ info.creatorName  }}
             </el-form-item>
             <el-form-item label="创建时间：" prop="createTime">
               {{ info.createTime  }}
             </el-form-item>
-            <el-form-item label="主键：" prop="id">
+            <!-- <el-form-item label="主键：" prop="id">
               {{ info.id  }}
             </el-form-item>
             <el-form-item label="创建者：" prop="creator">
@@ -66,7 +67,7 @@
             </el-form-item>
             <el-form-item label="车系ID：" prop="vehicleSeriesId">
               {{ info.vehicleSeriesId  }}
-            </el-form-item>
+            </el-form-item> -->
           </el-form>
         </div>
       </section>
