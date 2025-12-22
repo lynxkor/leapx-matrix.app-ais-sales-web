@@ -607,24 +607,6 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/datacenter/materials/vehicleModel',
-      name: 'vehicleModel',
-      component: () => import('@/views/datacenter/materials/vehicleModel/index.vue'),
-
-      meta: {
-        name: '新页面',
-        keepAlive: true
-      }
-    }, {
-      path: '/datacenter/materials/vehiclemodel/detail',
-      name: 'vehicleModelDetail',
-      component: () => import('@/views/datacenter/materials/vehicleModel/detail.vue'),
-
-      meta: {
-        name: '新页面详情',
-        noResourceUrl: 'true'
-      }
-    }, {
       path: '/datacenter/materials/vehiclemodel/edit',
       name: 'vehicleModelEdit',
       component: () => import('@/views/datacenter/materials/vehicleModel/edit.vue'),
