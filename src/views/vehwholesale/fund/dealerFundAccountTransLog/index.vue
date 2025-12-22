@@ -76,80 +76,44 @@
         <el-form-item label="交易类型">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.transactionType"
+            enumCode="vw_transaction_type"
+            v-model="form.transactionTypes"
             placeholder="请选择"
             clearable
             multiple
             filterable
           />
         </el-form-item>
-        <el-form-item label="交易金额">
-          <el-input
+        <el-form-item label="VIN号">
+          <tag-input v-model="form.vins" placeholder="请输入" />
+          <!-- <el-input
             placeholder="请输入"
-            v-model="form.transactionAmount"
+            v-model="form.vin"
             clearable
-          />
+          /> -->
         </el-form-item>
-        <el-form-item label="交易凭证号">
-          <el-input
+        <el-form-item label="整车批售订单">
+          <tag-input v-model="form.wholesaleOrderIds" placeholder="请输入" />
+          <!-- <el-input
             placeholder="请输入"
-            v-model="form.transactionReceiptCode"
+            v-model="form.wholesaleOrderIds"
             clearable
-          />
+          /> -->
+        </el-form-item>
+        <el-form-item label="企业客户整车订单">
+          <tag-input v-model="form.entVehorderIds" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="交车单">
+          <tag-input v-model="form.deliveryOrderIds" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="入账凭证号">
+          <tag-input v-model="form.transactionReceiptCodes" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="备注（说明）">
           <el-input
             placeholder="请输入"
             v-model="form.remark"
             clearable
-          />
-        </el-form-item>
-        <el-form-item label="整车VIN编码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.vin"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="批售订单ID">
-          <el-input
-            placeholder="请输入"
-            v-model="form.wholesaleOrderId"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="交车单ID">
-          <el-input
-            placeholder="请输入"
-            v-model="form.deliveryOrderId"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="门店名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.dealerName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="整车资金账户ID">
-          <el-input
-            placeholder="请输入"
-            v-model="form.fundAccountId"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="创建时间">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.createTime"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
           />
         </el-form-item>
       </template>
@@ -212,12 +176,18 @@ const defaultForm = {
   transLogCode: '',
   fundTypes: [],
   financialOrganizationId: '',
-  transactionType: '',
+  transactionTypes: [],
   transactionAmount: '',
   transactionTime: [],
   transactionReceiptCode: '',
   remark: '',
   vin: '',
+  vins: [],
+  transactionReceiptCodes: [],
+  deliveryOrderIds: [],
+  entVehorderIds: [],
+  wholesaleOrderIds: [],
+  // vins: [],
   wholesaleOrderId: '',
   deliveryOrderId: '',
   dealerName: '',
@@ -338,11 +308,24 @@ export default {
       }
     };
   },
-  created () {
+  async created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
+    await this.transactionTypes();
     this.getData();
   },
   methods: {
+    async transactionTypes () {
+      try {
+        const res = await getEnum('vw_transaction_type');
+        console.log('transactionTypes:', res);
+        const codes = res
+          .map(item => item.code)
+          .filter(code => code !== '2' && code !== '5');
+        this.form.transactionTypes = codes;
+      } catch (error) {
+        console.log('transactionTypes error:', error);
+      }
+    },
     repairItemSearch (query) { return listIdNames({ seriesNameLike: query, status: 1 }); },
     handleAdd () {
       this.$router.push({

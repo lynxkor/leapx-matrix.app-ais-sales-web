@@ -11,100 +11,69 @@
           <h2>基础信息</h2>
         </div>
         <div class="common-section-body">
-          <el-form :inline="true" ref="ruleForm" label-width="120px">
+          <el-form :inline="true" ref="ruleForm" label-width="140px">
             <!-- TIPS: 根据实际情况调整展示字段 -->
-            <el-form-item label="流水编号：" prop="transLogCode">
+            <el-form-item label="账号编号：" prop="transLogCode">
               {{ info.transLogCode  }}
-            </el-form-item>
-            <el-form-item label="资金类型：" prop="fundType">
-              {{ info.fundType  }}
-            </el-form-item>
-            <el-form-item label="金融机构ID：" prop="financialOrganizationId">
-              {{ info.financialOrganizationId  }}
-            </el-form-item>
-            <el-form-item label="交易类型：" prop="transactionType">
-              {{ info.transactionType  }}
-            </el-form-item>
-            <el-form-item label="交易金额：" prop="transactionAmount">
-              {{ info.transactionAmount  }}
-            </el-form-item>
-            <el-form-item label="过账时间（交易时间）：" prop="transactionTime">
-              {{ info.transactionTime  }}
-            </el-form-item>
-            <el-form-item label="交易凭证号：" prop="transactionReceiptCode">
-              {{ info.transactionReceiptCode  }}
-            </el-form-item>
-            <el-form-item label="备注（说明）：" prop="remark">
-              {{ info.remark  }}
-            </el-form-item>
-            <el-form-item label="整车VIN编码：" prop="vin">
-              {{ info.vin  }}
-            </el-form-item>
-            <el-form-item label="批售订单ID：" prop="wholesaleOrderId">
-              {{ info.wholesaleOrderId  }}
-            </el-form-item>
-            <el-form-item label="交车单ID：" prop="deliveryOrderId">
-              {{ info.deliveryOrderId  }}
-            </el-form-item>
-            <el-form-item label="门店名称：" prop="dealerName">
-              {{ info.dealerName  }}
             </el-form-item>
             <el-form-item label="母公司名称：" prop="dealerCompanyName">
               {{ info.dealerCompanyName  }}
             </el-form-item>
-            <el-form-item label="母公司编码：" prop="dealerComapnyCode">
+            <el-form-item label="资金类型：" prop="fundType">
+              {{ info.fundType  }}
+            </el-form-item>
+            <el-form-item label="金融机构：" prop="financialOrganizationId">
+              {{ info.financialOrganizationName  }}
+            </el-form-item>
+            <el-form-item label="公司编码：" prop="dealerComapnyCode">
               {{ info.dealerComapnyCode  }}
             </el-form-item>
-            <el-form-item label="整车资金账户ID：" prop="fundAccountId">
-              {{ info.fundAccountId  }}
-            </el-form-item>
-            <el-form-item label="创建时间：" prop="createTime">
-              {{ info.createTime  }}
-            </el-form-item>
-            <el-form-item label="主键：" prop="id">
-              {{ info.id  }}
-            </el-form-item>
-            <el-form-item label="创建者：" prop="creator">
-              {{ info.creator  }}
-            </el-form-item>
-            <el-form-item label="创建者名称：" prop="creatorName">
-              {{ info.creatorName  }}
-            </el-form-item>
-            <el-form-item label="修改者：" prop="modifier">
-              {{ info.modifier  }}
-            </el-form-item>
-            <el-form-item label="修改者名称：" prop="modifierName">
-              {{ info.modifierName  }}
-            </el-form-item>
-            <el-form-item label="修改时间：" prop="updateTime">
-              {{ info.updateTime  }}
-            </el-form-item>
-            <el-form-item label="状态：" prop="status">
-              {{ info.status  }}
-            </el-form-item>
-            <el-form-item label="状态变更描述：" prop="statusDesc">
-              {{ info.statusDesc  }}
-            </el-form-item>
-            <el-form-item label="门店编码：" prop="dealerCode">
-              {{ info.dealerCode  }}
-            </el-form-item>
-            <el-form-item label="交易前-可用余额：" prop="availableBalanceBefore">
+          </el-form>
+        </div>
+      </section>
+      <section class="common-section">
+        <div class="common-section-header">
+          <h2>基础信息</h2>
+        </div>
+        <div class="common-section-body">
+          <el-form :inline="true" ref="ruleForm" label-width="140px">
+            <el-form-item label="交易余额：" prop="availableBalanceBefore">
               {{ info.availableBalanceBefore  }}
             </el-form-item>
-            <el-form-item label="交易前-冻结余额：" prop="frozenBalanceBefore">
-              {{ info.frozenBalanceBefore  }}
+            <el-form-item label="过账时间：" prop="transactionTime">
+              {{ info.transactionTime  }}
             </el-form-item>
-            <el-form-item label="企业客户整车订单ID：" prop="entVehorderId">
+            <el-form-item label="交易类型：" prop="transactionType">
+              {{ info.transactionTypeLabel  }}
+            </el-form-item>
+            <el-form-item label="VIN号：" prop="vin">
+              {{ info.vin  }}
+            </el-form-item>
+            <el-form-item label="整车批售订单：" prop="wholesaleOrderId">
+              {{ info.wholesaleOrderId  }}
+            </el-form-item>
+            <el-form-item label="企业客户整车订单：" prop="entVehorderId">
               {{ info.entVehorderId  }}
             </el-form-item>
-            <el-form-item label="版本号，来自资金账户的版本号：" prop="version">
-              {{ info.version  }}
+            <el-form-item label="交车单号：" prop="deliveryOrderId">
+              {{ info.deliveryOrderId  }}
             </el-form-item>
-            <el-form-item label="归属门店ID（组织ID），当数据权限归属到本组织以及本下级：" prop="ownerOrgId">
-              {{ info.ownerOrgId  }}
+            <el-form-item label="销售门店：" prop="deliveryOrderId">
+              {{ info.dealerName  }}
             </el-form-item>
-            <el-form-item label="业务幂等ID：" prop="bizIdempotentId">
-              {{ info.bizIdempotentId  }}
+            <el-form-item label="入账凭证号：" prop="transactionReceiptCode">
+              {{ info.transactionReceiptCode  }}
+            </el-form-item>
+            <el-form-item label="入行项目号：" prop="transactionReceiptCode">
+            </el-form-item>
+            <el-form-item label="年度：" prop="remark">
+              {{ info.yearNo  }}
+            </el-form-item>
+            <el-form-item label="流水编号：" prop="transLogCode">
+              {{ info.transLogCode  }}
+            </el-form-item>
+            <el-form-item label="备注：" prop="remark">
+              {{ info.remark  }}
             </el-form-item>
           </el-form>
         </div>
