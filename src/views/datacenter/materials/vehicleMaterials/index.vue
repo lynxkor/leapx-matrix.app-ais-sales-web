@@ -271,6 +271,7 @@ export default {
           { props: 'allowConfigurationModifyLabel', label: '是否允许改配', visible: true, width: 200 },
           { props: 'allowTestDriveVehicleWholesaleLabel', label: '是否允许采购试驾车', visible: true, width: 200 },
           { props: 'allowCustomerSalesLabel', label: '是否允许企业客户销售	', visible: true, width: 200 },
+          { props: 'yearTypeName', label: '车型年款', visible: true, width: 200 },
           { props: 'modelLineName', label: '系列名称', visible: true, width: 200 },
           { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
           { props: 'drivingRangeName', label: '选配续航', visible: true, width: 200 },
