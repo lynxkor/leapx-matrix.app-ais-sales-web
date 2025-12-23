@@ -129,7 +129,7 @@ export default {
       moduleKey: 'AISVW-account',
       loading: true,
       info: {},
-      latestTransLog:{},
+      latestTransLog: {},
       yes_no_enum_map: YES_NO_ENUM_MAP,
       columns: [
         { field: 'transLogCode', title: '流水编号', width: 240 },

@@ -266,15 +266,7 @@ export default {
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           { props: 'dealerComapnyCode', label: '母公司编码', visible: true, width: 200 },
           { props: 'fundAccountCode', label: '账户编号', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          {
-            props: 'operate',
-            label: '操作',
-            type: 'operate',
-            visible: true,
-            fixed: 'right',
-            buttons: []
-          }
+          { props: 'createTime', label: '创建时间', visible: true, width: 200 }
         ],
         total: 0
       }
@@ -403,6 +395,11 @@ export default {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
+      }
+
+      if (this.form.transactionTime.length === 2) {
+        data.transactionTimeStart = this.form.transactionTime[0];
+        data.transactionTimeEnd = this.form.transactionTime[1];
       }
 
       return data;
