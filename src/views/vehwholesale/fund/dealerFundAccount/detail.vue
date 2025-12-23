@@ -44,7 +44,7 @@
               {{ info.frozenBalance  }}
             </el-form-item>
             <el-form-item label="最近交易时间：" prop="lastTradeTime">
-              {{ info.lastTradeTime  }}
+              {{ latestTransLog.transactionTime  }}
             </el-form-item>
             <el-form-item label="累计充值金额：" prop="totalRechargeAmount">
               {{ info.totalRechargeAmount  }}
@@ -53,11 +53,13 @@
               {{ info.totalSettleAmount  }}
             </el-form-item>
             <el-form-item label="最近交易金额：" prop="lastTradeTime">
+              {{ latestTransLog.transactionAmount  }}
             </el-form-item>
             <el-form-item label="最近交易类型：" prop="lastTradeTime">
+              {{ latestTransLog.transactionTypeLabel  }}
             </el-form-item>
             <el-form-item label="最近交易描述：" prop="lastTradeTime">
-              {{ info.remark }}
+              {{ latestTransLog.remark  }}
             </el-form-item>
           </el-form>
         </div>
@@ -127,19 +129,20 @@ export default {
       moduleKey: 'AISVW-account',
       loading: true,
       info: {},
+      latestTransLog:{},
       yes_no_enum_map: YES_NO_ENUM_MAP,
       columns: [
         { field: 'transLogCode', title: '流水编号', width: 240 },
         { field: 'transactionTypeLabel', title: '交易类型', width: 120 },
         { field: 'transactionAmount', title: '交易金额', width: 160 },
         { field: 'transactionTime', title: '过账时间', width: 200 },
-        { field: '', title: '入账凭证时间', width: 200 },
-        { field: '', title: '行项目号', width: 200 },
+        { field: 'transactionTime', title: '入账凭证时间', width: 200 },
+        { field: 'lineNo', title: '行项目号', width: 200 },
         { field: 'remark', title: '备注', width: 260 },
         { field: 'vin', title: 'VIN码', width: 200 },
-        { field: 'wholesaleOrderId', title: '整车补货订单', width: 200 },
-        { field: 'entVehorderId', title: '企业客户整车订单', width: 200 },
-        { field: 'deliveryOrderId', title: '交车单', width: 200 },
+        { field: 'wholesaleOrderCode', title: '整车补货订单', width: 200 },
+        { field: 'entVehorderCode', title: '企业客户整车订单', width: 200 },
+        { field: 'deliveryOrderCode', title: '交车单', width: 200 },
         { field: 'dealerName', title: '门店', width: 200 },
         { field: 'createTime', title: '创建时间', width: 200 },
       ],
@@ -189,6 +192,7 @@ export default {
       getDetail(this.$route.query.id).then(res => {
         this.loading = false;
         this.info = res;
+        this.latestTransLog = res.latestTransLog ?? {};
         this.getList();
       }).catch(() => {
         this.loading = false;

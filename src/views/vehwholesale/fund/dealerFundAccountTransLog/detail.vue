@@ -37,8 +37,8 @@
         </div>
         <div class="common-section-body">
           <el-form :inline="true" ref="ruleForm" label-width="140px">
-            <el-form-item label="交易余额：" prop="availableBalanceBefore">
-              {{ info.availableBalanceBefore  }}
+            <el-form-item label="交易余额：" prop="availableBalance">
+              {{ info.availableBalance  }}
             </el-form-item>
             <el-form-item label="过账时间：" prop="transactionTime">
               {{ info.transactionTime  }}
@@ -50,13 +50,13 @@
               {{ info.vin  }}
             </el-form-item>
             <el-form-item label="整车批售订单：" prop="wholesaleOrderId">
-              {{ info.wholesaleOrderId  }}
+              {{ info.wholesaleOrderCode  }}
             </el-form-item>
             <el-form-item label="企业客户整车订单：" prop="entVehorderId">
-              {{ info.entVehorderId  }}
+              {{ info.entVehorderCode  }}
             </el-form-item>
             <el-form-item label="交车单号：" prop="deliveryOrderId">
-              {{ info.deliveryOrderId  }}
+              {{ info.deliveryOrderCode  }}
             </el-form-item>
             <el-form-item label="销售门店：" prop="deliveryOrderId">
               {{ info.dealerName  }}
@@ -65,6 +65,7 @@
               {{ info.transactionReceiptCode  }}
             </el-form-item>
             <el-form-item label="入行项目号：" prop="transactionReceiptCode">
+              {{ info.lineNo  }}
             </el-form-item>
             <el-form-item label="年度：" prop="remark">
               {{ info.yearNo  }}
