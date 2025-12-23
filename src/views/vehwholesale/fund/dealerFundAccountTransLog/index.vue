@@ -93,7 +93,7 @@
           /> -->
         </el-form-item>
         <el-form-item label="整车批售订单">
-          <tag-input v-model="form.wholesaleOrderIds" placeholder="请输入" />
+          <tag-input v-model="form.wholesaleOrderCodes" placeholder="请输入" />
           <!-- <el-input
             placeholder="请输入"
             v-model="form.wholesaleOrderIds"
@@ -101,15 +101,15 @@
           /> -->
         </el-form-item>
         <el-form-item label="企业客户整车订单">
-          <tag-input v-model="form.entVehorderIds" placeholder="请输入" />
+          <tag-input v-model="form.entVehorderCodes" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="交车单">
-          <tag-input v-model="form.deliveryOrderIds" placeholder="请输入" />
+          <tag-input v-model="form.deliveryOrderCodes" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="入账凭证号">
           <tag-input v-model="form.transactionReceiptCodes" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="备注（说明）">
+        <el-form-item label="备注">
           <el-input
             placeholder="请输入"
             v-model="form.remark"
@@ -259,50 +259,14 @@ export default {
           { props: 'transactionReceiptCode', label: '交易凭证号', visible: true, width: 200 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'vin', label: '整车VIN编码', visible: true, width: 200 },
-          { props: 'wholesaleOrderId', label: '批售订单ID', visible: true, width: 200 },
-          { props: 'deliveryOrderId', label: '交车单ID', visible: true, width: 200 },
+          { props: 'wholesaleOrderCode', label: '整车批售订单', visible: true, width: 200 },
+          { props: 'entVehorderCode', label: '企业客户整车订单', visible: true, width: 200 },
+          { props: 'deliveryOrderCode', label: '交车单', visible: true, width: 200 },
           { props: 'dealerName', label: '门店名称', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           { props: 'dealerComapnyCode', label: '母公司编码', visible: true, width: 200 },
-          { props: 'fundAccountId', label: '整车资金账户ID', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          {
-            props: 'operate',
-            label: '操作',
-            type: 'operate',
-            visible: true,
-            fixed: 'right',
-            buttons: [{
-              name: '编辑',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/fund/dealerFundAccountTransLog/edit',
-                  query: {
-                    id: row.id
-                  }
-                });
-              },
-              type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
-            }]
-          }
+          { props: 'fundAccountCode', label: '账户编号', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200 }
         ],
         total: 0
       }
@@ -431,6 +395,11 @@ export default {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
+      }
+
+      if (this.form.transactionTime.length === 2) {
+        data.transactionTimeStart = this.form.transactionTime[0];
+        data.transactionTimeEnd = this.form.transactionTime[1];
       }
 
       return data;
