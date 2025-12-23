@@ -93,7 +93,7 @@
           /> -->
         </el-form-item>
         <el-form-item label="整车批售订单">
-          <tag-input v-model="form.wholesaleOrderIds" placeholder="请输入" />
+          <tag-input v-model="form.wholesaleOrderCodes" placeholder="请输入" />
           <!-- <el-input
             placeholder="请输入"
             v-model="form.wholesaleOrderIds"
@@ -101,15 +101,15 @@
           /> -->
         </el-form-item>
         <el-form-item label="企业客户整车订单">
-          <tag-input v-model="form.entVehorderIds" placeholder="请输入" />
+          <tag-input v-model="form.entVehorderCodes" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="交车单">
-          <tag-input v-model="form.deliveryOrderIds" placeholder="请输入" />
+          <tag-input v-model="form.deliveryOrderCodes" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="入账凭证号">
           <tag-input v-model="form.transactionReceiptCodes" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="备注（说明）">
+        <el-form-item label="备注">
           <el-input
             placeholder="请输入"
             v-model="form.remark"
