@@ -16,6 +16,7 @@
                   placeholder="请输入"
                   v-model="form.budgetItemName"
                   clearable
+                  maxlength="30"
                 />
               </el-form-item>
               <el-form-item label="预算科目编码" prop="budgetItemCode">
@@ -24,6 +25,7 @@
                   v-model="form.budgetItemCode"
                   clearable
                   :disabled="id"
+                  maxlength="30"
                 />
               </el-form-item>
               <el-form-item label="状态" prop="status">
@@ -246,6 +248,11 @@ export default {
             const id = this.$route.query.id;
             if (rest || !id) {
               this.resetForm(formName);
+              const currentPath = this.$route.path;
+              this.$router.push({
+                path: currentPath,
+                query: { id: res }
+              });
             } else {
               this.getDetailData();
             }
