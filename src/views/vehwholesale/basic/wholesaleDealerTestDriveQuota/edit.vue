@@ -204,7 +204,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehwholesale/basic/wholesale_dealer_test_drive_quota/index';
+import { getDetail, addOrUpdate } from '@/api/vehwholesale/basic/wholesaleDealerTestDriveQuota/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -240,7 +240,7 @@ const defaultForm = {
 };
 
 export default {
-  name: 'wholesale_dealer_test_drive_quotaEdit',
+  name: 'wholesaleDealerTestDriveQuotaEdit',
   // 集中视图预留
   props: {
     id: {
@@ -258,7 +258,7 @@ export default {
       pageTitle: '整车批售-批售主数据-门店试驾车配额管理',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-wholesale_dealer_test_drive_quota',
+      moduleKey: 'AISMC-wholesaleDealerTestDriveQuota',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
