@@ -71,7 +71,7 @@
             <h2>价格信息</h2>
           </div>
           <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" inline>
-            <el-form-item label="整车价格：" prop="price">
+            <el-form-item label="整车价格：">
               <el-input-number placeholder="请输入" v-model="form.price" clearable :controls="false"
                 :precision="2" :min="0.00" :step="0.01"/>
             </el-form-item>
@@ -228,6 +228,9 @@ export default {
         yearTypeId: [
           { required: true, message: '请选择年款', trigger: 'blur' }
         ],
+        seriesId: [
+          { required: true, message: '请输入车型名称', trigger: 'blur' }
+        ],
         modelId: [
           { required: true, message: '请输入车型名称', trigger: 'blur' }
         ],
@@ -377,7 +380,9 @@ export default {
       ));
     },
     handleBack () {
-      this.$router.back();
+      // this.$router.back();
+      let newPath = this.$route.path.replace(/\/edit$/, '');
+      this.$router.push(newPath);
     },
     getDetailData () {
       const id = this.id || this.$route.query.id;
@@ -393,6 +398,8 @@ export default {
             this.yearTypeList = [{ label: res.yearTypeName, value: res.yearTypeId }];
           }
         });
+      } else {
+        this.form = JSON.parse(JSON.stringify(defaultForm));
       }
     },
     submitForm (formName, rest = false) {
@@ -424,7 +431,7 @@ export default {
     resetForm (formName) {
       this.$refs[formName].resetFields();
       this.tableData = [];
-      this.form = { ...defaultForm };
+      this.form = JSON.parse(JSON.stringify(defaultForm));
     },
     // handleJumpAuditLog () {
     //   this.$router.push({

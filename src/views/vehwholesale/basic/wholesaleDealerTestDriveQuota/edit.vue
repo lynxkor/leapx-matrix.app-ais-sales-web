@@ -258,7 +258,7 @@ export default {
       pageTitle: '整车批售-批售主数据-门店试驾车配额管理',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-wholesaleDealerTestDriveQuota',
+      moduleKey: 'AISVW-wholesaleDealerTestDriveQuota',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
@@ -342,7 +342,9 @@ export default {
   },
   methods: {
     handleBack () {
-      this.$router.back();
+      // this.$router.back();
+      let newPath = this.$route.path.replace(/\/edit$/, '');
+      this.$router.push(newPath);
     },
     getDetailData () {
       const id = this.id || this.$route.query.id;

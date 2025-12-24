@@ -367,7 +367,7 @@ export default {
       pageTitle: '整车批售-批售主数据-整车销售模式配置管理',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-wholesaleVehicleSaleModelConf',
+      moduleKey: 'AISVW-wholesaleVehicleSaleModelConf',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
