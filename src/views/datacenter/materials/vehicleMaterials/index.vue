@@ -81,22 +81,24 @@
              />
         </el-form-item>
         <el-form-item label="停产状态">
-          <!-- <fetch-select :options="yes_no_enum" v-model="form.discontinueStatus" placeholder="请选择" clearable  /> -->
-           <el-select v-model="form.discontinueStatus" placeholder="请选择" clearable>
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="dc_discontinue_statusEnum" v-model="form.discontinueStatus" placeholder="请选择" clearable  />
+           <!-- <el-select v-model="form.discontinueStatus" placeholder="请选择" clearable>
             <el-option label="正常生产" value="1" />
             <el-option label="停产" value="0" />
-           </el-select>
+           </el-select> -->
         </el-form-item>
         <el-form-item label="状态">
            <fetch-select
-          :request="fetchOptions"
-          enumCode="StatusEnum"
-          v-model="form.statusIncludeList"
-          placeholder="请选择"
-          clearable
-          multiple
-          filterable
-        />
+            :request="fetchOptions"
+            enumCode="StatusEnum"
+            v-model="form.statusIncludeList"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
         </el-form-item>
       </template>
       <page-search-action v-model="show" is-expandable :loading="loading" @submit="onSubmit" @reset="onReset" />
