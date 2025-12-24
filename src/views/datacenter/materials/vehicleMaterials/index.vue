@@ -609,7 +609,7 @@ export default {
     // },
 
     async getVehicleModelList (val) {
-      const res = await vehicleModelList({ seriesIdList: val || [], size: 1000 });
+      const res = await vehicleModelList({ seriesIdList: val || [], size: 1000, limitSize: 500 });
       console.log('vehicleModelList', res);
       if (res.length) {
         const vehicleModelData = res.map(item => {
@@ -623,7 +623,7 @@ export default {
       }
     },
     async listVehicleYearType () {
-      const res = await listVehicleYearType({ size: 50 });
+      const res = await listVehicleYearType({ size: 50, limitSize: 50 });
       console.log('listVehicleYearType', res);
       this.yearModelList = res.map(item => {
         return {
@@ -634,7 +634,7 @@ export default {
       });
     },
     async getModelYearTypeRelationsList (val) {
-      const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList: val, size: 1000 });
+      const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList: val, limitSize: 1000 });
       this.yearModelList = res.map(item => {
         return {
           ...item,
@@ -645,7 +645,7 @@ export default {
     },
 
     async getVehicleExteriorList () {
-      const res = await vehicleExterior({ size: 1000 });
+      const res = await vehicleExterior({ limitSize: 1000 });
       this.exteriorList = res.map(item => {
         return {
           ...item,
@@ -656,7 +656,7 @@ export default {
     },
 
     async getVehicleInteriorList () {
-      const res = await vehicleInterior({ size: 1000 });
+      const res = await vehicleInterior({ limitSize: 1000 });
       this.interiorList = res.map(item => {
         return {
           ...item,
@@ -667,7 +667,7 @@ export default {
     },
 
     async getVehicleWheelHubList () {
-      const res = await vehicleWheelHub({ size: 1000 });
+      const res = await vehicleWheelHub({ limitSize: 1000 });
       this.wheelHubList = res.map(item => {
         return {
           ...item,
@@ -678,7 +678,7 @@ export default {
     },
 
     async getVehicleOptionPackageList () {
-      const res = await vehicleOptionPackage({ size: 1000 });
+      const res = await vehicleOptionPackage({ limitSize: 1000 });
       this.optionPackageList = res.map(item => {
         return {
           ...item,
@@ -689,7 +689,7 @@ export default {
     },
 
     async getVehicleBatteryCellList () {
-      const res = await vehicleBatteryCell({ size: 1000 });
+      const res = await vehicleBatteryCell({ limitSize: 1000 });
       this.batteryCellList = res.map(item => {
         return {
           ...item,
@@ -700,7 +700,7 @@ export default {
     },
 
     async geVehicleRoofList () {
-      const res = await vehicleRoof({ size: 1000 });
+      const res = await vehicleRoof({ limitSize: 1000 });
       this.roofList = res.map(item => {
         return {
           ...item,
