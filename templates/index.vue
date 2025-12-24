@@ -362,7 +362,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '{{{title}}}',
-        dataFetchPath: '/{{{{apiPath}}}}/page',
+        dataFetchPath: '{{{{apiPath}}}}/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
