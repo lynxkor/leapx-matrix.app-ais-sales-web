@@ -73,7 +73,7 @@
           <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" inline>
             <el-form-item label="整车价格：" prop="price">
               <el-input-number placeholder="请输入" v-model="form.price" clearable :controls="false"
-                :precision="2" :min="0.01" :step="0.01"/>
+                :precision="2" :min="0.00" :step="0.01"/>
             </el-form-item>
           </el-form>
         </section>
@@ -445,6 +445,9 @@ export default {
     seriesListChange (val) {
       if (val.length) {
         fetchAndFormatData(this, vehicleModelList, { seriesIdList: [val], size: 1000 }, 'modelList');
+        this.form.modelId = [];
+        this.yearModelList = [];
+        this.form.yearTypeId = [];
       } else {
         this.modelList = [];
         this.form.modelId = [];
