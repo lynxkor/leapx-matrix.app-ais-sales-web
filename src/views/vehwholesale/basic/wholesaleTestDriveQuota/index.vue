@@ -197,7 +197,7 @@ export default {
       pageTitle: '整车批售-批售主数据-试驾车默认配额管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-wholesaleTestDriveQuota',
+      moduleKey: 'AISVW-wholesaleTestDriveQuota',
       form: {
         ...defaultForm
       },

@@ -147,7 +147,7 @@ export default {
       pageTitle: '整车批售-批售主数据-销售目标跟踪管理',
       pageType: 'detail',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-wholesaleSaleTargetTracking',
+      moduleKey: 'AISVW-wholesaleSaleTargetTracking',
       loading: true,
       info: {},
       yes_no_enum_map: YES_NO_ENUM_MAP

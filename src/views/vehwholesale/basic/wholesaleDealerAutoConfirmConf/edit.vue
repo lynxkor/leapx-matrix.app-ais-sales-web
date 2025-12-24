@@ -196,7 +196,7 @@ export default {
       pageTitle: '新页面',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-wholesaleDealerAutoConfirmConf',
+      moduleKey: 'AISVW-wholesaleDealerAutoConfirmConf',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,

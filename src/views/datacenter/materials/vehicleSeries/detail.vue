@@ -72,7 +72,7 @@ export default {
   data () {
     return {
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-vehicleSeries',
+      moduleKey: 'AISVW-vehicleSeries',
       loading: true,
       info: {},
       yes_no_enum_map: YES_NO_ENUM_MAP

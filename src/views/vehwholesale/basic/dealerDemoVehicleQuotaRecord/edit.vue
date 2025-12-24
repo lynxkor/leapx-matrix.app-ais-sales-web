@@ -247,7 +247,7 @@ export default {
       pageTitle: '整车批售-批售主数据-门店试驾车配额调整记录管理',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-dealerDemoVehicleQuotaRecord',
+      moduleKey: 'AISVW-dealerDemoVehicleQuotaRecord',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
