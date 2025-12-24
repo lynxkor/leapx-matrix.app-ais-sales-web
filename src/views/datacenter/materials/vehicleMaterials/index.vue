@@ -13,7 +13,6 @@
           <fetch-select
             :remote-method="seriesSearch"
             remote
-            reserve-keyword
             v-model="form.seriesIds"
             placeholder="请选择"
             labelKey="name"
@@ -22,6 +21,7 @@
             multiple
             collapseTags
             filterable
+            :options="seriesList"
             @change="seriesListChange" />
         </el-form-item>
       <template v-if="show">
@@ -81,18 +81,24 @@
              />
         </el-form-item>
         <el-form-item label="停产状态">
-          <fetch-select :options="yes_no_enum" v-model="form.discontinueStatus" placeholder="请选择" clearable  />
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="dc_discontinue_statusEnum" v-model="form.discontinueStatus" placeholder="请选择" clearable  />
+           <!-- <el-select v-model="form.discontinueStatus" placeholder="请选择" clearable>
+            <el-option label="正常生产" value="1" />
+            <el-option label="停产" value="0" />
+           </el-select> -->
         </el-form-item>
         <el-form-item label="状态">
            <fetch-select
-          :request="fetchOptions"
-          enumCode="StatusEnum"
-          v-model="form.statusIncludeList"
-          placeholder="请选择"
-          clearable
-          multiple
-          filterable
-        />
+            :request="fetchOptions"
+            enumCode="StatusEnum"
+            v-model="form.statusIncludeList"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
         </el-form-item>
       </template>
       <page-search-action v-model="show" is-expandable :loading="loading" @submit="onSubmit" @reset="onReset" />
@@ -282,6 +288,7 @@ export default {
           { props: 'roofName', label: '车顶名称', visible: true, width: 200 },
           { props: 'optionPackageName', label: '选装包名称', visible: true, width: 200 },
           { props: 'discontinueStatusLabel', label: '停产状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           // { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           // { props: 'statusDesc', label: '说明', visible: true, width: 200 },
@@ -365,7 +372,15 @@ export default {
     this.geVehicleRoofList();
   },
   methods: {
-    seriesSearch (query) { return vehicleSeriesList({ seriesNameLike: query }); },
+    async seriesSearch (query) {
+      try {
+        const res = await vehicleSeriesList({ seriesNameLike: query });
+        this.seriesList = res;
+        return res;
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
+    },
     async modelSearch (query) {
       // if (query) {
       let params = {
@@ -405,6 +420,8 @@ export default {
     onReset () {
       this.form = { ...defaultForm };
       this.getData();
+      this.listVehicleYearType();
+      this.seriesSearch();
     },
     exportExcel () {
       this.exportLoading = true;
@@ -610,7 +627,7 @@ export default {
     // },
 
     async getVehicleModelList (val) {
-      const res = await vehicleModelList({ seriesIdList: val || [], size: 1000 });
+      const res = await vehicleModelList({ seriesIdList: val || [], size: 1000, limitSize: 500 });
       console.log('vehicleModelList', res);
       if (res.length) {
         const vehicleModelData = res.map(item => {
@@ -624,7 +641,7 @@ export default {
       }
     },
     async listVehicleYearType () {
-      const res = await listVehicleYearType({ size: 50 });
+      const res = await listVehicleYearType({ size: 50, limitSize: 50 });
       console.log('listVehicleYearType', res);
       this.yearModelList = res.map(item => {
         return {
@@ -635,7 +652,7 @@ export default {
       });
     },
     async getModelYearTypeRelationsList (val) {
-      const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList: val, size: 1000 });
+      const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList: val, limitSize: 1000 });
       this.yearModelList = res.map(item => {
         return {
           ...item,
@@ -646,7 +663,7 @@ export default {
     },
 
     async getVehicleExteriorList () {
-      const res = await vehicleExterior({ size: 1000 });
+      const res = await vehicleExterior({ limitSize: 1000 });
       this.exteriorList = res.map(item => {
         return {
           ...item,
@@ -657,7 +674,7 @@ export default {
     },
 
     async getVehicleInteriorList () {
-      const res = await vehicleInterior({ size: 1000 });
+      const res = await vehicleInterior({ limitSize: 1000 });
       this.interiorList = res.map(item => {
         return {
           ...item,
@@ -668,7 +685,7 @@ export default {
     },
 
     async getVehicleWheelHubList () {
-      const res = await vehicleWheelHub({ size: 1000 });
+      const res = await vehicleWheelHub({ limitSize: 1000 });
       this.wheelHubList = res.map(item => {
         return {
           ...item,
@@ -679,7 +696,7 @@ export default {
     },
 
     async getVehicleOptionPackageList () {
-      const res = await vehicleOptionPackage({ size: 1000 });
+      const res = await vehicleOptionPackage({ limitSize: 1000 });
       this.optionPackageList = res.map(item => {
         return {
           ...item,
@@ -690,7 +707,7 @@ export default {
     },
 
     async getVehicleBatteryCellList () {
-      const res = await vehicleBatteryCell({ size: 1000 });
+      const res = await vehicleBatteryCell({ limitSize: 1000 });
       this.batteryCellList = res.map(item => {
         return {
           ...item,
@@ -701,7 +718,7 @@ export default {
     },
 
     async geVehicleRoofList () {
-      const res = await vehicleRoof({ size: 1000 });
+      const res = await vehicleRoof({ limitSize: 1000 });
       this.roofList = res.map(item => {
         return {
           ...item,

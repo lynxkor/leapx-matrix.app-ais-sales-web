@@ -11,6 +11,13 @@
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
+              <el-form-item label="名称" prop="wholesaleDealerWholesaleConfName">
+                <el-input
+                  placeholder="请输入"
+                  v-model="form.wholesaleDealerWholesaleConfName"
+                  clearable
+                />
+              </el-form-item>
               <el-form-item label="门店编码" prop="dealerCode">
                 <el-input
                   placeholder="请输入"
@@ -25,59 +32,39 @@
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="年款" prop="vehicleYearType">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.vehicleYearType"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                />
-              </el-form-item>
-              <el-form-item label="系列" prop="vehicleModelLine">
+              <el-form-item label="母公司" prop="dealerParentOrgName">
                 <el-input
                   placeholder="请输入"
-                  v-model="form.vehicleModelLine"
+                  v-model="form.dealerParentOrgName"
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="车系" prop="seriesName">
+              <el-form-item label="开启自动配车" prop="autoAllocationEnabled">
                 <el-input
                   placeholder="请输入"
-                  v-model="form.seriesName"
+                  v-model="form.autoAllocationEnabled"
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="累计已申请数" prop="requestQty">
+              <el-form-item label="开启自动结算" prop="autoSettlementEnabled">
                 <el-input
                   placeholder="请输入"
-                  v-model="form.requestQty"
+                  v-model="form.autoSettlementEnabled"
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="调整说明" prop="changeDesc">
+              <el-form-item label="允许排产申请" prop="productionRequestEnabled">
                 <el-input
                   placeholder="请输入"
-                  v-model="form.changeDesc"
+                  v-model="form.productionRequestEnabled"
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="配额数量" prop="quotaQty">
+              <el-form-item label="允许现车批售" prop="spotWholesaleEnabled">
                 <el-input
                   placeholder="请输入"
-                  v-model="form.quotaQty"
+                  v-model="form.spotWholesaleEnabled"
                   clearable
-                />
-              </el-form-item>
-              <el-form-item label="状态" prop="status">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.status"
-                  placeholder="请选择"
-                  clearable
-                  filterable
                 />
               </el-form-item>
               <el-form-item label="修改者名称" prop="modifierName">
@@ -142,6 +129,16 @@
                   clearable
                 />
               </el-form-item>
+              <el-form-item label="状态" prop="status">
+                <fetch-select
+                  :request="fetchOptions"
+                  enumCode="xxx"
+                  v-model="form.status"
+                  placeholder="请选择"
+                  clearable
+                  filterable
+                />
+              </el-form-item>
               <el-form-item label="状态变更描述" prop="statusDesc">
                 <fetch-select
                   :request="fetchOptions"
@@ -159,27 +156,10 @@
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="年款ID" prop="vehicleYearTypeId">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.vehicleYearTypeId"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                />
-              </el-form-item>
-              <el-form-item label="系列ID" prop="vehicleModelLineId">
+              <el-form-item label="母公司ID" prop="dealerParentOrgId">
                 <el-input
                   placeholder="请输入"
-                  v-model="form.vehicleModelLineId"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="车系ID" prop="seriesId">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.seriesId"
+                  v-model="form.dealerParentOrgId"
                   clearable
                 />
               </el-form-item>
@@ -204,7 +184,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehwholesale/basic/wholesale_dealer_test_drive_quota/index';
+import { getDetail, addOrUpdate } from '@/api/vehwholesale/basic/wholesaleDealerWholesaleConf/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -214,15 +194,14 @@ import commonMixins from '@/libs/mixins/commonMixins';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
+  wholesaleDealerWholesaleConfName: '',
   dealerCode: '',
   dealerName: '',
-  vehicleYearType: '',
-  vehicleModelLine: '',
-  seriesName: '',
-  requestQty: '',
-  changeDesc: '',
-  quotaQty: '',
-  status: '',
+  dealerParentOrgName: '',
+  autoAllocationEnabled: '',
+  autoSettlementEnabled: '',
+  productionRequestEnabled: '',
+  spotWholesaleEnabled: '',
   modifierName: '',
   updateTime: '',
   id: '',
@@ -231,16 +210,15 @@ const defaultForm = {
   createTime: '',
   modifier: '',
   remark: '',
+  status: '',
   statusDesc: '',
   dataSource: '',
-  vehicleYearTypeId: '',
-  vehicleModelLineId: '',
-  seriesId: '',
+  dealerParentOrgId: '',
   ownerOrgId: '',
 };
 
 export default {
-  name: 'wholesale_dealer_test_drive_quotaEdit',
+  name: 'wholesaleDealerWholesaleConfEdit',
   // 集中视图预留
   props: {
     id: {
@@ -255,42 +233,39 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '整车批售-批售主数据-门店试驾车配额管理',
+      pageTitle: '整车批售-批售主数据-门店批售设置管理',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-wholesale_dealer_test_drive_quota',
+      moduleKey: 'AISVW-wholesaleDealerWholesaleConf',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
       rules: {
+        wholesaleDealerWholesaleConfName: [
+          { required: true, message: '请输入名称', trigger: 'blur' }
+        ],
         dealerCode: [
           { required: true, message: '请输入门店编码', trigger: 'blur' }
         ],
         dealerName: [
           { required: true, message: '请输入门店名称', trigger: 'blur' }
         ],
-        vehicleYearType: [
-          { required: true, message: '请选择年款', trigger: 'change' }
+        dealerParentOrgName: [
+          { required: true, message: '请输入母公司', trigger: 'blur' }
         ],
-        vehicleModelLine: [
-          { required: true, message: '请输入系列', trigger: 'blur' }
+        autoAllocationEnabled: [
+          { required: true, message: '请输入开启自动配车', trigger: 'blur' }
         ],
-        seriesName: [
-          { required: true, message: '请输入车系', trigger: 'blur' }
+        autoSettlementEnabled: [
+          { required: true, message: '请输入开启自动结算', trigger: 'blur' }
         ],
-        requestQty: [
-          { required: true, message: '请输入累计已申请数', trigger: 'blur' }
+        productionRequestEnabled: [
+          { required: true, message: '请输入允许排产申请', trigger: 'blur' }
         ],
-        changeDesc: [
-          { required: true, message: '请输入调整说明', trigger: 'blur' }
-        ],
-        quotaQty: [
-          { required: true, message: '请输入配额数量', trigger: 'blur' }
-        ],
-        status: [
-          { required: true, message: '请选择状态', trigger: 'change' }
+        spotWholesaleEnabled: [
+          { required: true, message: '请输入允许现车批售', trigger: 'blur' }
         ],
         modifierName: [
           { required: true, message: '请输入修改者名称', trigger: 'blur' }
@@ -316,20 +291,17 @@ export default {
         remark: [
           { required: true, message: '请输入备注', trigger: 'blur' }
         ],
+        status: [
+          { required: true, message: '请选择状态', trigger: 'change' }
+        ],
         statusDesc: [
           { required: true, message: '请选择状态变更描述', trigger: 'change' }
         ],
         dataSource: [
           { required: true, message: '请输入数据来源，140:新销服; 老销服:10', trigger: 'blur' }
         ],
-        vehicleYearTypeId: [
-          { required: true, message: '请选择年款ID', trigger: 'change' }
-        ],
-        vehicleModelLineId: [
-          { required: true, message: '请输入系列ID', trigger: 'blur' }
-        ],
-        seriesId: [
-          { required: true, message: '请输入车系ID', trigger: 'blur' }
+        dealerParentOrgId: [
+          { required: true, message: '请输入母公司ID', trigger: 'blur' }
         ],
         ownerOrgId: [
           { required: true, message: '请输入归属门店ID（组织ID），当数据权限归属到本组织以及本下级', trigger: 'blur' }
@@ -341,12 +313,16 @@ export default {
     this.getDetailData();
   },
   methods: {
+    // 打开侧边栏
+    openPane () {
+      this.$refs.editLayout.openPane();
+    },
     handleBack () {
       this.$router.back();
     },
     getDetailData () {
       const id = this.id || this.$route.query.id;
-      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车批售-批售主数据-门店试驾车配额管理', `${id ? '编辑' : '新建'}`]);
+      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车批售-批售主数据-门店批售设置管理', `${id ? '编辑' : '新建'}`]);
       if (id) {
         getDetail(id).then(res => {
           this.loading = false;
@@ -367,11 +343,6 @@ export default {
             const id = this.$route.query.id;
             if (rest || !id) {
               this.resetForm(formName);
-              const currentPath = this.$route.path;
-              this.$router.push({
-                path: currentPath,
-                query: { id: res }
-              });
             } else {
               this.getDetailData();
             }

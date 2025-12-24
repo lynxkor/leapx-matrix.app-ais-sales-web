@@ -1,5 +1,5 @@
 <template>
-  <div class="page-common m-wholesale_dealer_test_drive_quota-list">
+  <div class="page-common m-wholesale-dealer-auto-confirm-conf-list">
     <!--  TIPS: 自行调整如下label-width，满足label不换行  -->
     <el-form
       :inline="true"
@@ -23,54 +23,18 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="年款"  v-show="this.visibleCount === 3 || show">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.vehicleYearType"
-          placeholder="请选择"
+      <el-form-item label="开启自动批售确认"  v-show="this.visibleCount === 3 || show">
+        <el-input
+          placeholder="请输入"
+          v-model="form.openAutoConfirm"
           clearable
-          multiple
-          filterable
         />
       </el-form-item>
       <template v-if="show">
-        <el-form-item label="系列">
-          <el-input
-            placeholder="请输入"
-            v-model="form.vehicleModelLine"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="车系">
-          <el-input
-            placeholder="请输入"
-            v-model="form.seriesName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="配额数量">
-          <el-input
-            placeholder="请输入"
-            v-model="form.quotaQty"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="状态">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.status"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
-          />
-        </el-form-item>
-        <el-form-item label="创建时间">
+        <el-form-item label="修改时间">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
-            v-model="form.createTime"
+            v-model="form.updateTime"
             type="daterange"
             :picker-options="pickerOptions"
             range-separator="至"
@@ -127,7 +91,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesale_dealer_test_drive_quota/index';
+import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleDealerAutoConfirmConf/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -141,12 +105,8 @@ const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   dealerCode: '',
   dealerName: '',
-  vehicleYearType: '',
-  vehicleModelLine: '',
-  seriesName: '',
-  quotaQty: '',
-  status: '',
-  createTime: '',
+  openAutoConfirm: '',
+  updateTime: '',
 };
 
 const pageSize = 20;
@@ -164,10 +124,10 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车批售-批售主数据-门店试驾车配额管理',
+      pageTitle: '新页面',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-wholesale_dealer_test_drive_quota',
+      moduleKey: 'AISVW-wholesaleDealerAutoConfirmConf',
       form: {
         ...defaultForm
       },
@@ -178,7 +138,7 @@ export default {
       exportLoading: false,
       uploadDialogVisible: false,
       optionObj: {
-        id: 'wholesale_dealer_test_drive_quotaTable',
+        id: 'wholesaleDealerAutoConfirmConfTable',
         dataList: [],
         form: {
           page: 1,
@@ -186,15 +146,15 @@ export default {
         },
         dataProp: [
           {
-            props: 'dealerCode',
-            label: '门店编码',
+            props: 'wholesaleDealerAutoConfirmConfName',
+            label: '名称',
             visible: true,
             width: 200,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/basic/wholesale_dealer_test_drive_quota/detail',
+                  path: '/vehwholesale/basic/wholesaleDealerAutoConfirmConf/detail',
                   query: {
                     id: row.id
                   }
@@ -203,14 +163,9 @@ export default {
               type: 'primary'
             }]
           },
+          { props: 'dealerCode', label: '门店编码', visible: true, width: 200 },
           { props: 'dealerName', label: '门店名称', visible: true, width: 200 },
-          { props: 'vehicleYearType', label: '年款', visible: true, width: 200 },
-          { props: 'vehicleModelLine', label: '系列', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系', visible: true, width: 200 },
-          { props: 'requestQty', label: '累计已申请数', visible: true, width: 200 },
-          { props: 'changeDesc', label: '调整说明', visible: true, width: 200 },
-          { props: 'quotaQty', label: '配额数量', visible: true, width: 200 },
-          { props: 'status', label: '状态', visible: true, width: 200 },
+          { props: 'openAutoConfirm', label: '开启自动批售确认', visible: true, width: 200 },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
@@ -223,7 +178,7 @@ export default {
               name: '编辑',
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/basic/wholesale_dealer_test_drive_quota/edit',
+                  path: '/vehwholesale/basic/wholesaleDealerAutoConfirmConf/edit',
                   query: {
                     id: row.id
                   }
@@ -268,7 +223,7 @@ export default {
     },
     handleAdd () {
       this.$router.push({
-        path: '/vehwholesale/basic/wholesale_dealer_test_drive_quota/edit'
+        path: '/vehwholesale/basic/wholesaleDealerAutoConfirmConf/edit'
       });
     },
     onSubmit () {
@@ -281,15 +236,15 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '整车批售-批售主数据-门店试驾车配额管理',
-        dataFetchPath: 'vehwholesale/web/basic/wholesale_dealer_test_drive_quota/page',
+        businessType: '新页面',
+        dataFetchPath: 'vehwholesale/web/basic/wholesaleDealerAutoConfirmConf/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车批售-批售主数据-门店试驾车配额管理.xlsx');
+            await downloadExcel(res.excelUrl, '新页面.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -437,6 +392,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.m-wholesale_dealer_test_drive_quota-list {
+.m-wholesale-dealer-auto-confirm-conf-list {
 }
 </style>

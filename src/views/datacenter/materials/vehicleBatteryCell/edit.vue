@@ -241,7 +241,9 @@ export default {
   },
   methods: {
     handleBack () {
-      this.$router.back();
+      // this.$router.back();
+      let newPath = this.$route.path.replace(/\/edit$/, '');
+      this.$router.push(newPath);
     },
     getDetailData () {
       const id = this.id || this.$route.query.id;
