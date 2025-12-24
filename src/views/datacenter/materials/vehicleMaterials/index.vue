@@ -13,7 +13,6 @@
           <fetch-select
             :remote-method="seriesSearch"
             remote
-            reserve-keyword
             v-model="form.seriesIds"
             placeholder="请选择"
             labelKey="name"
@@ -22,6 +21,7 @@
             multiple
             collapseTags
             filterable
+            :options="seriesList"
             @change="seriesListChange" />
         </el-form-item>
       <template v-if="show">
@@ -81,18 +81,24 @@
              />
         </el-form-item>
         <el-form-item label="停产状态">
-          <fetch-select :options="yes_no_enum" v-model="form.discontinueStatus" placeholder="请选择" clearable  />
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="dc_discontinue_statusEnum" v-model="form.discontinueStatus" placeholder="请选择" clearable  />
+           <!-- <el-select v-model="form.discontinueStatus" placeholder="请选择" clearable>
+            <el-option label="正常生产" value="1" />
+            <el-option label="停产" value="0" />
+           </el-select> -->
         </el-form-item>
         <el-form-item label="状态">
            <fetch-select
-          :request="fetchOptions"
-          enumCode="StatusEnum"
-          v-model="form.statusIncludeList"
-          placeholder="请选择"
-          clearable
-          multiple
-          filterable
-        />
+            :request="fetchOptions"
+            enumCode="StatusEnum"
+            v-model="form.statusIncludeList"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
         </el-form-item>
       </template>
       <page-search-action v-model="show" is-expandable :loading="loading" @submit="onSubmit" @reset="onReset" />
@@ -271,6 +277,7 @@ export default {
           { props: 'allowConfigurationModifyLabel', label: '是否允许改配', visible: true, width: 200 },
           { props: 'allowTestDriveVehicleWholesaleLabel', label: '是否允许采购试驾车', visible: true, width: 200 },
           { props: 'allowCustomerSalesLabel', label: '是否允许企业客户销售	', visible: true, width: 200 },
+          { props: 'yearTypeName', label: '车型年款', visible: true, width: 200 },
           { props: 'modelLineName', label: '系列名称', visible: true, width: 200 },
           { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
           { props: 'drivingRangeName', label: '选配续航', visible: true, width: 200 },
@@ -281,6 +288,7 @@ export default {
           { props: 'roofName', label: '车顶名称', visible: true, width: 200 },
           { props: 'optionPackageName', label: '选装包名称', visible: true, width: 200 },
           { props: 'discontinueStatusLabel', label: '停产状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           // { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           // { props: 'statusDesc', label: '说明', visible: true, width: 200 },
@@ -364,7 +372,15 @@ export default {
     this.geVehicleRoofList();
   },
   methods: {
-    seriesSearch (query) { return vehicleSeriesList({ seriesNameLike: query }); },
+    async seriesSearch (query) {
+      try {
+        const res = await vehicleSeriesList({ seriesNameLike: query });
+        this.seriesList = res;
+        return res;
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
+    },
     async modelSearch (query) {
       // if (query) {
       let params = {
@@ -404,6 +420,8 @@ export default {
     onReset () {
       this.form = { ...defaultForm };
       this.getData();
+      this.listVehicleYearType();
+      this.seriesSearch();
     },
     exportExcel () {
       this.exportLoading = true;
