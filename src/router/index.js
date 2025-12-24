@@ -859,30 +859,246 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/basic/wholesale_dealer_test_drive_quota',
-      name: 'wholesale_dealer_test_drive_quota',
-      component: () => import('@/views/vehwholesale/basic/wholesale_dealer_test_drive_quota/index.vue'),
+      path: '/vehwholesale/basic/wholesaleDealerTestDriveQuota',
+      name: 'wholesaleDealerTestDriveQuota',
+      component: () => import('@/views/vehwholesale/basic/wholesaleDealerTestDriveQuota/index.vue'),
 
       meta: {
         name: '整车批售-批售主数据-门店试驾车配额管理',
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/basic/wholesale_dealer_test_drive_quota/detail',
-      name: 'wholesale_dealer_test_drive_quotaDetail',
-      component: () => import('@/views/vehwholesale/basic/wholesale_dealer_test_drive_quota/detail.vue'),
+      path: '/vehwholesale/basic/wholesaleDealerTestDriveQuota/detail',
+      name: 'wholesaleDealerTestDriveQuotaDetail',
+      component: () => import('@/views/vehwholesale/basic/wholesaleDealerTestDriveQuota/detail.vue'),
 
       meta: {
         name: '整车批售-批售主数据-门店试驾车配额管理详情',
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/basic/wholesale_dealer_test_drive_quota/edit',
-      name: 'wholesale_dealer_test_drive_quotaEdit',
-      component: () => import('@/views/vehwholesale/basic/wholesale_dealer_test_drive_quota/edit.vue'),
+      path: '/vehwholesale/basic/wholesaleDealerTestDriveQuota/edit',
+      name: 'wholesaleDealerTestDriveQuotaEdit',
+      component: () => import('@/views/vehwholesale/basic/wholesaleDealerTestDriveQuota/edit.vue'),
 
       meta: {
         name: '整车批售-批售主数据-门店试驾车配额管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaleSaleTargetTracking',
+      name: 'wholesaleSaleTargetTracking',
+      component: () => import('@/views/vehwholesale/basic/wholesaleSaleTargetTracking/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-销售目标跟踪管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesalesaletargettracking/detail',
+      name: 'wholesaleSaleTargetTrackingDetail',
+      component: () => import('@/views/vehwholesale/basic/wholesaleSaleTargetTracking/detail.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-销售目标跟踪管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesalesaletargettracking/edit',
+      name: 'wholesaleSaleTargetTrackingEdit',
+      component: () => import('@/views/vehwholesale/basic/wholesaleSaleTargetTracking/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-销售目标跟踪管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaleNoAutoCarModelConf',
+      name: 'wholesaleNoAutoCarModelConf',
+      component: () => import('@/views/vehwholesale/basic/wholesaleNoAutoCarModelConf/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-不自动批售确认车型管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesalenoautocarmodelconf/detail',
+      name: 'wholesaleNoAutoCarModelConfDetail',
+      component: () => import('@/views/vehwholesale/basic/wholesaleNoAutoCarModelConf/detail.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-不自动批售确认车型管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesalenoautocarmodelconf/edit',
+      name: 'wholesaleNoAutoCarModelConfEdit',
+      component: () => import('@/views/vehwholesale/basic/wholesaleNoAutoCarModelConf/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-不自动批售确认车型管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaleTargetDefaultQuota',
+      name: 'wholesaleTargetDefaultQuota',
+      component: () => import('@/views/vehwholesale/basic/wholesaleTargetDefaultQuota/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-批售目标默认配额管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaletargetdefaultquota/detail',
+      name: 'wholesaleTargetDefaultQuotaDetail',
+      component: () => import('@/views/vehwholesale/basic/wholesaleTargetDefaultQuota/detail.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-批售目标默认配额管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaletargetdefaultquota/edit',
+      name: 'wholesaleTargetDefaultQuotaEdit',
+      component: () => import('@/views/vehwholesale/basic/wholesaleTargetDefaultQuota/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-批售目标默认配额管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaleTestDriveQuota',
+      name: 'wholesaleTestDriveQuota',
+      component: () => import('@/views/vehwholesale/basic/wholesaleTestDriveQuota/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-试驾车默认配额管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaletestdrivequota/detail',
+      name: 'wholesaleTestDriveQuotaDetail',
+      component: () => import('@/views/vehwholesale/basic/wholesaleTestDriveQuota/detail.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-试驾车默认配额管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaletestdrivequota/edit',
+      name: 'wholesaleTestDriveQuotaEdit',
+      component: () => import('@/views/vehwholesale/basic/wholesaleTestDriveQuota/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-试驾车默认配额管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaleDealerAutoConfirmConf',
+      name: 'wholesaleDealerAutoConfirmConf',
+      component: () => import('@/views/vehwholesale/basic/wholesaleDealerAutoConfirmConf/index.vue'),
+
+      meta: {
+        name: '新页面',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaledealerautoconfirmconf/detail',
+      name: 'wholesaleDealerAutoConfirmConfDetail',
+      component: () => import('@/views/vehwholesale/basic/wholesaleDealerAutoConfirmConf/detail.vue'),
+
+      meta: {
+        name: '新页面详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaledealerautoconfirmconf/edit',
+      name: 'wholesaleDealerAutoConfirmConfEdit',
+      component: () => import('@/views/vehwholesale/basic/wholesaleDealerAutoConfirmConf/edit.vue'),
+
+      meta: {
+        name: '新页面详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaleDealerWholesaleConf',
+      name: 'wholesaleDealerWholesaleConf',
+      component: () => import('@/views/vehwholesale/basic/wholesaleDealerWholesaleConf/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-门店批售设置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaledealerwholesaleconf/detail',
+      name: 'wholesaleDealerWholesaleConfDetail',
+      component: () => import('@/views/vehwholesale/basic/wholesaleDealerWholesaleConf/detail.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-门店批售设置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaledealerwholesaleconf/edit',
+      name: 'wholesaleDealerWholesaleConfEdit',
+      component: () => import('@/views/vehwholesale/basic/wholesaleDealerWholesaleConf/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-门店批售设置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/dealerDemoVehicleQuotaRecord',
+      name: 'dealerDemoVehicleQuotaRecord',
+      component: () => import('@/views/vehwholesale/basic/dealerDemoVehicleQuotaRecord/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-门店试驾车配额调整记录管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/basic/dealerdemovehiclequotarecord/detail',
+      name: 'dealerDemoVehicleQuotaRecordDetail',
+      component: () => import('@/views/vehwholesale/basic/dealerDemoVehicleQuotaRecord/detail.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-门店试驾车配额调整记录管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/dealerdemovehiclequotarecord/edit',
+      name: 'dealerDemoVehicleQuotaRecordEdit',
+      component: () => import('@/views/vehwholesale/basic/dealerDemoVehicleQuotaRecord/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-门店试驾车配额调整记录管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaleVehicleSaleModelConf',
+      name: 'wholesaleVehicleSaleModelConf',
+      component: () => import('@/views/vehwholesale/basic/wholesaleVehicleSaleModelConf/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车销售模式配置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesalevehiclesalemodelconf/detail',
+      name: 'wholesaleVehicleSaleModelConfDetail',
+      component: () => import('@/views/vehwholesale/basic/wholesaleVehicleSaleModelConf/detail.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车销售模式配置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesalevehiclesalemodelconf/edit',
+      name: 'wholesaleVehicleSaleModelConfEdit',
+      component: () => import('@/views/vehwholesale/basic/wholesaleVehicleSaleModelConf/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车销售模式配置管理详情',
         noResourceUrl: 'true'
       }
     }, {

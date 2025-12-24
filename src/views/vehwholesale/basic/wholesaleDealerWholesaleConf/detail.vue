@@ -1,9 +1,9 @@
 <template>
-  <div class="page-common-detail m-wholesale_dealer_test_drive_quota-detail">
+  <div class="page-common-detail m-wholesale-dealer-wholesale-conf-detail">
     <el-skeleton v-if="loading" :rows="6" animated />
     <template v-else>
       <section class="common-title">
-        <h2>门店编码：{{ info.dealerCode }}</h2>
+        <h2>名称：{{ info.wholesaleDealerWholesaleConfName }}</h2>
         <el-button v-if="canAddOrUpdate" size="small" @click="handleEdit"><i class="iconfont icon-lxppc-edit"></i>编辑</el-button>
       </section>
       <section class="common-section">
@@ -13,32 +13,29 @@
         <div class="common-section-body">
           <!-- TIPS: 根据实际情况调整展示字段和宽度 -->
           <el-form :inline="true" ref="ruleForm" label-width="150px">
+            <el-form-item label="名称：" prop="wholesaleDealerWholesaleConfName">
+              {{ info.wholesaleDealerWholesaleConfName  }}
+            </el-form-item>
             <el-form-item label="门店编码：" prop="dealerCode">
               {{ info.dealerCode  }}
             </el-form-item>
             <el-form-item label="门店名称：" prop="dealerName">
               {{ info.dealerName  }}
             </el-form-item>
-            <el-form-item label="年款：" prop="vehicleYearType">
-              {{ info.vehicleYearType  }}
+            <el-form-item label="母公司：" prop="dealerParentOrgName">
+              {{ info.dealerParentOrgName  }}
             </el-form-item>
-            <el-form-item label="系列：" prop="vehicleModelLine">
-              {{ info.vehicleModelLine  }}
+            <el-form-item label="开启自动配车：" prop="autoAllocationEnabled">
+              {{ info.autoAllocationEnabled  }}
             </el-form-item>
-            <el-form-item label="车系：" prop="seriesName">
-              {{ info.seriesName  }}
+            <el-form-item label="开启自动结算：" prop="autoSettlementEnabled">
+              {{ info.autoSettlementEnabled  }}
             </el-form-item>
-            <el-form-item label="累计已申请数：" prop="requestQty">
-              {{ info.requestQty  }}
+            <el-form-item label="允许排产申请：" prop="productionRequestEnabled">
+              {{ info.productionRequestEnabled  }}
             </el-form-item>
-            <el-form-item label="调整说明：" prop="changeDesc">
-              {{ info.changeDesc  }}
-            </el-form-item>
-            <el-form-item label="配额数量：" prop="quotaQty">
-              {{ info.quotaQty  }}
-            </el-form-item>
-            <el-form-item label="状态：" prop="status">
-              {{ info.status  }}
+            <el-form-item label="允许现车批售：" prop="spotWholesaleEnabled">
+              {{ info.spotWholesaleEnabled  }}
             </el-form-item>
             <el-form-item label="修改者名称：" prop="modifierName">
               {{ info.modifierName  }}
@@ -64,20 +61,17 @@
             <el-form-item label="备注：" prop="remark">
               {{ info.remark  }}
             </el-form-item>
+            <el-form-item label="状态：" prop="status">
+              {{ info.status  }}
+            </el-form-item>
             <el-form-item label="状态变更描述：" prop="statusDesc">
               {{ info.statusDesc  }}
             </el-form-item>
             <el-form-item label="数据来源，140:新销服; 老销服:10：" prop="dataSource">
               {{ info.dataSource  }}
             </el-form-item>
-            <el-form-item label="年款ID：" prop="vehicleYearTypeId">
-              {{ info.vehicleYearTypeId  }}
-            </el-form-item>
-            <el-form-item label="系列ID：" prop="vehicleModelLineId">
-              {{ info.vehicleModelLineId  }}
-            </el-form-item>
-            <el-form-item label="车系ID：" prop="seriesId">
-              {{ info.seriesId  }}
+            <el-form-item label="母公司ID：" prop="dealerParentOrgId">
+              {{ info.dealerParentOrgId  }}
             </el-form-item>
             <el-form-item label="归属门店ID（组织ID），当数据权限归属到本组织以及本下级：" prop="ownerOrgId">
               {{ info.ownerOrgId  }}
@@ -90,35 +84,35 @@
 </template>
 
 <script>
-import { getDetail } from '@/api/vehwholesale/basic/wholesale_dealer_test_drive_quota/index';
+import { getDetail } from '@/api/vehwholesale/basic/wholesaleDealerWholesaleConf/index';
 import { YES_NO_ENUM_MAP } from '@/libs/constants';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 
 export default {
-  name: 'wholesale_dealer_test_drive_quotaDetail',
+  name: 'wholesaleDealerWholesaleConfDetail',
   mixins: [permissions, commonMixins],
   components: {
   },
   data () {
     return {
-      pageTitle: '整车批售-批售主数据-门店试驾车配额管理',
+      pageTitle: '整车批售-批售主数据-门店批售设置管理',
       pageType: 'detail',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-wholesale_dealer_test_drive_quota',
+      moduleKey: 'AISMC-wholesaleDealerWholesaleConf',
       loading: true,
       info: {},
       yes_no_enum_map: YES_NO_ENUM_MAP
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车批售-批售主数据-门店试驾车配额管理', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车批售-批售主数据-门店批售设置管理', '详情']);
     this.getData();
   },
   methods: {
     handleEdit () {
       this.$router.push({
-        path: '/vehwholesale/basic/wholesale_dealer_test_drive_quota/edit',
+        path: '/vehwholesale/basic/wholesaleDealerWholesaleConf/edit',
         query: {
           id: this.$route.query.id
         }
