@@ -42,3 +42,11 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 整车采购订单过点记录列表查询
+ * @param {Object} data
+ */
+export function vehiclePoTrack (data) {
+  return api.jsonPost('/vehstock/web/vdc/vehiclePoTrack/list', data);
+}
