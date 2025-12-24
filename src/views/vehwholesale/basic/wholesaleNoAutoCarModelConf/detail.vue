@@ -90,7 +90,7 @@ export default {
       pageTitle: '整车批售-批售主数据-不自动批售确认车型管理',
       pageType: 'detail',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-wholesaleNoAutoCarModelConf',
+      moduleKey: 'AISVW-wholesaleNoAutoCarModelConf',
       loading: true,
       info: {},
       yes_no_enum_map: YES_NO_ENUM_MAP
