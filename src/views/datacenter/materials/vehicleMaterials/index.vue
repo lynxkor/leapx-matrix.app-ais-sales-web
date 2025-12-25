@@ -154,7 +154,7 @@
         </el-row>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="batchSetAttrVisible = false">取 消</el-button>
+        <el-button size="small" @click="closeSetAttr">取 消</el-button>
         <el-button size="small" type="primary" @click="confirmSetAttr">确 定</el-button>
       </div>
     </el-dialog>
@@ -727,7 +727,12 @@ export default {
         };
       });
     },
-
+    closeSetAttr () {
+      this.allowWholesale = null;
+      this.allowProductionSchedule = null;
+      this.allowWholesaleConfirm = null;
+      this.batchSetAttrVisible = false;
+    },
     async confirmSetAttr () {
       const ids = this.selectionList.map(item => item.id) || [];
       const params = {
@@ -740,7 +745,9 @@ export default {
           type: 'success',
           message: '操作成功!'
         });
-
+        this.allowWholesale = null;
+        this.allowProductionSchedule = null;
+        this.allowWholesaleConfirm = null;
         this.batchSetAttrVisible = false;
       }).catch(() => {
         this.batchSetAttrVisible = false;

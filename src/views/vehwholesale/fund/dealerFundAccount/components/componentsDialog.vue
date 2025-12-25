@@ -273,24 +273,29 @@ export default {
       this.debouncedGetData();
     },
     handleBatchEnable (val) {
-      let params = {
-        ids: this.selectionList.map(item => item.id),
-        allowEntOrderSettle: val
-      };
-      setRebateFlag(params).then(res => {
-        let message = val ? '批量启用成功' : '批量关闭成功';
-        this.$message.success(message);
-        this.getData();
+      let msg = val ? '启用' : '关闭';
+      this.$confirm(`确定要批量${msg}返利吗？`).then(() => {
+        let params = {
+          ids: this.selectionList.map(item => item.id),
+          allowEntOrderSettle: val
+        };
+        setRebateFlag(params).then(res => {
+          let message = val ? '批量启用成功' : '批量关闭成功';
+          this.$message.success(message);
+          this.getData();
+        }).catch(() => {});
       }).catch(() => {});
     },
     setEntOrderSettleFlag (val) {
-      let params = {
-        ids: this.selectionList.map(item => item.id),
-        allowEntOrderSettle: val
-      };
-      setEntOrderSettleFlag(params).then(res => {
-        this.$message.success('批量关闭成功');
-        this.getData();
+      this.$confirm('确定要批量关闭结算订单吗？').then(() => {
+        let params = {
+          ids: this.selectionList.map(item => item.id),
+          allowEntOrderSettle: val
+        };
+        setEntOrderSettleFlag(params).then(res => {
+          this.$message.success('批量关闭成功');
+          this.getData();
+        }).catch(() => {});
       }).catch(() => {});
     },
     setSettleSort () {
