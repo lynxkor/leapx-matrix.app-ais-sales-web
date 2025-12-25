@@ -3,23 +3,27 @@
     <!--  TIPS: 自行调整如下label-width，满足label不换行  -->
     <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
       class="ais-search-form">
-      <el-form-item label="VIN" v-show="this.visibleCount === 3 || show">
-        <el-input placeholder="请输入" v-model="form.vin" clearable />
+      <el-form-item label="VIN">
+        <tag-input v-model="form.vinList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="物料描述">
         <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
       </el-form-item>
-      <el-form-item label="VDC入库时间">
-        <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.inboundDateTime" type="daterange"
-          :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
-          start-placeholder="开始日期" end-placeholder="结束日期" />
-      </el-form-item>
       <template v-if="show">
+        <el-form-item label="VDC入库时间">
+          <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.inboundDateTime" type="daterange"
+            :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期" end-placeholder="结束日期" />
+        </el-form-item>
         <el-form-item label="物料编码">
-          <el-input placeholder="请输入" v-model="form.materialsCode" clearable />
+          <tag-input v-model="form.materialsDescList" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="车系">
-          <el-input placeholder="请输入" v-model="form.seriesId" clearable />
+          <fetch-select
+            v-model="form.seriesIdList"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.series"
+          />
         </el-form-item>
         <el-form-item label="是否配车">
           <fetch-select :request="fetchOptions" enumCode="BooleanEnum"
@@ -34,7 +38,18 @@
           v-model="form.logisticsReserved" placeholder="请选择" clearable filterable />
         </el-form-item>
         <el-form-item label="整车仓库">
-          <el-input placeholder="请输入" v-model="form.warehouseCode" clearable />
+          <fetch-select
+            v-model="form.warehouseCodeList"
+            filterable
+            clearable
+            remote
+            multiple
+            reserve-keyword
+            placeholder="请选择"
+            :remote-method="serchWarehouse"
+            value-key="warehouseCode"
+            label-key="warehouseName"
+          />
         </el-form-item>
         <el-form-item label="退车标识">
           <fetch-select :request="fetchOptions" enumCode="BooleanEnum"
@@ -49,7 +64,11 @@
           v-model="form.shipVia" placeholder="请选择" clearable filterable />
         </el-form-item>
         <el-form-item label="公告车型">
-          <el-input placeholder="请输入" v-model="form.vehicleRegisteredModelId" clearable />
+          <fetch-select
+            v-model="form.vehicleRegisteredModelIdList"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.announcement"
+          />
         </el-form-item>
         <el-form-item label="常用复合查询">
           <fetch-select :request="fetchOptions" enumCode="vehstock_vdc_common_composite_query"
@@ -74,7 +93,7 @@
         @handleSelect="handleSelectionChange" />
     </div>
     <!-- TIPS: 填入项目id即可 -->
-    <Upload :visible="uploadDialogVisible" :id="1" @close="handleUploadDialogClose" />
+    <Upload :visible="uploadDialogVisible" :id="'1'" @close="handleUploadDialogClose" />
   </div>
 </template>
 
@@ -83,7 +102,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/vdc/vehicleVdcInventoryLedger/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleSalesVersionList, pageWithPermission } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -91,21 +110,24 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   inboundDateTime: '',
-  warehouseCode: '',
-  vin: '',
-  materialsDesc: '',
+  warehouseCodeList: [],
+  vinLike: '',
+  vinList: [],
+  materialsDescLike: '',
+  materialsDescList: [],
   vehicleDeliveryStatusList: [],
-  carAllocated: '',
+  carAllocated: '0',
   logisticsReserved: '',
   returnLabel: '',
   allowLockRetail: '',
-  vehicleRegisteredModelId: '',
+  vehicleRegisteredModelIdList: [],
   materialsCode: '',
-  seriesId: '',
+  seriesIdList: [],
   shipVia: '',
   vdcCommonCompositeQuery: '',
 };
@@ -121,7 +143,8 @@ export default {
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
-    Upload
+    Upload,
+    TagInput
   },
   data () {
     return {
@@ -134,6 +157,7 @@ export default {
       },
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
+      warehouseOptions: [], // 整车仓库
       show: false,
       loading: false,
       exportLoading: false,
@@ -147,8 +171,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'inboundDateTime',
-            label: 'VDC入库时间',
+            props: 'vin',
+            label: 'VIN',
             visible: true,
             width: 200,
             fixed: 'left',
@@ -164,9 +188,14 @@ export default {
               type: 'primary'
             }]
           },
+          {
+            props: 'inboundDateTime',
+            label: 'VDC入库时间',
+            visible: true,
+            width: 200,
+          },
           { props: 'stockAge', label: '库龄（天）', visible: true, width: 200 },
           { props: 'warehouseName', label: '整车仓库', visible: true, width: 200 },
-          { props: 'vin', label: 'VIN', visible: true, width: 200 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           { props: 'allowWholesaleLabel', label: '是否允许现车批售', visible: true, width: 200 },
           { props: 'vehicleDeliveryStatusLabel', label: '车辆交付状态', visible: true, width: 200 },
@@ -248,6 +277,27 @@ export default {
           }
         ],
         total: 0
+      },
+      // 提取公共配置
+      selectOptions: {
+        placeholder: '请选择',
+        labelKey: 'name',
+        valueKey: 'id',
+        clearable: true,
+        multiple: true,
+        collapseTags: true,
+        filterable: true,
+        remote: true,
+        reserveKeyword: true
+      },
+      // 远程搜索方法
+      remoteMethods: {
+        series: async (query) => {
+          return await vehicleSeriesList({ seriesNameLike: query });
+        },
+        announcement: async (query) => {
+          return await vehicleSalesVersionList({ registeredModelNameLike: query });
+        }
       }
     };
   },
@@ -367,6 +417,15 @@ export default {
         }
       }
 
+      if (Array.isArray(this.form.vinList) && this.form.vinList.length <= 1) {
+        delete data.vinList;
+        data.vinLike = this.form.vinList[0] || '';
+      }
+      if (Array.isArray(this.form.materialsDescList) && this.form.materialsDescList.length <= 1) {
+        delete data.materialsDescList;
+        data.materialsDescLike = this.form.materialsDescList[0] || '';
+      }
+
       return data;
     },
     async fetchOptions (code) {
@@ -405,29 +464,18 @@ export default {
         apiFunc: enableItem,
         refreshFunc: this.getData
       });
-      // const ids = this.selectionList.map(item => item.id) || [];
-      // this.$confirm(`此操作将${status ? '启用' : '停用'}选中项，是否继续?`, '提示', {
-      //   confirmButtonText: '确定',
-      //   cancelButtonText: '取消',
-      //   type: 'warning'
-      // }).then(() => {
-      //   enableItem({
-      //     idSet: ids,
-      //     status
-      //   }).then(() => {
-      //     this.$message({
-      //       type: 'success',
-      //       message: '操作成功!'
-      //     });
-      //     this.getData();
-      //   }).catch(() => {
-      //     this.$message({
-      //       type: 'error',
-      //       message: '操作失败!'
-      //     });
-      //   });
-      // });
-    }
+    },
+    // 搜索仓库
+    async serchWarehouse (query) {
+      const res = await pageWithPermission({ warehouseName: query, page: 1, size: 20 });
+      return res?.records?.map(item => {
+        return {
+          ...item,
+          label: item.warehouseName,
+          value: item.warehouseCode,
+        };
+      });
+    },
   }
 };
 </script>
