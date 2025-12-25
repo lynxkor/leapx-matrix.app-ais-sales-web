@@ -302,6 +302,7 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
+      console.log('22');
       // this.form.transactionTime = [];
       // this.$refs.transactionTime.clearTime();
       this.getData();
