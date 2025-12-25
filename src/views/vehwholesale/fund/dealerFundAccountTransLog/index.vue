@@ -14,7 +14,7 @@
           v-model="form.transactionTime"
           :setDefault="true"
           deftTime="最近一周"
-          ref="createTime"/>
+          ref="transactionTime"/>
         <!-- <el-date-picker
          :default-time="['00:00:00', '23:59:59']"
           v-model="form.transactionTime"
@@ -67,7 +67,7 @@
           />
         </el-form-item>
         <el-form-item label="母公司编码">
-          <tag-input v-model="form.dealerComapnyCode" placeholder="请输入" />
+          <tag-input v-model="form.dealerComapnyCodes" placeholder="请输入" />
           <!-- <el-input
             placeholder="请输入"
             v-model="form.dealerComapnyCode"
@@ -302,7 +302,8 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
-      this.$refs.createTime.clearTime();
+      // this.form.transactionTime = [];
+      // this.$refs.transactionTime.clearTime();
       this.getData();
     },
     exportExcel () {
