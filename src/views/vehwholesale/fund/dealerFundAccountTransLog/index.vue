@@ -252,7 +252,7 @@ export default {
             }]
           },
           { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 200 },
-          { props: 'financialOrganizationName', label: '金融机构ID', visible: true, width: 200 },
+          { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 200 },
           { props: 'transactionTypeLabel', label: '交易类型', visible: true, width: 200 },
           { props: 'transactionAmount', label: '交易金额', visible: true, width: 200 },
           { props: 'transactionTime', label: '过账时间', visible: true, width: 200 },
