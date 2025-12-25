@@ -531,7 +531,7 @@ const routes = [
       component: () => import('@/views/datacenter/materials/vehicleMaterialsMatch/index.vue'),
 
       meta: {
-        name: '整车主数据-物料配车关系管理',
+        name: '整车主数据-物料可配关系管理',
         keepAlive: true
       }
     }, {
@@ -540,7 +540,7 @@ const routes = [
       component: () => import('@/views/datacenter/materials/vehicleMaterialsMatch/detail.vue'),
 
       meta: {
-        name: '整车主数据-物料配车关系管理详情',
+        name: '整车主数据-物料可配关系管理详情',
         noResourceUrl: 'true'
       }
     }, {
@@ -549,7 +549,7 @@ const routes = [
       component: () => import('@/views/datacenter/materials/vehicleMaterialsMatch/edit.vue'),
 
       meta: {
-        name: '整车主数据-物料配车关系管理详情',
+        name: '整车主数据-物料可配关系管理详情',
         noResourceUrl: 'true'
       }
     }, {

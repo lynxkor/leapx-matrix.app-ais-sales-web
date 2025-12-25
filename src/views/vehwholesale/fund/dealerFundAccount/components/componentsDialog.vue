@@ -208,23 +208,23 @@ export default {
       columns: [],
       columns1: [
         { field: 'dealerCompanyName', title: '母公司名称', width: '30%' },
-        { field: 'fundType', title: '资金类型', width: 120 },
+        { field: 'fundTypeLabel', title: '资金类型', width: 120 },
         { field: 'entOrderQuota', title: '企业订单额度系数', width: 200 },
         { field: 'financialOrganizationName', title: '金融机构', width: 120 },
         { field: 'availableBalance', title: '可用余额', width: 200 },
         { field: 'rebateAvailableBalance', title: '返利账户可用余额', width: 200 },
-        { field: 'allowUseRebate', title: '是否允许使用返利', width: 200 },
+        { field: 'allowUseRebateLabel', title: '是否允许使用返利', width: 200 },
         { field: 'fundAccountCode', title: '账户编号', width: 200 },
         { field: 'lastTradeTime', title: '最近交易时间', width: 200 },
         { field: 'createTime', title: '创建时间', width: 200 },
       ],
       columns2: [
         { field: 'dealerCompanyName', title: '母公司名称', width: '30%' },
-        { field: 'fundType', title: '资金类型', width: 120 },
+        { field: 'fundTypeLabel', title: '资金类型', width: 120 },
         { field: 'financialOrganizationName', title: '金融机构', width: 120 },
         { field: 'availableBalance', title: '可用余额', width: 200 },
         { field: 'rebateAvailableBalance', title: '返利账户可用余额', width: 200 },
-        { field: 'allowUseRebate', title: '是否允许使用返利', width: 200 },
+        { field: 'allowUseRebateLabel', title: '是否允许使用返利', width: 200 },
         { field: 'fundAccountCode', title: '账户编号', width: 200 },
       ],
       optionObj: {
@@ -273,24 +273,29 @@ export default {
       this.debouncedGetData();
     },
     handleBatchEnable (val) {
-      let params = {
-        ids: this.selectionList.map(item => item.id),
-        allowEntOrderSettle: val
-      };
-      setRebateFlag(params).then(res => {
-        let message = val ? '批量启用成功' : '批量关闭成功';
-        this.$message.success(message);
-        this.getData();
+      let msg = val ? '启用' : '关闭';
+      this.$confirm(`确定要批量${msg}返利吗？`).then(() => {
+        let params = {
+          ids: this.selectionList.map(item => item.id),
+          allowEntOrderSettle: val
+        };
+        setRebateFlag(params).then(res => {
+          let message = val ? '批量启用成功' : '批量关闭成功';
+          this.$message.success(message);
+          this.getData();
+        }).catch(() => {});
       }).catch(() => {});
     },
     setEntOrderSettleFlag (val) {
-      let params = {
-        ids: this.selectionList.map(item => item.id),
-        allowEntOrderSettle: val
-      };
-      setEntOrderSettleFlag(params).then(res => {
-        this.$message.success('批量关闭成功');
-        this.getData();
+      this.$confirm('确定要批量关闭结算订单吗？').then(() => {
+        let params = {
+          ids: this.selectionList.map(item => item.id),
+          allowEntOrderSettle: val
+        };
+        setEntOrderSettleFlag(params).then(res => {
+          this.$message.success('批量关闭成功');
+          this.getData();
+        }).catch(() => {});
       }).catch(() => {});
     },
     setSettleSort () {

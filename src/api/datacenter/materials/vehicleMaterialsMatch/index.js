@@ -44,7 +44,7 @@ export function enableItem (data) {
 }
 
 /**
- * 物料配车关系管理列表
+ * 物料可配关系管理列表
  * @param {Object} data
  */
 export function vehicleMaterialsMatchList (data) {

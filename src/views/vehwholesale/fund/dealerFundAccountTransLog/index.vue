@@ -12,7 +12,8 @@
       <el-form-item label="过账时间">
         <dateranges
           v-model="form.transactionTime"
-          :limtNum="3"
+          :setDefault="true"
+          deftTime="最近一周"
           ref="createTime"/>
         <!-- <el-date-picker
          :default-time="['00:00:00', '23:59:59']"
@@ -252,7 +253,7 @@ export default {
             }]
           },
           { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 200 },
-          { props: 'financialOrganizationName', label: '金融机构ID', visible: true, width: 200 },
+          { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 200 },
           { props: 'transactionTypeLabel', label: '交易类型', visible: true, width: 200 },
           { props: 'transactionAmount', label: '交易金额', visible: true, width: 200 },
           { props: 'transactionTime', label: '过账时间', visible: true, width: 200 },
