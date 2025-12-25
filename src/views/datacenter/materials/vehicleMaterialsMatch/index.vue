@@ -136,9 +136,9 @@ export default {
   },
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-物料配车关系',
+      pageTitle: '销服-业务主数据-配置主数据-物料可配关系',
       pageType: 'list',
-      moduleKey: 'AISDC-vehicleMaterials',
+      moduleKey: 'AISDC-vehicleMaterialsMatch',
       form: {
         ...defaultForm
       },
@@ -266,7 +266,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '销服-业务主数据-配置主数据-物料配车关系',
+        businessType: '销服-业务主数据-配置主数据-物料可配关系',
         dataFetchPath: '/datacenter/web/materials/vehicleMaterialsMatch/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -275,7 +275,7 @@ export default {
         if (res) {
           if (res.excelUrl) {
             try {
-              await downloadExcel(res.excelUrl, '配置主数据-物料配车关系.xlsx');
+              await downloadExcel(res.excelUrl, '配置主数据-物料可配关系.xlsx');
             } catch (error) {
               this.$message({
                 type: 'error',
