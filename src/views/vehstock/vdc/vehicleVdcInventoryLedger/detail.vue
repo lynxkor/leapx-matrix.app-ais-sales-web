@@ -4,197 +4,226 @@
     <template v-else>
       <section class="common-title">
         <h2>主键：{{ info.id }}</h2>
-        <el-button v-if="canAddOrUpdate" size="small" @click="handleEdit"><i class="iconfont icon-lxppc-edit"></i>编辑</el-button>
+        <el-button v-if="canAddOrUpdate" size="small" @click="handleEdit"><i
+            class="iconfont icon-lxppc-edit"></i>编辑</el-button>
       </section>
       <section class="common-section">
         <div class="common-section-header">
-          <h2>基础信息</h2>
+          <h2>基本信息</h2>
         </div>
         <div class="common-section-body">
           <!-- TIPS: 根据实际情况调整展示字段和宽度 -->
           <el-form :inline="true" ref="ruleForm" label-width="150px">
             <el-form-item label="VIN：" prop="vin">
-              {{ info.vin  }}
+              {{ info.vin }}
             </el-form-item>
             <el-form-item label="物料编码：" prop="materialsCode">
-              {{ info.materialsCode  }}
+              {{ info.materialsCode }}
             </el-form-item>
             <el-form-item label="车系：" prop="seriesName">
-              {{ info.seriesName  }}
+              {{ info.seriesName }}
             </el-form-item>
             <el-form-item label="产地：" prop="productarea">
-              {{ info.productarea  }}
+              {{ info.productarea }}
             </el-form-item>
             <el-form-item label="制造工厂：" prop="factory">
-              {{ info.factory  }}
+              {{ info.factory }}
             </el-form-item>
             <el-form-item label="整车仓库：" prop="warehouseName">
-              {{ info.warehouseName  }}
+              {{ info.warehouseName }}
             </el-form-item>
             <el-form-item label="电量（%）：" prop="electricity">
-              {{ info.electricity  }}
+              {{ info.electricity }}
             </el-form-item>
             <el-form-item label="电量获取时间：" prop="electricityon">
-              {{ info.electricityon  }}
+              {{ info.electricityon }}
             </el-form-item>
             <el-form-item label="下线时间：" prop="offlineTime">
-              {{ info.offlineTime  }}
+              {{ info.offlineTime }}
             </el-form-item>
             <el-form-item label="VDC入库时间：" prop="inboundDateTime">
-              {{ info.inboundDateTime  }}
+              {{ info.inboundDateTime }}
             </el-form-item>
             <el-form-item label="VDC出库时间：" prop="outboundDateTime">
-              {{ info.outboundDateTime  }}
+              {{ info.outboundDateTime }}
             </el-form-item>
             <el-form-item label="最近入库时间：" prop="lastInboundTime">
-              {{ info.lastInboundTime  }}
+              {{ info.lastInboundTime }}
             </el-form-item>
             <el-form-item label="最近出库时间：" prop="lastOutboundTime">
-              {{ info.lastOutboundTime  }}
+              {{ info.lastOutboundTime }}
             </el-form-item>
+          </el-form>
+        </div>
+      </section>
+      <section class="common-section">
+        <div class="common-section-header">
+          <h2>销售信息</h2>
+        </div>
+        <div class="common-section-body">
+          <el-form :inline="true" ref="ruleForm" label-width="150px">
+
             <el-form-item label="订单编号：" prop="po">
-              {{ info.po  }}
+              {{ info.po }}
             </el-form-item>
             <el-form-item label="销售预留：" prop="reserved">
-              {{ info.reservedLabel  }}
+              {{ info.reservedLabel }}
             </el-form-item>
             <el-form-item label="整车物流预留：" prop="logisticsReserved">
-              {{ info.logisticsReservedLabel  }}
+              {{ info.logisticsReservedLabel }}
             </el-form-item>
             <el-form-item label="订单状态：" prop="poStatus">
-              {{ info.poStatusLabel  }}
+              {{ info.poStatusLabel }}
             </el-form-item>
             <el-form-item label="销售预留类型：" prop="reservedType">
-              {{ info.reservedTypeLabel  }}
+              {{ info.reservedTypeLabel }}
             </el-form-item>
             <el-form-item label="整车物流预留备注：" prop="vehicleLogisticsReserveRemark">
-              {{ info.vehicleLogisticsReserveRemark  }}
+              {{ info.vehicleLogisticsReserveRemark }}
             </el-form-item>
             <el-form-item label="门店：" prop="dealerName">
-              {{ info.dealerName  }}
+              {{ info.dealerName }}
             </el-form-item>
             <el-form-item label="销售解除预留时间：" prop="salesCancelReservedon">
-              {{ info.salesCancelReservedon  }}
+              {{ info.salesCancelReservedon }}
             </el-form-item>
             <el-form-item label="整车物流操作时间：" prop="vehicleLogisticsOperationTime">
-              {{ info.vehicleLogisticsOperationTime  }}
+              {{ info.vehicleLogisticsOperationTime }}
             </el-form-item>
             <el-form-item label="门店入库时间：" prop="dealerinTime">
-              {{ info.dealerinTime  }}
+              {{ info.dealerinTime }}
             </el-form-item>
             <el-form-item label="销售预留时间：" prop="salesReservedon">
-              {{ info.salesReservedon  }}
+              {{ info.salesReservedon }}
             </el-form-item>
             <el-form-item label="整车物流操作人：" prop="vehicleLogisticsOperatorName">
-              {{ info.vehicleLogisticsOperatorName  }}
+              {{ info.vehicleLogisticsOperatorName }}
             </el-form-item>
             <el-form-item label="订单类型：" prop="orderType">
-              {{ info.orderType  }}
+              {{ info.orderType }}
             </el-form-item>
             <el-form-item label="退车标识：" prop="returnLabel">
-              {{ info.returnLabelLabel  }}
+              {{ info.returnLabelLabel }}
             </el-form-item>
             <el-form-item label="特殊预留备注：" prop="specialReserveRemark">
-              {{ info.specialReserveRemark  }}
+              {{ info.specialReserveRemark }}
             </el-form-item>
             <el-form-item label="销售预留操作人：" prop="salesReservationOperatorName">
-              {{ info.salesReservationOperatorName  }}
+              {{ info.salesReservationOperatorName }}
             </el-form-item>
             <el-form-item label="销售备注：" prop="salesRemark">
-              {{ info.salesRemark  }}
+              {{ info.salesRemark }}
             </el-form-item>
             <el-form-item label="允许锁零售单：" prop="allowLockRetail">
-              {{ info.allowLockRetailLabel  }}
+              {{ info.allowLockRetailLabel }}
             </el-form-item>
+          </el-form>
+        </div>
+      </section>
+      <section class="common-section">
+        <div class="common-section-header">
+          <h2>物料信息</h2>
+        </div>
+        <div class="common-section-body">
+          <el-form :inline="true" ref="ruleForm" label-width="150px">
             <el-form-item label="物料编码：" prop="materialsCode">
-              {{ info.materialsCode  }}
+              {{ info.materialsCode }}
             </el-form-item>
             <el-form-item label="车系：" prop="seriesName">
-              {{ info.seriesName  }}
+              {{ info.seriesName }}
             </el-form-item>
             <el-form-item label="车型：" prop="modelName">
-              {{ info.modelName  }}
+              {{ info.modelName }}
             </el-form-item>
             <el-form-item label="物料描述：" prop="materialsDesc">
-              {{ info.materialsDesc  }}
+              {{ info.materialsDesc }}
             </el-form-item>
             <el-form-item label="续航里程：" prop="drivingRangeName">
-              {{ info.drivingRangeName  }}
+              {{ info.drivingRangeName }}
             </el-form-item>
             <el-form-item label="选配动力：" prop="rangePowerName">
-              {{ info.rangePowerName  }}
+              {{ info.rangePowerName }}
             </el-form-item>
             <el-form-item label="外观：" prop="exteriorName">
-              {{ info.exteriorName  }}
+              {{ info.exteriorName }}
             </el-form-item>
             <el-form-item label="内饰：" prop="interiorName">
-              {{ info.interiorName  }}
+              {{ info.interiorName }}
             </el-form-item>
             <el-form-item label="选配轮毂：" prop="wheelHubName">
-              {{ info.wheelHubName  }}
+              {{ info.wheelHubName }}
             </el-form-item>
             <el-form-item label="电池电芯：" prop="batteryCellName">
-              {{ info.batteryCellName  }}
+              {{ info.batteryCellName }}
             </el-form-item>
             <el-form-item label="年款：" prop="yearTypeName">
-              {{ info.yearTypeName  }}
+              {{ info.yearTypeName }}
             </el-form-item>
             <el-form-item label="选配包：" prop="optionPackageName">
-              {{ info.optionPackageName  }}
+              {{ info.optionPackageName }}
             </el-form-item>
             <el-form-item label="是否允许现车批售：" prop="allowWholesale">
-              {{ info.allowWholesaleLabel  }}
+              {{ info.allowWholesaleLabel }}
             </el-form-item>
+          </el-form>
+        </div>
+      </section>
+      <section class="common-section">
+        <div class="common-section-header">
+          <h2>生产信息</h2>
+        </div>
+        <div class="common-section-body">
+          <el-form :inline="true" ref="ruleForm" label-width="150px">
             <el-form-item label="工厂：" prop="factory">
-              {{ info.factory  }}
+              {{ info.factory }}
             </el-form-item>
             <el-form-item label="VIN：" prop="vin">
-              {{ info.vin  }}
+              {{ info.vin }}
             </el-form-item>
             <el-form-item label="计划收车时间：" prop="planReceiveCarTime">
-              {{ info.planReceiveCarTime  }}
+              {{ info.planReceiveCarTime }}
             </el-form-item>
             <el-form-item label="公告车型：" prop="vehicleRegisteredModelName">
-              {{ info.vehicleRegisteredModelName  }}
+              {{ info.vehicleRegisteredModelName }}
             </el-form-item>
             <el-form-item label="合格证号：" prop="certNumber">
-              {{ info.certNumber  }}
+              {{ info.certNumber }}
             </el-form-item>
             <el-form-item label="焊装上线时间：" prop="weldingOnlineTime">
-              {{ info.weldingOnlineTime  }}
+              {{ info.weldingOnlineTime }}
             </el-form-item>
             <el-form-item label="发动机号：" prop="enginenNumber">
-              {{ info.enginenNumber  }}
+              {{ info.enginenNumber }}
             </el-form-item>
             <el-form-item label="发动机型号：" prop="enginenModel">
-              {{ info.enginenModel  }}
+              {{ info.enginenModel }}
             </el-form-item>
             <el-form-item label="涂装上线时间：" prop="paintingOnlineTime">
-              {{ info.paintingOnlineTime  }}
+              {{ info.paintingOnlineTime }}
             </el-form-item>
             <el-form-item label="电机型号：" prop="motorModel">
-              {{ info.motorModel  }}
+              {{ info.motorModel }}
             </el-form-item>
             <el-form-item label="电驱序列号（前）：" prop="electricNumberBefore">
-              {{ info.electricNumberBefore  }}
+              {{ info.electricNumberBefore }}
             </el-form-item>
             <el-form-item label="总装上线时间：" prop="finalAssemblyOnlineTime">
-              {{ info.finalAssemblyOnlineTime  }}
+              {{ info.finalAssemblyOnlineTime }}
             </el-form-item>
             <el-form-item label="电机序列号：" prop="motorSerialNumber">
-              {{ info.motorSerialNumber  }}
+              {{ info.motorSerialNumber }}
             </el-form-item>
             <el-form-item label="电驱序列号（后）：" prop="electricNumberAfter">
-              {{ info.electricNumberAfter  }}
+              {{ info.electricNumberAfter }}
             </el-form-item>
             <el-form-item label="PDI上线时间：" prop="pdiOnlineTime">
-              {{ info.pdiOnlineTime  }}
+              {{ info.pdiOnlineTime }}
             </el-form-item>
             <el-form-item label="电池包编号：" prop="batteryPackNumber">
-              {{ info.batteryPackNumber  }}
+              {{ info.batteryPackNumber }}
             </el-form-item>
             <el-form-item label="制造日期：" prop="manufacturingDate">
-              {{ info.manufacturingDate  }}
+              {{ info.manufacturingDate }}
             </el-form-item>
           </el-form>
         </div>
