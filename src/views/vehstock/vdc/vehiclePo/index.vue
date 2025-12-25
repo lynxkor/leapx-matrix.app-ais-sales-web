@@ -9,10 +9,10 @@
       <el-form-item label="物料描述">
         <tag-input v-model="form.materialsDescList" placeholder="请输入" />
       </el-form-item>
-      <el-form-item label="物料编码">
-        <tag-input v-model="form.materialsCodeList" placeholder="请输入" />
-      </el-form-item>
       <template v-if="show">
+        <el-form-item label="物料编码">
+          <tag-input v-model="form.materialsCodeList" placeholder="请输入" />
+        </el-form-item>
         <el-form-item label="订单状态">
           <fetch-select :request="fetchOptions" enumCode="vehstock_po_status" v-model="form.poStatusList" placeholder="请选择"
             clearable multiple filterable />
@@ -202,8 +202,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'createTime',
-            label: '创建时间',
+            props: 'vin',
+            label: 'VIN',
             visible: true,
             width: 200,
             fixed: 'left',
@@ -219,9 +219,9 @@ export default {
               type: 'primary'
             }]
           },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'inboundDateTime', label: 'VDC入库时间', visible: true, width: 200 },
           { props: 'zppNo', label: '产销识别码', visible: true, width: 200 },
-          { props: 'vin', label: 'VIN', visible: true, width: 200 },
           { props: 'poStatusLabel', label: '订单状态', visible: true, width: 200 },
           { props: 'reservedLabel', label: '销售预留', visible: true, width: 200 },
           { props: 'reservedTypeLabel', label: '销售预留类型', visible: true, width: 200 },
