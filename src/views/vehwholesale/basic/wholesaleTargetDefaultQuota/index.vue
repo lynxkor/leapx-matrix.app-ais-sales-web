@@ -74,7 +74,7 @@ import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleTargetDefaultQuota/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
-import FetchSelect from '@/libs/components/FetchSelect';
+// import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -98,7 +98,7 @@ export default {
   components: {
     PageSearchAction,
     LPVxeTable,
-    FetchSelect,
+    // FetchSelect,
     Upload
   },
   data () {
@@ -125,8 +125,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'seriesName',
-            label: '车系',
+            props: 'wholesaleTargetDefaultQuotaName',
+            label: '名称',
             visible: true,
             width: 200,
             fixed: 'left',
@@ -142,6 +142,7 @@ export default {
               type: 'primary'
             }]
           },
+          { props: 'seriesName', label: '车系', visible: true, width: 200 },
           { props: 'wholesaleTargetQty', label: '批售目标数', visible: true, width: 200 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
