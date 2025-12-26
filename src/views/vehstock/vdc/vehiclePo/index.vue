@@ -9,10 +9,10 @@
       <el-form-item label="物料描述">
         <tag-input v-model="form.materialsDescList" placeholder="请输入" />
       </el-form-item>
+      <el-form-item label="物料编码">
+        <tag-input v-model="form.materialsCodeList" placeholder="请输入" />
+      </el-form-item>
       <template v-if="show">
-        <el-form-item label="物料编码">
-          <tag-input v-model="form.materialsCodeList" placeholder="请输入" />
-        </el-form-item>
         <el-form-item label="订单状态">
           <fetch-select :request="fetchOptions" enumCode="vehstock_po_status" v-model="form.poStatusList" placeholder="请选择"
             clearable multiple filterable />
@@ -202,8 +202,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'vin',
-            label: 'VIN',
+            props: 'po',
+            label: '订单编号',
             visible: true,
             width: 200,
             fixed: 'left',
@@ -219,6 +219,7 @@ export default {
               type: 'primary'
             }]
           },
+          { props: 'vin', label: 'VIN', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'inboundDateTime', label: 'VDC入库时间', visible: true, width: 200 },
           { props: 'zppNo', label: '产销识别码', visible: true, width: 200 },
@@ -230,7 +231,6 @@ export default {
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           { props: 'batteryCellName', label: '电池电芯', visible: true, width: 200 },
           { props: 'vehicleRegisteredModelName', label: '公告车型', visible: true, width: 200 },
-          { props: 'po', label: '订单编号', visible: true, width: 200 },
           { props: 'outboundDateTime', label: 'VDC出库时间', visible: true, width: 200 },
           { props: 'mesStatusLabel', label: 'MES订单状态', visible: true, width: 200 },
           { props: 'carAllocatedDateTime', label: '配车时间', visible: true, width: 200 },
