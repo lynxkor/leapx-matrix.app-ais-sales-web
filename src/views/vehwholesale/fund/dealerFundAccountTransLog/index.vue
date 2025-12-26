@@ -391,9 +391,12 @@ export default {
           delete data[key];
         }
       });
-      if (this.form.transactionTim && this.form.transactionTime.length === 2) {
+      console.log('this.form.transactionTime:', this.form.transactionTime);
+      console.log('this.form.transactionTime.length:', this.form.transactionTime.length);
+      if (this.form.transactionTime && this.form.transactionTime.length === 2) {
         data.transactionTimeStart = this.form.transactionTime[0];
         data.transactionTimeEnd = this.form.transactionTime[1];
+        delete data.transactionTime;
       }
 
       return data;
