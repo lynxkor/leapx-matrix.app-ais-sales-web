@@ -105,6 +105,9 @@
             <el-form-item label="年款：" prop="yearTypeName">
               {{ info.yearTypeName }}
             </el-form-item>
+            <el-form-item label="选装包：" prop="optionPackageName">
+              {{ info.optionPackageName }}
+            </el-form-item>
             <el-form-item label="是否允许现车批售：" prop="allowWholesale">
               {{ info.allowWholesaleLabel }}
             </el-form-item>
@@ -123,11 +126,17 @@
             <el-form-item label="VIN：" prop="vin">
               {{ info.vin }}
             </el-form-item>
+            <el-form-item label="计划收车时间：" prop="planReceiveCarTime">
+              {{ info.planReceiveCarTime }}
+            </el-form-item>
             <el-form-item label="公告车型：" prop="vehicleRegisteredModelName">
               {{ info.vehicleRegisteredModelName }}
             </el-form-item>
             <el-form-item label="合格证号：" prop="certNumber">
               {{ info.certNumber }}
+            </el-form-item>
+            <el-form-item label="焊装上线时间：" prop="weldingOnlineTime">
+              {{ info.weldingOnlineTime }}
             </el-form-item>
             <el-form-item label="发动机号：" prop="enginenNumber">
               {{ info.enginenNumber }}
@@ -135,17 +144,26 @@
             <el-form-item label="发动机型号：" prop="enginenModel">
               {{ info.enginenModel }}
             </el-form-item>
+            <el-form-item label="涂装上线时间：" prop="paintingOnlineTime">
+              {{ info.paintingOnlineTime }}
+            </el-form-item>
             <el-form-item label="电机型号：" prop="motorModel">
               {{ info.motorModel }}
-            </el-form-item>
-            <el-form-item label="电机序列号：" prop="motorSerialNumber">
-              {{ info.motorSerialNumber }}
             </el-form-item>
             <el-form-item label="电驱序列号(前)：" prop="electricNumberBefore">
               {{ info.electricNumberBefore }}
             </el-form-item>
+            <el-form-item label="总装上线时间：" prop="finalAssemblyOnlineTime">
+              {{ info.finalAssemblyOnlineTime }}
+            </el-form-item>
+            <el-form-item label="电机序列号：" prop="motorSerialNumber">
+              {{ info.motorSerialNumber }}
+            </el-form-item>
             <el-form-item label="电驱序列号(后)：" prop="electricNumberAfter">
               {{ info.electricNumberAfter }}
+            </el-form-item>
+            <el-form-item label="PDI上线时间：" prop="pdiOfflineTime">
+              {{ info.pdiOnlineTime }}
             </el-form-item>
             <el-form-item label="电池包编号：" prop="batteryPackNumber">
               {{ info.batteryPackNumber }}
@@ -153,26 +171,11 @@
             <el-form-item label="电池序列号：" prop="batterySerialNumber">
               {{ info.batterySerialNumber }}
             </el-form-item>
-            <el-form-item label="MES订单状态：" prop="mesStatus">
-              {{ info.mesStatusLabel }}
-            </el-form-item>
-            <el-form-item label="计划收车时间：" prop="planReceiveCarTime">
-              {{ info.planReceiveCarTime }}
-            </el-form-item>
-            <el-form-item label="焊装上线时间：" prop="weldingOnlineTime">
-              {{ info.weldingOnlineTime }}
-            </el-form-item>
-            <el-form-item label="涂装上线时间：" prop="paintingOnlineTime">
-              {{ info.paintingOnlineTime }}
-            </el-form-item>
-            <el-form-item label="总装上线时间：" prop="finalAssemblyOnlineTime">
-              {{ info.finalAssemblyOnlineTime }}
-            </el-form-item>
-            <el-form-item label="PDI下线时间：" prop="pdiOfflineTime">
-              {{ info.pdiOfflineTime }}
-            </el-form-item>
             <el-form-item label="制造日期：" prop="manufacturingDate">
               {{ info.manufacturingDate }}
+            </el-form-item>
+            <el-form-item label="MES订单状态：" prop="mesStatus">
+              {{ info.mesStatusLabel }}
             </el-form-item>
           </el-form>
         </div>

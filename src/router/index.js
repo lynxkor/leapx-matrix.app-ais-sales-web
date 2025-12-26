@@ -1128,6 +1128,60 @@ const routes = [
         name: 'VDC库存台账详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehretail/productManager/productSkuPrice',
+      name: 'productManager',
+      component: () => import('@/views/vehretail/productManager/productSkuPrice/index.vue'),
+
+      meta: {
+        name: '销售管理-商品管理-商品SKU价格维护管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/productmanager/productSkuPrice/detail',
+      name: 'productManagerDetail',
+      component: () => import('@/views/vehretail/productManager/productSkuPrice/detail.vue'),
+
+      meta: {
+        name: '销售管理-商品管理-商品SKU价格维护管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/productmanager/productSkuPrice/edit',
+      name: 'productManagerEdit',
+      component: () => import('@/views/vehretail/productManager/productSkuPrice/edit.vue'),
+
+      meta: {
+        name: '销售管理-商品管理-商品SKU价格维护管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/productManager/productCenter',
+      name: 'productCenter',
+      component: () => import('@/views/vehretail/productManager/productCenter/index.vue'),
+
+      meta: {
+        name: '销售管理-商品管理-商品中心管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/productmanager/productcenter/detail',
+      name: 'productCenterDetail',
+      component: () => import('@/views/vehretail/productManager/productCenter/detail.vue'),
+
+      meta: {
+        name: '销售管理-商品管理-商品中心管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/productmanager/productcenter/edit',
+      name: 'productCenterEdit',
+      component: () => import('@/views/vehretail/productManager/productCenter/edit.vue'),
+
+      meta: {
+        name: '销售管理-商品管理-商品中心管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];

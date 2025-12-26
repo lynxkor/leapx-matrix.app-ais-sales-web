@@ -9,6 +9,11 @@
       <el-form-item label="物料描述">
         <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
       </el-form-item>
+      <el-form-item label="VDC入库时间">
+        <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.inboundDateTime" type="daterange"
+          :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
+          start-placeholder="开始日期" end-placeholder="结束日期" />
+      </el-form-item>
       <template v-if="show">
         <el-form-item label="VDC入库时间">
           <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.createTime" type="daterange"
@@ -19,60 +24,43 @@
           <tag-input v-model="form.materialsDescList" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="车系">
-          <fetch-select
-            v-model="form.seriesIdList"
-            v-bind="selectOptions"
-            :remote-method="remoteMethods.series"
-          />
+          <fetch-select v-model="form.seriesIdList" v-bind="selectOptions" :remote-method="remoteMethods.series" />
         </el-form-item>
         <el-form-item label="是否配车">
-          <fetch-select :request="fetchOptions" enumCode="BooleanEnum"
-            v-model="form.carAllocated" placeholder="请选择" clearable filterable />
+          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.carAllocated" placeholder="请选择"
+            clearable filterable />
         </el-form-item>
         <el-form-item label="车辆交付状态">
           <fetch-select :request="fetchOptions" enumCode="vehstock_vehicle_delivery_status"
             v-model="form.vehicleDeliveryStatusList" placeholder="请选择" clearable multiple filterable />
         </el-form-item>
         <el-form-item label="整车物流预留">
-          <fetch-select :request="fetchOptions" enumCode="BooleanEnum"
-          v-model="form.logisticsReserved" placeholder="请选择" clearable filterable />
+          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.logisticsReserved"
+            placeholder="请选择" clearable filterable />
         </el-form-item>
         <el-form-item label="整车仓库">
-          <fetch-select
-            v-model="form.warehouseCodeList"
-            filterable
-            clearable
-            remote
-            multiple
-            reserve-keyword
-            placeholder="请选择"
-            :remote-method="serchWarehouse"
-            value-key="warehouseCode"
-            label-key="warehouseName"
-          />
+          <fetch-select v-model="form.warehouseCodeList" filterable clearable remote multiple reserve-keyword
+            placeholder="请选择" :remote-method="serchWarehouse" value-key="warehouseCode" label-key="warehouseName" />
         </el-form-item>
         <el-form-item label="退车标识">
-          <fetch-select :request="fetchOptions" enumCode="BooleanEnum"
-          v-model="form.returnLabel" placeholder="请选择" clearable filterable />
+          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.returnLabel" placeholder="请选择"
+            clearable filterable />
         </el-form-item>
         <el-form-item label="允许锁零售单">
-          <fetch-select :request="fetchOptions" enumCode="BooleanEnum"
-          v-model="form.allowLockRetail" placeholder="请选择" clearable filterable />
+          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.allowLockRetail" placeholder="请选择"
+            clearable filterable />
         </el-form-item>
         <el-form-item label="发运方式">
-          <fetch-select :request="fetchOptions" enumCode="vehstock_ship_via"
-          v-model="form.shipVia" placeholder="请选择" clearable filterable />
+          <fetch-select :request="fetchOptions" enumCode="vehstock_ship_via" v-model="form.shipVia" placeholder="请选择"
+            clearable filterable />
         </el-form-item>
         <el-form-item label="公告车型">
-          <fetch-select
-            v-model="form.vehicleRegisteredModelIdList"
-            v-bind="selectOptions"
-            :remote-method="remoteMethods.announcement"
-          />
+          <fetch-select v-model="form.vehicleRegisteredModelIdList" v-bind="selectOptions"
+            :remote-method="remoteMethods.announcement" />
         </el-form-item>
         <el-form-item label="常用复合查询">
           <fetch-select :request="fetchOptions" enumCode="vehstock_vdc_common_composite_query"
-          v-model="form.vdcCommonCompositeQuery" placeholder="请选择" clearable filterable />
+            v-model="form.vdcCommonCompositeQuery" placeholder="请选择" clearable filterable />
         </el-form-item>
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
