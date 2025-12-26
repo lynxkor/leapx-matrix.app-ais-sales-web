@@ -391,16 +391,7 @@ export default {
           delete data[key];
         }
       });
-
-      if (this.form.createTime) {
-        delete data.createTime;
-        if (this.form.createTime.length > 1) {
-          data.createTimeStart = this.form.createTime[0];
-          data.createTimeEnd = this.form.createTime[1];
-        }
-      }
-
-      if (this.form.transactionTime.length === 2) {
+      if (this.form.transactionTim && this.form.transactionTime.length === 2) {
         data.transactionTimeStart = this.form.transactionTime[0];
         data.transactionTimeEnd = this.form.transactionTime[1];
       }
