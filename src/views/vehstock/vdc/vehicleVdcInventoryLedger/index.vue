@@ -11,7 +11,7 @@
       </el-form-item>
       <template v-if="show">
         <el-form-item label="VDC入库时间">
-          <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.inboundDateTime" type="daterange"
+          <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.createTime" type="daterange"
             :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期" end-placeholder="结束日期" />
         </el-form-item>
@@ -114,7 +114,7 @@ import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  inboundDateTime: '',
+  createTime: '',
   warehouseCodeList: [],
   vinLike: '',
   vinList: [],
