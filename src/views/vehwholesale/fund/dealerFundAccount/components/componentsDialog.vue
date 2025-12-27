@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" width="1200px" :visible.sync="dialogVisible">
+  <el-dialog :title="title" width="1200px" :visible.sync="dialogVisible" @close="handleClose">
     <div class="page-common m-account-list">
       <el-form
         ref="form"
@@ -192,6 +192,21 @@ export default {
     EditTable,
     PageSearchAction
   },
+  computed: {
+    currentPageType () {
+      return this.pageTpye; // 将 pageTpye 转换为计算属性
+    }
+  },
+  watch: {
+    currentPageType: {
+      immediate: true, // 确保组件初始化时也能触发
+      handler (newVal) {
+        if (newVal) {
+          this.updateDialogContent(newVal); // 根据新的 pageTpye 更新内容
+        }
+      }
+    }
+  },
   data () {
     return {
       title: '',
@@ -239,6 +254,13 @@ export default {
     };
   },
   methods: {
+    handleClose () {
+      this.form = { ...defaultForm }; // 重置表单数据
+      this.tableData = []; // 清空表格数据
+      this.selectionList = []; // 清空多选框选择状态
+      this.columns = []; // 清空列配置
+      this.title = ''; // 清空标题
+    },
     repairItemSearch (query) { return listIdNames({ seriesNameLike: query, status: 1 }); },
     entOrderQuotaSubmit () {
       let params = {
@@ -348,17 +370,17 @@ export default {
       this.selectionList = selection;
     },
 
-    dialogshow () {
-      this.dialogVisible = true;
-      this.fundTypesList();
-      if (this.pageTpye === 'setEntOrderSettleFlag') {
+    dialogshow (type) {
+      if (type === 'setEntOrderSettleFlag') {
         this.columns = this.columns1;
         this.title = '设置企业订单结算';
-      } else {
+      } else if (type === 'setRebateFlag') {
         this.columns = this.columns2;
         this.title = '设置使用返利';
       }
+      this.fundTypesList();
       this.getData();
+      this.dialogVisible = true;
     },
     confirm () {
       this.dialogVisible = true;

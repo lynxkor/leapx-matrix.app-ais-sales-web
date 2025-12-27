@@ -247,7 +247,7 @@ export default {
     repairItemSearch (query) { return listIdNames({ seriesNameLike: query, status: 1 }); },
     componentsDialogChange (type) {
       this.dialogTpye = type;
-      this.$refs.componentsDialog.dialogshow();
+      this.$refs.componentsDialog.dialogshow(type);
     },
     setSettleSort () {
       this.$refs.setSettleSort.dialogshow();
