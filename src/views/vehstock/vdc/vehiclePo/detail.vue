@@ -253,7 +253,6 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车采购订单', '详情']);
     this.getData();
-    this.getTable();
   },
   methods: {
     handleEdit () {
@@ -269,13 +268,14 @@ export default {
         .then((res) => {
           this.loading = false;
           this.info = res;
+          this.getTable(res.ordNo);
         })
         .catch(() => {
           this.loading = false;
         });
     },
-    async getTable () {
-      const res = await vehiclePoTrack({ planOrder: this.info.ordNo });
+    async getTable (val) {
+      const res = await vehiclePoTrack({ planOrder: val });
       this.tableData = res || [];
     }
   },
