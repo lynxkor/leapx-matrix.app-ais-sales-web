@@ -138,6 +138,14 @@
                   maxlength="100"
                 />
               </el-form-item>
+              <el-form-item label="创建者" prop="creator">
+                <el-input
+                  placeholder="请输入"
+                  v-model="form.creatorName"
+                  clearable
+                  disabled
+                />
+              </el-form-item>
               <el-form-item label="创建时间" prop="createTime">
                 <el-date-picker
                   :default-time="['00:00:00', '23:59:59']"
@@ -157,14 +165,6 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  disabled
-                />
-              </el-form-item>
-              <el-form-item label="创建者" prop="creator">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.creatorName"
-                  clearable
                   disabled
                 />
               </el-form-item>

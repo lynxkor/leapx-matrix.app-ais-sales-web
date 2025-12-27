@@ -39,106 +39,55 @@
               <el-form-item label="购车类型" prop="purchaseType">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="xxx"
+                  enumCode="purchase_type_app"
                   v-model="form.purchaseType"
                   placeholder="请选择"
                   clearable
-                  filterable
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="商品状态" prop="productStatus">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="xxx"
+                  enumCode="product_status"
                   v-model="form.productStatus"
                   placeholder="请选择"
                   clearable
-                  filterable
+                  disabled
                 />
-              </el-form-item>
-              <el-form-item label="主键" prop="id">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.id"
+              </el-form-item> <el-form-item label="是否需要支付" prop="needPayStatus">
+                <fetch-select
+                   :options="yes_no_enum"
+                  v-model="form.needPayStatus"
+                  placeholder="请选择"
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="创建者名称" prop="creatorName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.creatorName"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="修改者" prop="modifier">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modifier"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="修改者名称" prop="modifierName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modifierName"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="备注" prop="remark">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.remark"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="状态" prop="status">
+              <el-form-item label="支付方式" prop="payMethod">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.status"
+                  enumCode="pay_method"
+                  v-model="form.payMethod"
                   placeholder="请选择"
                   clearable
                   filterable
                 />
               </el-form-item>
-              <el-form-item label="状态变更描述" prop="statusDesc">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.statusDesc"
-                  placeholder="请选择"
+              <el-form-item label="支付定金金额" prop="depositAmount">
+                <el-input-number placeholder="请输入" v-model="form.depositAmount" clearable :controls="false"
+                :precision="2" :min="0.00" :step="0.01"/>
+                <!-- <el-input
+                  placeholder="请输入"
+                  v-model="form.depositAmount"
                   clearable
-                  filterable
-                />
+                /> -->
               </el-form-item>
-              <el-form-item label="商品类型标签" prop="productTypeLabel">
+              <el-form-item label="是否需要支付定金" prop="needDepositStatus">
                 <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.productTypeLabel"
+                   :options="yes_no_enum"
+                  v-model="form.needDepositStatus"
                   placeholder="请选择"
                   clearable
-                  filterable
-                />
-              </el-form-item>
-              <el-form-item label="购车类型标签" prop="purchaseTypeLabel">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.purchaseTypeLabel"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                />
-              </el-form-item>
-              <el-form-item label="商品状态标签" prop="productStatusLabel">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.productStatusLabel"
-                  placeholder="请选择"
-                  clearable
-                  filterable
                 />
               </el-form-item>
               <el-form-item label="简介" prop="introduction">
@@ -146,6 +95,7 @@
                   placeholder="请输入"
                   v-model="form.introduction"
                   clearable
+                  maxlength="100"
                 />
               </el-form-item>
               <el-form-item label="描述" prop="description">
@@ -153,51 +103,68 @@
                   placeholder="请输入"
                   v-model="form.description"
                   clearable
+                  maxlength="100"
                 />
               </el-form-item>
-              <el-form-item label="是否需要支付" prop="needPayStatus">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.needPayStatus"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                />
-              </el-form-item>
-              <el-form-item label="支付方式" prop="payMethod">
+              <el-form-item label="创建者" prop="creator">
                 <el-input
                   placeholder="请输入"
-                  v-model="form.payMethod"
+                  v-model="form.creatorName"
                   clearable
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="是否需要支付定金" prop="needDepositStatus">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.needDepositStatus"
-                  placeholder="请选择"
-                  clearable
-                  filterable
+              <el-form-item label="创建时间" prop="createTime">
+                <el-date-picker
+                  :default-time="['00:00:00', '23:59:59']"
+                  v-model="form.createTime"
+                  :picker-options="pickerOptions"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="支付定金金额" prop="depositAmount">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.depositAmount"
-                  clearable
+              <el-form-item label="修改时间" prop="updateTime">
+                <el-date-picker
+                  :default-time="['00:00:00', '23:59:59']"
+                  v-model="form.updateTime"
+                  :picker-options="pickerOptions"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="数据来源" prop="dataSource">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.dataSource"
-                  clearable
-                />
-              </el-form-item>
+
             </el-form>
           </div>
+        </section>
+        <section class="common-section">
+          <div class="common-section-header">
+            <h2>订购属性</h2>
+            <!-- <el-button v-if="canAddOrUpdate" size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
+            <el-button size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
+          </div>
+          <div class="common-section-body">
+            <div class="common-section-table">
+              <edit-table
+                ref="editTable"
+                :columns="columns"
+                :data="tableData"
+                :defaultNewRow="defaultNewRow"
+                :show-toolbar="false"
+                :options="options"
+                :auth="{edit: canAddOrUpdate, delete: canDelete}"
+              />
+            </div>
+          </div>
+        </section>
+        <section class="common-section">
+          <div class="common-section-header">
+            <h2>商品定价</h2>
+          </div>
+          <div class="common-section-body"></div>
         </section>
       </el-main>
       <el-footer height="60px">
@@ -217,6 +184,8 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import moment from 'moment';
+import EditTable from '@/libs/components/EditTable';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -258,7 +227,8 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
-    FetchSelect
+    FetchSelect,
+    EditTable
   },
   computed: {
     _id () {
@@ -278,10 +248,54 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '销售管理-商品管理-商品中心管理',
+      defaultNewRow: {
+        yearTypeName: ''
+      },
+      tableData: [],
+      // TIPS: 复杂的表格输入项，参考 /dealerTeam/edit.vue
+      columns: [
+        {
+          field: 'yearTypeName',
+          title: '年型名称',
+          width: '20%',
+          editable: true,
+          editRender: {
+            name: 'ElSelect',
+            props: {
+              clearable: true,
+              filterable: true,
+              remote: true,
+              'suffix-icon': 'el-icon-search',
+              placeholder: '请选择年款',
+              'remote-method': this.querySearchYear
+            }
+          },
+          rules: [
+            {
+              required: true,
+              message: '年型名称不能为空',
+              trigger: 'blur'
+            }
+          ]
+        },
+        {
+          field: 'creatorName',
+          title: '创建人',
+          editable: false,
+          width: '30%',
+          editRender: { name: 'ElInput', props: { type: 'number' } }
+        },
+        {
+          field: 'createTime',
+          title: '创建时间',
+          // width: '33%',
+          editRender: { name: 'ElInput' }
+        },
+      ],
+      pageTitle: '销售管理-商品管理-商品中心',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-productCenter',
+      moduleKey: 'AISVR-productInfo',
       isEditing: false,
       loading: false,
       submitLoading: false,
@@ -371,6 +385,11 @@ export default {
     this.getDetailData();
   },
   methods: {
+    // 详情表格相关数据
+    handleAddRow () {
+      // 通过引用直接调用子组件方法
+      this.$refs.editTable.addRow();
+    },
     handleBack () {
       this.$router.back();
     },
@@ -415,11 +434,15 @@ export default {
     },
     getDefautlForm () {
       // TIPS: 此处可添加表单默认值，如当前用户信息等
-      // const userInfo = this.$store.state.user.userInfo;
+      const userInfo = this.$store.state.user.userInfo;
       return {
-        ...defaultForm
-        // ownerId: userInfo.userId,
-        // ownerName: userInfo.userName,
+        ...defaultForm,
+        creator: userInfo.userId,
+        creatorName: userInfo.userName,
+        productType: '1',
+        productStatus: '1',
+        purchaseType: '1',
+        createTime: moment().format('YYYY-MM-DD HH:mm:ss')
       };
     },
     // 审核日志
@@ -435,3 +458,9 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+  ::v-deep .el-input-number {
+    width: 100%;
+  }
+</style>
