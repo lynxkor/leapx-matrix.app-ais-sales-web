@@ -1,6 +1,6 @@
 <template>
   <!-- TIPS: 如果填写项大于15项，使用类名page-common-edit替换page-common-add -->
-  <div class="page-common-add">
+  <div class="page-common-edit">
     <el-container>
       <el-main>
         <section class="common-section">
@@ -10,12 +10,13 @@
           <div class="common-section-body">
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-            <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
-              <el-form-item label="商品编码（系统自动生成：类型编号+6位流水号）" prop="productCode">
+            <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" inline>
+              <el-form-item label="商品编码" prop="productCode">
                 <el-input
                   placeholder="请输入"
                   v-model="form.productCode"
                   clearable
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="商品名称" prop="productName">
@@ -25,17 +26,17 @@
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="商品类型（1-整车，2-整车选装件，3-充电桩&#x2F;枪，4-备件，5-工时，6-卡券类，7-业务办理，8-施工，9-预约类）" prop="productType">
+              <el-form-item label="商品类型" prop="productType">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="xxx"
+                  enumCode="vr_product_type"
                   v-model="form.productType"
                   placeholder="请选择"
                   clearable
-                  filterable
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="购车类型（1-C端用户，2-员工，3-试乘试驾&#x2F;展车）" prop="purchaseType">
+              <el-form-item label="购车类型" prop="purchaseType">
                 <fetch-select
                   :request="fetchOptions"
                   enumCode="xxx"
@@ -45,34 +46,7 @@
                   filterable
                 />
               </el-form-item>
-              <el-form-item label="创建者" prop="creator">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.creator"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="修改时间" prop="updateTime">
-                <el-date-picker
-                  :default-time="['00:00:00', '23:59:59']"
-                  v-model="form.updateTime"
-                  :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                />
-              </el-form-item>
-              <el-form-item label="创建时间" prop="createTime">
-                <el-date-picker
-                  :default-time="['00:00:00', '23:59:59']"
-                  v-model="form.createTime"
-                  :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                />
-              </el-form-item>
-              <el-form-item label="商品状态（1-新建，2-上架，3-下架）" prop="productStatus">
+              <el-form-item label="商品状态" prop="productStatus">
                 <fetch-select
                   :request="fetchOptions"
                   enumCode="xxx"
@@ -167,21 +141,21 @@
                   filterable
                 />
               </el-form-item>
-              <el-form-item label="简介（最多100字符）" prop="introduction">
+              <el-form-item label="简介" prop="introduction">
                 <el-input
                   placeholder="请输入"
                   v-model="form.introduction"
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="描述（最多100字符）" prop="description">
+              <el-form-item label="描述" prop="description">
                 <el-input
                   placeholder="请输入"
                   v-model="form.description"
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="是否需要支付（1-是，0-否）" prop="needPayStatus">
+              <el-form-item label="是否需要支付" prop="needPayStatus">
                 <fetch-select
                   :request="fetchOptions"
                   enumCode="xxx"
@@ -191,14 +165,14 @@
                   filterable
                 />
               </el-form-item>
-              <el-form-item label="支付方式（1-现金，2-积分）" prop="payMethod">
+              <el-form-item label="支付方式" prop="payMethod">
                 <el-input
                   placeholder="请输入"
                   v-model="form.payMethod"
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="是否需要支付定金（1-是，0-否）" prop="needDepositStatus">
+              <el-form-item label="是否需要支付定金" prop="needDepositStatus">
                 <fetch-select
                   :request="fetchOptions"
                   enumCode="xxx"
@@ -208,14 +182,14 @@
                   filterable
                 />
               </el-form-item>
-              <el-form-item label="支付定金金额（保留两位小数）" prop="depositAmount">
+              <el-form-item label="支付定金金额" prop="depositAmount">
                 <el-input
                   placeholder="请输入"
                   v-model="form.depositAmount"
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="数据来源，150-新销服; 10-老销服" prop="dataSource">
+              <el-form-item label="数据来源" prop="dataSource">
                 <el-input
                   placeholder="请输入"
                   v-model="form.dataSource"
@@ -322,10 +296,10 @@ export default {
           { required: true, message: '请输入商品名称', trigger: 'change' }
         ],
         productType: [
-          { required: true, message: '请选择商品类型（1-整车，2-整车选装件，3-充电桩&#x2F;枪，4-备件，5-工时，6-卡券类，7-业务办理，8-施工，9-预约类）', trigger: 'change' }
+          { required: true, message: '请选择商品类型', trigger: 'change' }
         ],
         purchaseType: [
-          { required: true, message: '请选择购车类型（1-C端用户，2-员工，3-试乘试驾&#x2F;展车）', trigger: 'change' }
+          { required: true, message: '请选择购车类型', trigger: 'change' }
         ],
         creator: [
           { required: true, message: '请输入创建者', trigger: 'change' }
@@ -337,7 +311,7 @@ export default {
           { required: true, message: '请选择创建时间', trigger: 'change' }
         ],
         productStatus: [
-          { required: true, message: '请选择商品状态（1-新建，2-上架，3-下架）', trigger: 'change' }
+          { required: true, message: '请选择商品状态', trigger: 'change' }
         ],
         id: [
           { required: true, message: '请输入主键', trigger: 'change' }
@@ -370,25 +344,25 @@ export default {
           { required: true, message: '请选择商品状态标签', trigger: 'change' }
         ],
         introduction: [
-          { required: true, message: '请输入简介（最多100字符）', trigger: 'change' }
+          { required: true, message: '请输入简介', trigger: 'change' }
         ],
         description: [
-          { required: true, message: '请输入描述（最多100字符）', trigger: 'change' }
+          { required: true, message: '请输入描述', trigger: 'change' }
         ],
         needPayStatus: [
-          { required: true, message: '请选择是否需要支付（1-是，0-否）', trigger: 'change' }
+          { required: true, message: '请选择是否需要支付', trigger: 'change' }
         ],
         payMethod: [
-          { required: true, message: '请输入支付方式（1-现金，2-积分）', trigger: 'change' }
+          { required: true, message: '请输入支付方式', trigger: 'change' }
         ],
         needDepositStatus: [
-          { required: true, message: '请选择是否需要支付定金（1-是，0-否）', trigger: 'change' }
+          { required: true, message: '请选择是否需要支付定金', trigger: 'change' }
         ],
         depositAmount: [
-          { required: true, message: '请输入支付定金金额（保留两位小数）', trigger: 'change' }
+          { required: true, message: '请输入支付定金金额', trigger: 'change' }
         ],
         dataSource: [
-          { required: true, message: '请输入数据来源，150-新销服; 10-老销服', trigger: 'change' }
+          { required: true, message: '请输入数据来源', trigger: 'change' }
         ],
       }
     };

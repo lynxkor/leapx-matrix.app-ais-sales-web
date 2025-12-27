@@ -9,28 +9,35 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="商品价格编码（系统自动生成，前缀SKU）">
-        <el-input
+      <el-form-item label="商品价格编码">
+        <tag-input v-model="form.skuPriceCodeList" placeholder="请输入" />
+        <!-- <el-input
           placeholder="请输入"
           v-model="form.skuPriceCode"
           clearable
-        />
+        /> -->
       </el-form-item>
       <el-form-item label="SKU编码">
-        <el-input
-          placeholder="请输入"
-          v-model="form.skuCode"
-          clearable
-        />
+        <tag-input v-model="form.skuCodeList" placeholder="请输入" />
       </el-form-item>
-      <el-form-item label="关联商品编码"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.productCode"
-          clearable
-        />
+      <el-form-item label="商品编码"  v-show="this.visibleCount === 3 || show">
+        <tag-input v-model="form.productCodeList" placeholder="请输入" />
       </el-form-item>
       <template v-if="show">
+        <el-form-item label="车系">
+          <fetch-select
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.series"
+            v-model="form.series"
+          />
+        </el-form-item>
+        <el-form-item label="车型">
+          <fetch-select
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.series"
+            v-model="form.model"
+          />
+        </el-form-item>
         <el-form-item label="物料编码">
           <el-input
             placeholder="请输入"
@@ -45,75 +52,34 @@
             clearable
           />
         </el-form-item>
-        <el-form-item label="购车类型（1-个人，2-企业）">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.purchaseTypeLabel"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
-          />
+        <el-form-item label="允许改配">
+          <fetch-select :options="yes_no_enum" v-model="form.allowConfigChange" placeholder="请选择" clearable  />
         </el-form-item>
-        <el-form-item label="补贴前价格（保留两位小数）">
-          <el-input
-            placeholder="请输入"
-            v-model="form.priceBeforeSubsidy"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="补贴后价格（保留两位小数，&#x3D;补贴前-补贴金额）">
-          <el-input
-            placeholder="请输入"
-            v-model="form.priceAfterSubsidy"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="补贴金额（保留两位小数）">
-          <el-input
-            placeholder="请输入"
-            v-model="form.subsidyAmount"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="定金（保留两位小数）">
-          <el-input
-            placeholder="请输入"
-            v-model="form.deposit"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="整车价格（关联物料编码）">
-          <el-input
-            placeholder="请输入"
-            v-model="form.vehiclePrice"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="价格对比（1-一致，2-不一致，自动计算）">
+        <el-form-item label="价格对比">
           <el-input
             placeholder="请输入"
             v-model="form.priceCompareLabel"
             clearable
           />
         </el-form-item>
-        <el-form-item label="允许改配（1-是，0-否，默认否）">
-          <el-input
-            placeholder="请输入"
-            v-model="form.allowConfigChange"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="状态（1-可用，0-停用，默认1-可用）">
+        <el-form-item label="购车类型">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.statusLabel"
+            enumCode="purchase_type_pc"
+            v-model="form.purchaseType"
             placeholder="请选择"
             clearable
             multiple
             filterable
+          />
+        </el-form-item>
+        <el-form-item label="状态">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="StatusEnum"
+            v-model="form.status"
+            placeholder="请选择"
+            clearable
           />
         </el-form-item>
         <el-form-item label="开始日期">
@@ -140,50 +106,10 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item label="描述（最多100字符）">
-          <el-input
-            placeholder="请输入"
-            v-model="form.description"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="车系名">
-          <el-input
-            placeholder="请输入"
-            v-model="form.seriesName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="车型名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.modelName"
-            clearable
-          />
-        </el-form-item>
         <el-form-item label="创建时间">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.createTime"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
-        </el-form-item>
-        <el-form-item label="修改者名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.modifierName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="修改时间">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.updateTime"
             type="daterange"
             :picker-options="pickerOptions"
             range-separator="至"
@@ -245,7 +171,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/productManager/productSkuPrice/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleModel } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -254,10 +180,14 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   skuPriceCode: '',
+  skuPriceCodeList: [],
+  skuCodeList: [],
+  productCodeList: [],
   skuCode: '',
   productCode: '',
   materialsCode: '',
@@ -289,6 +219,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
@@ -297,7 +228,28 @@ export default {
   },
   data () {
     return {
-      pageTitle: '销售管理-商品管理-商品SKU价格维护管理',
+      // 提取公共配置
+      selectOptions: {
+        placeholder: '请选择',
+        labelKey: 'name',
+        valueKey: 'id',
+        clearable: true,
+        // multiple: true,
+        collapseTags: true,
+        filterable: true,
+        remote: true,
+        reserveKeyword: true
+      },
+      // 远程搜索方法
+      remoteMethods: {
+        series: async (query) => {
+          return await vehicleSeriesList({ seriesNameLike: query });
+        },
+        model: async (query) => {
+          return await listVehicleModel({ modelNameLike: query });
+        },
+      },
+      pageTitle: '销售管理-商品管理-商品SKU价格维护',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-productSkuPrice',
@@ -321,14 +273,14 @@ export default {
         dataProp: [
           {
             props: 'skuPriceCode',
-            label: '商品价格编码（系统自动生成，前缀SKU）',
+            label: '商品价格编码',
             visible: true,
             width: 200,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehretail/productManager/detail',
+                  path: '/vehretail/productManager/productCenter/detail',
                   query: {
                     id: row.id
                   }
@@ -338,27 +290,27 @@ export default {
             }]
           },
           { props: 'skuCode', label: 'SKU编码', visible: true, width: 200 },
-          { props: 'productCode', label: '关联商品编码', visible: true, width: 200 },
+          { props: 'productCode', label: '商品编码', visible: true, width: 200 },
           { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
-          { props: 'purchaseTypeLabel', label: '购车类型（1-个人，2-企业）', visible: true, width: 200 },
-          { props: 'priceBeforeSubsidy', label: '补贴前价格（保留两位小数）', visible: true, width: 200 },
-          { props: 'priceAfterSubsidy', label: '补贴后价格（保留两位小数，&#x3D;补贴前-补贴金额）', visible: true, width: 200 },
-          { props: 'subsidyAmount', label: '补贴金额（保留两位小数）', visible: true, width: 200 },
-          { props: 'deposit', label: '定金（保留两位小数）', visible: true, width: 200 },
-          { props: 'vehiclePrice', label: '整车价格（关联物料编码）', visible: true, width: 200 },
-          { props: 'priceCompareLabel', label: '价格对比（1-一致，2-不一致，自动计算）', visible: true, width: 200 },
-          { props: 'allowConfigChange', label: '允许改配（1-是，0-否，默认否）', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态（1-可用，0-停用，默认1-可用）', visible: true, width: 200 },
+          { props: 'purchaseTypeLabel', label: '购车类型', visible: true, width: 200 },
+          { props: 'priceBeforeSubsidy', label: '补贴前价格', visible: true, width: 200 },
+          { props: 'priceAfterSubsidy', label: '补贴后价格', visible: true, width: 200 },
+          { props: 'subsidyAmount', label: '补贴金额', visible: true, width: 200 },
+          { props: 'deposit', label: '定金', visible: true, width: 200 },
+          { props: 'vehiclePrice', label: '整车价格', visible: true, width: 200 },
+          { props: 'priceCompareLabel', label: '价格对比', visible: true, width: 200 },
+          { props: 'allowConfigChangeLabel', label: '允许改配', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'startTime', label: '开始日期', visible: true, width: 200 },
           { props: 'endTime', label: '截止日期', visible: true, width: 200 },
-          { props: 'description', label: '描述（最多100字符）', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系名', visible: true, width: 200 },
-          { props: 'modelName', label: '车型名称', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
+          { props: 'description', label: '描述', visible: true, width: 200 },
+          { props: 'seriesName', label: '车系', visible: true, width: 200 },
+          { props: 'modelName', label: '车型', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建者', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
-          { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
+          // { props: 'modifierName', label: '修改者', visible: true, width: 200 },
+          { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
@@ -369,7 +321,7 @@ export default {
               name: '编辑',
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehretail/productManager/edit',
+                  path: '/vehretail/productManager/productCenter/edit',
                   query: {
                     id: row.id
                   }
@@ -417,7 +369,7 @@ export default {
     },
     handleAdd () {
       this.$router.push({
-        path: '/vehretail/productManager/edit'
+        path: '/vehretail/productManager/productSkuPrice/edit'
       });
     },
     onSubmit () {
@@ -521,6 +473,20 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
+      // if (this.form.createTime) {
+      //   delete data.createTime;
+      //   if (this.form.createTime.length > 1) {
+      //     data.createTimeStart = this.form.createTime[0];
+      //     data.createTimeEnd = this.form.createTime[1];
+      //   }
+      // }
+      // if (this.form.createTime) {
+      //   delete data.createTime;
+      //   if (this.form.createTime.length > 1) {
+      //     data.createTimeStart = this.form.createTime[0];
+      //     data.createTimeEnd = this.form.createTime[1];
+      //   }
+      // }
 
       return data;
     },

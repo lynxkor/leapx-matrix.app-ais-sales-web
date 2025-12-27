@@ -1,6 +1,6 @@
 <template>
   <!-- TIPS: 如果填写项大于15项，使用类名page-common-edit替换page-common-add -->
-  <div class="page-common-add">
+  <div class="page-common-edit">
     <el-container>
       <el-main>
         <section class="common-section">
@@ -10,12 +10,13 @@
           <div class="common-section-body">
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-            <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
-              <el-form-item label="商品价格编码（系统自动生成，前缀SKU）" prop="skuPriceCode">
+            <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" inline>
+              <el-form-item label="商品价格编码" prop="skuPriceCode">
                 <el-input
                   placeholder="请输入"
                   v-model="form.skuPriceCode"
                   clearable
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="SKU编码" prop="skuCode">
@@ -23,6 +24,7 @@
                   placeholder="请输入"
                   v-model="form.skuCode"
                   clearable
+                  :disabled="!!_id"
                 />
               </el-form-item>
               <el-form-item label="关联商品编码" prop="productCode">
@@ -30,137 +32,110 @@
                   placeholder="请输入"
                   v-model="form.productCode"
                   clearable
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="物料编码" prop="materialsCode">
-                <el-input
+                <fetch-select
+                  v-model="form.materialsCode"
+                  placeholder="请选择"
+                  optionKey="id"
+                  labelKey="materialsCode"
+                  valueKey="materialsCode"
+                  :remoteMethod="repairItemSearch"
+                  @change="materialsSelect"
+                  remote
+                  clearable
+                  filterable/>
+                <!-- <el-input
                   placeholder="请输入"
                   v-model="form.materialsCode"
                   clearable
-                />
+                /> -->
               </el-form-item>
-              <el-form-item label="物料描述" prop="materialsDesc">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.materialsDesc"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="购车类型（1-个人，2-企业）" prop="purchaseTypeLabel">
+              <el-form-item label="购车类型" prop="purchaseType">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.purchaseTypeLabel"
+                  enumCode="purchase_type_pc"
+                  v-model="form.purchaseType"
                   placeholder="请选择"
                   clearable
+                  multiple
                   filterable
                 />
               </el-form-item>
-              <el-form-item label="补贴前价格（保留两位小数）" prop="priceBeforeSubsidy">
-                <el-input
+              <el-form-item label="补贴前价格" prop="priceBeforeSubsidy">
+                <el-input-number placeholder="请输入" v-model="form.priceBeforeSubsidy" clearable :controls="false"
+                  :precision="2" :min="0.00" :step="0.01"/>
+                <!-- <el-input
                   placeholder="请输入"
                   v-model="form.priceBeforeSubsidy"
                   clearable
-                />
+                /> -->
               </el-form-item>
-              <el-form-item label="补贴后价格（保留两位小数，&#x3D;补贴前-补贴金额）" prop="priceAfterSubsidy">
+              <el-form-item label="补贴金额" prop="subsidyAmount">
+                <el-input-number placeholder="请输入" v-model="form.subsidyAmount" clearable :controls="false"
+                  :precision="2" :min="0.00" :step="0.01"/>
+                <!-- <el-input
+                  placeholder="请输入"
+                  v-model="form.subsidyAmount"
+                  clearable
+                /> -->
+              </el-form-item>
+              <el-form-item label="补贴后价格" prop="priceAfterSubsidy">
                 <el-input
                   placeholder="请输入"
                   v-model="form.priceAfterSubsidy"
                   clearable
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="补贴金额（保留两位小数）" prop="subsidyAmount">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.subsidyAmount"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="定金（保留两位小数）" prop="deposit">
-                <el-input
+              <el-form-item label="定金" prop="deposit">
+                <el-input-number placeholder="请输入" v-model="form.deposit" clearable :controls="false"
+                :precision="2" :min="0.00" :step="0.01"/>
+                <!-- <el-input
                   placeholder="请输入"
                   v-model="form.deposit"
                   clearable
-                />
+                /> -->
               </el-form-item>
-              <el-form-item label="整车价格（关联物料编码）" prop="vehiclePrice">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.vehiclePrice"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="价格对比（1-一致，2-不一致，自动计算）" prop="priceCompareLabel">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.priceCompareLabel"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="允许改配（1-是，0-否，默认否）" prop="allowConfigChange">
-                <el-input
+              <el-form-item label="允许改配" prop="allowConfigChange">
+                <fetch-select :options="yes_no_enum" v-model="form.allowConfigChange" placeholder="请选择" clearable  />
+                <!-- <el-input
                   placeholder="请输入"
                   v-model="form.allowConfigChange"
                   clearable
-                />
+                /> -->
               </el-form-item>
-              <el-form-item label="状态（1-可用，0-停用，默认1-可用）" prop="statusLabel">
+              <el-form-item label="状态" prop="statusLabel">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.statusLabel"
+                  enumCode="StatusEnum"
+                  v-model="form.status"
                   placeholder="请选择"
                   clearable
-                  filterable
                 />
               </el-form-item>
               <el-form-item label="开始日期" prop="startTime">
                 <el-date-picker
-                  :default-time="['00:00:00', '23:59:59']"
+                  type="datetime"
                   v-model="form.startTime"
-                  :picker-options="pickerOptions"
                   value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
                 />
               </el-form-item>
               <el-form-item label="截止日期" prop="endTime">
                 <el-date-picker
-                  :default-time="['00:00:00', '23:59:59']"
+                  type="datetime"
                   v-model="form.endTime"
-                  :picker-options="pickerOptions"
                   value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
                 />
               </el-form-item>
-              <el-form-item label="描述（最多100字符）" prop="description">
+              <el-form-item label="描述" prop="description">
                 <el-input
                   placeholder="请输入"
                   v-model="form.description"
                   clearable
-                />
-              </el-form-item>
-              <el-form-item label="车系名" prop="seriesName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.seriesName"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="车型名称" prop="modelName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modelName"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="创建者名称" prop="creatorName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.creatorName"
-                  clearable
+                  maxlength="100"
                 />
               </el-form-item>
               <el-form-item label="创建时间" prop="createTime">
@@ -171,13 +146,7 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                />
-              </el-form-item>
-              <el-form-item label="修改者名称" prop="modifierName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modifierName"
-                  clearable
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="修改时间" prop="updateTime">
@@ -188,113 +157,15 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                />
-              </el-form-item>
-              <el-form-item label="主键" prop="id">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.id"
-                  clearable
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="创建者" prop="creator">
                 <el-input
                   placeholder="请输入"
-                  v-model="form.creator"
+                  v-model="form.creatorName"
                   clearable
-                />
-              </el-form-item>
-              <el-form-item label="修改者" prop="modifier">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modifier"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="备注" prop="remark">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.remark"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="状态（1-可用，0-停用，默认1-可用）" prop="status">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.status"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                />
-              </el-form-item>
-              <el-form-item label="状态变更描述" prop="statusDesc">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.statusDesc"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                />
-              </el-form-item>
-              <el-form-item label="关联商品信息主键id" prop="productId">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.productId"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="物料主数据主键id" prop="vehicleMaterialsId">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.vehicleMaterialsId"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="车系ID" prop="seriesId">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.seriesId"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="车型ID" prop="modelId">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modelId"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="购车类型（1-个人，2-企业）" prop="purchaseType">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.purchaseType"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                />
-              </el-form-item>
-              <el-form-item label="允许改配（1-是，0-否，默认否）" prop="allowConfigChangeLabel">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.allowConfigChangeLabel"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="价格对比（1-一致，2-不一致，自动计算）" prop="priceCompare">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.priceCompare"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="数据来源，150-新销服; 10-老销服" prop="dataSource">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.dataSource"
-                  clearable
+                  disabled
                 />
               </el-form-item>
             </el-form>
@@ -318,6 +189,8 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import moment from 'moment';
+import { getList } from '@/api/datacenter/materials/vehicleMaterials/index';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -326,7 +199,7 @@ const defaultForm = {
   productCode: '',
   materialsCode: '',
   materialsDesc: '',
-  purchaseTypeLabel: '',
+  purchaseType: '',
   priceBeforeSubsidy: '',
   priceAfterSubsidy: '',
   subsidyAmount: '',
@@ -354,7 +227,6 @@ const defaultForm = {
   vehicleMaterialsId: '',
   seriesId: '',
   modelId: '',
-  purchaseType: '',
   allowConfigChangeLabel: '',
   priceCompare: '',
   dataSource: '',
@@ -379,6 +251,18 @@ export default {
     }
   },
   watch: {
+    'form.priceBeforeSubsidy': {
+      handler (newVal) {
+        this.calculatePriceAfterSubsidy();
+      },
+      immediate: true
+    },
+    'form.subsidyAmount': {
+      handler (newVal) {
+        this.calculatePriceAfterSubsidy();
+      },
+      immediate: true
+    },
     id: {
       handler (val) {
         if (val) {
@@ -391,10 +275,10 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '销售管理-商品管理-商品SKU价格维护管理',
+      pageTitle: '销售管理-商品管理-商品SKU价格维护',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-productManager',
+      moduleKey: 'AISVR-productSkuPrice',
       isEditing: false,
       loading: false,
       submitLoading: false,
@@ -403,7 +287,7 @@ export default {
       originalForm: { ...form },
       rules: {
         skuPriceCode: [
-          { required: true, message: '请输入商品价格编码（系统自动生成，前缀SKU）', trigger: 'change' }
+          { required: true, message: '请输入商品价格编码', trigger: 'change' }
         ],
         skuCode: [
           { required: true, message: '请输入SKU编码', trigger: 'change' }
@@ -417,32 +301,32 @@ export default {
         materialsDesc: [
           { required: true, message: '请输入物料描述', trigger: 'change' }
         ],
-        purchaseTypeLabel: [
-          { required: true, message: '请选择购车类型（1-个人，2-企业）', trigger: 'change' }
+        purchaseType: [
+          { required: true, message: '请选择购车类型）', trigger: 'change' }
         ],
         priceBeforeSubsidy: [
-          { required: true, message: '请输入补贴前价格（保留两位小数）', trigger: 'change' }
+          { required: true, message: '请输入补贴前价格', trigger: 'change' }
         ],
         priceAfterSubsidy: [
-          { required: true, message: '请输入补贴后价格（保留两位小数，&#x3D;补贴前-补贴金额）', trigger: 'change' }
+          { required: true, message: '请输入补贴后价格', trigger: 'change' }
         ],
         subsidyAmount: [
-          { required: true, message: '请输入补贴金额（保留两位小数）', trigger: 'change' }
+          { required: true, message: '请输入补贴金额', trigger: 'change' }
         ],
         deposit: [
-          { required: true, message: '请输入定金（保留两位小数）', trigger: 'change' }
+          { required: true, message: '请输入定金', trigger: 'change' }
         ],
         vehiclePrice: [
-          { required: true, message: '请输入整车价格（关联物料编码）', trigger: 'change' }
+          { required: true, message: '请输入整车价格', trigger: 'change' }
         ],
         priceCompareLabel: [
-          { required: true, message: '请输入价格对比（1-一致，2-不一致，自动计算）', trigger: 'change' }
+          { required: true, message: '请输入价格对比', trigger: 'change' }
         ],
         allowConfigChange: [
-          { required: true, message: '请输入允许改配（1-是，0-否，默认否）', trigger: 'change' }
+          { required: true, message: '请输入允许改配', trigger: 'change' }
         ],
         statusLabel: [
-          { required: true, message: '请选择状态（1-可用，0-停用，默认1-可用）', trigger: 'change' }
+          { required: true, message: '请选择状态', trigger: 'change' }
         ],
         startTime: [
           { required: true, message: '请选择开始日期', trigger: 'change' }
@@ -451,7 +335,7 @@ export default {
           { required: true, message: '请选择截止日期', trigger: 'change' }
         ],
         description: [
-          { required: true, message: '请输入描述（最多100字符）', trigger: 'change' }
+          { required: true, message: '请输入描述', trigger: 'change' }
         ],
         seriesName: [
           { required: true, message: '请输入车系名', trigger: 'change' }
@@ -484,7 +368,7 @@ export default {
           { required: true, message: '请输入备注', trigger: 'change' }
         ],
         status: [
-          { required: true, message: '请选择状态（1-可用，0-停用，默认1-可用）', trigger: 'change' }
+          { required: true, message: '请选择状态', trigger: 'change' }
         ],
         statusDesc: [
           { required: true, message: '请选择状态变更描述', trigger: 'change' }
@@ -501,17 +385,14 @@ export default {
         modelId: [
           { required: true, message: '请输入车型ID', trigger: 'change' }
         ],
-        purchaseType: [
-          { required: true, message: '请选择购车类型（1-个人，2-企业）', trigger: 'change' }
-        ],
         allowConfigChangeLabel: [
-          { required: true, message: '请输入允许改配（1-是，0-否，默认否）', trigger: 'change' }
+          { required: true, message: '请输入允许改配', trigger: 'change' }
         ],
         priceCompare: [
-          { required: true, message: '请输入价格对比（1-一致，2-不一致，自动计算）', trigger: 'change' }
+          { required: true, message: '请输入价格对比', trigger: 'change' }
         ],
         dataSource: [
-          { required: true, message: '请输入数据来源，150-新销服; 10-老销服', trigger: 'change' }
+          { required: true, message: '请输入数据来源', trigger: 'change' }
         ],
       }
     };
@@ -520,6 +401,16 @@ export default {
     this.getDetailData();
   },
   methods: {
+    materialsSelect () {},
+    repairItemSearch (query) { return getList({ nammaterialsCodeLikeeLike: query, size: 20, status: 1 }); },
+    calculatePriceAfterSubsidy () {
+      const { priceBeforeSubsidy, subsidyAmount } = this.form;
+      if (typeof priceBeforeSubsidy === 'number' && typeof subsidyAmount === 'number') {
+        this.form.priceAfterSubsidy = (priceBeforeSubsidy - subsidyAmount).toFixed(2);
+      } else {
+        this.form.priceAfterSubsidy = null; // 如果输入无效，清空补贴后价格
+      }
+    },
     handleBack () {
       this.$router.back();
     },
@@ -564,11 +455,13 @@ export default {
     },
     getDefautlForm () {
       // TIPS: 此处可添加表单默认值，如当前用户信息等
-      // const userInfo = this.$store.state.user.userInfo;
+      const userInfo = this.$store.state.user.userInfo;
       return {
-        ...defaultForm
-        // ownerId: userInfo.userId,
-        // ownerName: userInfo.userName,
+        ...defaultForm,
+        creator: userInfo.userId,
+        creatorName: userInfo.userName,
+        status: 1,
+        createTime: moment().format('YYYY-MM-DD HH:mm:ss')
       };
     },
     // 审核日志
@@ -584,3 +477,8 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+  ::v-deep .el-input-number {
+    width: 100%;
+  }
+</style>

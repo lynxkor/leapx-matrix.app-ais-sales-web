@@ -131,7 +131,7 @@ const defaultForm = {
   createTime: '',
   modifier: '',
   modifierName: '',
-  id: '',
+  id: null,
   creator: '',
   updateTime: '',
   statusDesc: '',

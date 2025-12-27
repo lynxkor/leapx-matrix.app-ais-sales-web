@@ -9,7 +9,7 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="商品编码（系统自动生成：类型编号+6位流水号）">
+      <el-form-item label="商品编码">
         <el-input
           placeholder="请输入"
           v-model="form.productCode"
@@ -23,11 +23,11 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="商品类型（1-整车，2-整车选装件，3-充电桩&#x2F;枪，4-备件，5-工时，6-卡券类，7-业务办理，8-施工，9-预约类）"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="商品状态"  v-show="this.visibleCount === 3 || show">
         <fetch-select
           :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.productType"
+          enumCode="product_status"
+          v-model="form.productStatus"
           placeholder="请选择"
           clearable
           multiple
@@ -35,36 +35,6 @@
         />
       </el-form-item>
       <template v-if="show">
-        <el-form-item label="购车类型（1-C端用户，2-员工，3-试乘试驾&#x2F;展车）">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.purchaseType"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
-          />
-        </el-form-item>
-        <el-form-item label="创建者">
-          <el-input
-            placeholder="请输入"
-            v-model="form.creator"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="修改时间">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.updateTime"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
-        </el-form-item>
         <el-form-item label="创建时间">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
@@ -75,17 +45,6 @@
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-          />
-        </el-form-item>
-        <el-form-item label="商品状态（1-新建，2-上架，3-下架）">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.productStatus"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
           />
         </el-form-item>
       </template>
@@ -179,7 +138,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '销售管理-商品管理-商品中心管理',
+      pageTitle: '销售管理-商品管理-商品中心',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-productInfo',
@@ -203,7 +162,7 @@ export default {
         dataProp: [
           {
             props: 'productCode',
-            label: '商品编码（系统自动生成：类型编号+6位流水号）',
+            label: '商品编码',
             visible: true,
             width: 200,
             fixed: 'left',
@@ -220,12 +179,12 @@ export default {
             }]
           },
           { props: 'productName', label: '商品名称', visible: true, width: 200 },
-          { props: 'productType', label: '商品类型（1-整车，2-整车选装件，3-充电桩&#x2F;枪，4-备件，5-工时，6-卡券类，7-业务办理，8-施工，9-预约类）', visible: true, width: 200 },
-          { props: 'purchaseType', label: '购车类型（1-C端用户，2-员工，3-试乘试驾&#x2F;展车）', visible: true, width: 200 },
-          { props: 'creator', label: '创建者', visible: true, width: 200 },
+          { props: 'productTypeLabel', label: '商品类型', visible: true, width: 200 },
+          { props: 'purchaseTypeLabel', label: '购车类型', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建者', visible: true, width: 200 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'productStatus', label: '商品状态（1-新建，2-上架，3-下架）', visible: true, width: 200 },
+          { props: 'productStatusLabel', label: '商品状态', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
