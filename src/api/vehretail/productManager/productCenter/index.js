@@ -42,3 +42,27 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 订购属性 新增/编辑
+ * @param {Object} data
+ */
+export function productSaleAttributeAddOrUpdate (data) {
+  return api.jsonPost('vr/web/product/productSaleAttribute/addOrUpdate', data);
+}
+
+/**
+ * 订购属性 删除
+ * @param {Object} data
+ */
+export function productSaleAttributeDelete (data) {
+  return api.jsonPost('vr/web/product/productSaleAttribute/delete', data);
+}
+
+/**
+ * 订购属性 删除
+ * @param {Object} data
+ */
+export function productSaleAttributePage (data) {
+  return api.jsonPost('vr/web/product/productSaleAttribute/page', data);
+}

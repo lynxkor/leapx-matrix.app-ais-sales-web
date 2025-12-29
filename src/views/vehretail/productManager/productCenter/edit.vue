@@ -1,179 +1,204 @@
 <template>
-  <!-- TIPS: 如果填写项大于15项，使用类名page-common-edit替换page-common-add -->
-  <div class="page-common-edit">
-    <el-container>
-      <el-main>
-        <section class="common-section">
-          <div class="common-section-header">
-            <h2>基础信息</h2>
-          </div>
-          <div class="common-section-body">
-            <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
-            <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-            <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" inline>
-              <el-form-item label="商品编码" prop="productCode">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.productCode"
-                  clearable
-                  disabled
-                />
-              </el-form-item>
-              <el-form-item label="商品名称" prop="productName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.productName"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="商品类型" prop="productType">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="vr_product_type"
-                  v-model="form.productType"
-                  placeholder="请选择"
-                  clearable
-                  disabled
-                />
-              </el-form-item>
-              <el-form-item label="购车类型" prop="purchaseType">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="purchase_type_app"
-                  v-model="form.purchaseType"
-                  placeholder="请选择"
-                  clearable
-                  disabled
-                />
-              </el-form-item>
-              <el-form-item label="商品状态" prop="productStatus">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="product_status"
-                  v-model="form.productStatus"
-                  placeholder="请选择"
-                  clearable
-                  disabled
-                />
-              </el-form-item> <el-form-item label="是否需要支付" prop="needPayStatus">
-                <fetch-select
-                   :options="yes_no_enum"
-                  v-model="form.needPayStatus"
-                  placeholder="请选择"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="支付方式" prop="payMethod">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="pay_method"
-                  v-model="form.payMethod"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                />
-              </el-form-item>
-              <el-form-item label="支付定金金额" prop="depositAmount">
-                <el-input-number placeholder="请输入" v-model="form.depositAmount" clearable :controls="false"
-                :precision="2" :min="0.00" :step="0.01"/>
-                <!-- <el-input
-                  placeholder="请输入"
-                  v-model="form.depositAmount"
-                  clearable
-                /> -->
-              </el-form-item>
-              <el-form-item label="是否需要支付定金" prop="needDepositStatus">
-                <fetch-select
-                   :options="yes_no_enum"
-                  v-model="form.needDepositStatus"
-                  placeholder="请选择"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="简介" prop="introduction">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.introduction"
-                  clearable
-                  maxlength="100"
-                />
-              </el-form-item>
-              <el-form-item label="描述" prop="description">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.description"
-                  clearable
-                  maxlength="100"
-                />
-              </el-form-item>
-              <el-form-item label="创建者" prop="creator">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.creatorName"
-                  clearable
-                  disabled
-                />
-              </el-form-item>
-              <el-form-item label="创建时间" prop="createTime">
-                <el-date-picker
-                  :default-time="['00:00:00', '23:59:59']"
-                  v-model="form.createTime"
-                  :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  disabled
-                />
-              </el-form-item>
-              <el-form-item label="修改时间" prop="updateTime">
-                <el-date-picker
-                  :default-time="['00:00:00', '23:59:59']"
-                  v-model="form.updateTime"
-                  :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  disabled
-                />
-              </el-form-item>
+  <edit-page-layout ref="editLayout" :title="pannelTitle" :width="40">
+    <template #left>
+      <!-- TIPS: 如果填写项大于15项，使用类名page-common-edit替换page-common-add -->
+      <div class="page-common-edit">
+        <el-container>
+          <el-main>
+            <section class="common-section">
+              <div class="common-section-header">
+                <h2>基础信息</h2>
+              </div>
+              <div class="common-section-body">
+                <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
+                <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
+                <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" inline>
+                  <el-form-item label="商品编码">
+                    <el-input
+                      placeholder="请输入"
+                      v-model="form.productCode"
+                      clearable
+                      disabled
+                    />
+                  </el-form-item>
+                  <el-form-item label="商品名称" prop="productName">
+                    <el-input
+                      placeholder="请输入"
+                      v-model="form.productName"
+                      clearable
+                    />
+                  </el-form-item>
+                  <el-form-item label="商品类型" prop="productType">
+                    <fetch-select
+                      :request="fetchOptions"
+                      enumCode="vr_product_type"
+                      v-model="form.productType"
+                      placeholder="请选择"
+                      clearable
+                      disabled
+                    />
+                  </el-form-item>
+                  <el-form-item label="购车类型" prop="purchaseType">
+                    <fetch-select
+                      :request="fetchOptions"
+                      enumCode="purchase_type_app"
+                      v-model="form.purchaseType"
+                      placeholder="请选择"
+                      clearable
+                      disabled
+                    />
+                  </el-form-item>
+                  <el-form-item label="商品状态" prop="productStatus">
+                    <fetch-select
+                      :request="fetchOptions"
+                      enumCode="product_status"
+                      v-model="form.productStatus"
+                      placeholder="请选择"
+                      clearable
+                      disabled
+                    />
+                  </el-form-item> <el-form-item label="是否需要支付" prop="needPayStatus">
+                    <fetch-select
+                      :options="yes_no_enum"
+                      v-model="form.needPayStatus"
+                      placeholder="请选择"
+                      clearable
+                    />
+                  </el-form-item>
+                  <el-form-item label="支付方式" prop="payMethod">
+                    <fetch-select
+                      :request="fetchOptions"
+                      enumCode="pay_method"
+                      v-model="form.payMethod"
+                      placeholder="请选择"
+                      clearable
+                      filterable
+                    />
+                  </el-form-item>
+                  <el-form-item label="支付定金金额" prop="depositAmount">
+                    <el-input-number placeholder="请输入" v-model="form.depositAmount" clearable :controls="false"
+                    :precision="2" :min="0.00" :step="0.01"/>
+                    <!-- <el-input
+                      placeholder="请输入"
+                      v-model="form.depositAmount"
+                      clearable
+                    /> -->
+                  </el-form-item>
+                  <el-form-item label="是否需要支付定金" prop="needDepositStatus">
+                    <fetch-select
+                      :options="yes_no_enum"
+                      v-model="form.needDepositStatus"
+                      placeholder="请选择"
+                      clearable
+                    />
+                  </el-form-item>
+                  <el-form-item label="简介" prop="introduction">
+                    <el-input
+                      placeholder="请输入"
+                      v-model="form.introduction"
+                      clearable
+                      maxlength="100"
+                    />
+                  </el-form-item>
+                  <el-form-item label="描述" prop="description">
+                    <el-input
+                      placeholder="请输入"
+                      v-model="form.description"
+                      clearable
+                      maxlength="100"
+                    />
+                  </el-form-item>
+                  <el-form-item label="创建者" prop="creator">
+                    <el-input
+                      placeholder="请输入"
+                      v-model="form.creatorName"
+                      clearable
+                      disabled
+                    />
+                  </el-form-item>
+                  <el-form-item label="创建时间" prop="createTime">
+                    <el-date-picker
+                      :default-time="['00:00:00', '23:59:59']"
+                      v-model="form.createTime"
+                      :picker-options="pickerOptions"
+                      value-format="yyyy-MM-dd HH:mm:ss"
+                      start-placeholder="开始日期"
+                      end-placeholder="结束日期"
+                      disabled
+                    />
+                  </el-form-item>
+                  <el-form-item label="修改时间">
+                    <el-date-picker
+                      :default-time="['00:00:00', '23:59:59']"
+                      v-model="form.updateTime"
+                      :picker-options="pickerOptions"
+                      value-format="yyyy-MM-dd HH:mm:ss"
+                      start-placeholder="开始日期"
+                      end-placeholder="结束日期"
+                      disabled
+                    />
+                  </el-form-item>
 
-            </el-form>
-          </div>
-        </section>
-        <section class="common-section">
-          <div class="common-section-header">
-            <h2>订购属性</h2>
-            <!-- <el-button v-if="canAddOrUpdate" size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
-            <el-button size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-          </div>
-          <div class="common-section-body">
-            <div class="common-section-table">
-              <edit-table
-                ref="editTable"
-                :columns="columns"
-                :data="tableData"
-                :defaultNewRow="defaultNewRow"
-                :show-toolbar="false"
-                :options="options"
-                :auth="{edit: canAddOrUpdate, delete: canDelete}"
-              />
-            </div>
-          </div>
-        </section>
-        <section class="common-section">
-          <div class="common-section-header">
-            <h2>商品定价</h2>
-          </div>
-          <div class="common-section-body"></div>
-        </section>
-      </el-main>
-      <el-footer height="60px">
-        <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
-        <el-button size="small" @click="handleBack">取消</el-button>
-        <!-- <el-button size="small" @click="handleJumpAuditLog">审核日志</el-button> -->
-      </el-footer>
-    </el-container>
-  </div>
+                </el-form>
+              </div>
+            </section>
+            <section class="common-section"  v-if="_id">
+              <div class="common-section-header">
+                <h2>订购属性</h2>
+                <!-- <el-button v-if="canAddOrUpdate" size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
+                <el-button size="small" @click="handleAddRow('attributeable')"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
+              </div>
+              <div class="common-section-body">
+                <div class="common-section-table">
+                  <attributeable-table
+                      :moduleKey="moduleKey"
+                      ref="attributeable"
+                      :id="id"
+                      @replace="onReplace" />
+                  <!-- <edit-table
+                    ref="attributeable"
+                    :columns="attributeColumns"
+                    :data="tableData"
+                    :defaultNewRow="defaultNewRow"
+                    :enableSingleRowSave="true"
+                    :show-toolbar="false"
+                    :options="options"
+                    :auth="{edit: canAddOrUpdate, delete: canDelete}"
+                  /> -->
+                </div>
+              </div>
+            </section>
+            <section class="common-section"  v-if="_id">
+              <div class="common-section-header">
+                <h2>商品定价</h2>
+                <el-button size="small" @click="handleAddRow('pricingTable')"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
+                <el-button size="small" @click="onReplace"><i class="iconfont icon-lxppc-plus"></i>开</el-button>
+              </div>
+              <div class="common-section-body">
+                <edit-table
+                  ref="pricingTable"
+                  :columns="pricingColumns"
+                  :data="tableData"
+                  :defaultNewRow="defaultNewRow"
+                  :show-toolbar="false"
+                  :options="options"
+                  :auth="{edit: canAddOrUpdate, delete: canDelete}"
+                />
+              </div>
+            </section>
+          </el-main>
+          <el-footer height="60px" v-if="!_id">
+            <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
+            <el-button size="small" @click="handleBack">取消</el-button>
+            <!-- <el-button size="small" @click="handleJumpAuditLog">审核日志</el-button> -->
+          </el-footer>
+        </el-container>
+      </div>
+    </template>
+    <template #right>
+      <div class="page-common-edit">000000</div>
+    </template>
+  </edit-page-layout>
 </template>
 
 <script>
@@ -186,6 +211,8 @@ import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import moment from 'moment';
 import EditTable from '@/libs/components/EditTable';
+import EditPageLayout from '@/libs/components/EditPageLayout';
+import attributeableTable from './attributeable.vue';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -227,6 +254,8 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
+    attributeableTable,
+    EditPageLayout,
     FetchSelect,
     EditTable
   },
@@ -248,47 +277,106 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
+      options: {
+      },
+      pannelTitle: '',
       defaultNewRow: {
         yearTypeName: ''
       },
       tableData: [],
       // TIPS: 复杂的表格输入项，参考 /dealerTeam/edit.vue
-      columns: [
+      attributeColumns: [
         {
-          field: 'yearTypeName',
-          title: '年型名称',
+          field: 'attributeSort',
+          title: '属性序号',
           width: '20%',
           editable: true,
           editRender: {
-            name: 'ElSelect',
+            name: 'ElInputNumber',
             props: {
-              clearable: true,
-              filterable: true,
-              remote: true,
-              'suffix-icon': 'el-icon-search',
-              placeholder: '请选择年款',
-              'remote-method': this.querySearchYear
+              controls: false,
+              precision: 0,
+              min: 1,
+              step: 1,
             }
           },
           rules: [
             {
               required: true,
-              message: '年型名称不能为空',
+              message: '属性序号不能为空',
               trigger: 'blur'
             }
           ]
         },
         {
-          field: 'creatorName',
-          title: '创建人',
-          editable: false,
+          field: 'attributeName',
+          title: '属性名称',
+          editable: true,
           width: '30%',
-          editRender: { name: 'ElInput', props: { type: 'number' } }
+          editRender: {
+            name: 'ElInput',
+            props: {
+              maxlength: 30,
+              placeholder: '请输入属性名称',
+              clearable: true
+            },
+          },
+          rules: [
+            {
+              required: true,
+              message: '属性名称不能为空',
+              trigger: 'blur'
+            }
+          ]
+        },
+        {
+          field: 'attributeValue',
+          title: '属性值',
+          editable: true,
+          width: '33%',
+          editRender: {
+            name: 'ElInput',
+            props: {
+              maxlength: 30,
+              placeholder: '请输入属性名称',
+              clearable: true
+            }
+          },
+          rules: [
+            {
+              required: true,
+              message: '属性名称不能为空',
+              trigger: 'blur'
+            }
+          ]
+        },
+      ],
+      pricingColumns: [
+        {
+          field: 'yearTypeName',
+          title: 'SKU编码',
+          width: '25%',
+          editable: false,
+        },
+        {
+          field: 'creatorName',
+          title: '销售属性',
+          editable: true,
+          width: '25%',
+          editRender: { name: 'ElInput' }
         },
         {
           field: 'createTime',
-          title: '创建时间',
-          // width: '33%',
+          title: '市场指导价',
+          editable: true,
+          width: '25%',
+          editRender: { name: 'ElInput' }
+        },
+        {
+          field: 'createTime1',
+          title: '物料编码',
+          editable: true,
+          width: '25%',
           editRender: { name: 'ElInput' }
         },
       ],
@@ -385,10 +473,13 @@ export default {
     this.getDetailData();
   },
   methods: {
+    onReplace () {
+      this.$refs.editLayout.openPane();
+    },
     // 详情表格相关数据
-    handleAddRow () {
+    handleAddRow (type) {
       // 通过引用直接调用子组件方法
-      this.$refs.editTable.addRow();
+      this.$refs[type].addRow();
     },
     handleBack () {
       this.$router.back();
@@ -399,7 +490,7 @@ export default {
         this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销售管理-商品管理-商品中心管理', `${id ? '详情' : '新建'}`]);
       }
       if (id) {
-        getDetail(id).then(res => {
+        getDetail({ productId: id }).then(res => {
           this.loading = false;
           Object.assign(this.form, res);
           Object.assign(this.originalForm, res);
@@ -418,6 +509,12 @@ export default {
             const id = this.$route.query.id;
             if (rest || !id) {
               this.resetForm(formName);
+              // 获取新增的 id
+              const currentPath = this.$route.path;
+              this.$router.push({
+                path: currentPath,
+                query: { id: res }
+              });
             } else {
               this.getDetailData();
             }
