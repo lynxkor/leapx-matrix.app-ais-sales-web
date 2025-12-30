@@ -20,25 +20,13 @@
     :actionWidth="200"
     :emptyText="_id ? '' : '新增后，即可添加'"
   >
-    <template #btn-middle="{ row, rowIndex }">
-      <el-button
-        type="text"
-        @click="onReplace(row, rowIndex)"
-        class="action-button btn-edit"
-        :class="{
-          'active': selectedRow.id === row.id,
-        }"
-        >
-        替换件
-      </el-button>
-    </template>
   </edit-table>
 </template>
 <script>
 import {
-  productSaleAttributePage, // 免保零件明细分页查询
-  productSaleAttributeAddOrUpdate, // 免保零件明细新增/编辑
-  productSaleAttributeDelete,
+  productSaleAttributePage, // 分页
+  productSaleAttributeAddOrUpdate, // 新增/编辑
+  productSaleAttributeDelete // 删除
 } from '@/api/vehretail/productManager/productCenter/index';
 import EditTable from '@/libs/components/EditTable';
 import permissions from '@/libs/mixins/permissions';
@@ -72,7 +60,7 @@ export default {
         partQuantity: '',
       },
       current: 1,
-      pageSize: 10,
+      pageSize: 20,
       total: 0,
       tableData: [],
       options: {
@@ -162,7 +150,7 @@ export default {
     // 表格数据
     getDetailPageApi () {
       productSaleAttributePage({
-        id: this._id,
+        productId: this._id,
         pageSize: this.pageSize,
         pageNum: this.current,
       }).then((res) => {
@@ -183,14 +171,18 @@ export default {
     },
     // 行保存
     saveRowEdit (row, defer) {
-      const parmas = {
-        id: row.id,
-        partId: row.partId, // 零件ID
-        partQuantity: row.partQuantity, // 零件数量
-      };
-      productSaleAttributeAddOrUpdate(parmas).then(id => {
+      // const parmas = {
+      //   id: row.id,
+      //   partId: row.partId, // 零件ID
+      //   partQuantity: row.partQuantity, // 零件数量
+      // };
+      console.log('row:', row);
+      // return;
+      productSaleAttributeAddOrUpdate(row).then(id => {
         defer.resolve(id);
         this.$message.success('更新成功');
+        this.getDetailPageApi();
+        this.$emit('replace');
       }).catch(e => {
         defer.reject();
       });

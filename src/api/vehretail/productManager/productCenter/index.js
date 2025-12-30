@@ -60,9 +60,49 @@ export function productSaleAttributeDelete (data) {
 }
 
 /**
- * 订购属性 删除
+ * 订购属性 分页
  * @param {Object} data
  */
 export function productSaleAttributePage (data) {
   return api.jsonPost('vr/web/product/productSaleAttribute/page', data);
+}
+
+/**
+ * 订购属性SKU 分页
+ * @param {Object} data
+ */
+export function productSkuPage (data) {
+  return api.jsonPost('vr/web/product/productSku/page', data);
+}
+
+/**
+ * 订购属性SKU 新增/编辑
+ * @param {Object} data
+ */
+export function productSkuAddOrUpdate (data) {
+  return api.jsonPost('vr/web/product/productSku/addOrUpdate', data);
+}
+
+/**
+ * 订购属性SKU 删除
+ * @param {Object} data
+ */
+export function productSkuDelete (data) {
+  return api.jsonPost('vr/web/product/productSku/delete', data);
+}
+
+/**
+ * 订购属性SKU 下拉
+ * @param {Object} data
+ */
+export function getSaleAttributeGroupList (data) {
+  return api.jsonPost('vr/web/product/productSku/getSaleAttributeGroupList', data);
+}
+
+/**
+ * 订购属性SKU 修改市场指导价
+ * @param {Object} data
+ */
+export function updateMarketGuidePrice (data) {
+  return api.jsonPost('vr/web/product/productSku/updateMarketGuidePrice', data);
 }

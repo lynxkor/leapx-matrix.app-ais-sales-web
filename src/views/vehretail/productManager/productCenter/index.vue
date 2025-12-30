@@ -60,11 +60,14 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canImport" size="small" @click="handleImport('productInfoImport')">导入</el-button>
+      <el-button v-if="canImport" size="small" @click="handleImport('productSaleAttributeImport')">属性导入</el-button>
+      <el-button v-if="canImport" size="small" @click="handleImport('productSkuPriceImport')">商品定价导入</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">商品定价导出</el-button>
+      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -88,8 +91,9 @@
     </div>
     <!-- TIPS: 填入项目id即可 -->
     <Upload
+      v-if="uploadDialogVisible"
       :visible="uploadDialogVisible"
-      :id="1"
+      :id="currentImportType"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -138,6 +142,7 @@ export default {
   },
   data () {
     return {
+      currentImportType: '',
       pageTitle: '销售管理-商品管理-商品中心',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
@@ -235,7 +240,8 @@ export default {
     handleListSelect (row) {
       this.clickItemId = row.id;
     },
-    handleImport () {
+    handleImport (importType) {
+      this.currentImportType = importType;
       this.uploadDialogVisible = true;
     },
     handleUploadDialogClose () {

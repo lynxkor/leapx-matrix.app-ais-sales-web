@@ -146,44 +146,33 @@
               <div class="common-section-header">
                 <h2>订购属性</h2>
                 <!-- <el-button v-if="canAddOrUpdate" size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
-                <el-button size="small" @click="handleAddRow('attributeable')"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
+                <el-button size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
               </div>
               <div class="common-section-body">
                 <div class="common-section-table">
                   <attributeable-table
-                      :moduleKey="moduleKey"
-                      ref="attributeable"
-                      :id="id"
-                      @replace="onReplace" />
-                  <!-- <edit-table
+                    :moduleKey="moduleKey"
                     ref="attributeable"
-                    :columns="attributeColumns"
-                    :data="tableData"
-                    :defaultNewRow="defaultNewRow"
-                    :enableSingleRowSave="true"
-                    :show-toolbar="false"
-                    :options="options"
-                    :auth="{edit: canAddOrUpdate, delete: canDelete}"
-                  /> -->
+                    @replace="replace"
+                    :id="id" />
                 </div>
               </div>
             </section>
             <section class="common-section"  v-if="_id">
               <div class="common-section-header">
                 <h2>商品定价</h2>
-                <el-button size="small" @click="handleAddRow('pricingTable')"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-                <el-button size="small" @click="onReplace"><i class="iconfont icon-lxppc-plus"></i>开</el-button>
+                <div>
+                  <el-button size="small" @click="addReplace"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
+                  <el-button size="small" @click="updatePrice" :disabled="selection.length === 0">修改市场指导价</el-button>
+                </div>
               </div>
               <div class="common-section-body">
-                <edit-table
-                  ref="pricingTable"
-                  :columns="pricingColumns"
-                  :data="tableData"
-                  :defaultNewRow="defaultNewRow"
-                  :show-toolbar="false"
-                  :options="options"
-                  :auth="{edit: canAddOrUpdate, delete: canDelete}"
-                />
+                  <pricing-table
+                    :module-key="moduleKey"
+                    ref="pricing"
+                    :id="id"
+                    @replace="updateReplace"
+                    @checkboxChange="checkboxChange" />
               </div>
             </section>
           </el-main>
@@ -193,16 +182,44 @@
             <!-- <el-button size="small" @click="handleJumpAuditLog">审核日志</el-button> -->
           </el-footer>
         </el-container>
+        <el-dialog
+          width="300px"
+          title="请输入需要改市场指导价格"
+          :visible.sync="updatePriceShow"
+          append-to-body>
+            <div class="centered-input">
+              <el-input-number
+                placeholder="请输入"
+                v-model="entOrderQuota"
+                :min="0"
+                :step="0.01"
+                :precision="2"
+                :controls="false"
+              />
+            </div>
+          <div slot="footer" class="dialog-footer">
+            <el-button size="small" @click="entOrderQuotaCLose">取消</el-button>
+            <el-button size="small" type="primary" @click="entOrderQuotaSubmit">确定</el-button>
+          </div>
+        </el-dialog>
       </div>
     </template>
     <template #right>
-      <div class="page-common-edit">000000</div>
+      <div class="page-common-edit">
+        <pricing-form
+          ref="pricingForm"
+          :productCode="form.productCode"
+          :parms="rowParms"
+          @submit="pricingFormSubmit"
+          @cancel="pricingFormCancel"
+        />
+      </div>
     </template>
   </edit-page-layout>
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehretail/productManager/productCenter/index';
+import { getDetail, addOrUpdate, updateMarketGuidePrice } from '@/api/vehretail/productManager/productCenter/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -210,9 +227,11 @@ import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import moment from 'moment';
-import EditTable from '@/libs/components/EditTable';
+// import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import attributeableTable from './attributeable.vue';
+import pricingTable from './pricing.vue';
+import pricingForm from './pricingForm.vue';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -242,7 +261,14 @@ const defaultForm = {
   depositAmount: '',
   dataSource: '',
 };
-
+const rowParms = {
+  productCode: '',
+  saleAttribute: [],
+  marketGuidePrice: null,
+  materialsCode: '',
+  productId: '',
+  saleAttributeJson: ''
+};
 export default {
   name: 'productCenterEdit',
   // 集中视图预留
@@ -254,10 +280,11 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
+    pricingForm,
+    pricingTable,
     attributeableTable,
     EditPageLayout,
-    FetchSelect,
-    EditTable
+    FetchSelect
   },
   computed: {
     _id () {
@@ -276,7 +303,14 @@ export default {
   },
   data () {
     const form = this.getDefautlForm();
+    const rowParms = this.getRowParmsForm();
     return {
+      selection: [],
+      entOrderQuota: null,
+      updatePriceShow: false,
+      rowParms: {
+        ...rowParms
+      },
       options: {
       },
       pannelTitle: '',
@@ -284,73 +318,6 @@ export default {
         yearTypeName: ''
       },
       tableData: [],
-      // TIPS: 复杂的表格输入项，参考 /dealerTeam/edit.vue
-      attributeColumns: [
-        {
-          field: 'attributeSort',
-          title: '属性序号',
-          width: '20%',
-          editable: true,
-          editRender: {
-            name: 'ElInputNumber',
-            props: {
-              controls: false,
-              precision: 0,
-              min: 1,
-              step: 1,
-            }
-          },
-          rules: [
-            {
-              required: true,
-              message: '属性序号不能为空',
-              trigger: 'blur'
-            }
-          ]
-        },
-        {
-          field: 'attributeName',
-          title: '属性名称',
-          editable: true,
-          width: '30%',
-          editRender: {
-            name: 'ElInput',
-            props: {
-              maxlength: 30,
-              placeholder: '请输入属性名称',
-              clearable: true
-            },
-          },
-          rules: [
-            {
-              required: true,
-              message: '属性名称不能为空',
-              trigger: 'blur'
-            }
-          ]
-        },
-        {
-          field: 'attributeValue',
-          title: '属性值',
-          editable: true,
-          width: '33%',
-          editRender: {
-            name: 'ElInput',
-            props: {
-              maxlength: 30,
-              placeholder: '请输入属性名称',
-              clearable: true
-            }
-          },
-          rules: [
-            {
-              required: true,
-              message: '属性名称不能为空',
-              trigger: 'blur'
-            }
-          ]
-        },
-      ],
       pricingColumns: [
         {
           field: 'yearTypeName',
@@ -361,21 +328,21 @@ export default {
         {
           field: 'creatorName',
           title: '销售属性',
-          editable: true,
+          editable: false,
           width: '25%',
           editRender: { name: 'ElInput' }
         },
         {
           field: 'createTime',
           title: '市场指导价',
-          editable: true,
+          editable: false,
           width: '25%',
           editRender: { name: 'ElInput' }
         },
         {
           field: 'createTime1',
           title: '物料编码',
-          editable: true,
+          editable: false,
           width: '25%',
           editRender: { name: 'ElInput' }
         },
@@ -414,18 +381,6 @@ export default {
         ],
         productStatus: [
           { required: true, message: '请选择商品状态', trigger: 'change' }
-        ],
-        id: [
-          { required: true, message: '请输入主键', trigger: 'change' }
-        ],
-        creatorName: [
-          { required: true, message: '请输入创建者名称', trigger: 'change' }
-        ],
-        modifier: [
-          { required: true, message: '请输入修改者', trigger: 'change' }
-        ],
-        modifierName: [
-          { required: true, message: '请输入修改者名称', trigger: 'change' }
         ],
         remark: [
           { required: true, message: '请输入备注', trigger: 'change' }
@@ -473,13 +428,61 @@ export default {
     this.getDetailData();
   },
   methods: {
-    onReplace () {
+    checkboxChange (selection) {
+      this.selection = selection;
+    },
+    entOrderQuotaSubmit () {
+      let params = {
+        productSkuIds: this.selection.map(item => item.id),
+        marketGuidePrice: this.entOrderQuota
+      };
+      updateMarketGuidePrice(params).then(res => {
+        this.$message.success('指导价修改成功');
+        this.updatePriceShow = false;
+        this.entOrderQuota = null;
+        this.$refs.pricing.getDetailPageApi();
+      }).catch(() => {
+        this.updatePriceShow = false;
+      });
+    },
+    entOrderQuotaCLose () {
+      this.updatePriceShow = false;
+    },
+    pricingFormSubmit () {
+      this.$refs.pricing.getDetailPageApi();
+      this.$refs.editLayout.closePane();
+    },
+    pricingFormCancel () {
+      this.$refs.editLayout.closePane();
+      this.rowParms = this.getRowParmsForm();
+    },
+    updatePrice () {
+      this.updatePriceShow = true;
+    },
+    addReplace () {
+      this.rowParms = this.getRowParmsForm();
+      this.pannelTitle = '新增商品定价';
+      this.$refs.editLayout.openPane();
+      // this.$refs.pricingForm.openForm();
+    },
+    replace () {
+      this.$refs.pricingForm.openForm();
+    },
+    updateReplace (row) {
+      this.rowParms = row;
+      this.pannelTitle = '编辑商品定价';
       this.$refs.editLayout.openPane();
     },
     // 详情表格相关数据
-    handleAddRow (type) {
-      // 通过引用直接调用子组件方法
-      this.$refs[type].addRow();
+    handleAddRow () {
+      const newItem = {
+        productId: this.$route.query.id,
+        productCode: this.form.productCode,
+        attributeSort: '',
+        attributeName: '',
+        attributeValue: ''
+      };
+      this.$refs.attributeable.handleAdd(newItem);
     },
     handleBack () {
       this.$router.back();
@@ -494,6 +497,8 @@ export default {
           this.loading = false;
           Object.assign(this.form, res);
           Object.assign(this.originalForm, res);
+          this.$refs.attributeable.getDetailPageApi();
+          this.$refs.pricing.getDetailPageApi();
         });
       }
     },
@@ -528,6 +533,11 @@ export default {
       this.$refs[formName].resetFields();
       this.tableData = [];
       this.form = this.getDefautlForm();
+    },
+    getRowParmsForm () {
+      return {
+        ...rowParms
+      };
     },
     getDefautlForm () {
       // TIPS: 此处可添加表单默认值，如当前用户信息等

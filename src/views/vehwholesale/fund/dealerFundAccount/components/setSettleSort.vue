@@ -9,6 +9,12 @@
               ref="expandTable"
               :columns="columns"
               :data="tableData"
+              :auth="{
+                add: false,
+                edit: false,
+                delete: false,
+              }"
+              :dragSort=" true"
               :dynamicButtons="dynamicButtons"
               :show-toolbar="false"
             />
