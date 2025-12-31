@@ -10,7 +10,7 @@
       class="ais-search-form"
     >
       <el-form-item label="费用支持类型名称">
-           <tag-input v-model="form.feeSupportTypeNames" placeholder="请输入" />
+        <tag-input v-model="form.feeSupportTypeNames" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="费用支持类型编码">
         <el-input
@@ -203,6 +203,8 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
+      this.optionObj.form.page = 1;
+      this.optionObj.form.pageSize = pageSize;
       this.getData();
     },
     exportExcel () {

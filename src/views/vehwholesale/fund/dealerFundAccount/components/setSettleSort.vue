@@ -1,7 +1,7 @@
 <template>
   <el-dialog :title="title" width="1000px" :visible.sync="dialogVisible">
     <div class="page-common m-account-list">
-      <h3 class="header-title">母公司名称:{{ parentOrg.orgName }}</h3>
+      <h3 class="header-title">母公司名称:{{ dealerCompanyName }}</h3>
       <section class="common-section">
         <div class="common-section-body">
           <div class="common-section-table">
@@ -66,9 +66,8 @@ export default {
       type: String,
       default: ''
     },
-    parentOrg: {
-      type: Object,
-      default: () => ({})
+    dealerCompanyName: {
+      type: String
     }
   },
   components: {
@@ -90,6 +89,7 @@ export default {
       },
       columns: [
         { field: 'fundTypeLabel', title: '资金类型', width: 120 },
+        // { field: 'settleSort', title: '顺序', width: 120 },
         { field: 'financialOrganizationName', title: '金融机构', width: 120 },
         { field: 'availableBalance', title: '可用余额', width: 160 },
         { field: 'dealerCompanyName', title: '母公司名称', width: 260 },
@@ -171,7 +171,18 @@ export default {
       this.selectionList = [];
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
-          this.tableData = res.records;
+          // 检查 records 是否为空
+          if (!res.records || res.records.length === 0) {
+            this.tableData = [];
+            this.total = 0;
+            return;
+          }
+          // 对 records 进行排序
+          this.tableData = res.records.sort((a, b) => {
+            const settleSortA = a.settleSort !== null && a.settleSort !== '' ? Number(a.settleSort) : Infinity;
+            const settleSortB = b.settleSort !== null && b.settleSort !== '' ? Number(b.settleSort) : Infinity;
+            return settleSortA - settleSortB;
+          });
           this.total = res.total;
         }).finally(() => {
           this.loading = false;
@@ -202,7 +213,7 @@ export default {
         const settleSortItems = tableData.map((ele, index) => {
           return {
             id: ele.id,
-            settleSort: index
+            settleSort: index + 1
           };
         });
         setSettleSort({ settleSortItems: settleSortItems }).then(res => {

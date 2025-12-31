@@ -20,6 +20,7 @@
               {{ info.budgetItemCode  }}
             </el-form-item>
             <el-form-item label="状态：" prop="statusLabel">
+              {{  info.statusLabel  }}
             </el-form-item>
             <!-- <el-form-item label="状态变更描述：" prop="statusDesc">
               {{ info.statusDesc  }}

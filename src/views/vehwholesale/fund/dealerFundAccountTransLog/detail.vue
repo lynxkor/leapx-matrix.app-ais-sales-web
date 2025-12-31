@@ -8,7 +8,7 @@
       </section>
       <section class="common-section">
         <div class="common-section-header">
-          <h2>基础信息</h2>
+          <h2>账户信息</h2>
         </div>
         <div class="common-section-body">
           <el-form :inline="true" ref="ruleForm" label-width="140px">
@@ -20,7 +20,7 @@
               {{ info.dealerCompanyName  }}
             </el-form-item>
             <el-form-item label="资金类型：" prop="fundType">
-              {{ info.fundType  }}
+              {{ info.fundTypeLabel }}
             </el-form-item>
             <el-form-item label="金融机构：" prop="financialOrganizationId">
               {{ info.financialOrganizationName  }}
@@ -33,12 +33,12 @@
       </section>
       <section class="common-section">
         <div class="common-section-header">
-          <h2>基础信息</h2>
+          <h2>交易信息</h2>
         </div>
         <div class="common-section-body">
           <el-form :inline="true" ref="ruleForm" label-width="140px">
-            <el-form-item label="交易余额：" prop="availableBalance">
-              {{ info.availableBalance  }}
+            <el-form-item label="交易余额：" prop="transactionAmount">
+              {{ info.transactionAmount  }}
             </el-form-item>
             <el-form-item label="过账时间：" prop="transactionTime">
               {{ info.transactionTime  }}
