@@ -251,14 +251,14 @@ export default {
       this.$refs.componentsDialog.dialogshow(type);
     },
     setSettleSort () {
-      if (this.dealerCompanyName) {
-        this.$refs.setSettleSort.dialogshow();
-      } else {
-        this.$message({
-          message: '未查询该账号挂靠母公司',
-          type: 'warning'
-        });
-      }
+      // if (this.dealerCompanyName) {
+      this.$refs.setSettleSort.dialogshow();
+      // } else {
+      //   this.$message({
+      //     message: '未查询该账号挂靠母公司',
+      //     type: 'warning'
+      //   });
+      // }
     },
     onSubmit () {
       this.getData();
