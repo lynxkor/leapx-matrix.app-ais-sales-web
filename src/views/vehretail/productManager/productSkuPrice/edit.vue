@@ -60,8 +60,6 @@
                   v-model="form.purchaseType"
                   placeholder="请选择"
                   clearable
-                  multiple
-                  filterable
                 />
               </el-form-item>
               <el-form-item label="补贴前价格" prop="priceBeforeSubsidy">
@@ -302,7 +300,7 @@ export default {
           { required: true, message: '请输入物料描述', trigger: 'change' }
         ],
         purchaseType: [
-          { required: true, message: '请选择购车类型）', trigger: 'change' }
+          { required: true, message: '请选择购车类型', trigger: 'change' }
         ],
         priceBeforeSubsidy: [
           { required: true, message: '请输入补贴前价格', trigger: 'change' }

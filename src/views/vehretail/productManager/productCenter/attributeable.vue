@@ -6,7 +6,7 @@
     :defaultNewRow="defaultNewRow"
     :show-toolbar="false"
     :options="options"
-    :auth="{ edit: canAddOrUpdate, delete: canAddOrUpdate }"
+    :auth="tableType === 'detail' ? {} : { edit: canAddOrUpdate, delete: canAddOrUpdate }"
     :isFocusNewRow="false"
     :enableSingleRowSave="true"
     :showPagination="true"
@@ -35,6 +35,9 @@ export default {
   name: 'attributeable',
   props: {
     moduleKey: {
+      type: String,
+    },
+    tableType: {
       type: String,
     },
     id: {

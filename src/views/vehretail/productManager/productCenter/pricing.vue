@@ -1,14 +1,14 @@
 <template>
   <expand-table
     ref="editTable"
-    :dynamic-buttons="dynamicButtons"
+    :dynamic-buttons="tableType === 'detail' ? [] : dynamicButtons"
     :columns="columns"
     :data="tableData"
     :defaultNewRow="defaultNewRow"
     :show-toolbar="false"
-    :checkbox="true"
+    :checkbox="!tableType === 'detail'"
     :options="options"
-    :auth="{ delete: canAddOrUpdate }"
+    :auth="tableType === 'detail' ? {} : { delete: canAddOrUpdate }"
     :isFocusNewRow="false"
     :enableSingleRowSave="true"
     :showPagination="true"
@@ -38,6 +38,9 @@ export default {
   name: 'pricingTable',
   props: {
     moduleKey: {
+      type: String,
+    },
+    tableType: {
       type: String,
     },
     id: {
@@ -82,7 +85,7 @@ export default {
         {
           field: 'skuCode',
           title: 'SKU编码',
-          width: '25%',
+          width: '15%',
           editable: false,
         },
         {
@@ -95,13 +98,19 @@ export default {
           field: 'marketGuidePrice',
           title: '市场指导价',
           editable: false,
-          width: '25%',
+          width: '15%',
         },
         {
           field: 'materialsCode',
           title: '物料编码',
           editable: false,
-          width: '25%',
+          width: '15%',
+        },
+        {
+          field: 'statusLabel',
+          title: '状态',
+          editable: false,
+          width: '20%',
         },
       ],
       selectedRow: {},
