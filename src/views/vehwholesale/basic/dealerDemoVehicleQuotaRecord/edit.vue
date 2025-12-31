@@ -237,6 +237,11 @@ export default {
       default: null
     }
   },
+  computed: {
+    _id () {
+      return this.id || this.$route.query.id || this.form.id;
+    }
+  },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
     FetchSelect,

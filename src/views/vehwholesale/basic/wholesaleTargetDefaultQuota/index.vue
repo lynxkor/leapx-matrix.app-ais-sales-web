@@ -10,10 +10,16 @@
       class="ais-search-form"
     >
       <el-form-item label="车系">
-        <el-input
-          placeholder="请输入"
-          v-model="form.seriesName"
+        <fetch-select
+          filterable
           clearable
+          multiple
+          remote
+          collapseTags
+          v-model="form.seriesIds"
+          :remote-method="getVehicleSeriesList"
+          value-key="id"
+          label-key="name"
         />
       </el-form-item>
       <el-form-item label="备注">
@@ -39,9 +45,10 @@
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <el-button size="small" @click="handleGenerateCurrentMonthQuota" :disabled="selectionList.length === 0">生成当月配额</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <!-- <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button> -->
     </div>
     <div
       class="ais-table-c"
@@ -72,8 +79,8 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleTargetDefaultQuota/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getList, deleteItem, enableItem, generateCurrentMonthQuota } from '@/api/vehwholesale/basic/wholesaleTargetDefaultQuota/index';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList } from '@/api/common';
 // import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -81,10 +88,11 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+import FetchSelect from '@/libs/components/FetchSelect';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  seriesName: '',
+  seriesIds: [],
   remark: '',
 };
 
@@ -98,8 +106,8 @@ export default {
   components: {
     PageSearchAction,
     LPVxeTable,
-    // FetchSelect,
-    Upload
+    FetchSelect,
+    Upload,
   },
   data () {
     return {
@@ -145,8 +153,8 @@ export default {
           { props: 'seriesName', label: '车系', visible: true, width: 200 },
           { props: 'wholesaleTargetQty', label: '批售目标数', visible: true, width: 200 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
+          { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
@@ -365,6 +373,34 @@ export default {
       //     });
       //   });
       // });
+    },
+    handleGenerateCurrentMonthQuota () {
+      this.$message({
+        message: '生成中，请稍后...'
+      });
+      const ids = this.selectionList.map(item => item.id) || [];
+      // if (ids.length === 0) {
+      //   this.$message({
+      //     type: 'warning',
+      //     message: '请选择对应车系!'
+      //   });
+      //   return;
+      // }
+      generateCurrentMonthQuota(ids).then(() => {
+        this.$message({
+          type: 'success',
+          message: '生成成功'
+        });
+        this.getData();
+      }).catch(() => {
+        this.$message({
+          type: 'error',
+          message: '生成失败'
+        });
+      });
+    },
+    async getVehicleSeriesList (params) {
+      return vehicleSeriesList({ seriesNameLike: params, status: 1 });
     }
   }
 };

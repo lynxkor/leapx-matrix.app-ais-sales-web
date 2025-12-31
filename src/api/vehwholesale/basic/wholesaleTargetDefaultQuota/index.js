@@ -42,3 +42,11 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 生成当月配额
+ * @param {Array<Number>} data
+ */
+export function generateCurrentMonthQuota (data) {
+  return api.jsonPost(prefix + 'generateCurrentMonthQuota', data);
+}

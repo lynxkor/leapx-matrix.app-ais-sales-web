@@ -21,15 +21,16 @@
                   :remote-method="getVehicleSeriesList"
                   value-key="id"
                   label-key="name"
-                  :disabled="!!id"
+                  :disabled="!!_id"
                   @change="(val, record) => {form.seriesName = record?.name || ''}"
                 />
               </el-form-item>
               <el-form-item label="批售目标数" prop="wholesaleTargetQty">
-                <el-input
+                <el-input-number
                   placeholder="请输入"
                   v-model="form.wholesaleTargetQty"
                   clearable
+                  min="0"
                 />
               </el-form-item>
               <el-form-item label="备注" prop="remark">
@@ -88,6 +89,11 @@ export default {
     id: {
       type: [String, Number],
       default: null
+    }
+  },
+  computed: {
+    _id () {
+      return this.id || this.$route.query.id || this.form.id;
     }
   },
   mixins: [routeGuard, permissions, commonMixins],

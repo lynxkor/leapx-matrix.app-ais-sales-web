@@ -42,3 +42,51 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 批量编辑
+ * @param {Object} data
+ */
+export function batchEdit (data) {
+  return api.jsonPost(prefix + 'batchEdit', data);
+}
+
+/**
+ * 批量编辑校验
+ * @param {Object} data
+ */
+export function batchEditValid (data) {
+  return api.jsonPost(prefix + 'batchEditValid', data);
+}
+
+/**
+ * 批量审核
+ * @param {Object} data
+ */
+export function batchAudit (data) {
+  return api.jsonPost(prefix + 'batchAudit', data);
+}
+
+/**
+ * 批量提交
+ * @param {Object} data
+ */
+export function batchSubmit (data) {
+  return api.jsonPost(prefix + 'batchSubmit', data);
+}
+
+/**
+ * 批量审核校验
+ * @param {Object} data
+ */
+export function batchAuditValid (data) {
+  return api.jsonPost(prefix + 'batchAuditValid', data);
+}
+
+/**
+ * 批量提交校验
+ * @param {Object} data
+ */
+export function batchSubmitValid (data) {
+  return api.jsonPost(prefix + 'batchSubmitValid', data);
+}

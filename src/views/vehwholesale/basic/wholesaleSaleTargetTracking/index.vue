@@ -10,70 +10,114 @@
       class="ais-search-form"
     >
       <el-form-item label="年">
-        <el-input
-          placeholder="请输入"
+        <el-date-picker
           v-model="form.year"
+          type="year"
+          placeholder="选择年份"
+          format="yyyy"
+          value-format="yyyy"
           clearable
         />
       </el-form-item>
       <el-form-item label="月">
-        <el-input
-          placeholder="请输入"
+        <el-date-picker
           v-model="form.month"
+          type="month"
+          placeholder="选择月份"
+          format="MM月"
+          value-format="MM"
           clearable
         />
       </el-form-item>
       <el-form-item label="母公司"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerParentOrgName"
+        <fetch-select
+          filterable
           clearable
+          remote
+          multiple
+          v-model="form.dealerParentOrgIds"
+          :remote-method="getDealerParentOrgList"
+          value-key="companyCode"
+          label-key="companyName"
         />
       </el-form-item>
-      <template v-if="show">
-        <el-form-item label="门店编码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.dealerCode"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="门店名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.dealerName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="大区">
-          <el-input
-            placeholder="请输入"
-            v-model="form.regionName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="省份">
-          <el-input
-            placeholder="请输入"
-            v-model="form.provinceName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="城市">
-          <el-input
-            placeholder="请输入"
-            v-model="form.cityName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="车系">
-          <el-input
-            placeholder="请输入"
-            v-model="form.seriesName"
-            clearable
-          />
-        </el-form-item>
-      </template>
+    <template v-if="show">
+      <el-form-item label="大区">
+        <fetch-select
+          filterable
+          clearable
+          remote
+          v-model="form.regionCode"
+          :remote-method="getRegionList"
+          value-key="orgCode"
+          label-key="orgName"
+        />
+      </el-form-item>
+      <el-form-item label="省份">
+        <fetch-select
+          filterable
+          clearable
+          remote
+          v-model="form.provinceCode"
+          :remote-method="getProvince"
+          value-key="code"
+          label-key="name"
+          @change="handleChangeProvince"
+        />
+      </el-form-item>
+      <el-form-item label="城市">
+        <fetch-select
+          filterable
+          clearable
+          v-model="form.cityCode"
+          :options="cityOptions"
+          value-key="code"
+          label-key="name"
+        />
+      </el-form-item>
+      <el-form-item label="门店编码">
+        <fetch-select
+          filterable
+          clearable
+          multiple
+          remote
+          collapseTags
+          v-model="form.dealerCodes"
+          :remote-method="getDealerCodeList"
+          value-key="storeCode"
+          label-key="storeCode"
+          @change="handleChangeDealer"
+        />
+      </el-form-item>
+      <el-form-item label="门店名称">
+        <fetch-select
+          filterable
+          clearable
+          multiple
+          remote
+          collapseTags
+          v-model="form.dealerCodes"
+          :remote-method="getDealerCodeList"
+          value-key="storeCode"
+          label-key="storeName"
+          @change="handleChangeDealer"
+        />
+      </el-form-item>
+      <el-form-item label="车系">
+        <fetch-select
+          filterable
+          clearable
+          multiple
+          remote
+          collapseTags
+          v-model="form.seriesIds"
+          :options="seriesList"
+          :remote-method="getVehicleSeriesList"
+          value-key="id"
+          label-key="name"
+        />
+      </el-form-item>
+    </template>
       <page-search-action
         v-if="canList"
         v-model="show"
@@ -85,7 +129,6 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
@@ -122,7 +165,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleSaleTargetTracking/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getProvinceTree, getRigion, listOrgStoreInfo, vehicleSeriesList, getParentCompany } from '@/api/common';
 // import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -130,18 +173,18 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+import FetchSelect from '@/libs/components/FetchSelect';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   year: '',
   month: '',
-  dealerParentOrgName: '',
-  dealerCode: '',
-  dealerName: '',
-  regionName: '',
-  provinceName: '',
-  cityName: '',
-  seriesName: '',
+  dealerParentOrgIds: [],
+  dealerCodes: [],
+  regionCode: '',
+  provinceCode: '',
+  cityCode: '',
+  seriesIds: [],
 };
 
 const pageSize = 20;
@@ -154,8 +197,8 @@ export default {
   components: {
     PageSearchAction,
     LPVxeTable,
-    // FetchSelect,
-    Upload
+    FetchSelect,
+    Upload,
   },
   data () {
     return {
@@ -172,6 +215,7 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      cityOptions: [], // 市
       optionObj: {
         id: 'wholesaleSaleTargetTrackingTable',
         dataList: [],
@@ -201,7 +245,7 @@ export default {
           { props: 'year', label: '年', visible: true, width: 200 },
           { props: 'month', label: '月', visible: true, width: 200 },
           { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 200 },
-          { props: 'cooperationType', label: '合作类型', visible: true, width: 200 },
+          { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 200 },
           { props: 'dealerCode', label: '门店编码', visible: true, width: 200 },
           { props: 'dealerName', label: '门店名称', visible: true, width: 200 },
           { props: 'regionName', label: '大区', visible: true, width: 200 },
@@ -217,8 +261,8 @@ export default {
           { props: 'confirmedQty', label: '已确认数量', visible: true, width: 200 },
           { props: 'wholesaleRemark', label: '批售备注', visible: true, width: 200 },
           { props: 'retailRemark', label: '零售备注', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
+          { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
@@ -226,10 +270,22 @@ export default {
             visible: true,
             fixed: 'right',
             buttons: [{
-              name: '编辑',
+              name: '批售编辑',
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/basic/wholesaleSaleTargetTracking/edit',
+                  path: '/vehwholesale/basic/wholesalesaletargettracking/wholesaleEdit',
+                  query: {
+                    id: row.id
+                  }
+                });
+              },
+              type: 'info'
+            },
+            {
+              name: '零售编辑',
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehwholesale/basic/wholesalesaletargettracking/retailEdit',
                   query: {
                     id: row.id
                   }
@@ -271,11 +327,6 @@ export default {
     },
     handleUploadDialogClose () {
       this.uploadDialogVisible = false;
-    },
-    handleAdd () {
-      this.$router.push({
-        path: '/vehwholesale/basic/wholesaleSaleTargetTracking/edit'
-      });
     },
     onSubmit () {
       this.getData();
@@ -437,6 +488,42 @@ export default {
       //     });
       //   });
       // });
+    },
+    async getDealerParentOrgList (params) {
+      return getParentCompany({ parentCompanyName: params });
+    },
+    async getRegionList (params) {
+      return getRigion({ regionName: params });
+    },
+    // 查询所有省市区
+    async getProvince (params) {
+      const res = await getProvinceTree();
+      let list = res || [];
+      if (params && params.trim()) {
+        const searchText = params.trim().toLowerCase();
+        list = list.filter(item => item.name && item.name.toLowerCase().includes(searchText));
+      }
+      return list;
+    },
+    // 选择省以后带出市信息
+    handleChangeProvince (val, selectedOption) {
+      if (val) {
+        this.form.provinceCode = selectedOption?.code || '';
+        this.cityOptions = selectedOption?.child || []; // 选择省以后带出市信息
+        this.form.cityCode = '';
+      }
+    },
+    async getVehicleSeriesList (params) {
+      return vehicleSeriesList({ seriesNameLike: params, status: 1 });
+    },
+    async getDealerCodeList (params) {
+      return listOrgStoreInfo({ keyword: params });
+    },
+    handleChangeDealer (val, selectedOption) {
+      if (val) {
+        this.form.dealerCode = selectedOption?.storeCode || '';
+        this.form.dealerName = selectedOption?.storeName || '';
+      }
     }
   }
 };

@@ -13,7 +13,7 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="xxx"
-          v-model="form.vehicleYearType"
+          v-model="form.vehicleYearTypeId"
           placeholder="请选择"
           clearable
           multiple
@@ -58,30 +58,6 @@
             placeholder="请输入"
             v-model="form.cityName"
             clearable
-          />
-        </el-form-item>
-        <el-form-item label="开始日期">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.startDate"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
-        </el-form-item>
-        <el-form-item label="截止日期">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.endDate"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
           />
         </el-form-item>
         <el-form-item label="状态">
@@ -167,7 +143,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  vehicleYearType: '',
+  vehicleYearTypeId: '',
   vehicleModelLine: '',
   seriesName: '',
   quantity: '',

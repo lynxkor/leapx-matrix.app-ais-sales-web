@@ -904,9 +904,18 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/basic/wholesalesaletargettracking/edit',
-      name: 'wholesaleSaleTargetTrackingEdit',
-      component: () => import('@/views/vehwholesale/basic/wholesaleSaleTargetTracking/edit.vue'),
+      path: '/vehwholesale/basic/wholesalesaletargettracking/wholesaleEdit',
+      name: 'wholesaleSaleTargetTrackingWholesaleEdit',
+      component: () => import('@/views/vehwholesale/basic/wholesaleSaleTargetTracking/wholesaleEdit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-销售目标跟踪管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesalesaletargettracking/retailEdit',
+      name: 'wholesaleSaleTargetTrackingRetailEdit',
+      component: () => import('@/views/vehwholesale/basic/wholesaleSaleTargetTracking/retailEdit.vue'),
 
       meta: {
         name: '整车批售-批售主数据-销售目标跟踪管理详情',
