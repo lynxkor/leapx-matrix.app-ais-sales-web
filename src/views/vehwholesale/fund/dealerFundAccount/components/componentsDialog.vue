@@ -126,7 +126,7 @@
           <el-input-number
             placeholder="请输入"
             v-model="entOrderQuota"
-            :min="0.01"
+            :min="0"
             :max="1"
             :step="0.01"
             :precision="2"
