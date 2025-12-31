@@ -213,7 +213,7 @@ export default {
         const settleSortItems = tableData.map((ele, index) => {
           return {
             id: ele.id,
-            settleSort: index
+            settleSort: index + 1
           };
         });
         setSettleSort({ settleSortItems: settleSortItems }).then(res => {
