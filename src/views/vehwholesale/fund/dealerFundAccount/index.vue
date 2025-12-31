@@ -105,7 +105,7 @@
       />
     </div>
     <components-dialog ref="componentsDialog" :page-tpye="dialogTpye" />
-    <setSettleSort ref="setSettleSort" :parentOrg="parentOrg" />
+    <setSettleSort ref="setSettleSort" :dealerCompanyName="dealerCompanyName" @confirm="getData" />
   </div>
 </template>
 
@@ -241,7 +241,7 @@ export default {
       loginUserGet().then(res => {
         console.log('loginUserGet:', res);
         this.accountFlag = res.accountFlag;
-        this.parentOrg = res.parentOrg;
+        this.dealerCompanyName = res.dealerCompanyName;
       }).catch(() => {});
     },
     repairItemSearch (query) { return listIdNames({ seriesNameLike: query, status: 1 }); },
@@ -250,15 +250,23 @@ export default {
       this.$refs.componentsDialog.dialogshow(type);
     },
     setSettleSort () {
+      // if (this.dealerCompanyName) {
       this.$refs.setSettleSort.dialogshow();
+      // } else {
+      //   this.$message({
+      //     message: '未查询该账号挂靠母公司',
+      //     type: 'warning'
+      //   });
+      // }
     },
     onSubmit () {
       this.getData();
     },
     onReset () {
       this.form = { ...defaultForm };
-      this.getData();
-    },
+      this.optionObj.form.page = 1;
+      this.optionObj.form.pageSize = pageSize;
+      th
     // 1. 导出excel
     exportExcel () {
       this.exportLoading = true;

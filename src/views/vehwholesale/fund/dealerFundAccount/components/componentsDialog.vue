@@ -126,7 +126,7 @@
           <el-input-number
             placeholder="请输入"
             v-model="entOrderQuota"
-            :min="0"
+            :min="0.01"
             :max="1"
             :step="0.01"
             :precision="2"
@@ -334,8 +334,9 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
-      this.getData();
-    },
+      this.optionObj.form.page = 1;
+      this.optionObj.form.pageSize = pageSize;
+      th
     getFormData () {
       const data = { ...this.form };
       Object.keys(this.form).forEach(key => {

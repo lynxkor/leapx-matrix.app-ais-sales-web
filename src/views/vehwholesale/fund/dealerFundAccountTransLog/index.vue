@@ -258,6 +258,7 @@ export default {
           { props: 'transactionAmount', label: '交易金额', visible: true, width: 200 },
           { props: 'transactionTime', label: '过账时间', visible: true, width: 200 },
           { props: 'transactionReceiptCode', label: '交易凭证号', visible: true, width: 200 },
+          { props: 'lineNo', label: '行项目号', visible: true, width: 200 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'vin', label: '整车VIN编码', visible: true, width: 200 },
           { props: 'wholesaleOrderCode', label: '整车批售订单', visible: true, width: 200 },
@@ -302,9 +303,8 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
-      console.log('22');
-      // this.form.transactionTime = [];
-      // this.$refs.transactionTime.clearTime();
+      this.optionObj.form.page = 1;
+      this.optionObj.form.pageSize = pageSize;
       this.getData();
     },
     exportExcel () {
@@ -391,8 +391,6 @@ export default {
           delete data[key];
         }
       });
-      console.log('this.form.transactionTime:', this.form.transactionTime);
-      console.log('this.form.transactionTime.length:', this.form.transactionTime.length);
       if (this.form.transactionTime && this.form.transactionTime.length === 2) {
         data.transactionTimeStart = this.form.transactionTime[0];
         data.transactionTimeEnd = this.form.transactionTime[1];
