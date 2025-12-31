@@ -56,7 +56,8 @@ const defaultForm = {
   totalSettleAmount: '',
   lastTradeTime: '',
   saleCompanyId: '',
-  createTime: ''
+  createTime: '',
+  setRebateFlagQuery: true,
 };
 const pageSize = 20;
 export default {
