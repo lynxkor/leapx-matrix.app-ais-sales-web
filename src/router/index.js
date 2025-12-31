@@ -1182,6 +1182,60 @@ const routes = [
         name: '销售管理-商品管理-商品中心管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehwholesale/rebate/fundVehicleRebateBill',
+      name: 'fundVehicleRebateBill',
+      component: () => import('@/views/vehwholesale/rebate/fundVehicleRebateBill/index.vue'),
+
+      meta: {
+        name: '账户管理-整车返利-整车返利核算单明细管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/rebate/fundvehiclerebatebill/detail',
+      name: 'fundVehicleRebateBillDetail',
+      component: () => import('@/views/vehwholesale/rebate/fundVehicleRebateBill/detail.vue'),
+
+      meta: {
+        name: '账户管理-整车返利-整车返利核算单明细管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/rebate/fundvehiclerebatebill/edit',
+      name: 'fundVehicleRebateBillEdit',
+      component: () => import('@/views/vehwholesale/rebate/fundVehicleRebateBill/edit.vue'),
+
+      meta: {
+        name: '账户管理-整车返利-整车返利核算单明细管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/rebate/fundVehicleRebateBillDetail',
+      name: 'fundVehicleRebateBillDetail',
+      component: () => import('@/views/vehwholesale/rebate/fundVehicleRebateBillDetail/index.vue'),
+
+      meta: {
+        name: '账户管理-整车返利-整车返利核算单明细管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/rebate/fundvehiclerebatebilldetail/detail',
+      name: 'fundVehicleRebateBillDetailDetail',
+      component: () => import('@/views/vehwholesale/rebate/fundVehicleRebateBillDetail/detail.vue'),
+
+      meta: {
+        name: '账户管理-整车返利-整车返利核算单明细管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/rebate/fundvehiclerebatebilldetail/edit',
+      name: 'fundVehicleRebateBillDetailEdit',
+      component: () => import('@/views/vehwholesale/rebate/fundVehicleRebateBillDetail/edit.vue'),
+
+      meta: {
+        name: '账户管理-整车返利-整车返利核算单明细管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
