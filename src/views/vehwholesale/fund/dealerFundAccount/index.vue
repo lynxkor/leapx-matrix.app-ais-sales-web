@@ -86,7 +86,7 @@
       <el-button v-permission="moduleKey+'-setEntOrderSettleFlag'" v-show="!accountFlag" size="small" @click="componentsDialogChange('setEntOrderSettleFlag')">设置企业订单结算</el-button>
       <el-button v-permission="moduleKey+'-setRebateFlag'" v-show="!accountFlag" size="small" @click="componentsDialogChange('setRebateFlag')">设置使用返利</el-button>
       <el-button v-permission="moduleKey+'-setSettleSort'" v-show="accountFlag" size="small" @click="setSettleSort">设置结算顺序</el-button>
-      <el-button size="small" @click="setSettleSort">设置结算顺序</el-button>
+      <!-- <el-button size="small" @click="setSettleSort">设置结算顺序</el-button> -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
@@ -241,7 +241,6 @@ export default {
   methods: {
     loginUserGet () {
       loginUserGet().then(res => {
-        console.log('loginUserGet:', res);
         this.accountFlag = res.accountFlag;
         this.dealerCompanyName = res.dealerCompanyName;
       }).catch(() => {});
