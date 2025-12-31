@@ -10,7 +10,7 @@
           <div class="common-section-body">
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-            <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
+            <el-form :model="form" :rules="rules" ref="ruleForm" label-width="170px">
               <el-form-item label="金融机构名称" prop="organizationName">
                 <el-input
                   placeholder="请输入"

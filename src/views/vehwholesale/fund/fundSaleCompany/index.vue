@@ -10,18 +10,20 @@
       class="ais-search-form"
     >
       <el-form-item label="销售公司编码">
-        <el-input
+        <tag-input v-model="form.companyCodes" placeholder="请输入" />
+        <!-- <el-input
           placeholder="请输入"
           v-model="form.companyCodeLike"
           clearable
-        />
+        /> -->
       </el-form-item>
       <el-form-item label="销售公司名称">
-        <el-input
+        <tag-input v-model="form.companyNames" placeholder="请输入" />
+        <!-- <el-input
           placeholder="请输入"
           v-model="form.companyNameLike"
           clearable
-        />
+        /> -->
       </el-form-item>
       <el-form-item label="状态"  v-show="this.visibleCount === 3 || show">
         <fetch-select
@@ -92,6 +94,7 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   companyCode: '',
@@ -107,6 +110,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
