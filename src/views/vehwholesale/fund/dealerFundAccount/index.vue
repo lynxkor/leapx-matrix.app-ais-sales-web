@@ -266,7 +266,8 @@ export default {
       this.form = { ...defaultForm };
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
-      th
+      this.getData();
+    },
     // 1. 导出excel
     exportExcel () {
       this.exportLoading = true;

@@ -336,7 +336,8 @@ export default {
       this.form = { ...defaultForm };
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
-      th
+      this.getData();
+    },
     getFormData () {
       const data = { ...this.form };
       Object.keys(this.form).forEach(key => {
