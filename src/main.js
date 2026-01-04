@@ -11,8 +11,7 @@ import PrintPlugin from '@/libs/plugins/print.js';
 
 import '@/common/css/element-variables.scss';
 import '@/common/css/base.css';
-import '@/common/css/base.scss';
-import '@/libs/assets/styles/common.scss';
+import '@/libs/assets/styles/index.scss';
 import '@/libs/assets/iconfont/iconfont.css';
 import '@leapmotor/splitpanes/dist/splitpanes.css';
 
