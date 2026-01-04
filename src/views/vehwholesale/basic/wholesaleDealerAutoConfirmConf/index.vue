@@ -10,24 +10,41 @@
       class="ais-search-form"
     >
       <el-form-item label="门店编码">
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerCode"
+        <fetch-select
+          filterable
           clearable
+          multiple
+          remote
+          collapseTags
+          v-model="form.dealerCodes"
+          :remote-method="getDealerCodeList"
+          value-key="storeCode"
+          label-key="storeCode"
+          @change="handleChangeDealer"
         />
       </el-form-item>
       <el-form-item label="门店名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerName"
+        <fetch-select
+          filterable
           clearable
+          multiple
+          remote
+          collapseTags
+          v-model="form.dealerCodes"
+          :remote-method="getDealerCodeList"
+          value-key="storeCode"
+          label-key="storeName"
+          @change="handleChangeDealer"
         />
       </el-form-item>
       <el-form-item label="开启自动批售确认"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="BooleanEnum"
           v-model="form.openAutoConfirm"
+          placeholder="请选择"
           clearable
+          filterable
         />
       </el-form-item>
       <template v-if="show">
@@ -57,10 +74,10 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <!-- <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button> -->
+      <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button> -->
     </div>
     <div
       class="ais-table-c"
@@ -92,8 +109,8 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleDealerAutoConfirmConf/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
-// import FetchSelect from '@/libs/components/FetchSelect';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo } from '@/api/common';
+import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -103,8 +120,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  dealerCode: '',
-  dealerName: '',
+  dealerCodes: '',
   openAutoConfirm: '',
   updateTime: '',
 };
@@ -119,7 +135,7 @@ export default {
   components: {
     PageSearchAction,
     LPVxeTable,
-    // FetchSelect,
+    FetchSelect,
     Upload
   },
   data () {
@@ -165,7 +181,7 @@ export default {
           },
           { props: 'dealerCode', label: '门店编码', visible: true, width: 200 },
           { props: 'dealerName', label: '门店名称', visible: true, width: 200 },
-          { props: 'openAutoConfirm', label: '开启自动批售确认', visible: true, width: 200 },
+          { props: 'openAutoConfirmLabel', label: '开启自动批售确认', visible: true, width: 200 },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
@@ -203,6 +219,15 @@ export default {
                 });
               },
               type: 'danger'
+            }, {
+              name: '日志',
+              click: (rowIndex, row) => {
+                this.$message({
+                  type: 'info',
+                  message: '功能开发中!'
+                });
+              },
+              type: 'info'
             }]
           }
         ],
@@ -388,6 +413,15 @@ export default {
       //     });
       //   });
       // });
+    },
+    async getDealerCodeList (params) {
+      return listOrgStoreInfo({ keyword: params });
+    },
+    handleChangeDealer (val, selectedOption) {
+      if (val) {
+        this.form.dealerCode = selectedOption?.storeCode || '';
+        this.form.dealerName = selectedOption?.storeName || '';
+      }
     }
   }
 };

@@ -11,163 +11,90 @@
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
-              <el-form-item label="名称" prop="wholesaleDealerWholesaleConfName">
+              <!-- <el-form-item label="名称" prop="wholesaleDealerWholesaleConfName">
                 <el-input
                   placeholder="请输入"
                   v-model="form.wholesaleDealerWholesaleConfName"
                   clearable
                 />
-              </el-form-item>
+              </el-form-item> -->
               <el-form-item label="门店编码" prop="dealerCode">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.dealerCode"
+                <fetch-select
+                  filterable
                   clearable
+                  remote
+                  v-model="form.dealerCode"
+                  :remote-method="getDealerCodeList"
+                  value-key="storeCode"
+                  label-key="storeCode"
+                  @change="handleChangeDealer"
+                  :disabled="!!_id"
                 />
               </el-form-item>
               <el-form-item label="门店名称" prop="dealerName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.dealerName"
+                <fetch-select
+                  filterable
                   clearable
-                />
-              </el-form-item>
-              <el-form-item label="母公司" prop="dealerParentOrgName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.dealerParentOrgName"
-                  clearable
+                  remote
+                  v-model="form.dealerCode"
+                  :remote-method="getDealerCodeList"
+                  value-key="storeCode"
+                  label-key="storeName"
+                  @change="handleChangeDealer"
+                  :disabled="!!_id"
                 />
               </el-form-item>
               <el-form-item label="开启自动配车" prop="autoAllocationEnabled">
-                <el-input
-                  placeholder="请输入"
+                <fetch-select
+                  :request="fetchOptions"
+                  enumCode="BooleanEnum"
                   v-model="form.autoAllocationEnabled"
+                  placeholder="请选择"
                   clearable
+                  filterable
                 />
               </el-form-item>
               <el-form-item label="开启自动结算" prop="autoSettlementEnabled">
-                <el-input
-                  placeholder="请输入"
+                <fetch-select
+                  :request="fetchOptions"
+                  enumCode="BooleanEnum"
                   v-model="form.autoSettlementEnabled"
+                  placeholder="请选择"
                   clearable
+                  filterable
                 />
               </el-form-item>
               <el-form-item label="允许排产申请" prop="productionRequestEnabled">
-                <el-input
-                  placeholder="请输入"
+                <fetch-select
+                  :request="fetchOptions"
+                  enumCode="BooleanEnum"
                   v-model="form.productionRequestEnabled"
+                  placeholder="请选择"
                   clearable
+                  filterable
                 />
               </el-form-item>
               <el-form-item label="允许现车批售" prop="spotWholesaleEnabled">
-                <el-input
-                  placeholder="请输入"
+                <fetch-select
+                  :request="fetchOptions"
+                  enumCode="BooleanEnum"
                   v-model="form.spotWholesaleEnabled"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="修改者名称" prop="modifierName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modifierName"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="修改时间" prop="updateTime">
-                <el-date-picker
-                  :default-time="['00:00:00', '23:59:59']"
-                  v-model="form.updateTime"
-                  :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                />
-              </el-form-item>
-              <el-form-item label="主键" prop="id">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.id"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="创建者" prop="creator">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.creator"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="创建者名称" prop="creatorName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.creatorName"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="创建时间" prop="createTime">
-                <el-date-picker
-                  :default-time="['00:00:00', '23:59:59']"
-                  v-model="form.createTime"
-                  :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                />
-              </el-form-item>
-              <el-form-item label="修改者" prop="modifier">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modifier"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="备注" prop="remark">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.remark"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="状态" prop="status">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.status"
                   placeholder="请选择"
                   clearable
                   filterable
                 />
               </el-form-item>
-              <el-form-item label="状态变更描述" prop="statusDesc">
+              <el-form-item label="母公司" prop="dealerParentOrgId">
                 <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.statusDesc"
-                  placeholder="请选择"
-                  clearable
                   filterable
-                />
-              </el-form-item>
-              <el-form-item label="数据来源，140:新销服; 老销服:10" prop="dataSource">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.dataSource"
                   clearable
-                />
-              </el-form-item>
-              <el-form-item label="母公司ID" prop="dealerParentOrgId">
-                <el-input
-                  placeholder="请输入"
+                  remote
                   v-model="form.dealerParentOrgId"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="归属门店ID（组织ID），当数据权限归属到本组织以及本下级" prop="ownerOrgId">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.ownerOrgId"
-                  clearable
+                  :remote-method="getDealerParentOrgList"
+                  value-key="companyCode"
+                  label-key="companyName"
+                  @change="(val, record) => {form.dealerParentOrgName = record?.companyName || ''}"
+                  :disabled="!!_id"
                 />
               </el-form-item>
             </el-form>
@@ -186,7 +113,7 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehwholesale/basic/wholesaleDealerWholesaleConf/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import { getEnum } from '@/api/common';
+import { getEnum, listOrgStoreInfo, getParentCompany } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -198,10 +125,10 @@ const defaultForm = {
   dealerCode: '',
   dealerName: '',
   dealerParentOrgName: '',
-  autoAllocationEnabled: '',
-  autoSettlementEnabled: '',
-  productionRequestEnabled: '',
-  spotWholesaleEnabled: '',
+  autoAllocationEnabled: '1',
+  autoSettlementEnabled: '1',
+  productionRequestEnabled: '1',
+  spotWholesaleEnabled: '1',
   modifierName: '',
   updateTime: '',
   id: '',
@@ -224,6 +151,11 @@ export default {
     id: {
       type: [String, Number],
       default: null
+    }
+  },
+  computed: {
+    _id () {
+      return this.id || this.$route.query.id || this.form.id;
     }
   },
   mixins: [routeGuard, permissions, commonMixins],
@@ -253,7 +185,7 @@ export default {
           { required: true, message: '请输入门店名称', trigger: 'blur' }
         ],
         dealerParentOrgName: [
-          { required: true, message: '请输入母公司', trigger: 'blur' }
+          { required: false, message: '请输入母公司', trigger: 'blur' }
         ],
         autoAllocationEnabled: [
           { required: true, message: '请输入开启自动配车', trigger: 'blur' }
@@ -301,7 +233,7 @@ export default {
           { required: true, message: '请输入数据来源，140:新销服; 老销服:10', trigger: 'blur' }
         ],
         dealerParentOrgId: [
-          { required: true, message: '请输入母公司ID', trigger: 'blur' }
+          { required: false, message: '请输入母公司ID', trigger: 'blur' }
         ],
         ownerOrgId: [
           { required: true, message: '请输入归属门店ID（组织ID），当数据权限归属到本组织以及本下级', trigger: 'blur' }
@@ -380,6 +312,18 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    async getDealerCodeList (params) {
+      return listOrgStoreInfo({ keyword: params });
+    },
+    handleChangeDealer (val, selectedOption) {
+      if (val) {
+        this.form.dealerCode = selectedOption?.storeCode || '';
+        this.form.dealerName = selectedOption?.storeName || '';
+      }
+    },
+    async getDealerParentOrgList (params) {
+      return getParentCompany({ parentCompanyName: params });
     }
   }
 };

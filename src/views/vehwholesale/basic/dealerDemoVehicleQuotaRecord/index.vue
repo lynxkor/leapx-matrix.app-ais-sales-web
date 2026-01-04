@@ -11,23 +11,8 @@
     >
       <template v-if="show">
       </template>
-      <page-search-action
-        v-if="canList"
-        v-model="show"
-        is-expandable
-        :loading="loading"
-        @submit="onSubmit"
-        @reset="onReset"
-      />
     </el-form>
     <div class="ais-actions">
-      <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -57,15 +42,13 @@
 <script>
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
-import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/dealerDemoVehicleQuotaRecord/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getList } from '@/api/vehwholesale/basic/dealerDemoVehicleQuotaRecord/index';
+import { getTableConfig, getEnum } from '@/api/common';
 // import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 
 const defaultForm = {
@@ -80,10 +63,14 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
-    PageSearchAction,
     LPVxeTable,
     // FetchSelect,
     Upload
+  },
+  computed: {
+    relatedId () {
+      return this.$route.query.id;
+    }
   },
   data () {
     return {
@@ -96,7 +83,7 @@ export default {
       },
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
-      show: false,
+      show: true,
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
@@ -129,49 +116,12 @@ export default {
           { props: 'changeAfterQty', label: '变化后数量', visible: true, width: 200 },
           { props: 'changeQty', label: '变化数量', visible: true, width: 200 },
           { props: 'changeTime', label: '变化时间', visible: true, width: 200 },
-          { props: 'logDataSource', label: '数据来源', visible: true, width: 200 },
+          { props: 'logDataSourceLabel', label: '数据来源', visible: true, width: 200 },
           { props: 'relatedFormCode', label: '相关单号', visible: true, width: 200 },
           { props: 'changeDesc', label: '调整说明', visible: true, width: 200 },
           { props: 'changeDescFileId', label: '附件调整说明', visible: true, width: 200 },
           { props: 'responsibleName', label: '负责人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          {
-            props: 'operate',
-            label: '操作',
-            type: 'operate',
-            visible: true,
-            fixed: 'right',
-            buttons: [{
-              name: '编辑',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/basic/dealerDemoVehicleQuotaRecord/edit',
-                  query: {
-                    id: row.id
-                  }
-                });
-              },
-              type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
-            }]
-          }
         ],
         total: 0
       }
@@ -198,38 +148,36 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
-      this.optionObj.form.page = 1;
-      this.optionObj.form.pageSize = pageSize;
       this.getData();
     },
-    exportExcel () {
-      this.exportLoading = true;
-      exportTable({
-        businessType: '整车批售-批售主数据-门店试驾车配额调整记录管理',
-        dataFetchPath: 'vehwholesale/web/basic/dealerDemoVehicleQuotaRecord/page',
-        reqParams: this.getFormData(),
-        titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
-        httpMethod: 'POST'
-      }).then(async res => {
-        if (res && res.excelUrl) {
-          try {
-            await downloadExcel(res.excelUrl, '整车批售-批售主数据-门店试驾车配额调整记录管理.xlsx');
-          } catch (error) {
-            this.$message({
-              type: 'error',
-              message: '文件导出失败'
-            });
-          }
-        } else {
-          this.$message({
-            type: 'info',
-            message: '请前往导出列表中查询导出结果'
-          });
-        }
-      }).finally(() => {
-        this.exportLoading = false;
-      });
-    },
+    // exportExcel () {
+    //   this.exportLoading = true;
+    //   exportTable({
+    //     businessType: '整车批售-批售主数据-门店试驾车配额调整记录管理',
+    //     dataFetchPath: 'vehwholesale/web/basic/dealerDemoVehicleQuotaRecord/page',
+    //     reqParams: this.getFormData(),
+    //     titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
+    //     httpMethod: 'POST'
+    //   }).then(async res => {
+    //     if (res && res.excelUrl) {
+    //       try {
+    //         await downloadExcel(res.excelUrl, '整车批售-批售主数据-门店试驾车配额调整记录管理.xlsx');
+    //       } catch (error) {
+    //         this.$message({
+    //           type: 'error',
+    //           message: '文件导出失败'
+    //         });
+    //       }
+    //     } else {
+    //       this.$message({
+    //         type: 'info',
+    //         message: '请前往导出列表中查询导出结果'
+    //       });
+    //     }
+    //   }).finally(() => {
+    //     this.exportLoading = false;
+    //   });
+    // },
     getData () {
       this.loading = true;
       this.selectionList = [];
@@ -263,9 +211,6 @@ export default {
         });
       });
     },
-    saveOrUpdate (data) {
-      return tableAddOrUpdate(data);
-    },
     paginationChange (type, num) {
       if (type === 'page') {
         this.optionObj.form.page = num;
@@ -274,10 +219,7 @@ export default {
       }
       this.debouncedGetData();
     },
-    // 多选框选中数据
-    handleSelectionChange (selection) {
-      this.selectionList = selection;
-    },
+
     getFormData () {
       const data = { ...this.form };
 
@@ -286,6 +228,8 @@ export default {
           delete data[key];
         }
       });
+
+      data.relatedId = this.relatedId;
 
       if (this.form.createTime) {
         delete data.createTime;
@@ -303,59 +247,6 @@ export default {
       }
       return [];
     },
-    // 批量删除
-    handleBatchDelete () {
-      const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        deleteItem(ids).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-          this.getData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '删除失败!'
-          });
-        });
-      }).catch(() => {});
-    },
-    // 批量启用停用
-    handleBatchEnable (status) {
-      handleBatchStatusChange.call(this, {
-        selectionList: this.selectionList,
-        targetStatus: status,
-        apiFunc: enableItem,
-        refreshFunc: this.getData
-      });
-      // const ids = this.selectionList.map(item => item.id) || [];
-      // this.$confirm(`此操作将${status ? '启用' : '停用'}选中项，是否继续?`, '提示', {
-      //   confirmButtonText: '确定',
-      //   cancelButtonText: '取消',
-      //   type: 'warning'
-      // }).then(() => {
-      //   enableItem({
-      //     idSet: ids,
-      //     status
-      //   }).then(() => {
-      //     this.$message({
-      //       type: 'success',
-      //       message: '操作成功!'
-      //     });
-      //     this.getData();
-      //   }).catch(() => {
-      //     this.$message({
-      //       type: 'error',
-      //       message: '操作失败!'
-      //     });
-      //   });
-      // });
-    }
   }
 };
 </script>

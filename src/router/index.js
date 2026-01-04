@@ -904,9 +904,18 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/basic/wholesalesaletargettracking/edit',
-      name: 'wholesaleSaleTargetTrackingEdit',
-      component: () => import('@/views/vehwholesale/basic/wholesaleSaleTargetTracking/edit.vue'),
+      path: '/vehwholesale/basic/wholesalesaletargettracking/wholesaleEdit',
+      name: 'wholesaleSaleTargetTrackingWholesaleEdit',
+      component: () => import('@/views/vehwholesale/basic/wholesaleSaleTargetTracking/wholesaleEdit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-销售目标跟踪管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesalesaletargettracking/retailEdit',
+      name: 'wholesaleSaleTargetTrackingRetailEdit',
+      component: () => import('@/views/vehwholesale/basic/wholesaleSaleTargetTracking/retailEdit.vue'),
 
       meta: {
         name: '整车批售-批售主数据-销售目标跟踪管理详情',
@@ -1180,6 +1189,171 @@ const routes = [
 
       meta: {
         name: '销售管理-商品管理-商品中心管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/rebate/fundVehicleRebateBill',
+      name: 'fundVehicleRebateBill',
+      component: () => import('@/views/vehwholesale/rebate/fundVehicleRebateBill/index.vue'),
+
+      meta: {
+        name: '账户管理-整车返利-整车返利核算单明细管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/rebate/fundvehiclerebatebill/detail',
+      name: 'fundVehicleRebateBillDetail',
+      component: () => import('@/views/vehwholesale/rebate/fundVehicleRebateBill/detail.vue'),
+
+      meta: {
+        name: '账户管理-整车返利-整车返利核算单明细管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/rebate/fundvehiclerebatebill/edit',
+      name: 'fundVehicleRebateBillEdit',
+      component: () => import('@/views/vehwholesale/rebate/fundVehicleRebateBill/edit.vue'),
+
+      meta: {
+        name: '账户管理-整车返利-整车返利核算单明细管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/rebate/fundVehicleRebateBillDetail',
+      name: 'fundVehicleRebateBillDetail',
+      component: () => import('@/views/vehwholesale/rebate/fundVehicleRebateBillDetail/index.vue'),
+
+      meta: {
+        name: '账户管理-整车返利-整车返利核算单明细管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/rebate/fundvehiclerebatebilldetail/detail',
+      name: 'fundVehicleRebateBillDetailDetail',
+      component: () => import('@/views/vehwholesale/rebate/fundVehicleRebateBillDetail/detail.vue'),
+
+      meta: {
+        name: '账户管理-整车返利-整车返利核算单明细管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/rebate/fundvehiclerebatebilldetail/edit',
+      name: 'fundVehicleRebateBillDetailEdit',
+      component: () => import('@/views/vehwholesale/rebate/fundVehicleRebateBillDetail/edit.vue'),
+
+      meta: {
+        name: '账户管理-整车返利-整车返利核算单明细管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/creditsales/fundOwnCreditSalesLimit',
+      name: 'fundOwnCreditSalesLimit',
+      component: () => import('@/views/vehwholesale/creditsales/fundOwnCreditSalesLimit/index.vue'),
+
+      meta: {
+        name: '账户管理-赊销管理-自有资金赊销额度管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/creditsales/fundowncreditsaleslimit/detail',
+      name: 'fundOwnCreditSalesLimitDetail',
+      component: () => import('@/views/vehwholesale/creditsales/fundOwnCreditSalesLimit/detail.vue'),
+
+      meta: {
+        name: '账户管理-赊销管理-自有资金赊销额度管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/creditsales/fundowncreditsaleslimit/edit',
+      name: 'fundOwnCreditSalesLimitEdit',
+      component: () => import('@/views/vehwholesale/creditsales/fundOwnCreditSalesLimit/edit.vue'),
+
+      meta: {
+        name: '账户管理-赊销管理-自有资金赊销额度管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/creditsales/fundOwnCreditSalesConfig',
+      name: 'fundOwnCreditSalesConfig',
+      component: () => import('@/views/vehwholesale/creditsales/fundOwnCreditSalesConfig/index.vue'),
+
+      meta: {
+        name: '账户管理-赊销管理-自有资金赊销配置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/creditsales/fundowncreditsalesconfig/detail',
+      name: 'fundOwnCreditSalesConfigDetail',
+      component: () => import('@/views/vehwholesale/creditsales/fundOwnCreditSalesConfig/detail.vue'),
+
+      meta: {
+        name: '账户管理-赊销管理-自有资金赊销配置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/creditsales/fundowncreditsalesconfig/edit',
+      name: 'fundOwnCreditSalesConfigEdit',
+      component: () => import('@/views/vehwholesale/creditsales/fundOwnCreditSalesConfig/edit.vue'),
+
+      meta: {
+        name: '账户管理-赊销管理-自有资金赊销配置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/creditsales/fundCreditSalesFeeConfig',
+      name: 'fundCreditSalesFeeConfig',
+      component: () => import('@/views/vehwholesale/creditsales/fundCreditSalesFeeConfig/index.vue'),
+
+      meta: {
+        name: '账户管理-赊销管理-赊销资费设置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/creditsales/fundcreditsalesfeeconfig/detail',
+      name: 'fundCreditSalesFeeConfigDetail',
+      component: () => import('@/views/vehwholesale/creditsales/fundCreditSalesFeeConfig/detail.vue'),
+
+      meta: {
+        name: '账户管理-赊销管理-赊销资费设置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/creditsales/fundcreditsalesfeeconfig/edit',
+      name: 'fundCreditSalesFeeConfigEdit',
+      component: () => import('@/views/vehwholesale/creditsales/fundCreditSalesFeeConfig/edit.vue'),
+
+      meta: {
+        name: '账户管理-赊销管理-赊销资费设置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/creditsales/fundOwnCreditSalesDetail',
+      name: 'page',
+      component: () => import('@/views/vehwholesale/creditsales/fundOwnCreditSalesDetail/page/index.vue'),
+
+      meta: {
+        name: '账户管理-赊销管理-自有资金赊销明细管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/creditsales/fundowncreditsalesdetail/page/detail',
+      name: 'pageDetail',
+
+      component: () => import(
+        '@/views/vehwholesale/creditsales/fundOwnCreditSalesDetail/page/detail.vue'
+      ),
+
+      meta: {
+        name: '账户管理-赊销管理-自有资金赊销明细管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/creditsales/fundowncreditsalesdetail/page/edit',
+      name: 'pageEdit',
+      component: () => import('@/views/vehwholesale/creditsales/fundOwnCreditSalesDetail/page/edit.vue'),
+
+      meta: {
+        name: '账户管理-赊销管理-自有资金赊销明细管理详情',
         noResourceUrl: 'true'
       }
     }]

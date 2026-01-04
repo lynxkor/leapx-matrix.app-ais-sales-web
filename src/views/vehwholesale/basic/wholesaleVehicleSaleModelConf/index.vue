@@ -10,39 +10,47 @@
       class="ais-search-form"
     >
       <el-form-item label="车型">
-        <el-input
-          placeholder="请输入"
-          v-model="form.modelName"
+        <fetch-select
+          filterable
           clearable
+          multiple
+          remote
+          collapseTags
+          v-model="form.modelIds"
+          :remote-method="getModelIdList"
+          value-key="id"
+          label-key="name"
+          @change="modelListChange"
         />
       </el-form-item>
       <el-form-item label="年款">
         <fetch-select
-          :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.vehicleYearType"
-          placeholder="请选择"
-          clearable
-          multiple
           filterable
+          clearable
+          v-model="form.vehicleYearTypeId"
+          :options="yearTypeList"
+          value-key="value"
+          label-key="label"
         />
       </el-form-item>
-      <el-form-item label="订单���类"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.orderCategory"
+      <el-form-item label="订单分类"  v-show="this.visibleCount === 3 || show">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="ws_order_category"
+          v-model="form.auditStatus"
+          placeholder="请选择"
           clearable
+          filterable
         />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="审核状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
+            enumCode="ws_audit_status"
             v-model="form.auditStatus"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -71,11 +79,14 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <!-- <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button> -->
+      <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
+      <!-- <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button> -->
+      <el-button size="small" @click="handleBatchEditValid" :disabled="selectionList.length === 0">批量编辑</el-button>
+      <el-button size="small" @click="handleBatchSubmitValid" :disabled="selectionList.length === 0">批量提交</el-button>
+      <el-button size="small" @click="handleBatchAuditValid" :disabled="selectionList.length === 0">批量审核</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -99,6 +110,16 @@
       :id="1"
       @close="handleUploadDialogClose"
     />
+    <BatchAuditInput
+      :visible.sync="showAuditDialog"
+      :audit-ids="selectionList.map(item => item.id)"
+      @confirm="handleBatchAudit"
+    />
+    <BatchEditInput
+      :visible.sync="showEditDialog"
+      :edit-ids="selectionList.map(item => item.id)"
+      @confirm="handleBatchEdit"
+    />
   </div>
 </template>
 
@@ -106,8 +127,8 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleVehicleSaleModelConf/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getList, deleteItem, enableItem, batchAuditValid, batchSubmitValid, batchAudit, batchSubmit, batchEditValid, batchEdit } from '@/api/vehwholesale/basic/wholesaleVehicleSaleModelConf/index';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, vehicleModelYearTypeRelationDistinctYeayType } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -115,11 +136,13 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+import BatchAuditInput from './BatchAuditInput.vue';
+import BatchEditInput from './BatchEditInput.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  modelName: '',
-  vehicleYearType: '',
+  modelIds: [],
+  vehicleYearTypeId: '',
   orderCategory: '',
   auditStatus: '',
   updateTime: '',
@@ -136,7 +159,9 @@ export default {
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
-    Upload
+    Upload,
+    BatchAuditInput,
+    BatchEditInput
   },
   data () {
     return {
@@ -153,6 +178,9 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      yearTypeList: [],
+      showAuditDialog: false,
+      showEditDialog: false,
       optionObj: {
         id: 'wholesaleVehicleSaleModelConfTable',
         dataList: [],
@@ -180,11 +208,11 @@ export default {
             }]
           },
           { props: 'vehicleYearType', label: '年款', visible: true, width: 200 },
-          { props: 'orderCategory', label: '订单���类', visible: true, width: 200 },
-          { props: 'cooperationMode', label: '合作模式', visible: true, width: 200 },
-          { props: 'invoiceDiscountType', label: '开票优惠类型', visible: true, width: 200 },
+          { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
+          { props: 'cooperationModeLabel', label: '合作模式', visible: true, width: 200 },
+          { props: 'invoiceDiscountTypeLabel', label: '开票优惠类型', visible: true, width: 200 },
           { props: 'invoiceCoefficient', label: '开票系数', visible: true, width: 200 },
-          { props: 'rebateUseType', label: '返利使用类型', visible: true, width: 200 },
+          { props: 'rebateUseTypeLabel', label: '返利使用类型', visible: true, width: 200 },
           { props: 'rebateCoefficient', label: '返利使用系数', visible: true, width: 200 },
           { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 200 },
           { props: 'startDate', label: '开始日期', visible: true, width: 200 },
@@ -193,7 +221,7 @@ export default {
           { props: 'submitTime', label: '提交时间', visible: true, width: 200 },
           { props: 'auditorName', label: '审核人', visible: true, width: 200 },
           { props: 'auditTime', label: '审核时间', visible: true, width: 200 },
-          { props: 'auditStatus', label: '审核状态', visible: true, width: 200 },
+          { props: 'auditStatusLabel', label: '审核状态', visible: true, width: 200 },
           { props: 'auditOpinion', label: '审核意见', visible: true, width: 200 },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
@@ -204,6 +232,7 @@ export default {
             visible: true,
             fixed: 'right',
             buttons: [{
+              show: (row) => row.permission.edit,
               name: '编辑',
               click: (rowIndex, row) => {
                 this.$router.push({
@@ -215,6 +244,7 @@ export default {
               },
               type: 'info'
             }, {
+              show: (row) => row.permission.delete,
               name: '删除',
               popconfirmTitle: '此操作将永久删除, 是否继续?',
               click: (rowIndex, row) => {
@@ -417,7 +447,71 @@ export default {
       //     });
       //   });
       // });
-    }
+    },
+    async getModelIdList (params) {
+      return listVehicleModel({ modelNameLike: params, status: 1 });
+    },
+    async modelListChange (val) {
+      const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList: val, size: 1000 });
+      this.yearTypeList = res.map(item => {
+        return {
+          ...item,
+          label: item.yearTypeName,
+          value: item.yearTypeId
+        };
+      });
+    },
+    handleBatchAudit (data) {
+      return batchAudit(data).then(() => {
+        this.$message({
+          type: 'success',
+          message: '批量审核成功'
+        });
+        this.getData();
+      });
+    },
+    handleBatchSubmit (ids) {
+      return batchSubmit(ids).then(() => {
+        this.$message({
+          type: 'success',
+          message: '批量提交成功'
+        });
+        this.getData();
+      });
+    },
+    handleBatchAuditValid () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      return batchAuditValid(ids).then(() => {
+        this.showAuditDialog = true;
+      });
+    },
+    handleBatchSubmitValid () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      return batchSubmitValid(ids).then(() => {
+        this.$confirm('是否确认批量提交?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.handleBatchSubmit(ids);
+        });
+      });
+    },
+    handleBatchEditValid () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      return batchEditValid(ids).then(() => {
+        this.showEditDialog = true;
+      });
+    },
+    handleBatchEdit (data) {
+      return batchEdit(data).then(() => {
+        this.$message({
+          type: 'success',
+          message: '批量编辑成功'
+        });
+        this.getData();
+      });
+    },
   }
 };
 </script>

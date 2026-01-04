@@ -10,50 +10,73 @@
       class="ais-search-form"
     >
       <el-form-item label="物料编码">
-        <el-input
-          placeholder="请输入"
-          v-model="form.materialsCode"
+        <fetch-select
+          filterable
           clearable
+          remote
+          v-model="form.materialsId"
+          :remote-method="getVehicleMaterialsList"
+          value-key="id"
+          label-key="materialsCode"
         />
       </el-form-item>
       <el-form-item label="车系">
-        <el-input
-          placeholder="请输入"
-          v-model="form.seriesName"
+        <fetch-select
+          filterable
           clearable
+          multiple
+          remote
+          collapseTags
+          v-model="form.seriesIds"
+          :remote-method="getVehicleSeriesList"
+          value-key="id"
+          label-key="name"
         />
       </el-form-item>
       <el-form-item label="车型"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.modelName"
+        <fetch-select
+          filterable
           clearable
+          multiple
+          remote
+          collapseTags
+          v-model="form.modelIds"
+          :remote-method="getModelIdList"
+          value-key="id"
+          label-key="name"
+          @change="modelListChange"
         />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="年款">
           <fetch-select
-            :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.vehicleYearType"
-            placeholder="请选择"
-            clearable
-            multiple
             filterable
+            clearable
+            v-model="form.vehicleYearTypeId"
+            :options="yearTypeList"
+            value-key="value"
+            label-key="label"
           />
         </el-form-item>
         <el-form-item label="选装包">
-          <el-input
-            placeholder="请输入"
-            v-model="form.optionPackageName"
+          <fetch-select
+            filterable
             clearable
+            remote
+            v-model="form.optionPackageId"
+            :remote-method="getOptionPackageList"
+            value-key="id"
+            label-key="name"
           />
         </el-form-item>
         <el-form-item label="允许试驾车批售">
-          <el-input
-            placeholder="请输入"
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
             v-model="form.allowTestDriveWholesale"
+            placeholder="请选择"
             clearable
+            filterable
           />
         </el-form-item>
       </template>
@@ -68,12 +91,12 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
+      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button> -->
     </div>
     <div
       class="ais-table-c"
@@ -105,7 +128,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleTestDrivePurchaseConf/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleOptionPackage, listVehicleModel, vehicleModelYearTypeRelationDistinctYeayType, vehicleMaterials } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -116,11 +139,11 @@ import commonMixins from '@/libs/mixins/commonMixins';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  materialsCode: '',
-  seriesName: '',
-  modelName: '',
-  vehicleYearType: '',
-  optionPackageName: '',
+  modelIds: [],
+  seriesIds: [],
+  materialsId: '',
+  vehicleYearTypeId: '',
+  optionPackageId: '',
   allowTestDriveWholesale: '',
 };
 
@@ -183,7 +206,7 @@ export default {
           { props: 'modelName', label: '车型', visible: true, width: 200 },
           { props: 'vehicleYearType', label: '年款', visible: true, width: 200 },
           { props: 'optionPackageName', label: '选装包', visible: true, width: 200 },
-          { props: 'allowTestDriveWholesale', label: '允许试驾车批售', visible: true, width: 200 },
+          { props: 'allowTestDriveWholesaleLabel', label: '允许试驾车批售', visible: true, width: 200 },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
@@ -203,24 +226,6 @@ export default {
                 });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],
@@ -406,7 +411,29 @@ export default {
       //     });
       //   });
       // });
-    }
+    },
+    async getVehicleSeriesList (params) {
+      return vehicleSeriesList({ seriesNameLike: params, status: 1 });
+    },
+    async getModelIdList (params) {
+      return listVehicleModel({ modelNameLike: params, status: 1 });
+    },
+    async modelListChange (val) {
+      const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList: val, size: 1000 });
+      this.yearTypeList = res.map(item => {
+        return {
+          ...item,
+          label: item.yearTypeName,
+          value: item.yearTypeId
+        };
+      });
+    },
+    async getOptionPackageList (params) {
+      return vehicleOptionPackage({ optionPackageNameLike: params, status: 1 });
+    },
+    async getVehicleMaterialsList (params) {
+      return vehicleMaterials({ materialsCodeLike: params, status: 1 });
+    },
   }
 };
 </script>

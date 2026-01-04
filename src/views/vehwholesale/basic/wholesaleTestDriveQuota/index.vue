@@ -11,87 +11,80 @@
     >
       <el-form-item label="年款">
         <fetch-select
-          :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.vehicleYearType"
-          placeholder="请选择"
-          clearable
-          multiple
           filterable
+          clearable
+          remote
+          v-model="form.vehicleYearTypeId"
+          :params="form.vehicleYearType"
+          :remote-method="getVehicleYearTypeList"
+          value-key="id"
+          label-key="name"
         />
       </el-form-item>
       <el-form-item label="系列">
-        <el-input
-          placeholder="请输入"
-          v-model="form.vehicleModelLine"
+        <fetch-select
+          filterable
           clearable
+          remote
+          v-model="form.vehicleModelLineId"
+          :params="form.vehicleModelLine"
+          :remote-method="getVehicleModelLineList"
+          value-key="id"
+          label-key="name"
         />
       </el-form-item>
       <el-form-item label="车系"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.seriesName"
+        <fetch-select
+          filterable
           clearable
+          multiple
+          remote
+          collapseTags
+          v-model="form.seriesIds"
+          :remote-method="getVehicleSeriesList"
+          value-key="id"
+          label-key="name"
         />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="数量">
-          <el-input
+          <el-input-number
             placeholder="请输入"
             v-model="form.quantity"
             clearable
+            :precision="0"
           />
         </el-form-item>
         <el-form-item label="建店类型">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="xxx"
+          <el-cascader
             v-model="form.mcDealerType"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
+            :options="shopTypeList"
+            :props="{
+                multiple: false,
+                emitPath: false
+              }"
+            collapse-tags
           />
         </el-form-item>
         <el-form-item label="城市">
-          <el-input
-            placeholder="请输入"
-            v-model="form.cityName"
+          <fetch-select
+            filterable
             clearable
-          />
-        </el-form-item>
-        <el-form-item label="开始日期">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.startDate"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
-        </el-form-item>
-        <el-form-item label="截止日期">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.endDate"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            remote
+            v-model="form.cityCode"
+            :params="form.cityName"
+            :remote-method="getCityList"
+            value-key="areaCode"
+            label-key="areaName"
           />
         </el-form-item>
         <el-form-item label="状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
+            enumCode="StatusEnum"
             v-model="form.status"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -156,7 +149,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleTestDriveQuota/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getBuildType, cityPage, listVehicleYearType, vehicleModelLineList, vehicleSeriesList } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -167,14 +160,12 @@ import commonMixins from '@/libs/mixins/commonMixins';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  vehicleYearType: '',
-  vehicleModelLine: '',
-  seriesName: '',
+  vehicleYearTypeId: '',
+  vehicleModelLineId: '',
+  seriesIds: '',
   quantity: '',
   mcDealerType: '',
-  cityName: '',
-  startDate: '',
-  endDate: '',
+  cityCode: '',
   status: '',
   updateTime: '',
 };
@@ -202,6 +193,7 @@ export default {
         ...defaultForm
       },
       selectionList: [],
+      shopTypeList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -236,11 +228,11 @@ export default {
           { props: 'vehicleModelLine', label: '系列', visible: true, width: 200 },
           { props: 'seriesName', label: '车系', visible: true, width: 200 },
           { props: 'quantity', label: '数量', visible: true, width: 200 },
-          { props: 'mcDealerType', label: '建店类型', visible: true, width: 200 },
+          { props: 'mcDealerTypeLabel', label: '建店类型', visible: true, width: 200 },
           { props: 'cityName', label: '城市', visible: true, width: 200 },
           { props: 'startDate', label: '开始日期', visible: true, width: 200 },
           { props: 'endDate', label: '截止日期', visible: true, width: 200 },
-          { props: 'status', label: '状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
@@ -288,6 +280,9 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
+  },
+  mounted () {
+    this.fetchShopTypeEnum();
   },
   methods: {
     handleImport () {
@@ -463,6 +458,30 @@ export default {
       //     });
       //   });
       // });
+    },
+    async getVehicleSeriesList (params) {
+      return vehicleSeriesList({ seriesNameLike: params, status: 1 });
+    },
+    async getVehicleModelLineList (params) {
+      return vehicleModelLineList({ modelLineNameLike: params, status: 1 });
+    },
+    async getVehicleYearTypeList (params) {
+      return listVehicleYearType({ yearTypeNameLike: params, status: 1 });
+    },
+    async getCityList (params) {
+      const res = await cityPage({});
+      let list = res.records || [];
+      if (params && params.trim()) {
+        const searchText = params.trim().toLowerCase();
+        list = list.filter(item => item.areaName && item.areaName.toLowerCase().includes(searchText));
+      }
+      return list;
+    },
+    async getBuildTypeList () {
+      return getBuildType({ status: 1 });
+    },
+    async fetchShopTypeEnum () {
+      this.shopTypeList = await this.getBuildTypeList();
     }
   }
 };

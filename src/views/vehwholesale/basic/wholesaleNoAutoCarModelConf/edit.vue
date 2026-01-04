@@ -11,148 +11,39 @@
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
-              <el-form-item label="名称" prop="wholesaleNoAutoCarModelConfName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.wholesaleNoAutoCarModelConfName"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="车型" prop="modelName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modelName"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="年款" prop="vehicleYearType">
+              <el-form-item label="车型" prop="modelId">
                 <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.vehicleYearType"
-                  placeholder="请选择"
-                  clearable
                   filterable
+                  clearable
+                  remote
+                  v-model="form.modelId"
+                  :remote-method="getModelIdList"
+                  value-key="id"
+                  label-key="name"
+                  @change="modelListChange"
+                  :disabled="!!_id"
+                />
+              </el-form-item>
+              <el-form-item label="年款" prop="vehicleYearTypeId">
+                <fetch-select
+                  filterable
+                  clearable
+                  v-model="form.vehicleYearTypeId"
+                  :options="yearTypeList"
+                  value-key="value"
+                  label-key="label"
+                  :disabled="!!_id"
+                  @change="(val, record) => {form.vehicleYearType = record?.label || ''}"
                 />
               </el-form-item>
               <el-form-item label="不参与自动批售确认" prop="noJoinAutoConfirm">
-                <el-input
-                  placeholder="请输入"
+                <fetch-select
+                  :request="fetchOptions"
+                  enumCode="BooleanEnum"
                   v-model="form.noJoinAutoConfirm"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="状态" prop="status">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.status"
                   placeholder="请选择"
                   clearable
                   filterable
-                />
-              </el-form-item>
-              <el-form-item label="修改者名称" prop="modifierName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modifierName"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="修改时间" prop="updateTime">
-                <el-date-picker
-                  :default-time="['00:00:00', '23:59:59']"
-                  v-model="form.updateTime"
-                  :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                />
-              </el-form-item>
-              <el-form-item label="主键" prop="id">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.id"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="创建者" prop="creator">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.creator"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="创建者名称" prop="creatorName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.creatorName"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="创建时间" prop="createTime">
-                <el-date-picker
-                  :default-time="['00:00:00', '23:59:59']"
-                  v-model="form.createTime"
-                  :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                />
-              </el-form-item>
-              <el-form-item label="修改者" prop="modifier">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modifier"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="备注" prop="remark">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.remark"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="状态变更描述" prop="statusDesc">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.statusDesc"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                />
-              </el-form-item>
-              <el-form-item label="数据来源，140:新销服; 老销服:10" prop="dataSource">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.dataSource"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="车型ID" prop="modelId">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modelId"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="年款ID" prop="vehicleYearTypeId">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.vehicleYearTypeId"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                />
-              </el-form-item>
-              <el-form-item label="归属门店ID（组织ID），当数据权限归属到本组织以及本下级" prop="ownerOrgId">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.ownerOrgId"
-                  clearable
                 />
               </el-form-item>
             </el-form>
@@ -171,7 +62,7 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehwholesale/basic/wholesaleNoAutoCarModelConf/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import { getEnum } from '@/api/common';
+import { getEnum, listVehicleModel, vehicleModelYearTypeRelation } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -206,6 +97,11 @@ export default {
     id: {
       type: [String, Number],
       default: null
+    }
+  },
+  computed: {
+    _id () {
+      return this.id || this.$route.query.id || this.form.id;
     }
   },
   mixins: [routeGuard, permissions, commonMixins],
@@ -353,7 +249,21 @@ export default {
         return getEnum(code);
       }
       return [];
-    }
+    },
+    async getModelIdList (params) {
+      return listVehicleModel({ modelNameLike: params, status: 1 });
+    },
+    async modelListChange (val, record) {
+      const res = await vehicleModelYearTypeRelation({ modelIdList: [val], size: 1000 });
+      this.form.modelName = record?.name || '';
+      this.yearTypeList = res.map(item => {
+        return {
+          ...item,
+          label: item.yearTypeName,
+          value: item.yearTypeId
+        };
+      });
+    },
   }
 };
 </script>

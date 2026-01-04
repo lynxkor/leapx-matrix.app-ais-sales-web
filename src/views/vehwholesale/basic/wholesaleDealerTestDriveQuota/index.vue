@@ -9,61 +9,87 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="门店编码">
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerCode"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item label="门店名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerName"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item label="年款"  v-show="this.visibleCount === 3 || show">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.vehicleYearType"
-          placeholder="请选择"
-          clearable
-          multiple
-          filterable
-        />
-      </el-form-item>
+  `      <el-form-item label="门店编码">
+          <fetch-select
+            filterable
+            clearable
+            multiple
+            remote
+            collapseTags
+            v-model="form.dealerCodes"
+            :remote-method="getDealerCodeList"
+            value-key="storeCode"
+            label-key="storeCode"
+            @change="handleChangeDealer"
+          />
+        </el-form-item>
+        <el-form-item label="门店名称">
+          <fetch-select
+            filterable
+            clearable
+            multiple
+            remote
+            collapseTags
+            v-model="form.dealerCodes"
+            :remote-method="getDealerCodeList"
+            value-key="storeCode"
+            label-key="storeName"
+            @change="handleChangeDealer"
+          />
+        </el-form-item>
+        <el-form-item label="年款" v-show="this.visibleCount === 3 || show">
+          <fetch-select
+            filterable
+            clearable
+            remote
+            v-model="form.vehicleYearTypeId"
+            :params="form.vehicleYearType"
+            :remote-method="getVehicleYearTypeList"
+            value-key="id"
+            label-key="name"
+          />
+        </el-form-item>
       <template v-if="show">
         <el-form-item label="系列">
-          <el-input
-            placeholder="请输入"
-            v-model="form.vehicleModelLine"
+          <fetch-select
+            filterable
             clearable
+            remote
+            v-model="form.vehicleModelLineId"
+            :params="form.vehicleModelLine"
+            :remote-method="getVehicleModelLineList"
+            value-key="id"
+            label-key="name"
           />
         </el-form-item>
         <el-form-item label="车系">
-          <el-input
-            placeholder="请输入"
-            v-model="form.seriesName"
+          <fetch-select
+            filterable
             clearable
+            multiple
+            remote
+            collapseTags
+            v-model="form.seriesIds"
+            :remote-method="getVehicleSeriesList"
+            value-key="id"
+            label-key="name"
           />
         </el-form-item>
         <el-form-item label="配额数量">
-          <el-input
+          <el-input-number
             placeholder="请输入"
-            v-model="form.quotaQty"
+            v-model="form.quantity"
             clearable
+            :precision="0"
           />
         </el-form-item>
         <el-form-item label="状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
+            enumCode="StatusEnum"
             v-model="form.status"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -92,11 +118,11 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
     </div>
     <div
       class="ais-table-c"
@@ -128,7 +154,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleDealerTestDriveQuota/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo, listVehicleYearType, vehicleModelLineList, vehicleSeriesList } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -139,11 +165,10 @@ import commonMixins from '@/libs/mixins/commonMixins';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  dealerCode: '',
-  dealerName: '',
-  vehicleYearType: '',
-  vehicleModelLine: '',
-  seriesName: '',
+  dealerCodes: '',
+  vehicleYearTypeId: '',
+  vehicleModelLineId: '',
+  seriesIds: '',
   quotaQty: '',
   status: '',
   createTime: '',
@@ -210,7 +235,7 @@ export default {
           { props: 'requestQty', label: '累计已申请数', visible: true, width: 200 },
           { props: 'changeDesc', label: '调整说明', visible: true, width: 200 },
           { props: 'quotaQty', label: '配额数量', visible: true, width: 200 },
-          { props: 'status', label: '状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
@@ -220,6 +245,17 @@ export default {
             visible: true,
             fixed: 'right',
             buttons: [{
+              name: '配额调整',
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehwholesale/basic/dealerDemoVehicleQuotaRecord/edit',
+                  query: {
+                    id: row.id
+                  }
+                });
+              },
+              type: 'info'
+            }, {
               name: '编辑',
               click: (rowIndex, row) => {
                 this.$router.push({
@@ -248,6 +284,26 @@ export default {
                 });
               },
               type: 'danger'
+            }, {
+              name: '日志',
+              click: (rowIndex, row) => {
+                this.$message({
+                  type: 'info',
+                  message: '功能开发中!'
+                });
+              },
+              type: 'info'
+            }, {
+              name: '配额调整日志',
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehwholesale/basic/dealerDemoVehicleQuotaRecord',
+                  query: {
+                    id: row.id
+                  }
+                });
+              },
+              type: 'info'
             }]
           }
         ],
@@ -433,6 +489,24 @@ export default {
       //     });
       //   });
       // });
+    },
+    async getDealerCodeList (params) {
+      return listOrgStoreInfo({ keyword: params });
+    },
+    handleChangeDealer (val, selectedOption) {
+      if (val) {
+        this.form.dealerCode = selectedOption?.storeCode || '';
+        this.form.dealerName = selectedOption?.storeName || '';
+      }
+    },
+    async getVehicleSeriesList (params) {
+      return vehicleSeriesList({ seriesNameLike: params, status: 1 });
+    },
+    async getVehicleModelLineList (params) {
+      return vehicleModelLineList({ modelLineNameLike: params, status: 1 });
+    },
+    async getVehicleYearTypeList (params) {
+      return listVehicleYearType({ yearTypeNameLike: params, status: 1 });
     }
   }
 };

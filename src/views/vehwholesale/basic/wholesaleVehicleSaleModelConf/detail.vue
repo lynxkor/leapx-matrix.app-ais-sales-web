@@ -19,7 +19,7 @@
             <el-form-item label="年款：" prop="vehicleYearType">
               {{ info.vehicleYearType  }}
             </el-form-item>
-            <el-form-item label="订单���类：" prop="orderCategory">
+            <el-form-item label="订单分类：" prop="orderCategory">
               {{ info.orderCategory  }}
             </el-form-item>
             <el-form-item label="合作模式：" prop="cooperationMode">

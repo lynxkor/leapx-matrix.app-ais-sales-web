@@ -11,49 +11,21 @@
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
-              <el-form-item label="变化前数量" prop="changeBeforeQty">
-                <el-input
+              <el-form-item label="调整前配额数" prop="quotaQty">
+                <el-input-number
                   placeholder="请输入"
-                  v-model="form.changeBeforeQty"
+                  v-model="form.quotaQty"
                   clearable
+                  :precision="0"
+                  :disabled="true"
                 />
               </el-form-item>
-              <el-form-item label="变化后数量" prop="changeAfterQty">
-                <el-input
+              <el-form-item label="配额数" prop="changeAfterQty">
+                <el-input-number
                   placeholder="请输入"
                   v-model="form.changeAfterQty"
                   clearable
-                />
-              </el-form-item>
-              <el-form-item label="变化数量" prop="changeQty">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.changeQty"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="变化时间" prop="changeTime">
-                <el-date-picker
-                  :default-time="['00:00:00', '23:59:59']"
-                  v-model="form.changeTime"
-                  :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                />
-              </el-form-item>
-              <el-form-item label="数据来源" prop="logDataSource">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.logDataSource"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="相关单号" prop="relatedFormCode">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.relatedFormCode"
-                  clearable
+                  :precision="0"
                 />
               </el-form-item>
               <el-form-item label="调整说明" prop="changeDesc">
@@ -63,120 +35,19 @@
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="附件调整说明" prop="changeDescFileId">
+              <el-form-item label="累计已申请数" prop="requestQty">
+                <el-input-number
+                  placeholder="请输入"
+                  v-model="form.requestQty"
+                  clearable
+                  :precision="0"
+                  :disabled="true"
+                />
+              </el-form-item>
+              <el-form-item label="附件说明" prop="changeDescFileId">
                 <el-input
                   placeholder="请输入"
                   v-model="form.changeDescFileId"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="负责人" prop="responsibleName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.responsibleName"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="创建时间" prop="createTime">
-                <el-date-picker
-                  :default-time="['00:00:00', '23:59:59']"
-                  v-model="form.createTime"
-                  :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                />
-              </el-form-item>
-              <el-form-item label="主键" prop="id">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.id"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="创建者" prop="creator">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.creator"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="创建者名称" prop="creatorName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.creatorName"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="修改者" prop="modifier">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modifier"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="修改者名称" prop="modifierName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modifierName"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="修改时间" prop="updateTime">
-                <el-date-picker
-                  :default-time="['00:00:00', '23:59:59']"
-                  v-model="form.updateTime"
-                  :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                />
-              </el-form-item>
-              <el-form-item label="备注" prop="remark">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.remark"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="状态" prop="status">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.status"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                />
-              </el-form-item>
-              <el-form-item label="状态变更描述" prop="statusDesc">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.statusDesc"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                />
-              </el-form-item>
-              <el-form-item label="相关单号ID" prop="relatedFormId">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.relatedFormId"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="负责人ID" prop="responsibleUserId">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.responsibleUserId"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="归属门店ID（组织ID），当数据权限归属到本组织以及本下级" prop="ownerOrgId">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.ownerOrgId"
                   clearable
                 />
               </el-form-item>
@@ -185,7 +56,7 @@
         </section>
       </el-main>
       <el-footer height="60px">
-        <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
+        <el-button size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
         <el-button size="small" @click="handleBack">取消</el-button>
         <!-- <el-button size="small" @click="handleJumpAuditLog">审核日志</el-button> -->
       </el-footer>
@@ -194,8 +65,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehwholesale/basic/dealerDemoVehicleQuotaRecord/index';
-import FetchSelect from '@/libs/components/FetchSelect';
+import { getDetail, updateTestDriveQuota } from '@/api/vehwholesale/basic/wholesaleDealerTestDriveQuota/index';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
@@ -204,28 +74,12 @@ import commonMixins from '@/libs/mixins/commonMixins';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
-  changeBeforeQty: '',
   changeAfterQty: '',
   changeQty: '',
-  changeTime: '',
-  logDataSource: '',
-  relatedFormCode: '',
   changeDesc: '',
   changeDescFileId: '',
-  responsibleName: '',
-  createTime: '',
   id: '',
-  creator: '',
-  creatorName: '',
-  modifier: '',
-  modifierName: '',
-  updateTime: '',
-  remark: '',
-  status: '',
-  statusDesc: '',
-  relatedFormId: '',
-  responsibleUserId: '',
-  ownerOrgId: '',
+  requestQty: '',
 };
 
 export default {
@@ -237,10 +91,12 @@ export default {
       default: null
     }
   },
-  mixins: [routeGuard, permissions, commonMixins],
-  components: {
-    FetchSelect,
+  computed: {
+    _id () {
+      return this.id || this.$route.query.id || this.form.id;
+    }
   },
+  mixins: [routeGuard, permissions, commonMixins],
   data () {
     const form = this.getDefautlForm();
     return {
@@ -259,66 +115,6 @@ export default {
         ],
         changeAfterQty: [
           { required: true, message: '请输入变化后数量', trigger: 'blur' }
-        ],
-        changeQty: [
-          { required: true, message: '请输入变化数量', trigger: 'blur' }
-        ],
-        changeTime: [
-          { required: true, message: '请选择变化时间', trigger: 'change' }
-        ],
-        logDataSource: [
-          { required: true, message: '请输入数据来源', trigger: 'blur' }
-        ],
-        relatedFormCode: [
-          { required: true, message: '请输入相关单号', trigger: 'blur' }
-        ],
-        changeDesc: [
-          { required: true, message: '请输入调整说明', trigger: 'blur' }
-        ],
-        changeDescFileId: [
-          { required: true, message: '请输入附件调整说明', trigger: 'blur' }
-        ],
-        responsibleName: [
-          { required: true, message: '请输入负责人', trigger: 'blur' }
-        ],
-        createTime: [
-          { required: true, message: '请选择创建时间', trigger: 'change' }
-        ],
-        id: [
-          { required: true, message: '请输入主键', trigger: 'blur' }
-        ],
-        creator: [
-          { required: true, message: '请输入创建者', trigger: 'blur' }
-        ],
-        creatorName: [
-          { required: true, message: '请输入创建者名称', trigger: 'blur' }
-        ],
-        modifier: [
-          { required: true, message: '请输入修改者', trigger: 'blur' }
-        ],
-        modifierName: [
-          { required: true, message: '请输入修改者名称', trigger: 'blur' }
-        ],
-        updateTime: [
-          { required: true, message: '请选择修改时间', trigger: 'change' }
-        ],
-        remark: [
-          { required: true, message: '请输入备注', trigger: 'blur' }
-        ],
-        status: [
-          { required: true, message: '请选择状态', trigger: 'change' }
-        ],
-        statusDesc: [
-          { required: true, message: '请选择状态变更描述', trigger: 'change' }
-        ],
-        relatedFormId: [
-          { required: true, message: '请输入相关单号ID', trigger: 'blur' }
-        ],
-        responsibleUserId: [
-          { required: true, message: '请输入负责人ID', trigger: 'blur' }
-        ],
-        ownerOrgId: [
-          { required: true, message: '请输入归属门店ID（组织ID），当数据权限归属到本组织以及本下级', trigger: 'blur' }
         ],
       }
     };
@@ -349,7 +145,14 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.submitLoading = true;
-          addOrUpdate({ ...this.form }).then(res => {
+          const submitForm = {
+            changeAfterQty: this.form.changeAfterQty,
+            changeDesc: this.form.changeDesc,
+            changeDescFileId: this.form.changeDescFileId,
+            changeBeforeQty: this.form.quotaQty,
+            relatedId: this._id,
+          };
+          updateTestDriveQuota(submitForm).then(res => {
             this.$message({
               message: '保存成功',
               type: 'success'
@@ -375,7 +178,8 @@ export default {
       // TIPS: 此处可添加表单默认值，如当前用户信息等
       // const userInfo = this.$store.state.user.userInfo;
       return {
-        ...defaultForm
+        ...defaultForm,
+        changeBeforeQty: defaultForm.quotaQty,
         // ownerId: userInfo.userId,
         // ownerName: userInfo.userName,
       };

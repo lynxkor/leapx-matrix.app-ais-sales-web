@@ -247,6 +247,14 @@ export function vehicleRangePower (data) {
 }
 
 /**
+ * 整车主数据-整车物料列表查询
+ * @param {*} data
+ */
+export function vehicleMaterials (data) {
+  return api.jsonPost('/datacenter/web/materials/vehicleMaterials/list', data);
+}
+
+/**
  * 仓库名称查询
  * @param {*} data
  */
@@ -276,4 +284,32 @@ export function vehicleModelYearTypeRelationDistinctYeayType (data) {
  */
 export function loginUserGet (data) {
   return api.jsonPost('/datacenter/web/common/loginUser/get', data);
+}
+
+/**
+ * 建店类型接口 级联
+ * @param {*} data
+ */
+export function getBuildType (data) {
+  return api.get('/network/portal/DataDict/getBuildType', data);
+}
+
+/**
+ * 大区列表查询
+ * @param {*} data
+ */
+export function getRigion (data) {
+  data = {
+    ...data,
+    orgType: '1020',
+  };
+  return api.jsonPost('/accountService/orgInfo/findByReginType2R', data);
+}
+
+/**
+ * 母公司列表查询
+ * @param {*} data
+ */
+export function getParentCompany (data) {
+  return api.jsonPost('/network/portal/parentCompany/page', data);
 }
