@@ -135,7 +135,7 @@ export default {
   components: {
     PageSearchAction,
     LPVxeTable,
-    // FetchSelect,
+    FetchSelect,
     Upload
   },
   data () {
