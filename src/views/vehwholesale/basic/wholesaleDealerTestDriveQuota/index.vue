@@ -9,7 +9,7 @@
       label-width="150px"
       class="ais-search-form"
     >
-  `      <el-form-item label="门店编码">
+        <el-form-item label="门店编码">
           <fetch-select
             filterable
             clearable
@@ -122,7 +122,7 @@
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
+      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -267,34 +267,7 @@ export default {
               },
               type: 'info'
             }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
-            }, {
               name: '日志',
-              click: (rowIndex, row) => {
-                this.$message({
-                  type: 'info',
-                  message: '功能开发中!'
-                });
-              },
-              type: 'info'
-            }, {
-              name: '配额调整日志',
               click: (rowIndex, row) => {
                 this.$router.push({
                   path: '/vehwholesale/basic/dealerDemoVehicleQuotaRecord',

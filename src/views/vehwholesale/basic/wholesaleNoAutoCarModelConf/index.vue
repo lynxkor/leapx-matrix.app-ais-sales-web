@@ -213,10 +213,7 @@ export default {
             }, {
               name: '日志',
               click: (rowIndex, row) => {
-                this.$message({
-                  type: 'info',
-                  message: '功能开发中!'
-                });
+                this.$auditLog.show({ id: row.id })
               },
               type: 'info'
             }]
