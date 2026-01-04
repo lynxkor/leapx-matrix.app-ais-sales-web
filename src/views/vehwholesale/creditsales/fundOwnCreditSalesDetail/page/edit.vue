@@ -226,7 +226,7 @@
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="备注（说明）" prop="remark">
+              <el-form-item label="备注" prop="remark">
                 <el-input
                   placeholder="请输入"
                   v-model="form.remark"
@@ -376,8 +376,8 @@ export default {
     return {
       pageTitle: '账户管理-赊销管理-自有资金赊销明细管理',
       pageType: 'edit',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-page',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-page',
       isEditing: false,
       loading: false,
       submitLoading: false,
@@ -473,7 +473,7 @@ export default {
           { required: true, message: '请输入修改者', trigger: 'change' }
         ],
         remark: [
-          { required: true, message: '请输入备注（说明）', trigger: 'change' }
+          { required: true, message: '请输入备注', trigger: 'change' }
         ],
         status: [
           { required: true, message: '请选择状态', trigger: 'change' }

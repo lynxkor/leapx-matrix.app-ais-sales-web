@@ -13,16 +13,14 @@
         <div class="common-section-body">
           <!-- TIPS: 根据实际情况调整展示字段和宽度 -->
           <el-form :inline="true" ref="ruleForm" label-width="150px">
-            <el-form-item label="记录编号：" prop="creditSalesFeeConfigCode">
-              {{ info.creditSalesFeeConfigCode  }}
-            </el-form-item>
+
             <el-form-item label="车系名称：" prop="seriesName">
               {{ info.seriesName  }}
             </el-form-item>
             <el-form-item label="年款名称：" prop="yearTypeName">
               {{ info.yearTypeName  }}
             </el-form-item>
-            <el-form-item label="首付款比例，如0.15：" prop="downPaymentRatio">
+            <el-form-item label="首付款比例" prop="downPaymentRatio">
               {{ info.downPaymentRatio  }}
             </el-form-item>
             <el-form-item label="是否使用返利：" prop="useRebate">
@@ -43,11 +41,11 @@
             <el-form-item label="有效结束日期：" prop="effectiveEndTime">
               {{ info.effectiveEndTime  }}
             </el-form-item>
-            <el-form-item label="备注（说明）：" prop="remark">
+            <el-form-item label="备注：" prop="remark">
               {{ info.remark  }}
-            </el-form-item>
-            <el-form-item label="状态：" prop="status">
-              {{ info.status  }}
+              </el-form-item>
+           <el-form-item label="记录编号：" prop="creditSalesFeeConfigCode">
+              {{ info.creditSalesFeeConfigCode  }}
             </el-form-item>
             <el-form-item label="创建人：" prop="creatorName">
               {{ info.creatorName  }}
@@ -55,7 +53,10 @@
             <el-form-item label="创建时间：" prop="createTime">
               {{ info.createTime  }}
             </el-form-item>
-            <el-form-item label="修改人：" prop="modifierName">
+            <el-form-item label="状态：" prop="status">
+              {{ info.statusLabel  }}
+            </el-form-item>
+            <!-- <el-form-item label="修改人：" prop="modifierName">
               {{ info.modifierName  }}
             </el-form-item>
             <el-form-item label="修改时间：" prop="updateTime">
@@ -78,7 +79,7 @@
             </el-form-item>
             <el-form-item label="年款ID：" prop="yearTypeId">
               {{ info.yearTypeId  }}
-            </el-form-item>
+            </el-form-item> -->
           </el-form>
         </div>
       </section>
@@ -101,8 +102,8 @@ export default {
     return {
       pageTitle: '账户管理-赊销管理-赊销资费设置管理',
       pageType: 'detail',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-fundCreditSalesFeeConfig',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-fundCreditSalesFeeConfig',
       loading: true,
       info: {},
       yes_no_enum_map: YES_NO_ENUM_MAP

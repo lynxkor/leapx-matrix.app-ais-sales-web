@@ -17,11 +17,19 @@
         />
       </el-form-item>
       <el-form-item label="母公司名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerCompanyName"
-          clearable
-        />
+        <fetch-select
+            :remote-method="getParentCompany"
+            remote
+            v-model="form.dealerCompanyName"
+            placeholder="请选择"
+            labelKey="name"
+            valueKey="id"
+            clearable
+            multiple
+            collapseTags
+            filterable
+            :options="seriesList"
+            @change="seriesListChange" />
       </el-form-item>
       <el-form-item label="母公司编码"  v-show="this.visibleCount === 3 || show">
         <el-input
@@ -79,7 +87,7 @@
             filterable
           />
         </el-form-item>
-        <el-form-item label="备注（说明）">
+        <el-form-item label="备注">
           <el-input
             placeholder="请输入"
             v-model="form.remark"
@@ -165,7 +173,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesConfig/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -174,6 +182,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import { get } from 'core-js/core/dict';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -209,7 +218,7 @@ export default {
     return {
       pageTitle: '账户管理-赊销管理-自有资金赊销配置管理',
       pageType: 'list',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundOwnCreditSalesConfig',
       form: {
         ...defaultForm
@@ -259,7 +268,7 @@ export default {
           { props: 'auditStatus', label: '配置状态', visible: true, width: 200 },
           { props: 'reviewName', label: '复核人人', visible: true, width: 200 },
           { props: 'reviewTime', label: '复核时间', visible: true, width: 200 },
-          { props: 'remark', label: '备注（说明）', visible: true, width: 200 },
+          { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'reviewOpinion', label: '复核意见', visible: true, width: 200 },
           { props: 'modifierName', label: '修改人', visible: true, width: 200 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
@@ -486,7 +495,16 @@ export default {
       //     });
       //   });
       // });
-    }
+    },
+    async getParentCompany (query) {
+      try {
+        const res = await getParentCompany({ parentCompanyName: query });
+        this.parentCompanyNames = res;
+        return res;
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
+    },
   }
 };
 </script>

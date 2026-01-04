@@ -118,7 +118,7 @@
                   end-placeholder="结束日期"
                 />
               </el-form-item>
-              <el-form-item label="备注（说明）" prop="remark">
+              <el-form-item label="备注" prop="remark">
                 <el-input
                   placeholder="请输入"
                   v-model="form.remark"
@@ -302,8 +302,8 @@ export default {
     return {
       pageTitle: '账户管理-赊销管理-自有资金赊销额度管理',
       pageType: 'edit',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-fundOwnCreditSalesLimit',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-fundOwnCreditSalesLimit',
       isEditing: false,
       loading: false,
       submitLoading: false,
@@ -354,7 +354,7 @@ export default {
           { required: true, message: '请选择额度生效日期', trigger: 'change' }
         ],
         remark: [
-          { required: true, message: '请输入备注（说明）', trigger: 'change' }
+          { required: true, message: '请输入备注', trigger: 'change' }
         ],
         expireTime: [
           { required: true, message: '请选择额度失效日期', trigger: 'change' }

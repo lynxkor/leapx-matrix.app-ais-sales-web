@@ -11,13 +11,13 @@
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
-              <el-form-item label="主键" prop="id">
+              <!-- <el-form-item label="主键" prop="id">
                 <el-input
                   placeholder="请输入"
                   v-model="form.id"
                   clearable
                 />
-              </el-form-item>
+              </el-form-item> -->
               <el-form-item label="母公司名称" prop="dealerCompanyName">
                 <el-input
                   placeholder="请输入"
@@ -120,7 +120,7 @@
                   end-placeholder="结束日期"
                 />
               </el-form-item>
-              <el-form-item label="备注（说明）" prop="remark">
+              <el-form-item label="备注" prop="remark">
                 <el-input
                   placeholder="请输入"
                   v-model="form.remark"
@@ -273,8 +273,8 @@ export default {
     return {
       pageTitle: '账户管理-赊销管理-自有资金赊销配置管理',
       pageType: 'edit',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-fundOwnCreditSalesConfig',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-fundOwnCreditSalesConfig',
       isEditing: false,
       loading: false,
       submitLoading: false,
@@ -322,7 +322,7 @@ export default {
           { required: true, message: '请选择复核时间', trigger: 'change' }
         ],
         remark: [
-          { required: true, message: '请输入备注（说明）', trigger: 'change' }
+          { required: true, message: '请输入备注', trigger: 'change' }
         ],
         reviewOpinion: [
           { required: true, message: '请输入复核意见', trigger: 'change' }

@@ -52,7 +52,7 @@
             <el-form-item label="复核时间：" prop="reviewTime">
               {{ info.reviewTime  }}
             </el-form-item>
-            <el-form-item label="备注（说明）：" prop="remark">
+            <el-form-item label="备注：" prop="remark">
               {{ info.remark  }}
             </el-form-item>
             <el-form-item label="复核意见：" prop="reviewOpinion">
@@ -101,8 +101,8 @@ export default {
     return {
       pageTitle: '账户管理-赊销管理-自有资金赊销配置管理',
       pageType: 'detail',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-fundOwnCreditSalesConfig',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-fundOwnCreditSalesConfig',
       loading: true,
       info: {},
       yes_no_enum_map: YES_NO_ENUM_MAP

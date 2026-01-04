@@ -55,7 +55,7 @@
             <el-form-item label="额度生效日期：" prop="effectiveTime">
               {{ info.effectiveTime  }}
             </el-form-item>
-            <el-form-item label="备注（说明）：" prop="remark">
+            <el-form-item label="备注：" prop="remark">
               {{ info.remark  }}
             </el-form-item>
             <el-form-item label="额度失效日期：" prop="expireTime">
@@ -113,8 +113,8 @@ export default {
     return {
       pageTitle: '账户管理-赊销管理-自有资金赊销额度管理',
       pageType: 'detail',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-fundOwnCreditSalesLimit',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-fundOwnCreditSalesLimit',
       loading: true,
       info: {},
       yes_no_enum_map: YES_NO_ENUM_MAP

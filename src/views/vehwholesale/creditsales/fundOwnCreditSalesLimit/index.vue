@@ -123,7 +123,7 @@ export default {
     return {
       pageTitle: '账户管理-赊销管理-自有资金赊销额度管理',
       pageType: 'list',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundOwnCreditSalesLimit',
       form: {
         ...defaultForm
@@ -163,9 +163,9 @@ export default {
           },
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
-          { props: 'creditAccountStatus', label: '赊销账户状态', visible: true, width: 200 },
+          { props: 'creditAccountStatusLabel', label: '赊销账户状态', visible: true, width: 200 },
           { props: 'creditAmount', label: '授信额度', visible: true, width: 200 },
-          { props: 'downPaymentRatio', label: '首付款比例，如0.15', visible: true, width: 200 },
+          { props: 'downPaymentRatio', label: '首付款比例', visible: true, width: 200 },
           { props: 'totalDrawnAmount', label: '累计提款金额', visible: true, width: 200 },
           { props: 'usedCreditAmount', label: '已用额度', visible: true, width: 200 },
           { props: 'usedRatio', label: '资金使用率', visible: true, width: 200 },
@@ -174,7 +174,7 @@ export default {
           { props: 'remainingReceivableAmount', label: '剩余应收账款', visible: true, width: 200 },
           { props: 'latestSettleDateTime', label: '最近结算时间', visible: true, width: 200 },
           { props: 'effectiveTime', label: '额度生效日期', visible: true, width: 200 },
-          { props: 'remark', label: '备注（说明）', visible: true, width: 200 },
+          { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'expireTime', label: '额度失效日期', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
