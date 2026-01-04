@@ -7,11 +7,13 @@ import ElementUI from 'element-ui';
 import Vuex from 'vuex';
 import '@/libs/directive/permissions.js';
 import AuditLogPlugin from '@/libs/plugins/auditLog.js';
+import PrintPlugin from '@/libs/plugins/print.js';
+
 import '@/common/css/element-variables.scss';
 import '@/common/css/base.css';
-import '@/common/css/base.scss';
-import '@/libs/assets/styles/common.scss';
+import '@/libs/assets/styles/index.scss';
 import '@/libs/assets/iconfont/iconfont.css';
+import '@leapmotor/splitpanes/dist/splitpanes.css';
 
 /* -------------------- 注册vxe-table ----------------- */
 import {
@@ -51,6 +53,7 @@ Vue.use(Vuex);
 
 /* -------------------- 注册插件 ----------------- */
 Vue.use(AuditLogPlugin);
+Vue.use(PrintPlugin);
 
 // 监听全局分辨率
 const onResize = () => {

@@ -135,7 +135,7 @@ export default {
   components: {
     PageSearchAction,
     LPVxeTable,
-    FetchSelect,
+    // FetchSelect,
     Upload
   },
   data () {
@@ -256,6 +256,8 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
+      this.optionObj.form.page = 1;
+      this.optionObj.form.pageSize = pageSize;
       this.getData();
     },
     exportExcel () {

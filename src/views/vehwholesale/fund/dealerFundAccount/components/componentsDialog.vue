@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" width="1200px" :visible.sync="dialogVisible">
+  <el-dialog :title="title" width="1200px" :visible.sync="dialogVisible" @close="handleClose">
     <div class="page-common m-account-list">
       <el-form
         ref="form"
@@ -126,7 +126,7 @@
           <el-input-number
             placeholder="请输入"
             v-model="entOrderQuota"
-            :min="0"
+            :min="0.01"
             :max="1"
             :step="0.01"
             :precision="2"
@@ -192,6 +192,21 @@ export default {
     EditTable,
     PageSearchAction
   },
+  computed: {
+    currentPageType () {
+      return this.pageTpye; // 将 pageTpye 转换为计算属性
+    }
+  },
+  watch: {
+    currentPageType: {
+      immediate: true, // 确保组件初始化时也能触发
+      handler (newVal) {
+        if (newVal) {
+          this.updateDialogContent(newVal); // 根据新的 pageTpye 更新内容
+        }
+      }
+    }
+  },
   data () {
     return {
       title: '',
@@ -208,23 +223,23 @@ export default {
       columns: [],
       columns1: [
         { field: 'dealerCompanyName', title: '母公司名称', width: '30%' },
-        { field: 'fundType', title: '资金类型', width: 120 },
+        { field: 'fundTypeLabel', title: '资金类型', width: 120 },
         { field: 'entOrderQuota', title: '企业订单额度系数', width: 200 },
         { field: 'financialOrganizationName', title: '金融机构', width: 120 },
         { field: 'availableBalance', title: '可用余额', width: 200 },
         { field: 'rebateAvailableBalance', title: '返利账户可用余额', width: 200 },
-        { field: 'allowUseRebate', title: '是否允许使用返利', width: 200 },
+        { field: 'allowUseRebateLabel', title: '是否允许使用返利', width: 200 },
         { field: 'fundAccountCode', title: '账户编号', width: 200 },
         { field: 'lastTradeTime', title: '最近交易时间', width: 200 },
         { field: 'createTime', title: '创建时间', width: 200 },
       ],
       columns2: [
         { field: 'dealerCompanyName', title: '母公司名称', width: '30%' },
-        { field: 'fundType', title: '资金类型', width: 120 },
+        { field: 'fundTypeLabel', title: '资金类型', width: 120 },
         { field: 'financialOrganizationName', title: '金融机构', width: 120 },
         { field: 'availableBalance', title: '可用余额', width: 200 },
         { field: 'rebateAvailableBalance', title: '返利账户可用余额', width: 200 },
-        { field: 'allowUseRebate', title: '是否允许使用返利', width: 200 },
+        { field: 'allowUseRebateLabel', title: '是否允许使用返利', width: 200 },
         { field: 'fundAccountCode', title: '账户编号', width: 200 },
       ],
       optionObj: {
@@ -239,6 +254,13 @@ export default {
     };
   },
   methods: {
+    handleClose () {
+      this.form = { ...defaultForm }; // 重置表单数据
+      this.tableData = []; // 清空表格数据
+      this.selectionList = []; // 清空多选框选择状态
+      this.columns = []; // 清空列配置
+      this.title = ''; // 清空标题
+    },
     repairItemSearch (query) { return listIdNames({ seriesNameLike: query, status: 1 }); },
     entOrderQuotaSubmit () {
       let params = {
@@ -273,24 +295,29 @@ export default {
       this.debouncedGetData();
     },
     handleBatchEnable (val) {
-      let params = {
-        ids: this.selectionList.map(item => item.id),
-        allowEntOrderSettle: val
-      };
-      setRebateFlag(params).then(res => {
-        let message = val ? '批量启用成功' : '批量关闭成功';
-        this.$message.success(message);
-        this.getData();
+      let msg = val ? '启用' : '关闭';
+      this.$confirm(`确定要批量${msg}返利吗？`).then(() => {
+        let params = {
+          ids: this.selectionList.map(item => item.id),
+          allowEntOrderSettle: val
+        };
+        setRebateFlag(params).then(res => {
+          let message = val ? '批量启用成功' : '批量关闭成功';
+          this.$message.success(message);
+          this.getData();
+        }).catch(() => {});
       }).catch(() => {});
     },
     setEntOrderSettleFlag (val) {
-      let params = {
-        ids: this.selectionList.map(item => item.id),
-        allowEntOrderSettle: val
-      };
-      setEntOrderSettleFlag(params).then(res => {
-        this.$message.success('批量关闭成功');
-        this.getData();
+      this.$confirm('确定要批量关闭结算订单吗？').then(() => {
+        let params = {
+          ids: this.selectionList.map(item => item.id),
+          allowEntOrderSettle: val
+        };
+        setEntOrderSettleFlag(params).then(res => {
+          this.$message.success('批量关闭成功');
+          this.getData();
+        }).catch(() => {});
       }).catch(() => {});
     },
     setSettleSort () {
@@ -307,6 +334,8 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
+      this.optionObj.form.page = 1;
+      this.optionObj.form.pageSize = pageSize;
       this.getData();
     },
     getFormData () {
@@ -343,17 +372,17 @@ export default {
       this.selectionList = selection;
     },
 
-    dialogshow () {
-      this.dialogVisible = true;
-      this.fundTypesList();
-      if (this.pageTpye === 'setEntOrderSettleFlag') {
+    dialogshow (type) {
+      if (type === 'setEntOrderSettleFlag') {
         this.columns = this.columns1;
         this.title = '设置企业订单结算';
-      } else {
+      } else if (type === 'setRebateFlag') {
         this.columns = this.columns2;
         this.title = '设置使用返利';
       }
+      this.fundTypesList();
       this.getData();
+      this.dialogVisible = true;
     },
     confirm () {
       this.dialogVisible = true;

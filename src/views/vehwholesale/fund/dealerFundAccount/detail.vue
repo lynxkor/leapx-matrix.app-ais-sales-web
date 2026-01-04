@@ -163,14 +163,14 @@ export default {
   methods: {
     pageChange (page) {
       this.optionObj.form.page = page;
-      this.getDetail();
+      this.getList();
     },
     sizeChange (size) {
       this.optionObj.form.size = size;
-      this.getDetail();
+      this.getList();
     },
     getList () {
-      getList({ fundAccountId: this.info.fundAccountCode, pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
+      getList({ fundAccountId: this.$route.query.id, pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
           console.log(res);
           this.tableData = res.records;

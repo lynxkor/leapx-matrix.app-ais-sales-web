@@ -12,8 +12,9 @@
       <el-form-item label="过账时间">
         <dateranges
           v-model="form.transactionTime"
-          :limtNum="3"
-          ref="createTime"/>
+          :setDefault="true"
+          deftTime="最近一周"
+          ref="transactionTime"/>
         <!-- <el-date-picker
          :default-time="['00:00:00', '23:59:59']"
           v-model="form.transactionTime"
@@ -66,7 +67,7 @@
           />
         </el-form-item>
         <el-form-item label="母公司编码">
-          <tag-input v-model="form.dealerComapnyCode" placeholder="请输入" />
+          <tag-input v-model="form.dealerComapnyCodes" placeholder="请输入" />
           <!-- <el-input
             placeholder="请输入"
             v-model="form.dealerComapnyCode"
@@ -252,11 +253,12 @@ export default {
             }]
           },
           { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 200 },
-          { props: 'financialOrganizationName', label: '金融机构ID', visible: true, width: 200 },
+          { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 200 },
           { props: 'transactionTypeLabel', label: '交易类型', visible: true, width: 200 },
           { props: 'transactionAmount', label: '交易金额', visible: true, width: 200 },
           { props: 'transactionTime', label: '过账时间', visible: true, width: 200 },
           { props: 'transactionReceiptCode', label: '交易凭证号', visible: true, width: 200 },
+          { props: 'lineNo', label: '行项目号', visible: true, width: 200 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'vin', label: '整车VIN编码', visible: true, width: 200 },
           { props: 'wholesaleOrderCode', label: '整车批售订单', visible: true, width: 200 },
@@ -301,7 +303,8 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
-      this.$refs.createTime.clearTime();
+      this.optionObj.form.page = 1;
+      this.optionObj.form.pageSize = pageSize;
       this.getData();
     },
     exportExcel () {
@@ -388,18 +391,10 @@ export default {
           delete data[key];
         }
       });
-
-      if (this.form.createTime) {
-        delete data.createTime;
-        if (this.form.createTime.length > 1) {
-          data.createTimeStart = this.form.createTime[0];
-          data.createTimeEnd = this.form.createTime[1];
-        }
-      }
-
-      if (this.form.transactionTime.length === 2) {
+      if (this.form.transactionTime && this.form.transactionTime.length === 2) {
         data.transactionTimeStart = this.form.transactionTime[0];
         data.transactionTimeEnd = this.form.transactionTime[1];
+        delete data.transactionTime;
       }
 
       return data;

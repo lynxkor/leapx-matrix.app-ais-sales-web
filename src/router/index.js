@@ -531,7 +531,7 @@ const routes = [
       component: () => import('@/views/datacenter/materials/vehicleMaterialsMatch/index.vue'),
 
       meta: {
-        name: '整车主数据-物料配车关系管理',
+        name: '整车主数据-物料可配关系管理',
         keepAlive: true
       }
     }, {
@@ -540,7 +540,7 @@ const routes = [
       component: () => import('@/views/datacenter/materials/vehicleMaterialsMatch/detail.vue'),
 
       meta: {
-        name: '整车主数据-物料配车关系管理详情',
+        name: '整车主数据-物料可配关系管理详情',
         noResourceUrl: 'true'
       }
     }, {
@@ -549,7 +549,7 @@ const routes = [
       component: () => import('@/views/datacenter/materials/vehicleMaterialsMatch/edit.vue'),
 
       meta: {
-        name: '整车主数据-物料配车关系管理详情',
+        name: '整车主数据-物料可配关系管理详情',
         noResourceUrl: 'true'
       }
     }, {
@@ -1135,6 +1135,114 @@ const routes = [
 
       meta: {
         name: 'VDC库存台账详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/productManager/productSkuPrice',
+      name: 'productManager',
+      component: () => import('@/views/vehretail/productManager/productSkuPrice/index.vue'),
+
+      meta: {
+        name: '销售管理-商品管理-商品SKU价格维护管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/productmanager/productSkuPrice/detail',
+      name: 'productManagerDetail',
+      component: () => import('@/views/vehretail/productManager/productSkuPrice/detail.vue'),
+
+      meta: {
+        name: '销售管理-商品管理-商品SKU价格维护管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/productmanager/productSkuPrice/edit',
+      name: 'productManagerEdit',
+      component: () => import('@/views/vehretail/productManager/productSkuPrice/edit.vue'),
+
+      meta: {
+        name: '销售管理-商品管理-商品SKU价格维护管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/productManager/productCenter',
+      name: 'productCenter',
+      component: () => import('@/views/vehretail/productManager/productCenter/index.vue'),
+
+      meta: {
+        name: '销售管理-商品管理-商品中心管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/productmanager/productcenter/detail',
+      name: 'productCenterDetail',
+      component: () => import('@/views/vehretail/productManager/productCenter/detail.vue'),
+
+      meta: {
+        name: '销售管理-商品管理-商品中心管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/productmanager/productcenter/edit',
+      name: 'productCenterEdit',
+      component: () => import('@/views/vehretail/productManager/productCenter/edit.vue'),
+
+      meta: {
+        name: '销售管理-商品管理-商品中心管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/rebate/fundVehicleRebateBill',
+      name: 'fundVehicleRebateBill',
+      component: () => import('@/views/vehwholesale/rebate/fundVehicleRebateBill/index.vue'),
+
+      meta: {
+        name: '账户管理-整车返利-整车返利核算单明细管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/rebate/fundvehiclerebatebill/detail',
+      name: 'fundVehicleRebateBillDetail',
+      component: () => import('@/views/vehwholesale/rebate/fundVehicleRebateBill/detail.vue'),
+
+      meta: {
+        name: '账户管理-整车返利-整车返利核算单明细管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/rebate/fundvehiclerebatebill/edit',
+      name: 'fundVehicleRebateBillEdit',
+      component: () => import('@/views/vehwholesale/rebate/fundVehicleRebateBill/edit.vue'),
+
+      meta: {
+        name: '账户管理-整车返利-整车返利核算单明细管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/rebate/fundVehicleRebateBillDetail',
+      name: 'fundVehicleRebateBillDetail',
+      component: () => import('@/views/vehwholesale/rebate/fundVehicleRebateBillDetail/index.vue'),
+
+      meta: {
+        name: '账户管理-整车返利-整车返利核算单明细管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/rebate/fundvehiclerebatebilldetail/detail',
+      name: 'fundVehicleRebateBillDetailDetail',
+      component: () => import('@/views/vehwholesale/rebate/fundVehicleRebateBillDetail/detail.vue'),
+
+      meta: {
+        name: '账户管理-整车返利-整车返利核算单明细管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/rebate/fundvehiclerebatebilldetail/edit',
+      name: 'fundVehicleRebateBillDetailEdit',
+      component: () => import('@/views/vehwholesale/rebate/fundVehicleRebateBillDetail/edit.vue'),
+
+      meta: {
+        name: '账户管理-整车返利-整车返利核算单明细管理详情',
         noResourceUrl: 'true'
       }
     }]
