@@ -12,182 +12,97 @@
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
               <el-form-item label="门店编码" prop="dealerCode">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.dealerCode"
+                <fetch-select
+                  filterable
                   clearable
+                  remote
+                  v-model="form.dealerCode"
+                  :remote-method="getDealerCodeList"
+                  value-key="storeCode"
+                  label-key="storeCode"
+                  @change="handleChangeDealer"
+                  :disabled="!!_id"
                 />
               </el-form-item>
               <el-form-item label="门店名称" prop="dealerName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.dealerName"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="年款" prop="vehicleYearType">
                 <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.vehicleYearType"
-                  placeholder="请选择"
-                  clearable
                   filterable
+                  clearable
+                  remote
+                  v-model="form.dealerCode"
+                  :remote-method="getDealerCodeList"
+                  value-key="storeCode"
+                  label-key="storeName"
+                  @change="handleChangeDealer"
+                  :disabled="!!_id"
                 />
               </el-form-item>
-              <el-form-item label="系列" prop="vehicleModelLine">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.vehicleModelLine"
+              <el-form-item label="年款" prop="vehicleYearTypeId">
+                <fetch-select
+                  filterable
                   clearable
+                  remote
+                  v-model="form.vehicleYearTypeId"
+                  :params="form.vehicleYearType"
+                  :remote-method="getVehicleYearTypeList"
+                  value-key="id"
+                  label-key="name"
+                  :disabled="!!_id"
+                  @change="(val, record) => {form.vehicleYearType = record?.name || ''}"
                 />
               </el-form-item>
-              <el-form-item label="车系" prop="seriesName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.seriesName"
+              <el-form-item label="系列" prop="vehicleModelLineId">
+                <fetch-select
+                  filterable
                   clearable
+                  remote
+                  v-model="form.vehicleModelLineId"
+                  :params="form.vehicleModelLine"
+                  :remote-method="getVehicleModelLineList"
+                  value-key="id"
+                  label-key="name"
+                  :disabled="!!_id"
+                  @change="(val, record) => {form.vehicleModelLine = record?.name || ''}"
+                />
+              </el-form-item>
+              <el-form-item label="车系" prop="seriesId">
+                <fetch-select
+                  filterable
+                  clearable
+                  remote
+                  v-model="form.seriesId"
+                  :remote-method="getVehicleSeriesList"
+                  value-key="id"
+                  label-key="name"
+                  :disabled="!!_id"
+                  @change="(val, record) => {form.seriesName = record?.name || ''}"
                 />
               </el-form-item>
               <el-form-item label="累计已申请数" prop="requestQty">
-                <el-input
+                <el-input-number
                   placeholder="请输入"
                   v-model="form.requestQty"
                   clearable
-                />
-              </el-form-item>
-              <el-form-item label="调整说明" prop="changeDesc">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.changeDesc"
-                  clearable
+                  :precision="0"
+                  :disabled="!!_id"
                 />
               </el-form-item>
               <el-form-item label="配额数量" prop="quotaQty">
-                <el-input
+                <el-input-number
                   placeholder="请输入"
                   v-model="form.quotaQty"
                   clearable
+                  :precision="0"
                 />
               </el-form-item>
               <el-form-item label="状态" prop="status">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="xxx"
+                  enumCode="StatusEnum"
                   v-model="form.status"
                   placeholder="请选择"
                   clearable
                   filterable
-                />
-              </el-form-item>
-              <el-form-item label="修改者名称" prop="modifierName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modifierName"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="修改时间" prop="updateTime">
-                <el-date-picker
-                  :default-time="['00:00:00', '23:59:59']"
-                  v-model="form.updateTime"
-                  :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                />
-              </el-form-item>
-              <el-form-item label="主键" prop="id">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.id"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="创建者" prop="creator">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.creator"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="创建者名称" prop="creatorName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.creatorName"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="创建时间" prop="createTime">
-                <el-date-picker
-                  :default-time="['00:00:00', '23:59:59']"
-                  v-model="form.createTime"
-                  :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                />
-              </el-form-item>
-              <el-form-item label="修改者" prop="modifier">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modifier"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="备注" prop="remark">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.remark"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="状态变更描述" prop="statusDesc">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.statusDesc"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                />
-              </el-form-item>
-              <el-form-item label="数据来源，140:新销服; 老销服:10" prop="dataSource">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.dataSource"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="年款ID" prop="vehicleYearTypeId">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.vehicleYearTypeId"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                />
-              </el-form-item>
-              <el-form-item label="系列ID" prop="vehicleModelLineId">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.vehicleModelLineId"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="车系ID" prop="seriesId">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.seriesId"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="归属门店ID（组织ID），当数据权限归属到本组织以及本下级" prop="ownerOrgId">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.ownerOrgId"
-                  clearable
                 />
               </el-form-item>
             </el-form>
@@ -206,7 +121,7 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehwholesale/basic/wholesaleDealerTestDriveQuota/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import { getEnum } from '@/api/common';
+import { getEnum, listOrgStoreInfo, listVehicleYearType, vehicleModelLineList, vehicleSeriesList } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -219,9 +134,9 @@ const defaultForm = {
   vehicleYearType: '',
   vehicleModelLine: '',
   seriesName: '',
-  requestQty: '',
+  requestQty: '0',
   changeDesc: '',
-  quotaQty: '',
+  quotaQty: '0',
   status: '',
   modifierName: '',
   updateTime: '',
@@ -334,7 +249,7 @@ export default {
           { required: true, message: '请输入系列ID', trigger: 'blur' }
         ],
         seriesId: [
-          { required: true, message: '请输入车系ID', trigger: 'blur' }
+          { required: false, message: '请输入车系ID', trigger: 'blur' }
         ],
         ownerOrgId: [
           { required: true, message: '请输入归属门店ID（组织ID），当数据权限归属到本组织以及本下级', trigger: 'blur' }
@@ -416,6 +331,24 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    async getDealerCodeList (params) {
+      return listOrgStoreInfo({ keyword: params });
+    },
+    handleChangeDealer (val, selectedOption) {
+      if (val) {
+        this.form.dealerCode = selectedOption?.storeCode || '';
+        this.form.dealerName = selectedOption?.storeName || '';
+      }
+    },
+    async getVehicleSeriesList (params) {
+      return vehicleSeriesList({ seriesNameLike: params, status: 1 });
+    },
+    async getVehicleModelLineList (params) {
+      return vehicleModelLineList({ modelLineNameLike: params, status: 1 });
+    },
+    async getVehicleYearTypeList (params) {
+      return listVehicleYearType({ yearTypeNameLike: params, status: 1 });
     }
   }
 };

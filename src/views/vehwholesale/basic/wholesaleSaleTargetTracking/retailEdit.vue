@@ -108,6 +108,7 @@
                   v-model="form.newOrderQty"
                   clearable
                   min="0"
+                  :precision="0"
                 />
               </el-form-item>
               <el-form-item label="新增锁单目标数" prop="newLockTargetQty">
@@ -116,6 +117,7 @@
                   v-model="form.newLockTargetQty"
                   clearable
                   min="0"
+                  :precision="0"
                 />
               </el-form-item>
               <el-form-item label="净增锁单目标数" prop="netLockTargetQty">
@@ -124,6 +126,7 @@
                   v-model="form.netLockTargetQty"
                   clearable
                   min="0"
+                  :precision="0"
                 />
               </el-form-item>
               <el-form-item label="批售考核目标数" prop="wholesaleAssessmentTargetQty">
@@ -132,6 +135,7 @@
                   v-model="form.wholesaleAssessmentTargetQty"
                   clearable
                   min="0"
+                  :precision="0"
                 />
               </el-form-item>
               <el-form-item label="交付目标数" prop="deliveryTargetQty">
@@ -140,6 +144,7 @@
                   v-model="form.deliveryTargetQty"
                   clearable
                   min="0"
+                  :precision="0"
                 />
               </el-form-item>
               <el-form-item label="零售备注" prop="retailRemark">

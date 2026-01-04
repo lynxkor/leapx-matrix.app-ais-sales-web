@@ -59,6 +59,7 @@
                   v-model="form.quantity"
                   clearable
                   min="0"
+                  :precision="0"
                 />
               </el-form-item>
               <el-form-item label="建店类型" prop="mcDealerType">
@@ -339,13 +340,19 @@ export default {
       return listVehicleYearType({ yearTypeNameLike: params, status: 1 });
     },
     async getCityList (params) {
-      return cityPage({ cityNameLike: params, status: 1 });
+      const res = await cityPage({});
+      let list = res.records || [];
+      if (params && params.trim()) {
+        const searchText = params.trim().toLowerCase();
+        list = list.filter(item => item.areaName && item.areaName.toLowerCase().includes(searchText));
+      }
+      return list;
     },
-    async getBuildType (params) {
-      return getBuildType({ areaNameLike: params, status: 1 });
+    async getBuildTypeList () {
+      return getBuildType({ status: 1 });
     },
     async fetchShopTypeEnum () {
-      this.shopTypeList = await this.getBuildType();
+      this.shopTypeList = await this.getBuildTypeList();
     }
   }
 };

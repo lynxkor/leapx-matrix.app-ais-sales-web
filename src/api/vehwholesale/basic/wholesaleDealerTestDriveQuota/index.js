@@ -42,3 +42,11 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 调整试驾车配额
+ * @param {Object} data
+ */
+export function updateTestDriveQuota (data) {
+  return api.jsonPost(prefix + 'updateTestDriveQuota', data);
+}

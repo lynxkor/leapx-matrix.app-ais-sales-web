@@ -111,7 +111,6 @@
           remote
           collapseTags
           v-model="form.seriesIds"
-          :options="seriesList"
           :remote-method="getVehicleSeriesList"
           value-key="id"
           label-key="name"
