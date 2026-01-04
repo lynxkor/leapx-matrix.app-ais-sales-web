@@ -11,7 +11,7 @@
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" inline>
-              <el-form-item label="商品价格编码" prop="skuPriceCode">
+              <el-form-item label="商品价格编码">
                 <el-input
                   placeholder="请输入"
                   v-model="form.skuPriceCode"
