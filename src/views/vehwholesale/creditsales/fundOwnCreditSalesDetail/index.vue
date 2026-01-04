@@ -1,5 +1,5 @@
 <template>
-  <div class="page-common m-page-list">
+  <div class="page-common m-fund-own-credit-sales-detail-list">
     <!--  TIPS: 自行调整如下label-width，满足label不换行  -->
     <el-form
       :inline="true"
@@ -9,84 +9,33 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="赊销明细编号">
+      <el-form-item label="主键">
         <el-input
           placeholder="请输入"
-          v-model="form.creditSalesDetailCode"
+          v-model="form.id"
           clearable
         />
       </el-form-item>
-      <el-form-item label="母公司名称">
+      <el-form-item label="创建者">
         <el-input
           placeholder="请输入"
-          v-model="form.dealerCompanyName"
+          v-model="form.creator"
           clearable
         />
       </el-form-item>
-      <el-form-item label="母公司编码"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerCompanyCode"
-          clearable
+      <el-form-item label="创建时间"  v-show="this.visibleCount === 3 || show">
+        <el-date-picker
+         :default-time="['00:00:00', '23:59:59']"
+          v-model="form.createTime"
+          type="daterange"
+          :picker-options="pickerOptions"
+          range-separator="至"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
         />
       </el-form-item>
       <template v-if="show">
-        <el-form-item label="门店编码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.dealerCode"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="门店名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.dealerName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="整车批售订单">
-          <el-input
-            placeholder="请输入"
-            v-model="form.wholesaleOrderCode"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="企业客户整车订单">
-          <el-input
-            placeholder="请输入"
-            v-model="form.entVehorderCode"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="VIN号">
-          <el-input
-            placeholder="请输入"
-            v-model="form.vin"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="批售价/折扣价">
-          <el-input
-            placeholder="请输入"
-            v-model="form.wholesalePrice"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="合格证赎回申请ID">
-          <el-input
-            placeholder="请输入"
-            v-model="form.certificateRedemptionApplyId"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="凭证号">
-          <el-input
-            placeholder="请输入"
-            v-model="form.voucherNo"
-            clearable
-          />
-        </el-form-item>
       </template>
       <page-search-action
         v-if="canList"
@@ -139,7 +88,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesDetail/page/index';
+import { getList, deleteItem, enableItem } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesDetail/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 // import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -152,17 +101,9 @@ import EditPage from './edit.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  creditSalesDetailCode: '',
-  dealerCompanyName: '',
-  dealerCompanyCode: '',
-  dealerCode: '',
-  dealerName: '',
-  wholesaleOrderCode: '',
-  entVehorderCode: '',
-  vin: '',
-  wholesalePrice: '',
-  certificateRedemptionApplyId: '',
-  voucherNo: '',
+  id: '',
+  creator: '',
+  createTime: '',
 };
 
 const pageSize = 20;
@@ -175,6 +116,7 @@ export default {
   components: {
     PageSearchAction,
     LPVxeTable,
+    // FetchSelect,
     EditPage,
     Upload
   },
@@ -195,7 +137,7 @@ export default {
       uploadDialogVisible: false,
       clickItemId: '',
       optionObj: {
-        id: 'pageTable',
+        id: 'fundOwnCreditSalesDetailTable',
         dataList: [],
         form: {
           page: 1,
@@ -203,15 +145,15 @@ export default {
         },
         dataProp: [
           {
-            props: 'creditSalesDetailCode',
-            label: '赊销明细编号',
+            props: 'id',
+            label: '主键',
             visible: true,
             width: 200,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/creditsales/fundOwnCreditSalesDetail/page/detail',
+                  path: '/vehwholesale/creditsales/fundOwnCreditSalesDetail/detail',
                   query: {
                     id: row.id
                   }
@@ -220,31 +162,39 @@ export default {
               type: 'primary'
             }]
           },
+          { props: 'creator', label: '创建者', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
+          { props: 'modifier', label: '修改者', visible: true, width: 200 },
+          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
+          { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
+          { props: 'remark', label: '备注（说明）', visible: true, width: 200 },
+          { props: 'status', label: '状态', visible: true, width: 200 },
+          { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },
+          { props: 'creditSalesDetailCode', label: '赊销明细编号', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200 },
           { props: 'dealerCode', label: '门店编码', visible: true, width: 200 },
           { props: 'dealerName', label: '门店名称', visible: true, width: 200 },
+          { props: 'vin', label: '整车VIN编码', visible: true, width: 200 },
           { props: 'wholesaleOrderCode', label: '整车批售订单', visible: true, width: 200 },
-          { props: 'entVehorderCode', label: '企业客户整车订单', visible: true, width: 200 },
-          { props: 'vin', label: 'VIN号', visible: true, width: 200 },
-          { props: 'wholesalePrice', label: '批售价/折扣价', visible: true, width: 200 },
+          { props: 'wholesalePrice', label: '批售价&#x2F;折扣价', visible: true, width: 200 },
           { props: 'cashAmount', label: '现金金额', visible: true, width: 200 },
           { props: 'rebateAmount', label: '返利金额', visible: true, width: 200 },
-          { props: 'downPaymentRatio', label: '首付款比例', visible: true, width: 200 },
           { props: 'creditSalesAmount', label: '赊销金额', visible: true, width: 200 },
           { props: 'creditSalesTime', label: '赊销时间', visible: true, width: 200 },
           { props: 'creditSalesDays', label: '赊销天数', visible: true, width: 200 },
+          { props: 'repaymentFlag', label: '是否还款', visible: true, width: 200 },
           { props: 'repaymentTime', label: '还款时间', visible: true, width: 200 },
           { props: 'repaymentAmount', label: '还款金额', visible: true, width: 200 },
           { props: 'creditSalesFee', label: '赊销费用', visible: true, width: 200 },
-          { props: 'certificateRedemptionApplyId', label: '合格证赎回申请', visible: true, width: 200 },
           { props: 'overdueFee', label: '超期赊销费用', visible: true, width: 200 },
           { props: 'penaltyFee', label: '违约金', visible: true, width: 200 },
+          { props: 'certificateRedemptionApplyId', label: '合格证赎回申请ID', visible: true, width: 200 },
           { props: 'voucherNo', label: '凭证号', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改人', visible: true, width: 200 },
-          { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
+          { props: 'entVehorderId', label: '企业客户整车订单ID', visible: true, width: 200 },
+          { props: 'wholesaleOrderId', label: '批售订单ID', visible: true, width: 200 },
+          { props: 'fundAccountId', label: '关联资金账户ID', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
@@ -255,7 +205,7 @@ export default {
               name: '编辑',
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/creditsales/fundOwnCreditSalesDetail/page/edit',
+                  path: '/vehwholesale/creditsales/fundOwnCreditSalesDetail/edit',
                   query: {
                     id: row.id
                   }
@@ -303,7 +253,7 @@ export default {
     },
     handleAdd () {
       this.$router.push({
-        path: '/vehwholesale/creditsales/fundOwnCreditSalesDetail/page/edit'
+        path: '/vehwholesale/creditsales/fundOwnCreditSalesDetail/edit'
       });
     },
     onSubmit () {
@@ -319,7 +269,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '账户管理-赊销管理-自有资金赊销明细管理',
-        dataFetchPath: 'vw/web/creditsales/fundOwnCreditSalesDetail/page',
+        dataFetchPath: 'vehwholesale/web/creditsales/fundOwnCreditSalesDetail/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -474,6 +424,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.m-page-list {
+.m-fund-own-credit-sales-detail-list {
 }
 </style>
