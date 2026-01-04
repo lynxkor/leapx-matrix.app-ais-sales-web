@@ -106,3 +106,19 @@ export function getSaleAttributeGroupList (data) {
 export function updateMarketGuidePrice (data) {
   return api.jsonPost('vr/web/product/productSku/updateMarketGuidePrice', data);
 }
+
+/**
+ * 订购属性 导出
+ * @param {Object} data
+ */
+export function productSaleAttributeExport (data) {
+  return api.jsonPost('vr/web/product/productSaleAttribute/export', data);
+}
+
+/**
+ * 订购属性 导入
+ * @param {Object} data
+ */
+export function productSaleAttributeImport (data) {
+  return api.jsonPost('vr/web/product/productSaleAttribute/import', data);
+}
