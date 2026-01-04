@@ -20,14 +20,20 @@
                 />
               </el-form-item>
               <el-form-item label="SKU编码" prop="skuCode">
-                <el-input
+                <fetch-select
+                  v-bind="selectOptions"
+                  :remote-method="remoteMethods"
+                  @change="skuCodeSelect"
+                  v-model="form.skuCode"
+                />
+                <!-- <el-input
                   placeholder="请输入"
                   v-model="form.skuCode"
                   clearable
                   :disabled="!!_id"
-                />
+                /> -->
               </el-form-item>
-              <el-form-item label="关联商品编码" prop="productCode">
+              <el-form-item label="商品编码" prop="productCode">
                 <el-input
                   placeholder="请输入"
                   v-model="form.productCode"
@@ -35,7 +41,7 @@
                   disabled
                 />
               </el-form-item>
-              <el-form-item label="物料编码" prop="materialsCode">
+              <el-form-item label="整车物料" prop="materialsCode">
                 <fetch-select
                   v-model="form.materialsCode"
                   placeholder="请选择"
@@ -180,7 +186,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehretail/productManager/productSkuPrice/index';
+import { getDetail, addOrUpdate, getProductSkuBySkuCode } from '@/api/vehretail/productManager/productSkuPrice/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -273,6 +279,18 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
+      // 提取公共配置
+      selectOptions: {
+        placeholder: '请选择',
+        labelKey: 'skuCode',
+        valueKey: 'skuCode',
+        clearable: true,
+        // multiple: true,
+        collapseTags: true,
+        filterable: true,
+        remote: true,
+        reserveKeyword: true
+      },
       pageTitle: '销售管理-商品管理-商品SKU价格维护',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
@@ -399,7 +417,23 @@ export default {
     this.getDetailData();
   },
   methods: {
-    materialsSelect () {},
+    remoteMethods (query) { return getProductSkuBySkuCode({ skuCodeLike: query, pageSize: 20 }); },
+    skuCodeSelect (val, row) {
+      if (val) {
+        this.form.vehicleMaterialsId = row.id;
+      } else {
+        this.form.vehicleMaterialsId = '';
+      }
+    },
+    materialsSelect (val, row) {
+      if (val) {
+        this.form.productId = row.productId;
+        this.form.productCode = row.productCode;
+      } else {
+        this.form.productId = '';
+        this.form.productCode = '';
+      }
+    },
     repairItemSearch (query) { return getList({ nammaterialsCodeLikeeLike: query, size: 20, status: 1 }); },
     calculatePriceAfterSubsidy () {
       const { priceBeforeSubsidy, subsidyAmount } = this.form;
