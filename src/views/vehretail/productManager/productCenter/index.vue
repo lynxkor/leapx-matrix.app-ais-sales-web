@@ -27,7 +27,7 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="product_status"
-          v-model="form.productStatus"
+          v-model="form.productStatusList"
           placeholder="请选择"
           clearable
           multiple
@@ -131,7 +131,7 @@ const defaultForm = {
   creator: '',
   updateTime: '',
   createTime: '',
-  productStatus: '',
+  productStatusList: '',
 };
 
 const pageSize = 20;
