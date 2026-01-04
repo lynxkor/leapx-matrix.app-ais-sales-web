@@ -150,34 +150,34 @@ export default {
       this.form = { ...defaultForm };
       this.getData();
     },
-    exportExcel () {
-      this.exportLoading = true;
-      exportTable({
-        businessType: '整车批售-批售主数据-门店试驾车配额调整记录管理',
-        dataFetchPath: 'vehwholesale/web/basic/dealerDemoVehicleQuotaRecord/page',
-        reqParams: this.getFormData(),
-        titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
-        httpMethod: 'POST'
-      }).then(async res => {
-        if (res && res.excelUrl) {
-          try {
-            await downloadExcel(res.excelUrl, '整车批售-批售主数据-门店试驾车配额调整记录管理.xlsx');
-          } catch (error) {
-            this.$message({
-              type: 'error',
-              message: '文件导出失败'
-            });
-          }
-        } else {
-          this.$message({
-            type: 'info',
-            message: '请前往导出列表中查询导出结果'
-          });
-        }
-      }).finally(() => {
-        this.exportLoading = false;
-      });
-    },
+    // exportExcel () {
+    //   this.exportLoading = true;
+    //   exportTable({
+    //     businessType: '整车批售-批售主数据-门店试驾车配额调整记录管理',
+    //     dataFetchPath: 'vehwholesale/web/basic/dealerDemoVehicleQuotaRecord/page',
+    //     reqParams: this.getFormData(),
+    //     titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
+    //     httpMethod: 'POST'
+    //   }).then(async res => {
+    //     if (res && res.excelUrl) {
+    //       try {
+    //         await downloadExcel(res.excelUrl, '整车批售-批售主数据-门店试驾车配额调整记录管理.xlsx');
+    //       } catch (error) {
+    //         this.$message({
+    //           type: 'error',
+    //           message: '文件导出失败'
+    //         });
+    //       }
+    //     } else {
+    //       this.$message({
+    //         type: 'info',
+    //         message: '请前往导出列表中查询导出结果'
+    //       });
+    //     }
+    //   }).finally(() => {
+    //     this.exportLoading = false;
+    //   });
+    // },
     getData () {
       this.loading = true;
       this.selectionList = [];
