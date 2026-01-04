@@ -41,12 +41,12 @@
 </template>
 
 <script>
-import { getTemplateCode, importExcelConfirmFile } from '@/api/common';
-import { downloadExcel } from '../../../../libs/utils';
+import { productSaleAttributeImport } from '@/api/vehretail/productManager/productCenter/index';
+import { downloadExcel } from '@/libs/utils';
 // import api from '@/axios';
 
 export default {
-  name: 'UploadModal',
+  name: 'saleAttributeUpload',
   props: {
     visible: {
       type: Boolean,
@@ -123,6 +123,7 @@ export default {
       try {
         const formData = new FormData();
         formData.append('file', this.currentFile);
+        console.log('formData:', formData);
         //  1  2种方法都可 暂时使用第二种 第一种需要手动拼接参数
         // const params = new URLSearchParams({
         //   id: this.id,
@@ -135,7 +136,7 @@ export default {
         //     Authorization: `Bearer ${localStorage.getItem('token')}`
         //   }
         // });
-        const res = await importExcelConfirmFile(formData, {
+        const res = await productSaleAttributeImport(formData, {
           id: this.id,
           token: localStorage.getItem('token'),
           headers: {

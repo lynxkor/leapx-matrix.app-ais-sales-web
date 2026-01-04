@@ -63,7 +63,7 @@
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport('productInfoImport')">导入</el-button>
-      <el-button v-permission="moduleKey+'-saleAttributeimport'" size="small" @click="handleImport('productSaleAttributeImport')">订购属性导入</el-button>
+      <el-button v-permission="moduleKey+'-saleAttributeimport'" size="small" @click="saleAttributeImport('productSaleAttributeImport')">订购属性导入</el-button>
       <el-button v-permission="moduleKey+'-skuimport'" size="small" @click="handleImport('productSkuPriceImport')">商品定价导入</el-button>
       <el-button v-if="canExport" :loading="infoLoading" size="small" @click="exportExcel('productInfoImport')">导出</el-button>
       <el-button v-permission="moduleKey+'-saleAttributeexport'" :loading="saleAttributeLoading" size="small" @click="saleAttributeExportExcel" :disabled="selectionList.length === 0">订购属性导出</el-button>
@@ -97,6 +97,12 @@
       :id="currentImportType"
       @close="handleUploadDialogClose"
     />
+    <sale-attribute-upload
+      v-if="saleAttributeVisible"
+      :visible="saleAttributeVisible"
+      :id="currentImportType"
+      @close="saleAttributeVisible = false"
+    />
   </div>
 </template>
 
@@ -114,6 +120,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import saleAttributeUpload from './saleAttributeUpload.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -135,6 +142,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    saleAttributeUpload,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
@@ -173,6 +181,7 @@ export default {
       saleAttributeLoading: false,
       skuPriceLoading: false,
       uploadDialogVisible: false,
+      saleAttributeVisible: false,
       clickItemId: '',
       optionObj: {
         id: 'productCenterTable',
@@ -256,6 +265,9 @@ export default {
   methods: {
     handleListSelect (row) {
       this.clickItemId = row.id;
+    },
+    saleAttributeImport () {
+      this.saleAttributeVisible = true;
     },
     handleImport (importType) {
       this.currentImportType = importType;
