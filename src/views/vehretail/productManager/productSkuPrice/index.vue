@@ -28,14 +28,14 @@
           <fetch-select
             v-bind="selectOptions"
             :remote-method="remoteMethods.series"
-            v-model="form.series"
+            v-model="form.seriesId"
           />
         </el-form-item>
         <el-form-item label="车型">
           <fetch-select
             v-bind="selectOptions"
-            :remote-method="remoteMethods.series"
-            v-model="form.model"
+            :remote-method="remoteMethods.model"
+            v-model="form.modelId"
           />
         </el-form-item>
         <el-form-item label="物料编码">
