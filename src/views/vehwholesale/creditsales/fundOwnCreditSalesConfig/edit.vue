@@ -18,24 +18,33 @@
                   clearable
                 />
               </el-form-item> -->
-              <el-form-item label="母公司名称" prop="dealerCompanyName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.dealerCompanyName"
+              <el-form-item label="母公司名称" prop="dealerCompanyCode">
+                  <fetch-select
+                  :remote-method="getParentCompany"
+                  remote
+                  v-model="form.dealerCompanyCode"
+                  placeholder="请选择"
+                  labelKey="companyName"
+                  valueKey="companyCode"
                   clearable
-                />
+                  collapseTags
+                  filterable
+                  :disabled="_id"
+                  @change="parentCompanyChange" />
               </el-form-item>
+
               <el-form-item label="母公司编码" prop="dealerCompanyCode">
                 <el-input
                   placeholder="请输入"
                   v-model="form.dealerCompanyCode"
                   clearable
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="赊销账户状态" prop="creditAccountStatus">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="xxx"
+                  enumCode="vw_fund_own_credit_sales_limit_status"
                   v-model="form.creditAccountStatus"
                   placeholder="请选择"
                   clearable
@@ -43,47 +52,49 @@
                 />
               </el-form-item>
               <el-form-item label="授信额度" prop="creditAmount">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.creditAmount"
-                  clearable
-                />
+                <el-input-number placeholder="请输入" v-model="form.creditAmount" clearable :controls="false"
+                :precision="2" :min="0" :step="0.01"  />
               </el-form-item>
-              <el-form-item label="首付款比例，如0.15" prop="downPaymentRatio">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.downPaymentRatio"
-                  clearable
-                />
+              <el-form-item label="首付款比例%" prop="downPaymentRatio">
+                <el-input-number placeholder="请输入" v-model="form.downPaymentRatio" clearable :controls="false"
+                :precision="2" :min="0" :step="0.01" :max="100" />
               </el-form-item>
               <el-form-item label="额度生效日期" prop="effectiveTime">
                 <el-date-picker
-                  :default-time="['00:00:00', '23:59:59']"
+                  type="date"
                   v-model="form.effectiveTime"
-                  :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
                 />
               </el-form-item>
               <el-form-item label="额度失效日期" prop="expireTime">
                 <el-date-picker
-                  :default-time="['00:00:00', '23:59:59']"
+                  type="date"
                   v-model="form.expireTime"
-                  :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
                 />
               </el-form-item>
-              <el-form-item label="创建人" prop="creatorName">
+              <el-form-item label="创建人" prop="creatorName" v-show="!_id">
                 <el-input
                   placeholder="请输入"
                   v-model="form.creatorName"
                   clearable
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="创建时间" prop="createTime">
+              <el-form-item label="配置人" prop="configUserName"  v-show="_id">
+                <el-input
+                  placeholder="请输入"
+                  v-model="form.configUserName"
+                  clearable
+                  disabled
+                />
+              </el-form-item>
+              <el-form-item label="备注" prop="remark"  v-show="_id">
+                <el-input
+                  placeholder="请输入"
+                  v-model="form.remark"
+                  clearable
+                />
+              </el-form-item>
+              <el-form-item label="创建时间" prop="createTime" v-show="!_id">
                 <el-date-picker
                   :default-time="['00:00:00', '23:59:59']"
                   v-model="form.createTime"
@@ -91,23 +102,55 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
+                  disabled
+                />
+              </el-form-item>
+              <el-form-item label="配置时间" prop="configTime"  v-show="_id">
+                <el-date-picker
+                  tyype="date"
+                  v-model="form.configTime"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="配置状态" prop="auditStatus">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="xxx"
+                  enumCode="ve_credit_sales_config_audit_status"
                   v-model="form.auditStatus"
                   placeholder="请选择"
                   clearable
                   filterable
+                  disabled
                 />
               </el-form-item>
-              <el-form-item label="复核人人" prop="reviewName">
+              <el-form-item label="配置编号" prop="configCode">
+                <el-input
+                  placeholder="请输入"
+                  v-model="form.configCode"
+                  clearable
+                  disabled
+                />
+              </el-form-item>
+             >
+            </el-form>
+          </div>
+        </section>
+
+        <section class="common-section" v-show="_id">
+          <div class="common-section-header">
+            <h2>复核信息</h2>
+          </div>
+          <div class="common-section-body">
+            <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
+            <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
+            <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
+              <el-form-item label="复核人" prop="reviewName">
                 <el-input
                   placeholder="请输入"
                   v-model="form.reviewName"
                   clearable
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="复核时间" prop="reviewTime">
@@ -118,13 +161,7 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                />
-              </el-form-item>
-              <el-form-item label="备注" prop="remark">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.remark"
-                  clearable
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="复核意见" prop="reviewOpinion">
@@ -132,64 +169,7 @@
                   placeholder="请输入"
                   v-model="form.reviewOpinion"
                   clearable
-                />
-              </el-form-item>
-              <el-form-item label="修改人" prop="modifierName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modifierName"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="修改时间" prop="updateTime">
-                <el-date-picker
-                  :default-time="['00:00:00', '23:59:59']"
-                  v-model="form.updateTime"
-                  :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                />
-              </el-form-item>
-              <el-form-item label="创建者" prop="creator">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.creator"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="修改者" prop="modifier">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modifier"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="状态" prop="status">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.status"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                />
-              </el-form-item>
-              <el-form-item label="状态变更描述" prop="statusDesc">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.statusDesc"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                />
-              </el-form-item>
-              <el-form-item label="复核人ID" prop="reviewUserId">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.reviewUserId"
-                  clearable
+                  disabled
                 />
               </el-form-item>
             </el-form>
@@ -208,11 +188,12 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import { getEnum } from '@/api/common';
+import { getEnum, getParentCompany } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { formatDateTime } from '@/libs/utils';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -238,6 +219,10 @@ const defaultForm = {
   status: '',
   statusDesc: '',
   reviewUserId: '',
+  configCode: '',
+  configTime: '',
+  configUserName: '',
+  configUserId: '',
 };
 
 export default {
@@ -270,6 +255,15 @@ export default {
   },
   data () {
     const form = this.getDefautlForm();
+
+    // 1. 自定义校验规则：失效日期 > 生效日期
+    const validateDateRange = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请选择额度失效日期'));
+        return;
+      }
+      callback();
+    };
     return {
       pageTitle: '账户管理-赊销管理-自有资金赊销配置管理',
       pageType: 'edit',
@@ -282,9 +276,9 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       rules: {
-        id: [
-          { required: true, message: '请输入主键', trigger: 'change' }
-        ],
+        // id: [
+        //   { required: true, message: '请输入主键', trigger: 'change' }
+        // ],
         dealerCompanyName: [
           { required: true, message: '请输入母公司名称', trigger: 'change' }
         ],
@@ -298,13 +292,14 @@ export default {
           { required: true, message: '请输入授信额度', trigger: 'change' }
         ],
         downPaymentRatio: [
-          { required: true, message: '请输入首付款比例，如0.15', trigger: 'change' }
+          { required: true, message: '请输入首付款比例', trigger: 'change' }
         ],
         effectiveTime: [
           { required: true, message: '请选择额度生效日期', trigger: 'change' }
         ],
         expireTime: [
-          { required: true, message: '请选择额度失效日期', trigger: 'change' }
+          { required: true, message: '请选择额度失效日期', trigger: 'change' },
+          { required: true, trigger: 'change', validator: validateDateRange }
         ],
         creatorName: [
           { required: true, message: '请输入创建人', trigger: 'change' }
@@ -316,37 +311,37 @@ export default {
           { required: true, message: '请选择配置状态', trigger: 'change' }
         ],
         reviewName: [
-          { required: true, message: '请输入复核人人', trigger: 'change' }
+          { required: false, message: '请输入复核人', trigger: 'change' }
         ],
         reviewTime: [
-          { required: true, message: '请选择复核时间', trigger: 'change' }
+          { required: false, message: '请选择复核时间', trigger: 'change' }
         ],
         remark: [
-          { required: true, message: '请输入备注', trigger: 'change' }
+          { required: false, message: '请输入备注', trigger: 'change' }
         ],
         reviewOpinion: [
-          { required: true, message: '请输入复核意见', trigger: 'change' }
+          { required: false, message: '请输入复核意见', trigger: 'change' }
         ],
         modifierName: [
-          { required: true, message: '请输入修改人', trigger: 'change' }
+          { required: false, message: '请输入修改人', trigger: 'change' }
         ],
         updateTime: [
-          { required: true, message: '请选择修改时间', trigger: 'change' }
+          { required: false, message: '请选择修改时间', trigger: 'change' }
         ],
         creator: [
-          { required: true, message: '请输入创建者', trigger: 'change' }
+          { required: false, message: '请输入创建者', trigger: 'change' }
         ],
         modifier: [
-          { required: true, message: '请输入修改者', trigger: 'change' }
+          { required: false, message: '请输入修改者', trigger: 'change' }
         ],
         status: [
-          { required: true, message: '请选择状态', trigger: 'change' }
+          { required: false, message: '请选择状态', trigger: 'change' }
         ],
         statusDesc: [
-          { required: true, message: '请选择状态变更描述', trigger: 'change' }
+          { required: false, message: '请选择状态变更描述', trigger: 'change' }
         ],
         reviewUserId: [
-          { required: true, message: '请输入复核人ID', trigger: 'change' }
+          { required: false, message: '请输入复核人ID', trigger: 'change' }
         ],
       }
     };
@@ -375,7 +370,10 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.submitLoading = true;
-          addOrUpdate({ ...this.form }).then(res => {
+
+          addOrUpdate({
+            ...this.form,
+          }).then(res => {
             this.$message({
               message: '保存成功',
               type: 'success'
@@ -399,11 +397,13 @@ export default {
     },
     getDefautlForm () {
       // TIPS: 此处可添加表单默认值，如当前用户信息等
-      // const userInfo = this.$store.state.user.userInfo;
+      const userInfo = this.$store.state.user.userInfo;
       return {
-        ...defaultForm
-        // ownerId: userInfo.userId,
-        // ownerName: userInfo.userName,
+        ...defaultForm,
+        creatorName: userInfo.userName,
+        createTime: new Date(),
+        // 初始化草稿
+        auditStatus: 0,
       };
     },
     // 审核日志
@@ -415,7 +415,16 @@ export default {
         return getEnum(code);
       }
       return [];
-    }
+    },
+    async getParentCompany (query) {
+      try {
+        const res = await getParentCompany({ parentCompanyName: query });
+        this.parentCompanyNames = res;
+        return res;
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
+    },
   }
 };
 </script>

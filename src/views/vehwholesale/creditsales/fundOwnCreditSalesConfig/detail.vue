@@ -46,7 +46,7 @@
             <el-form-item label="配置状态：" prop="auditStatus">
               {{ info.auditStatus  }}
             </el-form-item>
-            <el-form-item label="复核人人：" prop="reviewName">
+            <el-form-item label="复核人：" prop="reviewName">
               {{ info.reviewName  }}
             </el-form-item>
             <el-form-item label="复核时间：" prop="reviewTime">
