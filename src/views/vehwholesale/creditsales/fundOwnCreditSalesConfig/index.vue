@@ -6,30 +6,29 @@
       :model="form"
       size="small"
       label-position="right"
-      label-width="150px"
+      label-width="120px"
       class="ais-search-form"
     >
-      <el-form-item label="主键">
+      <!-- <el-form-item label="主键">
         <el-input
           placeholder="请输入"
           v-model="form.id"
           clearable
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="母公司名称">
         <fetch-select
             :remote-method="getParentCompany"
             remote
-            v-model="form.dealerCompanyName"
+            v-model="form.dealerCompanyCodes"
             placeholder="请选择"
-            labelKey="name"
-            valueKey="id"
+            labelKey="companyName"
+            valueKey="companyCode"
             clearable
             multiple
             collapseTags
             filterable
-            :options="seriesList"
-            @change="seriesListChange" />
+             @change="parentCompanyChange" />
       </el-form-item>
       <el-form-item label="母公司编码"  v-show="this.visibleCount === 3 || show">
         <el-input
@@ -39,35 +38,37 @@
         />
       </el-form-item>
       <template v-if="show">
-        <el-form-item label="赊销账户状态">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.creditAccountStatus"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
-          />
-        </el-form-item>
-        <el-form-item label="授信额度">
+
+        <!-- <el-form-item label="授信额度">
           <el-input
             placeholder="请输入"
             v-model="form.creditAmount"
             clearable
           />
-        </el-form-item>
-        <el-form-item label="创建人">
+        </el-form-item> -->
+        <!-- <el-form-item label="创建人">
           <el-input
             placeholder="请输入"
             v-model="form.creatorName"
             clearable
           />
-        </el-form-item>
-        <el-form-item label="创建时间">
+        </el-form-item> -->
+        <el-form-item label="配置时间">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
-            v-model="form.createTime"
+            v-model="form.configTime"
+            type="daterange"
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
+        <el-form-item label="复核时间">
+          <el-date-picker
+           :default-time="['00:00:00', '23:59:59']"
+            v-model="form.reviewTime"
             type="daterange"
             :picker-options="pickerOptions"
             range-separator="至"
@@ -79,15 +80,26 @@
         <el-form-item label="配置状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.auditStatus"
+            enumCode="ve_credit_sales_config_audit_status"
+            v-model="form.auditStatuses"
             placeholder="请选择"
             clearable
             multiple
             filterable
           />
         </el-form-item>
-        <el-form-item label="备注">
+        <el-form-item label="赊销账户状态">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vw_fund_own_credit_sales_limit_status"
+            v-model="form.creditAccountStatuses"
+            placeholder="请选择"
+            clearable
+            filterable
+            multiple
+          />
+        </el-form-item>
+        <!-- <el-form-item label="备注">
           <el-input
             placeholder="请输入"
             v-model="form.remark"
@@ -119,7 +131,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
           />
-        </el-form-item>
+        </el-form-item> -->
       </template>
       <page-search-action
         v-if="canList"
@@ -257,15 +269,15 @@ export default {
           },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200 },
-          { props: 'creditAccountStatus', label: '赊销账户状态', visible: true, width: 200 },
+          { props: 'creditAccountStatusLabel', label: '赊销账户状态', visible: true, width: 200 },
           { props: 'creditAmount', label: '授信额度', visible: true, width: 200 },
-          { props: 'downPaymentRatio', label: '首付款比例，如0.15', visible: true, width: 200 },
+          { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 200 },
           { props: 'effectiveTime', label: '额度生效日期', visible: true, width: 200 },
           { props: 'expireTime', label: '额度失效日期', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'auditStatus', label: '配置状态', visible: true, width: 200 },
-          { props: 'reviewName', label: '复核人人', visible: true, width: 200 },
+          { props: 'auditStatusLabel', label: '配置状态', visible: true, width: 200 },
+          { props: 'reviewName', label: '复核人', visible: true, width: 200 },
           { props: 'reviewTime', label: '复核时间', visible: true, width: 200 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'reviewOpinion', label: '复核意见', visible: true, width: 200 },
@@ -434,6 +446,22 @@ export default {
         }
       }
 
+      if (this.form.configTime) {
+        delete data.configTime;
+        if (this.form.configTime.length > 1) {
+          data.configTimeStart = this.form.configTime[0];
+          data.configTimeEnd = this.form.configTime[1];
+        }
+      }
+
+      if (this.form.reviewTime) {
+        delete data.reviewTime;
+        if (this.form.reviewTime.length > 1) {
+          data.reviewTimeStart = this.form.reviewTime[0];
+          data.reviewTimeEnd = this.form.reviewTime[1];
+        }
+      }
+
       return data;
     },
     async fetchOptions (code) {
@@ -497,9 +525,7 @@ export default {
     },
     async getParentCompany (query) {
       try {
-        const res = await getParentCompany({ parentCompanyName: query });
-        this.parentCompanyNames = res;
-        return res;
+        return await getParentCompany({ parentCompanyName: query });
       } catch (error) {
         console.error('Error fetching series list:', error);
       }
