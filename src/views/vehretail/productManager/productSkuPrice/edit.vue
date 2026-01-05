@@ -111,7 +111,7 @@
                   clearable
                 /> -->
               </el-form-item>
-              <el-form-item label="状态" prop="statusLabel">
+              <el-form-item label="状态" prop="status">
                 <fetch-select
                   :request="fetchOptions"
                   enumCode="StatusEnum"
@@ -161,7 +161,7 @@
                   disabled
                 />
               </el-form-item>
-              <el-form-item label="修改时间" prop="updateTime">
+              <el-form-item label="修改时间">
                 <el-date-picker
                   :default-time="['00:00:00', '23:59:59']"
                   v-model="form.updateTime"
@@ -417,15 +417,15 @@ export default {
     this.getDetailData();
   },
   methods: {
-    remoteMethods (query) { return getProductSkuBySkuCode({ skuCodeLike: query, pageSize: 20 }); },
-    skuCodeSelect (val, row) {
+    remoteMethods (query) { return getProductSkuBySkuCode({ skuCodeLike: query || '', pageSize: 20 }); },
+    materialsSelect (val, row) {
       if (val) {
         this.form.vehicleMaterialsId = row.id;
       } else {
         this.form.vehicleMaterialsId = '';
       }
     },
-    materialsSelect (val, row) {
+    skuCodeSelect (val, row) {
       if (val) {
         this.form.productId = row.productId;
         this.form.productCode = row.productCode;
@@ -444,7 +444,9 @@ export default {
       }
     },
     handleBack () {
-      this.$router.back();
+      // this.$router.back();
+      let newPath = this.$route.path.replace(/\/edit$/, '');
+      this.$router.push(newPath);
     },
     getDetailData () {
       const id = this._id;
@@ -471,6 +473,12 @@ export default {
             const id = this.$route.query.id;
             if (rest || !id) {
               this.resetForm(formName);
+              // 获取新增的 id
+              const currentPath = this.$route.path;
+              this.$router.push({
+                path: currentPath,
+                query: { id: res }
+              });
             } else {
               this.getDetailData();
             }
