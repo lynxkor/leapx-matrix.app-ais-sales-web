@@ -42,11 +42,3 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
-
-/**
- * 商品定价根据SKU编码查询商品定价信息
- * @param {Object} data
- */
-export function getProductSkuBySkuCode (data) {
-  return api.jsonPost('vr/web/product/productSku/getProductSkuBySkuCode', data);
-}

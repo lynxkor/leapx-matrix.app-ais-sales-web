@@ -11,7 +11,7 @@
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" inline>
-              <el-form-item label="商品价格编码">
+              <el-form-item label="商品价格编码" prop="skuPriceCode">
                 <el-input
                   placeholder="请输入"
                   v-model="form.skuPriceCode"
@@ -20,20 +20,14 @@
                 />
               </el-form-item>
               <el-form-item label="SKU编码" prop="skuCode">
-                <fetch-select
-                  v-bind="selectOptions"
-                  :remote-method="remoteMethods"
-                  @change="skuCodeSelect"
-                  v-model="form.skuCode"
-                />
-                <!-- <el-input
+                <el-input
                   placeholder="请输入"
                   v-model="form.skuCode"
                   clearable
                   :disabled="!!_id"
-                /> -->
+                />
               </el-form-item>
-              <el-form-item label="商品编码" prop="productCode">
+              <el-form-item label="关联商品编码" prop="productCode">
                 <el-input
                   placeholder="请输入"
                   v-model="form.productCode"
@@ -41,7 +35,7 @@
                   disabled
                 />
               </el-form-item>
-              <el-form-item label="整车物料" prop="materialsCode">
+              <el-form-item label="物料编码" prop="materialsCode">
                 <fetch-select
                   v-model="form.materialsCode"
                   placeholder="请选择"
@@ -279,18 +273,6 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      // 提取公共配置
-      selectOptions: {
-        placeholder: '请选择',
-        labelKey: 'skuCode',
-        valueKey: 'skuCode',
-        clearable: true,
-        // multiple: true,
-        collapseTags: true,
-        filterable: true,
-        remote: true,
-        reserveKeyword: true
-      },
       pageTitle: '销售管理-商品管理-商品SKU价格维护',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改

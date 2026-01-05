@@ -280,7 +280,7 @@ export default {
           { required: true, message: '请选择年款名称', trigger: 'change' }
         ],
         downPaymentRatio: [
-          { required: true, message: '请输入首付款比例，如0.15', trigger: 'change' }
+          { required: true, message: '请输入首付款比例%', trigger: 'change' }
         ],
         useRebate: [
           { required: true, message: '请输入是否使用返利', trigger: 'change' }

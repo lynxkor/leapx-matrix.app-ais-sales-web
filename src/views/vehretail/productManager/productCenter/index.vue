@@ -10,20 +10,18 @@
       class="ais-search-form"
     >
       <el-form-item label="商品编码">
-        <tag-input v-model="form.productCodeList" placeholder="请输入" />
-        <!-- <el-input
+        <el-input
           placeholder="请输入"
           v-model="form.productCode"
           clearable
-        /> -->
+        />
       </el-form-item>
       <el-form-item label="商品名称">
-        <tag-input v-model="form.productNameList" placeholder="请输入" />
-        <!-- <el-input
+        <el-input
           placeholder="请输入"
           v-model="form.productName"
           clearable
-        /> -->
+        />
       </el-form-item>
       <el-form-item label="商品状态"  v-show="this.visibleCount === 3 || show">
         <fetch-select
@@ -123,7 +121,6 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import saleAttributeUpload from './saleAttributeUpload.vue';
-import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -145,7 +142,6 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
-    TagInput,
     saleAttributeUpload,
     PageSearchAction,
     LPVxeTable,
@@ -216,10 +212,10 @@ export default {
           { props: 'productName', label: '商品名称', visible: true, width: 200 },
           { props: 'productTypeLabel', label: '商品类型', visible: true, width: 200 },
           { props: 'purchaseTypeLabel', label: '购车类型', visible: true, width: 200 },
-          { props: 'productStatusLabel', label: '商品状态', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者', visible: true, width: 200 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'productStatusLabel', label: '商品状态', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
