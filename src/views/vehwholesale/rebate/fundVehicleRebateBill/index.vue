@@ -13,7 +13,7 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_fundtype"
-          v-model="form.rebateType"
+          v-model="form.rebateTypes"
           placeholder="请选择"
           clearable
           multiple
@@ -69,12 +69,12 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
+      <!-- <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button> -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
+      <!-- <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button> -->
+      <!-- <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button> -->
     </div>
     <div
       class="ais-table-c"
@@ -202,10 +202,10 @@ export default {
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           { props: 'dealerName', label: '门店名称', visible: true, width: 200 },
           { props: 'rebateType', label: '返利类型', visible: true, width: 200 },
-          { props: 'period', label: '周期', visible: true, width: 200 },
+          { props: 'periodLabel', label: '周期', visible: true, width: 200 },
           { props: 'year', label: '年度', visible: true, width: 200 },
-          { props: 'quarter', label: '季度', visible: true, width: 200 },
-          { props: 'month', label: '月度', visible: true, width: 200 },
+          { props: 'quarterLabel', label: '季度', visible: true, width: 200 },
+          { props: 'monthLabel', label: '月度', visible: true, width: 200 },
           { props: 'rebateAmount', label: '核销金额', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },

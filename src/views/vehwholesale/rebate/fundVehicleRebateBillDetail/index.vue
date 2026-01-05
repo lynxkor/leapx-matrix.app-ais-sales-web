@@ -155,12 +155,12 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
+      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchAudit()" >批量初审</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchReview()" >批量复审</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -188,6 +188,12 @@
       :id="'1'"
       @close="handleUploadDialogClose"
     />
+    <BatchAuditDialog
+      ref="showBatchAudit" @callParentMethod="batchAuditgetData">
+    </BatchAuditDialog>
+    <BatchReviewDialog
+      ref="showBatchReview" @callReviewParentMethod="batchReviewgetData">
+    </BatchReviewDialog>
   </div>
 </template>
 
@@ -208,6 +214,8 @@ import EditPage from './edit.vue';
 import { listIdNames as fundBudgetItemList } from '@/api/vehwholesale/fund/fundBudgetItem/index';
 import { listIdNames as fundFeeSuportTypeList } from '@/api/vehwholesale/fund/fundFeeSupportType/index';
 import TagInput from '@/libs/components/TagInput';
+import BatchAuditDialog from '../components/batchAudit';
+import BatchReviewDialog from '../components/batchReview';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -240,7 +248,9 @@ export default {
     FetchSelect,
     EditPage,
     Upload,
-    TagInput
+    TagInput,
+    BatchAuditDialog,
+    BatchReviewDialog
   },
   data () {
     return {
@@ -258,6 +268,7 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      batchAuditDialogVisible: false,
       clickItemId: '',
       optionObj: {
         id: 'fundVehicleRebateBillDetailTable',
@@ -287,28 +298,28 @@ export default {
           },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           { props: 'dealerName', label: '门店名称', visible: true, width: 200 },
-          { props: 'period', label: '周期', visible: true, width: 200 },
+          { props: 'periodLabel', label: '周期', visible: true, width: 200 },
           { props: 'year', label: '年度', visible: true, width: 200 },
-          { props: 'quarter', label: '季度', visible: true, width: 200 },
-          { props: 'month', label: '月度', visible: true, width: 200 },
-          { props: 'rebateType', label: '返利类型', visible: true, width: 200 },
+          { props: 'quarterLabel', label: '季度', visible: true, width: 200 },
+          { props: 'monthLabel', label: '月度', visible: true, width: 200 },
+          { props: 'rebateTypeLabel', label: '返利类型', visible: true, width: 200 },
           { props: 'vin', label: 'VIN', visible: true, width: 200 },
           { props: 'bizOrderNo', label: '业务单据号', visible: true, width: 200 },
           { props: 'rebateAmount', label: '核销金额', visible: true, width: 200 },
           { props: 'modelName', label: '基本车型', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
+          { props: 'seriesName', label: '车系', visible: true, width: 200 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'billStatus', label: '审核状态', visible: true, width: 200 },
-          { props: 'budgetItemId', label: '预算科目ID', visible: true, width: 200 },
-          { props: 'feeSupportTypeId', label: '费用支持类型ID', visible: true, width: 200 },
+          { props: 'billStatusLabel', label: '审核状态', visible: true, width: 200 },
+          { props: 'budgetItemName', label: '预算科目', visible: true, width: 200 },
+          { props: 'feeSupportTypeName', label: '费用支持类型', visible: true, width: 200 },
           { props: 'auditorName', label: '审核人', visible: true, width: 200 },
           { props: 'auditTime', label: '审核时间', visible: true, width: 200 },
           { props: 'auditOpinion', label: '审核意见', visible: true, width: 200 },
           { props: 'reviewName', label: '复审人', visible: true, width: 200 },
           { props: 'reviewTime', label: '复审时间', visible: true, width: 200 },
           { props: 'reviewOpinion', label: '复审意见', visible: true, width: 200 },
-          { props: 'posted', label: '是否已入账', visible: true, width: 200 },
-          { props: 'dataSource', label: '数据来源', visible: true, width: 200 },
+          { props: 'postedLabel', label: '是否已入账', visible: true, width: 200 },
+          { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           // { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
           // { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
@@ -444,13 +455,18 @@ export default {
         this.exportLoading = false;
       });
     },
+    batchAuditgetData () {
+      this.getData();
+    },
+    batchReviewgetData () {
+      this.getData();
+    },
     getData () {
       this.loading = true;
       this.selectionList = [];
 
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
-          console.log(res);
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item,
@@ -516,6 +532,47 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    update (val) {
+      console.log(val);
+      this.batchAuditDialogVisible = true;
+    },
+    // 判断数组的所有元素是否都等于某个值
+    isAllSpecifiedValue (arr, targetValue) {
+      if (arr.length === 0) return false;
+      return arr.every(item => item === targetValue);
+    },
+    handleBatchReview () {
+      const BatchReviewIds = this.selectionList.map(item => item.id) || [];
+      if (BatchReviewIds.length > 0) {
+        const billStatuss = this.selectionList.map(item => item.billStatus) || [];
+        if (this.isAllSpecifiedValue(billStatuss, 1050)) {
+          this.$refs.showBatchReview.showOrHide('isSelect', BatchReviewIds);
+        } else {
+          this.$message({
+            type: 'warning',
+            message: '存在不是待审核的记录，请确认!'
+          });
+        }
+      } else {
+        this.$refs.showBatchReview.showOrHide('notSelect');
+      }
+    },
+    handleBatchAudit () {
+      const BatchAuditIds = this.selectionList.map(item => item.id) || [];
+      if (BatchAuditIds.length > 0) {
+        const billStatuss = this.selectionList.map(item => item.billStatus) || [];
+        if (this.isAllSpecifiedValue(billStatuss, 1050)) {
+          this.$refs.showBatchAudit.showOrHide('isSelect', BatchAuditIds);
+        } else {
+          this.$message({
+            type: 'warning',
+            message: '存在不是待审核的记录，请确认!'
+          });
+        }
+      } else {
+        this.$refs.showBatchAudit.showOrHide('notSelect');
+      }
     },
     // 批量删除
     handleBatchDelete () {
