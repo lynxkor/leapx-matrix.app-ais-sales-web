@@ -15,11 +15,6 @@
           start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
       <template v-if="show">
-        <el-form-item label="VDC入库时间">
-          <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.createTime" type="daterange"
-            :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期" end-placeholder="结束日期" />
-        </el-form-item>
         <el-form-item label="物料编码">
           <tag-input v-model="form.materialsDescList" placeholder="请输入" />
         </el-form-item>
@@ -129,7 +124,8 @@ const defaultForm = {
   seriesIdList: [],
   shipVia: '',
   vdcCommonCompositeQuery: '',
-  lowBatteryCar: 0
+  lowBatteryCar: 0,
+  inboundDateTime: []
 };
 
 const pageSize = 20;
@@ -558,11 +554,11 @@ export default {
         }
       });
 
-      if (this.form.createTime) {
-        delete data.createTime;
-        if (this.form.createTime.length > 1) {
-          data.createTimeStart = this.form.createTime[0];
-          data.createTimeEnd = this.form.createTime[1];
+      if (this.form.inboundDateTime) {
+        delete data.inboundDateTime;
+        if (this.form.inboundDateTime.length > 1) {
+          data.inboundDateTimeStart = this.form.inboundDateTime[0];
+          data.inboundDateTimeEnd = this.form.inboundDateTime[1];
         }
       }
 
