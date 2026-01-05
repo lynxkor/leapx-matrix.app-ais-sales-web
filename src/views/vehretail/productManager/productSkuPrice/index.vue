@@ -385,7 +385,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '销售管理-商品管理-商品SKU价格维护管理',
-        dataFetchPath: 'vr/web/product/productSku/page',
+        dataFetchPath: '/vr/web/product/productSku/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

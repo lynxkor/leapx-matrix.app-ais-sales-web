@@ -161,7 +161,7 @@ export default {
         productSkuPriceImport: {
           businessType: '销售管理-商品管理-商品SKU价格维护管理',
           title: '销售管理-商品管理-商品SKU价格维护管理',
-          dataFetchPath: 'vr/web/product/productSku/page',
+          dataFetchPath: '/vr/web/product/productSku/page',
           loading: 'skuPriceLoading'
         },
       },

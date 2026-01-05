@@ -568,7 +568,7 @@ export default {
         creator: userInfo.userId,
         creatorName: userInfo.userName,
         productType: '1',
-        productStatus: '1',
+        productStatus: '0',
         purchaseType: '1',
         createTime: moment().format('YYYY-MM-DD HH:mm:ss')
       };
