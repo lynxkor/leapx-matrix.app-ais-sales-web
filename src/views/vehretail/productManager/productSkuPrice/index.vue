@@ -28,14 +28,14 @@
           <fetch-select
             v-bind="selectOptions"
             :remote-method="remoteMethods.series"
-            v-model="form.series"
+            v-model="form.seriesId"
           />
         </el-form-item>
         <el-form-item label="车型">
           <fetch-select
             v-bind="selectOptions"
-            :remote-method="remoteMethods.series"
-            v-model="form.model"
+            :remote-method="remoteMethods.model"
+            v-model="form.modelId"
           />
         </el-form-item>
         <el-form-item label="物料编码">
@@ -56,11 +56,19 @@
           <fetch-select :options="yes_no_enum" v-model="form.allowConfigChange" placeholder="请选择" clearable  />
         </el-form-item>
         <el-form-item label="价格对比">
-          <el-input
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="price_compare"
+            v-model="form.priceCompare"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+          <!-- <el-input
             placeholder="请输入"
             v-model="form.priceCompareLabel"
             clearable
-          />
+          /> -->
         </el-form-item>
         <el-form-item label="购车类型">
           <fetch-select
@@ -69,7 +77,6 @@
             v-model="form.purchaseType"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -385,7 +392,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '销售管理-商品管理-商品SKU价格维护管理',
-        dataFetchPath: 'vr/web/product/productSku/page',
+        dataFetchPath: '/vr/web/product/productSkuPrice/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
