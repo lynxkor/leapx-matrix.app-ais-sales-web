@@ -88,7 +88,9 @@ export default {
         if (newVal && Object.keys(newVal).length > 0) {
           const updatedParms = { ...newVal };
           if (typeof updatedParms.saleAttribute === 'string') {
-            updatedParms.saleAttribute = updatedParms.saleAttribute.split('+');
+            updatedParms.saleAttributeJson = JSON.parse(updatedParms.saleAttributeJson);
+            // updatedParms.saleAttribute = updatedParms.saleAttribute.split('+');
+            updatedParms.saleAttribute = updatedParms.saleAttributeJson.map(ele => ele.attributeValues[0].attributeValueId);
           }
           this.form = { ...this.form, ...updatedParms };
         } else {
@@ -158,7 +160,9 @@ export default {
               this.form.saleAttribute.includes(item.attributeValueId)
             );
             return {
-              saleAttributeId: group.saleAttributeId,
+              productId: group.productId,
+              productCode: group.productCode,
+              attributeSort: group.attributeSort,
               attributeName: group.attributeName,
               attributeValues: matchedValues
             };
@@ -169,6 +173,7 @@ export default {
           });
           // 生成 saleAttributeJson
           const saleAttributeJson = JSON.stringify(matchedAttributes);
+          // const saleAttributeJson = matchedAttributes;
           // 拼接 saleAttribute
           const saleAttribute = matchedAttributes
             .map(group => group.attributeValues.map(item => item.attributeValue).join('+'))
@@ -181,6 +186,7 @@ export default {
             saleAttributeJson,
             saleAttribute
           };
+          console.log('submitData:', submitData);
           productSkuAddOrUpdate(submitData).then(res => {
             this.$emit('submit');
           }).catch(() => {

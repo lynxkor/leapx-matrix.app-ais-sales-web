@@ -105,7 +105,7 @@
                   clearable
                 /> -->
               </el-form-item>
-              <el-form-item label="状态" prop="statusLabel">
+              <el-form-item label="状态" prop="status">
                 <fetch-select
                   :request="fetchOptions"
                   enumCode="StatusEnum"
@@ -155,7 +155,7 @@
                   disabled
                 />
               </el-form-item>
-              <el-form-item label="修改时间" prop="updateTime">
+              <el-form-item label="修改时间">
                 <el-date-picker
                   :default-time="['00:00:00', '23:59:59']"
                   v-model="form.updateTime"
@@ -180,7 +180,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehretail/productManager/productSkuPrice/index';
+import { getDetail, addOrUpdate, getProductSkuBySkuCode } from '@/api/vehretail/productManager/productSkuPrice/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -399,7 +399,23 @@ export default {
     this.getDetailData();
   },
   methods: {
-    materialsSelect () {},
+    remoteMethods (query) { return getProductSkuBySkuCode({ skuCodeLike: query || '', pageSize: 20 }); },
+    materialsSelect (val, row) {
+      if (val) {
+        this.form.vehicleMaterialsId = row.id;
+      } else {
+        this.form.vehicleMaterialsId = '';
+      }
+    },
+    skuCodeSelect (val, row) {
+      if (val) {
+        this.form.productId = row.productId;
+        this.form.productCode = row.productCode;
+      } else {
+        this.form.productId = '';
+        this.form.productCode = '';
+      }
+    },
     repairItemSearch (query) { return getList({ nammaterialsCodeLikeeLike: query, size: 20, status: 1 }); },
     calculatePriceAfterSubsidy () {
       const { priceBeforeSubsidy, subsidyAmount } = this.form;
@@ -410,7 +426,9 @@ export default {
       }
     },
     handleBack () {
-      this.$router.back();
+      // this.$router.back();
+      let newPath = this.$route.path.replace(/\/edit$/, '');
+      this.$router.push(newPath);
     },
     getDetailData () {
       const id = this._id;
@@ -437,6 +455,12 @@ export default {
             const id = this.$route.query.id;
             if (rest || !id) {
               this.resetForm(formName);
+              // 获取新增的 id
+              const currentPath = this.$route.path;
+              this.$router.push({
+                path: currentPath,
+                query: { id: res }
+              });
             } else {
               this.getDetailData();
             }

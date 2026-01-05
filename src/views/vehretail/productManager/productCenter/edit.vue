@@ -8,6 +8,7 @@
             <section class="common-section">
               <div class="common-section-header">
                 <h2>基础信息</h2>
+                <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
               </div>
               <div class="common-section-body">
                 <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
@@ -469,6 +470,8 @@ export default {
       this.$refs.pricingForm.openForm();
     },
     updateReplace (row) {
+      console.log('updateReplace:', row);
+
       this.rowParms = row;
       this.pannelTitle = '编辑商品定价';
       this.$refs.editLayout.openPane();
@@ -485,7 +488,9 @@ export default {
       this.$refs.attributeable.handleAdd(newItem);
     },
     handleBack () {
-      this.$router.back();
+      // this.$router.back();
+      let newPath = this.$route.path.replace(/\/edit$/, '');
+      this.$router.push(newPath);
     },
     getDetailData () {
       const id = this._id;
@@ -501,6 +506,22 @@ export default {
           this.$refs.pricing.getDetailPageApi();
         });
       }
+    },
+    editSubmitForm (formName, rest = false) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.submitLoading = true;
+          addOrUpdate({ ...this.form }).then(res => {
+            this.$message({
+              message: '保存成功',
+              type: 'success'
+            });
+            this.getDetailData();
+          }).finally(() => {
+            this.submitLoading = false;
+          });
+        }
+      });
     },
     submitForm (formName, rest = false) {
       this.$refs[formName].validate((valid) => {

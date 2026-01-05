@@ -56,11 +56,9 @@ export default {
   data () {
     return {
       defaultNewRow: {
-        partId: '',
-        partCode: '',
-        partName: '',
-        purchasePrice: '',
-        partQuantity: '',
+        attributeSort: '',
+        attributeName: '',
+        attributeValue: ''
       },
       current: 1,
       pageSize: 20,
