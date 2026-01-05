@@ -56,11 +56,19 @@
           <fetch-select :options="yes_no_enum" v-model="form.allowConfigChange" placeholder="请选择" clearable  />
         </el-form-item>
         <el-form-item label="价格对比">
-          <el-input
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="price_compare"
+            v-model="form.priceCompare"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+          <!-- <el-input
             placeholder="请输入"
             v-model="form.priceCompareLabel"
             clearable
-          />
+          /> -->
         </el-form-item>
         <el-form-item label="购车类型">
           <fetch-select
@@ -69,7 +77,6 @@
             v-model="form.purchaseType"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
