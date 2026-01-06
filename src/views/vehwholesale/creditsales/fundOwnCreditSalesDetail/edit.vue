@@ -1,6 +1,6 @@
 <template>
   <!-- TIPS: 如果填写项大于15项，使用类名page-common-edit替换page-common-add -->
-  <div class="page-common-add">
+  <div class="page-common-edit">
     <el-container>
       <el-main>
         <section class="common-section">
@@ -10,7 +10,7 @@
           <div class="common-section-body">
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-            <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
+            <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" :inline="true">
               <el-form-item label="主键" prop="id">
                 <el-input
                   placeholder="请输入"

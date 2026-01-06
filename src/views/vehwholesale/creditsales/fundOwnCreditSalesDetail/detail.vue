@@ -3,8 +3,8 @@
     <el-skeleton v-if="loading" :rows="6" animated />
     <template v-else>
       <section class="common-title">
-        <h2>主键：{{ info.id }}</h2>
-        <el-button v-if="canAddOrUpdate" size="small" @click="handleEdit"><i class="iconfont icon-lxppc-edit"></i>编辑</el-button>
+        <h2>赊销明细编号：{{ info.creditSalesDetailCode }}</h2>
+        <!-- <el-button v-if="canAddOrUpdate" size="small" @click="handleEdit"><i class="iconfont icon-lxppc-edit"></i>编辑</el-button> -->
       </section>
       <section class="common-section">
         <div class="common-section-header">
@@ -13,62 +13,52 @@
         <div class="common-section-body">
           <!-- TIPS: 根据实际情况调整展示字段和宽度 -->
           <el-form :inline="true" ref="ruleForm" label-width="150px">
-            <el-form-item label="主键：" prop="id">
-              {{ info.id  }}
-            </el-form-item>
-            <el-form-item label="创建者：" prop="creator">
-              {{ info.creator  }}
-            </el-form-item>
-            <el-form-item label="创建时间：" prop="createTime">
-              {{ info.createTime  }}
-            </el-form-item>
-            <el-form-item label="创建者名称：" prop="creatorName">
-              {{ info.creatorName  }}
-            </el-form-item>
-            <el-form-item label="修改者：" prop="modifier">
-              {{ info.modifier  }}
-            </el-form-item>
-            <el-form-item label="修改者名称：" prop="modifierName">
-              {{ info.modifierName  }}
-            </el-form-item>
-            <el-form-item label="修改时间：" prop="updateTime">
-              {{ info.updateTime  }}
-            </el-form-item>
-            <el-form-item label="备注（说明）：" prop="remark">
-              {{ info.remark  }}
-            </el-form-item>
-            <el-form-item label="状态：" prop="status">
-              {{ info.status  }}
-            </el-form-item>
-            <el-form-item label="状态变更描述：" prop="statusDesc">
-              {{ info.statusDesc  }}
-            </el-form-item>
-            <el-form-item label="赊销明细编号：" prop="creditSalesDetailCode">
+            <el-form-item label="赊销账户编号：" prop="creditSalesDetailCode">
               {{ info.creditSalesDetailCode  }}
             </el-form-item>
             <el-form-item label="母公司名称：" prop="dealerCompanyName">
               {{ info.dealerCompanyName  }}
             </el-form-item>
-            <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-              {{ info.dealerCompanyCode  }}
+            <el-form-item label="资金账户编号：" prop="fundAccountId">
+              {{ info.fundAccountId  }}
             </el-form-item>
-            <el-form-item label="门店编码：" prop="dealerCode">
-              {{ info.dealerCode  }}
+            <el-form-item label="赊销明细编号：" prop="creditSalesDetailCode">
+              {{ info.creditSalesDetailCode  }}
             </el-form-item>
-            <el-form-item label="门店名称：" prop="dealerName">
-              {{ info.dealerName  }}
+            <el-form-item label="创建时间：" prop="createTime">
+              {{ info.createTime  }}
             </el-form-item>
-            <el-form-item label="整车VIN编码：" prop="vin">
+            <el-form-item label="结算资金类型：" prop="createTime">
+            </el-form-item>
+            <el-form-item label="备注：" prop="remark">
+              {{ info.remark  }}
+            </el-form-item>
+            <el-form-item label="VIN号：" prop="vin">
               {{ info.vin  }}
-            </el-form-item>
-            <el-form-item label="企业客户整车订单：" prop="entVehorderCode">
-              {{ info.entVehorderCode  }}
             </el-form-item>
             <el-form-item label="整车批售订单：" prop="wholesaleOrderCode">
               {{ info.wholesaleOrderCode  }}
             </el-form-item>
-            <el-form-item label="批售价&#x2F;折扣价：" prop="wholesalePrice">
+            <el-form-item label="企业客户整车订单：" prop="entVehorderCode">
+              {{ info.entVehorderCode  }}
+            </el-form-item>=
+          </el-form>
+        </div>
+      </section>
+      <section class="common-section">
+        <div class="common-section-header">
+          <h2>赊销信息</h2>
+        </div>
+        <div class="common-section-body">
+          <el-form :inline="true" ref="ruleForm" label-width="150px">
+            <el-form-item label="车辆价格：" prop="wholesalePrice">
+              <!-- {{  }} -->
+            </el-form-item>
+            <el-form-item label="批售价/折扣价：" prop="wholesalePrice">
               {{ info.wholesalePrice  }}
+            </el-form-item>
+            <el-form-item label="首付款比例：" prop="downPaymentRatio">
+              {{ info.downPaymentRatio  }}
             </el-form-item>
             <el-form-item label="现金金额：" prop="cashAmount">
               {{ info.cashAmount  }}
@@ -76,26 +66,17 @@
             <el-form-item label="返利金额：" prop="rebateAmount">
               {{ info.rebateAmount  }}
             </el-form-item>
-            <el-form-item label="首付款比例，如0.15：" prop="downPaymentRatio">
-              {{ info.downPaymentRatio  }}
-            </el-form-item>
             <el-form-item label="赊销金额：" prop="creditSalesAmount">
               {{ info.creditSalesAmount  }}
             </el-form-item>
             <el-form-item label="赊销时间：" prop="creditSalesTime">
               {{ info.creditSalesTime  }}
             </el-form-item>
-            <el-form-item label="赊销天数：" prop="creditSalesDays">
-              {{ info.creditSalesDays  }}
-            </el-form-item>
-            <el-form-item label="是否还款：" prop="repaymentFlag">
-              {{ info.repaymentFlag  }}
-            </el-form-item>
             <el-form-item label="还款时间：" prop="repaymentTime">
               {{ info.repaymentTime  }}
             </el-form-item>
-            <el-form-item label="还款金额：" prop="repaymentAmount">
-              {{ info.repaymentAmount  }}
+            <el-form-item label="赊销天数：" prop="creditSalesDays">
+              {{ info.creditSalesDays  }}
             </el-form-item>
             <el-form-item label="赊销费用：" prop="creditSalesFee">
               {{ info.creditSalesFee  }}
@@ -106,20 +87,11 @@
             <el-form-item label="违约金：" prop="penaltyFee">
               {{ info.penaltyFee  }}
             </el-form-item>
-            <el-form-item label="合格证赎回申请ID：" prop="certificateRedemptionApplyId">
-              {{ info.certificateRedemptionApplyId  }}
-            </el-form-item>
             <el-form-item label="凭证号：" prop="voucherNo">
               {{ info.voucherNo  }}
             </el-form-item>
-            <el-form-item label="企业客户整车订单ID：" prop="entVehorderId">
-              {{ info.entVehorderId  }}
-            </el-form-item>
-            <el-form-item label="批售订单ID：" prop="wholesaleOrderId">
-              {{ info.wholesaleOrderId  }}
-            </el-form-item>
-            <el-form-item label="关联资金账户ID：" prop="fundAccountId">
-              {{ info.fundAccountId  }}
+            <el-form-item label="合格证赎回申请：" prop="certificateRedemptionApplyId">
+              {{ info.certificateRedemptionApplyId  }}
             </el-form-item>
           </el-form>
         </div>

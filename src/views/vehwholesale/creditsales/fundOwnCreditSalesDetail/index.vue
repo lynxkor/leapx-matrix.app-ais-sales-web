@@ -70,10 +70,9 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="StatusEnum"
-            v-model="form.statusIncludeList"
+            v-model="form.statusInclude"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -89,12 +88,12 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
+      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button> -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button> -->
     </div>
     <div
       class="ais-table-c"
@@ -102,7 +101,6 @@
       <LPVxeTable
         ref="tableRef"
         v-loading="loading"
-        is-checkbox
         is-page
         checkboxFixed
         centralized
@@ -110,7 +108,6 @@
         :get-config="getConfig"
         :save-or-update="saveOrUpdate"
         @paginationChange="paginationChange"
-        @handleSelect="handleSelectionChange"
         @listSelect="handleListSelect"
       >
         <EditPage slot="centralizedViewSlot" :id="clickItemId"/>
@@ -147,6 +144,7 @@ const defaultForm = {
   id: '',
   creator: '',
   createTime: '',
+  statusInclude: '1'
 };
 
 const pageSize = 20;
@@ -190,8 +188,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'id',
-            label: '主键',
+            props: 'creditSalesDetailCode',
+            label: '赊销明细编号',
             visible: true,
             width: 200,
             fixed: 'left',
@@ -207,76 +205,76 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'creator', label: '创建者', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
-          { props: 'modifier', label: '修改者', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
-          { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
-          { props: 'remark', label: '备注（说明）', visible: true, width: 200 },
-          { props: 'status', label: '状态', visible: true, width: 200 },
-          { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },
-          { props: 'creditSalesDetailCode', label: '赊销明细编号', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
-          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200 },
-          { props: 'dealerCode', label: '门店编码', visible: true, width: 200 },
           { props: 'dealerName', label: '门店名称', visible: true, width: 200 },
-          { props: 'vin', label: '整车VIN编码', visible: true, width: 200 },
           { props: 'wholesaleOrderCode', label: '整车批售订单', visible: true, width: 200 },
-          { props: 'wholesalePrice', label: '批售价&#x2F;折扣价', visible: true, width: 200 },
+          { props: 'entVehorderId', label: '企业客户整车订单ID', visible: true, width: 200 },
+          { props: 'vin', label: '整车VIN编码', visible: true, width: 200 },
+          { props: 'wholesalePrice', label: '批售价/折扣价', visible: true, width: 200 },
           { props: 'cashAmount', label: '现金金额', visible: true, width: 200 },
           { props: 'rebateAmount', label: '返利金额', visible: true, width: 200 },
+          { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 200 },
           { props: 'creditSalesAmount', label: '赊销金额', visible: true, width: 200 },
           { props: 'creditSalesTime', label: '赊销时间', visible: true, width: 200 },
           { props: 'creditSalesDays', label: '赊销天数', visible: true, width: 200 },
-          { props: 'repaymentFlag', label: '是否还款', visible: true, width: 200 },
           { props: 'repaymentTime', label: '还款时间', visible: true, width: 200 },
-          { props: 'repaymentAmount', label: '还款金额', visible: true, width: 200 },
           { props: 'creditSalesFee', label: '赊销费用', visible: true, width: 200 },
+          { props: 'certificateRedemptionApplyId', label: '合格证赎回申请', visible: true, width: 200 },
           { props: 'overdueFee', label: '超期赊销费用', visible: true, width: 200 },
           { props: 'penaltyFee', label: '违约金', visible: true, width: 200 },
-          { props: 'certificateRedemptionApplyId', label: '合格证赎回申请ID', visible: true, width: 200 },
           { props: 'voucherNo', label: '凭证号', visible: true, width: 200 },
-          { props: 'entVehorderId', label: '企业客户整车订单ID', visible: true, width: 200 },
-          { props: 'wholesaleOrderId', label: '批售订单ID', visible: true, width: 200 },
-          { props: 'fundAccountId', label: '关联资金账户ID', visible: true, width: 200 },
-          {
-            props: 'operate',
-            label: '操作',
-            type: 'operate',
-            visible: true,
-            fixed: 'right',
-            buttons: [{
-              name: '编辑',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/creditsales/fundOwnCreditSalesDetail/edit',
-                  query: {
-                    id: row.id
-                  }
-                });
-              },
-              type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
-            }]
-          }
+          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'modifierName', label: '更新人', visible: true, width: 200 },
+          { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
+          // { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
+          // { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
+          // { props: 'remark', label: '备注（说明）', visible: true, width: 200 },
+          // { props: 'status', label: '状态', visible: true, width: 200 },
+          // { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },
+          // { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200 },
+          // { props: 'dealerCode', label: '门店编码', visible: true, width: 200 },
+          // { props: 'repaymentFlag', label: '是否还款', visible: true, width: 200 },
+          // { props: 'repaymentAmount', label: '还款金额', visible: true, width: 200 },
+          // { props: 'wholesaleOrderId', label: '批售订单ID', visible: true, width: 200 },
+          // { props: 'fundAccountId', label: '关联资金账户ID', visible: true, width: 200 },
+          // {
+          //   props: 'operate',
+          //   label: '操作',
+          //   type: 'operate',
+          //   visible: true,
+          //   fixed: 'right',
+          //   buttons: [{
+          //     name: '编辑',
+          //     click: (rowIndex, row) => {
+          //       this.$router.push({
+          //         path: '/vehwholesale/creditsales/fundOwnCreditSalesDetail/edit',
+          //         query: {
+          //           id: row.id
+          //         }
+          //       });
+          //     },
+          //     type: 'info'
+          //   }, {
+          //     name: '删除',
+          //     popconfirmTitle: '此操作将永久删除, 是否继续?',
+          //     click: (rowIndex, row) => {
+          //       deleteItem([row.id]).then(() => {
+          //         this.$message({
+          //           type: 'success',
+          //           message: '删除成功!'
+          //         });
+          //         this.getData();
+          //       }).catch(() => {
+          //         this.$message({
+          //           type: 'error',
+          //           message: '删除失败!'
+          //         });
+          //       });
+          //     },
+          //     type: 'danger'
+          //   }]
+          // }
         ],
         total: 0
       }
@@ -285,12 +283,6 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
-    const end = new Date(); // 当前时间
-    const start = new Date();
-    start.setMonth(start.getMonth() - 3); // 当前时间的前三个月
-    console.log('end:', end);
-    console.log('start:', start);
-    this.form.statusIncludeList = ['1'];
   },
   methods: {
     handleListSelect (row) {
