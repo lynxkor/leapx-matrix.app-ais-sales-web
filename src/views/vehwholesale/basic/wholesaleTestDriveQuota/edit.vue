@@ -55,6 +55,7 @@
               </el-form-item>
               <el-form-item label="数量" prop="quantity">
                 <el-input-number
+                  :controls="false"
                   placeholder="请输入"
                   v-model="form.quantity"
                   clearable
@@ -70,8 +71,8 @@
                       multiple: false,
                       emitPath: false
                     }"
-                  :disabled="!!_id"
                   collapse-tags
+                  :disabled="!!_id"
                 />
               </el-form-item>
               <el-form-item label="城市" prop="cityCode">
@@ -80,7 +81,6 @@
                   clearable
                   remote
                   v-model="form.cityCode"
-                  :params="form.cityName"
                   :remote-method="getCityList"
                   value-key="areaCode"
                   label-key="areaName"
@@ -91,13 +91,21 @@
               <el-form-item label="开始日期" prop="startDate">
                 <el-date-picker
                   v-model="form.startDate"
+                  format="yyyy-MM-dd HH:mm"
                   value-format="yyyy-MM-dd HH:mm:ss"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  type="datetime"
                 />
               </el-form-item>
               <el-form-item label="截止日期" prop="endDate">
                 <el-date-picker
                   v-model="form.endDate"
+                  format="yyyy-MM-dd HH:mm"
                   value-format="yyyy-MM-dd HH:mm:ss"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  type="datetime"
                 />
               </el-form-item>
             </el-form>
@@ -258,8 +266,8 @@ export default {
     };
   },
   mounted () {
-    this.getDetailData();
     this.fetchShopTypeEnum();
+    this.getDetailData();
   },
   methods: {
     // 打开侧边栏
@@ -277,6 +285,7 @@ export default {
           this.loading = false;
           Object.assign(this.form, res);
           Object.assign(this.originalForm, res);
+          this.form.mcDealerType = this.form.mcDealerType + '';
         });
       }
     },
@@ -351,8 +360,10 @@ export default {
     async getBuildTypeList () {
       return getBuildType({ status: 1 });
     },
-    async fetchShopTypeEnum () {
-      this.shopTypeList = await this.getBuildTypeList();
+    fetchShopTypeEnum () {
+      getBuildType().then(res => {
+        this.shopTypeList = res;
+      });
     }
   }
 };

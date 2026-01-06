@@ -43,10 +43,10 @@
                   disabled
                 />
               </el-form-item>
-              <el-form-item label="大区" prop="regionCode">
+              <el-form-item label="大区" prop="regionId">
                 <el-input
                   placeholder="请输入"
-                  v-model="form.regionCode"
+                  v-model="form.regionName"
                   clearable
                   disabled
                 />
@@ -54,7 +54,7 @@
               <el-form-item label="省份" prop="provinceCode">
                 <el-input
                   placeholder="请输入"
-                  v-model="form.provinceCode"
+                  v-model="form.provinceName"
                   clearable
                   disabled
                 />
@@ -62,7 +62,7 @@
               <el-form-item label="城市" prop="cityCode">
                 <el-input
                   placeholder="请输入"
-                  v-model="form.cityCode"
+                  v-model="form.cityName"
                   clearable
                   disabled
                 />
@@ -86,7 +86,7 @@
               <el-form-item label="车系" prop="seriesId">
                 <el-input
                   placeholder="请输入"
-                  v-model="form.seriesId"
+                  v-model="form.seriesName"
                   clearable
                   disabled
                 />
@@ -104,6 +104,7 @@
               </el-form-item>
               <el-form-item label="批售目标数" prop="wholesaleTargetQty">
                 <el-input-number
+                  :controls="false"
                   placeholder="请输入"
                   v-model="form.wholesaleTargetQty"
                   clearable
@@ -264,7 +265,7 @@ export default {
           { required: true, message: '请输入交付目标数', trigger: 'blur' }
         ],
         wholesaleTargetQty: [
-          { required: true, message: '请输入批售目标数', trigger: 'blur' }
+          { required: false, message: '请输入批售目标数', trigger: 'blur' }
         ],
         confirmedQty: [
           { required: true, message: '请输入已确认数量', trigger: 'blur' }

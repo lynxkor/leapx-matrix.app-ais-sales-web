@@ -20,7 +20,7 @@
           :remote-method="getModelIdList"
           value-key="id"
           label-key="name"
-          @change="modelListChange"
+          @change="handleModelChange"
         />
       </el-form-item>
       <el-form-item label="年款">
@@ -37,7 +37,7 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="ws_order_category"
-          v-model="form.auditStatus"
+          v-model="form.orderCategory"
           placeholder="请选择"
           clearable
           filterable
@@ -313,6 +313,9 @@ export default {
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item,
+              // 年月日时分
+              startDate: item.startDate ? item.startDate.substring(0, 16) : '',
+              endDate: item.endDate ? item.endDate.substring(0, 16) : '',
               deleteLoading: false
             };
           });
@@ -365,6 +368,13 @@ export default {
         if (this.form.createTime.length > 1) {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
+        }
+      }
+      if (this.form.updateTime) {
+        delete data.updateTime;
+        if (this.form.updateTime.length > 1) {
+          data.updateTimeStart = this.form.updateTime[0];
+          data.updateTimeEnd = this.form.updateTime[1];
         }
       }
 
@@ -432,7 +442,9 @@ export default {
     async getModelIdList (params) {
       return listVehicleModel({ modelNameLike: params, status: 1 });
     },
-    async modelListChange (val) {
+    async handleModelChange (val, record) {
+      this.yearTypeList = [];
+      this.form.vehicleYearTypeId = null;
       const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList: val, size: 1000 });
       this.yearTypeList = res.map(item => {
         return {

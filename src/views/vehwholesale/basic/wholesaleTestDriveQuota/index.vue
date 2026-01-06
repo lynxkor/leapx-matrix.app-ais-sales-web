@@ -49,6 +49,7 @@
       <template v-if="show">
         <el-form-item label="数量">
           <el-input-number
+                  :controls="false"
             placeholder="请输入"
             v-model="form.quantity"
             clearable
@@ -325,7 +326,10 @@ export default {
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item,
-              deleteLoading: false
+              deleteLoading: false,
+              // 年月日时分
+              startDate: item.startDate ? item.startDate.substring(0, 16) : '',
+              endDate: item.endDate ? item.endDate.substring(0, 16) : '',
             };
           });
           this.optionObj.total = res.total;
@@ -377,6 +381,13 @@ export default {
         if (this.form.createTime.length > 1) {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
+        }
+      }
+      if (this.form.updateTime) {
+        delete data.updateTime;
+        if (this.form.updateTime.length > 1) {
+          data.updateTimeStart = this.form.updateTime[0];
+          data.updateTimeEnd = this.form.updateTime[1];
         }
       }
 

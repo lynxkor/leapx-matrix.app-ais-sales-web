@@ -20,7 +20,7 @@
           :remote-method="getModelIdList"
           value-key="id"
           label-key="name"
-          @change="modelListChange"
+          @change="handleModelChange"
         />
       </el-form-item>
       <el-form-item label="年款">
@@ -37,7 +37,7 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="BooleanEnum"
-          v-model="form.openAutoConfirm"
+          v-model="form.noJoinAutoConfirm"
           placeholder="请选择"
           clearable
           filterable
@@ -156,6 +156,7 @@ export default {
         ...defaultForm
       },
       selectionList: [],
+      yearTypeList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -213,7 +214,7 @@ export default {
             }, {
               name: '日志',
               click: (rowIndex, row) => {
-                this.$auditLog.show({ id: row.id })
+                this.$auditLog.show({ id: row.id });
               },
               type: 'info'
             }]
@@ -340,6 +341,13 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
+      if (this.form.updateTime) {
+        delete data.updateTime;
+        if (this.form.updateTime.length > 1) {
+          data.updateTimeStart = this.form.updateTime[0];
+          data.updateTimeEnd = this.form.updateTime[1];
+        }
+      }
 
       return data;
     },
@@ -405,7 +413,9 @@ export default {
     async getModelIdList (params) {
       return listVehicleModel({ modelNameLike: params, status: 1 });
     },
-    async modelListChange (val) {
+    async handleModelChange (val, record) {
+      this.yearTypeList = [];
+      this.form.vehicleYearTypeId = null;
       const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList: val, size: 1000 });
       this.yearTypeList = res.map(item => {
         return {

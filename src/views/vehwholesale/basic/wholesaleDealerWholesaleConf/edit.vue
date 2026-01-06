@@ -24,7 +24,7 @@
                   clearable
                   remote
                   v-model="form.dealerCode"
-                  :remote-method="getDealerCodeList"
+                  :remote-method="getDealerListByCode"
                   value-key="storeCode"
                   label-key="storeCode"
                   @change="handleChangeDealer"
@@ -36,8 +36,9 @@
                   filterable
                   clearable
                   remote
+                  :params="form.dealerName"
                   v-model="form.dealerCode"
-                  :remote-method="getDealerCodeList"
+                  :remote-method="getDealerListByName"
                   value-key="storeCode"
                   label-key="storeName"
                   @change="handleChangeDealer"
@@ -122,6 +123,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 const defaultForm = {
   // 多选时字段有变化，自行修复
   wholesaleDealerWholesaleConfName: '',
+  dealerId: '',
   dealerCode: '',
   dealerName: '',
   dealerParentOrgName: '',
@@ -313,13 +315,17 @@ export default {
       }
       return [];
     },
-    async getDealerCodeList (params) {
-      return listOrgStoreInfo({ keyword: params });
+    async getDealerListByCode (params) {
+      return listOrgStoreInfo({ storeCode: params });
+    },
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params });
     },
     handleChangeDealer (val, selectedOption) {
       if (val) {
         this.form.dealerCode = selectedOption?.storeCode || '';
         this.form.dealerName = selectedOption?.storeName || '';
+        this.form.dealerId = selectedOption?.storeId || '';
       }
     },
     async getDealerParentOrgList (params) {

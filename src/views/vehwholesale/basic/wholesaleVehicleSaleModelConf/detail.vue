@@ -20,26 +20,26 @@
               {{ info.vehicleYearType  }}
             </el-form-item>
             <el-form-item label="订单分类：" prop="orderCategory">
-              {{ info.orderCategory  }}
+              {{ info.orderCategoryLabel  }}
             </el-form-item>
             <el-form-item label="合作模式：" prop="cooperationMode">
-              {{ info.cooperationMode  }}
+              {{ info.cooperationModeLabel  }}
             </el-form-item>
             <el-form-item label="开票优惠类型：" prop="invoiceDiscountType">
-              {{ info.invoiceDiscountType  }}
+              {{ info.invoiceDiscountTypeLabel  }}
             </el-form-item>
             <el-form-item label="开票系数：" prop="invoiceCoefficient">
               {{ info.invoiceCoefficient  }}
             </el-form-item>
             <el-form-item label="返利使用类型：" prop="rebateUseType">
-              {{ info.rebateUseType  }}
+              {{ info.rebateUseTypeLabel  }}
             </el-form-item>
             <el-form-item label="返利使用系数：" prop="rebateCoefficient">
               {{ info.rebateCoefficient  }}
             </el-form-item>
-            <el-form-item label="母公司ID：" prop="dealerParentOrgId">
+            <!-- <el-form-item label="母公司ID：" prop="dealerParentOrgId">
               {{ info.dealerParentOrgId  }}
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="母公司：" prop="dealerParentOrgName">
               {{ info.dealerParentOrgName  }}
             </el-form-item>
@@ -62,7 +62,7 @@
               {{ info.auditTime  }}
             </el-form-item>
             <el-form-item label="审核状态：" prop="auditStatus">
-              {{ info.auditStatus  }}
+              {{ info.auditStatusLabel  }}
             </el-form-item>
             <el-form-item label="审核意见：" prop="auditOpinion">
               {{ info.auditOpinion  }}
@@ -73,7 +73,7 @@
             <el-form-item label="修改时间：" prop="updateTime">
               {{ info.updateTime  }}
             </el-form-item>
-            <el-form-item label="主键：" prop="id">
+            <!-- <el-form-item label="主键：" prop="id">
               {{ info.id  }}
             </el-form-item>
             <el-form-item label="创建者：" prop="creator">
@@ -114,7 +114,7 @@
             </el-form-item>
             <el-form-item label="归属门店ID（组织ID），当数据权限归属到本组织以及本下级：" prop="ownerOrgId">
               {{ info.ownerOrgId  }}
-            </el-form-item>
+            </el-form-item> -->
           </el-form>
         </div>
       </section>
@@ -159,8 +159,15 @@ export default {
     },
     getData () {
       getDetail(this.$route.query.id).then(res => {
+        console.log('res', res);
         this.loading = false;
-        this.info = res;
+        this.info = {
+          ...res,
+          // 年月日时分
+          startDate: res.startDate ? res.startDate.substring(0, 16) : '',
+          endDate: res.endDate ? res.endDate.substring(0, 16) : '',
+        };
+        console.log('this.info', this.info);
       }).catch(() => {
         this.loading = false;
       });

@@ -44,7 +44,7 @@
           :remote-method="getModelIdList"
           value-key="id"
           label-key="name"
-          @change="modelListChange"
+          @change="handleModelChange"
         />
       </el-form-item>
       <template v-if="show">
@@ -170,6 +170,7 @@ export default {
         ...defaultForm
       },
       selectionList: [],
+      yearTypeList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -418,7 +419,9 @@ export default {
     async getModelIdList (params) {
       return listVehicleModel({ modelNameLike: params, status: 1 });
     },
-    async modelListChange (val) {
+    async handleModelChange (val, record) {
+      this.yearTypeList = [];
+      this.form.vehicleYearTypeId = null;
       const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList: val, size: 1000 });
       this.yearTypeList = res.map(item => {
         return {

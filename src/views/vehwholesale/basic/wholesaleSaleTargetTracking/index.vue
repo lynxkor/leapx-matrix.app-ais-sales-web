@@ -47,7 +47,7 @@
           filterable
           clearable
           remote
-          v-model="form.regionCode"
+          v-model="form.regionId"
           :remote-method="getRegionList"
           value-key="orgCode"
           label-key="orgName"
@@ -97,7 +97,7 @@
           remote
           collapseTags
           v-model="form.dealerCodes"
-          :remote-method="getDealerCodeList"
+          :remote-method="getDealerListByCode"
           value-key="storeCode"
           label-key="storeName"
           @change="handleChangeDealer"
@@ -111,7 +111,7 @@
           remote
           collapseTags
           v-model="form.seriesIds"
-          :remote-method="getVehicleSeriesList"
+          :remote-method="getDealerListByName"
           value-key="id"
           label-key="name"
         />
@@ -180,7 +180,7 @@ const defaultForm = {
   month: '',
   dealerParentOrgIds: [],
   dealerCodes: [],
-  regionCode: '',
+  regionId: '',
   provinceCode: '',
   cityCode: '',
   seriesIds: [],
@@ -499,15 +499,13 @@ export default {
     async getVehicleSeriesList (params) {
       return vehicleSeriesList({ seriesNameLike: params, status: 1 });
     },
-    async getDealerCodeList (params) {
-      return listOrgStoreInfo({ keyword: params });
+    async getDealerListByCode (params) {
+      return listOrgStoreInfo({ storeCode: params });
     },
-    handleChangeDealer (val, selectedOption) {
-      if (val) {
-        this.form.dealerCode = selectedOption?.storeCode || '';
-        this.form.dealerName = selectedOption?.storeName || '';
-      }
-    }
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params });
+    },
+
   }
 };
 </script>

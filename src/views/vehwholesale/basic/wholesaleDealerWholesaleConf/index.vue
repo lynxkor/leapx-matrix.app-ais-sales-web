@@ -17,10 +17,9 @@
           remote
           collapseTags
           v-model="form.dealerCodes"
-          :remote-method="getDealerCodeList"
+          :remote-method="getDealerListByCode"
           value-key="storeCode"
           label-key="storeCode"
-          @change="handleChangeDealer"
         />
       </el-form-item>
       <el-form-item label="门店名称">
@@ -31,10 +30,9 @@
           remote
           collapseTags
           v-model="form.dealerCodes"
-          :remote-method="getDealerCodeList"
+          :remote-method="getDealerListByName"
           value-key="storeCode"
           label-key="storeName"
-          @change="handleChangeDealer"
         />
       </el-form-item>
       <el-form-item label="母公司"  v-show="this.visibleCount === 3 || show">
@@ -251,7 +249,7 @@ export default {
             }, {
               name: '日志',
               click: (rowIndex, row) => {
-                this.$auditLog.show({ id: row.id })
+                this.$auditLog.show({ id: row.id });
               },
               type: 'info'
             }]
@@ -378,6 +376,13 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
+      if (this.form.updateTime) {
+        delete data.updateTime;
+        if (this.form.updateTime.length > 1) {
+          data.updateTimeStart = this.form.updateTime[0];
+          data.updateTimeEnd = this.form.updateTime[1];
+        }
+      }
 
       return data;
     },
@@ -440,14 +445,11 @@ export default {
       //   });
       // });
     },
-    async getDealerCodeList (params) {
-      return listOrgStoreInfo({ keyword: params });
+    async getDealerListByCode (params) {
+      return listOrgStoreInfo({ storeCode: params });
     },
-    handleChangeDealer (val, selectedOption) {
-      if (val) {
-        this.form.dealerCode = selectedOption?.storeCode || '';
-        this.form.dealerName = selectedOption?.storeName || '';
-      }
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params });
     },
     async getDealerParentOrgList (params) {
       return getParentCompany({ parentCompanyName: params });

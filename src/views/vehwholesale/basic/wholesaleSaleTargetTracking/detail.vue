@@ -22,14 +22,14 @@
             <el-form-item label="月：" prop="month">
               {{ info.month  }}
             </el-form-item>
-            <el-form-item label="母公司ID：" prop="dealerParentOrgId">
+            <!-- <el-form-item label="母公司ID：" prop="dealerParentOrgId">
               {{ info.dealerParentOrgId  }}
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="母公司：" prop="dealerParentOrgName">
               {{ info.dealerParentOrgName  }}
             </el-form-item>
             <el-form-item label="合作类型：" prop="cooperationType">
-              {{ info.cooperationType  }}
+              {{ info.cooperationTypeLabel  }}
             </el-form-item>
             <el-form-item label="门店编码：" prop="dealerCode">
               {{ info.dealerCode  }}
@@ -76,7 +76,7 @@
             <el-form-item label="零售备注：" prop="retailRemark">
               {{ info.retailRemark  }}
             </el-form-item>
-            <el-form-item label="创建者名称：" prop="creatorName">
+            <!-- <el-form-item label="创建者名称：" prop="creatorName">
               {{ info.creatorName  }}
             </el-form-item>
             <el-form-item label="创建时间：" prop="createTime">
@@ -90,14 +90,14 @@
             </el-form-item>
             <el-form-item label="修改者：" prop="modifier">
               {{ info.modifier  }}
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="修改者名称：" prop="modifierName">
               {{ info.modifierName  }}
             </el-form-item>
             <el-form-item label="修改时间：" prop="updateTime">
               {{ info.updateTime  }}
             </el-form-item>
-            <el-form-item label="备注：" prop="remark">
+            <!-- <el-form-item label="备注：" prop="remark">
               {{ info.remark  }}
             </el-form-item>
             <el-form-item label="状态：" prop="status">
@@ -123,7 +123,7 @@
             </el-form-item>
             <el-form-item label="归属门店ID（组织ID），当数据权限归属到本组织以及本下级：" prop="ownerOrgId">
               {{ info.ownerOrgId  }}
-            </el-form-item>
+            </el-form-item> -->
           </el-form>
         </div>
       </section>

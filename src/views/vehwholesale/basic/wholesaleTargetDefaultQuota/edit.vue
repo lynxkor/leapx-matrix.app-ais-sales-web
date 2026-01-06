@@ -27,6 +27,7 @@
               </el-form-item>
               <el-form-item label="批售目标数" prop="wholesaleTargetQty">
                 <el-input-number
+                  :controls="false"
                   placeholder="请输入"
                   v-model="form.wholesaleTargetQty"
                   clearable

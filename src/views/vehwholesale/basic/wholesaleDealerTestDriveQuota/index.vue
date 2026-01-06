@@ -17,10 +17,9 @@
             remote
             collapseTags
             v-model="form.dealerCodes"
-            :remote-method="getDealerCodeList"
+            :remote-method="getDealerListByCode"
             value-key="storeCode"
             label-key="storeCode"
-            @change="handleChangeDealer"
           />
         </el-form-item>
         <el-form-item label="门店名称">
@@ -31,10 +30,9 @@
             remote
             collapseTags
             v-model="form.dealerCodes"
-            :remote-method="getDealerCodeList"
+            :remote-method="getDealerListByName"
             value-key="storeCode"
             label-key="storeName"
-            @change="handleChangeDealer"
           />
         </el-form-item>
         <el-form-item label="年款" v-show="this.visibleCount === 3 || show">
@@ -77,6 +75,7 @@
         </el-form-item>
         <el-form-item label="配额数量">
           <el-input-number
+                  :controls="false"
             placeholder="请输入"
             v-model="form.quantity"
             clearable
@@ -463,14 +462,11 @@ export default {
       //   });
       // });
     },
-    async getDealerCodeList (params) {
-      return listOrgStoreInfo({ keyword: params });
+    async getDealerListByCode (params) {
+      return listOrgStoreInfo({ storeCode: params });
     },
-    handleChangeDealer (val, selectedOption) {
-      if (val) {
-        this.form.dealerCode = selectedOption?.storeCode || '';
-        this.form.dealerName = selectedOption?.storeName || '';
-      }
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params });
     },
     async getVehicleSeriesList (params) {
       return vehicleSeriesList({ seriesNameLike: params, status: 1 });

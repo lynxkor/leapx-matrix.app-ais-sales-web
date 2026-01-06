@@ -25,7 +25,7 @@
             <el-form-item label="备注：" prop="remark">
               {{ info.remark  }}
             </el-form-item>
-            <el-form-item label="创建者名称：" prop="creatorName">
+            <!-- <el-form-item label="创建者名称：" prop="creatorName">
               {{ info.creatorName  }}
             </el-form-item>
             <el-form-item label="创建时间：" prop="createTime">
@@ -36,17 +36,17 @@
             </el-form-item>
             <el-form-item label="创建者：" prop="creator">
               {{ info.creator  }}
-            </el-form-item>
-            <el-form-item label="修改者：" prop="modifier">
+            </el-form-item> -->
+            <!-- <el-form-item label="修改者：" prop="modifier">
               {{ info.modifier  }}
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="修改者名称：" prop="modifierName">
               {{ info.modifierName  }}
             </el-form-item>
             <el-form-item label="修改时间：" prop="updateTime">
               {{ info.updateTime  }}
             </el-form-item>
-            <el-form-item label="状态：" prop="status">
+            <!-- <el-form-item label="状态：" prop="status">
               {{ info.status  }}
             </el-form-item>
             <el-form-item label="状态变更描述：" prop="statusDesc">
@@ -60,7 +60,7 @@
             </el-form-item>
             <el-form-item label="归属门店ID（组织ID），当数据权限归属到本组织以及本下级：" prop="ownerOrgId">
               {{ info.ownerOrgId  }}
-            </el-form-item>
+            </el-form-item> -->
           </el-form>
         </div>
       </section>
