@@ -9,24 +9,26 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="母公司编码">
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerCompanyCode"
-          clearable
-        />
-      </el-form-item>
       <el-form-item label="母公司名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerCompanyName"
-          clearable
-        />
+        <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
       </el-form-item>
-      <el-form-item label="赊销账户状态"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="创建时间">
+          <el-date-picker
+           :default-time="['00:00:00', '23:59:59']"
+            v-model="form.createTime"
+            type="daterange"
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
+      <template v-if="show">
+         <el-form-item label="赊销账户状态">
         <fetch-select
           :request="fetchOptions"
-          enumCode="xxx"
+          enumCode="vw_fund_own_credit_sales_limit_status"
           v-model="form.creditAccountStatus"
           placeholder="请选择"
           clearable
@@ -34,7 +36,23 @@
           filterable
         />
       </el-form-item>
-      <template v-if="show">
+        <el-form-item label="母公司编码">
+        <el-input
+          placeholder="请输入"
+          v-model="form.dealerCompanyCode"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item label="额度是否有效">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
       </template>
       <page-search-action
         v-if="canList"
@@ -77,7 +95,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="1"
+      :id="'1'"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -88,7 +106,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesLimit/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -97,7 +115,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
-
+import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   dealerCompanyCode: '',
@@ -113,6 +131,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
@@ -372,6 +391,13 @@ export default {
           });
         });
       }).catch(() => {});
+    },
+    async getParentCompany (query) {
+      try {
+        return await getParentCompany({ parentCompanyName: query });
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
     },
     // 批量启用停用
     handleBatchEnable (status) {

@@ -35,7 +35,7 @@
               <el-form-item label="赊销账户状态" prop="creditAccountStatus">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="xxx"
+                  enumCode="vw_fund_own_credit_sales_limit_status"
                   v-model="form.creditAccountStatus"
                   placeholder="请选择"
                   clearable

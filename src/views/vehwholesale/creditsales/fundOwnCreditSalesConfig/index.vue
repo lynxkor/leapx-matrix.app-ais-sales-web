@@ -17,43 +17,9 @@
         />
       </el-form-item> -->
       <el-form-item label="母公司名称">
-        <fetch-select
-            :remote-method="getParentCompany"
-            remote
-            v-model="form.dealerCompanyCodes"
-            placeholder="请选择"
-            labelKey="companyName"
-            valueKey="companyCode"
-            clearable
-            multiple
-            collapseTags
-            filterable
-             @change="parentCompanyChange" />
+        <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
       </el-form-item>
-      <el-form-item label="母公司编码"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerCompanyCode"
-          clearable
-        />
-      </el-form-item>
-      <template v-if="show">
-
-        <!-- <el-form-item label="授信额度">
-          <el-input
-            placeholder="请输入"
-            v-model="form.creditAmount"
-            clearable
-          />
-        </el-form-item> -->
-        <!-- <el-form-item label="创建人">
-          <el-input
-            placeholder="请输入"
-            v-model="form.creatorName"
-            clearable
-          />
-        </el-form-item> -->
-        <el-form-item label="配置时间">
+       <el-form-item label="配置时间">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.configTime"
@@ -65,6 +31,22 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
+
+      <template v-if="show">
+         <el-form-item label="配置状态">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="ve_credit_sales_config_audit_status"
+            v-model="form.auditStatuses"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="母公司编码" >
+          <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
+        </el-form-item>
         <el-form-item label="复核时间">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
@@ -75,17 +57,6 @@
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-          />
-        </el-form-item>
-        <el-form-item label="配置状态">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="ve_credit_sales_config_audit_status"
-            v-model="form.auditStatuses"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
           />
         </el-form-item>
         <el-form-item label="赊销账户状态">
@@ -174,7 +145,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="1"
+      :id="'1'"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -194,6 +165,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -223,7 +195,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    TagInput
   },
   data () {
     return {

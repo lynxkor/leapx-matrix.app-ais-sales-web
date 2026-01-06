@@ -14,13 +14,13 @@
           <!-- TIPS: 根据实际情况调整展示字段和宽度 -->
           <el-form :inline="true" ref="ruleForm" label-width="150px">
 
-            <el-form-item label="车系名称：" prop="seriesName">
+            <el-form-item label="车系：" prop="seriesName">
               {{ info.seriesName  }}
             </el-form-item>
-            <el-form-item label="年款名称：" prop="yearTypeName">
+            <el-form-item label="年款：" prop="yearTypeName">
               {{ info.yearTypeName  }}
             </el-form-item>
-            <el-form-item label="首付款比例" prop="downPaymentRatio">
+            <el-form-item label="首付款比例%：" prop="downPaymentRatio">
               {{ info.downPaymentRatio  }}
             </el-form-item>
             <el-form-item label="是否使用返利：" prop="useRebate">

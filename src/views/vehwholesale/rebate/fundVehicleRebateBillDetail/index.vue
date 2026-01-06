@@ -21,51 +21,33 @@
       />
     </el-form-item>
     <el-form-item label="创建时间">
-      <el-date-picker
-        :default-time="['00:00:00', '23:59:59']"
+      <dateranges
         v-model="form.createTime"
-        type="daterange"
-        :picker-options="pickerOptions"
-        range-separator="至"
-        value-format="yyyy-MM-dd HH:mm:ss"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
-    />
+        :setDefault="true"
+        deftTime="最近一周"
+        ref="transactionTime"/>
   </el-form-item>
+  <template v-if="show">
     <el-form-item label="VIN">
-      <el-input
-        placeholder="请输入"
-        v-model="form.vin"
-        clearable
-      />
+      <tag-input v-model="form.vins" placeholder="请输入" />
     </el-form-item>
-    <el-form-item label="母公司名称"  v-show="this.visibleCount === 3 || show">
-    <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
-    <!-- <el-input
-      placeholder="请输入"
-      v-model="form.dealerCompanyName"
-      clearable
-    /> -->
-  </el-form-item>
-    <template v-if="show">
-      <el-form-item label="门店名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerName"
+    <el-form-item label="母公司名称">
+      <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
+    </el-form-item>
+    <el-form-item label="门店名称">
+      <tag-input v-model="form.dealerNames" placeholder="请输入" />
+    </el-form-item>
+    <el-form-item label="单据状态" prop="billStatus">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="vw_rebate_bills_detail_status"
+          v-model="form.billStatuss"
+          placeholder="请选择"
           clearable
+          multiple
+          filterable
         />
       </el-form-item>
-      <el-form-item label="单据状态" prop="billStatus">
-              <fetch-select
-                :request="fetchOptions"
-                enumCode="vw_rebate_bills_detail_status"
-                v-model="form.billStatuss"
-                placeholder="请选择"
-                clearable
-                multiple
-                filterable
-              />
-            </el-form-item>
       <el-form-item label="预算科目">
         <fetch-select
           filterable
@@ -91,40 +73,35 @@
         />
         </el-form-item>
          <el-form-item label="交车单编码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.deliveryOrderCode"
-            clearable
-          />
+          <tag-input v-model="form.deliveryOrderCodes" placeholder="请输入" />
         </el-form-item>
-      <el-form-item label="车系名称"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="车系名称">
         <fetch-select
-        filterable
-        clearable
-        remote
-        v-model="form.vehicleSeriesIds"
-        :remote-method="getVehicleSeriesList"
-        value-key="id"
-        label-key="name"
-        multiple
-        />
+            :remote-method="seriesSearch"
+            remote
+            v-model="form.seriesIds"
+            placeholder="请选择"
+            labelKey="name"
+            valueKey="id"
+            clearable
+            multiple
+            collapseTags
+            filterable
+            :options="seriesList"
+             />
       </el-form-item>
        <el-form-item label="车型">
           <fetch-select
             :remote-method="modelSearch"
             remote
             reserve-keyword
-            :options="modelList" v-model="form.modelIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable
+            :options="modelList" v-model="form.modelIds" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable
             />
         </el-form-item>
         <el-form-item label="业务单据号">
-          <el-input
-            placeholder="请输入"
-            v-model="form.bizOrderNo"
-            clearable
-          />
+            <tag-input v-model="form.bizOrderNos" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="审核时间">
+        <el-form-item label="初审时间">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.auditTime"
@@ -160,7 +137,7 @@
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchAudit()" >批量初审</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchReview()" >批量复审</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" >批量删除</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -185,7 +162,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="'fundVehicleRebateBillDetailImport'"
+      id="fundVehicleRebateBillDetailImport"
       @close="handleUploadDialogClose"
     />
     <BatchAuditDialog
@@ -202,7 +179,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/rebate/fundVehicleRebateBillDetail/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelList } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelList, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -216,11 +193,12 @@ import { listIdNames as fundFeeSuportTypeList } from '@/api/vehwholesale/fund/fu
 import TagInput from '@/libs/components/TagInput';
 import BatchAuditDialog from '../components/batchAudit';
 import BatchReviewDialog from '../components/batchReview';
+import dateranges from '@/libs/components/dateranges';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   creatorName: '',
-  createTime: '',
+  createTime: [],
   dealerCompanyName: '',
   dealerName: '',
   rebateType: '',
@@ -250,7 +228,9 @@ export default {
     Upload,
     TagInput,
     BatchAuditDialog,
-    BatchReviewDialog
+    BatchReviewDialog,
+    dateranges
+
   },
   data () {
     return {
@@ -263,6 +243,7 @@ export default {
       },
       selectionList: [],
       modelList: [],
+      seriesList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -332,36 +313,38 @@ export default {
             type: 'operate',
             visible: true,
             fixed: 'right',
-            buttons: [{
-              name: '编辑',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/rebate/fundVehicleRebateBillDetail/edit',
-                  query: {
-                    id: row.id
-                  }
-                });
-              },
-              type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
+            buttons: [
+            //   {
+            //   name: '编辑',
+            //   click: (rowIndex, row) => {
+            //     this.$router.push({
+            //       path: '/vehwholesale/rebate/fundVehicleRebateBillDetail/edit',
+            //       query: {
+            //         id: row.id
+            //       }
+            //     });
+            //   },
+            //   type: 'info'
+            // },
+              {
+                name: '删除',
+                popconfirmTitle: '此操作将永久删除, 是否继续?',
+                click: (rowIndex, row) => {
+                  deleteItem([row.id]).then(() => {
+                    this.$message({
+                      type: 'success',
+                      message: '删除成功!'
+                    });
+                    this.getData();
+                  }).catch(() => {
+                    this.$message({
+                      type: 'error',
+                      message: '删除失败!'
+                    });
                   });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
-            }]
+                },
+                type: 'danger'
+              }]
           }
         ],
         total: 0
@@ -373,6 +356,15 @@ export default {
     this.getData();
   },
   methods: {
+    async seriesSearch (query) {
+      try {
+        const res = await vehicleSeriesList({ seriesNameLike: query });
+        this.seriesList = res;
+        return res;
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
+    },
     async modelSearch (query) {
       // if (query) {
       let params = {
@@ -524,7 +516,6 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
-
       return data;
     },
     async fetchOptions (code) {
@@ -595,6 +586,13 @@ export default {
           });
         });
       }).catch(() => {});
+    },
+    async getParentCompany (query) {
+      try {
+        return await getParentCompany({ parentCompanyName: query });
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
     },
     // 批量启用停用
     handleBatchEnable (status) {

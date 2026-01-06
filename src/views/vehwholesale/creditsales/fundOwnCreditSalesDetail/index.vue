@@ -9,33 +9,69 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="主键">
-        <el-input
-          placeholder="请输入"
-          v-model="form.id"
-          clearable
-        />
+    <el-form-item label="母公司名称">
+      <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
+    </el-form-item>
+    <el-form-item label="创建时间">
+      <el-date-picker
+        :default-time="['00:00:00', '23:59:59']"
+        v-model="form.createTime"
+        type="daterange"
+        :picker-options="pickerOptions"
+        range-separator="至"
+        value-format="yyyy-MM-dd HH:mm:ss"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+    />
+  </el-form-item>
+    <template v-if="show">
+      <el-form-item label="VIN">
+      <tag-input v-model="form.vins" placeholder="请输入" />
+    </el-form-item>
+    <el-form-item label="门店名称">
+      <tag-input v-model="form.dealerNames" placeholder="请输入" />
       </el-form-item>
-      <el-form-item label="创建者">
-        <el-input
-          placeholder="请输入"
-          v-model="form.creator"
-          clearable
-        />
+      <el-form-item label="整车批售订单">
+        <tag-input v-model="form.wholesaleOrderCodes" placeholder="请输入" />
       </el-form-item>
-      <el-form-item label="创建时间"  v-show="this.visibleCount === 3 || show">
-        <el-date-picker
-         :default-time="['00:00:00', '23:59:59']"
-          v-model="form.createTime"
-          type="daterange"
-          :picker-options="pickerOptions"
-          range-separator="至"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        />
+      <el-form-item label="企业客户整车订单">
+        <tag-input v-model="form.entVehorderCodes" placeholder="请输入" />
       </el-form-item>
-      <template v-if="show">
+      <el-form-item label="使用天数下限">
+          <el-input
+            placeholder="请输入"
+            v-model="form.minUsageDays"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="使用天数上限">
+          <el-input
+            placeholder="请输入"
+            v-model="form.maxUsageDays"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="是否还款">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.useRebate"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="状态">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="StatusEnum"
+            v-model="form.statusIncludeList"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
+        </el-form-item>
       </template>
       <page-search-action
         v-if="canList"
@@ -78,7 +114,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="1"
+      :id="'1'"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -89,8 +125,8 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesDetail/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
-// import FetchSelect from '@/libs/components/FetchSelect';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
+import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -98,6 +134,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -116,9 +153,10 @@ export default {
   components: {
     PageSearchAction,
     LPVxeTable,
-    // FetchSelect,
+    FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    TagInput
   },
   data () {
     return {
@@ -240,6 +278,7 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
+    this.form.statusIncludeList = ['1'];
   },
   methods: {
     handleListSelect (row) {
@@ -387,6 +426,13 @@ export default {
           });
         });
       }).catch(() => {});
+    },
+    async getParentCompany (query) {
+      try {
+        return await getParentCompany({ parentCompanyName: query });
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
     },
     // 批量启用停用
     handleBatchEnable (status) {

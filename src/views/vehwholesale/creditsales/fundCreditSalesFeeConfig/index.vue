@@ -29,7 +29,7 @@
             collapseTags
             filterable
             :options="seriesList"
-            @change="seriesListChange" />
+          />
       </el-form-item>
       <el-form-item label="年款">
         <fetch-select
@@ -44,7 +44,7 @@
             collapseTags
             filterable
             :options="yearTypeList"
-            @change="seriesListChange" />
+            />
       </el-form-item>
       <el-form-item label="创建时间" v-show="this.visibleCount === 3 || show">
           <el-date-picker
@@ -187,7 +187,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="fundCreditSalesFeeConfigImport"
+      id="fundCreditSalesFeeConfigImport"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -247,7 +247,9 @@ export default {
       form: {
         ...defaultForm
       },
+      seriesList: [],
       selectionList: [],
+      yearTypeList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -280,9 +282,9 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
-          { props: 'yearTypeName', label: '年款名称', visible: true, width: 200 },
-          { props: 'downPaymentRatio', label: '首付款比例', visible: true, width: 200 },
+          { props: 'seriesName', label: '车系', visible: true, width: 200 },
+          { props: 'yearTypeName', label: '年款', visible: true, width: 200 },
+          { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 200 },
           { props: 'useRebateLabel', label: '是否使用返利', visible: true, width: 200 },
           { props: 'minUsageDays', label: '使用天数下限', visible: true, width: 200 },
           { props: 'maxUsageDays', label: '使用天数上限', visible: true, width: 200 },
@@ -322,6 +324,7 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
+    this.form.statusIncludeList = ['1']; // 默认只显示启用的
   },
   methods: {
     handleListSelect (row) {

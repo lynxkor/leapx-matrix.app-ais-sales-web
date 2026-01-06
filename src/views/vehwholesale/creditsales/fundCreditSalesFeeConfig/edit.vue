@@ -11,7 +11,7 @@
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
-              <el-form-item label="车系名称" prop="seriesName">
+              <el-form-item label="车系" prop="seriesName">
                 <el-input
                   placeholder="请输入"
                   v-model="form.seriesName"
@@ -19,7 +19,7 @@
                   disabled="!id"
                 />
               </el-form-item>
-              <el-form-item label="年款名称" prop="yearTypeName">
+              <el-form-item label="年款" prop="yearTypeName">
                 <el-input
                   placeholder="请输入"
                   v-model="form.yearTypeName"
@@ -27,7 +27,7 @@
                   disabled="!id"
                 />
               </el-form-item>
-              <el-form-item label="首付款比例" prop="downPaymentRatio">
+              <el-form-item label="首付款比例%" prop="downPaymentRatio">
                 <el-input
                   placeholder="请输入"
                   v-model="form.downPaymentRatio"

@@ -35,7 +35,7 @@
   >
     <el-form ref="filterReviewformRef" :model="filterReviewform"  :label-width="formLabelWidth">
       <el-form-item label="单据状态">
-          <input type="text" v-model="billStatus" placeholder="请选择" style="width: 100%" disabled=""/>
+          <el-input type="text" v-model="billStatus" placeholder="请选择" style="width: 100%" disabled=""/>
       </el-form-item>
          <el-form-item label="返利类型">
           <fetch-select
@@ -239,6 +239,10 @@ export default {
     },
     close () {
       this.dialogVisible = false;
+    },
+    reviewRejectClose () {
+      this.reviewRejectlogVisible = false;
+      this.$refs.rejectformRef.resetFields();
     },
     reviewApp () {
       this.totalDialogVisible = true;
