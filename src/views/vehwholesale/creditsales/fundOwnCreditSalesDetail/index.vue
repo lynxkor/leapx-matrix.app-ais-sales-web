@@ -13,7 +13,12 @@
       <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
     </el-form-item>
     <el-form-item label="创建时间">
-      <el-date-picker
+        <dateranges
+          v-model="form.createTime"
+          :setDefault="true"
+          deftTime="最近一周"
+        />
+      <!-- <el-date-picker
         :default-time="['00:00:00', '23:59:59']"
         v-model="form.createTime"
         type="daterange"
@@ -22,8 +27,8 @@
         value-format="yyyy-MM-dd HH:mm:ss"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
-    />
-  </el-form-item>
+      /> -->
+    </el-form-item>
     <template v-if="show">
       <el-form-item label="VIN">
       <tag-input v-model="form.vins" placeholder="请输入" />
@@ -135,6 +140,7 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
+import dateranges from '@/libs/components/dateranges';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -151,6 +157,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    dateranges,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
@@ -278,6 +285,11 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
+    const end = new Date(); // 当前时间
+    const start = new Date();
+    start.setMonth(start.getMonth() - 3); // 当前时间的前三个月
+    console.log('end:', end);
+    console.log('start:', start);
     this.form.statusIncludeList = ['1'];
   },
   methods: {

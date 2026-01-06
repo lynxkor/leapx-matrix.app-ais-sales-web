@@ -6,7 +6,7 @@
       :model="form"
       size="small"
       label-position="right"
-      label-width="90px"
+      label-width="120px"
       class="ais-search-form"
     >
       <!-- <el-form-item label="记录编号">
@@ -138,10 +138,9 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="StatusEnum"
-            v-model="form.statusIncludeList"
+            v-model="form.statusInclude"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -209,6 +208,7 @@ import EditPage from './edit.vue';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleYearType } from '@/api/common';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  statusInclude: '1',
   creditSalesFeeConfigCode: '',
   seriesName: '',
   yearTypeName: '',
@@ -324,7 +324,6 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
-    this.form.statusIncludeList = ['1']; // 默认只显示启用的
   },
   methods: {
     handleListSelect (row) {
