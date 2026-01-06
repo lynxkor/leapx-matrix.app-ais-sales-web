@@ -172,6 +172,7 @@
                     :module-key="moduleKey"
                     ref="pricing"
                     :id="id"
+                    :tableType="'edit'"
                     @replace="updateReplace"
                     @checkboxChange="checkboxChange" />
               </div>

@@ -65,8 +65,8 @@
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport('productInfoImport')">导入</el-button>
-      <el-button v-permission="moduleKey+'-saleAttributeimport'" size="small" @click="saleAttributeImport('productSaleAttributeImport')">订购属性导入</el-button>
-      <el-button v-permission="moduleKey+'-skuimport'" size="small" @click="handleImport('productSkuPriceImport')">商品定价导入</el-button>
+      <el-button v-permission="moduleKey+'-saleAttributeimport'" size="small" @click="handleImport('productSaleAttributeImport')">订购属性导入</el-button>
+      <el-button v-permission="moduleKey+'-skuimport'" size="small" @click="saleAttributeImport('productSaleAttributeImport')">商品定价导入</el-button>
       <el-button v-if="canExport" :loading="infoLoading" size="small" @click="exportExcel('productInfoImport')">导出</el-button>
       <el-button v-permission="moduleKey+'-saleAttributeexport'" :loading="saleAttributeLoading" size="small" @click="saleAttributeExportExcel" :disabled="selectionList.length === 0">订购属性导出</el-button>
       <el-button v-permission="moduleKey+'-skuexport'" :loading="skuPriceLoading" size="small" @click="exportExcel('productSkuPriceImport')" :disabled="selectionList.length === 0">商品定价导出</el-button>
