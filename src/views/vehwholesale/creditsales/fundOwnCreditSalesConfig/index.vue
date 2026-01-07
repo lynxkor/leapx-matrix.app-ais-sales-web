@@ -145,7 +145,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="'1'"
+      :id="'fundCreditSalesFeeConfigImport'"
       @close="handleUploadDialogClose"
     />
   </div>
