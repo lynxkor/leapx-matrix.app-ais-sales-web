@@ -40,6 +40,7 @@
                   placeholder="请选择"
                   clearable
                   filterable
+                  multiple
                 />
               </el-form-item>
               <el-form-item label="授信额度" prop="creditAmount">

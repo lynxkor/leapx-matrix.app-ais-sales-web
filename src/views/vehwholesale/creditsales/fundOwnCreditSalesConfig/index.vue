@@ -63,11 +63,10 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_fund_own_credit_sales_limit_status"
-            v-model="form.creditAccountStatuses"
+            v-model="form.creditAccountStatus"
             placeholder="请选择"
             clearable
             filterable
-            multiple
           />
         </el-form-item>
         <!-- <el-form-item label="备注">

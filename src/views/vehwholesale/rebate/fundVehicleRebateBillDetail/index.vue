@@ -520,6 +520,14 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
+      if (this.form.auditTime) {
+        delete data.auditTime;
+        if (this.form.auditTime.length > 1) {
+          data.auditTimeStart = this.form.auditTime[0];
+          data.auditTimeEnd = this.form.auditTime[1];
+        }
+      }
+
       return data;
     },
     async fetchOptions (code) {
