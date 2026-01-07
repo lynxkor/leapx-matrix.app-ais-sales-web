@@ -42,3 +42,25 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+/**
+ * 账户管理-赊销管理-自有资金赊销配置-提交
+ * @param {Object} data
+ */
+export function submitItem (data) {
+  return api.jsonPost(prefix + 'submit', data);
+}
+/**
+ * 账户管理-赊销管理-自有资金赊销配置-审核
+ * @param {Object} data
+ */
+export function reviewItem (data) {
+  return api.jsonPost(prefix + 'review', data);
+}
+/**
+ * 账户管理-赊销管理-自有资金赊销配置-作废
+ * @param {Object} data
+ */
+
+export function cancelItem (data) {
+  return api.jsonPost(prefix + 'cancel', data);
+}

@@ -72,10 +72,10 @@
             multiple
         />
         </el-form-item>
-         <el-form-item label="交车单编码">
+         <el-form-item label="交车单号">
           <tag-input v-model="form.deliveryOrderCodes" placeholder="请输入" />
         </el-form-item>
-      <el-form-item label="车系名称">
+      <el-form-item label="车系">
         <fetch-select
             :remote-method="seriesSearch"
             remote
@@ -101,7 +101,7 @@
         <el-form-item label="业务单据号">
             <tag-input v-model="form.bizOrderNos" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="初审时间">
+        <el-form-item label="初审日期">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.auditTime"
@@ -113,7 +113,7 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item label="创建者名称">
+        <el-form-item label="创建者人">
         <el-input
           placeholder="请输入"
           v-model="form.creatorName"
@@ -201,7 +201,7 @@ const defaultForm = {
   createTime: [],
   dealerCompanyName: '',
   dealerName: '',
-  rebateType: '',
+  rebateTypes: [],
   vin: '',
   bizOrderNo: '',
   modelName: '',
@@ -262,7 +262,7 @@ export default {
           {
             props: 'rebateBillDetailCode',
             label: '返利核算单明细编号',
-            visible: false,
+            visible: true,
             width: 200,
             fixed: 'left',
             buttons: [{
@@ -284,7 +284,7 @@ export default {
           { props: 'quarterLabel', label: '季度', visible: true, width: 200 },
           { props: 'monthLabel', label: '月度', visible: true, width: 200 },
           { props: 'rebateTypeLabel', label: '返利类型', visible: true, width: 200 },
-          { props: 'vin', label: 'VIN', visible: true, width: 200 },
+          { props: 'vin', label: 'VIN号', visible: true, width: 200 },
           { props: 'bizOrderNo', label: '业务单据号', visible: true, width: 200 },
           { props: 'rebateAmount', label: '核销金额', visible: true, width: 200 },
           { props: 'modelName', label: '基本车型', visible: true, width: 200 },
@@ -293,18 +293,18 @@ export default {
           { props: 'billStatusLabel', label: '审核状态', visible: true, width: 200 },
           { props: 'budgetItemName', label: '预算科目', visible: true, width: 200 },
           { props: 'feeSupportTypeName', label: '费用支持类型', visible: true, width: 200 },
-          { props: 'auditorName', label: '审核人', visible: true, width: 200 },
-          { props: 'auditTime', label: '审核时间', visible: true, width: 200 },
-          { props: 'auditOpinion', label: '审核意见', visible: true, width: 200 },
+          { props: 'auditorName', label: '初审人', visible: true, width: 200 },
+          { props: 'auditTime', label: '初审时间', visible: true, width: 200 },
+          { props: 'auditOpinion', label: '初审意见', visible: true, width: 200 },
           { props: 'reviewName', label: '复审人', visible: true, width: 200 },
           { props: 'reviewTime', label: '复审时间', visible: true, width: 200 },
           { props: 'reviewOpinion', label: '复审意见', visible: true, width: 200 },
-          { props: 'postedLabel', label: '是否已入账', visible: true, width: 200 },
+          { props: 'postedLabel', label: '是否入账', visible: true, width: 200 },
           { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          // { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
-          // { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
-          // { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
+          { props: 'modifierName', label: '更新人', visible: true, width: 200 },
+          { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
           // // { props: 'rebateBillDetailCode', label: '返利核算单明细编号', visible: true, width: 200 },
           // { props: 'accruedAmount', label: '预提金额', visible: true, width: 200 },
           {
@@ -353,7 +353,10 @@ export default {
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
-    this.getData();
+    // 确保默认的创建时间能够赋值
+    this.$nextTick(() => {
+      this.getData();
+    });
   },
   methods: {
     async seriesSearch (query) {
@@ -415,6 +418,7 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
+      this.form.createTime = [];
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
       this.getData();
@@ -525,7 +529,6 @@ export default {
       return [];
     },
     update (val) {
-      console.log(val);
       this.batchAuditDialogVisible = true;
     },
     // 判断数组的所有元素是否都等于某个值
@@ -542,7 +545,7 @@ export default {
         } else {
           this.$message({
             type: 'warning',
-            message: '存在不是待审核的记录，请确认!'
+            message: '存在不是已初审的记录，请确认!'
           });
         }
       } else {

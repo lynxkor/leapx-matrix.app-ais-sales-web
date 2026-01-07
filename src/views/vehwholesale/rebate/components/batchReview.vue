@@ -7,21 +7,21 @@
     :visible.sync="dialogVisible"
     @close="reviewClose"
   >
-    <el-form ref="formRef" :model="Selectform"  :label-width="formLabelWidth">
-      <el-form-item label="复审结果：">
+    <el-form ref="SelectformRef" :model="Selectform"  :label-width="formLabelWidth">
+      <el-form-item label="复审结果：" prop="passOrReject">
          <el-select v-model="Selectform.passOrReject" placeholder="请选择" clearable style="width: 100%">
             <el-option label="通过" value='1'/>
             <el-option label="驳回" value='0' />
          </el-select>
       </el-form-item>
-      <el-form-item label="复审意见：">
+      <el-form-item label="复审意见：" prop="opinion">
         <el-input v-model="Selectform.opinion" autocomplete="off" />
       </el-form-item>
     </el-form>
     <template v-slot:footer>
-      <div class="dialog-footer">
-        <el-button @click="reviewClose()">取 消</el-button>
+      <div class="dialog-footer" style="text-align: center;">
         <el-button :loading="submitLoading" type="primary" @click="submit()">确 定</el-button>
+        <el-button @click="reviewClose()">取 消</el-button>
       </div>
     </template>
   </el-dialog>
@@ -37,10 +37,10 @@
       <el-form-item label="单据状态">
           <el-input type="text" v-model="billStatus" placeholder="请选择" style="width: 100%" disabled=""/>
       </el-form-item>
-         <el-form-item label="返利类型">
+         <el-form-item label="返利类型" prop="rebateTypes">
           <fetch-select
             :request="fetchOptions"
-            enumCode="vw_fundtype"
+            enumCode="vw_rebate_type"
             v-model="filterReviewform.rebateTypes"
             placeholder="请选择"
             clearable
@@ -58,27 +58,27 @@
                   end-placeholder="结束日期"
                 />
               </el-form-item>
-      <el-form-item label="业务单据号：">
+      <el-form-item label="业务单据号" prop="bizOrderNo">
         <el-input v-model="filterReviewform.bizOrderNo" autocomplete="off" />
       </el-form-item>
-       <el-form-item label="预算科目类型">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="vw_fundtype"
-            v-model="filterReviewform.budgetItemIds"
-            :remote-method="getFundBudgetItemList"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
-          />
+       <el-form-item label="预算科目" prop="budgetItemIds">
+         <fetch-select
+          filterable
+          clearable
+          remote
+          v-model="filterReviewform.budgetItemIds"
+          :remote-method="getFundBudgetItemList"
+          value-key="id"
+          label-key="name"
+          multiple
+      />
       </el-form-item>
-      <el-form-item label="创建人：">
+      <el-form-item label="创建人" prop="creatorName">
         <el-input v-model="filterReviewform.creatorName" autocomplete="off" />
       </el-form-item>
     </el-form>
     <template v-slot:footer>
-      <div class="dialog-footer">
+      <div class="dialog-footer" style="text-align: center;">
         <el-button :loading="submitLoading" type="primary" @click="reviewApp()">复审通过</el-button>
         <el-button :loading="submitLoading"  @click="reviewRej()">复审驳回</el-button>
       </div>
@@ -90,13 +90,13 @@
     title=""
     width="800px"
     :visible.sync="totalDialogVisible"
-    @close="close"
+    @close="reviewAppClose"
   >
     <el-form ref="reviewAllformRef" :model="reviewAllform"  :label-width="formLabelWidth">
       <p>本次复审记录数： {{ reviewNum }}, 合计核销金额：{{ reviewCount }}</p>
     </el-form>
     <template v-slot:footer>
-      <div class="dialog-footer">
+      <div class="dialog-footer" style="text-align: center;">
         <el-button :loading="submitLoading" type="primary" @click="reviewAppSure()">复审确认</el-button>
         <el-button :loading="submitLoading"  @click="reviewAppClose()">取消</el-button>
       </div>
@@ -111,17 +111,17 @@
     @close="reviewRejectClose"
   >
    <el-form ref="rejectformRef" :model="reviewRjectform"  :label-width="formLabelWidth">
-      <el-form-item label="初审结果：">
+      <el-form-item label="复审结果：">
         <el-input v-model="rejectPassOrReject" autocomplete="off" disabled=""/>
       </el-form-item>
-      <el-form-item label="初审意见：" prop="opinion">
+      <el-form-item label="复审意见：" prop="opinion">
         <el-input v-model="reviewRjectform.opinion" autocomplete="off" />
       </el-form-item>
     </el-form>
     <template v-slot:footer>
-      <div class="dialog-footer">
-        <el-button @click="rejectClose()">取 消</el-button>
+      <div class="dialog-footer" style="text-align: center;">
         <el-button :loading="submitLoading" type="primary" @click="reviewRejectSubmit()">确 定</el-button>
+        <el-button @click="reviewRejectClose()">取 消</el-button>
       </div>
     </template>
   </el-dialog>
@@ -195,7 +195,10 @@ export default {
         opinion: '',
         passOrReject: '',
       },
-      reviewRjectform: {},
+      reviewRjectform: {
+        opinion: '',
+        passOrReject: 0
+      },
       filterReviewform: {
         billStatus: 1040
       },
@@ -234,19 +237,35 @@ export default {
       }
     },
     reviewClose () {
+      this.$refs.SelectformRef.resetFields();
       this.dialogVisible = false;
-      this.$refs.formRef.resetFields();
     },
     close () {
       this.dialogVisible = false;
+      this.$refs.filterReviewformRef.resetFields();
+      this.filterReviewform.rebateTypes = [];
+      this.filterReviewform.budgetItemIds = [];
+    },
+    rejectClose () {
+      this.reviewRejectlogVisible = false;
+      this.$refs.reviewAllformRef.resetFields();
     },
     reviewRejectClose () {
       this.reviewRejectlogVisible = false;
       this.$refs.rejectformRef.resetFields();
     },
+    getFormData (val) {
+      const data = { ...val };
+      Object.keys(val).forEach(key => {
+        if (data[key] === '' || data[key] === null) {
+          delete data[key];
+        }
+      });
+      return data;
+    },
     reviewApp () {
       this.totalDialogVisible = true;
-      statTotalRebate(this.filterReviewform).then(res => {
+      statTotalRebate({ ...this.getFormData(this.filterReviewform) }).then(res => {
         this.reviewNum = res.qty;
         this.reviewCount = res.totalRebateAmount;
       }).catch(() => {});
@@ -255,15 +274,36 @@ export default {
       this.totalDialogVisible = false;
     },
     reviewAppSure () {
-      this.totalDialogVisible = false;
+      let approveParams = { ...this.getFormData(this.filterReviewform) };
+      approveParams.passOrReject = 1;
+      reviewItem(approveParams).then(res => {
+        this.totalDialogVisible = false;
+        this.filterDialogVisible = false;
+        this.$message.success('批量通过成功');
+      }).catch(() => {});
     },
     reviewRej () {
+      this.reviewRejectlogVisible = true;
+      // this.filterDialogVisible = false;
+      // let approveParams = { ...this.filterReviewform };
+      // approveParams.passOrReject = 1;
+      // reviewItem(approveParams).then(res => {
+      //   this.$message.success('批量通过成功');
+      // }).catch(() => {});
     },
     reviewRejectSubmit () {
       let rejectParams = { ...this.filterReviewform, ...this.reviewRjectform };
-      reviewItem(rejectParams).then(res => {
-        this.$message.success('批量通过成功');
-      }).catch(() => {});
+      // rejectParams.passOrReject = 0;
+      if (rejectParams.opinion === undefined || rejectParams.opinion === '' || rejectParams.opinion.length === 0) {
+        this.$message({
+          type: 'warning',
+          message: '复审意见必填!'
+        });
+      } else if (rejectParams.opinion && rejectParams.opinion.length > 0) {
+        reviewItem(rejectParams).then(res => {
+          this.$message.success('批量通过成功');
+        }).catch(() => {});
+      }
     },
     submit () {
       let params = {

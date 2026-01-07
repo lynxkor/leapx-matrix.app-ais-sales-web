@@ -188,8 +188,8 @@ export default {
         dataProp: [
           {
             props: 'rebateBillCode',
-            label: '返利核算单明细编号',
-            visible: false,
+            label: '返利核算单编号',
+            visible: true,
             width: 200,
             fixed: 'left',
             buttons: [{

@@ -18,19 +18,19 @@
                   clearable
                 />
               </el-form-item> -->
-              <el-form-item label="母公司名称" prop="dealerCompanyCode">
+              <el-form-item label="母公司名称" prop="dealerCompanyName">
                   <fetch-select
                   :remote-method="getParentCompany"
                   remote
-                  v-model="form.dealerCompanyCode"
+                  v-model="form.dealerCompanyName"
                   placeholder="请选择"
                   labelKey="companyName"
                   valueKey="companyCode"
                   clearable
                   collapseTags
                   filterable
-                  :disabled="_id"
-                  @change="parentCompanyChange" />
+                  disabled
+                  />
               </el-form-item>
 
               <el-form-item label="母公司编码" prop="dealerCompanyCode">
@@ -132,7 +132,6 @@
                   disabled
                 />
               </el-form-item>
-             >
             </el-form>
           </div>
         </section>
@@ -178,6 +177,7 @@
       </el-main>
       <el-footer height="60px">
         <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
+        <el-button v-if="form.auditStatus === 0 || form.auditStatus === 2" size="small" type="primary" @click="submitForm('submit')" :loading="submitLoading">提交</el-button>
         <el-button size="small" @click="handleBack">取消</el-button>
         <!-- <el-button size="small" @click="handleJumpAuditLog">审核日志</el-button> -->
       </el-footer>
@@ -186,7 +186,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesConfig/index';
+import { getDetail, addOrUpdate, submitItem } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum, getParentCompany } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -367,28 +367,57 @@ export default {
       }
     },
     submitForm (formName, rest = false) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.submitLoading = true;
-
-          addOrUpdate({
-            ...this.form,
-          }).then(res => {
-            this.$message({
-              message: '保存成功',
-              type: 'success'
+      if (formName === 'ruleForm') {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            this.submitLoading = true;
+            addOrUpdate({
+              ...this.form,
+            }).then(res => {
+              this.$message({
+                message: '保存成功',
+                type: 'success'
+              });
+              const id = this.$route.query.id;
+              if (rest || !id) {
+                this.resetForm(formName);
+              } else {
+                this.getDetailData();
+              }
+            }).finally(() => {
+              this.submitLoading = false;
             });
-            const id = this.$route.query.id;
-            if (rest || !id) {
-              this.resetForm(formName);
-            } else {
-              this.getDetailData();
-            }
-          }).finally(() => {
-            this.submitLoading = false;
+          }
+        });
+      } else if (formName === 'submit') {
+        const params = {
+          idSet: [this.form.id]
+        };
+        this.$confirm('是否对配置编号为' + this.form.id + '的数据进行提交？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          submitItem(params).then(() => {
+            this.$message({
+              type: 'success',
+              message: '提交成功!'
+            });
+            this.getDetailData();
+          }).catch(() => {
+            this.$message({
+              type: 'error',
+              message: '提交失败!'
+            });
           });
-        }
-      });
+        }).catch(() => {});
+      //   let params = {
+      //     "ids": [this.form.id]
+      //   }
+      //   submitItem(params).then(res => {
+      //   this.$message.success('提交成功');
+      // }).catch(() => {});
+      }
     },
     resetForm (formName) {
       this.$refs[formName].resetFields();
