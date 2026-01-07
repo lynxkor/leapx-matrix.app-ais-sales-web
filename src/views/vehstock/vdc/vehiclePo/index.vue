@@ -237,6 +237,7 @@ export default {
           { props: 'serNo', label: 'SAP流水号', visible: true, width: 200 },
           { props: 'ordNo', label: '计划订单号', visible: true, width: 200 },
           { props: 'seriesName', label: '车系', visible: true, width: 200 },
+          { props: 'modelName', label: '车型', visible: true, width: 200 },
           { props: 'rangePowerName', label: '选配动力', visible: true, width: 200 },
           { props: 'drivingRangeName', label: '续航里程', visible: true, width: 200 },
           { props: 'exteriorName', label: '外观', visible: true, width: 200 },
