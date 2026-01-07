@@ -216,6 +216,12 @@ const defaultForm = {
   createTime: '',
   modifierName: '',
   updateTime: '',
+  startTimeStart: '',
+  startTimeEnd: '',
+  endTimeStart: '',
+  endTimeEnd: '',
+  createTimeStart: '',
+  createTimeEnd: ''
 };
 
 const pageSize = 20;
@@ -480,20 +486,20 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
-      // if (this.form.createTime) {
-      //   delete data.createTime;
-      //   if (this.form.createTime.length > 1) {
-      //     data.createTimeStart = this.form.createTime[0];
-      //     data.createTimeEnd = this.form.createTime[1];
-      //   }
-      // }
-      // if (this.form.createTime) {
-      //   delete data.createTime;
-      //   if (this.form.createTime.length > 1) {
-      //     data.createTimeStart = this.form.createTime[0];
-      //     data.createTimeEnd = this.form.createTime[1];
-      //   }
-      // }
+      if (this.form.startTime) {
+        delete data.startTime;
+        if (this.form.startTime.length > 1) {
+          data.startTimeStart = this.form.startTime[0];
+          data.startTimeEnd = this.form.startTime[1];
+        }
+      }
+      if (this.form.endTime) {
+        delete data.endTime;
+        if (this.form.endTime.length > 1) {
+          data.endTimeStart = this.form.endTime[0];
+          data.endTimeEnd = this.form.endTime[1];
+        }
+      }
 
       return data;
     },
