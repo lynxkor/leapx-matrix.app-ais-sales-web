@@ -119,6 +119,6 @@ export function productSaleAttributeExport (data) {
  * 订购属性 导入
  * @param {Object} data
  */
-export function productSaleAttributeImport (data) {
-  return api.jsonPost('vr/web/product/productSaleAttribute/import', data);
+export function productSaleAttributeImport (formData, config = {}) {
+  return api.postExport('vr/web/product/productSaleAttribute/import', formData);
 }

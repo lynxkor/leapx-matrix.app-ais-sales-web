@@ -137,8 +137,6 @@ export default {
         //   }
         // });
         const res = await productSaleAttributeImport(formData, {
-          id: this.id,
-          token: localStorage.getItem('token'),
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
