@@ -7,7 +7,7 @@
     :visible.sync="dialogVisible"
     @close="close"
   >
-    <el-form ref="Selectform" :model="Selectform"  :label-width="formLabelWidth">
+    <el-form ref="SelectformRef" :model="Selectform"  :label-width="formLabelWidth">
       <el-form-item label="初审结果：" prop="passOrReject">
          <el-select v-model="Selectform.passOrReject" placeholder="请选择" clearable style="width: 100%">
             <el-option label="通过" value='1'/>
@@ -19,9 +19,9 @@
       </el-form-item>
     </el-form>
     <template v-slot:footer>
-      <div class="dialog-footer">
-        <el-button @click="close()">取 消</el-button>
+      <div class="dialog-footer" style="text-align: center;">
         <el-button :loading="submitLoading" type="primary" @click="submit()">确 定</el-button>
+        <el-button @click="close()">取 消</el-button>
       </div>
     </template>
   </el-dialog>
@@ -40,7 +40,7 @@
          <el-form-item label="返利类型" prop="rebateTypes">
           <fetch-select
             :request="fetchOptions"
-            enumCode="vw_fundtype"
+            enumCode="vw_rebate_type"
             v-model="filterForm.rebateTypes"
             placeholder="请选择"
             clearable
@@ -61,7 +61,7 @@
       <el-form-item label="业务单据号：" prop="bizOrderNo">
         <el-input v-model="filterForm.bizOrderNo" autocomplete="off" />
       </el-form-item>
-       <el-form-item label="预算科目类型">
+       <el-form-item label="预算科目">
          <fetch-select
           filterable
           clearable
@@ -73,12 +73,12 @@
           multiple
       />
       </el-form-item>
-      <el-form-item label="创建人：" prop="creatorName">
+      <el-form-item label="创建人" prop="creatorName">
         <el-input v-model="filterForm.creatorName" autocomplete="off" />
       </el-form-item>
     </el-form>
     <template v-slot:footer>
-      <div class="dialog-footer">
+      <div class="dialog-footer" style="text-align: center;">
         <el-button :loading="submitLoading" type="primary" @click="AuditApp()">初审通过</el-button>
         <el-button :loading="submitLoading"  @click="AuditRej()">初审驳回</el-button>
       </div>
@@ -90,13 +90,13 @@
     title=""
     width="800px"
     :visible.sync="totalDialogVisible"
-    @close="close"
+    @close="AuditAppClose"
   >
     <el-form ref="Allform" :model="Allform"  :label-width="formLabelWidth">
       <p>本次初审记录数： {{ auditNum }}, 合计核销金额：{{ auditCount }}</p>
     </el-form>
     <template v-slot:footer>
-      <div class="dialog-footer">
+      <div class="dialog-footer" style="text-align: center;">
         <el-button :loading="submitLoading" type="primary" @click="AuditAppSure()">初审确认</el-button>
         <el-button :loading="submitLoading"  @click="AuditAppClose()">取消</el-button>
       </div>
@@ -119,9 +119,9 @@
       </el-form-item>
     </el-form>
     <template v-slot:footer>
-      <div class="dialog-footer">
-        <el-button @click="rejectClose()">取 消</el-button>
+      <div class="dialog-footer" style="text-align: center;">
         <el-button :loading="submitLoading" type="primary" @click="rejectSubmit()">确 定</el-button>
+        <el-button @click="rejectClose()">取 消</el-button>
       </div>
     </template>
   </el-dialog>
@@ -201,7 +201,7 @@ export default {
       },
       rejectform: {
         opinion: '',
-        passOrReject: 1,
+        passOrReject: 0,
       },
       Allform: {},
       submitLoading: false,
@@ -232,23 +232,36 @@ export default {
     filterClose () {
       this.filterDialogVisible = false;
       this.$refs.filterFormRef.resetFields();
+      this.filterForm.rebateTypes = [];
+      this.filterForm.budgetItemIds = [];
     },
     close () {
       this.dialogVisible = false;
+      this.$refs.SelectformRef.resetFields();
     },
     rejectClose () {
       this.$refs.rejectformRef.resetFields();
       this.rejectlogVisible = false;
     },
+    getFormData (val) {
+      const data = { ...val };
+      Object.keys(val).forEach(key => {
+        if (data[key] === '' || data[key] === null) {
+          delete data[key];
+        }
+      });
+      return data;
+    },
     rejectSubmit () {
       let rejectParams = { ...this.filterForm, ...this.rejectform };
-      auditItem(rejectParams).then(res => {
+      // rejectParams.passOrReject = 0;
+      auditItem({ ...this.getFormData(rejectParams) }).then(res => {
         this.$message.success('批量通过成功');
       }).catch(() => {});
     },
     AuditApp () {
       this.totalDialogVisible = true;
-      statTotalRebate(this.filterForm).then(res => {
+      statTotalRebate({ ...this.getFormData(this.filterForm) }).then(res => {
         this.auditNum = res.qty;
         this.auditCount = res.totalRebateAmount;
       }).catch(() => {});
@@ -259,7 +272,7 @@ export default {
     AuditAppSure () {
       this.totalDialogVisible = false;
       this.filterForm.passOrReject = 1;
-      auditItem(this.filterForm).then(res => {
+      auditItem({ ...this.getFormData(this.filterForm) }).then(res => {
         this.$message.success('批量通过成功');
       }).catch(() => {});
     },
@@ -275,6 +288,7 @@ export default {
       if (params.passOrReject === '1') {
         auditItem(params).then(res => {
           this.$message.success('批量通过成功');
+          this.$refs.SelectformRef.resetFields();
         }).catch(() => {});
       } else if (params.passOrReject === '0') {
         if (params.opinion.length === 0) {
@@ -285,6 +299,7 @@ export default {
         } else {
           auditItem(params).then(res => {
             this.$message.success('批量驳回成功');
+            this.$refs.SelectformRef.resetFields();
           }).catch(() => {});
         }
       }

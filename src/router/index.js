@@ -1292,8 +1292,17 @@ const routes = [
       }
     }, {
       path: '/vehwholesale/creditsales/fundowncreditsalesconfig/edit',
-      name: 'fundOwnCreditSalesConfigEdit',
+      name: 'fundOwnCreditSalesConfigReview',
       component: () => import('@/views/vehwholesale/creditsales/fundOwnCreditSalesConfig/edit.vue'),
+
+      meta: {
+        name: '账户管理-赊销管理-自有资金赊销配置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/creditsales/fundowncreditsalesconfig/review',
+      name: 'fundOwnCreditSalesConfigEdit',
+      component: () => import('@/views/vehwholesale/creditsales/fundOwnCreditSalesConfig/review.vue'),
 
       meta: {
         name: '账户管理-赊销管理-自有资金赊销配置管理详情',

@@ -13,7 +13,7 @@
         <div class="common-section-body">
           <!-- TIPS: 根据实际情况调整展示字段和宽度 -->
           <el-form :inline="true" ref="ruleForm" label-width="150px">
-            <el-form-item label="返利核算单编号：" prop="rebateBillDetailCode">
+            <el-form-item label="返利核算单编号：" prop="rebateBillCode">
               {{ info.rebateBillCode  }}
             </el-form-item>
             <el-form-item label="母公司名称：" prop="dealerCompanyName">
@@ -25,7 +25,7 @@
             <el-form-item label="创建时间：" prop="createTime">
               {{ info.createTime  }}
             </el-form-item>
-            <el-form-item label="返利核算单明细编号: " prop="rebateBillCode">
+            <el-form-item label="返利核算单明细编号: " prop="rebateBillDetailCode">
               {{ info.rebateBillDetailCode }}
             </el-form-item>
              <el-form-item label="周期：" prop="period">

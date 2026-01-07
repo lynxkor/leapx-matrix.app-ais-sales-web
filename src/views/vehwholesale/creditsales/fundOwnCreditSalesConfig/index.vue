@@ -116,11 +116,11 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <!-- <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button> -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
+      <!-- <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button> -->
+      <!-- <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button> -->
     </div>
     <div
       class="ais-table-c"
@@ -145,7 +145,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="'fundCreditSalesFeeConfigImport'"
+      :id="'1'"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -155,7 +155,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesConfig/index';
+import { getList, deleteItem, enableItem, submitItem, cancelItem } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesConfig/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -264,6 +264,9 @@ export default {
             fixed: 'right',
             buttons: [{
               name: '编辑',
+              show: (row) => {
+                return row.auditStatus === 0 || row.auditStatus === 2;
+              },
               click: (rowIndex, row) => {
                 this.$router.push({
                   path: '/vehwholesale/creditsales/fundOwnCreditSalesConfig/edit',
@@ -274,21 +277,48 @@ export default {
               },
               type: 'info'
             }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
+              name: '提交',
+              show: (row) => {
+                return row.auditStatus === 0 || row.auditStatus === 2;
+              },
+              // popconfirmTitle: '是否对配置编号为' + row.configCode + '的数据进行提交?',
               click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
+                this.handleSubmit(rowIndex, row.id, row.configCode);
+                // submitItem({
+                //   idSet: [row.id]
+                // }).then(() => {
+                //   this.$message({
+                //     type: 'success',
+                //     message: '作废成功!'
+                //   });
+                //   this.getData();
+                // }).catch(() => {
+                //   this.$message({
+                //     type: 'error',
+                //     message: '作废失败!'
+                //   });
+                // });
+              },
+              type: 'info'
+            }, {
+              name: '复核',
+              show: (row) => {
+                return row.auditStatus === 0 || row.auditStatus === 2;
+              },
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehwholesale/creditsales/fundOwnCreditSalesConfig/review',
+                  query: {
+                    id: row.id
+                  }
                 });
+              },
+              type: 'info'
+            }, {
+              name: '作废',
+              // popconfirmTitle: '是否对配置编号为' + row.configCode + '的数据进行作废?',
+              click: (rowIndex, row) => {
+                this.handleCancel(rowIndex, row.id, row.configCode);
               },
               type: 'danger'
             }]
@@ -442,6 +472,46 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    handleSubmit (ind, id, configCode) {
+      this.$confirm('是否对配置编号为' + configCode + '的数据进行提交?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        submitItem({ idSet: [id] }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '提交成功!'
+          });
+          this.getData();
+        }).catch(() => {
+          this.$message({
+            type: 'error',
+            message: '提交失败!'
+          });
+        });
+      }).catch(() => {});
+    },
+    handleCancel (ind, id, configCode) {
+      this.$confirm('是否对配置编号为' + configCode + '的数据进行作废?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        cancelItem({ idSet: [id] }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '作废成功!'
+          });
+          this.getData();
+        }).catch(() => {
+          this.$message({
+            type: 'error',
+            message: '作废失败!'
+          });
+        });
+      }).catch(() => {});
     },
     // 批量删除
     handleBatchDelete () {
