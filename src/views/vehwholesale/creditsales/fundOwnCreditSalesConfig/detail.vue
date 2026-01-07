@@ -38,14 +38,14 @@
             <el-form-item label="额度失效日期：" prop="expireTime">
               {{ info.expireTime  }}
             </el-form-item>
-            <el-form-item label="创建人：" prop="creatorName">
-              {{ info.creatorName  }}
+            <el-form-item label="配置人：" prop="configUserName">
+              {{ info.configUserName  }}
             </el-form-item>
             <el-form-item label="备注：" prop="remark">
               {{ info.remark  }}
             </el-form-item>
-            <el-form-item label="创建时间：" prop="createTime">
-              {{ info.createTime  }}
+            <el-form-item label="配置时间：" prop="configTime">
+              {{ info.configTime  }}
             </el-form-item>
             <el-form-item label="配置状态：" prop="auditStatusLabel">
               {{ info.auditStatusLabel  }}

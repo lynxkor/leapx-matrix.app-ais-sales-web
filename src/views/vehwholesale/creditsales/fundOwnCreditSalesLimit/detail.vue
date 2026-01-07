@@ -4,7 +4,7 @@
     <template v-else>
       <section class="common-title">
         <h2>赊销额度记录编号：{{ info.creditSalesLimitCode }}</h2>
-        <el-button v-if="canAddOrUpdate" size="small" @click="handleEdit"><i class="iconfont icon-lxppc-edit"></i>编辑</el-button>
+        <!-- <el-button v-if="canAddOrUpdate" size="small" @click="handleEdit"><i class="iconfont icon-lxppc-edit"></i>编辑</el-button> -->
       </section>
       <section class="common-section">
         <div class="common-section-header">

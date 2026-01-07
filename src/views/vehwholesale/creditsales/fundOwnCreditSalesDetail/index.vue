@@ -16,7 +16,7 @@
         <dateranges
           v-model="form.createTime"
           :setDefault="true"
-          deftTime="最近一周"
+          deftTime="最近一月"
         />
       <!-- <el-date-picker
         :default-time="['00:00:00', '23:59:59']"
@@ -42,17 +42,17 @@
       <el-form-item label="企业客户整车订单">
         <tag-input v-model="form.entVehorderCodes" placeholder="请输入" />
       </el-form-item>
-      <el-form-item label="使用天数下限">
+      <el-form-item label="赊销天数下限">
           <el-input
             placeholder="请输入"
-            v-model="form.minUsageDays"
+            v-model="form.mincreditSalesDays"
             clearable
           />
         </el-form-item>
-        <el-form-item label="使用天数上限">
+        <el-form-item label="赊销天数上限">
           <el-input
             placeholder="请输入"
-            v-model="form.maxUsageDays"
+            v-model="form.maxcreditSalesDays"
             clearable
           />
         </el-form-item>
@@ -143,7 +143,7 @@ const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   id: '',
   creator: '',
-  createTime: '',
+  createTime: [],
   statusInclude: '1'
 };
 
@@ -282,7 +282,9 @@ export default {
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
-    this.getData();
+    this.$nextTick(() => {
+      this.getData();
+    });
   },
   methods: {
     handleListSelect (row) {
@@ -306,6 +308,7 @@ export default {
       this.form = { ...defaultForm };
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
+      this.form.createTime = [];
       this.getData();
     },
     exportExcel () {
