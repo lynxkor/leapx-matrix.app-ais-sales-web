@@ -87,7 +87,7 @@
         @handleSelect="handleSelectionChange" />
     </div>
     <!-- TIPS: 填入项目id即可 -->
-    <Upload :visible="uploadDialogVisible" :id="'1'" @close="handleUploadDialogClose" />
+    <Upload :visible="uploadDialogVisible" :id="'vehicleVdcInventoryLedgerImport'" @close="handleUploadDialogClose" />
   </div>
 </template>
 
