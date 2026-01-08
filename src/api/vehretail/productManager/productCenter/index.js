@@ -120,5 +120,11 @@ export function productSaleAttributeExport (data) {
  * @param {Object} data
  */
 export function productSaleAttributeImport (formData, config = {}) {
-  return api.postExport('vr/web/product/productSaleAttribute/import', formData);
+  return api.postExport('vr/web/product/productSaleAttribute/import', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      ...config.headers
+    },
+    ...config
+  });
 }
