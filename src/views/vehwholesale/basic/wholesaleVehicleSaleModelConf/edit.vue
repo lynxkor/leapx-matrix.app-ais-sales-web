@@ -346,6 +346,9 @@ export default {
           this.loading = false;
           Object.assign(this.form, res);
           Object.assign(this.originalForm, res);
+
+          this.form.startDate = res.startDate ? res.startDate + ':00' : '';
+          this.form.endDate = res.endDate ? res.endDate + ':00' : '';
         });
       }
     },
@@ -415,8 +418,8 @@ export default {
       this.yearTypeList = [];
       this.form.vehicleYearTypeId = null;
       this.form.vehicleYearType = null;
-      const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList: this.form.modelId, size: 1000 });
-      return res.map(item => {
+      const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList: [val], size: 1000 });
+      this.yearTypeList = res.map(item => {
         return {
           ...item,
           label: item.yearTypeName,

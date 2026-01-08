@@ -128,7 +128,8 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-permission="moduleKey+'-generateCurrentMonthQuota'" size="small" @click="handleImportWholesale">批售导入</el-button>
+      <el-button v-permission="moduleKey+'-generateCurrentMonthQuota'" size="small" @click="handleImportRetail">零售导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
@@ -152,9 +153,15 @@
     </div>
     <!-- TIPS: 填入项目id即可 -->
     <Upload
-      :visible="uploadDialogVisible"
-      :id="1"
-      @close="handleUploadDialogClose"
+      :visible="uploadDialogVisibleRetail"
+      :id="'SaleTargetTrackingImportByRetail'"
+      @close="handleUploadDialogCloseRetail"
+    />
+    <!-- TIPS: 填入项目id即可 -->
+    <Upload
+      :visible="uploadDialogVisibleWholesale"
+      :id="'SaleTargetTrackingImportByWholesale'"
+      @close="handleUploadDialogCloseWholesale"
     />
   </div>
 </template>
@@ -213,7 +220,8 @@ export default {
       show: false,
       loading: false,
       exportLoading: false,
-      uploadDialogVisible: false,
+      uploadDialogVisibleRetail: false,
+      uploadDialogVisibleWholesale: false,
       cityOptions: [], // 市
       optionObj: {
         id: 'wholesaleSaleTargetTrackingTable',
@@ -303,11 +311,17 @@ export default {
     this.getData();
   },
   methods: {
-    handleImport () {
-      this.uploadDialogVisible = true;
+    handleImportWholesale () {
+      this.uploadDialogVisibleWholesale = true;
     },
-    handleUploadDialogClose () {
-      this.uploadDialogVisible = false;
+    handleImportRetail () {
+      this.uploadDialogVisibleRetail = true;
+    },
+    handleUploadDialogCloseWholesale () {
+      this.uploadDialogVisibleWholesale = false;
+    },
+    handleUploadDialogCloseRetail () {
+      this.uploadDialogVisibleRetail = false;
     },
     onSubmit () {
       this.getData();
@@ -322,7 +336,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '整车批售-批售主数据-销售目标跟踪管理',
-        dataFetchPath: 'vehwholesale/web/basic/wholesaleSaleTargetTracking/page',
+        dataFetchPath: '/vw/web/basic/wholesaleSaleTargetTracking/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

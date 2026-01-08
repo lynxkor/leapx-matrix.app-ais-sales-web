@@ -69,7 +69,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="1"
+      :id="'wholesaleTargetDefaultQuotaImport'"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -208,7 +208,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '整车批售-批售主数据-批售目标默认配额管理',
-        dataFetchPath: 'vehwholesale/web/basic/wholesaleTargetDefaultQuota/page',
+        dataFetchPath: '/vw/web/basic/wholesaleTargetDefaultQuota/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -360,7 +360,7 @@ export default {
     },
     handleGenerateCurrentMonthQuota () {
       this.$message({
-        message: '生成中，请稍后...'
+        message: '后台生成中，请稍后...'
       });
       const ids = this.selectionList.map(item => item.id) || [];
       // if (ids.length === 0) {

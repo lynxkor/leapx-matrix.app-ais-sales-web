@@ -117,7 +117,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="1"
+      :id="'wholesaleTestDrivePurchaseConfImport'"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -263,7 +263,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '整车批售-批售主数据-试驾车采购配置管理',
-        dataFetchPath: 'vehwholesale/web/basic/wholesaleTestDrivePurchaseConf/page',
+        dataFetchPath: '/vw/web/basic/wholesaleTestDrivePurchaseConf/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

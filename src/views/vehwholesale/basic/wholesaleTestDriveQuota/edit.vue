@@ -124,7 +124,7 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehwholesale/basic/wholesaleTestDriveQuota/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import { getEnum, vehicleSeriesList, vehicleModelLineList, listVehicleYearType, cityPage, getBuildType } from '@/api/common';
+import { getEnum, vehicleSeriesList, vehicleModelLineList, listVehicleYearType, cityListByName, getBuildType } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -135,7 +135,7 @@ const defaultForm = {
   vehicleYearType: '',
   vehicleModelLine: '',
   seriesName: '',
-  quantity: 0,
+  quantity: '',
   mcDealerType: '',
   cityName: '',
   startDate: '',
@@ -286,6 +286,8 @@ export default {
           Object.assign(this.form, res);
           Object.assign(this.originalForm, res);
           this.form.mcDealerType = this.form.mcDealerType + '';
+          this.form.startDate = res.startDate ? res.startDate + ':00' : '';
+          this.form.endDate = res.endDate ? res.endDate + ':00' : '';
         });
       }
     },
@@ -349,13 +351,7 @@ export default {
       return listVehicleYearType({ yearTypeNameLike: params, status: 1 });
     },
     async getCityList (params) {
-      const res = await cityPage({});
-      let list = res.records || [];
-      if (params && params.trim()) {
-        const searchText = params.trim().toLowerCase();
-        list = list.filter(item => item.areaName && item.areaName.toLowerCase().includes(searchText));
-      }
-      return list;
+      return cityListByName({ cityName: params });
     },
     async getBuildTypeList () {
       return getBuildType({ status: 1 });

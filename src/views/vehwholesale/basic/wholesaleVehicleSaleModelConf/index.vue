@@ -279,7 +279,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '整车批售-批售主数据-整车销售模式配置管理',
-        dataFetchPath: 'vehwholesale/web/basic/wholesaleVehicleSaleModelConf/page',
+        dataFetchPath: '/vw/web/basic/wholesaleVehicleSaleModelConf/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -313,9 +313,6 @@ export default {
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item,
-              // 年月日时分
-              startDate: item.startDate ? item.startDate.substring(0, 16) : '',
-              endDate: item.endDate ? item.endDate.substring(0, 16) : '',
               deleteLoading: false
             };
           });

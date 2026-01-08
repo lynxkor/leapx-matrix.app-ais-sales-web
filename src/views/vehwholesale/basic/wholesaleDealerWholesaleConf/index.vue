@@ -135,7 +135,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="1"
+      :id="'wholesaleDealerWholesaleConfImport'"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -288,7 +288,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '整车批售-批售主数据-门店批售设置管理',
-        dataFetchPath: 'vehwholesale/web/basic/wholesaleDealerWholesaleConf/page',
+        dataFetchPath: '/vw/web/basic/wholesaleDealerWholesaleConf/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

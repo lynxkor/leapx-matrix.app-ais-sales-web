@@ -104,7 +104,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="1"
+      :id="'DealerAutoConfirmConfImport'"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -253,7 +253,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '整车批售-批售主数据-不自动批售确认车型管理',
-        dataFetchPath: 'vehwholesale/web/basic/wholesaleNoAutoCarModelConf/page',
+        dataFetchPath: '/vw/web/basic/wholesaleNoAutoCarModelConf/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

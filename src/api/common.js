@@ -127,11 +127,19 @@ export function getProvinceTree () {
 }
 
 /**
- * 城市模糊搜索
+ * 城市分页搜索
  * @param {*} data
  */
 export function cityPage (data) {
   return api.jsonPost('/area/findPage/city', data);
+}
+
+/**
+ * 城市模糊搜索
+ * @param {*} data
+ */
+export function cityListByName (data) {
+  return api.post('/area/search/city', data);
 }
 
 /**

@@ -75,9 +75,9 @@
         </el-form-item>
         <el-form-item label="配额数量">
           <el-input-number
-                  :controls="false"
+            :controls="false"
             placeholder="请输入"
-            v-model="form.quantity"
+            v-model="form.quotaQty"
             clearable
             :precision="0"
           />
@@ -142,7 +142,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="1"
+      :id="'wholesaleDealerTestDriveQuotaImport'"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -312,7 +312,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '整车批售-批售主数据-门店试驾车配额管理',
-        dataFetchPath: 'vehwholesale/web/basic/wholesaleDealerTestDriveQuota/page',
+        dataFetchPath: '/vw/web/basic/wholesaleDealerTestDriveQuota/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

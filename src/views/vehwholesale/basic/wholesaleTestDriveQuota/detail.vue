@@ -133,9 +133,9 @@ export default {
         this.info = {
           ...res,
           // 年月日时分
-          startDate: res.startDate ? res.startDate.substring(0, 16) : '',
-          endDate: res.endDate ? res.endDate.substring(0, 16) : '',
-        }
+          // startDate: res.startDate ? res.startDate.substring(0, 16) : '',
+          // endDate: res.endDate ? res.endDate.substring(0, 16) : '',
+        };
       }).catch(() => {
         this.loading = false;
       });

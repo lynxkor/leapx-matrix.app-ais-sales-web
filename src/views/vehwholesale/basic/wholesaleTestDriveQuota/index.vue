@@ -49,7 +49,7 @@
       <template v-if="show">
         <el-form-item label="数量">
           <el-input-number
-                  :controls="false"
+            :controls="false"
             placeholder="请输入"
             v-model="form.quantity"
             clearable
@@ -65,6 +65,7 @@
                 emitPath: false
               }"
             collapse-tags
+            clearable
           />
         </el-form-item>
         <el-form-item label="城市">
@@ -139,7 +140,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="1"
+      :id="'wholesaleTestDriveQuotaImport'"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -150,7 +151,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleTestDriveQuota/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getBuildType, cityPage, listVehicleYearType, vehicleModelLineList, vehicleSeriesList } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getBuildType, cityListByName, listVehicleYearType, vehicleModelLineList, vehicleSeriesList } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -292,7 +293,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '整车批售-批售主数据-试驾车默认配额管理',
-        dataFetchPath: 'vehwholesale/web/basic/wholesaleTestDriveQuota/page',
+        dataFetchPath: '/vw/web/basic/wholesaleTestDriveQuota/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -327,9 +328,9 @@ export default {
             return {
               ...item,
               deleteLoading: false,
-              // 年月日时分
-              startDate: item.startDate ? item.startDate.substring(0, 16) : '',
-              endDate: item.endDate ? item.endDate.substring(0, 16) : '',
+              // // 年月日时分
+              // startDate: item.startDate ? item.startDate.substring(0, 16) : '',
+              // endDate: item.endDate ? item.endDate.substring(0, 16) : '',
             };
           });
           this.optionObj.total = res.total;
@@ -462,13 +463,7 @@ export default {
       return listVehicleYearType({ yearTypeNameLike: params, status: 1 });
     },
     async getCityList (params) {
-      const res = await cityPage({});
-      let list = res.records || [];
-      if (params && params.trim()) {
-        const searchText = params.trim().toLowerCase();
-        list = list.filter(item => item.areaName && item.areaName.toLowerCase().includes(searchText));
-      }
-      return list;
+      return cityListByName({ cityName: params });
     },
     async getBuildTypeList () {
       return getBuildType({ status: 1 });
