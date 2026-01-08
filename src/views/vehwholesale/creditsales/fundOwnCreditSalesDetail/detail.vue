@@ -28,8 +28,8 @@
             <el-form-item label="创建时间：" prop="createTime">
               {{ info.createTime  }}
             </el-form-item>
-            <el-form-item label="结算资金类型：" prop="createTime">
-            </el-form-item>
+            <!-- <el-form-item label="结算资金类型：" prop="createTime">
+            </el-form-item> -->
             <el-form-item label="备注：" prop="remark">
               {{ info.remark  }}
             </el-form-item>

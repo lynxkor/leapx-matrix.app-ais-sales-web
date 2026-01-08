@@ -136,7 +136,7 @@
           <div class="common-section-body">
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-            <el-form :model="form" ref="ruleForm" label-width="150px">
+            <el-form :model="form"  label-width="150px">
               <el-form-item label="复核人" prop="reviewName">
                 <el-input
                   placeholder="请输入"

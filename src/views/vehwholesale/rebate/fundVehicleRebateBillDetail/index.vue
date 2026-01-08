@@ -12,7 +12,7 @@
     <el-form-item label="返利类型">
       <fetch-select
         :request="fetchOptions"
-        enumCode="vw_fundtype"
+        enumCode="vw_rebate_type"
         v-model="form.rebateTypes"
         placeholder="请选择"
         clearable
@@ -24,7 +24,7 @@
       <dateranges
         v-model="form.createTime"
         :setDefault="true"
-        deftTime="最近一周"
+        deftTime="本周"
         ref="transactionTime"/>
   </el-form-item>
   <template v-if="show">

@@ -16,7 +16,7 @@
         <dateranges
           v-model="form.createTime"
           :setDefault="true"
-          deftTime="最近一月"
+          deftTime="本月"
         />
       <!-- <el-date-picker
         :default-time="['00:00:00', '23:59:59']"
@@ -208,8 +208,8 @@ export default {
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           { props: 'dealerName', label: '门店名称', visible: true, width: 200 },
           { props: 'wholesaleOrderCode', label: '整车批售订单', visible: true, width: 200 },
-          { props: 'entVehorderId', label: '企业客户整车订单ID', visible: true, width: 200 },
-          { props: 'vin', label: '整车VIN编码', visible: true, width: 200 },
+          { props: 'entVehorderId', label: '企业客户整车订单', visible: true, width: 200 },
+          { props: 'vin', label: 'VIN号', visible: true, width: 200 },
           { props: 'wholesalePrice', label: '批售价/折扣价', visible: true, width: 200 },
           { props: 'cashAmount', label: '现金金额', visible: true, width: 200 },
           { props: 'rebateAmount', label: '返利金额', visible: true, width: 200 },

@@ -23,8 +23,8 @@
             <el-form-item label="首付款比例%：" prop="downPaymentRatio">
               {{ info.downPaymentRatio  }}
             </el-form-item>
-            <el-form-item label="是否使用返利：" prop="useRebate">
-              {{ info.useRebate  }}
+            <el-form-item label="是否使用返利：" prop="useRebateLabel">
+              {{ info.useRebateLabel  }}
             </el-form-item>
             <el-form-item label="使用天数下限：" prop="minUsageDays">
               {{ info.minUsageDays  }}
