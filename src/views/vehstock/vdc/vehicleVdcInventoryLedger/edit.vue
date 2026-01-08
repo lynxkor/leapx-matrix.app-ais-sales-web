@@ -13,11 +13,14 @@
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
               <el-form-item label="销售预留" prop="reserved">
                 <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.reserved" placeholder="请选择"
-                  clearable filterable />
+                  clearable filterable @change="reservedChange" />
               </el-form-item>
               <el-form-item label="销售预留类型" prop="reservedType">
-                <fetch-select :request="fetchOptions" enumCode="vehstock_reserved_type" v-model="form.reservedType"
-                  placeholder="请选择" clearable filterable />
+                <el-select v-model="form.reservedType" placeholder="请选择">
+                  <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"
+                    :disabled="item.disabled">
+                  </el-option>
+                </el-select>
               </el-form-item>
               <el-form-item label="销售备注" prop="salesRemark">
                 <el-input placeholder="请输入" v-model="form.salesRemark" clearable />
@@ -44,7 +47,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehstock/vdc/vehicleVdcInventoryLedger/index';
+import { getDetail, batchEdit } from '@/api/vehstock/vdc/vehicleVdcInventoryLedger/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -87,27 +90,36 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
+      allOptions: [], // 固定不变的原始数据源
+      options: [], // 动态显示的选项
       rules: {
         reserved: [
-          { required: true, message: '请输入销售预留', trigger: 'blur' }
+          { required: true, message: '请输入销售预留', trigger: 'change' }
         ],
         reservedType: [
           { required: true, message: '请选择销售预留类型', trigger: 'change' }
         ],
         allowLockRetail: [
-          { required: true, message: '请输入允许锁零售单', trigger: 'blur' }
-        ],
-        salesRemark: [
-          { required: true, message: '请输入销售备注', trigger: 'blur' }
-        ],
-        specialReserveRemark: [
-          { required: true, message: '请输入特殊预留备注', trigger: 'blur' }
+          { required: true, message: '请输入允许锁零售单', trigger: 'change' }
         ],
       }
     };
   },
   mounted () {
     this.getDetailData();
+  },
+  watch: {
+    '$route.query.id': {
+      handler (newVal, oldVal) {
+        if (!newVal) {
+          this.rules.reserved[0].required = false;
+          this.rules.reservedType[0].required = false;
+          this.rules.allowLockRetail[0].required = false;
+          this.salesType();
+        }
+      },
+      immediate: true
+    }
   },
   methods: {
     // 打开侧边栏
@@ -125,6 +137,9 @@ export default {
           this.loading = false;
           Object.assign(this.form, res);
           Object.assign(this.originalForm, res);
+          if (this.$route.query.id) {
+            this.salesType();
+          }
         });
       }
     },
@@ -132,14 +147,21 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.submitLoading = true;
-          addOrUpdate({ ...this.form }).then(res => {
+          const id = this.$route.query.id;
+          if (!id) {
+            let list = JSON.parse(localStorage.getItem('selectedIds'));
+            this.form.ids = list;
+          } else {
+            this.form.ids = [id];
+          }
+          batchEdit({ ...this.form }).then(res => {
             this.$message({
               message: '保存成功',
               type: 'success'
             });
-            const id = this.$route.query.id;
             if (rest || !id) {
               this.resetForm(formName);
+              localStorage.removeItem('selectedIds');
             } else {
               this.getDetailData();
             }
@@ -177,6 +199,34 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    // 销售预留类型接口枚举
+    async salesType () {
+      const res = await getEnum('vehstock_reserved_type');
+      this.allOptions = res.map(item => {
+        return {
+          label: item.message,
+          value: Number(item.code)
+        };
+      });
+      if (Number(this.form.reserved) === 0) {
+        // 当 销售预留 为 否 时，只显示可售
+        this.options = this.allOptions.filter(option => option.value === 1);
+      } else {
+        // 当 销售预留 不为 否 时，不显示可售
+        this.options = this.allOptions.filter(option => option.value !== 1);
+      };
+    },
+    // 点击销售预留改变预留类型值
+    reservedChange () {
+      this.form.reservedType = '';
+      if (Number(this.form.reserved) === 0) {
+        // 当 销售预留 为 否 时，只显示可售
+        this.options = this.allOptions.filter(option => option.value === 1);
+      } else {
+        // 当 销售预留 不为 否 时，不显示可售
+        this.options = this.allOptions.filter(option => option.value !== 1);
+      }
     }
   }
 };

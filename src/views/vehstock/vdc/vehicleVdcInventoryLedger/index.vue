@@ -71,6 +71,8 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleEdit"
+        :disabled="selectionList.length === 0">批量编辑</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
         :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)"
@@ -632,6 +634,14 @@ export default {
         this.getDataDl();
       }
     },
+    // 批量编辑
+    handleEdit () {
+      let list = this.selectionList.map(item => item.id);
+      localStorage.setItem('selectedIds', JSON.stringify(list));
+      this.$router.push({
+        path: '/vehstock/vdc/vehicleVdcInventoryLedger/edit'
+      });
+    }
   }
 };
 </script>
