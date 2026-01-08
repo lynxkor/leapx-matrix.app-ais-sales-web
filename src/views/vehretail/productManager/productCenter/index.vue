@@ -126,7 +126,7 @@ import saleAttributeUpload from './saleAttributeUpload.vue';
 import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
-  // TIPS:多选时字段名称会有变化，自行校对
+  // TIPS:多选时字段名称会有变化，自行校对1
   productCode: '',
   productName: '',
   productType: '',

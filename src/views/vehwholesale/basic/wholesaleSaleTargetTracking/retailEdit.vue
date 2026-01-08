@@ -104,6 +104,7 @@
               </el-form-item>
               <el-form-item label="新增缴定订单数" prop="newOrderQty">
                 <el-input-number
+                  :controls="false"
                   placeholder="请输入"
                   v-model="form.newOrderQty"
                   clearable
@@ -113,6 +114,7 @@
               </el-form-item>
               <el-form-item label="新增锁单目标数" prop="newLockTargetQty">
                 <el-input-number
+                  :controls="false"
                   placeholder="请输入"
                   v-model="form.newLockTargetQty"
                   clearable
@@ -122,6 +124,7 @@
               </el-form-item>
               <el-form-item label="净增锁单目标数" prop="netLockTargetQty">
                 <el-input-number
+                  :controls="false"
                   placeholder="请输入"
                   v-model="form.netLockTargetQty"
                   clearable
@@ -131,6 +134,7 @@
               </el-form-item>
               <el-form-item label="批售考核目标数" prop="wholesaleAssessmentTargetQty">
                 <el-input-number
+                  :controls="false"
                   placeholder="请输入"
                   v-model="form.wholesaleAssessmentTargetQty"
                   clearable
@@ -140,6 +144,7 @@
               </el-form-item>
               <el-form-item label="交付目标数" prop="deliveryTargetQty">
                 <el-input-number
+                  :controls="false"
                   placeholder="请输入"
                   v-model="form.deliveryTargetQty"
                   clearable

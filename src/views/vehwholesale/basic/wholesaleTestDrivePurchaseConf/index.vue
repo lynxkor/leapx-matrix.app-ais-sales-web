@@ -44,7 +44,7 @@
           :remote-method="getModelIdList"
           value-key="id"
           label-key="name"
-          @change="modelListChange"
+          @change="handleModelChange"
         />
       </el-form-item>
       <template v-if="show">
@@ -117,7 +117,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="1"
+      :id="'wholesaleTestDrivePurchaseConfImport'"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -170,6 +170,7 @@ export default {
         ...defaultForm
       },
       selectionList: [],
+      yearTypeList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -262,7 +263,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '整车批售-批售主数据-试驾车采购配置管理',
-        dataFetchPath: 'vehwholesale/web/basic/wholesaleTestDrivePurchaseConf/page',
+        dataFetchPath: '/vw/web/basic/wholesaleTestDrivePurchaseConf/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -418,7 +419,9 @@ export default {
     async getModelIdList (params) {
       return listVehicleModel({ modelNameLike: params, status: 1 });
     },
-    async modelListChange (val) {
+    async handleModelChange (val, record) {
+      this.yearTypeList = [];
+      this.form.vehicleYearTypeId = null;
       const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList: val, size: 1000 });
       this.yearTypeList = res.map(item => {
         return {

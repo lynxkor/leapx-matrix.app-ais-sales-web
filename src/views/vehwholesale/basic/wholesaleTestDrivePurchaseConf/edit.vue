@@ -17,6 +17,7 @@
                   clearable
                   remote
                   v-model="form.materialsId"
+                  :params="form.materialsCode"
                   :remote-method="getVehicleMaterialsList"
                   value-key="id"
                   label-key="materialsCode"
@@ -45,7 +46,7 @@
                   :disabled="!!_id"
                 />
               </el-form-item>
-              <el-form-item label="车型" prop="modelId">
+                            <el-form-item label="车型" prop="modelId">
                 <fetch-select
                   filterable
                   clearable
@@ -54,11 +55,11 @@
                   :remote-method="getModelIdList"
                   value-key="id"
                   label-key="name"
-                  @change="modelListChange"
+                  @change="handleModelChange"
                   :disabled="!!_id"
                 />
               </el-form-item>
-              <el-form-item label="年款" prop="vehicleYearTypeId">
+              <el-form-item label="年款" prop="vehicleYearTypeId" v-show = "!!!_id">
                 <fetch-select
                   filterable
                   clearable
@@ -68,6 +69,12 @@
                   label-key="label"
                   :disabled="!!_id"
                   @change="(val, record) => {form.vehicleYearType = record?.label || ''}"
+                />
+              </el-form-item>
+              <el-form-item label="年款" prop="vehicleYearTypeId" v-show = "!!_id">
+                <el-input
+                  :value="form.vehicleYearType"
+                  :disabled="!!_id"
                 />
               </el-form-item>
               <el-form-item label="选装包" prop="optionPackageId">
@@ -169,6 +176,7 @@ export default {
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleTestDrivePurchaseConf',
       loading: false,
+      yearTypeList: [],
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
@@ -330,10 +338,18 @@ export default {
     async getModelIdList (params) {
       return listVehicleModel({ modelNameLike: params, status: 1 });
     },
-    async modelListChange (val, record) {
-      this.form.modelName = record?.name || '';
-      const res = await vehicleModelYearTypeRelation({ modelIdList: [val], size: 1000 });
-      this.yearTypeList = res.map(item => {
+    async handleModelChange (val, record) {
+      if (record) {
+        this.form.modelName = record.name;
+      } else {
+        this.form.modelId = null;
+        this.form.modelName = null;
+      }
+      this.yearTypeList = [];
+      this.form.vehicleYearTypeId = null;
+      this.form.vehicleYearType = null;
+      const res = await vehicleModelYearTypeRelation({ modelIdList: [this.form.modelId], size: 1000 });
+      return res.map(item => {
         return {
           ...item,
           label: item.yearTypeName,

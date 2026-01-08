@@ -14,6 +14,7 @@
         </el-form-item>
         <el-form-item label="开票系数" prop="invoiceCoefficient">
           <el-input-number
+                  :controls="false"
             placeholder="请输入"
             v-model="form.invoiceCoefficient"
             clearable
@@ -32,6 +33,7 @@
         </el-form-item>
         <el-form-item label="返利使用系数" prop="rebateCoefficient">
           <el-input-number
+                  :controls="false"
             placeholder="请输入"
             v-model="form.rebateCoefficient"
             clearable

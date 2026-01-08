@@ -47,7 +47,7 @@
           filterable
           clearable
           remote
-          v-model="form.regionCode"
+          v-model="form.regionId"
           :remote-method="getRegionList"
           value-key="orgCode"
           label-key="orgName"
@@ -97,7 +97,7 @@
           remote
           collapseTags
           v-model="form.dealerCodes"
-          :remote-method="getDealerCodeList"
+          :remote-method="getDealerListByCode"
           value-key="storeCode"
           label-key="storeName"
           @change="handleChangeDealer"
@@ -111,7 +111,7 @@
           remote
           collapseTags
           v-model="form.seriesIds"
-          :remote-method="getVehicleSeriesList"
+          :remote-method="getDealerListByName"
           value-key="id"
           label-key="name"
         />
@@ -128,7 +128,8 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-permission="moduleKey+'-generateCurrentMonthQuota'" size="small" @click="handleImportWholesale">批售导入</el-button>
+      <el-button v-permission="moduleKey+'-generateCurrentMonthQuota'" size="small" @click="handleImportRetail">零售导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
@@ -152,9 +153,15 @@
     </div>
     <!-- TIPS: 填入项目id即可 -->
     <Upload
-      :visible="uploadDialogVisible"
-      :id="1"
-      @close="handleUploadDialogClose"
+      :visible="uploadDialogVisibleRetail"
+      :id="'SaleTargetTrackingImportByRetail'"
+      @close="handleUploadDialogCloseRetail"
+    />
+    <!-- TIPS: 填入项目id即可 -->
+    <Upload
+      :visible="uploadDialogVisibleWholesale"
+      :id="'SaleTargetTrackingImportByWholesale'"
+      @close="handleUploadDialogCloseWholesale"
     />
   </div>
 </template>
@@ -180,7 +187,7 @@ const defaultForm = {
   month: '',
   dealerParentOrgIds: [],
   dealerCodes: [],
-  regionCode: '',
+  regionId: '',
   provinceCode: '',
   cityCode: '',
   seriesIds: [],
@@ -213,7 +220,8 @@ export default {
       show: false,
       loading: false,
       exportLoading: false,
-      uploadDialogVisible: false,
+      uploadDialogVisibleRetail: false,
+      uploadDialogVisibleWholesale: false,
       cityOptions: [], // 市
       optionObj: {
         id: 'wholesaleSaleTargetTrackingTable',
@@ -291,24 +299,6 @@ export default {
                 });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],
@@ -321,11 +311,17 @@ export default {
     this.getData();
   },
   methods: {
-    handleImport () {
-      this.uploadDialogVisible = true;
+    handleImportWholesale () {
+      this.uploadDialogVisibleWholesale = true;
     },
-    handleUploadDialogClose () {
-      this.uploadDialogVisible = false;
+    handleImportRetail () {
+      this.uploadDialogVisibleRetail = true;
+    },
+    handleUploadDialogCloseWholesale () {
+      this.uploadDialogVisibleWholesale = false;
+    },
+    handleUploadDialogCloseRetail () {
+      this.uploadDialogVisibleRetail = false;
     },
     onSubmit () {
       this.getData();
@@ -340,7 +336,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '整车批售-批售主数据-销售目标跟踪管理',
-        dataFetchPath: 'vehwholesale/web/basic/wholesaleSaleTargetTracking/page',
+        dataFetchPath: '/vw/web/basic/wholesaleSaleTargetTracking/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -517,15 +513,13 @@ export default {
     async getVehicleSeriesList (params) {
       return vehicleSeriesList({ seriesNameLike: params, status: 1 });
     },
-    async getDealerCodeList (params) {
-      return listOrgStoreInfo({ keyword: params });
+    async getDealerListByCode (params) {
+      return listOrgStoreInfo({ storeCode: params });
     },
-    handleChangeDealer (val, selectedOption) {
-      if (val) {
-        this.form.dealerCode = selectedOption?.storeCode || '';
-        this.form.dealerName = selectedOption?.storeName || '';
-      }
-    }
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params });
+    },
+
   }
 };
 </script>

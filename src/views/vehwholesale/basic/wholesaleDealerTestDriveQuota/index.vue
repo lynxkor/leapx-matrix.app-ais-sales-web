@@ -9,7 +9,7 @@
       label-width="150px"
       class="ais-search-form"
     >
-  `      <el-form-item label="门店编码">
+        <el-form-item label="门店编码">
           <fetch-select
             filterable
             clearable
@@ -17,10 +17,9 @@
             remote
             collapseTags
             v-model="form.dealerCodes"
-            :remote-method="getDealerCodeList"
+            :remote-method="getDealerListByCode"
             value-key="storeCode"
             label-key="storeCode"
-            @change="handleChangeDealer"
           />
         </el-form-item>
         <el-form-item label="门店名称">
@@ -31,10 +30,9 @@
             remote
             collapseTags
             v-model="form.dealerCodes"
-            :remote-method="getDealerCodeList"
+            :remote-method="getDealerListByName"
             value-key="storeCode"
             label-key="storeName"
-            @change="handleChangeDealer"
           />
         </el-form-item>
         <el-form-item label="年款" v-show="this.visibleCount === 3 || show">
@@ -77,8 +75,9 @@
         </el-form-item>
         <el-form-item label="配额数量">
           <el-input-number
+            :controls="false"
             placeholder="请输入"
-            v-model="form.quantity"
+            v-model="form.quotaQty"
             clearable
             :precision="0"
           />
@@ -122,7 +121,7 @@
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
+      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -143,7 +142,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="1"
+      :id="'wholesaleDealerTestDriveQuotaImport'"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -267,34 +266,7 @@ export default {
               },
               type: 'info'
             }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
-            }, {
               name: '日志',
-              click: (rowIndex, row) => {
-                this.$message({
-                  type: 'info',
-                  message: '功能开发中!'
-                });
-              },
-              type: 'info'
-            }, {
-              name: '配额调整日志',
               click: (rowIndex, row) => {
                 this.$router.push({
                   path: '/vehwholesale/basic/dealerDemoVehicleQuotaRecord',
@@ -340,7 +312,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '整车批售-批售主数据-门店试驾车配额管理',
-        dataFetchPath: 'vehwholesale/web/basic/wholesaleDealerTestDriveQuota/page',
+        dataFetchPath: '/vw/web/basic/wholesaleDealerTestDriveQuota/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -490,14 +462,11 @@ export default {
       //   });
       // });
     },
-    async getDealerCodeList (params) {
-      return listOrgStoreInfo({ keyword: params });
+    async getDealerListByCode (params) {
+      return listOrgStoreInfo({ storeCode: params });
     },
-    handleChangeDealer (val, selectedOption) {
-      if (val) {
-        this.form.dealerCode = selectedOption?.storeCode || '';
-        this.form.dealerName = selectedOption?.storeName || '';
-      }
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params });
     },
     async getVehicleSeriesList (params) {
       return vehicleSeriesList({ seriesNameLike: params, status: 1 });

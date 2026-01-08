@@ -26,16 +26,16 @@
               {{ info.dealerParentOrgName  }}
             </el-form-item>
             <el-form-item label="开启自动配车：" prop="autoAllocationEnabled">
-              {{ info.autoAllocationEnabled  }}
+              {{ info.autoAllocationEnabledLabel  }}
             </el-form-item>
             <el-form-item label="开启自动结算：" prop="autoSettlementEnabled">
-              {{ info.autoSettlementEnabled  }}
+              {{ info.autoSettlementEnabledLabel }}
             </el-form-item>
             <el-form-item label="允许排产申请：" prop="productionRequestEnabled">
-              {{ info.productionRequestEnabled  }}
+              {{ info.productionRequestEnabledLabel  }}
             </el-form-item>
             <el-form-item label="允许现车批售：" prop="spotWholesaleEnabled">
-              {{ info.spotWholesaleEnabled  }}
+              {{ info.spotWholesaleEnabledLabel  }}
             </el-form-item>
             <el-form-item label="修改者名称：" prop="modifierName">
               {{ info.modifierName  }}
@@ -43,7 +43,7 @@
             <el-form-item label="修改时间：" prop="updateTime">
               {{ info.updateTime  }}
             </el-form-item>
-            <el-form-item label="主键：" prop="id">
+            <!-- <el-form-item label="主键：" prop="id">
               {{ info.id  }}
             </el-form-item>
             <el-form-item label="创建者：" prop="creator">
@@ -75,7 +75,7 @@
             </el-form-item>
             <el-form-item label="归属门店ID（组织ID），当数据权限归属到本组织以及本下级：" prop="ownerOrgId">
               {{ info.ownerOrgId  }}
-            </el-form-item>
+            </el-form-item> -->
           </el-form>
         </div>
       </section>

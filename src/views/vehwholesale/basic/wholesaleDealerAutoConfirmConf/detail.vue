@@ -23,7 +23,7 @@
               {{ info.dealerName  }}
             </el-form-item>
             <el-form-item label="开启自动批售确认：" prop="openAutoConfirm">
-              {{ info.openAutoConfirm  }}
+              {{ info.openAutoConfirmLabel  }}
             </el-form-item>
             <el-form-item label="修改者名称：" prop="modifierName">
               {{ info.modifierName  }}
@@ -31,7 +31,7 @@
             <el-form-item label="修改时间：" prop="updateTime">
               {{ info.updateTime  }}
             </el-form-item>
-            <el-form-item label="主键：" prop="id">
+            <!-- <el-form-item label="主键：" prop="id">
               {{ info.id  }}
             </el-form-item>
             <el-form-item label="创建者：" prop="creator">
@@ -60,7 +60,7 @@
             </el-form-item>
             <el-form-item label="归属门店ID（组织ID），当数据权限归属到本组织以及本下级：" prop="ownerOrgId">
               {{ info.ownerOrgId  }}
-            </el-form-item>
+            </el-form-item> -->
           </el-form>
         </div>
       </section>

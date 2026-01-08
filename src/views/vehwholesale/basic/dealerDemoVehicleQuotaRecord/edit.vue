@@ -13,6 +13,7 @@
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
               <el-form-item label="调整前配额数" prop="quotaQty">
                 <el-input-number
+                  :controls="false"
                   placeholder="请输入"
                   v-model="form.quotaQty"
                   clearable
@@ -22,21 +23,23 @@
               </el-form-item>
               <el-form-item label="配额数" prop="changeAfterQty">
                 <el-input-number
+                  :controls="false"
                   placeholder="请输入"
                   v-model="form.changeAfterQty"
                   clearable
                   :precision="0"
                 />
               </el-form-item>
-              <el-form-item label="调整说明" prop="changeDesc">
+              <el-form-item label="调整说明" prop="changeDescs">
                 <el-input
                   placeholder="请输入"
-                  v-model="form.changeDesc"
+                  v-model="form.changeDescs"
                   clearable
                 />
               </el-form-item>
               <el-form-item label="累计已申请数" prop="requestQty">
                 <el-input-number
+                  :controls="false"
                   placeholder="请输入"
                   v-model="form.requestQty"
                   clearable
@@ -44,7 +47,7 @@
                   :disabled="true"
                 />
               </el-form-item>
-              <el-form-item label="附件说明" prop="changeDescFileId">
+              <el-form-item label="附件说明（文件上传TODO）" prop="changeDescFileId">
                 <el-input
                   placeholder="请输入"
                   v-model="form.changeDescFileId"
@@ -56,7 +59,7 @@
         </section>
       </el-main>
       <el-footer height="60px">
-        <el-button size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
+        <el-button size="small" v-permission="'AISVW-wholesaleDealerTestDriveQuota-updateTestDriveQuota'" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
         <el-button size="small" @click="handleBack">取消</el-button>
         <!-- <el-button size="small" @click="handleJumpAuditLog">审核日志</el-button> -->
       </el-footer>
@@ -76,7 +79,7 @@ const defaultForm = {
   // 多选时字段有变化，自行修复
   changeAfterQty: '',
   changeQty: '',
-  changeDesc: '',
+  changeDescs: '',
   changeDescFileId: '',
   id: '',
   requestQty: '',
@@ -147,10 +150,13 @@ export default {
           this.submitLoading = true;
           const submitForm = {
             changeAfterQty: this.form.changeAfterQty,
-            changeDesc: this.form.changeDesc,
+            changeDesc: this.form.changeDescs,
             changeDescFileId: this.form.changeDescFileId,
             changeBeforeQty: this.form.quotaQty,
             relatedId: this._id,
+            dealerCode: this.form.dealerCode,
+            vehicleYearTypeId: this.form.vehicleYearTypeId,
+            vehicleModelLineId: this.form.vehicleModelLineId
           };
           updateTestDriveQuota(submitForm).then(res => {
             this.$message({

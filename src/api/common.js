@@ -40,17 +40,20 @@ export function getTemplateCode (data) {
  * @param {*} data
  */
 export function importExcelConfirmFile (formData, config = {}) {
-  // 查询参数需要放在 config 或 URL 中
+  const { businessParams, id, token, headers, ...restConfig } = config;
+  // 动态构建 params 对象，使用解构和条件展开
+  const params = {
+    id,
+    token,
+    ...(businessParams && { businessParams }) // 如果 businessParams 存在，则添加到 params 中
+  };
   return api.postExport('/data/ExcelManage/importExcelConfirm', formData, {
-    params: { // 查询参数放在 config 中
-      id: config.id,
-      token: config.token
-    },
+    params, // 直接使用动态构建的 params
     headers: {
       'Content-Type': 'multipart/form-data',
-      ...config.headers
+      ...headers
     },
-    ...config
+    ...restConfig
   });
 }
 
@@ -127,11 +130,19 @@ export function getProvinceTree () {
 }
 
 /**
- * 城市模糊搜索
+ * 城市分页搜索
  * @param {*} data
  */
 export function cityPage (data) {
   return api.jsonPost('/area/findPage/city', data);
+}
+
+/**
+ * 城市模糊搜索
+ * @param {*} data
+ */
+export function cityListByName (data) {
+  return api.post('/area/search/city', data);
 }
 
 /**

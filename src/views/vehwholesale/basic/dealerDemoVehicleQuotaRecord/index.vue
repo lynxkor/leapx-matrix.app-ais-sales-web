@@ -100,18 +100,6 @@ export default {
             label: '变化前数量',
             visible: true,
             width: 200,
-            fixed: 'left',
-            buttons: [{
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/basic/dealerDemoVehicleQuotaRecord/detail',
-                  query: {
-                    id: row.id
-                  }
-                });
-              },
-              type: 'primary'
-            }]
           },
           { props: 'changeAfterQty', label: '变化后数量', visible: true, width: 200 },
           { props: 'changeQty', label: '变化数量', visible: true, width: 200 },

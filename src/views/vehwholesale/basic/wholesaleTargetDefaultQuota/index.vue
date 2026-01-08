@@ -45,7 +45,7 @@
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button size="small" @click="handleGenerateCurrentMonthQuota" :disabled="selectionList.length === 0">生成当月配额</el-button>
+      <el-button v-permission="moduleKey+'-generateCurrentMonthQuota'" size="small" @click="handleGenerateCurrentMonthQuota" :disabled="selectionList.length === 0">生成当月配额</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <!-- <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button> -->
@@ -69,7 +69,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="1"
+      :id="'wholesaleTargetDefaultQuotaImport'"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -172,24 +172,6 @@ export default {
                 });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],
@@ -226,7 +208,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '整车批售-批售主数据-批售目标默认配额管理',
-        dataFetchPath: 'vehwholesale/web/basic/wholesaleTargetDefaultQuota/page',
+        dataFetchPath: '/vw/web/basic/wholesaleTargetDefaultQuota/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -378,7 +360,7 @@ export default {
     },
     handleGenerateCurrentMonthQuota () {
       this.$message({
-        message: '生成中，请稍后...'
+        message: '后台生成中，请稍后...'
       });
       const ids = this.selectionList.map(item => item.id) || [];
       // if (ids.length === 0) {

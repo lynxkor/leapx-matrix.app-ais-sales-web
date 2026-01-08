@@ -20,11 +20,11 @@
                   :remote-method="getModelIdList"
                   value-key="id"
                   label-key="name"
-                  @change="modelListChange"
+                  @change="handleModelChange"
                   :disabled="!!_id"
                 />
               </el-form-item>
-              <el-form-item label="年款" prop="vehicleYearTypeId">
+              <el-form-item label="年款" prop="vehicleYearTypeId" v-show = "!!!_id">
                 <fetch-select
                   filterable
                   clearable
@@ -34,6 +34,12 @@
                   label-key="label"
                   :disabled="!!_id"
                   @change="(val, record) => {form.vehicleYearType = record?.label || ''}"
+                />
+              </el-form-item>
+              <el-form-item label="年款" prop="vehicleYearTypeId" v-show = "!!_id">
+                <el-input
+                  :value="form.vehicleYearType"
+                  :disabled="!!_id"
                 />
               </el-form-item>
               <el-form-item label="不参与自动批售确认" prop="noJoinAutoConfirm">
@@ -120,6 +126,7 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
+      yearTypeList: [],
       rules: {
         wholesaleNoAutoCarModelConfName: [
           { required: true, message: '请输入名称', trigger: 'blur' }
@@ -253,9 +260,17 @@ export default {
     async getModelIdList (params) {
       return listVehicleModel({ modelNameLike: params, status: 1 });
     },
-    async modelListChange (val, record) {
+    async handleModelChange (val, record) {
+      if (record) {
+        this.form.modelName = record.name;
+      } else {
+        this.form.modelId = null;
+        this.form.modelName = null;
+      }
+      this.yearTypeList = [];
+      this.form.vehicleYearTypeId = null;
+      this.form.vehicleYearType = null;
       const res = await vehicleModelYearTypeRelation({ modelIdList: [val], size: 1000 });
-      this.form.modelName = record?.name || '';
       this.yearTypeList = res.map(item => {
         return {
           ...item,

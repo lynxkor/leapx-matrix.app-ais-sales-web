@@ -17,10 +17,9 @@
           remote
           collapseTags
           v-model="form.dealerCodes"
-          :remote-method="getDealerCodeList"
+          :remote-method="getDealerListByCode"
           value-key="storeCode"
           label-key="storeCode"
-          @change="handleChangeDealer"
         />
       </el-form-item>
       <el-form-item label="门店名称">
@@ -31,10 +30,9 @@
           remote
           collapseTags
           v-model="form.dealerCodes"
-          :remote-method="getDealerCodeList"
+          :remote-method="getDealerListByName"
           value-key="storeCode"
           label-key="storeName"
-          @change="handleChangeDealer"
         />
       </el-form-item>
       <el-form-item label="开启自动批售确认"  v-show="this.visibleCount === 3 || show">
@@ -75,8 +73,8 @@
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <!-- <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button> -->
-      <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
+      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+       <!-- <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button> -->
     </div>
     <div
@@ -98,7 +96,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="1"
+      :id="'wholesaleDealerAutoConfirmConfImport'"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -202,30 +200,9 @@ export default {
               },
               type: 'info'
             }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
-            }, {
               name: '日志',
               click: (rowIndex, row) => {
-                this.$message({
-                  type: 'info',
-                  message: '功能开发中!'
-                });
+                this.$auditLog.show({ id: row.id });
               },
               type: 'info'
             }]
@@ -264,7 +241,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '新页面',
-        dataFetchPath: 'vehwholesale/web/basic/wholesaleDealerAutoConfirmConf/page',
+        dataFetchPath: '/vw/web/basic/wholesaleDealerAutoConfirmConf/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -352,6 +329,13 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
+      if (this.form.updateTime) {
+        delete data.updateTime;
+        if (this.form.updateTime.length > 1) {
+          data.updateTimeStart = this.form.updateTime[0];
+          data.updateTimeEnd = this.form.updateTime[1];
+        }
+      }
 
       return data;
     },
@@ -414,15 +398,12 @@ export default {
       //   });
       // });
     },
-    async getDealerCodeList (params) {
-      return listOrgStoreInfo({ keyword: params });
+    async getDealerListByCode (params) {
+      return listOrgStoreInfo({ storeCode: params });
     },
-    handleChangeDealer (val, selectedOption) {
-      if (val) {
-        this.form.dealerCode = selectedOption?.storeCode || '';
-        this.form.dealerName = selectedOption?.storeName || '';
-      }
-    }
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params });
+    },
   }
 };
 </script>

@@ -20,11 +20,11 @@
                   :remote-method="getModelIdList"
                   value-key="id"
                   label-key="name"
-                  @change="modelListChange"
+                  @change="handleModelChange"
                   :disabled="!!_id"
                 />
               </el-form-item>
-              <el-form-item label="年款" prop="vehicleYearTypeId">
+              <el-form-item label="年款" prop="vehicleYearTypeId" v-show = "!!!_id">
                 <fetch-select
                   filterable
                   clearable
@@ -34,6 +34,12 @@
                   label-key="label"
                   :disabled="!!_id"
                   @change="(val, record) => {form.vehicleYearType = record?.label || ''}"
+                />
+              </el-form-item>
+              <el-form-item label="年款" prop="vehicleYearTypeId" v-show = "!!_id">
+                <el-input
+                  :value="form.vehicleYearType"
+                  :disabled="!!_id"
                 />
               </el-form-item>
               <el-form-item label="订单分类" prop="orderCategory">
@@ -70,6 +76,7 @@
               </el-form-item>
               <el-form-item label="开票系数" prop="invoiceCoefficient">
                 <el-input-number
+                  :controls="false"
                   placeholder="请输入"
                   v-model="form.invoiceCoefficient"
                   clearable
@@ -88,6 +95,7 @@
               </el-form-item>
               <el-form-item label="返利使用系数" prop="rebateCoefficient">
                 <el-input-number
+                  :controls="false"
                   placeholder="请输入"
                   v-model="form.rebateCoefficient"
                   clearable
@@ -213,6 +221,7 @@ export default {
       moduleKey: 'AISVW-wholesaleVehicleSaleModelConf',
       loading: false,
       submitLoading: false,
+      yearTypeList: [],
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
@@ -337,6 +346,9 @@ export default {
           this.loading = false;
           Object.assign(this.form, res);
           Object.assign(this.originalForm, res);
+
+          this.form.startDate = res.startDate ? res.startDate + ':00' : '';
+          this.form.endDate = res.endDate ? res.endDate + ':00' : '';
         });
       }
     },
@@ -396,8 +408,16 @@ export default {
     async getModelIdList (params) {
       return listVehicleModel({ modelNameLike: params, status: 1 });
     },
-    async modelListChange (val, record) {
-      this.form.modelName = record?.name || '';
+    async handleModelChange (val, record) {
+      if (record) {
+        this.form.modelName = record.name;
+      } else {
+        this.form.modelId = null;
+        this.form.modelName = null;
+      }
+      this.yearTypeList = [];
+      this.form.vehicleYearTypeId = null;
+      this.form.vehicleYearType = null;
       const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelIdList: [val], size: 1000 });
       this.yearTypeList = res.map(item => {
         return {
@@ -406,7 +426,7 @@ export default {
           value: item.yearTypeId
         };
       });
-    }
+    },
   }
 };
 </script>

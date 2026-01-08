@@ -17,7 +17,7 @@
                   clearable
                   remote
                   v-model="form.dealerCode"
-                  :remote-method="getDealerCodeList"
+                  :remote-method="getDealerListByCode"
                   value-key="storeCode"
                   label-key="storeCode"
                   @change="handleChangeDealer"
@@ -29,11 +29,12 @@
                   filterable
                   clearable
                   remote
+                  :params="form.dealerName"
                   v-model="form.dealerCode"
-                  :remote-method="getDealerCodeList"
+                  :remote-method="getDealerListByName"
                   value-key="storeCode"
                   label-key="storeName"
-                  @change="handleChangeDealer"
+                  @change="(val, record) => {form.modelName = record?.name || ''}"
                   :disabled="!!_id"
                 />
               </el-form-item>
@@ -80,6 +81,7 @@
               </el-form-item>
               <el-form-item label="累计已申请数" prop="requestQty">
                 <el-input-number
+                  :controls="false"
                   placeholder="请输入"
                   v-model="form.requestQty"
                   clearable
@@ -89,6 +91,7 @@
               </el-form-item>
               <el-form-item label="配额数量" prop="quotaQty">
                 <el-input-number
+                  :controls="false"
                   placeholder="请输入"
                   v-model="form.quotaQty"
                   clearable
@@ -129,6 +132,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
+  dealerId: '',
   dealerCode: '',
   dealerName: '',
   vehicleYearType: '',
@@ -332,13 +336,17 @@ export default {
       }
       return [];
     },
-    async getDealerCodeList (params) {
-      return listOrgStoreInfo({ keyword: params });
+    async getDealerListByCode (params) {
+      return listOrgStoreInfo({ storeCode: params });
+    },
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params });
     },
     handleChangeDealer (val, selectedOption) {
       if (val) {
         this.form.dealerCode = selectedOption?.storeCode || '';
         this.form.dealerName = selectedOption?.storeName || '';
+        this.form.dealerId = selectedOption?.storeId || '';
       }
     },
     async getVehicleSeriesList (params) {
