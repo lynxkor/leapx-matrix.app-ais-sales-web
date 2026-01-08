@@ -20,17 +20,12 @@
           filterable
         />
         </el-form-item>
-         <el-form-item label="创建时间">
-        <el-date-picker
-         :default-time="['00:00:00', '23:59:59']"
-          v-model="form.createTime"
-          type="daterange"
-          :picker-options="pickerOptions"
-          range-separator="至"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        />
+         <el-form-item label="创建日期">
+          <dateranges
+            v-model="form.createTime"
+            :setDefault="true"
+            deftTime="最近一月"
+            ref="transactionTime"/>
       </el-form-item>
       <el-form-item label="母公司名称"  v-show="this.visibleCount === 3 || show">
         <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
@@ -39,14 +34,27 @@
         <el-form-item label="门店名称">
           <tag-input v-model="form.dealerNames" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="年度" prop="year">
-          <el-input
+        <el-form-item label="年度" prop="years">
+          <fetch-select
+            :remote-method="listVehicleYearType"
+            remote
+            v-model="form.years"
+            placeholder="请选择"
+            labelKey="name"
+            valueKey="name"
+            clearable
+            multiple
+            collapseTags
+            filterable
+            :options="yearTypeList"
+            />
+          <!-- <el-input
             placeholder="请输入"
             v-model="form.year"
             clearable
-          />
+          /> -->
         </el-form-item>
-        <el-form-item label="月度" prop="month">
+        <el-form-item label="月度" prop="months">
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_month"
@@ -116,7 +124,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/rebate/fundVehicleRebateBill/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelList } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelList, listVehicleYearType } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -128,10 +136,11 @@ import EditPage from './edit.vue';
 import { listIdNames as fundBudgetItemList } from '@/api/vehwholesale/fund/fundBudgetItem/index';
 import { listIdNames as fundFeeSuportTypeList } from '@/api/vehwholesale/fund/fundFeeSupportType/index';
 import TagInput from '@/libs/components/TagInput';
+import dateranges from '@/libs/components/dateranges';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   creatorName: '',
-  createTime: '',
+  createTime: [],
   dealerCompanyName: '',
   dealerName: '',
   rebateType: '',
@@ -159,7 +168,8 @@ export default {
     FetchSelect,
     EditPage,
     Upload,
-    TagInput
+    TagInput,
+    dateranges
   },
   data () {
     return {
@@ -171,6 +181,7 @@ export default {
         ...defaultForm
       },
       selectionList: [],
+      yearTypeList: [],
       modelList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
@@ -207,7 +218,7 @@ export default {
           // { pops: 'rebateBillDetailCode', label: '返利核算单明细编号', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           { props: 'dealerName', label: '门店名称', visible: true, width: 200 },
-          { props: 'rebateType', label: '返利类型', visible: true, width: 200 },
+          { props: 'rebateTypeLabel', label: '返利类型', visible: true, width: 200 },
           { props: 'periodLabel', label: '周期', visible: true, width: 200 },
           { props: 'year', label: '年度', visible: true, width: 200 },
           { props: 'quarterLabel', label: '季度', visible: true, width: 200 },
@@ -259,9 +270,20 @@ export default {
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
-    this.getData();
+    this.$nextTick(() => {
+      this.getData();
+    });
   },
   methods: {
+    async listVehicleYearType (query) {
+      try {
+        const res = await listVehicleYearType({ yearTypeNameLike: query });
+        this.yearTypeList = res;
+        return res;
+      } catch (error) {
+        console.error('Error fetching model list:', error);
+      }
+    },
     async modelSearch (query) {
       // if (query) {
       let params = {
@@ -315,6 +337,7 @@ export default {
       this.form = { ...defaultForm };
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
+      this.form.createTime = [];
       this.getData();
     },
     exportExcel () {

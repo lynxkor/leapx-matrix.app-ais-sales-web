@@ -10,7 +10,7 @@
       class="ais-search-form"
     >
       <el-form-item label="母公司名称">
-        <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
+        <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="创建时间">
           <el-date-picker
@@ -32,7 +32,6 @@
           v-model="form.creditAccountStatus"
           placeholder="请选择"
           clearable
-          multiple
           filterable
         />
       </el-form-item>

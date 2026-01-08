@@ -7,7 +7,7 @@
         <tag-input v-model="form.vinList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="物料描述">
-        <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
+        <tag-input v-model="form.materialsDescList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="VDC入库时间">
         <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.inboundDateTime" type="daterange"
@@ -16,7 +16,7 @@
       </el-form-item>
       <template v-if="show">
         <el-form-item label="物料编码">
-          <tag-input v-model="form.materialsDescList" placeholder="请输入" />
+          <tag-input v-model="form.materialsCodeList" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="车系">
           <fetch-select v-model="form.seriesIdList" v-bind="selectOptions" :remote-method="remoteMethods.series" />
@@ -87,7 +87,7 @@
         @handleSelect="handleSelectionChange" />
     </div>
     <!-- TIPS: 填入项目id即可 -->
-    <Upload :visible="uploadDialogVisible" :id="'1'" @close="handleUploadDialogClose" />
+    <Upload :visible="uploadDialogVisible" :id="'vehicleVdcInventoryLedgerImport'" @close="handleUploadDialogClose" />
   </div>
 </template>
 
@@ -121,6 +121,7 @@ const defaultForm = {
   allowLockRetail: '',
   vehicleRegisteredModelIdList: [],
   materialsCode: '',
+  materialsCodeList: [],
   seriesIdList: [],
   shipVia: '',
   vdcCommonCompositeQuery: '',

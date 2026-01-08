@@ -63,11 +63,10 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_fund_own_credit_sales_limit_status"
-            v-model="form.creditAccountStatuses"
+            v-model="form.creditAccountStatus"
             placeholder="请选择"
             clearable
             filterable
-            multiple
           />
         </el-form-item>
         <!-- <el-form-item label="备注">
@@ -240,22 +239,25 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200 },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           { props: 'creditAccountStatusLabel', label: '赊销账户状态', visible: true, width: 200 },
           { props: 'creditAmount', label: '授信额度', visible: true, width: 200 },
           { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 200 },
           { props: 'effectiveTime', label: '额度生效日期', visible: true, width: 200 },
           { props: 'expireTime', label: '额度失效日期', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'configUserName', label: '配置人', visible: true, width: 200 },
+          { props: 'configTime', label: '配置时间', visible: true, width: 200 },
           { props: 'auditStatusLabel', label: '配置状态', visible: true, width: 200 },
           { props: 'reviewName', label: '复核人', visible: true, width: 200 },
           { props: 'reviewTime', label: '复核时间', visible: true, width: 200 },
-          { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'reviewOpinion', label: '复核意见', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改人', visible: true, width: 200 },
-          { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
+          { props: 'remark', label: '备注', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          // { props: 'creatorName', label: '创建人', visible: true, width: 200 },
+          // { props: 'auditStatusLabel', label: '配置状态', visible: true, width: 200 },
+          // { props: 'modifierName', label: '修改人', visible: true, width: 200 },
+          // { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',

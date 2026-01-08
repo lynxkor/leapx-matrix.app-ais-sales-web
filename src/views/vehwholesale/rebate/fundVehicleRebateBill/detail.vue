@@ -25,20 +25,20 @@
             <el-form-item label="创建时间：" prop="createTime">
               {{ info.createTime  }}
             </el-form-item>
-            <el-form-item label="返利核算单明细编号: " prop="rebateBillDetailCode">
+            <!-- <el-form-item label="返利核算单明细编号: " prop="rebateBillDetailCode">
               {{ info.rebateBillDetailCode }}
-            </el-form-item>
-             <el-form-item label="周期：" prop="period">
-              {{ info.period  }}
+            </el-form-item> -->
+             <el-form-item label="周期：" prop="periodLabel">
+              {{ info.periodLabel  }}
             </el-form-item>
             <el-form-item label="年度：" prop="year">
               {{ info.year  }}
             </el-form-item>
-            <el-form-item label="季度：" prop="quarter">
-              {{ info.quarter  }}
+            <el-form-item label="季度：" prop="quarterLabel">
+              {{ info.quarterLabel  }}
             </el-form-item>
-            <el-form-item label="月度：" prop="month">
-              {{ info.month  }}
+            <el-form-item label="月度：" prop="monthLabel">
+              {{ info.monthLabel  }}
             </el-form-item>
              <el-form-item label="核销金额：" prop="rebateAmount">
               {{ info.rebateAmount  }}

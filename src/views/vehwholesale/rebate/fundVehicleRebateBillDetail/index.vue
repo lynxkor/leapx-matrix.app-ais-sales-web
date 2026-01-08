@@ -37,7 +37,7 @@
     <el-form-item label="门店名称">
       <tag-input v-model="form.dealerNames" placeholder="请输入" />
     </el-form-item>
-    <el-form-item label="单据状态" prop="billStatus">
+    <el-form-item label="单据状态" prop="billStatuss">
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_rebate_bills_detail_status"
@@ -113,7 +113,7 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item label="创建者人">
+        <el-form-item label="创建人">
         <el-input
           placeholder="请输入"
           v-model="form.creatorName"
@@ -508,7 +508,7 @@ export default {
       const data = { ...this.form };
 
       Object.keys(this.form).forEach(key => {
-        if (data[key] === '' || data[key] === null) {
+        if (data[key] === '' || data[key] === null || data[key].length === 0 || data[key] === []) {
           delete data[key];
         }
       });
@@ -520,6 +520,14 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
+      if (this.form.auditTime) {
+        delete data.auditTime;
+        if (this.form.auditTime.length > 1) {
+          data.auditTimeStart = this.form.auditTime[0];
+          data.auditTimeEnd = this.form.auditTime[1];
+        }
+      }
+
       return data;
     },
     async fetchOptions (code) {
