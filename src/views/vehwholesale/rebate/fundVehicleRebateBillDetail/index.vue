@@ -137,7 +137,7 @@
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchAudit()" >批量初审</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchReview()" >批量复审</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" >批量删除</el-button>
+      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
     </div>
     <div
       class="ais-table-c"

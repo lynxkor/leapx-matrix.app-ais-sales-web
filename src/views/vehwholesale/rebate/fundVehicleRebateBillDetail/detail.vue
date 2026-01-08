@@ -41,7 +41,7 @@
         <div class="common-section-body">
           <!-- TIPS: 根据实际情况调整展示字段和宽度 -->
           <el-form :inline="true" ref="ruleForm" label-width="150px">
-            <el-form-item label="返利类型：" prop="rebateType">
+            <el-form-item label="返利类型：" prop="rebateTypeLabel">
               {{ info.rebateTypeLabel  }}
             </el-form-item>
             <el-form-item label="核销金额：" prop="rebateAmount">
@@ -62,11 +62,11 @@
             <el-form-item label="交车单号：" prop="deliveryOrderCode">
               {{ info.deliveryOrderCode  }}
             </el-form-item>
-             <el-form-item label="预算科目：" prop="budgetItemId">
-              {{ info.budgetItemId  }}
+             <el-form-item label="预算科目：" prop="budgetItemName">
+              {{ info.budgetItemName  }}
             </el-form-item>
-            <el-form-item label="费用支持类型：" prop="feeSupportTypeId">
-              {{ info.feeSupportTypeId  }}
+            <el-form-item label="费用支持类型：" prop="feeSupportTypeName">
+              {{ info.feeSupportTypeName  }}
             </el-form-item>
              <el-form-item label="周期：" prop="periodLabel">
               {{ info.periodLabel  }}

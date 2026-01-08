@@ -64,3 +64,11 @@ export function reviewItem (data) {
 export function cancelItem (data) {
   return api.jsonPost(prefix + 'cancel', data);
 }
+
+/**
+ * 账户管理-赊销管理-自有资金赊销配置-根据【门店母公司编码】查询该【门店母公司赊销账户】没有就空
+ * @param {Object} data
+ */
+export function gdclItem (data) {
+  return api.jsonPost(prefix + 'getDealerCompanyCreditSalesFundAccount', data);
+}

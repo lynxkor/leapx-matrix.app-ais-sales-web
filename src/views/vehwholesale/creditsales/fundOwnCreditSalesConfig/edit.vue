@@ -11,13 +11,6 @@
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
-              <!-- <el-form-item label="主键" prop="id">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.id"
-                  clearable
-                />
-              </el-form-item> -->
               <el-form-item label="母公司名称" prop="dealerCompanyName">
                   <fetch-select
                   :remote-method="getParentCompany"
@@ -27,13 +20,13 @@
                   labelKey="companyName"
                   valueKey="companyCode"
                   clearable
-                  collapseTags
                   filterable
-                  disabled
+                  @change="getFormData"
+
                   />
               </el-form-item>
 
-              <el-form-item label="母公司编码" prop="dealerCompanyCode">
+              <el-form-item label="母公司编码">
                 <el-input
                   placeholder="请输入"
                   v-model="form.dealerCompanyCode"
@@ -51,12 +44,12 @@
                   filterable
                 />
               </el-form-item>
-              <el-form-item label="授信额度" prop="creditAmount">
-                <el-input-number placeholder="请输入" v-model="form.creditAmount" clearable :controls="false"
+              <el-form-item label="授信额度" prop="creditAmount" >
+                <el-input-number placeholder="请输入" v-model="form.creditAmount" clearable :controls="false" style="width: 100%;"
                 :precision="2" :min="0" :step="0.01"  />
               </el-form-item>
               <el-form-item label="首付款比例%" prop="downPaymentRatio">
-                <el-input-number placeholder="请输入" v-model="form.downPaymentRatio" clearable :controls="false"
+                <el-input-number placeholder="请输入" v-model="form.downPaymentRatio" clearable :controls="false" style="width: 100%;"
                 :precision="2" :min="0" :step="0.01" :max="100" />
               </el-form-item>
               <el-form-item label="额度生效日期" prop="effectiveTime">
@@ -71,15 +64,15 @@
                   v-model="form.expireTime"
                 />
               </el-form-item>
-              <el-form-item label="创建人" prop="creatorName" v-show="!_id">
+              <!-- <el-form-item label="创建人" prop="creatorName" v-show="!_id">
                 <el-input
                   placeholder="请输入"
                   v-model="form.creatorName"
                   clearable
                   disabled
                 />
-              </el-form-item>
-              <el-form-item label="配置人" prop="configUserName"  v-show="_id">
+              </el-form-item> -->
+              <el-form-item label="配置人" >
                 <el-input
                   placeholder="请输入"
                   v-model="form.configUserName"
@@ -87,14 +80,14 @@
                   disabled
                 />
               </el-form-item>
-              <el-form-item label="备注" prop="remark"  v-show="_id">
+              <el-form-item label="备注">
                 <el-input
                   placeholder="请输入"
                   v-model="form.remark"
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="创建时间" prop="createTime" v-show="!_id">
+              <!-- <el-form-item label="创建时间" prop="createTime" v-show="!_id">
                 <el-date-picker
                   :default-time="['00:00:00', '23:59:59']"
                   v-model="form.createTime"
@@ -104,16 +97,16 @@
                   end-placeholder="结束日期"
                   disabled
                 />
-              </el-form-item>
-              <el-form-item label="配置时间" prop="configTime"  v-show="_id">
+              </el-form-item> -->
+              <el-form-item label="配置时间" >
                 <el-date-picker
-                  tyype="date"
+                  type="datetime"
                   v-model="form.configTime"
                   value-format="yyyy-MM-dd HH:mm:ss"
                   disabled
                 />
               </el-form-item>
-              <el-form-item label="配置状态" prop="auditStatus">
+              <el-form-item label="配置状态">
                 <fetch-select
                   :request="fetchOptions"
                   enumCode="ve_credit_sales_config_audit_status"
@@ -143,7 +136,7 @@
           <div class="common-section-body">
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-            <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
+            <el-form :model="form" ref="ruleForm" label-width="150px">
               <el-form-item label="复核人" prop="reviewName">
                 <el-input
                   placeholder="请输入"
@@ -177,7 +170,7 @@
       </el-main>
       <el-footer height="60px">
         <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
-        <el-button v-if="form.auditStatus === 0 || form.auditStatus === 2" size="small" type="primary" @click="submitForm('submit')" :loading="submitLoading">提交</el-button>
+        <!-- <el-button v-if="form.auditStatus === 0 || form.auditStatus === 2" size="small" type="primary" @click="submitForm('submit')" :loading="submitLoading">提交</el-button> -->
         <el-button size="small" @click="handleBack">取消</el-button>
         <!-- <el-button size="small" @click="handleJumpAuditLog">审核日志</el-button> -->
       </el-footer>
@@ -186,7 +179,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, submitItem } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesConfig/index';
+import { getDetail, addOrUpdate, submitItem, gdclItem } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum, getParentCompany } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -220,7 +213,7 @@ const defaultForm = {
   statusDesc: '',
   reviewUserId: '',
   configCode: '',
-  configTime: '',
+  configTime: new Date(),
   configUserName: '',
   configUserId: '',
 };
@@ -276,15 +269,12 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       rules: {
-        // id: [
-        //   { required: true, message: '请输入主键', trigger: 'change' }
-        // ],
         dealerCompanyName: [
           { required: true, message: '请输入母公司名称', trigger: 'change' }
         ],
-        dealerCompanyCode: [
-          { required: true, message: '请输入母公司编码', trigger: 'change' }
-        ],
+        // dealerCompanyCode: [
+        //   { required: true, message: '请输入母公司编码', trigger: 'change' }
+        // ],
         creditAccountStatus: [
           { required: true, message: '请选择赊销账户状态', trigger: 'change' }
         ],
@@ -300,49 +290,7 @@ export default {
         expireTime: [
           { required: true, message: '请选择额度失效日期', trigger: 'change' },
           { required: true, trigger: 'change', validator: validateDateRange }
-        ],
-        creatorName: [
-          { required: true, message: '请输入创建人', trigger: 'change' }
-        ],
-        createTime: [
-          { required: true, message: '请选择创建时间', trigger: 'change' }
-        ],
-        auditStatus: [
-          { required: true, message: '请选择配置状态', trigger: 'change' }
-        ],
-        reviewName: [
-          { required: false, message: '请输入复核人', trigger: 'change' }
-        ],
-        reviewTime: [
-          { required: false, message: '请选择复核时间', trigger: 'change' }
-        ],
-        remark: [
-          { required: false, message: '请输入备注', trigger: 'change' }
-        ],
-        reviewOpinion: [
-          { required: false, message: '请输入复核意见', trigger: 'change' }
-        ],
-        modifierName: [
-          { required: false, message: '请输入修改人', trigger: 'change' }
-        ],
-        updateTime: [
-          { required: false, message: '请选择修改时间', trigger: 'change' }
-        ],
-        creator: [
-          { required: false, message: '请输入创建者', trigger: 'change' }
-        ],
-        modifier: [
-          { required: false, message: '请输入修改者', trigger: 'change' }
-        ],
-        status: [
-          { required: false, message: '请选择状态', trigger: 'change' }
-        ],
-        statusDesc: [
-          { required: false, message: '请选择状态变更描述', trigger: 'change' }
-        ],
-        reviewUserId: [
-          { required: false, message: '请输入复核人ID', trigger: 'change' }
-        ],
+        ]
       }
     };
   },
@@ -350,6 +298,19 @@ export default {
     this.getDetailData();
   },
   methods: {
+    getFormData () {
+      gdclItem({ dealerCompanyCode: this.form.dealerCompanyName }).then(res => {
+        if (res !== null && res !== '') {
+          this.form.dealerCompanyCode = res.dealerCompanyCode;
+          this.form.dealerCompanyName = res.dealerCompanyName;
+          this.form.creditAccountStatus = res.creditAccountStatus;
+          this.form.creditAmount = res.creditAmount;
+          this.form.downPaymentRatio = res.downPaymentRatio;
+          this.form.effectiveTime = res.effectiveTime;
+          this.form.expireTime = res.expireTime;
+        }
+      });
+    },
     handleBack () {
       this.$router.back();
     },
@@ -378,12 +339,12 @@ export default {
                 message: '保存成功',
                 type: 'success'
               });
-              const id = this.$route.query.id;
-              if (rest || !id) {
-                this.resetForm(formName);
-              } else {
-                this.getDetailData();
-              }
+              // const id = this.$route.query.id;
+              // if (rest || !id) {
+              //   this.resetForm(formName);
+              // } else {
+              //   this.getDetailData();
+              // }
             }).finally(() => {
               this.submitLoading = false;
             });

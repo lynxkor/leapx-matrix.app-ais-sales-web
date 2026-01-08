@@ -257,7 +257,7 @@ export default {
     getFormData (val) {
       const data = { ...val };
       Object.keys(val).forEach(key => {
-        if (data[key] === '' || data[key] === null) {
+        if (data[key] === '' || data[key] === null || data[key].length === 0 || data[key] === []) {
           delete data[key];
         }
       });
