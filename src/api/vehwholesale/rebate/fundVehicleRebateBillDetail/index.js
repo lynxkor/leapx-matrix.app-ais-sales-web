@@ -42,3 +42,15 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+export function auditItem (data) {
+  return api.jsonPost(prefix + 'audit', data);
+}
+
+export function statTotalRebate (data) {
+  return api.jsonPost(prefix + 'statTotalRebateAmountAndQtyForAudit', data);
+}
+
+export function reviewItem (data) {
+  return api.jsonPost(prefix + 'review', data);
+}

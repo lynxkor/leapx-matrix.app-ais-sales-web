@@ -6,56 +6,74 @@
       :model="form"
       size="small"
       label-position="right"
-      label-width="150px"
+      label-width="120px"
       class="ais-search-form"
     >
-      <el-form-item label="记录编号">
+      <!-- <el-form-item label="记录编号">
         <el-input
           placeholder="请输入"
           v-model="form.creditSalesFeeConfigCode"
           clearable
         />
-      </el-form-item>
-      <el-form-item label="车系名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.seriesName"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item label="年款名称"  v-show="this.visibleCount === 3 || show">
+      </el-form-item> -->
+      <el-form-item label="车系">
         <fetch-select
-          :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.yearTypeName"
-          placeholder="请选择"
-          clearable
-          multiple
-          filterable
-        />
+            :remote-method="seriesSearch"
+            remote
+            v-model="form.seriesIds"
+            placeholder="请选择"
+            labelKey="name"
+            valueKey="id"
+            clearable
+            multiple
+            collapseTags
+            filterable
+            :options="seriesList"
+          />
       </el-form-item>
+      <el-form-item label="年款">
+        <fetch-select
+            :remote-method="listVehicleYearType"
+            remote
+            v-model="form.yearTypeIds"
+            placeholder="请选择"
+            labelKey="name"
+            valueKey="id"
+            clearable
+            multiple
+            collapseTags
+            filterable
+            :options="yearTypeList"
+            />
+      </el-form-item>
+      <el-form-item label="创建时间" v-show="this.visibleCount === 3 || show">
+          <el-date-picker
+           :default-time="['00:00:00', '23:59:59']"
+            v-model="form.createTime"
+            type="daterange"
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
       <template v-if="show">
-        <el-form-item label="首付款比例，如0.15">
+        <el-form-item label="首付款比例">
           <el-input
             placeholder="请输入"
             v-model="form.downPaymentRatio"
             clearable
           />
         </el-form-item>
-        <el-form-item label="是否使用返利">
-          <el-input
-            placeholder="请输入"
-            v-model="form.useRebate"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="使用天数下限">
+
+        <!-- <el-form-item label="使用天数下限">
           <el-input
             placeholder="请输入"
             v-model="form.minUsageDays"
             clearable
           />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="使用天数上限">
           <el-input
             placeholder="请输入"
@@ -63,14 +81,29 @@
             clearable
           />
         </el-form-item>
-        <el-form-item label="赊销费用">
+        <el-form-item label="是否使用返利">
+          <!-- <el-input
+            placeholder="请输入"
+            v-model="form.useRebate"
+            clearable
+          /> -->
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.useRebate"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
+        <!-- <el-form-item label="赊销费用">
           <el-input
             placeholder="请输入"
             v-model="form.creditSalesFee"
             clearable
           />
-        </el-form-item>
-        <el-form-item label="有效开始日期">
+        </el-form-item> -->
+        <!-- <el-form-item label="有效开始日期">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.effectiveStartTime"
@@ -94,34 +127,21 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item label="备注（说明）">
+        <el-form-item label="备注">
           <el-input
             placeholder="请输入"
             v-model="form.remark"
             clearable
           />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.status"
+            enumCode="StatusEnum"
+            v-model="form.statusInclude"
             placeholder="请选择"
             clearable
-            multiple
             filterable
-          />
-        </el-form-item>
-        <el-form-item label="修改时间">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.updateTime"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
           />
         </el-form-item>
       </template>
@@ -136,10 +156,10 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
+      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
     </div>
@@ -166,7 +186,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="1"
+      id="fundCreditSalesFeeConfigImport"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -177,7 +197,6 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/creditsales/fundCreditSalesFeeConfig/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -186,9 +205,10 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
-
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleYearType } from '@/api/common';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  statusInclude: '1',
   creditSalesFeeConfigCode: '',
   seriesName: '',
   yearTypeName: '',
@@ -222,12 +242,14 @@ export default {
     return {
       pageTitle: '账户管理-赊销管理-赊销资费设置管理',
       pageType: 'list',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundCreditSalesFeeConfig',
       form: {
         ...defaultForm
       },
+      seriesList: [],
       selectionList: [],
+      yearTypeList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -260,17 +282,17 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
-          { props: 'yearTypeName', label: '年款名称', visible: true, width: 200 },
-          { props: 'downPaymentRatio', label: '首付款比例', visible: true, width: 200 },
-          { props: 'useRebate', label: '是否使用返利', visible: true, width: 200 },
+          { props: 'seriesName', label: '车系', visible: true, width: 200 },
+          { props: 'yearTypeName', label: '年款', visible: true, width: 200 },
+          { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 200 },
+          { props: 'useRebateLabel', label: '是否使用返利', visible: true, width: 200 },
           { props: 'minUsageDays', label: '使用天数下限', visible: true, width: 200 },
           { props: 'maxUsageDays', label: '使用天数上限', visible: true, width: 200 },
           { props: 'creditSalesFee', label: '赊销费用', visible: true, width: 200 },
           { props: 'effectiveStartTime', label: '有效开始日期', visible: true, width: 200 },
           { props: 'effectiveEndTime', label: '有效结束日期', visible: true, width: 200 },
-          { props: 'remark', label: '备注（说明）', visible: true, width: 200 },
-          { props: 'status', label: '状态', visible: true, width: 200 },
+          { props: 'remark', label: '备注', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'modifierName', label: '修改人', visible: true, width: 200 },
@@ -292,24 +314,6 @@ export default {
                 });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],
@@ -349,7 +353,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '账户管理-赊销管理-赊销资费设置管理',
-        dataFetchPath: 'vehwholesale/web/creditsales/fundCreditSalesFeeConfig/page',
+        dataFetchPath: '/vw/web/creditsales/fundCreditSalesFeeConfig/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -425,7 +429,7 @@ export default {
       const data = { ...this.form };
 
       Object.keys(this.form).forEach(key => {
-        if (data[key] === '' || data[key] === null) {
+        if (data[key] === '' || data[key] === null || data[key].length === 0 || data[key] === []) {
           delete data[key];
         }
       });
@@ -498,7 +502,25 @@ export default {
       //     });
       //   });
       // });
-    }
+    },
+    async seriesSearch (query) {
+      try {
+        const res = await vehicleSeriesList({ seriesNameLike: query });
+        this.seriesList = res;
+        return res;
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
+    },
+    async listVehicleYearType (query) {
+      try {
+        const res = await listVehicleYearType({ yearTypeNameLike: query });
+        this.yearTypeList = res;
+        return res;
+      } catch (error) {
+        console.error('Error fetching model list:', error);
+      }
+    },
   }
 };
 </script>

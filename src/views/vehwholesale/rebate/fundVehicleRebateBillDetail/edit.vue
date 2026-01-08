@@ -318,7 +318,7 @@
                   filterable
                 />
               </el-form-item>
-              <el-form-item label="数据来源，140:新销服; 老销服:10" prop="dataSource">
+              <el-form-item label="数据来源" prop="dataSource">
                 <el-input
                   placeholder="请输入"
                   v-model="form.dataSource"

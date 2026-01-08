@@ -11,64 +11,52 @@
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
-              <el-form-item label="记录编号" prop="creditSalesFeeConfigCode">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.creditSalesFeeConfigCode"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="车系名称" prop="seriesName">
+              <el-form-item label="车系" prop="seriesName">
                 <el-input
                   placeholder="请输入"
                   v-model="form.seriesName"
                   clearable
+                  disabled="!id"
                 />
               </el-form-item>
-              <el-form-item label="年款名称" prop="yearTypeName">
+              <el-form-item label="年款" prop="yearTypeName">
+                <el-input
+                  placeholder="请输入"
+                  v-model="form.yearTypeName"
+                  clearable
+                  disabled="!id"
+                />
+              </el-form-item>
+              <el-form-item label="首付款比例%" prop="downPaymentRatio">
+                <el-input
+                  placeholder="请输入"
+                  v-model="form.downPaymentRatio"
+                  clearable
+                  disabled="!id"
+                />
+              </el-form-item>
+              <el-form-item label="是否使用返利" prop="useRebate">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.yearTypeName"
+                  enumCode="BooleanEnum"
+                  v-model="form.useRebate"
                   placeholder="请选择"
                   clearable
                   filterable
                 />
               </el-form-item>
-              <el-form-item label="首付款比例，如0.15" prop="downPaymentRatio">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.downPaymentRatio"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="是否使用返利" prop="useRebate">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.useRebate"
-                  clearable
-                />
-              </el-form-item>
               <el-form-item label="使用天数下限" prop="minUsageDays">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.minUsageDays"
-                  clearable
-                />
+                <el-input-number placeholder="请输入" v-model="form.minUsageDays" clearable :controls="false"
+                :precision="0" :min="0" :step="1"  />
               </el-form-item>
               <el-form-item label="使用天数上限" prop="maxUsageDays">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.maxUsageDays"
-                  clearable
-                />
+                <el-input-number placeholder="请输入" v-model="form.maxUsageDays" clearable :controls="false"
+                :precision="0" :min="0" :step="1"  />
               </el-form-item>
               <el-form-item label="赊销费用" prop="creditSalesFee">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.creditSalesFee"
-                  clearable
-                />
+
+                <el-input-number placeholder="请输入" v-model="form.creditSalesFee" clearable :controls="false"
+                :precision="2" :min="0" :step="0.01"  />
               </el-form-item>
               <el-form-item label="有效开始日期" prop="effectiveStartTime">
                 <el-date-picker
@@ -90,7 +78,7 @@
                   end-placeholder="结束日期"
                 />
               </el-form-item>
-              <el-form-item label="备注（说明）" prop="remark">
+              <el-form-item label="备注" prop="remark">
                 <el-input
                   placeholder="请输入"
                   v-model="form.remark"
@@ -100,11 +88,12 @@
               <el-form-item label="状态" prop="status">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="xxx"
+                  enumCode="StatusEnum"
                   v-model="form.status"
                   placeholder="请选择"
                   clearable
                   filterable
+                  disabled="!id"
                 />
               </el-form-item>
               <el-form-item label="创建人" prop="creatorName">
@@ -112,6 +101,7 @@
                   placeholder="请输入"
                   v-model="form.creatorName"
                   clearable
+                  disabled="!id"
                 />
               </el-form-item>
               <el-form-item label="创建时间" prop="createTime">
@@ -122,9 +112,10 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
+                  disabled="!id"
                 />
               </el-form-item>
-              <el-form-item label="修改人" prop="modifierName">
+              <!-- <el-form-item label="修改人" prop="modifierName">
                 <el-input
                   placeholder="请输入"
                   v-model="form.modifierName"
@@ -188,7 +179,7 @@
                   clearable
                   filterable
                 />
-              </el-form-item>
+              </el-form-item> -->
             </el-form>
           </div>
         </section>
@@ -270,8 +261,8 @@ export default {
     return {
       pageTitle: '账户管理-赊销管理-赊销资费设置管理',
       pageType: 'edit',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-fundCreditSalesFeeConfig',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-fundCreditSalesFeeConfig',
       isEditing: false,
       loading: false,
       submitLoading: false,
@@ -289,7 +280,7 @@ export default {
           { required: true, message: '请选择年款名称', trigger: 'change' }
         ],
         downPaymentRatio: [
-          { required: true, message: '请输入首付款比例，如0.15', trigger: 'change' }
+          { required: true, message: '请输入首付款比例%', trigger: 'change' }
         ],
         useRebate: [
           { required: true, message: '请输入是否使用返利', trigger: 'change' }
@@ -310,7 +301,7 @@ export default {
           { required: true, message: '请选择有效结束日期', trigger: 'change' }
         ],
         remark: [
-          { required: true, message: '请输入备注（说明）', trigger: 'change' }
+          { required: false, message: '请输入备注', trigger: 'change' }
         ],
         status: [
           { required: true, message: '请选择状态', trigger: 'change' }
@@ -416,3 +407,9 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+  ::v-deep .el-input-number {
+    width: 100%;
+  }
+</style>

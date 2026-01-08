@@ -6,7 +6,7 @@
     :data="tableData"
     :defaultNewRow="defaultNewRow"
     :show-toolbar="false"
-    :checkbox="!tableType === 'detail'"
+    :checkbox="tableType !== 'detail'"
     :options="options"
     :auth="tableType === 'detail' ? {} : { delete: canAddOrUpdate }"
     :isFocusNewRow="false"

@@ -9,32 +9,49 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="母公司编码">
+      <el-form-item label="母公司名称">
+        <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
+      </el-form-item>
+      <el-form-item label="创建时间">
+          <el-date-picker
+           :default-time="['00:00:00', '23:59:59']"
+            v-model="form.createTime"
+            type="daterange"
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
+      <template v-if="show">
+         <el-form-item label="赊销账户状态">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="vw_fund_own_credit_sales_limit_status"
+          v-model="form.creditAccountStatus"
+          placeholder="请选择"
+          clearable
+          filterable
+        />
+      </el-form-item>
+        <el-form-item label="母公司编码">
         <el-input
           placeholder="请输入"
           v-model="form.dealerCompanyCode"
           clearable
         />
       </el-form-item>
-      <el-form-item label="母公司名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerCompanyName"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item label="赊销账户状态"  v-show="this.visibleCount === 3 || show">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.creditAccountStatus"
-          placeholder="请选择"
-          clearable
-          multiple
-          filterable
-        />
-      </el-form-item>
-      <template v-if="show">
+      <el-form-item label="额度是否有效">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
       </template>
       <page-search-action
         v-if="canList"
@@ -47,12 +64,12 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
+      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button> -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button> -->
     </div>
     <div
       class="ais-table-c"
@@ -77,7 +94,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="1"
+      :id="'1'"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -88,7 +105,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesLimit/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -97,7 +114,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
-
+import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   dealerCompanyCode: '',
@@ -113,6 +130,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
@@ -123,7 +141,7 @@ export default {
     return {
       pageTitle: '账户管理-赊销管理-自有资金赊销额度管理',
       pageType: 'list',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundOwnCreditSalesLimit',
       form: {
         ...defaultForm
@@ -163,9 +181,9 @@ export default {
           },
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
-          { props: 'creditAccountStatus', label: '赊销账户状态', visible: true, width: 200 },
+          { props: 'creditAccountStatusLabel', label: '赊销账户状态', visible: true, width: 200 },
           { props: 'creditAmount', label: '授信额度', visible: true, width: 200 },
-          { props: 'downPaymentRatio', label: '首付款比例，如0.15', visible: true, width: 200 },
+          { props: 'downPaymentRatio', label: '首付款比例', visible: true, width: 200 },
           { props: 'totalDrawnAmount', label: '累计提款金额', visible: true, width: 200 },
           { props: 'usedCreditAmount', label: '已用额度', visible: true, width: 200 },
           { props: 'usedRatio', label: '资金使用率', visible: true, width: 200 },
@@ -174,49 +192,49 @@ export default {
           { props: 'remainingReceivableAmount', label: '剩余应收账款', visible: true, width: 200 },
           { props: 'latestSettleDateTime', label: '最近结算时间', visible: true, width: 200 },
           { props: 'effectiveTime', label: '额度生效日期', visible: true, width: 200 },
-          { props: 'remark', label: '备注（说明）', visible: true, width: 200 },
+          { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'expireTime', label: '额度失效日期', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'modifierName', label: '修改人', visible: true, width: 200 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
-          {
-            props: 'operate',
-            label: '操作',
-            type: 'operate',
-            visible: true,
-            fixed: 'right',
-            buttons: [{
-              name: '编辑',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/creditsales/fundOwnCreditSalesLimit/edit',
-                  query: {
-                    id: row.id
-                  }
-                });
-              },
-              type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
-            }]
-          }
+          // {
+          //   props: 'operate',
+          //   label: '操作',
+          //   type: 'operate',
+          //   visible: true,
+          //   fixed: 'right',
+          //   buttons: [{
+          //     name: '编辑',
+          //     click: (rowIndex, row) => {
+          //       this.$router.push({
+          //         path: '/vehwholesale/creditsales/fundOwnCreditSalesLimit/edit',
+          //         query: {
+          //           id: row.id
+          //         }
+          //       });
+          //     },
+          //     type: 'info'
+          //   }, {
+          //     name: '删除',
+          //     popconfirmTitle: '此操作将永久删除, 是否继续?',
+          //     click: (rowIndex, row) => {
+          //       deleteItem([row.id]).then(() => {
+          //         this.$message({
+          //           type: 'success',
+          //           message: '删除成功!'
+          //         });
+          //         this.getData();
+          //       }).catch(() => {
+          //         this.$message({
+          //           type: 'error',
+          //           message: '删除失败!'
+          //         });
+          //       });
+          //     },
+          //     type: 'danger'
+          //   }]
+          // }
         ],
         total: 0
       }
@@ -330,7 +348,7 @@ export default {
       const data = { ...this.form };
 
       Object.keys(this.form).forEach(key => {
-        if (data[key] === '' || data[key] === null) {
+        if (data[key] === '' || data[key] === null || data[key].length === 0 || data[key] === []) {
           delete data[key];
         }
       });
@@ -372,6 +390,13 @@ export default {
           });
         });
       }).catch(() => {});
+    },
+    async getParentCompany (query) {
+      try {
+        return await getParentCompany({ parentCompanyName: query });
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
     },
     // 批量启用停用
     handleBatchEnable (status) {

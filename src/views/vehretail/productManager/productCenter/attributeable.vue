@@ -56,11 +56,9 @@ export default {
   data () {
     return {
       defaultNewRow: {
-        partId: '',
-        partCode: '',
-        partName: '',
-        purchasePrice: '',
-        partQuantity: '',
+        attributeSort: '',
+        attributeName: '',
+        attributeValue: ''
       },
       current: 1,
       pageSize: 20,
@@ -162,10 +160,10 @@ export default {
       });
     },
     handleRemoveRow (row, index, defer) {
-      if (!row.id) {
+      if (!row.attributeValueId) {
         return;
       }
-      productSaleAttributeDelete([row.id]).then((d) => {
+      productSaleAttributeDelete([row.attributeValueId]).then((d) => {
         defer.resolve();
         this.$message.success('删除成功');
       }).catch(() => {

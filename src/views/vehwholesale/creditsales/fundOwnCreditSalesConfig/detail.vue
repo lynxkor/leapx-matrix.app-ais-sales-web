@@ -3,8 +3,9 @@
     <el-skeleton v-if="loading" :rows="6" animated />
     <template v-else>
       <section class="common-title">
-        <h2>主键：{{ info.id }}</h2>
-        <el-button v-if="canAddOrUpdate" size="small" @click="handleEdit"><i class="iconfont icon-lxppc-edit"></i>编辑</el-button>
+        <h2>自有资金赊销配置</h2>
+        <el-button v-if="info.auditStatus === 0 || info.auditStatus === 2" size="small" @click="handleEdit"><i class="iconfont icon-lxppc-edit"></i>编辑</el-button>
+        <el-button v-if="info.auditStatus === 1" size="small" @click="handleReview"><i class="iconfont icon-lxppc-edit"></i>复核</el-button>
       </section>
       <section class="common-section">
         <div class="common-section-header">
@@ -13,22 +14,22 @@
         <div class="common-section-body">
           <!-- TIPS: 根据实际情况调整展示字段和宽度 -->
           <el-form :inline="true" ref="ruleForm" label-width="150px">
-            <el-form-item label="主键：" prop="id">
+            <!-- <el-form-item label="主键：" prop="id">
               {{ info.id  }}
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="母公司名称：" prop="dealerCompanyName">
               {{ info.dealerCompanyName  }}
             </el-form-item>
             <el-form-item label="母公司编码：" prop="dealerCompanyCode">
               {{ info.dealerCompanyCode  }}
             </el-form-item>
-            <el-form-item label="赊销账户状态：" prop="creditAccountStatus">
-              {{ info.creditAccountStatus  }}
+            <el-form-item label="赊销账户状态：" prop="creditAccountStatusLabel">
+              {{ info.creditAccountStatusLabel  }}
             </el-form-item>
             <el-form-item label="授信额度：" prop="creditAmount">
               {{ info.creditAmount  }}
             </el-form-item>
-            <el-form-item label="首付款比例，如0.15：" prop="downPaymentRatio">
+            <el-form-item label="首付款比例%：" prop="downPaymentRatio">
               {{ info.downPaymentRatio  }}
             </el-form-item>
             <el-form-item label="额度生效日期：" prop="effectiveTime">
@@ -37,34 +38,37 @@
             <el-form-item label="额度失效日期：" prop="expireTime">
               {{ info.expireTime  }}
             </el-form-item>
-            <el-form-item label="创建人：" prop="creatorName">
-              {{ info.creatorName  }}
+            <el-form-item label="配置人：" prop="configUserName">
+              {{ info.configUserName  }}
             </el-form-item>
-            <el-form-item label="创建时间：" prop="createTime">
-              {{ info.createTime  }}
+            <el-form-item label="备注：" prop="remark">
+              {{ info.remark  }}
             </el-form-item>
-            <el-form-item label="配置状态：" prop="auditStatus">
-              {{ info.auditStatus  }}
+            <el-form-item label="配置时间：" prop="configTime">
+              {{ info.configTime  }}
             </el-form-item>
-            <el-form-item label="复核人人：" prop="reviewName">
+            <el-form-item label="配置状态：" prop="auditStatusLabel">
+              {{ info.auditStatusLabel  }}
+            </el-form-item>
+            <el-form-item label="配置编号：" prop="configCode">
+              {{ info.configCode  }}
+            </el-form-item>
+            <!-- <el-form-item label="复核人：" prop="reviewName">
               {{ info.reviewName  }}
             </el-form-item>
             <el-form-item label="复核时间：" prop="reviewTime">
               {{ info.reviewTime  }}
-            </el-form-item>
-            <el-form-item label="备注（说明）：" prop="remark">
-              {{ info.remark  }}
-            </el-form-item>
-            <el-form-item label="复核意见：" prop="reviewOpinion">
+            </el-form-item> -->
+            <!-- <el-form-item label="复核意见：" prop="reviewOpinion">
               {{ info.reviewOpinion  }}
             </el-form-item>
             <el-form-item label="修改人：" prop="modifierName">
               {{ info.modifierName  }}
             </el-form-item>
             <el-form-item label="修改时间：" prop="updateTime">
-              {{ info.updateTime  }}
-            </el-form-item>
-            <el-form-item label="创建者：" prop="creator">
+              {{ info.updateTime  }} -->
+            <!-- </el-form-item> -->
+            <!-- <el-form-item label="创建者：" prop="creator">
               {{ info.creator  }}
             </el-form-item>
             <el-form-item label="修改者：" prop="modifier">
@@ -78,7 +82,7 @@
             </el-form-item>
             <el-form-item label="复核人ID：" prop="reviewUserId">
               {{ info.reviewUserId  }}
-            </el-form-item>
+            </el-form-item> -->
           </el-form>
         </div>
       </section>
@@ -101,8 +105,8 @@ export default {
     return {
       pageTitle: '账户管理-赊销管理-自有资金赊销配置管理',
       pageType: 'detail',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-fundOwnCreditSalesConfig',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-fundOwnCreditSalesConfig',
       loading: true,
       info: {},
       yes_no_enum_map: YES_NO_ENUM_MAP
@@ -116,6 +120,14 @@ export default {
     handleEdit () {
       this.$router.push({
         path: '/vehwholesale/creditsales/fundOwnCreditSalesConfig/edit',
+        query: {
+          id: this.$route.query.id
+        }
+      });
+    },
+    handleReview () {
+      this.$router.push({
+        path: '/vehwholesale/creditsales/fundOwnCreditSalesConfig/review',
         query: {
           id: this.$route.query.id
         }

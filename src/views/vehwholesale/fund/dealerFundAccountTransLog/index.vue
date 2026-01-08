@@ -87,19 +87,9 @@
         </el-form-item>
         <el-form-item label="VIN号">
           <tag-input v-model="form.vins" placeholder="请输入" />
-          <!-- <el-input
-            placeholder="请输入"
-            v-model="form.vin"
-            clearable
-          /> -->
         </el-form-item>
         <el-form-item label="整车批售订单">
           <tag-input v-model="form.wholesaleOrderCodes" placeholder="请输入" />
-          <!-- <el-input
-            placeholder="请输入"
-            v-model="form.wholesaleOrderIds"
-            clearable
-          /> -->
         </el-form-item>
         <el-form-item label="企业客户整车订单">
           <tag-input v-model="form.entVehorderCodes" placeholder="请输入" />

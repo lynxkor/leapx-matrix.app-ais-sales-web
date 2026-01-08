@@ -7,7 +7,7 @@
         <tag-input v-model="form.vinList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="物料描述">
-        <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
+        <tag-input v-model="form.materialsDescList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="VDC入库时间">
         <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.inboundDateTime" type="daterange"
@@ -15,13 +15,8 @@
           start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
       <template v-if="show">
-        <el-form-item label="VDC入库时间">
-          <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.createTime" type="daterange"
-            :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期" end-placeholder="结束日期" />
-        </el-form-item>
         <el-form-item label="物料编码">
-          <tag-input v-model="form.materialsDescList" placeholder="请输入" />
+          <tag-input v-model="form.materialsCodeList" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="车系">
           <fetch-select v-model="form.seriesIdList" v-bind="selectOptions" :remote-method="remoteMethods.series" />
@@ -92,7 +87,7 @@
         @handleSelect="handleSelectionChange" />
     </div>
     <!-- TIPS: 填入项目id即可 -->
-    <Upload :visible="uploadDialogVisible" :id="'1'" @close="handleUploadDialogClose" />
+    <Upload :visible="uploadDialogVisible" :id="'vehicleVdcInventoryLedgerImport'" @close="handleUploadDialogClose" />
   </div>
 </template>
 
@@ -126,10 +121,12 @@ const defaultForm = {
   allowLockRetail: '',
   vehicleRegisteredModelIdList: [],
   materialsCode: '',
+  materialsCodeList: [],
   seriesIdList: [],
   shipVia: '',
   vdcCommonCompositeQuery: '',
-  lowBatteryCar: 0
+  lowBatteryCar: 0,
+  inboundDateTime: []
 };
 
 const pageSize = 20;
@@ -214,11 +211,12 @@ export default {
           { props: 'salesRemark', label: '销售备注', visible: true, width: 200 },
           { props: 'specialReserveRemark', label: '特殊预留备注', visible: true, width: 200 },
           { props: 'vehicleLogisticsReserveRemark', label: '整车物流预留备注', visible: true, width: 200 },
-          { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
           { props: 'yearTypeName', label: '年款', visible: true, width: 200 },
+          { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
           { props: 'seriesName', label: '车系', visible: true, width: 200 },
           { props: 'modelName', label: '车型', visible: true, width: 200 },
           { props: 'shipViaLabel', label: '发运方式', visible: true, width: 200 },
+          { props: 'vdcInventoryStatusLabel', label: '库存状态', visible: true, width: 200 },
           { props: 'po', label: '订单编号', visible: true, width: 200 },
           { props: 'optionPackageName', label: '选配包', visible: true, width: 200 },
           { props: 'rangePowerName', label: '选配动力', visible: true, width: 200 },
@@ -226,7 +224,6 @@ export default {
           { props: 'exteriorName', label: '外观', visible: true, width: 200 },
           { props: 'interiorName', label: '内饰', visible: true, width: 200 },
           { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 200 },
-          { props: 'vdcInventoryStatusLabel', label: '库存状态', visible: true, width: 200 },
           { props: 'outboundDateTime', label: 'VDC出库时间', visible: true, width: 200 },
           { props: 'bulkoutLabel', label: '是否批量出库', visible: true, width: 200 },
           { props: 'offlineTime', label: '下线时间', visible: true, width: 200 },
@@ -558,11 +555,11 @@ export default {
         }
       });
 
-      if (this.form.createTime) {
-        delete data.createTime;
-        if (this.form.createTime.length > 1) {
-          data.createTimeStart = this.form.createTime[0];
-          data.createTimeEnd = this.form.createTime[1];
+      if (this.form.inboundDateTime) {
+        delete data.inboundDateTime;
+        if (this.form.inboundDateTime.length > 1) {
+          data.inboundDateTimeStart = this.form.inboundDateTime[0];
+          data.inboundDateTimeEnd = this.form.inboundDateTime[1];
         }
       }
 

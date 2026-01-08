@@ -3,12 +3,12 @@
     <el-skeleton v-if="loading" :rows="6" animated />
     <template v-else>
       <section class="common-title">
-        <h2>赊销额度记录编号：{{ info.creditSalesLimitCode }}</h2>
-        <el-button v-if="canAddOrUpdate" size="small" @click="handleEdit"><i class="iconfont icon-lxppc-edit"></i>编辑</el-button>
+        <h2>自有资金赊销额度</h2>
+        <!-- <el-button v-if="canAddOrUpdate" size="small" @click="handleEdit"><i class="iconfont icon-lxppc-edit"></i>编辑</el-button> -->
       </section>
       <section class="common-section">
         <div class="common-section-header">
-          <h2>基础信息</h2>
+          <h2>基本信息</h2>
         </div>
         <div class="common-section-body">
           <!-- TIPS: 根据实际情况调整展示字段和宽度 -->
@@ -16,19 +16,35 @@
             <el-form-item label="赊销额度记录编号：" prop="creditSalesLimitCode">
               {{ info.creditSalesLimitCode  }}
             </el-form-item>
-            <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-              {{ info.dealerCompanyCode  }}
-            </el-form-item>
             <el-form-item label="母公司名称：" prop="dealerCompanyName">
               {{ info.dealerCompanyName  }}
             </el-form-item>
-            <el-form-item label="赊销账户状态：" prop="creditAccountStatus">
-              {{ info.creditAccountStatus  }}
+            <el-form-item label="母公司编码：" prop="dealerCompanyCode">
+              {{ info.dealerCompanyCode  }}
             </el-form-item>
+            <el-form-item label="赊销账户状态：" prop="creditAccountStatus">
+              {{ info.creditAccountStatusLabel  }}
+            </el-form-item>
+            <el-form-item label="创建时间：" prop="createTime">
+              {{ info.createTime  }}
+            </el-form-item>
+            <el-form-item label="备注：" prop="remark">
+              {{ info.remark  }}
+            </el-form-item>
+          </el-form>
+        </div>
+      </section>
+      <section class="common-section">
+        <div class="common-section-header">
+          <h2>额度信息</h2>
+        </div>
+        <div class="common-section-body">
+          <!-- TIPS: 根据实际情况调整展示字段和宽度 -->
+          <el-form :inline="true" ref="ruleForm" label-width="150px">
             <el-form-item label="授信额度：" prop="creditAmount">
               {{ info.creditAmount  }}
             </el-form-item>
-            <el-form-item label="首付款比例，如0.15：" prop="downPaymentRatio">
+            <el-form-item label="首付款比例：" prop="downPaymentRatio">
               {{ info.downPaymentRatio  }}
             </el-form-item>
             <el-form-item label="累计提款金额：" prop="totalDrawnAmount">
@@ -37,7 +53,7 @@
             <el-form-item label="已用额度：" prop="usedCreditAmount">
               {{ info.usedCreditAmount  }}
             </el-form-item>
-            <el-form-item label="资金使用率：" prop="usedRatio">
+            <el-form-item label="资金使用率%：" prop="usedRatio">
               {{ info.usedRatio  }}
             </el-form-item>
             <el-form-item label="剩余可用额度：" prop="availableCreditAmount">
@@ -49,47 +65,21 @@
             <el-form-item label="剩余应收账款：" prop="remainingReceivableAmount">
               {{ info.remainingReceivableAmount  }}
             </el-form-item>
-            <el-form-item label="最近结算时间：" prop="latestSettleDateTime">
-              {{ info.latestSettleDateTime  }}
+            <el-form-item label="最近结算金额：" prop="remainingReceivableAmount">
             </el-form-item>
             <el-form-item label="额度生效日期：" prop="effectiveTime">
               {{ info.effectiveTime  }}
             </el-form-item>
-            <el-form-item label="备注（说明）：" prop="remark">
-              {{ info.remark  }}
-            </el-form-item>
             <el-form-item label="额度失效日期：" prop="expireTime">
               {{ info.expireTime  }}
             </el-form-item>
-            <el-form-item label="创建人：" prop="creatorName">
-              {{ info.creatorName  }}
+            <el-form-item label="最近结算时间：" prop="latestSettleDateTime">
+              {{ info.latestSettleDateTime  }}
             </el-form-item>
-            <el-form-item label="创建时间：" prop="createTime">
-              {{ info.createTime  }}
+            <el-form-item label="最近交易类型：" prop="remainingReceivableAmount">
             </el-form-item>
-            <el-form-item label="修改人：" prop="modifierName">
-              {{ info.modifierName  }}
-            </el-form-item>
-            <el-form-item label="修改时间：" prop="updateTime">
-              {{ info.updateTime  }}
-            </el-form-item>
-            <el-form-item label="主键：" prop="id">
-              {{ info.id  }}
-            </el-form-item>
-            <el-form-item label="创建者：" prop="creator">
-              {{ info.creator  }}
-            </el-form-item>
-            <el-form-item label="修改者：" prop="modifier">
-              {{ info.modifier  }}
-            </el-form-item>
-            <el-form-item label="状态：" prop="status">
-              {{ info.status  }}
-            </el-form-item>
-            <el-form-item label="状态变更描述：" prop="statusDesc">
-              {{ info.statusDesc  }}
-            </el-form-item>
-            <el-form-item label="自有资金赊销配置ID：" prop="creditSalesConfigId">
-              {{ info.creditSalesConfigId  }}
+            <el-form-item label="备注：" prop="remark">
+              {{ info.remark  }}
             </el-form-item>
           </el-form>
         </div>
@@ -113,8 +103,8 @@ export default {
     return {
       pageTitle: '账户管理-赊销管理-自有资金赊销额度管理',
       pageType: 'detail',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-fundOwnCreditSalesLimit',
+      // TIPS: 权限前缀 AISVW，根据实际情况修改
+      moduleKey: 'AISVW-fundOwnCreditSalesLimit',
       loading: true,
       info: {},
       yes_no_enum_map: YES_NO_ENUM_MAP

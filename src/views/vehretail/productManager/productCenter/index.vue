@@ -10,24 +10,26 @@
       class="ais-search-form"
     >
       <el-form-item label="商品编码">
-        <el-input
+        <tag-input v-model="form.productCodeList" placeholder="请输入" />
+        <!-- <el-input
           placeholder="请输入"
           v-model="form.productCode"
           clearable
-        />
+        /> -->
       </el-form-item>
       <el-form-item label="商品名称">
-        <el-input
+        <tag-input v-model="form.productNameList" placeholder="请输入" />
+        <!-- <el-input
           placeholder="请输入"
           v-model="form.productName"
           clearable
-        />
+        /> -->
       </el-form-item>
       <el-form-item label="商品状态"  v-show="this.visibleCount === 3 || show">
         <fetch-select
           :request="fetchOptions"
           enumCode="product_status"
-          v-model="form.productStatus"
+          v-model="form.productStatusList"
           placeholder="请选择"
           clearable
           multiple
@@ -63,10 +65,11 @@
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport('productInfoImport')">导入</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport('productSaleAttributeImport')">属性导入</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport('productSkuPriceImport')">商品定价导入</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">商品定价导出</el-button>
+      <el-button v-permission="moduleKey+'-saleAttributeimport'" size="small" @click="handleImport('productSaleAttributeImport')">订购属性导入</el-button>
+      <el-button v-permission="moduleKey+'-skuimport'" size="small" @click="saleAttributeImport('productSaleAttributeImport')">商品定价导入</el-button>
+      <el-button v-if="canExport" :loading="infoLoading" size="small" @click="exportExcel('productInfoImport')">导出</el-button>
+      <el-button v-permission="moduleKey+'-saleAttributeexport'" :loading="saleAttributeLoading" size="small" @click="saleAttributeExportExcel" :disabled="selectionList.length === 0">订购属性导出</el-button>
+      <el-button v-permission="moduleKey+'-skuexport'" :loading="skuPriceLoading" size="small" @click="exportExcel('productSkuPriceImport')" :disabled="selectionList.length === 0">商品定价导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
     </div>
     <div
@@ -96,6 +99,12 @@
       :id="currentImportType"
       @close="handleUploadDialogClose"
     />
+    <sale-attribute-upload
+      v-if="saleAttributeVisible"
+      :visible="saleAttributeVisible"
+      :id="currentImportType"
+      @close="saleAttributeVisible = false"
+    />
   </div>
 </template>
 
@@ -103,7 +112,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehretail/productManager/productCenter/index';
+import { getList, deleteItem, enableItem, productSaleAttributeExport } from '@/api/vehretail/productManager/productCenter/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -113,9 +122,11 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import saleAttributeUpload from './saleAttributeUpload.vue';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
-  // TIPS:多选时字段名称会有变化，自行校对
+  // TIPS:多选时字段名称会有变化，自行校对1
   productCode: '',
   productName: '',
   productType: '',
@@ -123,7 +134,7 @@ const defaultForm = {
   creator: '',
   updateTime: '',
   createTime: '',
-  productStatus: '',
+  productStatusList: [],
 };
 
 const pageSize = 20;
@@ -134,6 +145,8 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
+    saleAttributeUpload,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
@@ -142,6 +155,20 @@ export default {
   },
   data () {
     return {
+      exportExcelData: {
+        productInfoImport: {
+          businessType: '销售管理-商品管理-商品中心管理',
+          title: '销售管理-商品管理-商品中心管理',
+          dataFetchPath: '/vr/web/product/productInfo/page',
+          loading: 'infoLoading'
+        },
+        productSkuPriceImport: {
+          businessType: '销售管理-商品管理-商品SKU价格维护管理',
+          title: '销售管理-商品管理-商品SKU价格维护管理',
+          dataFetchPath: '/vr/web/product/productSku/page',
+          loading: 'skuPriceLoading'
+        },
+      },
       currentImportType: '',
       pageTitle: '销售管理-商品管理-商品中心',
       pageType: 'list',
@@ -154,8 +181,11 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
-      exportLoading: false,
+      infoLoading: false,
+      saleAttributeLoading: false,
+      skuPriceLoading: false,
       uploadDialogVisible: false,
+      saleAttributeVisible: false,
       clickItemId: '',
       optionObj: {
         id: 'productCenterTable',
@@ -186,10 +216,10 @@ export default {
           { props: 'productName', label: '商品名称', visible: true, width: 200 },
           { props: 'productTypeLabel', label: '商品类型', visible: true, width: 200 },
           { props: 'purchaseTypeLabel', label: '购车类型', visible: true, width: 200 },
+          { props: 'productStatusLabel', label: '商品状态', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者', visible: true, width: 200 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'productStatusLabel', label: '商品状态', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
@@ -240,6 +270,9 @@ export default {
     handleListSelect (row) {
       this.clickItemId = row.id;
     },
+    saleAttributeImport () {
+      this.saleAttributeVisible = true;
+    },
     handleImport (importType) {
       this.currentImportType = importType;
       this.uploadDialogVisible = true;
@@ -261,18 +294,13 @@ export default {
       this.optionObj.form.pageSize = pageSize;
       this.getData();
     },
-    exportExcel () {
-      this.exportLoading = true;
-      exportTable({
-        businessType: '销售管理-商品管理-商品中心管理',
-        dataFetchPath: 'vehretail/web/productManager/productCenter/page',
-        reqParams: this.getFormData(),
-        titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
-        httpMethod: 'POST'
-      }).then(async res => {
+    saleAttributeExportExcel () {
+      this.saleAttributeLoading = true;
+      let params = this.selectionList.map(ele => ele.productCode);
+      productSaleAttributeExport(params).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '销售管理-商品管理-商品中心管理.xlsx');
+            await downloadExcel(res.excelUrl, '订购属性导出.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -286,7 +314,43 @@ export default {
           });
         }
       }).finally(() => {
-        this.exportLoading = false;
+        this.saleAttributeLoading = false;
+      });
+    },
+    exportExcel (type) {
+      this[this.exportExcelData[type].loading] = true;
+      exportTable({
+        businessType: this.exportExcelData[type].businessType,
+        dataFetchPath: this.exportExcelData[type].dataFetchPath,
+        reqParams: type === 'productInfoImport' ? this.getFormData() : { productIds: this.selectionList.map(ele => ele.id) },
+        titleMap: type === 'productInfoImport' ? Object.fromEntries(this.$refs.tableRef.getVisibleCols())
+          : {
+            productCode: '商品编码',
+            skuCode: 'SKU编码',
+            saleAttribute: '销售属性',
+            marketGuidePrice: '市场指导价',
+            materialsCode: '物料编码',
+            statusLabel: '状态'
+          },
+        httpMethod: 'POST'
+      }).then(async res => {
+        if (res && res.excelUrl) {
+          try {
+            await downloadExcel(res.excelUrl, this.exportExcelData[type].title);
+          } catch (error) {
+            this.$message({
+              type: 'error',
+              message: '文件导出失败'
+            });
+          }
+        } else {
+          this.$message({
+            type: 'info',
+            message: '请前往导出列表中查询导出结果'
+          });
+        }
+      }).finally(() => {
+        this[this.exportExcelData[type].loading] = false;
       });
     },
     getData () {

@@ -3,8 +3,8 @@
     <el-skeleton v-if="loading" :rows="6" animated />
     <template v-else>
       <section class="common-title">
-        <h2>整车返利核算单明细</h2>
-        <el-button v-if="canAddOrUpdate" size="small" @click="handleEdit"><i class="iconfont icon-lxppc-edit"></i>编辑</el-button>
+        <h2>整车返利核算单</h2>
+        <!-- <el-button v-if="canAddOrUpdate" size="small" @click="handleEdit"><i class="iconfont icon-lxppc-edit"></i>编辑</el-button> -->
       </section>
       <section class="common-section">
         <div class="common-section-header">
@@ -13,8 +13,8 @@
         <div class="common-section-body">
           <!-- TIPS: 根据实际情况调整展示字段和宽度 -->
           <el-form :inline="true" ref="ruleForm" label-width="150px">
-            <el-form-item label="返利核算单明细编号：" prop="rebateBillDetailCode">
-              {{ info.rebateBillDetailCode  }}
+            <el-form-item label="返利核算单编号：" prop="rebateBillCode">
+              {{ info.rebateBillCode  }}
             </el-form-item>
             <el-form-item label="母公司名称：" prop="dealerCompanyName">
               {{ info.dealerCompanyName  }}
@@ -25,20 +25,20 @@
             <el-form-item label="创建时间：" prop="createTime">
               {{ info.createTime  }}
             </el-form-item>
-            <el-form-item label="返利核算单编号: " prop="rebateBillCode">
-              {{ info.rebateBillCode  }}
-            </el-form-item>
-             <el-form-item label="周期：" prop="period">
-              {{ info.period  }}
+            <!-- <el-form-item label="返利核算单明细编号: " prop="rebateBillDetailCode">
+              {{ info.rebateBillDetailCode }}
+            </el-form-item> -->
+             <el-form-item label="周期：" prop="periodLabel">
+              {{ info.periodLabel  }}
             </el-form-item>
             <el-form-item label="年度：" prop="year">
               {{ info.year  }}
             </el-form-item>
-            <el-form-item label="季度：" prop="quarter">
-              {{ info.quarter  }}
+            <el-form-item label="季度：" prop="quarterLabel">
+              {{ info.quarterLabel  }}
             </el-form-item>
-            <el-form-item label="月度：" prop="month">
-              {{ info.month  }}
+            <el-form-item label="月度：" prop="monthLabel">
+              {{ info.monthLabel  }}
             </el-form-item>
              <el-form-item label="核销金额：" prop="rebateAmount">
               {{ info.rebateAmount  }}

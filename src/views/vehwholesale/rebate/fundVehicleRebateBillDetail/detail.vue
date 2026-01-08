@@ -4,11 +4,11 @@
     <template v-else>
       <section class="common-title">
         <h2>整车返利核算单明细</h2>
-        <el-button v-if="canAddOrUpdate" size="small" @click="handleEdit"><i class="iconfont icon-lxppc-edit"></i>编辑</el-button>
+        <!-- <el-button v-if="canAddOrUpdate" size="small" @click="handleEdit"><i class="iconfont icon-lxppc-edit"></i>编辑</el-button> -->
       </section>
       <section class="common-section">
         <div class="common-section-header">
-          <h2>基础信息</h2>
+          <h2>基本信息</h2>
         </div>
         <div class="common-section-body">
           <!-- TIPS: 根据实际情况调整展示字段和宽度 -->
@@ -26,7 +26,7 @@
               {{ info.rebateBillCode  }}
             </el-form-item>
             <el-form-item label="单据状态：" prop="billStatus">
-              {{ info.billStatus  }}
+              {{ info.billStatusLabel  }}
             </el-form-item>
              <el-form-item label="创建时间：" prop="createTime">
               {{ info.createTime  }}
@@ -41,8 +41,8 @@
         <div class="common-section-body">
           <!-- TIPS: 根据实际情况调整展示字段和宽度 -->
           <el-form :inline="true" ref="ruleForm" label-width="150px">
-            <el-form-item label="返利类型：" prop="rebateType">
-              {{ info.rebateType  }}
+            <el-form-item label="返利类型：" prop="rebateTypeLabel">
+              {{ info.rebateTypeLabel  }}
             </el-form-item>
             <el-form-item label="核销金额：" prop="rebateAmount">
               {{ info.rebateAmount  }}
@@ -50,38 +50,38 @@
             <el-form-item label="业务单据号：" prop="bizOrderNo">
               {{ info.bizOrderNo  }}
             </el-form-item>
-            <el-form-item label="VIN：" prop="vin">
+            <el-form-item label="VIN号：" prop="vin">
               {{ info.vin  }}
             </el-form-item>
-            <el-form-item label="车系名称：" prop="seriesName">
+            <el-form-item label="车系：" prop="seriesName">
               {{ info.seriesName  }}
             </el-form-item>
              <el-form-item label="基本车型：" prop="modelName">
-              {{ info.modelName  }}
+              {{ info.modelNameLabel  }}
             </el-form-item>
-            <el-form-item label="交车单编码：" prop="deliveryOrderCode">
+            <el-form-item label="交车单号：" prop="deliveryOrderCode">
               {{ info.deliveryOrderCode  }}
             </el-form-item>
-             <el-form-item label="预算科目ID：" prop="budgetItemId">
-              {{ info.budgetItemId  }}
+             <el-form-item label="预算科目：" prop="budgetItemName">
+              {{ info.budgetItemName  }}
             </el-form-item>
-            <el-form-item label="费用支持类型ID：" prop="feeSupportTypeId">
-              {{ info.feeSupportTypeId  }}
+            <el-form-item label="费用支持类型：" prop="feeSupportTypeName">
+              {{ info.feeSupportTypeName  }}
             </el-form-item>
-             <el-form-item label="周期：" prop="period">
-              {{ info.period  }}
+             <el-form-item label="周期：" prop="periodLabel">
+              {{ info.periodLabel  }}
             </el-form-item>
             <el-form-item label="年度：" prop="year">
               {{ info.year  }}
             </el-form-item>
-            <el-form-item label="季度：" prop="quarter">
-              {{ info.quarter  }}
+            <el-form-item label="季度：" prop="quarterLabel">
+              {{ info.quarterLabel  }}
             </el-form-item>
             <el-form-item label="备注：" prop="remark">
               {{ info.remark  }}
             </el-form-item>
-             <el-form-item label="月度：" prop="month">
-              {{ info.month  }}
+             <el-form-item label="月度：" prop="monthLabel">
+              {{ info.monthLabel  }}
             </el-form-item>
           </el-form>
         </div>
@@ -93,13 +93,13 @@
         <div class="common-section-body">
           <!-- TIPS: 根据实际情况调整展示字段和宽度 -->
           <el-form :inline="true" ref="ruleForm" label-width="150px">
-            <el-form-item label="审核人：" prop="auditorName">
+            <el-form-item label="初审人：" prop="auditorName">
               {{ info.auditorName  }}
             </el-form-item>
-            <el-form-item label="审核时间：" prop="auditTime">
+            <el-form-item label="初审时间：" prop="auditTime">
               {{ info.auditTime  }}
             </el-form-item>
-            <el-form-item label="审核意见：" prop="auditOpinion">
+            <el-form-item label="初审意见：" prop="auditOpinion">
               {{ info.auditOpinion  }}
             </el-form-item>
             <el-form-item label="复审人：" prop="reviewName">
