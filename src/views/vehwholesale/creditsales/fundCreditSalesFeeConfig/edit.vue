@@ -16,7 +16,7 @@
                   placeholder="请输入"
                   v-model="form.seriesName"
                   clearable
-                  disabled="!id"
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="年款" prop="yearTypeName">
@@ -24,7 +24,7 @@
                   placeholder="请输入"
                   v-model="form.yearTypeName"
                   clearable
-                  disabled="!id"
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="首付款比例%" prop="downPaymentRatio">
@@ -32,7 +32,7 @@
                   placeholder="请输入"
                   v-model="form.downPaymentRatio"
                   clearable
-                  disabled="!id"
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="是否使用返利" prop="useRebate">
@@ -42,6 +42,7 @@
                   v-model="form.useRebate"
                   placeholder="请选择"
                   clearable
+                  disabled
                   filterable
                 />
               </el-form-item>
@@ -54,28 +55,23 @@
                 :precision="0" :min="0" :step="1"  />
               </el-form-item>
               <el-form-item label="赊销费用" prop="creditSalesFee">
-
                 <el-input-number placeholder="请输入" v-model="form.creditSalesFee" clearable :controls="false"
                 :precision="2" :min="0" :step="0.01"  />
               </el-form-item>
               <el-form-item label="有效开始日期" prop="effectiveStartTime">
                 <el-date-picker
-                  :default-time="['00:00:00', '23:59:59']"
                   v-model="form.effectiveStartTime"
                   :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
+                  type="date"
+                  placeholder="选择日期"
                 />
               </el-form-item>
               <el-form-item label="有效结束日期" prop="effectiveEndTime">
                 <el-date-picker
-                  :default-time="['00:00:00', '23:59:59']"
                   v-model="form.effectiveEndTime"
                   :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
+                   type="date"
+                   placeholder="选择日期"
                 />
               </el-form-item>
               <el-form-item label="备注" prop="remark">
@@ -93,7 +89,7 @@
                   placeholder="请选择"
                   clearable
                   filterable
-                  disabled="!id"
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="创建人" prop="creatorName">
@@ -101,7 +97,7 @@
                   placeholder="请输入"
                   v-model="form.creatorName"
                   clearable
-                  disabled="!id"
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="创建时间" prop="createTime">
@@ -112,7 +108,7 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  disabled="!id"
+                  disabled
                 />
               </el-form-item>
               <!-- <el-form-item label="修改人" prop="modifierName">
@@ -362,21 +358,30 @@ export default {
     submitForm (formName, rest = false) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.submitLoading = true;
-          addOrUpdate({ ...this.form }).then(res => {
+          const startDate = new Date(this.form.effectiveStartTime);
+          const endDate = new Date(this.form.effectiveEndTime);
+          if (startDate > endDate) {
             this.$message({
-              message: '保存成功',
-              type: 'success'
+              message: '有效结束日期必须大于有效开始日期',
+              type: 'error'
             });
-            const id = this.$route.query.id;
-            if (rest || !id) {
-              this.resetForm(formName);
-            } else {
-              this.getDetailData();
-            }
-          }).finally(() => {
-            this.submitLoading = false;
-          });
+          } else {
+            this.submitLoading = true;
+            addOrUpdate({ ...this.form }).then(res => {
+              this.$message({
+                message: '保存成功',
+                type: 'success'
+              });
+              const id = this.$route.query.id;
+              if (rest || !id) {
+                this.resetForm(formName);
+              } else {
+                this.getDetailData();
+              }
+            }).finally(() => {
+              this.submitLoading = false;
+            });
+          }
         }
       });
     },

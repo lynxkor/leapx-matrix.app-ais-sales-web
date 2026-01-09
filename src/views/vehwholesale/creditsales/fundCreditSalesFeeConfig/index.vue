@@ -138,7 +138,7 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="StatusEnum"
-            v-model="form.statusInclude"
+            v-model="form.status"
             placeholder="请选择"
             clearable
             filterable
@@ -208,7 +208,7 @@ import EditPage from './edit.vue';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleYearType } from '@/api/common';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  statusInclude: '1',
+  status: '1',
   creditSalesFeeConfigCode: '',
   seriesName: '',
   yearTypeName: '',
@@ -220,7 +220,6 @@ const defaultForm = {
   effectiveStartTime: '',
   effectiveEndTime: '',
   remark: '',
-  status: '',
   updateTime: '',
 };
 
@@ -295,8 +294,8 @@ export default {
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改人', visible: true, width: 200 },
-          { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
+          { props: 'modifierName', label: '更新人', visible: true, width: 200 },
+          { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',

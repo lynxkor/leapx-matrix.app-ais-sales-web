@@ -12,7 +12,7 @@
     <el-form-item label="返利类型">
         <fetch-select
           :request="fetchOptions"
-          enumCode="vw_fundtype"
+          enumCode="vw_rebate_type"
           v-model="form.rebateTypes"
           placeholder="请选择"
           clearable
@@ -24,7 +24,7 @@
           <dateranges
             v-model="form.createTime"
             :setDefault="true"
-            deftTime="最近一月"
+            deftTime="本月"
             ref="transactionTime"/>
       </el-form-item>
       <el-form-item label="母公司名称"  v-show="this.visibleCount === 3 || show">
@@ -223,9 +223,9 @@ export default {
           { props: 'year', label: '年度', visible: true, width: 200 },
           { props: 'quarterLabel', label: '季度', visible: true, width: 200 },
           { props: 'monthLabel', label: '月度', visible: true, width: 200 },
-          { props: 'rebateAmount', label: '核销金额', visible: true, width: 200 },
+          { props: 'rebateAmount', label: '核销合计金额', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
+          { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
           // {
           //   props: 'operate',
           //   label: '操作',
