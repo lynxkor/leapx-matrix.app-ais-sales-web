@@ -197,7 +197,7 @@ export default {
         passOrReject: '',
       },
       filterForm: {
-        billStatus: 1010,
+        billStatus: 1020,
       },
       rejectform: {
         opinion: '',

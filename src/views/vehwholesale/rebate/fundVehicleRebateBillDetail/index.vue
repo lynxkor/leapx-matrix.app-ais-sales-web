@@ -548,7 +548,7 @@ export default {
       const BatchReviewIds = this.selectionList.map(item => item.id) || [];
       if (BatchReviewIds.length > 0) {
         const billStatuss = this.selectionList.map(item => item.billStatus) || [];
-        if (this.isAllSpecifiedValue(billStatuss, 1050)) {
+        if (this.isAllSpecifiedValue(billStatuss, 1040)) {
           this.$refs.showBatchReview.showOrHide('isSelect', BatchReviewIds);
         } else {
           this.$message({
@@ -564,7 +564,7 @@ export default {
       const BatchAuditIds = this.selectionList.map(item => item.id) || [];
       if (BatchAuditIds.length > 0) {
         const billStatuss = this.selectionList.map(item => item.billStatus) || [];
-        if (this.isAllSpecifiedValue(billStatuss, 1050)) {
+        if (this.isAllSpecifiedValue(billStatuss, 1020)) {
           this.$refs.showBatchAudit.showOrHide('isSelect', BatchAuditIds);
         } else {
           this.$message({
