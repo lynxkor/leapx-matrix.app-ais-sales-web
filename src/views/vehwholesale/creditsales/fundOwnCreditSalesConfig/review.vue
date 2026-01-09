@@ -127,7 +127,7 @@ export default {
       };
       const reqParams = { ...this.getFormData(params) };
       if (type === 'approve') {
-        reqParams.passOrReject = true;
+        reqParams.passOrReject = 1;
         reviewItem(reqParams).then(() => {
           this.$message({
             type: 'success',
@@ -144,7 +144,7 @@ export default {
             message: '请填写审核意见!'
           });
         } else if (reqParams.reviewOpinion.length > 0) {
-          reqParams.passOrReject = false;
+          reqParams.passOrReject = 0;
           reviewItem(reqParams).then(() => {
             this.$message({
               type: 'success',
