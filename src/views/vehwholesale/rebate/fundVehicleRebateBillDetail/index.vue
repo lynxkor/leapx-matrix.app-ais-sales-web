@@ -37,11 +37,11 @@
     <el-form-item label="门店名称">
       <tag-input v-model="form.dealerNames" placeholder="请输入" />
     </el-form-item>
-    <el-form-item label="单据状态" prop="billStatuss">
+    <el-form-item label="单据状态" prop="billStatuses">
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_rebate_bills_detail_status"
-          v-model="form.billStatuss"
+          v-model="form.billStatuses"
           placeholder="请选择"
           clearable
           multiple
@@ -547,8 +547,8 @@ export default {
     handleBatchReview () {
       const BatchReviewIds = this.selectionList.map(item => item.id) || [];
       if (BatchReviewIds.length > 0) {
-        const billStatuss = this.selectionList.map(item => item.billStatus) || [];
-        if (this.isAllSpecifiedValue(billStatuss, 1040)) {
+        const billStatues = this.selectionList.map(item => item.billStatus) || [];
+        if (this.isAllSpecifiedValue(billStatues, 1040)) {
           this.$refs.showBatchReview.showOrHide('isSelect', BatchReviewIds);
         } else {
           this.$message({

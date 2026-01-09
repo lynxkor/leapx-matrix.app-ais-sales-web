@@ -302,6 +302,7 @@ export default {
       } else if (rejectParams.opinion && rejectParams.opinion.length > 0) {
         reviewItem(rejectParams).then(res => {
           this.$message.success('批量通过成功');
+          this.reviewRejectlogVisible = false;
         }).catch(() => {});
       }
     },
