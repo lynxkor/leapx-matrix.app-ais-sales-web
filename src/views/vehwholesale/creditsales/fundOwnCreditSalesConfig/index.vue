@@ -305,7 +305,7 @@ export default {
             }, {
               name: '复核',
               show: (row) => {
-                return row.auditStatus === 0 || row.auditStatus === 2;
+                return row.auditStatus === 1;
               },
               click: (rowIndex, row) => {
                 this.$router.push({
