@@ -93,7 +93,7 @@
                       clearable
                     />
                   </el-form-item>
-                  <el-form-item label="简介" prop="introduction">
+                  <el-form-item label="简介">
                     <el-input
                       placeholder="请输入"
                       v-model="form.introduction"
@@ -101,7 +101,7 @@
                       maxlength="100"
                     />
                   </el-form-item>
-                  <el-form-item label="描述" prop="description">
+                  <el-form-item label="描述">
                     <el-input
                       placeholder="请输入"
                       v-model="form.description"
