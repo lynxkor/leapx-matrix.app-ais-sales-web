@@ -63,6 +63,7 @@
                   v-model="form.effectiveStartTime"
                   :picker-options="pickerOptions"
                   type="date"
+                  value-format="yyyy-MM-dd"
                   placeholder="选择日期"
                 />
               </el-form-item>
@@ -71,10 +72,11 @@
                   v-model="form.effectiveEndTime"
                   :picker-options="pickerOptions"
                    type="date"
+                   value-format="yyyy-MM-dd"
                    placeholder="选择日期"
                 />
               </el-form-item>
-              <el-form-item label="备注" prop="remark">
+              <el-form-item label="备注">
                 <el-input
                   placeholder="请输入"
                   v-model="form.remark"
@@ -266,9 +268,9 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       rules: {
-        creditSalesFeeConfigCode: [
-          { required: true, message: '请输入记录编号', trigger: 'change' }
-        ],
+        // creditSalesFeeConfigCode: [
+        //   { required: true, message: '请输入记录编号', trigger: 'change' }
+        // ],
         seriesName: [
           { required: true, message: '请输入车系名称', trigger: 'change' }
         ],
@@ -296,42 +298,42 @@ export default {
         effectiveEndTime: [
           { required: true, message: '请选择有效结束日期', trigger: 'change' }
         ],
-        remark: [
-          { required: false, message: '请输入备注', trigger: 'change' }
-        ],
+        // remark: [
+        //   { required: false, message: '请输入备注', trigger: 'change' }
+        // ],
         status: [
           { required: true, message: '请选择状态', trigger: 'change' }
         ],
-        creatorName: [
-          { required: true, message: '请输入创建人', trigger: 'change' }
-        ],
-        createTime: [
-          { required: true, message: '请选择创建时间', trigger: 'change' }
-        ],
-        modifierName: [
-          { required: true, message: '请输入修改人', trigger: 'change' }
-        ],
-        updateTime: [
-          { required: true, message: '请选择修改时间', trigger: 'change' }
-        ],
-        id: [
-          { required: true, message: '请输入主键', trigger: 'change' }
-        ],
-        creator: [
-          { required: true, message: '请输入创建者', trigger: 'change' }
-        ],
-        modifier: [
-          { required: true, message: '请输入修改者', trigger: 'change' }
-        ],
-        statusDesc: [
-          { required: true, message: '请选择状态变更描述', trigger: 'change' }
-        ],
-        seriesId: [
-          { required: true, message: '请输入车系ID', trigger: 'change' }
-        ],
-        yearTypeId: [
-          { required: true, message: '请选择年款ID', trigger: 'change' }
-        ],
+        // creatorName: [
+        //   { required: true, message: '请输入创建人', trigger: 'change' }
+        // ],
+        // createTime: [
+        //   { required: true, message: '请选择创建时间', trigger: 'change' }
+        // ],
+        // modifierName: [
+        //   { required: true, message: '请输入修改人', trigger: 'change' }
+        // ],
+        // updateTime: [
+        //   { required: true, message: '请选择修改时间', trigger: 'change' }
+        // ],
+        // id: [
+        //   { required: true, message: '请输入主键', trigger: 'change' }
+        // ],
+        // creator: [
+        //   { required: true, message: '请输入创建者', trigger: 'change' }
+        // ],
+        // modifier: [
+        //   { required: true, message: '请输入修改者', trigger: 'change' }
+        // ],
+        // statusDesc: [
+        //   { required: true, message: '请选择状态变更描述', trigger: 'change' }
+        // ],
+        // seriesId: [
+        //   { required: true, message: '请输入车系ID', trigger: 'change' }
+        // ],
+        // yearTypeId: [
+        //   { required: true, message: '请选择年款ID', trigger: 'change' }
+        // ],
       }
     };
   },
@@ -363,6 +365,11 @@ export default {
           if (startDate > endDate) {
             this.$message({
               message: '有效结束日期必须大于有效开始日期',
+              type: 'error'
+            });
+          } else if (this.form.minUsageDays > this.form.maxUsageDays) {
+            this.$message({
+              message: '使用天数下限必须小于使用天数上限',
               type: 'error'
             });
           } else {

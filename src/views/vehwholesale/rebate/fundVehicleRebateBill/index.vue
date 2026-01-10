@@ -223,7 +223,7 @@ export default {
           { props: 'year', label: '年度', visible: true, width: 200 },
           { props: 'quarterLabel', label: '季度', visible: true, width: 200 },
           { props: 'monthLabel', label: '月度', visible: true, width: 200 },
-          { props: 'rebateAmount', label: '核销合计金额', visible: true, width: 200 },
+          { props: 'totalRebateAmount', label: '核销合计金额', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
           // {
@@ -344,7 +344,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '账户管理-整车返利-整车返利核算单明细管理',
-        dataFetchPath: 'vw/web/rebate/fundVehicleRebateBill/page',
+        dataFetchPath: '/vw/web/rebate/fundVehicleRebateBill/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -420,7 +420,7 @@ export default {
       const data = { ...this.form };
 
       Object.keys(this.form).forEach(key => {
-        if (data[key] === '' || data[key] === null || data[key].length === 0 || data[key] === []) {
+        if (data[key] === '' || data[key] === null || (typeof data[key] === 'object' && Object.keys(data[key]).length === 0)) {
           delete data[key];
         }
       });

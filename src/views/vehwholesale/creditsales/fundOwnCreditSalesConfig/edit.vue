@@ -55,12 +55,14 @@
                 <el-date-picker
                   type="date"
                   v-model="form.effectiveTime"
+                  value-format="yyyy-MM-dd"
                 />
               </el-form-item>
               <el-form-item label="额度失效日期" prop="expireTime">
                 <el-date-picker
                   type="date"
                   v-model="form.expireTime"
+                  value-format="yyyy-MM-dd"
                 />
               </el-form-item>
               <!-- <el-form-item label="创建人" prop="creatorName" v-show="!_id">
@@ -178,7 +180,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, submitItem, gdclItem } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesConfig/index';
+import { getDetail, addOrUpdate, submitItem } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum, getParentCompany } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';

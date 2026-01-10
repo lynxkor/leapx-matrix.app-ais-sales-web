@@ -362,7 +362,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '账户管理-赊销管理-自有资金赊销配置管理',
-        dataFetchPath: 'vw/web/creditsales/fundOwnCreditSalesConfig/page',
+        dataFetchPath: '/vw/web/creditsales/fundOwnCreditSalesConfig/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -438,7 +438,7 @@ export default {
       const data = { ...this.form };
 
       Object.keys(this.form).forEach(key => {
-        if (data[key] === '' || data[key] === null || data[key].length === 0 || data[key] === []) {
+        if (data[key] === '' || data[key] === null || (typeof data[key] === 'object' && Object.keys(data[key]).length === 0)) {
           delete data[key];
         }
       });

@@ -37,40 +37,40 @@
       <el-form-item label="单据状态">
         <el-input v-model="billStatus" placeholder="单据状态" style="width: 100%" disabled=""/>
       </el-form-item >
-         <el-form-item label="返利类型" prop="rebateTypes">
+         <el-form-item label="返利类型" prop="rebateType">
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_rebate_type"
-            v-model="filterForm.rebateTypes"
+            v-model="filterForm.rebateType"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
       </el-form-item>
-      <el-form-item label="创建日期" style="width: 100%" prop="createTime">
-                <el-date-picker
-                  style="width: 100%"
-                  v-model="filterForm.createTime"
-                  :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                />
-              </el-form-item>
+      <el-form-item label="创建日期" prop="createTime" >
+          <el-date-picker style="width: 100%;"
+           :default-time="['00:00:00', '23:59:59']"
+            v-model="filterForm.createTime"
+            type="daterange"
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
       <el-form-item label="业务单据号：" prop="bizOrderNo">
         <el-input v-model="filterForm.bizOrderNo" autocomplete="off" />
       </el-form-item>
-       <el-form-item label="预算科目">
+       <el-form-item label="预算科目" prop="budgetItemId">
          <fetch-select
           filterable
           clearable
           remote
-          v-model="filterForm.budgetItemIds"
+          v-model="filterForm.budgetItemId"
           :remote-method="getFundBudgetItemList"
           value-key="id"
           label-key="name"
-          multiple
       />
       </el-form-item>
       <el-form-item label="创建人" prop="creatorName">
@@ -198,6 +198,7 @@ export default {
       },
       filterForm: {
         billStatus: 1020,
+        createTime: [],
       },
       rejectform: {
         opinion: '',
@@ -246,10 +247,17 @@ export default {
     getFormData (val) {
       const data = { ...val };
       Object.keys(val).forEach(key => {
-        if (data[key] === '' || data[key] === null || data[key].length === 0 || data[key] === []) {
+        if (data[key] === '' || data[key] === null || (typeof data[key] === 'object' && Object.keys(data[key]).length === 0)) {
           delete data[key];
         }
       });
+      if (val.createTime) {
+        delete data.createTime;
+        if (val.createTime.length > 1) {
+          data.createTimeStart = val.createTime[0];
+          data.createTimeEnd = val.createTime[1];
+        }
+      }
       return data;
     },
     rejectSubmit () {
@@ -257,23 +265,25 @@ export default {
       // rejectParams.passOrReject = 0;
       auditItem({ ...this.getFormData(rejectParams) }).then(res => {
         this.$message.success('批量通过成功');
+        this.dialogVisible = false;
+        this.filterDialogVisible = false;
       }).catch(() => {});
     },
     AuditApp () {
-      this.totalDialogVisible = true;
       statTotalRebate({ ...this.getFormData(this.filterForm) }).then(res => {
         this.auditNum = res.qty;
         this.auditCount = res.totalRebateAmount;
+        this.totalDialogVisible = true;
       }).catch(() => {});
     },
     AuditAppClose () {
       this.totalDialogVisible = false;
     },
     AuditAppSure () {
-      this.totalDialogVisible = false;
       this.filterForm.passOrReject = 1;
       auditItem({ ...this.getFormData(this.filterForm) }).then(res => {
         this.$message.success('批量通过成功');
+        this.totalDialogVisible = false;
       }).catch(() => {});
     },
     AuditRej () {
@@ -289,6 +299,8 @@ export default {
         auditItem(params).then(res => {
           this.$message.success('批量通过成功');
           this.$refs.SelectformRef.resetFields();
+          this.dialogVisible = false;
+          this.$emit('callParentMethod');
         }).catch(() => {});
       } else if (params.passOrReject === '0') {
         if (params.opinion.length === 0) {
@@ -300,10 +312,11 @@ export default {
           auditItem(params).then(res => {
             this.$message.success('批量驳回成功');
             this.$refs.SelectformRef.resetFields();
+            this.dialogVisible = false;
+            this.$emit('callParentMethod');
           }).catch(() => {});
         }
       }
-      this.$emit('callParentMethod');
     }
 
   }

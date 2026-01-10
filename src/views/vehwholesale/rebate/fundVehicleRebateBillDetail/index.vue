@@ -307,45 +307,45 @@ export default {
           { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
           // // { props: 'rebateBillDetailCode', label: '返利核算单明细编号', visible: true, width: 200 },
           // { props: 'accruedAmount', label: '预提金额', visible: true, width: 200 },
-          {
-            props: 'operate',
-            label: '操作',
-            type: 'operate',
-            visible: true,
-            fixed: 'right',
-            buttons: [
-            //   {
-            //   name: '编辑',
-            //   click: (rowIndex, row) => {
-            //     this.$router.push({
-            //       path: '/vehwholesale/rebate/fundVehicleRebateBillDetail/edit',
-            //       query: {
-            //         id: row.id
-            //       }
-            //     });
-            //   },
-            //   type: 'info'
-            // },
-              {
-                name: '删除',
-                popconfirmTitle: '此操作将永久删除, 是否继续?',
-                click: (rowIndex, row) => {
-                  deleteItem([row.id]).then(() => {
-                    this.$message({
-                      type: 'success',
-                      message: '删除成功!'
-                    });
-                    this.getData();
-                  }).catch(() => {
-                    this.$message({
-                      type: 'error',
-                      message: '删除失败!'
-                    });
-                  });
-                },
-                type: 'danger'
-              }]
-          }
+          // {
+          //   props: 'operate',
+          //   label: '操作',
+          //   type: 'operate',
+          //   visible: true,
+          //   fixed: 'right',
+          //   buttons: [
+          //   //   {
+          //   //   name: '编辑',
+          //   //   click: (rowIndex, row) => {
+          //   //     this.$router.push({
+          //   //       path: '/vehwholesale/rebate/fundVehicleRebateBillDetail/edit',
+          //   //       query: {
+          //   //         id: row.id
+          //   //       }
+          //   //     });
+          //   //   },
+          //   //   type: 'info'
+          //   // },
+          //     {
+          //       name: '删除',
+          //       popconfirmTitle: '此操作将永久删除, 是否继续?',
+          //       click: (rowIndex, row) => {
+          //         deleteItem([row.id]).then(() => {
+          //           this.$message({
+          //             type: 'success',
+          //             message: '删除成功!'
+          //           });
+          //           this.getData();
+          //         }).catch(() => {
+          //           this.$message({
+          //             type: 'error',
+          //             message: '删除失败!'
+          //           });
+          //         });
+          //       },
+          //       type: 'danger'
+          //     }]
+          // }
         ],
         total: 0
       }
@@ -427,7 +427,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '账户管理-整车返利-整车返利核算单明细管理',
-        dataFetchPath: 'vw/web/rebate/fundVehicleRebateBillDetail/page',
+        dataFetchPath: '/vw/web/rebate/fundVehicleRebateBillDetail/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -508,11 +508,10 @@ export default {
       const data = { ...this.form };
 
       Object.keys(this.form).forEach(key => {
-        if (data[key] === '' || data[key] === null || data[key].length === 0 || data[key] === []) {
+        if (data[key] === '' || data[key] === null || (typeof data[key] === 'object' && Object.keys(data[key]).length === 0)) {
           delete data[key];
         }
       });
-
       if (this.form.createTime) {
         delete data.createTime;
         if (this.form.createTime.length > 1) {
@@ -576,27 +575,39 @@ export default {
         this.$refs.showBatchAudit.showOrHide('notSelect');
       }
     },
+    isAllSpecifiedStatus (arr, targetValue, targetValue2) {
+      if (arr.length === 0) return false;
+      return arr.every(item => item === targetValue || item === targetValue2);
+    },
     // 批量删除
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        deleteItem(ids).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
+      const selectBillStatuses = this.selectionList.map(item => item.billStatus) || [];
+      if (this.isAllSpecifiedStatus(selectBillStatuses, 1020, 1030)) {
+        this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          deleteItem(ids).then(() => {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            });
+            this.getData();
+          }).catch(() => {
+            this.$message({
+              type: 'error',
+              message: '删除失败!'
+            });
           });
-          this.getData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '删除失败!'
-          });
+        }).catch(() => {});
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '存在不是待审核或驳回的记录，请确认!'
         });
-      }).catch(() => {});
+      }
     },
     async getParentCompany (query) {
       try {
