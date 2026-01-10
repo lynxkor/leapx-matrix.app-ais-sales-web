@@ -119,6 +119,16 @@ export default {
         }
       },
       immediate: true
+    },
+    'form.reserved': {
+      handler (newVal, oldVal) { // 编辑时 销售预留和预留类型绑定 填了销售预留  类型就必填
+        if (newVal) {
+          this.rules.reservedType[0].required = true;
+        } else {
+          this.rules.reservedType[0].required = false;
+          this.$refs.ruleForm?.clearValidate?.('reservedType');
+        }
+      }
     }
   },
   methods: {

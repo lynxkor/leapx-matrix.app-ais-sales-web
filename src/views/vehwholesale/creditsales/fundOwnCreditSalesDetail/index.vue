@@ -315,7 +315,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '账户管理-赊销管理-自有资金赊销明细管理',
-        dataFetchPath: 'vehwholesale/web/creditsales/fundOwnCreditSalesDetail/page',
+        dataFetchPath: 'vw/web/creditsales/fundOwnCreditSalesDetail/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

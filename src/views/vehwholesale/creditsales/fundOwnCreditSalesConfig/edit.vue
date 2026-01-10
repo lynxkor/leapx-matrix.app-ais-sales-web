@@ -21,8 +21,7 @@
                   valueKey="companyCode"
                   clearable
                   filterable
-                  @change="getFormData"
-
+                  @change="getDealerCompanyCode"
                   />
               </el-form-item>
 
@@ -298,19 +297,11 @@ export default {
     this.getDetailData();
   },
   methods: {
-    getFormData () {
-      gdclItem({ dealerCompanyCode: this.form.dealerCompanyName }).then(res => {
-        if (res !== null && res !== '') {
-          this.form.dealerCompanyCode = res.dealerCompanyCode;
-          this.form.dealerCompanyName = res.dealerCompanyName;
-          this.form.creditAccountStatus = res.creditAccountStatus;
-          this.form.creditAmount = res.creditAmount;
-          this.form.downPaymentRatio = res.downPaymentRatio;
-          this.form.effectiveTime = res.effectiveTime;
-          this.form.expireTime = res.expireTime;
-        }
-      });
+    getDealerCompanyCode (dealerCompanyCode) {
+      console.log('query', dealerCompanyCode);
+      this.form.dealerCompanyCode = dealerCompanyCode;
     },
+
     handleBack () {
       this.$router.back();
     },
