@@ -46,7 +46,7 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="BooleanEnum"
-            v-model="form"
+            v-model="form.creditFlag"
             placeholder="请选择"
             clearable
             filterable
@@ -194,10 +194,10 @@ export default {
           { props: 'effectiveTime', label: '额度生效日期', visible: true, width: 200 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'expireTime', label: '额度失效日期', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
-          { props: 'modifierName', label: '更新人', visible: true, width: 200 },
-          { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
+          // { props: 'expireTime', label: '额度失效日期', visible: true, width: 200 },
+          // { props: 'creatorName', label: '创建人', visible: true, width: 200 },
+          // { props: 'modifierName', label: '更新人', visible: true, width: 200 },
+          // { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
           // {
           //   props: 'operate',
           //   label: '操作',

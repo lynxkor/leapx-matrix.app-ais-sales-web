@@ -284,6 +284,8 @@ export default {
       auditItem({ ...this.getFormData(this.filterForm) }).then(res => {
         this.$message.success('批量通过成功');
         this.totalDialogVisible = false;
+        this.filterDialogVisible = false;
+        this.$emit('callParentMethod');
       }).catch(() => {});
     },
     AuditRej () {

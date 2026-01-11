@@ -20,7 +20,7 @@
           filterable
         />
         </el-form-item>
-         <el-form-item label="创建日期">
+         <el-form-item label="创建时间">
           <dateranges
             v-model="form.createTime"
             :setDefault="true"
@@ -225,7 +225,9 @@ export default {
           { props: 'monthLabel', label: '月度', visible: true, width: 200 },
           { props: 'totalRebateAmount', label: '核销合计金额', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          // { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
+          // { props: 'modifierName', label: '更新人', visible: true, width: 200 },
           // {
           //   props: 'operate',
           //   label: '操作',

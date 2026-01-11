@@ -286,6 +286,7 @@ export default {
       reviewItem(approveParams).then(res => {
         this.totalDialogVisible = false;
         this.filterDialogVisible = false;
+        this.$emit('callReviewParentMethod');
         this.$message.success('批量通过成功');
       }).catch(() => {});
     },
@@ -321,10 +322,9 @@ export default {
       };
       if (params.passOrReject === '1') {
         reviewItem(params).then(res => {
-          if (res.code === 200) {
-            this.$message.success('批量通过成功');
-            this.dialogVisible = false;
-          }
+          this.$message.success('批量通过成功');
+          this.dialogVisible = false;
+          this.$emit('callReviewParentMethod');
         }).catch(() => {});
       } else if (params.passOrReject === '0') {
         if (params.opinion.length === 0) {
@@ -334,16 +334,13 @@ export default {
           });
         } else {
           reviewItem(params).then(res => {
-            if (res.code === 200) {
-              this.$message.success('批量驳回成功');
-              this.dialogVisible = false;
-            }
+            this.$message.success('批量驳回成功');
+            this.dialogVisible = false;
+            this.$emit('callReviewParentMethod');
           }).catch(() => {});
         }
       }
-      this.$emit('callReviewParentMethod');
     }
-
   }
 };
 </script>

@@ -318,6 +318,9 @@ export default {
               type: 'info'
             }, {
               name: '作废',
+              show: (row) => {
+                return row.auditStatus === 0 || row.auditStatus === 2;
+              },
               // popconfirmTitle: '是否对配置编号为' + row.configCode + '的数据进行作废?',
               click: (rowIndex, row) => {
                 this.handleCancel(rowIndex, row.id, row.configCode);

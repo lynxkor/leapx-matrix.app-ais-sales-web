@@ -18,7 +18,7 @@
                   v-model="form.dealerCompanyName"
                   placeholder="请选择"
                   labelKey="companyName"
-                  valueKey="companyCode"
+                  valueKey="companyName"
                   clearable
                   filterable
                   @change="getDealerCompanyCode"
@@ -171,7 +171,7 @@
       </el-main>
       <el-footer height="60px">
         <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
-        <!-- <el-button v-if="form.auditStatus === 0 || form.auditStatus === 2" size="small" type="primary" @click="submitForm('submit')" :loading="submitLoading">提交</el-button> -->
+        <el-button v-show="auditSub" size="small" type="primary" @click="submitForm('submit')" :loading="submitLoading">提交</el-button>
         <el-button size="small" @click="handleBack">取消</el-button>
         <!-- <el-button size="small" @click="handleJumpAuditLog">审核日志</el-button> -->
       </el-footer>
@@ -264,6 +264,7 @@ export default {
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundOwnCreditSalesConfig',
       isEditing: false,
+      auditSub: false,
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
@@ -299,9 +300,8 @@ export default {
     this.getDetailData();
   },
   methods: {
-    getDealerCompanyCode (dealerCompanyCode) {
-      console.log('query', dealerCompanyCode);
-      this.form.dealerCompanyCode = dealerCompanyCode;
+    getDealerCompanyCode (dealerCompanyCode, obj) {
+      this.form.dealerCompanyCode = obj.companyCode;
     },
 
     handleBack () {
@@ -332,12 +332,11 @@ export default {
                 message: '保存成功',
                 type: 'success'
               });
-              // const id = this.$route.query.id;
-              // if (rest || !id) {
-              //   this.resetForm(formName);
-              // } else {
-              //   this.getDetailData();
-              // }
+              const id = this.$route.query.id;
+              if (id) {
+                this.getDetailData();
+                this.auditSub = true;
+              }
             }).finally(() => {
               this.submitLoading = false;
             });
@@ -402,6 +401,7 @@ export default {
     async getParentCompany (query) {
       try {
         const res = await getParentCompany({ parentCompanyName: query });
+        console.log(res);
         this.parentCompanyNames = res;
         return res;
       } catch (error) {

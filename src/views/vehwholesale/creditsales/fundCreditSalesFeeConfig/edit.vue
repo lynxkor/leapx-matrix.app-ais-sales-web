@@ -83,14 +83,11 @@
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="状态" prop="status">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="StatusEnum"
-                  v-model="form.status"
-                  placeholder="请选择"
+              <el-form-item label="记录编号">
+                <el-input
+                  placeholder="请输入"
+                  v-model="form.creditSalesFeeConfigCode"
                   clearable
-                  filterable
                   disabled
                 />
               </el-form-item>
@@ -110,6 +107,17 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
+                  disabled
+                />
+              </el-form-item>
+              <el-form-item label="状态" prop="status">
+                <fetch-select
+                  :request="fetchOptions"
+                  enumCode="StatusEnum"
+                  v-model="form.status"
+                  placeholder="请选择"
+                  clearable
+                  filterable
                   disabled
                 />
               </el-form-item>
@@ -205,15 +213,13 @@ const defaultForm = {
   creditSalesFeeConfigCode: '',
   seriesName: '',
   yearTypeName: '',
-  downPaymentRatio: '',
-  useRebate: '',
-  minUsageDays: '',
-  maxUsageDays: '',
+  minUsageDays: 0,
+  maxUsageDays: 0,
   creditSalesFee: '',
   effectiveStartTime: '',
   effectiveEndTime: '',
   remark: '',
-  status: '',
+  status: 1,
   creatorName: '',
   createTime: '',
   modifierName: '',

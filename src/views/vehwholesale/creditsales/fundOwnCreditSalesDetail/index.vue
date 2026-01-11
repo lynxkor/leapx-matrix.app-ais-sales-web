@@ -10,7 +10,7 @@
       class="ais-search-form"
     >
     <el-form-item label="母公司名称">
-      <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
+      <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
     </el-form-item>
     <el-form-item label="创建时间">
         <dateranges
@@ -50,17 +50,29 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="BooleanEnum"
-            v-model="form.useRebate"
+            v-model="form.repaymentFlag"
             placeholder="请选择"
             clearable
             filterable
+          />
+        </el-form-item>
+        <el-form-item label="还款时间">
+          <el-date-picker
+           :default-time="['00:00:00', '23:59:59']"
+            v-model="form.repaymentTime"
+            type="daterange"
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
           />
         </el-form-item>
         <el-form-item label="状态">
           <fetch-select
             :request="fetchOptions"
             enumCode="StatusEnum"
-            v-model="form.statusInclude"
+            v-model="form.status"
             placeholder="请选择"
             clearable
             filterable
@@ -134,7 +146,8 @@ const defaultForm = {
   id: '',
   creator: '',
   createTime: [],
-  statusInclude: '1'
+  repaymentTime: [],
+  status: 1,
 };
 
 const pageSize = 20;
@@ -212,11 +225,11 @@ export default {
           { props: 'certificateRedemptionApplyId', label: '合格证赎回申请', visible: true, width: 200 },
           { props: 'overdueFee', label: '超期赊销费用', visible: true, width: 200 },
           { props: 'penaltyFee', label: '违约金', visible: true, width: 200 },
-          { props: 'voucherNo', label: '凭证号', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
+          // { props: 'voucherNo', label: '凭证号', visible: true, width: 200 },
+          // { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '更新人', visible: true, width: 200 },
-          { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
+          // { props: 'modifierName', label: '更新人', visible: true, width: 200 },
+          // { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
           // { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
           // { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           // { props: 'remark', label: '备注（说明）', visible: true, width: 200 },
@@ -299,6 +312,7 @@ export default {
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
       this.form.createTime = [];
+      this.form.repaymentTime = [];
       this.getData();
     },
     exportExcel () {
@@ -391,6 +405,13 @@ export default {
         if (this.form.createTime.length > 1) {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
+        }
+      }
+      if (this.form.repaymentTime) {
+        delete data.repaymentTime;
+        if (this.form.repaymentTime.length > 1) {
+          data.repaymentTimeStart = this.form.repaymentTime[0];
+          data.repaymentTimeEnd = this.form.repaymentTime[1];
         }
       }
 
