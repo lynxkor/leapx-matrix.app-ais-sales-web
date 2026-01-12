@@ -134,7 +134,7 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                 />
               </el-form-item>
-              <el-form-item label="描述" prop="description">
+              <el-form-item label="描述">
                 <el-input
                   placeholder="请输入"
                   v-model="form.description"
