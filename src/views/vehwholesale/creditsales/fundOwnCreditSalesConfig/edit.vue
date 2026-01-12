@@ -303,7 +303,12 @@ export default {
     getDealerCompanyCode (dealerCompanyCode, obj) {
       this.form.dealerCompanyCode = obj.companyCode;
     },
-
+    isEmptyObject (obj) {
+      if (typeof obj !== 'object' || obj === null || Array.isArray(obj)) {
+        return false;
+      }
+      return Object.keys(obj).length === 0;
+    },
     handleBack () {
       this.$router.back();
     },

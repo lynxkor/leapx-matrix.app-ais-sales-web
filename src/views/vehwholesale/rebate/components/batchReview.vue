@@ -253,6 +253,7 @@ export default {
     reviewRejectClose () {
       this.reviewRejectlogVisible = false;
       this.$refs.rejectformRef.resetFields();
+      this.filterDialogVisible = false;
     },
     getFormData (val) {
       const data = { ...val };
@@ -311,6 +312,7 @@ export default {
         reviewItem(rejectParams).then(res => {
           this.$message.success('批量通过成功');
           this.reviewRejectlogVisible = false;
+          this.filterDialogVisible = false;
         }).catch(() => {});
       }
     },
