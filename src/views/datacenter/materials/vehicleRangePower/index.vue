@@ -24,6 +24,7 @@
       <el-form-item label="创建时间" v-show="this.visibleCount === 3 || show">
         <dateranges
           :v-model="createTime"
+          :limtNum="3"
           ref="createTime"
           @changeNewTime="(value) => changeNewTime(value, 'createTime')"/>
         <!-- <el-date-picker

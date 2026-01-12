@@ -28,6 +28,17 @@
         <span>只能上传excel文件，且大小不超过20MB</span>
       </div>
     </el-upload>
+    <div v-if="errorData && errorData.errorList && errorData.errorList.length > 0">
+      <div>
+        <span>导入结果：</span>
+        <span>文件上传成功{{errorData.successNum}}条,失败{{errorData.failNum}}条</span>
+      </div>
+      <div>
+        <div v-for="(item, index) in errorData.errorList" :key="index">
+          报错行数：第{{item.rowNum + 1}}行,失败原因：{{item.errorMsg}}
+        </div>
+      </div>
+    </div>
     <div slot="footer" class="dialog-footer">
       <el-button @click="handleClose" size="small">取 消</el-button>
       <el-button
@@ -42,7 +53,7 @@
 
 <script>
 import { productSaleAttributeImport } from '@/api/vehretail/productManager/productCenter/index';
-import { downloadExcel } from '@/libs/utils';
+// import { downloadExcel } from '@/libs/utils';
 // import api from '@/axios';
 
 export default {
@@ -79,6 +90,11 @@ export default {
       headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
       form: {},
       fileList: [],
+      errorData: {
+        successNum: null,
+        failNum: null,
+        errorList: []
+      },
       currentFile: null,
     };
   },
@@ -91,6 +107,7 @@ export default {
   methods: {
     handleClose () {
       this.$refs.upload.clearFiles();
+      this.errorData = {};
       this.$emit('close');
     },
     // 文件选择变化
@@ -141,18 +158,23 @@ export default {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
         });
-        if (res.failExcelUrl) { // 判断是否有未上传成功错误文件 有的话 直接走自动下载逻辑
-          this.$message.error(`文件上传成功${res.successNum}条,失败${res.failNum}条,将自动下载失败文件!`);
-          setTimeout(() => {
-            downloadExcel(res?.failExcelUrl, res?.fileName || res?.businessType || '模板.xlsx');
-          }, 2000);
+        console.log('res:', res);
+        if (res.data.errorList && res.failNum > 0) { // 判断是否有未上传成功错误文件 有的话 直接走自动下载逻辑
+          this.errorData = {
+            errorList: res.data.errorList,
+            ...res
+          };
+          // this.$message.error(`文件上传成功${res.successNum}条,失败${res.failNum}条,将自动下载失败文件!`);
+          // setTimeout(() => {
+          //   downloadExcel(res?.failExcelUrl, res?.fileName || res?.businessType || '模板.xlsx');
+          // }, 2000);
         } else {
           this.$message.success('文件上传成功');
+          this.fileList = [];
+          this.currentFile = null;
+          this.handleClose();
         }
         // 公共清理逻辑
-        this.fileList = [];
-        this.currentFile = null;
-        this.handleClose();
       } catch (error) {
         this.$message.error('文件上传失败');
       } finally {

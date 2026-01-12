@@ -190,8 +190,8 @@ export default {
             validator: (rule, value, callback) => {
               if (value === '' || value === null || value === undefined) {
                 callback(new Error('需预留数不能为空'));
-              } else if (value < 0) {
-                callback(new Error('需预留数不能小于0'));
+              } else if (value < 1) {
+                callback(new Error('需预留数不能小于1'));
               } else if (value > 99999999) {
                 callback(new Error('需预留数不能大于99999999'));
               } else if (isNaN(Number(value))) {
