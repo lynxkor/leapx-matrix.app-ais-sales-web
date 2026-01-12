@@ -61,12 +61,12 @@
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
         @reset="onReset" />
     </el-form>
-    <!-- <div class="ais-active"> 暂时注释 等架构修改公共组件
+    <div class="ais-active">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="主页" name="homePage"></el-tab-pane>
         <el-tab-pane label="低电量≤10%" name="lowBattery"></el-tab-pane>
       </el-tabs>
-    </div> -->
+    </div>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
