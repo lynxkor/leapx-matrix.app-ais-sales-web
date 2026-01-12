@@ -83,7 +83,7 @@
           remote
           collapseTags
           v-model="form.dealerCodes"
-          :remote-method="getDealerCodeList"
+          :remote-method="getDealerListByCode"
           value-key="storeCode"
           label-key="storeCode"
           @change="handleChangeDealer"
@@ -97,7 +97,7 @@
           remote
           collapseTags
           v-model="form.dealerCodes"
-          :remote-method="getDealerListByCode"
+          :remote-method="getDealerListByName"
           value-key="storeCode"
           label-key="storeName"
           @change="handleChangeDealer"
@@ -128,8 +128,8 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-permission="moduleKey+'-generateCurrentMonthQuota'" size="small" @click="handleImportWholesale">批售导入</el-button>
-      <el-button v-permission="moduleKey+'-generateCurrentMonthQuota'" size="small" @click="handleImportRetail">零售导入</el-button>
+      <el-button v-permission="moduleKey+'-importExcelByWholesale'" size="small" @click="handleImportWholesale">批售导入</el-button>
+      <el-button v-permission="moduleKey+'-importExcelByRetail'" size="small" @click="handleImportRetail">零售导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
@@ -514,10 +514,10 @@ export default {
       return vehicleSeriesList({ seriesNameLike: params, status: 1 });
     },
     async getDealerListByCode (params) {
-      return listOrgStoreInfo({ storeCode: params });
+      return listOrgStoreInfo({ storeCode: params, isWholesaleSale: true });
     },
     async getDealerListByName (params) {
-      return listOrgStoreInfo({ storeName: params });
+      return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
     },
 
   }

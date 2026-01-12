@@ -316,10 +316,10 @@ export default {
       return [];
     },
     async getDealerListByCode (params) {
-      return listOrgStoreInfo({ storeCode: params });
+      return listOrgStoreInfo({ storeCode: params, isWholesaleSale: true });
     },
     async getDealerListByName (params) {
-      return listOrgStoreInfo({ storeName: params });
+      return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
     },
     handleChangeDealer (val, selectedOption) {
       if (val) {

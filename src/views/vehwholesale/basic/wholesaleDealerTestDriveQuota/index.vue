@@ -463,10 +463,10 @@ export default {
       // });
     },
     async getDealerListByCode (params) {
-      return listOrgStoreInfo({ storeCode: params });
+      return listOrgStoreInfo({ storeCode: params, isWholesaleSale: true });
     },
     async getDealerListByName (params) {
-      return listOrgStoreInfo({ storeName: params });
+      return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
     },
     async getVehicleSeriesList (params) {
       return vehicleSeriesList({ seriesNameLike: params, status: 1 });
