@@ -265,8 +265,8 @@ export default {
       // rejectParams.passOrReject = 0;
       auditItem({ ...this.getFormData(rejectParams) }).then(res => {
         this.$message.success('批量通过成功');
-        this.dialogVisible = false;
         this.filterDialogVisible = false;
+        this.rejectlogVisible = false;
       }).catch(() => {});
     },
     AuditApp () {
