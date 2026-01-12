@@ -18,11 +18,10 @@
                   v-model="form.dealerCompanyName"
                   placeholder="请选择"
                   labelKey="companyName"
-                  valueKey="companyCode"
+                  valueKey="companyName"
                   clearable
                   filterable
-                  @change="getFormData"
-
+                  @change="getDealerCompanyCode"
                   />
               </el-form-item>
 
@@ -56,12 +55,14 @@
                 <el-date-picker
                   type="date"
                   v-model="form.effectiveTime"
+                  value-format="yyyy-MM-dd"
                 />
               </el-form-item>
               <el-form-item label="额度失效日期" prop="expireTime">
                 <el-date-picker
                   type="date"
                   v-model="form.expireTime"
+                  value-format="yyyy-MM-dd"
                 />
               </el-form-item>
               <!-- <el-form-item label="创建人" prop="creatorName" v-show="!_id">
@@ -170,7 +171,7 @@
       </el-main>
       <el-footer height="60px">
         <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
-        <!-- <el-button v-if="form.auditStatus === 0 || form.auditStatus === 2" size="small" type="primary" @click="submitForm('submit')" :loading="submitLoading">提交</el-button> -->
+        <el-button v-show="auditSub" size="small" type="primary" @click="submitForm('submit')" :loading="submitLoading">提交</el-button>
         <el-button size="small" @click="handleBack">取消</el-button>
         <!-- <el-button size="small" @click="handleJumpAuditLog">审核日志</el-button> -->
       </el-footer>
@@ -179,7 +180,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, submitItem, gdclItem } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesConfig/index';
+import { getDetail, addOrUpdate, submitItem } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum, getParentCompany } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -263,6 +264,7 @@ export default {
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundOwnCreditSalesConfig',
       isEditing: false,
+      auditSub: false,
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
@@ -298,18 +300,14 @@ export default {
     this.getDetailData();
   },
   methods: {
-    getFormData () {
-      gdclItem({ dealerCompanyCode: this.form.dealerCompanyName }).then(res => {
-        if (res !== null && res !== '') {
-          this.form.dealerCompanyCode = res.dealerCompanyCode;
-          this.form.dealerCompanyName = res.dealerCompanyName;
-          this.form.creditAccountStatus = res.creditAccountStatus;
-          this.form.creditAmount = res.creditAmount;
-          this.form.downPaymentRatio = res.downPaymentRatio;
-          this.form.effectiveTime = res.effectiveTime;
-          this.form.expireTime = res.expireTime;
-        }
-      });
+    getDealerCompanyCode (dealerCompanyCode, obj) {
+      this.form.dealerCompanyCode = obj.companyCode;
+    },
+    isEmptyObject (obj) {
+      if (typeof obj !== 'object' || obj === null || Array.isArray(obj)) {
+        return false;
+      }
+      return Object.keys(obj).length === 0;
     },
     handleBack () {
       this.$router.back();
@@ -339,12 +337,11 @@ export default {
                 message: '保存成功',
                 type: 'success'
               });
-              // const id = this.$route.query.id;
-              // if (rest || !id) {
-              //   this.resetForm(formName);
-              // } else {
-              //   this.getDetailData();
-              // }
+              const id = this.$route.query.id;
+              if (id) {
+                this.getDetailData();
+                this.auditSub = true;
+              }
             }).finally(() => {
               this.submitLoading = false;
             });
@@ -409,6 +406,7 @@ export default {
     async getParentCompany (query) {
       try {
         const res = await getParentCompany({ parentCompanyName: query });
+        console.log(res);
         this.parentCompanyNames = res;
         return res;
       } catch (error) {

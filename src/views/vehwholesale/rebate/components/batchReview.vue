@@ -44,20 +44,21 @@
             v-model="filterReviewform.rebateTypes"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
       </el-form-item>
-      <el-form-item label="创建日期" prop="createTime" style="width: 100%">
-                <el-date-picker
-                  style="width: 100%"
-                  v-model="filterReviewform.createTime"
-                  :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                />
-              </el-form-item>
+      <el-form-item label="初审日期" prop="auditTime" >
+          <el-date-picker style="width: 100%;"
+           :default-time="['00:00:00', '23:59:59']"
+            v-model="filterReviewform.auditTime"
+            type="daterange"
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
       <el-form-item label="业务单据号" prop="bizOrderNo">
         <el-input v-model="filterReviewform.bizOrderNo" autocomplete="off" />
       </el-form-item>
@@ -70,7 +71,6 @@
           :remote-method="getFundBudgetItemList"
           value-key="id"
           label-key="name"
-          multiple
       />
       </el-form-item>
       <el-form-item label="创建人" prop="creatorName">
@@ -253,14 +253,22 @@ export default {
     reviewRejectClose () {
       this.reviewRejectlogVisible = false;
       this.$refs.rejectformRef.resetFields();
+      this.filterDialogVisible = false;
     },
     getFormData (val) {
       const data = { ...val };
       Object.keys(val).forEach(key => {
-        if (data[key] === '' || data[key] === null || data[key].length === 0 || data[key] === []) {
+        if (data[key] === '' || data[key] === null || (typeof data[key] === 'object' && Object.keys(data[key]).length === 0)) {
           delete data[key];
         }
       });
+      if (val.auditTime) {
+        delete data.auditTime;
+        if (val.auditTime.length > 1) {
+          data.auditTimeStart = val.auditTime[0];
+          data.auditTimeEnd = val.auditTime[1];
+        }
+      }
       return data;
     },
     reviewApp () {
@@ -279,6 +287,7 @@ export default {
       reviewItem(approveParams).then(res => {
         this.totalDialogVisible = false;
         this.filterDialogVisible = false;
+        this.$emit('callReviewParentMethod');
         this.$message.success('批量通过成功');
       }).catch(() => {});
     },
@@ -302,6 +311,8 @@ export default {
       } else if (rejectParams.opinion && rejectParams.opinion.length > 0) {
         reviewItem(rejectParams).then(res => {
           this.$message.success('批量通过成功');
+          this.reviewRejectlogVisible = false;
+          this.filterDialogVisible = false;
         }).catch(() => {});
       }
     },
@@ -313,9 +324,9 @@ export default {
       };
       if (params.passOrReject === '1') {
         reviewItem(params).then(res => {
-          if (res.code === 200) {
-            this.$message.success('批量通过成功');
-          }
+          this.$message.success('批量通过成功');
+          this.dialogVisible = false;
+          this.$emit('callReviewParentMethod');
         }).catch(() => {});
       } else if (params.passOrReject === '0') {
         if (params.opinion.length === 0) {
@@ -325,15 +336,13 @@ export default {
           });
         } else {
           reviewItem(params).then(res => {
-            if (res.code === 200) {
-              this.$message.success('批量驳回成功');
-            }
+            this.$message.success('批量驳回成功');
+            this.dialogVisible = false;
+            this.$emit('callReviewParentMethod');
           }).catch(() => {});
         }
       }
-      this.$emit('callReviewParentMethod');
     }
-
   }
 };
 </script>

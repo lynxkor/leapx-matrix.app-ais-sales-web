@@ -119,6 +119,16 @@ export default {
         }
       },
       immediate: true
+    },
+    'form.reserved': {
+      handler (newVal, oldVal) { // 编辑时 销售预留和预留类型绑定 填了销售预留  类型就必填
+        if (newVal) {
+          this.rules.reservedType[0].required = true;
+        } else {
+          this.rules.reservedType[0].required = false;
+          this.$refs.ruleForm?.clearValidate?.('reservedType');
+        }
+      }
     }
   },
   methods: {
@@ -146,28 +156,60 @@ export default {
     submitForm (formName, rest = false) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.submitLoading = true;
           const id = this.$route.query.id;
+          let txt = '是否需要更新！';
           if (!id) {
             let list = JSON.parse(localStorage.getItem('selectedIds'));
             this.form.ids = list;
+            txt = '是否需要批量更新！';
           } else {
             this.form.ids = [id];
+            txt = '是否需要更新！';
           }
-          batchEdit({ ...this.form }).then(res => {
-            this.$message({
-              message: '保存成功',
-              type: 'success'
+          this.$confirm(`${txt}`, '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            batchEdit({ ...this.form }).then(res => {
+              this.$message({
+                message: '保存成功',
+                type: 'success'
+              });
+              if (rest || !id) {
+                this.resetForm(formName);
+                localStorage.removeItem('selectedIds');
+              } else {
+                this.getDetailData();
+              }
+            }).finally(() => {
+              this.submitLoading = false;
             });
-            if (rest || !id) {
-              this.resetForm(formName);
-              localStorage.removeItem('selectedIds');
-            } else {
-              this.getDetailData();
-            }
-          }).finally(() => {
-            this.submitLoading = false;
+          }).catch(() => {
+            // 用户取消重置
           });
+          // this.submitLoading = true;
+          // const id = this.$route.query.id;
+          // if (!id) {
+          //   let list = JSON.parse(localStorage.getItem('selectedIds'));
+          //   this.form.ids = list;
+          // } else {
+          //   this.form.ids = [id];
+          // }
+          // batchEdit({ ...this.form }).then(res => {
+          //   this.$message({
+          //     message: '保存成功',
+          //     type: 'success'
+          //   });
+          //   if (rest || !id) {
+          //     this.resetForm(formName);
+          //     localStorage.removeItem('selectedIds');
+          //   } else {
+          //     this.getDetailData();
+          //   }
+          // }).finally(() => {
+          //   this.submitLoading = false;
+          // });
         }
       });
     },
