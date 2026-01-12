@@ -190,8 +190,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'modelName',
-            label: '车型',
+            props: 'code',
+            label: '编码',
             visible: true,
             width: 200,
             fixed: 'left',
@@ -207,6 +207,7 @@ export default {
               type: 'primary'
             }]
           },
+          { props: 'modelName', label: '车型', visible: true, width: 200 },
           { props: 'vehicleYearType', label: '年款', visible: true, width: 200 },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'cooperationModeLabel', label: '合作模式', visible: true, width: 200 },

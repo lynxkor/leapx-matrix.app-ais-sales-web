@@ -185,8 +185,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'materialsCode',
-            label: '物料编码',
+            props: 'code',
+            label: '编码',
             visible: true,
             width: 200,
             fixed: 'left',
@@ -202,6 +202,7 @@ export default {
               type: 'primary'
             }]
           },
+          { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           { props: 'seriesName', label: '车系', visible: true, width: 200 },
           { props: 'modelName', label: '车型', visible: true, width: 200 },
