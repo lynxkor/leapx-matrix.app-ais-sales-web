@@ -44,7 +44,7 @@
             <el-form-item label="授信额度：" prop="creditAmount">
               {{ info.creditAmount  }}
             </el-form-item>
-            <el-form-item label="首付款比例：" prop="downPaymentRatio">
+            <el-form-item label="首付款比例%：" prop="downPaymentRatio">
               {{ info.downPaymentRatio  }}
             </el-form-item>
             <el-form-item label="累计提款金额：" prop="totalDrawnAmount">
@@ -65,7 +65,8 @@
             <el-form-item label="剩余应收账款：" prop="remainingReceivableAmount">
               {{ info.remainingReceivableAmount  }}
             </el-form-item>
-            <el-form-item label="最近结算金额：" prop="remainingReceivableAmount">
+            <el-form-item label="最近结算金额：" prop="transactionAmount">
+              {{ info.transactionAmount  }}
             </el-form-item>
             <el-form-item label="额度生效日期：" prop="effectiveTime">
               {{ info.effectiveTime  }}
@@ -76,10 +77,11 @@
             <el-form-item label="最近结算时间：" prop="latestSettleDateTime">
               {{ info.latestSettleDateTime  }}
             </el-form-item>
-            <el-form-item label="最近交易类型：" prop="remainingReceivableAmount">
+            <el-form-item label="最近交易类型：" prop="transactionTypeLabel">
+              {{ info.transactionTypeLabel  }}
             </el-form-item>
-            <el-form-item label="备注：" prop="remark">
-              {{ info.remark  }}
+            <el-form-item label="最近交易原因：" prop="transactionTypeReason">
+              {{ info.transactionTypeReason  }}
             </el-form-item>
           </el-form>
         </div>

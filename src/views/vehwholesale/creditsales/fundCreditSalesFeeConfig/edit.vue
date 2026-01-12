@@ -218,6 +218,8 @@ const defaultForm = {
   creditSalesFee: '',
   effectiveStartTime: '',
   effectiveEndTime: '',
+  downPaymentRatio: '',
+  useRebate: '',
   remark: '',
   status: 1,
   creatorName: '',

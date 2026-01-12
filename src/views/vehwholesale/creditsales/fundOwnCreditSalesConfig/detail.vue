@@ -4,8 +4,11 @@
     <template v-else>
       <section class="common-title">
         <h2>自有资金赊销配置</h2>
+        <div>
         <el-button v-if="info.auditStatus === 0 || info.auditStatus === 2" size="small" @click="handleEdit"><i class="iconfont icon-lxppc-edit"></i>编辑</el-button>
+        <el-button v-if="info.auditStatus === 0 || info.auditStatus === 2" size="small" @click="handleSubmit(info.id, info.configCode)"><i class="iconfont icon-lxppc-edit"></i>提交</el-button>
         <el-button v-if="info.auditStatus === 1" size="small" @click="handleReview"><i class="iconfont icon-lxppc-edit"></i>复核</el-button>
+        </div>
       </section>
       <section class="common-section">
         <div class="common-section-header">
@@ -91,7 +94,7 @@
 </template>
 
 <script>
-import { getDetail } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesConfig/index';
+import { getDetail, submitItem } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesConfig/index';
 import { YES_NO_ENUM_MAP } from '@/libs/constants';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
@@ -117,6 +120,26 @@ export default {
     this.getData();
   },
   methods: {
+    handleSubmit (id, configCode) {
+      this.$confirm('是否对配置编号为' + configCode + '的数据进行提交?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        submitItem({ idSet: [id] }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '提交成功!'
+          });
+          this.getData();
+        }).catch(() => {
+          this.$message({
+            type: 'error',
+            message: '提交失败!'
+          });
+        });
+      }).catch(() => {});
+    },
     handleEdit () {
       this.$router.push({
         path: '/vehwholesale/creditsales/fundOwnCreditSalesConfig/edit',
