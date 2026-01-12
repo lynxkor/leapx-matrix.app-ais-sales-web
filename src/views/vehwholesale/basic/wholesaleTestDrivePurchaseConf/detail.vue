@@ -13,6 +13,9 @@
         <div class="common-section-body">
           <!-- TIPS: 根据实际情况调整展示字段和宽度 -->
           <el-form :inline="true" ref="ruleForm" label-width="150px">
+            <el-form-item label="编码" prop="code">
+              {{ info.code  }}
+            </el-form-item>
             <el-form-item label="物料编码：" prop="materialsCode">
               {{ info.materialsCode  }}
             </el-form-item>

@@ -210,8 +210,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'vehicleYearType',
-            label: '年款',
+            props: 'code',
+            label: '编码',
             visible: true,
             width: 200,
             fixed: 'left',
@@ -227,6 +227,7 @@ export default {
               type: 'primary'
             }]
           },
+          { props: 'vehicleYearType', label: '年款', visible: true, width: 200 },
           { props: 'vehicleModelLine', label: '系列', visible: true, width: 200 },
           { props: 'seriesName', label: '车系', visible: true, width: 200 },
           { props: 'quantity', label: '数量', visible: true, width: 200 },
