@@ -37,11 +37,11 @@
     <el-form-item label="门店名称">
       <tag-input v-model="form.dealerNames" placeholder="请输入" />
     </el-form-item>
-    <el-form-item label="单据状态" prop="billStatuss">
+    <el-form-item label="单据状态" prop="billStatuses">
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_rebate_bills_detail_status"
-          v-model="form.billStatuss"
+          v-model="form.billStatuses"
           placeholder="请选择"
           clearable
           multiple
@@ -287,10 +287,11 @@ export default {
           { props: 'vin', label: 'VIN号', visible: true, width: 200 },
           { props: 'bizOrderNo', label: '业务单据号', visible: true, width: 200 },
           { props: 'rebateAmount', label: '核销金额', visible: true, width: 200 },
+          { props: 'accruedAmount', label: '预提金额', visible: true, width: 200 },
           { props: 'modelName', label: '基本车型', visible: true, width: 200 },
           { props: 'seriesName', label: '车系', visible: true, width: 200 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'billStatusLabel', label: '审核状态', visible: true, width: 200 },
+          { props: 'billStatusLabel', label: '单据状态', visible: true, width: 200 },
           { props: 'budgetItemName', label: '预算科目', visible: true, width: 200 },
           { props: 'feeSupportTypeName', label: '费用支持类型', visible: true, width: 200 },
           { props: 'auditorName', label: '初审人', visible: true, width: 200 },
@@ -302,50 +303,50 @@ export default {
           { props: 'postedLabel', label: '是否入账', visible: true, width: 200 },
           { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
-          { props: 'modifierName', label: '更新人', visible: true, width: 200 },
-          { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
+          // { props: 'creatorName', label: '创建人', visible: true, width: 200 },
+          // { props: 'modifierName', label: '更新人', visible: true, width: 200 },
+          // { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
           // // { props: 'rebateBillDetailCode', label: '返利核算单明细编号', visible: true, width: 200 },
           // { props: 'accruedAmount', label: '预提金额', visible: true, width: 200 },
-          {
-            props: 'operate',
-            label: '操作',
-            type: 'operate',
-            visible: true,
-            fixed: 'right',
-            buttons: [
-            //   {
-            //   name: '编辑',
-            //   click: (rowIndex, row) => {
-            //     this.$router.push({
-            //       path: '/vehwholesale/rebate/fundVehicleRebateBillDetail/edit',
-            //       query: {
-            //         id: row.id
-            //       }
-            //     });
-            //   },
-            //   type: 'info'
-            // },
-              {
-                name: '删除',
-                popconfirmTitle: '此操作将永久删除, 是否继续?',
-                click: (rowIndex, row) => {
-                  deleteItem([row.id]).then(() => {
-                    this.$message({
-                      type: 'success',
-                      message: '删除成功!'
-                    });
-                    this.getData();
-                  }).catch(() => {
-                    this.$message({
-                      type: 'error',
-                      message: '删除失败!'
-                    });
-                  });
-                },
-                type: 'danger'
-              }]
-          }
+          // {
+          //   props: 'operate',
+          //   label: '操作',
+          //   type: 'operate',
+          //   visible: true,
+          //   fixed: 'right',
+          //   buttons: [
+          //   //   {
+          //   //   name: '编辑',
+          //   //   click: (rowIndex, row) => {
+          //   //     this.$router.push({
+          //   //       path: '/vehwholesale/rebate/fundVehicleRebateBillDetail/edit',
+          //   //       query: {
+          //   //         id: row.id
+          //   //       }
+          //   //     });
+          //   //   },
+          //   //   type: 'info'
+          //   // },
+          //     {
+          //       name: '删除',
+          //       popconfirmTitle: '此操作将永久删除, 是否继续?',
+          //       click: (rowIndex, row) => {
+          //         deleteItem([row.id]).then(() => {
+          //           this.$message({
+          //             type: 'success',
+          //             message: '删除成功!'
+          //           });
+          //           this.getData();
+          //         }).catch(() => {
+          //           this.$message({
+          //             type: 'error',
+          //             message: '删除失败!'
+          //           });
+          //         });
+          //       },
+          //       type: 'danger'
+          //     }]
+          // }
         ],
         total: 0
       }
@@ -427,7 +428,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '账户管理-整车返利-整车返利核算单明细管理',
-        dataFetchPath: 'vw/web/rebate/fundVehicleRebateBillDetail/page',
+        dataFetchPath: '/vw/web/rebate/fundVehicleRebateBillDetail/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -508,11 +509,10 @@ export default {
       const data = { ...this.form };
 
       Object.keys(this.form).forEach(key => {
-        if (data[key] === '' || data[key] === null || data[key].length === 0 || data[key] === []) {
+        if (data[key] === '' || data[key] === null || (typeof data[key] === 'object' && Object.keys(data[key]).length === 0)) {
           delete data[key];
         }
       });
-
       if (this.form.createTime) {
         delete data.createTime;
         if (this.form.createTime.length > 1) {
@@ -547,8 +547,8 @@ export default {
     handleBatchReview () {
       const BatchReviewIds = this.selectionList.map(item => item.id) || [];
       if (BatchReviewIds.length > 0) {
-        const billStatuss = this.selectionList.map(item => item.billStatus) || [];
-        if (this.isAllSpecifiedValue(billStatuss, 1050)) {
+        const billStatues = this.selectionList.map(item => item.billStatus) || [];
+        if (this.isAllSpecifiedValue(billStatues, 1040)) {
           this.$refs.showBatchReview.showOrHide('isSelect', BatchReviewIds);
         } else {
           this.$message({
@@ -564,7 +564,7 @@ export default {
       const BatchAuditIds = this.selectionList.map(item => item.id) || [];
       if (BatchAuditIds.length > 0) {
         const billStatuss = this.selectionList.map(item => item.billStatus) || [];
-        if (this.isAllSpecifiedValue(billStatuss, 1050)) {
+        if (this.isAllSpecifiedValue(billStatuss, 1020)) {
           this.$refs.showBatchAudit.showOrHide('isSelect', BatchAuditIds);
         } else {
           this.$message({
@@ -576,27 +576,39 @@ export default {
         this.$refs.showBatchAudit.showOrHide('notSelect');
       }
     },
+    isAllSpecifiedStatus (arr, targetValue, targetValue2) {
+      if (arr.length === 0) return false;
+      return arr.every(item => item === targetValue || item === targetValue2);
+    },
     // 批量删除
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        deleteItem(ids).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
+      const selectBillStatuses = this.selectionList.map(item => item.billStatus) || [];
+      if (this.isAllSpecifiedStatus(selectBillStatuses, 1020, 1030)) {
+        this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          deleteItem(ids).then(() => {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            });
+            this.getData();
+          }).catch(() => {
+            this.$message({
+              type: 'error',
+              message: '删除失败!'
+            });
           });
-          this.getData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '删除失败!'
-          });
+        }).catch(() => {});
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '存在不是待审核或驳回的记录，请确认!'
         });
-      }).catch(() => {});
+      }
     },
     async getParentCompany (query) {
       try {

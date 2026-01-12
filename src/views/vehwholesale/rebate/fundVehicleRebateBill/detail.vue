@@ -40,8 +40,8 @@
             <el-form-item label="月度：" prop="monthLabel">
               {{ info.monthLabel  }}
             </el-form-item>
-             <el-form-item label="合计核销金额：" prop="rebateAmount">
-              {{ info.rebateAmount  }}
+             <el-form-item label="合计核销金额：" prop="totalRebateAmount">
+              {{ info.totalRebateAmount  }}
             </el-form-item>
           </el-form>
         </div>
