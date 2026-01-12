@@ -62,8 +62,8 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量上架</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(2)" :disabled="selectionList.length === 0">批量下架</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport('productInfoImport')">导入</el-button>
       <el-button v-permission="moduleKey+'-saleAttributeimport'" size="small" @click="handleImport('productSaleAttributeImport')">订购属性导入</el-button>
       <el-button v-permission="moduleKey+'-skuimport'" size="small" @click="saleAttributeImport('productSaleAttributeImport')">商品定价导入</el-button>
@@ -119,7 +119,7 @@ import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
+import { downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import saleAttributeUpload from './saleAttributeUpload.vue';
@@ -448,9 +448,42 @@ export default {
         });
       }).catch(() => {});
     },
+    handleBatchShelfChange ({ selectionList, targetStatus, apiFunc, refreshFunc }) {
+      const statusText = { 1: '上架', 2: '下架' }[targetStatus] || (targetStatus === 1 ? '上架' : '下架');
+      if (!selectionList?.length) {
+        this.$message.warning('请先选择要操作的数据!');
+        return;
+      }
+      const hasInvalidItem = selectionList.some(item => item.status === targetStatus);
+      if (hasInvalidItem) {
+        const allInvalid = selectionList.every(item => item.status === targetStatus);
+        this.$message.warning(
+          allInvalid
+            ? `选中的数据已经是${statusText}状态，无需重复操作！`
+            : `选中的数据中存在${statusText}状态的数据，无法批量${statusText}！`
+        );
+        return;
+      }
+      this.$confirm(`此操作将${statusText}选中项，是否继续?`, '提示', {
+        type: 'warning'
+      })
+        .then(() => apiFunc({
+          idSet: selectionList.map(item => item.id),
+          productStatus: targetStatus
+        }))
+        .then(() => {
+          this.$message.success('操作成功!');
+          refreshFunc?.();
+        })
+        .catch(err => {
+          if (err !== 'cancel') {
+            this.$message.error('操作失败!');
+          }
+        });
+    },
     // 批量启用停用
     handleBatchEnable (status) {
-      handleBatchStatusChange.call(this, {
+      this.handleBatchShelfChange({
         selectionList: this.selectionList,
         targetStatus: status,
         apiFunc: enableItem,
