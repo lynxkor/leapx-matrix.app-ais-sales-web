@@ -182,7 +182,7 @@
 <script>
 import { getDetail, addOrUpdate, submitItem } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import { getEnum, getParentCompany } from '@/api/common';
+import { getEnum, getParentCompany, loginUserGet } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -316,6 +316,9 @@ export default {
       const id = this._id;
       if (!this.id) {
         this.$store.commit('SET_ACTIVE_BREADCRUMB', ['账户管理-赊销管理-自有资金赊销配置管理', `${id ? '详情' : '新建'}`]);
+        loginUserGet().then(res => {
+          this.form.configUserName = res.userName;
+        }).catch(() => {});
       }
       if (id) {
         getDetail(id).then(res => {

@@ -39,9 +39,10 @@
       </el-form-item>
          <el-form-item label="返利类型" prop="rebateTypes">
           <fetch-select
+            style="width: 100%"
             :request="fetchOptions"
             enumCode="vw_rebate_type"
-            v-model="filterReviewform.rebateTypes"
+            v-model="filterReviewform.rebateTyp"
             placeholder="请选择"
             clearable
             filterable
@@ -65,6 +66,7 @@
        <el-form-item label="预算科目" prop="budgetItemIds">
          <fetch-select
           filterable
+          style="width: 100%"
           clearable
           remote
           v-model="filterReviewform.budgetItemIds"
@@ -200,7 +202,12 @@ export default {
         passOrReject: 0
       },
       filterReviewform: {
-        billStatus: 1040
+        billStatus: 1040,
+        rebateTyp: '',
+        auditTime: [],
+        bizOrderNo: '',
+        budgetItemIds: '',
+        creatorName: ''
       },
       reviewAllform: {},
       submitLoading: false,

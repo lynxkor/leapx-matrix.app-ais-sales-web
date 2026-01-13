@@ -25,6 +25,7 @@
         v-model="form.createTime"
         :setDefault="true"
         deftTime="本周"
+        :limtNum="3"
         ref="transactionTime"/>
   </el-form-item>
   <template v-if="show">

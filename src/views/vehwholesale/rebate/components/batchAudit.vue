@@ -35,10 +35,11 @@
   >
     <el-form ref="filterFormRef" :model="filterForm"  :label-width="formLabelWidth">
       <el-form-item label="单据状态">
-        <el-input v-model="billStatus" placeholder="单据状态" style="width: 100%" disabled=""/>
+        <el-input v-model="billStatus" placeholder="单据状态" style="width: 100%" disabled/>
       </el-form-item >
-         <el-form-item label="返利类型" prop="rebateType">
+         <el-form-item label="返利类型" prop="rebateType" >
           <fetch-select
+            style="width: 100%"
             :request="fetchOptions"
             enumCode="vw_rebate_type"
             v-model="filterForm.rebateType"
@@ -62,12 +63,13 @@
       <el-form-item label="业务单据号：" prop="bizOrderNo">
         <el-input v-model="filterForm.bizOrderNo" autocomplete="off" />
       </el-form-item>
-       <el-form-item label="预算科目" prop="budgetItemId">
+       <el-form-item label="预算科目" prop="budgetItemIds">
          <fetch-select
+          style="width: 100%"
           filterable
           clearable
           remote
-          v-model="filterForm.budgetItemId"
+          v-model="filterForm.budgetItemIds"
           :remote-method="getFundBudgetItemList"
           value-key="id"
           label-key="name"
@@ -197,8 +199,12 @@ export default {
         passOrReject: '',
       },
       filterForm: {
+        creatorName: '',
         billStatus: 1020,
         createTime: [],
+        budgetItemId: [],
+        bizOrderNo: '',
+        rebateType: []
       },
       rejectform: {
         opinion: '',

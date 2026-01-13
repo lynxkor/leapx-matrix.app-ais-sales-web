@@ -57,7 +57,7 @@
               {{ info.seriesName  }}
             </el-form-item>
              <el-form-item label="基本车型：" prop="modelName">
-              {{ info.modelNameLabel  }}
+              {{ info.modelName  }}
             </el-form-item>
             <el-form-item label="交车单号：" prop="deliveryOrderCode">
               {{ info.deliveryOrderCode  }}

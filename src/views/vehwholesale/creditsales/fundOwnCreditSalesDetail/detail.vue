@@ -41,7 +41,7 @@
             </el-form-item>
             <el-form-item label="企业客户整车订单：" prop="entVehorderCode">
               {{ info.entVehorderCode  }}
-            </el-form-item>=
+            </el-form-item>
           </el-form>
         </div>
       </section>
@@ -51,9 +51,8 @@
         </div>
         <div class="common-section-body">
           <el-form :inline="true" ref="ruleForm" label-width="150px">
-            <el-form-item label="车辆价格：" prop="wholesalePrice">
-              <!-- {{  }} -->
-            </el-form-item>
+            <!-- <el-form-item label="车辆价格：" prop="wholesalePrice">
+            </el-form-item> -->
             <el-form-item label="批售价/折扣价：" prop="wholesalePrice">
               {{ info.wholesalePrice  }}
             </el-form-item>
@@ -87,7 +86,7 @@
             <el-form-item label="违约金：" prop="penaltyFee">
               {{ info.penaltyFee  }}
             </el-form-item>
-            <el-form-item label="凭证号：" prop="voucherNo">
+            <el-form-item label="凭证编号：" prop="voucherNo">
               {{ info.voucherNo  }}
             </el-form-item>
             <el-form-item label="合格证赎回申请：" prop="certificateRedemptionApplyId">
