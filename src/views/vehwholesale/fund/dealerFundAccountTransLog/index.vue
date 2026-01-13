@@ -156,7 +156,7 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
-import dateranges from '@/libs/components/Dateranges';
+import dateranges from '@/libs/components/dateranges';
 import TagInput from '@/libs/components/TagInput';
 import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
