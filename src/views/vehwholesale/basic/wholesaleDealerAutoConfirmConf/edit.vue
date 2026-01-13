@@ -36,7 +36,7 @@
                   filterable
                   clearable
                   remote
-                  v-model="form.dealerCode"
+                  v-model="form.dealerName"
                   :remote-method="getDealerListByName"
                   :params="form.dealerName"
                   value-key="storeCode"
