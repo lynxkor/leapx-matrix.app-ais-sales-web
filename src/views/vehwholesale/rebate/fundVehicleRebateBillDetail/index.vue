@@ -194,7 +194,7 @@ import { listIdNames as fundFeeSuportTypeList } from '@/api/vehwholesale/fund/fu
 import TagInput from '@/libs/components/TagInput';
 import BatchAuditDialog from '../components/batchAudit';
 import BatchReviewDialog from '../components/batchReview';
-import dateranges from '@/libs/components/dateranges';
+import dateranges from '@/libs/components/Dateranges';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对

@@ -136,7 +136,7 @@ import EditPage from './edit.vue';
 import { listIdNames as fundBudgetItemList } from '@/api/vehwholesale/fund/fundBudgetItem/index';
 import { listIdNames as fundFeeSuportTypeList } from '@/api/vehwholesale/fund/fundFeeSupportType/index';
 import TagInput from '@/libs/components/TagInput';
-import dateranges from '@/libs/components/dateranges';
+import dateranges from '@/libs/components/Dateranges';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   creatorName: '',

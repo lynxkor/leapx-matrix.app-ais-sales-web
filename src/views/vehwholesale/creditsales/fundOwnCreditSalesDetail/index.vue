@@ -139,7 +139,7 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
-import dateranges from '@/libs/components/dateranges';
+import dateranges from '@/libs/components/Dateranges';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
