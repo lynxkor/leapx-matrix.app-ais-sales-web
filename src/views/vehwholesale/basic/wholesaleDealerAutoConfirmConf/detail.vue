@@ -81,7 +81,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '新页面',
+      pageTitle: '整车批售-批售主数据-门店自动确认批售配置',
       pageType: 'detail',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleDealerAutoConfirmConf',
@@ -91,7 +91,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['新页面', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车批售-批售主数据-门店自动确认批售配置', '详情']);
     this.getData();
   },
   methods: {

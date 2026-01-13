@@ -111,7 +111,7 @@
           remote
           collapseTags
           v-model="form.seriesIds"
-          :remote-method="getDealerListByName"
+          :remote-method="getVehicleSeriesList"
           value-key="id"
           label-key="name"
         />
@@ -519,7 +519,6 @@ export default {
     async getDealerListByName (params) {
       return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
     },
-
   }
 };
 </script>
