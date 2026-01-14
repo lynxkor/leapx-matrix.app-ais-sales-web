@@ -26,3 +26,8 @@ debug.log
 
 # yapi数据临时文件
 /bin/generate.json
+
+# 临时文件
+/src/components/AisUpload
+/src/components/FileDisplay
+/src/api/attachment
