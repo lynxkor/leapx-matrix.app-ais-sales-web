@@ -36,11 +36,12 @@
         />
       </el-form-item>
         <el-form-item label="母公司编码">
-        <el-input
+          <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
+        <!-- <el-input
           placeholder="请输入"
           v-model="form.dealerCompanyCode"
           clearable
-        />
+        /> -->
       </el-form-item>
       <el-form-item label="额度是否有效">
           <fetch-select

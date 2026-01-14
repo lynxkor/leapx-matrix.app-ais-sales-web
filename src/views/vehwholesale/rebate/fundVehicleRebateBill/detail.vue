@@ -46,6 +46,23 @@
           </el-form>
         </div>
       </section>
+        <section class="common-section">
+        <div class="common-section-header">
+          <h2>返利核算单明细</h2>
+        </div>
+        <div class="common-section-body">
+          <edit-table
+            ref="editTable"
+            :columns="columns"
+            :data="tableData"
+            :show-toolbar="false"
+            :show-pagination="true"
+            :total="total"
+            @current-page-change="pageChange"
+            @page-size-change="sizeChange"
+          />
+        </div>
+      </section>
     </template>
   </div>
 </template>
@@ -55,11 +72,14 @@ import { getDetail } from '@/api/vehwholesale/rebate/fundVehicleRebateBill/index
 import { YES_NO_ENUM_MAP } from '@/libs/constants';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-
+import EditTable from '@/libs/components/EditTable';
+import { getList } from '@/api/vehwholesale/rebate/fundVehicleRebateBillDetail/index';
+const pageSize = 10;
 export default {
   name: 'fundVehicleRebateBillDetail',
   mixins: [permissions, commonMixins],
   components: {
+    EditTable
   },
   data () {
     return {
@@ -68,6 +88,28 @@ export default {
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-fundVehicleRebateBill',
       loading: true,
+      tableData: [],
+      optionObj: {
+        form: {
+          page: 1,
+          size: pageSize
+        }
+      },
+      total: 0,
+      columns: [
+        { field: 'rebateBillDetailCode', title: '返利核算单明细编号', width: 240 },
+        { field: 'vin', title: 'VIN号', width: 120 },
+        { field: 'bizOrderNo', title: '业务单据号', width: 160 },
+        { field: 'rebateAmount', title: '核销金额', width: 200 },
+        { field: 'modelName', title: '基本车型', width: 200 },
+        { field: 'seriesName', title: '车系', width: 200 },
+        { field: 'remark', title: '备注', width: 260 },
+        { field: 'billStatusLabel', title: '单据状态', width: 200 },
+        { field: 'budgetItemName', title: '预算科目', width: 200 },
+        { field: 'feeSupportTypeName', title: '费用支持类型', width: 200 },
+        { field: 'reviewTime', title: '复审时间', width: 200 },
+        { field: 'createTime', title: '创建时间', width: 200 },
+      ],
       info: {},
       yes_no_enum_map: YES_NO_ENUM_MAP
     };
@@ -77,6 +119,25 @@ export default {
     this.getData();
   },
   methods: {
+    pageChange (page) {
+      this.optionObj.form.page = page;
+      this.getList();
+    },
+    sizeChange (size) {
+      this.optionObj.form.size = size;
+      this.getList();
+    },
+    getList () {
+      getList({ rebateBillId: this.$route.query.id, pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
+        .then(res => {
+          console.log(res);
+          this.tableData = res.records;
+          this.total = res.total;
+        }).catch(() => {
+          this.tableData = [];
+          this.loading = false;
+        });
+    },
     handleEdit () {
       this.$router.push({
         path: '/vehwholesale/rebate/fundVehicleRebateBill/edit',
@@ -89,6 +150,7 @@ export default {
       getDetail(this.$route.query.id).then(res => {
         this.loading = false;
         this.info = res;
+        this.getList();
       }).catch(() => {
         this.loading = false;
       });

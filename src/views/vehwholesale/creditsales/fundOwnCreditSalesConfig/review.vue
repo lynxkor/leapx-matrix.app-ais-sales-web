@@ -131,7 +131,7 @@ export default {
         reviewItem(reqParams).then(() => {
           this.$message({
             type: 'success',
-            message: '审核通过成功!'
+            message: '复核成功!'
           });
           this.$router.push({
             name: 'fundOwnCreditSalesConfig'
@@ -141,14 +141,17 @@ export default {
         if (reqParams.reviewOpinion === '' || reqParams.reviewOpinion === null || reqParams.reviewOpinion === undefined) {
           this.$message({
             type: 'error',
-            message: '请填写审核意见!'
+            message: '请填复核意见!'
           });
         } else if (reqParams.reviewOpinion.length > 0) {
           reqParams.passOrReject = 0;
           reviewItem(reqParams).then(() => {
             this.$message({
               type: 'success',
-              message: '审核拒绝成功!'
+              message: '复核成功!'
+            });
+            this.$router.push({
+              name: 'fundOwnCreditSalesConfig'
             });
           }).catch(() => {});
         }

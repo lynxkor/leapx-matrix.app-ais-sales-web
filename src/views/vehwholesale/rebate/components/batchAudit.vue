@@ -60,7 +60,7 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-      <el-form-item label="业务单据号：" prop="bizOrderNo">
+      <el-form-item label="业务单据号" prop="bizOrderNo">
         <el-input v-model="filterForm.bizOrderNo" autocomplete="off" />
       </el-form-item>
        <el-form-item label="预算科目" prop="budgetItemIds">
@@ -69,7 +69,7 @@
           filterable
           clearable
           remote
-          v-model="filterForm.budgetItemIds"
+          v-model="filterForm.budgetItemId"
           :remote-method="getFundBudgetItemList"
           value-key="id"
           label-key="name"
@@ -202,9 +202,9 @@ export default {
         creatorName: '',
         billStatus: 1020,
         createTime: [],
-        budgetItemId: [],
+        budgetItemId: '',
         bizOrderNo: '',
-        rebateType: []
+        rebateType: ''
       },
       rejectform: {
         opinion: '',
@@ -239,8 +239,8 @@ export default {
     filterClose () {
       this.filterDialogVisible = false;
       this.$refs.filterFormRef.resetFields();
-      this.filterForm.rebateTypes = [];
-      this.filterForm.budgetItemIds = [];
+      this.filterForm.rebateType = '';
+      this.filterForm.budgetItemId = '';
     },
     close () {
       this.dialogVisible = false;
@@ -270,7 +270,7 @@ export default {
       let rejectParams = { ...this.filterForm, ...this.rejectform };
       // rejectParams.passOrReject = 0;
       auditItem({ ...this.getFormData(rejectParams) }).then(res => {
-        this.$message.success('批量通过成功');
+        this.$message.success('批量初审成功');
         this.filterDialogVisible = false;
         this.rejectlogVisible = false;
       }).catch(() => {});
@@ -288,7 +288,7 @@ export default {
     AuditAppSure () {
       this.filterForm.passOrReject = 1;
       auditItem({ ...this.getFormData(this.filterForm) }).then(res => {
-        this.$message.success('批量通过成功');
+        this.$message.success('批量初审成功');
         this.totalDialogVisible = false;
         this.filterDialogVisible = false;
         this.$emit('callParentMethod');
@@ -305,7 +305,7 @@ export default {
       };
       if (params.passOrReject === '1') {
         auditItem(params).then(res => {
-          this.$message.success('批量通过成功');
+          this.$message.success('批量初审成功');
           this.$refs.SelectformRef.resetFields();
           this.dialogVisible = false;
           this.$emit('callParentMethod');
