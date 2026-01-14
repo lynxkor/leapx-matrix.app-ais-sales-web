@@ -8,13 +8,13 @@
       </section>
       <section class="common-section">
         <div class="common-section-header">
-          <h2>基础信息</h2>
+          <h2>基本信息</h2>
         </div>
         <div class="common-section-body">
           <!-- TIPS: 根据实际情况调整展示字段和宽度 -->
           <el-form :inline="true" ref="ruleForm" label-width="150px">
-            <el-form-item label="赊销账户编号：" prop="creditSalesDetailCode">
-              {{ info.creditSalesDetailCode  }}
+            <el-form-item label="赊销账户编号：" prop="fundAccountCode">
+              {{ info.fundAccountCode  }}
             </el-form-item>
             <el-form-item label="母公司名称：" prop="dealerCompanyName">
               {{ info.dealerCompanyName  }}
@@ -28,8 +28,9 @@
             <el-form-item label="创建时间：" prop="createTime">
               {{ info.createTime  }}
             </el-form-item>
-            <!-- <el-form-item label="结算资金类型：" prop="createTime">
-            </el-form-item> -->
+            <el-form-item label="结算资金类型：" prop="fundTypeLabel">
+              {{ info.fundTypeLabel  }}
+            </el-form-item>
             <el-form-item label="备注：" prop="remark">
               {{ info.remark  }}
             </el-form-item>

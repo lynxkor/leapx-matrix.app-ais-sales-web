@@ -11,7 +11,21 @@
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
-              <el-form-item label="母公司名称" prop="dealerCompanyName">
+              <el-form-item label="母公司名称" prop="dealerCompanyName" v-show="_id">
+                  <fetch-select
+                  :remote-method="getParentCompany"
+                  remote
+                  v-model="form.dealerCompanyName"
+                  placeholder="请选择"
+                  labelKey="companyName"
+                  valueKey="companyName"
+                  clearable
+                  filterable
+                  disabled
+                  @change="getDealerCompanyCode"
+                  />
+              </el-form-item>
+              <el-form-item label="母公司名称" prop="dealerCompanyName" v-show="!_id">
                   <fetch-select
                   :remote-method="getParentCompany"
                   remote
@@ -180,9 +194,9 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, submitItem } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesConfig/index';
+import { getDetail, addOrUpdate, submitItem, gdclItem } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import { getEnum, getParentCompany } from '@/api/common';
+import { getEnum, getParentCompany, loginUserGet } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -266,6 +280,7 @@ export default {
       isEditing: false,
       auditSub: false,
       loading: false,
+      editId: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
@@ -302,6 +317,22 @@ export default {
   methods: {
     getDealerCompanyCode (dealerCompanyCode, obj) {
       this.form.dealerCompanyCode = obj.companyCode;
+      gdclItem({ dealerCompanyCode: obj.companyCode }).then((res) => {
+        if (res) {
+          this.form.creditAccountStatus = res.creditAccountStatus;
+          this.form.creditAmount = res.creditAmount;
+          this.form.downPaymentRatio = res.downPaymentRatio;
+          this.form.effectiveTime = res.effectiveTime;
+          this.form.expireTime = res.expireTime;
+        } else {
+          this.form.creditAccountStatus = '';
+          this.form.creditAmount = '';
+          this.form.downPaymentRatio = '';
+          this.form.effectiveTime = '';
+          this.form.expireTime = '';
+        }
+      }).catch(() => {
+      });
     },
     isEmptyObject (obj) {
       if (typeof obj !== 'object' || obj === null || Array.isArray(obj)) {
@@ -316,6 +347,9 @@ export default {
       const id = this._id;
       if (!this.id) {
         this.$store.commit('SET_ACTIVE_BREADCRUMB', ['账户管理-赊销管理-自有资金赊销配置管理', `${id ? '详情' : '新建'}`]);
+        loginUserGet().then(res => {
+          this.form.configUserName = res.userName;
+        }).catch(() => {});
       }
       if (id) {
         getDetail(id).then(res => {

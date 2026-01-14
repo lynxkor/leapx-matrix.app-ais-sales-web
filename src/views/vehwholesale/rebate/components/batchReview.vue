@@ -37,12 +37,12 @@
       <el-form-item label="单据状态">
           <el-input type="text" v-model="billStatus" placeholder="请选择" style="width: 100%" disabled=""/>
       </el-form-item>
-         <el-form-item label="返利类型" prop="rebateTypes">
+         <el-form-item label="返利类型" prop="rebateType">
           <fetch-select
             style="width: 100%"
             :request="fetchOptions"
             enumCode="vw_rebate_type"
-            v-model="filterReviewform.rebateTyp"
+            v-model="filterReviewform.rebateType"
             placeholder="请选择"
             clearable
             filterable
@@ -63,13 +63,13 @@
       <el-form-item label="业务单据号" prop="bizOrderNo">
         <el-input v-model="filterReviewform.bizOrderNo" autocomplete="off" />
       </el-form-item>
-       <el-form-item label="预算科目" prop="budgetItemIds">
+       <el-form-item label="预算科目" prop="budgetItemId">
          <fetch-select
           filterable
           style="width: 100%"
           clearable
           remote
-          v-model="filterReviewform.budgetItemIds"
+          v-model="filterReviewform.budgetItemId"
           :remote-method="getFundBudgetItemList"
           value-key="id"
           label-key="name"
@@ -206,7 +206,7 @@ export default {
         rebateTyp: '',
         auditTime: [],
         bizOrderNo: '',
-        budgetItemIds: '',
+        budgetItemId: '',
         creatorName: ''
       },
       reviewAllform: {},
@@ -250,8 +250,8 @@ export default {
     close () {
       this.dialogVisible = false;
       this.$refs.filterReviewformRef.resetFields();
-      this.filterReviewform.rebateTypes = [];
-      this.filterReviewform.budgetItemIds = [];
+      this.filterReviewform.rebateType = '';
+      this.filterReviewform.budgetItemId = '';
     },
     rejectClose () {
       this.reviewRejectlogVisible = false;
@@ -260,7 +260,6 @@ export default {
     reviewRejectClose () {
       this.reviewRejectlogVisible = false;
       this.$refs.rejectformRef.resetFields();
-      this.filterDialogVisible = false;
     },
     getFormData (val) {
       const data = { ...val };
@@ -295,7 +294,7 @@ export default {
         this.totalDialogVisible = false;
         this.filterDialogVisible = false;
         this.$emit('callReviewParentMethod');
-        this.$message.success('批量通过成功');
+        this.$message.success('批量复审成功');
       }).catch(() => {});
     },
     reviewRej () {
@@ -304,7 +303,7 @@ export default {
       // let approveParams = { ...this.filterReviewform };
       // approveParams.passOrReject = 1;
       // reviewItem(approveParams).then(res => {
-      //   this.$message.success('批量通过成功');
+      //   this.$message.success(复审成功');
       // }).catch(() => {});
     },
     reviewRejectSubmit () {
@@ -317,7 +316,7 @@ export default {
         });
       } else if (rejectParams.opinion && rejectParams.opinion.length > 0) {
         reviewItem(rejectParams).then(res => {
-          this.$message.success('批量通过成功');
+          this.$message.success('批量复审成功');
           this.reviewRejectlogVisible = false;
           this.filterDialogVisible = false;
         }).catch(() => {});
@@ -331,7 +330,7 @@ export default {
       };
       if (params.passOrReject === '1') {
         reviewItem(params).then(res => {
-          this.$message.success('批量通过成功');
+          this.$message.success('批量复审成功');
           this.dialogVisible = false;
           this.$emit('callReviewParentMethod');
         }).catch(() => {});

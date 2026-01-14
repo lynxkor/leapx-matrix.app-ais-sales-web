@@ -238,8 +238,8 @@ export default {
               // 如果有值，再进行验证
               if (value < 1) {
                 callback(new Error('截取预留起始位不能小于1'));
-              } else if (value > 50) {
-                callback(new Error('截取预留起始位不能大于50'));
+              } else if (value > 17) {
+                callback(new Error('截取预留起始位不能大于17'));
               } else if (Math.floor(Number(value)) !== Number(value)) {
                 callback(new Error('截取预留起始位必须为整数'));
               } else {
@@ -262,8 +262,8 @@ export default {
               // 如果有值，再进行验证
               if (value < 1) {
                 callback(new Error('截取预留截止位不能小于1'));
-              } else if (value > 50) {
-                callback(new Error('截取预留截止位不能大于50'));
+              } else if (value > 17) {
+                callback(new Error('截取预留截止位不能大于17'));
               } else if (Math.floor(Number(value)) !== Number(value)) {
                 callback(new Error('截取预留截止位必须为整数'));
               } else {

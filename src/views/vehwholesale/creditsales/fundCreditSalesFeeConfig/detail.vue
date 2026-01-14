@@ -8,7 +8,7 @@
       </section>
       <section class="common-section">
         <div class="common-section-header">
-          <h2>基础信息</h2>
+          <h2>基本信息</h2>
         </div>
         <div class="common-section-body">
           <!-- TIPS: 根据实际情况调整展示字段和宽度 -->
