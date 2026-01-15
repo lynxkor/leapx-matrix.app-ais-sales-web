@@ -28,7 +28,7 @@
 
   <el-dialog
     class="filter-batchAudit-dialog"
-    title=""
+    title="设置初审数据过滤条件"
     width="800px"
     :visible.sync="filterDialogVisible"
     @close="filterClose"

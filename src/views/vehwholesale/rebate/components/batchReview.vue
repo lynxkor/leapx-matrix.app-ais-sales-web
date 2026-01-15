@@ -28,7 +28,7 @@
 
   <el-dialog
     class="filter-batchReview-dialog"
-    title=""
+    title="设置复审数据过滤条件"
     width="800px"
     :visible.sync="filterDialogVisible"
     @close="close"
