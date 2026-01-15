@@ -30,6 +30,31 @@
             clearable
           />
         </el-form-item>
+        <el-form-item label="库存状态">
+          <fetch-select :request="fetchOptions" enumCode="vehstock_vdc_inventory_status" v-model="form.vdcInventoryStatus"
+            placeholder="请选择" clearable filterable />
+        </el-form-item>
+        <el-form-item label="销售预留">
+          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.reserved"
+            placeholder="请选择" clearable filterable />
+        </el-form-item>
+        <el-form-item label="销售预留类型">
+          <fetch-select :request="fetchOptions" enumCode="vehstock_reserved_type"
+            v-model="form.reservedTypeList" placeholder="请选择" clearable multiple filterable />
+        </el-form-item>
+        <el-form-item label="整车物流预留">
+          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.logisticsReserved"
+            placeholder="请选择" clearable filterable />
+        </el-form-item>
+        <el-form-item label="车辆交付状态">
+          <fetch-select :request="fetchOptions" enumCode="vehstock_vehicle_delivery_status"
+            v-model="form.vehicleDeliveryStatusList" placeholder="请选择" clearable multiple filterable />
+        </el-form-item>
+      <el-form-item label="VDC入库时间">
+        <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.inboundDateTime" type="daterange"
+          :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
+          start-placeholder="开始日期" end-placeholder="结束日期" />
+      </el-form-item>
         <el-form-item label="创建人">
           <el-input
             placeholder="请输入"
@@ -91,6 +116,7 @@ import TagInput from '@/libs/components/TagInput';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/basic/vehicleReservationDetail/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import Upload from '@/libs/components/UploadDialog';
+import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
@@ -107,6 +133,14 @@ const defaultForm = {
   remarkLike: '',
   createByName: '',
   updateByName: '',
+  vdcInventoryStatus: '',
+  reserved: '',
+  reservedType: '',
+  reservedTypeList: [],
+  logisticsReserved: '',
+  vehicleDeliveryStatus: '',
+  vehicleDeliveryStatusList: [],
+  inboundDateTime: []
 };
 
 const pageSize = 20;
@@ -120,6 +154,7 @@ export default {
     PageSearchAction,
     LPVxeTable,
     Upload,
+    FetchSelect,
     TagInput
   },
   data () {
@@ -167,6 +202,12 @@ export default {
           { props: 'reserveTime', label: '预留时间', visible: true, width: 200 },
           { props: 'reserveNum', label: '需预留数', visible: true, width: 200 },
           { props: 'reservedNum', label: '已预留数', visible: true, width: 200 },
+          { props: 'reservedLabel', label: '销售预留', visible: true, width: 200 },
+          { props: 'reservedTypeLabel', label: '销售预留类型', visible: true, width: 200 },
+          { props: 'logisticsReservedLabel', label: '整车物流预留', visible: true, width: 200 },
+          { props: 'vehicleDeliveryStatusLabel', label: '车辆交付状态', visible: true, width: 200 },
+          { props: 'vdcInventoryStatusLabel', label: '库存状态', visible: true, width: 200 },
+          { props: 'inboundDateTime', label: 'VDC入库时间', visible: true, width: 200 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
@@ -334,6 +375,14 @@ export default {
           delete data[key];
         }
       });
+
+      if (this.form.inboundDateTime) {
+        delete data.inboundDateTime;
+        if (this.form.inboundDateTime.length > 1) {
+          data.inboundDateTimeStart = this.form.inboundDateTime[0];
+          data.inboundDateTimeEnd = this.form.inboundDateTime[1];
+        }
+      }
 
       if (this.form.createTime) {
         delete data.createTime;
