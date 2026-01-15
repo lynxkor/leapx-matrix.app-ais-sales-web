@@ -80,6 +80,7 @@
             v-model="form.quotaQty"
             clearable
             :precision="0"
+            :min="null"
           />
         </el-form-item>
         <el-form-item label="状态">
@@ -168,7 +169,7 @@ const defaultForm = {
   vehicleYearTypeId: '',
   vehicleModelLineId: '',
   seriesIds: '',
-  quotaQty: '',
+  quotaQty: null,
   status: '',
   createTime: '',
 };
@@ -483,6 +484,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.m-wholesaleDealerTestDriveQuota-list {
-}
+  ::v-deep .el-input-number {
+    width: 100%;
+  }
 </style>
