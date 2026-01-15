@@ -54,6 +54,7 @@
             v-model="form.quantity"
             clearable
             :precision="0"
+            :min="null"
           />
         </el-form-item>
         <el-form-item label="建店类型">
@@ -165,7 +166,7 @@ const defaultForm = {
   vehicleYearTypeId: '',
   vehicleModelLineId: '',
   seriesIds: '',
-  quantity: '',
+  quantity: null,
   mcDealerType: '',
   cityCode: '',
   status: '',
@@ -477,6 +478,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.m-wholesale-test-drive-quota-list {
-}
+  ::v-deep .el-input-number {
+    width: 100%;
+  }
 </style>

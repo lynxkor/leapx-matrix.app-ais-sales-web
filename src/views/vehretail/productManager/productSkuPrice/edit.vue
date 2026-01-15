@@ -105,11 +105,6 @@
               </el-form-item>
               <el-form-item label="允许改配" prop="allowConfigChange">
                 <fetch-select :options="yes_no_enum" v-model="form.allowConfigChange" placeholder="请选择" clearable  />
-                <!-- <el-input
-                  placeholder="请输入"
-                  v-model="form.allowConfigChange"
-                  clearable
-                /> -->
               </el-form-item>
               <el-form-item label="状态" prop="status">
                 <fetch-select
