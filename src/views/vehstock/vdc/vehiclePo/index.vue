@@ -299,7 +299,7 @@ export default {
           return await vehicleInterior({ interiorNameLike: query });
         },
         wheel: async (query) => {
-          return await vehicleWheelHub({ wheelHunNameLike: query });
+          return await vehicleWheelHub({ wheelHubNameLike: query });
         },
         optional: async (query) => {
           return await vehicleOptionPackage({ optionPackageNameLike: query });
