@@ -68,7 +68,7 @@
       </section>
       <section class="common-section">
         <div class="common-section-header">
-          <h2>生产信息</h2>
+          <h2>物料信息</h2>
         </div>
         <div class="common-section-body">
           <el-form :inline="true" ref="ruleForm" label-width="160px">
@@ -116,7 +116,7 @@
       </section>
       <section class="common-section">
         <div class="common-section-header">
-          <h2>物料信息</h2>
+          <h2>生产信息</h2>
         </div>
         <div class="common-section-body">
           <el-form :inline="true" ref="ruleForm" label-width="160px">

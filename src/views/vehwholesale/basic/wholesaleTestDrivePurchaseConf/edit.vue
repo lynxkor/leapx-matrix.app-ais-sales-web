@@ -39,6 +39,7 @@
                   clearable
                   remote
                   v-model="form.seriesId"
+                  :params="form.seriesName"
                   :remote-method="getVehicleSeriesList"
                   value-key="id"
                   label-key="name"
@@ -46,12 +47,13 @@
                   :disabled="!!_id"
                 />
               </el-form-item>
-                            <el-form-item label="车型" prop="modelId">
+              <el-form-item label="车型" prop="modelId">
                 <fetch-select
                   filterable
                   clearable
                   remote
                   v-model="form.modelId"
+                  :params="form.modelName"
                   :remote-method="getModelIdList"
                   value-key="id"
                   label-key="name"
@@ -83,6 +85,7 @@
                   clearable
                   remote
                   v-model="form.optionPackageId"
+                  :params="form.optionPackageName"
                   :remote-method="getOptionPackageList"
                   value-key="id"
                   label-key="name"
@@ -186,19 +189,19 @@ export default {
           { required: true, message: '请输入物料编码', trigger: 'blur' }
         ],
         materialsDesc: [
-          { required: true, message: '请输入物料描述', trigger: 'blur' }
+          { required: false, message: '请输入物料描述', trigger: 'blur' }
         ],
         seriesName: [
           { required: true, message: '请输入车系', trigger: 'blur' }
         ],
         modelName: [
-          { required: true, message: '请输入车型', trigger: 'blur' }
+          { required: false, message: '请输入车型', trigger: 'blur' }
         ],
         vehicleYearType: [
           { required: true, message: '请选择年款', trigger: 'change' }
         ],
         optionPackageName: [
-          { required: true, message: '请输入选装包', trigger: 'blur' }
+          { required: false, message: '请输入选装包', trigger: 'blur' }
         ],
         allowTestDriveWholesale: [
           { required: true, message: '请输入允许试驾车批售', trigger: 'blur' }
@@ -243,13 +246,13 @@ export default {
           { required: true, message: '请输入车系ID', trigger: 'blur' }
         ],
         modelId: [
-          { required: true, message: '请输入车型ID', trigger: 'blur' }
+          { required: false, message: '请输入车型ID', trigger: 'blur' }
         ],
         vehicleYearTypeId: [
           { required: true, message: '请选择年款ID', trigger: 'change' }
         ],
         optionPackageId: [
-          { required: true, message: '请输入选装包ID', trigger: 'blur' }
+          { required: false, message: '请输入选装包ID', trigger: 'blur' }
         ],
         ownerOrgId: [
           { required: true, message: '请输入归属门店ID（组织ID），当数据权限归属到本组织以及本下级', trigger: 'blur' }

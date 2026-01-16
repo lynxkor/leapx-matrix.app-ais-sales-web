@@ -9,7 +9,7 @@
       <el-form-item label="物料描述">
         <tag-input v-model="form.materialsDescList" placeholder="请输入" />
       </el-form-item>
-      <el-form-item label="物料编码">
+      <el-form-item label="物料编码" v-show="this.visibleCount === 3 || show">
         <tag-input v-model="form.materialsCodeList" placeholder="请输入" />
       </el-form-item>
       <template v-if="show">
@@ -299,7 +299,7 @@ export default {
           return await vehicleInterior({ interiorNameLike: query });
         },
         wheel: async (query) => {
-          return await vehicleWheelHub({ wheelHunNameLike: query });
+          return await vehicleWheelHub({ wheelHubNameLike: query });
         },
         optional: async (query) => {
           return await vehicleOptionPackage({ optionPackageNameLike: query });
