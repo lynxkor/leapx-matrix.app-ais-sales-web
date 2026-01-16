@@ -102,6 +102,65 @@
       :id="'1'"
       @close="handleUploadDialogClose"
     />
+      <el-dialog
+    class="audit-total-dialog"
+    title="门店试驾车配额调整"
+    width="800px"
+    :visible.sync="totalQuotaQtyDialogVisible"
+    @close="changeClose"
+  >
+    <el-form ref="changeformRef" :model="changeform" :rules="changerules" :label-width="formLabelWidth">
+        <el-form-item label="调整前配额数" prop="quotaQty">
+          <el-input-number
+            :controls="false"
+            placeholder="请输入"
+            v-model="changeform.quotaQty"
+            clearable
+            :precision="0"
+            :disabled="true"
+          />
+        </el-form-item>
+        <el-form-item label="配额数" prop="changeAfterQty">
+          <el-input-number
+            :controls="false"
+            placeholder="请输入"
+            v-model="changeform.changeAfterQty"
+            clearable
+            :precision="0"
+          />
+        </el-form-item>
+        <el-form-item label="调整说明" prop="changeDescs">
+          <el-input
+            placeholder="请输入"
+            v-model="changeform.changeDescs"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="累计已申请数" prop="requestQty">
+          <el-input-number
+            :controls="false"
+            placeholder="请输入"
+            v-model="changeform.requestQty"
+            clearable
+            :precision="0"
+            :disabled="true"
+          />
+        </el-form-item>
+        <el-form-item label="附件说明（文件上传TODO）" prop="changeDescFileId">
+          <el-input
+            placeholder="请输入"
+            v-model="changeform.changeDescFileId"
+            clearable
+          />
+        </el-form-item>
+    </el-form>
+    <template v-slot:footer>
+      <div class="dialog-footer" style="text-align: center;">
+        <el-button :loading="submitLoading" type="primary" @click="changeSure()">确认</el-button>
+        <el-button :loading="submitLoading"  @click="changeClose()">取消</el-button>
+      </div>
+    </template>
+  </el-dialog>
   </div>
 </template>
 
@@ -120,6 +179,7 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
+import { updateTestDriveQuota, getDetail as getDetailChange } from '@/api/vehwholesale/basic/wholesaleDealerTestDriveQuota/index';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -151,8 +211,18 @@ export default {
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleProdScheduleActivity',
+      changeId: -1,
       form: {
         ...defaultForm
+      },
+      changeform: {},
+      changerules: {
+        changeBeforeQty: [
+          { required: true, message: '请输入变化前数量', trigger: 'blur' }
+        ],
+        changeAfterQty: [
+          { required: true, message: '请输入变化后数量', trigger: 'blur' }
+        ],
       },
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
@@ -160,6 +230,7 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      totalQuotaQtyDialogVisible: false,
       clickItemId: '',
       optionObj: {
         id: 'wholesaleProdScheduleActivityTable',
@@ -216,7 +287,16 @@ export default {
               },
               type: 'info'
             }, {
+              name: '配额调整',
+              click: (rowIndex, row) => {
+                this.changeTotalQuotaQty(row.id);
+              },
+              type: 'info'
+            }, {
               name: '删除',
+              show: (row) => {
+                return row.usedQuotaQty === 0;
+              },
               popconfirmTitle: '此操作将永久删除, 是否继续?',
               click: (rowIndex, row) => {
                 deleteItem([row.id]).then(() => {
@@ -233,6 +313,17 @@ export default {
                 });
               },
               type: 'danger'
+            }, {
+              name: '日志',
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehwholesale/basic/dealerDemoVehicleQuotaRecord',
+                  query: {
+                    id: row.id
+                  }
+                });
+              },
+              type: 'info'
             }]
           }
         ],
@@ -245,6 +336,46 @@ export default {
     this.getData();
   },
   methods: {
+    changeClose () {
+      this.totalQuotaQtyDialogVisible = false;
+    },
+    changeSure () {
+      this.$refs.changeformRef.validate((valid) => {
+        if (valid) {
+          this.submitLoading = true;
+          const submitForm = {
+            changeAfterQty: this.changeform.changeAfterQty,
+            changeDesc: this.changeform.changeDescs,
+            changeDescFileId: this.changeform.changeDescFileId,
+            changeBeforeQty: this.changeform.quotaQty,
+            relatedId: this.changeId,
+            dealerCode: this.changeform.dealerCode,
+            vehicleYearTypeId: this.changeform.vehicleYearTypeId,
+            vehicleModelLineId: this.changeform.vehicleModelLineId
+          };
+          updateTestDriveQuota(submitForm).then(res => {
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            });
+            this.getData();
+            this.totalQuotaQtyDialogVisible = false;
+          }).finally(() => {
+            this.submitLoading = false;
+          });
+        }
+      });
+    },
+    changeTotalQuotaQty (id) {
+      this.totalQuotaQtyDialogVisible = true;
+      this.changeId = id;
+      if (id) {
+        getDetailChange(id).then(res => {
+          this.loading = false;
+          Object.assign(this.changeform, res);
+        });
+      }
+    },
     handleListSelect (row) {
       this.clickItemId = row.id;
     },

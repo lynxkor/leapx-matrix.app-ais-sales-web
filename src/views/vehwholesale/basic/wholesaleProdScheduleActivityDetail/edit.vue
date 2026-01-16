@@ -76,7 +76,8 @@
                 </el-form-item>
                 <el-form-item label="备注（说明）：" prop="remark">
                   <el-input
-                    placeholder="请输入"
+                    maxlength = '150'
+                    placeholder="请输入(最多150个字符)"
                     v-model="form.remark"
                     clearable
                   />

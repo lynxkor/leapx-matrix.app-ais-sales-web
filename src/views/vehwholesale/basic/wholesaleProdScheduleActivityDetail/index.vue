@@ -66,11 +66,7 @@
             />
         </el-form-item>
         <el-form-item label="物料编码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.materialsCode"
-            clearable
-          />
+          <tag-input v-model="form.materialsCode" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="是否锁零售单">
           <fetch-select
@@ -217,6 +213,7 @@ export default {
           },
           { props: 'activityName', label: '活动名称', visible: true, width: 200 },
           { props: 'modelLineId', label: '系列', visible: true, width: 200 },
+          { props: 'deliveryWayLabel', label: '指定发运方式', visible: true, width: 200 },
           { props: 'allowLockRetailLabel', label: '是否锁零售单', visible: true, width: 200 },
           { props: 'startTime', label: '开始日期', visible: true, width: 200 },
           { props: 'endTime', label: '截止日期', visible: true, width: 200 },
@@ -251,23 +248,16 @@ export default {
               },
               type: 'info'
             }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
+              name: '日志',
               click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
+                this.$router.push({
+                  path: '/vehwholesale/basic/dealerDemoVehicleQuotaRecord',
+                  query: {
+                    id: row.id
+                  }
                 });
               },
-              type: 'danger'
+              type: 'info'
             }]
           }
         ],
