@@ -31,3 +31,4 @@ debug.log
 /src/components/AisUpload
 /src/components/FileDisplay
 /src/api/attachment
+/src/mixins
