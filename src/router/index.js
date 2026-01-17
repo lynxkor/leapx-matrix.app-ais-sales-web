@@ -1419,6 +1419,60 @@ const routes = [
         name: '账户管理-赊销管理-自有资金赊销明细管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehwholesale/basic/wholesaleProdScheduleActivity',
+      name: 'wholesaleProdScheduleActivity',
+      component: () => import('@/views/vehwholesale/basic/wholesaleProdScheduleActivity/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-排产专项活动管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaleprodscheduleactivity/edit',
+      name: 'wholesaleProdScheduleActivityEdit',
+      component: () => import('@/views/vehwholesale/basic/wholesaleProdScheduleActivity/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-排产专项活动管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaleProdScheduleActivity',
+      name: 'wholesaleProdScheduleActivity',
+      component: () => import('@/views/vehwholesale/basic/wholesaleProdScheduleActivity/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-排产专项活动管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaleprodscheduleactivity/edit',
+      name: 'wholesaleProdScheduleActivityEdit',
+      component: () => import('@/views/vehwholesale/basic/wholesaleProdScheduleActivity/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-排产专项活动管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaleProdScheduleActivityDetail',
+      name: 'wholesaleProdScheduleActivityDetail',
+      component: () => import('@/views/vehwholesale/basic/wholesaleProdScheduleActivityDetail/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-排产专项活动明细管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/basic/wholesaleprodscheduleactivitydetail/edit',
+      name: 'wholesaleProdScheduleActivityDetailEdit',
+      component: () => import('@/views/vehwholesale/basic/wholesaleProdScheduleActivityDetail/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-排产专项活动明细管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];

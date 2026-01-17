@@ -70,11 +70,8 @@
 
     <div class="ais-actions">
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -109,10 +106,11 @@
     :visible.sync="totalQuotaQtyDialogVisible"
     @close="changeClose"
   >
-    <el-form ref="changeformRef" :model="changeform" :rules="changerules" :label-width="formLabelWidth">
+    <el-form ref="changeformRef" :model="changeform" :rules="changerules" label-width="120px">
         <el-form-item label="调整前配额数" prop="quotaQty">
           <el-input-number
             :controls="false"
+            style="width: 100%;"
             placeholder="请输入"
             v-model="changeform.quotaQty"
             clearable
@@ -123,6 +121,7 @@
         <el-form-item label="配额数" prop="changeAfterQty">
           <el-input-number
             :controls="false"
+            style="width: 100%;"
             placeholder="请输入"
             v-model="changeform.changeAfterQty"
             clearable
@@ -139,6 +138,7 @@
         <el-form-item label="累计已申请数" prop="requestQty">
           <el-input-number
             :controls="false"
+            style="width: 100%;"
             placeholder="请输入"
             v-model="changeform.requestQty"
             clearable
@@ -227,6 +227,7 @@ export default {
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
+      submitLoading: false,
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
@@ -313,17 +314,6 @@ export default {
                 });
               },
               type: 'danger'
-            }, {
-              name: '日志',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/basic/dealerDemoVehicleQuotaRecord',
-                  query: {
-                    id: row.id
-                  }
-                });
-              },
-              type: 'info'
             }]
           }
         ],

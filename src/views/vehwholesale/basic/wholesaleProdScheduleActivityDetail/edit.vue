@@ -272,8 +272,8 @@
                 <el-form-item label="物料编码：" prop="materialsCode">
                   {{ form.materialsCode }}
                 </el-form-item>
-                <el-form-item label="适用订单分类：" prop="applyOrderCategory">
-                  {{ form.applyOrderCategory }}
+                <el-form-item label="适用订单分类：" prop="applyOrderCategoryLabel">
+                  {{ form.applyOrderCategoryLabel }}
                 </el-form-item>
                 <el-form-item label="额度数量：" prop="totalQuotaQty">
                   {{ form.totalQuotaQty }}
@@ -293,7 +293,7 @@
               </el-form>
             </div>
           </section>
-          <section class="common-section">
+          <!-- <section class="common-section">
             <div class="common-section-header">
               <h2>区块标题</h2>
               <el-button v-if="canAddOrUpdate" size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>添加</el-button>
@@ -311,7 +311,7 @@
                 />
               </div>
             </div>
-          </section>
+          </section> -->
         </el-main>
       </edit-base-container>
     </template>
@@ -326,9 +326,7 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivityDetail/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
-import EditBaseContainer from '@/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
@@ -380,8 +378,6 @@ export default {
   mixins: [routeGuard, permissions, commonMixins],
   components: {
     EditPageLayout,
-    EditBaseContainer,
-    EditTable,
     FetchSelect
   },
   computed: {

@@ -91,12 +91,7 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -229,37 +224,7 @@ export default {
           { props: 'totalQuotaQty', label: '额度数量', visible: true, width: 200 },
           { props: 'usedQuotaQty', label: '已提报数量', visible: true, width: 200 },
           { props: 'remainQuotaQty', label: '剩余可用', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          {
-            props: 'operate',
-            label: '操作',
-            type: 'operate',
-            visible: true,
-            fixed: 'right',
-            buttons: [{
-              name: '编辑',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/basic/wholesaleProdScheduleActivityDetail/edit',
-                  query: {
-                    id: row.id
-                  }
-                });
-              },
-              type: 'info'
-            }, {
-              name: '日志',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/basic/dealerDemoVehicleQuotaRecord',
-                  query: {
-                    id: row.id
-                  }
-                });
-              },
-              type: 'info'
-            }]
-          }
+          { props: 'createTime', label: '创建时间', visible: true, width: 200 }
         ],
         total: 0
       }

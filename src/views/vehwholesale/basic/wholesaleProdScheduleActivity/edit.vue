@@ -34,18 +34,24 @@
                   />
                 </el-form-item>
                  <el-form-item label="已提报数量：">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.usedQuotaQty"
-                    clearable
-                  />
+                  <el-input-number
+                      :controls="false"
+                      style="width: 100%;"
+                      placeholder="请输入"
+                       v-model="form.usedQuotaQty"
+                      clearable
+                      :precision="0"
+                    />
                 </el-form-item>
                 <el-form-item label="额度数量：">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.totalQuotaQty"
-                    clearable
-                  />
+                  <el-input-number
+                      :controls="false"
+                      style="width: 100%;"
+                      placeholder="请输入"
+                       v-model="form.totalQuotaQty"
+                      clearable
+                      :precision="0"
+                    />
                 </el-form-item>
                  <el-form-item label="是否锁零售单：" prop="allowLockRetail">
                   <fetch-select
@@ -68,30 +74,29 @@
                     />
                 </el-form-item>
                     <el-form-item label="指定发运方式：" prop="deliveryWay">
-                  <el-input
-                    placeholder="请输入"
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vehstock_ship_via"
                     v-model="form.deliveryWay"
+                    placeholder="请选择"
                     clearable
+                    filterable
                   />
                 </el-form-item>
                  <el-form-item label="开始日期：" prop="startTime">
                   <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
+                    type="date"
                     v-model="form.startTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
+                    value-format="yyyy-MM-dd"
+                    placeholder="请选择开始日期"
                   />
                 </el-form-item>
                 <el-form-item label="截止日期：" prop="endTime">
                   <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
+                    type="date"
                     v-model="form.endTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
+                    value-format="yyyy-MM-dd"
+                    placeholder="请选择截止日期："
                   />
                 </el-form-item>
                  <el-form-item label="备注（说明）：">
@@ -107,33 +112,31 @@
                     placeholder="请输入"
                     v-model="form.creatorName"
                     clearable
+                    disabled
                   />
                 </el-form-item>
-                <el-form-item label="创建时间：">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
+                  <el-form-item label="创建时间：">
+                    <el-date-picker
+                    type="datetime"
                     v-model="form.createTime"
-                    :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
+                    disabled
                   />
                 </el-form-item>
-                 <el-form-item label="修改者名称：">
+                 <el-form-item label="修改者名称：" v-show="_id">
                   <el-input
                     placeholder="请输入"
                     v-model="form.modifierName"
                     clearable
+                    disabled
                   />
                 </el-form-item>
-                <el-form-item label="修改时间：">
+                <el-form-item label="修改时间：" v-show="_id">
                   <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
+                    type="datetime"
                     v-model="form.updateTime"
-                    :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
+                    disabled
                   />
                 </el-form-item>
 
@@ -279,8 +282,8 @@ import { getDetail, addOrUpdate } from '@/api/vehwholesale/basic/wholesaleProdSc
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
-import EditBaseContainer from '@/components/EditBaseContainer';
-import { getEnum } from '@/api/common';
+import EditBaseContainer from '@/libs/components/EditBaseContainer';
+import { getEnum, loginUserGet } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -291,7 +294,7 @@ const defaultForm = {
   id: '',
   creator: '',
   creatorName: '',
-  createTime: '',
+  createTime: new Date(),
   modifier: '',
   modifierName: '',
   updateTime: '',
@@ -346,6 +349,31 @@ export default {
   },
   data () {
     const form = this.getDefautlForm();
+    const validateDateRange = (rule, value, callback) => {
+      const { startTime, endTime } = this.form;
+      // 1. 校验截止日期必填
+      if (!endTime) {
+        return callback(new Error('请选择截止日期'));
+      }
+
+      // 2. 转换为时间戳（兼容日期/日期时间格式）
+      const getTimeStamp = (dateStr) => {
+        if (!dateStr) return 0;
+        return new Date(dateStr).getTime();
+      };
+      const effstartTime = getTimeStamp(startTime);
+      const effendTime = getTimeStamp(endTime);
+      // 当日时间戳（23:59:59）：避免选当日提示超限
+      const todayEnd = new Date();
+      todayEnd.setHours(0, 0, 0, 0);
+      // const todayEndTime = todayEnd.getTime();
+
+      // 3. 校验开始日期 ≤ 截止日期
+      if (startTime && effstartTime > effendTime) {
+        return callback(new Error('开始日期不能晚于截止日期'));
+      }
+      callback();
+    };
     return {
       pageTitle: '整车批售-批售主数据-排产专项活动管理',
       pageType: 'edit',
@@ -482,7 +510,8 @@ export default {
           { required: true, message: '请选择开始日期', trigger: 'change' }
         ],
         endTime: [
-          { required: true, message: '请选择截止日期', trigger: 'change' }
+          { required: true, message: '请选择截止日期', trigger: 'change' },
+          { validator: validateDateRange, trigger: 'change' }
         ],
         needAutoAllocateCar: [
           { required: true, message: '请输入是否需要自动配车,1:是；0：否', trigger: 'change' }
@@ -503,8 +532,16 @@ export default {
     };
   },
   mounted () {
+    this.getLoginUser();
   },
   methods: {
+    getLoginUser () {
+      if (!this.id) {
+        loginUserGet().then(res => {
+          this.form.creatorName = res.userName;
+        }).catch(() => {});
+      }
+    },
     detailRequest () {
       const id = this._id;
       if (id) {
