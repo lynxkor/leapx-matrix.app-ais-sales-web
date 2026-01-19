@@ -286,8 +286,12 @@ export default {
         series: async (query) => {
           return await vehicleSeriesList({ seriesNameLike: query });
         },
+        // model: async (query) => {
+        //   return await listVehicleModel({ modelNameLike: query });
+        // },
+        // 初始方法
         model: async (query) => {
-          return await listVehicleModel({ modelNameLike: query });
+          return await this.searchModel(query);
         },
         yearType: async (query) => {
           return await listVehicleYearType({ yearTypeNameLike: query });
@@ -313,11 +317,36 @@ export default {
       }
     };
   },
+  watch: {
+    'form.seriesIdList': {
+      handler (newVal) {
+        // 车系变化时清空车型选择
+        this.form.modelIdList = [];
+        this.searchModel();
+      },
+      deep: true,
+      immediate: true
+    },
+  },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
   },
   methods: {
+    // 车型支持车系 ID 和 车型输入 方法
+    async searchModel (query) {
+      const params = {};
+
+      if (query) {
+        params.modelNameLike = query;
+      }
+
+      if (this.form.seriesIdList?.length) {
+        params.seriesIds = this.form.seriesIdList;
+      }
+
+      return await listVehicleModel(params);
+    },
     handleImport () {
       this.uploadDialogVisible = true;
     },
