@@ -459,7 +459,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/wholesale/replenish/dealerVehicleReplenishApplyDetail/index';
+import { getDetail, addOrUpdate } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';

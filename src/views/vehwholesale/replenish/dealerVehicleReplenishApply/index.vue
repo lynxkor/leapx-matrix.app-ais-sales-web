@@ -1,5 +1,5 @@
 <template>
-  <div class="page-common m-dealer-vehicle-replenish-apply-detail-list">
+  <div class="page-common m-dealer-vehicle-replenish-apply-list">
     <!--  TIPS: 自行调整如下label-width，满足label不换行  -->
     <el-form
       :inline="true"
@@ -9,6 +9,13 @@
       label-width="150px"
       class="ais-search-form"
     >
+      <el-form-item label="整车补货单号">
+        <el-input
+          placeholder="请输入"
+          v-model="form.replenishApplyCode"
+          clearable
+        />
+      </el-form-item>
       <el-form-item label="审核状态">
         <fetch-select
           :request="fetchOptions"
@@ -20,21 +27,21 @@
           filterable
         />
       </el-form-item>
-      <el-form-item label="销售门店名称">
+      <el-form-item label="销售门店名称"  v-show="this.visibleCount === 3 || show">
         <el-input
           placeholder="请输入"
           v-model="form.saleDealerName"
           clearable
         />
       </el-form-item>
-      <el-form-item label="所属大区"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.regionName"
-          clearable
-        />
-      </el-form-item>
       <template v-if="show">
+        <el-form-item label="所属大区">
+          <el-input
+            placeholder="请输入"
+            v-model="form.regionName"
+            clearable
+          />
+        </el-form-item>
         <el-form-item label="专项活动名称">
           <el-input
             placeholder="请输入"
@@ -53,6 +60,13 @@
           <el-input
             placeholder="请输入"
             v-model="form.seriesName"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="车型名称">
+          <el-input
+            placeholder="请输入"
+            v-model="form.modelName"
             clearable
           />
         </el-form-item>
@@ -78,6 +92,20 @@
           <el-input
             placeholder="请输入"
             v-model="form.financialOrganization"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="申请数量">
+          <el-input
+            placeholder="请输入"
+            v-model="form.applyQty"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="整车补货明细单号">
+          <el-input
+            placeholder="请输入"
+            v-model="form.replenishApplyDetailCode"
             clearable
           />
         </el-form-item>
@@ -133,7 +161,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/wholesale/replenish/dealerVehicleReplenishApplyDetail/index';
+import { getList, deleteItem, enableItem } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -146,15 +174,19 @@ import EditPage from './edit.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  replenishApplyCode: '',
   auditStatus: '',
   saleDealerName: '',
   regionName: '',
   prodScheduleActivity: '',
   applyCategory: '',
   seriesName: '',
+  modelName: '',
   orderCategory: '',
   settleFundType: '',
   financialOrganization: '',
+  applyQty: '',
+  replenishApplyDetailCode: '',
 };
 
 const pageSize = 20;
@@ -176,7 +208,7 @@ export default {
       pageTitle: '整车批售-批售主数据-整车门店补货明细管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-dealerVehicleReplenishApplyDetail',
+      moduleKey: 'AISMC-dealerVehicleReplenishApply',
       form: {
         ...defaultForm
       },
@@ -188,7 +220,7 @@ export default {
       uploadDialogVisible: false,
       clickItemId: '',
       optionObj: {
-        id: 'dealerVehicleReplenishApplyDetailTable',
+        id: 'dealerVehicleReplenishApplyTable',
         dataList: [],
         form: {
           page: 1,
@@ -204,7 +236,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/wholesale/replenish/dealerVehicleReplenishApplyDetail/edit',
+                  path: '/vehwholesale/replenish/dealerVehicleReplenishApply/edit',
                   query: {
                     id: row.id
                   }
@@ -242,7 +274,7 @@ export default {
               name: '编辑',
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/wholesale/replenish/dealerVehicleReplenishApplyDetail/edit',
+                  path: '/vehwholesale/replenish/dealerVehicleReplenishApply/edit',
                   query: {
                     id: row.id
                   }
@@ -290,7 +322,7 @@ export default {
     },
     handleAdd () {
       this.$router.push({
-        path: '/wholesale/replenish/dealerVehicleReplenishApplyDetail/edit'
+        path: '/vehwholesale/replenish/dealerVehicleReplenishApply/edit'
       });
     },
     onSubmit () {
@@ -306,7 +338,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '整车批售-批售主数据-整车门店补货明细管理',
-        dataFetchPath: 'wholesale/web/replenish/dealerVehicleReplenishApplyDetail/page',
+        dataFetchPath: 'wholesale/web/replenish/dealerVehicleReplenishApply/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -461,6 +493,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.m-dealer-vehicle-replenish-apply-detail-list {
+.m-dealer-vehicle-replenish-apply-list {
 }
 </style>

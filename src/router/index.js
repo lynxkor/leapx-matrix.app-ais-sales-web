@@ -1474,54 +1474,54 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/replenish/dealerVehicleReplenishApply',
+      path: '/vehwholesale/replenish/dealerVehicleReplenishApply',
       name: 'dealerVehicleReplenishApply',
-      component: () => import('@/views/replenish/dealerVehicleReplenishApply/index.vue'),
+      component: () => import('@/views/vehwholesale/replenish/dealerVehicleReplenishApply/index.vue'),
 
       meta: {
         name: '整车批售-批售主数据-整车门店补货申请管理',
         keepAlive: true
       }
     }, {
-      path: '/replenish/dealervehiclereplenishapply/edit',
+      path: '/vehwholesale/replenish/dealervehiclereplenishapply/edit',
       name: 'dealerVehicleReplenishApplyEdit',
-      component: () => import('@/views/replenish/dealerVehicleReplenishApply/edit.vue'),
+      component: () => import('@/views/vehwholesale/replenish/dealerVehicleReplenishApply/edit.vue'),
 
       meta: {
         name: '整车批售-批售主数据-整车门店补货申请管理详情',
         noResourceUrl: 'true'
       }
     }, {
-      path: '/wholesale/replenish/dealerVehicleReplenishApply',
+      path: '/vehwholesale/replenish/dealerVehicleReplenishApply',
       name: 'dealerVehicleReplenishApply',
-      component: () => import('@/views/wholesale/replenish/dealerVehicleReplenishApply/index.vue'),
+      component: () => import('@/views/vehwholesale/replenish/dealerVehicleReplenishApply/index.vue'),
 
       meta: {
         name: '整车批售-批售主数据-整车门店补货明细管理',
         keepAlive: true
       }
     }, {
-      path: '/wholesale/replenish/dealervehiclereplenishapply/edit',
+      path: '/vehwholesale/replenish/dealervehiclereplenishapply/edit',
       name: 'dealerVehicleReplenishApplyEdit',
-      component: () => import('@/views/wholesale/replenish/dealerVehicleReplenishApply/edit.vue'),
+      component: () => import('@/views/vehwholesale/replenish/dealerVehicleReplenishApply/edit.vue'),
 
       meta: {
         name: '整车批售-批售主数据-整车门店补货明细管理详情',
         noResourceUrl: 'true'
       }
     }, {
-      path: '/wholesale/replenish/dealerVehicleReplenishApplyDetail',
+      path: '/vehwholesale/replenish/dealerVehicleReplenishApplyDetail',
       name: 'dealerVehicleReplenishApplyDetail',
-      component: () => import('@/views/wholesale/replenish/dealerVehicleReplenishApplyDetail/index.vue'),
+      component: () => import('@/views/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/index.vue'),
 
       meta: {
         name: '整车批售-批售主数据-整车门店补货明细管理',
         keepAlive: true
       }
     }, {
-      path: '/wholesale/replenish/dealervehiclereplenishapplydetail/edit',
+      path: '/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit',
       name: 'dealerVehicleReplenishApplyDetailEdit',
-      component: () => import('@/views/wholesale/replenish/dealerVehicleReplenishApplyDetail/edit.vue'),
+      component: () => import('@/views/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit.vue'),
 
       meta: {
         name: '整车批售-批售主数据-整车门店补货明细管理详情',
