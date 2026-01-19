@@ -1473,6 +1473,60 @@ const routes = [
         name: '整车批售-批售主数据-排产专项活动明细管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/replenish/dealerVehicleReplenishApply',
+      name: 'dealerVehicleReplenishApply',
+      component: () => import('@/views/replenish/dealerVehicleReplenishApply/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车门店补货申请管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/replenish/dealervehiclereplenishapply/edit',
+      name: 'dealerVehicleReplenishApplyEdit',
+      component: () => import('@/views/replenish/dealerVehicleReplenishApply/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车门店补货申请管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/wholesale/replenish/dealerVehicleReplenishApply',
+      name: 'dealerVehicleReplenishApply',
+      component: () => import('@/views/wholesale/replenish/dealerVehicleReplenishApply/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车门店补货明细管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/wholesale/replenish/dealervehiclereplenishapply/edit',
+      name: 'dealerVehicleReplenishApplyEdit',
+      component: () => import('@/views/wholesale/replenish/dealerVehicleReplenishApply/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车门店补货明细管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/wholesale/replenish/dealerVehicleReplenishApplyDetail',
+      name: 'dealerVehicleReplenishApplyDetail',
+      component: () => import('@/views/wholesale/replenish/dealerVehicleReplenishApplyDetail/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车门店补货明细管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/wholesale/replenish/dealervehiclereplenishapplydetail/edit',
+      name: 'dealerVehicleReplenishApplyDetailEdit',
+      component: () => import('@/views/wholesale/replenish/dealerVehicleReplenishApplyDetail/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车门店补货明细管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
