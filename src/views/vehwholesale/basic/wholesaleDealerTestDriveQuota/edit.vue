@@ -98,6 +98,15 @@
                   :precision="0"
                 />
               </el-form-item>
+              <el-form-item label="调整说明" prop="changeDesc">
+                <el-input
+                  type="textarea"
+                  :rows="3"
+                  placeholder="请输入"
+                  v-model="form.changeDesc"
+                  clearable
+                />
+              </el-form-item>
               <el-form-item label="状态" prop="status">
                 <fetch-select
                   :request="fetchOptions"
@@ -208,7 +217,7 @@ export default {
           { required: true, message: '请输入累计已申请数', trigger: 'blur' }
         ],
         changeDesc: [
-          { required: true, message: '请输入调整说明', trigger: 'blur' }
+          { required: false, message: '请输入调整说明', trigger: 'blur' }
         ],
         quotaQty: [
           { required: true, message: '请输入配额数量', trigger: 'blur' }
