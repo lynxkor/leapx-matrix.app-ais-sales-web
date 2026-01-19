@@ -162,7 +162,7 @@
             <el-form-item label="电驱序列号(后)：" prop="electricNumberAfter">
               {{ info.electricNumberAfter }}
             </el-form-item>
-            <el-form-item label="PDI上线时间：" prop="pdiOfflineTime">
+            <el-form-item label="PDI下线日期：" prop="pdiOfflineTime">
               {{ info.pdiOnlineTime }}
             </el-form-item>
             <el-form-item label="电池包编号：" prop="batteryPackNumber">
