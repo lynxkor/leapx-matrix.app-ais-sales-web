@@ -1473,6 +1473,60 @@ const routes = [
         name: '整车批售-批售主数据-排产专项活动明细管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehwholesale/replenish/dealerVehicleReplenishApply',
+      name: 'dealerVehicleReplenishApply',
+      component: () => import('@/views/vehwholesale/replenish/dealerVehicleReplenishApply/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车门店补货申请管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/replenish/dealervehiclereplenishapply/edit',
+      name: 'dealerVehicleReplenishApplyEdit',
+      component: () => import('@/views/vehwholesale/replenish/dealerVehicleReplenishApply/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车门店补货申请管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/replenish/dealerVehicleReplenishApply',
+      name: 'dealerVehicleReplenishApply',
+      component: () => import('@/views/vehwholesale/replenish/dealerVehicleReplenishApply/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车门店补货明细管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/replenish/dealervehiclereplenishapply/edit',
+      name: 'dealerVehicleReplenishApplyEdit',
+      component: () => import('@/views/vehwholesale/replenish/dealerVehicleReplenishApply/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车门店补货明细管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/replenish/dealerVehicleReplenishApplyDetail',
+      name: 'dealerVehicleReplenishApplyDetail',
+      component: () => import('@/views/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车门店补货明细管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit',
+      name: 'dealerVehicleReplenishApplyDetailEdit',
+      component: () => import('@/views/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车门店补货明细管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
