@@ -1,5 +1,5 @@
 <template>
-  <div class="page-common m-dealer-vehicle-replenish-apply-list">
+  <div class="page-common m-vehwholesale\replenish\dealer-vehicle-replenish-apply-list">
     <!--  TIPS: 自行调整如下label-width，满足label不换行  -->
     <el-form
       :inline="true"
@@ -16,7 +16,14 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="审核状态">
+      <el-form-item label="销售门店名称">
+        <el-input
+          placeholder="请输入"
+          v-model="form.saleDealerName"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item label="审核状态"  v-show="this.visibleCount === 3 || show">
         <fetch-select
           :request="fetchOptions"
           enumCode="xxx"
@@ -27,13 +34,6 @@
           filterable
         />
       </el-form-item>
-      <el-form-item label="销售门店名称"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.saleDealerName"
-          clearable
-        />
-      </el-form-item>
       <template v-if="show">
         <el-form-item label="所属大区">
           <el-input
@@ -42,31 +42,24 @@
             clearable
           />
         </el-form-item>
-        <el-form-item label="专项活动名称">
+        <el-form-item label="批售方式">
           <el-input
             placeholder="请输入"
-            v-model="form.prodScheduleActivity"
+            v-model="form.wholesaleWay"
             clearable
           />
         </el-form-item>
-        <el-form-item label="申请类别">
+        <el-form-item label="专项活动">
           <el-input
             placeholder="请输入"
-            v-model="form.applyCategory"
+            v-model="form.prodScheduleActivityId"
             clearable
           />
         </el-form-item>
-        <el-form-item label="车系名称">
+        <el-form-item label="车系组合">
           <el-input
             placeholder="请输入"
-            v-model="form.seriesName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="车型名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.modelName"
+            v-model="form.serials"
             clearable
           />
         </el-form-item>
@@ -88,24 +81,10 @@
             filterable
           />
         </el-form-item>
-        <el-form-item label="金融机构名称">
+        <el-form-item label="金融机构ID">
           <el-input
             placeholder="请输入"
-            v-model="form.financialOrganization"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="申请数量">
-          <el-input
-            placeholder="请输入"
-            v-model="form.applyQty"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="整车补货明细单号">
-          <el-input
-            placeholder="请输入"
-            v-model="form.replenishApplyDetailCode"
+            v-model="form.financialOrganizationId"
             clearable
           />
         </el-form-item>
@@ -175,18 +154,15 @@ import EditPage from './edit.vue';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   replenishApplyCode: '',
-  auditStatus: '',
   saleDealerName: '',
+  auditStatus: '',
   regionName: '',
-  prodScheduleActivity: '',
-  applyCategory: '',
-  seriesName: '',
-  modelName: '',
+  wholesaleWay: '',
+  prodScheduleActivityId: '',
+  serials: '',
   orderCategory: '',
   settleFundType: '',
-  financialOrganization: '',
-  applyQty: '',
-  replenishApplyDetailCode: '',
+  financialOrganizationId: '',
 };
 
 const pageSize = 20;
@@ -205,10 +181,10 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车批售-批售主数据-整车门店补货明细管理',
+      pageTitle: '整车批售-批售主数据-整车门店补货申请管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-dealerVehicleReplenishApply',
+      moduleKey: 'AISVW-dealerVehicleReplenishApply',
       form: {
         ...defaultForm
       },
@@ -245,24 +221,22 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'auditStatus', label: '审核状态', visible: true, width: 200 },
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
+          { props: 'auditStatus', label: '审核状态', visible: true, width: 200 },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
-          { props: 'prodScheduleActivity', label: '专项活动名称', visible: true, width: 200 },
-          { props: 'applyCategory', label: '申请类别', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
-          { props: 'modelName', label: '车型名称', visible: true, width: 200 },
+          { props: 'wholesaleWay', label: '批售方式', visible: true, width: 200 },
+          { props: 'prodScheduleActivityId', label: '专项活动', visible: true, width: 200 },
+          { props: 'serials', label: '车系组合', visible: true, width: 200 },
           { props: 'orderCategory', label: '订单分类', visible: true, width: 200 },
-          { props: 'settleFundType', label: '结算资金类型', visible: true, width: 200 },
-          { props: 'financialOrganization', label: '金融机构名称', visible: true, width: 200 },
-          { props: 'applyQty', label: '申请数量', visible: true, width: 200 },
-          { props: 'replenishApplyDetailCode', label: '整车补货明细单号', visible: true, width: 200 },
-          { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
+          { props: 'applyTotalQty', label: '申请总数量', visible: true, width: 200 },
           { props: 'applyTime', label: '申请时间', visible: true, width: 200 },
-          { props: 'auditTime', label: '审核时间', visible: true, width: 200 },
-          { props: 'invoiceDiscountType', label: '开票优惠类型', visible: true, width: 200 },
-          { props: 'invoiceCoefficient', label: '开票系数', visible: true, width: 200 },
+          { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
+          { props: 'auditTime', label: '门店审核时间', visible: true, width: 200 },
+          { props: 'settleFundType', label: '结算资金类型', visible: true, width: 200 },
+          { props: 'financialOrganizationId', label: '金融机构ID', visible: true, width: 200 },
+          { props: 'dealerWarehouseName', label: '门店仓库名称', visible: true, width: 200 },
+          { props: 'deliveryDealerName', label: '交付门店名称', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',
@@ -337,15 +311,15 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '整车批售-批售主数据-整车门店补货明细管理',
-        dataFetchPath: 'wholesale/web/replenish/dealerVehicleReplenishApply/page',
+        businessType: '整车批售-批售主数据-整车门店补货申请管理',
+        dataFetchPath: 'vehwholesale/replenish/dealerVehicleReplenishApply/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车批售-批售主数据-整车门店补货明细管理.xlsx');
+            await downloadExcel(res.excelUrl, '整车批售-批售主数据-整车门店补货申请管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -493,6 +467,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.m-dealer-vehicle-replenish-apply-list {
+.m-vehwholesale\replenish\dealer-vehicle-replenish-apply-list {
 }
 </style>
