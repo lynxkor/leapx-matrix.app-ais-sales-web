@@ -48,5 +48,5 @@ export function enableItem (data) {
  * @param {Object} data
  */
 export function vehiclePoTrack (data) {
-  return api.jsonPost('/vehstock/web/vdc/vehiclePoTrack/list', data);
+  return api.jsonPost('/vehstock/web/vdc/vehiclePoTrack/page', data);
 }
