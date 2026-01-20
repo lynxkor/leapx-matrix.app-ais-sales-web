@@ -33,7 +33,21 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="销售门店名称：" prop="saleDealerName">
+                <el-form-item label="门店编码">
+                  <fetch-select
+                    filterable
+                    clearable
+                    multiple
+                    remote
+                    collapseTags
+                    v-model="form.saleDealerCodes"
+                    :remote-method="getDealerListByName"
+                    value-key="storeCode"
+                    label-key="storeName"
+                    @change="handleDealerChange"
+                  />
+                </el-form-item>
+                <el-form-item label="销售门店：" prop="saleDealerName">
                   <el-input
                     placeholder="请输入"
                     v-model="form.saleDealerName"

@@ -16,17 +16,24 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="销售门店名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.saleDealerName"
+      <el-form-item label="销售门店">
+        <fetch-select
+          filterable
           clearable
+          multiple
+          remote
+          collapseTags
+          v-model="form.saleDealerCodes"
+          :remote-method="getDealerListByName"
+          value-key="storeCode"
+          label-key="storeName"
+          @change="handleDealerChange"
         />
       </el-form-item>
       <el-form-item label="审核状态"  v-show="this.visibleCount === 3 || show">
         <fetch-select
           :request="fetchOptions"
-          enumCode="xxx"
+          enumCode="vw_replenish_audit_status"
           v-model="form.auditStatus"
           placeholder="请选择"
           clearable
@@ -36,24 +43,38 @@
       </el-form-item>
       <template v-if="show">
         <el-form-item label="所属大区">
-          <el-input
-            placeholder="请输入"
-            v-model="form.regionName"
+          <fetch-select
+            filterable
             clearable
+            remote
+            v-model="form.regionCodes"
+            :remote-method="getRegionList"
+            value-key="orgCode"
+            label-key="orgName"
           />
         </el-form-item>
         <el-form-item label="批售方式">
-          <el-input
-            placeholder="请输入"
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vw_wholesale_way"
             v-model="form.wholesaleWay"
+            placeholder="请选择"
             clearable
+            multiple
+            filterable
           />
         </el-form-item>
         <el-form-item label="专项活动">
-          <el-input
-            placeholder="请输入"
+          <fetch-select
+            :remote-method="prodScheduleActivitySearch"
+            remote
+            reserve-keyword
+            labelKey="name"
+            valueKey="id"
             v-model="form.prodScheduleActivityId"
+            placeholder="请选择"
             clearable
+            filterable
           />
         </el-form-item>
         <el-form-item label="车系组合">
@@ -64,28 +85,37 @@
           />
         </el-form-item>
         <el-form-item label="订单分类">
-          <el-input
-            placeholder="请输入"
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="ws_order_category"
             v-model="form.orderCategory"
+            placeholder="请选择"
             clearable
+            filterable
           />
         </el-form-item>
         <el-form-item label="结算资金类型">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.settleFundType"
+            enumCode="vw_fundtype"
+            v-model="form.fundTypes"
             placeholder="请选择"
             clearable
             multiple
             filterable
           />
         </el-form-item>
-        <el-form-item label="金融机构ID">
-          <el-input
-            placeholder="请输入"
+        <el-form-item label="金融机构">
+          <fetch-select
+            :remote-method="repairItemSearch"
+            remote
+            reserve-keyword
+            labelKey="name"
+            valueKey="id"
             v-model="form.financialOrganizationId"
+            placeholder="请选择"
             clearable
+            filterable
           />
         </el-form-item>
       </template>
@@ -101,11 +131,8 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -128,11 +155,11 @@
       </LPVxeTable>
     </div>
     <!-- TIPS: 填入项目id即可 -->
-    <Upload
+    <!-- <Upload
       :visible="uploadDialogVisible"
       :id="1"
       @close="handleUploadDialogClose"
-    />
+    /> -->
   </div>
 </template>
 
@@ -141,9 +168,11 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getRigion, listOrgStoreInfo } from '@/api/common';
+import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import { listIdNames as listWholesaleProdScheduleActivity } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivity/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import Upload from '@/libs/components/UploadDialog';
+// import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
@@ -154,9 +183,9 @@ import EditPage from './edit.vue';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   replenishApplyCode: '',
-  saleDealerName: '',
+  saleDealerCodes: [],
   auditStatus: '',
-  regionName: '',
+  regionCodes: '',
   wholesaleWay: '',
   prodScheduleActivityId: '',
   serials: '',
@@ -176,8 +205,8 @@ export default {
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
-    EditPage,
-    Upload
+    EditPage
+    // Upload
   },
   data () {
     return {
@@ -461,7 +490,26 @@ export default {
       //     });
       //   });
       // });
-    }
+    },
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
+    },
+    async getRegionList (params) {
+      return getRigion({ regionName: params });
+    },
+    async repairItemSearch (query) {
+      return listFinancialOrganization({ organizationNameLike: query, status: 1 });
+    },
+    async prodScheduleActivitySearch (query) {
+      return listWholesaleProdScheduleActivity({ activityNameLike: query, status: 1 });
+    },
+    handleDealerChange (val, record) {
+      this.form.regionCodes = [...new Set(
+        record
+          .map(item => item?.orgCode)
+          .filter(Boolean)
+      )];
+    },
   }
 };
 </script>
