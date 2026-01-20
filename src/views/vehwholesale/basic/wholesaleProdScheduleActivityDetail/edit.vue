@@ -215,65 +215,50 @@
                 </el-form-item>
               </el-form>
               <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="主键：" prop="id">
-                  {{ form.id }}
+                <el-form-item label="活动编码：" prop="activityCode">
+                  {{ form.activityCode }}
                 </el-form-item>
-                <el-form-item label="创建者：" prop="creator">
-                  {{ form.creator }}
+                <el-form-item label="活动名称：" prop="activityName">
+                  {{ form.activityName }}
                 </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  {{ form.creatorName }}
-                </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
-                  {{ form.createTime }}
-                </el-form-item>
-                <el-form-item label="修改者：" prop="modifier">
-                  {{ form.modifier }}
-                </el-form-item>
-                <el-form-item label="修改者名称：" prop="modifierName">
-                  {{ form.modifierName }}
-                </el-form-item>
-                <el-form-item label="修改时间：" prop="updateTime">
-                  {{ form.updateTime }}
-                </el-form-item>
-                <el-form-item label="备注（说明）：" prop="remark">
-                  {{ form.remark }}
-                </el-form-item>
-                <el-form-item label="状态：" prop="status">
-                  {{ form.status }}
-                </el-form-item>
-                <el-form-item label="状态变更描述：" prop="statusDesc">
-                  {{ form.statusDesc }}
-                </el-form-item>
-                <el-form-item label="排产活动ID：" prop="scheduleActivityId">
-                  {{ form.scheduleActivityId }}
-                </el-form-item>
-                <el-form-item label="门店编码（组织code同网发门店编码）：" prop="dealerCode">
-                  {{ form.dealerCode }}
-                </el-form-item>
-                <el-form-item label="门店名称（组织名称同网发门店名称）：" prop="dealerName">
-                  {{ form.dealerName }}
-                </el-form-item>
-                <el-form-item label="车系ID：" prop="seriesId">
-                  {{ form.seriesId }}
-                </el-form-item>
-                <el-form-item label="车系名称：" prop="seriesName">
+                 <el-form-item label="车系名称：" prop="seriesName">
                   {{ form.seriesName }}
                 </el-form-item>
-                <el-form-item label="系列ID：" prop="modelLineId">
-                  {{ form.modelLineId }}
+                  <el-form-item label="是否锁零售单：" prop="allowLockRetailLabel">
+                  {{ form.allowLockRetailLabel }}
+                </el-form-item>
+                <el-form-item label="开始日期：" prop="startTime">
+                  {{ form.startTime }}
+                </el-form-item>
+                <el-form-item label="截至日期：" prop="endTime">
+                  {{ form.endTime }}
+                </el-form-item>
+                  <el-form-item label="门店编码：" prop="dealerCode">
+                  {{ form.dealerCode }}
+                </el-form-item>
+                <el-form-item label="门店名称：" prop="dealerName">
+                  {{ form.dealerName }}
+                </el-form-item>
+                <el-form-item label="省份：" prop="provinceName">
+                  {{ form.provinceName }}
+                </el-form-item>
+                <el-form-item label="城市：" prop="cityName">
+                  {{ form.cityName }}
+                </el-form-item>
+                  <el-form-item label="适用订单分类：" prop="applyOrderCategoryLabel">
+                  {{ form.applyOrderCategoryLabel }}
                 </el-form-item>
                 <el-form-item label="系列名称：" prop="modelLineName">
                   {{ form.modelLineName }}
                 </el-form-item>
-                <el-form-item label="物料ID：" prop="materialsId">
-                  {{ form.materialsId }}
+                  <el-form-item label="年款名称：" prop="yearTypeName">
+                  {{ form.yearTypeName }}
                 </el-form-item>
-                <el-form-item label="物料编码：" prop="materialsCode">
+                  <el-form-item label="物料编码：" prop="materialsCode">
                   {{ form.materialsCode }}
                 </el-form-item>
-                <el-form-item label="适用订单分类：" prop="applyOrderCategoryLabel">
-                  {{ form.applyOrderCategoryLabel }}
+                  <el-form-item label="物料描述：" prop="materialsDesc">
+                  {{ form.materialsDesc }}
                 </el-form-item>
                 <el-form-item label="额度数量：" prop="totalQuotaQty">
                   {{ form.totalQuotaQty }}
@@ -281,14 +266,11 @@
                 <el-form-item label="已提报数量：" prop="usedQuotaQty">
                   {{ form.usedQuotaQty }}
                 </el-form-item>
-                <el-form-item label="归属门店ID（组织ID），当数据权限归属到本组织以及本下级：" prop="ownerOrgId">
-                  {{ form.ownerOrgId }}
+                 <el-form-item label="剩余可用：" prop="remainQuotaQty">
+                  {{ form.remainQuotaQty }}
                 </el-form-item>
-                <el-form-item label="年款ID：" prop="yearTypeId">
-                  {{ form.yearTypeId }}
-                </el-form-item>
-                <el-form-item label="年款名称：" prop="yearTypeName">
-                  {{ form.yearTypeName }}
+                   <el-form-item label="创建时间：" prop="createTime">
+                  {{ form.createTime }}
                 </el-form-item>
               </el-form>
             </div>
