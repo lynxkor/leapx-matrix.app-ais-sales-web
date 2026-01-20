@@ -31,26 +31,90 @@
                     placeholder="请输入"
                     v-model="form.replenishApplyCode"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
-                <el-form-item label="门店编码">
-                  <fetch-select
-                    filterable
+                <el-form-item label="门店编码" prop="saleDealerCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.saleDealerCode"
                     clearable
-                    multiple
-                    remote
-                    collapseTags
-                    v-model="form.saleDealerCodes"
-                    :remote-method="getDealerListByName"
-                    value-key="storeCode"
-                    label-key="storeName"
-                    @change="handleDealerChange"
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="销售门店：" prop="saleDealerName">
+                  <fetch-select
+                    filterable
+                    clearable
+                    remote
+                    v-model="form.saleDealerName"
+                    :remote-method="getDealerListByName"
+                    value-key="storeCode"
+                    label-key="storeName"
+                    @change="handleChangeDealer"
+                  />
+                </el-form-item>
+                <el-form-item label="订单分类：" prop="orderCategory">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="ws_order_category"
+                    v-model="form.orderCategory"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                    @change="handleChangeOrderCategory"
+                  />
+                </el-form-item>
+                <el-form-item label="交付门店：" prop="deliveryDealerCode">
+                  <fetch-select
+                    filterable
+                    clearable
+                    remote
+                    v-model="form.deliveryDealerCode"
+                    :remote-method="getDeliveryDealerByDealerCode"
+                    value-key="storeCode"
+                    label-key="storeName"
+                  />
+                </el-form-item>
+                <el-form-item label="批售方式：" prop="wholesaleWay">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vw_wholesale_way"
+                    v-model="form.wholesaleWay"
+                    placeholder="请选择"
+                    clearable
+                    multiple
+                    filterable
+                  />
+                </el-form-item>
+                <el-form-item label="专项活动：" prop="prodScheduleActivityId" v-show="isShowActivity">
+                  <fetch-select
+                    :remote-method="prodScheduleActivitySearch"
+                    remote
+                    reserve-keyword
+                    labelKey="name"
+                    valueKey="id"
+                    v-model="form.prodScheduleActivityId"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                  />
+                </el-form-item>
+                <el-form-item label="申请类别：" prop="applyCategory" v-show="isShowApplyCategory">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="apply_category_enum"
+                    v-model="form.applyCategory"
+                    placeholder="请选择"
+                    clearable
+                    multiple
+                    filterable
+                  />
+                </el-form-item>
+                <el-form-item label="门店仓库：" prop="dealerWarehouseCode">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.saleDealerName"
+                    v-model="form.dealerWarehouseCode"
                     clearable
                   />
                 </el-form-item>
@@ -61,41 +125,46 @@
                     v-model="form.auditStatus"
                     placeholder="请选择"
                     clearable
+                  />
+                </el-form-item>
+                <el-form-item label="金融机构ID：" prop="financialOrganizationId">
+                  <fetch-select
+                    :remote-method="repairItemSearch"
+                    remote
+                    reserve-keyword
+                    labelKey="name"
+                    valueKey="id"
+                    v-model="form.financialOrganizationId"
+                    placeholder="请选择"
+                    clearable
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="所属大区：" prop="regionName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.regionName"
+                <el-form-item label="是否撤销：" prop="isSheXiao">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="BooleanEnum"
+                    v-model="form.isSheXiao"
+                    placeholder="请选择"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="批售方式：" prop="wholesaleWay">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.wholesaleWay"
+                <el-form-item label="结算资金类型：" prop="settleFundType">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vw_fundtype"
+                    v-model="form.fundTypes"
+                    placeholder="请选择"
                     clearable
+                    multiple
+                    filterable
+                    @change="handleChangeFundType"
                   />
                 </el-form-item>
-                <el-form-item label="专项活动：" prop="prodScheduleActivityId">
+                <el-form-item label="申请原因：" prop="applyReason">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.prodScheduleActivityId"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="车系组合：" prop="serials">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.serials"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="订单分类：" prop="orderCategory">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.orderCategory"
+                    v-model="form.applyReason"
                     clearable
                   />
                 </el-form-item>
@@ -106,20 +175,17 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="申请时间：" prop="applyTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.applyTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  />
-                </el-form-item>
-                <el-form-item label="申请原因：" prop="applyReason">
+                <el-form-item label="仓库编码：" prop="dealerWarehouseCode">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.applyReason"
+                    v-model="form.dealerWarehouseCode"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="仓库地址：" prop="dealerWarehouseAddress">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.dealerWarehouseAddress"
                     clearable
                   />
                 </el-form-item>
@@ -131,213 +197,6 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
-                  />
-                </el-form-item>
-                <el-form-item label="结算资金类型：" prop="settleFundType">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
-                    v-model="form.settleFundType"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                  />
-                </el-form-item>
-                <el-form-item label="金融机构ID：" prop="financialOrganizationId">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.financialOrganizationId"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="门店仓库名称：" prop="dealerWarehouseName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.dealerWarehouseName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="交付门店名称：" prop="deliveryDealerName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.deliveryDealerName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.creatorName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.createTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  />
-                </el-form-item>
-                <el-form-item label="主键：" prop="id">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.id"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="创建者：" prop="creator">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.creator"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="修改者：" prop="modifier">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.modifier"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="修改者名称：" prop="modifierName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.modifierName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="修改时间：" prop="updateTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.updateTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  />
-                </el-form-item>
-                <el-form-item label="备注（说明）：" prop="remark">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.remark"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="状态：" prop="status">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
-                    v-model="form.status"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                  />
-                </el-form-item>
-                <el-form-item label="状态变更描述：" prop="statusDesc">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
-                    v-model="form.statusDesc"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                  />
-                </el-form-item>
-                <el-form-item label="销售门店编码：" prop="saleDealerCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.saleDealerCode"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="交付门店编码：" prop="deliveryDealerCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.deliveryDealerCode"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="门店仓库编码：" prop="dealerWarehouseCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.dealerWarehouseCode"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="大区ID：" prop="regionCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.regionCode"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="申请类别：" prop="applyCategory">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.applyCategory"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="门店审核人：" prop="auditorName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.auditorName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="门店审核人：" prop="auditorUserId">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.auditorUserId"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="审核意见：" prop="auditOpinion">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.auditOpinion"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="厂端审核人：" prop="reviewName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.reviewName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="厂端审核人：" prop="reviewUserId">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.reviewUserId"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="厂端审核时间：" prop="reviewTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.reviewTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  />
-                </el-form-item>
-                <el-form-item label="厂端审核意见：" prop="reviewOpinion">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.reviewOpinion"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="权限：" prop="permission">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.permission"
-                    clearable
                   />
                 </el-form-item>
               </el-form>
@@ -498,7 +357,9 @@ import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum } from '@/api/common';
+import { getEnum, getDealerDetailByCode, getRigion, listOrgStoreInfo } from '@/api/common';
+import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import { listIdNames as listWholesaleProdScheduleActivity } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivity/index';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -510,7 +371,7 @@ const defaultForm = {
   saleDealerName: '',
   auditStatus: '',
   regionName: '',
-  wholesaleWay: '',
+  wholesaleWay: '10',
   prodScheduleActivityId: '',
   serials: '',
   orderCategory: '',
@@ -545,6 +406,7 @@ const defaultForm = {
   reviewTime: '',
   reviewOpinion: '',
   permission: '',
+  isSheXiao: false,
 };
 
 export default {
@@ -586,6 +448,9 @@ export default {
       title: '整车补货单号：' + form.replenishApplyCode,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-dealerVehicleReplenishApply',
+      isShowActivity: false,
+      isShowApplyCategory: false,
+      isShowFinancialOrganization: false,
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
@@ -645,7 +510,7 @@ export default {
           { required: true, message: '请输入批售方式', trigger: 'change' }
         ],
         prodScheduleActivityId: [
-          { required: true, message: '请输入专项活动', trigger: 'change' }
+          { required: this.isShowActivity, message: '请输入专项活动', trigger: 'change' }
         ],
         serials: [
           { required: true, message: '请输入车系组合', trigger: 'change' }
@@ -669,7 +534,7 @@ export default {
           { required: true, message: '请选择结算资金类型', trigger: 'change' }
         ],
         financialOrganizationId: [
-          { required: true, message: '请输入金融机构ID', trigger: 'change' }
+          { required: this.isShowFinancialOrganization, message: '请输入金融机构ID', trigger: 'change' }
         ],
         dealerWarehouseName: [
           { required: true, message: '请输入门店仓库名称', trigger: 'change' }
@@ -720,7 +585,7 @@ export default {
           { required: true, message: '请输入大区ID', trigger: 'change' }
         ],
         applyCategory: [
-          { required: true, message: '请输入申请类别', trigger: 'change' }
+          { required: this.isShowApplyCategory, message: '请输入申请类别', trigger: 'change' }
         ],
         auditorName: [
           { required: true, message: '请输入门店审核人', trigger: 'change' }
@@ -745,6 +610,9 @@ export default {
         ],
         permission: [
           { required: true, message: '请输入权限', trigger: 'change' }
+        ],
+        isSheXiao: [
+          { required: true, message: '请选择是否撤销', trigger: 'change' }
         ],
       }
     };
@@ -798,7 +666,52 @@ export default {
         return getEnum(code);
       }
       return [];
-    }
+    },
+    handleChangeDealer (val, record) {
+      this.form.saleDealerCode = record?.storeCode || '';
+      const dealer = getDealerDetailByCode(this.form.saleDealerCode);
+      this.form.deliveryDealerCode = dealer?.exclusiveServiceStoreCode || '';
+      this.form.deliveryDealerName = dealer?.exclusiveServiceStoreName || '';
+    },
+    handleChangeOrderCategory (val) {
+      if (val === '2') {
+        this.isShowApplyCategory = true;
+        this.isShowActivity = false;
+        this.form.prodScheduleActivityId = '';
+      } else if (val === '1' || val === '3') {
+        this.isShowApplyCategory = false;
+        this.isShowActivity = true;
+        this.form.applyCategory = '';
+      } else {
+        this.isShowApplyCategory = false;
+        this.isShowActivity = false;
+        this.form.applyCategory = '';
+        this.form.prodScheduleActivityId = '';
+      }
+    },
+    handleChangeFundType (val) {
+      if (val === '2010') {
+        this.isShowFinancialOrganization = true;
+      } else {
+        this.isShowFinancialOrganization = false;
+        this.form.financialOrganizationId = '';
+      }
+      if (val === '1050') {
+        this.form.isSheXiao = true;
+      }
+    },
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
+    },
+    async getRegionList (params) {
+      return getRigion({ regionName: params });
+    },
+    async repairItemSearch (query) {
+      return listFinancialOrganization({ organizationNameLike: query, status: 1 });
+    },
+    async prodScheduleActivitySearch (query) {
+      return listWholesaleProdScheduleActivity({ activityNameLike: query, status: 1, valid: true });
+    },
   }
 };
 </script>

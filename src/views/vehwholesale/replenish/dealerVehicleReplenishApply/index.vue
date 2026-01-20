@@ -27,7 +27,6 @@
           :remote-method="getDealerListByName"
           value-key="storeCode"
           label-key="storeName"
-          @change="handleDealerChange"
         />
       </el-form-item>
       <el-form-item label="审核状态"  v-show="this.visibleCount === 3 || show">
@@ -47,6 +46,8 @@
             filterable
             clearable
             remote
+            multiple
+            collapse-tags
             v-model="form.regionCodes"
             :remote-method="getRegionList"
             value-key="orgCode"
@@ -503,13 +504,13 @@ export default {
     async prodScheduleActivitySearch (query) {
       return listWholesaleProdScheduleActivity({ activityNameLike: query, status: 1 });
     },
-    handleDealerChange (val, record) {
-      this.form.regionCodes = [...new Set(
-        record
-          .map(item => item?.orgCode)
-          .filter(Boolean)
-      )];
-    },
+    // handleDealerChange (val, record) {
+    //   this.form.regionCodes = [...new Set(
+    //     record
+    //       .map(item => item?.regionCode)
+    //       .filter(Boolean)
+    //   )];
+    // },
   }
 };
 </script>
