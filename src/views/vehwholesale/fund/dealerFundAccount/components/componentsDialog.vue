@@ -261,7 +261,7 @@ export default {
       this.columns = []; // 清空列配置
       this.title = ''; // 清空标题
     },
-    repairItemSearch (query) { return listIdNames({ seriesNameLike: query, status: 1 }); },
+    repairItemSearch (query) { return listIdNames({ organizationNameLike: query, status: 1 }); },
     entOrderQuotaSubmit () {
       let params = {
         ids: this.selectionList.map(item => item.id),

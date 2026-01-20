@@ -545,11 +545,11 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '整车批售-批售主数据-整车门店补货明细管理',
+      pageTitle: '整车批售-批售主数据-整车门店补货申请明细管理',
       pageType: 'edit',
       title: '整车补货单号：' + form.replenishApplyCode,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-dealerVehicleReplenishApplyDetail',
+      moduleKey: 'AISVW-dealerVehicleReplenishApplyDetail',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,

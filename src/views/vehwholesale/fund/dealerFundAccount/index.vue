@@ -245,7 +245,7 @@ export default {
         this.dealerCompanyName = res.dealerCompanyName;
       }).catch(() => {});
     },
-    repairItemSearch (query) { return listIdNames({ seriesNameLike: query, status: 1 }); },
+    repairItemSearch (query) { return listIdNames({ organizationNameLike: query, status: 1 }); },
     componentsDialogChange (type) {
       this.dialogTpye = type;
       this.$refs.componentsDialog.dialogshow(type);

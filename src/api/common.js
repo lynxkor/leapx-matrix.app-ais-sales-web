@@ -90,6 +90,14 @@ export function listOrgStoreInfo (data) {
 }
 
 /**
+ * 门店详情获取通过CODE
+ * @param {*} data
+ */
+export function getDealerDetailByCode (data) {
+  return api.get(`/network/api/store/getStoreDetailByCode2R?storeCode=${data}`);
+}
+
+/**
  * 门店模糊搜索
  * @param {*} data
  */
