@@ -36,7 +36,6 @@
           v-model="form.auditStatus"
           placeholder="请选择"
           clearable
-          multiple
           filterable
         />
       </el-form-item>
@@ -56,12 +55,11 @@
         </el-form-item>
         <el-form-item label="批售方式">
           <fetch-select
-            :request="fetchOptions"
-            enumCode="vw_wholesale_way"
+            :remote-method="getWholesaleWayList"
+            remote
             v-model="form.wholesaleWay"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -102,7 +100,6 @@
             v-model="form.fundTypes"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -138,6 +135,16 @@
     <div
       class="ais-table-c"
     >
+      <div>
+        <el-tabs v-model="tabName" type="card" @tab-click="handleClickTab">
+          <el-tab-pane label="全部" name="1"></el-tab-pane>
+          <el-tab-pane label="待门店审核" name="2"></el-tab-pane>
+          <el-tab-pane label="待审现车批售" name="3"></el-tab-pane>
+          <el-tab-pane label="待审排产商品车" name="4"></el-tab-pane>
+          <el-tab-pane label="待审展车" name="5"></el-tab-pane>
+          <el-tab-pane label="待审试驾车" name="6"></el-tab-pane>
+        </el-tabs>
+      </div>
       <LPVxeTable
         ref="tableRef"
         v-loading="loading"
@@ -186,13 +193,14 @@ const defaultForm = {
   replenishApplyCode: '',
   saleDealerCodes: [],
   auditStatus: '',
-  regionCodes: '',
+  regionCodes: [],
   wholesaleWay: '',
   prodScheduleActivityId: '',
   serials: '',
   orderCategory: '',
   settleFundType: '',
   financialOrganizationId: '',
+  queryTab: '1'
 };
 
 const pageSize = 20;
@@ -225,6 +233,7 @@ export default {
       exportLoading: false,
       uploadDialogVisible: false,
       clickItemId: '',
+      tabName: '1',
       optionObj: {
         id: 'dealerVehicleReplenishApplyTable',
         dataList: [],
@@ -504,6 +513,14 @@ export default {
     async prodScheduleActivitySearch (query) {
       return listWholesaleProdScheduleActivity({ activityNameLike: query, status: 1 });
     },
+    async getWholesaleWayList (query) {
+      // 不要code为20的
+      return this.fetchOptions('vw_wholesale_way').then(list => list.filter(item => item.code !== '20'));
+    },
+    handleClickTab () {
+      this.form.queryTab = this.tabName;
+      this.getData();
+    }
     // handleDealerChange (val, record) {
     //   this.form.regionCodes = [...new Set(
     //     record

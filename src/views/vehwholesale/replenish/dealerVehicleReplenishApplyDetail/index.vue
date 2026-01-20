@@ -9,76 +9,106 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="审核状态">
+      <el-form-item label="销售门店">
         <fetch-select
-          :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.auditStatus"
-          placeholder="请选择"
+          filterable
           clearable
           multiple
+          remote
+          collapseTags
+          v-model="form.saleDealerCodes"
+          :remote-method="getDealerListByName"
+          value-key="storeCode"
+          label-key="storeName"
+        />
+      </el-form-item>
+      <el-form-item label="所属大区">
+        <fetch-select
+          filterable
+          clearable
+          remote
+          multiple
+          collapse-tags
+          v-model="form.regionCodes"
+          :remote-method="getRegionList"
+          value-key="orgCode"
+          label-key="orgName"
+        />
+      </el-form-item>
+      <el-form-item label="批售方式" v-show="this.visibleCount === 3 || show">
+        <fetch-select
+          :remote-method="getWholesaleWayList"
+          remote
+          v-model="form.wholesaleWay"
+          placeholder="请选择"
+          clearable
           filterable
         />
       </el-form-item>
-      <el-form-item label="销售门店名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.saleDealerName"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item label="所属大区"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.regionName"
-          clearable
-        />
-      </el-form-item>
       <template v-if="show">
-        <el-form-item label="专项活动名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.prodScheduleActivity"
+        <el-form-item label="审核状态">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vw_replenish_audit_status"
+            v-model="form.auditStatus"
+            placeholder="请选择"
             clearable
-          />
-        </el-form-item>
-        <el-form-item label="申请类别">
-          <el-input
-            placeholder="请输入"
-            v-model="form.applyCategory"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="车系名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.seriesName"
-            clearable
+            filterable
           />
         </el-form-item>
         <el-form-item label="订单分类">
-          <el-input
-            placeholder="请输入"
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="ws_order_category"
             v-model="form.orderCategory"
+            placeholder="请选择"
             clearable
+            filterable
           />
         </el-form-item>
         <el-form-item label="结算资金类型">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.settleFundType"
+            enumCode="vw_fundtype"
+            v-model="form.fundTypes"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
-        <el-form-item label="金融机构名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.financialOrganization"
+        <el-form-item label="车系">
+          <fetch-select
+            filterable
             clearable
+            remote
+            collapseTags
+            v-model="form.seriesId"
+            :remote-method="getVehicleSeriesList"
+            value-key="id"
+            label-key="name"
+          />
+        </el-form-item>
+        <el-form-item label="申请类别">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vw_replenish_apply_type"
+            v-model="form.applyCategory"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="金融机构">
+          <fetch-select
+            :remote-method="repairItemSearch"
+            remote
+            reserve-keyword
+            labelKey="name"
+            valueKey="id"
+            v-model="form.financialOrganizationId"
+            placeholder="请选择"
+            clearable
+            filterable
           />
         </el-form-item>
       </template>
@@ -134,7 +164,8 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getRigion, listOrgStoreInfo, vehicleSeriesList } from '@/api/common';
+import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -147,14 +178,14 @@ import EditPage from './edit.vue';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   auditStatus: '',
-  saleDealerName: '',
-  regionName: '',
-  prodScheduleActivity: '',
+  saleDealerCodes: [],
+  regionCodes: [],
   applyCategory: '',
-  seriesName: '',
   orderCategory: '',
   settleFundType: '',
   financialOrganization: '',
+  wholesaleWay: '',
+  seriesId: ''
 };
 
 const pageSize = 20;
@@ -455,6 +486,22 @@ export default {
       //     });
       //   });
       // });
+    },
+    async getWholesaleWayList (query) {
+      // 不要code为20的
+      return this.fetchOptions('vw_wholesale_way').then(list => list.filter(item => item.code !== '20'));
+    },
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
+    },
+    async getRegionList (params) {
+      return getRigion({ regionName: params });
+    },
+    async repairItemSearch (query) {
+      return listFinancialOrganization({ organizationNameLike: query, status: 1 });
+    },
+    async getVehicleSeriesList (params) {
+      return vehicleSeriesList({ seriesNameLike: params, status: 1 });
     }
   }
 };
