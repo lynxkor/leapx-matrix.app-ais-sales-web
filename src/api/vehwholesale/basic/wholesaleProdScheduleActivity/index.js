@@ -42,3 +42,18 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+/**
+ * 修改配额数量
+ * @param {Object} data
+ */
+export function updateQuotaQty (data) {
+  return api.jsonPost(prefix + 'updateQuotaQty', data);
+}
+
+/**
+ *  下拉框查询
+ * @param {Object} data
+ */
+export function listIdNames (data) {
+  return api.jsonPost(prefix + 'list', data);
+}

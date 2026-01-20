@@ -176,7 +176,7 @@ export default {
       pageTitle: '整车批售-批售主数据-整车门店补货明细管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-dealerVehicleReplenishApplyDetail',
+      moduleKey: 'AISVW-dealerVehicleReplenishApplyDetail',
       form: {
         ...defaultForm
       },

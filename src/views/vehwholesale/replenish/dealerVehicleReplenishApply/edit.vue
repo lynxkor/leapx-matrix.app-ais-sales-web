@@ -33,6 +33,27 @@
                     clearable
                   />
                 </el-form-item>
+                <el-form-item label="门店编码">
+                  <fetch-select
+                    filterable
+                    clearable
+                    multiple
+                    remote
+                    collapseTags
+                    v-model="form.saleDealerCodes"
+                    :remote-method="getDealerListByName"
+                    value-key="storeCode"
+                    label-key="storeName"
+                    @change="handleDealerChange"
+                  />
+                </el-form-item>
+                <el-form-item label="销售门店：" prop="saleDealerName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.saleDealerName"
+                    clearable
+                  />
+                </el-form-item>
                 <el-form-item label="审核状态：" prop="auditStatus">
                   <fetch-select
                     :request="fetchOptions"
@@ -43,13 +64,6 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="销售门店名称：" prop="saleDealerName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.saleDealerName"
-                    clearable
-                  />
-                </el-form-item>
                 <el-form-item label="所属大区：" prop="regionName">
                   <el-input
                     placeholder="请输入"
@@ -57,31 +71,24 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="专项活动名称：" prop="prodScheduleActivity">
+                <el-form-item label="批售方式：" prop="wholesaleWay">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.prodScheduleActivity"
+                    v-model="form.wholesaleWay"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="申请类别：" prop="applyCategory">
+                <el-form-item label="专项活动：" prop="prodScheduleActivityId">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.applyCategory"
+                    v-model="form.prodScheduleActivityId"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="车系名称：" prop="seriesName">
+                <el-form-item label="车系组合：" prop="serials">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.seriesName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="车型名称：" prop="modelName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.modelName"
+                    v-model="form.serials"
                     clearable
                   />
                 </el-form-item>
@@ -92,48 +99,10 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="结算资金类型：" prop="settleFundType">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
-                    v-model="form.settleFundType"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                  />
-                </el-form-item>
-                <el-form-item label="金融机构名称：" prop="financialOrganization">
+                <el-form-item label="申请总数量：" prop="applyTotalQty">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.financialOrganization"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="申请数量：" prop="applyQty">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.applyQty"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="整车补货明细单号：" prop="replenishApplyDetailCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.replenishApplyDetailCode"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="物料编码：" prop="materialsCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.materialsCode"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="物料描述：" prop="materialsDesc">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.materialsDesc"
+                    v-model="form.applyTotalQty"
                     clearable
                   />
                 </el-form-item>
@@ -147,7 +116,14 @@
                     end-placeholder="结束日期"
                   />
                 </el-form-item>
-                <el-form-item label="审核时间：" prop="auditTime">
+                <el-form-item label="申请原因：" prop="applyReason">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.applyReason"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="门店审核时间：" prop="auditTime">
                   <el-date-picker
                     :default-time="['00:00:00', '23:59:59']"
                     v-model="form.auditTime"
@@ -157,20 +133,41 @@
                     end-placeholder="结束日期"
                   />
                 </el-form-item>
-                <el-form-item label="开票优惠类型：" prop="invoiceDiscountType">
+                <el-form-item label="结算资金类型：" prop="settleFundType">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="xxx"
-                    v-model="form.invoiceDiscountType"
+                    v-model="form.settleFundType"
                     placeholder="请选择"
                     clearable
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="开票系数：" prop="invoiceCoefficient">
+                <el-form-item label="金融机构ID：" prop="financialOrganizationId">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.invoiceCoefficient"
+                    v-model="form.financialOrganizationId"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="门店仓库名称：" prop="dealerWarehouseName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.dealerWarehouseName"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="交付门店名称：" prop="deliveryDealerName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.deliveryDealerName"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="创建者名称：" prop="creatorName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.creatorName"
                     clearable
                   />
                 </el-form-item>
@@ -198,13 +195,6 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.creatorName"
-                    clearable
-                  />
-                </el-form-item>
                 <el-form-item label="修改者：" prop="modifier">
                   <el-input
                     placeholder="请输入"
@@ -229,7 +219,7 @@
                     end-placeholder="结束日期"
                   />
                 </el-form-item>
-                <el-form-item label="备注：" prop="remark">
+                <el-form-item label="备注（说明）：" prop="remark">
                   <el-input
                     placeholder="请输入"
                     v-model="form.remark"
@@ -263,6 +253,20 @@
                     clearable
                   />
                 </el-form-item>
+                <el-form-item label="交付门店编码：" prop="deliveryDealerCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.deliveryDealerCode"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="门店仓库编码：" prop="dealerWarehouseCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.dealerWarehouseCode"
+                    clearable
+                  />
+                </el-form-item>
                 <el-form-item label="大区ID：" prop="regionCode">
                   <el-input
                     placeholder="请输入"
@@ -270,45 +274,69 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="专项活动：" prop="prodScheduleActivityId">
+                <el-form-item label="申请类别：" prop="applyCategory">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.prodScheduleActivityId"
+                    v-model="form.applyCategory"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="车系ID：" prop="seriesId">
+                <el-form-item label="门店审核人：" prop="auditorName">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.seriesId"
+                    v-model="form.auditorName"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="车型ID：" prop="modelId">
+                <el-form-item label="门店审核人：" prop="auditorUserId">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.modelId"
+                    v-model="form.auditorUserId"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="金融机构ID：" prop="financialOrganizationId">
+                <el-form-item label="审核意见：" prop="auditOpinion">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.financialOrganizationId"
+                    v-model="form.auditOpinion"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="物料ID：" prop="materialsId">
+                <el-form-item label="厂端审核人：" prop="reviewName">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.materialsId"
+                    v-model="form.reviewName"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="申请原因：" prop="applyReason">
+                <el-form-item label="厂端审核人：" prop="reviewUserId">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.applyReason"
+                    v-model="form.reviewUserId"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="厂端审核时间：" prop="reviewTime">
+                  <el-date-picker
+                    :default-time="['00:00:00', '23:59:59']"
+                    v-model="form.reviewTime"
+                    :picker-options="pickerOptions"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                  />
+                </el-form-item>
+                <el-form-item label="厂端审核意见：" prop="reviewOpinion">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.reviewOpinion"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="权限：" prop="permission">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.permission"
                     clearable
                   />
                 </el-form-item>
@@ -317,59 +345,53 @@
                 <el-form-item label="整车补货单号：" prop="replenishApplyCode">
                   {{ form.replenishApplyCode }}
                 </el-form-item>
-                <el-form-item label="审核状态：" prop="auditStatus">
-                  {{ form.auditStatus }}
-                </el-form-item>
                 <el-form-item label="销售门店名称：" prop="saleDealerName">
                   {{ form.saleDealerName }}
+                </el-form-item>
+                <el-form-item label="审核状态：" prop="auditStatus">
+                  {{ form.auditStatus }}
                 </el-form-item>
                 <el-form-item label="所属大区：" prop="regionName">
                   {{ form.regionName }}
                 </el-form-item>
-                <el-form-item label="专项活动名称：" prop="prodScheduleActivity">
-                  {{ form.prodScheduleActivity }}
+                <el-form-item label="批售方式：" prop="wholesaleWay">
+                  {{ form.wholesaleWay }}
                 </el-form-item>
-                <el-form-item label="申请类别：" prop="applyCategory">
-                  {{ form.applyCategory }}
+                <el-form-item label="专项活动：" prop="prodScheduleActivityId">
+                  {{ form.prodScheduleActivityId }}
                 </el-form-item>
-                <el-form-item label="车系名称：" prop="seriesName">
-                  {{ form.seriesName }}
-                </el-form-item>
-                <el-form-item label="车型名称：" prop="modelName">
-                  {{ form.modelName }}
+                <el-form-item label="车系组合：" prop="serials">
+                  {{ form.serials }}
                 </el-form-item>
                 <el-form-item label="订单分类：" prop="orderCategory">
                   {{ form.orderCategory }}
                 </el-form-item>
-                <el-form-item label="结算资金类型：" prop="settleFundType">
-                  {{ form.settleFundType }}
-                </el-form-item>
-                <el-form-item label="金融机构名称：" prop="financialOrganization">
-                  {{ form.financialOrganization }}
-                </el-form-item>
-                <el-form-item label="申请数量：" prop="applyQty">
-                  {{ form.applyQty }}
-                </el-form-item>
-                <el-form-item label="整车补货明细单号：" prop="replenishApplyDetailCode">
-                  {{ form.replenishApplyDetailCode }}
-                </el-form-item>
-                <el-form-item label="物料编码：" prop="materialsCode">
-                  {{ form.materialsCode }}
-                </el-form-item>
-                <el-form-item label="物料描述：" prop="materialsDesc">
-                  {{ form.materialsDesc }}
+                <el-form-item label="申请总数量：" prop="applyTotalQty">
+                  {{ form.applyTotalQty }}
                 </el-form-item>
                 <el-form-item label="申请时间：" prop="applyTime">
                   {{ form.applyTime }}
                 </el-form-item>
-                <el-form-item label="审核时间：" prop="auditTime">
+                <el-form-item label="申请原因：" prop="applyReason">
+                  {{ form.applyReason }}
+                </el-form-item>
+                <el-form-item label="门店审核时间：" prop="auditTime">
                   {{ form.auditTime }}
                 </el-form-item>
-                <el-form-item label="开票优惠类型：" prop="invoiceDiscountType">
-                  {{ form.invoiceDiscountType }}
+                <el-form-item label="结算资金类型：" prop="settleFundType">
+                  {{ form.settleFundType }}
                 </el-form-item>
-                <el-form-item label="开票系数：" prop="invoiceCoefficient">
-                  {{ form.invoiceCoefficient }}
+                <el-form-item label="金融机构ID：" prop="financialOrganizationId">
+                  {{ form.financialOrganizationId }}
+                </el-form-item>
+                <el-form-item label="门店仓库名称：" prop="dealerWarehouseName">
+                  {{ form.dealerWarehouseName }}
+                </el-form-item>
+                <el-form-item label="交付门店名称：" prop="deliveryDealerName">
+                  {{ form.deliveryDealerName }}
+                </el-form-item>
+                <el-form-item label="创建者名称：" prop="creatorName">
+                  {{ form.creatorName }}
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
@@ -380,9 +402,6 @@
                 <el-form-item label="创建者：" prop="creator">
                   {{ form.creator }}
                 </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  {{ form.creatorName }}
-                </el-form-item>
                 <el-form-item label="修改者：" prop="modifier">
                   {{ form.modifier }}
                 </el-form-item>
@@ -392,7 +411,7 @@
                 <el-form-item label="修改时间：" prop="updateTime">
                   {{ form.updateTime }}
                 </el-form-item>
-                <el-form-item label="备注：" prop="remark">
+                <el-form-item label="备注（说明）：" prop="remark">
                   {{ form.remark }}
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
@@ -404,26 +423,41 @@
                 <el-form-item label="销售门店编码：" prop="saleDealerCode">
                   {{ form.saleDealerCode }}
                 </el-form-item>
+                <el-form-item label="交付门店编码：" prop="deliveryDealerCode">
+                  {{ form.deliveryDealerCode }}
+                </el-form-item>
+                <el-form-item label="门店仓库编码：" prop="dealerWarehouseCode">
+                  {{ form.dealerWarehouseCode }}
+                </el-form-item>
                 <el-form-item label="大区ID：" prop="regionCode">
                   {{ form.regionCode }}
                 </el-form-item>
-                <el-form-item label="专项活动：" prop="prodScheduleActivityId">
-                  {{ form.prodScheduleActivityId }}
+                <el-form-item label="申请类别：" prop="applyCategory">
+                  {{ form.applyCategory }}
                 </el-form-item>
-                <el-form-item label="车系ID：" prop="seriesId">
-                  {{ form.seriesId }}
+                <el-form-item label="门店审核人：" prop="auditorName">
+                  {{ form.auditorName }}
                 </el-form-item>
-                <el-form-item label="车型ID：" prop="modelId">
-                  {{ form.modelId }}
+                <el-form-item label="门店审核人：" prop="auditorUserId">
+                  {{ form.auditorUserId }}
                 </el-form-item>
-                <el-form-item label="金融机构ID：" prop="financialOrganizationId">
-                  {{ form.financialOrganizationId }}
+                <el-form-item label="审核意见：" prop="auditOpinion">
+                  {{ form.auditOpinion }}
                 </el-form-item>
-                <el-form-item label="物料ID：" prop="materialsId">
-                  {{ form.materialsId }}
+                <el-form-item label="厂端审核人：" prop="reviewName">
+                  {{ form.reviewName }}
                 </el-form-item>
-                <el-form-item label="申请原因：" prop="applyReason">
-                  {{ form.applyReason }}
+                <el-form-item label="厂端审核人：" prop="reviewUserId">
+                  {{ form.reviewUserId }}
+                </el-form-item>
+                <el-form-item label="厂端审核时间：" prop="reviewTime">
+                  {{ form.reviewTime }}
+                </el-form-item>
+                <el-form-item label="厂端审核意见：" prop="reviewOpinion">
+                  {{ form.reviewOpinion }}
+                </el-form-item>
+                <el-form-item label="权限：" prop="permission">
+                  {{ form.permission }}
                 </el-form-item>
               </el-form>
             </div>
@@ -473,28 +507,25 @@ import commonMixins from '@/libs/mixins/commonMixins';
 const defaultForm = {
   // 多选时字段有变化，自行修复
   replenishApplyCode: '',
-  auditStatus: '',
   saleDealerName: '',
+  auditStatus: '',
   regionName: '',
-  prodScheduleActivity: '',
-  applyCategory: '',
-  seriesName: '',
-  modelName: '',
+  wholesaleWay: '',
+  prodScheduleActivityId: '',
+  serials: '',
   orderCategory: '',
-  settleFundType: '',
-  financialOrganization: '',
-  applyQty: '',
-  replenishApplyDetailCode: '',
-  materialsCode: '',
-  materialsDesc: '',
+  applyTotalQty: '',
   applyTime: '',
+  applyReason: '',
   auditTime: '',
-  invoiceDiscountType: '',
-  invoiceCoefficient: '',
+  settleFundType: '',
+  financialOrganizationId: '',
+  dealerWarehouseName: '',
+  deliveryDealerName: '',
+  creatorName: '',
   createTime: '',
   id: '',
   creator: '',
-  creatorName: '',
   modifier: '',
   modifierName: '',
   updateTime: '',
@@ -502,17 +533,22 @@ const defaultForm = {
   status: '',
   statusDesc: '',
   saleDealerCode: '',
+  deliveryDealerCode: '',
+  dealerWarehouseCode: '',
   regionCode: '',
-  prodScheduleActivityId: '',
-  seriesId: '',
-  modelId: '',
-  financialOrganizationId: '',
-  materialsId: '',
-  applyReason: '',
+  applyCategory: '',
+  auditorName: '',
+  auditorUserId: '',
+  auditOpinion: '',
+  reviewName: '',
+  reviewUserId: '',
+  reviewTime: '',
+  reviewOpinion: '',
+  permission: '',
 };
 
 export default {
-  name: 'dealerVehicleReplenishApplyEdit',
+  name: 'vehwholesale/replenish/dealerVehicleReplenishApplyEdit',
   // 集中视图预留
   props: {
     id: {
@@ -545,11 +581,11 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '整车批售-批售主数据-整车门店补货明细管理',
+      pageTitle: '整车批售-批售主数据-整车门店补货申请管理',
       pageType: 'edit',
       title: '整车补货单号：' + form.replenishApplyCode,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-dealerVehicleReplenishApply',
+      moduleKey: 'AISVW-dealerVehicleReplenishApply',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
@@ -596,59 +632,53 @@ export default {
         replenishApplyCode: [
           { required: true, message: '请输入整车补货单号', trigger: 'change' }
         ],
-        auditStatus: [
-          { required: true, message: '请选择审核状态', trigger: 'change' }
-        ],
         saleDealerName: [
           { required: true, message: '请输入销售门店名称', trigger: 'change' }
+        ],
+        auditStatus: [
+          { required: true, message: '请选择审核状态', trigger: 'change' }
         ],
         regionName: [
           { required: true, message: '请输入所属大区', trigger: 'change' }
         ],
-        prodScheduleActivity: [
-          { required: true, message: '请输入专项活动名称', trigger: 'change' }
+        wholesaleWay: [
+          { required: true, message: '请输入批售方式', trigger: 'change' }
         ],
-        applyCategory: [
-          { required: true, message: '请输入申请类别', trigger: 'change' }
+        prodScheduleActivityId: [
+          { required: true, message: '请输入专项活动', trigger: 'change' }
         ],
-        seriesName: [
-          { required: true, message: '请输入车系名称', trigger: 'change' }
-        ],
-        modelName: [
-          { required: true, message: '请输入车型名称', trigger: 'change' }
+        serials: [
+          { required: true, message: '请输入车系组合', trigger: 'change' }
         ],
         orderCategory: [
           { required: true, message: '请输入订单分类', trigger: 'change' }
         ],
-        settleFundType: [
-          { required: true, message: '请选择结算资金类型', trigger: 'change' }
-        ],
-        financialOrganization: [
-          { required: true, message: '请输入金融机构名称', trigger: 'change' }
-        ],
-        applyQty: [
-          { required: true, message: '请输入申请数量', trigger: 'change' }
-        ],
-        replenishApplyDetailCode: [
-          { required: true, message: '请输入整车补货明细单号', trigger: 'change' }
-        ],
-        materialsCode: [
-          { required: true, message: '请输入物料编码', trigger: 'change' }
-        ],
-        materialsDesc: [
-          { required: true, message: '请输入物料描述', trigger: 'change' }
+        applyTotalQty: [
+          { required: true, message: '请输入申请总数量', trigger: 'change' }
         ],
         applyTime: [
           { required: true, message: '请选择申请时间', trigger: 'change' }
         ],
+        applyReason: [
+          { required: true, message: '请输入申请原因', trigger: 'change' }
+        ],
         auditTime: [
-          { required: true, message: '请选择审核时间', trigger: 'change' }
+          { required: true, message: '请选择门店审核时间', trigger: 'change' }
         ],
-        invoiceDiscountType: [
-          { required: true, message: '请选择开票优惠类型', trigger: 'change' }
+        settleFundType: [
+          { required: true, message: '请选择结算资金类型', trigger: 'change' }
         ],
-        invoiceCoefficient: [
-          { required: true, message: '请输入开票系数', trigger: 'change' }
+        financialOrganizationId: [
+          { required: true, message: '请输入金融机构ID', trigger: 'change' }
+        ],
+        dealerWarehouseName: [
+          { required: true, message: '请输入门店仓库名称', trigger: 'change' }
+        ],
+        deliveryDealerName: [
+          { required: true, message: '请输入交付门店名称', trigger: 'change' }
+        ],
+        creatorName: [
+          { required: true, message: '请输入创建者名称', trigger: 'change' }
         ],
         createTime: [
           { required: true, message: '请选择创建时间', trigger: 'change' }
@@ -658,9 +688,6 @@ export default {
         ],
         creator: [
           { required: true, message: '请输入创建者', trigger: 'change' }
-        ],
-        creatorName: [
-          { required: true, message: '请输入创建者名称', trigger: 'change' }
         ],
         modifier: [
           { required: true, message: '请输入修改者', trigger: 'change' }
@@ -672,7 +699,7 @@ export default {
           { required: true, message: '请选择修改时间', trigger: 'change' }
         ],
         remark: [
-          { required: true, message: '请输入备注', trigger: 'change' }
+          { required: true, message: '请输入备注（说明）', trigger: 'change' }
         ],
         status: [
           { required: true, message: '请选择状态', trigger: 'change' }
@@ -683,26 +710,41 @@ export default {
         saleDealerCode: [
           { required: true, message: '请输入销售门店编码', trigger: 'change' }
         ],
+        deliveryDealerCode: [
+          { required: true, message: '请输入交付门店编码', trigger: 'change' }
+        ],
+        dealerWarehouseCode: [
+          { required: true, message: '请输入门店仓库编码', trigger: 'change' }
+        ],
         regionCode: [
           { required: true, message: '请输入大区ID', trigger: 'change' }
         ],
-        prodScheduleActivityId: [
-          { required: true, message: '请输入专项活动', trigger: 'change' }
+        applyCategory: [
+          { required: true, message: '请输入申请类别', trigger: 'change' }
         ],
-        seriesId: [
-          { required: true, message: '请输入车系ID', trigger: 'change' }
+        auditorName: [
+          { required: true, message: '请输入门店审核人', trigger: 'change' }
         ],
-        modelId: [
-          { required: true, message: '请输入车型ID', trigger: 'change' }
+        auditorUserId: [
+          { required: true, message: '请输入门店审核人', trigger: 'change' }
         ],
-        financialOrganizationId: [
-          { required: true, message: '请输入金融机构ID', trigger: 'change' }
+        auditOpinion: [
+          { required: true, message: '请输入审核意见', trigger: 'change' }
         ],
-        materialsId: [
-          { required: true, message: '请输入物料ID', trigger: 'change' }
+        reviewName: [
+          { required: true, message: '请输入厂端审核人', trigger: 'change' }
         ],
-        applyReason: [
-          { required: true, message: '请输入申请原因', trigger: 'change' }
+        reviewUserId: [
+          { required: true, message: '请输入厂端审核人', trigger: 'change' }
+        ],
+        reviewTime: [
+          { required: true, message: '请选择厂端审核时间', trigger: 'change' }
+        ],
+        reviewOpinion: [
+          { required: true, message: '请输入厂端审核意见', trigger: 'change' }
+        ],
+        permission: [
+          { required: true, message: '请输入权限', trigger: 'change' }
         ],
       }
     };

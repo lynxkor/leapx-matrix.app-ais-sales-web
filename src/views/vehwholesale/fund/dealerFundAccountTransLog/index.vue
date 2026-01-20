@@ -282,7 +282,7 @@ export default {
         console.log('transactionTypes error:', error);
       }
     },
-    repairItemSearch (query) { return listIdNames({ seriesNameLike: query, status: 1 }); },
+    repairItemSearch (query) { return listIdNames({ organizationNameLike: query, status: 1 }); },
     handleAdd () {
       this.$router.push({
         path: '/vehwholesale/fund/dealerFundAccountTransLog/edit'

@@ -101,41 +101,42 @@
     />
       <el-dialog
     class="audit-total-dialog"
-    title="门店试驾车配额调整"
+    title="排产专项活动明细配额调整"
     width="800px"
     :visible.sync="totalQuotaQtyDialogVisible"
     @close="changeClose"
   >
     <el-form ref="changeformRef" :model="changeform" :rules="changerules" label-width="120px">
-        <el-form-item label="调整前配额数" prop="quotaQty">
+      <el-form-item label="id：" prop="id" v-show="changeformId">
+          <el-input
+            placeholder="请输入"
+            v-model="changeform.id"
+            clearable
+          />
+        </el-form-item>
+
+        <el-form-item label="调整额度数量：" prop="beforetotalQuotaQty">
           <el-input-number
             :controls="false"
             style="width: 100%;"
             placeholder="请输入"
-            v-model="changeform.quotaQty"
+            v-model="changeform.beforetotalQuotaQty"
             clearable
             :precision="0"
             :disabled="true"
           />
         </el-form-item>
-        <el-form-item label="配额数" prop="changeAfterQty">
+        <el-form-item label="配额数量：" prop="totalQuotaQty">
           <el-input-number
             :controls="false"
             style="width: 100%;"
             placeholder="请输入"
-            v-model="changeform.changeAfterQty"
+            v-model="changeform.totalQuotaQty"
             clearable
             :precision="0"
           />
         </el-form-item>
-        <el-form-item label="调整说明" prop="changeDescs">
-          <el-input
-            placeholder="请输入"
-            v-model="changeform.changeDescs"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="累计已申请数" prop="requestQty">
+        <el-form-item label="已提报数量：" prop="requestQty">
           <el-input-number
             :controls="false"
             style="width: 100%;"
@@ -146,11 +147,15 @@
             :disabled="true"
           />
         </el-form-item>
-        <el-form-item label="附件说明（文件上传TODO）" prop="changeDescFileId">
-          <el-input
+        <el-form-item label="剩余可用：" prop="remainQuotaQty">
+          <el-input-number
+            :controls="false"
+            style="width: 100%;"
             placeholder="请输入"
-            v-model="changeform.changeDescFileId"
+            v-model="changeform.remainQuotaQty"
             clearable
+            :precision="0"
+            :disabled="true"
           />
         </el-form-item>
     </el-form>
@@ -168,7 +173,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivity/index';
+import { getList, deleteItem, enableItem, getDetail, updateQuotaQty } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivity/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -179,7 +184,6 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
-import { updateTestDriveQuota, getDetail as getDetailChange } from '@/api/vehwholesale/basic/wholesaleDealerTestDriveQuota/index';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -216,6 +220,7 @@ export default {
         ...defaultForm
       },
       changeform: {},
+      changeformId: false,
       changerules: {
         changeBeforeQty: [
           { required: true, message: '请输入变化前数量', trigger: 'blur' }
@@ -277,6 +282,12 @@ export default {
             visible: true,
             fixed: 'right',
             buttons: [{
+              name: '配额调整',
+              click: (rowIndex, row) => {
+                this.changeTotalQuotaQty(row.id);
+              },
+              type: 'info'
+            }, {
               name: '编辑',
               click: (rowIndex, row) => {
                 this.$router.push({
@@ -285,12 +296,6 @@ export default {
                     id: row.id
                   }
                 });
-              },
-              type: 'info'
-            }, {
-              name: '配额调整',
-              click: (rowIndex, row) => {
-                this.changeTotalQuotaQty(row.id);
               },
               type: 'info'
             }, {
@@ -334,16 +339,10 @@ export default {
         if (valid) {
           this.submitLoading = true;
           const submitForm = {
-            changeAfterQty: this.changeform.changeAfterQty,
-            changeDesc: this.changeform.changeDescs,
-            changeDescFileId: this.changeform.changeDescFileId,
-            changeBeforeQty: this.changeform.quotaQty,
-            relatedId: this.changeId,
-            dealerCode: this.changeform.dealerCode,
-            vehicleYearTypeId: this.changeform.vehicleYearTypeId,
-            vehicleModelLineId: this.changeform.vehicleModelLineId
+            id: this.changeform.id,
+            totalQuotaQty: this.changeform.totalQuotaQty
           };
-          updateTestDriveQuota(submitForm).then(res => {
+          updateQuotaQty(submitForm).then(res => {
             this.$message({
               message: '修改成功',
               type: 'success'
@@ -360,9 +359,10 @@ export default {
       this.totalQuotaQtyDialogVisible = true;
       this.changeId = id;
       if (id) {
-        getDetailChange(id).then(res => {
+        getDetail(id).then(res => {
           this.loading = false;
           Object.assign(this.changeform, res);
+          this.changeform.beforetotalQuotaQty = res.totalQuotaQty;
         });
       }
     },

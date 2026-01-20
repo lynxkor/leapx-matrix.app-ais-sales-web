@@ -1,7 +1,7 @@
 import api from '@/axios';
 
 // 根据项目名称（如maintain代表维保项目）手动修改前缀
-const prefix = 'wholesale/web/replenish/dealerVehicleReplenishApply/';
+const prefix = 'vw/web/replenish/dealerVehicleReplenishApply/';
 
 /**
  * 查询列表
@@ -41,4 +41,12 @@ export function getDetail (data) {
  */
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
+}
+
+/**
+ *  下拉框查询
+ * @param {Object} data
+ */
+export function listIdNames (data) {
+  return api.jsonPost(prefix + 'list', data);
 }
