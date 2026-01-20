@@ -74,6 +74,7 @@
                     :remote-method="getDeliveryDealerByDealerCode"
                     value-key="storeCode"
                     label-key="storeName"
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="批售方式：" prop="wholesaleWay">
@@ -83,11 +84,14 @@
                     v-model="form.wholesaleWay"
                     placeholder="请选择"
                     clearable
-                    multiple
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="专项活动：" prop="prodScheduleActivityId" v-show="isShowActivity">
+                <el-form-item
+                  label="专项活动："
+                  prop="prodScheduleActivityId"
+                  v-show="isShowActivity"
+                >
                   <fetch-select
                     :remote-method="prodScheduleActivitySearch"
                     remote
@@ -100,34 +104,45 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="申请类别：" prop="applyCategory" v-show="isShowApplyCategory">
+                <el-form-item
+                  label="申请类别："
+                  prop="applyCategory"
+                  v-show="isShowApplyCategory"
+                  :rules="form.orderCategory === '2' ? rules.applyCategory: []"
+                >
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="apply_category_enum"
+                    enumCode="vw_replenish_apply_type"
                     v-model="form.applyCategory"
                     placeholder="请选择"
                     clearable
-                    multiple
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="门店仓库：" prop="dealerWarehouseCode">
+                <el-form-item label="门店仓库：" prop="dealerWarehouseName">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.dealerWarehouseCode"
+                    v-model="form.dealerWarehouseName"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="审核状态：" prop="auditStatus">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="vw_replenish_audit_status"
                     v-model="form.auditStatus"
                     placeholder="请选择"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
-                <el-form-item label="金融机构ID：" prop="financialOrganizationId">
+                <el-form-item
+                  label="金融机构ID："
+                  prop="financialOrganizationId"
+                  :rules="form.settleFundType==='2010' ? rules.financialOrganizationId: []"
+                  v-show="isShowFinancialOrganization"
+                >
                   <fetch-select
                     :remote-method="repairItemSearch"
                     remote
@@ -140,7 +155,7 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="是否撤销：" prop="isSheXiao">
+                <el-form-item label="是否赊销：" prop="isSheXiao">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="BooleanEnum"
@@ -153,10 +168,9 @@
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vw_fundtype"
-                    v-model="form.fundTypes"
+                    v-model="form.settleFundType"
                     placeholder="请选择"
                     clearable
-                    multiple
                     filterable
                     @change="handleChangeFundType"
                   />
@@ -166,6 +180,7 @@
                     placeholder="请输入"
                     v-model="form.applyReason"
                     clearable
+                    maxlength="150"
                   />
                 </el-form-item>
                 <el-form-item label="申请总数量：" prop="applyTotalQty">
@@ -173,6 +188,7 @@
                     placeholder="请输入"
                     v-model="form.applyTotalQty"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="仓库编码：" prop="dealerWarehouseCode">
@@ -180,6 +196,7 @@
                     placeholder="请输入"
                     v-model="form.dealerWarehouseCode"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="仓库地址：" prop="dealerWarehouseAddress">
@@ -187,16 +204,16 @@
                     placeholder="请输入"
                     v-model="form.dealerWarehouseAddress"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
-                <el-form-item label="门店审核时间：" prop="auditTime">
+                <el-form-item label="审批时间：" prop="auditTime">
                   <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
                     v-model="form.auditTime"
-                    :picker-options="pickerOptions"
+                    type="datetime"
+                    placeholder="请选择日期时间"
                     value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
+                    :disabled="true"
                   />
                 </el-form-item>
               </el-form>
@@ -369,7 +386,7 @@ const defaultForm = {
   // 多选时字段有变化，自行修复
   replenishApplyCode: '',
   saleDealerName: '',
-  auditStatus: '',
+  auditStatus: '1',
   regionName: '',
   wholesaleWay: '10',
   prodScheduleActivityId: '',
@@ -406,11 +423,12 @@ const defaultForm = {
   reviewTime: '',
   reviewOpinion: '',
   permission: '',
-  isSheXiao: false,
+  isSheXiao: 0,
+  dealerWarehouseAddress: '',
 };
 
 export default {
-  name: 'vehwholesale/replenish/dealerVehicleReplenishApplyEdit',
+  name: 'dealerVehicleReplenishApplyEdit',
   // 集中视图预留
   props: {
     id: {
@@ -510,7 +528,7 @@ export default {
           { required: true, message: '请输入批售方式', trigger: 'change' }
         ],
         prodScheduleActivityId: [
-          { required: this.isShowActivity, message: '请输入专项活动', trigger: 'change' }
+          { required: false, message: '请输入专项活动', trigger: 'change' }
         ],
         serials: [
           { required: true, message: '请输入车系组合', trigger: 'change' }
@@ -528,13 +546,13 @@ export default {
           { required: true, message: '请输入申请原因', trigger: 'change' }
         ],
         auditTime: [
-          { required: true, message: '请选择门店审核时间', trigger: 'change' }
+          { required: false, message: '请选择审核时间', trigger: 'change' }
         ],
         settleFundType: [
           { required: true, message: '请选择结算资金类型', trigger: 'change' }
         ],
         financialOrganizationId: [
-          { required: this.isShowFinancialOrganization, message: '请输入金融机构ID', trigger: 'change' }
+          { required: true, message: '请输入金融机构ID', trigger: 'change' }
         ],
         dealerWarehouseName: [
           { required: true, message: '请输入门店仓库名称', trigger: 'change' }
@@ -585,7 +603,7 @@ export default {
           { required: true, message: '请输入大区ID', trigger: 'change' }
         ],
         applyCategory: [
-          { required: this.isShowApplyCategory, message: '请输入申请类别', trigger: 'change' }
+          { required: true, message: '请输入申请类别', trigger: 'change' }
         ],
         auditorName: [
           { required: true, message: '请输入门店审核人', trigger: 'change' }
@@ -612,7 +630,10 @@ export default {
           { required: true, message: '请输入权限', trigger: 'change' }
         ],
         isSheXiao: [
-          { required: true, message: '请选择是否撤销', trigger: 'change' }
+          { required: false, message: '请选择是否赊销', trigger: 'change' }
+        ],
+        dealerWarehouseAddress: [
+          { required: true, message: '请输入仓库地址', trigger: 'change' }
         ],
       }
     };
@@ -669,9 +690,23 @@ export default {
     },
     handleChangeDealer (val, record) {
       this.form.saleDealerCode = record?.storeCode || '';
-      const dealer = getDealerDetailByCode(this.form.saleDealerCode);
-      this.form.deliveryDealerCode = dealer?.exclusiveServiceStoreCode || '';
-      this.form.deliveryDealerName = dealer?.exclusiveServiceStoreName || '';
+      getDealerDetailByCode(this.form.saleDealerCode).then(response => {
+        this.form.deliveryDealerCode = response?.exclusiveDeliveryStoreCode || '';
+        this.form.deliveryDealerName = response?.exclusiveDeliveryStoreName || '';
+      }).catch(error => {
+        // 错误处理逻辑
+        console.error('请求失败:', error);
+      });
+      if (this.form.deliveryDealerCode) {
+        getDealerDetailByCode(this.form.deliveryDealerCode).then(response => {
+          this.form.dealerWarehouseCode = response?.storeWarehouseResp?.warehouseCode || '';
+          this.form.dealerWarehouseAddress = response?.storeWarehouseResp?.warehouseDetailAddress || '';
+          this.form.dealerWarehouseName = response?.storeWarehouseResp?.warehouseName || '';
+        }).catch(error => {
+          // 错误处理逻辑
+          console.error('请求失败:', error);
+        });
+      }
     },
     handleChangeOrderCategory (val) {
       if (val === '2') {
@@ -697,7 +732,7 @@ export default {
         this.form.financialOrganizationId = '';
       }
       if (val === '1050') {
-        this.form.isSheXiao = true;
+        this.form.isSheXiao = 1;
       }
     },
     async getDealerListByName (params) {

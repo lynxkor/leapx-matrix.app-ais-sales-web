@@ -94,7 +94,7 @@ export function listOrgStoreInfo (data) {
  * @param {*} data
  */
 export function getDealerDetailByCode (data) {
-  return api.get(`/network/api/store/getStoreDetailByCode?storeCode=${data}`);
+  return api.get(`/network/api/store/getStoreDetailByCode2R?storeCode=${data}`);
 }
 
 /**
