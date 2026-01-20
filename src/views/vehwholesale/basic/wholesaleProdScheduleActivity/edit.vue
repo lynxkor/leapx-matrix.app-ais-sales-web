@@ -184,36 +184,6 @@
                 </el-form-item> -->
               </el-form>
               <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <!-- <el-form-item label="主键：" prop="id">
-                  {{ form.id }}
-                </el-form-item>
-                <el-form-item label="创建者：" prop="creator">
-                  {{ form.creator }}
-                </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  {{ form.creatorName }}
-                </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
-                  {{ form.createTime }}
-                </el-form-item>
-                <el-form-item label="修改者：" prop="modifier">
-                  {{ form.modifier }}
-                </el-form-item>
-                <el-form-item label="修改者名称：" prop="modifierName">
-                  {{ form.modifierName }}
-                </el-form-item>
-                <el-form-item label="修改时间：" prop="updateTime">
-                  {{ form.updateTime }}
-                </el-form-item>
-                <el-form-item label="备注（说明）：" prop="remark">
-                  {{ form.remark }}
-                </el-form-item>
-                <el-form-item label="状态：" prop="status">
-                  {{ form.status }}
-                </el-form-item>
-                <el-form-item label="状态变更描述：" prop="statusDesc">
-                  {{ form.statusDesc }}
-                </el-form-item> -->
                 <el-form-item label="活动编码：" prop="activityCode">
                   {{ form.activityCode }}
                 </el-form-item>
@@ -235,7 +205,6 @@
                 <el-form-item label="指定发运方式：" prop="deliveryWay">
                   {{ form.deliveryWay }}
                 </el-form-item>
-
                 <el-form-item label="开始日期：" prop="startTime">
                   {{ form.startTime }}
                 </el-form-item>
@@ -248,10 +217,24 @@
               </el-form>
             </div>
           </section>
-          <section class="common-section">
+          <section class="common-section" v-if="!!_id">
             <div class="common-section-header">
               <h2>排产活动明细</h2>
-              <!-- <el-button v-if="canAddOrUpdate" size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>添加</el-button> -->
+              <el-button size="medium" type="primary" @click="handleAddRow">活动明细导入</el-button>
+            </div>
+            <div>
+              <el-form :inline="true" :model="detailForm" label-width="150px" class="form-edit">
+                <el-form-item label="门店编码：">
+                  <tag-input v-model="detailForm.dealerCodes" placeholder="请输入" />
+                </el-form-item>
+                <el-form-item label="门店名称：">
+                  <tag-input v-model="detailForm.dealerNames" placeholder="请输入" />
+                </el-form-item>
+                <el-form-item label=" ">
+                  <el-button size="medium" type="primary" @click="handleQuery">查询</el-button>
+                  <el-button size="medium" @click="handleClear">清空</el-button>
+                </el-form-item>
+              </el-form>
             </div>
             <div class="common-section-body">
               <div class="common-section-table">
@@ -259,12 +242,28 @@
                   ref="editTable"
                   :columns="columns"
                   :data="tableData"
+                  :defaultNewRow="defaultNewRow"
                   :show-toolbar="false"
+                  :show-pagination="true"
+                  :enable-single-row-save="true"
                   :options="options"
-                  :auth="{edit: canAddOrUpdate, delete: canDelete}"
+                  :current="pageNum"
+                  :pageSize="pageSize"
+                  :total="total"
+                  @save-row-edit="saveRowEdit"
+                  @remove-row="handleRemoveRow"
+                  @page-size-change="pageSizeChange"
+                  @current-page-change="currentPageChange"
+                  :auth="{edit: true, delete: true}"
                 />
               </div>
             </div>
+            <!-- TIPS: 填入项目id即可 -->
+            <Upload
+              :visible="uploadDialogVisible"
+              :id="'1'"
+              @close="uploadDialogVisible = false"
+            />
           </section>
         </el-main>
       </edit-base-container>
@@ -279,6 +278,7 @@
 
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivity/index';
+import { getList, addOrUpdate as addOrUpdateDetail, deleteItem } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivityDetail/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
@@ -288,6 +288,8 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import Upload from '@/libs/components/UploadDialog';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -327,6 +329,8 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
+    TagInput,
+    Upload,
     EditPageLayout,
     EditBaseContainer,
     EditTable,
@@ -349,6 +353,7 @@ export default {
   },
   data () {
     const form = this.getDefautlForm();
+    const detailForm = {};
     const validateDateRange = (rule, value, callback) => {
       const { startTime, endTime } = this.form;
       // 1. 校验截止日期必填
@@ -382,15 +387,18 @@ export default {
       moduleKey: 'AISVW-wholesaleProdScheduleActivity',
       loading: false,
       submitLoading: false,
+      uploadDialogVisible: false,
       yes_no_enum: YES_NO_ENUM,
+      detailForm: { ...detailForm },
       form: { ...form },
       originalForm: { ...form },
+      pageNum: 1,
+      pageSize: 20,
+      total: 0,
       defaultNewRow: {
-        name: '',
+        totalQuotaQty: '',
       },
       tableData: [
-        { id: 1, name: '张三', age: 25, email: 'zhangsan@example.com' },
-        { id: 2, name: '李四', age: 30, email: 'lisi@example.com' }
       ],
       options: {
         // 对应表格里选型枚举
@@ -400,100 +408,68 @@ export default {
       columns: [
         {
           field: 'dealerCode',
-          title: '门店编码',
-          editable: true,
-          editRender: { name: 'ElInput' },
-          rules: [
-            { required: true, message: '姓名不能为空', trigger: 'blur' }
-          ]
+          title: '门店编码'
         },
         {
           field: 'dealerName',
           title: '门店名称',
-          editable: true,
-          editRender: { name: 'ElInput', props: { type: 'number' } }
         },
         {
           field: 'provinceName',
-          title: '省份',
-          editRender: { name: 'ElInput' }
+          title: '省份'
         },
         {
           field: 'cityName',
-          title: '城市',
-          editRender: { name: 'ElInput' }
+          title: '城市'
         },
         {
           field: 'applyOrderCategoryLabel',
-          title: '适用订单分类',
-          editRender: { name: 'ElInput' }
+          title: '适用订单分类'
         },
         {
           field: 'seriesName',
-          title: '车系',
-          editRender: { name: 'ElInput' }
+          title: '车系'
         },
         {
           field: 'yearTypeName',
-          title: '年款',
-          editRender: { name: 'ElInput' }
+          title: '年款'
         },
         {
           field: 'materialsCode',
-          title: '物料编码',
-          editRender: { name: 'ElInput' }
+          title: '物料编码'
         },
         {
           field: 'materialsDesc',
-          title: '物料描述',
-          editRender: { name: 'ElInput' }
+          title: '物料描述'
         },
         {
           field: 'totalQuotaQty',
-          title: '额度数量',
-          editRender: { name: 'ElInput' }
+          title: '额度',
+          editable: true,
+          editRender: {
+            name: 'ElInput',
+            props: {
+              type: 'number'
+            }
+          },
+          rules: [
+            { required: true, message: '额度数量不能为空', trigger: 'blur' }
+          ]
         },
         {
           field: 'usedQuotaQty',
-          title: '已提报数量',
-          editRender: { name: 'ElInput' }
+          title: '已提报数量'
         },
         {
           field: 'remainQuotaQty',
-          title: '剩余可用',
-          editRender: { name: 'ElInput' }
+          title: '剩余可用'
         },
         {
           field: 'createTime',
-          title: '创建时间',
-          editRender: { name: 'ElInput' }
+          title: '创建时间'
         },
       ],
       rules: {
-        // id: [
-        //   { required: true, message: '请输入主键', trigger: 'change' }
-        // ],
-        // creator: [
-        //   { required: true, message: '请输入创建者', trigger: 'change' }
-        // ],
-        // creatorName: [
-        //   { required: true, message: '请输入创建者名称', trigger: 'change' }
-        // ],
-        // createTime: [
-        //   { required: true, message: '请选择创建时间', trigger: 'change' }
-        // ],
-        // modifier: [
-        //   { required: true, message: '请输入修改者', trigger: 'change' }
-        // ],
-        // modifierName: [
-        //   { required: true, message: '请输入修改者名称', trigger: 'change' }
-        // ],
-        // updateTime: [
-        //   { required: true, message: '请选择修改时间', trigger: 'change' }
-        // ],
-        // remark: [
-        //   { required: true, message: '请输入备注（说明）', trigger: 'change' }
-        // ],
         status: [
           { required: true, message: '请选择状态', trigger: 'change' }
         ],
@@ -533,8 +509,77 @@ export default {
   },
   mounted () {
     this.getLoginUser();
+    if (this._id) {
+      this.getList();
+    }
   },
   methods: {
+    // 查询方法
+    handleQuery () {
+      this.pageNum = 1; // 重置到第一页
+      this.getList();
+    },
+    // 清空方法
+    handleClear () {
+      this.detailForm.dealerCodes = [];
+      this.detailForm.dealerNames = [];
+      this.pageNum = 1;
+      this.getList();
+    },
+    handleRemoveRow (row, index, defer) {
+      if (!row.id) {
+        return;
+      }
+      deleteItem([row.id]).then((d) => {
+        defer.resolve();
+        this.$message.success('删除成功');
+      }).catch(() => {
+        defer.reject();
+      });
+    },
+    // 行保存
+    saveRowEdit (row, defer) {
+      if (row.totalQuotaQty < row.usedQuotaQty) {
+        this.$message.error(`额度数量不能低于已提报数量！当前已提报数量为 ${row.usedQuotaQty}`);
+        defer.reject();
+        return;
+      }
+      // const parmas = {
+      //   id: row.id,
+      //   partId: row.partId, // 零件ID
+      //   partQuantity: row.partQuantity, // 零件数量
+      // };
+      // return;
+      addOrUpdateDetail(row).then(id => {
+        defer.resolve(id);
+        this.$message.success('更新成功');
+        this.getDetailPageApi();
+        this.$emit('replace');
+      }).catch(e => {
+        defer.reject();
+      });
+    },
+    pageSizeChange (pageSize) {
+      this.pageSize = pageSize;
+      this.current = 1;
+      this.getList();
+    },
+    currentPageChange (pageNum) {
+      this.pageNum = pageNum;
+      this.getList();
+    },
+    getList () {
+      getList({
+        ...this.detailForm,
+        scheduleActivityId: this._id,
+        pageNum: this.pageNum,
+        pageSize: this.pageSize
+      }).then(res => {
+        this.tableData = res.records;
+        this.total = res.totals;
+      }).catch(() => {
+      });
+    },
     getLoginUser () {
       if (!this.id) {
         loginUserGet().then(res => {
@@ -557,8 +602,7 @@ export default {
     },
     // 详情表格相关数据
     handleAddRow () {
-      // 通过引用直接调用子组件方法
-      this.$refs.editTable.addRow();
+      this.uploadDialogVisible = true;
     },
     handleSaveTable (data) {
       // 调用保存方法并处理结果
