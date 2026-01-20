@@ -63,7 +63,7 @@
                       filterable
                     />
                 </el-form-item>
-                 <el-form-item label="是否需要自动配车" prop="needAutoAllocateCar">
+                 <el-form-item label="是否需要自动配车：" prop="needAutoAllocateCar">
                    <fetch-select
                       :request="fetchOptions"
                       enumCode="BooleanEnum"
@@ -226,14 +226,14 @@
                  <el-form-item label="额度数量：" prop="totalQuotaQty">
                   {{ form.totalQuotaQty }}
                 </el-form-item>
-                 <el-form-item label="是否锁零售单：" prop="allowLockRetail">
-                  {{ form.allowLockRetail }}
+                 <el-form-item label="是否锁零售单：" prop="allowLockRetailLabel">
+                  {{ form.allowLockRetailLabel }}
                 </el-form-item>
-                  <el-form-item label="是否需要自动配车" prop="needAutoAllocateCar">
-                  {{ form.needAutoAllocateCar }}
+                  <el-form-item label="是否需要自动配车" prop="needAutoAllocateCarLabel">
+                  {{ form.needAutoAllocateCarLabel }}
                 </el-form-item>
-                <el-form-item label="指定发运方式：" prop="deliveryWay">
-                  {{ form.deliveryWay }}
+                <el-form-item label="指定发运方式：" prop="deliveryWayLabel">
+                  {{ form.deliveryWayLabel }}
                 </el-form-item>
 
                 <el-form-item label="开始日期：" prop="startTime">
