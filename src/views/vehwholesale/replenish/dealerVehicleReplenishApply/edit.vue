@@ -741,7 +741,7 @@ export default {
       return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
     },
     async getRegionList (params) {
-      return getRigion({ regionName: params });
+      return getRigion({ orgName: params });
     },
     async repairItemSearch (query) {
       return listFinancialOrganization({ organizationNameLike: query, status: 1 });

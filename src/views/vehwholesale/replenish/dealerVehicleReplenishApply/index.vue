@@ -261,18 +261,18 @@ export default {
             }]
           },
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
-          { props: 'auditStatus', label: '审核状态', visible: true, width: 200 },
+          { props: 'auditStatusLabel', label: '审核状态', visible: true, width: 200 },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
-          { props: 'wholesaleWay', label: '批售方式', visible: true, width: 200 },
-          { props: 'prodScheduleActivityId', label: '专项活动', visible: true, width: 200 },
+          { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 200 },
+          { props: 'prodScheduleActivityName', label: '专项活动', visible: true, width: 200 },
           { props: 'serials', label: '车系组合', visible: true, width: 200 },
-          { props: 'orderCategory', label: '订单分类', visible: true, width: 200 },
+          { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'applyTotalQty', label: '申请总数量', visible: true, width: 200 },
           { props: 'applyTime', label: '申请时间', visible: true, width: 200 },
           { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
           { props: 'auditTime', label: '门店审核时间', visible: true, width: 200 },
-          { props: 'settleFundType', label: '结算资金类型', visible: true, width: 200 },
-          { props: 'financialOrganizationId', label: '金融机构ID', visible: true, width: 200 },
+          { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 200 },
+          { props: 'financialOrganizationName', label: '金融机构ID', visible: true, width: 200 },
           { props: 'dealerWarehouseName', label: '门店仓库名称', visible: true, width: 200 },
           { props: 'deliveryDealerName', label: '交付门店名称', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
@@ -505,7 +505,7 @@ export default {
       return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
     },
     async getRegionList (params) {
-      return getRigion({ regionName: params });
+      return getRigion({ orgName: params });
     },
     async repairItemSearch (query) {
       return listFinancialOrganization({ organizationNameLike: query, status: 1 });

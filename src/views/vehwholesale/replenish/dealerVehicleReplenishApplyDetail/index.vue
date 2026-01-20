@@ -244,15 +244,15 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'auditStatus', label: '审核状态', visible: true, width: 200 },
+          { props: 'auditStatusLabel', label: '审核状态', visible: true, width: 200 },
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
           { props: 'prodScheduleActivity', label: '专项活动名称', visible: true, width: 200 },
-          { props: 'applyCategory', label: '申请类别', visible: true, width: 200 },
+          { props: 'applyCategoryLabel', label: '申请类别', visible: true, width: 200 },
           { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
           { props: 'modelName', label: '车型名称', visible: true, width: 200 },
-          { props: 'orderCategory', label: '订单分类', visible: true, width: 200 },
-          { props: 'settleFundType', label: '结算资金类型', visible: true, width: 200 },
+          { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
+          { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 200 },
           { props: 'financialOrganization', label: '金融机构名称', visible: true, width: 200 },
           { props: 'applyQty', label: '申请数量', visible: true, width: 200 },
           { props: 'replenishApplyDetailCode', label: '整车补货明细单号', visible: true, width: 200 },
@@ -260,7 +260,7 @@ export default {
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           { props: 'applyTime', label: '申请时间', visible: true, width: 200 },
           { props: 'auditTime', label: '审核时间', visible: true, width: 200 },
-          { props: 'invoiceDiscountType', label: '开票优惠类型', visible: true, width: 200 },
+          { props: 'invoiceDiscountTypeLabel', label: '开票优惠类型', visible: true, width: 200 },
           { props: 'invoiceCoefficient', label: '开票系数', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
@@ -495,7 +495,7 @@ export default {
       return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
     },
     async getRegionList (params) {
-      return getRigion({ regionName: params });
+      return getRigion({ orgName: params });
     },
     async repairItemSearch (query) {
       return listFinancialOrganization({ organizationNameLike: query, status: 1 });
