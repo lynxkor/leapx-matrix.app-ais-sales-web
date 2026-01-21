@@ -162,6 +162,11 @@
         <EditPage slot="centralizedViewSlot" :id="clickItemId"/>
       </LPVxeTable>
     </div>
+    <BatchAuditInput
+      :visible.sync="showAuditDialog"
+      :audit-ids="selectionList.map(item => item.id)"
+      @confirm="handleBatchAudit"
+    />
     <!-- TIPS: 填入项目id即可 -->
     <!-- <Upload
       :visible="uploadDialogVisible"
@@ -227,6 +232,7 @@ export default {
         ...defaultForm
       },
       selectionList: [],
+      showEditDialog: false,
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -294,24 +300,6 @@ export default {
                 });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],
@@ -520,7 +508,22 @@ export default {
     handleClickTab () {
       this.form.queryTab = this.tabName;
       this.getData();
-    }
+    },
+    handleBatchEditValid () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      return batchEditValid(ids).then(() => {
+        this.showEditDialog = true;
+      });
+    },
+    handleBatchEdit (data) {
+      return batchEdit(data).then(() => {
+        this.$message({
+          type: 'success',
+          message: '批量编辑成功'
+        });
+        this.getData();
+      });
+    },
     // handleDealerChange (val, record) {
     //   this.form.regionCodes = [...new Set(
     //     record
