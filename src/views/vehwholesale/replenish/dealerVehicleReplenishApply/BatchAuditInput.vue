@@ -10,71 +10,56 @@
         show-word-limit
       />
       <div slot="footer" class="dialog-footer">
-        <el-button @click="confirmAudit(false)">确认</el-button>
-        <el-button type="primary" @click="cancelAudit()">取消</el-button>
+        <el-button @click="factoryApproval">确认</el-button>
+        <el-button type="primary" @click="cancelAudit">取消</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import { factoryApproval } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
 export default {
   name: 'BatchAuditInput',
-  props: {
-    visible: {
-      type: Boolean,
-      default: false
-    },
-    auditIds: {
-      type: Array,
-      default: () => []
-    },
-    isApprove: {
-      type: Boolean,
-      default: true
-    }
-  },
   data () {
     return {
-      auditOpinion: ''
+      dialogVisible: false,
+      auditOpinion: '',
+      auditIds: [],
+      isApprove: true
     };
   },
-  computed: {
-    dialogVisible: {
-      get () {
-        return this.visible;
-      },
-      set (val) {
-        this.$emit('update:visible', val);
-      }
-    }
-  },
-  watch: {
-    visible (newVal) {
-      if (newVal) {
-        this.auditOpinion = '';
-      }
-    }
-  },
   methods: {
-    confirmAudit () {
-      // 触发审核确认事件，传递审核结果和意见
-      if (this.isApprove === false) {
-        if (!this.auditOpinion || this.auditOpinion.trim() === '') {
-          this.$message.error('驳回时审批意见不能为空');
-          return;
-        }
-      }
-      this.$emit('confirm', {
-        isAudit: this.isApprove,
-        ids: this.auditIds,
-        auditOpinion: this.auditOpinion
-      });
-      this.dialogVisible = false;
+    openDialog (data) {
+      this.auditIds = data.ids;
+      this.auditOpinion = '';
+      this.dialogVisible = true;
+      this.isApprove = data.isApprove;
     },
     cancelAudit () {
       this.dialogVisible = false;
-    }
+      this.auditOpinion = '';
+    },
+    factoryApproval () {
+      if (this.isApprove === false && !this.auditOpinion) {
+        this.$message({
+          type: 'error',
+          message: '驳回时审批意见不能为空'
+        });
+        return;
+      }
+      return factoryApproval({
+        ids: this.auditIds,
+        isAudit: this.isApprove,
+        auditOpinion: this.auditOpinion
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '成功'
+        });
+        this.getData();
+      });
+    },
   }
 };
 </script>
