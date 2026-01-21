@@ -309,6 +309,7 @@
 import { getDetail, addOrUpdate } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivityDetail/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
+import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
@@ -360,7 +361,8 @@ export default {
   mixins: [routeGuard, permissions, commonMixins],
   components: {
     EditPageLayout,
-    FetchSelect
+    FetchSelect,
+    EditBaseContainer,
   },
   computed: {
     _id () {
@@ -394,39 +396,13 @@ export default {
         name: '',
       },
       tableData: [
-        { id: 1, name: '张三', age: 25, email: 'zhangsan@example.com' },
-        { id: 2, name: '李四', age: 30, email: 'lisi@example.com' }
       ],
       options: {
         // 对应表格里选型枚举
         // 如 type: [{label: 'xxx', value: 'xxx'}]
       },
       // TIPS: 复杂的表格输入项，参考 /dealerTeam/edit.vue
-      columns: [
-        {
-          field: 'name',
-          title: '姓名',
-          width: '33%',
-          editable: true,
-          editRender: { name: 'ElInput' },
-          rules: [
-            { required: true, message: '姓名不能为空', trigger: 'blur' }
-          ]
-        },
-        {
-          field: 'age',
-          title: '年龄',
-          editable: true,
-          width: '33%',
-          editRender: { name: 'ElInput', props: { type: 'number' } }
-        },
-        {
-          field: 'email',
-          title: '邮箱',
-          width: '33%',
-          editRender: { name: 'ElInput' }
-        },
-      ],
+      columns: [],
       rules: {
         id: [
           { required: true, message: '请输入主键', trigger: 'change' }
@@ -507,6 +483,7 @@ export default {
     };
   },
   mounted () {
+    this.detailRequest();
   },
   methods: {
     detailRequest () {
