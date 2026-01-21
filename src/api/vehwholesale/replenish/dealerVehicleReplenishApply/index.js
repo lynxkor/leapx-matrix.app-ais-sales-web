@@ -82,3 +82,35 @@ export function plantWholesaleInStockCreateApply (data) {
 export function checkInStockInventoryIsFull (data) {
   return api.jsonPost(prefix + 'checkInStockInventoryIsFull', data);
 }
+
+/**
+ * 批量厂端审核校验
+ * @param {Object} data
+ */
+export function factoryAuditValid (data) {
+  return api.jsonPost(prefix + 'factoryAuditValid', data);
+}
+
+/**
+ *  批量厂端审核
+ * @param {Object} data
+ */
+export function factoryApproval (data) {
+  return api.jsonPost(prefix + 'factoryApproval', data);
+}
+
+/**
+ * 批量门店审核校验
+ * @param {Object} data
+ */
+export function dealerAuditValid (data) {
+  return api.jsonPost(prefix + 'dealerAuditValid', data);
+}
+
+/**
+ *  批量门店审核
+ * @param {Object} data
+ */
+export function dealerApproval (data) {
+  return api.jsonPost(prefix + 'dealerApproval', data);
+}
