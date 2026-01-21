@@ -50,3 +50,35 @@ export function enableItem (data) {
 export function listIdNames (data) {
   return api.jsonPost(prefix + 'list', data);
 }
+
+/**
+ *  创建排产申请校验
+ * @param {Object} data
+ */
+export function createRequestValid (data) {
+  return api.jsonPost(prefix + 'createRequestValid', data);
+}
+
+/**
+ *  厂端现车批售-弹框 弹框查询
+ * @param {Object} data
+ */
+export function queryPlantWholesaleInStockInventory (data) {
+  return api.jsonPost(prefix + 'queryPlantWholesaleInStockInventory', data);
+}
+
+/**
+ *  厂端现车批售-弹框 确认下单接口
+ * @param {Object} data
+ */
+export function plantWholesaleInStockCreateApply (data) {
+  return api.jsonPost(prefix + 'plantWholesaleInStockCreateApply', data);
+}
+
+/**
+ *  厂端现车批售-弹框 校验库存是否充足
+ * @param {Object} data
+ */
+export function checkInStockInventoryIsFull (data) {
+  return api.jsonPost(prefix + 'checkInStockInventoryIsFull', data);
+}
