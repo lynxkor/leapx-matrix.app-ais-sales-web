@@ -144,6 +144,8 @@
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
+      <el-button size="small" @click="factoryAuditValid(true)" :disabled="selectionList.length === 0">批量审核通过</el-button>
+      <el-button size="small" @click="factoryAuditValid(false)" :disabled="selectionList.length === 0">批量审核驳回</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
     </div>
@@ -178,6 +180,12 @@
       </LPVxeTable>
     </div>
     <vehicle-wholesale-dialog ref="vehicleWholesale" :dealerCompanyName="'dealerCompanyName'" @confirm="getData" />
+    <BatchAuditInput
+      :visible.sync="showAuditDialog"
+      :audit-ids="selectionList.map(item => item.id)"
+      :isApprove="isApprove"
+      @confirm="factoryApproval"
+    />
     <!-- TIPS: 填入项目id即可 -->
     <!-- <Upload
       :visible="uploadDialogVisible"
@@ -191,7 +199,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, createRequestValid } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
+import { getList, deleteItem, enableItem, createRequestValid, factoryAuditValid, factoryApproval } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getRigion, listOrgStoreInfo } from '@/api/common';
 import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import { listIdNames as listWholesaleProdScheduleActivity } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivity/index';
@@ -204,6 +212,7 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import vehicleWholesaleDialog from './vehicleWholesaleDialog.vue';
+import BatchAuditInput from './BatchAuditInput.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -232,7 +241,8 @@ export default {
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
-    EditPage
+    EditPage,
+    BatchAuditInput
     // Upload
   },
   data () {
@@ -245,6 +255,8 @@ export default {
         ...defaultForm
       },
       selectionList: [],
+      showAuditDialog: false,
+      isApprove: true,
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -291,7 +303,7 @@ export default {
           { props: 'applyTotalQty', label: '申请总数量', visible: true, width: 200 },
           { props: 'applyTime', label: '申请时间', visible: true, width: 200 },
           { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
-          { props: 'auditTime', label: '门店审核时间', visible: true, width: 200 },
+          { props: 'auditDateTime', label: '审批时间', visible: true, width: 200 },
           { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 200 },
           { props: 'financialOrganizationName', label: '金融机构ID', visible: true, width: 200 },
           { props: 'dealerWarehouseName', label: '门店仓库名称', visible: true, width: 200 },
@@ -315,24 +327,6 @@ export default {
                 });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],
@@ -568,7 +562,23 @@ export default {
     handleClickTab () {
       this.form.queryTab = this.tabName;
       this.getData();
-    }
+    },
+    factoryAuditValid (data) {
+      const ids = this.selectionList.map(item => item.id) || [];
+      return factoryAuditValid(ids).then(() => {
+        this.showAuditDialog = true;
+        this.isApprove = data;
+      });
+    },
+    factoryApproval (data) {
+      return factoryApproval(data).then(() => {
+        this.$message({
+          type: 'success',
+          message: '批量审核成功'
+        });
+        this.getData();
+      });
+    },
     // handleDealerChange (val, record) {
     //   this.form.regionCodes = [...new Set(
     //     record
