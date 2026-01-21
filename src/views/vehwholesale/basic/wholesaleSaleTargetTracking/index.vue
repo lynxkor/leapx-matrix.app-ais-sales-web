@@ -490,7 +490,7 @@ export default {
       return getParentCompany({ parentCompanyName: params });
     },
     async getRegionList (params) {
-      return getRigion({ regionName: params });
+      return getRigion({ orgName: params });
     },
     // 查询所有省市区
     async getProvince (params) {

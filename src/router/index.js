@@ -1508,6 +1508,24 @@ const routes = [
         name: '整车批售-批售主数据-整车门店补货申请管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehwholesale/wholesale/vehicleWholesaleOrder',
+      name: 'order',
+      component: () => import('@/views/vehwholesale/wholesale/vehicleWholesaleOrder/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车批售订单管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
+      name: 'orderEdit',
+      component: () => import('@/views/vehwholesale/wholesale/vehicleWholesaleOrder/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车批售订单管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
