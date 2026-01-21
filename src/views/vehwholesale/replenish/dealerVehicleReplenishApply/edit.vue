@@ -16,8 +16,8 @@
         </template>
         <template #extraButtons>
           <el-button size="small">提交补货申请</el-button>
-          <el-button size="small" @click="handleAudit('dealer')">门店审核</el-button>
-          <el-button size="small" @click="handleAudit('factory')">厂端审核</el-button>
+          <el-button size="small" @click="handleAuditValid('dealer')">门店审核</el-button>
+          <el-button size="small" @click="handleAuditValid('factory')">厂端审核</el-button>
           <el-button size="small">作废</el-button>
         </template>
         <el-main>
@@ -73,7 +73,7 @@
                     clearable
                     remote
                     v-model="form.deliveryDealerCode"
-                    :remote-method="getDeliveryDealerByDealerCode"
+                    :remote-method="getDealerListByName"
                     value-key="storeCode"
                     label-key="storeName"
                     :disabled="true"
@@ -157,11 +157,11 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="是否赊销：" prop="isSheXiao">
+                <el-form-item label="是否赊销：" prop="isCreditSale">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="BooleanEnum"
-                    v-model="form.isSheXiao"
+                    v-model="form.isCreditSale"
                     placeholder="请选择"
                     clearable
                   />
@@ -253,8 +253,8 @@
                 <el-form-item label="金融机构：" prop="financialOrganizationId">
                   {{ form.financialOrganization }}
                 </el-form-item>
-                <el-form-item label="是否赊销：" prop="isSheXiao">
-                  {{ form.isSheXiao }}
+                <el-form-item label="是否赊销：" prop="isCreditSale">
+                  {{ form.settleFundType === '1050' ? '是' : '否' }}
                 </el-form-item>
                 <el-form-item label="结算资金类型：" prop="settleFundType">
                   {{ form.settleFundTypeLabel }}
@@ -296,6 +296,8 @@
               </div>
             </div>
           </section>
+          <auditDialog ref="auditInputForDealer" @audit="handelAuditForDealer"/>
+          <auditDialog ref="auditInputForFactory" @audit="handelAuditForFactory"/>
         </el-main>
       </edit-base-container>
     </template>
@@ -304,12 +306,6 @@
         <!-- 右侧栏组件，自行开发 -->
       </div>
     </template>
-      <AuditInput
-        :visible.sync="showAuditDialog"
-        :audit-ids="[id]"
-        :audit-type="auditType"
-        @confirm="handleAudit"
-      />
   </edit-page-layout>
 </template>
 
@@ -326,7 +322,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-import AuditInput from './AuditInput.vue';
+import auditDialog from '@/libs/components/auditDialog';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -369,7 +365,7 @@ const defaultForm = {
   reviewTime: '',
   reviewOpinion: '',
   permission: '',
-  isSheXiao: 0,
+  isCreditSale: 0,
   dealerWarehouseAddress: '',
   auditDateTime: ''
 };
@@ -389,7 +385,7 @@ export default {
     EditBaseContainer,
     EditTable,
     FetchSelect,
-    AuditInput
+    auditDialog
   },
   computed: {
     _id () {
@@ -414,8 +410,6 @@ export default {
       title: '整车补货单号：' + form.replenishApplyCode,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-dealerVehicleReplenishApply',
-      showAuditDialog: false,
-      auditType: '', // 'dealer' | 'factory'
       isShowActivity: false,
       isShowApplyCategory: false,
       isShowFinancialOrganization: false,
@@ -553,7 +547,7 @@ export default {
           { required: true, message: '请输入大区ID', trigger: 'change' }
         ],
         applyCategory: [
-          { required: true, message: '请输入申请类别', trigger: 'change' }
+          { required: false, message: '请输入申请类别', trigger: 'change' }
         ],
         auditorName: [
           { required: true, message: '请输入门店审核人', trigger: 'change' }
@@ -579,7 +573,7 @@ export default {
         permission: [
           { required: true, message: '请输入权限', trigger: 'change' }
         ],
-        isSheXiao: [
+        isCreditSale: [
           { required: false, message: '请选择是否赊销', trigger: 'change' }
         ],
         dealerWarehouseAddress: [
@@ -687,7 +681,7 @@ export default {
         this.form.financialOrganizationId = '';
       }
       if (val === '1050') {
-        this.form.isSheXiao = 1;
+        this.form.isCreditSale = 1;
       }
     },
     async getDealerListByName (params) {
@@ -702,39 +696,30 @@ export default {
     async prodScheduleActivitySearch (query) {
       return listWholesaleProdScheduleActivity({ activityNameLike: query, status: 1, valid: true });
     },
-    handleAuditValid (type) {
-      if (type === 'dealer') {
-        return dealerAuditValid([this.form.id]).then(() => {
-          this.showAuditDialog = true;
-          this.auditType = 'dealer';
-        });
-      } else if (type === 'factory') {
-        return factoryAuditValid([this.form.id]).then(() => {
-          this.showAuditDialog = true;
-          this.auditType = 'factory';
-        });
-      }
+    handleAuditValidForDealer (type) {
+      return dealerAuditValid([this._id]).then(() => {
+        this.$refs.auditInputForDealer.show();
+      });
     },
-    handleAudit (data) {
-      const type = data.auditType;
-      if (type === 'dealer') {
-        return dealerApproval(data).then(() => {
-          this.$message({
-            type: 'success',
-            message: '门店审核成功'
-          });
-          this.getData();
-        });
-      } else if (type === 'factory') {
-        return factoryApproval(data).then(() => {
-          this.$message({
-            type: 'success',
-            message: '厂端审核成功'
-          });
-          this.getData();
-        });
-      }
+    handleAuditValidForFactory (type) {
+      return factoryAuditValid([this._id]).then(() => {
+        this.$refs.auditInputForFactory.show();
+      });
     },
+    handelAuditForDealer (data) {
+      dealerApproval({
+        ids: [this._id],
+        isAudit: data.result,
+        auditOpinion: data.remark
+      });
+    },
+    handelAuditForFactory (data) {
+      factoryApproval({
+        ids: [this._id],
+        isAudit: data.result,
+        auditOpinion: data.remark
+      });
+    }
   }
 };
 </script>

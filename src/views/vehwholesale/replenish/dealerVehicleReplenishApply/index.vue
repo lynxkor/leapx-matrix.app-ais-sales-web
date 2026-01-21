@@ -579,13 +579,6 @@ export default {
         this.getData();
       });
     },
-    // handleDealerChange (val, record) {
-    //   this.form.regionCodes = [...new Set(
-    //     record
-    //       .map(item => item?.regionCode)
-    //       .filter(Boolean)
-    //   )];
-    // },
   }
 };
 </script>

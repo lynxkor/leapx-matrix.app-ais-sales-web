@@ -19,7 +19,7 @@
 
 <script>
 export default {
-  name: 'AuditInput',
+  name: 'BatchAuditInput',
   props: {
     visible: {
       type: Boolean,
