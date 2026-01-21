@@ -220,7 +220,7 @@ export default {
           { props: 'shipViaLabel', label: '发运方式', visible: true, width: 200 },
           { props: 'vdcInventoryStatusLabel', label: '库存状态', visible: true, width: 200 },
           { props: 'po', label: '订单编号', visible: true, width: 200 },
-          { props: 'optionPackageName', label: '选配包', visible: true, width: 200 },
+          { props: 'optionPackageName', label: '选装包', visible: true, width: 200 },
           { props: 'rangePowerName', label: '选配动力', visible: true, width: 200 },
           { props: 'drivingRangeName', label: '续航里程', visible: true, width: 200 },
           { props: 'exteriorName', label: '外观', visible: true, width: 200 },
@@ -335,7 +335,7 @@ export default {
           { props: 'modelName', label: '车型', visible: true, width: 200 },
           { props: 'shipViaLabel', label: '发运方式', visible: true, width: 200 },
           { props: 'po', label: '订单编号', visible: true, width: 200 },
-          { props: 'optionPackageName', label: '选配包', visible: true, width: 200 },
+          { props: 'optionPackageName', label: '选装包', visible: true, width: 200 },
           { props: 'rangePowerName', label: '选配动力', visible: true, width: 200 },
           { props: 'drivingRangeName', label: '续航里程', visible: true, width: 200 },
           { props: 'exteriorName', label: '外观', visible: true, width: 200 },
@@ -434,13 +434,26 @@ export default {
       });
     },
     onSubmit () {
-      this.getData();
+      if (this.activeName === 'homePage') {
+        this.getData();
+      } else if (this.activeName === 'lowBattery') {
+        this.getDataDl();
+      }
     },
     onReset () {
-      this.form = { ...defaultForm };
-      this.optionObj.form.page = 1;
-      this.optionObj.form.pageSize = pageSize;
-      this.getData();
+      if (this.activeName === 'homePage') {
+        this.form = { ...defaultForm };
+        this.optionObj.form.page = 1;
+        this.optionObj.form.pageSize = pageSize;
+        this.form.lowBatteryCar = 0;
+        this.getData();
+      } else if (this.activeName === 'lowBattery') {
+        this.form = { ...defaultForm };
+        this.optionDdl.form.page = 1;
+        this.optionDdl.form.pageSize = pageSize;
+        this.form.lowBatteryCar = 1;
+        this.getDataDl();
+      }
     },
     exportExcel () {
       this.exportLoading = true;
@@ -473,10 +486,8 @@ export default {
     getData () {
       this.loading = true;
       this.selectionList = [];
-
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
-          console.log(res);
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item,
@@ -492,10 +503,8 @@ export default {
     getDataDl () {
       this.loading = true;
       this.selectionList = [];
-
       getList({ ...this.getFormData(), pageNum: this.optionDdl.form.page, pageSize: this.optionDdl.form.size })
         .then(res => {
-          console.log(res);
           this.optionDdl.dataList = res.records.map(item => {
             return {
               ...item,
@@ -524,7 +533,7 @@ export default {
     },
     getConfigDl () {
       return new Promise((resolve, reject) => {
-        getTableConfig(this.optionObj.id).then(data => {
+        getTableConfig(this.optionDdl.id).then(data => {
           resolve({});
         }).catch(err => {
           // 容错：此处如果接口挂了，也不应该影响正常使用
@@ -541,6 +550,14 @@ export default {
         this.optionObj.form.page = num;
       } else {
         this.optionObj.form.size = num;
+      }
+      this.debouncedGetData();
+    },
+    paginationChangeDl (type, num) {
+      if (type === 'page') {
+        this.optionDdl.form.page = num;
+      } else {
+        this.optionDdl.form.size = num;
       }
       this.debouncedGetData();
     },
@@ -629,7 +646,7 @@ export default {
       if (item.name === 'homePage') {
         this.form.lowBatteryCar = 0;
         this.getData();
-      } else {
+      } else if (item.name === 'lowBattery') {
         this.form.lowBatteryCar = 1;
         this.getDataDl();
       }
