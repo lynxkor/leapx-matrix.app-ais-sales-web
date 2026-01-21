@@ -68,9 +68,17 @@ export function setRebateFlag (data) {
 }
 
 /**
- * 设置使用返利
+ * 可结算的资金账户列表
  * @param {Object} data
  */
 export function listCanSettleAccount (data) {
   return api.jsonPost(prefix + 'listCanSettleAccount', data);
+}
+
+/**
+ * 整车资金账户列表查询
+ * @param {Object} data
+ */
+export function listCanSettleAccountList (data) {
+  return api.jsonPost(prefix + 'listCanSettleAccount/list', data);
 }

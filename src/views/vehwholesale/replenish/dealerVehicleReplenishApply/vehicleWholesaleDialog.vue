@@ -52,9 +52,10 @@
 import debounce from 'lodash.debounce';
 import EditTable from '@/libs/components/EditTable';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList } from '@/api/vehwholesale/fund/account/index';
+import { getList, listCanSettleAccountList } from '@/api/vehwholesale/fund/account/index';
 import { getEnum } from '@/api/common';
 import { queryPlantWholesaleInStockInventory } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
+
 // import FetchSelect from '@/libs/components/FetchSelect';
 import permissions from '@/libs/mixins/permissions';
 // import TagInput from '@/libs/components/TagInput';
@@ -85,10 +86,6 @@ const pageSize = 20;
 export default {
   name: 'vehicleWholesaleDialog',
   props: {
-    pageTpye: {
-      type: String,
-      default: ''
-    }
   },
   mixins: [permissions],
   components: {
@@ -96,21 +93,6 @@ export default {
     // FetchSelect,
     EditTable,
     PageSearchAction
-  },
-  computed: {
-    currentPageType () {
-      return this.pageTpye; // 将 pageTpye 转换为计算属性
-    }
-  },
-  watch: {
-    currentPageType: {
-      immediate: true, // 确保组件初始化时也能触发
-      handler (newVal) {
-        if (newVal) {
-          this.updateDialogContent(newVal); // 根据新的 pageTpye 更新内容
-        }
-      }
-    }
   },
   data () {
     return {
@@ -145,6 +127,11 @@ export default {
     };
   },
   methods: {
+    listCanSettleAccountList () {
+      listCanSettleAccountList().then(res => {
+        console.log('listCanSettleAccountList:', res);
+      }).catch(err => { console.log(err); });
+    },
     queryPlantWholesaleInStockInventory () {
       queryPlantWholesaleInStockInventory({}).then(res => {
         console.log('queryPlantWholesaleInStockInventory:', res);
@@ -204,7 +191,8 @@ export default {
     dialogshow () {
       // this.getData();
 
-      this.queryPlantWholesaleInStockInventory();
+      // this.queryPlantWholesaleInStockInventory();
+      this.listCanSettleAccountList();
       this.dialogVisible = true;
     },
     confirm () {
