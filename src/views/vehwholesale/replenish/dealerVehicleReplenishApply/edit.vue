@@ -279,8 +279,8 @@
           </section>
           <section class="common-section">
             <div class="common-section-header">
-              <h2>区块标题</h2>
-              <el-button v-if="canAddOrUpdate" size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>添加</el-button>
+              <h2>整车门店补货明细</h2>
+              <el-button size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>添加</el-button>
             </div>
             <div class="common-section-body">
               <div class="common-section-table">
@@ -298,6 +298,26 @@
           </section>
           <auditDialog ref="auditInputForDealer" @audit="handelAuditForDealer"/>
           <auditDialog ref="auditInputForFactory" @audit="handelAuditForFactory"/>
+          <section class="common-section">
+            <div class="common-section-header">
+              <h2>整车资金账户</h2>
+            </div>
+            <div class="common-section-body">
+              <div class="common-section-table">
+                放个table
+              </div>
+            </div>
+          </section>
+          <section class="common-section">
+            <div class="common-section-header">
+              <h2>批售订单信息</h2>
+            </div>
+            <div class="common-section-body">
+              <div class="common-section-table">
+                <component-table />
+              </div>
+            </div>
+          </section>
         </el-main>
       </edit-base-container>
     </template>
@@ -322,6 +342,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import ComponentTable from './ComponentTable.vue';
 import auditDialog from '@/libs/components/auditDialog';
 
 const defaultForm = {
@@ -381,6 +402,7 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
+    ComponentTable,
     EditPageLayout,
     EditBaseContainer,
     EditTable,
