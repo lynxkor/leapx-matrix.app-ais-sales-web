@@ -211,7 +211,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
-import vehicleWholesaleDialog from './VehicleWholesaleDialog.vue';
+import vehicleWholesaleDialog from './vehicleWholesaleDialog.vue';
 import BatchAuditInput from './BatchAuditInput.vue';
 
 const defaultForm = {
