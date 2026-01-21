@@ -15,8 +15,10 @@
           <span class="status primary">状态</span>
         </template>
         <template #extraButtons>
-          <el-button size="small">按钮1</el-button>
-          <el-button size="small">按钮2</el-button>
+          <el-button size="small">提交补货申请</el-button>
+          <el-button size="small" @click="handleAudit('dealer')">门店审核</el-button>
+          <el-button size="small" @click="handleAudit('factory')">厂端审核</el-button>
+          <el-button size="small">作废</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -138,7 +140,7 @@
                   />
                 </el-form-item>
                 <el-form-item
-                  label="金融机构ID："
+                  label="金融机构："
                   prop="financialOrganizationId"
                   :rules="form.settleFundType==='2010' ? rules.financialOrganizationId: []"
                   v-show="isShowFinancialOrganization"
@@ -207,9 +209,9 @@
                     :disabled="true"
                   />
                 </el-form-item>
-                <el-form-item label="审批时间：" prop="auditTime">
+                <el-form-item label="审批时间：" prop="auditDateTime">
                   <el-date-picker
-                    v-model="form.auditTime"
+                    v-model="form.auditDateTime"
                     type="datetime"
                     placeholder="请选择日期时间"
                     value-format="yyyy-MM-dd HH:mm:ss"
@@ -221,119 +223,56 @@
                 <el-form-item label="整车补货单号：" prop="replenishApplyCode">
                   {{ form.replenishApplyCode }}
                 </el-form-item>
-                <el-form-item label="销售门店名称：" prop="saleDealerName">
+                <el-form-item label="门店编码：" prop="saleDealerCode">
+                  {{ form.saleDealerCode }}
+                </el-form-item>
+                <el-form-item label="销售门店：" prop="saleDealerName">
                   {{ form.saleDealerName }}
                 </el-form-item>
-                <el-form-item label="审核状态：" prop="auditStatus">
-                  {{ form.auditStatus }}
+                <el-form-item label="订单分类：" prop="orderCategory">
+                  {{ form.orderCategoryLabel }}
                 </el-form-item>
-                <el-form-item label="所属大区：" prop="regionName">
-                  {{ form.regionName }}
+                <el-form-item label="交付门店：" prop="deliveryDealerCode">
+                  {{ form.deliveryDealerName }}
                 </el-form-item>
                 <el-form-item label="批售方式：" prop="wholesaleWay">
-                  {{ form.wholesaleWay }}
+                  {{ form.wholesaleWayLabel }}
                 </el-form-item>
                 <el-form-item label="专项活动：" prop="prodScheduleActivityId">
-                  {{ form.prodScheduleActivityId }}
+                  {{ form.prodScheduleActivity }}
                 </el-form-item>
-                <el-form-item label="车系组合：" prop="serials">
-                  {{ form.serials }}
+                <el-form-item label="申请类别：" prop="applyCategory">
+                  {{ form.applyCategoryLabel }}
                 </el-form-item>
-                <el-form-item label="订单分类：" prop="orderCategory">
-                  {{ form.orderCategory }}
+                <el-form-item label="门店仓库：" prop="dealerWarehouseName">
+                  {{ form.dealerWarehouseName }}
                 </el-form-item>
-                <el-form-item label="申请总数量：" prop="applyTotalQty">
-                  {{ form.applyTotalQty }}
+                <el-form-item label="审核状态：" prop="auditStatus">
+                  {{ form.auditStatusLabel }}
                 </el-form-item>
-                <el-form-item label="申请时间：" prop="applyTime">
-                  {{ form.applyTime }}
+                <el-form-item label="金融机构：" prop="financialOrganizationId">
+                  {{ form.financialOrganization }}
+                </el-form-item>
+                <el-form-item label="是否赊销：" prop="isSheXiao">
+                  {{ form.isSheXiao }}
+                </el-form-item>
+                <el-form-item label="结算资金类型：" prop="settleFundType">
+                  {{ form.settleFundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="申请原因：" prop="applyReason">
                   {{ form.applyReason }}
                 </el-form-item>
-                <el-form-item label="门店审核时间：" prop="auditTime">
-                  {{ form.auditTime }}
+                <el-form-item label="申请总数量：" prop="applyTotalQty">
+                  {{ form.applyTotalQty }}
                 </el-form-item>
-                <el-form-item label="结算资金类型：" prop="settleFundType">
-                  {{ form.settleFundType }}
-                </el-form-item>
-                <el-form-item label="金融机构ID：" prop="financialOrganizationId">
-                  {{ form.financialOrganizationId }}
-                </el-form-item>
-                <el-form-item label="门店仓库名称：" prop="dealerWarehouseName">
-                  {{ form.dealerWarehouseName }}
-                </el-form-item>
-                <el-form-item label="交付门店名称：" prop="deliveryDealerName">
-                  {{ form.deliveryDealerName }}
-                </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  {{ form.creatorName }}
-                </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
-                  {{ form.createTime }}
-                </el-form-item>
-                <el-form-item label="主键：" prop="id">
-                  {{ form.id }}
-                </el-form-item>
-                <el-form-item label="创建者：" prop="creator">
-                  {{ form.creator }}
-                </el-form-item>
-                <el-form-item label="修改者：" prop="modifier">
-                  {{ form.modifier }}
-                </el-form-item>
-                <el-form-item label="修改者名称：" prop="modifierName">
-                  {{ form.modifierName }}
-                </el-form-item>
-                <el-form-item label="修改时间：" prop="updateTime">
-                  {{ form.updateTime }}
-                </el-form-item>
-                <el-form-item label="备注（说明）：" prop="remark">
-                  {{ form.remark }}
-                </el-form-item>
-                <el-form-item label="状态：" prop="status">
-                  {{ form.status }}
-                </el-form-item>
-                <el-form-item label="状态变更描述：" prop="statusDesc">
-                  {{ form.statusDesc }}
-                </el-form-item>
-                <el-form-item label="销售门店编码：" prop="saleDealerCode">
-                  {{ form.saleDealerCode }}
-                </el-form-item>
-                <el-form-item label="交付门店编码：" prop="deliveryDealerCode">
-                  {{ form.deliveryDealerCode }}
-                </el-form-item>
-                <el-form-item label="门店仓库编码：" prop="dealerWarehouseCode">
+                <el-form-item label="仓库编码：" prop="dealerWarehouseCode">
                   {{ form.dealerWarehouseCode }}
                 </el-form-item>
-                <el-form-item label="大区ID：" prop="regionCode">
-                  {{ form.regionCode }}
+                <el-form-item label="仓库地址：" prop="dealerWarehouseAddress">
+                  {{ form.dealerWarehouseAddress }}
                 </el-form-item>
-                <el-form-item label="申请类别：" prop="applyCategory">
-                  {{ form.applyCategory }}
-                </el-form-item>
-                <el-form-item label="门店审核人：" prop="auditorName">
-                  {{ form.auditorName }}
-                </el-form-item>
-                <el-form-item label="门店审核人：" prop="auditorUserId">
-                  {{ form.auditorUserId }}
-                </el-form-item>
-                <el-form-item label="审核意见：" prop="auditOpinion">
-                  {{ form.auditOpinion }}
-                </el-form-item>
-                <el-form-item label="厂端审核人：" prop="reviewName">
-                  {{ form.reviewName }}
-                </el-form-item>
-                <el-form-item label="厂端审核人：" prop="reviewUserId">
-                  {{ form.reviewUserId }}
-                </el-form-item>
-                <el-form-item label="厂端审核时间：" prop="reviewTime">
-                  {{ form.reviewTime }}
-                </el-form-item>
-                <el-form-item label="厂端审核意见：" prop="reviewOpinion">
-                  {{ form.reviewOpinion }}
-                </el-form-item>
-                <el-form-item label="权限：" prop="permission">
-                  {{ form.permission }}
+                <el-form-item label="审批时间：" prop="auditDateTime">
+                  {{ form.auditDateTime }}
                 </el-form-item>
               </el-form>
             </div>
@@ -365,11 +304,17 @@
         <!-- 右侧栏组件，自行开发 -->
       </div>
     </template>
+      <AuditInput
+        :visible.sync="showAuditDialog"
+        :audit-ids="[id]"
+        :audit-type="auditType"
+        @confirm="handleAudit"
+      />
   </edit-page-layout>
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
+import { getDetail, addOrUpdate, dealerAuditValid, factoryAuditValid, dealerApproval, factoryApproval } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
@@ -381,6 +326,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import AuditInput from './AuditInput.vue';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -425,6 +371,7 @@ const defaultForm = {
   permission: '',
   isSheXiao: 0,
   dealerWarehouseAddress: '',
+  auditDateTime: ''
 };
 
 export default {
@@ -441,7 +388,8 @@ export default {
     EditPageLayout,
     EditBaseContainer,
     EditTable,
-    FetchSelect
+    FetchSelect,
+    AuditInput
   },
   computed: {
     _id () {
@@ -466,6 +414,8 @@ export default {
       title: '整车补货单号：' + form.replenishApplyCode,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-dealerVehicleReplenishApply',
+      showAuditDialog: false,
+      auditType: '', // 'dealer' | 'factory'
       isShowActivity: false,
       isShowApplyCategory: false,
       isShowFinancialOrganization: false,
@@ -635,6 +585,9 @@ export default {
         dealerWarehouseAddress: [
           { required: true, message: '请输入仓库地址', trigger: 'change' }
         ],
+        auditDateTime: [
+          { required: true, message: '请选择审批时间', trigger: 'change' }
+        ],
       }
     };
   },
@@ -748,6 +701,39 @@ export default {
     },
     async prodScheduleActivitySearch (query) {
       return listWholesaleProdScheduleActivity({ activityNameLike: query, status: 1, valid: true });
+    },
+    handleAuditValid (type) {
+      if (type === 'dealer') {
+        return dealerAuditValid([this.form.id]).then(() => {
+          this.showAuditDialog = true;
+          this.auditType = 'dealer';
+        });
+      } else if (type === 'factory') {
+        return factoryAuditValid([this.form.id]).then(() => {
+          this.showAuditDialog = true;
+          this.auditType = 'factory';
+        });
+      }
+    },
+    handleAudit (data) {
+      const type = data.auditType;
+      if (type === 'dealer') {
+        return dealerApproval(data).then(() => {
+          this.$message({
+            type: 'success',
+            message: '门店审核成功'
+          });
+          this.getData();
+        });
+      } else if (type === 'factory') {
+        return factoryApproval(data).then(() => {
+          this.$message({
+            type: 'success',
+            message: '厂端审核成功'
+          });
+          this.getData();
+        });
+      }
     },
   }
 };

@@ -1,11 +1,11 @@
 <template>
   <div>
-    <el-dialog title="整车销售模式配置审批" :visible.sync="dialogVisible" width="400px" :close-on-click-modal="false">
+    <el-dialog title="整车补货申请厂端审批" :visible.sync="dialogVisible" width="400px" :close-on-click-modal="false">
       <el-input
         v-model="auditOpinion"
         type="textarea"
         :rows="3"
-        placeholder="请输入内容"
+        placeholder="审批意见可以输入150个中文"
         maxlength="150"
         show-word-limit
       />
@@ -19,7 +19,7 @@
 
 <script>
 export default {
-  name: 'BatchAuditInput',
+  name: 'AuditInput',
   props: {
     visible: {
       type: Boolean,
@@ -59,6 +59,12 @@ export default {
   methods: {
     confirmAudit () {
       // 触发审核确认事件，传递审核结果和意见
+      if (this.isApprove === false) {
+        if (!this.auditOpinion || this.auditOpinion.trim() === '') {
+          this.$message.error('驳回时审批意见不能为空');
+          return;
+        }
+      }
       this.$emit('confirm', {
         isAudit: this.isApprove,
         ids: this.auditIds,
