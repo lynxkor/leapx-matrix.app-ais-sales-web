@@ -130,7 +130,22 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
+      <el-button size="small" @click="vehicleWholesale">厂端现车批售</el-button>
+      <el-dropdown trigger="click" style="margin: 0 10px;">
+        <el-button size="small" type="primary" @click="showDropdown">
+          {{ dropdownLoading ? '加载中...' : '创建排产申请' }}
+          <i class="el-icon-arrow-down el-icon--right" />
+        </el-button>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item
+            v-for="(item, index) in validatedOrderategoryList"
+            :key="index"
+            :command="item.code"
+            @click="handleAdd(item.code)">
+            {{ item.message }}
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
     </div>
@@ -154,6 +169,7 @@
         <EditPage slot="centralizedViewSlot" :id="clickItemId"/>
       </LPVxeTable>
     </div>
+    <vehicle-wholesale-dialog ref="vehicleWholesale" :dealerCompanyName="'dealerCompanyName'" @confirm="getData" />
     <!-- TIPS: 填入项目id即可 -->
     <!-- <Upload
       :visible="uploadDialogVisible"
@@ -167,7 +183,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
+import { getList, deleteItem, enableItem, createRequestValid } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getRigion, listOrgStoreInfo } from '@/api/common';
 import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import { listIdNames as listWholesaleProdScheduleActivity } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivity/index';
@@ -179,6 +195,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import vehicleWholesaleDialog from './vehicleWholesaleDialog.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -202,6 +219,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    vehicleWholesaleDialog,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
@@ -222,8 +240,11 @@ export default {
       show: false,
       loading: false,
       exportLoading: false,
+      dropdownLoading: false,
       uploadDialogVisible: false,
       clickItemId: '',
+      orderategoryList: [],
+      validatedOrderategoryList: [],
       optionObj: {
         id: 'dealerVehicleReplenishApplyTable',
         dataList: [],
@@ -312,8 +333,21 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
+    this.getEnum();
   },
   methods: {
+    async vehicleWholesale () {
+      try {
+        await createRequestValid();
+        this.$refs.vehicleWholesale.dialogshow();
+      } catch (error) {
+        // 忽略验证失败的错误，不显示任何提示
+      }
+    },
+    async getEnum () {
+      const response = await getEnum('ws_order_category');
+      this.orderategoryList = response;
+    },
     handleListSelect (row) {
       this.clickItemId = row.id;
     },
@@ -323,9 +357,23 @@ export default {
     handleUploadDialogClose () {
       this.uploadDialogVisible = false;
     },
-    handleAdd () {
+    async showDropdown () {
+      this.dropdownLoading = true;
+      try {
+        await createRequestValid();
+        this.dropdownLoading = false;
+        this.validatedOrderategoryList = [...this.orderategoryList];
+      } catch (error) {
+        this.dropdownLoading = false;
+        this.validatedOrderategoryList = [];
+      }
+    },
+    handleAdd (code) {
       this.$router.push({
-        path: '/vehwholesale/replenish/dealerVehicleReplenishApply/edit'
+        path: '/vehwholesale/replenish/dealerVehicleReplenishApply/edit',
+        query: {
+          orderCategory: code
+        }
       });
     },
     onSubmit () {

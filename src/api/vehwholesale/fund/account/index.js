@@ -66,3 +66,11 @@ export function setSettleSort (data) {
 export function setRebateFlag (data) {
   return api.jsonPost(prefix + 'setRebateFlag', data);
 }
+
+/**
+ * 设置使用返利
+ * @param {Object} data
+ */
+export function listCanSettleAccount (data) {
+  return api.jsonPost(prefix + 'listCanSettleAccount', data);
+}
