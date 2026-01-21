@@ -159,7 +159,7 @@
             <el-form-item label="年款：" prop="yearTypeName">
               {{ info.yearTypeName }}
             </el-form-item>
-            <el-form-item label="选配包：" prop="optionPackageName">
+            <el-form-item label="选装包：" prop="optionPackageName">
               {{ info.optionPackageName }}
             </el-form-item>
             <el-form-item label="是否允许现车批售：" prop="allowWholesale">
@@ -221,6 +221,12 @@
             </el-form-item>
             <el-form-item label="电池包编号：" prop="batteryPackNumber">
               {{ info.batteryPackNumber }}
+            </el-form-item>
+            <el-form-item label="电池序列号：" prop="batterySerialNumber">
+              {{ info.batterySerialNumber }}
+            </el-form-item>
+            <el-form-item label="MES订单状态：" prop="mesStatusLabel">
+              {{ info.mesStatusLabel }}
             </el-form-item>
             <el-form-item label="制造日期：" prop="manufacturingDate">
               {{ info.manufacturingDate }}
