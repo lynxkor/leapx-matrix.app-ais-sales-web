@@ -206,22 +206,21 @@
           <h2>过点明细</h2>
         </div>
         <div class="common-section-body">
-          <el-table :data="tableData" stripe style="width: 100%">
-            <el-table-column prop="pointDate" label="过点时间" width="220">
-            </el-table-column>
-            <el-table-column prop="code" label="站点编号" width="220">
-            </el-table-column>
-            <el-table-column prop="site" label="站点" width="220">
-            </el-table-column>
-            <el-table-column prop="planOrder" label="计划订单号" width="220">
-            </el-table-column>
-            <el-table-column prop="pviNo" label="PVI单号" width="220">
-            </el-table-column>
-            <el-table-column prop="factory" label="工厂" width="220">
-            </el-table-column>
-            <el-table-column prop="createTime" label="创建时间" width="220">
-            </el-table-column>
-          </el-table>
+          <div class="common-section-table">
+            <edit-table
+              ref="editTable"
+              :columns="columns"
+              :data="tableData"
+              :show-toolbar="false"
+              :isFocusNewRow="false"
+              showPagination
+              :current="pageNum"
+              :pageSize="pageSize"
+              :total="total"
+              @page-size-change="pageSizeChange"
+              @current-page-change="currentPageChange"
+            />
+          </div>
         </div>
       </section>
     </template>
@@ -233,11 +232,14 @@ import { getDetail, vehiclePoTrack } from '@/api/vehstock/vdc/vehiclePo/index';
 import { YES_NO_ENUM_MAP } from '@/libs/constants';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import EditTable from '@/libs/components/EditTable';
 
 export default {
   name: 'vehiclePoDetail',
   mixins: [permissions, commonMixins],
-  components: {},
+  components: {
+    EditTable
+  },
   data () {
     return {
       pageTitle: '整车采购订单',
@@ -247,7 +249,48 @@ export default {
       loading: true,
       info: {},
       yes_no_enum_map: YES_NO_ENUM_MAP,
-      tableData: []
+      tableData: [],
+      pageSize: 10,
+      total: 0,
+      pageNum: 1,
+      ordNo: '',
+      columns: [ // 适配车型
+        {
+          field: 'pointDate',
+          title: '过点时间',
+          width: '15%',
+        },
+        {
+          field: 'code',
+          title: '站点编号',
+          width: '15%',
+        },
+        {
+          field: 'site',
+          title: '站点',
+          width: '15%',
+        },
+        {
+          field: 'planOrder',
+          title: '计划订单号',
+          width: '15%',
+        },
+        {
+          field: 'pviNo',
+          title: 'PVI单号',
+          width: '15%',
+        },
+        {
+          field: 'factory',
+          title: '工厂',
+          width: '15%',
+        },
+        {
+          field: 'createTime',
+          title: '创建时间',
+          width: '15%',
+        },
+      ],
     };
   },
   created () {
@@ -268,15 +311,28 @@ export default {
         .then((res) => {
           this.loading = false;
           this.info = res;
-          this.getTable(res.ordNo);
+          this.ordNo = res.ordNo;
+          this.getTable();
         })
         .catch(() => {
           this.loading = false;
         });
     },
-    async getTable (val) {
-      const res = await vehiclePoTrack({ planOrder: val });
-      this.tableData = res || [];
+    async getTable () {
+      const { pageNum, pageSize } = this;
+      const res = await vehiclePoTrack({ planOrder: this.ordNo, pageNum, pageSize });
+      this.tableData = res.records || [];
+      this.total = res.total || 0;
+    },
+    pageSizeChange (pageSize) {
+      this.pageSize = pageSize;
+      this.pageNum = 1;
+      this.getTable();
+    },
+
+    currentPageChange (current) {
+      this.pageNum = current;
+      this.getTable();
     }
   },
 };

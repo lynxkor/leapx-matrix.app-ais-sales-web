@@ -690,6 +690,8 @@ export default {
     },
     handleChangeDealer (val, record) {
       this.form.saleDealerCode = record?.storeCode || '';
+      this.form.regionCode = record?.regionCode || '';
+      this.form.regionName = record?.region || '';
       getDealerDetailByCode(this.form.saleDealerCode).then(response => {
         this.form.deliveryDealerCode = response?.exclusiveDeliveryStoreCode || '';
         this.form.deliveryDealerName = response?.exclusiveDeliveryStoreName || '';
@@ -739,7 +741,7 @@ export default {
       return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
     },
     async getRegionList (params) {
-      return getRigion({ regionName: params });
+      return getRigion({ orgName: params });
     },
     async repairItemSearch (query) {
       return listFinancialOrganization({ organizationNameLike: query, status: 1 });
