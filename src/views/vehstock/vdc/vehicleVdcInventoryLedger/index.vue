@@ -656,7 +656,10 @@ export default {
       let list = this.selectionList.map(item => item.id);
       localStorage.setItem('selectedIds', JSON.stringify(list));
       this.$router.push({
-        path: '/vehstock/vdc/vehicleVdcInventoryLedger/edit'
+        path: '/vehstock/vdc/vehicleVdcInventoryLedger/edit',
+        query: {
+          list: 1
+        }
       });
     }
   }
