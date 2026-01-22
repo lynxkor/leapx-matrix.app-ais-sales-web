@@ -284,38 +284,40 @@
             </div>
             <div class="common-section-body">
               <div class="common-section-table">
-                <edit-table
-                  ref="editTable"
-                  :columns="columns"
-                  :data="tableData"
-                  :defaultNewRow="defaultNewRow"
-                  :show-toolbar="false"
-                  :options="options"
-                  :auth="{edit: canAddOrUpdate, delete: canDelete}"
+                <component-table
+                  :tableData="form.details"
+                  :columns="detailsColumns"
                 />
               </div>
             </div>
           </section>
-          <section class="common-section">
+          <section class="common-section" v-if="_id">
             <div class="common-section-header">
               <h2>整车资金账户</h2>
             </div>
             <div class="common-section-body">
               <div class="common-section-table">
-                放个table
+                <component-table
+                  :tableData="form.wholesaleOrders"
+                  :columns="columns"
+                />
               </div>
             </div>
           </section>
-          <section class="common-section">
+          <section class="common-section" v-if="_id">
             <div class="common-section-header">
               <h2>批售订单信息</h2>
             </div>
             <div class="common-section-body">
               <div class="common-section-table">
-                <component-table />
+                <component-table
+                  :tableData="form.wholesaleOrders"
+                  :columns="wholesaleOrdersColumns"
+                />
               </div>
             </div>
           </section>
+          <AddCommercialVehicleDialog />
         </el-main>
       </edit-base-container>
     </template>
@@ -336,7 +338,6 @@
 <script>
 import { getDetail, addOrUpdate, dealerAuditValid, factoryAuditValid, dealerApproval, factoryApproval } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum, getDealerDetailByCode, getRigion, listOrgStoreInfo } from '@/api/common';
@@ -348,6 +349,7 @@ import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import AuditInput from './AuditInput.vue';
 import ComponentTable from './ComponentTable.vue';
+import AddCommercialVehicleDialog from './AddCommercialVehicleDialog.vue';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -406,10 +408,10 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
+    AddCommercialVehicleDialog,
     ComponentTable,
     EditPageLayout,
     EditBaseContainer,
-    EditTable,
     FetchSelect,
     AuditInput
   },
@@ -446,42 +448,67 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
-      defaultNewRow: {
-        name: '',
-      },
       tableData: [
-        { id: 1, name: '张三', age: 25, email: 'zhangsan@example.com' },
-        { id: 2, name: '李四', age: 30, email: 'lisi@example.com' }
       ],
-      options: {
-        // 对应表格里选型枚举
-        // 如 type: [{label: 'xxx', value: 'xxx'}]
-      },
       // TIPS: 复杂的表格输入项，参考 /dealerTeam/edit.vue
       columns: [
-        {
-          field: 'name',
-          title: '姓名',
-          width: '33%',
-          editable: true,
-          editRender: { name: 'ElInput' },
-          rules: [
-            { required: true, message: '姓名不能为空', trigger: 'blur' }
-          ]
-        },
-        {
-          field: 'age',
-          title: '年龄',
-          editable: true,
-          width: '33%',
-          editRender: { name: 'ElInput', props: { type: 'number' } }
-        },
-        {
-          field: 'email',
-          title: '邮箱',
-          width: '33%',
-          editRender: { name: 'ElInput' }
-        },
+        { field: 'fundTypeLabel', title: '资金类型', width: '12%' },
+        { field: 'availableBalance', title: '可用余额', width: '12%' },
+        { field: 'frozenBalance', title: '冻结资金', width: '12%' },
+        { field: 'availableCreditAmount', title: '剩余可用额度', width: '12%' },
+        { field: 'downPaymentRatio', title: '首付款比例（%）', width: '12%' },
+        { field: 'creditAccountStatusLabel', title: '赊销账户状态', width: '12%' },
+        { field: 'effectiveTime', title: '额度生效日期', width: '14%' },
+        { field: 'expireTime', title: '额度失效日期', width: '14%' },
+      ],
+      wholesaleOrdersColumns: [
+        { field: 'wholesaleOrderCode', title: '批售订单号', width: '150' },
+        { field: 'vin', title: '配车VIN码', width: '180' },
+        { field: 'wholesalePrice', title: '批售价', width: '120' },
+        { field: 'confirmTime', title: '确认时间', width: '180' },
+        { field: 'noAutoConfirmReason', title: '未自动确认原因', width: '150' },
+        { field: 'confirmRemark', title: '确认说明', width: '150' },
+        { field: 'prodScheduleActivityId', title: '专项活动', width: '120' },
+        { field: 'confirmStatus', title: '确认状态', width: '120' },
+        { field: 'statusDesc', title: '订单状态', width: '120' },
+        { field: 'orderTime', title: '订单时间', width: '180' },
+        { field: 'allocateTime', title: '配车时间', width: '180' },
+        { field: 'settleTime', title: '结算时间', width: '180' },
+        { field: 'saleDealerName', title: '销售门店', width: '150' },
+        { field: 'deliveryDealerName', title: '交付门店', width: '150' },
+        { field: 'applyReason', title: '申请原因', width: '150' },
+        { field: 'modelName', title: '车型', width: '120' },
+        { field: 'yearTypeName', title: '年款', width: '100' },
+        { field: 'materialsDesc', title: '物料描述（L）', width: '350' },
+        { field: '', title: '选配续航（L）', width: '150' },
+        { field: 'exteriorName', title: '外饰风格（L)', width: '120' },
+        { field: 'wheelHubName', title: '选配轮毂（L）', width: '120' },
+        { field: '', title: '选配动力（L）', width: '120' },
+        { field: 'remark', title: '描述', width: '150' },
+        { field: 'orderCategoryName', title: '订单分类', width: '120' },
+        { field: 'wholesaleWay', title: '批售方式', width: '120' },
+        { field: 'settleFundType', title: '结算资金类型', width: '150' },
+        { field: 'financialOrganizationName', title: '金融机构', width: '150' },
+        { field: 'createTime', title: '创建时间', width: '180' },
+        { field: 'vehicleReturnFlag', title: '退车标识', width: '120' }
+      ],
+      detailsColumns: [
+        { field: 'replenishApplyDetailCode', title: '整车补货明细单号', width: '280' },
+        { field: 'seriesName', title: '车系', width: '120' },
+        { field: 'modelName', title: '车型', width: '200' },
+        { field: 'materialsCode', title: '物料编码', width: '250' },
+        { field: 'materialsDesc', title: '物料描述（L）', width: '350' },
+        { field: 'applyQty', title: '申请数量', width: '120' },
+        { field: 'invoiceDiscountType', title: '开票类型', width: '120' },
+        { field: 'invoiceCoefficient', title: '开票系数', width: '120' },
+        { field: 'createTime', title: '申请时间', width: '180' },
+        { field: 'updateTime', title: '审批时间', width: '180' },
+        // { field: 'orderCategoryName', title: '订单分类', width: '180' },
+        // { field: '', title: '结算资金类型', width: '180' },
+        // { field: '', title: '融资机构', width: '180' },
+        { field: 'remark', title: '申请原因', width: '150' },
+        { field: 'creatorName', title: '创建人', width: '120' },
+        { field: 'createTime', title: '创建时间', width: '180' }
       ],
       rules: {
         replenishApplyCode: [
@@ -631,18 +658,6 @@ export default {
     },
     // 详情表格相关数据
     handleAddRow () {
-      // 通过引用直接调用子组件方法
-      this.$refs.editTable.addRow();
-    },
-    handleSaveTable (data) {
-      // 调用保存方法并处理结果
-      return new Promise((resolve, reject) => {
-        this.$refs.editTable.saveAll().then(data => {
-          resolve(data);
-        }).catch(error => {
-          reject(error);
-        });
-      });
     },
     getDefautlForm () {
       // TIPS: 此处可添加表单默认值，如当前用户信息等

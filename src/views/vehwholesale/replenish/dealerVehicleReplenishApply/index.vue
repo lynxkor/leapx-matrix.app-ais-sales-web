@@ -129,7 +129,7 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button size="small" @click="vehicleWholesale">厂端现车批售</el-button>
-      <el-dropdown trigger="click" style="margin: 0 10px;">
+      <el-dropdown trigger="click" style="margin: 0 10px;" @command="handleAdd">
         <el-button size="small" type="primary" @click="showDropdown">
           {{ dropdownLoading ? '加载中...' : '创建排产申请' }}
           <i class="el-icon-arrow-down el-icon--right" />
@@ -138,12 +138,11 @@
           <el-dropdown-item
             v-for="(item, index) in validatedOrderategoryList"
             :key="index"
-            :command="item.code"
-            @click="handleAdd(item.code)">
+            :command="item.code">
             {{ item.message }}
           </el-dropdown-item>
         </el-dropdown-menu>
-      </el-dropdown>
+      </el-dropdown>>
       <el-button size="small" @click="factoryAuditValid(true)" :disabled="selectionList.length === 0">批量审核通过</el-button>
       <el-button size="small" @click="factoryAuditValid(false)" :disabled="selectionList.length === 0">批量审核驳回</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
