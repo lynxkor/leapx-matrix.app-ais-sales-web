@@ -12,6 +12,9 @@
      <el-form-item label="活动名称">
         <tag-input v-model="form.activityNames" placeholder="请输入" />
       </el-form-item>
+      <el-form-item label="活动编码">
+        <tag-input v-model="form.activityCodes" placeholder="请输入" />
+      </el-form-item>
       <el-form-item label="创建时间">
         <el-date-picker
          :default-time="['00:00:00', '23:59:59']"
@@ -92,6 +95,7 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
     </div>
     <div
       class="ais-table-c"

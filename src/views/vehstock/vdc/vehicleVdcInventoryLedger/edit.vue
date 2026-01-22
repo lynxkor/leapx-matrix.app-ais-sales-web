@@ -16,7 +16,7 @@
                   clearable filterable @change="reservedChange" />
               </el-form-item>
               <el-form-item label="销售预留类型" prop="reservedType">
-                <el-select v-model="form.reservedType" placeholder="请选择">
+                <el-select v-model="form.reservedType" placeholder="请选择" :disabled="!form.reserved && this.$route.query.list == 1">
                   <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"
                     :disabled="item.disabled">
                   </el-option>

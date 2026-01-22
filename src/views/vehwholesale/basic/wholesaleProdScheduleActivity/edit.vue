@@ -354,6 +354,21 @@ export default {
   data () {
     const form = this.getDefautlForm();
     const detailForm = {};
+    const validateTotalQuotaQty = (rule, value, callback) => {
+      const { totalQuotaQty, usedQuotaQty } = this.form;
+      if (totalQuotaQty < usedQuotaQty) {
+        return callback(new Error('额度数量不能小于已提报数量'));
+      }
+      callback();
+    };
+    const validateUsedQuotaQty = (rule, value, callback) => {
+      const { totalQuotaQty, usedQuotaQty } = this.form;
+      console.log(totalQuotaQty, usedQuotaQty);
+      if (totalQuotaQty < usedQuotaQty) {
+        return callback(new Error('已提报数量不能大于额度数量'));
+      }
+      callback();
+    };
     const validateDateRange = (rule, value, callback) => {
       const { startTime, endTime } = this.form;
       // 1. 校验截止日期必填
@@ -498,12 +513,14 @@ export default {
         allowLockRetail: [
           { required: true, message: '请输入是否锁零售单', trigger: 'change' }
         ],
-        // totalQuotaQty: [
-        //   { required: true, message: '请输入额度数量', trigger: 'change' }
-        // ],
-        // usedQuotaQty: [
-        //   { required: true, message: '请输入已提报数量', trigger: 'change' }
-        // ],
+        totalQuotaQty: [
+          { required: true, message: '请输入额度数量', trigger: 'change' },
+          { validator: validateTotalQuotaQty, trigger: 'change' }
+        ],
+        usedQuotaQty: [
+          { required: true, message: '请输入已提报数量', trigger: 'change' },
+          { validator: validateUsedQuotaQty, trigger: 'change' }
+        ],
       }
     };
   },

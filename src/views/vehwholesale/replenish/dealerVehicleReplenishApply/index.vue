@@ -179,12 +179,7 @@
       </LPVxeTable>
     </div>
     <vehicle-wholesale-dialog ref="vehicleWholesale" :dealerCompanyName="'dealerCompanyName'" @confirm="getData" />
-    <BatchAuditInput
-      :visible.sync="showAuditDialog"
-      :audit-ids="selectionList.map(item => item.id)"
-      :isApprove="isApprove"
-      @confirm="factoryApproval"
-    />
+    <BatchAuditInput ref="batchAuditInput"/>
     <!-- TIPS: 填入项目id即可 -->
     <!-- <Upload
       :visible="uploadDialogVisible"
@@ -198,7 +193,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, createRequestValid, factoryAuditValid, factoryApproval } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
+import { getList, deleteItem, enableItem, createRequestValid, factoryAuditValid } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getRigion, listOrgStoreInfo } from '@/api/common';
 import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import { listIdNames as listWholesaleProdScheduleActivity } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivity/index';
@@ -254,8 +249,6 @@ export default {
         ...defaultForm
       },
       selectionList: [],
-      showAuditDialog: false,
-      isApprove: true,
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -565,26 +558,9 @@ export default {
     factoryAuditValid (data) {
       const ids = this.selectionList.map(item => item.id) || [];
       return factoryAuditValid(ids).then(() => {
-        this.showAuditDialog = true;
-        this.isApprove = data;
+        this.$refs.batchAuditInput.openDialog({ ids, isApprove: data });
       });
-    },
-    factoryApproval (data) {
-      return factoryApproval(data).then(() => {
-        this.$message({
-          type: 'success',
-          message: '批量审核成功'
-        });
-        this.getData();
-      });
-    },
-    // handleDealerChange (val, record) {
-    //   this.form.regionCodes = [...new Set(
-    //     record
-    //       .map(item => item?.regionCode)
-    //       .filter(Boolean)
-    //   )];
-    // },
+    }
   }
 };
 </script>
