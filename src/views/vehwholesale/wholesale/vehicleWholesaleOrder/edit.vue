@@ -14,6 +14,13 @@
         <template #status>
           <span class="status primary">状态</span>
         </template>
+        <template #extraButtons >
+          <el-button  size="small" type="primary" @click="handleCheckConfirm">审核确认</el-button>
+          <el-button  size="small" type="primary" @click="handleaAutoVehicleAllocation">自动配车</el-button>
+          <el-button  size="small" type="primary" @click="handleManualVehicleAllocation">手工配车</el-button>
+          <el-button  size="small" type="primary" @click="handleDelete">删除</el-button>
+          <el-button  size="small" type="primary" @click="handleCancel">作废</el-button>
+        </template>
         <el-main>
           <section class="common-section">
             <div class="common-section-header">
@@ -25,7 +32,7 @@
                 <el-form-item label="订单状态：" prop="status">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="vw_wholesale_order_status"
                     v-model="form.status"
                     placeholder="请选择"
                     clearable
@@ -35,7 +42,7 @@
                    <el-form-item label="确认状态：" prop="confirmStatus">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="vw_wholesale_confirm_status"
                     v-model="form.confirmStatus"
                     placeholder="请选择"
                     clearable
@@ -573,8 +580,8 @@
                  <el-form-item label="首次配车时间：" prop="firstAllocateTime">
                   {{ form.firstAllocateTime }}
                 </el-form-item>
-                 <el-form-item label="退车标识：" prop="vehicleReturnFlag">
-                   {{ form.vehicleReturnFlag }}
+                 <el-form-item label="退车标识：" prop="vehicleReturnFlagLabel">
+                   {{ form.vehicleReturnFlagLable }}
                   <!-- {{ yes_no_enum_map[form.vehicleReturnFlag] }} -->
                 </el-form-item>
                   <el-form-item label="特殊备注：" prop="specialRemark">
@@ -587,7 +594,7 @@
                   {{ form.cancelAllocateRemark }}
                 </el-form-item>
                 <el-form-item label="取消结算时间：" prop="cancelAllocateRemark">
-                  {{ form.cancelAllocateRemark }}  ----
+                  <!-- {{ form.cancelAllocateRemark }}  -->
                 </el-form-item>
                 <el-form-item label="首次取消配车时间：" prop="firstCancelAllocateTime">
                   {{ form.firstCancelAllocateTime }}
@@ -726,13 +733,10 @@
                   </el-radio-group>
                 </el-form-item>
                  <el-form-item label="同步SAP状态：" prop="syncSapStatus">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
+                  <el-input
+                    placeholder="请输入"
                     v-model="form.syncSapStatus"
-                    placeholder="请选择"
                     clearable
-                    filterable
                   />
                 </el-form-item>
 
@@ -778,8 +782,8 @@
                    {{ form.creditSaleRepaidLabel }}
                 </el-form-item>
 
-                <el-form-item label="同步SAP状态：" prop="creditSaleRepaidLabel">
-                   {{ form.syncSapStatusLabel }}
+                <el-form-item label="同步SAP状态：" prop="syncSapStatus">
+                   {{ form.syncSapStatus }}
                 </el-form-item>
               </el-form>
             </div>
@@ -815,7 +819,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import { getDetail, addOrUpdate, batchConfirmItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
@@ -825,6 +829,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { ids } from 'webpack';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -1106,7 +1111,7 @@ export default {
           { required: true, message: '请输入ERP发票号', trigger: 'change' }
         ],
         syncSapStatus: [
-          { required: true, message: '请选择同步SAP状态', trigger: 'change' }
+          { required: true, message: '请输入同步SAP状态', trigger: 'change' }
         ],
         createTime: [
           { required: true, message: '请选择创建时间', trigger: 'change' }
@@ -1348,6 +1353,69 @@ export default {
   mounted () {
   },
   methods: {
+    allAllowConfirm (items) {
+      const ALLOWED_STATUS = [0, 11];
+      for (const item of items) {
+        if (item.confirmStatus !== 1010) {
+          this.$message({
+            type: 'error',
+            message: '选择的数据中[确认状态]必须为[未确认]!'
+          });
+          return;
+        };
+        if (!ALLOWED_STATUS.includes(item.status)) {
+          this.$message({
+            type: 'error',
+            message: '选择的数据中[订单状态]必须为[未配车,配车失败]!'
+          });
+          return;
+        };
+        if (item.orderCategory !== 1) {
+          this.$message({
+            type: 'error',
+            message: '选择的数据中[订单分类]必须为[商品车订单]!'
+          });
+          return;
+        }
+      }
+    },
+    handleCheckConfirm () {  // 审核确认
+      const checkStatus = this.allAllowConfirm(this.form);
+      if (checkStatus) {
+        this.$confirm('是否需要对批售订单进行批售确认? 注意：确认订单结算资金类型', '操作提醒', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          batchConfirmItem({
+            ids: [this.form.id]
+          }).then(() => {
+            this.$message({
+              type: 'success',
+              message: '确认成功!'
+            });
+            this.getData();
+          }).catch(() => {
+            this.$message({
+              type: 'error',
+              message: '确认失败!'
+            });
+          });
+        }).catch(() => {});
+      }
+    },
+    handleaAutoVehicleAllocation () { // 自动配车
+
+    },
+    handleManualVehicleAllocation () { // 手工配车
+
+    },
+    handleDelete () { // 删除
+
+    },
+    handleCancel () { // 作废
+
+    },
     detailRequest () {
       const id = this._id;
       if (id) {
