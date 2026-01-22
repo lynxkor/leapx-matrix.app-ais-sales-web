@@ -829,7 +829,6 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-import { ids } from 'webpack';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -1379,7 +1378,7 @@ export default {
         }
       }
     },
-    handleCheckConfirm () {  // 审核确认
+    handleCheckConfirm () { // 审核确认
       const checkStatus = this.allAllowConfirm(this.form);
       if (checkStatus) {
         this.$confirm('是否需要对批售订单进行批售确认? 注意：确认订单结算资金类型', '操作提醒', {
