@@ -86,7 +86,7 @@
         <el-form-item label="订单分类">
           <fetch-select
             :request="fetchOptions"
-            enumCode="ws_order_category"
+            enumCode="vw_order_category_wholesale"
             v-model="form.orderCategory"
             placeholder="请选择"
             clearable
@@ -142,7 +142,7 @@
             {{ item.message }}
           </el-dropdown-item>
         </el-dropdown-menu>
-      </el-dropdown>>
+      </el-dropdown>
       <el-button size="small" @click="factoryAuditValid(true)" :disabled="selectionList.length === 0">批量审核通过</el-button>
       <el-button size="small" @click="factoryAuditValid(false)" :disabled="selectionList.length === 0">批量审核驳回</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
@@ -341,7 +341,7 @@ export default {
       }
     },
     async getEnum () {
-      const response = await getEnum('ws_order_category');
+      const response = await getEnum('vw_order_category_wholesale');
       this.orderategoryList = response;
     },
     handleListSelect (row) {

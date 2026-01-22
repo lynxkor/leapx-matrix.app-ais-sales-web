@@ -1,5 +1,5 @@
 <template>
-  <edit-page-layout ref="editLayout" title="侧边栏标题" showPaneFooter>
+  <edit-page-layout ref="editLayout" :title="pannelTitle" showPaneFooter>
     <template #left>
       <!-- TIPS: 如果需要竖排，direction="vertical" -->
       <edit-base-container
@@ -59,7 +59,7 @@
                 <el-form-item label="订单分类：" prop="orderCategory">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="ws_order_category"
+                    enumCode="vw_order_category_wholesale"
                     v-model="form.orderCategory"
                     placeholder="请选择"
                     clearable
@@ -325,7 +325,7 @@
     <template #right>
       <div class="page-common-edit">
         <!-- 右侧栏组件，自行开发 -->
-        <add-commercial-vehicle-dialog ref="addCommercialVehicleDialog" />
+        <add-commercial-vehicle ref="addCommercialVehicle" />
       </div>
     </template>
   </edit-page-layout>
@@ -344,7 +344,7 @@ import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import ComponentTable from './ComponentTable.vue';
-import AddCommercialVehicleDialog from './AddCommercialVehicleDialog.vue';
+import AddCommercialVehicle from './AddCommercialVehicle.vue';
 import auditDialog from '@/libs/components/auditDialog';
 
 const defaultForm = {
@@ -404,7 +404,7 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
-    AddCommercialVehicleDialog,
+    AddCommercialVehicle,
     ComponentTable,
     EditPageLayout,
     EditBaseContainer,
@@ -428,10 +428,13 @@ export default {
   },
   data () {
     const form = this.getDefautlForm();
+    const routeOrderCategory = this.$route.query.orderCategory ? String(this.$route.query.orderCategory) : '';
+    form.orderCategory = routeOrderCategory;
     return {
       pageTitle: '整车批售-批售主数据-整车门店补货申请管理',
       pageType: 'edit',
       title: '整车补货单号：' + form.replenishApplyCode,
+      pannelTitle: '',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-dealerVehicleReplenishApply',
       isShowActivity: false,
@@ -640,9 +643,18 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        const res = getDetail(id);
-        return res;
+        return getDetail(id).then(res => {
+          const data = res;
+          if (data && data.orderCategory !== undefined && data.orderCategory !== null) {
+            data.orderCategory = String(data.orderCategory);
+          }
+          return data;
+        }).catch(error => {
+          this.$message.error('获取详情失败');
+          throw error;
+        });
       }
+      return Promise.resolve(null);
     },
     submitRequest () {
       return addOrUpdate({ ...this.form });
@@ -653,8 +665,9 @@ export default {
     },
     // 详情表格相关数据
     handleAddRow () {
+      this.pannelTitle = '补货申请添加';
       this.$refs.editLayout.openPane();
-      // this.$refs.addCommercialVehicleDialog.dialogshow();
+      // this.$refs.AddCommercialVehicle.dialogshow();
     },
     getDefautlForm () {
       // TIPS: 此处可添加表单默认值，如当前用户信息等

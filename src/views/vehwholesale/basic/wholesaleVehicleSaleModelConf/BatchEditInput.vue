@@ -5,7 +5,7 @@
         <el-form-item label="开票优惠类型" prop="invoiceDiscountType">
           <fetch-select
             :request="fetchOptions"
-            enumCode="ws_invoice_discount_type"
+            enumCode="vw_invoice_type"
             v-model="form.invoiceDiscountType"
             placeholder="请选择"
             clearable
