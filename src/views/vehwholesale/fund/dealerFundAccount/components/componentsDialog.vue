@@ -299,7 +299,7 @@ export default {
       this.$confirm(`确定要批量${msg}返利吗？`).then(() => {
         let params = {
           ids: this.selectionList.map(item => item.id),
-          allowEntOrderSettle: val
+          allowUseRebate: val
         };
         setRebateFlag(params).then(res => {
           let message = val ? '批量启用成功' : '批量关闭成功';

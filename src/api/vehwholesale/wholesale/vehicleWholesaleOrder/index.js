@@ -42,3 +42,35 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 批量确认
+ * @param {Object} data
+ */
+export function batchConfirmItem (data) {
+  return api.jsonPost(prefix + 'batchConfirm', data);
+}
+
+/**
+ * 设置急单
+ * @param {Object} data
+ */
+export function setEmergencyOrderItem (data) {
+  return api.jsonPost(prefix + 'setEmergencyOrder', data);
+}
+
+/**
+ * 批量作废
+ * @param {Object} data
+ */
+export function batchCancelItem (data) {
+  return api.jsonPost(prefix + 'batchCancel', data);
+}
+
+/**
+ * 配车或取消自动配车
+ * @param {Object} data
+ */
+export function batchSetAutoAllocateItem (data) {
+  return api.jsonPost(prefix + 'batchSetAutoAllocate', data);
+}
