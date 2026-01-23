@@ -1,5 +1,5 @@
 <template>
-  <div class="page-common m-vehwholesale\replenish\dealer-vehicle-replenish-apply-list">
+  <div class="page-common m-vehicle-materials-list">
     <!--  TIPS: 自行调整如下label-width，满足label不换行  -->
     <el-form
       :inline="true"
@@ -86,7 +86,7 @@
         <el-form-item label="订单分类">
           <fetch-select
             :request="fetchOptions"
-            enumCode="vw_order_category_wholesale"
+            enumCode="vw_order_category"
             v-model="form.orderCategory"
             placeholder="请选择"
             clearable
@@ -341,8 +341,22 @@ export default {
       }
     },
     async getEnum () {
-      const response = await getEnum('vw_order_category_wholesale');
-      this.orderategoryList = response;
+      const response = await getEnum('vw_order_category');
+      console.log('response:', response);
+      // 过滤出 code 为 0、2、20 的数据，且确保 code 是字符串类型
+      // 0 商品车订单
+      // 2 试驾车订单
+      // 20 展车订单
+      this.orderategoryList = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['0', '2', '20'].includes(codeStr);
+      }).map(item => {
+        // 确保 code 字段是字符串类型
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
     },
     handleListSelect (row) {
       this.clickItemId = row.id;
@@ -566,6 +580,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.m-vehwholesale\replenish\dealer-vehicle-replenish-apply-list {
+.m-vehicle-materials-list {
 }
 </style>

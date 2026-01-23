@@ -86,7 +86,7 @@
               <el-form-item label="返利使用类型" prop="rebateUseType">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="ws_rebate_use_type"
+                  enumCode="vw_rebate_use_type"
                   v-model="form.rebateUseType"
                   placeholder="请选择"
                   clearable

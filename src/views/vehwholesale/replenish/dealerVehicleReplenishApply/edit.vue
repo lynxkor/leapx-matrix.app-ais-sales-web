@@ -1,5 +1,5 @@
 <template>
-  <edit-page-layout ref="editLayout" :title="pannelTitle" showPaneFooter>
+  <edit-page-layout ref="editLayout" :title="pannelTitle" showPaneFooter @save="handleSave" @cancel="handleCancel">
     <template #left>
       <!-- TIPS: 如果需要竖排，direction="vertical" -->
       <edit-base-container
@@ -59,7 +59,7 @@
                 <el-form-item label="订单分类：" prop="orderCategory">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="vw_order_category_wholesale"
+                    enumCode="vw_order_category"
                     v-model="form.orderCategory"
                     placeholder="请选择"
                     clearable
@@ -280,7 +280,7 @@
           <section class="common-section">
             <div class="common-section-header">
               <h2>整车门店补货明细</h2>
-              <el-button size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>添加</el-button>
+              <el-button size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>添加补货明细</el-button>
             </div>
             <div class="common-section-body">
               <div class="common-section-table">
@@ -325,7 +325,7 @@
     <template #right>
       <div class="page-common-edit">
         <!-- 右侧栏组件，自行开发 -->
-        <add-commercial-vehicle ref="addCommercialVehicle" />
+        <add-commercial-vehicle ref="addCommercialVehicle" :orderCategory="form.orderCategory" />
       </div>
     </template>
   </edit-page-layout>
@@ -333,6 +333,7 @@
 
 <script>
 import { getDetail, addOrUpdate, dealerAuditValid, factoryAuditValid, dealerApproval, factoryApproval } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
+import { addOrUpdate as addOrUpdateDetail } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -640,6 +641,28 @@ export default {
   mounted () {
   },
   methods: {
+    handleSave () {
+      const dataList = this.$refs.addCommercialVehicle.tableList;
+      if (!dataList || dataList.length === 0) return;
+      let params = {
+        mainData: {
+          replenishApplyId: this._id,
+          ...this.form,
+        },
+        detailData: dataList
+      };
+      delete params.mainData.id;
+      addOrUpdateDetail(params).then(id => {
+        this.$message.success('更新成功');
+        this.$refs.editLayout.closePane();
+        this.detailRequest();
+      }).catch(e => {
+        this.$message.error('更新失败');
+      });
+    },
+    handleCancel () {
+      this.$refs.editLayout.closePane();
+    },
     detailRequest () {
       const id = this._id;
       if (id) {
@@ -665,9 +688,21 @@ export default {
     },
     // 详情表格相关数据
     handleAddRow () {
-      this.pannelTitle = '补货申请添加';
+      // 如果orderCategory不在有效范围内，不执行后续动作
+      if (!['0', '2', '20'].includes(this.form.orderCategory)) {
+        return;
+      }
+      let categoryText = '';
+      if (this.form.orderCategory === '0') {
+        categoryText = '商品车';
+      } else if (this.form.orderCategory === '2') {
+        categoryText = '试驾车';
+      } else if (this.form.orderCategory === '20') {
+        categoryText = '展车';
+      }
+      this.pannelTitle = `补货申请添加【${categoryText}】`;
       this.$refs.editLayout.openPane();
-      // this.$refs.AddCommercialVehicle.dialogshow();
+      // this.$refs.addCommercialVehicle.dialogshow();
     },
     getDefautlForm () {
       // TIPS: 此处可添加表单默认值，如当前用户信息等

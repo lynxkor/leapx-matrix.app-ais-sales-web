@@ -52,7 +52,7 @@
 import debounce from 'lodash.debounce';
 import EditTable from '@/libs/components/EditTable';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, listCanSettleAccountList } from '@/api/vehwholesale/fund/account/index';
+import { getList, listCanSettleAccount } from '@/api/vehwholesale/fund/account/index';
 import { getEnum } from '@/api/common';
 import { queryPlantWholesaleInStockInventory } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
 
@@ -127,9 +127,9 @@ export default {
     };
   },
   methods: {
-    listCanSettleAccountList () {
-      listCanSettleAccountList().then(res => {
-        console.log('listCanSettleAccountList:', res);
+    listCanSettleAccount () {
+      listCanSettleAccount({}).then(res => {
+        console.log('listCanSettleAccount:', res);
       }).catch(err => { console.log(err); });
     },
     queryPlantWholesaleInStockInventory () {
@@ -191,8 +191,8 @@ export default {
     dialogshow () {
       // this.getData();
 
-      // this.queryPlantWholesaleInStockInventory();
-      this.listCanSettleAccountList();
+      this.queryPlantWholesaleInStockInventory();
+      this.listCanSettleAccount();
       this.dialogVisible = true;
     },
     confirm () {
