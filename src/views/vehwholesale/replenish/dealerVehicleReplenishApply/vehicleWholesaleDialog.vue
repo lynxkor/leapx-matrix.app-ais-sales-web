@@ -37,8 +37,7 @@
               :show-pagination="true"
               :checkbox="true"
               :total="total"
-              @current-page-change="pageChange"
-              @page-size-change="sizeChange"
+              :auth="{ edit: false, delete: false }"
             />
           </div>
         </div>
@@ -135,20 +134,13 @@ export default {
     queryPlantWholesaleInStockInventory () {
       queryPlantWholesaleInStockInventory({}).then(res => {
         console.log('queryPlantWholesaleInStockInventory:', res);
+        this.tableData = res.inStockInventoryDtoList || [{}, {}];
       }).catch(err => { console.log(err); });
     },
     handleClose () {
       this.form = { ...defaultForm }; // 重置表单数据
       this.tableData = []; // 清空表格数据
       this.columns = []; // 清空列配置
-    },
-    pageChange (page) {
-      this.optionObj.form.page = page;
-      this.debouncedGetData();
-    },
-    sizeChange (size) {
-      this.optionObj.form.size = size;
-      this.debouncedGetData();
     },
     onSubmit () {
       this.getData();

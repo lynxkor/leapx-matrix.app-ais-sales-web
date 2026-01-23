@@ -649,7 +649,7 @@ export default {
           replenishApplyId: this._id,
           ...this.form,
         },
-        detailData: dataList
+        detailList: dataList
       };
       delete params.mainData.id;
       addOrUpdateDetail(params).then(id => {
