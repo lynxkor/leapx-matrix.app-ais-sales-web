@@ -122,7 +122,7 @@ const defaultForm = {
   returnLabel: '',
   allowLockRetail: '',
   vehicleRegisteredModelIdList: [],
-  materialsCode: '',
+  materialsCodeLike: '',
   materialsCodeList: [],
   seriesIdList: [],
   shipVia: '',
@@ -589,6 +589,10 @@ export default {
       if (Array.isArray(this.form.materialsDescList) && this.form.materialsDescList.length <= 1) {
         delete data.materialsDescList;
         data.materialsDescLike = this.form.materialsDescList[0] || '';
+      }
+      if (Array.isArray(this.form.materialsCodeList) && this.form.materialsCodeList.length <= 1) {
+        delete data.materialsCodeList;
+        data.materialsCodeLike = this.form.materialsCodeList[0] || '';
       }
 
       return data;
