@@ -1,186 +1,233 @@
 <template>
-    <div>
-    <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
-      class="ais-search-form">
-      <el-form-item label="车系">
-        <tag-input v-model="form.seriesIds" placeholder="请输入" />
-      </el-form-item>
-      <el-form-item label="车系">
-        <tag-input v-model="form.seriesIds" placeholder="请输入" />
-      </el-form-item>
-      <el-form-item label="车系">
-        <tag-input v-model="form.seriesIds" placeholder="请输入" />
-      </el-form-item>
-      <el-form-item label="车系">
-        <tag-input v-model="form.seriesIds" placeholder="请输入" />
-      </el-form-item>
-      <!-- <el-form-item label="物料编码">
-         <tag-input v-model="form.materialsCodeSet" placeholder="请输入" />
-      </el-form-item>
-      <el-form-item label="物料描述">
-        <tag-input v-model="form.materialsDescSet" placeholder="请输入" />
-      </el-form-item>
-        <el-form-item label="车系" v-show="visibleCount === 3 || show">
-          <fetch-select
-            :remote-method="seriesSearch"
-            remote
-            v-model="form.seriesIds"
-            placeholder="请选择"
-            labelKey="name"
-            valueKey="id"
-            clearable
-            multiple
-            collapseTags
-            filterable
-            :options="seriesList"
-            @change="seriesListChange" />
-        </el-form-item> -->
-      <template v-if="show">
-        <!-- <el-form-item label="车型">
-          <fetch-select
-            :remote-method="modelSearch"
-            remote
-            reserve-keyword
-            :options="modelList" v-model="form.modelIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable
-            @change="modelListChange" />
-        </el-form-item>
-        <el-form-item label="年款">
-          <fetch-select :options="yearModelList" v-model="form.yearTypeIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
-        </el-form-item>
-        <el-form-item label="外观">
-          <fetch-select :options="exteriorList" v-model="form.exteriorIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
-        </el-form-item>
-        <el-form-item label="内饰">
-          <fetch-select :options="interiorList" v-model="form.interiorIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags/>
-        </el-form-item>
-        <el-form-item label="轮毂">
-          <fetch-select :options="wheelHubList" v-model="form.wheelHubIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
-        </el-form-item>
-        <el-form-item label="选装包">
-          <fetch-select :options="optionPackageList" v-model="form.optionPackageIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
-        </el-form-item>
-        <el-form-item label="电池电芯">
-          <fetch-select :options="batteryCellList" v-model="form.batteryCellIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
-        </el-form-item>
-        <el-form-item label="车顶">
-          <fetch-select :options="roofList" v-model="form.roofIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable/>
-        </el-form-item> -->
-        <!-- <el-form-item label="是否允许排产申请">
-          <fetch-select :options="yes_no_enum" v-model="form.allowProductionSchedule" placeholder="请选择" clearable />
-        </el-form-item>
-        <el-form-item label="是否允许展车批售">
-          <fetch-select :options="yes_no_enum" v-model="form.allowDisplayVehicleWholesale" placeholder="请选择" clearable />
-        </el-form-item>
-        <el-form-item label="是否允许试驾车批售">
-          <fetch-select :options="yes_no_enum" v-model="form.allowTestDriveVehicleWholesale" placeholder="请选择" clearable />
-        </el-form-item> -->
-        <el-form-item label="状态">
-           <fetch-select
-            :request="fetchOptions"
-            enumCode="StatusEnum"
-            v-model="form.statusIncludeList"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
-          />
-        </el-form-item>
-      </template>
-      <page-search-action v-model="show" is-expandable :loading="loading" @submit="onSubmit" @reset="onReset" />
-    </el-form>
-      <div class="ais-actions">
-        <!--  TIPS:根据产品增删功能按钮  -->
-          <span>
-          </span>
-      </div>
-      <section class="common-section">
-        <div class="common-section-body">
-          <div class="common-section-table">
-            <edit-table
-              ref="editTable"
-              :columns="columns"
-              :data="tableData"
-              :show-toolbar="false"
-              :show-pagination="true"
-              :checkbox="true"
-              :total="total"
-              @current-page-change="pageChange"
-              @page-size-change="sizeChange"
+  <section class="common-section">
+    <div class="common-section-header">
+      <div class="ais-select-group">
+        <el-form :inline="true" :model="form" size="small" label-position="right" label-width="80px" class="form-edit">
+          <el-form-item label="车系：">
+            <fetch-select
+              v-model="form.seriesIdList"
+              v-bind="selectOptions"
+              :remote-method="remoteMethods.series"
             />
-          </div>
-        </div>
-      </section>
+          </el-form-item>
+          <el-form-item label="车型：">
+            <fetch-select
+              v-model="form.modelIdList"
+              v-bind="selectOptions"
+              :remote-method="remoteMethods.model"
+            />
+          </el-form-item>
+          <template v-if="show">
+            <el-form-item label="年款：">
+              <fetch-select
+                v-model="form.yearTypeIdList"
+                v-bind="selectOptions"
+                :remote-method="remoteMethods.yearType"
+              />
+            </el-form-item>
+            <el-form-item label="外观：">
+              <fetch-select
+                v-model="form.exteriorIdList"
+                v-bind="selectOptions"
+                :remote-method="remoteMethods.exterior"
+              />
+            </el-form-item>
+            <el-form-item label="内饰：">
+              <fetch-select
+                v-model="form.interiorIdList"
+                v-bind="selectOptions"
+                :remote-method="remoteMethods.interior"
+              />
+            </el-form-item>
+            <el-form-item label="选配轮毂：">
+              <fetch-select
+                v-model="form.wheelHubIdList"
+                v-bind="selectOptions"
+                :remote-method="remoteMethods.wheel"
+              />
+            </el-form-item>
+            <el-form-item label="选装包：">
+              <fetch-select
+                v-model="form.optionPackageIdList"
+                v-bind="selectOptions"
+                :remote-method="remoteMethods.optional"
+              />
+            </el-form-item>
+            <el-form-item label="物料编码：">
+                <tag-input v-model="form.materialsCodeSet" placeholder="请输入" />
+            </el-form-item>
+            <el-form-item label="物料描述：">
+              <tag-input v-model="form.materialsDescSet" placeholder="请输入" />
+            </el-form-item>
+          </template>
+          <page-search-action v-model="show" is-expandable :loading="loading" @submit="onSubmit" @reset="onReset" />
+        </el-form>
+      </div>
     </div>
+    <section class="common-section">
+      <div class="common-section-body">
+        <div class="common-section-table">
+          <vxe-table
+            ref="table"
+            :data="tableData"
+            stripe
+            resizable
+            border="inner"
+            size="medium"
+            height="auto"
+            width="1000px"
+            min-height="300px"
+            max-height="1000px"
+            :checkbox-config="{ checkField: 'checked' }"
+          >
+            <vxe-column field="checkbox" title="数量" align="center" width="140">
+              <template v-slot="{ row }">
+                <el-input-number
+                  :min="0"
+                  :max="999"
+                  :precision="0"
+                  :controls="false"
+                  v-model="row.applyQty"
+                  @change="handleApplyQtyChange(row, $event)"
+                />
+              </template>
+            </vxe-column>
+            <vxe-column
+              v-for="column in columns"
+              :key="column.field || column.title"
+              v-bind="column"
+            />
+          </vxe-table>
+          <el-pagination
+            @size-change="sizeChange"
+            @current-change="pageChange"
+            :current-page="optionObj.form.page"
+            :page-sizes="[10, 20, 50, 100]"
+            :page-size="optionObj.form.size"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+          >
+          </el-pagination>
+        </div>
+      </div>
+    </section>
+  </section>
 </template>
 
 <script>
 
 import debounce from 'lodash.debounce';
-import EditTable from '@/libs/components/EditTable';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, listCanSettleAccountList } from '@/api/vehwholesale/fund/account/index';
-import { getEnum } from '@/api/common';
-import { queryPlantWholesaleInStockInventory } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
-
+import { getList } from '@/api/datacenter/materials/vehicleMaterials/index';
+import { getEnum, vehicleSeriesList, listVehicleYearType, listVehicleModel, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleSalesVersionList } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import permissions from '@/libs/mixins/permissions';
 import TagInput from '@/libs/components/TagInput';
+
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  setRebateFlagQuery: true,
-  dealerCompanyNames: [],
-  financialOrganizationId: '',
-  dealerCompanyNameLike: '',
-  fundAccountCode: '',
-  dealerCompanyCode: '',
-  dealerCompanyName: '',
-  fundType: '',
-  financialOrganizationName: '',
-  settleSort: '',
-  allowUseRebate: '',
-  allowEntOrderSettle: '',
-  entOrderQuota: '',
-  availableBalance: '',
-  frozenBalance: '',
-  totalRechargeAmount: '',
-  totalSettleAmount: '',
-  lastTradeTime: '',
-  saleCompanyId: '',
-  createTime: ''
+  status: 1,
+  materialsCode: '',
+  materialsDesc: '',
+  modelName: '',
+  exteriorName: '',
+  interiorName: '',
+  wheelHubName: '',
+  roofName: '',
+  optionPackageName: '',
+  batteryCellName: '',
+  allowWholesale: '',
+  allowProductionSchedule: '',
+  allowDisplayVehicleWholesale: '',
+  allowTestDriveVehicleWholesale: '',
+  allowCustomerSales: '',
+  allowWholesaleConfirm: '',
+  allowConfigurationModify: '',
+  discontinueStatus: ''
 };
 const pageSize = 20;
 export default {
   name: 'AddCommercialVehicle',
   props: {
+    orderCategory: {
+      type: [String, Number],
+      default: ''
+    }
   },
   mixins: [permissions],
   components: {
     TagInput,
     FetchSelect,
-    EditTable,
     PageSearchAction
+  },
+  created () {
+    this.dialogshow();
   },
   data () {
     return {
       title: '厂端现车批售',
       moduleKey: '',
+      tableList: [],
       total: 0,
       loading: false,
       show: false,
       form: {
         ...defaultForm
       },
+      // 提取公共配置
+      selectOptions: {
+        placeholder: '请选择',
+        labelKey: 'name',
+        valueKey: 'id',
+        clearable: true,
+        multiple: true,
+        collapseTags: true,
+        filterable: true,
+        remote: true,
+        reserveKeyword: true
+      },
+      // 远程搜索方法
+      remoteMethods: {
+        series: async (query) => {
+          return await vehicleSeriesList({ seriesNameLike: query });
+        },
+        // 初始方法
+        model: async (query) => {
+          return await listVehicleModel(query);
+        },
+        yearType: async (query) => {
+          return await listVehicleYearType({ yearTypeNameLike: query });
+        },
+        exterior: async (query) => {
+          return await vehicleExterior({ exteriorNameLike: query });
+        },
+        interior: async (query) => {
+          return await vehicleInterior({ interiorNameLike: query });
+        },
+        wheel: async (query) => {
+          return await vehicleWheelHub({ wheelHubNameLike: query });
+        },
+        optional: async (query) => {
+          return await vehicleOptionPackage({ optionPackageNameLike: query });
+        },
+        battery: async (query) => {
+          return await vehicleBatteryCell({ batteryCellNameLike: query });
+        },
+        announcement: async (query) => {
+          return await vehicleSalesVersionList({ registeredModelNameLike: query });
+        }
+      },
       columns: [
-        { field: 'dealerCompanyName', title: '母公司名称', width: '30%' },
-        { field: 'fundTypeLabel', title: '资金类型', width: 120 },
-        { field: 'entOrderQuota', title: '企业订单额度系数', width: 200 },
-        { field: 'financialOrganizationName', title: '金融机构', width: 120 },
-        { field: 'availableBalance', title: '可用余额', width: 200 },
-        { field: 'rebateAvailableBalance', title: '返利账户可用余额', width: 200 },
-        { field: 'allowUseRebateLabel', title: '是否允许使用返利', width: 200 },
-        { field: 'fundAccountCode', title: '账户编号', width: 200 },
-        { field: 'lastTradeTime', title: '最近交易时间', width: 200 },
-        { field: 'createTime', title: '创建时间', width: 200 },
+        { field: 'yearTypeName', title: '年款', width: 120 },
+        { field: 'seriesName', title: '车系', width: 120 },
+        { field: 'modelName', title: '车型', width: 200 },
+        { field: 'optionPackageName', title: '选装包', width: 120 },
+        { field: 'materialsDesc', title: '物料描述', width: 400 },
+        { field: 'exteriorName', title: '外观', width: 200 },
+        { field: 'interiorName', title: '内饰', width: 200 },
+        { field: 'wheelHubName', title: '轮毂', width: 200 },
+        { field: 'roofName', title: '车顶', width: 200 },
+        { field: 'materialsCode', title: '物料编码', width: 200 },
       ],
       optionObj: {
         form: {
@@ -188,19 +235,42 @@ export default {
           size: pageSize
         }
       },
-      tableData: []
+      tableData: [{}]
     };
   },
   methods: {
-    listCanSettleAccountList () {
-      listCanSettleAccountList().then(res => {
-        console.log('listCanSettleAccountList:', res);
-      }).catch(err => { console.log(err); });
+    handleApplyQtyChange (row, value) {
+      const intValue = Math.max(0, Math.floor(value || 0));
+      row.applyQty = intValue;
+      if (row.id) {
+        const existingIndex = this.tableList.findIndex(item => item.id === row.id);
+        if (intValue > 0) {
+          if (existingIndex >= 0) {
+            // 更新现有记录
+            this.$set(this.tableList, existingIndex, { ...row });
+          } else {
+            // 添加新记录
+            this.tableList.push({ ...row });
+          }
+        } else {
+          // 删除 applyQty 为 0 的记录
+          if (existingIndex >= 0) {
+            this.tableList.splice(existingIndex, 1);
+          }
+        }
+      }
     },
-    queryPlantWholesaleInStockInventory () {
-      queryPlantWholesaleInStockInventory({}).then(res => {
-        console.log('queryPlantWholesaleInStockInventory:', res);
-      }).catch(err => { console.log(err); });
+    // 在获取数据后恢复 tableList 中的 applyQty 值
+    restoreApplyQtyFromTableList (records) {
+      return records.map(item => {
+        const existingItem = this.tableList.find(t => t.id === item.id);
+        if (existingItem) {
+          item.applyQty = existingItem.applyQty;
+        } else {
+          item.applyQty = 0;
+        }
+        return item;
+      });
     },
     handleClose () {
       this.form = { ...defaultForm }; // 重置表单数据
@@ -231,19 +301,21 @@ export default {
           delete data[key];
         }
       });
-      if (Array.isArray(this.form.dealerCompanyNames) && this.form.dealerCompanyNames.length <= 1) {
-        delete data.dealerCompanyNames;
-        data.dealerCompanyNameLike = this.form.dealerCompanyNames[0] || '';
-      };
+      if (this.orderCategory) {
+        delete data.orderCategory;
+        const category = String(this.orderCategory);
+        if (category === '0') data.allowProductionSchedule = '1';
+        if (category === '20') data.allowDisplayVehicleWholesale = '1';
+        if (category === '2') data.allowTestDriveVehicleWholesale = '1';
+      }
       return data;
     },
     getData () {
       this.loading = true;
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
-          console.log(res);
-          this.tableData = res.records;
-          this.total = res.total;
+          this.tableData = this.restoreApplyQtyFromTableList(res.records);
+          this.total = res.totals;
         }).finally(() => {
           this.loading = false;
         });
@@ -254,10 +326,9 @@ export default {
     }, 300),
 
     dialogshow () {
-      // this.getData();
-
-      // this.queryPlantWholesaleInStockInventory();
-      this.listCanSettleAccountList();
+      if (this.orderCategory) {
+        this.getData();
+      }
     },
     confirm () {
       this.$refs.editTable.clearSelection();
@@ -293,4 +364,7 @@ export default {
   justify-content: center;
   align-items: center;
 }
+  ::v-deep .el-input-number {
+    width: 100%;
+  }
 </style>

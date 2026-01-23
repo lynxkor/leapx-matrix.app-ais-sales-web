@@ -37,8 +37,7 @@
               :show-pagination="true"
               :checkbox="true"
               :total="total"
-              @current-page-change="pageChange"
-              @page-size-change="sizeChange"
+              :auth="{ edit: false, delete: false }"
             />
           </div>
         </div>
@@ -52,7 +51,7 @@
 import debounce from 'lodash.debounce';
 import EditTable from '@/libs/components/EditTable';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, listCanSettleAccountList } from '@/api/vehwholesale/fund/account/index';
+import { getList, listCanSettleAccount } from '@/api/vehwholesale/fund/account/index';
 import { getEnum } from '@/api/common';
 import { queryPlantWholesaleInStockInventory } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
 
@@ -127,28 +126,21 @@ export default {
     };
   },
   methods: {
-    listCanSettleAccountList () {
-      listCanSettleAccountList().then(res => {
-        console.log('listCanSettleAccountList:', res);
+    listCanSettleAccount () {
+      listCanSettleAccount({}).then(res => {
+        console.log('listCanSettleAccount:', res);
       }).catch(err => { console.log(err); });
     },
     queryPlantWholesaleInStockInventory () {
       queryPlantWholesaleInStockInventory({}).then(res => {
         console.log('queryPlantWholesaleInStockInventory:', res);
+        this.tableData = res.inStockInventoryDtoList || [{}, {}];
       }).catch(err => { console.log(err); });
     },
     handleClose () {
       this.form = { ...defaultForm }; // 重置表单数据
       this.tableData = []; // 清空表格数据
       this.columns = []; // 清空列配置
-    },
-    pageChange (page) {
-      this.optionObj.form.page = page;
-      this.debouncedGetData();
-    },
-    sizeChange (size) {
-      this.optionObj.form.size = size;
-      this.debouncedGetData();
     },
     onSubmit () {
       this.getData();
@@ -191,8 +183,8 @@ export default {
     dialogshow () {
       // this.getData();
 
-      // this.queryPlantWholesaleInStockInventory();
-      this.listCanSettleAccountList();
+      this.queryPlantWholesaleInStockInventory();
+      this.listCanSettleAccount();
       this.dialogVisible = true;
     },
     confirm () {

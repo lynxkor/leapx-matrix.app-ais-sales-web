@@ -114,3 +114,11 @@ export function dealerAuditValid (data) {
 export function dealerApproval (data) {
   return api.jsonPost(prefix + 'dealerApproval', data);
 }
+
+/**
+ *  提交补货申请
+ * @param {Object} data
+ */
+export function replenishmentSubmit (data) {
+  return api.jsonPost(prefix + 'submit', data);
+}
