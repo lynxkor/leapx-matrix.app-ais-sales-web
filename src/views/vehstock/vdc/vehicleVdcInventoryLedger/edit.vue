@@ -141,7 +141,7 @@ export default {
     },
     getDetailData () {
       const id = this.id || this.$route.query.id;
-      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['VDC库存台账', `${id ? '编辑' : '编辑'}`]);
+      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['VDC库存台账', `${id ? '编辑' : '批量编辑'}`]);
       if (id) {
         getDetail(id).then(res => {
           this.loading = false;
