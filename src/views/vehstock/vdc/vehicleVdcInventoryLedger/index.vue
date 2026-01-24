@@ -419,7 +419,7 @@ export default {
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
-    this.getData();
+    this.refreshTableData();
   },
   methods: {
     handleImport () {
@@ -434,26 +434,20 @@ export default {
       });
     },
     onSubmit () {
-      if (this.activeName === 'homePage') {
-        this.getData();
-      } else if (this.activeName === 'lowBattery') {
-        this.getDataDl();
-      }
+      // 重置到第一页
+      this.refreshTableData();
     },
     onReset () {
       if (this.activeName === 'homePage') {
         this.form = { ...defaultForm };
         this.optionObj.form.page = 1;
         this.optionObj.form.pageSize = pageSize;
-        this.form.lowBatteryCar = 0;
-        this.getData();
       } else if (this.activeName === 'lowBattery') {
         this.form = { ...defaultForm };
         this.optionDdl.form.page = 1;
         this.optionDdl.form.pageSize = pageSize;
-        this.form.lowBatteryCar = 1;
-        this.getDataDl();
       }
+      this.getData();
     },
     exportExcel () {
       this.exportLoading = true;
@@ -484,35 +478,29 @@ export default {
       });
     },
     getData () {
+      const config = this.getActiveTabConfig();
+
+      if (!config) {
+        console.warn('未找到当前标签页的配置');
+        return;
+      }
+
       this.loading = true;
       this.selectionList = [];
-      getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
+
+      const { pageKey, form } = config;
+      const params = {
+        ...this.getFormData(),
+        pageNum: this[pageKey].form.page,
+        pageSize: this[pageKey].form.size
+      };
+
+      getList(params)
         .then(res => {
-          this.optionObj.dataList = res.records.map(item => {
-            return {
-              ...item,
-              deleteLoading: false
-            };
-          });
-          this.optionObj.total = res.total;
-        }).finally(() => {
-          this.loading = false;
-        });
-    },
-    // 低电量
-    getDataDl () {
-      this.loading = true;
-      this.selectionList = [];
-      getList({ ...this.getFormData(), pageNum: this.optionDdl.form.page, pageSize: this.optionDdl.form.size })
-        .then(res => {
-          this.optionDdl.dataList = res.records.map(item => {
-            return {
-              ...item,
-              deleteLoading: false
-            };
-          });
-          this.optionDdl.total = res.total;
-        }).finally(() => {
+          this[pageKey].dataList = res.records || [];
+          this[pageKey].total = res.total;
+        })
+        .finally(() => {
           this.loading = false;
         });
     },
@@ -544,6 +532,36 @@ export default {
     },
     saveOrUpdate (data) {
       return tableAddOrUpdate(data);
+    },
+    // 根据当前活动标签页获取配置
+    getActiveTabConfig () {
+      const configMap = {
+        homePage: {
+          pageKey: 'optionObj',
+          formField: 'lowBatteryCar',
+          formValue: 0
+        },
+        lowBattery: {
+          pageKey: 'optionDdl',
+          formField: 'lowBatteryCar',
+          formValue: 1
+        }
+      };
+
+      return configMap[this.activeName];
+    },
+    // 刷新表格数据
+    refreshTableData () {
+      this.updateFormByActiveTab();
+      this.getData();
+    },
+
+    // 根据活动标签页更新表单字段
+    updateFormByActiveTab () {
+      const config = this.getActiveTabConfig();
+      if (config && config.formField) {
+        this.form[config.formField] = config.formValue;
+      }
     },
     paginationChange (type, num) {
       if (type === 'page') {
@@ -645,15 +663,10 @@ export default {
         };
       });
     },
-    // 点击tabs栏 切换
+    // 点击tabs栏切换
     handleClick (item) {
-      if (item.name === 'homePage') {
-        this.form.lowBatteryCar = 0;
-        this.getData();
-      } else if (item.name === 'lowBattery') {
-        this.form.lowBatteryCar = 1;
-        this.getDataDl();
-      }
+      this.activeName = item.name;
+      this.refreshTableData();
     },
     // 批量编辑
     handleEdit () {

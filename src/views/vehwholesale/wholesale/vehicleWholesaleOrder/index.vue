@@ -54,8 +54,18 @@
             filterable
           />
         </el-form-item>
-         <el-form-item label="大区">
-          <tag-input v-model="form.regionNames" placeholder="请输入" />
+         <el-form-item label="所属大区">
+          <fetch-select
+          filterable
+          clearable
+          remote
+          multiple
+          collapse-tags
+          v-model="form.regionCodes"
+          :remote-method="getRegionList"
+          value-key="orgCode"
+          label-key="orgName"
+        />
         </el-form-item>
         <el-form-item label="销售门店名称">
             <tag-input v-model="form.saleDealerNames" placeholder="请输入" />
@@ -90,7 +100,7 @@
         <el-form-item label="结算时间">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
-            v-model="form.settle_time"
+            v-model="form.settleTime"
             type="daterange"
             :picker-options="pickerOptions"
             range-separator="至"
@@ -123,16 +133,26 @@
             />
         </el-form-item>
            <el-form-item label="专项活动">
-            <tag-input v-model="form.prodScheduleActivityIds" placeholder="请输入" />
+            <fetch-select
+            :remote-method="prodScheduleActivitySearch"
+            remote
+            reserve-keyword
+            labelKey="name"
+            valueKey="id"
+            v-model="form.prodScheduleActivityId"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
         </el-form-item>
-          <el-form-item label="市">
-             <el-select v-model="form.cityNames" clearable filterable multiple placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
+          <el-form-item label="城市">
+             <el-select v-model="form.cityCodes" clearable filterable multiple placeholder="请选择">
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
         </el-select>
         </el-form-item>
            <el-form-item label="省份">
@@ -147,8 +167,19 @@
           @change="handleChangeProvince"
         />
         </el-form-item>
-         <el-form-item label="母公司编码">
-          <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
+         <el-form-item label="所属母公司">
+           <fetch-select
+                  :remote-method="getParentCompany"
+                  remote
+                  v-model="form.dealerCompanyName"
+                  placeholder="请选择"
+                  labelKey="companyName"
+                  valueKey="companyName"
+                  clearable
+                  filterable
+                  />
+
+          <!-- <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" /> -->
         </el-form-item>
         <el-form-item label="允许锁零售单">
           <fetch-select
@@ -171,10 +202,10 @@
             filterable
           />
         </el-form-item>
-          <el-form-item label="结算方式">
+          <el-form-item label="结算资金类型">
             <fetch-select
               :request="fetchOptions"
-              enumCode="vw_wholesale_settle_way"
+              enumCode="vw_fundtype"
               v-model="form.settleWay"
               placeholder="请选择"
               clearable
@@ -259,63 +290,42 @@
           />
         </el-form-item>
         <el-form-item label="订单物料编码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.orderMaterialCode"
-            clearable
-          />
+          <tag-input v-model="form.orderMaterialCodes" placeholder="请输入" />
         </el-form-item>
            <el-form-item label="是否需要自动配车">
              <fetch-select
-            :request="fetchOptions"
-            enumCode="BooleanEnum"
-            v-model="form.needAutoAllocateCar"
-            placeholder="请选择"
-            clearable
-            filterable
-          />
+                :request="fetchOptions"
+                enumCode="BooleanEnum"
+                v-model="form.needAutoAllocateCar"
+                placeholder="请选择"
+                clearable
+                filterable
+              />
         </el-form-item>
          <el-form-item label="整车物流预留">
-          <el-input
-            placeholder="请输入"
-            v-model="form.logisticsReserve"
-            clearable
-          />
+          <fetch-select
+              :request="fetchOptions"
+              enumCode="BooleanEnum"
+              v-model="form.logisticsReserve"
+              placeholder="请选择"
+              clearable
+              filterable
+            />
         </el-form-item>
          <el-form-item label="物流预留备注">
-          <el-input
-            placeholder="请输入"
-            v-model="form.logisticsReserveRemark"
-            clearable
-          />
+          <tag-input v-model="form.logisticsReserveRemarks" placeholder="请输入" />
         </el-form-item>
-           <el-form-item label="初始交付周期说明">
-          <el-input
-            placeholder="请输入"
-            v-model="form.initDeliveryCycleDesc"
-            clearable
-          />
+        <el-form-item label="初始交付周期说明">
+          <tag-input v-model="form.initDeliveryCycleDescs" placeholder="请输入" />
         </el-form-item>
           <el-form-item label="动态交付周期说明">
-          <el-input
-            placeholder="请输入"
-            v-model="form.dynamicDeliveryCycleDesc"
-            clearable
-          />
+            <tag-input v-model="form.dynamicDeliveryCycleDescs" placeholder="请输入" />
         </el-form-item>
-           <el-form-item label="电池电芯名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.orderBatteryCellName"
-            clearable
-          />
+           <el-form-item label="电池电芯(订单物料)">
+            <tag-input v-model="form.orderBatteryCellNames" placeholder="请输入" />
         </el-form-item>
-          <el-form-item label="电池电芯名称(配车物料)">
-          <el-input
-            placeholder="请输入"
-            v-model="form.batteryCellName"
-            clearable
-          />
+          <el-form-item label="电池电芯(配车物料)">
+            <tag-input v-model="form.batteryCellNames" placeholder="请输入" />
         </el-form-item>
       </template>
       <page-search-action
@@ -397,7 +407,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchConfirmItem, setEmergencyOrderItem, batchCancelItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, vehicleModelList, cityPage, getProvinceTree } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, vehicleModelList, cityPage, getProvinceTree, getParentCompany, getRigion } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -409,6 +419,7 @@ import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
 import BatchCancelInput from './BatchCancelInput.vue';
 import SetEmergencyOrderInput from './SetEmergencyOrderInput.vue';
+import { listIdNames as listWholesaleProdScheduleActivity } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivity/index';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -514,6 +525,7 @@ export default {
       yearTypeList: [],
       options: [],
       modelList: [],
+      ALLOWED_STATUS: [0, 11],
       uploadDialogVisible: false,
       clickItemId: '',
       optionObj: {
@@ -545,17 +557,19 @@ export default {
           { props: 'statusLabel', label: '订单状态', visible: true, width: 200 },
           { props: 'orderTime', label: '订单时间', visible: true, width: 200 },
           { props: 'confirmTime', label: '确认时间', visible: true, width: 200 },
-          // { props: 'saleDealerName', label: '销售门店', visible: true, width: 200 },
-          // { props: 'saleDealerCode', label: '销售门店', visible: true, width: 200 },
+          { props: 'saleDealerName', label: '销售公司名称', visible: true, width: 200 },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 200 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           { props: 'allocateTime', label: '配车时间', visible: true, width: 200 },
+          { props: 'settleTime', label: '结算时间', visible: true, width: 200 },
+
           { props: 'vin', label: '配车VIN码', visible: true, width: 200 },
           { props: 'replenishApplyCode', label: '整车补货单号', visible: true, width: 200 },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
+          { props: 'provinceName', label: '省份', visible: true, width: 200 },
           { props: 'cityName', label: '城市', visible: true, width: 200 },
-          { props: 'prodScheduleActivityId', label: '专项活动', visible: true, width: 200 },
+          { props: 'prodScheduleActivityName', label: '专项活动', visible: true, width: 200 },
           { props: 'allowLockRetailLabel', label: '允许锁零售单', visible: true, width: 200 },
           { props: 'retailPrice', label: '零售价', visible: true, width: 200 },
           { props: 'invoiceDiscountTypeLabel', label: '开票类型', visible: true, width: 200 },
@@ -563,13 +577,17 @@ export default {
           { props: 'wholesalePrice', label: '批售价', visible: true, width: 200 },
           { props: 'rebateUseTypeLabel', label: '返利使用类型', visible: true, width: 200 },
           { props: 'rebateCoefficient', label: '返利使用系数', visible: true, width: 200 },
+
           { props: 'usedRebateAmount', label: '使用返利金额', visible: true, width: 200 },
           { props: 'erpSaleOrderCode', label: 'ERP销售订单号', visible: true, width: 200 },
           { props: 'erpDeliverOrder', label: 'ERP交货单', visible: true, width: 200 },
           { props: 'erpInvoiceCode', label: 'ERP发票号', visible: true, width: 200 },
-          { props: 'syncSapStatusLabel', label: '同步SAP状态', visible: true, width: 200 },
+          { props: 'syncSapStatus', label: '同步SAP状态', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
+          // { props: 'dealerCompanyCode', label: '母公司代码', visible: true, width: 200 },
+          // { props: 'saleDealerCode', label: '销售公司编码', visible: true, width: 200 },
           { props: 'interiorName', label: '内饰', visible: true, width: 200 },
           { props: 'modelName', label: '车型', visible: true, width: 200 },
           { props: 'exteriorName', label: '外饰风格', visible: true, width: 200 },
@@ -580,6 +598,7 @@ export default {
           { props: 'outboundTime', label: '出库时间', visible: true, width: 200 },
           { props: 'lockStatusLabel', label: '是否已锁定', visible: true, width: 200 },
           { props: 'lockTime', label: '锁定时间', visible: true, width: 200 },
+          { props: 'mallOrderCode', label: '商城订单号', visible: true, width: 200 },
           { props: 'confirmStatusLabel', label: '确认状态', visible: true, width: 200 },
           { props: 'createdShippingPlanLabel', label: '是否创建发运单计划', visible: true, width: 200 },
           { props: 'hasSettleFailedLabel', label: '是否存在结算失败', visible: true, width: 200 },
@@ -593,26 +612,22 @@ export default {
           { props: 'emergencyOrderLabel', label: '是否紧急订单', visible: true, width: 200 },
           { props: 'emergencyOrderRemark', label: '急单备注', visible: true, width: 200 },
           { props: 'emergencyOrderTime', label: '设置急单时间', visible: true, width: 200 },
-          // { props: 'allowWholesaleConfirmLabel', label: '是否允许批售确认', visible: true, width: 200 },
           { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 200 },
+          // { props: 'downPaymentRatio', label: '配车顺序时间', visible: true, width: 200 },
+          { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
           { props: 'deliveryWayLabel', label: '指定发运方式', visible: true, width: 200 },
           { props: 'deliveryStatusLabel', label: '车辆交付状态', visible: true, width: 200 },
           { props: 'orderMaterialCode', label: '订单物料编码', visible: true, width: 200 },
           { props: 'needAutoAllocateCarLabel', label: '是否需要自动配车', visible: true, width: 200 },
           { props: 'dealerWarehouseName', label: '门店仓库名称', visible: true, width: 200 },
+          { props: 'logisticsReserveLabel', label: '整车物流预留', visible: true, width: 200 },
           { props: 'logisticsReserveRemark', label: '物流预留备注', visible: true, width: 200 },
           { props: 'logisticsReserve', label: '物流说明', visible: true, width: 200 },
           { props: 'initDeliveryCycleDesc', label: '初始交付周期说明', visible: true, width: 200 },
           { props: 'dynamicDeliveryCycleDesc', label: '动态交付周期说明', visible: true, width: 200 },
           { props: 'orderBatteryCellName', label: '电池电芯(订单物料)', visible: true, width: 200 },
           { props: 'batteryCellName', label: '电池电芯(配车物料)', visible: true, width: 200 },
-          // { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
-          // { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
-          // { props: 'batteryCellName', label: '电池电芯名称', visible: true, width: 200 },
-          // { props: 'cityCode', label: '市code', visible: true, width: 200 },
-          // { props: 'exteriorId', label: '外观ID', visible: true, width: 200 },
-          // { props: 'replenishApplyDetailCode', label: '整车补货单明细号', visible: true, width: 200 },
-          // { props: 'wholesaleOrderId', label: '批售订单ID', visible: true, width: 200 },
+          { props: 'confirmedCount', label: '批售确认次数', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
@@ -661,6 +676,22 @@ export default {
     this.getCity();
   },
   methods: {
+    async getRegionList (params) {
+      return getRigion({ orgName: params });
+    },
+    async prodScheduleActivitySearch (query) {
+      return listWholesaleProdScheduleActivity({ activityNameLike: query, status: 1 });
+    },
+    async getParentCompany (query) {
+      try {
+        const res = await getParentCompany({ parentCompanyName: query });
+        console.log(res);
+        this.parentCompanyNames = res;
+        return res;
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
+    },
     allAllowCancelEmergency (items) {
       if (items.length === 0) {
         this.$message({
@@ -669,9 +700,8 @@ export default {
         });
         return;
       };
-      const ALLOWED_STATUS = [0, 11];
       for (const item of items) {
-        if (!ALLOWED_STATUS.includes(item.status)) {
+        if (!this.ALLOWED_STATUS.includes(item.status)) {
           this.$message({
             type: 'error',
             message: '只有该订单状态【未配车、或配车失败】可以取消急单!'
@@ -736,7 +766,6 @@ export default {
         });
         return;
       };
-      const ALLOWED_STATUS = [0, 11];
       for (const item of items) {
         if (item.confirmStatus !== 1010) {
           this.$message({
@@ -745,14 +774,14 @@ export default {
           });
           return;
         };
-        if (!ALLOWED_STATUS.includes(item.status)) {
+        if (!this.ALLOWED_STATUS.includes(item.status)) {
           this.$message({
             type: 'error',
             message: '选择的数据中[订单状态]必须为[未配车,配车失败]!'
           });
           return;
         };
-        if (item.orderCategory !== 1) {
+        if (item.orderCategory !== 0) {
           this.$message({
             type: 'error',
             message: '选择的数据中[订单分类]必须为[商品车订单]!'
@@ -769,9 +798,8 @@ export default {
         });
         return;
       };
-      const ALLOWED_STATUS = [0, 11];
       for (const item of items) {
-        if (!ALLOWED_STATUS.includes(item.status)) {
+        if (!this.ALLOWED_STATUS.includes(item.status)) {
           this.$message({
             type: 'error',
             message: '订单已完成配车，不允许作废!'
@@ -795,22 +823,21 @@ export default {
         });
         return;
       };
-      const ALLOWED_STATUS = [0, 11];
       for (const item of items) {
-        if (!ALLOWED_STATUS.includes(item.status)) {
+        if (!this.ALLOWED_STATUS.includes(item.status)) {
           this.$message({
             type: 'error',
             message: '只有【订单状态】为未配车、配车失败的记录可以设置，请核实！!'
           });
           return; // 只要有一个不满足，立即终止操作
         }
-        if (item.emergencyOrder !== 1) {
-          this.$message({
-            type: 'error',
-            message: '只有是否急单为是才可以取消急单！!'
-          });
-          return;
-        }
+        // if (item.emergencyOrder === 1) {
+        //   this.$message({
+        //     type: 'error',
+        //     message: '选择的数据中包含已经设为急单的数据!'
+        //   });
+        //   return;
+        // }
       }
     },
     handleSetEmergencyOrder () {
@@ -1032,6 +1059,30 @@ export default {
         if (this.form.createTime.length > 1) {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
+        }
+      }
+
+      if (this.form.orderTime) {
+        delete data.orderTime;
+        if (this.form.orderTime.length > 1) {
+          data.orderTimeStart = this.form.orderTime[0];
+          data.orderTimeEnd = this.form.orderTime[1];
+        }
+      }
+
+      if (this.form.settleTime) {
+        delete data.settleTime;
+        if (this.form.settleTime.length > 1) {
+          data.settleTimeStart = this.form.settleTime[0];
+          data.settleTimeEnd = this.form.settleTime[1];
+        }
+      }
+
+      if (this.form.confirmTime) {
+        delete data.confirmTime;
+        if (this.form.confirmTime.length > 1) {
+          data.confirmTimeStart = this.form.confirmTime[0];
+          data.confirmTimeEnd = this.form.confirmTime[1];
         }
       }
 

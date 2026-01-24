@@ -124,7 +124,7 @@
               <el-form-item label="配置状态">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="ve_credit_sales_config_audit_status"
+                  enumCode="vw_credit_sales_config_audit_status"
                   v-model="form.auditStatus"
                   placeholder="请选择"
                   clearable

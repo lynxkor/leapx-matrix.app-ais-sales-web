@@ -1,4 +1,5 @@
 <template>
+  <div>
   <edit-page-layout ref="editLayout" title="侧边栏标题" showPaneFooter>
     <template #left>
       <!-- TIPS: 如果需要竖排，direction="vertical" -->
@@ -15,7 +16,7 @@
           <span class="status primary">状态</span>
         </template>
         <template #extraButtons >
-          <el-button  size="small" type="primary" @click="handleCheckConfirm">审核确认</el-button>
+          <el-button  size="small" type="primary" @click="handleCheckConfirm" >审核确认</el-button>
           <el-button  size="small" type="primary" @click="handleaAutoVehicleAllocation">自动配车</el-button>
           <el-button  size="small" type="primary" @click="handleManualVehicleAllocation">手工配车</el-button>
           <el-button  size="small" type="primary" @click="handleDelete">删除</el-button>
@@ -28,7 +29,7 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="订单状态：" prop="status">
                   <fetch-select
                     :request="fetchOptions"
@@ -37,6 +38,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    disabled
                   />
                 </el-form-item>
                    <el-form-item label="确认状态：" prop="confirmStatus">
@@ -47,6 +49,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    disabled
                   />
                 </el-form-item>
 
@@ -55,13 +58,15 @@
                     placeholder="请输入"
                     v-model="form.saleDealerCode"
                     clearable
+                    disabled
                   />
                 </el-form-item>
-                                <el-form-item label="交付门店编码：" prop="deliveryDealerCode">
+                <el-form-item label="交付门店编码：" prop="deliveryDealerCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.deliveryDealerCode"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="交付门店名称：" prop="deliveryDealerName">
@@ -69,6 +74,7 @@
                     placeholder="请输入"
                     v-model="form.deliveryDealerName"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                     <el-form-item label="门店仓库编码：" prop="dealerWarehouseCode">
@@ -76,6 +82,7 @@
                     placeholder="请输入"
                     v-model="form.dealerWarehouseCode"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="门店仓库名称：" prop="dealerWarehouseName">
@@ -83,6 +90,7 @@
                     placeholder="请输入"
                     v-model="form.dealerWarehouseName"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                     <el-form-item label="整车补货单号：" prop="replenishApplyCode">
@@ -90,6 +98,7 @@
                     placeholder="请输入"
                     v-model="form.replenishApplyCode"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                   <el-form-item label="订单分类：" prop="orderCategory">
@@ -97,6 +106,7 @@
                     placeholder="请输入"
                     v-model="form.orderCategory"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                    <el-form-item label="批售方式：" prop="wholesaleWay">
@@ -104,6 +114,7 @@
                     placeholder="请输入"
                     v-model="form.wholesaleWay"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                    <el-form-item label="订单时间：" prop="orderTime">
@@ -114,6 +125,7 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                    disabled
                   />
                 </el-form-item>
                   <el-form-item label="物料描述：" prop="materialsDesc">
@@ -121,6 +133,7 @@
                     placeholder="请输入"
                     v-model="form.materialsDesc"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                   <el-form-item label="专项活动：" prop="prodScheduleActivityId">
@@ -128,6 +141,7 @@
                     placeholder="请输入"
                     v-model="form.prodScheduleActivityId"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                      <el-form-item label="ERP发票号：" prop="erpInvoiceCode">
@@ -135,6 +149,7 @@
                     placeholder="请输入"
                     v-model="form.erpInvoiceCode"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                    <el-form-item label="开票时间：" prop="invoiceTime">
@@ -145,12 +160,13 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                    disabled
                   />
                 </el-form-item>
-                   <el-form-item label="设置急单时间：" prop="invoiceTime">
+                   <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
                   <el-date-picker
                     :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.invoiceTime"
+                    v-model="form.emergencyOrderTime"
                     :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"
@@ -162,6 +178,7 @@
                     placeholder="请输入"
                     v-model="form.emergencyOrderRemark"
                     clearable
+                    maxlength="300"
                   />
                 </el-form-item>
                 <el-form-item label="确认说明：" prop="confirmRemark">
@@ -169,6 +186,7 @@
                     placeholder="请输入"
                     v-model="form.confirmRemark"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                  <el-form-item label="确认人：" prop="confirmUserName">
@@ -176,6 +194,7 @@
                     placeholder="请输入"
                     v-model="form.confirmUserName"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                     <el-form-item label="确认时间：" prop="confirmTime">
@@ -186,6 +205,7 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                    disabled
                   />
                 </el-form-item>
                  <el-form-item label="未自动确认原因：" prop="noAutoConfirmReason">
@@ -193,20 +213,27 @@
                     placeholder="请输入"
                     v-model="form.noAutoConfirmReason"
                     clearable
+                    maxlength="300"
+                    disabled
                   />
                 </el-form-item>
                   <el-form-item label="允许锁零售单：" prop="allowLockRetail">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.allowLockRetail"
-                    clearable
-                  />
+                    <fetch-select
+                      :request="fetchOptions"
+                      enumCode="BooleanEnum"
+                      v-model="form.allowLockRetail"
+                      placeholder="请选择"
+                      clearable
+                      filterable
+                      disabled
+                    />
                 </el-form-item>
                    <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.replenishApplyDetailCode"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                   <el-form-item label="订单物料编码：" prop="orderMaterialCode">
@@ -214,6 +241,7 @@
                     placeholder="请输入"
                     v-model="form.orderMaterialCode"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                   <el-form-item label="指定发运方式：" prop="deliveryWay">
@@ -221,6 +249,7 @@
                     placeholder="请输入"
                     v-model="form.deliveryWay"
                     clearable
+                    disabled
                   />
                 </el-form-item>
 
@@ -269,8 +298,8 @@
                  <el-form-item label="物料描述：" prop="materialsDesc">
                   {{ form.materialsDesc }}
                 </el-form-item>
-                    <el-form-item label="专项活动：" prop="prodScheduleActivityId">
-                  {{ form.prodScheduleActivityId }}
+                    <el-form-item label="专项活动：" prop="prodScheduleActivityName">
+                  {{ form.prodScheduleActivityName }}
                 </el-form-item>
                   <el-form-item label="ERP发票号：" prop="erpInvoiceCode">
                   {{ form.erpInvoiceCode }}
@@ -319,7 +348,7 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form"  ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="是否已锁定：" prop="lockStatus">
                   <fetch-select
                     :request="fetchOptions"
@@ -328,6 +357,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    disabled
                   />
                 </el-form-item>
                    <el-form-item label="锁定时间：" prop="lockTime">
@@ -338,6 +368,7 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="零售订单号：" prop="retailOrderCode">
@@ -345,6 +376,7 @@
                     placeholder="请输入"
                     v-model="form.retailOrderCode"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                   <el-form-item label="配车方式：" prop="allocateWay">
@@ -352,6 +384,7 @@
                     placeholder="请输入"
                     v-model="form.allocateWay"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                    <el-form-item label="配车VIN码：" prop="vin">
@@ -359,6 +392,7 @@
                     placeholder="请输入"
                     v-model="form.vin"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                   <el-form-item label="配车时间：" prop="allocateTime">
@@ -369,6 +403,7 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                    disabled
                   />
                 </el-form-item>
                     <el-form-item label="ERP销售订单号：" prop="erpSaleOrderCode">
@@ -376,6 +411,7 @@
                     placeholder="请输入"
                     v-model="form.erpSaleOrderCode"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                  <el-form-item label="结算时间：" prop="settleTime">
@@ -386,6 +422,7 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                    disabled
                   />
                 </el-form-item>
                     <el-form-item label="结算方式：" prop="settleWay">
@@ -393,6 +430,7 @@
                     placeholder="请输入"
                     v-model="form.settleWay"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                    <el-form-item label="首次配车时间：" prop="firstAllocateTime">
@@ -403,11 +441,12 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                    disabled
                   />
                 </el-form-item>
                   <el-form-item label="退车标识：" prop="vehicleReturnFlag">
-                  <el-radio-group v-model="form.vehicleReturnFlag">
-                    <el-radio v-for="item in yes_no_enum" :key="item.code" :label="item.code">{{ item.message }}</el-radio>
+                  <el-radio-group v-model="form.vehicleReturnFlag" disabled>
+                    <el-radio v-for="item in true_false_enum" :key="item.code" :label="item.code">{{ item.message }}</el-radio>
                   </el-radio-group>
                 </el-form-item>
                 <el-form-item label="特殊备注：" prop="specialRemark">
@@ -415,11 +454,12 @@
                     placeholder="请输入"
                     v-model="form.specialRemark"
                     clearable
+                    maxlength="300"
                   />
                 </el-form-item>
                 <el-form-item label="合格证是否质押：" prop="certificatePledged">
-                  <el-radio-group v-model="form.certificatePledged">
-                    <el-radio v-for="item in yes_no_enum" :key="item.code" :label="item.code">{{ item.message }}</el-radio>
+                  <el-radio-group v-model="form.certificatePledged" disabled>
+                    <el-radio v-for="item in true_false_enum" :key="item.code" :label="item.code">{{ item.message }}</el-radio>
                   </el-radio-group>
                 </el-form-item>
                  <el-form-item label="取消配车说明：" prop="cancelAllocateRemark">
@@ -427,27 +467,8 @@
                     placeholder="请输入"
                     v-model="form.cancelAllocateRemark"
                     clearable
-                  />
-                </el-form-item>
-                <el-form-item label="批售方式：" prop="wholesaleWay">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.wholesaleWay"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="物料描述：" prop="materialsDesc">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.materialsDesc"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="整车补货单号：" prop="replenishApplyCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.replenishApplyCode"
-                    clearable
+                    maxlength="300"
+                    disabled
                   />
                 </el-form-item>
                   <el-form-item label="取消结算时间：" prop="firstCancelAllocateTime">
@@ -458,6 +479,7 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="首次取消配车时间：" prop="firstCancelAllocateTime">
@@ -468,6 +490,7 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="是否创建发运单计划：" prop="createdShippingPlan">
@@ -475,6 +498,7 @@
                     placeholder="请输入"
                     v-model="form.createdShippingPlan"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                  <el-form-item label="作废说明：" prop="cancelRemark">
@@ -482,21 +506,24 @@
                     placeholder="请输入"
                     v-model="form.cancelRemark"
                     clearable
+                    maxlength="300"
+                    disabled
                   />
                 </el-form-item>
                     <el-form-item label="是否存在结算失败：" prop="hasSettleFailed">
-                  <el-radio-group v-model="form.hasSettleFailed">
+                  <el-radio-group v-model="form.hasSettleFailed" disabled>
                     <el-radio v-for="item in yes_no_enum" :key="item.code" :label="item.code">{{ item.message }}</el-radio>
                   </el-radio-group>
                 </el-form-item>
                   <el-form-item label="车辆交付状态：" prop="deliveryStatus">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="mcs_vehicledeliverystatus"
                     v-model="form.deliveryStatus"
                     placeholder="请选择"
                     clearable
                     filterable
+                    disabled
                   />
                 </el-form-item>
                  <el-form-item label="是否需要自动配车" prop="needAutoAllocateCar">
@@ -504,6 +531,7 @@
                     placeholder="请输入"
                     v-model="form.needAutoAllocateCar"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                     <el-form-item label="整车物流预留：" prop="logisticsReserve">
@@ -511,6 +539,7 @@
                     placeholder="请输入"
                     v-model="form.logisticsReserve"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="物流预留备注：" prop="logisticsReserveRemark">
@@ -518,6 +547,7 @@
                     placeholder="请输入"
                     v-model="form.logisticsReserveRemark"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                     <el-form-item label="初始交付周期说明：" prop="initDeliveryCycleDesc">
@@ -525,6 +555,7 @@
                     placeholder="请输入"
                     v-model="form.initDeliveryCycleDesc"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                   <el-form-item label="动态交付周期说明：" prop="dynamicDeliveryCycleDesc">
@@ -532,6 +563,7 @@
                     placeholder="请输入"
                     v-model="form.dynamicDeliveryCycleDesc"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="电池电芯(订单物料)：" prop="orderBatteryCellName">
@@ -539,6 +571,7 @@
                     placeholder="请输入"
                     v-model="form.orderBatteryCellName"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                   <el-form-item label="电池电芯(配车物料)：" prop="batteryCellName">
@@ -546,6 +579,7 @@
                     placeholder="请输入"
                     v-model="form.batteryCellName"
                     clearable
+                    disabled
                   />
                 </el-form-item>
               </el-form>
@@ -581,7 +615,7 @@
                   {{ form.firstAllocateTime }}
                 </el-form-item>
                  <el-form-item label="退车标识：" prop="vehicleReturnFlagLabel">
-                   {{ form.vehicleReturnFlagLable }}
+                   {{ form.vehicleReturnFlagLabel }}
                   <!-- {{ yes_no_enum_map[form.vehicleReturnFlag] }} -->
                 </el-form-item>
                   <el-form-item label="特殊备注：" prop="specialRemark">
@@ -611,7 +645,7 @@
                 <el-form-item label="车辆交付状态：" prop="deliveryStatusLabel">
                   {{ form.deliveryStatusLabel }}
                 </el-form-item>
-                 <el-form-item label="是否需要自动配车" prop="needAutoAllocateCarLabel">
+                 <el-form-item label="是否需要自动配车：" prop="needAutoAllocateCarLabel">
                   {{ form.needAutoAllocateCarLabel }}
                 </el-form-item>
                 <el-form-item label="整车物流预留：" prop="logisticsReserve">
@@ -641,7 +675,7 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+               <el-form :inline="true" :model="form" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="结算资金类型：" prop="settleFundType">
                   <fetch-select
                     :request="fetchOptions"
@@ -652,11 +686,19 @@
                     filterable
                   />
                 </el-form-item>
-                   <el-form-item label="金融机构名称：" prop="financialOrganizationName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.financialOrganizationName"
+                   <el-form-item label="金融机构名称：" prop="financialOrganizationId">
+                    <fetch-select
+                    :remote-method="repairItemSearch"
+                    remote
+                    reserve-keyword
+                    labelKey="name"
+                    valueKey="id"
+                    v-model="form.financialOrganizationId"
+                    placeholder="请选择"
                     clearable
+                    multiple
+                    filterable
+                    :disabled="form.settleFundType !== '2010'"
                   />
                 </el-form-item>
                 <el-form-item label="零售价：" prop="retailPrice">
@@ -664,6 +706,7 @@
                     placeholder="请输入"
                     v-model="form.retailPrice"
                     clearable
+                    disabled
                   />
                 </el-form-item>
 
@@ -675,6 +718,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="开票系数：" prop="invoiceCoefficient">
@@ -682,6 +726,7 @@
                     placeholder="请输入"
                     v-model="form.invoiceCoefficient"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="批售价：" prop="wholesalePrice">
@@ -689,6 +734,7 @@
                     placeholder="请输入"
                     v-model="form.wholesalePrice"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="返利使用类型：" prop="rebateUseType">
@@ -699,6 +745,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="返利使用系数：" prop="rebateCoefficient">
@@ -706,6 +753,7 @@
                     placeholder="请输入"
                     v-model="form.rebateCoefficient"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="使用现金金额：" prop="usedCashAmount">
@@ -713,30 +761,31 @@
                     placeholder="请输入"
                     v-model="form.usedCashAmount"
                     clearable
+                    disabled
                   />
                 </el-form-item>
-                <el-form-item label="赊销欠款：" prop="usedCashAmount">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.usedCashAmount"
-                    clearable
-                  />
+                <el-form-item label="赊销欠款：" prop="creditSaleFlag">
+                   <el-radio-group v-model="form.creditSaleFlag" disabled>
+                    <el-radio v-for="item in true_false_enum" :key="item.code" :label="item.code">{{ item.message }}</el-radio>
+                  </el-radio-group>
                 </el-form-item>
                   <el-form-item label="是否赊销：" prop="creditSaleFlag">
-                  <el-radio-group v-model="form.creditSaleFlag">
-                    <el-radio v-for="item in yes_no_enum" :key="item.code" :label="item.code">{{ item.message }}</el-radio>
+                  <el-radio-group v-model="form.creditSaleFlag" disabled>
+                    <el-radio v-for="item in true_false_enum" :key="item.code" :label="item.code">{{ item.message }}</el-radio>
                   </el-radio-group>
                 </el-form-item>
                    <el-form-item label="赊销是否还款：" prop="creditSaleRepaid">
-                  <el-radio-group v-model="form.creditSaleRepaid">
-                    <el-radio v-for="item in yes_no_enum" :key="item.code" :label="item.code">{{ item.message }}</el-radio>
+                  <el-radio-group v-model="form.creditSaleRepaid" disabled>
+                    <el-radio v-for="item in true_false_enum" :key="item.code" :label="item.code">{{ item.message }}</el-radio>
                   </el-radio-group>
                 </el-form-item>
                  <el-form-item label="同步SAP状态：" prop="syncSapStatus">
                   <el-input
                     placeholder="请输入"
                     v-model="form.syncSapStatus"
+                    maxlength="300"
                     clearable
+                    disabled
                   />
                 </el-form-item>
 
@@ -773,7 +822,7 @@
                   {{ form.usedCashAmount }}
                 </el-form-item>
                  <el-form-item label="赊销欠款：" prop="creditSaleFlag">
-                  {{ form.creditSaleFlag }}
+                  {{ form.creditSaleFlagLabel }}
                 </el-form-item>
                   <el-form-item label="是否赊销：" prop="creditSaleFlagLabel">
                   {{ form.creditSaleFlagLabel }}
@@ -791,18 +840,18 @@
           <section class="common-section">
             <div class="common-section-header">
               <h2>整车资金账户信息</h2>
-              <el-button v-if="canAddOrUpdate" size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>添加</el-button>
+              <!-- <el-button v-if="canAddOrUpdate" size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>添加</el-button> -->
             </div>
             <div class="common-section-body">
               <div class="common-section-table">
                 <edit-table
                   ref="editTable"
                   :columns="columns"
-                  :data="tableData"
+                  :data="form.dealerFundAccounts"
                   :defaultNewRow="defaultNewRow"
                   :show-toolbar="false"
                   :options="options"
-                  :auth="{edit: canAddOrUpdate, delete: canDelete}"
+                  :auth="{edit: false, delete: false}"
                 />
               </div>
             </div>
@@ -816,20 +865,31 @@
       </div>
     </template>
   </edit-page-layout>
+  <BatchCancelInput
+      :visible.sync="showBatchCancelDialog"
+      :cancel-ids="[_id]"
+      @confirm="cancelApproval"
+    />
+   <ManualVehicle
+      :visible.sync="showManualVehicleDialog"
+    />
+  </div>
 </template>
 
 <script>
-import { getDetail, addOrUpdate, batchConfirmItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import { getDetail, addOrUpdate, batchConfirmItem, batchSetAutoAllocateItem, batchCancelItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
-import { YES_NO_ENUM } from '@/libs/constants';
+import { YES_NO_ENUM, TRUE_FALSE_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-
+import ManualVehicle from './ManualVehicle.vue';
+import BatchCancelInput from './BatchCancelInput.vue';
+import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 const defaultForm = {
   // 多选时字段有变化，自行修复
   wholesaleOrderCode: '',
@@ -959,7 +1019,9 @@ export default {
     EditPageLayout,
     EditBaseContainer,
     EditTable,
-    FetchSelect
+    FetchSelect,
+    ManualVehicle,
+    BatchCancelInput,
   },
   computed: {
     _id () {
@@ -986,16 +1048,17 @@ export default {
       moduleKey: 'AISVW-vehicleWholesaleOrder',
       loading: false,
       submitLoading: false,
+      showManualVehicleDialog: false,
+      showBatchCancelDialog: false,
       yes_no_enum: YES_NO_ENUM,
+      true_false_enum: TRUE_FALSE_ENUM,
+      ALLOWED_STATUS: [0, 11],
       form: { ...form },
       originalForm: { ...form },
       defaultNewRow: {
         name: '',
       },
-      tableData: [
-        { id: 1, name: '张三', age: 25, email: 'zhangsan@example.com' },
-        { id: 2, name: '李四', age: 30, email: 'lisi@example.com' }
-      ],
+      tableData: [],
       options: {
         // 对应表格里选型枚举
         // 如 type: [{label: 'xxx', value: 'xxx'}]
@@ -1003,385 +1066,82 @@ export default {
       // TIPS: 复杂的表格输入项，参考 /dealerTeam/edit.vue
       columns: [
         {
-          field: 'name',
+          field: 'fundTypeLabel',
           title: '资金类型',
           editable: true,
-          editRender: { name: 'ElInput' },
-          rules: [
-            { required: true, message: '姓名不能为空', trigger: 'blur' }
-          ]
         },
         {
-          field: 'age',
+          field: 'availableBalance',
           title: '可用余额',
           editable: true,
           editRender: { name: 'ElInput', props: { type: 'number' } }
         },
         {
-          field: 'email',
+          field: 'frozenBalance',
           title: '冻结资金',
           editRender: { name: 'ElInput' }
         },
         {
-          field: 'email',
+          field: 'availableCreditAmount',
           title: '剩余可用额度',
           editRender: { name: 'ElInput' }
         },
         {
-          field: 'email',
+          field: 'downPaymentRatio',
           title: '首付款比例%',
           editRender: { name: 'ElInput' }
         },
       ],
-      rules: {
-        wholesaleOrderCode: [
-          { required: true, message: '请输入批售订单号', trigger: 'change' }
-        ],
-        status: [
-          { required: true, message: '请选择订单状态', trigger: 'change' }
-        ],
-        orderTime: [
-          { required: true, message: '请选择订单时间', trigger: 'change' }
-        ],
-        confirmTime: [
-          { required: true, message: '请选择确认时间', trigger: 'change' }
-        ],
-        saleDealerCode: [
-          { required: true, message: '请输入销售门店编码', trigger: 'change' }
-        ],
-        orderCategory: [
-          { required: true, message: '请输入订单分类', trigger: 'change' }
-        ],
-        saleDealerName: [
-          { required: true, message: '请输入销售门店名称', trigger: 'change' }
-        ],
-        wholesaleWay: [
-          { required: true, message: '请输入批售方式', trigger: 'change' }
-        ],
-        materialsDesc: [
-          { required: true, message: '请输入物料描述', trigger: 'change' }
-        ],
-        allocateTime: [
-          { required: true, message: '请选择配车时间', trigger: 'change' }
-        ],
-        vin: [
-          { required: true, message: '请输入配车VIN码', trigger: 'change' }
-        ],
-        replenishApplyCode: [
-          { required: true, message: '请输入整车补货单号', trigger: 'change' }
-        ],
-        regionName: [
-          { required: true, message: '请输入大区', trigger: 'change' }
-        ],
-        cityName: [
-          { required: true, message: '请输入市', trigger: 'change' }
-        ],
-        prodScheduleActivityId: [
-          { required: true, message: '请输入专项活动', trigger: 'change' }
-        ],
-        allowLockRetail: [
-          { required: true, message: '请输入允许锁零售单', trigger: 'change' }
-        ],
-        retailPrice: [
-          { required: true, message: '请输入零售价', trigger: 'change' }
-        ],
-        invoiceDiscountType: [
-          { required: true, message: '请选择开票类型', trigger: 'change' }
-        ],
-        invoiceCoefficient: [
-          { required: true, message: '请输入开票系数', trigger: 'change' }
-        ],
-        wholesalePrice: [
-          { required: true, message: '请输入批售价', trigger: 'change' }
-        ],
-        rebateUseType: [
-          { required: true, message: '请选择返利使用类型', trigger: 'change' }
-        ],
-        rebateCoefficient: [
-          { required: true, message: '请输入返利使用系数', trigger: 'change' }
-        ],
-        usedRebateAmount: [
-          { required: true, message: '请输入使用返利金额', trigger: 'change' }
-        ],
-        erpSaleOrderCode: [
-          { required: true, message: '请输入ERP销售订单号', trigger: 'change' }
-        ],
-        erpInvoiceCode: [
-          { required: true, message: '请输入ERP发票号', trigger: 'change' }
-        ],
-        syncSapStatus: [
-          { required: true, message: '请输入同步SAP状态', trigger: 'change' }
-        ],
-        createTime: [
-          { required: true, message: '请选择创建时间', trigger: 'change' }
-        ],
-        dealerCompanyCode: [
-          { required: true, message: '请输入母公司编码', trigger: 'change' }
-        ],
-        applyReason: [
-          { required: true, message: '请输入申请原因', trigger: 'change' }
-        ],
-        dealerCompanyName: [
-          { required: true, message: '请输入母公司名称', trigger: 'change' }
-        ],
-        interiorName: [
-          { required: true, message: '请输入内饰', trigger: 'change' }
-        ],
-        modelName: [
-          { required: true, message: '请输入车型名称', trigger: 'change' }
-        ],
-        exteriorName: [
-          { required: true, message: '请输入外观', trigger: 'change' }
-        ],
-        wheelHubName: [
-          { required: true, message: '请输入轮毂名称', trigger: 'change' }
-        ],
-        yearTypeName: [
-          { required: true, message: '请选择年款名称', trigger: 'change' }
-        ],
-        specialRemark: [
-          { required: true, message: '请输入特殊备注', trigger: 'change' }
-        ],
-        firstCancelAllocateTime: [
-          { required: true, message: '请选择首次取消配车时间', trigger: 'change' }
-        ],
-        firstAllocateTime: [
-          { required: true, message: '请选择首次配车时间', trigger: 'change' }
-        ],
-        outboundTime: [
-          { required: true, message: '请选择出库时间', trigger: 'change' }
-        ],
-        confirmStatus: [
-          { required: true, message: '请选择确认状态', trigger: 'change' }
-        ],
-        lockStatus: [
-          { required: true, message: '请选择是否已锁定', trigger: 'change' }
-        ],
-        lockTime: [
-          { required: true, message: '请选择锁定时间', trigger: 'change' }
-        ],
-        createdShippingPlan: [
-          { required: true, message: '请输入是否创建发运单计划', trigger: 'change' }
-        ],
-        confirmUserName: [
-          { required: true, message: '请输入确认人', trigger: 'change' }
-        ],
-        settleWay: [
-          { required: true, message: '请输入结算方式', trigger: 'change' }
-        ],
-        allocateWay: [
-          { required: true, message: '请输入配车方式', trigger: 'change' }
-        ],
-        cooperateType: [
-          { required: true, message: '请选择合作类型', trigger: 'change' }
-        ],
-        settleFundType: [
-          { required: true, message: '请选择结算资金类型', trigger: 'change' }
-        ],
-        creditSalesAmount: [
-          { required: true, message: '请输入融资金额&#x2F;赊账', trigger: 'change' }
-        ],
-        emergencyOrderRemark: [
-          { required: true, message: '请输入急单备注', trigger: 'change' }
-        ],
-        downPaymentRatio: [
-          { required: true, message: '请输入首付款比例%', trigger: 'change' }
-        ],
-        deliveryWay: [
-          { required: true, message: '请输入指定发运方式', trigger: 'change' }
-        ],
-        deliveryStatus: [
-          { required: true, message: '请选择车辆交付状态', trigger: 'change' }
-        ],
-        orderMaterialCode: [
-          { required: true, message: '请输入订单物料编码', trigger: 'change' }
-        ],
-        needAutoAllocateCar: [
-          { required: true, message: '请输入是否需要自动配车', trigger: 'change' }
-        ],
-        dealerWarehouseCode: [
-          { required: true, message: '请输入门店仓库编码', trigger: 'change' }
-        ],
-        dealerWarehouseName: [
-          { required: true, message: '请输入门店仓库名称', trigger: 'change' }
-        ],
-        logisticsReserve: [
-          { required: true, message: '请输入整车物流预留', trigger: 'change' }
-        ],
-        logisticsReserveRemark: [
-          { required: true, message: '请输入物流预留备注', trigger: 'change' }
-        ],
-        initDeliveryCycleDesc: [
-          { required: true, message: '请输入初始交付周期说明', trigger: 'change' }
-        ],
-        dynamicDeliveryCycleDesc: [
-          { required: true, message: '请输入动态交付周期说明', trigger: 'change' }
-        ],
-        batteryCellName: [
-          { required: true, message: '请输入电池电芯名称', trigger: 'change' }
-        ],
-        cityCode: [
-          { required: true, message: '请输入市code', trigger: 'change' }
-        ],
-        exteriorId: [
-          { required: true, message: '请输入外观ID', trigger: 'change' }
-        ],
-        saleTargetTrackingId: [
-          { required: true, message: '请输入批售目标额度占用记录ID', trigger: 'change' }
-        ],
-        replenishApplyDetailCode: [
-          { required: true, message: '请输入整车补货单明细号', trigger: 'change' }
-        ],
-        id: [
-          { required: true, message: '请输入主键', trigger: 'change' }
-        ],
-        creator: [
-          { required: true, message: '请输入创建者', trigger: 'change' }
-        ],
-        creatorName: [
-          { required: true, message: '请输入创建者名称', trigger: 'change' }
-        ],
-        modifier: [
-          { required: true, message: '请输入修改者', trigger: 'change' }
-        ],
-        modifierName: [
-          { required: true, message: '请输入修改者名称', trigger: 'change' }
-        ],
-        updateTime: [
-          { required: true, message: '请选择修改时间', trigger: 'change' }
-        ],
-        remark: [
-          { required: true, message: '请输入备注', trigger: 'change' }
-        ],
-        statusDesc: [
-          { required: true, message: '请选择状态变更描述', trigger: 'change' }
-        ],
-        saleCompanyId: [
-          { required: true, message: '请输入销售公司', trigger: 'change' }
-        ],
-        deliveryDealerCode: [
-          { required: true, message: '请输入交付门店编码', trigger: 'change' }
-        ],
-        deliveryDealerName: [
-          { required: true, message: '请输入交付门店名称', trigger: 'change' }
-        ],
-        materialsId: [
-          { required: true, message: '请输入物料ID', trigger: 'change' }
-        ],
-        materialsCode: [
-          { required: true, message: '请输入物料编码', trigger: 'change' }
-        ],
-        settleTime: [
-          { required: true, message: '请选择结算时间', trigger: 'change' }
-        ],
-        regionCode: [
-          { required: true, message: '请输入大区编码', trigger: 'change' }
-        ],
-        provinceCode: [
-          { required: true, message: '请输入省code', trigger: 'change' }
-        ],
-        provinceName: [
-          { required: true, message: '请输入省', trigger: 'change' }
-        ],
-        interiorId: [
-          { required: true, message: '请输入内饰ID', trigger: 'change' }
-        ],
-        modelId: [
-          { required: true, message: '请输入车型ID', trigger: 'change' }
-        ],
-        wheelHubId: [
-          { required: true, message: '请输入轮毂ID', trigger: 'change' }
-        ],
-        yearTypeId: [
-          { required: true, message: '请选择年款ID', trigger: 'change' }
-        ],
-        firstSettleFailedTime: [
-          { required: true, message: '请选择首次结算失败时间', trigger: 'change' }
-        ],
-        mallOrderCode: [
-          { required: true, message: '请输入商城订单号', trigger: 'change' }
-        ],
-        retailOrderCode: [
-          { required: true, message: '请输入零售订单号', trigger: 'change' }
-        ],
-        emergencyOrder: [
-          { required: true, message: '请输入是否紧急订单：1是0否', trigger: 'change' }
-        ],
-        dataSource: [
-          { required: true, message: '请输入数据来源，150:新销服; 老销服:10', trigger: 'change' }
-        ],
-        financialOrganizationId: [
-          { required: true, message: '请输入金融机构ID', trigger: 'change' }
-        ],
-        financialOrganizationName: [
-          { required: true, message: '请输入金融机构名称', trigger: 'change' }
-        ],
-        wholesaleOrderExtId: [
-          { required: true, message: '请输入批售订单扩展ID', trigger: 'change' }
-        ],
-        confirmUserId: [
-          { required: true, message: '请输入确认人', trigger: 'change' }
-        ],
-        cancelAllocateRemark: [
-          { required: true, message: '请输入取消配车说明', trigger: 'change' }
-        ],
-        cancelRemark: [
-          { required: true, message: '请输入作废说明', trigger: 'change' }
-        ],
-        usedCashAmount: [
-          { required: true, message: '请输入使用现金金额', trigger: 'change' }
-        ],
-        confirmRemark: [
-          { required: true, message: '请输入确认说明', trigger: 'change' }
-        ],
-        noAutoConfirmReason: [
-          { required: true, message: '请输入未自动确认原因', trigger: 'change' }
-        ],
-        expectedOfflineTime: [
-          { required: true, message: '请选择车辆预计下线日期', trigger: 'change' }
-        ],
-        purchaseOrderId: [
-          { required: true, message: '请输入采购订单ID', trigger: 'change' }
-        ],
-        wholesaleOrderId: [
-          { required: true, message: '请输入批售订单ID', trigger: 'change' }
-        ],
-      }
     };
   },
   mounted () {
+    console.log('mounted', ManualVehicle.props);
   },
   methods: {
-    allAllowConfirm (items) {
-      const ALLOWED_STATUS = [0, 11];
-      for (const item of items) {
-        if (item.confirmStatus !== 1010) {
-          this.$message({
-            type: 'error',
-            message: '选择的数据中[确认状态]必须为[未确认]!'
-          });
-          return;
-        };
-        if (!ALLOWED_STATUS.includes(item.status)) {
-          this.$message({
-            type: 'error',
-            message: '选择的数据中[订单状态]必须为[未配车,配车失败]!'
-          });
-          return;
-        };
-        if (item.orderCategory !== 1) {
-          this.$message({
-            type: 'error',
-            message: '选择的数据中[订单分类]必须为[商品车订单]!'
-          });
-          return;
-        }
+    repairItemSearch (query) { return listIdNames({ organizationNameLike: query, status: 1 }); },
+    allAllowConfirm (item) {
+      if (item.confirmStatus !== 1010) {
+        this.$message({
+          type: 'error',
+          message: '订单[确认状态]必须为[未确认]!'
+        });
+        return false;
+      };
+      if (!this.ALLOWED_STATUS.includes(item.status)) {
+        this.$message({
+          type: 'error',
+          message: '订单[订单状态]必须为[未配车,配车失败]!'
+        });
+        return false;
+      };
+      if (item.orderCategory !== 1) {
+        this.$message({
+          type: 'error',
+          message: '订单[订单分类]必须为[商品车订单]!'
+        });
+        return false;
       }
     },
-    handleCheckConfirm () { // 审核确认
+    allAutoVehicleAllocation (item) {
+      if (item.confirmStatus !== 1020) {
+        this.$message({
+          type: 'error',
+          message: '订单[确认状态]必须为[已确认]!'
+        });
+        return;
+      };
+      if (!this.ALLOWED_STATUS.includes(item.status)) {
+        this.$message({
+          type: 'error',
+          message: '订单[订单状态]必须为[未配车,配车失败]!'
+        });
+        return;
+      };
+    },
+    handleCheckConfirm () { //
       const checkStatus = this.allAllowConfirm(this.form);
       if (checkStatus) {
-        this.$confirm('是否需要对批售订单进行批售确认? 注意：确认订单结算资金类型', '操作提醒', {
+        this.$confirm('是否需要对批售订单进行确认? 注意：确认订单结算资金类型', '操作提醒', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -1404,16 +1164,67 @@ export default {
       }
     },
     handleaAutoVehicleAllocation () { // 自动配车
-
+      const checkStatus = this.allAutoVehicleAllocation(this.form);
+      if (checkStatus) {
+        this.$confirm('是否需要对批售订单进行自动配车?', '操作提醒', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          batchSetAutoAllocateItem({
+            ids: [this.form.id],
+            needAutoAllocateCar: 1
+          }).then(() => {
+            this.$message({
+              type: 'success',
+              message: '自动配车成功!'
+            });
+            this.getData();
+          }).catch(() => {
+            this.$message({
+              type: 'error',
+              message: '自动配车失败!'
+            });
+          });
+        }).catch(() => {});
+      }
     },
     handleManualVehicleAllocation () { // 手工配车
-
+      this.showManualVehicleDialog = true;
     },
     handleDelete () { // 删除
 
     },
+    allAllowCancel (item) {
+      if (!this.ALLOWED_STATUS.includes(item.status)) {
+        this.$message({
+          type: 'error',
+          message: '订单已完成配车，不允许作废!'
+        });
+        return;
+      };
+      if (item.allow_lock_retail === 1) {
+        this.$message({
+          type: 'error',
+          message: '批售订单已绑定零售订单,不允许作废!'
+        });
+        return false;
+      }
+    },
     handleCancel () { // 作废
-
+      const checkStatus = this.allAllowCancel(this.form);
+      if (checkStatus) {
+        this.showBatchCancelDialog = true;
+      }
+    },
+    cancelApproval (data) {
+      return batchCancelItem(data).then(() => {
+        this.$message({
+          type: 'success',
+          message: '批量审核成功'
+        });
+        this.getData();
+      });
     },
     detailRequest () {
       const id = this._id;
