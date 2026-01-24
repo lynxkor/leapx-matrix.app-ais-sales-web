@@ -170,24 +170,13 @@
             </el-form>
           </div>
           <div>
-            <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" inline class="attachment-form">
-              <el-form-item v-for="configItem in uploadConfigs" :key="configItem.id"
-                :label="configItem.attachType + '：'"
-                :prop="`files_${configItem.attachType}`"
-                :required="configItem.required === '1'"
-              >
-                <ais-upload
-                  v-model="fileLists[configItem.attachType]"
-                  :business-id="$route.query.id"
-                  :attach-type="configItem.attachType"
-                  :show-upload="true"
-                  :editable="true"
-                  :disabled="false"
-                  :upload-config="getUploadConfig(configItem)"
-                />
-              </el-form-item>
-            </el-form>
+            <h1>通用模版</h1>
           </div>
+          <ais-attachment-form
+            ref="attachmentForm"
+            :business-id="$route.query.id"
+            attach-type="mcs_techniacalrepair"
+          />
         </section>
       </el-main>
       <el-footer height="60px">
@@ -209,8 +198,7 @@ import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import moment from 'moment';
 import { getList } from '@/api/datacenter/materials/vehicleMaterials/index';
-import AisUpload from '@/libs/components/AisUpload';
-import { attachmentMixin } from '@/libs/mixins/attachmentMixin.js';
+import AisAttachmentForm from '@/libs/components/AisAttachmentForm';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -261,10 +249,10 @@ export default {
       default: null
     }
   },
-  mixins: [routeGuard, permissions, commonMixins, attachmentMixin],
+  mixins: [routeGuard, permissions, commonMixins],
   components: {
-    AisUpload,
-    FetchSelect
+    FetchSelect,
+    AisAttachmentForm,
   },
   computed: {
     _id () {
@@ -296,7 +284,6 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      uploadConfigs: [],
       // 提取公共配置
       selectOptions: {
         placeholder: '请选择',
@@ -309,6 +296,7 @@ export default {
         remote: true,
         reserveKeyword: true
       },
+      fileList: [],
       pageTitle: '销售管理-商品管理-商品SKU价格维护',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
@@ -431,22 +419,6 @@ export default {
       }
     };
   },
-  created () {
-    // 使用通用方法初始化数据
-    this.initAttachmentData(
-      'mcs_techniacalrepair',
-      this.$route.query.id,
-      () => {
-        // 成功回调（可选）
-        console.log('附件数据初始化成功');
-        this.initFormAndRules();
-      },
-      (error) => {
-        // 错误回调（可选）
-        console.log('附件数据初始化失败:', error);
-      }
-    );
-  },
   mounted () {
     this.getDetailData();
   },
@@ -498,26 +470,36 @@ export default {
     submitForm (formName, rest = false) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.submitLoading = true;
-          addOrUpdate({ ...this.form }).then(res => {
-            this.$message({
-              message: '保存成功',
-              type: 'success'
-            });
-            const id = this.$route.query.id;
-            if (rest || !id) {
-              this.resetForm(formName);
-              // 获取新增的 id
-              const currentPath = this.$route.path;
-              this.$router.push({
-                path: currentPath,
-                query: { id: res }
+          // 先验证附件表单
+          this.$refs.attachmentForm.validate((attachmentValid) => {
+            if (attachmentValid) {
+              this.submitLoading = true;
+              // 合并附件数据到主表单
+              const attachmentData = this.$refs.attachmentForm.getAttachmentData();
+              addOrUpdate({
+                ...this.form,
+                attachmentFiles: attachmentData
+              }).then(res => {
+                this.$message({
+                  message: '保存成功',
+                  type: 'success'
+                });
+                const id = this.$route.query.id;
+                if (rest || !id) {
+                  this.resetForm(formName);
+                  // 获取新增的 id
+                  const currentPath = this.$route.path;
+                  this.$router.push({
+                    path: currentPath,
+                    query: { id: res }
+                  });
+                } else {
+                  this.getDetailData();
+                }
+              }).finally(() => {
+                this.submitLoading = false;
               });
-            } else {
-              this.getDetailData();
             }
-          }).finally(() => {
-            this.submitLoading = false;
           });
         }
       });
@@ -554,9 +536,5 @@ export default {
 <style lang="scss" scoped>
   ::v-deep .el-input-number {
     width: 100%;
-  }
-  .attachment-form {
-    display: flex;
-    flex-direction: column;
   }
 </style>
