@@ -90,7 +90,15 @@
             <vxe-column field="warehouseName" title="整车仓库" align="center" width="240" />
             <vxe-column field="inventoryStatus" title="库存状态" align="center" width="140">
               <template v-slot="{ row }">
-                <span>{{ row.inventoryStatus }}</span>
+                <span
+                  :class="getInventoryStatusClass(row.inventoryStatus)"
+                  :title="getInventoryStatusText(row.inventoryStatus)"
+                >
+                  {{ getInventoryStatusText(row.inventoryStatus) }}
+                </span>
+                <span class="inventory-status-red" v-if="row.inventoryStatus === '1' || row.inventoryStatus === 1">
+                  ({{ row.inventoryQty || 0 }})
+                </span>
               </template>
             </vxe-column>
             <vxe-column field="materialsDesc" title="物料描述" align="center" width="340" />
@@ -136,7 +144,7 @@
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { listCanSettleAccount } from '@/api/vehwholesale/fund/account/index';
 import { getEnum } from '@/api/common';
-import { queryPlantWholesaleInStockInventory, plantWholesaleInStockCreateApply } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
+import { queryPlantWholesaleInStockInventory } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
 
 // import FetchSelect from '@/libs/components/FetchSelect';
 import permissions from '@/libs/mixins/permissions';
@@ -154,88 +162,93 @@ const defaultForm = {
   materialsDesc: '', // 物料描述
 };
 // 测试数据
-const mockInStockInventoryData = [
-  {
-    seriesId: '9C9D922E-0543-EE11-B13B-CAB212903EA5',
-    modelId: '101',
-    yearTypeId: '2023',
-    exteriorId: 'red',
-    interiorId: 'C298D93A-6ACA-F011-B0B8-D75101E5D01E',
-    wheelHubId: 'hub1',
-    warehouseCode: 'WH001',
-    optionPackageId: 'pkg1',
-    materialsDesc: '豪华版红色轿车配黑色内饰',
-    modelName: '奥迪A4',
-    warehouseName: '上海仓库',
-    inventoryStatus: '在库',
-    optionPackageName: '豪华包',
-    applyQty: 0
-  },
-  {
-    seriesId: '9C9D922E-0543-EE11-B13B-CAB212903EA5',
-    modelId: '102',
-    yearTypeId: '2023',
-    exteriorId: 'F75370E5-21A5-EE11-B156-E3C14957A562',
-    interiorId: 'C298D93A-6ACA-F011-B0B8-D75101E5D01Ebeige',
-    wheelHubId: 'hub2',
-    warehouseCode: 'WH001',
-    optionPackageId: 'pkg2',
-    materialsDesc: '标准版白色SUV配米色内饰',
-    modelName: '奥迪Q5',
-    warehouseName: '上海仓库',
-    inventoryStatus: '在途',
-    optionPackageName: '舒适包',
-    applyQty: 0
-  },
-  {
-    seriesId: '2',
-    modelId: '2187156E-CB55-EE11-B144-ADA35F92B08E',
-    yearTypeId: '2024',
-    exteriorId: 'F75370E5-21A5-EE11-B156-E3C14957A562',
-    interiorId: 'black',
-    wheelHubId: 'hub3',
-    warehouseCode: 'WH002',
-    optionPackageId: 'pkg1',
-    materialsDesc: '运动版黑色轿车配全黑内饰',
-    modelName: '宝马3系',
-    warehouseName: '北京仓库',
-    inventoryStatus: '在库',
-    optionPackageName: '运动包',
-    applyQty: 0
-  },
-  {
-    seriesId: '2',
-    modelId: '2187156E-CB55-EE11-B144-ADA35F92B08E',
-    yearTypeId: '2024',
-    exteriorId: 'blue',
-    interiorId: 'white',
-    wheelHubId: 'hub1',
-    warehouseCode: 'WH002',
-    optionPackageId: 'pkg3',
-    materialsDesc: '旗舰版蓝色SUV配白色内饰',
-    modelName: '宝马X5',
-    warehouseName: '北京仓库',
-    inventoryStatus: '预留',
-    optionPackageName: '旗舰包',
-    applyQty: 0
-  },
-  {
-    seriesId: '3',
-    modelId: '301',
-    yearTypeId: '2023',
-    exteriorId: 'F75370E5-21A5-EE11-B156-E3C14957A562',
-    interiorId: 'gray',
-    wheelHubId: 'hub2',
-    warehouseCode: 'WH003',
-    optionPackageId: 'pkg2',
-    materialsDesc: '经典版银色轿车配灰色内饰',
-    modelName: '奔驰C级',
-    warehouseName: '广州仓库',
-    inventoryStatus: '在库',
-    optionPackageName: '经典包',
-    applyQty: 0
-  }
-];
+// const mockInStockInventoryData = [
+//   {
+//     seriesId: '9C9D922E-0543-EE11-B13B-CAB212903EA5',
+//     modelId: '101',
+//     yearTypeId: '2023',
+//     exteriorId: 'red',
+//     interiorId: 'C298D93A-6ACA-F011-B0B8-D75101E5D01E',
+//     wheelHubId: 'hub1',
+//     warehouseCode: 'WH001',
+//     optionPackageId: 'pkg1',
+//     materialsDesc: '豪华版红色轿车配黑色内饰',
+//     modelName: '奥迪A4',
+//     warehouseName: '上海仓库',
+//     inventoryStatus: '0',
+//     inventoryQty: 5,
+//     optionPackageName: '豪华包',
+//     applyQty: 0
+//   },
+//   {
+//     seriesId: '9C9D922E-0543-EE11-B13B-CAB212903EA5',
+//     modelId: '102',
+//     yearTypeId: '2023',
+//     exteriorId: 'F75370E5-21A5-EE11-B156-E3C14957A562',
+//     interiorId: 'C298D93A-6ACA-F011-B0B8-D75101E5D01Ebeige',
+//     wheelHubId: 'hub2',
+//     warehouseCode: 'WH001',
+//     optionPackageId: 'pkg2',
+//     materialsDesc: '标准版白色SUV配米色内饰',
+//     modelName: '奥迪Q5',
+//     warehouseName: '上海仓库',
+//     inventoryStatus: '1',
+//     inventoryQty: 10,
+//     optionPackageName: '舒适包',
+//     applyQty: 0
+//   },
+//   {
+//     seriesId: '2',
+//     modelId: '2187156E-CB55-EE11-B144-ADA35F92B08E',
+//     yearTypeId: '2024',
+//     exteriorId: 'F75370E5-21A5-EE11-B156-E3C14957A562',
+//     interiorId: 'black',
+//     wheelHubId: 'hub3',
+//     warehouseCode: 'WH002',
+//     optionPackageId: 'pkg1',
+//     materialsDesc: '运动版黑色轿车配全黑内饰',
+//     modelName: '宝马3系',
+//     warehouseName: '北京仓库',
+//     inventoryStatus: '2',
+//     inventoryQty: 15,
+//     optionPackageName: '运动包',
+//     applyQty: 0
+//   },
+//   {
+//     seriesId: '2',
+//     modelId: '2187156E-CB55-EE11-B144-ADA35F92B08E',
+//     yearTypeId: '2024',
+//     exteriorId: 'blue',
+//     interiorId: 'white',
+//     wheelHubId: 'hub1',
+//     warehouseCode: 'WH002',
+//     optionPackageId: 'pkg3',
+//     materialsDesc: '旗舰版蓝色SUV配白色内饰',
+//     modelName: '宝马X5',
+//     warehouseName: '北京仓库',
+//     inventoryStatus: '3',
+//     inventoryQty: 20,
+//     optionPackageName: '旗舰包',
+//     applyQty: 0
+//   },
+//   {
+//     seriesId: '3',
+//     modelId: '301',
+//     yearTypeId: '2023',
+//     exteriorId: 'F75370E5-21A5-EE11-B156-E3C14957A562',
+//     interiorId: 'gray',
+//     wheelHubId: 'hub2',
+//     warehouseCode: 'WH003',
+//     optionPackageId: 'pkg2',
+//     materialsDesc: '经典版银色轿车配灰色内饰',
+//     modelName: '奔驰C级',
+//     warehouseName: '广州仓库',
+//     inventoryStatus: '1',
+//     inventoryQty: 8,
+//     optionPackageName: '经典包',
+//     applyQty: 0
+//   }
+// ];
 export default {
   name: 'vehicleWholesaleDialog',
   props: {
@@ -275,7 +288,8 @@ export default {
         wheelHubList: [],
         optionPackageList: []
       },
-      settleAccountList: []
+      settleAccountList: [],
+      stockStatusList: []
     };
   },
   computed: {
@@ -341,18 +355,6 @@ export default {
         this.settleAccountList = res || [];
       }).catch(err => { console.log(err); });
     },
-    queryPlantWholesaleInStockInventory () {
-      queryPlantWholesaleInStockInventory({}).then(res => {
-        console.log('queryPlantWholesaleInStockInventory:', res);
-        this.tableData = [{
-          inventoryStatus: '1'
-        }, {
-          inventoryStatus: '2'
-        }];
-        // this.tableData = res.inStockInventoryDtoList;
-        console.log('this.tableData:', this.tableData);
-      }).catch(err => { console.log(err); });
-    },
     handleClose () {
       this.form = { ...defaultForm }; // 重置表单数据
       this.fundForm = { fundType: '' }; // 重置资金类型表单
@@ -396,9 +398,12 @@ export default {
           optionPackageList: data.optionPackageList || []
         };
         // 设置表格数据
-        // this.originalTableData = data.inStockInventoryDtoList || [];
-        this.originalTableData = mockInStockInventoryData;
+        this.originalTableData = data.inStockInventoryDtoList || [];
+        // this.originalTableData = mockInStockInventoryData;
         this.tableData = [...this.originalTableData];
+
+        // 获取库存状态枚举
+        await this.getStockStatusEnum();
       } catch (error) {
         console.error('加载数据失败:', error);
       } finally {
@@ -406,10 +411,19 @@ export default {
       }
     },
 
+    async getStockStatusEnum () {
+      try {
+        const response = await getEnum('vw_stock_status');
+        this.stockStatusList = response || [];
+        console.log('stockStatusList:', this.stockStatusList);
+      } catch (error) {
+        console.error('获取库存状态枚举失败:', error);
+      }
+    },
+
     dialogshow () {
       this.getData();
       this.listCanSettleAccount();
-      this.getEnum();
       this.dialogVisible = true;
     },
     async getEnum () {
@@ -435,26 +449,40 @@ export default {
       this.$refs.fundForm.validate((valid) => {
         if (valid) {
           this.submitLoading = true;
-          let materialsList = this.tableData.filter(row => row.applyQty > 0);
-          let params = {
-            fundAccountId: this.fundForm.fundType,
-            materialsList: materialsList.map(ele => {
-              return {
-                warehouseCode: ele.warehouseCode,
-                materialDesc: ele.materialDesc,
-                applyQty: ele.applyQty
-              };
-            })
-          };
-          plantWholesaleInStockCreateApply(params).then(res => {
-            this.submitLoading = false;
-            this.dialogVisible = false;
-            this.$emit('callParentMethod');
-          }).finally(() => {
-            this.submitLoading = false;
+          // 这里可以添加提交逻辑
+          // 例如：调用API提交数据
+          // 提交成功后关闭对话框
+          this.$emit('confirm', {
+            ...this.form,
+            fundType: this.fundForm.fundType,
+            tableData: this.tableData.filter(row => row.applyQty > 0)
           });
+          this.submitLoading = false;
+          this.dialogVisible = false;
         }
       });
+    },
+
+    // 根据库存状态获取对应的文本
+    getInventoryStatusText (status) {
+      if (!this.stockStatusList || this.stockStatusList.length === 0) {
+        return status;
+      }
+
+      const statusItem = this.stockStatusList.find(item => item.code === status.toString());
+      return statusItem ? statusItem.message : status;
+    },
+
+    // 根据库存状态获取对应的CSS类名
+    getInventoryStatusClass (status) {
+      const statusStr = status.toString();
+      if (statusStr === '0' || statusStr === '1') {
+        return 'inventory-status-red';
+      } else if (statusStr === '2') {
+        return 'inventory-status-yellow';
+      } else {
+        return 'inventory-status-green';
+      }
     }
   }
 };
@@ -476,5 +504,19 @@ export default {
   margin-top: 20px;
   padding: 10px 0;
   border-top: 1px solid #ebeef5;
+}
+
+// 库存状态颜色样式
+.inventory-status-red {
+  color: var(--leap-color-danger)!important;
+  font-weight: bold;
+}
+.inventory-status-yellow {
+  color: var(--leap-color-warning)!important;
+  font-weight: bold;
+}
+.inventory-status-green {
+  color: var(--leap-color-primary)!important;
+  font-weight: bold;
 }
 </style>
