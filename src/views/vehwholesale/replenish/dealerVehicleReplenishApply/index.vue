@@ -179,7 +179,7 @@
       </LPVxeTable>
     </div>
     <vehicle-wholesale-dialog ref="vehicleWholesale" :dealerCompanyName="'dealerCompanyName'" @confirm="getData" />
-    <BatchAuditInput ref="batchAuditInput"/>
+    <BatchAuditInput ref="batchAuditInput" @confirm="getData"/>
     <!-- TIPS: 填入项目id即可 -->
     <!-- <Upload
       :visible="uploadDialogVisible"
