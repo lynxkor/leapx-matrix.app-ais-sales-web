@@ -201,7 +201,7 @@ import { getList } from '@/api/datacenter/materials/vehicleMaterials/index';
 import AisAttachmentForm from '@/libs/components/AisAttachmentForm';
 
 const defaultForm = {
-  // 多选时字段有变化，自行修复
+  // 多选时字段有变化，自行修复1
   skuPriceCode: '',
   skuCode: '',
   productCode: '',
