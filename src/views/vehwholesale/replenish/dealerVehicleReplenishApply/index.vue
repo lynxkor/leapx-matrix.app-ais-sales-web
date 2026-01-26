@@ -12,7 +12,7 @@
       <el-form-item label="整车补货单号">
         <el-input
           placeholder="请输入"
-          v-model="form.replenishApplyCode"
+          v-model="form.replenishApplyCodeLike"
           clearable
         />
       </el-form-item>
@@ -97,7 +97,7 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_fundtype"
-            v-model="form.fundTypes"
+            v-model="form.settleFundType"
             placeholder="请选择"
             clearable
             filterable
@@ -210,7 +210,7 @@ import BatchAuditInput from './BatchAuditInput.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  replenishApplyCode: '',
+  replenishApplyCodeLike: '',
   saleDealerCodes: [],
   auditStatus: '',
   regionCodes: [],
@@ -370,7 +370,7 @@ export default {
     async showDropdown () {
       this.dropdownLoading = true;
       try {
-        await createRequestValid();
+        // await createRequestValid();
         this.dropdownLoading = false;
         this.validatedOrderategoryList = [...this.orderategoryList];
       } catch (error) {
