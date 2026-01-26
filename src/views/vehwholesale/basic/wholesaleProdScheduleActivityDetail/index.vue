@@ -69,7 +69,7 @@
             />
         </el-form-item>
         <el-form-item label="物料编码">
-          <tag-input v-model="form.materialsCode" placeholder="请输入" />
+          <tag-input v-model="form.materialsCodes" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="是否锁零售单">
           <fetch-select
@@ -372,7 +372,7 @@ export default {
       const data = { ...this.form };
 
       Object.keys(this.form).forEach(key => {
-        if (data[key] === '' || data[key] === null) {
+        if (data[key] === '' || data[key] === null || (typeof data[key] === 'object' && Object.keys(data[key]).length === 0)) {
           delete data[key];
         }
       });
