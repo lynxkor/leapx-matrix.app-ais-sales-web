@@ -47,7 +47,7 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_wholesale_confirm_status"
-            v-model="form.confirmStatus"
+            v-model="form.confirmStatuses"
             placeholder="请选择"
             clearable
             multiple
@@ -56,16 +56,16 @@
         </el-form-item>
          <el-form-item label="所属大区">
           <fetch-select
-          filterable
-          clearable
-          remote
-          multiple
-          collapse-tags
-          v-model="form.regionCodes"
-          :remote-method="getRegionList"
-          value-key="orgCode"
-          label-key="orgName"
-        />
+            filterable
+            clearable
+            remote
+            multiple
+            collapse-tags
+            v-model="form.regionCodes"
+            :remote-method="getRegionList"
+            value-key="orgCode"
+            label-key="orgName"
+          />
         </el-form-item>
         <el-form-item label="销售门店名称">
             <tag-input v-model="form.saleDealerNames" placeholder="请输入" />
@@ -110,19 +110,19 @@
           />
         </el-form-item>
             <el-form-item label="年款名称">
-               <fetch-select
-            :remote-method="listVehicleYearType"
-            remote
-            v-model="form.yearTypeName"
-            placeholder="请选择"
-            labelKey="name"
-            valueKey="name"
-            clearable
-            multiple
-            collapseTags
-            filterable
-            :options="yearTypeList"
-            />
+              <fetch-select
+                :remote-method="listVehicleYearType"
+                remote
+                v-model="form.yearTypeIds"
+                placeholder="请选择"
+                labelKey="name"
+                valueKey="name"
+                clearable
+                multiple
+                collapseTags
+                filterable
+                :options="yearTypeList"
+              />
         </el-form-item>
          <el-form-item label="车型名称">
           <fetch-select
@@ -139,7 +139,7 @@
             reserve-keyword
             labelKey="name"
             valueKey="id"
-            v-model="form.prodScheduleActivityId"
+            v-model="form.prodScheduleActivityIds"
             placeholder="请选择"
             clearable
             filterable
@@ -157,24 +157,26 @@
         </el-form-item>
            <el-form-item label="省份">
             <fetch-select
-          filterable
-          clearable
-          remote
-          v-model="form.provinceCode"
-          :remote-method="getProvince"
-          value-key="code"
-          label-key="name"
-          @change="handleChangeProvince"
-        />
+              filterable
+              clearable
+              remote
+              v-model="form.provinceCodes"
+              :remote-method="getProvince"
+              multiple
+              value-key="code"
+              label-key="name"
+              @change="handleChangeProvince"
+            />
         </el-form-item>
          <el-form-item label="所属母公司">
            <fetch-select
                   :remote-method="getParentCompany"
                   remote
-                  v-model="form.dealerCompanyName"
+                  v-model="form.dealerCompanyNames"
                   placeholder="请选择"
                   labelKey="companyName"
                   valueKey="companyName"
+                  multiple
                   clearable
                   filterable
                   />
@@ -195,7 +197,7 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_wholesale_way"
-            v-model="form.wholesaleWay"
+            v-model="form.wholesaleWays"
             placeholder="请选择"
             clearable
             multiple
@@ -206,7 +208,7 @@
             <fetch-select
               :request="fetchOptions"
               enumCode="vw_fundtype"
-              v-model="form.settleWay"
+              v-model="form.settleFundTypes"
               placeholder="请选择"
               clearable
               multiple
@@ -226,13 +228,13 @@
           />
         </el-form-item>
       <template v-if="show">
-        <el-form-item label="销售门店编码">
+        <!-- <el-form-item label="销售门店编码">
           <el-input
             placeholder="请输入"
-            v-model="form.saleDealerCode"
+            v-model="form.saleDealerCodes"
             clearable
           />
-        </el-form-item>
+        </el-form-item> -->
             <el-form-item label="创建时间">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
@@ -271,7 +273,7 @@
             <fetch-select
               :request="fetchOptions"
               enumCode="vehstock_ship_via"
-              v-model="form.deliveryWay"
+              v-model="form.deliveryWays"
               placeholder="请选择"
               clearable
               multiple
@@ -282,7 +284,7 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="vehstock_vehicle_delivery_status"
-            v-model="form.deliveryStatus"
+            v-model="form.deliveryStatuses"
             placeholder="请选择"
             clearable
             multiple
@@ -1049,7 +1051,7 @@ export default {
       const data = { ...this.form };
 
       Object.keys(this.form).forEach(key => {
-        if (data[key] === '' || data[key] === null) {
+        if (data[key] === '' || data[key] === null || (typeof data[key] === 'object' && Object.keys(data[key]).length === 0)) {
           delete data[key];
         }
       });
