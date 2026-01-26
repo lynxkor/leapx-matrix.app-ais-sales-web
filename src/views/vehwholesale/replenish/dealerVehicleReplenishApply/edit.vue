@@ -58,8 +58,7 @@
                 </el-form-item>
                 <el-form-item label="订单分类：" prop="orderCategory">
                   <fetch-select
-                    :request="fetchOptions"
-                    enumCode="vw_order_category"
+                    :options="orderCategoryOptions"
                     v-model="form.orderCategory"
                     placeholder="请选择"
                     clearable
@@ -438,6 +437,7 @@ export default {
       pannelTitle: '',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-dealerVehicleReplenishApply',
+      orderCategoryOptions: [],
       isShowActivity: false,
       isShowApplyCategory: false,
       isShowFinancialOrganization: false,
@@ -510,7 +510,7 @@ export default {
       ],
       rules: {
         replenishApplyCode: [
-          { required: true, message: '请输入整车补货单号', trigger: 'change' }
+          { required: false, message: '请输入整车补货单号', trigger: 'change' }
         ],
         saleDealerName: [
           { required: true, message: '请输入销售门店名称', trigger: 'change' }
@@ -534,7 +534,7 @@ export default {
           { required: true, message: '请输入订单分类', trigger: 'change' }
         ],
         applyTotalQty: [
-          { required: true, message: '请输入申请总数量', trigger: 'change' }
+          { required: false, message: '请输入申请总数量', trigger: 'change' }
         ],
         applyTime: [
           { required: true, message: '请选择申请时间', trigger: 'change' }
@@ -633,12 +633,13 @@ export default {
           { required: true, message: '请输入仓库地址', trigger: 'change' }
         ],
         auditDateTime: [
-          { required: true, message: '请选择审批时间', trigger: 'change' }
+          { required: false, message: '请选择审批时间', trigger: 'change' }
         ],
       }
     };
   },
   mounted () {
+    this.fetchOrderCategoryOptions();
   },
   methods: {
     handleSave () {
@@ -723,6 +724,24 @@ export default {
       }
       return [];
     },
+    async fetchOrderCategoryOptions () {
+      const response = await getEnum('vw_order_category');
+      console.log('response:', response);
+      // 过滤出 code 为 0、2、20 的数据，且确保 code 是字符串类型
+      // 0 商品车订单
+      // 2 试驾车订单
+      // 20 展车订单
+      this.orderCategoryOptions = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['0', '2', '20'].includes(codeStr);
+      }).map(item => {
+        // 确保 code 字段是字符串类型
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
+    },
     handleChangeDealer (val, record) {
       this.form.saleDealerCode = record?.storeCode || '';
       this.form.regionCode = record?.regionCode || '';
@@ -746,11 +765,14 @@ export default {
       }
     },
     handleChangeOrderCategory (val) {
+      // 0 商品车订单
+      // 2 试驾车订单
+      // 20 展车订单
       if (val === '2') {
         this.isShowApplyCategory = true;
         this.isShowActivity = false;
         this.form.prodScheduleActivityId = '';
-      } else if (val === '1' || val === '3') {
+      } else if (val === '0' || val === '20') {
         this.isShowApplyCategory = false;
         this.isShowActivity = true;
         this.form.applyCategory = '';

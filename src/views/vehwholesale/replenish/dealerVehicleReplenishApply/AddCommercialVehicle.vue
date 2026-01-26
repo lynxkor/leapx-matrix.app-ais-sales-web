@@ -5,14 +5,14 @@
         <el-form :inline="true" :model="form" size="small" label-position="right" label-width="80px" class="form-edit">
           <el-form-item label="车系：">
             <fetch-select
-              v-model="form.seriesIdList"
+              v-model="form.seriesIds"
               v-bind="selectOptions"
               :remote-method="remoteMethods.series"
             />
           </el-form-item>
           <el-form-item label="车型：">
             <fetch-select
-              v-model="form.modelIdList"
+              v-model="form.modelIdSet"
               v-bind="selectOptions"
               :remote-method="remoteMethods.model"
             />
@@ -20,35 +20,42 @@
           <template v-if="show">
             <el-form-item label="年款：">
               <fetch-select
-                v-model="form.yearTypeIdList"
+                v-model="form.yearTypeIdSet"
                 v-bind="selectOptions"
                 :remote-method="remoteMethods.yearType"
               />
             </el-form-item>
             <el-form-item label="外观：">
               <fetch-select
-                v-model="form.exteriorIdList"
+                v-model="form.exteriorIdSet"
                 v-bind="selectOptions"
                 :remote-method="remoteMethods.exterior"
               />
             </el-form-item>
             <el-form-item label="内饰：">
               <fetch-select
-                v-model="form.interiorIdList"
+                v-model="form.interiorIdSet"
                 v-bind="selectOptions"
                 :remote-method="remoteMethods.interior"
               />
             </el-form-item>
-            <el-form-item label="选配轮毂：">
+            <el-form-item label="车顶：">
               <fetch-select
-                v-model="form.wheelHubIdList"
+                v-model="form.roofIdSet"
+                v-bind="selectOptions"
+                :remote-method="remoteMethods.roof"
+              />
+            </el-form-item>
+            <el-form-item label="轮毂：">
+              <fetch-select
+                v-model="form.wheelHubIdSet"
                 v-bind="selectOptions"
                 :remote-method="remoteMethods.wheel"
               />
             </el-form-item>
             <el-form-item label="选装包：">
               <fetch-select
-                v-model="form.optionPackageIdList"
+                v-model="form.optionPackageIdSet"
                 v-bind="selectOptions"
                 :remote-method="remoteMethods.optional"
               />
@@ -119,7 +126,7 @@
 import debounce from 'lodash.debounce';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList } from '@/api/datacenter/materials/vehicleMaterials/index';
-import { getEnum, vehicleSeriesList, listVehicleYearType, listVehicleModel, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleSalesVersionList } from '@/api/common';
+import { getEnum, vehicleSeriesList, listVehicleYearType, listVehicleModel, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleSalesVersionList, vehicleRoof } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import permissions from '@/libs/mixins/permissions';
 import TagInput from '@/libs/components/TagInput';
@@ -127,14 +134,16 @@ import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   status: 1,
-  materialsCode: '',
-  materialsDesc: '',
-  modelName: '',
-  exteriorName: '',
-  interiorName: '',
-  wheelHubName: '',
-  roofName: '',
-  optionPackageName: '',
+  seriesIds: [],
+  materialsCodeSet: [],
+  materialsDescSet: [],
+  modelIdSet: [],
+  yearTypeIdSet: [],
+  exteriorIdSet: [],
+  interiorIdSet: [],
+  wheelHubIdSet: [],
+  roofIdSet: [],
+  optionPackageIdSet: [],
   batteryCellName: '',
   allowWholesale: '',
   allowProductionSchedule: '',
@@ -193,7 +202,7 @@ export default {
         },
         // 初始方法
         model: async (query) => {
-          return await listVehicleModel(query);
+          return await listVehicleModel({ modelNameLike: query });
         },
         yearType: async (query) => {
           return await listVehicleYearType({ yearTypeNameLike: query });
@@ -215,6 +224,9 @@ export default {
         },
         announcement: async (query) => {
           return await vehicleSalesVersionList({ registeredModelNameLike: query });
+        },
+        roof: async (query) => {
+          return await vehicleRoof({ roofNameLike: query });
         }
       },
       columns: [
@@ -307,6 +319,14 @@ export default {
         if (category === '0') data.allowProductionSchedule = '1';
         if (category === '20') data.allowDisplayVehicleWholesale = '1';
         if (category === '2') data.allowTestDriveVehicleWholesale = '1';
+      }
+      if (data.materialsCodeSet && data.materialsCodeSet.length === 1) {
+        data.materialsCodeLike = data.materialsCodeSet[0];
+        data.materialsCodeSet = [];
+      }
+      if (data.materialsDescSet && data.materialsDescSet.length === 1) {
+        data.materialsDescLike = data.materialsDescSet[0];
+        data.materialsDescSet = [];
       }
       return data;
     },
