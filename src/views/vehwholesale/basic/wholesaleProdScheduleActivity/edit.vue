@@ -199,7 +199,7 @@
                  <el-form-item label="是否锁零售单：" prop="allowLockRetailLabel">
                   {{ form.allowLockRetailLabel }}
                 </el-form-item>
-                  <el-form-item label="是否需要自动配车" prop="needAutoAllocateCarLabel">
+                  <el-form-item label="是否需要自动配车：" prop="needAutoAllocateCarLabel">
                   {{ form.needAutoAllocateCarLabel }}
                 </el-form-item>
                 <el-form-item label="指定发运方式：" prop="deliveryWayLabel">
@@ -505,7 +505,7 @@ export default {
           { validator: validateDateRange, trigger: 'change' }
         ],
         needAutoAllocateCar: [
-          { required: true, message: '请输入是否需要自动配车,1:是；0：否', trigger: 'change' }
+          { required: true, message: '请输入是否需要自动配车', trigger: 'change' }
         ],
         // deliveryWay: [
         //   { required: true, message: '请输入指定发运方式', trigger: 'change' }
@@ -547,12 +547,17 @@ export default {
       if (!row.id) {
         return;
       }
-      deleteItem([row.id]).then((d) => {
-        defer.resolve();
-        this.$message.success('删除成功');
-      }).catch(() => {
-        defer.reject();
-      });
+      if (row.usedQuotaQty > 0) {
+        this.$message.error('已排产专项活动已提报数量大于0, 不允许删除');
+        this.getList();
+      } else if (row.totalQuotaQty === 0) {
+        deleteItem([row.id]).then((d) => {
+          defer.resolve();
+          this.$message.success('删除成功');
+        }).catch(() => {
+          defer.reject();
+        });
+      }
     },
     // 行保存
     saveRowEdit (row, defer) {

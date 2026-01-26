@@ -1121,6 +1121,7 @@ export default {
         });
         return false;
       }
+      return true;
     },
     allAutoVehicleAllocation (item) {
       if (item.confirmStatus !== 1020) {
@@ -1128,15 +1129,16 @@ export default {
           type: 'error',
           message: '订单[确认状态]必须为[已确认]!'
         });
-        return;
+        return false;
       };
       if (!this.ALLOWED_STATUS.includes(item.status)) {
         this.$message({
           type: 'error',
           message: '订单[订单状态]必须为[未配车,配车失败]!'
         });
-        return;
+        return false;
       };
+      return true;
     },
     handleCheckConfirm () { //
       const checkStatus = this.allAllowConfirm(this.form);
@@ -1210,6 +1212,7 @@ export default {
         });
         return false;
       }
+      return true;
     },
     handleCancel () { // 作废
       const checkStatus = this.allAllowCancel(this.form);
