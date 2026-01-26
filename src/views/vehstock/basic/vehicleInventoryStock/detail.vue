@@ -26,7 +26,7 @@
               {{ info.stockType }}
             </el-form-item>
             <el-form-item label="状态：" prop="status">
-              {{ info.status }}
+              {{ info.statusLabel }}
             </el-form-item>
             <el-form-item label="备注：" prop="remark">
               {{ info.remark }}
