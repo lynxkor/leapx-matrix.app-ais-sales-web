@@ -202,7 +202,7 @@ export default {
         },
         // 初始方法
         model: async (query) => {
-          return await listVehicleModel({ modelNameLike: query });
+          return await this.searchModel(query);
         },
         yearType: async (query) => {
           return await listVehicleYearType({ yearTypeNameLike: query });
@@ -251,6 +251,18 @@ export default {
     };
   },
   methods: {
+    // 车型支持车系 ID 和 车型输入 方法
+    async searchModel (query) {
+      const params = {};
+      if (query) {
+        params.modelNameLike = query;
+      }
+      if (this.form.seriesIdList?.length) {
+        params.seriesIds = this.form.seriesIdList;
+      }
+
+      return await listVehicleModel(params);
+    },
     handleApplyQtyChange (row, value) {
       const intValue = Math.max(0, Math.floor(value || 0));
       row.applyQty = intValue;

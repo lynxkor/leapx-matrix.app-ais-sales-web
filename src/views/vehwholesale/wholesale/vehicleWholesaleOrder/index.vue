@@ -19,7 +19,7 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_wholesale_order_status"
-          v-model="form.status"
+          v-model="form.statuses"
           placeholder="请选择"
           clearable
           multiple
@@ -36,7 +36,7 @@
              <fetch-select
                 :request="fetchOptions"
                 enumCode="vw_eorder_type"
-                v-model="form.orderCategory"
+                v-model="form.orderCategorys"
                 placeholder="请选择"
                 clearable
                 multiple
@@ -142,6 +142,7 @@
             v-model="form.prodScheduleActivityIds"
             placeholder="请选择"
             clearable
+            multiple
             filterable
           />
         </el-form-item>
@@ -700,7 +701,7 @@ export default {
           type: 'error',
           message: '请选择需要操作的数据！!'
         });
-        return;
+        return false;
       };
       for (const item of items) {
         if (!this.ALLOWED_STATUS.includes(item.status)) {
@@ -708,16 +709,17 @@ export default {
             type: 'error',
             message: '只有该订单状态【未配车、或配车失败】可以取消急单!'
           });
-          return;
+          return false;
         };
         if (item.emergencyOrder !== 1) {
           this.$message({
             type: 'error',
             message: '只有【已设置急单】可以取消急单!'
           });
-          return;
+          return false;
         };
       }
+      return true;
     },
     handleCancelEmergencyOrder () {
       const ids = this.selectionList.map(item => item.id) || [];
@@ -743,6 +745,7 @@ export default {
       }
     },
     emergencyApproval (data) {
+      console.log(data);
       return setEmergencyOrderItem(data).then(() => {
         this.$message({
           type: 'success',
@@ -755,7 +758,7 @@ export default {
       return batchCancelItem(data).then(() => {
         this.$message({
           type: 'success',
-          message: '批量审核成功'
+          message: '批量作废成功'
         });
         this.getData();
       });
@@ -766,7 +769,7 @@ export default {
           type: 'error',
           message: '请选择需要操作的数据！!'
         });
-        return;
+        return false;
       };
       for (const item of items) {
         if (item.confirmStatus !== 1010) {
@@ -774,23 +777,24 @@ export default {
             type: 'error',
             message: '选择的数据中[确认状态]必须为[未确认]!'
           });
-          return;
+          return false;
         };
         if (!this.ALLOWED_STATUS.includes(item.status)) {
           this.$message({
             type: 'error',
             message: '选择的数据中[订单状态]必须为[未配车,配车失败]!'
           });
-          return;
+          return false;
         };
         if (item.orderCategory !== 0) {
           this.$message({
             type: 'error',
             message: '选择的数据中[订单分类]必须为[商品车订单]!'
           });
-          return;
+          return false;
         }
       }
+      return true;
     },
     allAllowCancel (items) {
       if (items.length === 0) {
@@ -798,7 +802,7 @@ export default {
           type: 'error',
           message: '请选择需要操作的数据！!'
         });
-        return;
+        return false;
       };
       for (const item of items) {
         if (!this.ALLOWED_STATUS.includes(item.status)) {
@@ -806,16 +810,17 @@ export default {
             type: 'error',
             message: '订单已完成配车，不允许作废!'
           });
-          return;
+          return false;
         };
-        if (item.allow_lock_retail === 1) {
+        if (item.allowLockRetail === 0) {
           this.$message({
             type: 'error',
             message: '批售订单已绑定零售订单,不允许作废!'
           });
-          return;
+          return false;
         }
       }
+      return true;
     },
     allAllowEmergency (items) {
       if (items.length === 0) {
@@ -823,7 +828,7 @@ export default {
           type: 'error',
           message: '请选择需要操作的数据！!'
         });
-        return;
+        return false;
       };
       for (const item of items) {
         if (!this.ALLOWED_STATUS.includes(item.status)) {
@@ -831,7 +836,7 @@ export default {
             type: 'error',
             message: '只有【订单状态】为未配车、配车失败的记录可以设置，请核实！!'
           });
-          return; // 只要有一个不满足，立即终止操作
+          return false; // 只要有一个不满足，立即终止操作
         }
         // if (item.emergencyOrder === 1) {
         //   this.$message({
@@ -841,6 +846,7 @@ export default {
         //   return;
         // }
       }
+      return true;
     },
     handleSetEmergencyOrder () {
       const items = this.selectionList.map(item => item) || [];
@@ -867,7 +873,9 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          batchConfirmItem(ids).then(() => {
+          batchConfirmItem({
+            idSet: ids
+          }).then(() => {
             this.$message({
               type: 'success',
               message: '确认成功!'
@@ -1085,6 +1093,14 @@ export default {
         if (this.form.confirmTime.length > 1) {
           data.confirmTimeStart = this.form.confirmTime[0];
           data.confirmTimeEnd = this.form.confirmTime[1];
+        }
+      }
+
+      if (this.form.allocateTime) {
+        delete data.allocateTime;
+        if (this.form.allocateTime.length > 1) {
+          data.allocateTimeStart = this.form.allocateTime[0];
+          data.allocateTimeEnd = this.form.allocateTime[1];
         }
       }
 

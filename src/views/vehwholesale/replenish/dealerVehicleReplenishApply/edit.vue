@@ -279,13 +279,15 @@
           <section class="common-section">
             <div class="common-section-header">
               <h2>整车门店补货明细</h2>
-              <el-button size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>添加补货明细</el-button>
+              <el-button size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus" v-show="isEditing || !_id"></i>添加补货明细</el-button>
             </div>
             <div class="common-section-body">
               <div class="common-section-table">
                 <component-table
                   :tableData="form.details"
                   :columns="detailsColumns"
+                  :show-delete="true"
+                  @delete-row="handleDeleteDetailRow"
                 />
               </div>
             </div>
@@ -424,6 +426,12 @@ export default {
         }
       },
       immediate: true
+    },
+    'form.details': {
+      handler (newVal) {
+        this.updateApplyTotalQty();
+      },
+      deep: true
     }
   },
   data () {
@@ -635,24 +643,63 @@ export default {
     // this.handleChangeFundType(this.form.settleFundType);
   },
   methods: {
+    handleDeleteDetailRow (row, rowIndex) {
+      this.$confirm(`确定要删除${row.replenishApplyDetailCode}表格数据吗`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.form.details.splice(rowIndex, 1);
+        this.updateApplyTotalQty();
+      }).catch(() => {
+      });
+    },
     handleSave () {
       const dataList = this.$refs.addCommercialVehicle.tableList;
       if (!dataList || dataList.length === 0) return;
-      let params = {
-        mainData: {
-          replenishApplyId: this._id,
-          ...this.form,
-        },
-        detailList: dataList
-      };
-      delete params.mainData.id;
-      addOrUpdateDetail(params).then(id => {
-        this.$message.success('更新成功');
-        this.$refs.editLayout.closePane();
-        this.detailRequest();
-      }).catch(e => {
-        this.$message.error('更新失败');
+      const processedDataList = dataList.map(item => {
+        const { id, yearTypeId, yearTypeName, ...rest } = item;
+        return {
+          ...rest,
+          vehicleYearTypeId: yearTypeId,
+          vehicleYearType: yearTypeName
+        };
       });
+      // 创建一个 map 来存储 form.details 中已有的 materialsCode
+      const existingDetailsMap = new Map();
+      this.form.details.forEach(detail => {
+        if (detail.materialsCode) {
+          existingDetailsMap.set(detail.materialsCode, detail);
+        }
+      });
+      const newDetails = [];
+      const updatedDetails = [...this.form.details];
+      processedDataList.forEach(dataItem => {
+        const existingDetail = existingDetailsMap.get(dataItem.materialsCode);
+        if (existingDetail) {
+          existingDetail.applyQty = (Number(existingDetail.applyQty) || 0) + (Number(dataItem.applyQty) || 0);
+        } else {
+          newDetails.push(dataItem);
+        }
+      });
+      this.form.details = [...updatedDetails, ...newDetails];
+      this.updateApplyTotalQty();
+      this.$refs.editLayout.closePane();
+      // let params = {
+      //   mainData: {
+      //     replenishApplyId: this._id,
+      //     ...this.form,
+      //   },
+      //   detailList: dataList
+      // };
+      // delete params.mainData.id;
+      // addOrUpdateDetail(params).then(id => {
+      //   this.$message.success('更新成功');
+      //   this.$refs.editLayout.closePane();
+      //   this.detailRequest();
+      // }).catch(e => {
+      //   this.$message.error('更新失败');
+      // });
     },
     handleCancel () {
       this.$refs.editLayout.closePane();
@@ -665,6 +712,8 @@ export default {
           if (data && data.orderCategory !== undefined && data.orderCategory !== null) {
             data.orderCategory = String(data.orderCategory);
           }
+          // 更新applyTotalQty
+          this.updateApplyTotalQty();
           return data;
         }).catch(error => {
           this.$message.error('获取详情失败');
@@ -674,7 +723,14 @@ export default {
       return Promise.resolve(null);
     },
     submitRequest () {
-      return addOrUpdate({ ...this.form });
+      let params = {
+        mainData: {
+          ...this.form,
+        },
+        detailList: this.form.details
+      };
+
+      return addOrUpdate(params);
     },
     // 打开侧边栏
     openPane () {
@@ -821,6 +877,18 @@ export default {
         isAudit: data.result,
         auditOpinion: data.remark
       });
+    },
+    updateApplyTotalQty () {
+      if (!this.form.details || this.form.details.length === 0) {
+        this.form.applyTotalQty = 0;
+        return;
+      }
+      let total = 0;
+      this.form.details.forEach(detail => {
+        const qty = Number(detail.applyQty) || 0;
+        total += qty;
+      });
+      this.form.applyTotalQty = total;
     },
     handleUnused () {
       // 作废逻辑

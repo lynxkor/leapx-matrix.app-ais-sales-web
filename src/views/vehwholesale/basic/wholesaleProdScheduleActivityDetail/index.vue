@@ -12,9 +12,9 @@
      <el-form-item label="活动名称">
         <tag-input v-model="form.activityNames" placeholder="请输入" />
       </el-form-item>
-      <el-form-item label="活动编码">
+      <!-- <el-form-item label="活动编码">
         <tag-input v-model="form.activityCodes" placeholder="请输入" />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="创建时间">
         <el-date-picker
          :default-time="['00:00:00', '23:59:59']"
@@ -65,7 +65,7 @@
             :remote-method="modelSearch"
             remote
             reserve-keyword
-            :options="modelList" v-model="form.modelIds" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable
+            :options="modelList" v-model="form.modelLineIds" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable
             />
         </el-form-item>
         <el-form-item label="物料编码">
@@ -211,7 +211,7 @@ export default {
             }]
           },
           { props: 'activityName', label: '活动名称', visible: true, width: 200 },
-          { props: 'modelLineId', label: '系列', visible: true, width: 200 },
+          { props: 'modelLineName', label: '车型', visible: true, width: 200 },
           { props: 'deliveryWayLabel', label: '指定发运方式', visible: true, width: 200 },
           { props: 'allowLockRetailLabel', label: '是否锁零售单', visible: true, width: 200 },
           { props: 'startTime', label: '开始日期', visible: true, width: 200 },
