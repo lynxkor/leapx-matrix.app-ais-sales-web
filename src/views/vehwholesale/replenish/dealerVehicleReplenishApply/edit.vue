@@ -640,6 +640,7 @@ export default {
   },
   mounted () {
     this.fetchOrderCategoryOptions();
+    this.handleChangeOrderCategory(this.form.orderCategory);
   },
   methods: {
     handleSave () {
@@ -743,6 +744,7 @@ export default {
       });
     },
     handleChangeDealer (val, record) {
+      this.form.saleDealerName = record?.storeName || '';
       this.form.saleDealerCode = record?.storeCode || '';
       this.form.regionCode = record?.regionCode || '';
       this.form.regionName = record?.region || '';
