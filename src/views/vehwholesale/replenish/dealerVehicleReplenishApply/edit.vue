@@ -673,6 +673,10 @@ export default {
           vehicleYearType: yearTypeName
         };
       });
+      // 确保 form.details 存在且是数组
+      if (!Array.isArray(this.form.details)) {
+        this.form.details = [];
+      }
       // 创建一个 map 来存储 form.details 中已有的 materialsCode
       const existingDetailsMap = new Map();
       this.form.details.forEach(detail => {
