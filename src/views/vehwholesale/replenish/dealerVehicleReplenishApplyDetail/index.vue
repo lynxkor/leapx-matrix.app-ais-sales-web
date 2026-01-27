@@ -58,8 +58,7 @@
         </el-form-item>
         <el-form-item label="订单分类">
           <fetch-select
-            :request="fetchOptions"
-            enumCode="ws_order_category"
+            :options="orderCategoryOptions"
             v-model="form.orderCategory"
             placeholder="请选择"
             clearable
@@ -70,7 +69,7 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_fundtype"
-            v-model="form.fundTypes"
+            v-model="form.settleFundType"
             placeholder="请选择"
             clearable
             filterable
@@ -183,7 +182,7 @@ const defaultForm = {
   applyCategory: '',
   orderCategory: '',
   settleFundType: '',
-  financialOrganization: '',
+  financialOrganizationId: '',
   wholesaleWay: '',
   seriesId: ''
 };
@@ -212,6 +211,7 @@ export default {
         ...defaultForm
       },
       selectionList: [],
+      orderCategoryOptions: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -247,6 +247,7 @@ export default {
           { props: 'auditStatusLabel', label: '审核状态', visible: true, width: 200 },
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
+          { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 200 },
           { props: 'prodScheduleActivity', label: '专项活动名称', visible: true, width: 200 },
           { props: 'applyCategoryLabel', label: '申请类别', visible: true, width: 200 },
           { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
@@ -308,6 +309,9 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
+  },
+  mounted () {
+    this.fetchOrderCategoryOptions();
   },
   methods: {
     handleListSelect (row) {
@@ -502,7 +506,25 @@ export default {
     },
     async getVehicleSeriesList (params) {
       return vehicleSeriesList({ seriesNameLike: params, status: 1 });
-    }
+    },
+    async fetchOrderCategoryOptions () {
+      const response = await getEnum('vw_order_category');
+      console.log('response:', response);
+      // 过滤出 code 为 0、2、20 的数据，且确保 code 是字符串类型
+      // 0 商品车订单
+      // 2 试驾车订单
+      // 20 展车订单
+      this.orderCategoryOptions = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['0', '2', '20'].includes(codeStr);
+      }).map(item => {
+        // 确保 code 字段是字符串类型
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
+    },
   }
 };
 </script>

@@ -10,15 +10,17 @@
         :form.sync="form"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="form.permission.edit"
       >
         <template #status>
-          <span class="status primary">状态</span>
+          {{ form.replenishApplyCode }}
+          <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button size="small" @click="handleSubmit">提交补货申请</el-button>
-          <el-button size="small" @click="handleAuditValid('dealer')">门店审核</el-button>
-          <el-button size="small" @click="handleAuditValid('factory')">厂端审核</el-button>
-          <el-button size="small" @click="handleUnused">作废</el-button>
+          <el-button size="small" @click="handleSubmit" :disabled="!form.permission.submit">提交补货申请</el-button>
+          <el-button size="small" @click="handleAuditValidForDealer()" :disabled="!form.permission.dealerAudit">门店审核</el-button>
+          <el-button size="small" @click="handleAuditValidForFactory()" :disabled="!form.permission.factoryAudit">厂端审核</el-button>
+          <el-button size="small" @click="handleUnused" :disabled="!form.permission.cancel">作废</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -279,14 +281,14 @@
           <section class="common-section">
             <div class="common-section-header">
               <h2>整车门店补货明细</h2>
-              <el-button size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus" v-show="isEditing || !_id"></i>添加补货明细</el-button>
+              <el-button size="small" @click="handleAddRow" v-show="isEditing || !_id"><i class="iconfont icon-lxppc-plus"></i>添加补货明细</el-button>
             </div>
             <div class="common-section-body">
               <div class="common-section-table">
                 <component-table
                   :tableData="form.details"
                   :columns="detailsColumns"
-                  :show-delete="true"
+                  :show-delete="isEditing || !_id"
                   @delete-row="handleDeleteDetailRow"
                 />
               </div>
@@ -334,7 +336,7 @@
 
 <script>
 import { getDetail, addOrUpdate, dealerAuditValid, factoryAuditValid, dealerApproval, factoryApproval, unusedApply, replenishmentSubmit } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
-import { addOrUpdate as addOrUpdateDetail } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/index';
+// import { addOrUpdate as addOrUpdateDetail } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -665,6 +667,10 @@ export default {
           vehicleYearType: yearTypeName
         };
       });
+      // 确保 form.details 存在且是数组
+      if (!Array.isArray(this.form.details)) {
+        this.form.details = [];
+      }
       // 创建一个 map 来存储 form.details 中已有的 materialsCode
       const existingDetailsMap = new Map();
       this.form.details.forEach(detail => {
@@ -800,18 +806,12 @@ export default {
       getDealerDetailByCode(this.form.saleDealerCode).then(response => {
         this.form.deliveryDealerCode = response?.exclusiveDeliveryStoreCode || '';
         this.form.deliveryDealerName = response?.exclusiveDeliveryStoreName || '';
-      }).catch(error => {
-        // 错误处理逻辑
-        console.error('请求失败:', error);
       });
       if (this.form.deliveryDealerCode) {
         getDealerDetailByCode(this.form.deliveryDealerCode).then(response => {
           this.form.dealerWarehouseCode = response?.storeWarehouseResp?.warehouseCode || '';
           this.form.dealerWarehouseAddress = response?.storeWarehouseResp?.warehouseDetailAddress || '';
           this.form.dealerWarehouseName = response?.storeWarehouseResp?.warehouseName || '';
-        }).catch(error => {
-          // 错误处理逻辑
-          console.error('请求失败:', error);
         });
       }
     },
@@ -847,19 +847,18 @@ export default {
       return await listFinancialOrganization({ organizationNameLike: query, status: 1 });
     },
     async prodScheduleActivitySearch (query) {
-      // if (!this.form.saleDealerCode) {
-      //   this.$message.warning('请先选择销售门店');
-      //   return [];
-      // }
-      // todo
+      if (!this.form.saleDealerCode) {
+        this.$message.warning('请先选择销售门店');
+        return [];
+      }
       return await listWholesaleProdScheduleActivity({ scheduleActivityIdLike: query, status: 1, dealerCode: this.form.saleDealerCode });
     },
-    handleAuditValidForDealer (type) {
+    handleAuditValidForDealer () {
       return dealerAuditValid([this._id]).then(() => {
         this.$refs.auditInputForDealer.show();
       });
     },
-    handleAuditValidForFactory (type) {
+    handleAuditValidForFactory () {
       return factoryAuditValid([this._id]).then(() => {
         this.$refs.auditInputForFactory.show();
       });
@@ -869,6 +868,9 @@ export default {
         ids: [this._id],
         isAudit: data.result,
         auditOpinion: data.remark
+      }).then(() => {
+        this.$message.success('补货申请门店审核成功');
+        this.detailRequest();
       });
     },
     handelAuditForFactory (data) {
@@ -876,6 +878,9 @@ export default {
         ids: [this._id],
         isAudit: data.result,
         auditOpinion: data.remark
+      }).then(() => {
+        this.$message.success('补货申请厂端审核成功');
+        this.detailRequest();
       });
     },
     updateApplyTotalQty () {
@@ -892,7 +897,7 @@ export default {
     },
     handleUnused () {
       // 作废逻辑
-      this.$confirm('确定要作废该补货申请吗？', '提示', {
+      this.$confirm('是否执行作废操作？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

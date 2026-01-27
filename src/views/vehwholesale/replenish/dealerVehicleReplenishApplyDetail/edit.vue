@@ -318,7 +318,7 @@
                   {{ form.replenishApplyCode }}
                 </el-form-item>
                 <el-form-item label="审核状态：" prop="auditStatus">
-                  {{ form.auditStatus }}
+                  {{ form.auditStatusLabel }}
                 </el-form-item>
                 <el-form-item label="销售门店名称：" prop="saleDealerName">
                   {{ form.saleDealerName }}
@@ -326,11 +326,14 @@
                 <el-form-item label="所属大区：" prop="regionName">
                   {{ form.regionName }}
                 </el-form-item>
+                <el-form-item label="批售方式：" prop="wholesaleWayLabel">
+                  {{ form.wholesaleWayLabel }}
+                </el-form-item>
                 <el-form-item label="专项活动名称：" prop="prodScheduleActivity">
                   {{ form.prodScheduleActivity }}
                 </el-form-item>
                 <el-form-item label="申请类别：" prop="applyCategory">
-                  {{ form.applyCategory }}
+                  {{ form.applyCategoryLabel }}
                 </el-form-item>
                 <el-form-item label="车系名称：" prop="seriesName">
                   {{ form.seriesName }}
@@ -339,10 +342,10 @@
                   {{ form.modelName }}
                 </el-form-item>
                 <el-form-item label="订单分类：" prop="orderCategory">
-                  {{ form.orderCategory }}
+                  {{ form.orderCategoryLabel }}
                 </el-form-item>
                 <el-form-item label="结算资金类型：" prop="settleFundType">
-                  {{ form.settleFundType }}
+                  {{ form.settleFundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构名称：" prop="financialOrganization">
                   {{ form.financialOrganization }}
@@ -366,7 +369,7 @@
                   {{ form.auditTime }}
                 </el-form-item>
                 <el-form-item label="开票优惠类型：" prop="invoiceDiscountType">
-                  {{ form.invoiceDiscountType }}
+                  {{ form.invoiceDiscountTypeLabel }}
                 </el-form-item>
                 <el-form-item label="开票系数：" prop="invoiceCoefficient">
                   {{ form.invoiceCoefficient }}
@@ -374,77 +377,7 @@
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
                 </el-form-item>
-                <el-form-item label="主键：" prop="id">
-                  {{ form.id }}
-                </el-form-item>
-                <el-form-item label="创建者：" prop="creator">
-                  {{ form.creator }}
-                </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  {{ form.creatorName }}
-                </el-form-item>
-                <el-form-item label="修改者：" prop="modifier">
-                  {{ form.modifier }}
-                </el-form-item>
-                <el-form-item label="修改者名称：" prop="modifierName">
-                  {{ form.modifierName }}
-                </el-form-item>
-                <el-form-item label="修改时间：" prop="updateTime">
-                  {{ form.updateTime }}
-                </el-form-item>
-                <el-form-item label="备注：" prop="remark">
-                  {{ form.remark }}
-                </el-form-item>
-                <el-form-item label="状态：" prop="status">
-                  {{ form.status }}
-                </el-form-item>
-                <el-form-item label="状态变更描述：" prop="statusDesc">
-                  {{ form.statusDesc }}
-                </el-form-item>
-                <el-form-item label="销售门店编码：" prop="saleDealerCode">
-                  {{ form.saleDealerCode }}
-                </el-form-item>
-                <el-form-item label="大区ID：" prop="regionCode">
-                  {{ form.regionCode }}
-                </el-form-item>
-                <el-form-item label="专项活动：" prop="prodScheduleActivityId">
-                  {{ form.prodScheduleActivityId }}
-                </el-form-item>
-                <el-form-item label="车系ID：" prop="seriesId">
-                  {{ form.seriesId }}
-                </el-form-item>
-                <el-form-item label="车型ID：" prop="modelId">
-                  {{ form.modelId }}
-                </el-form-item>
-                <el-form-item label="金融机构ID：" prop="financialOrganizationId">
-                  {{ form.financialOrganizationId }}
-                </el-form-item>
-                <el-form-item label="物料ID：" prop="materialsId">
-                  {{ form.materialsId }}
-                </el-form-item>
-                <el-form-item label="申请原因：" prop="applyReason">
-                  {{ form.applyReason }}
-                </el-form-item>
               </el-form>
-            </div>
-          </section>
-          <section class="common-section">
-            <div class="common-section-header">
-              <h2>区块标题</h2>
-              <el-button v-if="canAddOrUpdate" size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>添加</el-button>
-            </div>
-            <div class="common-section-body">
-              <div class="common-section-table">
-                <edit-table
-                  ref="editTable"
-                  :columns="columns"
-                  :data="tableData"
-                  :defaultNewRow="defaultNewRow"
-                  :show-toolbar="false"
-                  :options="options"
-                  :auth="{edit: canAddOrUpdate, delete: canDelete}"
-                />
-              </div>
             </div>
           </section>
         </el-main>

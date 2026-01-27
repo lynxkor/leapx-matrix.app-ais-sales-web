@@ -85,8 +85,7 @@
         </el-form-item>
         <el-form-item label="订单分类">
           <fetch-select
-            :request="fetchOptions"
-            enumCode="vw_order_category"
+            :options="orderCategoryOptions"
             v-model="form.orderCategory"
             placeholder="请选择"
             clearable
@@ -249,6 +248,7 @@ export default {
         ...defaultForm
       },
       selectionList: [],
+      orderCategoryOptions: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -314,9 +314,16 @@ export default {
                 this.$router.push({
                   path: '/vehwholesale/replenish/dealerVehicleReplenishApply/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
+              },
+              type: 'info'
+            }, {
+              name: '日志',
+              click: (rowIndex, row) => {
+                this.$auditLog.show({ id: row.id });
               },
               type: 'info'
             }]
@@ -330,6 +337,9 @@ export default {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
     this.getEnum();
+  },
+  mounted () {
+    this.fetchOrderCategoryOptions();
   },
   methods: {
     async vehicleWholesale () {
@@ -370,7 +380,7 @@ export default {
     async showDropdown () {
       this.dropdownLoading = true;
       try {
-        // await createRequestValid();
+        await createRequestValid();
         // todo
         this.dropdownLoading = false;
         this.validatedOrderategoryList = [...this.orderategoryList];
@@ -575,7 +585,25 @@ export default {
       return factoryAuditValid(ids).then(() => {
         this.$refs.batchAuditInput.openDialog({ ids, isApprove: data });
       });
-    }
+    },
+    async fetchOrderCategoryOptions () {
+      const response = await getEnum('vw_order_category');
+      console.log('response:', response);
+      // 过滤出 code 为 0、2、20 的数据，且确保 code 是字符串类型
+      // 0 商品车订单
+      // 2 试驾车订单
+      // 20 展车订单
+      this.orderCategoryOptions = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['0', '2', '20'].includes(codeStr);
+      }).map(item => {
+        // 确保 code 字段是字符串类型
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
+    },
   }
 };
 </script>
