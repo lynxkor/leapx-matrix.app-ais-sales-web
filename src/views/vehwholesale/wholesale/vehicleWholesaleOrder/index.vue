@@ -333,7 +333,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      id="wholesaleDealerWholesaleConfImport"
+      id="importPriceCoefficient"
       @close="handleUploadDialogClose"
     />
 
