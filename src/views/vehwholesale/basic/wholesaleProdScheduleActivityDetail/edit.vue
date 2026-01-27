@@ -4,9 +4,10 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        :title="title"
+        title="排产专项活动明细"
         :isEditing.sync="isEditing"
         :form.sync="form"
+        :showEditBtn="false"
         :showBackBtn="showBackBtn"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
