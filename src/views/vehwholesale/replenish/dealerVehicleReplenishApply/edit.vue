@@ -499,6 +499,7 @@ export default {
       ],
       detailsColumns: [
         { field: 'replenishApplyDetailCode', title: '整车补货明细单号', width: '280' },
+        { field: 'vehicleYearType', title: '年款', width: '120' },
         { field: 'seriesName', title: '车系', width: '120' },
         { field: 'modelName', title: '车型', width: '200' },
         { field: 'materialsCode', title: '物料编码', width: '250' },

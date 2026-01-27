@@ -45,7 +45,7 @@
               <el-form-item label="订单分类" prop="orderCategory">
                 <fetch-select
                   :request="fetchOptions"
-                  enumCode="ws_order_category"
+                  enumCode="vw_order_category"
                   v-model="form.orderCategory"
                   placeholder="请选择"
                   clearable
