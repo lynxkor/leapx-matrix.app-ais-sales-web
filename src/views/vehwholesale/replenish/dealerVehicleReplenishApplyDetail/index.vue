@@ -341,7 +341,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '整车批售-批售主数据-整车门店补货明细管理',
-        dataFetchPath: 'wholesale/web/replenish/dealerVehicleReplenishApplyDetail/page',
+        dataFetchPath: 'vw/web/replenish/dealerVehicleReplenishApplyDetail/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

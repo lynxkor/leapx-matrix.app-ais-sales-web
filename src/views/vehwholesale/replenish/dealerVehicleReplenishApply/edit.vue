@@ -38,7 +38,7 @@
                     :disabled="true"
                   />
                 </el-form-item>
-                <el-form-item label="门店编码" prop="saleDealerCode">
+                <el-form-item label="门店编码：" prop="saleDealerCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.saleDealerCode"
@@ -806,14 +806,14 @@ export default {
       getDealerDetailByCode(this.form.saleDealerCode).then(response => {
         this.form.deliveryDealerCode = response?.exclusiveDeliveryStoreCode || '';
         this.form.deliveryDealerName = response?.exclusiveDeliveryStoreName || '';
+        if (this.form.deliveryDealerCode) {
+          getDealerDetailByCode(this.form.deliveryDealerCode).then(response => {
+            this.form.dealerWarehouseCode = response?.storeWarehouseResp?.warehouseCode || '';
+            this.form.dealerWarehouseAddress = response?.storeWarehouseResp?.warehouseDetailAddress || '';
+            this.form.dealerWarehouseName = response?.storeWarehouseResp?.warehouseName || '';
+          });
+        }
       });
-      if (this.form.deliveryDealerCode) {
-        getDealerDetailByCode(this.form.deliveryDealerCode).then(response => {
-          this.form.dealerWarehouseCode = response?.storeWarehouseResp?.warehouseCode || '';
-          this.form.dealerWarehouseAddress = response?.storeWarehouseResp?.warehouseDetailAddress || '';
-          this.form.dealerWarehouseName = response?.storeWarehouseResp?.warehouseName || '';
-        });
-      }
     },
     handleChangeOrderCategory (val) {
       // 0 商品车订单

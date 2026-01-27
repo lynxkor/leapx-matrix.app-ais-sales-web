@@ -381,7 +381,6 @@ export default {
       this.dropdownLoading = true;
       try {
         await createRequestValid();
-        // todo
         this.dropdownLoading = false;
         this.validatedOrderategoryList = [...this.orderategoryList];
       } catch (error) {
@@ -410,7 +409,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '整车批售-批售主数据-整车门店补货申请管理',
-        dataFetchPath: 'vehwholesale/replenish/dealerVehicleReplenishApply/page',
+        dataFetchPath: 'vw/web/replenish/dealerVehicleReplenishApply/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
