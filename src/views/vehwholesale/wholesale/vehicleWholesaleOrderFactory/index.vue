@@ -116,7 +116,7 @@
                 v-model="form.yearTypeIds"
                 placeholder="请选择"
                 labelKey="name"
-                valueKey="name"
+                valueKey="id"
                 clearable
                 multiple
                 collapseTags
@@ -173,10 +173,10 @@
            <fetch-select
                   :remote-method="getParentCompany"
                   remote
-                  v-model="form.dealerCompanyNames"
+                  v-model="form.dealerCompanyCodes"
                   placeholder="请选择"
                   labelKey="companyName"
-                  valueKey="companyName"
+                  valueKey="companyCode"
                   multiple
                   clearable
                   filterable
@@ -586,7 +586,6 @@ export default {
           { props: 'erpDeliverOrder', label: 'ERP交货单', visible: true, width: 200 },
           { props: 'erpInvoiceCode', label: 'ERP发票号', visible: true, width: 200 },
           { props: 'syncSapStatus', label: '同步SAP状态', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           // { props: 'dealerCompanyCode', label: '母公司代码', visible: true, width: 200 },
@@ -630,7 +629,7 @@ export default {
           { props: 'dynamicDeliveryCycleDesc', label: '动态交付周期说明', visible: true, width: 200 },
           { props: 'orderBatteryCellName', label: '电池电芯(订单物料)', visible: true, width: 200 },
           { props: 'batteryCellName', label: '电池电芯(配车物料)', visible: true, width: 200 },
-          // { props: 'confirmedCount', label: '批售确认次数', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',

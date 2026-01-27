@@ -116,7 +116,7 @@
                 v-model="form.yearTypeIds"
                 placeholder="请选择"
                 labelKey="name"
-                valueKey="name"
+                valueKey="id"
                 clearable
                 multiple
                 collapseTags
@@ -173,10 +173,10 @@
            <fetch-select
                   :remote-method="getParentCompany"
                   remote
-                  v-model="form.dealerCompanyNames"
+                  v-model="form.dealerCompanyCodes"
                   placeholder="请选择"
                   labelKey="companyName"
-                  valueKey="companyName"
+                  valueKey="companyCode"
                   multiple
                   clearable
                   filterable
@@ -333,7 +333,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      id="wholesaleDealerWholesaleConfImport"
+      id="importPriceCoefficient"
       @close="handleUploadDialogClose"
     />
 
@@ -525,13 +525,11 @@ export default {
           { props: 'wholesalePrice', label: '批售价', visible: true, width: 200 },
           { props: 'rebateUseTypeLabel', label: '返利使用类型', visible: true, width: 200 },
           { props: 'rebateCoefficient', label: '返利使用系数', visible: true, width: 200 },
-
           { props: 'usedRebateAmount', label: '使用返利金额', visible: true, width: 200 },
           { props: 'erpSaleOrderCode', label: 'ERP销售订单号', visible: true, width: 200 },
           { props: 'erpDeliverOrder', label: 'ERP交货单', visible: true, width: 200 },
           { props: 'erpInvoiceCode', label: 'ERP发票号', visible: true, width: 200 },
           { props: 'syncSapStatus', label: '同步SAP状态', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           // { props: 'dealerCompanyCode', label: '母公司代码', visible: true, width: 200 },
@@ -564,6 +562,7 @@ export default {
           { props: 'logisticsReserve', label: '物流说明', visible: true, width: 200 },
           { props: 'initDeliveryCycleDesc', label: '初始交付周期说明', visible: true, width: 200 },
           { props: 'dynamicDeliveryCycleDesc', label: '动态交付周期说明', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
