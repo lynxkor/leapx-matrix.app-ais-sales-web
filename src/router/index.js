@@ -1526,6 +1526,42 @@ const routes = [
         name: '整车批售-批售主数据-整车批售订单管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehwholesale/wholesale/vehicleWholesaleOrder',
+      name: 'order',
+      component: () => import('@/views/vehwholesale/wholesale/vehicleWholesaleOrder/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车批售订单管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
+      name: 'orderEdit',
+      component: () => import('@/views/vehwholesale/wholesale/vehicleWholesaleOrder/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车批售订单管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/wholesale/vehicleWholesaleOrderFactory',
+      name: 'orderFactory',
+      component: () => import('@/views/vehwholesale/wholesale/vehicleWholesaleOrderFactory/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车批售订单管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/wholesale/vehicleWholesaleOrderFactory/edit',
+      name: 'orderEditFactory',
+      component: () => import('@/views/vehwholesale/wholesale/vehicleWholesaleOrderFactory/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车批售订单管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];

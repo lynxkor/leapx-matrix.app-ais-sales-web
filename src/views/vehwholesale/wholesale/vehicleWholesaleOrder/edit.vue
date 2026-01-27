@@ -104,7 +104,7 @@
                   <el-form-item label="订单分类：" prop="orderCategory">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.orderCategory"
+                    v-model="form.orderCategories"
                     clearable
                     disabled
                   />
@@ -236,23 +236,6 @@
                     disabled
                   />
                 </el-form-item>
-                  <el-form-item label="订单物料编码：" prop="orderMaterialCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.orderMaterialCode"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                  <el-form-item label="指定发运方式：" prop="deliveryWay">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.deliveryWay"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-
               </el-form>
               <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <!-- <el-form-item label="批售订单号：" prop="wholesaleOrderCode">
@@ -332,12 +315,6 @@
                 </el-form-item>
                  <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
                   {{ form.replenishApplyDetailCode }}
-                </el-form-item>
-                 <el-form-item label="订单物料编码：" prop="orderMaterialCode">
-                  {{ form.orderMaterialCode }}
-                </el-form-item>
-                <el-form-item label="指定发运方式：" prop="deliveryWayLabel">
-                  {{ form.deliveryWayLabel }}
                 </el-form-item>
               </el-form>
             </div>
@@ -526,31 +503,7 @@
                     disabled
                   />
                 </el-form-item>
-                 <el-form-item label="是否需要自动配车" prop="needAutoAllocateCar">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.needAutoAllocateCar"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                    <el-form-item label="整车物流预留：" prop="logisticsReserve">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.logisticsReserve"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="物流预留备注：" prop="logisticsReserveRemark">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.logisticsReserveRemark"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                    <el-form-item label="初始交付周期说明：" prop="initDeliveryCycleDesc">
+                <el-form-item label="初始交付周期说明：" prop="initDeliveryCycleDesc">
                   <el-input
                     placeholder="请输入"
                     v-model="form.initDeliveryCycleDesc"
@@ -562,22 +515,6 @@
                   <el-input
                     placeholder="请输入"
                     v-model="form.dynamicDeliveryCycleDesc"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="电池电芯(订单物料)：" prop="orderBatteryCellName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.orderBatteryCellName"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                  <el-form-item label="电池电芯(配车物料)：" prop="batteryCellName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.batteryCellName"
                     clearable
                     disabled
                   />
@@ -645,26 +582,11 @@
                 <el-form-item label="车辆交付状态：" prop="deliveryStatusLabel">
                   {{ form.deliveryStatusLabel }}
                 </el-form-item>
-                 <el-form-item label="是否需要自动配车：" prop="needAutoAllocateCarLabel">
-                  {{ form.needAutoAllocateCarLabel }}
-                </el-form-item>
-                <el-form-item label="整车物流预留：" prop="logisticsReserve">
-                  {{ form.logisticsReserve }}
-                </el-form-item>
-                <el-form-item label="物流预留备注：" prop="logisticsReserveRemark">
-                  {{ form.logisticsReserveRemark }}
-                </el-form-item>
                   <el-form-item label="初始交付周期说明：" prop="initDeliveryCycleDesc">
                   {{ form.initDeliveryCycleDesc }}
                 </el-form-item>
                 <el-form-item label="动态交付周期说明：" prop="dynamicDeliveryCycleDesc">
                   {{ form.dynamicDeliveryCycleDesc }}
-                </el-form-item>
-                <el-form-item label="电池电芯(订单物料)：" prop="orderBatteryCellName">
-                  {{ form.orderBatteryCellName }}
-                </el-form-item>
-                <el-form-item label="电池电芯(配车物料)：" prop="batteryCellName">
-                  {{ form.batteryCellName }}
                 </el-form-item>
               </el-form>
             </div>
@@ -1114,7 +1036,7 @@ export default {
         });
         return false;
       };
-      if (item.orderCategory !== 1) {
+      if (item.orderCategory !== 0) {
         this.$message({
           type: 'error',
           message: '订单[订单分类]必须为[商品车订单]!'
@@ -1149,7 +1071,7 @@ export default {
           type: 'warning'
         }).then(() => {
           batchConfirmItem({
-            ids: [this.form.id]
+            idSet: [this.form.id]
           }).then(() => {
             this.$message({
               type: 'success',

@@ -36,7 +36,7 @@
              <fetch-select
                 :request="fetchOptions"
                 enumCode="vw_eorder_type"
-                v-model="form.orderCategorys"
+                v-model="form.orderCategories"
                 placeholder="请选择"
                 clearable
                 multiple
@@ -258,30 +258,7 @@
             filterable
           />
         </el-form-item>
-
-        <el-form-item label="是否紧急订单">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="BooleanEnum"
-            v-model="form.emergencyOrder"
-            placeholder="请选择"
-            clearable
-            filterable
-          />
-        </el-form-item>
-
-         <el-form-item label="指定发运方式">
-            <fetch-select
-              :request="fetchOptions"
-              enumCode="vehstock_ship_via"
-              v-model="form.deliveryWays"
-              placeholder="请选择"
-              clearable
-              multiple
-              filterable
-            />
-        </el-form-item>
-             <el-form-item label="车辆交付状态">
+        <el-form-item label="车辆交付状态">
           <fetch-select
             :request="fetchOptions"
             enumCode="vehstock_vehicle_delivery_status"
@@ -292,43 +269,11 @@
             filterable
           />
         </el-form-item>
-        <el-form-item label="订单物料编码">
-          <tag-input v-model="form.orderMaterialCodes" placeholder="请输入" />
-        </el-form-item>
-           <el-form-item label="是否需要自动配车">
-             <fetch-select
-                :request="fetchOptions"
-                enumCode="BooleanEnum"
-                v-model="form.needAutoAllocateCar"
-                placeholder="请选择"
-                clearable
-                filterable
-              />
-        </el-form-item>
-         <el-form-item label="整车物流预留">
-          <fetch-select
-              :request="fetchOptions"
-              enumCode="BooleanEnum"
-              v-model="form.logisticsReserve"
-              placeholder="请选择"
-              clearable
-              filterable
-            />
-        </el-form-item>
-         <el-form-item label="物流预留备注">
-          <tag-input v-model="form.logisticsReserveRemarks" placeholder="请输入" />
-        </el-form-item>
         <el-form-item label="初始交付周期说明">
           <tag-input v-model="form.initDeliveryCycleDescs" placeholder="请输入" />
         </el-form-item>
           <el-form-item label="动态交付周期说明">
             <tag-input v-model="form.dynamicDeliveryCycleDescs" placeholder="请输入" />
-        </el-form-item>
-           <el-form-item label="电池电芯(订单物料)">
-            <tag-input v-model="form.orderBatteryCellNames" placeholder="请输入" />
-        </el-form-item>
-          <el-form-item label="电池电芯(配车物料)">
-            <tag-input v-model="form.batteryCellNames" placeholder="请输入" />
         </el-form-item>
       </template>
       <page-search-action
@@ -560,7 +505,7 @@ export default {
           { props: 'statusLabel', label: '订单状态', visible: true, width: 200 },
           { props: 'orderTime', label: '订单时间', visible: true, width: 200 },
           { props: 'confirmTime', label: '确认时间', visible: true, width: 200 },
-          { props: 'saleDealerName', label: '销售公司名称', visible: true, width: 200 },
+          // { props: 'saleDealerName', label: '销售公司名称', visible: true, width: 200 },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 200 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
@@ -612,25 +557,13 @@ export default {
           { props: 'cooperateTypeLabel', label: '合作类型', visible: true, width: 200 },
           { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 200 },
           { props: 'creditSalesAmount', label: '融资金额/赊账', visible: true, width: 200 },
-          { props: 'emergencyOrderLabel', label: '是否紧急订单', visible: true, width: 200 },
           { props: 'emergencyOrderRemark', label: '急单备注', visible: true, width: 200 },
-          { props: 'emergencyOrderTime', label: '设置急单时间', visible: true, width: 200 },
           { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 200 },
           // { props: 'downPaymentRatio', label: '配车顺序时间', visible: true, width: 200 },
-          { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
-          { props: 'deliveryWayLabel', label: '指定发运方式', visible: true, width: 200 },
           { props: 'deliveryStatusLabel', label: '车辆交付状态', visible: true, width: 200 },
-          { props: 'orderMaterialCode', label: '订单物料编码', visible: true, width: 200 },
-          { props: 'needAutoAllocateCarLabel', label: '是否需要自动配车', visible: true, width: 200 },
-          { props: 'dealerWarehouseName', label: '门店仓库名称', visible: true, width: 200 },
-          { props: 'logisticsReserveLabel', label: '整车物流预留', visible: true, width: 200 },
-          { props: 'logisticsReserveRemark', label: '物流预留备注', visible: true, width: 200 },
           { props: 'logisticsReserve', label: '物流说明', visible: true, width: 200 },
           { props: 'initDeliveryCycleDesc', label: '初始交付周期说明', visible: true, width: 200 },
           { props: 'dynamicDeliveryCycleDesc', label: '动态交付周期说明', visible: true, width: 200 },
-          { props: 'orderBatteryCellName', label: '电池电芯(订单物料)', visible: true, width: 200 },
-          { props: 'batteryCellName', label: '电池电芯(配车物料)', visible: true, width: 200 },
-          { props: 'confirmedCount', label: '批售确认次数', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
@@ -648,25 +581,27 @@ export default {
                 });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
-            }]
+            }
+            // {
+            //   name: '删除',
+            //   popconfirmTitle: '此操作将永久删除, 是否继续?',
+            //   click: (rowIndex, row) => {
+            //     deleteItem([row.id]).then(() => {
+            //       this.$message({
+            //         type: 'success',
+            //         message: '删除成功!'
+            //       });
+            //       this.getData();
+            //     }).catch(() => {
+            //       this.$message({
+            //         type: 'error',
+            //         message: '删除失败!'
+            //       });
+            //     });
+            //   },
+            //   type: 'danger'
+            // }
+            ]
           }
         ],
         total: 0
