@@ -23,6 +23,7 @@
                   <el-input
                     placeholder="请输入"
                     v-model="form.activityCode"
+                    disabled
                     clearable
                   />
                 </el-form-item>
@@ -40,6 +41,7 @@
                       placeholder="请输入"
                        v-model="form.usedQuotaQty"
                       clearable
+                      disabled
                       :precision="0"
                     />
                 </el-form-item>
@@ -50,6 +52,7 @@
                       placeholder="请输入"
                        v-model="form.totalQuotaQty"
                       clearable
+                      disabled
                       :precision="0"
                     />
                 </el-form-item>
@@ -404,6 +407,7 @@ export default {
       submitLoading: false,
       uploadDialogVisible: false,
       yes_no_enum: YES_NO_ENUM,
+      generateCode:'',
       detailForm: { ...detailForm },
       form: { ...form },
       originalForm: { ...form },
@@ -491,9 +495,6 @@ export default {
         statusDesc: [
           { required: true, message: '请选择状态变更描述', trigger: 'change' }
         ],
-        activityCode: [
-          { required: true, message: '请输入活动编码', trigger: 'change' }
-        ],
         activityName: [
           { required: true, message: '请输入活动名称', trigger: 'change' }
         ],
@@ -550,10 +551,11 @@ export default {
       if (row.usedQuotaQty > 0) {
         this.$message.error('已排产专项活动已提报数量大于0, 不允许删除');
         this.getList();
-      } else if (row.totalQuotaQty === 0) {
+      } else if (row.usedQuotaQty === 0) {
         deleteItem([row.id]).then((d) => {
           defer.resolve();
           this.$message.success('删除成功');
+          this.getList();
         }).catch(() => {
           defer.reject();
         });
