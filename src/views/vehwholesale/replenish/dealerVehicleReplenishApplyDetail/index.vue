@@ -276,7 +276,8 @@ export default {
                 this.$router.push({
                   path: '/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },

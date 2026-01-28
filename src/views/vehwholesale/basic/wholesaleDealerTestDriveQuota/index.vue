@@ -262,7 +262,8 @@ export default {
                 this.$router.push({
                   path: '/vehwholesale/basic/wholesaleDealerTestDriveQuota/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },

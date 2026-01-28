@@ -293,7 +293,8 @@ export default {
                 this.$router.push({
                   path: '/vehwholesale/basic/wholesaleProdScheduleActivity/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },
