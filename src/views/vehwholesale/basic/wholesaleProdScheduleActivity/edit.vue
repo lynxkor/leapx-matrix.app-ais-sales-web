@@ -553,7 +553,7 @@ export default {
         return;
       }
       if (row.usedQuotaQty > 0) {
-        this.$message.error('已排产专项活动已提报数量大于0, 不允许删除');
+        this.$message.error('排产专项活动已提报数量大于0, 不允许删除');
         this.getList();
       } else {
         deleteItem([row.id]).then((d) => {
