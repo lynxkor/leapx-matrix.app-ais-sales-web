@@ -239,7 +239,8 @@ export default {
                 this.$router.push({
                   path: '/vehwholesale/basic/wholesaleVehicleSaleModelConf/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },

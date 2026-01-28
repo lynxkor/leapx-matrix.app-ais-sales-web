@@ -223,7 +223,7 @@
           <section class="common-section" v-if="!!_id">
             <div class="common-section-header">
               <h2>排产活动明细</h2>
-              <el-button size="medium" type="primary" @click="handleAddRow">活动明细导入</el-button>
+              <el-button size="medium" v-show="isEditing" type="primary" @click="handleAddRow">活动明细导入</el-button>
             </div>
             <div>
               <el-form :inline="true" :model="detailForm" label-width="150px" class="form-edit">
@@ -257,7 +257,7 @@
                   @remove-row="handleRemoveRow"
                   @page-size-change="pageSizeChange"
                   @current-page-change="currentPageChange"
-                  :auth="{edit: true, delete: true}"
+                  :auth="{edit: isEditing, delete: isEditing}"
                 />
               </div>
             </div>
@@ -408,7 +408,7 @@ export default {
       submitLoading: false,
       uploadDialogVisible: false,
       yes_no_enum: YES_NO_ENUM,
-      generateCode:'',
+      generateCode: '',
       detailForm: { ...detailForm },
       form: { ...form },
       originalForm: { ...form },

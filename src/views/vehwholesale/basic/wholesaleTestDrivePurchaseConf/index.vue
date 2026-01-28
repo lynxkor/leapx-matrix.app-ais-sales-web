@@ -223,7 +223,8 @@ export default {
                 this.$router.push({
                   path: '/vehwholesale/basic/wholesaleTestDrivePurchaseConf/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },
