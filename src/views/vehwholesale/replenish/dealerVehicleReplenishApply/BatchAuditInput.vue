@@ -58,6 +58,9 @@ export default {
           message: '成功'
         });
         this.getData();
+      }).finally(() => {
+        this.dialogVisible = false;
+        this.auditOpinion = '';
       });
     },
   }
