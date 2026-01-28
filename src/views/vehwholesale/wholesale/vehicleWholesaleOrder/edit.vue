@@ -9,6 +9,7 @@
         :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
+        :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
       >
@@ -978,7 +979,6 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       defaultNewRow: {
-        name: '',
       },
       tableData: [],
       options: {
@@ -990,28 +990,22 @@ export default {
         {
           field: 'fundTypeLabel',
           title: '资金类型',
-          editable: true,
         },
         {
           field: 'availableBalance',
           title: '可用余额',
-          editable: true,
-          editRender: { name: 'ElInput', props: { type: 'number' } }
         },
         {
           field: 'frozenBalance',
           title: '冻结资金',
-          editRender: { name: 'ElInput' }
         },
         {
           field: 'availableCreditAmount',
           title: '剩余可用额度',
-          editRender: { name: 'ElInput' }
         },
         {
           field: 'downPaymentRatio',
           title: '首付款比例%',
-          editRender: { name: 'ElInput' }
         },
       ],
     };

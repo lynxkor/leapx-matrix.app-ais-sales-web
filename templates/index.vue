@@ -312,7 +312,8 @@ export default {
                 this.$router.push({
                   path: '/{{{{modulePath}}}}/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },

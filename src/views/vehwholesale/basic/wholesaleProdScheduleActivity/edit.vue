@@ -7,6 +7,7 @@
         :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
+        :originalForm.sync="originalForm"
         :showBackBtn="showBackBtn"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
@@ -266,6 +267,7 @@
               :visible="uploadDialogVisible"
               id='detailImportExcel'
               :businessParams="_id"
+              @getData="handleQuery"
               @close="uploadDialogVisible = false"
             />
           </section>
@@ -527,9 +529,10 @@ export default {
     };
   },
   mounted () {
-    this.getLoginUser();
     if (this._id) {
       this.getList();
+    } else {
+      this.getLoginUser();
     }
   },
   methods: {
@@ -552,7 +555,7 @@ export default {
       if (row.usedQuotaQty > 0) {
         this.$message.error('已排产专项活动已提报数量大于0, 不允许删除');
         this.getList();
-      } else if (row.usedQuotaQty === 0) {
+      } else {
         deleteItem([row.id]).then((d) => {
           defer.resolve();
           this.$message.success('删除成功');
@@ -661,3 +664,9 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+  ::v-deep .tag-input {
+    line-height: 32px;
+  }
+</style>

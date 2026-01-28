@@ -8,6 +8,7 @@
         :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
+        :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
       >
@@ -394,7 +395,7 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import EditTable from '@/libs/components/EditTable';
+// import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
@@ -457,7 +458,7 @@ export default {
   components: {
     EditPageLayout,
     EditBaseContainer,
-    EditTable,
+    // EditTable,
     FetchSelect
   },
   computed: {

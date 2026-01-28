@@ -7,6 +7,7 @@
         title="排产专项活动明细"
         :isEditing.sync="isEditing"
         :form.sync="form"
+        :originalForm.sync="originalForm"
         :showEditBtn="false"
         :showBackBtn="showBackBtn"
         :submitRequest="submitRequest"
