@@ -29,12 +29,11 @@
                   filterable
                   clearable
                   remote
-                  :params="form.dealerName"
                   v-model="form.dealerName"
                   :remote-method="getDealerListByName"
                   value-key="storeCode"
                   label-key="storeName"
-                  @change="(val, record) => {form.modelName = record?.name || ''}"
+                  @change="handleChangeDealer"
                   :disabled="!!_id"
                 />
               </el-form-item>
