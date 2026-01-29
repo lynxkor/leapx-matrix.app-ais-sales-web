@@ -1580,6 +1580,24 @@ const routes = [
         name: '整车PDI检查项配置详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehstock/store/storeVehiclePdi',
+      name: 'storeVehiclePdi',
+      component: () => import('@/views/vehstock/store/storeVehiclePdi/index.vue'),
+
+      meta: {
+        name: '门店整车PDI单',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/store/storevehiclepdi/edit',
+      name: 'storeVehiclePdiEdit',
+      component: () => import('@/views/vehstock/store/storeVehiclePdi/edit.vue'),
+
+      meta: {
+        name: '门店整车PDI单详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
