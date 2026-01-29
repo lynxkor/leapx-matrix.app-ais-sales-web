@@ -86,7 +86,7 @@
                   v-model="form.requestQty"
                   clearable
                   :precision="0"
-                  :disabled="!!_id"
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="配额数量" prop="quotaQty">
