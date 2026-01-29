@@ -208,7 +208,8 @@ export default {
                 this.$router.push({
                   path: '/vehwholesale/rebate/fundVehicleRebateBill/detail',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },

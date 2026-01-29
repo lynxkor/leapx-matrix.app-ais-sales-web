@@ -273,7 +273,8 @@ export default {
                 this.$router.push({
                   path: '/vehwholesale/creditsales/fundOwnCreditSalesConfig/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },

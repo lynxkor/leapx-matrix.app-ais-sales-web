@@ -178,7 +178,8 @@ export default {
                 this.$router.push({
                   path: '/vehwholesale/fund/fundBudgetItem/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },

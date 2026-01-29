@@ -575,7 +575,8 @@ export default {
                 this.$router.push({
                   path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },
