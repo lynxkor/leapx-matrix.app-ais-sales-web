@@ -1562,6 +1562,24 @@ const routes = [
         name: '整车批售-批售主数据-整车批售订单管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehstock/store/vehiclePdiCheckItemConfig',
+      name: 'vehiclePdiCheckItemConfig',
+      component: () => import('@/views/vehstock/store/vehiclePdiCheckItemConfig/index.vue'),
+
+      meta: {
+        name: '整车PDI检查项配置',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/store/vehiclepdicheckitemconfig/edit',
+      name: 'vehiclePdiCheckItemConfigEdit',
+      component: () => import('@/views/vehstock/store/vehiclePdiCheckItemConfig/edit.vue'),
+
+      meta: {
+        name: '整车PDI检查项配置详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
