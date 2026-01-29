@@ -33,15 +33,15 @@
           <tag-input v-model="form.mallOrderCodes" placeholder="请输入" />
         </el-form-item>
           <el-form-item label="订单分类">
-             <fetch-select
-                :request="fetchOptions"
-                enumCode="vw_eorder_type"
-                v-model="form.orderCategories"
-                placeholder="请选择"
-                clearable
-                multiple
-                filterable
-              />
+            <fetch-select
+              :remote-method="getWholesaleEorderTyprList"
+              remote
+              v-model="form.orderCategories"
+              placeholder="请选择"
+              clearable
+              multiple
+              filterable
+            />
         </el-form-item>
             <el-form-item label="确认状态">
           <fetch-select
@@ -1040,6 +1040,10 @@ export default {
       }
 
       return data;
+    },
+    async getWholesaleEorderTyprList (query) {
+      // 不要code为20的
+      return this.fetchOptions('vw_eorder_type').then(list => list.filter(item => item.code === '0' || item.code === '20'));
     },
     async fetchOptions (code) {
       if (code) {

@@ -166,7 +166,7 @@
 
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehstock/store/storeVehiclePdi/index';
-import FetchSelect from '@/libs/components/FetchSelect';
+// import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -243,8 +243,7 @@ export default {
   components: {
     EditPageLayout,
     EditBaseContainer,
-    EditTable,
-    FetchSelect
+    EditTable
   },
   computed: {
     _id () {
