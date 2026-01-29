@@ -91,13 +91,13 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item
-                  label="专项活动："
+                <el-form-item label="专项活动："
                   prop="prodScheduleActivityId"
                   v-show="form.orderCategory !== '2'"
                 >
                   <fetch-select
                     :remote-method="prodScheduleActivitySearch"
+                    :options="prodScheduleActivityOptions"
                     remote
                     reserve-keyword
                     labelKey="activityName"
@@ -360,6 +360,7 @@ const defaultForm = {
   regionName: '',
   wholesaleWay: '10',
   prodScheduleActivityId: '',
+  prodScheduleActivityName: '',
   serials: '',
   orderCategory: '',
   applyTotalQty: '',
@@ -449,6 +450,7 @@ export default {
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-dealerVehicleReplenishApply',
       orderCategoryOptions: [],
+      prodScheduleActivityOptions: [],
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
@@ -799,23 +801,29 @@ export default {
         };
       });
     },
-    handleChangeDealer (val, record) {
+    async handleChangeDealer (val, record) {
       this.form.saleDealerName = record?.storeName || '';
       this.form.saleDealerCode = record?.storeCode || '';
       this.form.regionCode = record?.regionCode || '';
       this.form.regionName = record?.region || '';
       this.form.prodScheduleActivityId = '';
-      getDealerDetailByCode(this.form.saleDealerCode).then(response => {
-        this.form.deliveryDealerCode = response?.exclusiveDeliveryStoreCode || '';
-        this.form.deliveryDealerName = response?.exclusiveDeliveryStoreName || '';
+      this.form.prodScheduleActivityName = '';
+      try {
+        const result = await listWholesaleProdScheduleActivity({ status: 1, dealerCode: this.form.saleDealerCode });
+        this.prodScheduleActivityOptions = result.records || [];
+        const dealerResponse = await getDealerDetailByCode(this.form.saleDealerCode);
+        this.form.deliveryDealerCode = dealerResponse?.exclusiveDeliveryStoreCode || '';
+        this.form.deliveryDealerName = dealerResponse?.exclusiveDeliveryStoreName || '';
         if (this.form.deliveryDealerCode) {
-          getDealerDetailByCode(this.form.deliveryDealerCode).then(response => {
-            this.form.dealerWarehouseCode = response?.storeWarehouseResp?.warehouseCode || '';
-            this.form.dealerWarehouseAddress = response?.storeWarehouseResp?.warehouseDetailAddress || '';
-            this.form.dealerWarehouseName = response?.storeWarehouseResp?.warehouseName || '';
-          });
+          const deliveryDealerResponse = await getDealerDetailByCode(this.form.deliveryDealerCode);
+          this.form.dealerWarehouseCode = deliveryDealerResponse?.storeWarehouseResp?.warehouseCode || '';
+          this.form.dealerWarehouseAddress = deliveryDealerResponse?.storeWarehouseResp?.warehouseDetailAddress || '';
+          this.form.dealerWarehouseName = deliveryDealerResponse?.storeWarehouseResp?.warehouseName || '';
         }
-      });
+      } catch (error) {
+        console.error('获取经销商信息失败:', error);
+        this.$message.error('获取经销商信息失败，请重试');
+      }
     },
     handleChangeOrderCategory (val) {
       // 0 商品车订单
@@ -853,7 +861,11 @@ export default {
         this.$message.warning('请先选择销售门店');
         return [];
       }
-      return await listWholesaleProdScheduleActivity({ scheduleActivityIdLike: query, status: 1, dealerCode: this.form.saleDealerCode });
+      const searchQuery = typeof query === 'string' ? query : '';
+      const result = await listWholesaleProdScheduleActivity({ scheduleActivityIdLike: searchQuery, status: 1, dealerCode: this.form.saleDealerCode });
+      // 将查询结果存储到选项数组中
+      this.prodScheduleActivityOptions = result.records || [];
+      return result || [];
     },
     handleAuditValidForDealer () {
       return dealerAuditValid([this._id]).then(() => {

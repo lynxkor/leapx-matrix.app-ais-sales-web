@@ -488,7 +488,7 @@ export default {
       this.loading = true;
       this.selectionList = [];
 
-      const { pageKey, form } = config;
+      const { pageKey } = config;
       const params = {
         ...this.getFormData(),
         pageNum: this[pageKey].form.page,

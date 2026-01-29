@@ -96,7 +96,7 @@
                 >
                   {{ getInventoryStatusText(row.inventoryStatus) }}
                 </span>
-                <span class="inventory-status-red" v-if="row.inventoryStatus === '1' || row.inventoryStatus === 1">
+                <span class="inventory-status-red" v-if="!row.inventoryStatus && (row.inventoryStatus === '1' || row.inventoryStatus === 1)">
                   ({{ row.inventoryQty || 0 }})
                 </span>
               </template>
@@ -421,9 +421,9 @@ export default {
       }
     },
 
-    dialogshow () {
-      this.getData();
-      this.listCanSettleAccount();
+    async dialogshow () {
+      await this.getData();
+      await this.listCanSettleAccount();
       this.dialogVisible = true;
     },
     async getEnum () {
@@ -469,13 +469,13 @@ export default {
         return status;
       }
 
-      const statusItem = this.stockStatusList.find(item => item.code === status.toString());
+      const statusItem = this.stockStatusList.find(item => item.code === status + '');
       return statusItem ? statusItem.message : status;
     },
 
     // 根据库存状态获取对应的CSS类名
     getInventoryStatusClass (status) {
-      const statusStr = status.toString();
+      const statusStr = status + '';
       if (statusStr === '0' || statusStr === '1') {
         return 'inventory-status-red';
       } else if (statusStr === '2') {

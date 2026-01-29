@@ -380,7 +380,8 @@ export default {
     async showDropdown () {
       this.dropdownLoading = true;
       try {
-        await createRequestValid();
+        // 又不要校验了
+        // await createRequestValid();
         this.dropdownLoading = false;
         this.validatedOrderategoryList = [...this.orderategoryList];
       } catch (error) {
