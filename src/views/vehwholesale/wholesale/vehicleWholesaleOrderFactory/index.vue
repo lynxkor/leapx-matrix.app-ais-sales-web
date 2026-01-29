@@ -34,14 +34,14 @@
         </el-form-item>
           <el-form-item label="订单分类">
              <fetch-select
-                :request="fetchOptions"
-                enumCode="vw_eorder_type"
-                v-model="form.orderCategories"
-                placeholder="请选择"
-                clearable
-                multiple
-                filterable
-              />
+              :remote-method="getWholesaleEorderTyprList"
+              remote
+              v-model="form.orderCategories"
+              placeholder="请选择"
+              clearable
+              multiple
+              filterable
+            />
         </el-form-item>
             <el-form-item label="确认状态">
           <fetch-select
