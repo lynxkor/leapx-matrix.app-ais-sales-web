@@ -357,7 +357,7 @@ export default {
     },
     async fetchOptions (code) {
       if (code) {
-        return getEnum(code);
+        return getEnum(code, 100);
       }
       return [];
     },

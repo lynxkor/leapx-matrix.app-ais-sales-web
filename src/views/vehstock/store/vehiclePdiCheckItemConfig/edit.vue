@@ -196,7 +196,7 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehstock/store/vehiclePdiCheckItemConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import EditTable from '@/libs/components/EditTable';
+// import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
@@ -248,7 +248,7 @@ export default {
   components: {
     EditPageLayout,
     EditBaseContainer,
-    EditTable,
+    // EditTable,
     FetchSelect
   },
   computed: {

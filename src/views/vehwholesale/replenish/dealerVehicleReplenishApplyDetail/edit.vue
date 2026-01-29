@@ -13,7 +13,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          {{ form.replenishApplyDetailCode }} 
+          {{ form.replenishApplyDetailCode }}
         </template>
         <template #extraButtons>
           <el-button size="small">按钮1</el-button>
