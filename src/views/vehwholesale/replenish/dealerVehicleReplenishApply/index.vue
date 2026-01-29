@@ -344,7 +344,7 @@ export default {
   methods: {
     async vehicleWholesale () {
       try {
-        await createRequestValid();
+        // await createRequestValid();
         this.$refs.vehicleWholesale.dialogshow();
       } catch (error) {
         // 忽略验证失败的错误，不显示任何提示
