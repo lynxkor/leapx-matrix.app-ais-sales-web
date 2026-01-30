@@ -1042,7 +1042,7 @@ export default {
       return data;
     },
     async getWholesaleEorderTyprList (query) {
-      // 不要code为20的
+      // 筛选过滤(保留 0 和 20)
       return this.fetchOptions('vw_eorder_type').then(list => list.filter(item => item.code === '0' || item.code === '20'));
     },
     async fetchOptions (code) {

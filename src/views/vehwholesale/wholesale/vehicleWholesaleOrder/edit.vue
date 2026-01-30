@@ -6,7 +6,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        :title="title"
+        title="整车批售订单信息："
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -14,7 +14,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          <span class="status primary">状态</span>
+          {{ form.wholesaleOrderCode }}
         </template>
         <template #extraButtons >
           <el-button  size="small" type="primary" @click="handleCheckConfirm" >审核确认</el-button>
