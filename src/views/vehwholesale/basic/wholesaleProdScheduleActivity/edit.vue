@@ -12,7 +12,7 @@
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
       >
-      <template #status>
+        <template #status>
           {{ form.activityCode }}
         </template>
         <el-main>
