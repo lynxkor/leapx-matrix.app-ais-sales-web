@@ -16,11 +16,11 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="原因分类代码">
-        <el-input
-          placeholder="请输入"
+      <el-form-item label="原因分类">
+        <fetch-select
+          v-bind="selectOptions"
+          :remote-method="fetchCategorySelectorList"
           v-model="form.cateCode"
-          clearable
         />
       </el-form-item>
       <template v-if="show">
@@ -66,7 +66,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="1"
+      :id="currentImportType"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -86,6 +86,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import { fetchCategoryList } from '@/api/vehretail/orderRefund/category';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -109,10 +110,22 @@ export default {
   },
   data () {
     return {
+      // 提取公共配置
+      selectOptions: {
+        placeholder: '请选择',
+        labelKey: 'name',
+        valueKey: 'code',
+        clearable: true,
+        // multiple: true,
+        collapseTags: true,
+        filterable: true,
+        remote: true,
+        reserveKeyword: true
+      },
       pageTitle: '整车零售订单退订原因二级分类管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-subCategory',
+      moduleKey: 'AISVR-orderRefundCategoryDetail',
       form: {
         ...defaultForm
       },
@@ -121,10 +134,11 @@ export default {
       show: false,
       loading: false,
       exportLoading: false,
+      currentImportType: '',
       uploadDialogVisible: false,
       clickItemId: '',
       optionObj: {
-        id: 'subCategoryTable',
+        id: 'orderRefundCategoryDetailTable',
         dataList: [],
         form: {
           page: 1,
@@ -140,7 +154,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehretail/orderRefund/subCategory/edit',
+                  path: '/vehretail/orderRefund/categoryDetail/edit',
                   query: {
                     id: row.id
                   }
@@ -149,8 +163,9 @@ export default {
               type: 'primary'
             }]
           },
+          { props: 'cateCode', label: '原因分类编码', visible: true, width: 200 },
+          { props: 'cateName', label: '原因分类', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'cateCode', label: '原因分类代码', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
@@ -161,7 +176,7 @@ export default {
               name: '编辑',
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehretail/orderRefund/subCategory/edit',
+                  path: '/vehretail/orderRefund/categoryDetail/edit',
                   query: {
                     id: row.id
                   }
@@ -198,6 +213,9 @@ export default {
     this.getData();
   },
   methods: {
+    async fetchCategorySelectorList () {
+      return await fetchCategoryList({ pageSize: 1000 });
+    },
     handleListSelect (row) {
       this.clickItemId = row.id;
     },
@@ -209,7 +227,7 @@ export default {
     },
     handleAdd () {
       this.$router.push({
-        path: '/vehretail/orderRefund/subCategory/edit'
+        path: '/vehretail/orderRefund/categoryDetail/edit'
       });
     },
     onSubmit () {
@@ -225,7 +243,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '整车零售订单退订原因二级分类管理',
-        dataFetchPath: 'vehretail/web/orderRefund/subCategory/page',
+        dataFetchPath: '/vr/web/refund/orderRefundCategoryDetail/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

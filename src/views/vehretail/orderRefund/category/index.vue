@@ -146,7 +146,7 @@ import { getList, deleteItem, enableItem } from '@/api/vehretail/orderRefund/cat
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
-import { YES_NO_INT_ENUM, YES_NO_ENUM_MAP } from '@/libs/constants';
+import { YES_NO_INT_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
@@ -195,7 +195,7 @@ export default {
       uploadDialogVisible: false,
       clickItemId: '',
       optionObj: {
-        id: 'orderRefundTable',
+        id: 'orderRefundCategoryTable',
         dataList: [],
         form: {
           page: 1,
@@ -308,7 +308,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '整车零售订单退订原因分类管理',
-        dataFetchPath: 'vehretail/web/orderRefund/page',
+        dataFetchPath: '/vr/web/refund/orderRefundCategory/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

@@ -411,9 +411,9 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '整车零售订单退订原因分类管理',
+      pageTitle: '退订原因分类管理',
       pageType: 'edit',
-      title: '主键：' + form.id,
+      title: '退订原因分类管理',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-orderRefundCategory',
       loading: false,
