@@ -552,6 +552,7 @@ export default {
       this.getList();
     },
     handleRemoveRow (row, index, defer) {
+      this.detailRequest();
       if (!row.id) {
         return;
       }

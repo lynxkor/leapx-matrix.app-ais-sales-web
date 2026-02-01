@@ -688,9 +688,9 @@
                   />
                 </el-form-item>
                 <el-form-item label="赊销欠款：" prop="creditSaleFlag">
-                   <el-radio-group v-model="form.creditSaleFlag" disabled>
+                   <!-- <el-radio-group v-model="form.creditSaleFlag" disabled>
                     <el-radio v-for="item in true_false_enum" :key="item.code" :label="item.code">{{ item.message }}</el-radio>
-                  </el-radio-group>
+                  </el-radio-group> -->
                 </el-form-item>
                   <el-form-item label="是否赊销：" prop="creditSaleFlag">
                   <el-radio-group v-model="form.creditSaleFlag" disabled>
@@ -702,10 +702,10 @@
                     <el-radio v-for="item in true_false_enum" :key="item.code" :label="item.code">{{ item.message }}</el-radio>
                   </el-radio-group>
                 </el-form-item>
-                 <el-form-item label="同步SAP状态：" prop="syncSapStatus">
+                 <el-form-item label="同步SAP状态：" prop="syncSapMsg">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.syncSapStatus"
+                    v-model="form.syncSapMsg"
                     maxlength="300"
                     clearable
                     disabled
@@ -745,7 +745,7 @@
                   {{ form.usedCashAmount }}
                 </el-form-item>
                  <el-form-item label="赊销欠款：" prop="creditSaleFlag">
-                  {{ form.creditSaleFlagLabel }}
+                  <!-- {{ form.creditSaleFlagLabel }} -->
                 </el-form-item>
                   <el-form-item label="是否赊销：" prop="creditSaleFlagLabel">
                   {{ form.creditSaleFlagLabel }}
@@ -754,8 +754,8 @@
                    {{ form.creditSaleRepaidLabel }}
                 </el-form-item>
 
-                <el-form-item label="同步SAP状态：" prop="syncSapStatus">
-                   {{ form.syncSapStatus }}
+                <el-form-item label="同步SAP状态：" prop="syncSapMsg">
+                   {{ form.syncSapMsg }}
                 </el-form-item>
               </el-form>
             </div>
@@ -840,7 +840,7 @@ const defaultForm = {
   usedRebateAmount: '',
   erpSaleOrderCode: '',
   erpInvoiceCode: '',
-  syncSapStatus: '',
+  syncSapMsg: '',
   createTime: '',
   dealerCompanyCode: '',
   applyReason: '',
