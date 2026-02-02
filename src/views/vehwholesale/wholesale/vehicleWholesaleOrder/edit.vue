@@ -688,6 +688,7 @@
                   />
                 </el-form-item>
                 <el-form-item label="赊销欠款：" prop="creditSaleFlag">
+                  <!-- todo 后续版本添加字段 -->
                    <!-- <el-radio-group v-model="form.creditSaleFlag" disabled>
                     <el-radio v-for="item in true_false_enum" :key="item.code" :label="item.code">{{ item.message }}</el-radio>
                   </el-radio-group> -->
@@ -745,6 +746,7 @@
                   {{ form.usedCashAmount }}
                 </el-form-item>
                  <el-form-item label="赊销欠款：" prop="creditSaleFlag">
+                  <!-- todo 后续版本添加字段 -->
                   <!-- {{ form.creditSaleFlagLabel }} -->
                 </el-form-item>
                   <el-form-item label="是否赊销：" prop="creditSaleFlagLabel">
