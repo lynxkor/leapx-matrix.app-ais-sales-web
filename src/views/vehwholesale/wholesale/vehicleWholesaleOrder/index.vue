@@ -396,7 +396,7 @@ const defaultForm = {
   usedRebateAmount: '',
   erpSaleOrderCode: '',
   erpInvoiceCode: '',
-  syncSapStatus: '',
+  syncSapMsg: '',
   createTime: '',
   dealerCompanyCode: '',
   applyReason: '',
@@ -529,7 +529,7 @@ export default {
           { props: 'erpSaleOrderCode', label: 'ERP销售订单号', visible: true, width: 200 },
           { props: 'erpDeliverOrder', label: 'ERP交货单', visible: true, width: 200 },
           { props: 'erpInvoiceCode', label: 'ERP发票号', visible: true, width: 200 },
-          { props: 'syncSapStatus', label: '同步SAP状态', visible: true, width: 200 },
+          { props: 'syncSapMsg', label: '同步SAP状态', visible: true, width: 200 },
           { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           // { props: 'dealerCompanyCode', label: '母公司代码', visible: true, width: 200 },
@@ -1042,7 +1042,7 @@ export default {
       return data;
     },
     async getWholesaleEorderTyprList (query) {
-      // 不要code为20的
+      // 筛选过滤(保留 0 和 20)
       return this.fetchOptions('vw_eorder_type').then(list => list.filter(item => item.code === '0' || item.code === '20'));
     },
     async fetchOptions (code) {
