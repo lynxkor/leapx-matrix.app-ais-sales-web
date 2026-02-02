@@ -123,7 +123,6 @@ import commonMixins from '@/libs/mixins/commonMixins';
 const defaultForm = {
   // 多选时字段有变化，自行修复
   wholesaleDealerWholesaleConfName: '',
-  dealerId: '',
   dealerCode: '',
   dealerName: '',
   dealerParentOrgName: '',
@@ -325,7 +324,6 @@ export default {
       if (val) {
         this.form.dealerCode = selectedOption?.storeCode || '';
         this.form.dealerName = selectedOption?.storeName || '';
-        this.form.dealerId = selectedOption?.storeId || '';
       }
     },
     async getDealerParentOrgList (params) {

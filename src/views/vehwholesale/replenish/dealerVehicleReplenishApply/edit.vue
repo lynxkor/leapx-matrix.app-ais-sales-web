@@ -929,6 +929,7 @@ export default {
     handleSubmit () {
       replenishmentSubmit({ id: this._id }).then(() => {
         this.$message.success('补货申请提交成功');
+        this.detailRequest();
       });
     }
   }
