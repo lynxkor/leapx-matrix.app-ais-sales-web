@@ -140,7 +140,6 @@ import commonMixins from '@/libs/mixins/commonMixins';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
-  dealerId: '',
   dealerCode: '',
   dealerName: '',
   vehicleYearType: '',
@@ -354,7 +353,6 @@ export default {
       if (val) {
         this.form.dealerCode = selectedOption?.storeCode || '';
         this.form.dealerName = selectedOption?.storeName || '';
-        this.form.dealerId = selectedOption?.storeId || '';
       }
     },
     async getVehicleSeriesList (params) {

@@ -1598,6 +1598,42 @@ const routes = [
         name: '门店整车PDI单详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehretail/orderRefund/category',
+      name: 'orderRefund',
+      component: () => import('@/views/vehretail/orderRefund/category/index.vue'),
+
+      meta: {
+        name: '退订原因分类',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/orderRefund/category/edit',
+      name: 'orderRefundEdit',
+      component: () => import('@/views/vehretail/orderRefund/category/edit.vue'),
+
+      meta: {
+        name: '退订原因分类详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/orderRefund/categoryDetail',
+      name: 'subCategory',
+      component: () => import('@/views/vehretail/orderRefund/categoryDetail/index.vue'),
+
+      meta: {
+        name: '原因二级分类',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/orderRefund/categoryDetail/edit',
+      name: 'subCategoryEdit',
+      component: () => import('@/views/vehretail/orderRefund/categoryDetail/edit.vue'),
+
+      meta: {
+        name: '原因二级分类详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
