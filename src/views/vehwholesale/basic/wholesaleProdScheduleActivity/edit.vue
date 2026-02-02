@@ -539,6 +539,16 @@ export default {
     }
   },
   methods: {
+    getDetailData () {
+      const id = this._id;
+      if (id) {
+        getDetail(id).then(res => {
+          this.loading = false;
+          Object.assign(this.form, res);
+          Object.assign(this.originalForm, res);
+        });
+      }
+    },
     // 查询方法
     handleQuery () {
       this.pageNum = 1; // 重置到第一页
@@ -552,7 +562,6 @@ export default {
       this.getList();
     },
     handleRemoveRow (row, index, defer) {
-      this.detailRequest();
       if (!row.id) {
         return;
       }
@@ -563,6 +572,7 @@ export default {
         deleteItem([row.id]).then((d) => {
           defer.resolve();
           this.$message.success('删除成功');
+          this.getDetailData();
           this.getList();
         }).catch(() => {
           defer.reject();
@@ -585,7 +595,7 @@ export default {
       addOrUpdateDetail(row).then(id => {
         defer.resolve(id);
         this.$message.success('更新成功');
-        this.getDetailPageApi();
+        this.getDetailData();
         this.$emit('replace');
       }).catch(e => {
         defer.reject();

@@ -96,7 +96,7 @@
                 >
                   {{ getInventoryStatusText(row.inventoryStatus) }}
                 </span>
-                <span class="inventory-status-red" v-if="!row.inventoryStatus && (row.inventoryStatus === '1' || row.inventoryStatus === 1)">
+                <span class="inventory-status-red" v-if="[0, 1, '0', '1'].includes(row.inventoryStatus)">
                   ({{ row.inventoryQty || 0 }})
                 </span>
               </template>
@@ -482,7 +482,7 @@ export default {
       }
 
       const statusItem = this.stockStatusList.find(item => item.code === status + '');
-      return statusItem ? statusItem.message : status;
+      return statusItem ? statusItem.message : '';
     },
 
     // 根据库存状态获取对应的CSS类名

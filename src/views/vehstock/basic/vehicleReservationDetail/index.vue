@@ -283,6 +283,7 @@ export default {
       this.uploadDialogVisible = false;
     },
     onSubmit () {
+      this.optionObj.form.page = 1;
       this.getData();
     },
     onReset () {

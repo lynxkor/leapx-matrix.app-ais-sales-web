@@ -71,7 +71,12 @@
             <tag-input v-model="form.saleDealerNames" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="整车补货单号">
-          <tag-input v-model="form.replenishApplyCodes" placeholder="请输入" />
+          <el-input
+          placeholder="请输入"
+          v-model="form.replenishApplyCodeLike"
+          clearable
+        />
+          <!-- <tag-input v-model="form.replenishApplyCodes" placeholder="请输入" /> -->
         </el-form-item>
       <el-form-item label="订单时间"  v-show="this.visibleCount === 3 || show">
         <el-date-picker
@@ -907,6 +912,7 @@ export default {
       });
     },
     onSubmit () {
+      this.optionObj.form.page = 1;
       this.getData();
     },
     onReset () {
