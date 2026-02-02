@@ -104,12 +104,6 @@
         @handleSelect="handleSelectionChange"
       />
     </div>
-    <!-- TIPS: 填入项目id即可 -->
-    <Upload
-      :visible="uploadDialogVisible"
-      :id="1"
-      @close="handleUploadDialogClose"
-    />
     <audit-dialog
       ref="auditRef"
       @audit="handleBatchAudit"
@@ -131,7 +125,6 @@ import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchAuditValid, batchSubmitValid, batchAudit, batchSubmit, batchEditValid, batchEdit } from '@/api/vehwholesale/basic/wholesaleVehicleSaleModelConf/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, vehicleModelYearTypeRelationDistinctYeayType } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
-import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
@@ -160,7 +153,6 @@ export default {
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
-    Upload,
     auditDialog,
     BatchEditInput
   },
@@ -454,7 +446,13 @@ export default {
       });
     },
     handleBatchAudit (data) {
-      return batchAudit(data).then(() => {
+      console.log('data:', data);
+      let params = {
+        ids: data.auditDataList ? data.auditDataList.map(item => item.id) : [],
+        isAudit: data.result,
+        auditOpinion: data.remark
+      };
+      return batchAudit(params).then(() => {
         this.$message({
           type: 'success',
           message: '批量审核成功'
