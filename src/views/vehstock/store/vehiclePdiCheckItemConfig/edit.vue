@@ -97,17 +97,31 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="图谱坐标X：" prop="atlasCoordX">
+                <el-form-item label="图谱坐标top：" prop="atlasCoordTop">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.atlasCoordX"
+                    v-model="form.atlasCoordTop"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="图谱坐标Y：" prop="atlasCoordY">
+                <el-form-item label="图谱坐标left：" prop="atlasCoordLeft">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.atlasCoordY"
+                    v-model="form.atlasCoordLeft"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="图谱坐标bottom：" prop="atlasCoordBottom">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.atlasCoordBottom"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="图谱坐标right：" prop="atlasCoordRight">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.atlasCoordRight"
                     clearable
                   />
                 </el-form-item>
@@ -164,11 +178,17 @@
                 <el-form-item label="图谱地址：" prop="atlasUrl">
                   {{ form.atlasUrl }}
                 </el-form-item>
-                <el-form-item label="图谱坐标X：" prop="atlasCoordX">
-                  {{ form.atlasCoordX }}
+                <el-form-item label="图谱坐标top：" prop="atlasCoordTop">
+                  {{ form.atlasCoordTop }}
                 </el-form-item>
-                <el-form-item label="图谱坐标Y：" prop="atlasCoordY">
-                  {{ form.atlasCoordY }}
+                <el-form-item label="图谱坐标left：" prop="atlasCoordLeft">
+                  {{ form.atlasCoordLeft }}
+                </el-form-item>
+                <el-form-item label="图谱坐标bottom：" prop="atlasCoordBottom">
+                  {{ form.atlasCoordBottom }}
+                </el-form-item>
+                <el-form-item label="图谱坐标right：" prop="atlasCoordRight">
+                  {{ form.atlasCoordRight }}
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
                   {{ form.statusLabel }}
@@ -228,8 +248,10 @@ const defaultForm = {
   seriesName: '',
   checkMode: '',
   isAtlas: '',
-  atlasCoordX: '',
-  atlasCoordY: '',
+  atlasCoordTop: '',
+  atlasCoordLeft: '',
+  atlasCoordBottom: '',
+  atlasCoordRight: '',
   atlasUrl: '',
   effectiveOn: '',
   expiredOn: '',
@@ -310,11 +332,17 @@ export default {
         atlasUrl: [
           { required: false, message: '请输入图谱地址', trigger: 'change' }
         ],
-        atlasCoordX: [
-          { required: false, message: '请输入图谱坐标X', trigger: 'change' }
+        atlasCoordTop: [
+          { required: false, message: '请输入图谱坐标top', trigger: 'change' }
         ],
-        atlasCoordY: [
-          { required: false, message: '请输入图谱坐标Y', trigger: 'change' }
+        atlasCoordLeft: [
+          { required: false, message: '图谱坐标left', trigger: 'change' }
+        ],
+        atlasCoordBottom: [
+          { required: false, message: '图谱坐标bottom', trigger: 'change' }
+        ],
+        atlasCoordRight: [
+          { required: false, message: '图谱坐标right', trigger: 'change' }
         ],
         status: [
           { required: true, message: '请选择状态', trigger: 'change' }
