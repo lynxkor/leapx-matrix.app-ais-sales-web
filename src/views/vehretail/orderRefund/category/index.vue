@@ -25,9 +25,9 @@
         >
           <el-option
             v-for="item in yes_no_enum"
-            :key="item.code"
+            :key="Number(item.code)"
             :label="item.message"
-            :value="item.code"
+            :value="Number(item.code)"
           />
         </el-select>
       </el-form-item>
@@ -40,9 +40,9 @@
         >
           <el-option
             v-for="item in yes_no_enum"
-            :key="item.code"
+            :key="Number(item.code)"
             :label="item.message"
-            :value="item.code"
+            :value="Number(item.code)"
           />
         </el-select>
       </el-form-item>
@@ -51,14 +51,13 @@
           placeholder="请选择"
           v-model="form.preApproval"
           clearable
-          multiple
           filterable
         >
           <el-option
             v-for="item in yes_no_enum"
-            :key="item.code"
+            :key="Number(item.code)"
             :label="item.message"
-            :value="item.code"
+            :value="Number(item.code)"
           />
         </el-select>
       </el-form-item>
@@ -67,14 +66,13 @@
           placeholder="请选择"
           v-model="form.finalApproval"
           clearable
-          multiple
           filterable
         >
           <el-option
             v-for="item in yes_no_enum"
-            :key="item.code"
+            :key="Number(item.code)"
             :label="item.message"
-            :value="item.code"
+            :value="Number(item.code)"
           />
         </el-select>
       </el-form-item>
@@ -86,7 +84,6 @@
             v-model="form.refundTypeSelect"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -146,7 +143,7 @@ import { getList, deleteItem, enableItem } from '@/api/vehretail/orderRefund/cat
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
-import { YES_NO_INT_ENUM } from '@/libs/constants';
+import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
@@ -156,11 +153,11 @@ import EditPage from './edit.vue';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   cateName: '',
-  selectorDisplay: '',
-  originalRefund: '',
-  preApproval: '',
-  finalApproval: '',
-  refundTypeSelect: '',
+  selectorDisplay: null,
+  originalRefund: null,
+  preApproval: null,
+  finalApproval: null,
+  refundTypeSelect: null,
 };
 
 const pageSize = 20;
@@ -187,7 +184,7 @@ export default {
         ...defaultForm
       },
       selectionList: [],
-      yes_no_enum: YES_NO_INT_ENUM,
+      yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
       exportLoading: false,
