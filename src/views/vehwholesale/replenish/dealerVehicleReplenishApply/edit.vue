@@ -884,7 +884,7 @@ export default {
         auditOpinion: data.remark
       }).then(() => {
         this.$message.success('补货申请门店审核成功');
-        this.detailRequest();
+        this.getDetailData();
       });
     },
     handelAuditForFactory (data) {
@@ -894,7 +894,7 @@ export default {
         auditOpinion: data.remark
       }).then(() => {
         this.$message.success('补货申请厂端审核成功');
-        this.detailRequest();
+        this.getDetailData();
       });
     },
     updateApplyTotalQty () {
@@ -909,6 +909,16 @@ export default {
       });
       this.form.applyTotalQty = total;
     },
+    getDetailData () {
+      const id = this._id;
+      if (id) {
+        getDetail(id).then(res => {
+          this.loading = false;
+          Object.assign(this.form, res);
+          Object.assign(this.originalForm, res);
+        });
+      }
+    },
     handleUnused () {
       // 作废逻辑
       this.$confirm('是否执行作废操作？', '提示', {
@@ -918,7 +928,7 @@ export default {
       }).then(() => {
         unusedApply(this._id).then(() => {
           this.$message.success('补货申请已作废');
-          this.detailRequest();
+          this.getDetailData();
         }).catch(() => {
           this.$message.error('补货申请作废失败');
         });
@@ -929,7 +939,7 @@ export default {
     handleSubmit () {
       replenishmentSubmit({ id: this._id }).then(() => {
         this.$message.success('补货申请提交成功');
-        this.detailRequest();
+        this.getDetailData();
       });
     }
   }
