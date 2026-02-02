@@ -151,20 +151,6 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="母公司编码-批量：" prop="dealerCompanyCodes">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.dealerCompanyCodes"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="母公司编码-模糊：" prop="dealerCompanyCodeLike">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.dealerCompanyCodeLike"
-                    clearable
-                  />
-                </el-form-item>
                 <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationName">
                   <el-input
                     placeholder="请输入"
@@ -179,31 +165,10 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="融资金融机构ID-批量：" prop="fundFinancialOrganizationIds">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.fundFinancialOrganizationIds"
-                    clearable
-                  />
-                </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
                   <el-input
                     placeholder="请输入"
                     v-model="form.dealerCompanyName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="母公司名称-批量：" prop="dealerCompanyNames">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.dealerCompanyNames"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="母公司名称-模糊：" prop="dealerCompanyNameLike">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.dealerCompanyNameLike"
                     clearable
                   />
                 </el-form-item>
@@ -340,29 +305,15 @@
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
                   {{ form.dealerCompanyCode }}
                 </el-form-item>
-                <el-form-item label="母公司编码-批量：" prop="dealerCompanyCodes">
-                  {{ form.dealerCompanyCodes }}
-                </el-form-item>
-                <el-form-item label="母公司编码-模糊：" prop="dealerCompanyCodeLike">
-                  {{ form.dealerCompanyCodeLike }}
-                </el-form-item>
+
                 <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationName">
                   {{ form.fundFinancialOrganizationName }}
                 </el-form-item>
                 <el-form-item label="融资金融机构ID：" prop="fundFinancialOrganizationId">
                   {{ form.fundFinancialOrganizationId }}
                 </el-form-item>
-                <el-form-item label="融资金融机构ID-批量：" prop="fundFinancialOrganizationIds">
-                  {{ form.fundFinancialOrganizationIds }}
-                </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
                   {{ form.dealerCompanyName }}
-                </el-form-item>
-                <el-form-item label="母公司名称-批量：" prop="dealerCompanyNames">
-                  {{ form.dealerCompanyNames }}
-                </el-form-item>
-                <el-form-item label="母公司名称-模糊：" prop="dealerCompanyNameLike">
-                  {{ form.dealerCompanyNameLike }}
                 </el-form-item>
                 <el-form-item label="经销商编码：" prop="dealerCode">
                   {{ form.dealerCode }}
@@ -611,29 +562,14 @@ export default {
         dealerCompanyCode: [
           { required: true, message: '请输入母公司编码', trigger: 'change' }
         ],
-        dealerCompanyCodes: [
-          { required: true, message: '请输入母公司编码-批量', trigger: 'change' }
-        ],
-        dealerCompanyCodeLike: [
-          { required: true, message: '请输入母公司编码-模糊', trigger: 'change' }
-        ],
         fundFinancialOrganizationName: [
           { required: true, message: '请输入融资金融机构', trigger: 'change' }
         ],
         fundFinancialOrganizationId: [
           { required: true, message: '请输入融资金融机构ID', trigger: 'change' }
         ],
-        fundFinancialOrganizationIds: [
-          { required: true, message: '请输入融资金融机构ID-批量', trigger: 'change' }
-        ],
         dealerCompanyName: [
           { required: true, message: '请输入母公司名称', trigger: 'change' }
-        ],
-        dealerCompanyNames: [
-          { required: true, message: '请输入母公司名称-批量', trigger: 'change' }
-        ],
-        dealerCompanyNameLike: [
-          { required: true, message: '请输入母公司名称-模糊', trigger: 'change' }
         ],
         dealerCode: [
           { required: true, message: '请输入经销商编码', trigger: 'change' }
