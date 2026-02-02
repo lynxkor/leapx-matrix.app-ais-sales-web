@@ -4,13 +4,17 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        :title="title"
+        title="排产专项活动管理："
         :isEditing.sync="isEditing"
         :form.sync="form"
+        :originalForm.sync="originalForm"
         :showBackBtn="showBackBtn"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
       >
+        <template #status>
+          {{ form.activityCode }}
+        </template>
         <el-main>
           <section class="common-section">
             <div class="common-section-header">
@@ -23,6 +27,7 @@
                   <el-input
                     placeholder="请输入"
                     v-model="form.activityCode"
+                    disabled
                     clearable
                   />
                 </el-form-item>
@@ -40,6 +45,7 @@
                       placeholder="请输入"
                        v-model="form.usedQuotaQty"
                       clearable
+                      disabled
                       :precision="0"
                     />
                 </el-form-item>
@@ -50,6 +56,7 @@
                       placeholder="请输入"
                        v-model="form.totalQuotaQty"
                       clearable
+                      disabled
                       :precision="0"
                     />
                 </el-form-item>
@@ -199,7 +206,7 @@
                  <el-form-item label="是否锁零售单：" prop="allowLockRetailLabel">
                   {{ form.allowLockRetailLabel }}
                 </el-form-item>
-                  <el-form-item label="是否需要自动配车" prop="needAutoAllocateCarLabel">
+                  <el-form-item label="是否需要自动配车：" prop="needAutoAllocateCarLabel">
                   {{ form.needAutoAllocateCarLabel }}
                 </el-form-item>
                 <el-form-item label="指定发运方式：" prop="deliveryWayLabel">
@@ -220,7 +227,7 @@
           <section class="common-section" v-if="!!_id">
             <div class="common-section-header">
               <h2>排产活动明细</h2>
-              <el-button size="medium" type="primary" @click="handleAddRow">活动明细导入</el-button>
+              <el-button size="medium" v-show="isEditing" type="primary" @click="handleAddRow">活动明细导入</el-button>
             </div>
             <div>
               <el-form :inline="true" :model="detailForm" label-width="150px" class="form-edit">
@@ -254,14 +261,16 @@
                   @remove-row="handleRemoveRow"
                   @page-size-change="pageSizeChange"
                   @current-page-change="currentPageChange"
-                  :auth="{edit: true, delete: true}"
+                  :auth="{edit: isEditing, delete: isEditing}"
                 />
               </div>
             </div>
             <!-- TIPS: 填入项目id即可 -->
             <Upload
               :visible="uploadDialogVisible"
-              :id="'1'"
+              id='detailImportExcel'
+              :businessParams="_id"
+              @getData="handleQuery"
               @close="uploadDialogVisible = false"
             />
           </section>
@@ -404,6 +413,7 @@ export default {
       submitLoading: false,
       uploadDialogVisible: false,
       yes_no_enum: YES_NO_ENUM,
+      generateCode: '',
       detailForm: { ...detailForm },
       form: { ...form },
       originalForm: { ...form },
@@ -491,9 +501,6 @@ export default {
         statusDesc: [
           { required: true, message: '请选择状态变更描述', trigger: 'change' }
         ],
-        activityCode: [
-          { required: true, message: '请输入活动编码', trigger: 'change' }
-        ],
         activityName: [
           { required: true, message: '请输入活动名称', trigger: 'change' }
         ],
@@ -505,7 +512,7 @@ export default {
           { validator: validateDateRange, trigger: 'change' }
         ],
         needAutoAllocateCar: [
-          { required: true, message: '请输入是否需要自动配车,1:是；0：否', trigger: 'change' }
+          { required: true, message: '请输入是否需要自动配车', trigger: 'change' }
         ],
         // deliveryWay: [
         //   { required: true, message: '请输入指定发运方式', trigger: 'change' }
@@ -525,9 +532,10 @@ export default {
     };
   },
   mounted () {
-    this.getLoginUser();
     if (this._id) {
       this.getList();
+    } else {
+      this.getLoginUser();
     }
   },
   methods: {
@@ -544,15 +552,22 @@ export default {
       this.getList();
     },
     handleRemoveRow (row, index, defer) {
+      this.detailRequest();
       if (!row.id) {
         return;
       }
-      deleteItem([row.id]).then((d) => {
-        defer.resolve();
-        this.$message.success('删除成功');
-      }).catch(() => {
-        defer.reject();
-      });
+      if (row.usedQuotaQty > 0) {
+        this.$message.error('排产专项活动已提报数量大于0, 不允许删除');
+        this.getList();
+      } else {
+        deleteItem([row.id]).then((d) => {
+          defer.resolve();
+          this.$message.success('删除成功');
+          this.getList();
+        }).catch(() => {
+          defer.reject();
+        });
+      }
     },
     // 行保存
     saveRowEdit (row, defer) {
@@ -653,3 +668,9 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+  ::v-deep .tag-input {
+    line-height: 32px;
+  }
+</style>

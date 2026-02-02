@@ -8,17 +8,20 @@
         :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
+        :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="form.permission.edit"
       >
         <template #status>
-          <span class="status primary">状态</span>
+          {{ form.replenishApplyCode }}
+          <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button size="small">提交补货申请</el-button>
-          <el-button size="small" @click="handleAuditValid('dealer')">门店审核</el-button>
-          <el-button size="small" @click="handleAuditValid('factory')">厂端审核</el-button>
-          <el-button size="small">作废</el-button>
+          <el-button size="small" @click="handleSubmit" :disabled="!form.permission.submit">提交补货申请</el-button>
+          <el-button size="small" @click="handleAuditValidForDealer()" :disabled="!form.permission.dealerAudit">门店审核</el-button>
+          <el-button size="small" @click="handleAuditValidForFactory()" :disabled="!form.permission.factoryAudit">厂端审核</el-button>
+          <el-button size="small" @click="handleUnused" :disabled="!form.permission.cancel">作废</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -36,7 +39,7 @@
                     :disabled="true"
                   />
                 </el-form-item>
-                <el-form-item label="门店编码" prop="saleDealerCode">
+                <el-form-item label="门店编码：" prop="saleDealerCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.saleDealerCode"
@@ -58,8 +61,7 @@
                 </el-form-item>
                 <el-form-item label="订单分类：" prop="orderCategory">
                   <fetch-select
-                    :request="fetchOptions"
-                    enumCode="vw_order_category"
+                    :options="orderCategoryOptions"
                     v-model="form.orderCategory"
                     placeholder="请选择"
                     clearable
@@ -89,18 +91,19 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item
-                  label="专项活动："
+                <el-form-item label="专项活动："
                   prop="prodScheduleActivityId"
-                  v-show="isShowActivity"
+                  v-show="form.orderCategory !== '2'"
                 >
                   <fetch-select
                     :remote-method="prodScheduleActivitySearch"
+                    :options="prodScheduleActivityOptions"
                     remote
                     reserve-keyword
-                    labelKey="name"
-                    valueKey="id"
+                    labelKey="activityName"
+                    valueKey="scheduleActivityId"
                     v-model="form.prodScheduleActivityId"
+                    :params="form.prodScheduleActivityName"
                     placeholder="请选择"
                     clearable
                     filterable
@@ -109,8 +112,7 @@
                 <el-form-item
                   label="申请类别："
                   prop="applyCategory"
-                  v-show="isShowApplyCategory"
-                  :rules="form.orderCategory === '2' ? rules.applyCategory: []"
+                  v-show="form.orderCategory === '2'"
                 >
                   <fetch-select
                     :request="fetchOptions"
@@ -142,8 +144,8 @@
                 <el-form-item
                   label="金融机构："
                   prop="financialOrganizationId"
-                  :rules="form.settleFundType==='2010' ? rules.financialOrganizationId: []"
-                  v-show="isShowFinancialOrganization"
+                  :rules="form.settleFundType==2010 ? rules.financialOrganizationId: []"
+                  v-show="form.settleFundType==2010"
                 >
                   <fetch-select
                     :remote-method="repairItemSearch"
@@ -238,10 +240,10 @@
                 <el-form-item label="批售方式：" prop="wholesaleWay">
                   {{ form.wholesaleWayLabel }}
                 </el-form-item>
-                <el-form-item label="专项活动：" prop="prodScheduleActivityId">
-                  {{ form.prodScheduleActivity }}
+                <el-form-item label="专项活动：" prop="prodScheduleActivityId" v-show="form.orderCategory !== '2'">
+                  {{ form.prodScheduleActivityName }}
                 </el-form-item>
-                <el-form-item label="申请类别：" prop="applyCategory">
+                <el-form-item label="申请类别：" prop="applyCategory" v-show="form.orderCategory === '2'">
                   {{ form.applyCategoryLabel }}
                 </el-form-item>
                 <el-form-item label="门店仓库：" prop="dealerWarehouseName">
@@ -250,8 +252,8 @@
                 <el-form-item label="审核状态：" prop="auditStatus">
                   {{ form.auditStatusLabel }}
                 </el-form-item>
-                <el-form-item label="金融机构：" prop="financialOrganizationId">
-                  {{ form.financialOrganization }}
+                <el-form-item label="金融机构：" prop="financialOrganizationId" v-show="form.settleFundType==2010">
+                  {{ form.financialOrganizationName }}
                 </el-form-item>
                 <el-form-item label="是否赊销：" prop="isCreditSale">
                   {{ form.settleFundType === '1050' ? '是' : '否' }}
@@ -280,13 +282,15 @@
           <section class="common-section">
             <div class="common-section-header">
               <h2>整车门店补货明细</h2>
-              <el-button size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>添加补货明细</el-button>
+              <el-button size="small" @click="handleAddRow" v-show="isEditing || !_id"><i class="iconfont icon-lxppc-plus"></i>添加补货明细</el-button>
             </div>
             <div class="common-section-body">
               <div class="common-section-table">
                 <component-table
                   :tableData="form.details"
                   :columns="detailsColumns"
+                  :show-delete="isEditing || !_id"
+                  @delete-row="handleDeleteDetailRow"
                 />
               </div>
             </div>
@@ -332,14 +336,14 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, dealerAuditValid, factoryAuditValid, dealerApproval, factoryApproval } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
-import { addOrUpdate as addOrUpdateDetail } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/index';
+import { getDetail, addOrUpdate, dealerAuditValid, factoryAuditValid, dealerApproval, factoryApproval, unusedApply, replenishmentSubmit } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
+// import { addOrUpdate as addOrUpdateDetail } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum, getDealerDetailByCode, getRigion, listOrgStoreInfo } from '@/api/common';
 import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
-import { listIdNames as listWholesaleProdScheduleActivity } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivity/index';
+import { getList as listWholesaleProdScheduleActivity } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivityDetail/index';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -356,6 +360,7 @@ const defaultForm = {
   regionName: '',
   wholesaleWay: '10',
   prodScheduleActivityId: '',
+  prodScheduleActivityName: '',
   serials: '',
   orderCategory: '',
   applyTotalQty: '',
@@ -425,6 +430,12 @@ export default {
         }
       },
       immediate: true
+    },
+    'form.details': {
+      handler (newVal) {
+        this.updateApplyTotalQty();
+      },
+      deep: true
     }
   },
   data () {
@@ -438,9 +449,8 @@ export default {
       pannelTitle: '',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-dealerVehicleReplenishApply',
-      isShowActivity: false,
-      isShowApplyCategory: false,
-      isShowFinancialOrganization: false,
+      orderCategoryOptions: [],
+      prodScheduleActivityOptions: [],
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
@@ -492,6 +502,7 @@ export default {
       ],
       detailsColumns: [
         { field: 'replenishApplyDetailCode', title: '整车补货明细单号', width: '280' },
+        { field: 'vehicleYearType', title: '年款', width: '120' },
         { field: 'seriesName', title: '车系', width: '120' },
         { field: 'modelName', title: '车型', width: '200' },
         { field: 'materialsCode', title: '物料编码', width: '250' },
@@ -499,18 +510,12 @@ export default {
         { field: 'applyQty', title: '申请数量', width: '120' },
         { field: 'invoiceDiscountType', title: '开票类型', width: '120' },
         { field: 'invoiceCoefficient', title: '开票系数', width: '120' },
-        { field: '', title: '申请时间', width: '180' },
-        { field: 'updateTime', title: '审批时间', width: '180' },
-        // { field: 'orderCategoryName', title: '订单分类', width: '180' },
-        // { field: '', title: '结算资金类型', width: '180' },
-        // { field: '', title: '融资机构', width: '180' },
-        { field: 'remark', title: '申请原因', width: '150' },
         { field: 'creatorName', title: '创建人', width: '120' },
         { field: 'createTime', title: '创建时间', width: '180' }
       ],
       rules: {
         replenishApplyCode: [
-          { required: true, message: '请输入整车补货单号', trigger: 'change' }
+          { required: false, message: '请输入整车补货单号', trigger: 'change' }
         ],
         saleDealerName: [
           { required: true, message: '请输入销售门店名称', trigger: 'change' }
@@ -534,7 +539,7 @@ export default {
           { required: true, message: '请输入订单分类', trigger: 'change' }
         ],
         applyTotalQty: [
-          { required: true, message: '请输入申请总数量', trigger: 'change' }
+          { required: false, message: '请输入申请总数量', trigger: 'change' }
         ],
         applyTime: [
           { required: true, message: '请选择申请时间', trigger: 'change' }
@@ -633,32 +638,78 @@ export default {
           { required: true, message: '请输入仓库地址', trigger: 'change' }
         ],
         auditDateTime: [
-          { required: true, message: '请选择审批时间', trigger: 'change' }
+          { required: false, message: '请选择审批时间', trigger: 'change' }
         ],
       }
     };
   },
   mounted () {
+    this.fetchOrderCategoryOptions();
+    // this.handleChangeOrderCategory(this.form.orderCategory);
+    // this.handleChangeFundType(this.form.settleFundType);
   },
   methods: {
+    handleDeleteDetailRow (row, rowIndex) {
+      this.$confirm(`确定要删除${row.replenishApplyDetailCode}表格数据吗`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.form.details.splice(rowIndex, 1);
+        this.updateApplyTotalQty();
+      }).catch(() => {
+      });
+    },
     handleSave () {
       const dataList = this.$refs.addCommercialVehicle.tableList;
       if (!dataList || dataList.length === 0) return;
-      let params = {
-        mainData: {
-          replenishApplyId: this._id,
-          ...this.form,
-        },
-        detailData: dataList
-      };
-      delete params.mainData.id;
-      addOrUpdateDetail(params).then(id => {
-        this.$message.success('更新成功');
-        this.$refs.editLayout.closePane();
-        this.detailRequest();
-      }).catch(e => {
-        this.$message.error('更新失败');
+      const processedDataList = dataList.map(item => {
+        const { id, yearTypeId, yearTypeName, ...rest } = item;
+        return {
+          ...rest,
+          vehicleYearTypeId: yearTypeId,
+          vehicleYearType: yearTypeName
+        };
       });
+      // 确保 form.details 存在且是数组
+      if (!Array.isArray(this.form.details)) {
+        this.form.details = [];
+      }
+      // 创建一个 map 来存储 form.details 中已有的 materialsCode
+      const existingDetailsMap = new Map();
+      this.form.details.forEach(detail => {
+        if (detail.materialsCode) {
+          existingDetailsMap.set(detail.materialsCode, detail);
+        }
+      });
+      const newDetails = [];
+      const updatedDetails = [...this.form.details];
+      processedDataList.forEach(dataItem => {
+        const existingDetail = existingDetailsMap.get(dataItem.materialsCode);
+        if (existingDetail) {
+          existingDetail.applyQty = (Number(existingDetail.applyQty) || 0) + (Number(dataItem.applyQty) || 0);
+        } else {
+          newDetails.push(dataItem);
+        }
+      });
+      this.form.details = [...updatedDetails, ...newDetails];
+      this.updateApplyTotalQty();
+      this.$refs.editLayout.closePane();
+      // let params = {
+      //   mainData: {
+      //     replenishApplyId: this._id,
+      //     ...this.form,
+      //   },
+      //   detailList: dataList
+      // };
+      // delete params.mainData.id;
+      // addOrUpdateDetail(params).then(id => {
+      //   this.$message.success('更新成功');
+      //   this.$refs.editLayout.closePane();
+      //   this.detailRequest();
+      // }).catch(e => {
+      //   this.$message.error('更新失败');
+      // });
     },
     handleCancel () {
       this.$refs.editLayout.closePane();
@@ -671,6 +722,8 @@ export default {
           if (data && data.orderCategory !== undefined && data.orderCategory !== null) {
             data.orderCategory = String(data.orderCategory);
           }
+          // 更新applyTotalQty
+          this.updateApplyTotalQty();
           return data;
         }).catch(error => {
           this.$message.error('获取详情失败');
@@ -680,7 +733,14 @@ export default {
       return Promise.resolve(null);
     },
     submitRequest () {
-      return addOrUpdate({ ...this.form });
+      let params = {
+        mainData: {
+          ...this.form,
+        },
+        detailList: this.form.details
+      };
+
+      return addOrUpdate(params);
     },
     // 打开侧边栏
     openPane () {
@@ -723,73 +783,96 @@ export default {
       }
       return [];
     },
-    handleChangeDealer (val, record) {
+    async fetchOrderCategoryOptions () {
+      const response = await getEnum('vw_order_category');
+      console.log('response:', response);
+      // 过滤出 code 为 0、2、20 的数据，且确保 code 是字符串类型
+      // 0 商品车订单
+      // 2 试驾车订单
+      // 20 展车订单
+      this.orderCategoryOptions = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['0', '2', '20'].includes(codeStr);
+      }).map(item => {
+        // 确保 code 字段是字符串类型
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
+    },
+    async handleChangeDealer (val, record) {
+      this.form.saleDealerName = record?.storeName || '';
       this.form.saleDealerCode = record?.storeCode || '';
       this.form.regionCode = record?.regionCode || '';
       this.form.regionName = record?.region || '';
-      getDealerDetailByCode(this.form.saleDealerCode).then(response => {
-        this.form.deliveryDealerCode = response?.exclusiveDeliveryStoreCode || '';
-        this.form.deliveryDealerName = response?.exclusiveDeliveryStoreName || '';
-      }).catch(error => {
-        // 错误处理逻辑
-        console.error('请求失败:', error);
-      });
-      if (this.form.deliveryDealerCode) {
-        getDealerDetailByCode(this.form.deliveryDealerCode).then(response => {
-          this.form.dealerWarehouseCode = response?.storeWarehouseResp?.warehouseCode || '';
-          this.form.dealerWarehouseAddress = response?.storeWarehouseResp?.warehouseDetailAddress || '';
-          this.form.dealerWarehouseName = response?.storeWarehouseResp?.warehouseName || '';
-        }).catch(error => {
-          // 错误处理逻辑
-          console.error('请求失败:', error);
-        });
+      this.form.prodScheduleActivityId = '';
+      this.form.prodScheduleActivityName = '';
+      try {
+        const result = await listWholesaleProdScheduleActivity({ status: 1, dealerCode: this.form.saleDealerCode });
+        this.prodScheduleActivityOptions = result.records || [];
+        const dealerResponse = await getDealerDetailByCode(this.form.saleDealerCode);
+        this.form.deliveryDealerCode = dealerResponse?.exclusiveDeliveryStoreCode || '';
+        this.form.deliveryDealerName = dealerResponse?.exclusiveDeliveryStoreName || '';
+        if (this.form.deliveryDealerCode) {
+          const deliveryDealerResponse = await getDealerDetailByCode(this.form.deliveryDealerCode);
+          this.form.dealerWarehouseCode = deliveryDealerResponse?.storeWarehouseResp?.warehouseCode || '';
+          this.form.dealerWarehouseAddress = deliveryDealerResponse?.storeWarehouseResp?.warehouseDetailAddress || '';
+          this.form.dealerWarehouseName = deliveryDealerResponse?.storeWarehouseResp?.warehouseName || '';
+        }
+      } catch (error) {
+        console.error('获取经销商信息失败:', error);
+        this.$message.error('获取经销商信息失败，请重试');
       }
     },
     handleChangeOrderCategory (val) {
+      // 0 商品车订单
+      // 2 试驾车订单
+      // 20 展车订单
       if (val === '2') {
-        this.isShowApplyCategory = true;
-        this.isShowActivity = false;
         this.form.prodScheduleActivityId = '';
-      } else if (val === '1' || val === '3') {
-        this.isShowApplyCategory = false;
-        this.isShowActivity = true;
+      } else if (val === '0' || val === '20') {
         this.form.applyCategory = '';
-      } else {
-        this.isShowApplyCategory = false;
-        this.isShowActivity = false;
-        this.form.applyCategory = '';
-        this.form.prodScheduleActivityId = '';
       }
     },
     handleChangeFundType (val) {
-      if (val === '2010') {
-        this.isShowFinancialOrganization = true;
-      } else {
-        this.isShowFinancialOrganization = false;
+      //  * ('vw_fundtype','1010','现金',0,'资金类型-现金'),
+      // * ('vw_fundtype','1020','返利',1,'资金类型-返利'),
+      // * ('vw_fundtype','1050','赊销-零跑',2,'资金类型-赊销-零跑'),
+      // * ('vw_fundtype','2010','融资',3,'资金类型-融资');
+      if (val !== '2010') {
         this.form.financialOrganizationId = '';
       }
-      if (val === '1050') {
+      if (val === '1050' && !this._id) {
         this.form.isCreditSale = 1;
       }
     },
     async getDealerListByName (params) {
-      return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
+      return await listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
     },
     async getRegionList (params) {
-      return getRigion({ orgName: params });
+      return await getRigion({ orgName: params });
     },
     async repairItemSearch (query) {
-      return listFinancialOrganization({ organizationNameLike: query, status: 1 });
+      return await listFinancialOrganization({ organizationNameLike: query, status: 1 });
     },
     async prodScheduleActivitySearch (query) {
-      return listWholesaleProdScheduleActivity({ activityNameLike: query, status: 1, valid: true });
+      if (!this.form.saleDealerCode) {
+        this.$message.warning('请先选择销售门店');
+        return [];
+      }
+      const searchQuery = typeof query === 'string' ? query : '';
+      const result = await listWholesaleProdScheduleActivity({ scheduleActivityIdLike: searchQuery, status: 1, dealerCode: this.form.saleDealerCode });
+      // 将查询结果存储到选项数组中
+      this.prodScheduleActivityOptions = result.records || [];
+      return result || [];
     },
-    handleAuditValidForDealer (type) {
+    handleAuditValidForDealer () {
       return dealerAuditValid([this._id]).then(() => {
         this.$refs.auditInputForDealer.show();
       });
     },
-    handleAuditValidForFactory (type) {
+    handleAuditValidForFactory () {
       return factoryAuditValid([this._id]).then(() => {
         this.$refs.auditInputForFactory.show();
       });
@@ -799,6 +882,9 @@ export default {
         ids: [this._id],
         isAudit: data.result,
         auditOpinion: data.remark
+      }).then(() => {
+        this.$message.success('补货申请门店审核成功');
+        this.detailRequest();
       });
     },
     handelAuditForFactory (data) {
@@ -806,6 +892,44 @@ export default {
         ids: [this._id],
         isAudit: data.result,
         auditOpinion: data.remark
+      }).then(() => {
+        this.$message.success('补货申请厂端审核成功');
+        this.detailRequest();
+      });
+    },
+    updateApplyTotalQty () {
+      if (!this.form.details || this.form.details.length === 0) {
+        this.form.applyTotalQty = 0;
+        return;
+      }
+      let total = 0;
+      this.form.details.forEach(detail => {
+        const qty = Number(detail.applyQty) || 0;
+        total += qty;
+      });
+      this.form.applyTotalQty = total;
+    },
+    handleUnused () {
+      // 作废逻辑
+      this.$confirm('是否执行作废操作？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        unusedApply(this._id).then(() => {
+          this.$message.success('补货申请已作废');
+          this.detailRequest();
+        }).catch(() => {
+          this.$message.error('补货申请作废失败');
+        });
+      }).catch(() => {
+        // 取消作废
+      });
+    },
+    handleSubmit () {
+      replenishmentSubmit({ id: this._id }).then(() => {
+        this.$message.success('补货申请提交成功');
+        this.detailRequest();
       });
     }
   }

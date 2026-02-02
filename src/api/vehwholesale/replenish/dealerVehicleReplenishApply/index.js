@@ -122,3 +122,11 @@ export function dealerApproval (data) {
 export function replenishmentSubmit (data) {
   return api.jsonPost(prefix + 'submit', data);
 }
+
+/**
+ *  作废补货申请
+ * @param {Object} data
+ */
+export function unusedApply (data) {
+  return api.jsonPost(prefix + 'invalid', data);
+}

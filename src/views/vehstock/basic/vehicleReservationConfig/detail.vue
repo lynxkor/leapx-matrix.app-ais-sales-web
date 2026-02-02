@@ -40,11 +40,11 @@
             <el-form-item label="截取预留值：" prop="reserveCutValue">
               {{ info.reserveCutValue  }}
             </el-form-item>
+            <el-form-item label="状态：" prop="status">
+              {{ info.statusLabel  }}
+            </el-form-item>
             <el-form-item label="备注：" prop="remark">
               {{ info.remark  }}
-            </el-form-item>
-            <el-form-item label="状态：" prop="status">
-              {{ info.status  }}
             </el-form-item>
           </el-form>
         </div>

@@ -43,11 +43,18 @@
                 />
               </el-form-item>
               <el-form-item label="金融机构名称" prop="financialOrganizationName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.financialOrganizationName"
-                  clearable
-                />
+                 <fetch-select
+                    :remote-method="repairItemSearch"
+                    remote
+                    reserve-keyword
+                    labelKey="name"
+                    valueKey="id"
+                    v-model="form.financialOrganizationIds"
+                    placeholder="请选择"
+                    clearable
+                    multiple
+                    filterable
+                  />
               </el-form-item>
               <el-form-item label="资金结算顺序" prop="settleSort">
                 <el-input
@@ -253,6 +260,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -407,6 +415,7 @@ export default {
     this.getDetailData();
   },
   methods: {
+    repairItemSearch (query) { return listIdNames({ organizationNameLike: query, status: 1 }); },
     handleBack () {
       // this.$router.back();
       let newPath = this.$route.path.replace(/\/edit$/, '');

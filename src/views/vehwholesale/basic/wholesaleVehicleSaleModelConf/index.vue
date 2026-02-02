@@ -36,7 +36,7 @@
       <el-form-item label="订单分类"  v-show="this.visibleCount === 3 || show">
         <fetch-select
           :request="fetchOptions"
-          enumCode="ws_order_category"
+          enumCode="vw_order_category"
           v-model="form.orderCategory"
           placeholder="请选择"
           clearable
@@ -110,10 +110,11 @@
       :id="1"
       @close="handleUploadDialogClose"
     />
-    <BatchAuditInput
-      :visible.sync="showAuditDialog"
-      :audit-ids="selectionList.map(item => item.id)"
-      @confirm="handleBatchAudit"
+    <audit-dialog
+      ref="auditRef"
+      @audit="handleBatchAudit"
+      :auditDataList="selectionList"
+      :field="'code'"
     />
     <BatchEditInput
       :visible.sync="showEditDialog"
@@ -136,7 +137,7 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
-import BatchAuditInput from './BatchAuditInput.vue';
+import auditDialog from '@/libs/components/auditDialog';
 import BatchEditInput from './BatchEditInput.vue';
 
 const defaultForm = {
@@ -160,7 +161,7 @@ export default {
     LPVxeTable,
     FetchSelect,
     Upload,
-    BatchAuditInput,
+    auditDialog,
     BatchEditInput
   },
   data () {
@@ -179,7 +180,6 @@ export default {
       exportLoading: false,
       uploadDialogVisible: false,
       yearTypeList: [],
-      showAuditDialog: false,
       showEditDialog: false,
       optionObj: {
         id: 'wholesaleVehicleSaleModelConfTable',
@@ -239,7 +239,8 @@ export default {
                 this.$router.push({
                   path: '/vehwholesale/basic/wholesaleVehicleSaleModelConf/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },
@@ -473,7 +474,7 @@ export default {
     handleBatchAuditValid () {
       const ids = this.selectionList.map(item => item.id) || [];
       return batchAuditValid(ids).then(() => {
-        this.showAuditDialog = true;
+        this.$refs.auditRef.show();
       });
     },
     handleBatchSubmitValid () {

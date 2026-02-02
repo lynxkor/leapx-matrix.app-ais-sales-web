@@ -12,7 +12,7 @@
       <el-form-item label="整车补货单号">
         <el-input
           placeholder="请输入"
-          v-model="form.replenishApplyCode"
+          v-model="form.replenishApplyCodeLike"
           clearable
         />
       </el-form-item>
@@ -85,8 +85,7 @@
         </el-form-item>
         <el-form-item label="订单分类">
           <fetch-select
-            :request="fetchOptions"
-            enumCode="vw_order_category"
+            :options="orderCategoryOptions"
             v-model="form.orderCategory"
             placeholder="请选择"
             clearable
@@ -97,7 +96,7 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_fundtype"
-            v-model="form.fundTypes"
+            v-model="form.settleFundType"
             placeholder="请选择"
             clearable
             filterable
@@ -179,7 +178,7 @@
       </LPVxeTable>
     </div>
     <vehicle-wholesale-dialog ref="vehicleWholesale" :dealerCompanyName="'dealerCompanyName'" @confirm="getData" />
-    <BatchAuditInput ref="batchAuditInput"/>
+    <BatchAuditInput ref="batchAuditInput" @confirm="getData"/>
     <!-- TIPS: 填入项目id即可 -->
     <!-- <Upload
       :visible="uploadDialogVisible"
@@ -193,7 +192,8 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, createRequestValid, factoryAuditValid } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
+// createRequestValid
+import { getList, deleteItem, enableItem, factoryAuditValid } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getRigion, listOrgStoreInfo } from '@/api/common';
 import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import { listIdNames as listWholesaleProdScheduleActivity } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivity/index';
@@ -210,7 +210,7 @@ import BatchAuditInput from './BatchAuditInput.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  replenishApplyCode: '',
+  replenishApplyCodeLike: '',
   saleDealerCodes: [],
   auditStatus: '',
   regionCodes: [],
@@ -249,6 +249,7 @@ export default {
         ...defaultForm
       },
       selectionList: [],
+      orderCategoryOptions: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -314,9 +315,16 @@ export default {
                 this.$router.push({
                   path: '/vehwholesale/replenish/dealerVehicleReplenishApply/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
+              },
+              type: 'info'
+            }, {
+              name: '日志',
+              click: (rowIndex, row) => {
+                this.$auditLog.show({ id: row.id });
               },
               type: 'info'
             }]
@@ -331,10 +339,13 @@ export default {
     this.getData();
     this.getEnum();
   },
+  mounted () {
+    this.fetchOrderCategoryOptions();
+  },
   methods: {
     async vehicleWholesale () {
       try {
-        await createRequestValid();
+        // await createRequestValid();
         this.$refs.vehicleWholesale.dialogshow();
       } catch (error) {
         // 忽略验证失败的错误，不显示任何提示
@@ -370,7 +381,8 @@ export default {
     async showDropdown () {
       this.dropdownLoading = true;
       try {
-        await createRequestValid();
+        // 又不要校验了
+        // await createRequestValid();
         this.dropdownLoading = false;
         this.validatedOrderategoryList = [...this.orderategoryList];
       } catch (error) {
@@ -399,7 +411,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '整车批售-批售主数据-整车门店补货申请管理',
-        dataFetchPath: 'vehwholesale/replenish/dealerVehicleReplenishApply/page',
+        dataFetchPath: 'vw/web/replenish/dealerVehicleReplenishApply/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -574,7 +586,25 @@ export default {
       return factoryAuditValid(ids).then(() => {
         this.$refs.batchAuditInput.openDialog({ ids, isApprove: data });
       });
-    }
+    },
+    async fetchOrderCategoryOptions () {
+      const response = await getEnum('vw_order_category');
+      console.log('response:', response);
+      // 过滤出 code 为 0、2、20 的数据，且确保 code 是字符串类型
+      // 0 商品车订单
+      // 2 试驾车订单
+      // 20 展车订单
+      this.orderCategoryOptions = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['0', '2', '20'].includes(codeStr);
+      }).map(item => {
+        // 确保 code 字段是字符串类型
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
+    },
   }
 };
 </script>

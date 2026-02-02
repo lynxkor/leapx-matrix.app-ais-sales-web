@@ -7,6 +7,8 @@
     border="inner"
     size="medium"
     height="auto"
+    min-height="200px"
+    max-height="600px"
     width="1000px"
     :checkbox-config="{ checkField: 'checked' }"
   >
@@ -15,6 +17,17 @@
       :key="column.field || column.title"
       v-bind="column"
     />
+    <vxe-column
+      v-if="showDelete"
+      field="action"
+      title="操作"
+      width="80"
+      fixed="right"
+    >
+      <template #default="{ row, rowIndex }">
+        <el-button type="text" size="small" @click="handleDelete(row, rowIndex)">删除</el-button>
+      </template>
+    </vxe-column>
   </vxe-table>
 </template>
 
@@ -29,6 +42,10 @@ export default {
     columns: {
       type: Array,
       default: () => []
+    },
+    showDelete: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -46,6 +63,9 @@ export default {
         this.$refs.table.clearCheckboxRow();
         this.$refs.table.clearCheckboxReserve();
       }
+    },
+    handleDelete (row, rowIndex) {
+      this.$emit('delete-row', row, rowIndex);
     }
   }
 };

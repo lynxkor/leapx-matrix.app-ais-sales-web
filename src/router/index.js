@@ -1527,6 +1527,78 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
+      path: '/vehwholesale/wholesale/vehicleWholesaleOrder',
+      name: 'order',
+      component: () => import('@/views/vehwholesale/wholesale/vehicleWholesaleOrder/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车批售订单管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
+      name: 'orderEdit',
+      component: () => import('@/views/vehwholesale/wholesale/vehicleWholesaleOrder/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车批售订单管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/wholesale/vehicleWholesaleOrderFactory',
+      name: 'orderFactory',
+      component: () => import('@/views/vehwholesale/wholesale/vehicleWholesaleOrderFactory/index.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车批售订单管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/wholesale/vehicleWholesaleOrderFactory/edit',
+      name: 'orderEditFactory',
+      component: () => import('@/views/vehwholesale/wholesale/vehicleWholesaleOrderFactory/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售主数据-整车批售订单管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/store/vehiclePdiCheckItemConfig',
+      name: 'vehiclePdiCheckItemConfig',
+      component: () => import('@/views/vehstock/store/vehiclePdiCheckItemConfig/index.vue'),
+
+      meta: {
+        name: '整车PDI检查项配置',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/store/vehiclepdicheckitemconfig/edit',
+      name: 'vehiclePdiCheckItemConfigEdit',
+      component: () => import('@/views/vehstock/store/vehiclePdiCheckItemConfig/edit.vue'),
+
+      meta: {
+        name: '整车PDI检查项配置详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/store/storeVehiclePdi',
+      name: 'storeVehiclePdi',
+      component: () => import('@/views/vehstock/store/storeVehiclePdi/index.vue'),
+
+      meta: {
+        name: '门店整车PDI单',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/store/storevehiclepdi/edit',
+      name: 'storeVehiclePdiEdit',
+      component: () => import('@/views/vehstock/store/storeVehiclePdi/edit.vue'),
+
+      meta: {
+        name: '门店整车PDI单详情',
+        noResourceUrl: 'true'
+      }
+    }, {
       path: '/vehretail/orderRefund/category',
       name: 'orderRefund',
       component: () => import('@/views/vehretail/orderRefund/category/index.vue'),

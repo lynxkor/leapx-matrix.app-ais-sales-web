@@ -26,7 +26,7 @@
               {{ info.modelName  }}
             </el-form-item>
             <el-form-item label="年款：" prop="modelName">
-              {{ info.yearModelName  }}
+              {{ info.yearTypeName  }}
             </el-form-item>
             <el-form-item label="外观：" prop="exteriorName">
               {{ info.exteriorName  }}

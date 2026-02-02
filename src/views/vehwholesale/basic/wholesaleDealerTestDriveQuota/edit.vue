@@ -29,12 +29,11 @@
                   filterable
                   clearable
                   remote
-                  :params="form.dealerName"
                   v-model="form.dealerName"
                   :remote-method="getDealerListByName"
                   value-key="storeCode"
                   label-key="storeName"
-                  @change="(val, record) => {form.modelName = record?.name || ''}"
+                  @change="handleChangeDealer"
                   :disabled="!!_id"
                 />
               </el-form-item>
@@ -86,7 +85,7 @@
                   v-model="form.requestQty"
                   clearable
                   :precision="0"
-                  :disabled="!!_id"
+                  disabled
                 />
               </el-form-item>
               <el-form-item label="配额数量" prop="quotaQty">
@@ -141,7 +140,6 @@ import commonMixins from '@/libs/mixins/commonMixins';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
-  dealerId: '',
   dealerCode: '',
   dealerName: '',
   vehicleYearType: '',
@@ -355,7 +353,6 @@ export default {
       if (val) {
         this.form.dealerCode = selectedOption?.storeCode || '';
         this.form.dealerName = selectedOption?.storeName || '';
-        this.form.dealerId = selectedOption?.storeId || '';
       }
     },
     async getVehicleSeriesList (params) {

@@ -293,7 +293,8 @@ export default {
                 this.$router.push({
                   path: '/vehwholesale/basic/wholesaleProdScheduleActivity/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },
@@ -319,6 +320,12 @@ export default {
                 });
               },
               type: 'danger'
+            }, {
+              name: '日志',
+              click: (rowIndex, row) => {
+                this.$auditLog.show({ id: row.id });
+              },
+              type: 'info'
             }]
           }
         ],
@@ -469,7 +476,7 @@ export default {
       const data = { ...this.form };
 
       Object.keys(this.form).forEach(key => {
-        if (data[key] === '' || data[key] === null) {
+        if (data[key] === '' || data[key] === null || (typeof data[key] === 'object' && Object.keys(data[key]).length === 0)) {
           delete data[key];
         }
       });
@@ -490,27 +497,50 @@ export default {
       }
       return [];
     },
+    checkUseTotal (items) {
+      if (items.length === 0) {
+        this.$message({
+          type: 'error',
+          message: '请选择需要操作的数据！!'
+        });
+        return false;
+      };
+      for (const item of items) {
+        if (item.usedQuotaQty > 0) {
+          this.$message({
+            type: 'error',
+            message: '排产专项活动已提报数量大于0, 不允许删除!'
+          });
+          return false;
+        };
+      }
+      return true;
+    },
     // 批量删除
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        deleteItem(ids).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
+      const items = this.selectionList.map(item => item) || [];
+      const checkStatus = this.checkUseTotal(items);
+      if (checkStatus) {
+        this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          deleteItem(ids).then(() => {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            });
+            this.getData();
+          }).catch(() => {
+            this.$message({
+              type: 'error',
+              message: '删除失败!'
+            });
           });
-          this.getData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '删除失败!'
-          });
-        });
-      }).catch(() => {});
+        }).catch(() => {});
+      }
     },
     // 批量启用停用
     handleBatchEnable (status) {

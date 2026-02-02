@@ -4,13 +4,18 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        :title="title"
+        title="排产专项活动明细:"
         :isEditing.sync="isEditing"
         :form.sync="form"
+        :originalForm.sync="originalForm"
+        :showEditBtn="false"
         :showBackBtn="showBackBtn"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
       >
+        <template #status>
+          {{ form.activityCode }}
+        </template>
         <el-main>
           <section class="common-section">
             <div class="common-section-header">

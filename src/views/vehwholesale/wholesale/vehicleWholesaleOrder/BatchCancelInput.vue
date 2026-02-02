@@ -57,7 +57,7 @@ export default {
         return;
       }
       this.$emit('confirm', {
-        ids: this.cancelIds,
+        idSet: this.cancelIds,
         statusDesc: this.statusDesc
       });
       this.dialogVisible = false;

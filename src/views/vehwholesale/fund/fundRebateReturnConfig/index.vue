@@ -222,7 +222,8 @@ export default {
                 this.$router.push({
                   path: '/vehwholesale/fund/fundRebateReturnConfig/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },
@@ -356,7 +357,7 @@ export default {
     },
     async fetchOptions (code) {
       if (code) {
-        return getEnum(code);
+        return getEnum(code, 100);
       }
       return [];
     },

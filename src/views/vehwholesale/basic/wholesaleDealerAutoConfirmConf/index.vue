@@ -194,7 +194,8 @@ export default {
                 this.$router.push({
                   path: '/vehwholesale/basic/wholesaleDealerAutoConfirmConf/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },
