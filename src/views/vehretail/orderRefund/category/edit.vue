@@ -340,8 +340,8 @@
 
 <script>
 import { addOrUpdate, getDetail } from '@/api/vehretail/orderRefund/category';
-import FetchSelect from '@/libs/components/FetchSelect';
-import EditTable from '@/libs/components/EditTable';
+// import FetchSelect from '@/libs/components/FetchSelect';
+// import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
@@ -390,8 +390,8 @@ export default {
   components: {
     EditPageLayout,
     EditBaseContainer,
-    EditTable,
-    FetchSelect
+    // EditTable,
+    // FetchSelect
   },
   computed: {
     _id () {
