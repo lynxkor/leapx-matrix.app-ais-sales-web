@@ -192,7 +192,8 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, createRequestValid, factoryAuditValid } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
+// createRequestValid
+import { getList, deleteItem, enableItem, factoryAuditValid } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getRigion, listOrgStoreInfo } from '@/api/common';
 import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import { listIdNames as listWholesaleProdScheduleActivity } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivity/index';
