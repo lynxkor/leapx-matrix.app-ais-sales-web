@@ -124,9 +124,9 @@
           >
             <el-option
               v-for="item in settleAccountList"
-              :key="item.fundType"
-              :label="item.fundTypeLabel"
-              :value="item.fundType"
+              :key="item.id"
+              :label="getFundTypeLabel(item)"
+              :value="item.id"
             />
           </el-select>
         </el-form-item>
@@ -144,7 +144,7 @@
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { listCanSettleAccount } from '@/api/vehwholesale/fund/account/index';
 import { getEnum } from '@/api/common';
-import { queryPlantWholesaleInStockInventory } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
+import { queryPlantWholesaleInStockInventory, plantWholesaleInStockCreateApply } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
 
 // import FetchSelect from '@/libs/components/FetchSelect';
 import permissions from '@/libs/mixins/permissions';
@@ -313,6 +313,9 @@ export default {
     }
   },
   methods: {
+    getFundTypeLabel (item) {
+      return item.fundType === 2010 ? item.fundTypeLabel + '-' + item.financialOrganizationName : item.fundTypeLabel;
+    },
     filterTableData () {
       let filteredData = [...this.originalTableData];
 
@@ -350,8 +353,9 @@ export default {
       row.applyQty = intValue;
     },
     listCanSettleAccount () {
+      // 这里只能查出20条
+      // 厂端不允许点开查询的 但是产品坚持要可以打开在最后一步骤提交校验
       listCanSettleAccount({}).then(res => {
-        console.log('listCanSettleAccount:', res);
         this.settleAccountList = res || [];
       }).catch(err => { console.log(err); });
     },
@@ -449,16 +453,24 @@ export default {
       this.$refs.fundForm.validate((valid) => {
         if (valid) {
           this.submitLoading = true;
-          // 这里可以添加提交逻辑
-          // 例如：调用API提交数据
-          // 提交成功后关闭对话框
-          this.$emit('confirm', {
-            ...this.form,
-            fundType: this.fundForm.fundType,
-            tableData: this.tableData.filter(row => row.applyQty > 0)
+          let params = {
+            materialsList: this.tableData.filter(row => row.applyQty > 0).map(ele => {
+              return {
+                warehouseCode: ele.warehouseCode,
+                materialDesc: ele.materialsDesc,
+                applyQty: ele.applyQty
+              };
+            }),
+            fundAccountId: this.fundForm.fundType
+          };
+          // console.log('params:', params);
+          plantWholesaleInStockCreateApply(params).then(res => {
+            this.$emit('confirm');
+            this.submitLoading = false;
+            this.dialogVisible = false;
+          }).catch(() => {
+            this.submitLoading = false;
           });
-          this.submitLoading = false;
-          this.dialogVisible = false;
         }
       });
     },
