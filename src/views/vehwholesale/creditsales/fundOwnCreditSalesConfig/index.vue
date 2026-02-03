@@ -31,9 +31,7 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-
-      <template v-if="show">
-         <el-form-item label="配置状态">
+        <el-form-item label="配置状态">
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_credit_sales_config_audit_status"
@@ -44,6 +42,7 @@
             filterable
           />
         </el-form-item>
+      <template v-if="show">
         <el-form-item label="母公司编码" >
           <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
         </el-form-item>

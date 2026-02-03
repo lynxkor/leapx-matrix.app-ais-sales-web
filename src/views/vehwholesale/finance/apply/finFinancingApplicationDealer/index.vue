@@ -15,14 +15,14 @@
       <el-form-item label="母公司编码">
         <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
       </el-form-item>
-      <template v-if="show">
-         <el-form-item label="融资金融机构ID">
+      <el-form-item label="融资金融机构ID">
           <el-input
             placeholder="请输入"
             v-model="form.fundFinancialOrganizationId"
             clearable
           />
         </el-form-item>
+      <template v-if="show">
         <el-form-item label="主体母公司名称">
           <tag-input v-model="form.mainDealerCompanyNames" placeholder="请输入" />
         </el-form-item>
@@ -40,17 +40,17 @@
           />
         </el-form-item>
           <el-form-item label="创建时间">
-        <el-date-picker
-         :default-time="['00:00:00', '23:59:59']"
-          v-model="form.createTime"
-          type="daterange"
-          :picker-options="pickerOptions"
-          range-separator="至"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        />
-      </el-form-item>
+            <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+              v-model="form.createTime"
+              type="daterange"
+              :picker-options="pickerOptions"
+              range-separator="至"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+            />
+        </el-form-item>
       <el-form-item label="状态">
          <fetch-select
             :request="fetchOptions"
@@ -215,24 +215,6 @@ export default {
                 });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],

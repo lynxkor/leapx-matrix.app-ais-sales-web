@@ -24,8 +24,7 @@
           end-placeholder="结束日期"
         />
       </el-form-item>
-      <template v-if="show">
-        <el-form-item label="是否锁零售单">
+      <el-form-item label="是否锁零售单">
           <fetch-select
             :request="fetchOptions"
             enumCode="BooleanEnum"
@@ -35,6 +34,7 @@
             filterable
           />
         </el-form-item>
+      <template v-if="show">
         <el-form-item label="是否需要自动配车">
           <fetch-select
             :request="fetchOptions"
