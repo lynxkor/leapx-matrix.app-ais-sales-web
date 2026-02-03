@@ -493,12 +493,12 @@ export default {
         { field: 'wheelHubName', title: '选配轮毂（L）', width: '120' },
         { field: '', title: '选配动力（L）', width: '120' },
         { field: 'remark', title: '描述', width: '150' },
-        { field: 'orderCategoryName', title: '订单分类', width: '120' },
-        { field: 'wholesaleWay', title: '批售方式', width: '120' },
-        { field: 'settleFundType', title: '结算资金类型', width: '150' },
+        { field: 'orderCategoryNameLabel', title: '订单分类', width: '120' },
+        { field: 'wholesaleWayLabel', title: '批售方式', width: '120' },
+        { field: 'settleFundTypeLabel', title: '结算资金类型', width: '150' },
         { field: 'financialOrganizationName', title: '金融机构', width: '150' },
         { field: 'createTime', title: '创建时间', width: '180' },
-        { field: 'vehicleReturnFlag', title: '退车标识', width: '120' }
+        { field: 'vehicleReturnFlagLabel', title: '退车标识', width: '120' }
       ],
       detailsColumns: [
         { field: 'replenishApplyDetailCode', title: '整车补货明细单号', width: '280' },

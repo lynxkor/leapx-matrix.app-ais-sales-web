@@ -1634,6 +1634,189 @@ const routes = [
         name: '原因二级分类详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehwholesale/finance/bank/finBankCreditRecord',
+      name: 'bank',
+      component: () => import('@/views/vehwholesale/finance/bank/finBankCreditRecord/index.vue'),
+
+      meta: {
+        name: '账户管理-银行融资信息-银行授信记录管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/finance/bank/finBankCreditRecord/edit',
+      name: 'bankEdit',
+      component: () => import('@/views/vehwholesale/finance/bank/finBankCreditRecord/edit.vue'),
+
+      meta: {
+        name: '账户管理-银行融资信息-银行授信记录管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/finance/bank/finBankFinancingRecord',
+      name: 'finBankFinancingRecord',
+      component: () => import('@/views/vehwholesale/finance/bank/finBankFinancingRecord/index.vue'),
+
+      meta: {
+        name: '账户管理-银行融资信息-银行融资记录管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/finance/bank/finbankfinancingrecord/edit',
+      name: 'finBankFinancingRecordEdit',
+      component: () => import('@/views/vehwholesale/finance/bank/finBankFinancingRecord/edit.vue'),
+
+      meta: {
+        name: '账户管理-银行融资信息-银行融资记录管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/finance/bank/finCustomerRepaymentRecord',
+      name: 'finCustomerRepaymentRecord',
+      component: () => import('@/views/vehwholesale/finance/bank/finCustomerRepaymentRecord/index.vue'),
+
+      meta: {
+        name: '账户管理-银行融资信息-客户还款记录管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/finance/bank/fincustomerrepaymentrecord/edit',
+      name: 'finCustomerRepaymentRecordEdit',
+      component: () => import('@/views/vehwholesale/finance/bank/finCustomerRepaymentRecord/edit.vue'),
+
+      meta: {
+        name: '账户管理-银行融资信息-客户还款记录管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/finance/bank/finBankVehicleRepaymentRecord',
+      name: 'finBankVehicleRepaymentRecord',
+
+      component: () => import(
+        '@/views/vehwholesale/finance/bank/finBankVehicleRepaymentRecord/index.vue'
+      ),
+
+      meta: {
+        name: '账户管理-银行融资信息-银行还款车辆记录管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/finance/bank/finbankvehiclerepaymentrecord/edit',
+      name: 'finBankVehicleRepaymentRecordEdit',
+      component: () => import('@/views/vehwholesale/finance/bank/finBankVehicleRepaymentRecord/edit.vue'),
+
+      meta: {
+        name: '账户管理-银行融资信息-银行还款车辆记录管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/finance/factory/finVehicleBindingMileageRecord',
+      name: 'finVehicleBindingMileageRecord',
+
+      component: () => import(
+        '@/views/vehwholesale/finance/factory/finVehicleBindingMileageRecord/index.vue'
+      ),
+
+      meta: {
+        name: '账户管理-车厂融资信息-车辆绑车及里程记录管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/finance/factory/finvehiclebindingmileagerecord/edit',
+      name: 'finVehicleBindingMileageRecordEdit',
+
+      component: () => import(
+        '@/views/vehwholesale/finance/factory/finVehicleBindingMileageRecord/edit.vue'
+      ),
+
+      meta: {
+        name: '账户管理-车厂融资信息-车辆绑车及里程记录管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/finance/factory/finVehicleStatusRecord',
+      name: 'finVehicleStatusRecord',
+
+      component: () => import(
+        '@/views/vehwholesale/finance/factory/finVehicleStatusRecord/index.vue'
+      ),
+
+      meta: {
+        name: '账户管理-车厂融资信息-车辆状态记录管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/finance/factory/finvehiclestatusrecord/edit',
+      name: 'finVehicleStatusRecordEdit',
+
+      component: () => import(
+        '@/views/vehwholesale/finance/factory/finVehicleStatusRecord/edit.vue'
+      ),
+
+      meta: {
+        name: '账户管理-车厂融资信息-车辆状态记录管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/finance/apply/finFinancingApplicationDealer',
+      name: 'finFinancingApplicationDealer',
+
+      component: () => import(
+        '@/views/vehwholesale/finance/apply/finFinancingApplicationDealer/index.vue'
+      ),
+
+      meta: {
+        name: '新页面',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/finance/apply/finfinancingapplicationdealer/edit',
+      name: 'finFinancingApplicationDealerEdit',
+
+      component: () => import(
+        '@/views/vehwholesale/finance/apply/finFinancingApplicationDealer/edit.vue'
+      ),
+
+      meta: {
+        name: '新页面详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/finance/factory/finCustomerPurchaseRecord',
+      name: 'finCustomerPurchaseRecord',
+      component: () => import('@/views/vehwholesale/finance/factory/finCustomerPurchaseRecord/index.vue'),
+
+      meta: {
+        name: '新页面',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/finance/factory/fincustomerpurchaserecord/edit',
+      name: 'finCustomerPurchaseRecordEdit',
+      component: () => import('@/views/vehwholesale/finance/factory/finCustomerPurchaseRecord/edit.vue'),
+
+      meta: {
+        name: '新页面详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/finance/factory/finDealerRecommendation',
+      name: 'finDealerRecommendation',
+      component: () => import('@/views/vehwholesale/finance/factory/finDealerRecommendation/index.vue'),
+
+      meta: {
+        name: '账户管理-车厂融资信息-经销商推荐函管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/finance/factory/findealerrecommendation/edit',
+      name: 'finDealerRecommendationEdit',
+      component: () => import('@/views/vehwholesale/finance/factory/finDealerRecommendation/edit.vue'),
+
+      meta: {
+        name: '账户管理-车厂融资信息-经销商推荐函管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
