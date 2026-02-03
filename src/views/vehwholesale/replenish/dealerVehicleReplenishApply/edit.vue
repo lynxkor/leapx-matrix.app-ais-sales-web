@@ -728,7 +728,11 @@ export default {
               if (account.creditSalesLimit) {
                 return {
                   ...account,
-                  ...account.creditSalesLimit // 将creditSalesLimit的属性展开到上级对象
+                  availableCreditAmount: account.creditSalesLimit.availableCreditAmount,
+                  downPaymentRatio: account.creditSalesLimit.downPaymentRatio,
+                  creditAccountStatusLabel: account.creditSalesLimit.creditAccountStatusLabel,
+                  effectiveTime: account.creditSalesLimit.effectiveTime,
+                  expireTime: account.creditSalesLimit.expireTime,
                 };
               }
               return account;
