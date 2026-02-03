@@ -722,6 +722,18 @@ export default {
           if (data && data.orderCategory !== undefined && data.orderCategory !== null) {
             data.orderCategory = String(data.orderCategory);
           }
+          if (data && data.dealerFundAccounts) {
+            // 解构dealerFundAccounts数组中每个元素的creditSalesLimit对象
+            data.dealerFundAccounts = data.dealerFundAccounts.map(account => {
+              if (account.creditSalesLimit) {
+                return {
+                  ...account,
+                  ...account.creditSalesLimit // 将creditSalesLimit的属性展开到上级对象
+                };
+              }
+              return account;
+            });
+          }
           // 更新applyTotalQty
           this.updateApplyTotalQty();
           return data;
