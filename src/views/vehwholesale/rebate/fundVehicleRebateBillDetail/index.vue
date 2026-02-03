@@ -27,11 +27,11 @@
         deftTime="本周"
         :limtNum="3"
         ref="transactionTime"/>
-  </el-form-item>
-  <template v-if="show">
-    <el-form-item label="VIN">
+   </el-form-item>
+   <el-form-item label="VIN">
       <tag-input v-model="form.vins" placeholder="请输入" />
     </el-form-item>
+  <template v-if="show">
     <el-form-item label="母公司名称">
       <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
     </el-form-item>
@@ -400,7 +400,7 @@ export default {
       return fundBudgetItemList({ budgetItemNameLike: params });
     },
     async getFeeSuportTypeList (params) {
-      return fundFeeSuportTypeList({ budgetItemNameLike: params });
+      return fundFeeSuportTypeList({ feeSupportTypeNameLike: params });
     },
     handleListSelect (row) {
       this.clickItemId = row.id;

@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        :title="title"
+        title="融资申请经销商："
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -13,11 +13,10 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          <span class="status primary">状态</span>
+          <span class="status primary">{{ form.code }}</span>
         </template>
-        <template #extraButtons>
-          <el-button size="small">按钮1</el-button>
-          <el-button size="small">按钮2</el-button>
+         <template #extraButtons>
+          <el-button size="small">生成采购记录</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -27,142 +26,55 @@
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="主键：" prop="id">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.id"
-                    clearable
+              <el-form-item label="母公司名称：" prop="dealerCompanyName">
+                <fetch-select
+                  :remote-method="getParentCompany"
+                  remote
+                  v-model="form.dealerCompanyName"
+                  placeholder="请选择"
+                  labelKey="companyName"
+                  valueKey="companyName"
+                  clearable
+                  filterable
+                  :disabled="isEditing===true"
+                  @change="getDealerCompanyCode"
                   />
                 </el-form-item>
-                <el-form-item label="创建者：" prop="creator">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.creator"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.creatorName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.createTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  />
-                </el-form-item>
-                <el-form-item label="修改者：" prop="modifier">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.modifier"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="修改者名称：" prop="modifierName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.modifierName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="修改时间：" prop="updateTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.updateTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  />
-                </el-form-item>
-                <el-form-item label="备注：" prop="remark">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.remark"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="状态：" prop="status">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
-                    v-model="form.status"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                  />
-                </el-form-item>
-                <el-form-item label="状态变更描述：" prop="statusDesc">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
-                    v-model="form.statusDesc"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                  />
-                </el-form-item>
-                <el-form-item label="数据来源，150:新销服; 老销服:10：" prop="dataSource">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.dataSource"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="编码：" prop="code">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.code"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="归属门店ID（组织ID），当数据权限归属到本组织以及本下级：" prop="ownerOrgId">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.ownerOrgId"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.dealerCompanyName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="母公司编码：" prop="dealerCompanyCode">
+                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.dealerCompanyCode"
                     clearable
+                    disabled
                   />
                 </el-form-item>
-                <el-form-item label="是否合作：" prop="isCooperation">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.isCooperation"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationName">
+                 <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationName">
                   <el-input
                     placeholder="请输入"
                     v-model="form.fundFinancialOrganizationName"
                     clearable
+                    :disabled="isEditing===true"
                   />
                 </el-form-item>
-                <el-form-item label="融资金融机构ID：" prop="fundFinancialOrganizationId">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.fundFinancialOrganizationId"
+                 <el-form-item label="是否合作：" prop="isCooperation">
+                  <fetch-select
+                      :request="fetchOptions"
+                      enumCode="BooleanEnum"
+                      v-model="form.isCooperation"
+                      placeholder="请选择"
+                      clearable
+                      filterable
+                    />
+                </el-form-item>
+                 <el-form-item label="状态：" prop="status">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="StatusEnum"
+                    v-model="form.status"
+                    placeholder="请选择"
                     clearable
+                    filterable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="主体母公司名称：" prop="mainDealerCompanyName">
@@ -170,6 +82,7 @@
                     placeholder="请输入"
                     v-model="form.mainDealerCompanyName"
                     clearable
+                    :disabled="isEditing===true"
                   />
                 </el-form-item>
                 <el-form-item label="主体公司编码：" prop="mainDealerCompanyCode">
@@ -177,63 +90,33 @@
                     placeholder="请输入"
                     v-model="form.mainDealerCompanyCode"
                     clearable
+                    :disabled="isEditing===true"
                   />
+                </el-form-item>
+                <el-form-item label="创建时间：" prop="createTime">
+                  <el-date-picker
+                  type="datetime"
+                  v-model="form.createTime"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                  disabled
+                />
                 </el-form-item>
               </el-form>
               <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="主键：" prop="id">
-                  {{ form.id }}
-                </el-form-item>
-                <el-form-item label="创建者：" prop="creator">
-                  {{ form.creator }}
-                </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  {{ form.creatorName }}
-                </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
-                  {{ form.createTime }}
-                </el-form-item>
-                <el-form-item label="修改者：" prop="modifier">
-                  {{ form.modifier }}
-                </el-form-item>
-                <el-form-item label="修改者名称：" prop="modifierName">
-                  {{ form.modifierName }}
-                </el-form-item>
-                <el-form-item label="修改时间：" prop="updateTime">
-                  {{ form.updateTime }}
-                </el-form-item>
-                <el-form-item label="备注：" prop="remark">
-                  {{ form.remark }}
-                </el-form-item>
-                <el-form-item label="状态：" prop="status">
-                  {{ form.status }}
-                </el-form-item>
-                <el-form-item label="状态变更描述：" prop="statusDesc">
-                  {{ form.statusDesc }}
-                </el-form-item>
-                <el-form-item label="数据来源，150:新销服; 老销服:10：" prop="dataSource">
-                  {{ form.dataSource }}
-                </el-form-item>
-                <el-form-item label="编码：" prop="code">
-                  {{ form.code }}
-                </el-form-item>
-                <el-form-item label="归属门店ID（组织ID），当数据权限归属到本组织以及本下级：" prop="ownerOrgId">
-                  {{ form.ownerOrgId }}
-                </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
                   {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
                   {{ form.dealerCompanyCode }}
                 </el-form-item>
-                <el-form-item label="是否合作：" prop="isCooperation">
-                  {{ form.isCooperation }}
-                </el-form-item>
-                <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationName">
+                  <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationName">
                   {{ form.fundFinancialOrganizationName }}
                 </el-form-item>
-                <el-form-item label="融资金融机构ID：" prop="fundFinancialOrganizationId">
-                  {{ form.fundFinancialOrganizationId }}
+                <el-form-item label="是否合作：" prop="isCooperation">
+                  {{ form.isCooperationLabel }}
+                </el-form-item>
+                <el-form-item label="状态：" prop="status">
+                  {{ form.statusLabel }}
                 </el-form-item>
                 <el-form-item label="主体母公司名称：" prop="mainDealerCompanyName">
                   {{ form.mainDealerCompanyName }}
@@ -241,26 +124,13 @@
                 <el-form-item label="主体公司编码：" prop="mainDealerCompanyCode">
                   {{ form.mainDealerCompanyCode }}
                 </el-form-item>
+                <el-form-item label="创建者名称：" prop="creatorName">
+                  {{ form.creatorName }}
+                </el-form-item>
+                <el-form-item label="创建时间：" prop="createTime">
+                  {{ form.createTime }}
+                </el-form-item>
               </el-form>
-            </div>
-          </section>
-          <section class="common-section">
-            <div class="common-section-header">
-              <h2>区块标题</h2>
-              <el-button v-if="canAddOrUpdate" size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>添加</el-button>
-            </div>
-            <div class="common-section-body">
-              <div class="common-section-table">
-                <edit-table
-                  ref="editTable"
-                  :columns="columns"
-                  :data="tableData"
-                  :defaultNewRow="defaultNewRow"
-                  :show-toolbar="false"
-                  :options="options"
-                  :auth="{edit: canAddOrUpdate, delete: canDelete}"
-                />
-              </div>
             </div>
           </section>
         </el-main>
@@ -277,10 +147,9 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehwholesale/finance/apply/finFinancingApplicationDealer/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum } from '@/api/common';
+import { getEnum, getParentCompany } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -291,19 +160,19 @@ const defaultForm = {
   id: '',
   creator: '',
   creatorName: '',
-  createTime: '',
+  createTime: new Date(),
   modifier: '',
   modifierName: '',
   updateTime: '',
   remark: '',
-  status: '',
+  status: 1,
   statusDesc: '',
   dataSource: '',
   code: '',
   ownerOrgId: '',
   dealerCompanyName: '',
   dealerCompanyCode: '',
-  isCooperation: '',
+  isCooperation: 1,
   fundFinancialOrganizationName: '',
   fundFinancialOrganizationId: '',
   mainDealerCompanyName: '',
@@ -323,7 +192,6 @@ export default {
   components: {
     EditPageLayout,
     EditBaseContainer,
-    EditTable,
     FetchSelect
   },
   computed: {
@@ -344,7 +212,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '新页面',
+      pageTitle: '账户管理-融资管理-融资申请经销商',
       pageType: 'edit',
       title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
@@ -458,6 +326,19 @@ export default {
   mounted () {
   },
   methods: {
+    async getParentCompany (query) {
+      try {
+        const res = await getParentCompany({ parentCompanyName: query });
+        console.log(res);
+        this.parentCompanyNames = res;
+        return res;
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
+    },
+    getDealerCompanyCode (dealerCompanyCode, obj) {
+      this.form.dealerCompanyCode = obj.companyCode;
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

@@ -177,7 +177,7 @@ export default {
       pageTitle: '账户管理-银行融资信息-银行授信记录管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
-      moduleKey: 'AISVW-bank',
+      moduleKey: 'AISVW-finBankCreditRecord',
       form: {
         ...defaultForm
       },

@@ -10,38 +10,28 @@
       class="ais-search-form"
     >
     <el-form-item label="母公司名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.dealerCompanyName"
-            clearable
-          />
-        </el-form-item>
-         <el-form-item label="融资金融机构ID">
-          <el-input
-            placeholder="请输入"
-            v-model="form.fundFinancialOrganizationId"
-            clearable
-          />
-        </el-form-item>
+      <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
+    </el-form-item>
+    <el-form-item label="融资金融机构">
+    <el-input
+      placeholder="请输入"
+      v-model="form.fundFinancialOrganizationId"
+      clearable
+    />
+    </el-form-item>
+    <el-form-item label="同步状态">
+      <fetch-select
+        :options="syncStatusOptions"
+          v-model="form.syncStatus"
+          placeholder="请选择"
+          clearable
+          multiple
+          filterable
+        />
+    </el-form-item>
       <template v-if="show">
-        <el-form-item label="同步状态">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.syncStatus"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
-          />
-        </el-form-item>
-
         <el-form-item label="母公司编码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.dealerCompanyCode"
-            clearable
-          />
+          <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="数据月份"  v-show="this.visibleCount === 3 || show">
         <el-input
@@ -51,34 +41,31 @@
           />
         </el-form-item>
         <el-form-item label="创建时间">
-        <el-date-picker
-         :default-time="['00:00:00', '23:59:59']"
-          v-model="form.createTime"
-          type="daterange"
-          :picker-options="pickerOptions"
-          range-separator="至"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        />
+          <dateranges
+            v-model="form.createTime"
+            :setDefault="true"
+            deftTime=""
+            ref="transactionTime"/>
       </el-form-item>
         <el-form-item label="融资数据来源">
-          <el-input
-            placeholder="请输入"
+          <fetch-select
+            :options="financingDataSourceOptions"
             v-model="form.financingDataSource"
+            placeholder="请选择"
             clearable
+            multiple
+            filterable
           />
         </el-form-item>
       <el-form-item label="状态">
         <fetch-select
-          :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.status"
-          placeholder="请选择"
-          clearable
-          multiple
-          filterable
-        />
+            :request="fetchOptions"
+            enumCode="StatusEnum"
+            v-model="form.status"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
       </el-form-item>
       </template>
       <page-search-action
@@ -138,11 +125,13 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import TagInput from '@/libs/components/TagInput';
+import dateranges from '@/libs/components/dateranges';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   createTime: '',
-  status: '',
+  status: '1',
   dataMonth: '',
   dealerCompanyCode: '',
   fundFinancialOrganizationId: '',
@@ -162,7 +151,9 @@ export default {
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
-    EditPage
+    EditPage,
+    TagInput,
+    dateranges
   },
   data () {
     return {
@@ -174,6 +165,8 @@ export default {
         ...defaultForm
       },
       selectionList: [],
+      syncStatusOptions: [],
+      financingDataSourceOptions: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -190,7 +183,7 @@ export default {
         dataProp: [
           {
             props: 'code',
-            label: '主键',
+            label: '编号',
             visible: true,
             width: 200,
             fixed: 'left',
@@ -215,53 +208,15 @@ export default {
           { props: 'dealerName', label: '经销商名称', visible: true, width: 200 },
           { props: 'unifiedSocialCreditCode', label: '统一社会信用代码', visible: true, width: 200 },
           { props: 'cooperationDate', label: '合作时间', visible: true, width: 200 },
-          { props: 'hasFixedBusinessPremises', label: '是否有固定经营场所', visible: true, width: 200 },
+          { props: 'hasFixedBusinessPremisesLabel', label: '是否有固定经营场所', visible: true, width: 200 },
           { props: 'fixedBusinessPremises', label: '固定经营场所', visible: true, width: 200 },
-          { props: 'syncStatus', label: '同步状态', visible: true, width: 200 },
+          { props: 'syncStatusLabel', label: '同步状态', visible: true, width: 200 },
           { props: 'syncResult', label: '同步结果', visible: true, width: 200 },
           { props: 'syncCount', label: '推送次数', visible: true, width: 200 },
-          { props: 'financingDataSource', label: '融资数据来源', visible: true, width: 200 },
-          { props: 'status', label: '状态', visible: true, width: 200 },
+          { props: 'financingDataSourceLabel', label: '融资数据来源', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          {
-            props: 'operate',
-            label: '操作',
-            type: 'operate',
-            visible: true,
-            fixed: 'right',
-            buttons: [{
-              name: '编辑',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/finance/factory/finCustomerPurchaseRecord/edit',
-                  query: {
-                    id: row.id,
-                    isEditing: true
-                  }
-                });
-              },
-              type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
-            }]
-          }
+          { props: 'createTime', label: '创建时间', visible: true, width: 200 }
         ],
         total: 0
       }
@@ -271,7 +226,36 @@ export default {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
   },
+  mounted () {
+    this.fetchEnumsOptions();
+    this.fetchfinancingDataSourceOptions();
+  },
   methods: {
+    async fetchEnumsOptions () {
+      const response = await getEnum('vw_sync_status');
+      this.syncStatusOptions = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['30', '40'].includes(codeStr);
+      }).map(item => {
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
+    },
+    async fetchfinancingDataSourceOptions () {
+      const response = await getEnum('vw_financing_data_source');
+      this.financingDataSourceOptions = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['50', '70'].includes(codeStr);
+      }).map(item => {
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
+    },
+
     handleListSelect (row) {
       this.clickItemId = row.id;
     },
