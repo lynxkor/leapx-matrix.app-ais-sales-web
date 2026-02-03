@@ -22,7 +22,7 @@
               v-for="item in dropdownOptions[field.optionsKey]"
               :key="item.id"
               :label="item.name"
-              :value="field.key === 'warehouseCode' ? item.code : item.id"
+              :value="item.id"
             />
           </el-select>
         </el-form-item>
@@ -39,7 +39,7 @@
                 v-for="item in dropdownOptions[field.optionsKey]"
                 :key="item.id"
                 :label="item.name"
-                :value="field.key === 'warehouseCode' ? item.code : item.id"
+                :value="item.id"
               />
             </el-select>
           </el-form-item>
@@ -62,9 +62,10 @@
       </div>
       <section class="common-section">
         <div class="common-section-body">
-          <div class="common-section-table"><vxe-table
+          <div class="common-section-table">
+            <vxe-table
             ref="table"
-            :data="tableData"
+            :data="currentTableData"
             stripe
             resizable
             border="inner"
@@ -104,6 +105,16 @@
             <vxe-column field="materialsDesc" title="物料描述" align="center" width="340" />
             <vxe-column field="optionPackageName" title="选装包" align="center" width="140" />
           </vxe-table>
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pagination.currentPage"
+            :page-sizes="[10, 20, 50, 100]"
+            :page-size="pagination.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="pagination.total"
+            style="margin-top: 20px;">
+          </el-pagination>
           </div>
         </div>
       </section>
@@ -157,7 +168,7 @@ const defaultForm = {
   exteriorId: '', // 外观ID
   interiorId: '', // 内饰ID
   wheelHubId: '', // 轮毂ID
-  warehouseCode: '', // 整车仓库编码
+  warehouseId: '', // 整车仓库编码
   optionPackageId: '', // 选装包ID
   materialsDesc: '', // 物料描述
 };
@@ -196,57 +207,6 @@ const defaultForm = {
 //     inventoryQty: 10,
 //     optionPackageName: '舒适包',
 //     applyQty: 0
-//   },
-//   {
-//     seriesId: '2',
-//     modelId: '2187156E-CB55-EE11-B144-ADA35F92B08E',
-//     yearTypeId: '2024',
-//     exteriorId: 'F75370E5-21A5-EE11-B156-E3C14957A562',
-//     interiorId: 'black',
-//     wheelHubId: 'hub3',
-//     warehouseCode: 'WH002',
-//     optionPackageId: 'pkg1',
-//     materialsDesc: '运动版黑色轿车配全黑内饰',
-//     modelName: '宝马3系',
-//     warehouseName: '北京仓库',
-//     inventoryStatus: '2',
-//     inventoryQty: 15,
-//     optionPackageName: '运动包',
-//     applyQty: 0
-//   },
-//   {
-//     seriesId: '2',
-//     modelId: '2187156E-CB55-EE11-B144-ADA35F92B08E',
-//     yearTypeId: '2024',
-//     exteriorId: 'blue',
-//     interiorId: 'white',
-//     wheelHubId: 'hub1',
-//     warehouseCode: 'WH002',
-//     optionPackageId: 'pkg3',
-//     materialsDesc: '旗舰版蓝色SUV配白色内饰',
-//     modelName: '宝马X5',
-//     warehouseName: '北京仓库',
-//     inventoryStatus: '3',
-//     inventoryQty: 20,
-//     optionPackageName: '旗舰包',
-//     applyQty: 0
-//   },
-//   {
-//     seriesId: '3',
-//     modelId: '301',
-//     yearTypeId: '2023',
-//     exteriorId: 'F75370E5-21A5-EE11-B156-E3C14957A562',
-//     interiorId: 'gray',
-//     wheelHubId: 'hub2',
-//     warehouseCode: 'WH003',
-//     optionPackageId: 'pkg2',
-//     materialsDesc: '经典版银色轿车配灰色内饰',
-//     modelName: '奔驰C级',
-//     warehouseName: '广州仓库',
-//     inventoryStatus: '1',
-//     inventoryQty: 8,
-//     optionPackageName: '经典包',
-//     applyQty: 0
 //   }
 // ];
 export default {
@@ -278,6 +238,12 @@ export default {
       },
       tableData: [],
       originalTableData: [],
+      // 添加分页相关数据
+      pagination: {
+        currentPage: 1,
+        pageSize: 10,
+        total: 0
+      },
       dropdownOptions: {
         warehouseList: [],
         seriesList: [],
@@ -302,7 +268,7 @@ export default {
         { key: 'interiorId', label: '内饰：', optionsKey: 'interiorList' },
         { key: 'wheelHubId', label: '轮毂：', optionsKey: 'wheelHubList' },
         { key: 'optionPackageId', label: '选装包：', optionsKey: 'optionPackageList' },
-        { key: 'warehouseCode', label: '整车仓库：', optionsKey: 'warehouseList' }
+        { key: 'warehouseId', label: '整车仓库：', optionsKey: 'warehouseList' }
       ];
     },
     visibleFilterFields () {
@@ -310,9 +276,22 @@ export default {
     },
     hiddenFilterFields () {
       return this.filterFields.slice(3);
+    },
+    // 计算当前页数据
+    currentTableData () {
+      const start = (this.pagination.currentPage - 1) * this.pagination.pageSize;
+      const end = start + this.pagination.pageSize;
+      return this.tableData.slice(start, end);
     }
   },
   methods: {
+    handleSizeChange (val) {
+      this.pagination.pageSize = val;
+      this.pagination.currentPage = 1; // 切换每页显示数量时回到第一页
+    },
+    handleCurrentChange (val) {
+      this.pagination.currentPage = val;
+    },
     getFundTypeLabel (item) {
       return item.fundType === 2010 ? item.fundTypeLabel + '-' + item.financialOrganizationName : item.fundTypeLabel;
     },
@@ -328,7 +307,7 @@ export default {
         interiorId: 'interiorId',
         wheelHubId: 'wheelHubId',
         optionPackageId: 'optionPackageId',
-        warehouseCode: 'warehouseCode'
+        warehouseId: 'warehouseId'
       };
 
       // 应用下拉框筛选
@@ -347,6 +326,8 @@ export default {
       }
 
       this.tableData = filteredData;
+      this.pagination.total = filteredData.length;
+      this.pagination.currentPage = 1;
     },
     handleApplyQtyChange (row, value) {
       const intValue = Math.max(0, Math.floor(value || 0));
@@ -402,9 +383,14 @@ export default {
           optionPackageList: data.optionPackageList || []
         };
         // 设置表格数据
-        this.originalTableData = data.inStockInventoryDtoList || [];
+        this.originalTableData = (data.inStockInventoryDtoList || []).map(item => ({
+          ...item,
+          applyQty: item.applyQty || 0 // 保留用户之前输入的数据
+        }));
         // this.originalTableData = mockInStockInventoryData;
         this.tableData = [...this.originalTableData];
+        this.pagination.total = this.tableData.length;
+        this.pagination.currentPage = 1;
 
         // 获取库存状态枚举
         await this.getStockStatusEnum();
