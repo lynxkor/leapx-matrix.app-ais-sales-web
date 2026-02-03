@@ -302,7 +302,7 @@
             <div class="common-section-body">
               <div class="common-section-table">
                 <component-table
-                  :tableData="form.wholesaleOrders"
+                  :tableData="form.dealerFundAccounts"
                   :columns="columns"
                 />
               </div>
