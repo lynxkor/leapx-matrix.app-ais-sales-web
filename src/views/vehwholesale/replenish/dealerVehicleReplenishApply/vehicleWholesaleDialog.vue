@@ -89,7 +89,7 @@
             </vxe-column>
             <vxe-column field="modelName" title="车型" align="center" width="200" />
             <vxe-column field="warehouseName" title="整车仓库" align="center" width="240" />
-            <vxe-column field="inventoryStatus" title="库存状态" align="center" width="140">
+            <vxe-column field="inventoryStatusLabel" title="库存状态" align="center" width="140">
               <template v-slot="{ row }">
                 <span
                   :class="getInventoryStatusClass(row.inventoryStatus)"
