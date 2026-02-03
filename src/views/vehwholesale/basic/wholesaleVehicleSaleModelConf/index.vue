@@ -447,7 +447,6 @@ export default {
       });
     },
     handleBatchAudit (data) {
-      console.log('data:', data);
       let params = {
         ids: data.auditDataList ? data.auditDataList.map(item => item.id) : [],
         isAudit: data.result,

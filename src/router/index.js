@@ -1757,6 +1757,66 @@ const routes = [
         name: '账户管理-车厂融资信息-车辆状态记录管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehwholesale/finance/apply/finFinancingApplicationDealer',
+      name: 'finFinancingApplicationDealer',
+
+      component: () => import(
+        '@/views/vehwholesale/finance/apply/finFinancingApplicationDealer/index.vue'
+      ),
+
+      meta: {
+        name: '新页面',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/finance/apply/finfinancingapplicationdealer/edit',
+      name: 'finFinancingApplicationDealerEdit',
+
+      component: () => import(
+        '@/views/vehwholesale/finance/apply/finFinancingApplicationDealer/edit.vue'
+      ),
+
+      meta: {
+        name: '新页面详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/finance/factory/finCustomerPurchaseRecord',
+      name: 'finCustomerPurchaseRecord',
+      component: () => import('@/views/vehwholesale/finance/factory/finCustomerPurchaseRecord/index.vue'),
+
+      meta: {
+        name: '新页面',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/finance/factory/fincustomerpurchaserecord/edit',
+      name: 'finCustomerPurchaseRecordEdit',
+      component: () => import('@/views/vehwholesale/finance/factory/finCustomerPurchaseRecord/edit.vue'),
+
+      meta: {
+        name: '新页面详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/finance/factory/finDealerRecommendation',
+      name: 'finDealerRecommendation',
+      component: () => import('@/views/vehwholesale/finance/factory/finDealerRecommendation/index.vue'),
+
+      meta: {
+        name: '账户管理-车厂融资信息-经销商推荐函管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/finance/factory/findealerrecommendation/edit',
+      name: 'finDealerRecommendationEdit',
+      component: () => import('@/views/vehwholesale/finance/factory/finDealerRecommendation/edit.vue'),
+
+      meta: {
+        name: '账户管理-车厂融资信息-经销商推荐函管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
