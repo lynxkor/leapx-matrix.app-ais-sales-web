@@ -447,7 +447,7 @@ export default {
       pageType: 'edit',
       title: '编码：' + form.code,
       // TIPS: 权限前缀 AISVW，根据实际情况修改
-      moduleKey: 'AISVW-bank',
+      moduleKey: 'AISVW-finBankCreditRecord',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,

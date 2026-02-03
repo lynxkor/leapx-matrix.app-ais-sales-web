@@ -1,7 +1,7 @@
 import api from '@/axios';
 
 // 根据项目名称（如maintain代表维保项目）手动修改前缀
-const prefix = 'vehwholesale/web/finance/factory/finVehicleBindingMileageRecord/';
+const prefix = 'vw/web/finance/factory/finVehicleBindingMileageRecord/';
 
 /**
  * 查询列表
