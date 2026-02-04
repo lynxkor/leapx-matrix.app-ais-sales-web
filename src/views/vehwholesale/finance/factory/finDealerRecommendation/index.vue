@@ -178,7 +178,7 @@ export default {
         dataProp: [
           {
             props: 'code',
-            label: '主键',
+            label: '编码',
             visible: true,
             width: 200,
             fixed: 'left',
