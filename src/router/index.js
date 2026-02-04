@@ -1817,6 +1817,24 @@ const routes = [
         name: '账户管理-车厂融资信息-经销商推荐函管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehretail/orderManager/orderUnlockApply',
+      name: 'orderUnlockApply',
+      component: () => import('@/views/vehretail/orderManager/orderUnlockApply/index.vue'),
+
+      meta: {
+        name: '订单锁车解绑申请记录管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/ordermanager/orderunlockapply/edit',
+      name: 'orderUnlockApplyEdit',
+      component: () => import('@/views/vehretail/orderManager/orderUnlockApply/edit.vue'),
+
+      meta: {
+        name: '订单锁车解绑申请记录管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
