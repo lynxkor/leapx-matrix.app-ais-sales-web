@@ -1853,6 +1853,15 @@ const routes = [
         name: '订单锁车解绑申请记录管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehstock/store/storeInventoryInboundDetails',
+      name: 'storeInventoryInboundDetails',
+      component: () => import('@/views/vehstock/store/storeInventoryInboundDetails/index.vue'),
+
+      meta: {
+        name: '门店库存入库明细',
+        keepAlive: true
+      }
     }]
   }
 ];
