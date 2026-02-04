@@ -1871,6 +1871,42 @@ const routes = [
         name: '门店库存出库明细',
         keepAlive: true
       }
+    }, {
+      path: '/vehretail/basicConfig/retailOrderUnlockConfig',
+      name: 'retailOrderUnlockConfig',
+      component: () => import('@/views/vehretail/basicConfig/retailOrderUnlockConfig/index.vue'),
+
+      meta: {
+        name: '订单解绑配车配置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicconfig/retailorderunlockconfig/edit',
+      name: 'retailOrderUnlockConfigEdit',
+      component: () => import('@/views/vehretail/basicConfig/retailOrderUnlockConfig/edit.vue'),
+
+      meta: {
+        name: '订单解绑配车配置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/basicConfig/retailOrderUnlockReasonConfig',
+      name: 'retailOrderUnlockReasonConfig',
+      component: () => import('@/views/vehretail/basicConfig/retailOrderUnlockReasonConfig/index.vue'),
+
+      meta: {
+        name: '订单解绑原因配置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicconfig/retailorderunlockreasonconfig/edit',
+      name: 'retailOrderUnlockReasonConfigEdit',
+      component: () => import('@/views/vehretail/basicConfig/retailOrderUnlockReasonConfig/edit.vue'),
+
+      meta: {
+        name: '订单解绑原因配置管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
