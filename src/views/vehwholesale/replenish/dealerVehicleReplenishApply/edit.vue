@@ -508,7 +508,7 @@ export default {
         { field: 'materialsCode', title: '物料编码', width: '250' },
         { field: 'materialsDesc', title: '物料描述（L）', width: '350' },
         { field: 'applyQty', title: '申请数量', width: '120' },
-        { field: 'invoiceDiscountType', title: '开票类型', width: '120' },
+        { field: 'invoiceDiscountTypeLabel', title: '开票类型', width: '120' },
         { field: 'invoiceCoefficient', title: '开票系数', width: '120' },
         { field: 'creatorName', title: '创建人', width: '120' },
         { field: 'createTime', title: '创建时间', width: '180' }
