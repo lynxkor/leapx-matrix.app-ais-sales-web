@@ -11,6 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="false"
       >
         <template #status>
           <span class="status primary">{{ form.code }}</span>
@@ -273,7 +274,7 @@
                   {{ form.unifiedSocialCreditCode }}
                 </el-form-item>
                 <el-form-item label="是否有固定经营场所：" prop="hasFixedBusinessPremises">
-                  {{ form.hasFixedBusinessPremises }}
+                  {{ form.hasFixedBusinessPremisesLabel }}
                 </el-form-item>
                  <el-form-item label="固定经营场所：" prop="fixedBusinessPremises">
                   {{ form.fixedBusinessPremises }}
@@ -344,6 +345,7 @@
                   :defaultNewRow="defaultNewRow"
                   :show-toolbar="false"
                   :options="options"
+                  :auth="{edit: false, delete: false}"
                 />
               </div>
             </div>
