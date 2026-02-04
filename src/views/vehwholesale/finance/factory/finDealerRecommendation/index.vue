@@ -10,27 +10,19 @@
       class="ais-search-form"
     >
       <el-form-item label="母公司名称"  v-show="this.visibleCount === 3 || show">
+       <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
+      </el-form-item>
+      <el-form-item label="母公司编码">
+          <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="推荐金融机构ID">
         <el-input
           placeholder="请输入"
-          v-model="form.dealerCompanyName"
+          v-model="form.recFinancialOrganizationId"
           clearable
         />
       </el-form-item>
-      <el-form-item label="母公司编码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.dealerCompanyCode"
-            clearable
-          />
-        </el-form-item>
       <template v-if="show">
-        <el-form-item label="推荐金融机构ID">
-          <el-input
-            placeholder="请输入"
-            v-model="form.recFinancialOrganizationId"
-            clearable
-          />
-        </el-form-item>
          <el-form-item label="同步状态">
           <fetch-select
             :request="fetchOptions"
@@ -46,7 +38,7 @@
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.recDate"
-            type="daterange"
+            type="date"
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -68,14 +60,13 @@
       </el-form-item>
       <el-form-item label="状态">
         <fetch-select
-          :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.status"
-          placeholder="请选择"
-          clearable
-          multiple
-          filterable
-        />
+            :request="fetchOptions"
+            enumCode="StatusEnum"
+            v-model="form.status"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
       </el-form-item>
       </template>
       <page-search-action
@@ -134,6 +125,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -157,6 +149,7 @@ export default {
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
+    TagInput,
     EditPage
   },
   data () {
@@ -185,7 +178,7 @@ export default {
         dataProp: [
           {
             props: 'code',
-            label: '主键',
+            label: '编码',
             visible: true,
             width: 200,
             fixed: 'left',
@@ -233,23 +226,17 @@ export default {
               },
               type: 'info'
             }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
+              name: '推送金融机构',
               click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
+                this.$router.push({
+                  path: '/vehwholesale/finance/factory/finDealerRecommendation/edit',
+                  query: {
+                    id: row.id,
+                    isEditing: true
+                  }
                 });
               },
-              type: 'danger'
+              type: 'info'
             }]
           }
         ],

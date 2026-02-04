@@ -24,8 +24,7 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-      <template v-if="show">
-         <el-form-item label="赊销账户状态">
+        <el-form-item label="赊销账户状态">
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_fund_own_credit_sales_limit_status"
@@ -35,6 +34,7 @@
           filterable
         />
       </el-form-item>
+      <template v-if="show">
         <el-form-item label="母公司编码">
           <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
         <!-- <el-input

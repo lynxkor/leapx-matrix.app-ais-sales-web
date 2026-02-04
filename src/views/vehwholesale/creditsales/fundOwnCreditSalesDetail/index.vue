@@ -19,10 +19,10 @@
           deftTime="本月"
         />
     </el-form-item>
-    <template v-if="show">
-      <el-form-item label="VIN">
+    <el-form-item label="VIN">
       <tag-input v-model="form.vins" placeholder="请输入" />
     </el-form-item>
+    <template v-if="show">
     <el-form-item label="门店名称">
       <tag-input v-model="form.dealerNames" placeholder="请输入" />
       </el-form-item>

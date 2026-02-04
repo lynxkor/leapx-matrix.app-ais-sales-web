@@ -1599,6 +1599,24 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
+      path: '/vehstock/store/storeInventoryLedger',
+      name: 'storeInventoryLedger',
+      component: () => import('@/views/vehstock/store/storeInventoryLedger/index.vue'),
+
+      meta: {
+        name: '门店库存台账',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/store/storeinventoryledger/edit',
+      name: 'storeInventoryLedgerEdit',
+      component: () => import('@/views/vehstock/store/storeInventoryLedger/edit.vue'),
+
+      meta: {
+        name: '门店库存台账单详情',
+        noResourceUrl: 'true'
+      }
+    }, {
       path: '/vehretail/orderRefund/category',
       name: 'orderRefund',
       component: () => import('@/views/vehretail/orderRefund/category/index.vue'),
@@ -1815,6 +1833,24 @@ const routes = [
 
       meta: {
         name: '账户管理-车厂融资信息-经销商推荐函管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/orderManager/orderUnlockApply',
+      name: 'orderUnlockApply',
+      component: () => import('@/views/vehretail/orderManager/orderUnlockApply/index.vue'),
+
+      meta: {
+        name: '订单锁车解绑申请记录管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/ordermanager/orderunlockapply/edit',
+      name: 'orderUnlockApplyEdit',
+      component: () => import('@/views/vehretail/orderManager/orderUnlockApply/edit.vue'),
+
+      meta: {
+        name: '订单锁车解绑申请记录管理详情',
         noResourceUrl: 'true'
       }
     }]

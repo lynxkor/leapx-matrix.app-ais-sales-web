@@ -476,9 +476,9 @@ export default {
         { field: 'confirmTime', title: '确认时间', width: '180' },
         { field: 'noAutoConfirmReason', title: '未自动确认原因', width: '150' },
         { field: 'confirmRemark', title: '确认说明', width: '150' },
-        { field: 'prodScheduleActivityId', title: '专项活动', width: '120' },
-        { field: 'confirmStatus', title: '确认状态', width: '120' },
-        { field: 'statusDesc', title: '订单状态', width: '120' },
+        { field: 'prodScheduleActivityName', title: '专项活动', width: '120' },
+        { field: 'confirmStatusLabel', title: '确认状态', width: '120' },
+        { field: 'statusLabel', title: '订单状态', width: '120' },
         { field: 'orderTime', title: '订单时间', width: '180' },
         { field: 'allocateTime', title: '配车时间', width: '180' },
         { field: 'settleTime', title: '结算时间', width: '180' },
@@ -502,7 +502,7 @@ export default {
       ],
       detailsColumns: [
         { field: 'replenishApplyDetailCode', title: '整车补货明细单号', width: '280' },
-        { field: 'vehicleYearType', title: '年款', width: '120' },
+        // { field: 'vehicleYearType', title: '年款', width: '120' },
         { field: 'seriesName', title: '车系', width: '120' },
         { field: 'modelName', title: '车型', width: '200' },
         { field: 'materialsCode', title: '物料编码', width: '250' },
@@ -510,7 +510,8 @@ export default {
         { field: 'applyQty', title: '申请数量', width: '120' },
         { field: 'invoiceDiscountTypeLabel', title: '开票类型', width: '120' },
         { field: 'invoiceCoefficient', title: '开票系数', width: '120' },
-        { field: 'creatorName', title: '创建人', width: '120' },
+        { field: 'applyTime', title: '申请时间', width: '120' },
+        { field: 'applyReason', title: '申请原因', width: '120' },
         { field: 'createTime', title: '创建时间', width: '180' }
       ],
       rules: {
