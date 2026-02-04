@@ -1862,6 +1862,15 @@ const routes = [
         name: '门店库存入库明细',
         keepAlive: true
       }
+    }, {
+      path: '/vehstock/store/storeInventoryOutboundDetails',
+      name: 'storeInventoryOutboundDetails',
+      component: () => import('@/views/vehstock/store/storeInventoryOutboundDetails/index.vue'),
+
+      meta: {
+        name: '门店库存出库明细',
+        keepAlive: true
+      }
     }]
   }
 ];

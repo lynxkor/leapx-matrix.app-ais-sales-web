@@ -1,103 +1,50 @@
 <template>
   <div class="page-common m-store-inventory-inbound-details-list">
     <!--  TIPS: 自行调整如下label-width，满足label不换行  -->
-    <el-form
-      :inline="true"
-      :model="form"
-      size="small"
-      label-position="right"
-      label-width="150px"
-      class="ais-search-form"
-    >
+    <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
+      class="ais-search-form">
       <el-form-item label="入库单号">
-        <el-input
-          placeholder="请输入"
-          v-model="form.name"
-          clearable
-        />
+        <el-input placeholder="请输入" v-model="form.name" clearable />
       </el-form-item>
       <el-form-item label="VIN">
-        <el-input
-          placeholder="请输入"
-          v-model="form.vin"
-          clearable
-        />
+        <el-input placeholder="请输入" v-model="form.vin" clearable />
       </el-form-item>
       <el-form-item label="物料编码">
-        <el-input
-          placeholder="请输入"
-          v-model="form.materialsCode"
-          clearable
-        />
+        <el-input placeholder="请输入" v-model="form.materialsCode" clearable />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="物料描述">
-          <el-input
-            placeholder="请输入"
-            v-model="form.materialsDesc"
-            clearable
-          />
+          <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
         </el-form-item>
         <el-form-item label="入库类型">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="vehstock_move_type"
-            v-model="form.moveTypeList"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
-          />
+          <fetch-select :request="fetchOptions" enumCode="vehstock_move_type" v-model="form.moveTypeList"
+            placeholder="请选择" clearable multiple filterable />
         </el-form-item>
         <el-form-item label="入库时间">
-          <el-input
-            placeholder="请输入"
-            v-model="form.moveinDate"
-            clearable
-          />
+          <el-input placeholder="请输入" v-model="form.moveinDate" clearable />
         </el-form-item>
       </template>
-      <page-search-action
-        v-if="canList"
-        v-model="show"
-        is-expandable
-        :loading="loading"
-        @submit="onSubmit"
-        @reset="onReset"
-      />
+      <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
+        @reset="onReset" />
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canDelete" size="small" @click="handleBatchDelete"
+        :disabled="selectionList.length === 0">批量删除</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
+        :disabled="selectionList.length === 0">批量启用</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)"
+        :disabled="selectionList.length === 0">批量停用</el-button>
     </div>
-    <div
-      class="ais-table-c"
-    >
-      <LPVxeTable
-        ref="tableRef"
-        v-loading="loading"
-        is-checkbox
-        is-page
-        checkboxFixed
-        centralized
-        :option-obj="optionObj"
-        :get-config="getConfig"
-        :save-or-update="saveOrUpdate"
-        @paginationChange="paginationChange"
-        @handleSelect="handleSelectionChange"
-        @listSelect="handleListSelect"
-      >
+    <div class="ais-table-c">
+      <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed centralized
+        :option-obj="optionObj" :get-config="getConfig" :save-or-update="saveOrUpdate"
+        @paginationChange="paginationChange" @handleSelect="handleSelectionChange" @listSelect="handleListSelect">
       </LPVxeTable>
     </div>
     <!-- TIPS: 填入项目id即可 -->
-    <Upload
-      :visible="uploadDialogVisible"
-      :id="1"
-      @close="handleUploadDialogClose"
-    />
+    <Upload :visible="uploadDialogVisible" :id="1" @close="handleUploadDialogClose" />
   </div>
 </template>
 
@@ -343,7 +290,7 @@ export default {
             message: '删除失败!'
           });
         });
-      }).catch(() => {});
+      }).catch(() => { });
     },
     // 批量启用停用
     handleBatchEnable (status) {
@@ -381,6 +328,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.m-store-inventory-inbound-details-list {
-}
+.m-store-inventory-inbound-details-list {}
 </style>
