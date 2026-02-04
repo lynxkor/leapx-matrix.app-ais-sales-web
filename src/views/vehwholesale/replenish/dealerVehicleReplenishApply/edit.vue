@@ -470,7 +470,7 @@ export default {
         { field: 'expireTime', title: '额度失效日期', width: '14%' },
       ],
       wholesaleOrdersColumns: [
-        { field: 'wholesaleOrderCode', title: '批售订单号', width: '150' },
+        { field: 'wholesaleOrderCode', title: '批售订单号', width: '240' },
         { field: 'vin', title: '配车VIN码', width: '180' },
         { field: 'wholesalePrice', title: '批售价', width: '120' },
         { field: 'confirmTime', title: '确认时间', width: '180' },
@@ -510,8 +510,6 @@ export default {
         { field: 'applyQty', title: '申请数量', width: '120' },
         { field: 'invoiceDiscountTypeLabel', title: '开票类型', width: '120' },
         { field: 'invoiceCoefficient', title: '开票系数', width: '120' },
-        { field: 'applyTime', title: '申请时间', width: '120' },
-        { field: 'applyReason', title: '申请原因', width: '120' },
         { field: 'createTime', title: '创建时间', width: '180' }
       ],
       rules: {
