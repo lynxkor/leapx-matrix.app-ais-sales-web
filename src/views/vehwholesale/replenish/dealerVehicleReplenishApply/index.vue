@@ -92,6 +92,16 @@
             filterable
           />
         </el-form-item>
+        <el-form-item label="申请类别">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vw_replenish_apply_type"
+            v-model="form.applyCategory"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
         <el-form-item label="结算资金类型">
           <fetch-select
             :request="fetchOptions"
@@ -219,6 +229,7 @@ const defaultForm = {
   serials: '',
   orderCategory: '',
   settleFundType: '',
+  applyCategory: '',
   financialOrganizationId: '',
   queryTab: '1'
 };

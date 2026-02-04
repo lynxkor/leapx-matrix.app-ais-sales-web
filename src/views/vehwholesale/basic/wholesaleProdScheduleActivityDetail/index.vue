@@ -27,6 +27,9 @@
           end-placeholder="结束日期"
         />
       </el-form-item>
+       <el-form-item label="门店名称">
+        <tag-input v-model="form.dealerNames" placeholder="请输入" />
+      </el-form-item>
       <!-- <el-form-item label="排产活动ID">
         <el-input
           placeholder="请输入"
@@ -42,9 +45,6 @@
         />
       </el-form-item> -->
       <template v-if="show">
-        <el-form-item label="门店名称">
-        <tag-input v-model="form.dealerNames" placeholder="请输入" />
-      </el-form-item>
         <el-form-item label="车系">
         <fetch-select
             :remote-method="seriesSearch"

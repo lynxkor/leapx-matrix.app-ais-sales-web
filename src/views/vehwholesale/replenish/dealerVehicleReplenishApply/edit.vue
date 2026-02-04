@@ -302,7 +302,7 @@
             <div class="common-section-body">
               <div class="common-section-table">
                 <component-table
-                  :tableData="form.wholesaleOrders"
+                  :tableData="form.dealerFundAccounts"
                   :columns="columns"
                 />
               </div>
@@ -721,6 +721,22 @@ export default {
           const data = res;
           if (data && data.orderCategory !== undefined && data.orderCategory !== null) {
             data.orderCategory = String(data.orderCategory);
+          }
+          if (data && data.dealerFundAccounts) {
+            // 解构dealerFundAccounts数组中每个元素的creditSalesLimit对象
+            data.dealerFundAccounts = data.dealerFundAccounts.map(account => {
+              if (account.creditSalesLimit) {
+                return {
+                  ...account,
+                  availableCreditAmount: account.creditSalesLimit.availableCreditAmount,
+                  downPaymentRatio: account.creditSalesLimit.downPaymentRatio,
+                  creditAccountStatusLabel: account.creditSalesLimit.creditAccountStatusLabel,
+                  effectiveTime: account.creditSalesLimit.effectiveTime,
+                  expireTime: account.creditSalesLimit.expireTime,
+                };
+              }
+              return account;
+            });
           }
           // 更新applyTotalQty
           this.updateApplyTotalQty();

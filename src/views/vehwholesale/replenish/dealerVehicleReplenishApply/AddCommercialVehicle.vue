@@ -287,6 +287,7 @@ export default {
     // 在获取数据后恢复 tableList 中的 applyQty 值
     restoreApplyQtyFromTableList (records) {
       return records.map(item => {
+        item.materialsId = item.id;
         const existingItem = this.tableList.find(t => t.id === item.id);
         if (existingItem) {
           item.applyQty = existingItem.applyQty;

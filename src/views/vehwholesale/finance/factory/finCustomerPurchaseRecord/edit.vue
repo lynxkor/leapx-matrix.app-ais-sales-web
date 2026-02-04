@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        :title="title"
+        title="客户采购记录:"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -13,12 +13,12 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          <span class="status primary">状态</span>
+          <span class="status primary">{{ form.code }}</span>
         </template>
-        <template #extraButtons>
+        <!-- <template #extraButtons>
           <el-button size="small">按钮1</el-button>
           <el-button size="small">按钮2</el-button>
-        </template>
+        </template> -->
         <el-main>
           <section class="common-section">
             <div class="common-section-header">
@@ -257,86 +257,65 @@
                 </el-form-item>
               </el-form>
               <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="主键：" prop="id">
-                  {{ form.id }}
-                </el-form-item>
-                <el-form-item label="创建者：" prop="creator">
-                  {{ form.creator }}
-                </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  {{ form.creatorName }}
-                </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
-                  {{ form.createTime }}
-                </el-form-item>
-                <el-form-item label="修改者：" prop="modifier">
-                  {{ form.modifier }}
-                </el-form-item>
-                <el-form-item label="修改者名称：" prop="modifierName">
-                  {{ form.modifierName }}
-                </el-form-item>
-                <el-form-item label="修改时间：" prop="updateTime">
-                  {{ form.updateTime }}
-                </el-form-item>
-                <el-form-item label="备注：" prop="remark">
-                  {{ form.remark }}
-                </el-form-item>
-                <el-form-item label="状态：" prop="status">
-                  {{ form.status }}
-                </el-form-item>
-                <el-form-item label="状态变更描述：" prop="statusDesc">
-                  {{ form.statusDesc }}
-                </el-form-item>
-                <el-form-item label="数据来源，150:新销服; 老销服:10：" prop="dataSource">
-                  {{ form.dataSource }}
-                </el-form-item>
-                <el-form-item label="编码：" prop="code">
-                  {{ form.code }}
-                </el-form-item>
-                <el-form-item label="归属门店ID（组织ID），当数据权限归属到本组织以及本下级：" prop="ownerOrgId">
-                  {{ form.ownerOrgId }}
-                </el-form-item>
-                <el-form-item label="数据月份：" prop="dataMonth">
-                  {{ form.dataMonth }}
-                </el-form-item>
-                <el-form-item label="金额合计：" prop="totalAmount">
-                  {{ form.totalAmount }}
+                <el-form-item label="母公司名称：" prop="dealerCompanyName">
+                  {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
                   {{ form.dealerCompanyCode }}
                 </el-form-item>
-
-                <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationName">
-                  {{ form.fundFinancialOrganizationName }}
-                </el-form-item>
-                <el-form-item label="融资金融机构ID：" prop="fundFinancialOrganizationId">
-                  {{ form.fundFinancialOrganizationId }}
-                </el-form-item>
-                <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
-                </el-form-item>
-                <el-form-item label="经销商编码：" prop="dealerCode">
-                  {{ form.dealerCode }}
-                </el-form-item>
                 <el-form-item label="经销商名称：" prop="dealerName">
                   {{ form.dealerName }}
+                </el-form-item>
+                 <el-form-item label="经销商编码：" prop="dealerCode">
+                  {{ form.dealerCode }}
                 </el-form-item>
                 <el-form-item label="统一社会信用代码：" prop="unifiedSocialCreditCode">
                   {{ form.unifiedSocialCreditCode }}
                 </el-form-item>
-                <el-form-item label="合作时间：" prop="cooperationDate">
-                  {{ form.cooperationDate }}
-                </el-form-item>
                 <el-form-item label="是否有固定经营场所：" prop="hasFixedBusinessPremises">
                   {{ form.hasFixedBusinessPremises }}
                 </el-form-item>
-                <el-form-item label="固定经营场所：" prop="fixedBusinessPremises">
+                 <el-form-item label="固定经营场所：" prop="fixedBusinessPremises">
                   {{ form.fixedBusinessPremises }}
                 </el-form-item>
-                <el-form-item label="同步状态：" prop="syncStatus">
-                  {{ form.syncStatus }}
+                <el-form-item label="合作时间：" prop="cooperationDate">
+                  {{ form.cooperationDate }}
                 </el-form-item>
-                <el-form-item label="同步结果：" prop="syncResult">
+                <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationName">
+                  {{ form.fundFinancialOrganizationName }}
+                </el-form-item>
+                <el-form-item label="编码：" prop="code">
+                  {{ form.code }}
+                </el-form-item>
+                <el-form-item label="状态：" prop="status">
+                  {{ form.statusLabel }}
+                </el-form-item>
+                  <el-form-item label="备注：" prop="remark">
+                  {{ form.remark }}
+                </el-form-item>
+              </el-form>
+            </div>
+          </section>
+          <section class="common-section">
+            <div class="common-section-header">
+              <h2>金额信息</h2>
+            </div>
+            <div class="common-section-body">
+              <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
+              <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+                <el-form-item label="金额合计：" prop="totalAmount">
+                  {{ form.totalAmount }}
+                </el-form-item>
+                <el-form-item label="数据月份：" prop="dataMonth">
+                  {{ form.dataMonth }}
+                </el-form-item>
+                <el-form-item label="融资数据来源：" prop="financingDataSource">
+                  {{ form.financingDataSourceLabel }}
+                </el-form-item>
+                    <el-form-item label="同步状态：" prop="syncStatus">
+                  {{ form.syncStatusLabel }}
+                </el-form-item>
+                  <el-form-item label="同步结果：" prop="syncResult">
                   {{ form.syncResult }}
                 </el-form-item>
                 <el-form-item label="同步时间：" prop="syncTime">
@@ -345,27 +324,26 @@
                 <el-form-item label="推送次数：" prop="syncCount">
                   {{ form.syncCount }}
                 </el-form-item>
-                <el-form-item label="融资数据来源：" prop="financingDataSource">
-                  {{ form.financingDataSource }}
+                <el-form-item label="创建时间：" prop="createTime">
+                  {{ form.createTime }}
                 </el-form-item>
               </el-form>
             </div>
           </section>
           <section class="common-section">
             <div class="common-section-header">
-              <h2>区块标题</h2>
-              <el-button v-if="canAddOrUpdate" size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>添加</el-button>
+              <h2>明细记录</h2>
+              <!-- <el-button v-if="canAddOrUpdate" size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>添加</el-button> -->
             </div>
             <div class="common-section-body">
               <div class="common-section-table">
                 <edit-table
                   ref="editTable"
                   :columns="columns"
-                  :data="tableData"
+                  :data="form.detailList"
                   :defaultNewRow="defaultNewRow"
                   :show-toolbar="false"
                   :options="options"
-                  :auth="{edit: canAddOrUpdate, delete: canDelete}"
                 />
               </div>
             </div>
@@ -466,7 +444,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '新页面',
+      pageTitle: '账户管理-车厂融资信息-客户采购记录',
       pageType: 'edit',
       title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
@@ -480,8 +458,6 @@ export default {
         name: '',
       },
       tableData: [
-        { id: 1, name: '张三', age: 25, email: 'zhangsan@example.com' },
-        { id: 2, name: '李四', age: 30, email: 'lisi@example.com' }
       ],
       options: {
         // 对应表格里选型枚举
@@ -490,27 +466,20 @@ export default {
       // TIPS: 复杂的表格输入项，参考 /dealerTeam/edit.vue
       columns: [
         {
-          field: 'name',
-          title: '姓名',
-          width: '33%',
-          editable: true,
-          editRender: { name: 'ElInput' },
-          rules: [
-            { required: true, message: '姓名不能为空', trigger: 'blur' }
-          ]
+          field: 'code',
+          title: '明细编号'
         },
         {
-          field: 'age',
-          title: '年龄',
-          editable: true,
-          width: '33%',
-          editRender: { name: 'ElInput', props: { type: 'number' } }
+          field: 'dataMonth',
+          title: '数据月份',
         },
         {
-          field: 'email',
-          title: '邮箱',
-          width: '33%',
-          editRender: { name: 'ElInput' }
+          field: 'amount',
+          title: '金额',
+        },
+        {
+          field: 'createTime',
+          title: '创建时间'
         },
       ],
       rules: {

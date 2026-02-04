@@ -96,44 +96,6 @@
             filterable
           />
         </el-form-item>
-        <!-- <el-form-item label="赊销费用">
-          <el-input
-            placeholder="请输入"
-            v-model="form.creditSalesFee"
-            clearable
-          />
-        </el-form-item> -->
-        <!-- <el-form-item label="有效开始日期">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.effectiveStartTime"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
-        </el-form-item>
-        <el-form-item label="有效结束日期">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.effectiveEndTime"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
-        </el-form-item>
-        <el-form-item label="备注">
-          <el-input
-            placeholder="请输入"
-            v-model="form.remark"
-            clearable
-          />
-        </el-form-item> -->
         <el-form-item label="状态">
           <fetch-select
             :request="fetchOptions"

@@ -1599,6 +1599,24 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
+      path: '/vehstock/store/storeInventoryLedger',
+      name: 'storeInventoryLedger',
+      component: () => import('@/views/vehstock/store/storeInventoryLedger/index.vue'),
+
+      meta: {
+        name: '门店库存台账',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/store/storeinventoryledger/edit',
+      name: 'storeInventoryLedgerEdit',
+      component: () => import('@/views/vehstock/store/storeInventoryLedger/edit.vue'),
+
+      meta: {
+        name: '门店库存台账单详情',
+        noResourceUrl: 'true'
+      }
+    }, {
       path: '/vehretail/orderRefund/category',
       name: 'orderRefund',
       component: () => import('@/views/vehretail/orderRefund/category/index.vue'),
