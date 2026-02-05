@@ -195,6 +195,7 @@
         @paginationChange="paginationChange"
         @handleSelect="handleSelectionChange"
         @listSelect="handleListSelect"
+        @sortChange="handleSortChange"
       >
         <EditPage slot="centralizedViewSlot" :id="clickItemId"/>
       </LPVxeTable>
@@ -202,8 +203,9 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="1"
+      :id="'1'"
       @close="handleUploadDialogClose"
+      @getData="getData"
     />
   </div>
 </template>
@@ -340,7 +342,13 @@ export default {
           }
         ],
         total: 0
-      }
+      },
+      sortColumns: [
+        // {
+        // column: 'create_time',
+        // sort: 'DESC'
+        // }
+      ]
     };
   },
   created () {
@@ -348,6 +356,16 @@ export default {
     this.getData();
   },
   methods: {
+    // 排序
+    handleSortChange (value) {
+      this.sortColumns = (value || []).map(item => {
+        return {
+          column: (item.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+          sort: (item.order || '').toUpperCase()
+        };
+      });
+      this.getData();
+    },
     handleListSelect (row) {
       this.clickItemId = row.id;
     },
@@ -469,7 +487,8 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
-
+      // 排序字段
+      data.sortColumns = this.sortColumns;
       return data;
     },
     async fetchOptions (code) {
