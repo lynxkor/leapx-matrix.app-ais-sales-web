@@ -174,14 +174,14 @@
                     end-placeholder="结束日期"
                   />
                 </el-form-item>
-                  <el-form-item label="急单备注：" prop="emergencyOrderRemark">
+                  <!-- <el-form-item label="急单备注：" prop="emergencyOrderRemark">
                   <el-input
                     placeholder="请输入"
                     v-model="form.emergencyOrderRemark"
                     clearable
                     maxlength="300"
                   />
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="确认说明：" prop="confirmRemark">
                   <el-input
                     placeholder="请输入"
@@ -296,9 +296,9 @@
                   {{ form.emergencyOrderTime }}
                 </el-form-item>
 
-                 <el-form-item label="急单备注：" prop="emergencyOrderRemark">
+                 <!-- <el-form-item label="急单备注：" prop="emergencyOrderRemark">
                   {{ form.emergencyOrderRemark }}
-                </el-form-item>
+                </el-form-item> -->
                    <el-form-item label="确认说明：" prop="confirmRemark">
                   {{ form.confirmRemark }}
                 </el-form-item>

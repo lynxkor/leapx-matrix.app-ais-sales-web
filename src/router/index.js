@@ -23,7 +23,7 @@ const routes = [
     name: '404',
     meta: {
       name: '404',
-      requiresAuth: true,
+      requiresAuth: false,
       noResourceUrl: true
     },
     component: () => import('@/views/404.vue')
@@ -1853,6 +1853,78 @@ const routes = [
         name: '订单锁车解绑申请记录管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehstock/store/storeInventoryInboundDetails',
+      name: 'storeInventoryInboundDetails',
+      component: () => import('@/views/vehstock/store/storeInventoryInboundDetails/index.vue'),
+
+      meta: {
+        name: '门店库存入库明细',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/store/storeInventoryOutboundDetails',
+      name: 'storeInventoryOutboundDetails',
+      component: () => import('@/views/vehstock/store/storeInventoryOutboundDetails/index.vue'),
+
+      meta: {
+        name: '门店库存出库明细',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicConfig/retailOrderUnlockConfig',
+      name: 'retailOrderUnlockConfig',
+      component: () => import('@/views/vehretail/basicConfig/retailOrderUnlockConfig/index.vue'),
+
+      meta: {
+        name: '订单解绑配车配置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicconfig/retailorderunlockconfig/edit',
+      name: 'retailOrderUnlockConfigEdit',
+      component: () => import('@/views/vehretail/basicConfig/retailOrderUnlockConfig/edit.vue'),
+
+      meta: {
+        name: '订单解绑配车配置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/basicConfig/retailOrderUnlockReasonConfig',
+      name: 'retailOrderUnlockReasonConfig',
+      component: () => import('@/views/vehretail/basicConfig/retailOrderUnlockReasonConfig/index.vue'),
+
+      meta: {
+        name: '订单解绑原因配置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicconfig/retailorderunlockreasonconfig/edit',
+      name: 'retailOrderUnlockReasonConfigEdit',
+      component: () => import('@/views/vehretail/basicConfig/retailOrderUnlockReasonConfig/edit.vue'),
+
+      meta: {
+        name: '订单解绑原因配置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/orderManager/retailOrderInfo',
+      name: 'retailOrderInfo',
+      component: () => import('@/views/vehretail/orderManager/retailOrderInfo/index.vue'),
+
+      meta: {
+        name: '门店整车订单管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/orderManager/retailOrderInfo/edit',
+      name: 'retailOrderInfoEdit',
+      component: () => import('@/views/vehretail/orderManager/retailOrderInfo/edit.vue'),
+
+      meta: {
+        name: '门店整车订单管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
@@ -1903,7 +1975,7 @@ export function getRouter () {
         window.alert('你没有访问该页面的权限');
         if (store.state.user.token) {
           next({
-            path: '/home'
+            path: '/404'
           });
         } else {
           toLoginPage(to, next);

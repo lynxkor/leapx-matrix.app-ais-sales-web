@@ -7,7 +7,7 @@
         <el-input placeholder="请输入" v-model="form.vin" clearable />
       </el-form-item>
       <el-form-item label="车辆状态">
-        <fetch-select :request="fetchOptions" enumCode="vehstock_vechicle_status" v-model="form.vechicleStatus"
+        <fetch-select :request="fetchOptions" enumCode="vehstock_vechicle_status" v-model="form.vechicleStatusList"
           placeholder="请选择" clearable multiple filterable />
       </el-form-item>
       <el-form-item label="物料描述">
@@ -18,7 +18,7 @@
           <el-input placeholder="请输入" v-model="form.moveoutDate" clearable />
         </el-form-item>
         <el-form-item label="车辆物流状态">
-          <fetch-select :request="fetchOptions" enumCode="vehstock_logistic_status" v-model="form.logisticStatus"
+          <fetch-select :request="fetchOptions" enumCode="vehstock_logistic_status" v-model="form.logisticStatusList"
             placeholder="请选择" clearable multiple filterable />
         </el-form-item>
         <el-form-item label="物流到店日期">
@@ -26,19 +26,19 @@
         </el-form-item>
         <el-form-item label="是否预留">
           <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.reserved" placeholder="请选择"
-            clearable multiple filterable />
+            clearable filterable />
         </el-form-item>
         <el-form-item label="车辆类型">
-          <fetch-select :request="fetchOptions" enumCode="vehstock_reservation_status" v-model="form.reservationStatus"
+          <fetch-select :request="fetchOptions" enumCode="vehstock_reservation_status" v-model="form.reservationStatusList"
             placeholder="请选择" clearable multiple filterable />
         </el-form-item>
         <el-form-item label="是否匹配订单">
           <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.lockStatus" placeholder="请选择"
-            clearable multiple filterable />
+            clearable filterable />
         </el-form-item>
         <el-form-item label="实车交车标识">
           <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.vehdeLiveried" placeholder="请选择"
-            clearable multiple filterable />
+            clearable filterable />
         </el-form-item>
         <el-form-item label="销售门店编码">
           <el-input placeholder="请输入" v-model="form.saleDealerCode" clearable />
@@ -75,7 +75,7 @@
         </el-form-item>
         <el-form-item label="入库是否及时">
           <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.inboundTimeLy" placeholder="请选择"
-            clearable multiple filterable />
+            clearable filterable />
         </el-form-item>
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
@@ -121,13 +121,13 @@ import EditPage from './edit.vue';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   vin: '',
-  vechicleStatus: '',
+  vechicleStatusList: [],
   materialsDesc: '',
   moveoutDate: '',
-  logisticStatus: '',
+  logisticStatusList: [],
   vehicleArrivalOn: '',
   reserved: '',
-  reservationStatus: '',
+  reservationStatusList: [],
   lockStatus: '',
   vehdeLiveried: '',
   saleDealerCode: '',
@@ -237,6 +237,11 @@ export default {
           { props: 'receivedBy', label: '收车确认人', visible: true, width: 200 },
           { props: 'receivedOn', label: '收车确认时间', visible: true, width: 200 },
           { props: 'receivedplatformLabel', label: '收车操作来源', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
+          { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
         ],
         total: 0
       }
