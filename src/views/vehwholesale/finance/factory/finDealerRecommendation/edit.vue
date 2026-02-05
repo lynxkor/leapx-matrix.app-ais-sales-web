@@ -215,7 +215,7 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehwholesale/finance/factory/finDealerRecommendation/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import EditTable from '@/libs/components/EditTable';
+// import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum, getParentCompany } from '@/api/common';

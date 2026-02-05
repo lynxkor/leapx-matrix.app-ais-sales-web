@@ -223,10 +223,10 @@ export default {
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           { props: 'wholesaleOrderCode', label: '整车批售订单', visible: true, width: 200 },
           { props: 'customerOrderCode', label: '企业客户整车订单', visible: true, width: 200 },
-          { props: 'vehicleStatus', label: '车辆状态', visible: true, width: 200 },
+          { props: 'vehicleStatusLabel', label: '车辆状态', visible: true, width: 200 },
           { props: 'vehicleRepaymentRecordCode', label: '还款车辆记录编号', visible: true, width: 200 },
           { props: 'dealerName', label: '经销商名称', visible: true, width: 200 },
-          { props: 'status', label: '状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {

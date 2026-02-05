@@ -144,8 +144,8 @@
                 <el-form-item
                   label="金融机构："
                   prop="financialOrganizationId"
-                  :rules="form.settleFundType==2010 ? rules.financialOrganizationId: []"
-                  v-show="form.settleFundType==2010"
+                  :rules="form.settleFundType + '' === '2010' ? rules.financialOrganizationId: []"
+                  v-show="form.settleFundType + '' === '2010'"
                 >
                   <fetch-select
                     :remote-method="repairItemSearch"
@@ -240,10 +240,10 @@
                 <el-form-item label="批售方式：" prop="wholesaleWay">
                   {{ form.wholesaleWayLabel }}
                 </el-form-item>
-                <el-form-item label="专项活动：" prop="prodScheduleActivityId" v-show="form.orderCategory !== '2'">
+                <el-form-item label="专项活动：" prop="prodScheduleActivityId" v-show="form.orderCategory + '' !== '2'">
                   {{ form.prodScheduleActivityName }}
                 </el-form-item>
-                <el-form-item label="申请类别：" prop="applyCategory" v-show="form.orderCategory === '2'">
+                <el-form-item label="申请类别：" prop="applyCategory" v-show="form.orderCategory + '' === '2'">
                   {{ form.applyCategoryLabel }}
                 </el-form-item>
                 <el-form-item label="门店仓库：" prop="dealerWarehouseName">
@@ -440,7 +440,7 @@ export default {
   },
   data () {
     const form = this.getDefautlForm();
-    const routeOrderCategory = this.$route.query.orderCategory ? String(this.$route.query.orderCategory) : '';
+    const routeOrderCategory = this.$route.query.orderCategory ? (this.$route.query.orderCategory) : '';
     form.orderCategory = routeOrderCategory;
     return {
       pageTitle: '整车批售-批售主数据-整车门店补货申请管理',
@@ -764,15 +764,15 @@ export default {
     // 详情表格相关数据
     handleAddRow () {
       // 如果orderCategory不在有效范围内，不执行后续动作
-      if (!['0', '2', '20'].includes(this.form.orderCategory)) {
+      if (!['0', '2', '20'].includes(this.form.orderCategory + '')) {
         return;
       }
       let categoryText = '';
-      if (this.form.orderCategory === '0') {
+      if (this.form.orderCategory + '' === '0') {
         categoryText = '商品车';
-      } else if (this.form.orderCategory === '2') {
+      } else if (this.form.orderCategory + '' === '2') {
         categoryText = '试驾车';
-      } else if (this.form.orderCategory === '20') {
+      } else if (this.form.orderCategory + '' === '20') {
         categoryText = '展车';
       }
       this.pannelTitle = `补货申请添加【${categoryText}】`;
@@ -807,7 +807,7 @@ export default {
       // 20 展车订单
       this.orderCategoryOptions = response.filter(item => {
         const codeStr = String(item.code);
-        return ['0', '2', '20'].includes(codeStr);
+        return ['0', '2', '20'].includes(codeStr + '');
       }).map(item => {
         // 确保 code 字段是字符串类型
         return {
@@ -844,9 +844,9 @@ export default {
       // 0 商品车订单
       // 2 试驾车订单
       // 20 展车订单
-      if (val === '2') {
+      if (val + '' === '2') {
         this.form.prodScheduleActivityId = '';
-      } else if (val === '0' || val === '20') {
+      } else if (val + '' === '0' || val + '' === '20') {
         this.form.applyCategory = '';
       }
     },
@@ -855,10 +855,10 @@ export default {
       // * ('vw_fundtype','1020','返利',1,'资金类型-返利'),
       // * ('vw_fundtype','1050','赊销-零跑',2,'资金类型-赊销-零跑'),
       // * ('vw_fundtype','2010','融资',3,'资金类型-融资');
-      if (val !== '2010') {
+      if (val + '' !== '2010') {
         this.form.financialOrganizationId = '';
       }
-      if (val === '1050' && !this._id) {
+      if (val + '' === '1050' && !this._id) {
         this.form.isCreditSale = 1;
       }
     },

@@ -246,9 +246,9 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'financingDataSource', label: '融资数据来源', visible: true, width: 200 },
+          { props: 'financingDataSourceLabel', label: '融资数据来源', visible: true, width: 200 },
           { props: 'orderCode', label: '订单号', visible: true, width: 200 },
-          { props: 'vehicleStatus', label: '车辆状态', visible: true, width: 200 },
+          { props: 'vehicleStatusLabel', label: '车辆状态', visible: true, width: 200 },
           { props: 'vin', label: 'VIN号', visible: true, width: 200 },
           { props: 'financingAmount', label: '融资金额', visible: true, width: 200 },
           { props: 'taxIncludedPrice', label: '含税价格', visible: true, width: 200 },
@@ -262,11 +262,11 @@ export default {
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           { props: 'shipmentDate', label: '发车日期', visible: true, width: 200 },
           { props: 'receiveDate', label: '收车日期', visible: true, width: 200 },
-          { props: 'syncStatus', label: '同步状态', visible: true, width: 200 },
+          { props: 'syncStatusLabel', label: '同步状态', visible: true, width: 200 },
           { props: 'syncResult', label: '同步结果', visible: true, width: 200 },
           { props: 'syncCount', label: '推送次数', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'status', label: '状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },
           {
             props: 'operate',
