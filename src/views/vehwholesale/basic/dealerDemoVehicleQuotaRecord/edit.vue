@@ -59,8 +59,8 @@
         </section>
       </el-main>
       <el-footer height="60px">
-        <el-button size="small" v-permission="'AISVW-wholesaleDealerTestDriveQuota-updateTestDriveQuota'" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
         <el-button size="small" @click="handleBack">取消</el-button>
+        <el-button size="small" v-permission="'AISVW-wholesaleDealerTestDriveQuota-updateTestDriveQuota'" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
         <!-- <el-button size="small" @click="handleJumpAuditLog">审核日志</el-button> -->
       </el-footer>
     </el-container>

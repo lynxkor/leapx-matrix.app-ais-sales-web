@@ -34,8 +34,8 @@
       <el-input v-model="form.materialsCode" placeholder="请输入物料编码" />
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="handleSubmit">提交</el-button>
       <el-button @click="handleCancel">取消</el-button>
+      <el-button type="primary" @click="handleSubmit">提交</el-button>
     </el-form-item>
   </el-form>
 </template>

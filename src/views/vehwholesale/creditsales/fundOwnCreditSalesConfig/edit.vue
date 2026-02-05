@@ -184,9 +184,9 @@
         </section>
       </el-main>
       <el-footer height="60px">
+        <el-button size="small" @click="handleBack">取消</el-button>
         <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
         <el-button v-show="auditSub" size="small" type="primary" @click="submitForm('submit')" :loading="submitLoading">提交</el-button>
-        <el-button size="small" @click="handleBack">取消</el-button>
         <!-- <el-button size="small" @click="handleJumpAuditLog">审核日志</el-button> -->
       </el-footer>
     </el-container>
