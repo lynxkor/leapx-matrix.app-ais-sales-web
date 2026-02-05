@@ -99,8 +99,8 @@
     </el-form>
     <template v-slot:footer>
       <div class="dialog-footer" style="text-align: center;">
-        <el-button :loading="submitLoading" type="primary" @click="AuditAppSure()">初审确认</el-button>
         <el-button :loading="submitLoading"  @click="AuditAppClose()">取消</el-button>
+        <el-button :loading="submitLoading" type="primary" @click="AuditAppSure()">初审确认</el-button>
       </div>
     </template>
   </el-dialog>
