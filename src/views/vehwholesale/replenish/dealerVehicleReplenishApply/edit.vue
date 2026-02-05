@@ -754,7 +754,8 @@ export default {
           // 日期假如是时分，改成时分秒
           auditDateTime: this.form.auditDateTime ? (this.form.auditDateTime.length === 16 ? this.form.auditDateTime + ':00' : this.form.auditDateTime) : null,
           auditTime: this.form.auditTime ? (this.form.auditTime.length === 16 ? this.form.auditTime + ':00' : this.form.auditTime) : null,
-          applyTime: this.form.applyTime ? (this.form.applyTime.length === 16 ? this.form.applyTime + ':00' : this.form.applyTime) : null
+          applyTime: this.form.applyTime ? (this.form.applyTime.length === 16 ? this.form.applyTime + ':00' : this.form.applyTime) : null,
+          reviewTime: this.form.reviewTime ? (this.form.reviewTime.length === 16 ? this.form.reviewTime + ':00' : this.form.reviewTime) : null,
         },
         detailList: this.form.details
       };
