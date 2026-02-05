@@ -27,7 +27,7 @@
           filterable
         />
       </el-form-item>
-      <el-form-item label="零售订单状态 3-订单确认;5-生产中;30-待门店向工厂付款;40-车辆发运准备中;6-车辆在途;7-等待交车;9-交车完成;10-退订中;15-退款中;99-作废"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="零售订单状态"  v-show="this.visibleCount === 3 || show">
         <fetch-select
           :request="fetchOptions"
           enumCode="xxx"
@@ -177,7 +177,7 @@ export default {
       pageTitle: '订单解绑配车配置管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-retailOrderUnlockConfig',
+      moduleKey: 'AISVR-retailOrderUnlockConfig',
       form: {
         ...defaultForm
       },
@@ -198,7 +198,7 @@ export default {
         dataProp: [
           {
             props: 'unlockConfigCode',
-            label: '订单解绑配车配置编码',
+            label: '配置编码',
             visible: true,
             width: 200,
             fixed: 'left',
@@ -216,10 +216,10 @@ export default {
           },
           { props: 'modelName', label: '车型名称', visible: true, width: 200 },
           { props: 'yearTypeName', label: '年款名称', visible: true, width: 200 },
-          { props: 'orderStatus', label: '零售订单状态 3-订单确认;5-生产中;30-待门店向工厂付款;40-车辆发运准备中;6-车辆在途;7-等待交车;9-交车完成;10-退订中;15-退款中;99-作废', visible: true, width: 200 },
-          { props: 'allowUnlockStatus', label: '允许门店取消锁车 0-否;1-是', visible: true, width: 200 },
-          { props: 'allowManualCarStatus', label: '允许门店手工配车 0-否;1-是', visible: true, width: 200 },
-          { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },
+          { props: 'orderStatusLabel', label: '订单状态', visible: true, width: 200 },
+          { props: 'allowUnlockStatusLabel', label: '允许门店取消锁车', visible: true, width: 200 },
+          { props: 'allowManualCarStatusLabel', label: '允许门店手工配车', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',

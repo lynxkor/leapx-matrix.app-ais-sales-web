@@ -1907,6 +1907,24 @@ const routes = [
         name: '订单解绑原因配置管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehretail/orderManager/retailOrderInfo',
+      name: 'retailOrderInfo',
+      component: () => import('@/views/vehretail/orderManager/retailOrderInfo/index.vue'),
+
+      meta: {
+        name: '门店整车订单管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/orderManager/retailOrderInfo/edit',
+      name: 'retailOrderInfoEdit',
+      component: () => import('@/views/vehretail/orderManager/retailOrderInfo/edit.vue'),
+
+      meta: {
+        name: '门店整车订单管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
