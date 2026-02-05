@@ -161,8 +161,8 @@
     </el-form>
     <template v-slot:footer>
       <div class="dialog-footer" style="text-align: center;">
-        <el-button :loading="submitLoading" type="primary" @click="changeSure()">确认</el-button>
         <el-button :loading="submitLoading"  @click="changeClose()">取消</el-button>
+        <el-button :loading="submitLoading" type="primary" @click="changeSure()">确认</el-button>
       </div>
     </template>
   </el-dialog>
