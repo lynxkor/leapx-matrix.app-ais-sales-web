@@ -10,27 +10,33 @@
       class="ais-search-form"
     >
       <el-form-item label="车型名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.modelName"
-          clearable
+        <fetch-select
+          :remote-method="remoteMethods.model"
+          v-model="form.modelId"
+          v-bind="selectOptions"
+          @change="modelListChange"
         />
       </el-form-item>
       <el-form-item label="年款名称">
         <fetch-select
-          :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.yearTypeName"
+          :options="yearModelList"
+          v-model="form.yearTypeId"
           placeholder="请选择"
+          labelKey="label"
+          valueKey="value"
           clearable
-          multiple
           filterable
         />
+        <!-- <fetch-select
+          :remote-method="remoteMethods.yearType"
+          v-model="form.yearTypeId"
+          v-bind="selectOptions"
+        /> -->
       </el-form-item>
-      <el-form-item label="零售订单状态"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="订单状态"  v-show="this.visibleCount === 3 || show">
         <fetch-select
           :request="fetchOptions"
-          enumCode="xxx"
+          enumCode="vr_order_status"
           v-model="form.orderStatus"
           placeholder="请选择"
           clearable
@@ -39,37 +45,29 @@
         />
       </el-form-item>
       <template v-if="show">
-        <el-form-item label="允许门店取消锁车 0-否;1-是">
+        <el-form-item label="允许门店取消锁车">
           <fetch-select
-            :request="fetchOptions"
-            enumCode="xxx"
+            :options="yes_no_enum"
             v-model="form.allowUnlockStatus"
             placeholder="请选择"
             clearable
-            multiple
-            filterable
           />
         </el-form-item>
-        <el-form-item label="允许门店手工配车 0-否;1-是">
+        <el-form-item label="允许门店手工配车">
           <fetch-select
-            :request="fetchOptions"
-            enumCode="xxx"
+            :options="yes_no_enum"
             v-model="form.allowManualCarStatus"
             placeholder="请选择"
             clearable
-            multiple
-            filterable
           />
         </el-form-item>
-        <el-form-item label="状态变更描述">
+        <el-form-item label="状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.statusDesc"
+            enumCode="StatusEnum"
+            v-model="form.status"
             placeholder="请选择"
             clearable
-            multiple
-            filterable
           />
         </el-form-item>
         <el-form-item label="创建时间">
@@ -126,8 +124,9 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="1"
+      :id="'retailOrderUnlockConfigImport'"
       @close="handleUploadDialogClose"
+      @getData="getData"
     />
   </div>
 </template>
@@ -137,7 +136,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/basicConfig/retailOrderUnlockConfig/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, listVehicleModel, vehicleModelYearTypeRelationDistinctYeayType } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -149,8 +148,8 @@ import EditPage from './edit.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  modelName: '',
-  yearTypeName: '',
+  modelId: '',
+  yearTypeId: '',
   orderStatus: '',
   allowUnlockStatus: '',
   allowManualCarStatus: '',
@@ -188,6 +187,27 @@ export default {
       exportLoading: false,
       uploadDialogVisible: false,
       clickItemId: '',
+      // 提取公共配置
+      selectOptions: {
+        placeholder: '请选择',
+        labelKey: 'name',
+        valueKey: 'id',
+        clearable: true,
+        filterable: true,
+        remote: true,
+        reserveKeyword: true
+      },
+      // 远程搜索方法
+      remoteMethods: {
+        // 初始方法
+        model: async (query) => {
+          return await listVehicleModel({ modelNameLike: query });
+        },
+        yearType: async (query) => {
+          return await listVehicleYearType({ yearTypeNameLike: query, modelId: this.form.modelId });
+        },
+      },
+      yearModelList: [],
       optionObj: {
         id: 'retailOrderUnlockConfigTable',
         dataList: [],
@@ -215,7 +235,7 @@ export default {
             }]
           },
           { props: 'modelName', label: '车型名称', visible: true, width: 200 },
-          { props: 'yearTypeName', label: '年款名称', visible: true, width: 200 },
+          { props: 'yearTypeId', label: '年款名称', visible: true, width: 200 },
           { props: 'orderStatusLabel', label: '订单状态', visible: true, width: 200 },
           { props: 'allowUnlockStatusLabel', label: '允许门店取消锁车', visible: true, width: 200 },
           { props: 'allowManualCarStatusLabel', label: '允许门店手工配车', visible: true, width: 200 },
@@ -239,24 +259,6 @@ export default {
                 });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],
@@ -264,11 +266,51 @@ export default {
       }
     };
   },
+  watch: {
+    'form.seriesId': {
+      handler (newVal) {
+        // 车系变化时清空车型选择
+        this.form.modelId = '';
+        this.searchModel();
+      },
+      deep: true,
+      immediate: true
+    },
+  },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
+    this.listVehicleYearType();
   },
   methods: {
+    modelListChange (val) {
+      this.form.yearTypeId = '';
+      this.yearModelList = [];
+      this.listVehicleYearType(val);
+    },
+    async listVehicleYearType (val) {
+      const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelId: val, limitSize: 50 });
+      this.yearModelList = res.map(item => {
+        return {
+          ...item,
+          label: item.yearTypeName,
+          value: item.yearTypeId
+        };
+      });
+    },
+    // 车型支持车系 ID 和 车型输入 方法
+    async searchModel (query) {
+      console.log('searchModel:', query);
+
+      const params = {};
+      if (query) {
+        params.modelNameLike = query;
+      }
+      if (this.form.seriesId?.length) {
+        params.seriesIds = this.form.seriesId;
+      }
+      return await listVehicleModel(params);
+    },
     handleListSelect (row) {
       this.clickItemId = row.id;
     },

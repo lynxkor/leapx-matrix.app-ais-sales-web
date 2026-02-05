@@ -642,8 +642,7 @@ export default {
       }
     },
     async listVehicleYearType () {
-      const res = await listVehicleYearType({ size: 50, limitSize: 50 });
-      console.log('listVehicleYearType', res);
+      const res = await listVehicleYearType({ pageSize: 50 });
       this.yearModelList = res.map(item => {
         return {
           ...item,

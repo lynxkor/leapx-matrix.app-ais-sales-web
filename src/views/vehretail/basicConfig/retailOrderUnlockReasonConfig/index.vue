@@ -16,63 +16,44 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="门店申请选择 0-否;1-是">
+      <el-form-item label="门店申请选择">
         <fetch-select
-          :request="fetchOptions"
-          enumCode="xxx"
           v-model="form.storeApplyStatus"
+          :options="yes_no_enum"
           placeholder="请选择"
           clearable
-          multiple
-          filterable
         />
       </el-form-item>
-      <el-form-item label="门店解锁选择 0-否;1-是"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="门店解锁选择"  v-show="this.visibleCount === 3 || show">
         <fetch-select
-          :request="fetchOptions"
-          enumCode="xxx"
           v-model="form.storeUnlockStatus"
+          :options="yes_no_enum"
           placeholder="请选择"
           clearable
-          multiple
-          filterable
         />
       </el-form-item>
       <template v-if="show">
-        <el-form-item label="厂端解锁选择 0-否;1-是">
+        <el-form-item label="厂端解锁选择">
           <fetch-select
-            :request="fetchOptions"
-            enumCode="xxx"
             v-model="form.factoryUnlockStatus"
+            :options="yes_no_enum"
             placeholder="请选择"
             clearable
-            multiple
-            filterable
           />
         </el-form-item>
-        <el-form-item label="需要同步APP 0-否;1-是">
+        <el-form-item label="需要同步APP">
           <fetch-select
-            :request="fetchOptions"
-            enumCode="xxx"
             v-model="form.syncAppStatus"
+            :options="yes_no_enum"
             placeholder="请选择"
             clearable
-            multiple
-            filterable
           />
         </el-form-item>
-        <el-form-item label="原因解释名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.reasonExplain"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="状态变更描述">
+        <el-form-item label="状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.statusDesc"
+            enumCode="StatusEnum"
+            v-model="form.status"
             placeholder="请选择"
             clearable
             multiple
@@ -104,9 +85,8 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <!-- <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button> -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
     </div>
@@ -130,12 +110,6 @@
         <EditPage slot="centralizedViewSlot" :id="clickItemId"/>
       </LPVxeTable>
     </div>
-    <!-- TIPS: 填入项目id即可 -->
-    <Upload
-      :visible="uploadDialogVisible"
-      :id="1"
-      @close="handleUploadDialogClose"
-    />
   </div>
 </template>
 
@@ -146,7 +120,6 @@ import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/basicConfig/retailOrderUnlockReasonConfig/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
-import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
@@ -162,7 +135,7 @@ const defaultForm = {
   factoryUnlockStatus: '',
   syncAppStatus: '',
   reasonExplain: '',
-  statusDesc: '',
+  statusLabel: '',
   createTime: '',
 };
 
@@ -177,15 +150,14 @@ export default {
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
-    EditPage,
-    Upload
+    EditPage
   },
   data () {
     return {
       pageTitle: '订单解绑原因配置管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-retailOrderUnlockReasonConfig',
+      moduleKey: 'AISVR-retailOrderUnlockReasonConfig',
       form: {
         ...defaultForm
       },
@@ -223,12 +195,12 @@ export default {
             }]
           },
           { props: 'unlockReason', label: '订单解锁原因', visible: true, width: 200 },
-          { props: 'storeApplyStatus', label: '门店申请选择 0-否;1-是', visible: true, width: 200 },
-          { props: 'storeUnlockStatus', label: '门店解锁选择 0-否;1-是', visible: true, width: 200 },
-          { props: 'factoryUnlockStatus', label: '厂端解锁选择 0-否;1-是', visible: true, width: 200 },
-          { props: 'syncAppStatus', label: '需要同步APP 0-否;1-是', visible: true, width: 200 },
+          { props: 'storeApplyStatusLabel', label: '门店申请选择', visible: true, width: 200 },
+          { props: 'storeUnlockStatusLabel', label: '门店解锁选择', visible: true, width: 200 },
+          { props: 'factoryUnlockStatusLabel', label: '厂端解锁选择', visible: true, width: 200 },
+          { props: 'syncAppStatusLabel', label: '需要同步APP', visible: true, width: 200 },
           { props: 'reasonExplain', label: '原因解释名称', visible: true, width: 200 },
-          { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',
@@ -248,24 +220,6 @@ export default {
                 });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],

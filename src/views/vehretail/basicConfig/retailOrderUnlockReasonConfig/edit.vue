@@ -13,12 +13,8 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          <!-- 支持primary,warning,success,danger等状态 -->
-          <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <!-- <el-button size="small">按钮1</el-button>
-          <el-button size="small">按钮2</el-button> -->
         </template>
         <el-main>
           <section class="common-section">
@@ -30,9 +26,10 @@
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="订单解绑编码：" prop="unlockReasonCode">
                   <el-input
-                    placeholder="请输入"
                     v-model="form.unlockReasonCode"
                     clearable
+                    placeholder="请输入"
+                    maxlength="30"
                   />
                 </el-form-item>
                 <el-form-item label="订单解锁原因：" prop="unlockReason">
@@ -40,46 +37,39 @@
                     placeholder="请输入"
                     v-model="form.unlockReason"
                     clearable
+                    maxlength="50"
                   />
                 </el-form-item>
-                <el-form-item label="门店申请选择 0-否;1-是：" prop="storeApplyStatus">
+                <el-form-item label="门店申请选择：" prop="storeApplyStatus">
                   <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
                     v-model="form.storeApplyStatus"
+                    :options="yes_no_enum"
                     placeholder="请选择"
                     clearable
-                    filterable
                   />
                 </el-form-item>
-                <el-form-item label="门店解锁选择 0-否;1-是：" prop="storeUnlockStatus">
+                <el-form-item label="门店解锁选择：" prop="storeUnlockStatus">
                   <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
                     v-model="form.storeUnlockStatus"
+                    :options="yes_no_enum"
                     placeholder="请选择"
                     clearable
-                    filterable
                   />
                 </el-form-item>
-                <el-form-item label="厂端解锁选择 0-否;1-是：" prop="factoryUnlockStatus">
+                <el-form-item label="厂端解锁选择：" prop="factoryUnlockStatus">
                   <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
                     v-model="form.factoryUnlockStatus"
+                    :options="yes_no_enum"
                     placeholder="请选择"
                     clearable
-                    filterable
                   />
                 </el-form-item>
-                <el-form-item label="需要同步APP 0-否;1-是：" prop="syncAppStatus">
+                <el-form-item label="需要同步APP：" prop="syncAppStatus">
                   <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
                     v-model="form.syncAppStatus"
+                    :options="yes_no_enum"
                     placeholder="请选择"
                     clearable
-                    filterable
                   />
                 </el-form-item>
                 <el-form-item label="原因解释名称：" prop="reasonExplain">
@@ -87,95 +77,32 @@
                     placeholder="请输入"
                     v-model="form.reasonExplain"
                     clearable
+                    maxlength="100"
                   />
                 </el-form-item>
-                <el-form-item label="状态变更描述：" prop="statusDesc">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
-                    v-model="form.statusDesc"
+                <el-form-item label="状态：" prop="status">
+                  <!-- <el-select
+                    v-model="form.status"
                     placeholder="请选择"
                     clearable
-                    filterable
-                  />
-                </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.createTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  />
-                </el-form-item>
-                <el-form-item label="主键：" prop="id">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.id"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="创建者：" prop="creator">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.creator"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.creatorName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="修改者：" prop="modifier">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.modifier"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="修改者名称：" prop="modifierName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.modifierName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="修改时间：" prop="updateTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.updateTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  />
-                </el-form-item>
-                <el-form-item label="备注：" prop="remark">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.remark"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="状态 0-禁用;1-启用：" prop="status">
+                  >
+                    <el-option label="禁用" :value="0" />
+                    <el-option label="启用" :value="1" />
+                  </el-select> -->
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="StatusEnum"
                     v-model="form.status"
                     placeholder="请选择"
                     clearable
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="数据来源，150-新销服; 10-老销服：" prop="dataSource">
+                <el-form-item label="创建时间：" prop="createTime">
                   <el-input
-                    placeholder="请输入"
-                    v-model="form.dataSource"
-                    clearable
+                    v-model="form.createTime"
+                    disabled
+                    placeholder="新增自动生成"
                   />
                 </el-form-item>
               </el-form>
@@ -186,74 +113,28 @@
                 <el-form-item label="订单解锁原因：" prop="unlockReason">
                   {{ form.unlockReason }}
                 </el-form-item>
-                <el-form-item label="门店申请选择 0-否;1-是：" prop="storeApplyStatus">
-                  {{ form.storeApplyStatus }}
+                <el-form-item label="门店申请选择：" prop="storeApplyStatus">
+                  {{ form.storeApplyStatusLabel }}
                 </el-form-item>
-                <el-form-item label="门店解锁选择 0-否;1-是：" prop="storeUnlockStatus">
-                  {{ form.storeUnlockStatus }}
+                <el-form-item label="门店解锁选择：" prop="storeUnlockStatus">
+                  {{ form.storeUnlockStatusLabel }}
                 </el-form-item>
-                <el-form-item label="厂端解锁选择 0-否;1-是：" prop="factoryUnlockStatus">
-                  {{ form.factoryUnlockStatus }}
+                <el-form-item label="厂端解锁选择：" prop="factoryUnlockStatus">
+                  {{ form.factoryUnlockStatusLabel }}
                 </el-form-item>
-                <el-form-item label="需要同步APP 0-否;1-是：" prop="syncAppStatus">
-                  {{ form.syncAppStatus }}
+                <el-form-item label="需要同步APP：" prop="syncAppStatus">
+                  {{ form.syncAppStatusLabel }}
                 </el-form-item>
                 <el-form-item label="原因解释名称：" prop="reasonExplain">
                   {{ form.reasonExplain }}
                 </el-form-item>
-                <el-form-item label="状态变更描述：" prop="statusDesc">
-                  {{ form.statusDesc }}
+                <el-form-item label="状态变更描述：" prop="statusLabel">
+                  {{ form.statusLabel }}
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
                 </el-form-item>
-                <el-form-item label="主键：" prop="id">
-                  {{ form.id }}
-                </el-form-item>
-                <el-form-item label="创建者：" prop="creator">
-                  {{ form.creator }}
-                </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  {{ form.creatorName }}
-                </el-form-item>
-                <el-form-item label="修改者：" prop="modifier">
-                  {{ form.modifier }}
-                </el-form-item>
-                <el-form-item label="修改者名称：" prop="modifierName">
-                  {{ form.modifierName }}
-                </el-form-item>
-                <el-form-item label="修改时间：" prop="updateTime">
-                  {{ form.updateTime }}
-                </el-form-item>
-                <el-form-item label="备注：" prop="remark">
-                  {{ form.remark }}
-                </el-form-item>
-                <el-form-item label="状态 0-禁用;1-启用：" prop="status">
-                  {{ form.status }}
-                </el-form-item>
-                <el-form-item label="数据来源，150-新销服; 10-老销服：" prop="dataSource">
-                  {{ form.dataSource }}
-                </el-form-item>
               </el-form>
-            </div>
-          </section>
-          <section class="common-section">
-            <div class="common-section-header">
-              <h2>区块标题</h2>
-              <el-button v-if="canAddOrUpdate" size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>添加</el-button>
-            </div>
-            <div class="common-section-body">
-              <div class="common-section-table">
-                <edit-table
-                  ref="editTable"
-                  :columns="columns"
-                  :data="tableData"
-                  :defaultNewRow="defaultNewRow"
-                  :show-toolbar="false"
-                  :options="options"
-                  :auth="{edit: canAddOrUpdate, delete: canDelete}"
-                />
-              </div>
             </div>
           </section>
         </el-main>
@@ -270,7 +151,6 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehretail/basicConfig/retailOrderUnlockReasonConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
@@ -288,7 +168,7 @@ const defaultForm = {
   factoryUnlockStatus: '',
   syncAppStatus: '',
   reasonExplain: '',
-  statusDesc: '',
+  statusLabel: '',
   createTime: '',
   id: '',
   creator: '',
@@ -314,7 +194,6 @@ export default {
   components: {
     EditPageLayout,
     EditBaseContainer,
-    EditTable,
     FetchSelect
   },
   computed: {
@@ -322,7 +201,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '：' + this.form.unlockReasonCode;
+      return '订单解绑编码：' + this.form.unlockReasonCode;
     }
   },
   watch: {
@@ -341,104 +220,38 @@ export default {
       pageTitle: '订单解绑原因配置管理',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-retailOrderUnlockReasonConfig',
+      moduleKey: 'AISVR-retailOrderUnlockReasonConfig',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
-      defaultNewRow: {
-        name: '',
-      },
-      tableData: [
-        { id: 1, name: '张三', age: 25, email: 'zhangsan@example.com' },
-        { id: 2, name: '李四', age: 30, email: 'lisi@example.com' }
-      ],
-      options: {
-        // 对应表格里选型枚举
-        // 如 type: [{label: 'xxx', value: 'xxx'}]
-      },
-      // TIPS: 复杂的表格输入项，参考 /dealerTeam/edit.vue
-      columns: [
-        {
-          field: 'name',
-          title: '姓名',
-          width: '33%',
-          editable: true,
-          editRender: { name: 'ElInput' },
-          rules: [
-            { required: true, message: '姓名不能为空', trigger: 'blur' }
-          ]
-        },
-        {
-          field: 'age',
-          title: '年龄',
-          editable: true,
-          width: '33%',
-          editRender: { name: 'ElInput', props: { type: 'number' } }
-        },
-        {
-          field: 'email',
-          title: '邮箱',
-          width: '33%',
-          editRender: { name: 'ElInput' }
-        },
-      ],
       rules: {
         unlockReasonCode: [
-          { required: true, message: '请输入订单解绑编码', trigger: 'change' }
+          { required: true, message: '请输入订单解绑编码', trigger: 'change' },
+          { pattern: /^[a-zA-Z0-9]+$/, message: '只能输入字母和数字', trigger: 'blur' }
         ],
         unlockReason: [
           { required: true, message: '请输入订单解锁原因', trigger: 'change' }
         ],
         storeApplyStatus: [
-          { required: true, message: '请选择门店申请选择 0-否;1-是', trigger: 'change' }
+          { required: true, message: '请选择门店申请选择', trigger: 'change' }
         ],
         storeUnlockStatus: [
-          { required: true, message: '请选择门店解锁选择 0-否;1-是', trigger: 'change' }
+          { required: true, message: '请选择门店解锁选择', trigger: 'change' }
         ],
         factoryUnlockStatus: [
-          { required: true, message: '请选择厂端解锁选择 0-否;1-是', trigger: 'change' }
+          { required: true, message: '请选择厂端解锁选择', trigger: 'change' }
         ],
         syncAppStatus: [
-          { required: true, message: '请选择需要同步APP 0-否;1-是', trigger: 'change' }
+          { required: true, message: '请选择需要同步APP', trigger: 'change' }
         ],
         reasonExplain: [
           { required: true, message: '请输入原因解释名称', trigger: 'change' }
         ],
-        statusDesc: [
-          { required: true, message: '请选择状态变更描述', trigger: 'change' }
-        ],
-        createTime: [
-          { required: true, message: '请选择创建时间', trigger: 'change' }
-        ],
-        id: [
-          { required: true, message: '请输入主键', trigger: 'change' }
-        ],
-        creator: [
-          { required: true, message: '请输入创建者', trigger: 'change' }
-        ],
-        creatorName: [
-          { required: true, message: '请输入创建者名称', trigger: 'change' }
-        ],
-        modifier: [
-          { required: true, message: '请输入修改者', trigger: 'change' }
-        ],
-        modifierName: [
-          { required: true, message: '请输入修改者名称', trigger: 'change' }
-        ],
-        updateTime: [
-          { required: true, message: '请选择修改时间', trigger: 'change' }
-        ],
-        remark: [
-          { required: true, message: '请输入备注', trigger: 'change' }
-        ],
         status: [
-          { required: true, message: '请选择状态 0-禁用;1-启用', trigger: 'change' }
-        ],
-        dataSource: [
-          { required: true, message: '请输入数据来源，150-新销服; 10-老销服', trigger: 'change' }
-        ],
+          { required: true, message: '请选择状态', trigger: 'change' }
+        ]
       }
     };
   },
@@ -457,11 +270,6 @@ export default {
     // 打开侧边栏
     openPane () {
       this.$refs.editLayout.openPane();
-    },
-    // 详情表格相关数据
-    handleAddRow () {
-      // 通过引用直接调用子组件方法
-      this.$refs.editTable.addRow();
     },
     handleSaveTable (data) {
       // 调用保存方法并处理结果
