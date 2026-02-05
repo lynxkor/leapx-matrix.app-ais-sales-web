@@ -13,11 +13,18 @@
       <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
     </el-form-item>
     <el-form-item label="融资金融机构">
-    <el-input
-      placeholder="请输入"
-      v-model="form.fundFinancialOrganizationId"
-      clearable
-    />
+    <fetch-select
+            :remote-method="repairItemSearch"
+            remote
+            reserve-keyword
+            labelKey="name"
+            valueKey="id"
+            v-model="form.financialOrganizationIds"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
     </el-form-item>
     <el-form-item label="同步状态">
       <fetch-select
@@ -81,7 +88,7 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量同步</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchSync" :disabled="selectionList.length === 0">批量同步</el-button>
       <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
       <!-- <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button> -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
@@ -127,6 +134,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
 import dateranges from '@/libs/components/dateranges';
+import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -167,6 +175,7 @@ export default {
       selectionList: [],
       syncStatusOptions: [],
       financingDataSourceOptions: [],
+      ALLOWED_STATUS: [10, 40],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -231,6 +240,7 @@ export default {
     this.fetchfinancingDataSourceOptions();
   },
   methods: {
+    repairItemSearch (query) { return listIdNames({ organizationNameLike: query, status: 1 }); },
     async fetchEnumsOptions () {
       const response = await getEnum('vw_sync_status');
       this.syncStatusOptions = response.filter(item => {
@@ -288,15 +298,15 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '新页面',
-        dataFetchPath: 'vehwholesale/web/finance/factory/finCustomerPurchaseRecord/page',
+        businessType: '账户管理-车厂融资信息-客户采购记录',
+        dataFetchPath: 'vw/web/finance/factory/finCustomerPurchaseRecord/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '新页面.xlsx');
+            await downloadExcel(res.excelUrl, '账户管理-车厂融资信息-客户采购记录.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -407,6 +417,32 @@ export default {
           });
         });
       }).catch(() => {});
+    },
+    checkSync (items) {
+      if (items.length === 0) {
+        this.$message({
+          type: 'error',
+          message: '请选择需要操作的数据！!'
+        });
+        return false;
+      };
+      for (const item of items) {
+        if (!this.ALLOWED_STATUS.includes(item.syncStatus) || item.status !== 0) {
+          this.$message({
+            type: 'error',
+            message: '只有可用且同步失败的数据才能同步，请确认!'
+          });
+          return false;
+        };
+      }
+      return true;
+    },
+
+    // 批量同步
+    handleBatchSync () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      const items = this.selectionList.map(item => item) || [];
+      const allowStatus = this.checkSync(items);
     },
     // 批量启用停用
     handleBatchEnable (status) {

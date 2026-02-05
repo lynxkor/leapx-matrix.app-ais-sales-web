@@ -48,13 +48,20 @@
                     disabled
                   />
                 </el-form-item>
-                 <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.fundFinancialOrganizationName"
-                    clearable
-                    :disabled="isEditing===true"
-                  />
+                 <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationId">
+                   <fetch-select
+                      :remote-method="repairItemSearch"
+                      remote
+                      reserve-keyword
+                      labelKey="name"
+                      valueKey="id"
+                      v-model="form.fundFinancialOrganizationId"
+                      placeholder="请选择"
+                      clearable
+                      filterable
+                      :disabled="isEditing===true"
+                      @change="getfundFinancialOrganizationName"
+                    />
                 </el-form-item>
                  <el-form-item label="是否合作：" prop="isCooperation">
                   <fetch-select
@@ -155,6 +162,7 @@ import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import { createFinCustomerPurchaseRecord } from '@/api/vehwholesale/finance/factory/finDealerRecommendation/index';
+import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -309,9 +317,9 @@ export default {
         isCooperation: [
           { required: true, message: '请输入是否合作', trigger: 'change' }
         ],
-        fundFinancialOrganizationName: [
-          { required: true, message: '请输入融资金融机构', trigger: 'change' }
-        ],
+        // fundFinancialOrganizationName: [
+        //   { required: true, message: '请输入融资金融机构', trigger: 'change' }
+        // ],
         fundFinancialOrganizationId: [
           { required: true, message: '请输入融资金融机构ID', trigger: 'change' }
         ],
@@ -327,6 +335,7 @@ export default {
   mounted () {
   },
   methods: {
+    repairItemSearch (query) { return listIdNames({ organizationNameLike: query, status: 1 }); },
     genereteFinCustomerPurchaseRecord () {
       this.$confirm('是否生成一笔客户采购记录?', '提示', {
         confirmButtonText: '确定',
@@ -358,6 +367,10 @@ export default {
     },
     getDealerCompanyCode (dealerCompanyCode, obj) {
       this.form.dealerCompanyCode = obj.companyCode;
+    },
+    getfundFinancialOrganizationName (fundFinancialOrganizationName, obj) {
+      this.form.fundFinancialOrganizationName = obj.name;
+      console.log(obj, this.form.fundFinancialOrganizationName);
     },
     detailRequest () {
       const id = this._id;

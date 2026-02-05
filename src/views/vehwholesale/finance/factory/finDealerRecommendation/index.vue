@@ -15,18 +15,25 @@
       <el-form-item label="母公司编码">
           <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="推荐金融机构ID">
-        <el-input
-          placeholder="请输入"
-          v-model="form.recFinancialOrganizationId"
-          clearable
-        />
+        <el-form-item label="推荐金融机构">
+          <fetch-select
+            :remote-method="repairItemSearch"
+            remote
+            reserve-keyword
+            labelKey="name"
+            valueKey="id"
+            v-model="form.financialOrganizationIds"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
       </el-form-item>
       <template v-if="show">
          <el-form-item label="同步状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
+            enumCode="vw_sync_status"
             v-model="form.syncStatus"
             placeholder="请选择"
             clearable
@@ -126,6 +133,7 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
+import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -200,10 +208,10 @@ export default {
           { props: 'recFinancialOrganizationName', label: '推荐金融机构', visible: true, width: 200 },
           { props: 'recDate', label: '推荐日期', visible: true, width: 200 },
           { props: 'depositRatio', label: '保证金比例%', visible: true, width: 200 },
-          { props: 'syncStatus', label: '同步状态', visible: true, width: 200 },
+          { props: 'syncStatusLabel', label: '同步状态', visible: true, width: 200 },
           { props: 'syncResult', label: '同步结果', visible: true, width: 200 },
           { props: 'syncTime', label: '同步时间', visible: true, width: 200 },
-          { props: 'status', label: '状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'remark', label: '备注（说明）', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
@@ -249,6 +257,7 @@ export default {
     this.getData();
   },
   methods: {
+    repairItemSearch (query) { return listIdNames({ organizationNameLike: query, status: 1 }); },
     handleListSelect (row) {
       this.clickItemId = row.id;
     },
@@ -282,7 +291,7 @@ export default {
       }
       exportTable({
         businessType: '账户管理-车厂融资信息-经销商推荐函管理',
-        dataFetchPath: 'vehwholesale/web/finance/factory/finDealerRecommendation/page',
+        dataFetchPath: 'vw/web/finance/factory/finDealerRecommendation/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

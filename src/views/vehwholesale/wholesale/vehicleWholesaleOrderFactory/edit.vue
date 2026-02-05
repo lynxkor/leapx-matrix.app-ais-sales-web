@@ -1048,7 +1048,7 @@ export default {
       pageType: 'edit',
       title: '批售订单号：' + form.wholesaleOrderCode,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISVW-vehicleWholesaleOrder',
+      moduleKey: 'AISVW-vehicleWholesaleOrderFactory',
       loading: false,
       submitLoading: false,
       showManualVehicleDialog: false,
@@ -1158,7 +1158,7 @@ export default {
               type: 'success',
               message: '确认成功!'
             });
-            this.getData();
+            this.detailRequest();
           }).catch(() => {
             this.$message({
               type: 'error',
@@ -1184,7 +1184,7 @@ export default {
               type: 'success',
               message: '自动配车成功!'
             });
-            this.getData();
+            this.detailRequest();
           }).catch(() => {
             this.$message({
               type: 'error',
@@ -1227,9 +1227,9 @@ export default {
       return batchCancelItem(data).then(() => {
         this.$message({
           type: 'success',
-          message: '批量审核成功'
+          message: '成功'
         });
-        this.getData();
+        this.detailRequest();
       });
     },
     detailRequest () {

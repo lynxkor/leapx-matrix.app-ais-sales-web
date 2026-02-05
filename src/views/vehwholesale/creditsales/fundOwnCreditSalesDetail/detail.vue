@@ -13,6 +13,8 @@
         <div class="common-section-body">
           <!-- TIPS: 根据实际情况调整展示字段和宽度 -->
           <el-form :inline="true" ref="ruleForm" label-width="150px">
+
+            <!-- // 自有资金赊销额度的编号 -->
             <el-form-item label="赊销账户编号：" prop="fundAccountCode">
               {{ info.fundAccountCode  }}
             </el-form-item>
@@ -20,6 +22,7 @@
               {{ info.dealerCompanyName  }}
             </el-form-item>
             <el-form-item label="资金账户编号：" prop="fundAccountId">
+              <!-- 整车资金账户的编号 -->
               {{ info.fundAccountId  }}
             </el-form-item>
             <el-form-item label="赊销明细编号：" prop="creditSalesDetailCode">
@@ -52,8 +55,9 @@
         </div>
         <div class="common-section-body">
           <el-form :inline="true" ref="ruleForm" label-width="150px">
-            <!-- <el-form-item label="车辆价格：" prop="wholesalePrice">
-            </el-form-item> -->
+            <el-form-item label="车辆价格：" prop="retailPrice">
+              {{ info.retailPrice  }}
+            </el-form-item>
             <el-form-item label="批售价/折扣价：" prop="wholesalePrice">
               {{ info.wholesalePrice  }}
             </el-form-item>

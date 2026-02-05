@@ -15,11 +15,18 @@
       <el-form-item label="母公司编码">
         <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
       </el-form-item>
-      <el-form-item label="融资金融机构ID">
-          <el-input
-            placeholder="请输入"
-            v-model="form.fundFinancialOrganizationId"
+      <el-form-item label="融资金融机构">
+        <fetch-select
+            :remote-method="repairItemSearch"
+            remote
+            reserve-keyword
+            labelKey="name"
+            valueKey="id"
+            v-model="form.financialOrganizationIds"
+            placeholder="请选择"
             clearable
+            multiple
+            filterable
           />
         </el-form-item>
       <template v-if="show">
@@ -118,6 +125,7 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
+import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -227,6 +235,7 @@ export default {
     this.getData();
   },
   methods: {
+    repairItemSearch (query) { return listIdNames({ organizationNameLike: query, status: 1 }); },
     handleListSelect (row) {
       this.clickItemId = row.id;
     },
@@ -259,15 +268,15 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '新页面',
-        dataFetchPath: 'vehwholesale/web/finance/apply/finFinancingApplicationDealer/page',
+        businessType: '账户管理-融资管理-融资申请经销商',
+        dataFetchPath: 'vw/web/finance/apply/finFinancingApplicationDealer/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '新页面.xlsx');
+            await downloadExcel(res.excelUrl, '账户管理-融资管理-融资申请经销商.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

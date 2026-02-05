@@ -518,7 +518,7 @@ export default {
       pageTitle: '整车批售-批售主数据-整车批售订单管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISVW-vehicleWholesaleOrder',
+      moduleKey: 'AISVW-vehicleWholesaleOrderFactory',
       form: {
         ...defaultForm
       },
@@ -553,7 +553,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
+                  path: '/vehwholesale/wholesale/vehicleWholesaleOrderFactory/edit',
                   query: {
                     id: row.id
                   }
@@ -646,7 +646,7 @@ export default {
               name: '编辑',
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
+                  path: '/vehwholesale/wholesale/vehicleWholesaleOrderFactory/edit',
                   query: {
                     id: row.id,
                     isEditing: true
@@ -976,7 +976,7 @@ export default {
     },
     handleAdd () {
       this.$router.push({
-        path: '/wholesale/vehicleWholesaleOrder/edit'
+        path: '/wholesale/vehicleWholesaleOrderFactory/edit'
       });
     },
     onSubmit () {
@@ -993,7 +993,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '整车批售-批售主数据-整车批售订单管理',
-        dataFetchPath: 'vw/web/wholesale/vehicleWholesaleOrder/page',
+        dataFetchPath: 'vw/web/wholesale/vehicleWholesaleOrderFactory/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
