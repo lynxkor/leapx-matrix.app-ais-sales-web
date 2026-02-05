@@ -122,7 +122,7 @@
                 <el-form-item label="物流到店日期：" prop="vehicleArrivalOn">
                   {{ form.vehicleArrivalOn }}
                 </el-form-item>
-                <el-form-item label="车辆物流状态" prop="logisticStatus">
+                <el-form-item label="车辆物流状态：" prop="logisticStatus">
                   {{ form.logisticStatusLabel }}
                 </el-form-item>
                 <el-form-item label="收车确认时间：" prop="receivedOn">
