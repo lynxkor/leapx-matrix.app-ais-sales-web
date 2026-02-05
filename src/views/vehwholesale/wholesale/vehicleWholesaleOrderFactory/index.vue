@@ -628,6 +628,7 @@ export default {
           { props: 'needAutoAllocateCarLabel', label: '是否需要自动配车', visible: true, width: 200 },
           { props: 'dealerWarehouseName', label: '门店仓库名称', visible: true, width: 200 },
           { props: 'logisticsReserveLabel', label: '整车物流预留', visible: true, width: 200 },
+          { props: 'vehicleWarehouseName', label: '整车仓库', visible: true, width: 200 },
           { props: 'logisticsReserveRemark', label: '物流预留备注', visible: true, width: 200 },
           { props: 'logisticsReserve', label: '物流说明', visible: true, width: 200 },
           { props: 'initDeliveryCycleDesc', label: '初始交付周期说明', visible: true, width: 200 },

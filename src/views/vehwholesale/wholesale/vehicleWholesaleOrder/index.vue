@@ -560,7 +560,7 @@ export default {
           { props: 'cooperateTypeLabel', label: '合作类型', visible: true, width: 200 },
           { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 200 },
           { props: 'creditSalesAmount', label: '融资金额/赊账', visible: true, width: 200 },
-          { props: 'emergencyOrderRemark', label: '急单备注', visible: true, width: 200 },
+          // { props: 'emergencyOrderRemark', label: '急单备注', visible: true, width: 200 },
           { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 200 },
           // { props: 'downPaymentRatio', label: '配车顺序时间', visible: true, width: 200 },
           { props: 'deliveryStatusLabel', label: '车辆交付状态', visible: true, width: 200 },
