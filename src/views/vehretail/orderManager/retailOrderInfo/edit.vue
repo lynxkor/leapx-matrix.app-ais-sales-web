@@ -1399,7 +1399,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/sales/vehretail/orderManager/retailOrderInfo/index';
+import { getDetail, addOrUpdate } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
