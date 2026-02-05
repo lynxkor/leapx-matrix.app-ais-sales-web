@@ -16,7 +16,7 @@
           <span class="status primary">{{ form.code }}</span>
         </template>
          <template #extraButtons>
-          <el-button size="small">生成采购记录</el-button>
+          <el-button size="small" @click="genereteFinCustomerPurchaseRecord">生成采购记录</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -154,6 +154,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { createFinCustomerPurchaseRecord } from '@/api/vehwholesale/finance/factory/finDealerRecommendation/index';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -326,6 +327,25 @@ export default {
   mounted () {
   },
   methods: {
+    genereteFinCustomerPurchaseRecord () {
+      this.$confirm('是否生成一笔客户采购记录?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        createFinCustomerPurchaseRecord(this._id).then(() => {
+          this.$message({
+            type: 'success',
+            message: '成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'error',
+            message: '失败!'
+          });
+        });
+      }).catch(() => {});
+    },
     async getParentCompany (query) {
       try {
         const res = await getParentCompany({ parentCompanyName: query });

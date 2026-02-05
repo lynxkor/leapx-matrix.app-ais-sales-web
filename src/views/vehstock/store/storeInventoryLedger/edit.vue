@@ -122,7 +122,7 @@
                 <el-form-item label="物流到店日期：" prop="vehicleArrivalOn">
                   {{ form.vehicleArrivalOn }}
                 </el-form-item>
-                <el-form-item label="车辆物流状态" prop="logisticStatus">
+                <el-form-item label="车辆物流状态：" prop="logisticStatus">
                   {{ form.logisticStatusLabel }}
                 </el-form-item>
                 <el-form-item label="收车确认时间：" prop="receivedOn">
@@ -298,7 +298,7 @@
 
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehstock/store/storeInventoryLedger/index';
-import FetchSelect from '@/libs/components/FetchSelect';
+// import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -430,7 +430,7 @@ export default {
     EditPageLayout,
     EditBaseContainer,
     EditTable,
-    FetchSelect
+    // FetchSelect
   },
   computed: {
     _id () {
