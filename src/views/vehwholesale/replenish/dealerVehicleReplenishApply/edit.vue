@@ -759,8 +759,17 @@ export default {
         },
         detailList: this.form.details
       };
-
-      return addOrUpdate(params);
+      if (!this.form.details || this.form.details.length <= 0) {
+        this.$message.error('请至少添加一条补货明细');
+        return;
+      };
+      return addOrUpdate(params).then(res => {
+        // 在addOrUpdate成功后调用getDetailData更新数据
+        this.getDetailData();
+        return res;
+      }).catch(() => {
+        this.getDetailData();
+      });
     },
     // 打开侧边栏
     openPane () {
@@ -888,14 +897,14 @@ export default {
       return result || [];
     },
     handleAuditValidForDealer () {
-      return dealerAuditValid([this._id]).then(() => {
+      dealerAuditValid([this._id]).then(() => {
         this.$refs.auditInputForDealer.show();
-      });
+      }).catch(() => {});
     },
     handleAuditValidForFactory () {
-      return factoryAuditValid([this._id]).then(() => {
+      factoryAuditValid([this._id]).then(() => {
         this.$refs.auditInputForFactory.show();
-      });
+      }).catch(() => {});
     },
     handelAuditForDealer (data) {
       dealerApproval({

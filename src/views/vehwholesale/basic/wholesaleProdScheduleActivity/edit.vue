@@ -534,8 +534,6 @@ export default {
   mounted () {
     if (this._id) {
       this.getList();
-    } else {
-      this.getLoginUser();
     }
   },
   methods: {
@@ -553,6 +551,7 @@ export default {
     handleQuery () {
       this.pageNum = 1; // 重置到第一页
       this.getList();
+      this.getDetailData();
     },
     // 清空方法
     handleClear () {

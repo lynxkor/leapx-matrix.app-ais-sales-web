@@ -81,6 +81,7 @@
                     v-model="form.status"
                     placeholder="请选择"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
