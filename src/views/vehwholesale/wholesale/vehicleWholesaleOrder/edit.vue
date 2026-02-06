@@ -20,7 +20,7 @@
           <el-button  size="small" type="primary" @click="handleCheckConfirm" >审核确认</el-button>
           <el-button  size="small" type="primary" @click="handleaAutoVehicleAllocation">自动配车</el-button>
           <el-button  size="small" type="primary" @click="handleManualVehicleAllocation">手工配车</el-button>
-          <el-button  size="small" type="primary" @click="handleDelete">删除</el-button>
+          <!-- <el-button  size="small" type="primary" @click="handleDelete">删除</el-button> -->
           <el-button  size="small" type="primary" @click="handleCancel">作废</el-button>
         </template>
         <el-main>
@@ -1150,7 +1150,7 @@ export default {
       return batchCancelItem(data).then(() => {
         this.$message({
           type: 'success',
-          message: '成功'
+          message: '整车批售订单作废成功'
         });
         this.getDetailData();
       });

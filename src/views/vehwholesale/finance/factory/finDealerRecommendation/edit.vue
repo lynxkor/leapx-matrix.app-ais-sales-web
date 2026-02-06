@@ -48,13 +48,21 @@
                     disabled
                   />
                 </el-form-item>
-                  <el-form-item label="推荐金融机构：" prop="recFinancialOrganizationName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.recFinancialOrganizationName"
-                    clearable
-                    :disabled="isEditing===true"
-                  />
+                  <el-form-item label="推荐金融机构：" prop="recFinancialOrganizationId">
+                    <fetch-select
+                        :remote-method="repairItemSearch"
+                        remote
+                        reserve-keyword
+                        labelKey="name"
+                        valueKey="id"
+                        v-model="form.recFinancialOrganizationId"
+                        placeholder="请选择"
+                        clearable
+                        filterable
+                        :disabled="isEditing===true"
+                        @change="getfundFinancialOrganizationName"
+
+                      />
                 </el-form-item>
                  <el-form-item label="推荐额度：" prop="recAmount">
                   <el-input
@@ -65,10 +73,10 @@
                 </el-form-item>
                  <el-form-item label="推荐日期：" prop="recDate">
                   <el-date-picker
-                     type="date"
+                     type="datetime"
                     v-model="form.recDate"
                     :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd"
+                    value-format="yyyy-MM-dd HH:mm:ss"
                   />
                 </el-form-item>
                 <el-form-item label="保证金比例%：" prop="depositRatio">
@@ -83,6 +91,7 @@
                       v-model="form.createTime"
                       type="datetime"
                       disabled
+                      value-format="yyyy-MM-dd HH:mm:ss"
                       placeholder="选择日期时间">
                     </el-date-picker>
                 </el-form-item>
@@ -171,7 +180,7 @@
                 <el-form-item label="推荐日期：" prop="recDate">
                   {{ form.recDate }}
                 </el-form-item>
-                <el-form-item label="保证金比例%：" prop="depositRatio">
+                <el-form-item label="保证金比例%：">
                   {{ form.depositRatio }}
                 </el-form-item>
                   <el-form-item label="编码：" prop="code">
@@ -183,19 +192,19 @@
                 <el-form-item label="同步状态：" prop="syncStatus">
                   {{ form.syncStatusLabel }}
                 </el-form-item>
-                <el-form-item label="同步时间：" prop="syncTime">
+                <el-form-item label="同步时间：">
                   {{ form.syncTime }}
                 </el-form-item>
                   <el-form-item label="修改时间：" prop="updateTime">
                   {{ form.updateTime }}
                 </el-form-item>
-                <el-form-item label="同步结果：" prop="syncResult">
+                <el-form-item label="同步结果：">
                   {{ form.syncResult }}
                 </el-form-item>
                  <el-form-item label="状态：" prop="status">
                   {{ form.statusLabel }}
                 </el-form-item>
-                 <el-form-item label="备注（说明）：" prop="remark">
+                 <el-form-item label="备注（说明）：">
                   {{ form.remark }}
                 </el-form-item>
               </el-form>
@@ -223,6 +232,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -324,20 +334,8 @@ export default {
         recDate: [
           { required: true, message: '请选择推荐日期', trigger: 'change' }
         ],
-        depositRatio: [
-          { required: true, message: '请输入保证金比例%', trigger: 'change' }
-        ],
-        createTime: [
-          { required: true, message: '请选择创建时间', trigger: 'change' }
-        ],
-        remark: [
-          { required: true, message: '请输入备注（说明）', trigger: 'change' }
-        ],
         status: [
           { required: true, message: '请选择状态', trigger: 'change' }
-        ],
-        statusDesc: [
-          { required: true, message: '请选择状态变更描述', trigger: 'change' }
         ],
         // code: [
         //   { required: true, message: '请输入编码', trigger: 'change' }
@@ -348,10 +346,13 @@ export default {
   mounted () {
   },
   methods: {
+    getfundFinancialOrganizationName (fundFinancialOrganizationName, obj) {
+      this.form.recFinancialOrganizationName = obj.name;
+    },
+    repairItemSearch (query) { return listIdNames({ organizationNameLike: query, status: 1 }); },
     async getParentCompany (query) {
       try {
         const res = await getParentCompany({ parentCompanyName: query });
-        console.log(res);
         this.parentCompanyNames = res;
         return res;
       } catch (error) {
@@ -361,6 +362,19 @@ export default {
     getDealerCompanyCode (dealerCompanyCode, obj) {
       this.form.dealerCompanyCode = obj.companyCode;
     },
+    formatIsoToDatetime (isoTime) {
+      if (!isoTime) return '';
+      return new Date(isoTime).toLocaleString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      }).replace(/\//g, '-');
+    },
+
     detailRequest () {
       const id = this._id;
       if (id) {
@@ -368,7 +382,13 @@ export default {
       }
     },
     submitRequest () {
-      return addOrUpdate({ ...this.form });
+      let params = {
+        ...this.form,
+        createTime: this.formatIsoToDatetime(this.form.createTime),
+        recDate: this.formatIsoToDatetime(this.form.recDate)
+      };
+      return addOrUpdate(params);
+      // return addOrUpdate({ ...this.form });
     },
     // 打开侧边栏
     openPane () {

@@ -19,7 +19,7 @@
             reserve-keyword
             labelKey="name"
             valueKey="id"
-            v-model="form.financialOrganizationIds"
+            v-model="form.fundFinancialOrganizationIds"
             placeholder="请选择"
             clearable
             multiple
@@ -440,9 +440,10 @@ export default {
 
     // 批量同步
     handleBatchSync () {
-      const ids = this.selectionList.map(item => item.id) || [];
+      // const ids = this.selectionList.map(item => item.id) || [];
       const items = this.selectionList.map(item => item) || [];
       const allowStatus = this.checkSync(items);
+      console.log(allowStatus);
     },
     // 批量启用停用
     handleBatchEnable (status) {

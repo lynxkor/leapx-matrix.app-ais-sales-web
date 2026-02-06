@@ -22,7 +22,7 @@
             reserve-keyword
             labelKey="name"
             valueKey="id"
-            v-model="form.financialOrganizationIds"
+            v-model="form.fundFinancialOrganizationIds"
             placeholder="请选择"
             clearable
             multiple

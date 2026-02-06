@@ -85,19 +85,26 @@
                   />
                 </el-form-item>
                 <el-form-item label="主体母公司名称：" prop="mainDealerCompanyName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.mainDealerCompanyName"
-                    clearable
-                    :disabled="isEditing===true"
+
+                  <fetch-select
+                  :remote-method="getParentCompany"
+                  remote
+                  v-model="form.mainDealerCompanyName"
+                  placeholder="请选择"
+                  labelKey="companyName"
+                  valueKey="companyName"
+                  clearable
+                  filterable
+                  :disabled="isEditing===true"
+                  @change="getMainDealerCompanyCode"
                   />
                 </el-form-item>
-                <el-form-item label="主体公司编码：" prop="mainDealerCompanyCode">
+                <el-form-item label="主体母公司编码：" prop="mainDealerCompanyCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.mainDealerCompanyCode"
                     clearable
-                    :disabled="isEditing===true"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
@@ -365,12 +372,14 @@ export default {
         console.error('Error fetching series list:', error);
       }
     },
+    getMainDealerCompanyCode (mainDealerCompanyCode, obj) {
+      this.form.mainDealerCompanyCode = obj.companyCode;
+    },
     getDealerCompanyCode (dealerCompanyCode, obj) {
       this.form.dealerCompanyCode = obj.companyCode;
     },
     getfundFinancialOrganizationName (fundFinancialOrganizationName, obj) {
       this.form.fundFinancialOrganizationName = obj.name;
-      console.log(obj, this.form.fundFinancialOrganizationName);
     },
     detailRequest () {
       const id = this._id;

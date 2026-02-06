@@ -22,7 +22,7 @@
             reserve-keyword
             labelKey="name"
             valueKey="id"
-            v-model="form.financialOrganizationIds"
+            v-model="form.fundFinancialOrganizationIds"
             placeholder="请选择"
             clearable
             multiple
@@ -45,7 +45,7 @@
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.recDate"
-            type="date"
+            type="daterange"
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -236,13 +236,6 @@ export default {
             }, {
               name: '推送金融机构',
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/finance/factory/finDealerRecommendation/edit',
-                  query: {
-                    id: row.id,
-                    isEditing: true
-                  }
-                });
               },
               type: 'info'
             }]
@@ -379,7 +372,13 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
-
+      if (this.form.recDate) {
+        delete data.recDate;
+        if (this.form.recDate.length > 1) {
+          data.recDateStart = this.form.recDate[0];
+          data.recDateEnd = this.form.recDate[1];
+        }
+      }
       return data;
     },
     async fetchOptions (code) {

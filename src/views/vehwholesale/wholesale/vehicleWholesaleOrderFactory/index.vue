@@ -26,6 +26,7 @@
           filterable
         />
       </el-form-item>
+      <template v-if="show">
         <el-form-item label="物料描述">
           <tag-input v-model="form.materialsDescs" placeholder="请输入" />
         </el-form-item>
@@ -233,7 +234,6 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-      <template v-if="show">
         <!-- <el-form-item label="销售门店编码">
           <el-input
             placeholder="请输入"
@@ -687,6 +687,10 @@ export default {
     this.getCity();
   },
   methods: {
+    async getWholesaleEorderTyprList (query) {
+      // 筛选过滤(保留 0 和 20)
+      return this.fetchOptions('vw_eorder_type').then(list => list.filter(item => item.code === '0' || item.code === '20' || item.code === '2' || item.code === '3'));
+    },
     async getRegionList (params) {
       return getRigion({ orgName: params });
     },
