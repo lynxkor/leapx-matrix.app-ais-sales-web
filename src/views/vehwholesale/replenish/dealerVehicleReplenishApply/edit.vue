@@ -763,6 +763,11 @@ export default {
         this.$message.error('请至少添加一条补货明细');
         return;
       };
+      console.log('this.form.orderCategory :', this.form.orderCategory);
+      if ((this.form.orderCategory === '2' || this.form.orderCategory === 2) && this.form.applyTotalQty !== 1) {
+        this.$message.error('试驾车订单申请不能大于1');
+        return;
+      };
       return addOrUpdate(params).then(res => {
         // 在addOrUpdate成功后调用getDetailData更新数据
         this.getDetailData();
