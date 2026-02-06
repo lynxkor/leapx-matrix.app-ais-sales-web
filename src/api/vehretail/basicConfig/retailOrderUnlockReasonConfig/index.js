@@ -42,3 +42,11 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 查询选项
+ * @param {Object} data
+ */
+export function getOptionList (data) {
+  return api.jsonPost(prefix + 'list', data);
+};

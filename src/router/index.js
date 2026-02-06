@@ -1845,12 +1845,30 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/ordermanager/orderunlockapply/edit',
+      path: '/vehretail/orderManager/orderunlockapply/edit',
       name: 'orderUnlockApplyEdit',
       component: () => import('@/views/vehretail/orderManager/orderUnlockApply/edit.vue'),
 
       meta: {
         name: '订单锁车解绑申请记录管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/orderManager/orderPayRecord',
+      name: 'orderPayRecord',
+      component: () => import('@/views/vehretail/orderManager/orderPayRecord/index.vue'),
+
+      meta: {
+        name: '订单收款记录管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/orderManager/orderpayrecord/edit',
+      name: 'orderPayRecordEdit',
+      component: () => import('@/views/vehretail/orderManager/orderPayRecord/edit.vue'),
+
+      meta: {
+        name: '订单收款记录管理详情',
         noResourceUrl: 'true'
       }
     }, {

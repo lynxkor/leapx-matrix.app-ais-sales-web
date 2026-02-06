@@ -42,3 +42,27 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 审核
+ * @param {Object} data
+ */
+export function auditApply (data) {
+  return api.jsonPost(prefix + 'audit', data);
+}
+
+/**
+ * 提交
+ * @param {Object} data
+ */
+export function submitApply (data) {
+  return api.jsonPost(prefix + 'submit', data);
+}
+
+/**
+ * 作废
+ * @param {Object} data
+ */
+export function batchVoidedApply (data) {
+  return api.jsonPost(prefix + 'batchVoided', data);
+}
