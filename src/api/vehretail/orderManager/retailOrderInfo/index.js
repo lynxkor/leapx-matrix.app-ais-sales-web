@@ -1,7 +1,7 @@
 import api from '@/axios';
 
 // 根据项目名称（如maintain代表维保项目）手动修改前缀
-const prefix = 'sales/web/vehretail/orderManager/retailOrderInfo/';
+const prefix = 'vr/web/order/retailOrderInfo/';
 
 /**
  * 查询列表
@@ -41,4 +41,12 @@ export function getDetail (data) {
  */
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
+}
+
+/**
+ * 获取可解绑的整车订单信息列表
+ * @param {Object} data
+ */
+export function findCanUnlockOrderList (data) {
+  return api.jsonPost(prefix + 'findCanUnlockOrderList', data);
 }

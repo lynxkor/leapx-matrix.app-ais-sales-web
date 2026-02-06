@@ -31,38 +31,17 @@
       </el-form-item>
       <el-form-item label="订单解锁原因">
         <fetch-select
-          :request="fetchOptions"
-          enumCode="vr_order_unlock_Apply_status"
-          v-model="form.unlockReasonList"
+          :remote-method="unlockReasonSearch"
+          :params="form.unlockReason"
+          remote
+          reserve-keyword
+          v-model="form.unlockReasonCodeList"
           placeholder="请选择"
           clearable
           multiple
           filterable
-        />
-      </el-form-item>
-      <el-form-item label="申请单号">
-        <el-input
-          placeholder="请输入"
-          v-model="form.unlockApplyCode"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item label="申请单状态">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="vr_order_unlock_Apply_status"
-          v-model="form.applyStatusList"
-          placeholder="请选择"
-          clearable
-          multiple
-          filterable
-        />
-      </el-form-item>
-      <el-form-item label="零售订单号"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.retailOrderCode"
-          clearable
+          value-key="code"
+          label-key="name"
         />
       </el-form-item>
       <template v-if="show">
@@ -77,11 +56,22 @@
             filterable
           />
         </el-form-item>
-        <el-form-item label="申请原因">
+        <el-form-item label="申请单号">
           <el-input
             placeholder="请输入"
-            v-model="form.applyReason"
+            v-model="form.unlockApplyCode"
             clearable
+          />
+        </el-form-item>
+        <el-form-item label="申请单状态">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vr_order_unlock_Apply_status"
+            v-model="form.applyStatusList"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
           />
         </el-form-item>
         <el-form-item label="创建时间">
@@ -109,11 +99,10 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-permission="moduleKey+'-voided'" size="small" @click="handleBatchVoided" :disabled="selectionList.length === 0">作废</el-button>
+      <el-button v-permission="moduleKey+'-submit'" size="small" @click="handleBatchSubmit" :disabled="selectionList.length === 0">提交</el-button>
+      <el-button v-permission="moduleKey+'-audit'" size="small" @click="handleBatchAudit" :disabled="selectionList.length === 0">审核</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -135,11 +124,11 @@
         <EditPage slot="centralizedViewSlot" :id="clickItemId"/>
       </LPVxeTable>
     </div>
-    <!-- TIPS: 填入项目id即可 -->
-    <Upload
-      :visible="uploadDialogVisible"
-      :id="1"
-      @close="handleUploadDialogClose"
+    <audit-dialog
+      ref="auditDialogRef"
+      field="unlockApplyCode"
+      :auditDataList="selectionList"
+      @audit="handleUnlkockApplyAudit"
     />
   </div>
 </template>
@@ -148,16 +137,17 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehretail/orderManager/orderUnlockApply/index';
+import { getList, deleteItem, enableItem, auditApply, submitApply, batchVoidedApply } from '@/api/vehretail/orderManager/orderUnlockApply/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
-import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import { getOptionList } from '@/api/vehretail/basicConfig/retailOrderUnlockReasonConfig/index';
+import auditDialog from '@/libs/components/auditDialog';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -168,7 +158,8 @@ const defaultForm = {
   applyReason: '',
   unlockReason: '',
   createTime: '',
-  saleDealerCodeList: []
+  saleDealerCodeList: [],
+  unlockReasonCodeList: []
 };
 
 const pageSize = 20;
@@ -183,7 +174,7 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    auditDialog
   },
   data () {
     return {
@@ -227,11 +218,12 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'applyStatus', label: '申请单状态', visible: true, width: 200 },
+          { props: 'applyStatusLabel', label: '申请单状态', visible: true, width: 200 },
           { props: 'retailOrderCode', label: '零售订单号', visible: true, width: 200 },
           { props: 'mallOrderCode', label: '商城订单编号', visible: true, width: 200 },
           { props: 'carBuyerName', label: '购车人姓名', visible: true, width: 200 },
           { props: 'idCardNo', label: '购车人证件号码', visible: true, width: 200 },
+          { props: 'saleDealerName', label: '销售门店', visible: true, width: 200 },
           { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
           { props: 'oaProcessCode', label: 'OA流程编号', visible: true, width: 200 },
           { props: 'materialsCode', label: '新配置物料编码', visible: true, width: 200 },
@@ -240,11 +232,11 @@ export default {
           { props: 'lockTime', label: '锁车时间', visible: true, width: 200 },
           { props: 'submitTime', label: '提交时间', visible: true, width: 200 },
           { props: 'refundApplyCode', label: '退订申请单号', visible: true, width: 200 },
-          { props: 'autoGenerateStatus', label: '是否自动生成', visible: true, width: 200 },
+          { props: 'autoGenerateStatusLabel', label: '是否自动生成', visible: true, width: 200 },
           { props: 'paymentTime', label: '缴定金时间', visible: true, width: 200 },
           { props: 'auditUserName', label: '审核人名称', visible: true, width: 200 },
           { props: 'auditRemark', label: '审核意见', visible: true, width: 200 },
-          { props: 'unlockType', label: '解绑方式', visible: true, width: 200 },
+          { props: 'unlockTypeLabel', label: '解绑方式', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'applyTime', label: '申请时间', visible: true, width: 200 },
           { props: 'applyUserName', label: '申请人名称', visible: true, width: 200 },
@@ -270,29 +262,12 @@ export default {
                 });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],
         total: 0
-      }
+      },
+      auditDataList: []
     };
   },
   created () {
@@ -300,6 +275,36 @@ export default {
     this.getData();
   },
   methods: {
+    handleBatchSubmit () {
+      // 弹窗确认
+      this.$confirm('确认提交吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const ids = this.selectionList.map(item => item.id) || [];
+        submitApply(ids).then(res => {
+          this.getData();
+        });
+      });
+    },
+    handleBatchAudit () {
+      this.$refs.auditDialogRef.show();
+    },
+    handleUnlkockApplyAudit (data) {
+      const ids = data.auditDataList.map(item => item.id) || [];
+      let reqParams = {
+        ids,
+        auditStatus: data.result,
+        auditRemark: data.remark
+      };
+      auditApply(reqParams).then((res) => {
+        this.getData();
+      });
+    },
+    async unlockReasonSearch (params) {
+      return getOptionList({ searchKey: params });
+    },
     handleListSelect (row) {
       this.clickItemId = row.id;
     },
@@ -311,7 +316,10 @@ export default {
     },
     handleAdd () {
       this.$router.push({
-        path: '/vehretail/orderManager/orderUnlockApply/edit'
+        path: '/vehretail/orderManager/orderUnlockApply/edit',
+        query: {
+          isAdding: true
+        }
       });
     },
     onSubmit () {
@@ -431,23 +439,32 @@ export default {
       return [];
     },
     // 批量删除
-    handleBatchDelete () {
+    handleBatchVoided () {
+      // 只有草稿状态的申请单才能作废 选择项中包含不是草稿状态的申请单时，提示用户
+      const validIds = this.selectionList.filter(item => item.applyStatus === 1010).map(item => item.id) || [];
+      if (validIds.length !== this.selectionList.length) {
+        this.$message({
+          type: 'error',
+          message: '只能作废草稿状态的申请单!'
+        });
+        return;
+      }
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+      this.$confirm('此操作将作废对应申请单, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteItem(ids).then(() => {
+        batchVoidedApply(ids).then(() => {
           this.$message({
             type: 'success',
-            message: '删除成功!'
+            message: '作废成功!'
           });
           this.getData();
         }).catch(() => {
           this.$message({
             type: 'error',
-            message: '删除失败!'
+            message: '作废失败!'
           });
         });
       }).catch(() => {});
