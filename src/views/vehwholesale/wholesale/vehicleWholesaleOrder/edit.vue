@@ -1016,6 +1016,14 @@ export default {
     console.log('mounted', ManualVehicle.props);
   },
   methods: {
+    getDetailData () {
+      if (this._id) {
+        getDetail(this._id).then(res => {
+          Object.assign(this.form, res);
+          Object.assign(this.originalForm, res);
+        }).catch(() => {});
+      }
+    },
     repairItemSearch (query) { return listIdNames({ organizationNameLike: query, status: 1 }); },
     allAllowConfirm (item) {
       if (item.confirmStatus !== 1010) {
@@ -1073,7 +1081,7 @@ export default {
               type: 'success',
               message: '确认成功!'
             });
-            this.detailRequest();
+            this.getDetailData();
           }).catch(() => {
             this.$message({
               type: 'error',
@@ -1099,7 +1107,7 @@ export default {
               type: 'success',
               message: '自动配车成功!'
             });
-            this.detailRequest();
+            this.getDetailData();
           }).catch(() => {
             this.$message({
               type: 'error',
@@ -1144,7 +1152,7 @@ export default {
           type: 'success',
           message: '成功'
         });
-        this.detailRequest();
+        this.getDetailData();
       });
     },
     detailRequest () {
