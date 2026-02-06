@@ -322,6 +322,7 @@ export default {
             fixed: 'right',
             buttons: [{
               name: '编辑',
+              show: (row) => !row.permission?.edit,
               click: (rowIndex, row) => {
                 this.$router.push({
                   path: '/vehwholesale/replenish/dealerVehicleReplenishApply/edit',
