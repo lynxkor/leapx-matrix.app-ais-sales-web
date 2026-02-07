@@ -1577,7 +1577,7 @@ export default {
       pageTitle: '整车零售订单管理',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-retailOrderInfo',
+      moduleKey: 'AISVR-retailOrderInfo',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,

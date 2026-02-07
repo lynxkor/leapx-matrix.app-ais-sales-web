@@ -595,6 +595,7 @@ export default {
         defer.resolve(id);
         this.$message.success('更新成功');
         this.getDetailData();
+        this.getList();
         this.$emit('replace');
       }).catch(e => {
         defer.reject();

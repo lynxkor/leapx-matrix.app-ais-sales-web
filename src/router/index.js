@@ -1845,30 +1845,12 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/orderManager/orderunlockapply/edit',
+      path: '/vehretail/ordermanager/orderunlockapply/edit',
       name: 'orderUnlockApplyEdit',
       component: () => import('@/views/vehretail/orderManager/orderUnlockApply/edit.vue'),
 
       meta: {
         name: '订单锁车解绑申请记录管理详情',
-        noResourceUrl: 'true'
-      }
-    }, {
-      path: '/vehretail/orderManager/orderPayRecord',
-      name: 'orderPayRecord',
-      component: () => import('@/views/vehretail/orderManager/orderPayRecord/index.vue'),
-
-      meta: {
-        name: '订单收款记录管理',
-        keepAlive: true
-      }
-    }, {
-      path: '/vehretail/orderManager/orderpayrecord/edit',
-      name: 'orderPayRecordEdit',
-      component: () => import('@/views/vehretail/orderManager/orderPayRecord/edit.vue'),
-
-      meta: {
-        name: '订单收款记录管理详情',
         noResourceUrl: 'true'
       }
     }, {
@@ -1926,22 +1908,22 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehretail/orderManager/retailOrderInfo',
-      name: 'retailOrderInfo',
-      component: () => import('@/views/vehretail/orderManager/retailOrderInfo/index.vue'),
+      path: "/sales/vehretail/orderManager/retailOrderInfo",
+      name: "retailOrderInfo",
+      component: () => import("@/views/sales/vehretail/orderManager/retailOrderInfo/index.vue"),
 
       meta: {
-        name: '门店整车订单管理',
+        name: "整车零售订单管理",
         keepAlive: true
       }
     }, {
-      path: '/vehretail/orderManager/retailOrderInfo/edit',
-      name: 'retailOrderInfoEdit',
-      component: () => import('@/views/vehretail/orderManager/retailOrderInfo/edit.vue'),
+      path: "/sales/vehretail/ordermanager/retailorderinfo/edit",
+      name: "retailOrderInfoEdit",
+      component: () => import("@/views/sales/vehretail/orderManager/retailOrderInfo/edit.vue"),
 
       meta: {
-        name: '门店整车订单管理详情',
-        noResourceUrl: 'true'
+        name: "整车零售订单管理详情",
+        noResourceUrl: "true"
       }
     }]
   }
