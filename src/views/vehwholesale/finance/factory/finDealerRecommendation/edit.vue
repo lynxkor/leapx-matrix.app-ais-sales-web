@@ -50,18 +50,17 @@
                 </el-form-item>
                   <el-form-item label="推荐金融机构：" prop="recFinancialOrganizationId">
                     <fetch-select
-                        :remote-method="repairItemSearch"
-                        remote
-                        reserve-keyword
-                        labelKey="name"
-                        valueKey="id"
-                        v-model="form.recFinancialOrganizationId"
-                        placeholder="请选择"
-                        clearable
-                        filterable
-                        :disabled="isEditing===true"
-                        @change="getfundFinancialOrganizationName"
-
+                     :remote-method="repairItemSearch"
+                      remote
+                      reserve-keyword
+                      labelKey="organizationName"
+                      valueKey="organizationCode"
+                      v-model="form.fundFinancialOrganizationId"
+                      placeholder="请选择"
+                      clearable
+                      filterable
+                      :disabled="isEditing===true"
+                      @change="getfundFinancialOrganizationName"
                       />
                 </el-form-item>
                  <el-form-item label="推荐额度：" prop="recAmount">
@@ -232,7 +231,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -347,9 +346,9 @@ export default {
   },
   methods: {
     getfundFinancialOrganizationName (fundFinancialOrganizationName, obj) {
-      this.form.recFinancialOrganizationName = obj.name;
+      this.form.recFinancialOrganizationName = obj.organizationName;
     },
-    repairItemSearch (query) { return listIdNames({ organizationNameLike: query, status: 1 }); },
+    repairItemSearch (query) { return fundGetList({ organizationNameLike: query, status: 1 }); },
     async getParentCompany (query) {
       try {
         const res = await getParentCompany({ parentCompanyName: query });

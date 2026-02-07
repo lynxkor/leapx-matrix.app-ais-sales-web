@@ -49,12 +49,12 @@
                   />
                 </el-form-item>
                  <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationId">
-                   <fetch-select
+                  <fetch-select
                       :remote-method="repairItemSearch"
                       remote
                       reserve-keyword
-                      labelKey="name"
-                      valueKey="id"
+                      labelKey="organizationName"
+                      valueKey="organizationCode"
                       v-model="form.fundFinancialOrganizationId"
                       placeholder="请选择"
                       clearable
@@ -169,7 +169,7 @@ import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import { createFinCustomerPurchaseRecord } from '@/api/vehwholesale/finance/factory/finDealerRecommendation/index';
-import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -241,40 +241,13 @@ export default {
       defaultNewRow: {
         name: '',
       },
-      tableData: [
-        { id: 1, name: '张三', age: 25, email: 'zhangsan@example.com' },
-        { id: 2, name: '李四', age: 30, email: 'lisi@example.com' }
-      ],
+      tableData: [],
       options: {
         // 对应表格里选型枚举
         // 如 type: [{label: 'xxx', value: 'xxx'}]
       },
       // TIPS: 复杂的表格输入项，参考 /dealerTeam/edit.vue
-      columns: [
-        {
-          field: 'name',
-          title: '姓名',
-          width: '33%',
-          editable: true,
-          editRender: { name: 'ElInput' },
-          rules: [
-            { required: true, message: '姓名不能为空', trigger: 'blur' }
-          ]
-        },
-        {
-          field: 'age',
-          title: '年龄',
-          editable: true,
-          width: '33%',
-          editRender: { name: 'ElInput', props: { type: 'number' } }
-        },
-        {
-          field: 'email',
-          title: '邮箱',
-          width: '33%',
-          editRender: { name: 'ElInput' }
-        },
-      ],
+      columns: [],
       rules: {
         id: [
           { required: true, message: '请输入主键', trigger: 'change' }
@@ -342,7 +315,7 @@ export default {
   mounted () {
   },
   methods: {
-    repairItemSearch (query) { return listIdNames({ organizationNameLike: query, status: 1 }); },
+    repairItemSearch (query) { return fundGetList({ organizationNameLike: query, status: 1 }); },
     genereteFinCustomerPurchaseRecord () {
       this.$confirm('是否生成一笔客户采购记录?', '提示', {
         confirmButtonText: '确定',
@@ -379,7 +352,7 @@ export default {
       this.form.dealerCompanyCode = obj.companyCode;
     },
     getfundFinancialOrganizationName (fundFinancialOrganizationName, obj) {
-      this.form.fundFinancialOrganizationName = obj.name;
+      this.form.fundFinancialOrganizationName = obj.organizationName;
     },
     detailRequest () {
       const id = this._id;

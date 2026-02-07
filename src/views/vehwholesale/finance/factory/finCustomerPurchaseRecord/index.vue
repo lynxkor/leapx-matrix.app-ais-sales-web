@@ -13,12 +13,12 @@
       <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
     </el-form-item>
     <el-form-item label="融资金融机构">
-    <fetch-select
+      <fetch-select
             :remote-method="repairItemSearch"
             remote
             reserve-keyword
-            labelKey="name"
-            valueKey="id"
+            labelKey="organizationName"
+            valueKey="organizationCode"
             v-model="form.fundFinancialOrganizationIds"
             placeholder="请选择"
             clearable
@@ -134,7 +134,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
 import dateranges from '@/libs/components/dateranges';
-import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -240,7 +240,7 @@ export default {
     this.fetchfinancingDataSourceOptions();
   },
   methods: {
-    repairItemSearch (query) { return listIdNames({ organizationNameLike: query, status: 1 }); },
+    repairItemSearch (query) { return fundGetList({ organizationNameLike: query, status: 1 }); },
     async fetchEnumsOptions () {
       const response = await getEnum('vw_sync_status');
       this.syncStatusOptions = response.filter(item => {

@@ -16,12 +16,12 @@
           <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="推荐金融机构">
-          <fetch-select
+         <fetch-select
             :remote-method="repairItemSearch"
             remote
             reserve-keyword
-            labelKey="name"
-            valueKey="id"
+            labelKey="organizationName"
+            valueKey="organizationCode"
             v-model="form.fundFinancialOrganizationIds"
             placeholder="请选择"
             clearable
@@ -133,7 +133,7 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
-import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -250,7 +250,7 @@ export default {
     this.getData();
   },
   methods: {
-    repairItemSearch (query) { return listIdNames({ organizationNameLike: query, status: 1 }); },
+    repairItemSearch (query) { return fundGetList({ organizationNameLike: query, status: 1 }); },
     handleListSelect (row) {
       this.clickItemId = row.id;
     },
