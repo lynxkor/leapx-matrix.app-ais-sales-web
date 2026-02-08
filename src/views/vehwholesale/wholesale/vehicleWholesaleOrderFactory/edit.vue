@@ -1226,10 +1226,11 @@ export default {
       return true;
     },
     handleCancel () { // 作废
-      const checkStatus = this.allAllowCancel(this.form);
-      if (checkStatus) {
-        this.showBatchCancelDialog = true;
-      }
+      this.showBatchCancelDialog = true;
+      // const checkStatus = this.allAllowCancel(this.form);
+      // if (checkStatus) {
+      //   this.showBatchCancelDialog = true;
+      // }
     },
     cancelApproval (data) {
       return batchCancelItem(data).then(() => {
