@@ -10,11 +10,7 @@
       class="ais-search-form"
     >
       <el-form-item label="商城订单编号">
-        <el-input
-          placeholder="请输入"
-          v-model="form.mallOrderCode"
-          clearable
-        />
+        <tag-input v-model="form.mallOrderCodeList" clearable placeholder="请输入" />
       </el-form-item>
       <el-form-item label="购车人信息">
         <el-input
@@ -23,7 +19,11 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="零售订单状态"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="批售订单号"  v-show="this.visibleCount === 3 || show">
+        <tag-input v-model="form.wholesaleOrderCodeList" clearable placeholder="请输入" />
+      </el-form-item>
+      <template v-if="show">
+      <el-form-item label="整车订单状态">
         <fetch-select
           :request="fetchOptions"
           enumCode="vr_order_status"
@@ -33,27 +33,22 @@
           filterable
         />
       </el-form-item>
-      <template v-if="show">
         <el-form-item label="配车VIN码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.matchVin"
-            clearable
-          />
+          <tag-input v-model="form.matchVinList" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="销售门店">
-          <el-input
-            placeholder="请输入"
-            v-model="form.saleDealerName"
+          <fetch-select
+            filterable
             clearable
+            remote
+            v-model="form.saleDealerCode"
+            :remote-method="getIsSalesCode"
+            value-key="storeCode"
+            label-key="storeName"
           />
         </el-form-item>
         <el-form-item label="物料编码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.materialsCode"
-            clearable
-          />
+          <tag-input v-model="form.materialsCodeList" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="物料描述">
           <el-input
@@ -63,67 +58,87 @@
           />
         </el-form-item>
         <el-form-item label="车系名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.modelName"
+          <fetch-select
+            :remote-method="remoteMethods.series"
+            v-model="form.seriesId"
+            placeholder="请选择"
+            labelKey="name"
+            valueKey="id"
             clearable
-          />
+            filterable
+            remote
+            @change="seriesListChange" />
         </el-form-item>
         <el-form-item label="车型名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.modelName"
+          <el-select
+            v-model="form.modelId"
             clearable
-          />
+            filterable
+            remote
+            @change="modelListChange"
+          >
+            <el-option
+            v-for="item in modelList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"/>
+          </el-select>
         </el-form-item>
         <el-form-item label="年款名称">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.yearTypeName"
-            placeholder="请选择"
+          <el-select
+            v-model="form.yearTypeId"
             clearable
-            multiple
             filterable
-          />
+            remote
+            @change="modelListChange"
+          >
+            <el-option
+            v-for="item in yearModelList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"/>
+          </el-select>
         </el-form-item>
         <el-form-item label="大区">
-          <el-input placeholder="请输入" v-model="form.regionCode" clearable />
+          <fetch-select
+            filterable
+            clearable
+            remote
+            v-model="form.regionCode"
+            :remote-method="remoteMethods.region"
+            value-key="orgCode"
+            label-key="orgName"
+          />
         </el-form-item>
         <el-form-item label="省市区">
-          <el-input placeholder="请输入" v-model="form.provinceCode" clearable />
+          <el-cascader
+            placeholder="请选择省市区"
+            v-model="form.area"
+            :props="orgProps"
+            :options="areaOptions"
+            filterable
+            clearable>
+          </el-cascader>
         </el-form-item>
         <el-form-item label="是否预售订单">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.preSaleOrder"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
-          />
+          <fetch-select :options="yes_no_enum" v-model="form.preSaleOrder" placeholder="请选择" clearable />
         </el-form-item>
         <el-form-item label="是否绑定批售">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.wholesaleBindStatus"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
-          />
+          <fetch-select :options="yes_no_enum" v-model="form.wholesaleBindStatus" placeholder="请选择" clearable />
         </el-form-item>
         <el-form-item label="批售订单状态">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="vw_wholesale_order_status"
-            v-model="form.wholesaleOrderStatusLabel"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
+          <fetch-select :options="yes_no_enum" v-model="form.wholesaleOrderStatus" placeholder="请选择" clearable />
+        </el-form-item>
+        <el-form-item label="订单排序时间">
+          <el-date-picker
+           :default-time="['00:00:00', '23:59:59']"
+            v-model="form.orderSortTime"
+            type="daterange"
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
           />
         </el-form-item>
         <el-form-item label="缴定金时间">
@@ -204,7 +219,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="1"
+      :id="'1'"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -215,7 +230,17 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/orderManager/retailOrderInfo/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import {
+  getTableConfig,
+  tableAddOrUpdate,
+  exportTable,
+  getEnum,
+  listOrgStoreInfo,
+  vehicleSeriesList,
+  vehicleModelList,
+  vehicleModelYearTypeRelationDistinctYeayType,
+  getRigion,
+} from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -224,13 +249,17 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  mallOrderCode: '',
+  area: [],
+  mallOrderCodeList: [],
+  wholesaleOrderCodeList: [],
+  matchVinList: [],
+  materialsCodeList: [],
   carBuyerParams: '',
   saleUserName: '',
-  matchVin: '',
   orderStatusLabel: '',
   lockStatusLabel: '',
   lockTime: '',
@@ -239,13 +268,13 @@ const defaultForm = {
   depositAmount: '',
   agentName: '',
   cooperationTypeLabel: '',
-  saleDealerName: '',
+  saleDealerCode: '',
   provinceName: '',
   cityName: '',
   regionName: '',
   dealerCompanyName: '',
   deliveryDealerName: '',
-  materialsCode: '',
+  seriesId: '',
   modelName: '',
   yearTypeName: '',
   materialsDesc: '',
@@ -261,7 +290,7 @@ const defaultForm = {
   orderTime: '',
   paymentTime: '',
   rightsEnjoyDate: '',
-  wholesaleOrderStatusLabel: '',
+  wholesaleOrderStatus: '',
   unlockCount: '',
   changeConfigCount: '',
   confirmedCount: '',
@@ -282,6 +311,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
@@ -297,6 +327,14 @@ export default {
       form: {
         ...defaultForm
       },
+      orgProps: {
+        checkStrictly: true,
+        emitPath: true,
+        label: 'name',
+        value: 'code',
+        children: 'child'
+      },
+      areaOptions: JSON.parse(localStorage.areaTree),
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
@@ -304,6 +342,16 @@ export default {
       exportLoading: false,
       uploadDialogVisible: false,
       clickItemId: '',
+      modelList: [],
+      yearModelList: [],
+      remoteMethods: {
+        series: async (query) => {
+          return await vehicleSeriesList({ seriesNameLike: query, status: 1 });
+        },
+        region: async (query) => {
+          return await getRigion({ seriesNameLike: query, status: 1 });
+        },
+      },
       optionObj: {
         id: 'retailOrderInfoTable',
         dataList: [],
@@ -427,8 +475,62 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
+    this.modelSearch();
+    this.listVehicleYearType();
   },
   methods: {
+    async modelSearch () {
+      const res = await vehicleModelList({ seriesId: this.form.seriesId, status: 1 });
+      if (res.length) {
+        const vehicleModelData = res.map(item => {
+          return {
+            ...item,
+            label: item.name,
+            value: item.id
+          };
+        });
+        this.modelList = vehicleModelData;
+      } else {
+        this.modelList = [];
+      }
+    },
+    async listVehicleYearType () {
+      const param = {
+        // seriesId: this.form.seriesId,
+        modelId: this.form.modelId,
+        status: 1
+      };
+      const res = await vehicleModelYearTypeRelationDistinctYeayType(param);
+      this.yearModelList = res.map(item => {
+        return {
+          ...item,
+          label: item.yearTypeName,
+          value: item.yearTypeId
+        };
+      });
+    },
+    seriesListChange (val) {
+      if (val.length) {
+        this.modelSearch();
+        this.listVehicleYearType();
+      } else {
+        this.modelList = [];
+        this.form.modelId = '';
+        this.yearModelList = [];
+        this.form.yearTypeId = '';
+        this.modelSearch();
+        this.listVehicleYearType();
+      }
+    },
+    modelListChange (val, selectedOption) {
+      if (val.length) {
+        this.listVehicleYearType();
+      } else {
+        this.listVehicleYearType();
+        this.yearModelList = [];
+        this.form.yearTypeId = '';
+      }
+    },
     handleListSelect (row) {
       this.clickItemId = row.id;
     },
@@ -542,12 +644,24 @@ export default {
           delete data[key];
         }
       });
-
-      if (this.form.createTime) {
-        delete data.createTime;
-        if (this.form.createTime.length > 1) {
-          data.createTimeStart = this.form.createTime[0];
-          data.createTimeEnd = this.form.createTime[1];
+      const timeFields = ['createTime', 'orderSortTime', 'paymentTime', 'deliveryTime'];
+      timeFields.forEach(field => {
+        if (this.form[field]) {
+          delete data[field];
+          if (this.form[field].length > 1) {
+            data[`${field}Start`] = this.form[field][0];
+            data[`${field}End`] = this.form[field][1];
+          }
+        }
+      });
+      console.log('this.area:', this.form.area);
+      if (Array.isArray(this.form.area) && this.form.area.length > 0) {
+        delete data.area;
+        console.log('delete data.area:', data);
+        data.provinceCode = this.form.area[0];
+        console.log(' data.provinceCode:', data.provinceCode);
+        if (this.form.area.length > 1) {
+          data.cityCode = this.form.area[1];
         }
       }
 
@@ -589,28 +703,9 @@ export default {
         apiFunc: enableItem,
         refreshFunc: this.getData
       });
-      // const ids = this.selectionList.map(item => item.id) || [];
-      // this.$confirm(`此操作将${status ? '启用' : '停用'}选中项，是否继续?`, '提示', {
-      //   confirmButtonText: '确定',
-      //   cancelButtonText: '取消',
-      //   type: 'warning'
-      // }).then(() => {
-      //   enableItem({
-      //     idSet: ids,
-      //     status
-      //   }).then(() => {
-      //     this.$message({
-      //       type: 'success',
-      //       message: '操作成功!'
-      //     });
-      //     this.getData();
-      //   }).catch(() => {
-      //     this.$message({
-      //       type: 'error',
-      //       message: '操作失败!'
-      //     });
-      //   });
-      // });
+    },
+    async getIsSalesCode (params) {
+      return listOrgStoreInfo({ keyword: params, isSales: true });
     }
   }
 };

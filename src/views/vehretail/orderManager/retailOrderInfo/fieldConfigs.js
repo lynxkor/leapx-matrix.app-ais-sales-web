@@ -1,0 +1,216 @@
+// 更新文件: src/views/vehretail/orderManager/retailOrderInfo/fieldConfigs.js
+export const retailOrderDisplayFields = [
+  { key: 'mallOrderCode', label: '商城订单编号' },
+  { key: 'retailOrderCode', label: '整车订单号' },
+  { key: 'orderStatus', label: '订单状态' },
+  { key: 'orderTime', label: '商城下单时间' },
+  { key: 'createTime', label: '创建时间' },
+  { key: 'compositeOrderCode', label: '综合订单编码' },
+  { key: 'orderSource', label: '订单来源' },
+  { key: 'outTradeNo', label: '外部订单号' },
+  { key: 'saleModeLabel', label: '销售模式' },
+  { key: 'saleDealerName', label: '订单销售门店' },
+  { key: 'saleUserName', label: '订单销售顾问' },
+  { key: 'deliveryDealerName', label: '订单交付门店' },
+  { key: 'deliveryUserName', label: '订单交付顾问' },
+  { key: 'preSaleOrderLabel', label: '是否预售订单' },
+  { key: 'blindOrderLabel', label: '是否盲订订单' },
+  { key: 'remark', label: '订单备注' },
+  { key: 'specialRemark', label: '特殊备注' },
+  { key: 'contractTerminationFileUrl', label: '合同解除协议文件地址' },
+  { key: 'deliveryCycleMaxWeek', label: '交付周期上限(周)' },
+  { key: 'dynamicDeliveryCycleDesc', label: '动态交付周期说明' },
+  { key: 'initialDeliveryCycleDesc', label: '初始交付周期说明' },
+  { key: 'secondNetStoreName', label: '二网门店' }
+];
+
+// 购车人信息字段配置
+export const carOwnerDisplayFields = [
+  { key: 'carBuyerName', label: '购车人姓名' },
+  { key: 'carBuyerPhone', label: '购车人手机' },
+  { key: 'idCardType', label: '证件类型' },
+  { key: 'idCardNo', label: '证件号码' },
+  { key: 'agentName', label: '代办联系人' },
+  { key: 'orderUserName', label: '下单人姓名' },
+  { key: 'orderUserPhone', label: '下单人手机号' },
+  { key: 'orderUserId', label: '下单人ID' },
+  { key: 'orderType', label: '订单类型' }
+];
+
+// 资金信息字段配置
+export const orderFundDisplayFields = [
+  { key: 'paymentTime', label: '缴定金时间' },
+  { key: 'guidePrice', label: '整车指导价' },
+  { key: 'depositAmount', label: '定金' },
+  { key: 'invitationCode', label: '邀请码' }
+];
+
+// 订单物料信息字段配置
+export const materialsDisplayFields = [
+  { key: 'skuCode', label: '商品SKU编码' },
+  { key: 'productCode', label: '商品编码' },
+  { key: 'materialsCode', label: '物料编码' },
+  { key: 'seriesName', label: '车系名称' },
+  { key: 'modelName', label: '车型名称' },
+  { key: 'materialsDesc', label: '物料描述' },
+  { key: 'drivingRangeName', label: '续航里程' },
+  { key: 'rangePowerName', label: '选配动力' },
+  { key: 'exteriorName', label: '外观名称' },
+  { key: 'interiorName', label: '内饰名称' },
+  { key: 'wheelHubName', label: '轮毂名称' },
+  { key: 'yearTypeName', label: '年款名称' },
+  { key: 'optionPackageName', label: '选装包名称' }
+];
+
+// 锁/配车信息字段配置
+export const lockAllocationDisplayFields = [
+  { key: 'lockCarType', label: '锁车类型' },
+  { key: 'lockType', label: '锁车匹配类型' },
+  { key: 'lockStatus', label: '是否锁单' },
+  { key: 'lockTime', label: '锁单时间' },
+  { key: 'materialsCode', label: '订单物料码' },
+  { key: 'allocationMaterialCode', label: '配车物料编码' },
+  { key: 'matchVin', label: '配车VIN码' },
+  { key: 'deliveryVin', label: '交车VIN码' },
+  { key: 'deliveryTime', label: '交车时间' },
+  { key: 'orderSortTime', label: '订单排序时间' },
+  { key: 'changeConfigCount', label: '改配次数' },
+  { key: 'unlockCount', label: '解绑次数' }
+];
+
+// 批售信息字段配置
+export const wholesaleDisplayFields = [
+  { key: 'wholesaleBindStatus', label: '是否绑定批售' },
+  { key: 'lockWholesaleTime', label: '锁批售时间' },
+  { key: 'confirmedCount', label: '批售确认次数' },
+  { key: 'wholesaleOrderCode', label: '批售订单号' },
+  { key: 'matchVin', label: '配车VIN码' },
+  { key: 'wholesaleOrderStatus', label: '批售订单状态' },
+  { key: 'wholesaleConfirmStatus', label: '批售确认状态' },
+  { key: 'wholesaleConfirmTime', label: '批售确认时间' },
+  { key: 'createdShippingPlan', label: '是否创建发运计划' }
+];
+
+// 订单取消信息字段配置
+export const refundDisplayFields = [
+  { key: 'cancelReason', label: '订单取消原因' },
+  { key: 'cancelDescription', label: '订单取消说明' },
+  { key: 'cancelTime', label: '订单取消时间' }
+];
+
+// 附属信息字段配置
+export const financeDisplayFields = [
+  { key: 'financialPlan', label: '金融方案' },
+  { key: 'mortgageProgress', label: '金融按揭进度' },
+  { key: 'financialOrderCode', label: '金融订单号' },
+  { key: 'financialOrderStatusLabel', label: '金融订单状态' },
+  { key: 'insuranceProgress', label: '保险办理进度' },
+  { key: 'insurancePlan', label: '保险方案' }
+];
+
+// 期限信息字段配置
+export const termDisplayFields = [
+  { key: 'deliveryNoticeTime', label: '触发交付通知时间' },
+  { key: 'deliveryDelayFlag', label: '是否延期交付' },
+  { key: 'deliveryWithdrawFlag', label: '是否做过交车撤回' },
+  { key: 'statusRollbackFlag', label: '状态是否回退过' },
+  { key: 'userPickupDeadline', label: '用户提车截止日' },
+  { key: 'deliveryDelayDays', label: '交付延期天数' },
+  { key: 'rightsEnjoyDate', label: '权益享受日期' }
+];
+
+// 整车订单改配信息字段配置
+export const modificationRecordDisplayFields = [
+  { key: 'operationTime', label: '操作时间' },
+  { key: 'operator', label: '操作人' },
+  { key: 'paymentTime', label: '缴定金时间' },
+  { key: 'beforeMaterialsDesc', label: '修改前物料描述' },
+  { key: 'beforeModelName', label: '修改前车型名称' },
+  { key: 'beforeYearTypeName', label: '修改前年款名称' },
+  { key: 'afterMaterialsCode', label: '修改后物料编码' },
+  { key: 'afterModelName', label: '修改后车型名称' },
+  { key: 'afterYearTypeName', label: '修改后年款名称' },
+  { key: 'beforeMaterialsCode', label: '修改前物料编码' },
+  { key: 'afterMaterialsDesc', label: '修改后物料描述' },
+  { key: 'remark', label: '备注' }
+];
+
+// 订单信息变更申请字段配置
+export const orderChangeApplicationDisplayFields = [
+  { key: 'applicationNumber', label: '订单变更申请编号' },
+  { key: 'applicationStatus', label: '申请状态' },
+  { key: 'changeType', label: '变更类型' },
+  { key: 'changeReason', label: '变成原因' },
+  { key: 'changeDescription', label: '变更说明' },
+  { key: 'completedDelivery', label: '是否完成交车' },
+  { key: 'createTime', label: '创建时间' }
+];
+
+// 锁车解绑申请记录字段配置
+export const unlockApplicationRecordDisplayFields = [
+  { key: 'applicationNumber', label: '申请单号' },
+  { key: 'submitTime', label: '提交时间' },
+  { key: 'unbindReason', label: '订单解绑原因' },
+  { key: 'vin', label: 'VIN号' },
+  { key: 'wholesaleOrderCode', label: '批售订单号' },
+  { key: 'applicationDescription', label: '申请说明' },
+  { key: 'orderHandlingMethod', label: '订单处理方式' },
+  { key: 'vehicleHandlingMethod', label: '车辆处理方式' },
+  { key: 'autoGenerated', label: '是否自动生成' },
+  { key: 'reviewer', label: '审核人' },
+  { key: 'reviewTime', label: '审核时间' }
+];
+
+// 锁车记录字段配置
+export const lockCarRecordDisplayFields = [
+  { key: 'dealer', label: '门店' },
+  { key: 'retailOrderCode', label: '整车订单' },
+  { key: 'mallOrderCode', label: '商城订单编号' },
+  { key: 'wholesaleOrderCode', label: '批售单号' },
+  { key: 'lockType', label: '锁车匹配类型' },
+  { key: 'materialsCode', label: '物料编码' },
+  { key: 'materialsDesc', label: '物料描述' },
+  { key: 'paymentTime', label: '缴定金时间' },
+  { key: 'vin', label: 'VIN号' },
+  { key: 'createTime', label: '创建时间' }
+];
+
+// 订单透明化状态跟踪字段配置
+export const orderTransparencyTrackingDisplayFields = [
+  { key: 'trackingNumber', label: '编号' },
+  { key: 'dealer', label: '门店' },
+  { key: 'retailOrderCode', label: '整车订单' },
+  { key: 'originalOrderStatus', label: '原订单状态' },
+  { key: 'newOrderStatus', label: '新订单状态' },
+  { key: 'operationTime', label: '操作时间' },
+  { key: 'operationDescription', label: '操作描述' }
+];
+
+// 订单状态发生变更记录字段配置
+export const orderStatusChangeRecordDisplayFields = [
+  { key: 'dealer', label: '门店' },
+  { key: 'retailOrderCode', label: '整车订单' },
+  { key: 'originalOrderStatus', label: '原订单状态' },
+  { key: 'newOrderStatus', label: '新订单状态' },
+  { key: 'operationTime', label: '操作时间' },
+  { key: 'operationDescription', label: '操作描述' }
+];
+
+// 订单退订记录字段配置
+export const orderCancellationRecordDisplayFields = [
+  { key: 'cancellationApplicationNumber', label: '退订申请单号' },
+  { key: 'applicationStatus', label: '申请单状态' },
+  { key: 'applicationTime', label: '申请时间' },
+  { key: 'applicant', label: '申请人' },
+  { key: 'cancellationMethod', label: '退订方式' },
+  { key: 'cancellationReasonCategory', label: '退订原因分类' },
+  { key: 'cancellationReasonDescription', label: '退订原因说明' }
+];
+
+// 订单收款记录字段配置
+export const orderPaymentRecordDisplayFields = [
+  { key: 'paymentType', label: '收款类型' },
+  { key: 'paymentMethod', label: '支付方式' },
+  { key: 'paymentAmount', label: '付款金额' },
+  { key: 'paymentTime', label: '付款时间' }
+];

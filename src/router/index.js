@@ -1908,22 +1908,22 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: "/sales/vehretail/orderManager/retailOrderInfo",
-      name: "retailOrderInfo",
-      component: () => import("@/views/sales/vehretail/orderManager/retailOrderInfo/index.vue"),
+      path: '/vehretail/orderManager/retailOrderInfo',
+      name: 'retailOrderInfo',
+      component: () => import('@/views/vehretail/orderManager/retailOrderInfo/index.vue'),
 
       meta: {
-        name: "整车零售订单管理",
+        name: '整车零售订单管理',
         keepAlive: true
       }
     }, {
-      path: "/sales/vehretail/ordermanager/retailorderinfo/edit",
-      name: "retailOrderInfoEdit",
-      component: () => import("@/views/sales/vehretail/orderManager/retailOrderInfo/edit.vue"),
+      path: '/vehretail/ordermanager/retailorderinfo/edit',
+      name: 'retailOrderInfoEdit',
+      component: () => import('@/views/vehretail/orderManager/retailOrderInfo/edit.vue'),
 
       meta: {
-        name: "整车零售订单管理详情",
-        noResourceUrl: "true"
+        name: '整车零售订单管理详情',
+        noResourceUrl: 'true'
       }
     }]
   }
