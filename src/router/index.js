@@ -2015,6 +2015,24 @@ const routes = [
         name: '订单信息变更申请详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehretail/basicConfig/storeBuildCapacityConfig',
+      name: 'storeBuildCapacityConfig',
+      component: () => import('@/views/vehretail/basicConfig/storeBuildCapacityConfig/index.vue'),
+
+      meta: {
+        name: '建店类型承载力配置',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicConfig/storeBuildCapacityConfig/edit',
+      name: 'storeBuildCapacityConfigEdit',
+      component: () => import('@/views/vehretail/basicConfig/storeBuildCapacityConfig/edit.vue'),
+
+      meta: {
+        name: '建店类型承载力配置详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
