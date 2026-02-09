@@ -1944,6 +1944,24 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
+      path: '/vehretail/basicConfig/deliveryCycleConfig',
+      name: 'deliveryCycleConfig',
+      component: () => import('@/views/vehretail/basicConfig/deliveryCycleConfig/index.vue'),
+
+      meta: {
+        name: '交付周期信息配置',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicConfig/deliveryCycleConfig/edit',
+      name: 'deliveryCycleConfigEdit',
+      component: () => import('@/views/vehretail/basicConfig/deliveryCycleConfig/edit.vue'),
+
+      meta: {
+        name: '交付周期信息配置详情',
+        noResourceUrl: 'true'
+      }
+    }, {
       path: '/vehretail/orderManager/orderLockRecord',
       name: 'orderLockRecord',
       component: () => import('@/views/vehretail/orderManager/orderLockRecord/index.vue'),
