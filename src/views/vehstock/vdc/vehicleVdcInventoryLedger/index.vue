@@ -451,10 +451,15 @@ export default {
     },
     exportExcel () {
       this.exportLoading = true;
+      const reqParams = this.getFormData() || {};
+      if (this.selectionList.length > 0) {
+        const ids = this.selectionList.map(item => item.id) || [];
+        reqParams.ids = ids;
+      };
       exportTable({
         businessType: 'VDC库存台账',
         dataFetchPath: 'vehstock/web/vdc/vehicleVdcInventoryLedger/page',
-        reqParams: this.getFormData(),
+        reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
       }).then(async res => {
@@ -687,5 +692,21 @@ export default {
 .m-vehicle-vdc-inventory-ledger-list {}
 .ais-active {
   margin-top: 20px;
+  // 修改 tabs 底部线条的样式
+  ::v-deep .el-tabs__nav-wrap::after {
+    height: 1px !important;
+    background-color: #E6E6E5 !important;
+  }
+  // 修改 tabs 默认字体样式
+  ::v-deep .el-tabs__item {
+    font-weight: normal !important; // 不加粗
+    color: #3B3E3B !important;     // 字体颜色
+  }
+
+  // 修改 tabs 激活状态下的字体样式（可选）
+  ::v-deep .el-tabs__item.is-active {
+    font-weight: normal !important; // 激活状态下也不加粗
+    color: #3B3E3B !important;     // 激活状态下的字体颜色
+  }
 }
 </style>

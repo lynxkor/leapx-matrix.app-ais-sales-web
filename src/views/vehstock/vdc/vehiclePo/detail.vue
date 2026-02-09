@@ -81,9 +81,6 @@
             <el-form-item label="车型：" prop="modelName">
               {{ info.modelName }}
             </el-form-item>
-            <el-form-item label="物料描述：" prop="materialsDesc">
-              {{ info.materialsDesc }}
-            </el-form-item>
             <el-form-item label="选配续航：" prop="drivingRangeName">
               {{ info.drivingRangeName }}
             </el-form-item>
@@ -110,6 +107,9 @@
             </el-form-item>
             <el-form-item label="是否允许现车批售：" prop="allowWholesale">
               {{ info.allowWholesaleLabel }}
+            </el-form-item>
+            <el-form-item label="物料描述：" prop="materialsDesc" style="width: 100%;">
+              {{ info.materialsDesc }}
             </el-form-item>
           </el-form>
         </div>

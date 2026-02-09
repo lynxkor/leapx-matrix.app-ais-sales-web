@@ -62,7 +62,6 @@
         </div>
         <div class="common-section-body">
           <el-form :inline="true" ref="ruleForm" label-width="150px">
-
             <el-form-item label="订单编号：" prop="po">
               {{ info.po }}
             </el-form-item>
@@ -77,9 +76,6 @@
             </el-form-item>
             <el-form-item label="销售预留类型：" prop="reservedType">
               {{ info.reservedTypeLabel }}
-            </el-form-item>
-            <el-form-item label="整车物流预留备注：" prop="vehicleLogisticsReserveRemark">
-              {{ info.vehicleLogisticsReserveRemark }}
             </el-form-item>
             <el-form-item label="门店：" prop="dealerName">
               {{ info.dealerName }}
@@ -105,17 +101,20 @@
             <el-form-item label="退车标识：" prop="returnLabel">
               {{ info.returnLabelLabel }}
             </el-form-item>
-            <el-form-item label="特殊预留备注：" prop="specialReserveRemark">
-              {{ info.specialReserveRemark }}
-            </el-form-item>
             <el-form-item label="销售预留操作人：" prop="salesReservationOperatorName">
               {{ info.salesReservationOperatorName }}
             </el-form-item>
-            <el-form-item label="销售备注：" prop="salesRemark">
-              {{ info.salesRemark }}
-            </el-form-item>
             <el-form-item label="允许锁零售单：" prop="allowLockRetail">
               {{ info.allowLockRetailLabel }}
+            </el-form-item>
+            <el-form-item label="整车物流预留备注：" prop="vehicleLogisticsReserveRemark" style="width: 100%;">
+              {{ info.vehicleLogisticsReserveRemark }}
+            </el-form-item>
+            <el-form-item label="特殊预留备注：" prop="specialReserveRemark" style="width: 100%;">
+              {{ info.specialReserveRemark }}
+            </el-form-item>
+            <el-form-item label="销售备注：" prop="salesRemark" style="width: 100%;">
+              {{ info.salesRemark }}
             </el-form-item>
           </el-form>
         </div>
@@ -134,9 +133,6 @@
             </el-form-item>
             <el-form-item label="车型：" prop="modelName">
               {{ info.modelName }}
-            </el-form-item>
-            <el-form-item label="物料描述：" prop="materialsDesc">
-              {{ info.materialsDesc }}
             </el-form-item>
             <el-form-item label="续航里程：" prop="drivingRangeName">
               {{ info.drivingRangeName }}
@@ -164,6 +160,9 @@
             </el-form-item>
             <el-form-item label="是否允许现车批售：" prop="allowWholesale">
               {{ info.allowWholesaleLabel }}
+            </el-form-item>
+            <el-form-item label="物料描述：" prop="materialsDesc" style="width: 100%;">
+              {{ info.materialsDesc }}
             </el-form-item>
           </el-form>
         </div>

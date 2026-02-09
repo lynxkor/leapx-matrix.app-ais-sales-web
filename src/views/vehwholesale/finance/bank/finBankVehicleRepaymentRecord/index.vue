@@ -10,76 +10,91 @@
       class="ais-search-form"
     >
       <el-form-item label="母公司编码">
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerCompanyCode"
+        <fetch-select
+          filterable
           clearable
+          remote
+          multiple
+          v-model="form.dealerCompanyCodes"
+          :remote-method="getDealerParentOrgListByCode"
+          value-key="companyCode"
+          label-key="companyCode"
         />
       </el-form-item>
       <el-form-item label="母公司名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerCompanyName"
+        <fetch-select
+          filterable
           clearable
+          remote
+          multiple
+          v-model="form.dealerCompanyCodes"
+          :remote-method="getDealerParentOrgListByName"
+          value-key="companyCode"
+          label-key="companyName"
         />
       </el-form-item>
       <el-form-item label="融资金融机构"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.fundFinancialOrganizationName"
+        <fetch-select
+          :remote-method="repairItemSearch"
+          remote
+          multiple
+          reserve-keyword
+          labelKey="name"
+          valueKey="id"
+          v-model="form.fundFinancialOrganizationIds"
+          placeholder="请选择"
           clearable
+          filterable
         />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="VIN号">
-          <el-input
+          <tag-input
             placeholder="请输入"
-            v-model="form.vin"
+            v-model="form.vins"
             clearable
           />
         </el-form-item>
         <el-form-item label="还款日期">
-          <el-input
-            placeholder="请输入"
+          <el-date-picker
             v-model="form.repaymentDate"
-            clearable
+            type="daterange"
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
           />
         </el-form-item>
         <el-form-item label="整车批售订单">
-          <el-input
+          <tag-input
             placeholder="请输入"
-            v-model="form.wholesaleOrderCode"
+            v-model="form.wholesaleOrderCodes"
             clearable
           />
         </el-form-item>
         <el-form-item label="企业客户整车订单">
-          <el-input
+          <tag-input
             placeholder="请输入"
-            v-model="form.customerOrderCode"
+            v-model="form.customerOrderCodes"
             clearable
           />
         </el-form-item>
         <el-form-item label="状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
+            enumCode="StatusEnum"
             v-model="form.status"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
         <el-form-item label="创建时间">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
+          <dateranges
             v-model="form.createTime"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            :setDefault="true"
+            deftTime="最近三个月"
           />
         </el-form-item>
       </template>
@@ -135,7 +150,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/finance/bank/finBankVehicleRepaymentRecord/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -144,17 +159,21 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import TagInput from '@/libs/components/TagInput';
+import dateranges from '@/libs/components/dateranges';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   dealerCompanyCode: '',
+  dealerCompanyCodes: [],
   dealerCompanyName: '',
-  fundFinancialOrganizationName: '',
-  vin: '',
+  fundFinancialOrganizationIds: [],
+  vins: [],
   repaymentDate: '',
-  wholesaleOrderCode: '',
-  customerOrderCode: '',
-  status: '',
+  wholesaleOrderCodes: [],
+  customerOrderCodes: [],
+  status: '1',
   createTime: '',
 };
 
@@ -170,7 +189,9 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    TagInput,
+    dateranges
   },
   data () {
     return {
@@ -236,35 +257,11 @@ export default {
             visible: true,
             fixed: 'right',
             buttons: [{
-              name: '编辑',
+              name: '日志',
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/finance/bank/finBankVehicleRepaymentRecord/edit',
-                  query: {
-                    id: row.id,
-                    isEditing: true
-                  }
-                });
+                this.$auditLog.show({ id: row.id });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],
@@ -337,7 +334,11 @@ export default {
       this.loading = true;
       this.selectionList = [];
 
-      getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
+      getList({
+        ...this.getFormData(),
+        pageNum: this.optionObj.form.page,
+        pageSize: this.optionObj.form.size,
+      })
         .then(res => {
           console.log(res);
           this.optionObj.dataList = res.records.map(item => {
@@ -397,7 +398,25 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
-
+      if (this.form.repaymentDate) {
+        delete data.repaymentDate;
+        if (this.form.repaymentDate.length > 1) {
+          data.repaymentDateStart = this.form.repaymentDate[0];
+          data.repaymentDateEnd = this.form.repaymentDate[1];
+        }
+      }
+      if (Array.isArray(this.form.vins) && this.form.vins.length <= 1) {
+        delete data.vins;
+        data.vinLike = this.form.vins[0] || '';
+      }
+      if (Array.isArray(this.form.wholesaleOrderCodes) && this.form.wholesaleOrderCodes.length <= 1) {
+        delete data.wholesaleOrderCodes;
+        data.wholesaleOrderCodeLike = this.form.wholesaleOrderCodes[0] || '';
+      }
+      if (Array.isArray(this.form.customerOrderCodes) && this.form.customerOrderCodes.length <= 1) {
+        delete data.customerOrderCodes;
+        data.customerOrderCodeLike = this.form.customerOrderCodes[0] || '';
+      }
       return data;
     },
     async fetchOptions (code) {
@@ -458,6 +477,15 @@ export default {
       //     });
       //   });
       // });
+    },
+    async repairItemSearch (query) {
+      return listFinancialOrganization({ organizationNameLike: query, status: 1 });
+    },
+    async getDealerParentOrgListByCode (params) {
+      return getParentCompany({ parentCompanyCode: params });
+    },
+    async getDealerParentOrgListByName (params) {
+      return getParentCompany({ parentCompanyName: params });
     }
   }
 };

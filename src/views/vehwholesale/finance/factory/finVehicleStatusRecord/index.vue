@@ -10,23 +10,26 @@
       class="ais-search-form"
     >
       <el-form-item label="融资数据来源">
-        <el-input
-          placeholder="请输入"
-          v-model="form.financingDataSource"
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="vw_financing_data_source"
+          v-model="form.syncStatus"
+          placeholder="请选择"
           clearable
+          filterable
         />
       </el-form-item>
       <el-form-item label="订单号">
-        <el-input
+        <tag-input
           placeholder="请输入"
-          v-model="form.orderCode"
+          v-model="form.orderCodes"
           clearable
         />
       </el-form-item>
       <el-form-item label="车辆状态"  v-show="this.visibleCount === 3 || show">
         <fetch-select
           :request="fetchOptions"
-          enumCode="xxx"
+          enumCode="vw_vehicle_status"
           v-model="form.vehicleStatus"
           placeholder="请选择"
           clearable
@@ -36,78 +39,96 @@
       </el-form-item>
       <template v-if="show">
         <el-form-item label="VIN号">
-          <el-input
+          <tag-input
             placeholder="请输入"
-            v-model="form.vin"
+            v-model="form.vins"
             clearable
           />
         </el-form-item>
-        <el-form-item label="母公司编码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.dealerCompanyCode"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="母公司名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.dealerCompanyName"
-            clearable
-          />
-        </el-form-item>
+      <el-form-item label="母公司编码">
+        <fetch-select
+          filterable
+          clearable
+          remote
+          multiple
+          v-model="form.dealerCompanyCodes"
+          :remote-method="getDealerParentOrgListByCode"
+          value-key="companyCode"
+          label-key="companyCode"
+        />
+      </el-form-item>
+      <el-form-item label="母公司名称">
+        <fetch-select
+          filterable
+          clearable
+          remote
+          multiple
+          v-model="form.dealerCompanyCodes"
+          :remote-method="getDealerParentOrgListByName"
+          value-key="companyCode"
+          label-key="companyName"
+        />
+      </el-form-item>
         <el-form-item label="融资金融机构">
-          <el-input
-            placeholder="请输入"
-            v-model="form.fundFinancialOrganizationName"
+          <fetch-select
+            :remote-method="repairItemSearch"
+            remote
+            reserve-keyword
+            multiple
+            labelKey="name"
+            valueKey="id"
+            v-model="form.fundFinancialOrganizationIds"
+            placeholder="请选择"
             clearable
+            filterable
           />
         </el-form-item>
         <el-form-item label="发车日期">
-          <el-input
-            placeholder="请输入"
+          <el-date-picker
             v-model="form.shipmentDate"
-            clearable
+            type="daterange"
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
           />
         </el-form-item>
         <el-form-item label="收车日期">
-          <el-input
-            placeholder="请输入"
+          <el-date-picker
             v-model="form.receiveDate"
-            clearable
+            type="daterange"
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
           />
         </el-form-item>
         <el-form-item label="同步状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
+            enumCode="vw_sync_status"
             v-model="form.syncStatus"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
         <el-form-item label="创建时间">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
+          <dateranges
             v-model="form.createTime"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            :setDefault="true"
+            deftTime="最近三个月"
           />
         </el-form-item>
         <el-form-item label="状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
+            enumCode="StatusEnum"
             v-model="form.status"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -164,7 +185,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/finance/factory/finVehicleStatusRecord/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -173,21 +194,25 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import TagInput from '@/libs/components/TagInput';
+import dateranges from '@/libs/components/dateranges';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   financingDataSource: '',
-  orderCode: '',
-  vehicleStatus: '',
-  vin: '',
+  orderCodes: [],
+  vehiclestatus: '1',
+  vins: [],
   dealerCompanyCode: '',
+  dealerCompanyCodes: [],
   dealerCompanyName: '',
-  fundFinancialOrganizationName: '',
+  fundFinancialOrganizationIds: [],
   shipmentDate: '',
   receiveDate: '',
   syncStatus: '',
   createTime: '',
-  status: '',
+  status: '1',
 };
 
 const pageSize = 20;
@@ -202,7 +227,9 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    TagInput,
+    dateranges
   },
   data () {
     return {
@@ -275,35 +302,11 @@ export default {
             visible: true,
             fixed: 'right',
             buttons: [{
-              name: '编辑',
+              name: '日志',
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/finance/factory/finVehicleStatusRecord/edit',
-                  query: {
-                    id: row.id,
-                    isEditing: true
-                  }
-                });
+                this.$auditLog.show({ id: row.id });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],
@@ -436,6 +439,28 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
+      if (this.form.shipmentDate) {
+        delete data.shipmentDate;
+        if (this.form.shipmentDate.length > 1) {
+          data.shipmentDateStart = this.form.shipmentDate[0];
+          data.shipmentDateEnd = this.form.shipmentDate[1];
+        }
+      }
+      if (this.form.receiveDate) {
+        delete data.receiveDate;
+        if (this.form.receiveDate.length > 1) {
+          data.receiveDateStart = this.form.receiveDate[0];
+          data.receiveDateEnd = this.form.receiveDate[1];
+        }
+      }
+      if (Array.isArray(this.form.vins) && this.form.vins.length <= 1) {
+        delete data.vins;
+        data.vinLike = this.form.vins[0] || '';
+      }
+      if (Array.isArray(this.form.orderCodes) && this.form.orderCodes.length <= 1) {
+        delete data.orderCodes;
+        data.orderCodeLike = this.form.orderCodes[0] || '';
+      }
 
       return data;
     },
@@ -497,6 +522,15 @@ export default {
       //     });
       //   });
       // });
+    },
+    async repairItemSearch (query) {
+      return listFinancialOrganization({ organizationNameLike: query, status: 1 });
+    },
+    async getDealerParentOrgListByCode (params) {
+      return getParentCompany({ parentCompanyCode: params });
+    },
+    async getDealerParentOrgListByName (params) {
+      return getParentCompany({ parentCompanyName: params });
     }
   }
 };

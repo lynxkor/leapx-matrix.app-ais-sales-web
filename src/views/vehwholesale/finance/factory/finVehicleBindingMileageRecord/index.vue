@@ -10,65 +10,71 @@
       class="ais-search-form"
     >
       <el-form-item label="融资数据来源">
-        <el-input
-          placeholder="请输入"
-          v-model="form.financingDataSource"
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="vw_financing_data_source"
+          v-model="form.syncStatus"
+          placeholder="请选择"
           clearable
+          filterable
         />
       </el-form-item>
       <el-form-item label="VIN号">
-        <el-input
+        <tag-input
           placeholder="请输入"
-          v-model="form.vin"
+          v-model="form.vins"
           clearable
         />
       </el-form-item>
       <el-form-item label="是否人车绑定"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.isVehicleBound"
-          clearable
-        />
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.isVehicleBound"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
       </el-form-item>
       <template v-if="show">
-        <el-form-item label="融资金融机构">
-          <el-input
-            placeholder="请输入"
-            v-model="form.fundFinancialOrganizationName"
-            clearable
-          />
-        </el-form-item>
+      <el-form-item label="融资金融机构">
+        <fetch-select
+          :remote-method="repairItemSearch"
+          remote
+          reserve-keyword
+          multiple
+          labelKey="name"
+          valueKey="id"
+          v-model="form.fundFinancialOrganizationIds"
+          placeholder="请选择"
+          clearable
+          filterable
+        />
+      </el-form-item>
         <el-form-item label="同步状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
+            enumCode="vw_sync_status"
             v-model="form.syncStatus"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
         <el-form-item label="创建时间">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
+          <dateranges
             v-model="form.createTime"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            :setDefault="true"
+            deftTime="最近三个月"
           />
         </el-form-item>
         <el-form-item label="状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
+            enumCode="StatusEnum"
             v-model="form.status"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -134,16 +140,19 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import TagInput from '@/libs/components/TagInput';
+import dateranges from '@/libs/components/dateranges';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   financingDataSource: '',
-  vin: '',
+  vins: [],
   isVehicleBound: '',
-  fundFinancialOrganizationName: '',
+  fundFinancialOrganizationIds: [],
   syncStatus: '',
   createTime: '',
-  status: '',
+  status: '1',
 };
 
 const pageSize = 20;
@@ -158,7 +167,9 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    dateranges,
+    TagInput
   },
   data () {
     return {
@@ -224,35 +235,11 @@ export default {
             visible: true,
             fixed: 'right',
             buttons: [{
-              name: '编辑',
+              name: '日志',
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/finance/factory/finVehicleBindingMileageRecord/edit',
-                  query: {
-                    id: row.id,
-                    isEditing: true
-                  }
-                });
+                this.$auditLog.show({ id: row.id });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],
@@ -385,7 +372,10 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
-
+      if (Array.isArray(this.form.vins) && this.form.vins.length <= 1) {
+        delete data.vins;
+        data.vinLike = this.form.vins[0] || '';
+      }
       return data;
     },
     async fetchOptions (code) {
@@ -446,7 +436,10 @@ export default {
       //     });
       //   });
       // });
-    }
+    },
+    async repairItemSearch (query) {
+      return listFinancialOrganization({ organizationNameLike: query, status: 1 });
+    },
   }
 };
 </script>

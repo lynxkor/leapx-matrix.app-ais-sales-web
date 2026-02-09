@@ -10,46 +10,74 @@
       class="ais-search-form"
     >
       <el-form-item label="母公司编码">
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerCompanyCode"
+        <fetch-select
+          filterable
           clearable
+          remote
+          multiple
+          v-model="form.dealerCompanyCodes"
+          :remote-method="getDealerParentOrgListByCode"
+          value-key="companyCode"
+          label-key="companyCode"
         />
       </el-form-item>
       <el-form-item label="母公司名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerCompanyName"
+        <fetch-select
+          filterable
           clearable
+          remote
+          multiple
+          v-model="form.dealerCompanyCodes"
+          :remote-method="getDealerParentOrgListByName"
+          value-key="companyCode"
+          label-key="companyName"
         />
       </el-form-item>
       <el-form-item label="融资金融机构"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.fundFinancialOrganizationName"
+        <fetch-select
+          :remote-method="repairItemSearch"
+          remote
+          multiple
+          reserve-keyword
+          labelKey="name"
+          valueKey="id"
+          v-model="form.fundFinancialOrganizationIds"
+          placeholder="请选择"
           clearable
+          filterable
         />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="额度生效日期">
-          <el-input
-            placeholder="请输入"
-            v-model="form.limitEffectiveDate"
-            clearable
+          <el-date-picker
+            v-model="form.effectiveDate"
+            type="daterange"
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
           />
         </el-form-item>
         <el-form-item label="额度失效日期">
-          <el-input
-            placeholder="请输入"
-            v-model="form.limitExpiryDate"
-            clearable
+          <el-date-picker
+            v-model="form.expiryDate"
+            type="daterange"
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
           />
         </el-form-item>
         <el-form-item label="业务模式">
-          <el-input
-            placeholder="请输入"
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vw_business_mode"
             v-model="form.businessMode"
+            placeholder="请选择"
             clearable
+            filterable
           />
         </el-form-item>
         <el-form-item label="授信记录编码">
@@ -62,11 +90,10 @@
         <el-form-item label="状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
+            enumCode="StatusEnum"
             v-model="form.status"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -135,7 +162,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/finance/bank/finBankCreditRecord/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -144,17 +171,19 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   dealerCompanyCode: '',
+  dealerCompanyCodes: [],
   dealerCompanyName: '',
-  fundFinancialOrganizationName: '',
+  fundFinancialOrganizationIds: [],
   limitEffectiveDate: '',
   limitExpiryDate: '',
   businessMode: '',
   creditRecordCode: '',
-  status: '',
+  status: '1',
   createTime: '',
 };
 
@@ -241,35 +270,11 @@ export default {
             visible: true,
             fixed: 'right',
             buttons: [{
-              name: '编辑',
+              name: '日志',
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/finance/bank/finBankCreditRecord/edit',
-                  query: {
-                    id: row.id,
-                    isEditing: true
-                  }
-                });
+                this.$auditLog.show({ id: row.id });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],
@@ -342,7 +347,11 @@ export default {
       this.loading = true;
       this.selectionList = [];
 
-      getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
+      getList({
+        ...this.getFormData(),
+        pageNum: this.optionObj.form.page,
+        pageSize: this.optionObj.form.size,
+      })
         .then(res => {
           console.log(res);
           this.optionObj.dataList = res.records.map(item => {
@@ -400,6 +409,20 @@ export default {
         if (this.form.createTime.length > 1) {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
+        }
+      }
+      if (this.form.effectiveDate) {
+        delete data.effectiveDate;
+        if (this.form.effectiveDate.length > 1) {
+          data.effectiveDateStart = this.form.effectiveDate[0];
+          data.effectiveDateEnd = this.form.effectiveDate[1];
+        }
+      }
+      if (this.form.expiryDate) {
+        delete data.expiryDate;
+        if (this.form.expiryDate.length > 1) {
+          data.expiryDateStart = this.form.expiryDate[0];
+          data.expiryDateEnd = this.form.expiryDate[1];
         }
       }
 
@@ -463,6 +486,15 @@ export default {
       //     });
       //   });
       // });
+    },
+    async repairItemSearch (query) {
+      return listFinancialOrganization({ organizationNameLike: query, status: 1 });
+    },
+    async getDealerParentOrgListByCode (params) {
+      return getParentCompany({ parentCompanyCode: params });
+    },
+    async getDealerParentOrgListByName (params) {
+      return getParentCompany({ parentCompanyName: params });
     }
   }
 };

@@ -65,7 +65,7 @@
                 <el-form-item label="融资类型：" prop="financingType">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="vw_financing_type"
                     v-model="form.financingType"
                     placeholder="请选择"
                     clearable
@@ -94,10 +94,13 @@
                   />
                 </el-form-item>
                 <el-form-item label="业务模式：" prop="businessMode">
-                  <el-input
-                    placeholder="请输入"
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vw_business_mode"
                     v-model="form.businessMode"
+                    placeholder="请选择"
                     clearable
+                    filterable
                   />
                 </el-form-item>
                 <el-form-item label="融资开始日期：" prop="financingStartDate">
@@ -145,7 +148,7 @@
                 <el-form-item label="状态：" prop="status">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="StatusEnum"
                     v-model="form.status"
                     placeholder="请选择"
                     clearable
@@ -414,7 +417,7 @@ const defaultForm = {
   code: '',
   dealerCompanyCode: '',
   dealerCompanyName: '',
-  fundFinancialOrganizationName: '',
+  fundFinancialOrganizationIds: [],
   financingAmount: '',
   financingType: '',
   iouNumber: '',
@@ -427,7 +430,7 @@ const defaultForm = {
   depositAmount: '',
   acceptanceBankName: '',
   financingApplicationCode: '',
-  status: '',
+  status: '1',
   remark: '',
   statusDesc: '',
   createTime: '',

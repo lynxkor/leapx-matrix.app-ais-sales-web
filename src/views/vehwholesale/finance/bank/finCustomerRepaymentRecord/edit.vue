@@ -100,7 +100,7 @@
                 <el-form-item label="融资类型：" prop="financingType">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="vw_financing_type"
                     v-model="form.financingType"
                     placeholder="请选择"
                     clearable
@@ -110,7 +110,7 @@
                 <el-form-item label="还款状态：" prop="repaymentStatus">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="vw_repayment_status"
                     v-model="form.repaymentStatus"
                     placeholder="请选择"
                     clearable
@@ -118,10 +118,13 @@
                   />
                 </el-form-item>
                 <el-form-item label="业务模式：" prop="businessMode">
-                  <el-input
-                    placeholder="请输入"
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vw_business_mode"
                     v-model="form.businessMode"
+                    placeholder="请选择"
                     clearable
+                    filterable
                   />
                 </el-form-item>
                 <el-form-item label="还款记录编号：" prop="repaymentRecordCode">
@@ -134,7 +137,7 @@
                 <el-form-item label="状态：" prop="status">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="StatusEnum"
                     v-model="form.status"
                     placeholder="请选择"
                     clearable
@@ -367,7 +370,7 @@ const defaultForm = {
   code: '',
   dealerCompanyCode: '',
   dealerCompanyName: '',
-  fundFinancialOrganizationName: '',
+  fundFinancialOrganizationIds: [],
   fundFinancialOrganizationId: '',
   repaymentAmount: '',
   repaymentDate: '',
@@ -375,10 +378,10 @@ const defaultForm = {
   creditAvailableExposure: '',
   financingApplicationCode: '',
   financingType: '',
-  repaymentStatus: '',
+  repaymentstatus: '1',
   businessMode: '',
   repaymentRecordCode: '',
-  status: '',
+  status: '1',
   statusDesc: '',
   dealerName: '',
   createTime: '',

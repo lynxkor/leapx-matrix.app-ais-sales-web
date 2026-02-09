@@ -17,15 +17,15 @@
           remote
           collapseTags
           v-model="form.saleDealerCodeList"
-          :remote-method="getDealerListByCode"
+          :remote-method="getDealerListByName"
           value-key="storeCode"
           label-key="storeName"
         />
       </el-form-item>
       <el-form-item label="商城订单编号">
-        <el-input
+        <tag-input
           placeholder="请输入"
-          v-model="form.mallOrderCode"
+          v-model="form.mallOrderCodeList"
           clearable
         />
       </el-form-item>
@@ -137,7 +137,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, auditApply, submitApply, batchVoidedApply } from '@/api/vehretail/orderManager/orderUnlockApply/index';
+import { getList, enableItem, auditApply, submitApply, batchVoidedApply } from '@/api/vehretail/orderManager/orderUnlockApply/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -148,6 +148,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import { getOptionList } from '@/api/vehretail/basicConfig/retailOrderUnlockReasonConfig/index';
 import auditDialog from '@/libs/components/auditDialog';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -155,6 +156,7 @@ const defaultForm = {
   applyStatusList: [],
   retailOrderCode: '',
   mallOrderCode: '',
+  mallOrderCodeList: [],
   applyReason: '',
   unlockReason: '',
   createTime: '',
@@ -174,7 +176,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    auditDialog
+    auditDialog,
+    TagInput,
   },
   data () {
     return {
@@ -500,8 +503,8 @@ export default {
       //   });
       // });
     },
-    async getDealerListByCode (params) {
-      return listOrgStoreInfo({ storeCode: params, isWholesaleSale: true });
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params, isSales: true });
     }
   }
 };

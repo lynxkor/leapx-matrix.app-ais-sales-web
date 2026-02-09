@@ -8,7 +8,7 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="城市：">
+      <el-form-item label="城市">
         <el-select v-model="form.cityCodeList" clearable filterable multiple placeholder="请选择">
           <el-option
             v-for="item in options"
@@ -18,7 +18,7 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="销售公告车型名称：">
+      <el-form-item label="销售公告车型名称">
         <el-select
           v-model="form.vehicleRegisteredModelId"
           filterable
@@ -37,7 +37,7 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="状态：" v-if="visibleCount === 3 || show">
+      <el-form-item label="状态" v-if="visibleCount === 3 || show">
           <fetch-select
             :request="fetchOptions"
             enumCode="StatusEnum"
@@ -48,14 +48,14 @@
           />
         </el-form-item>
       <template v-if="show">
-        <el-form-item label="地区公告编号：">
+        <el-form-item label="地区公告编号">
           <el-input
             placeholder="请输入"
             v-model="form.code"
             clearable
           />
         </el-form-item>
-        <el-form-item label="创建时间：">
+        <el-form-item label="创建时间">
           <el-date-picker
             v-model="form.createTime"
             type="daterange"
