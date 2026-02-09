@@ -2033,6 +2033,24 @@ const routes = [
         name: '建店类型承载力配置详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehretail/basicConfig/storeDeliveryCapacityConfig',
+      name: 'storeDeliveryCapacityConfig',
+      component: () => import('@/views/vehretail/basicConfig/storeDeliveryCapacityConfig/index.vue'),
+
+      meta: {
+        name: '门店交付承载力配置',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicConfig/storeDeliveryCapacityConfig/edit',
+      name: 'storeDeliveryCapacityConfigEdit',
+      component: () => import('@/views/vehretail/basicConfig/storeDeliveryCapacityConfig/edit.vue'),
+
+      meta: {
+        name: '门店交付承载力配置详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
