@@ -1961,6 +1961,24 @@ const routes = [
         name: '订单改配信息管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehretail/orderRefund/changeApply',
+      name: 'orderChange',
+      component: () => import('@/views/vehretail/orderRefund/changeApply/index.vue'),
+
+      meta: {
+        name: '订单信息变更申请',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/orderRefund/changeApply/edit',
+      name: 'orderChangeEdit',
+      component: () => import('@/views/vehretail/orderRefund/changeApply/edit.vue'),
+
+      meta: {
+        name: '订单信息变更申请详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
