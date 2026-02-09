@@ -292,17 +292,17 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleBatchConfirm">批量确认</el-button>
-      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleBatchSetAutoAllocate">批量配车</el-button> -->
-      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd">批量结算</el-button> -->
-      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd">批量取消结算</el-button> -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleBatchCancel">批量作废</el-button>
-      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd">批量取消配车</el-button> -->
-      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd">批量设置自动配车</el-button> -->
-      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" >批量设置不自动配车</el-button> -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleSetEmergencyOrder">设置急单</el-button>
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleCancelEmergencyOrder">取消急单</el-button>
-      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" >刷新价格</el-button> -->
+      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchConfirm">批量确认</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchAllocateVehicle">批量配车</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchSettleSubmit">批量结算</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchCancelSettle">批量取消结算</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchCancel">批量作废</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchCancelAllocateVehicle">批量取消配车</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchSetAutoAllocate">批量设置自动配车</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchSetNotAutoAllocate">批量设置不自动配车</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleSetEmergencyOrder">设置急单</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleCancelEmergencyOrder">取消急单</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" type="primary" >刷新价格</el-button>
       <el-button v-if="canImport" size="small" type="primary" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" type="primary" size="small" @click="exportExcel">导出</el-button>
     </div>
@@ -352,6 +352,24 @@
       :emergency-ids="selectionList.map(item => item.id)"
       @confirm="emergencyApproval"
     />
+
+    <BatchAllocateVehicleInput
+      :visible.sync="showBatchAllocateVehicleDialog"
+      :cancel-ids="selectionList.map(item => item.id)"
+      @confirmBatchAllocateVehicle="confirmBatchAllocateVehicle"
+    />
+
+     <CancleBatchAllocateVehicleInput
+      :visible.sync="showCancleBatchAllocateVehicleDialog"
+      :cancel-ids="selectionList.map(item => item.id)"
+      @confirmBatchAllocateVehicle="confirmBatchAllocateVehicle"
+    />
+
+    <BatchCancelSettleInput
+      :visible.sync="showBatchCancelSettleDialog"
+      :cancel-ids="selectionList.map(item => item.id)"
+      @batchCancelSettle="batchCancelSettle"
+    />
   </div>
 </template>
 
@@ -359,7 +377,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, batchConfirmItem, setEmergencyOrderItem, batchCancelItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import { getList, deleteItem, enableItem, batchConfirmItem, setEmergencyOrderItem, batchCancelItem, batchAllocateVehicleItem, batchSettleSubmitItem, batchCancelSettleItem, batchSetAutoAllocateItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, vehicleModelList, cityPage, getProvinceTree, getParentCompany, getRigion } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -371,7 +389,10 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
 import BatchCancelInput from './BatchCancelInput.vue';
+import BatchAllocateVehicleInput from './BatchAllocateVehicleInput.vue';
+import CancleBatchAllocateVehicleInput from './CancleBatchAllocateVehicleInput.vue';
 import SetEmergencyOrderInput from './SetEmergencyOrderInput.vue';
+import BatchCancelSettleInput from './BatchCancelSettleInput.vue';
 import { listIdNames as listWholesaleProdScheduleActivity } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivity/index';
 
 const defaultForm = {
@@ -456,7 +477,10 @@ export default {
     Upload,
     TagInput,
     BatchCancelInput,
-    SetEmergencyOrderInput
+    SetEmergencyOrderInput,
+    BatchAllocateVehicleInput,
+    CancleBatchAllocateVehicleInput,
+    BatchCancelSettleInput
   },
   data () {
     return {
@@ -475,10 +499,15 @@ export default {
       exportLoading: false,
       showBatchCancelDialog: false,
       showSetEmergencyOrderDialog: false,
+      showBatchAllocateVehicleDialog: false,
+      showCancleBatchAllocateVehicleDialog: false,
+      showBatchCancelSettleDialog: false,
       yearTypeList: [],
       options: [],
       modelList: [],
       ALLOWED_STATUS: [0, 11],
+      ALLOWED_CANCELALLOCATEVEHICLE_STATUS: [1, 5, 4],
+      SETTLED_SUCCESSFULLY_STATUS: [3],
       uploadDialogVisible: false,
       clickItemId: '',
       optionObj: {
@@ -619,6 +648,229 @@ export default {
     this.getCity();
   },
   methods: {
+    allAllocateVehicleConfirm (items) {
+      if (items.length === 0) {
+        this.$message({
+          type: 'error',
+          message: '请选择需要操作的数据！!'
+        });
+        return false;
+      };
+      for (const item of items) {
+        if (item.confirmStatus !== 1020) {
+          this.$message({
+            type: 'error',
+            message: '该批售订单确认状态未确认，无法进行配车操作!'
+          });
+          return false;
+        };
+        if (!this.ALLOWED_STATUS.includes(item.status)) {
+          this.$message({
+            type: 'error',
+            message: '选择的数据中[订单状态]必须为[未配车,配车失败]!'
+          });
+          return false;
+        };
+      }
+      return true;
+    },
+    handleBatchAllocateVehicle () {
+      const items = this.selectionList.map(item => item) || [];
+      const allowStatus = this.allAllocateVehicleConfirm(items);
+      if (allowStatus) {
+        this.showBatchAllocateVehicleDialog = true;
+      }
+    },
+    allBatchSetAutoAllocateConfirm (items) {
+      if (items.length === 0) {
+        this.$message({
+          type: 'error',
+          message: '请选择需要操作的数据！!'
+        });
+        return false;
+      };
+      for (const item of items) {
+        if (!this.ALLOWED_STATUS.includes(item.status)) {
+          this.$message({
+            type: 'error',
+            message: '存在' + item.statusLabel + '的订单，请重新核对需要操作的订单！'
+          });
+          return false;
+        };
+        if (item.needAutoAllocateCar !== 0) {
+          this.$message({
+            type: 'error',
+            message: '存在已设置为参与自动配车的订单，请重新核对需要操作的订单！'
+          });
+          return false;
+        }
+      }
+      return true;
+    },
+    handleBatchSetAutoAllocate () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      const items = this.selectionList.map(item => item) || [];
+      const allowStatus = this.allBatchSetAutoAllocateConfirm(items);
+      if (allowStatus) {
+        this.$confirm('是否确定要执行自动配车操作？', '操作提醒', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          batchSetAutoAllocateItem({
+            ids: ids,
+            needAutoAllocateCar: 1
+          }).then(() => {
+            this.$message({
+              type: 'success',
+              message: '确认成功!'
+            });
+            this.getData();
+          }).catch(() => {
+            this.$message({
+              type: 'error',
+              message: '确认失败!'
+            });
+          });
+        }).catch(() => {});
+      }
+    },
+    BatchSetNotAutoAllocateConfirm (items) {
+      if (items.length === 0) {
+        this.$message({
+          type: 'error',
+          message: '请选择需要操作的数据！!'
+        });
+        return false;
+      };
+      for (const item of items) {
+        if (!this.ALLOWED_STATUS.includes(item.status)) {
+          this.$message({
+            type: 'error',
+            message: '存在' + item.statusLabel + '的订单，请重新核对需要操作的订单！'
+          });
+          return false;
+        };
+        if (item.needAutoAllocateCar !== 1) {
+          this.$message({
+            type: 'error',
+            message: '存在已设置为不自动配车的订单，请重新核对需要操作的订单！'
+          });
+          return false;
+        }
+      }
+      return true;
+    },
+    handleBatchSetNotAutoAllocate () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      const items = this.selectionList.map(item => item) || [];
+      const allowStatus = this.BatchSetNotAutoAllocateConfirm(items);
+      if (allowStatus) {
+        this.$confirm('是否确定要执行自动配车操作？', '操作提醒', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          batchSetAutoAllocateItem({
+            ids: ids,
+            needAutoAllocateCar: 0
+          }).then(() => {
+            this.$message({
+              type: 'success',
+              message: '确认成功!'
+            });
+            this.getData();
+          }).catch(() => {
+            this.$message({
+              type: 'error',
+              message: '确认失败!'
+            });
+          });
+        }).catch(() => {});
+      }
+    },
+    handleBatchSettleSubmit () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      this.$confirm('是否需要对批售订单进行批量结算?', '操作提醒', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        batchSettleSubmitItem({
+          idSet: ids
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '批量结算成功!'
+          });
+          this.getData();
+        }).catch(() => {
+          this.$message({
+            type: 'error',
+            message: '批量结算失败!'
+          });
+        });
+      }).catch(() => {});
+    },
+    batchCancelSettleConfirm (items) {
+      if (items.length === 0) {
+        this.$message({
+          type: 'error',
+          message: '请选择需要操作的数据！!'
+        });
+        return false;
+      };
+      for (const item of items) {
+        if (!this.SETTLED_SUCCESSFULLY_STATUS.includes(item.status)) {
+          this.$message({
+            type: 'error',
+            message: '选择的数据中[订单状态]必须为[结算成功]!'
+          });
+          return false;
+        };
+        if (item.createdShippingPlan !== 0) {
+          this.$message({
+            type: 'error',
+            message: '整车补货订单' + item.wholesaleOrderCode + '已经做了发运计划不能取消结算!'
+          });
+          return false;
+        }
+      }
+      return true;
+    },
+    handleBatchCancelSettle () {
+      const items = this.selectionList.map(item => item) || [];
+      const allowStatus = this.batchCancelSettleConfirm(items);
+      if (allowStatus) {
+        this.showBatchCancelSettleDialog = true;
+      }
+    },
+    CancelAllocateVehicleConfirm (items) {
+      if (items.length === 0) {
+        this.$message({
+          type: 'error',
+          message: '请选择需要操作的数据！!'
+        });
+        return false;
+      };
+      for (const item of items) {
+        if (!this.ALLOWED_CANCELALLOCATEVEHICLE_STATUS.includes(item.status)) {
+          this.$message({
+            type: 'error',
+            message: '选择的数据中[订单状态]必须为[已完成配车、取消结算、结算失败]!'
+          });
+          return false;
+        };
+      }
+      return true;
+    },
+    handleBatchCancelAllocateVehicle () {
+      const items = this.selectionList.map(item => item) || [];
+      const allowStatus = this.CancelAllocateVehicleConfirm(items);
+      if (allowStatus) {
+        this.showCancleBatchAllocateVehicleDialog = true;
+      }
+    },
     async getRegionList (params) {
       return getRigion({ orgName: params });
     },
@@ -685,11 +937,28 @@ export default {
       }
     },
     emergencyApproval (data) {
-      console.log(data);
       return setEmergencyOrderItem(data).then(() => {
         this.$message({
           type: 'success',
           message: '批量设置急单成功'
+        });
+        this.getData();
+      });
+    },
+    batchCancelSettle (data) {
+      return batchCancelSettleItem(data).then(() => {
+        this.$message({
+          type: 'success',
+          message: '批量取消结算成功'
+        });
+        this.getData();
+      });
+    },
+    confirmBatchAllocateVehicle (data) {
+      return batchAllocateVehicleItem(data).then(() => {
+        this.$message({
+          type: 'success',
+          message: '批量配车成功'
         });
         this.getData();
       });
@@ -766,7 +1035,7 @@ export default {
       if (items.length === 0) {
         this.$message({
           type: 'error',
-          message: '请选择需要操作的数据！!'
+          message: '请选择需要操作的数据！'
         });
         return false;
       };
@@ -774,17 +1043,10 @@ export default {
         if (!this.ALLOWED_STATUS.includes(item.status)) {
           this.$message({
             type: 'error',
-            message: '只有【订单状态】为未配车、配车失败的记录可以设置，请核实！!'
+            message: '只有【订单状态】为未配车、配车失败的记录可以设置，请核实！'
           });
           return false; // 只要有一个不满足，立即终止操作
         }
-        // if (item.emergencyOrder === 1) {
-        //   this.$message({
-        //     type: 'error',
-        //     message: '选择的数据中包含已经设为急单的数据!'
-        //   });
-        //   return;
-        // }
       }
       return true;
     },

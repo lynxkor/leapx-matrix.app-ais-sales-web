@@ -85,7 +85,6 @@
                   />
                 </el-form-item>
                 <el-form-item label="主体母公司名称：" prop="mainDealerCompanyName">
-
                   <fetch-select
                   :remote-method="getParentCompany"
                   remote
@@ -107,6 +106,14 @@
                     disabled
                   />
                 </el-form-item>
+                <el-form-item label="创建人：" v-show="isEditing===true">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.creatorName"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   <el-date-picker
                   type="datetime"
@@ -114,6 +121,14 @@
                   value-format="yyyy-MM-dd HH:mm:ss"
                   disabled
                 />
+                </el-form-item>
+                <el-form-item label="编号：" v-show="isEditing===true">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.code"
+                    clearable
+                    disabled
+                  />
                 </el-form-item>
               </el-form>
               <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
