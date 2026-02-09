@@ -273,35 +273,11 @@ export default {
             visible: true,
             fixed: 'right',
             buttons: [{
-              name: '编辑',
+              name: '日志',
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/finance/bank/finBankFinancingRecord/edit',
-                  query: {
-                    id: row.id,
-                    isEditing: true
-                  }
-                });
+                this.$auditLog.show({ id: row.id });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],
@@ -377,9 +353,7 @@ export default {
       getList({
         ...this.getFormData(),
         pageNum: this.optionObj.form.page,
-        pageSize: this.optionObj.form.size,
-        accountDateStart: this.form.accountDate ? this.form.accountDate[0] : null,
-        accountDateEnd: this.form.accountDate ? this.form.accountDate[1] : null
+        pageSize: this.optionObj.form.size
       })
         .then(res => {
           console.log(res);
@@ -438,6 +412,13 @@ export default {
         if (this.form.createTime.length > 1) {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
+        }
+      }
+      if (this.form.accountDate) {
+        delete data.accountDate;
+        if (this.form.accountDate.length > 1) {
+          data.accountDateStart = this.form.accountDate[0];
+          data.accountDateEnd = this.form.accountDate[1];
         }
       }
 

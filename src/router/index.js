@@ -1943,6 +1943,60 @@ const routes = [
         name: '交付周期时效信息详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehretail/orderManager/orderLockRecord',
+      name: 'orderLockRecord',
+      component: () => import('@/views/vehretail/orderManager/orderLockRecord/index.vue'),
+
+      meta: {
+        name: '订单锁车记录管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/orderManager/orderLockRecord/edit',
+      name: 'orderLockRecordEdit',
+      component: () => import('@/views/vehretail/orderManager/orderLockRecord/edit.vue'),
+
+      meta: {
+        name: '订单锁车记录管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/orderManager/orderConfigChange',
+      name: 'orderConfigChange',
+      component: () => import('@/views/vehretail/orderManager/orderConfigChange/index.vue'),
+
+      meta: {
+        name: '订单改配信息管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/ordermanager/orderconfigchange/edit',
+      name: 'orderConfigChangeEdit',
+      component: () => import('@/views/vehretail/orderManager/orderConfigChange/edit.vue'),
+
+      meta: {
+        name: '订单改配信息管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/orderRefund/changeApply',
+      name: 'orderChange',
+      component: () => import('@/views/vehretail/orderRefund/changeApply/index.vue'),
+
+      meta: {
+        name: '订单信息变更申请',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/orderRefund/changeApply/edit',
+      name: 'orderChangeEdit',
+      component: () => import('@/views/vehretail/orderRefund/changeApply/edit.vue'),
+
+      meta: {
+        name: '订单信息变更申请详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];

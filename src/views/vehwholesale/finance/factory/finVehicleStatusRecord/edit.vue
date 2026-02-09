@@ -457,7 +457,7 @@ const defaultForm = {
   materialsDesc: '',
   shipmentDate: '',
   receiveDate: '',
-  syncstatus: '1',
+  syncStatus: '',
   syncResult: '',
   syncCount: '',
   createTime: '',
