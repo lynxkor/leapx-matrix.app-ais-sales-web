@@ -41,15 +41,7 @@
               <h2>销服订单状态</h2>
             </div>
             <div class="common-section-body">
-              <NavTop :current="form.lockType" :list="[
-                  { name: '待门店向工厂下单', code: 1 },
-                  { name: '车辆生产中', code: 3 },
-                  { name: '待门店向工厂付款', code: 33 },
-                  { name: '车辆发运准备中', code: 36 },
-                  { name: '车辆运输中', code: 4 },
-                  { name: '车辆已到店', code: 5 },
-                  { name: '交付完成', code: 6 }
-                ]"/>
+              <NavTop :current="form.orderStatus" :navType="'order'" :retailOrderCode="form.retailOrderCode"/>
             </div>
           </section>
           <section id="app-order-status" class="common-section">

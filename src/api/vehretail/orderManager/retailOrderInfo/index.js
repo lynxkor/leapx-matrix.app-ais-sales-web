@@ -50,3 +50,35 @@ export function enableItem (data) {
 export function findCanUnlockOrderList (data) {
   return api.jsonPost(prefix + 'findCanUnlockOrderList', data);
 }
+
+/**
+ * 取消锁车-申请原因
+ * @param {Object} data
+ */
+export function unlockReasonList (data) {
+  return api.jsonPost('vr/web/order/unlockReasonList', data);
+};
+
+/**
+ * 取消锁车-单车提交
+ * @param {Object} data
+ */
+export function perUnlock (data) {
+  return api.jsonPost('vr/web/order/perUnlock', data);
+};
+
+/**
+ * 取消锁车-手工配车
+ * @param {Object} data
+ */
+export function manualLock (data) {
+  return api.jsonPost('vr/web/order/manualLock', data);
+};
+
+/**
+ * 查询订单状态接口
+ * @param {Object} data
+ */
+export function orderStatusNodes (data) {
+  return api.jsonPost('vr/web/order/retailOrderInfo/orderStatus/nodes', data);
+};

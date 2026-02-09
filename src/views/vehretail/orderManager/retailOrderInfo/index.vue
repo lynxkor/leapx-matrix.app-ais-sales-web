@@ -190,7 +190,7 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
-       <el-button v-if="canAddOrUpdate" size="small" @click="handleAdd">取消锁车</el-button>
+       <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length !== 1" @click="handleUnlock">取消锁车</el-button>
        <el-button v-if="canAddOrUpdate" size="small" @click="handleAdd">更换销售门店</el-button>
        <el-button v-if="canAddOrUpdate" size="small" @click="handleAdd">更换交付门店</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
@@ -220,11 +220,9 @@
       </LPVxeTable>
     </div>
     <!-- TIPS: 填入项目id即可 -->
-    <Upload
-      :visible="uploadDialogVisible"
-      :id="'1'"
-      @close="handleUploadDialogClose"
-    />
+    <Upload :visible="uploadDialogVisible" :id="'1'" @close="handleUploadDialogClose" />
+    <!-- 取消锁车 -->
+     <UnlockDialog ref="unlockDialog" />
   </div>
 </template>
 
@@ -243,6 +241,7 @@ import {
   vehicleModelList,
   vehicleModelYearTypeRelationDistinctYeayType,
   getRigion,
+  loginUserGet,
 } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -253,6 +252,7 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
+import UnlockDialog from './components/UnlockDialog';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -314,6 +314,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    UnlockDialog,
     TagInput,
     PageSearchAction,
     LPVxeTable,
@@ -330,6 +331,7 @@ export default {
       form: {
         ...defaultForm
       },
+      accountFlag: null, // 账户标识  true: 是店端账号；false: 厂端账号
       orgProps: {
         checkStrictly: true,
         emitPath: true,
@@ -480,8 +482,17 @@ export default {
     this.getData();
     this.modelSearch();
     this.listVehicleYearType();
+    this.loginUserGet();
   },
   methods: {
+    handleUnlock () {
+      this.$refs.unlockDialog.show();
+    },
+    loginUserGet () {
+      loginUserGet().then(res => {
+        this.accountFlag = res.accountFlag;
+      }).catch(() => {});
+    },
     async modelSearch () {
       const res = await vehicleModelList({ seriesId: this.form.seriesId, status: 1 });
       if (res.length) {

@@ -5,6 +5,7 @@
 </template>
 <script>
 
+import { orderStatusNodes } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 export default {
   name: 'PageCommonNav',
   props: {
@@ -12,9 +13,18 @@ export default {
       type: [Number, String],
       default: 0
     },
-    list: {
-      type: Array,
-      default: () => [
+    navType: {
+      type: String,
+      default: 'APP'
+    },
+    retailOrderCode: {
+      type: String,
+      default: ''
+    }
+  },
+  data () {
+    return {
+      list: [
         { name: '待门店向工厂下单', code: 1 },
         { name: '车辆生产中', code: 3 },
         { name: '待门店向工厂付款', code: 33 },
@@ -23,15 +33,25 @@ export default {
         { name: '车辆已到店', code: 5 },
         { name: '交付完成', code: 6 }
       ]
-    }
-  },
-  data () {
-    return {
     };
   },
-  created () {
+  watch: {
+    retailOrderCode () {
+      this.orderStatusNodes();
+    }
   },
   methods: {
+    orderStatusNodes () {
+      orderStatusNodes(this.retailOrderCode).then(res => {
+        this.list = res.map(ele => {
+          return {
+            name: ele.orderStatusLabel,
+            code: ele.orderStatus,
+            ...ele
+          };
+        });
+      }).catch(() => {});
+    },
     handleClick (id) {
       // this.$emit('change', id);
     },

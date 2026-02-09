@@ -76,28 +76,28 @@
           </div>
           <el-form ref="ruleForm" label-width="170px" inline>
             <el-form-item label="是否允许现车批售：">
-              {{ info.props.allowWholesaleLabel }}
+              {{ info.props?.allowWholesaleLabel || '-' }}
             </el-form-item>
             <el-form-item label="是否允许排产申请：">
-              {{ info.props.allowProductionScheduleLabel }}
+              {{ info.props?.allowProductionScheduleLabel || '-' }}
             </el-form-item>
             <el-form-item label="是否允许展车批售：">
-              {{ info.props.allowDisplayVehicleWholesaleLabel }}
+              {{ info.props?.allowDisplayVehicleWholesaleLabel || '-' }}
             </el-form-item>
             <el-form-item label="是否允许试驾车批售：">
-              {{ info.props.allowTestDriveVehicleWholesaleLabel }}
+              {{ info.props?.allowTestDriveVehicleWholesaleLabel || '-' }}
             </el-form-item>
             <el-form-item label="是否允许企业客户销售：">
-              {{ info.props.allowCustomerSalesLabel }}
+              {{ info.props?.allowCustomerSalesLabel || '-' }}
             </el-form-item>
             <el-form-item label="是否允许批售确认：">
-              {{ info.props.allowWholesaleConfirmLabel }}
+              {{ info.props?.allowWholesaleConfirmLabel || '-' }}
             </el-form-item>
             <el-form-item label="是否允许改配：">
-              {{ info.props.allowConfigurationModifyLabel }}
+              {{ info.props?.allowConfigurationModifyLabel || '-' }}
             </el-form-item>
             <el-form-item label="停产状态：">
-              {{ info.props.discontinueStatusLabel }}
+              {{ info.props?.discontinueStatusLabel || '-' }}
             </el-form-item>
           </el-form>
         </section>
