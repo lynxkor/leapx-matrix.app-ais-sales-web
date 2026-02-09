@@ -10,10 +10,13 @@
       class="ais-search-form"
     >
       <el-form-item label="融资数据来源">
-        <el-input
-          placeholder="请输入"
-          v-model="form.financingDataSource"
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="vw_financing_data_source"
+          v-model="form.syncStatus"
+          placeholder="请选择"
           clearable
+          filterable
         />
       </el-form-item>
       <el-form-item label="订单号">
@@ -26,7 +29,7 @@
       <el-form-item label="车辆状态"  v-show="this.visibleCount === 3 || show">
         <fetch-select
           :request="fetchOptions"
-          enumCode="xxx"
+          enumCode="vw_vehicle_status"
           v-model="form.vehicleStatus"
           placeholder="请选择"
           clearable
@@ -42,25 +45,42 @@
             clearable
           />
         </el-form-item>
-        <el-form-item label="母公司编码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.dealerCompanyCode"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="母公司名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.dealerCompanyName"
-            clearable
-          />
-        </el-form-item>
+      <el-form-item label="母公司编码">
+        <fetch-select
+          filterable
+          clearable
+          remote
+          multiple
+          v-model="form.dealerCompanyCodes"
+          :remote-method="getDealerParentOrgListByCode"
+          value-key="companyCode"
+          label-key="companyCode"
+        />
+      </el-form-item>
+      <el-form-item label="母公司名称">
+        <fetch-select
+          filterable
+          clearable
+          remote
+          multiple
+          v-model="form.dealerCompanyCodes"
+          :remote-method="getDealerParentOrgListByName"
+          value-key="companyCode"
+          label-key="companyName"
+        />
+      </el-form-item>
         <el-form-item label="融资金融机构">
-          <el-input
-            placeholder="请输入"
-            v-model="form.fundFinancialOrganizationName"
+          <fetch-select
+            :remote-method="repairItemSearch"
+            remote
+            reserve-keyword
+            multiple
+            labelKey="name"
+            valueKey="id"
+            v-model="form.fundFinancialOrganizationIds"
+            placeholder="请选择"
             clearable
+            filterable
           />
         </el-form-item>
         <el-form-item label="发车日期">
@@ -80,7 +100,7 @@
         <el-form-item label="同步状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
+            enumCode="vw_sync_status"
             v-model="form.syncStatus"
             placeholder="请选择"
             clearable
@@ -103,11 +123,10 @@
         <el-form-item label="状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
+            enumCode="StatusEnum"
             v-model="form.status"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -164,7 +183,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/finance/factory/finVehicleStatusRecord/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -178,16 +197,17 @@ const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   financingDataSource: '',
   orderCode: '',
-  vehicleStatus: '',
+  vehiclestatus: '1',
   vin: '',
   dealerCompanyCode: '',
+  dealerCompanyCodes: [],
   dealerCompanyName: '',
-  fundFinancialOrganizationName: '',
+  fundFinancialOrganizationIds: [],
   shipmentDate: '',
   receiveDate: '',
-  syncStatus: '',
+  syncstatus: '1',
   createTime: '',
-  status: '',
+  status: '1',
 };
 
 const pageSize = 20;
@@ -497,6 +517,12 @@ export default {
       //     });
       //   });
       // });
+    },
+    async getDealerParentOrgListByCode (params) {
+      return getParentCompany({ parentCompanyCode: params });
+    },
+    async getDealerParentOrgListByName (params) {
+      return getParentCompany({ parentCompanyName: params });
     }
   }
 };

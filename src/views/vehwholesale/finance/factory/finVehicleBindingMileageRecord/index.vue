@@ -10,10 +10,13 @@
       class="ais-search-form"
     >
       <el-form-item label="融资数据来源">
-        <el-input
-          placeholder="请输入"
-          v-model="form.financingDataSource"
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="vw_financing_data_source"
+          v-model="form.syncStatus"
+          placeholder="请选择"
           clearable
+          filterable
         />
       </el-form-item>
       <el-form-item label="VIN号">
@@ -31,17 +34,24 @@
         />
       </el-form-item>
       <template v-if="show">
-        <el-form-item label="融资金融机构">
-          <el-input
-            placeholder="请输入"
-            v-model="form.fundFinancialOrganizationName"
-            clearable
-          />
-        </el-form-item>
+      <el-form-item label="融资金融机构">
+        <fetch-select
+          :remote-method="repairItemSearch"
+          remote
+          reserve-keyword
+          multiple
+          labelKey="name"
+          valueKey="id"
+          v-model="form.fundFinancialOrganizationIds"
+          placeholder="请选择"
+          clearable
+          filterable
+        />
+      </el-form-item>
         <el-form-item label="同步状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
+            enumCode="vw_sync_status"
             v-model="form.syncStatus"
             placeholder="请选择"
             clearable
@@ -64,11 +74,10 @@
         <el-form-item label="状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
+            enumCode="StatusEnum"
             v-model="form.status"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -134,16 +143,17 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   financingDataSource: '',
   vin: '',
   isVehicleBound: '',
-  fundFinancialOrganizationName: '',
-  syncStatus: '',
+  fundFinancialOrganizationIds: [],
+  syncstatus: '1',
   createTime: '',
-  status: '',
+  status: '1',
 };
 
 const pageSize = 20;
@@ -446,7 +456,10 @@ export default {
       //     });
       //   });
       // });
-    }
+    },
+    async repairItemSearch (query) {
+      return listFinancialOrganization({ organizationNameLike: query, status: 1 });
+    },
   }
 };
 </script>

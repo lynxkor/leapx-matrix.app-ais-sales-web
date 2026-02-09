@@ -100,7 +100,7 @@
                 <el-form-item label="车辆状态：" prop="vehicleStatus">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="vw_repayment_vehicle_status"
                     v-model="form.vehicleStatus"
                     placeholder="请选择"
                     clearable
@@ -124,7 +124,7 @@
                 <el-form-item label="状态：" prop="status">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="StatusEnum"
                     v-model="form.status"
                     placeholder="请选择"
                     clearable
@@ -355,16 +355,16 @@ const defaultForm = {
   code: '',
   dealerCompanyCode: '',
   dealerCompanyName: '',
-  fundFinancialOrganizationName: '',
+  fundFinancialOrganizationIds: [],
   vin: '',
   repaymentDate: '',
   materialsDesc: '',
   wholesaleOrderCode: '',
   customerOrderCode: '',
-  vehicleStatus: '',
+  vehiclestatus: '1',
   vehicleRepaymentRecordCode: '',
   dealerName: '',
-  status: '',
+  status: '1',
   statusDesc: '',
   createTime: '',
   id: '',

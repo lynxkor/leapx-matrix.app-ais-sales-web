@@ -35,10 +35,13 @@
                   />
                 </el-form-item>
                 <el-form-item label="融资数据来源：" prop="financingDataSource">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.financingDataSource"
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vw_financing_data_source"
+                    v-model="form.syncStatus"
+                    placeholder="请选择"
                     clearable
+                    filterable
                   />
                 </el-form-item>
                 <el-form-item label="订单号：" prop="orderCode">
@@ -51,7 +54,7 @@
                 <el-form-item label="车辆状态：" prop="vehicleStatus">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="vw_vehicle_status"
                     v-model="form.vehicleStatus"
                     placeholder="请选择"
                     clearable
@@ -152,7 +155,7 @@
                 <el-form-item label="同步状态：" prop="syncStatus">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="vw_sync_status"
                     v-model="form.syncStatus"
                     placeholder="请选择"
                     clearable
@@ -186,7 +189,7 @@
                 <el-form-item label="状态：" prop="status">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="StatusEnum"
                     v-model="form.status"
                     placeholder="请选择"
                     clearable
@@ -440,7 +443,7 @@ const defaultForm = {
   code: '',
   financingDataSource: '',
   orderCode: '',
-  vehicleStatus: '',
+  vehiclestatus: '1',
   vin: '',
   financingAmount: '',
   taxIncludedPrice: '',
@@ -449,16 +452,16 @@ const defaultForm = {
   dealerCode: '',
   dealerName: '',
   unifiedSocialCreditCode: '',
-  fundFinancialOrganizationName: '',
+  fundFinancialOrganizationIds: [],
   materialsCode: '',
   materialsDesc: '',
   shipmentDate: '',
   receiveDate: '',
-  syncStatus: '',
+  syncstatus: '1',
   syncResult: '',
   syncCount: '',
   createTime: '',
-  status: '',
+  status: '1',
   statusDesc: '',
   id: '',
   creator: '',

@@ -10,31 +10,48 @@
       class="ais-search-form"
     >
       <el-form-item label="母公司编码">
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerCompanyCode"
+        <fetch-select
+          filterable
           clearable
+          remote
+          multiple
+          v-model="form.dealerCompanyCodes"
+          :remote-method="getDealerParentOrgListByCode"
+          value-key="companyCode"
+          label-key="companyCode"
         />
       </el-form-item>
       <el-form-item label="母公司名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerCompanyName"
+        <fetch-select
+          filterable
           clearable
+          remote
+          multiple
+          v-model="form.dealerCompanyCodes"
+          :remote-method="getDealerParentOrgListByName"
+          value-key="companyCode"
+          label-key="companyName"
         />
       </el-form-item>
       <el-form-item label="融资金融机构"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.fundFinancialOrganizationName"
+        <fetch-select
+          :remote-method="repairItemSearch"
+          remote
+          reserve-keyword
+          multiple
+          labelKey="name"
+          valueKey="id"
+          v-model="form.fundFinancialOrganizationIds"
+          placeholder="请选择"
           clearable
+          filterable
         />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="融资类型">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
+            enumCode="vw_financing_type"
             v-model="form.financingType"
             placeholder="请选择"
             clearable
@@ -50,17 +67,24 @@
           />
         </el-form-item>
         <el-form-item label="出账日期">
-          <el-input
-            placeholder="请输入"
+          <el-date-picker
             v-model="form.accountDate"
-            clearable
+            type="daterange"
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
           />
         </el-form-item>
         <el-form-item label="业务模式">
-          <el-input
-            placeholder="请输入"
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vw_business_mode"
             v-model="form.businessMode"
+            placeholder="请选择"
             clearable
+            filterable
           />
         </el-form-item>
         <el-form-item label="融资申请编码">
@@ -73,24 +97,18 @@
         <el-form-item label="状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
+            enumCode="StatusEnum"
             v-model="form.status"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
         <el-form-item label="创建时间">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
+          <dateranges
             v-model="form.createTime"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            :setDefault="true"
+            deftTime="最近三个月"
           />
         </el-form-item>
       </template>
@@ -146,8 +164,9 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/finance/bank/finBankFinancingRecord/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
+import dateranges from '@/libs/components/dateranges';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -155,18 +174,20 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   dealerCompanyCode: '',
+  dealerCompanyCodes: [],
   dealerCompanyName: '',
-  fundFinancialOrganizationName: '',
+  fundFinancialOrganizationIds: [],
   financingType: '',
   iouNumber: '',
   accountDate: '',
   businessMode: '',
   financingApplicationCode: '',
-  status: '',
+  status: '1',
   createTime: '',
 };
 
@@ -182,7 +203,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    dateranges
   },
   data () {
     return {
@@ -352,7 +374,13 @@ export default {
       this.loading = true;
       this.selectionList = [];
 
-      getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
+      getList({
+        ...this.getFormData(),
+        pageNum: this.optionObj.form.page,
+        pageSize: this.optionObj.form.size,
+        accountDateStart: this.form.accountDate ? this.form.accountDate[0] : null,
+        accountDateEnd: this.form.accountDate ? this.form.accountDate[1] : null
+      })
         .then(res => {
           console.log(res);
           this.optionObj.dataList = res.records.map(item => {
@@ -473,6 +501,15 @@ export default {
       //     });
       //   });
       // });
+    },
+    async repairItemSearch (query) {
+      return listFinancialOrganization({ organizationNameLike: query, status: 1 });
+    },
+    async getDealerParentOrgListByCode (params) {
+      return getParentCompany({ parentCompanyCode: params });
+    },
+    async getDealerParentOrgListByName (params) {
+      return getParentCompany({ parentCompanyName: params });
     }
   }
 };

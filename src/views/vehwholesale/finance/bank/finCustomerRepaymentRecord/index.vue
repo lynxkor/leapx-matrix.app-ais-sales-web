@@ -10,24 +10,41 @@
       class="ais-search-form"
     >
       <el-form-item label="母公司编码">
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerCompanyCode"
+        <fetch-select
+          filterable
           clearable
+          remote
+          multiple
+          v-model="form.dealerCompanyCodes"
+          :remote-method="getDealerParentOrgListByCode"
+          value-key="companyCode"
+          label-key="companyCode"
         />
       </el-form-item>
       <el-form-item label="母公司名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerCompanyName"
+        <fetch-select
+          filterable
           clearable
+          remote
+          multiple
+          v-model="form.dealerCompanyCodes"
+          :remote-method="getDealerParentOrgListByName"
+          value-key="companyCode"
+          label-key="companyName"
         />
       </el-form-item>
       <el-form-item label="融资金融机构"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.fundFinancialOrganizationName"
+        <fetch-select
+          :remote-method="repairItemSearch"
+          remote
+          reserve-keyword
+          multiple
+          labelKey="name"
+          valueKey="id"
+          v-model="form.fundFinancialOrganizationIds"
+          placeholder="请选择"
           clearable
+          filterable
         />
       </el-form-item>
       <template v-if="show">
@@ -41,7 +58,7 @@
         <el-form-item label="融资类型">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
+            enumCode="vw_financing_type"
             v-model="form.financingType"
             placeholder="请选择"
             clearable
@@ -52,7 +69,7 @@
         <el-form-item label="还款状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
+            enumCode="vw_repayment_status"
             v-model="form.repaymentStatus"
             placeholder="请选择"
             clearable
@@ -61,20 +78,22 @@
           />
         </el-form-item>
         <el-form-item label="业务模式">
-          <el-input
-            placeholder="请输入"
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vw_business_mode"
             v-model="form.businessMode"
+            placeholder="请选择"
             clearable
+            filterable
           />
         </el-form-item>
         <el-form-item label="状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
+            enumCode="statusEnum"
             v-model="form.status"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -143,7 +162,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/finance/bank/finCustomerRepaymentRecord/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -152,17 +171,19 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   dealerCompanyCode: '',
+  dealerCompanyCodes: [],
   dealerCompanyName: '',
-  fundFinancialOrganizationName: '',
+  fundFinancialOrganizationIds: [],
   repaymentDate: '',
   financingType: '',
-  repaymentStatus: '',
+  repaymentstatus: '1',
   businessMode: '',
-  status: '',
+  status: '1',
   createTime: '',
 };
 
@@ -467,6 +488,15 @@ export default {
       //     });
       //   });
       // });
+    },
+    async repairItemSearch (query) {
+      return listFinancialOrganization({ organizationNameLike: query, status: 1 });
+    },
+    async getDealerParentOrgListByCode (params) {
+      return getParentCompany({ parentCompanyCode: params });
+    },
+    async getDealerParentOrgListByName (params) {
+      return getParentCompany({ parentCompanyName: params });
     }
   }
 };
