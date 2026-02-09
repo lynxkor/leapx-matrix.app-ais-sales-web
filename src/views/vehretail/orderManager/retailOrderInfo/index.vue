@@ -189,12 +189,15 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
+      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
+       <el-button v-if="canAddOrUpdate" size="small" @click="handleAdd">取消锁车</el-button>
+       <el-button v-if="canAddOrUpdate" size="small" @click="handleAdd">更换销售门店</el-button>
+       <el-button v-if="canAddOrUpdate" size="small" @click="handleAdd">更换交付门店</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button> -->
     </div>
     <div
       class="ais-table-c"
@@ -385,7 +388,7 @@ export default {
             visible: true,
             width: 100,
             mask: true,
-            getValue: (row) => getDetailDecryptField(row.id, 'carBuyerName')
+            // getValue: (row) => getDetailDecryptField(row.id, 'carBuyerName')
           },
           {
             props: 'carBuyerPhone',
@@ -393,7 +396,7 @@ export default {
             visible: true,
             width: 200,
             mask: true,
-            getValue: (row) => getDetailDecryptField(row.id, 'carBuyerPhone')
+            // getValue: (row) => getDetailDecryptField(row.id, 'carBuyerPhone')
           },
           {
             props: 'idCardNo',
@@ -401,7 +404,7 @@ export default {
             visible: true,
             width: 200,
             mask: true,
-            getValue: (row) => getDetailDecryptField(row.id, 'idCardNo')
+            // getValue: (row) => getDetailDecryptField(row.id, 'idCardNo')
           },
           { props: 'saleUserName', label: '订单销售顾问', visible: true, width: 200 },
           { props: 'matchVin', label: '配车VIN码', visible: true, width: 200 },
