@@ -175,7 +175,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '门店交付承载力配置';
+      return '承载力配置编码：' + this.form.deliveryConfigCode || '-';
     }
   },
   watch: {

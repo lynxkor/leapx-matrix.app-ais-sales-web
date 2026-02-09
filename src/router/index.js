@@ -2051,6 +2051,24 @@ const routes = [
         name: '门店交付承载力配置详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehretail/basicConfig/deliveryInfoConfig',
+      name: 'deliveryInfoConfig',
+      component: () => import('@/views/vehretail/basicConfig/deliveryInfoConfig/index.vue'),
+
+      meta: {
+        name: '交付信息配置',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicConfig/deliveryInfoConfig/edit',
+      name: 'deliveryInfoConfigEdit',
+      component: () => import('@/views/vehretail/basicConfig/deliveryInfoConfig/edit.vue'),
+
+      meta: {
+        name: '交付信息配置详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
