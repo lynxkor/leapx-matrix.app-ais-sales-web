@@ -374,7 +374,7 @@ const defaultForm = {
   isVehicleBound: '',
   bindingDate: '',
   fundFinancialOrganizationIds: [],
-  syncstatus: '1',
+  syncStatus: '',
   syncResult: '',
   syncCount: '',
   createTime: '',
