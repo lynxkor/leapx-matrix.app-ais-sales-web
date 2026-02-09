@@ -10,10 +10,30 @@
       class="ais-search-form"
     >
       <el-form-item label="母公司名称"  v-show="this.visibleCount === 3 || show">
-       <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
+        <fetch-select
+            :remote-method="getParentCompany"
+            remote
+            v-model="form.dealerCompanyNames"
+            placeholder="请选择"
+            labelKey="companyName"
+            valueKey="companyName"
+            clearable
+            filterable
+            multiple
+            />
       </el-form-item>
       <el-form-item label="母公司编码">
-          <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
+         <fetch-select
+            :remote-method="getParentCompany"
+            remote
+            v-model="form.dealerCompanyCodes"
+            placeholder="请选择"
+            labelKey="companyCode"
+            valueKey="companyCode"
+            clearable
+            filterable
+            multiple
+            />
         </el-form-item>
         <el-form-item label="推荐金融机构">
          <fetch-select
@@ -124,7 +144,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/finance/factory/finDealerRecommendation/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -132,7 +152,6 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
-import TagInput from '@/libs/components/TagInput';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
@@ -157,7 +176,6 @@ export default {
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
-    TagInput,
     EditPage
   },
   data () {
@@ -204,7 +222,7 @@ export default {
           },
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
-          { props: 'recAmount', label: '推荐额度', visible: true, width: 200 },
+          { props: 'recAmount', label: '推荐额度(万元)', visible: true, width: 200 },
           { props: 'recFinancialOrganizationName', label: '推荐金融机构', visible: true, width: 200 },
           { props: 'recDate', label: '推荐日期', visible: true, width: 200 },
           { props: 'depositRatio', label: '保证金比例%', visible: true, width: 200 },
@@ -238,6 +256,12 @@ export default {
               click: (rowIndex, row) => {
               },
               type: 'info'
+            }, {
+              name: '日志',
+              click: (rowIndex, row) => {
+                this.$auditLog.show({ id: row.id });
+              },
+              type: 'info'
             }]
           }
         ],
@@ -250,6 +274,16 @@ export default {
     this.getData();
   },
   methods: {
+    async getParentCompany (query) {
+      try {
+        const res = await getParentCompany({ parentCompanyName: query });
+        console.log(res);
+        this.parentCompanyNames = res;
+        return res;
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
+    },
     repairItemSearch (query) { return fundGetList({ organizationNameLike: query, status: 1 }); },
     handleListSelect (row) {
       this.clickItemId = row.id;

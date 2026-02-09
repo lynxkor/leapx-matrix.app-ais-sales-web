@@ -63,7 +63,7 @@
                       @change="getfundFinancialOrganizationName"
                       />
                 </el-form-item>
-                 <el-form-item label="推荐额度：" prop="recAmount">
+                 <el-form-item label="推荐额度(万元)：" prop="recAmount">
                   <el-input
                     placeholder="请输入"
                     v-model="form.recAmount"
@@ -173,7 +173,7 @@
                 <el-form-item label="推荐金融机构：" prop="recFinancialOrganizationName">
                   {{ form.recFinancialOrganizationName }}
                 </el-form-item>
-                <el-form-item label="推荐额度：" prop="recAmount">
+                <el-form-item label="推荐额度(万元)：" prop="recAmount">
                   {{ form.recAmount }}
                 </el-form-item>
                 <el-form-item label="推荐日期：" prop="recDate">
