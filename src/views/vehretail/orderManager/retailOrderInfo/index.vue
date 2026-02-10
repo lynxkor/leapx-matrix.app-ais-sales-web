@@ -231,6 +231,7 @@
     <!-- 配置页 -->
      <MaterialsDialog
       ref="materialsDialog"
+      :row="row"
       @confirm="getData"
     />
   </div>
@@ -240,7 +241,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getList, deleteItem, enableItem, getOrderUnlockConfig } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import {
   getTableConfig,
   tableAddOrUpdate,
@@ -473,7 +474,7 @@ export default {
             visible: true,
             fixed: 'right',
             buttons: [{
-              name: '配额调整',
+              name: '修改配置',
               click: (rowIndex, row) => {
                 this.changeConfiguration(row);
               },
@@ -506,16 +507,28 @@ export default {
   },
   methods: {
     changeConfiguration (row) {
+      this.row = row;
       this.$refs.materialsDialog.show();
     },
-    handleUnlock () {
-      console.log('this.selectionList[0]:', this.selectionList[0]);
+    async handleUnlock () {
       this.businessId = this.selectionList[0]?.id;
       this.row = this.selectionList[0];
+      const res = await getOrderUnlockConfig(this.row.retailOrderCode);
+      // 检查返回结果是否有效
+      if (!res || res.allowUnlockStatus !== 1 || res.allowManualCarStatus !== 1) {
+        this.$message.error('该门店没有取消配车权限');
+        return;
+      }
+      // 检查 accountFlag 和 unlockCount 的关系
+      if (this.accountFlag && this.row.unlockCount >= 1) {
+        this.$message.error('该订单取消配车次数已达上限');
+        return;
+      }
       this.$refs.unlockDialog.show();
     },
     loginUserGet () {
       loginUserGet().then(res => {
+        // true 店端 false厂端
         this.accountFlag = res.accountFlag;
       }).catch(() => {});
     },

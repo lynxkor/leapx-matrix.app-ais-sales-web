@@ -90,3 +90,11 @@ export function orderStatusNodes (data) {
 export function allowConfigChangeSkuPage (data) {
   return api.jsonPost('vr/web/product/productSkuPrice/allowConfigChangeSkuPage', data);
 };
+
+/**
+ * 取消锁车-校验门店是否允许锁车
+ * @param {Object} data
+ */
+export function getOrderUnlockConfig (data) {
+  return api.jsonPost('vr/web/order/retailOrderUnlockConfig/unlock/getOrderUnlockConfig', data);
+};

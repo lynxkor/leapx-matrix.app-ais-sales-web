@@ -154,10 +154,8 @@ export default {
   },
   methods: {
     handleUnlockReasonCodeChange (val, row) {
-      console.log('row:', row);
       this.form.unlockReason = row.unlockReason;
       this.form.reasonExplain = row.reasonExplain;
-      console.log('this.form.unlockReason:', this.form.unlockReason);
     },
     unlockReasonList () {
       unlockReasonList().then(res => {
