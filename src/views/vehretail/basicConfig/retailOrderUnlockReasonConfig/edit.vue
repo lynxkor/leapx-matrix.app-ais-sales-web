@@ -24,12 +24,13 @@
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="订单解绑编码：" prop="unlockReasonCode">
+                <el-form-item label="订单解绑编码：">
                   <el-input
                     v-model="form.unlockReasonCode"
                     clearable
                     placeholder="请输入"
                     maxlength="30"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="订单解锁原因：" prop="unlockReason">

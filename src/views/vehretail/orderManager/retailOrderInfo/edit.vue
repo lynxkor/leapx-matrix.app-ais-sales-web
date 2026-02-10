@@ -250,7 +250,6 @@
               />
             </div>
           </section>
-
           <section id="car-owner" class="common-section">
             <div class="common-section-header">
               <h2>购车人信息</h2>
@@ -262,7 +261,6 @@
               />
             </div>
           </section>
-
           <section id="order-fund" class="common-section">
             <div class="common-section-header">
               <h2>资金信息</h2>
@@ -274,7 +272,6 @@
               />
             </div>
           </section>
-
           <section id="materials" class="common-section">
             <div class="common-section-header">
               <h2>订单物料信息</h2>
@@ -286,7 +283,6 @@
               />
             </div>
           </section>
-
           <section id="lock-allocation" class="common-section">
             <div class="common-section-header">
               <h2>锁/配车信息</h2>
@@ -298,7 +294,6 @@
               />
             </div>
           </section>
-
           <section id="wholesale" class="common-section">
             <div class="common-section-header">
               <h2>批售信息</h2>
@@ -310,7 +305,6 @@
               />
             </div>
           </section>
-
           <section id="refund" class="common-section">
             <div class="common-section-header">
               <h2>订单取消信息</h2>
@@ -322,7 +316,6 @@
               />
             </div>
           </section>
-
           <section id="finance" class="common-section">
             <div class="common-section-header">
               <h2>附属信息</h2>

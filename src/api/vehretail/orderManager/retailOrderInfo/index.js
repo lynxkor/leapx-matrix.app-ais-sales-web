@@ -82,3 +82,11 @@ export function manualLock (data) {
 export function orderStatusNodes (data) {
   return api.jsonPost('vr/web/order/retailOrderInfo/orderStatus/nodes', data);
 };
+
+/**
+ * 取消锁车-选择配置
+ * @param {Object} data
+ */
+export function allowConfigChangeSkuPage (data) {
+  return api.jsonPost('vr/web/product/productSkuPrice/allowConfigChangeSkuPage', data);
+};
