@@ -705,8 +705,9 @@ export default {
     },
     // 购车人变更申请
     handleCarOwnerChangeApplication () {
-      // 实现购车人变更申请逻辑
-      console.log('购车人变更申请');
+      // this.$router.push({
+      //   path: '/vehwholesale/basic/wholesaleProdScheduleActivity'
+      // });
     },
     // 质量问题解绑申请
     handleQualityIssueUnbindApplication () {
