@@ -419,7 +419,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, autoLock, querySnapShot } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getDetail, addOrUpdate, autoLock, querySnapShot, getOrderUnlockConfig } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -444,7 +444,7 @@ import {
 import ComponentTable from './components/ComponentTable';
 import GenericDetailDisplay from './components/GenericDetailDisplay';
 import NavTop from './components/NavTop';
-import { getEnum } from '@/api/common';
+import { getEnum, loginUserGet } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -540,6 +540,7 @@ export default {
       agreementDialogContent: '',
       loading: false,
       submitLoading: false,
+      accountFlag: false,
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
@@ -640,6 +641,9 @@ export default {
       activeSection: 'basic-info'
     };
   },
+  created () {
+    this.loginUserGet();
+  },
   mounted () {
     // 监听滚动事件，高亮当前所在区域
     this.$nextTick(() => {
@@ -666,8 +670,27 @@ export default {
       console.log('设置特殊标识');
     },
     // 修改配置
-    handleModifyConfiguration () {
+    async  handleModifyConfiguration () {
+      this.businessId = this._id;
+      this.row = this.form;
+      const res = await getOrderUnlockConfig(this.row.retailOrderCode);
+      // 检查返回结果是否有效
+      if (!res || res.allowUnlockStatus !== 1 || res.allowManualCarStatus !== 1) {
+        this.$message.error('该门店没有取消配车权限');
+        return;
+      }
+      // 检查 accountFlag 和 unlockCount 的关系
+      if (this.accountFlag && this.row.unlockCount >= 1) {
+        this.$message.error('该订单取消配车次数已达上限');
+        return;
+      }
       this.$refs.materialsDialog.show();
+    },
+    loginUserGet () {
+      loginUserGet().then(res => {
+        // true 店端 false厂端
+        this.accountFlag = res.accountFlag;
+      }).catch(() => {});
     },
     // 手工配车
     handleManualVehicleAllocation () {
