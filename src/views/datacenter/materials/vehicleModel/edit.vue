@@ -37,10 +37,8 @@
                   v-model="form.seriesId"
                   :params="form.seriesName"
                   :remote-method="modelSearch"
-                  @change="handleModelChange"
                   value-key="id"
                   label-key="seriesName"
-
                 />
               </el-form-item>
               <el-form-item label="系列名称" prop="modelLineName">

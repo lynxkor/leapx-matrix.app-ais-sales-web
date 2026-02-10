@@ -21,7 +21,7 @@
           <el-button size="small">按钮2</el-button> -->
         </template>
         <!-- 固定悬浮导航栏 -->
-        <div class="fixed-nav" v-if="!isEditing || !_id">
+        <div class="fixed-nav">
           <ul>
             <li v-for="(navItem, index) in navItems" :key="index">
               <a
@@ -36,6 +36,22 @@
         </div>
 
         <el-main>
+          <section id="retail-order-status" class="common-section">
+            <div class="common-section-header">
+              <h2>销服订单状态</h2>
+            </div>
+            <div class="common-section-body">
+              <NavTop :current="form.orderStatus" :navType="'order'" :retailOrderCode="form.retailOrderCode"/>
+            </div>
+          </section>
+          <section id="app-order-status" class="common-section">
+            <div class="common-section-header">
+              <h2>APP订单状态</h2>
+            </div>
+            <div class="common-section-body">
+              <NavTop :current="form.leapAppOrderStatus"/>
+            </div>
+          </section>
           <section id="basic-info" class="common-section">
             <div class="common-section-header">
               <h2>基础信息</h2>
@@ -323,7 +339,7 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="金融按揭进度">
+                <el-form-item label="金融按揭进度：">
                   <fetch-select
                     v-model="form.finance.mortgageProgress"
                     placeholder="请选择"
@@ -333,18 +349,18 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="金融订单号">
+                <el-form-item label="金融订单号：">
                   <el-input v-model="form.finance.mortgageProgressDesc" placeholder="请输入" disabled />
                 </el-form-item>
-                <el-form-item label="金融订单状态">
+                <el-form-item label="金融订单状态：">
                   <el-input v-model="form.finance.financialOrderStatusLabel" placeholder="请输入" disabled />
                 </el-form-item>
-                <el-form-item label="保险办理进度">
+                <el-form-item label="保险办理进度：">
                   <fetch-select
                     v-model="form.finance.insuranceProgress"
                   />
                 </el-form-item>
-                <el-form-item label="保险方案">
+                <el-form-item label="保险方案：">
                   <fetch-select
                     v-model="form.finance.insurancePlan"
                   />
@@ -375,10 +391,8 @@
             <div class="common-section-body">
               <div class="common-section-table">
                 <component-table
-                  :api-method="tableConfig.apiMethod"
+                  :tableDataExternal="form[tableConfig.field]"
                   :columns="tableConfig.columns"
-                  :extra-params="{id: _id}"
-                  :show-pagination="true"
                 />
               </div>
             </div>
@@ -399,7 +413,6 @@ import { getDetail, addOrUpdate } from '@/api/vehretail/orderManager/retailOrder
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import GenericDetailDisplay from './GenericDetailDisplay';
 import {
   retailOrderDisplayFields,
   carOwnerDisplayFields,
@@ -415,11 +428,12 @@ import {
   unlockApplicationRecordDisplayFields,
   lockCarRecordDisplayFields,
   orderTransparencyTrackingDisplayFields,
-  orderStatusChangeRecordDisplayFields,
   orderCancellationRecordDisplayFields,
   orderPaymentRecordDisplayFields
-} from './fieldConfigs'; // 引入字段配置
-import ComponentTable from './ComponentTable.vue';
+} from './components/fieldConfigs'; // 引入字段配置
+import ComponentTable from './components/ComponentTable';
+import GenericDetailDisplay from './components/GenericDetailDisplay';
+import NavTop from './components/NavTop';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
@@ -477,6 +491,7 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
+    NavTop,
     ComponentTable,
     GenericDetailDisplay,
     EditPageLayout,
@@ -488,7 +503,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '：' + this.form.id;
+      return '商城订单编号：' + this.form.mallOrderCode;
     }
   },
   watch: {
@@ -539,48 +554,57 @@ export default {
       tableConfigs: [
         {
           title: '整车订单改配信息',
+          field: '整车订单改配信息',
           sectionId: 'modification-record',
           columns: this.convertToTableColumns(modificationRecordDisplayFields),
           apiMethod: null // 后续引入API方法
         },
         {
           title: '订单信息变更申请',
+          field: 'changeApplyList',
           sectionId: 'order-change-application',
           columns: this.convertToTableColumns(orderChangeApplicationDisplayFields),
           apiMethod: null // 后续引入API方法
         },
         {
           title: '锁车解绑申请记录',
+          field: 'unlockApplyList',
           sectionId: 'unlock-application-record',
           columns: this.convertToTableColumns(unlockApplicationRecordDisplayFields),
           apiMethod: null // 后续引入API方法
         },
         {
           title: '锁车记录',
+          field: 'lockRecordList',
           sectionId: 'lock-car-record',
           columns: this.convertToTableColumns(lockCarRecordDisplayFields),
           apiMethod: null // 后续引入API方法
         },
         {
           title: '订单透明化状态跟踪',
+          field: 'statusTrackList',
           sectionId: 'order-transparency-tracking',
           columns: this.convertToTableColumns(orderTransparencyTrackingDisplayFields),
           apiMethod: null // 后续引入API方法
         },
         {
-          title: '订单状态发生变更记录',
-          sectionId: 'order-status-change-record',
-          columns: this.convertToTableColumns(orderStatusChangeRecordDisplayFields),
+          title: '订单退订记录',
+          field: 'refundList',
+          sectionId: 'order-cancellation-record',
+          columns: this.convertToTableColumns(orderCancellationRecordDisplayFields),
           apiMethod: null // 后续引入API方法
         },
         {
-          title: '订单退订记录',
-          sectionId: 'order-cancellation-record',
-          columns: this.convertToTableColumns(orderCancellationRecordDisplayFields),
+          title: '订单收款记录',
+          field: 'payRecordList',
+          sectionId: 'order-pay-record',
+          columns: this.convertToTableColumns(orderPaymentRecordDisplayFields),
           apiMethod: null // 后续引入API方法
         }
       ],
       navItems: [
+        { id: 'retail-order-status', title: '销服订单状态', href: '#retail-order-status' },
+        { id: 'app-order-status', title: 'APP订单状态', href: '#app-order-status' },
         { id: 'basic-info', title: '基础信息', href: '#basic-info' },
         { id: 'car-owner', title: '购车人信息', href: '#car-owner' },
         { id: 'order-fund', title: '资金信息', href: '#order-fund' },
@@ -595,8 +619,8 @@ export default {
         { id: 'unlock-application-record', title: '锁车解绑申请记录', href: '#unlock-application-record' },
         { id: 'lock-car-record', title: '锁车记录', href: '#lock-car-record' },
         { id: 'order-transparency-tracking', title: '订单透明化状态跟踪', href: '#order-transparency-tracking' },
-        { id: 'order-status-change-record', title: '订单状态发生变更记录', href: '#order-status-change-record' },
-        { id: 'order-cancellation-record', title: '订单退订记录', href: '#order-cancellation-record' }
+        { id: 'order-cancellation-record', title: '订单退订记录', href: '#order-cancellation-record' },
+        { id: 'order-pay-record', title: '订单收款记录', href: '#order-pay-record' }
       ],
       activeSection: 'basic-info'
     };
@@ -617,7 +641,7 @@ export default {
       return displayFields.map(field => ({
         field: field.key,
         title: field.label,
-        width: 150 // 默认宽度，可根据需要调整
+        width: field.label || 150 // 默认宽度，可根据需要调整
       }));
     },
     detailRequest () {
@@ -626,6 +650,21 @@ export default {
         return getDetail(id).then(response => {
           const processedData = response;
           processedData.finance = response.finance || { ...defaultForm.finance };
+          // 辅助函数：为数组中的每个对象添加saleDealerName字段
+          const addSaleDealerName = (array) => {
+            if (array && Array.isArray(array) && response.saleDealerName) {
+              return array.map(item => ({
+                ...item,
+                saleDealerName: response.saleDealerName,
+                paymentTime: response.paymentTime,
+              }));
+            }
+            return array || [];
+          };
+          processedData.statusTrackList = addSaleDealerName(response.statusTrackList);
+          processedData.lockRecordList = addSaleDealerName(response.lockRecordList);
+          console.log('processedData.statusTrackList:', processedData.statusTrackList);
+          console.log('processedData.lockRecordList:', processedData.lockRecordList);
           return processedData;
         });
       }

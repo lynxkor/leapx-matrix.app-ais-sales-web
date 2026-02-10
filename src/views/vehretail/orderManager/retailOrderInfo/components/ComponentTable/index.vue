@@ -17,6 +17,8 @@
       <vxe-column
         v-for="column in columns"
         :key="column.field || column.title"
+        :width="column.width"
+        :align="column.align || 'center'"
         v-bind="column"
       />
     </vxe-table>
@@ -71,43 +73,73 @@ export default {
     paginationAlign: {
       type: String,
       default: 'left'
+    },
+    // 外部传入的数据
+    tableDataExternal: {
+      type: Array,
+      default: null
     }
   },
   data () {
     return {
-      tableData: [],
+      internalTableData: [],
       total: 0,
       loading: false,
       currentPage: 1,
       pageSize: 10
     };
   },
+  computed: {
+    // 计算属性：优先使用外部传入的数据，否则使用内部数据
+    tableData () {
+      return this.tableDataExternal !== null && this.tableDataExternal !== undefined
+        ? this.tableDataExternal
+        : this.internalTableData;
+    }
+  },
   watch: {
     // 监听额外参数变化，重新加载数据
     extraParams: {
       handler () {
-        this.loadData();
+        // 只有当没有外部传入数据时才重新加载
+        if (this.tableDataExternal === null || this.tableDataExternal === undefined) {
+          this.loadData();
+        }
       },
       deep: true
     },
     // 监听API方法变化，当API方法改变时重新加载数据
     apiMethod () {
-      if (this.apiMethod) {
+      if (this.apiMethod && (this.tableDataExternal === null || this.tableDataExternal === undefined)) {
         this.loadData();
       }
+    },
+    // 监听外部传入的数据变化
+    tableDataExternal: {
+      handler (newVal) {
+        if (newVal !== null && newVal !== undefined) {
+          // 当外部传入新数据时，更新内部数据
+          this.internalTableData = newVal;
+        }
+      },
+      deep: true
     }
   },
   created () {
-    // console.log('1111:', this.$route.query);
-    if (this.apiMethod) {
-      this.loadData();
+    // 如果有外部数据则使用外部数据，否则加载内部数据
+    if (this.tableDataExternal === null || this.tableDataExternal === undefined) {
+      if (this.apiMethod) {
+        this.loadData();
+      }
+    } else {
+      this.internalTableData = this.tableDataExternal;
     }
   },
   methods: {
     // 加载数据
     async loadData () {
-      // 如果没有API方法，则不执行加载
-      if (!this.apiMethod) {
+      // 如果没有API方法或者已有外部数据，则不执行加载
+      if (!this.apiMethod || (this.tableDataExternal !== null && this.tableDataExternal !== undefined)) {
         return;
       }
       this.loading = true;
@@ -119,11 +151,11 @@ export default {
         };
 
         const response = await this.apiMethod(params);
-        this.tableData = response.data || [];
+        this.internalTableData = response.data || [];
         this.total = response.total || response.count || 0;
       } catch (error) {
         console.error('Failed to load data:', error);
-        this.tableData = [];
+        this.internalTableData = [];
         this.total = 0;
       } finally {
         this.loading = false;
@@ -143,26 +175,45 @@ export default {
     // 处理每页数量变化
     handleSizeChange (val) {
       this.pageSize = val;
-      this.loadData();
+      // 只有当没有外部传入数据时才重新加载
+      if (this.tableDataExternal === null || this.tableDataExternal === undefined) {
+        this.loadData();
+      }
     },
     // 处理当前页变化
     handleCurrentChange (val) {
       this.currentPage = val;
-      this.loadData();
+      // 只有当没有外部传入数据时才重新加载
+      if (this.tableDataExternal === null || this.tableDataExternal === undefined) {
+        this.loadData();
+      }
     },
     // 刷新数据的方法，供外部调用
     refresh () {
-      this.loadData();
+      // 只有当没有外部传入数据时才重新加载
+      if (this.tableDataExternal === null || this.tableDataExternal === undefined) {
+        this.loadData();
+      }
     },
     // 供外部设置当前页的方法
     setCurrentPage (page) {
       this.currentPage = page;
-      this.loadData();
+      // 只有当没有外部传入数据时才重新加载
+      if (this.tableDataExternal === null || this.tableDataExternal === undefined) {
+        this.loadData();
+      }
     },
     // 供外部设置页面大小的方法
     setPageSize (size) {
       this.pageSize = size;
-      this.loadData();
+      // 只有当没有外部传入数据时才重新加载
+      if (this.tableDataExternal === null || this.tableDataExternal === undefined) {
+        this.loadData();
+      }
+    },
+    // 获取内部数据的方法（用于外部访问）
+    getInternalData () {
+      return this.internalTableData;
     }
   }
 };

@@ -80,15 +80,7 @@
                     maxlength="100"
                   />
                 </el-form-item>
-                <el-form-item label="状态：" prop="status">
-                  <!-- <el-select
-                    v-model="form.status"
-                    placeholder="请选择"
-                    clearable
-                  >
-                    <el-option label="禁用" :value="0" />
-                    <el-option label="启用" :value="1" />
-                  </el-select> -->
+                <!-- <el-form-item label="状态：">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="StatusEnum"
@@ -97,7 +89,7 @@
                     clearable
                     disabled
                   />
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="创建时间：" prop="createTime">
                   <el-input
                     v-model="form.createTime"

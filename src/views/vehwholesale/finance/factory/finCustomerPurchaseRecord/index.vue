@@ -10,7 +10,17 @@
       class="ais-search-form"
     >
     <el-form-item label="母公司名称">
-      <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
+       <fetch-select
+            :remote-method="getParentCompany"
+            remote
+            v-model="form.dealerCompanyNames"
+            placeholder="请选择"
+            labelKey="companyName"
+            valueKey="companyName"
+            clearable
+            filterable
+            multiple
+            />
     </el-form-item>
     <el-form-item label="融资金融机构">
       <fetch-select
@@ -28,7 +38,8 @@
     </el-form-item>
     <el-form-item label="同步状态">
       <fetch-select
-        :options="syncStatusOptions"
+         :request="fetchOptions"
+          enumCode="vw_sync_status"
           v-model="form.syncStatus"
           placeholder="请选择"
           clearable
@@ -38,26 +49,33 @@
     </el-form-item>
       <template v-if="show">
         <el-form-item label="母公司编码">
-          <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="数据月份"  v-show="this.visibleCount === 3 || show">
-        <el-input
-            placeholder="请输入"
-            v-model="form.dataMonth"
+           <fetch-select
+            :remote-method="getParentCompany"
+            remote
+            v-model="form.dealerCompanyCodes"
+            placeholder="请选择"
+            labelKey="companyCode"
+            valueKey="companyCode"
             clearable
-          />
+            filterable
+            multiple
+            />
+        </el-form-item>
+        <el-form-item label="数据月份">
+          <tag-input v-model="form.dataMonths" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="创建时间">
           <dateranges
             v-model="form.createTime"
             :setDefault="true"
-            deftTime=""
+            deftTime="最近三个月"
             ref="transactionTime"/>
       </el-form-item>
         <el-form-item label="融资数据来源">
           <fetch-select
-            :options="financingDataSourceOptions"
-            v-model="form.financingDataSource"
+           :request="fetchOptions"
+            enumCode="vw_financing_data_source"
+            v-model="form.financingDataSources"
             placeholder="请选择"
             clearable
             multiple
@@ -124,7 +142,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/finance/factory/finCustomerPurchaseRecord/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -132,10 +150,9 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
-import TagInput from '@/libs/components/TagInput';
 import dateranges from '@/libs/components/dateranges';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
-
+import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   createTime: '',
@@ -160,8 +177,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    TagInput,
-    dateranges
+    dateranges,
+    TagInput
   },
   data () {
     return {
@@ -240,6 +257,16 @@ export default {
     this.fetchfinancingDataSourceOptions();
   },
   methods: {
+    async getParentCompany (query) {
+      try {
+        const res = await getParentCompany({ parentCompanyName: query });
+        console.log(res);
+        this.parentCompanyNames = res;
+        return res;
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
+    },
     repairItemSearch (query) { return fundGetList({ organizationNameLike: query, status: 1 }); },
     async fetchEnumsOptions () {
       const response = await getEnum('vw_sync_status');

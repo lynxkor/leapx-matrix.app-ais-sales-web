@@ -74,3 +74,39 @@ export function batchCancelItem (data) {
 export function batchSetAutoAllocateItem (data) {
   return api.jsonPost(prefix + 'batchSetAutoAllocate', data);
 }
+
+/**
+ * 批量结算
+ * @param {Object} data
+ */
+
+export function batchSettleSubmitItem (data) {
+  return api.jsonPost(prefix + 'batchSettleSubmit', data);
+}
+
+/**
+ * 批量取消结算
+ * @param {Object} data
+ */
+
+export function batchCancelSettleItem (data) {
+  return api.jsonPost(prefix + 'batchCancelSettle', data);
+}
+
+/**
+ * 指定VIN配车-提交配车
+ * @param {Object} data
+ */
+
+export function vinAllocateVehicleSubmitItem (data) {
+  return api.jsonPost(prefix + 'vinAllocateVehicleSubmit', data);
+}
+
+/**
+ * 批量配车
+ * @param {Object} data
+ */
+
+export function batchAllocateVehicleItem (data) {
+  return api.jsonPost(prefix + 'batchAllocateVehicle', data);
+}
