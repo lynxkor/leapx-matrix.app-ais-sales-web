@@ -134,7 +134,7 @@
 </template>
 
 <script>
-import { allowConfigChangeSkuPage } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { allowConfigChangeSkuPage, changeOrderMaterials } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import {
   vehicleSeriesList,
   listVehicleModel,
@@ -347,7 +347,11 @@ export default {
       try {
         // 这里可以添加内部提交逻辑
         // 例如调用某个 API 接口保存选择的物料
-        console.log('内部提交物料选择:', this.selectedRow);
+        const params = {
+          orderInfoId: this.row.id,
+          changeProductSkuPriceId: this.selectedRow.id,
+        };
+        await changeOrderMaterials(params);
 
         // 显示成功消息
         this.$message.success('物料选择成功');

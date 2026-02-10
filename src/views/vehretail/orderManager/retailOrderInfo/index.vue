@@ -234,6 +234,11 @@
       :row="row"
       @confirm="getData"
     />
+    <ChangeDealer
+      ref="changeDealerDialog"
+      :dataList="selectionList"
+      @changeDealer="changeDealerFun"
+    />
   </div>
 </template>
 
@@ -241,7 +246,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, getOrderUnlockConfig } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getList, deleteItem, enableItem, getOrderUnlockConfig, batchReplaceStore } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import {
   getTableConfig,
   tableAddOrUpdate,
@@ -265,6 +270,7 @@ import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
 import UnlockDialog from './components/UnlockDialog';
 import MaterialsDialog from './components/MaterialsDialog';
+import ChangeDealer from './components/ChangeDealer';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -333,7 +339,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    ChangeDealer
   },
   data () {
     return {
@@ -506,8 +513,40 @@ export default {
     this.loginUserGet();
   },
   methods: {
+    handleChangeDealer (type) {
+      if (type === 'sales') {
+        // 校验选择的订单状态是否都是 订单确认
+        const confirmOrders = this.selectionList.filter(item => item.orderStatus === 3);
+        if (confirmOrders.length !== this.selectionList.length) {
+          this.$message.error('请选择订单状态为 订单确认 的订单');
+          return;
+        }
+        this.$refs.changeDealerDialog.show(type);
+      } else {
+        // 校验选择的订单状态是否都是 3、4、30、40
+        const validOrders = this.selectionList.filter(item => [3, 5, 30, 40].includes(item.orderStatus));
+        if (validOrders.length !== this.selectionList.length) {
+          this.$message.error('请选择订单状态为 订单确认、订单取消、订单确认失败、订单取消失败 的订单');
+          return;
+        }
+        this.$refs.changeDealerDialog.show(type);
+      }
+    },
+    changeDealerFun (data) {
+      const param = {
+        saleStoreChangeType: data.saleStoreChangeType,
+        saleStoreChangeRemark: data.saleStoreChangeRemark,
+        orderIdList: data.dataList.map(item => item.id),
+        newStoreCode: data.storeInfo.storeCode,
+        changeType: data.type === 'sales' ? 1 : 2
+      };
+      batchReplaceStore(param).then(res => {
+        this.$message.success('变更成功');
+        this.getData();
+      });
+    },
     async changeConfiguration (row) {
-      this.businessId = row.id;
+      this.businessId = this._id;
       this.row = row;
       const res = await getOrderUnlockConfig(this.row.retailOrderCode);
       // 检查返回结果是否有效

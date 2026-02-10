@@ -122,3 +122,11 @@ export function autoLock (data) {
 export function querySnapShot (data) {
   return api.jsonPost('vr/web/order/retailOrderInfo/querySnapShot', data);
 };
+
+/**
+ * 订单配置修改
+ * @param {Object} data
+ */
+export function changeOrderMaterials (data) {
+  return api.jsonPost(prefix + 'changeOrderMaterials', data);
+}
