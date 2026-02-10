@@ -263,6 +263,8 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
+import UnlockDialog from './components/UnlockDialog';
+import MaterialsDialog from './components/MaterialsDialog';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -324,6 +326,8 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    UnlockDialog,
+    MaterialsDialog,
     TagInput,
     PageSearchAction,
     LPVxeTable,
@@ -340,6 +344,9 @@ export default {
       form: {
         ...defaultForm
       },
+      businessId: '',
+      row: {},
+      accountFlag: null,
       orgProps: {
         checkStrictly: true,
         emitPath: true,
@@ -496,6 +503,7 @@ export default {
     this.getData();
     this.modelSearch();
     this.listVehicleYearType();
+    this.loginUserGet();
   },
   methods: {
     changeConfiguration (row) {

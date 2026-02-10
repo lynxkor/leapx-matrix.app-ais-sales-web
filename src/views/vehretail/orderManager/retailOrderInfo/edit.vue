@@ -250,7 +250,6 @@
                   />
                 </el-form-item>
               </el-form>
-
               <generic-detail-display
                 :formData="form"
                 :fields="displayFields"
@@ -398,6 +397,16 @@
               </div>
             </div>
           </section>
+          <!-- 组件位置不要放在右侧栏组件 -->
+           <!-- 修改配置对话框 -->
+          <materials-dialog ref="materialsDialog" :row="form" @confirm="getDetailData" />
+          <!-- 购车协议对话框 -->
+          <purchase-agreement-dialog
+            ref="PurchaseAgreementDialog"
+            :visible.sync="agreementDialogVisible"
+            :content="agreementDialogContent"
+            title="零跑汽车购车协议"
+          />
         </el-main>
       </edit-base-container>
     </template>
@@ -410,7 +419,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getDetail, addOrUpdate, autoLock, querySnapShot } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -440,6 +449,8 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import MaterialsDialog from './components/MaterialsDialog';
+import PurchaseAgreementDialog from './components/PurchaseAgreementDialog';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -492,6 +503,8 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
+    PurchaseAgreementDialog,
+    MaterialsDialog,
     NavTop,
     ComponentTable,
     GenericDetailDisplay,
@@ -524,6 +537,7 @@ export default {
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-retailOrderInfo',
+      agreementDialogContent: '',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
@@ -653,8 +667,7 @@ export default {
     },
     // 修改配置
     handleModifyConfiguration () {
-      // 实现修改配置逻辑
-      console.log('修改配置');
+      this.$refs.materialsDialog.show();
     },
     // 手工配车
     handleManualVehicleAllocation () {
@@ -663,13 +676,27 @@ export default {
     },
     // 自动锁车
     handleAutoLockVehicle () {
-      // 实现自动锁车逻辑
-      console.log('自动锁车');
+      const param = {
+        orderCode: this.form.mallOrderCode,
+        productCode: this.form.materials.productCode,
+        skuCode: this.form.materials.skuCode,
+      };
+      autoLock(param).then(response => {
+        this.$message.success('锁车成功');
+        this.getDetailData();
+      }).catch(() => {});
     },
     // 查看购车协议
     handleViewPurchaseAgreement () {
-      // 实现查看购车协议逻辑
-      console.log('查看购车协议');
+      // 2362166807179599872
+      // this.form.mallOrderCode
+      querySnapShot('2362166807179599872').then(response => {
+        console.log('response:', response);
+        this.agreementDialogContent = response;
+        this.$refs.PurchaseAgreementDialog.dialogVisible = true;
+      }).catch(() => {
+        this.$message.error('无购车权限');
+      });
     },
     // 订单退订
     handleOrderUnsubscribe () {
@@ -694,6 +721,29 @@ export default {
         width: field.label || 150 // 默认宽度，可根据需要调整
       }));
     },
+    getDetailData () {
+      if (this._id) {
+        getDetail(this._id).then(response => {
+          const processedData = response;
+          processedData.finance = response.finance || { ...defaultForm.finance };
+          // 辅助函数：为数组中的每个对象添加saleDealerName字段
+          const addSaleDealerName = (array) => {
+            if (array && Array.isArray(array) && response.saleDealerName) {
+              return array.map(item => ({
+                ...item,
+                saleDealerName: response.saleDealerName,
+                paymentTime: response.paymentTime,
+              }));
+            }
+            return array || [];
+          };
+          processedData.statusTrackList = addSaleDealerName(response.statusTrackList);
+          processedData.lockRecordList = addSaleDealerName(response.lockRecordList);
+          Object.assign(this.form, processedData);
+          Object.assign(this.originalForm, processedData);
+        }).catch(() => {});
+      }
+    },
     detailRequest () {
       const id = this._id;
       if (id) {
@@ -713,8 +763,6 @@ export default {
           };
           processedData.statusTrackList = addSaleDealerName(response.statusTrackList);
           processedData.lockRecordList = addSaleDealerName(response.lockRecordList);
-          console.log('processedData.statusTrackList:', processedData.statusTrackList);
-          console.log('processedData.lockRecordList:', processedData.lockRecordList);
           return processedData;
         });
       }

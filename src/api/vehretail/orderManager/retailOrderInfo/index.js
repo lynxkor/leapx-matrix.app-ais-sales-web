@@ -106,3 +106,19 @@ export function allowConfigChangeSkuPage (data) {
 export function getOrderUnlockConfig (data) {
   return api.jsonPost('vr/web/order/retailOrderUnlockConfig/unlock/getOrderUnlockConfig', data);
 };
+
+/**
+ * 自动锁车
+ * @param {Object} data
+ */
+export function autoLock (data) {
+  return api.jsonPost('vr/web/order/autoLock', data);
+};
+
+/**
+ * 获取零跑APP获取购车协议]
+ * @param {Object} data
+ */
+export function querySnapShot (data) {
+  return api.jsonPost('vr/web/order/retailOrderInfo/querySnapShot', data);
+};
