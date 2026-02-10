@@ -99,7 +99,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="订单解绑编码：" prop="unlockReasonCode">
                   {{ form.unlockReasonCode }}
                 </el-form-item>

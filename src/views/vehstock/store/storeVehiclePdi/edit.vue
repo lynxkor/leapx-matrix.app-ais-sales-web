@@ -24,7 +24,7 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="PDI单号：" prop="code">
                   {{ form.code }}
                 </el-form-item>

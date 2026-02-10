@@ -221,7 +221,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="整车补货单号：" prop="replenishApplyCode">
                   {{ form.replenishApplyCode }}
                 </el-form-item>

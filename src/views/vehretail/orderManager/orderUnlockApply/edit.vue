@@ -286,7 +286,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="150px" :inline="true" class="form-detail" v-show="!isAdding">
+              <el-form :inline="true" class="form-detail" v-show="!isAdding">
                 <el-form-item label="申请单号：" prop="unlockApplyCode">
                   {{ form.unlockApplyCode }}
                 </el-form-item>

@@ -55,7 +55,7 @@
                   <el-input v-model="form.createTime" disabled placeholder="新增自动生成" />
                 </el-form-item>
               </el-form>
-              <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="具体分类：">
                   {{ form.specificType }}
                 </el-form-item>
