@@ -690,7 +690,7 @@ export default {
     handleViewPurchaseAgreement () {
       // 2362166807179599872
       // this.form.mallOrderCode
-      querySnapShot('2362166807179599872').then(response => {
+      querySnapShot(this.form.mallOrderCode).then(response => {
         console.log('response:', response);
         this.agreementDialogContent = response;
         this.$refs.PurchaseAgreementDialog.dialogVisible = true;
