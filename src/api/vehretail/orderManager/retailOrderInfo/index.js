@@ -52,6 +52,14 @@ export function findCanUnlockOrderList (data) {
 }
 
 /**
+ * 批量更换订单门店
+ * @param {Object} data
+ */
+export function batchReplaceStore (data) {
+  return api.jsonPost(prefix + 'batchReplaceStore', data);
+}
+
+/**
  * 取消锁车-申请原因
  * @param {Object} data
  */
@@ -89,4 +97,12 @@ export function orderStatusNodes (data) {
  */
 export function allowConfigChangeSkuPage (data) {
   return api.jsonPost('vr/web/product/productSkuPrice/allowConfigChangeSkuPage', data);
+};
+
+/**
+ * 取消锁车-校验门店是否允许锁车
+ * @param {Object} data
+ */
+export function getOrderUnlockConfig (data) {
+  return api.jsonPost('vr/web/order/retailOrderUnlockConfig/unlock/getOrderUnlockConfig', data);
 };

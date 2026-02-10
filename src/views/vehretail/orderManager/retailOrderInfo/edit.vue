@@ -17,8 +17,16 @@
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <!-- <el-button size="small">按钮1</el-button>
-          <el-button size="small">按钮2</el-button> -->
+          <!-- <el-button size="small" type="primary" @click="handleEquityInquiry">权益查询</el-button> -->
+          <el-button size="small" type="primary" @click="handlePrintContractTermination">打印合同解除协议</el-button>
+          <el-button size="small" type="primary" @click="handleSetSpecialMark">设置特殊标识</el-button>
+          <el-button size="small" type="primary" @click="handleModifyConfiguration">修改配置</el-button>
+          <!-- <el-button size="small" type="primary" @click="handleManualVehicleAllocation">手工配车</el-button> -->
+          <el-button size="small" type="primary" @click="handleAutoLockVehicle">自动锁车</el-button>
+          <el-button size="small" type="primary" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
+          <el-button size="small" type="primary" @click="handleOrderUnsubscribe">订单退订</el-button>
+          <el-button size="small" type="primary" @click="handleCarOwnerChangeApplication">购车人变更申请</el-button>
+          <el-button size="small" type="primary" @click="handleQualityIssueUnbindApplication">质量问题解绑申请</el-button>
         </template>
         <!-- 固定悬浮导航栏 -->
         <div class="fixed-nav">
@@ -629,6 +637,55 @@ export default {
     window.removeEventListener('scroll', this.handleScroll);
   },
   methods: {
+    // 权益查询
+    handleEquityInquiry () {
+      console.log('执行权益查询');
+    },
+    // 打印合同解除协议
+    handlePrintContractTermination () {
+      // 实现打印合同解除协议逻辑
+      console.log('打印合同解除协议');
+    },
+    // 设置特殊标识
+    handleSetSpecialMark () {
+      // 实现设置特殊标识逻辑
+      console.log('设置特殊标识');
+    },
+    // 修改配置
+    handleModifyConfiguration () {
+      // 实现修改配置逻辑
+      console.log('修改配置');
+    },
+    // 手工配车
+    handleManualVehicleAllocation () {
+      // 实现手工配车逻辑
+      console.log('手工配车');
+    },
+    // 自动锁车
+    handleAutoLockVehicle () {
+      // 实现自动锁车逻辑
+      console.log('自动锁车');
+    },
+    // 查看购车协议
+    handleViewPurchaseAgreement () {
+      // 实现查看购车协议逻辑
+      console.log('查看购车协议');
+    },
+    // 订单退订
+    handleOrderUnsubscribe () {
+      // 实现订单退订逻辑
+      console.log('订单退订');
+    },
+    // 购车人变更申请
+    handleCarOwnerChangeApplication () {
+      // 实现购车人变更申请逻辑
+      console.log('购车人变更申请');
+    },
+    // 质量问题解绑申请
+    handleQualityIssueUnbindApplication () {
+      // 实现质量问题解绑申请逻辑
+      console.log('质量问题解绑申请');
+    },
     // 将显示字段配置转换为表格列配置
     convertToTableColumns (displayFields) {
       return displayFields.map(field => ({
