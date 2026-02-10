@@ -26,12 +26,11 @@
         <fetch-select
             :remote-method="listVehicleYearType"
             remote
-            v-model="form.yearTypeIds"
+            v-model="form.yearTypeId"
             placeholder="请选择"
             labelKey="name"
             valueKey="id"
             clearable
-            multiple
             collapseTags
             filterable
             :options="yearTypeList"
@@ -44,7 +43,6 @@
             v-model="form.preSaleUrgentStatus"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -56,7 +54,6 @@
             v-model="form.blindOrderUrgentStatus"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -67,7 +64,6 @@
           v-model="form.status"
           placeholder="请选择"
           clearable
-          multiple
           filterable
         />
       </el-form-item>
@@ -315,15 +311,15 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '预售&#x2F;盲订急单配置管理',
-        dataFetchPath: 'vehretail/web/basicConfig/orderUrgentConfig/page',
+        businessType: '盲订急单配置管理',
+        dataFetchPath: 'vr/web/order/orderUrgentConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '预售&#x2F;盲订急单配置管理.xlsx');
+            await downloadExcel(res.excelUrl, '盲订急单配置管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

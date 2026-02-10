@@ -2140,6 +2140,42 @@ const routes = [
         name: '锁车资源共享配置管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehretail/bizMasterData/configMasterData/salesConfig',
+      name: 'salesConfig',
+      component: () => import('@/views/vehretail/bizMasterData/configMasterData/salesConfig/index.vue'),
+
+      meta: {
+        name: '销售/交付顾问配置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/bizmasterdata/configmasterdata/salesconfig/edit',
+      name: 'salesConfigEdit',
+      component: () => import('@/views/vehretail/bizMasterData/configMasterData/salesConfig/edit.vue'),
+
+      meta: {
+        name: '销售/交付顾问配置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/shipping/vehicleShippingPlanDetail',
+      name: 'vehicleShippingPlanDetail',
+      component: () => import('@/views/vehwholesale/shipping/vehicleShippingPlanDetail/index.vue'),
+
+      meta: {
+        name: '新页面',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/shipping/vehicleshippingplandetail/edit',
+      name: 'vehicleShippingPlanDetailEdit',
+      component: () => import('@/views/vehwholesale/shipping/vehicleShippingPlanDetail/edit.vue'),
+
+      meta: {
+        name: '新页面详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];

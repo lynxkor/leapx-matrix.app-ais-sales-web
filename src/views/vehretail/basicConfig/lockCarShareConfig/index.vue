@@ -12,35 +12,41 @@
      <el-form-item label="资源类型">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
+            enumCode="vr_resource_type"
             v-model="form.resourceType"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
         <el-form-item label="销售门店名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.saleDealerName"
-            clearable
-          />
+          <fetch-select
+          filterable
+          clearable
+          remote
+          collapseTags
+          v-model="form.saleDealerCode"
+          :remote-method="getDealerListByName"
+          value-key="storeCode"
+          label-key="storeName"
+        />
         </el-form-item>
          <el-form-item label="资源共享组编码">
-        <el-input
-          placeholder="请输入"
-          v-model="form.shareGroupCode"
-          clearable
-        />
+           <el-input
+                    placeholder="请输入"
+                    v-model="form.shareGroupCodeLike"
+                    clearable
+                    maxlength="50"
+                  />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="资源共享组名称">
           <el-input
-            placeholder="请输入"
-            v-model="form.shareGroupName"
-            clearable
-          />
+                    placeholder="请输入"
+                    v-model="form.shareGroupNameLike"
+                    clearable
+                    maxlength="50"
+                  />
         </el-form-item>
         <el-form-item label="状态">
         <fetch-select
@@ -49,7 +55,6 @@
           v-model="form.status"
           placeholder="请选择"
           clearable
-          multiple
           filterable
         />
       </el-form-item>
@@ -119,7 +124,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/basicConfig/lockCarShareConfig/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -237,6 +242,9 @@ export default {
     this.getData();
   },
   methods: {
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
+    },
     // 排序
     handleSortChange (value) {
       this.sortColumns = (value || []).map(item => {
@@ -280,7 +288,7 @@ export default {
       }
       exportTable({
         businessType: '锁车资源共享配置管理',
-        dataFetchPath: 'vehretail/web/basicConfig/lockCarShareConfig/page',
+        dataFetchPath: 'vr/web/lock/lockCarShareConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
