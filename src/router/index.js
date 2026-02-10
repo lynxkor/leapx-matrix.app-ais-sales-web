@@ -2052,21 +2052,74 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehretail/basicConfig/deliveryInfoConfig',
-      name: 'deliveryInfoConfig',
-      component: () => import('@/views/vehretail/basicConfig/deliveryInfoConfig/index.vue'),
+      path: '/vehretail/basicConfig/modelDeliveryConfig',
+      name: 'modelDeliveryConfig',
+      component: () => import('@/views/vehretail/basicConfig/modelDeliveryConfig/index.vue'),
 
       meta: {
-        name: '交付信息配置',
+        name: '车型交付配置管理',
         keepAlive: true
       }
     }, {
-      path: '/vehretail/basicConfig/deliveryInfoConfig/edit',
-      name: 'deliveryInfoConfigEdit',
-      component: () => import('@/views/vehretail/basicConfig/deliveryInfoConfig/edit.vue'),
+      path: '/vehretail/basicconfig/modeldeliveryconfig/edit',
+      name: 'modelDeliveryConfigEdit',
+      component: () => import('@/views/vehretail/basicConfig/modelDeliveryConfig/edit.vue'),
 
       meta: {
-        name: '交付信息配置详情',
+        name: '车型交付配置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/basicConfig/productionOfflineConfig',
+      name: 'productionOfflineConfig',
+      component: () => import('@/views/vehretail/basicConfig/productionOfflineConfig/index.vue'),
+
+      meta: {
+        name: '排产下线时效管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicconfig/productionofflineconfig/edit',
+      name: 'productionOfflineConfigEdit',
+      component: () => import('@/views/vehretail/basicConfig/productionOfflineConfig/edit.vue'),
+
+      meta: {
+        name: '排产下线时效管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/basicConfig/orderUrgentConfig',
+      name: 'orderUrgentConfig',
+      component: () => import('@/views/vehretail/basicConfig/orderUrgentConfig/index.vue'),
+
+      meta: {
+        name: '预售/盲订急单配置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicconfig/orderurgentconfig/edit',
+      name: 'orderUrgentConfigEdit',
+      component: () => import('@/views/vehretail/basicConfig/orderUrgentConfig/edit.vue'),
+
+      meta: {
+        name: '预售/盲订急单配置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/basicConfig/lockCarShareConfig',
+      name: 'lockCarShareConfig',
+      component: () => import('@/views/vehretail/basicConfig/lockCarShareConfig/index.vue'),
+      meta: {
+        name: '锁车资源共享配置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicconfig/lockcarshareconfig/edit',
+      name: 'lockCarShareConfigEdit',
+      component: () => import('@/views/vehretail/basicConfig/lockCarShareConfig/edit.vue'),
+
+      meta: {
+        name: '锁车资源共享配置管理详情',
         noResourceUrl: 'true'
       }
     }]

@@ -39,8 +39,8 @@
           remote
           multiple
           reserve-keyword
-          labelKey="name"
-          valueKey="id"
+            labelKey="organizationName"
+            valueKey="organizationCode"
           v-model="form.fundFinancialOrganizationIds"
           placeholder="请选择"
           clearable
@@ -50,22 +50,22 @@
       <template v-if="show">
         <el-form-item label="额度生效日期">
           <el-date-picker
-            v-model="form.effectiveDate"
+            v-model="form.limitEffectiveDate"
             type="daterange"
             :picker-options="pickerOptions"
             range-separator="至"
-            value-format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
           />
         </el-form-item>
         <el-form-item label="额度失效日期">
           <el-date-picker
-            v-model="form.expiryDate"
+            v-model="form.limitExpiryDate"
             type="daterange"
             :picker-options="pickerOptions"
             range-separator="至"
-            value-format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
           />
@@ -171,7 +171,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
-import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -234,7 +234,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/finance/bank/edit',
+                  path: '/vehwholesale/finance/bank/finBankCreditRecord/edit',
                   query: {
                     id: row.id
                   }
@@ -249,9 +249,9 @@ export default {
           { props: 'creditLimit', label: '授信额度', visible: true, width: 200 },
           { props: 'usedLimit', label: '已用额度', visible: true, width: 200 },
           { props: 'availableLimit', label: '剩余可用额度', visible: true, width: 200 },
-          { props: 'wholesaleExposureLimit', label: '批售敞口额度', visible: true, width: 200 },
+          { props: 'wholesaleExposureLimit', label: '批复敞口额度', visible: true, width: 200 },
           { props: 'occupiedExposureLimit', label: '占用敞口额度', visible: true, width: 200 },
-          { props: 'usedExposureLimit', label: '已用敞口额度', visible: true, width: 200 },
+          { props: 'usedExposureLimit', label: '可用敞口额度', visible: true, width: 200 },
           { props: 'maxCreditLimit', label: '最高授信额度', visible: true, width: 200 },
           { props: 'depositRatio', label: '保证金比例%', visible: true, width: 200 },
           { props: 'limitEffectiveDate', label: '额度生效日期', visible: true, width: 200 },
@@ -411,18 +411,18 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
-      if (this.form.effectiveDate) {
-        delete data.effectiveDate;
-        if (this.form.effectiveDate.length > 1) {
-          data.effectiveDateStart = this.form.effectiveDate[0];
-          data.effectiveDateEnd = this.form.effectiveDate[1];
+      if (this.form.limitEffectiveDate) {
+        delete data.limitEffectiveDate;
+        if (this.form.limitEffectiveDate.length > 1) {
+          data.limitEffectiveDateStart = this.form.limitEffectiveDate[0];
+          data.limitEffectiveDateEnd = this.form.limitEffectiveDate[1];
         }
       }
-      if (this.form.expiryDate) {
-        delete data.expiryDate;
-        if (this.form.expiryDate.length > 1) {
-          data.expiryDateStart = this.form.expiryDate[0];
-          data.expiryDateEnd = this.form.expiryDate[1];
+      if (this.form.limitExpiryDate) {
+        delete data.limitExpiryDate;
+        if (this.form.limitExpiryDate.length > 1) {
+          data.limitExpiryDateStart = this.form.limitExpiryDate[0];
+          data.limitExpiryDateEnd = this.form.limitExpiryDate[1];
         }
       }
 
@@ -488,13 +488,13 @@ export default {
       // });
     },
     async repairItemSearch (query) {
-      return listFinancialOrganization({ organizationNameLike: query, status: 1 });
+      return fundGetList({ organizationNameLike: query, status: 1 });
     },
     async getDealerParentOrgListByCode (params) {
-      return getParentCompany({ parentCompanyCode: params });
+      return getParentCompany({ companyCode: params });
     },
     async getDealerParentOrgListByName (params) {
-      return getParentCompany({ parentCompanyName: params });
+      return getParentCompany({ companyName: params });
     }
   }
 };

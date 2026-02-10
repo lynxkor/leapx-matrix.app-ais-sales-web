@@ -13,7 +13,7 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_financing_data_source"
-          v-model="form.syncStatus"
+          v-model="form.financingDataSource"
           placeholder="请选择"
           clearable
           filterable
@@ -43,8 +43,8 @@
           remote
           reserve-keyword
           multiple
-          labelKey="name"
-          valueKey="id"
+          labelKey="organizationName"
+          valueKey="organizationCode"
           v-model="form.fundFinancialOrganizationIds"
           placeholder="请选择"
           clearable
@@ -140,7 +140,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
-import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import TagInput from '@/libs/components/TagInput';
 import dateranges from '@/libs/components/dateranges';
 
@@ -219,13 +219,14 @@ export default {
           { props: 'isVehicleBoundLabel', label: '是否人车绑定', visible: true, width: 200 },
           { props: 'bindingDate', label: '绑车日期', visible: true, width: 200 },
           { props: 'fundFinancialOrganizationName', label: '融资金融机构', visible: true, width: 200 },
-          { props: 'syncStatusLabel', label: '同步状态', visible: true, width: 200 },
-          { props: 'syncResult', label: '同步结果', visible: true, width: 200 },
-          { props: 'syncCount', label: '推送次数', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'deliveryDate', label: '交车日期', visible: true, width: 200 },
           { props: 'actualLongitude', label: '实车位置经度', visible: true, width: 200 },
           { props: 'actualLatitude', label: '实车位置纬度', visible: true, width: 200 },
+          { props: 'syncStatusLabel', label: '同步状态', visible: true, width: 200 },
+          { props: 'syncResult', label: '同步结果', visible: true, width: 200 },
+          { props: 'syncCount', label: '推送次数', visible: true, width: 200 },
+          { props: 'syncTime', label: '同步时间', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },
           {
@@ -438,7 +439,7 @@ export default {
       // });
     },
     async repairItemSearch (query) {
-      return listFinancialOrganization({ organizationNameLike: query, status: 1 });
+      return fundGetList({ organizationNameLike: query, status: 1 });
     },
   }
 };
