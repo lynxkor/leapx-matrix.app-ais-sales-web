@@ -11,7 +11,8 @@
     >
       <el-form-item label="信息类别">
         <fetch-select
-          :options="infoCategoryOptions"
+          :request="fetchOptions"
+          enumCode="vr_info_category"
           v-model="form.infoCategory"
           placeholder="请选择"
           clearable
@@ -102,12 +103,6 @@ const mockConfig = {
   data: null
 };
 
-// 信息类别枚举
-const infoCategoryOptions = [
-  { code: '1', message: '超时原因' },
-  { code: '2', message: '更改时间原因' }
-];
-
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
@@ -126,7 +121,6 @@ export default {
         ...defaultForm
       },
       selectionList: [],
-      infoCategoryOptions,
       show: false,
       loading: false,
       exportLoading: false,

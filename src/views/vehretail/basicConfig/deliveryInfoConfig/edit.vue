@@ -34,9 +34,10 @@
                 </el-form-item>
                 <el-form-item label="信息类别：" prop="infoCategory">
                   <fetch-select
-                    :options="infoCategoryOptions"
+                    :request="fetchOptions"
+                    enumCode="vr_info_category"
                     v-model="form.infoCategory"
-                    placeholder="请选择信息类别"
+                    placeholder="请选择"
                     clearable
                   />
                 </el-form-item>
@@ -90,12 +91,6 @@ import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import { getEnum } from '@/api/common';
-
-// 信息类别枚举
-const infoCategoryOptions = [
-  { code: '1', message: '超时原因' },
-  { code: '2', message: '更改时间原因' }
-];
 
 const defaultForm = {
   specificType: '',
@@ -156,7 +151,6 @@ export default {
       moduleKey: 'AISVR-deliveryInfoConfig',
       loading: false,
       submitLoading: false,
-      infoCategoryOptions,
       form: { ...form },
       originalForm: { ...form },
       rules: {
