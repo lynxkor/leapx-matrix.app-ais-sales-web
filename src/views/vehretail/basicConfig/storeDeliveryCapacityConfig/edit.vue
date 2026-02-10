@@ -73,18 +73,14 @@
                   />
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
-                  <el-select
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="StatusEnum"
                     v-model="form.status"
                     placeholder="请选择"
                     clearable
-                  >
-                    <el-option
-                      v-for="item in status_enum"
-                      :key="item.code"
-                      :label="item.message"
-                      :value="item.code"
-                    />
-                  </el-select>
+                    filterable
+                  />
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   <el-input
@@ -109,8 +105,8 @@
                 <el-form-item label="月度交付承载数量：" prop="monthlyDeliveryCapacity">
                   {{ form.monthlyDeliveryCapacity }}
                 </el-form-item>
-                <el-form-item label="状态：" prop="statusDesc">
-                  {{ form.statusDesc }}
+                <el-form-item label="状态：" prop="statusLabel">
+                  {{ form.statusLabel }}
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
