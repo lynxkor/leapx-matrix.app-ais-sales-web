@@ -252,6 +252,7 @@ import {
   vehicleModelList,
   vehicleModelYearTypeRelationDistinctYeayType,
   getRigion,
+  loginUserGet,
 } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
