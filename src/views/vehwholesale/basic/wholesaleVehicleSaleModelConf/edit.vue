@@ -403,7 +403,7 @@ export default {
       return [];
     },
     async getDealerParentOrgList (params) {
-      return getParentCompany({ parentCompanyName: params });
+      return getParentCompany({ companyName: params });
     },
     async getModelIdList (params) {
       return listVehicleModel({ modelNameLike: params, status: 1 });

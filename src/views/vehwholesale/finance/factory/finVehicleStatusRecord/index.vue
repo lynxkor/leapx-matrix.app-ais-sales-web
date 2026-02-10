@@ -13,7 +13,7 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_financing_data_source"
-          v-model="form.syncStatus"
+          v-model="form.financingDataSource"
           placeholder="请选择"
           clearable
           filterable
@@ -33,7 +33,6 @@
           v-model="form.vehicleStatus"
           placeholder="请选择"
           clearable
-          multiple
           filterable
         />
       </el-form-item>
@@ -51,7 +50,7 @@
           clearable
           remote
           multiple
-          v-model="form.dealerCompanyCodes"
+          v-model="form.mainDealerCompanyCodes"
           :remote-method="getDealerParentOrgListByCode"
           value-key="companyCode"
           label-key="companyCode"
@@ -63,7 +62,7 @@
           clearable
           remote
           multiple
-          v-model="form.dealerCompanyCodes"
+          v-model="form.mainDealerCompanyCodes"
           :remote-method="getDealerParentOrgListByName"
           value-key="companyCode"
           label-key="companyName"
@@ -75,8 +74,8 @@
             remote
             reserve-keyword
             multiple
-            labelKey="name"
-            valueKey="id"
+            labelKey="organizationName"
+            valueKey="organizationCode"
             v-model="form.fundFinancialOrganizationIds"
             placeholder="请选择"
             clearable
@@ -89,7 +88,7 @@
             type="daterange"
             :picker-options="pickerOptions"
             range-separator="至"
-            value-format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
           />
@@ -100,7 +99,7 @@
             type="daterange"
             :picker-options="pickerOptions"
             range-separator="至"
-            value-format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
           />
@@ -194,7 +193,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
-import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import TagInput from '@/libs/components/TagInput';
 import dateranges from '@/libs/components/dateranges';
 
@@ -524,13 +523,13 @@ export default {
       // });
     },
     async repairItemSearch (query) {
-      return listFinancialOrganization({ organizationNameLike: query, status: 1 });
+      return fundGetList({ organizationNameLike: query, status: 1 });
     },
     async getDealerParentOrgListByCode (params) {
-      return getParentCompany({ parentCompanyCode: params });
+      return getParentCompany({ companyCode: params });
     },
     async getDealerParentOrgListByName (params) {
-      return getParentCompany({ parentCompanyName: params });
+      return getParentCompany({ companyName: params });
     }
   }
 };
