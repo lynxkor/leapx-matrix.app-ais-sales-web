@@ -135,14 +135,14 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'quantityMin', label: '最小值', visible: true, width: 200 },
-          { props: 'quantityMax', label: '最大值', visible: true, width: 200 },
-          { props: 'stockTypeLabel', label: '库存存量类型', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'quantityMin', label: '最小值', visible: true, align: 'right', width: 100 },
+          { props: 'quantityMax', label: '最大值', visible: true, align: 'right', width: 100 },
+          { props: 'stockTypeLabel', label: '库存存量类型', visible: true, width: 140 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 78 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建者名称', visible: true, width: 140 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
+          { props: 'modifierName', label: '修改者名称', visible: true, width: 140 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
             props: 'operate',

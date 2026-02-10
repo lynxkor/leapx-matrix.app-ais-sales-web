@@ -30,7 +30,7 @@
                 <el-form-item label="申请单状态：" prop="applyStatus">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="vr_order_unlock_Apply_status"
+                    enumCode="vr_order_unlock_apply_status"
                     v-model="form.applyStatus"
                     placeholder="请选择"
                     clearable
@@ -286,7 +286,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="150px" :inline="true" class="form-detail" v-show="!isAdding">
+              <el-form :inline="true" class="form-detail" v-show="!isAdding">
                 <el-form-item label="申请单号：" prop="unlockApplyCode">
                   {{ form.unlockApplyCode }}
                 </el-form-item>

@@ -52,6 +52,14 @@ export function findCanUnlockOrderList (data) {
 }
 
 /**
+ * 批量更换订单门店
+ * @param {Object} data
+ */
+export function batchReplaceStore (data) {
+  return api.jsonPost(prefix + 'batchReplaceStore', data);
+}
+
+/**
  * 取消锁车-申请原因
  * @param {Object} data
  */

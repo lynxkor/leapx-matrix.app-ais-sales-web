@@ -219,7 +219,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="活动编码：" prop="activityCode">
                   {{ form.activityCode }}
                 </el-form-item>

@@ -308,7 +308,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="操作时间：" prop="operateTime">
                   {{ form.operateTime }}
                 </el-form-item>
