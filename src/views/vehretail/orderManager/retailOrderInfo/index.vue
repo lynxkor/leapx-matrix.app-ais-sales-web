@@ -191,8 +191,8 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
        <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length !== 1" @click="handleUnlock">取消锁车</el-button>
-       <el-button v-if="canAddOrUpdate" size="small" @click="handleAdd">更换销售门店</el-button>
-       <el-button v-if="canAddOrUpdate" size="small" @click="handleAdd">更换交付门店</el-button>
+       <el-button v-if="canAddOrUpdate" size="small" @click="handleChangeDealer('sales')" :disabled="selectionList.length === 0">更换销售门店</el-button>
+       <el-button v-if="canAddOrUpdate" size="small" @click="handleChangeDealer('support')" :disabled="selectionList.length === 0">更换交付门店</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
@@ -220,18 +220,10 @@
       </LPVxeTable>
     </div>
     <!-- TIPS: 填入项目id即可 -->
-    <Upload :visible="uploadDialogVisible" :id="'1'" @close="handleUploadDialogClose" />
-    <!-- 取消锁车 -->
-     <UnlockDialog
-      ref="unlockDialog"
-      :businessId="businessId"
-      :row="row"
-      @refresh="getData"
-    />
-    <!-- 配置页 -->
-     <MaterialsDialog
-      ref="materialsDialog"
-      @confirm="getData"
+    <Upload
+      :visible="uploadDialogVisible"
+      :id="'1'"
+      @close="handleUploadDialogClose"
     />
   </div>
 </template>
@@ -251,7 +243,6 @@ import {
   vehicleModelList,
   vehicleModelYearTypeRelationDistinctYeayType,
   getRigion,
-  loginUserGet,
 } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -262,8 +253,6 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
-import UnlockDialog from './components/UnlockDialog';
-import MaterialsDialog from './components/MaterialsDialog';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -325,8 +314,6 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
-    MaterialsDialog,
-    UnlockDialog,
     TagInput,
     PageSearchAction,
     LPVxeTable,
@@ -340,12 +327,9 @@ export default {
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-retailOrderInfo',
-      businessId: '',
-      row: {},
       form: {
         ...defaultForm
       },
-      accountFlag: null, // 账户标识  true: 是店端账号；false: 厂端账号
       orgProps: {
         checkStrictly: true,
         emitPath: true,
@@ -473,12 +457,6 @@ export default {
             visible: true,
             fixed: 'right',
             buttons: [{
-              name: '配额调整',
-              click: (rowIndex, row) => {
-                this.changeConfiguration(row);
-              },
-              type: 'info'
-            }, {
               name: '编辑',
               click: (rowIndex, row) => {
                 this.$router.push({
@@ -502,23 +480,8 @@ export default {
     this.getData();
     this.modelSearch();
     this.listVehicleYearType();
-    this.loginUserGet();
   },
   methods: {
-    changeConfiguration (row) {
-      this.$refs.materialsDialog.show();
-    },
-    handleUnlock () {
-      console.log('this.selectionList[0]:', this.selectionList[0]);
-      this.businessId = this.selectionList[0]?.id;
-      this.row = this.selectionList[0];
-      this.$refs.unlockDialog.show();
-    },
-    loginUserGet () {
-      loginUserGet().then(res => {
-        this.accountFlag = res.accountFlag;
-      }).catch(() => {});
-    },
     async modelSearch () {
       const res = await vehicleModelList({ seriesId: this.form.seriesId, status: 1 });
       if (res.length) {
