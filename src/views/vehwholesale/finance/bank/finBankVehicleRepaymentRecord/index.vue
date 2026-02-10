@@ -39,8 +39,8 @@
           remote
           multiple
           reserve-keyword
-          labelKey="name"
-          valueKey="id"
+          labelKey="organizationName"
+          valueKey="organizationCode"
           v-model="form.fundFinancialOrganizationIds"
           placeholder="请选择"
           clearable
@@ -61,7 +61,7 @@
             type="daterange"
             :picker-options="pickerOptions"
             range-separator="至"
-            value-format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
           />
@@ -159,7 +159,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
-import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import TagInput from '@/libs/components/TagInput';
 import dateranges from '@/libs/components/dateranges';
 
@@ -218,8 +218,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'materialsCode',
-            label: '物料编码',
+            props: 'code',
+            label: '编码',
             visible: false,
             width: 200,
             fixed: 'left',
@@ -235,12 +235,12 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'code', label: '编码', visible: true, width: 200 },
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           { props: 'fundFinancialOrganizationName', label: '融资金融机构', visible: true, width: 200 },
           { props: 'vin', label: 'VIN号', visible: true, width: 200 },
           { props: 'repaymentDate', label: '还款日期', visible: true, width: 200 },
+          { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           { props: 'wholesaleOrderCode', label: '整车批售订单', visible: true, width: 200 },
           { props: 'customerOrderCode', label: '企业客户整车订单', visible: true, width: 200 },
@@ -479,13 +479,13 @@ export default {
       // });
     },
     async repairItemSearch (query) {
-      return listFinancialOrganization({ organizationNameLike: query, status: 1 });
+      return fundGetList({ organizationNameLike: query, status: 1 });
     },
     async getDealerParentOrgListByCode (params) {
-      return getParentCompany({ parentCompanyCode: params });
+      return getParentCompany({ companyCode: params });
     },
     async getDealerParentOrgListByName (params) {
-      return getParentCompany({ parentCompanyName: params });
+      return getParentCompany({ companyName: params });
     }
   }
 };

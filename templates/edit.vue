@@ -72,7 +72,7 @@
               {{{/isNormal}}}
               {{{/cols}}}
               </el-form>
-              <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
               {{{#cols}}}
                 <el-form-item label="{{{description}}}：" prop="{{{key}}}">
                   {{{#isBoolean}}}
@@ -175,8 +175,8 @@
         </section>
       </el-main>
       <el-footer height="60px">
-        <el-button size="small" @click="handleBack">取消</el-button>
         <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
+        <el-button size="small" @click="handleBack">取消</el-button>
         <!-- <el-button size="small" @click="handleJumpAuditLog">审核日志</el-button> -->
       </el-footer>
     </el-container>

@@ -574,7 +574,7 @@ export default {
     },
     async getParentCompany (query) {
       try {
-        return await getParentCompany({ parentCompanyName: query });
+        return await getParentCompany({ companyName: query });
       } catch (error) {
         console.error('Error fetching series list:', error);
       }
