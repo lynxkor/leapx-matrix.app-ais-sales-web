@@ -222,7 +222,17 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload :visible="uploadDialogVisible" :id="'1'" @close="handleUploadDialogClose" />
     <!-- 取消锁车 -->
-     <UnlockDialog ref="unlockDialog" />
+     <UnlockDialog
+      ref="unlockDialog"
+      :businessId="businessId"
+      :row="row"
+      @refresh="getData"
+    />
+    <!-- 配置页 -->
+     <MaterialsDialog
+      ref="materialsDialog"
+      @confirm="getData"
+    />
   </div>
 </template>
 
@@ -253,6 +263,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
 import UnlockDialog from './components/UnlockDialog';
+import MaterialsDialog from './components/MaterialsDialog';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -314,6 +325,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    MaterialsDialog,
     UnlockDialog,
     TagInput,
     PageSearchAction,
@@ -328,6 +340,8 @@ export default {
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-retailOrderInfo',
+      businessId: '',
+      row: {},
       form: {
         ...defaultForm
       },
@@ -459,6 +473,12 @@ export default {
             visible: true,
             fixed: 'right',
             buttons: [{
+              name: '配额调整',
+              click: (rowIndex, row) => {
+                this.changeConfiguration(row);
+              },
+              type: 'info'
+            }, {
               name: '编辑',
               click: (rowIndex, row) => {
                 this.$router.push({
@@ -485,7 +505,13 @@ export default {
     this.loginUserGet();
   },
   methods: {
+    changeConfiguration (row) {
+      this.$refs.materialsDialog.show();
+    },
     handleUnlock () {
+      console.log('this.selectionList[0]:', this.selectionList[0]);
+      this.businessId = this.selectionList[0]?.id;
+      this.row = this.selectionList[0];
       this.$refs.unlockDialog.show();
     },
     loginUserGet () {
