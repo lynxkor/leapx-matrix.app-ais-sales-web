@@ -404,7 +404,7 @@ export default {
       callback();
     };
     return {
-      pageTitle: '整车批售-批售主数据-排产专项活动管理',
+      pageTitle: '排产专项活动管理',
       pageType: 'edit',
       title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改

@@ -74,7 +74,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车批售-批售主数据-门店试驾车配额调整记录管理',
+      pageTitle: '门店试驾车配额调整记录管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-dealerDemoVehicleQuotaRecord',
@@ -142,7 +142,7 @@ export default {
     // exportExcel () {
     //   this.exportLoading = true;
     //   exportTable({
-    //     businessType: '整车批售-批售主数据-门店试驾车配额调整记录管理',
+    //     businessType: '门店试驾车配额调整记录管理',
     //     dataFetchPath: 'vehwholesale/web/basic/dealerDemoVehicleQuotaRecord/page',
     //     reqParams: this.getFormData(),
     //     titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -150,7 +150,7 @@ export default {
     //   }).then(async res => {
     //     if (res && res.excelUrl) {
     //       try {
-    //         await downloadExcel(res.excelUrl, '整车批售-批售主数据-门店试驾车配额调整记录管理.xlsx');
+    //         await downloadExcel(res.excelUrl, '门店试驾车配额调整记录管理.xlsx');
     //       } catch (error) {
     //         this.$message({
     //           type: 'error',
