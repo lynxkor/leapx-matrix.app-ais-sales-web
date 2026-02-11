@@ -31,7 +31,7 @@
                   placeholder="请输入"
                   v-model="form.wholesaleTargetQty"
                   clearable
-                  min="0"
+                  :min="0"
                   :precision="0"
                 />
               </el-form-item>

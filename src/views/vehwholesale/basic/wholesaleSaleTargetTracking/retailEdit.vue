@@ -108,7 +108,7 @@
                   placeholder="请输入"
                   v-model="form.newOrderQty"
                   clearable
-                  min="0"
+                  :min="0"
                   :precision="0"
                 />
               </el-form-item>
@@ -118,7 +118,7 @@
                   placeholder="请输入"
                   v-model="form.newLockTargetQty"
                   clearable
-                  min="0"
+                  :min="0"
                   :precision="0"
                 />
               </el-form-item>
@@ -128,7 +128,7 @@
                   placeholder="请输入"
                   v-model="form.netLockTargetQty"
                   clearable
-                  min="0"
+                  :min="0"
                   :precision="0"
                 />
               </el-form-item>
@@ -138,7 +138,7 @@
                   placeholder="请输入"
                   v-model="form.wholesaleAssessmentTargetQty"
                   clearable
-                  min="0"
+                  :min="0"
                   :precision="0"
                 />
               </el-form-item>
@@ -148,7 +148,7 @@
                   placeholder="请输入"
                   v-model="form.deliveryTargetQty"
                   clearable
-                  min="0"
+                  :min="0"
                   :precision="0"
                 />
               </el-form-item>
