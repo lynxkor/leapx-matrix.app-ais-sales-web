@@ -68,7 +68,7 @@
         <el-form-item label="变更类型">
           <fetch-select
             :request="fetchOptions"
-            enumCode="vehretail_id_card_type"
+            enumCode="vehretail_order_change_type"
             v-model="form.changeType"
             placeholder="请选择"
             clearable
@@ -76,13 +76,13 @@
           />
         </el-form-item>
         <el-form-item label="变更原因">
-          <el-input
-            placeholder="请输入"
-            v-model="form.changeReason"
-            clearable
+          <fetch-select
+            v-bind="selectReasonOptions"
+            :remote-method="changeReasonSearch"
+            v-model="form.changeReasonCode"
           />
         </el-form-item>
-        <el-form-item label="变更原因">
+        <el-form-item label="变更说明">
           <el-input
             placeholder="请输入"
             v-model="form.changeExplain"
@@ -137,7 +137,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="1"
+      :id="'1'"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -158,6 +158,7 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
+import { fetchReasonLabelList } from '@/api/vehretail/orderRefund/changeReason';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -194,6 +195,17 @@ export default {
   },
   data () {
     return {
+      selectReasonOptions: {
+        placeholder: '请选择',
+        labelKey: 'name',
+        valueKey: 'code',
+        clearable: true,
+        // multiple: true,
+        collapseTags: true,
+        filterable: true,
+        remote: true,
+        reserveKeyword: true,
+      },
       pageTitle: '订单信息变更申请管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
@@ -234,14 +246,14 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'changeApplyCode', label: '订单信息变更申请编号', visible: true, width: 200 },
+          { props: 'changeApplyCode', label: '申请编号', visible: true, width: 200 },
           { props: 'retailOrderCode', label: '零售订单号', visible: true, width: 200 },
           { props: 'mallOrderCode', label: '商城订单编号', visible: true, width: 200 },
-          { props: 'saleDealerCode', label: '销售门店编码', visible: true, width: 200 },
-          { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
+          { props: 'saleDealerCode', label: '销售门店编码', visible: false, width: 200 },
+          { props: 'saleDealerName', label: '订单销售门店名称', visible: true, width: 200 },
           { props: 'paymentTime', label: '缴定金时间', visible: true, width: 200 },
           { props: 'deliveryTime', label: '交车时间', visible: true, width: 200 },
-          { props: 'modelId', label: '车型ID', visible: true, width: 200 },
+          { props: 'modelId', label: '车型ID', visible: false, width: 200 },
           { props: 'modelName', label: '车型名称', visible: true, width: 200 },
           { props: 'applyStatusLabel', label: '申请状态', visible: true, width: 200 },
           { props: 'changeTypeLabel', label: '变更类型', visible: true, width: 200 },
@@ -337,7 +349,7 @@ export default {
       this.exportLoading = true;
       exportTable({
         businessType: '订单信息变更申请管理',
-        dataFetchPath: '/vr/web/order/retailOrderChangeApply//page',
+        dataFetchPath: '/vr/web/order/retailOrderChangeApply/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -476,6 +488,13 @@ export default {
         this.form.deliveryTimeStart = null;
         this.form.deliveryTimeEnd = null;
       }
+    },
+    async changeReasonSearch (val) {
+      const params = {
+        pageSize: 1000,
+        changeType: this.form.changeType
+      };
+      return await fetchReasonLabelList(params);
     },
     // 批量启用停用
     handleBatchEnable (status) {

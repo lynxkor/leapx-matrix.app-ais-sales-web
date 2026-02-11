@@ -9,6 +9,13 @@
       label-width="150px"
       class="ais-search-form"
     >
+      <el-form-item label="原因二级分类编码">
+        <el-input
+          placeholder="请输入"
+          v-model="form.subCateCode"
+          clearable
+        />
+      </el-form-item>
       <el-form-item label="原因二级分类">
         <el-input
           placeholder="请输入"
@@ -90,6 +97,7 @@ import { fetchCategoryList } from '@/api/vehretail/orderRefund/category';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  subCateCode: '',
   subCateName: '',
   cateCode: '',
 };
@@ -146,8 +154,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'subCateName',
-            label: '原因二级分类',
+            props: 'subCateCode',
+            label: '原因二级分类编码',
             visible: true,
             width: 200,
             fixed: 'left',
@@ -163,6 +171,7 @@ export default {
               type: 'primary'
             }]
           },
+          { props: 'subCateName', label: '原因二级分类', visible: true, width: 200 },
           { props: 'cateCode', label: '原因分类编码', visible: true, width: 200 },
           { props: 'cateName', label: '原因分类', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
