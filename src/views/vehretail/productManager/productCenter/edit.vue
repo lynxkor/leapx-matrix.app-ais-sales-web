@@ -7,8 +7,8 @@
           <el-main>
             <section class="common-section">
               <div class="common-section-header">
-                <h2>基础信息</h2>
-                <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
+                <h2 v-show="_id">基础信息</h2>
+                <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button> -->
               </div>
               <div class="common-section-body">
                 <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
@@ -155,7 +155,7 @@
                     :moduleKey="moduleKey"
                     ref="attributeable"
                     @replace="replace"
-                    :id="id" />
+                    :id="_id" />
                 </div>
               </div>
             </section>
@@ -171,7 +171,7 @@
                   <pricing-table
                     :module-key="moduleKey"
                     ref="pricing"
-                    :id="id"
+                    :id="_id"
                     :tableType="'edit'"
                     @replace="updateReplace"
                     @checkboxChange="checkboxChange" />

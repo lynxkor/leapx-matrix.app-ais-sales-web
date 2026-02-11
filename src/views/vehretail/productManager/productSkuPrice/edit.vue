@@ -5,7 +5,7 @@
       <el-main>
         <section class="common-section">
           <div class="common-section-header">
-            <h2>基础信息</h2>
+            <h2 v-show="_id">基础信息</h2>
           </div>
           <div class="common-section-body">
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
@@ -137,7 +137,7 @@
                   maxlength="100"
                 />
               </el-form-item>
-              <el-form-item label="创建者" prop="creator">
+              <el-form-item label="创建者">
                 <el-input
                   placeholder="请输入"
                   v-model="form.creatorName"
@@ -145,7 +145,7 @@
                   disabled
                 />
               </el-form-item>
-              <el-form-item label="创建时间" prop="createTime">
+              <el-form-item label="创建时间">
                 <el-date-picker
                   :default-time="['00:00:00', '23:59:59']"
                   v-model="form.createTime"
@@ -188,7 +188,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-import moment from 'moment';
+// import moment from 'moment';
 import { getList } from '@/api/datacenter/materials/vehicleMaterials/index';
 
 const defaultForm = {
@@ -490,13 +490,13 @@ export default {
     },
     getDefautlForm () {
       // TIPS: 此处可添加表单默认值，如当前用户信息等
-      const userInfo = this.$store.state.user.userInfo;
+      // const userInfo = this.$store.state.user.userInfo;
       return {
         ...defaultForm,
-        creator: userInfo.userId,
-        creatorName: userInfo.userName,
-        status: 1,
-        createTime: moment().format('YYYY-MM-DD HH:mm:ss')
+        // creator: userInfo.userId,
+        // creatorName: userInfo.userName,
+        // status: 1,
+        // createTime: moment().format('YYYY-MM-DD HH:mm:ss')
       };
     },
     // 审核日志
