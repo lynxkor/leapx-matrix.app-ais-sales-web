@@ -606,7 +606,7 @@ const defaultForm = {
 };
 
 export default {
-  name: 'orderChangeEdit',
+  name: 'orderChangeApplyEdit',
   // 集中视图预留
   props: {
     id: {

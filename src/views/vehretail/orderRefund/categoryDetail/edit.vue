@@ -112,7 +112,7 @@ const defaultForm = {
 };
 
 export default {
-  name: 'subCategoryEdit',
+  name: 'orderRefundCategoryDetailEdit',
   // 集中视图预留
   props: {
     id: {
