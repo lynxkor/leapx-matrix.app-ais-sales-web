@@ -13,7 +13,7 @@
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
       >
-          <template #status>
+        <template #status>
           {{ form.wholesaleOrderCode }}
         </template>
         <template #extraButtons >
@@ -105,7 +105,7 @@
                   <el-form-item label="订单分类：" prop="orderCategory">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.orderCategory"
+                    v-model="form.orderCategories"
                     clearable
                     disabled
                   />
@@ -174,14 +174,14 @@
                     end-placeholder="结束日期"
                   />
                 </el-form-item>
-                  <el-form-item label="急单备注：" prop="emergencyOrderRemark">
+                  <!-- <el-form-item label="急单备注：" prop="emergencyOrderRemark">
                   <el-input
                     placeholder="请输入"
                     v-model="form.emergencyOrderRemark"
                     clearable
                     maxlength="300"
                   />
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="确认说明：" prop="confirmRemark">
                   <el-input
                     placeholder="请输入"
@@ -237,7 +237,7 @@
                     disabled
                   />
                 </el-form-item>
-                  <el-form-item label="订单物料编码：" prop="orderMaterialCode">
+                <el-form-item label="订单物料编码：" prop="orderMaterialCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.orderMaterialCode"
@@ -253,7 +253,6 @@
                     disabled
                   />
                 </el-form-item>
-
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <!-- <el-form-item label="批售订单号：" prop="wholesaleOrderCode">
@@ -313,9 +312,9 @@
                   {{ form.emergencyOrderTime }}
                 </el-form-item>
 
-                 <el-form-item label="急单备注：" prop="emergencyOrderRemark">
+                 <!-- <el-form-item label="急单备注：" prop="emergencyOrderRemark">
                   {{ form.emergencyOrderRemark }}
-                </el-form-item>
+                </el-form-item> -->
                    <el-form-item label="确认说明：" prop="confirmRemark">
                   {{ form.confirmRemark }}
                 </el-form-item>
@@ -328,7 +327,7 @@
                 <el-form-item label="未自动确认原因：" prop="noAutoConfirmReason">
                   {{ form.noAutoConfirmReason }}
                 </el-form-item>
-                <el-form-item label="允许锁零售单" prop="allowLockRetailLabel">
+                <el-form-item label="允许锁零售单：" prop="allowLockRetailLabel">
                   {{ form.allowLockRetailLabel }}
                 </el-form-item>
                  <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
@@ -527,31 +526,7 @@
                     disabled
                   />
                 </el-form-item>
-                 <el-form-item label="是否需要自动配车" prop="needAutoAllocateCar">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.needAutoAllocateCar"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                    <el-form-item label="整车物流预留：" prop="logisticsReserve">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.logisticsReserve"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="物流预留备注：" prop="logisticsReserveRemark">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.logisticsReserveRemark"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                    <el-form-item label="初始交付周期说明：" prop="initDeliveryCycleDesc">
+                <el-form-item label="初始交付周期说明：" prop="initDeliveryCycleDesc">
                   <el-input
                     placeholder="请输入"
                     v-model="form.initDeliveryCycleDesc"
@@ -563,22 +538,6 @@
                   <el-input
                     placeholder="请输入"
                     v-model="form.dynamicDeliveryCycleDesc"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="电池电芯(订单物料)：" prop="orderBatteryCellName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.orderBatteryCellName"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                  <el-form-item label="电池电芯(配车物料)：" prop="batteryCellName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.batteryCellName"
                     clearable
                     disabled
                   />
@@ -628,8 +587,8 @@
                 <el-form-item label="取消配车说明：" prop="cancelAllocateRemark">
                   {{ form.cancelAllocateRemark }}
                 </el-form-item>
-                <el-form-item label="取消结算时间：" prop="cancelAllocateRemark">
-                  <!-- {{ form.cancelAllocateRemark }}  -->
+                <el-form-item label="取消结算时间：" prop="cancelSettleTime">
+                  {{ form.cancelSettleTime }}
                 </el-form-item>
                 <el-form-item label="首次取消配车时间：" prop="firstCancelAllocateTime">
                   {{ form.firstCancelAllocateTime }}
@@ -646,26 +605,11 @@
                 <el-form-item label="车辆交付状态：" prop="deliveryStatusLabel">
                   {{ form.deliveryStatusLabel }}
                 </el-form-item>
-                 <el-form-item label="是否需要自动配车：" prop="needAutoAllocateCarLabel">
-                  {{ form.needAutoAllocateCarLabel }}
-                </el-form-item>
-                <el-form-item label="整车物流预留：" prop="logisticsReserve">
-                  {{ form.logisticsReserve }}
-                </el-form-item>
-                <el-form-item label="物流预留备注：" prop="logisticsReserveRemark">
-                  {{ form.logisticsReserveRemark }}
-                </el-form-item>
                   <el-form-item label="初始交付周期说明：" prop="initDeliveryCycleDesc">
                   {{ form.initDeliveryCycleDesc }}
                 </el-form-item>
                 <el-form-item label="动态交付周期说明：" prop="dynamicDeliveryCycleDesc">
                   {{ form.dynamicDeliveryCycleDesc }}
-                </el-form-item>
-                <el-form-item label="电池电芯(订单物料)：" prop="orderBatteryCellName">
-                  {{ form.orderBatteryCellName }}
-                </el-form-item>
-                <el-form-item label="电池电芯(配车物料)：" prop="batteryCellName">
-                  {{ form.batteryCellName }}
                 </el-form-item>
               </el-form>
             </div>
@@ -825,7 +769,7 @@
                 </el-form-item>
                  <el-form-item label="赊销欠款：" prop="creditSaleFlag">
                   <!-- todo 后续版本添加字段 -->
-                  <!-- {{ form.creditSaleFlagLabel }}  -->
+                  <!-- {{ form.creditSaleFlagLabel }} -->
                 </el-form-item>
                   <el-form-item label="是否赊销：" prop="creditSaleFlagLabel">
                   {{ form.creditSaleFlagLabel }}
@@ -875,12 +819,13 @@
     />
    <ManualVehicle
       :visible.sync="showManualVehicleDialog"
+      @confirmVin="confirmVin"
     />
   </div>
 </template>
 
 <script>
-import { getDetail, addOrUpdate, batchConfirmItem, batchSetAutoAllocateItem, batchCancelItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import { getDetail, addOrUpdate, batchConfirmItem, batchSetAutoAllocateItem, batchCancelItem, vinAllocateVehicleSubmitItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
@@ -1059,7 +1004,6 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       defaultNewRow: {
-        name: '',
       },
       tableData: [],
       options: {
@@ -1071,28 +1015,34 @@ export default {
         {
           field: 'fundTypeLabel',
           title: '资金类型',
-          editable: true,
         },
         {
           field: 'availableBalance',
           title: '可用余额',
-          editable: true,
-          editRender: { name: 'ElInput', props: { type: 'number' } }
         },
         {
           field: 'frozenBalance',
           title: '冻结资金',
-          editRender: { name: 'ElInput' }
         },
         {
           field: 'availableCreditAmount',
           title: '剩余可用额度',
-          editRender: { name: 'ElInput' }
         },
         {
           field: 'downPaymentRatio',
           title: '首付款比例%',
-          editRender: { name: 'ElInput' }
+        },
+        {
+          field: 'creditAccountStatusLabel',
+          title: '赊销账户状态',
+        },
+        {
+          field: 'effectiveTime',
+          title: '额度生效日期',
+        },
+        {
+          field: 'expireTime',
+          title: '额度失效日期',
         },
       ],
     };
@@ -1125,7 +1075,7 @@ export default {
         });
         return false;
       };
-      if (item.orderCategory !== 1) {
+      if (item.orderCategory !== 0) {
         this.$message({
           type: 'error',
           message: '订单[订单分类]必须为[商品车订单]!'
@@ -1152,58 +1102,75 @@ export default {
       return true;
     },
     handleCheckConfirm () { //
-      const checkStatus = this.allAllowConfirm(this.form);
-      if (checkStatus) {
-        this.$confirm('是否需要对批售订单进行确认? 注意：确认订单结算资金类型', '操作提醒', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
+      // const checkStatus = this.allAllowConfirm(this.form);
+      // if (checkStatus) {
+      this.$confirm('是否需要对批售订单进行确认?', '操作提醒', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        batchConfirmItem({
+          idSet: [this.form.id]
         }).then(() => {
-          batchConfirmItem({
-            ids: [this.form.id]
-          }).then(() => {
-            this.$message({
-              type: 'success',
-              message: '确认成功!'
-            });
-            this.getDetailData();
-          }).catch(() => {
-            this.$message({
-              type: 'error',
-              message: '确认失败!'
-            });
+          this.$message({
+            type: 'success',
+            message: '确认成功!'
           });
-        }).catch(() => {});
-      }
+          this.getDetailData();
+        }).catch(() => {
+          this.$message({
+            type: 'error',
+            message: '确认失败!'
+          });
+        });
+      }).catch(() => {});
+      // }
     },
     handleaAutoVehicleAllocation () { // 自动配车
-      const checkStatus = this.allAutoVehicleAllocation(this.form);
-      if (checkStatus) {
-        this.$confirm('是否需要对批售订单进行自动配车?', '操作提醒', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
+      // const checkStatus = this.allAutoVehicleAllocation(this.form);
+      // if (checkStatus) {
+      this.$confirm('是否需要对批售订单进行自动配车?', '操作提醒', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        batchSetAutoAllocateItem({
+          ids: [this.form.id],
+          needAutoAllocateCar: 1
         }).then(() => {
-          batchSetAutoAllocateItem({
-            ids: [this.form.id],
-            needAutoAllocateCar: 1
-          }).then(() => {
-            this.$message({
-              type: 'success',
-              message: '自动配车成功!'
-            });
-            this.getDetailData();
-          }).catch(() => {
-            this.$message({
-              type: 'error',
-              message: '自动配车失败!'
-            });
+          this.$message({
+            type: 'success',
+            message: '自动配车成功!'
           });
-        }).catch(() => {});
-      }
+          this.getDetailData();
+        }).catch(() => {
+          this.$message({
+            type: 'error',
+            message: '自动配车失败!'
+          });
+        });
+      }).catch(() => {});
+      // }
     },
     handleManualVehicleAllocation () { // 手工配车
       this.showManualVehicleDialog = true;
+    },
+    confirmVin (data) {
+      vinAllocateVehicleSubmitItem({
+        wholesaleOrderId: this.form.id,
+        vin: data.vin
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '自动配车成功!'
+        });
+        this.getDetailData();
+      }).catch(() => {
+        this.$message({
+          type: 'error',
+          message: '自动配车失败!'
+        });
+      });
     },
     handleDelete () { // 删除
 
@@ -1244,7 +1211,16 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        return getDetail(id).then((res) => {
+          // Map the nested properties to the top level for easier access in the table
+          res.dealerFundAccounts = res.dealerFundAccounts.map(account => ({
+            ...account,
+            creditAccountStatusLabel: account.creditSalesLimit?.creditAccountStatusLabel || '',
+            effectiveTime: account.creditSalesLimit?.effectiveTime || '',
+            expireTime: account.creditSalesLimit?.expireTime || ''
+          }));
+          return res;
+        }).catch(() => {});
       }
     },
     submitRequest () {
