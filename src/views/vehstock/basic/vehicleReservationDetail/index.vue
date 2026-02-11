@@ -200,18 +200,18 @@ export default {
           { props: 'bizCode', label: '业务编号', visible: true, width: 200 },
           { props: 'vin', label: 'VIN', visible: true, width: 200 },
           { props: 'reserveTime', label: '预留时间', visible: true, width: 200 },
-          { props: 'reserveNum', label: '需预留数', visible: true, width: 200 },
-          { props: 'reservedNum', label: '已预留数', visible: true, width: 200 },
-          { props: 'reservedLabel', label: '销售预留', visible: true, width: 200 },
-          { props: 'reservedTypeLabel', label: '销售预留类型', visible: true, width: 200 },
-          { props: 'logisticsReservedLabel', label: '整车物流预留', visible: true, width: 200 },
-          { props: 'vehicleDeliveryStatusLabel', label: '车辆交付状态', visible: true, width: 200 },
-          { props: 'vdcInventoryStatusLabel', label: '库存状态', visible: true, width: 200 },
+          { props: 'reserveNum', label: '需预留数', visible: true, align: 'right', width: 120 },
+          { props: 'reservedNum', label: '已预留数', visible: true, align: 'right', width: 120 },
+          { props: 'reservedLabel', label: '销售预留', visible: true, width: 120 },
+          { props: 'reservedTypeLabel', label: '销售预留类型', visible: true, width: 140 },
+          { props: 'logisticsReservedLabel', label: '整车物流预留', visible: true, width: 140 },
+          { props: 'vehicleDeliveryStatusLabel', label: '车辆交付状态', visible: true, width: 140 },
+          { props: 'vdcInventoryStatusLabel', label: '库存状态', visible: true, width: 120 },
           { props: 'inboundDateTime', label: 'VDC入库时间', visible: true, width: 200 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建者名称', visible: true, width: 120 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
+          { props: 'modifierName', label: '修改者名称', visible: true, width: 120 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
             props: 'operate',
@@ -414,10 +414,13 @@ export default {
     // 批量删除
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
+      this.$confirm(message, '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        dangerouslyUseHTMLString: true,
+        customClass: 'ais-leave-tips',
+        showClose: false
       }).then(() => {
         deleteItem(ids).then(() => {
           this.$message({

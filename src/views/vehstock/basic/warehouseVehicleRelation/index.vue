@@ -163,14 +163,14 @@ export default {
             }]
           },
           { props: 'warehouseName', label: '整车仓库', visible: true, width: 200 },
-          { props: 'warehouseTypeLabel', label: '仓库分类', visible: true, width: 200 },
-          { props: 'provinceName', label: '省', visible: true, width: 200 },
-          { props: 'cityName', label: '市', visible: true, width: 200 },
-          { props: 'priority', label: '配车优先级', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
+          { props: 'warehouseTypeLabel', label: '仓库分类', visible: true, width: 120 },
+          { props: 'provinceName', label: '省', visible: true, width: 140 },
+          { props: 'cityName', label: '市', visible: true, width: 140 },
+          { props: 'priority', label: '配车优先级', visible: true, width: 140 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 78 },
+          { props: 'creatorName', label: '创建者名称', visible: true, width: 120 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
+          { props: 'modifierName', label: '修改者名称', visible: true, width: 120 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
             props: 'operate',
@@ -374,10 +374,13 @@ export default {
     // 批量删除
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
+      this.$confirm(message, '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        dangerouslyUseHTMLString: true,
+        customClass: 'ais-leave-tips',
+        showClose: false
       }).then(() => {
         deleteItem(ids).then(() => {
           this.$message({

@@ -1618,7 +1618,7 @@ const routes = [
       }
     }, {
       path: '/vehretail/orderRefund/category',
-      name: 'orderRefund',
+      name: 'orderRefundCategory',
       component: () => import('@/views/vehretail/orderRefund/category/index.vue'),
 
       meta: {
@@ -1627,7 +1627,7 @@ const routes = [
       }
     }, {
       path: '/vehretail/orderRefund/category/edit',
-      name: 'orderRefundEdit',
+      name: 'orderRefundCategoryEdit',
       component: () => import('@/views/vehretail/orderRefund/category/edit.vue'),
 
       meta: {
@@ -1636,7 +1636,7 @@ const routes = [
       }
     }, {
       path: '/vehretail/orderRefund/categoryDetail',
-      name: 'subCategory',
+      name: 'orderRefundCategoryDetail',
       component: () => import('@/views/vehretail/orderRefund/categoryDetail/index.vue'),
 
       meta: {
@@ -1645,7 +1645,7 @@ const routes = [
       }
     }, {
       path: '/vehretail/orderRefund/categoryDetail/edit',
-      name: 'subCategoryEdit',
+      name: 'orderRefundCategoryDetailEdit',
       component: () => import('@/views/vehretail/orderRefund/categoryDetail/edit.vue'),
 
       meta: {
@@ -1999,7 +1999,7 @@ const routes = [
       }
     }, {
       path: '/vehretail/orderRefund/changeApply',
-      name: 'orderChange',
+      name: 'orderChangeApply',
       component: () => import('@/views/vehretail/orderRefund/changeApply/index.vue'),
 
       meta: {
@@ -2008,11 +2008,29 @@ const routes = [
       }
     }, {
       path: '/vehretail/orderRefund/changeApply/edit',
-      name: 'orderChangeEdit',
+      name: 'orderChangeApplyEdit',
       component: () => import('@/views/vehretail/orderRefund/changeApply/edit.vue'),
 
       meta: {
         name: '订单信息变更申请详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/orderRefund/changeReason',
+      name: 'orderChangeReason',
+      component: () => import('@/views/vehretail/orderRefund/changeReason'),
+
+      meta: {
+        name: '变更原因',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/orderRefund/changeReason/edit',
+      name: 'orderChangeReasonEdit',
+      component: () => import('@/views/vehretail/orderRefund/changeReason/edit.vue'),
+
+      meta: {
+        name: '变更原因详情',
         noResourceUrl: 'true'
       }
     }, {
@@ -2049,6 +2067,24 @@ const routes = [
 
       meta: {
         name: '门店交付承载力配置详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/basicConfig/deliveryInfoConfig',
+      name: 'deliveryInfoConfig',
+      component: () => import('@/views/vehretail/basicConfig/deliveryInfoConfig/index.vue'),
+
+      meta: {
+        name: '交付信息配置',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicConfig/deliveryInfoConfig/edit',
+      name: 'deliveryInfoConfigEdit',
+      component: () => import('@/views/vehretail/basicConfig/deliveryInfoConfig/edit.vue'),
+
+      meta: {
+        name: '交付信息配置详情',
         noResourceUrl: 'true'
       }
     }, {
@@ -2120,6 +2156,42 @@ const routes = [
 
       meta: {
         name: '锁车资源共享配置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/bizMasterData/configMasterData/salesConfig',
+      name: 'salesConfig',
+      component: () => import('@/views/vehretail/bizMasterData/configMasterData/salesConfig/index.vue'),
+
+      meta: {
+        name: '销售/交付顾问配置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/bizmasterdata/configmasterdata/salesconfig/edit',
+      name: 'salesConfigEdit',
+      component: () => import('@/views/vehretail/bizMasterData/configMasterData/salesConfig/edit.vue'),
+
+      meta: {
+        name: '销售/交付顾问配置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/shipping/vehicleShippingPlanDetail',
+      name: 'vehicleShippingPlanDetail',
+      component: () => import('@/views/vehwholesale/shipping/vehicleShippingPlanDetail/index.vue'),
+
+      meta: {
+        name: '新页面',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/shipping/vehicleshippingplandetail/edit',
+      name: 'vehicleShippingPlanDetailEdit',
+      component: () => import('@/views/vehwholesale/shipping/vehicleShippingPlanDetail/edit.vue'),
+
+      meta: {
+        name: '新页面详情',
         noResourceUrl: 'true'
       }
     }]

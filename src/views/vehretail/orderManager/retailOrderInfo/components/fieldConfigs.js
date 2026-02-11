@@ -122,16 +122,16 @@ export const termDisplayFields = [
 // 整车订单改配信息字段配置————暂时没有
 export const modificationRecordDisplayFields = [
   { key: 'operationTime', label: '操作时间' },
-  { key: 'operator', label: '操作人' },
+  { key: 'operateUserName', label: '操作人' },
   { key: 'paymentTime', label: '缴定金时间' },
-  { key: 'beforeMaterialsDesc', label: '修改前物料描述' },
-  { key: 'beforeModelName', label: '修改前车型名称' },
-  { key: 'beforeYearTypeName', label: '修改前年款名称' },
-  { key: 'afterMaterialsCode', label: '修改后物料编码' },
-  { key: 'afterModelName', label: '修改后车型名称' },
-  { key: 'afterYearTypeName', label: '修改后年款名称' },
-  { key: 'beforeMaterialsCode', label: '修改前物料编码' },
-  { key: 'afterMaterialsDesc', label: '修改后物料描述' },
+  { key: 'materialsDescBefore', label: '修改前物料描述' },
+  { key: 'modelNameBefore', label: '修改前车型名称' },
+  { key: 'yearTypeNameBefore', label: '修改前年款名称' },
+  { key: 'materialsCodeAfter', label: '修改后物料编码' },
+  { key: 'modelNameAfter', label: '修改后车型名称' },
+  { key: 'yearTypeNameAfter', label: '修改后年款名称' },
+  { key: 'materialsCodeBefore', label: '修改前物料编码' },
+  { key: 'materialsDescAfter', label: '修改后物料描述' },
   { key: 'remark', label: '备注' }
 ];
 

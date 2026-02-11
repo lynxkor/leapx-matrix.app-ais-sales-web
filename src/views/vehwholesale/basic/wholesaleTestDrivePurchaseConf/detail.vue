@@ -4,7 +4,7 @@
     <template v-else>
       <section class="common-title">
         <h2>编码：{{ info.code }}</h2>
-        <el-button v-if="canAddOrUpdate" size="small" @click="handleEdit"><i class="iconfont icon-lxppc-edit"></i>编辑</el-button>
+        <el-button v-if="canAddOrUpdate" size="small" @click="handleEdit" type="primary" plain><i class="iconfont icon-lxppc-edit"></i>编辑</el-button>
       </section>
       <section class="common-section">
         <div class="common-section-header">
@@ -12,15 +12,12 @@
         </div>
         <div class="common-section-body">
           <!-- TIPS: 根据实际情况调整展示字段和宽度 -->
-          <el-form :inline="true" ref="ruleForm" label-width="150px">
+          <el-form :inline="true" ref="ruleForm">
             <el-form-item label="编码：" prop="code">
               {{ info.code  }}
             </el-form-item>
             <el-form-item label="物料编码：" prop="materialsCode">
               {{ info.materialsCode  }}
-            </el-form-item>
-            <el-form-item label="物料描述：" prop="materialsDesc">
-              {{ info.materialsDesc  }}
             </el-form-item>
             <el-form-item label="车系：" prop="seriesName">
               {{ info.seriesName  }}
@@ -42,6 +39,9 @@
             </el-form-item>
             <el-form-item label="修改时间：" prop="updateTime">
               {{ info.updateTime  }}
+            </el-form-item>
+            <el-form-item label="物料描述：" prop="materialsDesc" class="form-item-full">
+              {{ info.materialsDesc  }}
             </el-form-item>
             <!-- <el-form-item label="主键：" prop="id">
               {{ info.id  }}
@@ -108,7 +108,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车批售-批售主数据-试驾车采购配置管理',
+      pageTitle: '试驾车采购配置管理',
       pageType: 'detail',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleTestDrivePurchaseConf',
@@ -118,7 +118,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车批售-批售主数据-试驾车采购配置管理', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['试驾车采购配置管理', '详情']);
     this.getData();
   },
   methods: {

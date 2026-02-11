@@ -137,11 +137,10 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button size="small" @click="vehicleWholesale">厂端现车批售</el-button>
       <el-dropdown trigger="click" style="margin: 0 10px;" @command="handleAdd">
         <el-button size="small" type="primary" @click="showDropdown">
           {{ dropdownLoading ? '加载中...' : '创建排产申请' }}
-          <i class="el-icon-arrow-down el-icon--right" />
+          <i class="iconfont icon-lxppc-down" />
         </el-button>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item
@@ -152,6 +151,7 @@
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
+      <el-button size="small" @click="vehicleWholesale">厂端现车批售</el-button>
       <el-button size="small" @click="factoryAuditValid(true)" :disabled="selectionList.length === 0">批量审核通过</el-button>
       <el-button size="small" @click="factoryAuditValid(false)" :disabled="selectionList.length === 0">批量审核驳回</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
@@ -161,7 +161,7 @@
       class="ais-table-c"
     >
       <div>
-        <el-tabs v-model="tabName" type="card" @tab-click="handleClickTab">
+        <el-tabs v-model="tabName" @tab-click="handleClickTab">
           <el-tab-pane label="全部" name="1"></el-tab-pane>
           <el-tab-pane label="待门店审核" name="2"></el-tab-pane>
           <el-tab-pane label="待审现车批售" name="3"></el-tab-pane>
@@ -252,7 +252,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车批售-批售主数据-整车门店补货申请管理',
+      pageTitle: '整车门店补货申请管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-dealerVehicleReplenishApply',
@@ -423,7 +423,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '整车批售-批售主数据-整车门店补货申请管理',
+        businessType: '整车门店补货申请管理',
         dataFetchPath: 'vw/web/replenish/dealerVehicleReplenishApply/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -431,7 +431,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车批售-批售主数据-整车门店补货申请管理.xlsx');
+            await downloadExcel(res.excelUrl, '整车门店补货申请管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -524,10 +524,13 @@ export default {
     // 批量删除
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
+      this.$confirm(message, '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        dangerouslyUseHTMLString: true,
+        customClass: 'ais-leave-tips',
+        showClose: false
       }).then(() => {
         deleteItem(ids).then(() => {
           this.$message({
@@ -624,5 +627,8 @@ export default {
 
 <style lang="scss" scoped>
 .m-vehicle-materials-list {
+  ::v-deep .m-vxe-table-options{
+    top: -50px;
+  }
 }
 </style>

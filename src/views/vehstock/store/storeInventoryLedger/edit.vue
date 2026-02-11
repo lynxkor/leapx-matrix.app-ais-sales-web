@@ -13,7 +13,7 @@
               <h2>基础信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="VIN：" prop="vin">
                   {{ form.vin }}
                 </el-form-item>

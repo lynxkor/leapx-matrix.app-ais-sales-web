@@ -40,12 +40,13 @@
                     placeholder="请输入"
                     v-model="form.shareGroupName"
                     clearable
+                    maxlength="50"
                   />
                 </el-form-item>
                   <el-form-item label="资源类型：" prop="resourceType">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="vr_resource_type"
                     v-model="form.resourceType"
                     placeholder="请选择"
                     clearable
@@ -53,10 +54,16 @@
                   />
                 </el-form-item>
                 <el-form-item label="销售门店名称：" prop="saleDealerName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.saleDealerName"
+                  <fetch-select
+                    filterable
                     clearable
+                    remote
+                    collapseTags
+                    v-model="form.saleDealerName"
+                    :remote-method="getDealerListByName"
+                    value-key="storeName"
+                    label-key="storeName"
+                    @change="getStoreCode"
                   />
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
@@ -69,16 +76,18 @@
                     filterable
                   />
                 </el-form-item>
-                  <el-form-item label="备注：" prop="remark">
+                  <el-form-item label="备注：" >
                   <el-input
                     placeholder="请输入"
                     v-model="form.remark"
                     clearable
+                    maxlength="100"
                   />
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   <el-date-picker
                     :default-time="['00:00:00', '23:59:59']"
+                    type="datetime"
                     v-model="form.createTime"
                     :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd HH:mm:ss"
@@ -89,53 +98,26 @@
                 </el-form-item>
               </el-form>
               <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="主键：" prop="id">
-                  {{ form.id }}
-                </el-form-item>
-                <el-form-item label="创建者：" prop="creator">
-                  {{ form.creator }}
-                </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  {{ form.creatorName }}
-                </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
-                  {{ form.createTime }}
-                </el-form-item>
-                <el-form-item label="修改者：" prop="modifier">
-                  {{ form.modifier }}
-                </el-form-item>
-                <el-form-item label="修改者名称：" prop="modifierName">
-                  {{ form.modifierName }}
-                </el-form-item>
-                <el-form-item label="修改时间：" prop="updateTime">
-                  {{ form.updateTime }}
-                </el-form-item>
-                <el-form-item label="备注：" prop="remark">
-                  {{ form.remark }}
-                </el-form-item>
-                <el-form-item label="状态 0-禁用;1-启用：" prop="status">
-                  {{ form.status }}
-                </el-form-item>
-                <el-form-item label="状态变更描述：" prop="statusDesc">
-                  {{ form.statusDesc }}
-                </el-form-item>
-                <el-form-item label="资源共享组编码：" prop="shareGroupCode">
+              <el-form-item label="资源共享组编码：" prop="shareGroupCode">
                   {{ form.shareGroupCode }}
                 </el-form-item>
                 <el-form-item label="资源共享组名称：" prop="shareGroupName">
                   {{ form.shareGroupName }}
                 </el-form-item>
-                <el-form-item label="资源类型 10-门店在库车辆：" prop="resourceType">
-                  {{ form.resourceType }}
-                </el-form-item>
-                <el-form-item label="销售门店编码：" prop="saleDealerCode">
-                  {{ form.saleDealerCode }}
+                <el-form-item label="资源类型：" prop="resourceTypeLabel">
+                  {{ form.resourceTypeLabel }}
                 </el-form-item>
                 <el-form-item label="销售门店名称：" prop="saleDealerName">
                   {{ form.saleDealerName }}
                 </el-form-item>
-                <el-form-item label="数据来源，150-新销服; 10-老销服：" prop="dataSource">
-                  {{ form.dataSource }}
+                <el-form-item label="状态：" prop="status">
+                  {{ form.statusLabel }}
+                </el-form-item>
+                <el-form-item label="备注：" prop="remark">
+                  {{ form.remark }}
+                </el-form-item>
+                   <el-form-item label="创建时间：" prop="createTime">
+                  {{ form.createTime }}
                 </el-form-item>
               </el-form>
             </div>
@@ -154,10 +136,10 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehretail/basicConfig/lockCarShareConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import EditTable from '@/libs/components/EditTable';
+// import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum } from '@/api/common';
+import { getEnum, listOrgStoreInfo } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -173,7 +155,7 @@ const defaultForm = {
   modifierName: '',
   updateTime: '',
   remark: '',
-  status: '',
+  status: 1,
   statusDesc: '',
   shareGroupCode: '',
   shareGroupName: '',
@@ -203,7 +185,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '：' + this.form.id;
+      return '锁车资源共享配置管理：' + this.form.id;
     }
   },
   watch: {
@@ -222,7 +204,7 @@ export default {
       pageTitle: '锁车资源共享配置管理',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-lockCarShareConfig',
+      moduleKey: 'AISVR-lockCarShareConfig',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
@@ -237,35 +219,8 @@ export default {
       },
       // TIPS: 复杂的表格输入项，参考 /dealerTeam/edit.vue
       rules: {
-        id: [
-          { required: true, message: '请输入主键', trigger: 'change' }
-        ],
-        creator: [
-          { required: true, message: '请输入创建者', trigger: 'change' }
-        ],
-        creatorName: [
-          { required: true, message: '请输入创建者名称', trigger: 'change' }
-        ],
-        createTime: [
-          { required: true, message: '请选择创建时间', trigger: 'change' }
-        ],
-        modifier: [
-          { required: true, message: '请输入修改者', trigger: 'change' }
-        ],
-        modifierName: [
-          { required: true, message: '请输入修改者名称', trigger: 'change' }
-        ],
-        updateTime: [
-          { required: true, message: '请选择修改时间', trigger: 'change' }
-        ],
-        remark: [
-          { required: true, message: '请输入备注', trigger: 'change' }
-        ],
         status: [
           { required: true, message: '请选择状态 0-禁用;1-启用', trigger: 'change' }
-        ],
-        statusDesc: [
-          { required: true, message: '请选择状态变更描述', trigger: 'change' }
         ],
         shareGroupCode: [
           { required: true, message: '请输入资源共享组编码', trigger: 'change' }
@@ -276,14 +231,8 @@ export default {
         resourceType: [
           { required: true, message: '请选择资源类型 10-门店在库车辆', trigger: 'change' }
         ],
-        saleDealerCode: [
-          { required: true, message: '请输入销售门店编码', trigger: 'change' }
-        ],
         saleDealerName: [
           { required: true, message: '请输入销售门店名称', trigger: 'change' }
-        ],
-        dataSource: [
-          { required: true, message: '请输入数据来源，150-新销服; 10-老销服', trigger: 'change' }
         ],
       }
     };
@@ -291,6 +240,12 @@ export default {
   mounted () {
   },
   methods: {
+    getStoreCode (val, obj) {
+      this.form.saleDealerCode = obj.storeCode;
+    },
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

@@ -21,7 +21,7 @@
               <h2>基础信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
                   {{ form.dealerCompanyCode }}
                 </el-form-item>
@@ -54,7 +54,7 @@
               <h2>额度信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="授信额度：" prop="creditLimit">
                   {{ form.creditLimit }}
                 </el-form-item>

@@ -35,6 +35,9 @@
                 </el-form-item>
               </el-form>
               <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+                <el-form-item label="原因二级分类编码：" prop="subCateName">
+                  {{ form.subCateCode }}
+                </el-form-item>
                 <el-form-item label="原因二级分类：" prop="subCateName">
                   {{ form.subCateName }}
                 </el-form-item>
@@ -109,7 +112,7 @@ const defaultForm = {
 };
 
 export default {
-  name: 'subCategoryEdit',
+  name: 'orderRefundCategoryDetailEdit',
   // 集中视图预留
   props: {
     id: {

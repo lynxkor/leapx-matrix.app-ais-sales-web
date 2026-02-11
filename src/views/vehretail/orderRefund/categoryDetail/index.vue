@@ -9,6 +9,13 @@
       label-width="150px"
       class="ais-search-form"
     >
+      <el-form-item label="原因二级分类编码">
+        <el-input
+          placeholder="请输入"
+          v-model="form.subCateCode"
+          clearable
+        />
+      </el-form-item>
       <el-form-item label="原因二级分类">
         <el-input
           placeholder="请输入"
@@ -90,6 +97,7 @@ import { fetchCategoryList } from '@/api/vehretail/orderRefund/category';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  subCateCode: '',
   subCateName: '',
   cateCode: '',
 };
@@ -146,8 +154,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'subCateName',
-            label: '原因二级分类',
+            props: 'subCateCode',
+            label: '原因二级分类编码',
             visible: true,
             width: 200,
             fixed: 'left',
@@ -163,6 +171,7 @@ export default {
               type: 'primary'
             }]
           },
+          { props: 'subCateName', label: '原因二级分类', visible: true, width: 200 },
           { props: 'cateCode', label: '原因分类编码', visible: true, width: 200 },
           { props: 'cateName', label: '原因分类', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
@@ -343,10 +352,13 @@ export default {
     // 批量删除
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
+      this.$confirm(message, '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        dangerouslyUseHTMLString: true,
+        customClass: 'ais-leave-tips',
+        showClose: false
       }).then(() => {
         deleteItem(ids).then(() => {
           this.$message({

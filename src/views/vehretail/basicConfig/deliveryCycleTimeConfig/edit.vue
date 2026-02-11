@@ -109,7 +109,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="时效指标：" prop="timeIndexLabel">
                   {{ form.timeIndexLabel }}
                 </el-form-item>

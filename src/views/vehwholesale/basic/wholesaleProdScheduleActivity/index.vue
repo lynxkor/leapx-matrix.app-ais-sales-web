@@ -1,171 +1,86 @@
 <template>
   <div class="page-common m-wholesale-prod-schedule-activity-list">
     <!--  TIPS: 自行调整如下label-width，满足label不换行  -->
-    <el-form
-      :inline="true"
-      :model="form"
-      size="small"
-      label-position="right"
-      label-width="150px"
-      class="ais-search-form"
-    >
+    <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
+      class="ais-search-form">
       <el-form-item label="活动名称">
         <tag-input v-model="form.activityNames" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="创建时间">
-        <el-date-picker
-         :default-time="['00:00:00', '23:59:59']"
-          v-model="form.createTime"
-          type="daterange"
-          :picker-options="pickerOptions"
-          range-separator="至"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        />
+        <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.createTime" type="daterange"
+          :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
+          start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
       <el-form-item label="是否锁零售单">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="BooleanEnum"
-            v-model="form.allowLockRetail"
-            placeholder="请选择"
-            clearable
-            filterable
-          />
-        </el-form-item>
+        <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.allowLockRetail" placeholder="请选择"
+          clearable filterable />
+      </el-form-item>
       <template v-if="show">
         <el-form-item label="是否需要自动配车">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="BooleanEnum"
-            v-model="form.needAutoAllocateCar"
-            placeholder="请选择"
-            clearable
-            filterable
-          />
+          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.needAutoAllocateCar"
+            placeholder="请选择" clearable filterable />
         </el-form-item>
         <el-form-item label="指定发运方式">
-          <fetch-select
-          :request="fetchOptions"
-          enumCode="vehstock_ship_via"
-          v-model="form.deliveryWays"
-          placeholder="请选择"
-          clearable
-          multiple
-          filterable
-        />
+          <fetch-select :request="fetchOptions" enumCode="vehstock_ship_via" v-model="form.deliveryWays"
+            placeholder="请选择" clearable multiple filterable />
         </el-form-item>
       </template>
-        <!-- v-if="canList" -->
-      <page-search-action
-        v-model="show"
-        is-expandable
-        v-if="canList"
-        :loading="loading"
-        @submit="onSubmit"
-        @reset="onReset"
-      />
+      <!-- v-if="canList" -->
+      <page-search-action v-model="show" is-expandable v-if="canList" :loading="loading" @submit="onSubmit"
+        @reset="onReset" />
     </el-form>
 
     <div class="ais-actions">
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i
+          class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <el-button v-if="canDelete" size="small" @click="handleBatchDelete"
+        :disabled="selectionList.length === 0">批量删除</el-button>
     </div>
-    <div
-      class="ais-table-c"
-    >
-      <LPVxeTable
-        ref="tableRef"
-        v-loading="loading"
-        is-checkbox
-        is-page
-        checkboxFixed
-        centralized
-        :option-obj="optionObj"
-        :get-config="getConfig"
-        :save-or-update="saveOrUpdate"
-        @paginationChange="paginationChange"
-        @handleSelect="handleSelectionChange"
-        @listSelect="handleListSelect"
-      >
-        <EditPage slot="centralizedViewSlot" :id="clickItemId"/>
+    <div class="ais-table-c">
+      <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed centralized
+        :option-obj="optionObj" :get-config="getConfig" :save-or-update="saveOrUpdate"
+        @paginationChange="paginationChange" @handleSelect="handleSelectionChange" @listSelect="handleListSelect">
+        <EditPage slot="centralizedViewSlot" :id="clickItemId" />
       </LPVxeTable>
     </div>
     <!-- TIPS: 填入项目id即可 -->
-    <Upload
-      :visible="uploadDialogVisible"
-      :id="'1'"
-      @close="handleUploadDialogClose"
-    />
-      <el-dialog
-    class="audit-total-dialog"
-    title="排产专项活动明细配额调整"
-    width="800px"
-    :visible.sync="totalQuotaQtyDialogVisible"
-    @close="changeClose"
-  >
-    <el-form ref="changeformRef" :model="changeform" :rules="changerules" label-width="120px">
-      <el-form-item label="id：" prop="id" v-show="changeformId">
-          <el-input
-            placeholder="请输入"
-            v-model="changeform.id"
-            clearable
-          />
+    <Upload :visible="uploadDialogVisible" :id="'1'" @close="handleUploadDialogClose" />
+    <el-dialog class="audit-total-dialog" title="排产专项活动明细配额调整" width="600px" :visible.sync="totalQuotaQtyDialogVisible"
+      @close="changeClose">
+      <el-form ref="changeformRef" :model="changeform" :rules="changerules" label-width="120px" size="small">
+        <!-- <el-form-item label="id：" prop="id" v-show="changeformId">
+          <el-input placeholder="请输入" v-model="changeform.id" clearable />
         </el-form-item>
-
         <el-form-item label="调整额度数量：" prop="beforetotalQuotaQty">
-          <el-input-number
-            :controls="false"
-            style="width: 100%;"
-            placeholder="请输入"
-            v-model="changeform.beforetotalQuotaQty"
-            clearable
-            :precision="0"
-            :disabled="true"
-          />
+          <el-input-number :controls="false" style="width: 100%;" placeholder="请输入"
+            v-model="changeform.beforetotalQuotaQty" clearable :precision="0" :disabled="true" />
+        </el-form-item> -->
+        <el-form-item label="修改配额数量：" prop="totalQuotaQty">
+          <el-input-number :controls="false" style="width: 100%;" placeholder="请输入" v-model="changeform.totalQuotaQty"
+            clearable :precision="0" />
         </el-form-item>
-        <el-form-item label="配额数量：" prop="totalQuotaQty">
-          <el-input-number
-            :controls="false"
-            style="width: 100%;"
-            placeholder="请输入"
-            v-model="changeform.totalQuotaQty"
-            clearable
-            :precision="0"
-          />
-        </el-form-item>
-        <el-form-item label="已提报数量：" prop="requestQty">
-          <el-input-number
-            :controls="false"
-            style="width: 100%;"
-            placeholder="请输入"
-            v-model="changeform.requestQty"
-            clearable
-            :precision="0"
-            :disabled="true"
-          />
+        <!-- <el-form-item label="已提报数量：" prop="requestQty">
+          <el-input-number :controls="false" style="width: 100%;" placeholder="请输入" v-model="changeform.requestQty"
+            clearable :precision="0" :disabled="true" />
         </el-form-item>
         <el-form-item label="剩余可用：" prop="remainQuotaQty">
-          <el-input-number
-            :controls="false"
-            style="width: 100%;"
-            placeholder="请输入"
-            v-model="changeform.remainQuotaQty"
-            clearable
-            :precision="0"
-            :disabled="true"
-          />
-        </el-form-item>
-    </el-form>
-    <template v-slot:footer>
-      <div class="dialog-footer" style="text-align: center;">
-        <el-button :loading="submitLoading"  @click="changeClose()">取消</el-button>
-        <el-button :loading="submitLoading" type="primary" @click="changeSure()">确认</el-button>
-      </div>
-    </template>
-  </el-dialog>
+          <el-input-number :controls="false" style="width: 100%;" placeholder="请输入" v-model="changeform.remainQuotaQty"
+            clearable :precision="0" :disabled="true" />
+        </el-form-item> -->
+        <el-row class="number-box">
+          <el-col :span="8">额度数量：<em>{{ changeform.beforetotalQuotaQty }}</em></el-col>
+          <el-col :span="8">已提报数量：<em>{{ changeform.requestQty }}</em></el-col>
+          <el-col :span="8">剩余可用：<em>{{ changeform.remainQuotaQty }}</em></el-col>
+        </el-row>
+      </el-form>
+      <template v-slot:footer>
+        <div class="dialog-footer" style="text-align: center;">
+          <el-button :loading="submitLoading" @click="changeClose()" size="small">取消</el-button>
+          <el-button :loading="submitLoading" type="primary" @click="changeSure()" size="small">确认</el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -211,7 +126,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车批售-批售主数据-排产专项活动管理',
+      pageTitle: '排产专项活动管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleProdScheduleActivity',
@@ -400,7 +315,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '整车批售-批售主数据-排产专项活动管理',
+        businessType: '排产专项活动管理',
         dataFetchPath: 'vw/web/basic/wholesaleProdScheduleActivity/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -408,7 +323,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车批售-批售主数据-排产专项活动管理.xlsx');
+            await downloadExcel(res.excelUrl, '排产专项活动管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -540,7 +455,7 @@ export default {
               message: '删除失败!'
             });
           });
-        }).catch(() => {});
+        }).catch(() => { });
       }
     },
     // 批量启用停用
@@ -580,5 +495,15 @@ export default {
 
 <style lang="scss" scoped>
 .m-wholesale-prod-schedule-activity-list {
+  .number-box {
+    background-color: var(--leap-color-default-light-5);
+    padding: 10px;
+    border-radius: 4px;
+    em {
+      font-style: normal;
+      color: var(--leap-color-default-dark-1);
+      font-weight: 500;
+    }
+  }
 }
 </style>

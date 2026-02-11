@@ -29,27 +29,43 @@
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="车型名称：" prop="modelName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.modelName"
-                    clearable
-                  />
+                   <fetch-select
+                      :remote-method="remoteMethods.model"
+                      v-model="form.modelId"
+                      placeholder="请选择"
+                      clearable
+                      label-key="name"
+                      value-key="id"
+                      filterable
+                      remote
+                      @change="getModelName"
+                    />
                 </el-form-item>
                 <el-form-item label="年款名称：" prop="yearTypeName">
                   <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
-                    v-model="form.yearTypeName"
+                    :remote-method="listVehicleYearType"
+                    remote
+                    v-model="form.yearTypeId"
                     placeholder="请选择"
+                    label-key="name"
+                    value-key="id"
                     clearable
+                    collapse-tags
                     filterable
+                    :options="yearTypeList"
+                     @change="getYearName"
                   />
                 </el-form-item>
-                 <el-form-item label="市：" prop="cityName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.cityName"
+                 <el-form-item label="城市：" >
+                  <fetch-select
+                    filterable
                     clearable
+                    remote
+                    v-model="form.cityName"
+                    :remote-method="getCityList"
+                    value-key="areaName"
+                    label-key="areaName"
+                    @change="getCityCode"
                   />
                 </el-form-item>
                  <el-form-item label="是否开启交付：" prop="openDeliveryStatus">
@@ -62,14 +78,13 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="开启交付日期：" prop="openDeliveryDate">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
+                <el-form-item label="开启交付日期："  v-if="form.openDeliveryStatus === '1'" prop="openDeliveryDate" >
+                 <el-date-picker
                     v-model="form.openDeliveryDate"
+                    type="datetime"
                     :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
+                    placeholder="请选择开启交付日期时间"
                   />
                 </el-form-item>
                 <el-form-item label="未开启交付文案：" prop="noOpenDeliveryText">
@@ -77,6 +92,7 @@
                     placeholder="请输入"
                     v-model="form.noOpenDeliveryText"
                     clearable
+                    maxlength="100"
                   />
                 </el-form-item>
                 <el-form-item label="备注：" prop="remark">
@@ -84,6 +100,7 @@
                     placeholder="请输入"
                     v-model="form.remark"
                     clearable
+                    maxlength="100"
                   />
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
@@ -98,62 +115,29 @@
                 </el-form-item>
               </el-form>
               <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="主键：" prop="id">
-                  {{ form.id }}
-                </el-form-item>
-                <el-form-item label="创建者：" prop="creator">
-                  {{ form.creator }}
-                </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  {{ form.creatorName }}
-                </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
-                  {{ form.createTime }}
-                </el-form-item>
-                <el-form-item label="修改者：" prop="modifier">
-                  {{ form.modifier }}
-                </el-form-item>
-                <el-form-item label="修改者名称：" prop="modifierName">
-                  {{ form.modifierName }}
-                </el-form-item>
-                <el-form-item label="修改时间：" prop="updateTime">
-                  {{ form.updateTime }}
-                </el-form-item>
-                <el-form-item label="备注：" prop="remark">
-                  {{ form.remark }}
-                </el-form-item>
-                <el-form-item label="状态 0-禁用;1-启用：" prop="status">
-                  {{ form.status }}
-                </el-form-item>
-                <el-form-item label="状态变更描述：" prop="statusDesc">
-                  {{ form.statusDesc }}
-                </el-form-item>
-                <el-form-item label="市编码：" prop="cityCode">
-                  {{ form.cityCode }}
-                </el-form-item>
-                <el-form-item label="市：" prop="cityName">
-                  {{ form.cityName }}
-                </el-form-item>
-                <el-form-item label="车型ID：" prop="modelId">
-                  {{ form.modelId }}
-                </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
                   {{ form.modelName }}
-                </el-form-item>
-                <el-form-item label="年款ID：" prop="yearTypeId">
-                  {{ form.yearTypeId }}
                 </el-form-item>
                 <el-form-item label="年款名称：" prop="yearTypeName">
                   {{ form.yearTypeName }}
                 </el-form-item>
-                <el-form-item label="是否开启交付 1-是;0-否：" prop="openDeliveryStatus">
-                  {{ form.openDeliveryStatus }}
+                <el-form-item label="城市：" prop="cityName">
+                  {{ form.cityName }}
+                </el-form-item>
+                <el-form-item label="是否开启交付：" prop="openDeliveryStatus">
+                  {{ form.openDeliveryStatusLabel }}
                 </el-form-item>
                 <el-form-item label="开启交付日期：" prop="openDeliveryDate">
                   {{ form.openDeliveryDate }}
                 </el-form-item>
                 <el-form-item label="未开启交付文案：" prop="noOpenDeliveryText">
                   {{ form.noOpenDeliveryText }}
+                </el-form-item>
+                  <el-form-item label="备注：" prop="remark">
+                  {{ form.remark }}
+                </el-form-item>
+                <el-form-item label="状态：" prop="status">
+                  {{ form.statusLabel }}
                 </el-form-item>
               </el-form>
             </div>
@@ -172,10 +156,9 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehretail/basicConfig/modelDeliveryConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum } from '@/api/common';
+import { getEnum, listVehicleModel, listVehicleYearType, cityListByName } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -225,7 +208,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '：' + this.form.id;
+      return '车型交付配置管理：' + this.form.id;
     }
   },
   watch: {
@@ -236,16 +219,33 @@ export default {
         }
       },
       immediate: true
-    }
+    },
+    'form.openDeliveryStatus' (newVal) {
+      this.$refs.ruleForm.clearValidate('openDeliveryDate');
+      if (newVal === '1') {
+        this.rules.openDeliveryDate[0].required = true;
+      } else {
+        this.rules.openDeliveryDate[0].required = false;
+      }
+      this.$nextTick(() => {
+        this.$refs.ruleForm.validateField('openDeliveryDate');
+      });
+    },
   },
   data () {
     const form = this.getDefautlForm();
     return {
+      remoteMethods: {
+        model: async (query) => {
+          return await listVehicleModel({ modelNameLike: query });
+        },
+      },
       pageTitle: '车型交付配置管理',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-modelDeliveryConfig',
+      moduleKey: 'AISVR-modelDeliveryConfig',
       loading: false,
+      yearTypeList: [],
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
@@ -259,65 +259,31 @@ export default {
       },
       // TIPS: 复杂的表格输入项，参考 /dealerTeam/edit.vue
       rules: {
-        id: [
-          { required: true, message: '请输入主键', trigger: 'change' }
-        ],
-        creator: [
-          { required: true, message: '请输入创建者', trigger: 'change' }
-        ],
-        creatorName: [
-          { required: true, message: '请输入创建者名称', trigger: 'change' }
-        ],
-        createTime: [
-          { required: true, message: '请选择创建时间', trigger: 'change' }
-        ],
-        modifier: [
-          { required: true, message: '请输入修改者', trigger: 'change' }
-        ],
-        modifierName: [
-          { required: true, message: '请输入修改者名称', trigger: 'change' }
-        ],
-        updateTime: [
-          { required: true, message: '请选择修改时间', trigger: 'change' }
-        ],
-        remark: [
-          { required: true, message: '请输入备注', trigger: 'change' }
-        ],
         status: [
           { required: true, message: '请选择状态 0-禁用;1-启用', trigger: 'change' }
-        ],
-        statusDesc: [
-          { required: true, message: '请选择状态变更描述', trigger: 'change' }
-        ],
-        cityCode: [
-          { required: true, message: '请输入市编码', trigger: 'change' }
-        ],
-        cityName: [
-          { required: true, message: '请输入市', trigger: 'change' }
         ],
         modelId: [
           { required: true, message: '请输入车型ID', trigger: 'change' }
         ],
-        modelName: [
-          { required: true, message: '请输入车型名称', trigger: 'change' }
-        ],
         yearTypeId: [
           { required: true, message: '请选择年款ID', trigger: 'change' }
-        ],
-        yearTypeName: [
-          { required: true, message: '请选择年款名称', trigger: 'change' }
         ],
         openDeliveryStatus: [
           { required: true, message: '请选择是否开启交付 1-是;0-否', trigger: 'change' }
         ],
         openDeliveryDate: [
-          { required: true, message: '请选择开启交付日期', trigger: 'change' }
-        ],
-        noOpenDeliveryText: [
-          { required: true, message: '请输入未开启交付文案', trigger: 'change' }
-        ],
-        dataSource: [
-          { required: true, message: '请输入数据来源，150-新销服; 10-老销服', trigger: 'change' }
+          {
+            required: true,
+            message: '请选择开启交付日期',
+            trigger: 'change',
+            validator: (rule, value, callback) => {
+              if (this.form.openDeliveryStatus === '1' && !value) {
+                callback(new Error('请选择开启交付日期'));
+              } else {
+                callback();
+              }
+            },
+          },
         ],
       }
     };
@@ -325,6 +291,27 @@ export default {
   mounted () {
   },
   methods: {
+    getCityCode (val, obj) {
+      this.form.cityCode = obj.areaCode;
+    },
+    async getCityList (params) {
+      return cityListByName({ cityName: params });
+    },
+    getModelName (val, obj) {
+      this.form.modelName = obj.name;
+    },
+    getYearName (val, obj) {
+      this.form.yearTypeName = obj.name;
+    },
+    async listVehicleYearType (query) {
+      try {
+        const res = await listVehicleYearType({ yearTypeNameLike: query });
+        this.yearTypeList = res;
+        return res;
+      } catch (error) {
+        console.error('Error fetching model list:', error);
+      }
+    },
     detailRequest () {
       const id = this._id;
       if (id) {
@@ -332,6 +319,7 @@ export default {
       }
     },
     submitRequest () {
+      console.log('submitRequest');
       return addOrUpdate({ ...this.form });
     },
     // 打开侧边栏

@@ -11,41 +11,52 @@
     >
 
     <el-form-item label="车型名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.modelName"
+      <fetch-select
+          :remote-method="remoteMethods.model"
+          v-model="form.modelId"
+          placeholder="请选择"
           clearable
+          label-key="name"
+          value-key="id"
+          filterable
+          remote
         />
       </el-form-item>
       <el-form-item label="年款名称" >
         <fetch-select
             :remote-method="listVehicleYearType"
             remote
-            v-model="form.yearTypeIds"
+            v-model="form.yearTypeId"
             placeholder="请选择"
             labelKey="name"
             valueKey="id"
             clearable
-            multiple
-            collapseTags
             filterable
             :options="yearTypeList"
           />
 
       </el-form-item>
       <el-form-item label="外观名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.exteriorName"
+        <fetch-select
+            v-model="form.exteriorId"
             clearable
+            filterable
+            remote
+            labelKey="name"
+            valueKey="id"
+            :remote-method="remoteMethods.exterior"
           />
         </el-form-item>
       <template v-if="show">
         <el-form-item label="内饰名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.interiorName"
+           <fetch-select
+            v-model="form.interiorId"
             clearable
+            filterable
+            remote
+            labelKey="name"
+            valueKey="id"
+            :remote-method="remoteMethods.interior"
           />
         </el-form-item>
         <el-form-item label="排产天数">
@@ -69,7 +80,6 @@
           v-model="form.status"
           placeholder="请选择"
           clearable
-          multiple
           filterable
         />
       </el-form-item>
@@ -115,7 +125,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="'1'"
+      id='import'
       @close="handleUploadDialogClose"
       @getData="getData"
     />
@@ -127,7 +137,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/basicConfig/productionOfflineConfig/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, vehicleExterior, listVehicleModel, vehicleInterior } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -164,6 +174,17 @@ export default {
   },
   data () {
     return {
+      remoteMethods: {
+        model: async (query) => {
+          return await listVehicleModel({ modelNameLike: query });
+        },
+        exterior: async (query) => {
+          return await vehicleExterior({ exteriorNameLike: query });
+        },
+        interior: async (query) => {
+          return await vehicleInterior({ interiorNameLike: query });
+        },
+      },
       pageTitle: '排产下线时效管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
@@ -303,7 +324,7 @@ export default {
       }
       exportTable({
         businessType: '排产下线时效管理',
-        dataFetchPath: 'vehretail/web/basicConfig/productionOfflineConfig/page',
+        dataFetchPath: 'vr/web/production/productionOfflineConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -404,10 +425,13 @@ export default {
     // 批量删除
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
+      this.$confirm(message, '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        dangerouslyUseHTMLString: true,
+        customClass: 'ais-leave-tips',
+        showClose: false
       }).then(() => {
         deleteItem(ids).then(() => {
           this.$message({

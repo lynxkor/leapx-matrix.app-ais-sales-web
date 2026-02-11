@@ -90,7 +90,7 @@ export function batchSettleSubmitItem (data) {
  */
 
 export function batchCancelSettleItem (data) {
-  return api.jsonPost(prefix + 'batchCancelSettle', data);
+  return api.jsonPost(prefix + 'batchCancelSettleSubmit', data);
 }
 
 /**
@@ -109,4 +109,13 @@ export function vinAllocateVehicleSubmitItem (data) {
 
 export function batchAllocateVehicleItem (data) {
   return api.jsonPost(prefix + 'batchAllocateVehicle', data);
+}
+
+/**
+ * 刷新价格
+ * @param {Object} data
+ */
+
+export function refreshPriceItem (data) {
+  return api.jsonPost(prefix + 'refreshPrice', data);
 }

@@ -177,7 +177,7 @@ export default {
           { props: 'deliveryUserName', label: '交付工程师', visible: true, width: 150 },
           { props: 'autoAssignSort', label: '自动分派排序', visible: true, width: 150 },
           { props: 'monthlyDeliveryCapacity', label: '月度交付承载数量', visible: true, width: 180 },
-          { props: 'statusDesc', label: '状态', visible: true, width: 120 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 120 },
           { props: 'createTime', label: '创建时间', visible: true, width: 180 },
           {
             props: 'operate',
@@ -366,10 +366,13 @@ export default {
     },
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
+      this.$confirm(message, '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        dangerouslyUseHTMLString: true,
+        customClass: 'ais-leave-tips',
+        showClose: false
       }).then(() => {
         deleteItem(ids).then(() => {
           this.$message({

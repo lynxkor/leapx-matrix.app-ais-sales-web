@@ -28,7 +28,7 @@
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                 <el-form-item label="车系名称：" prop="seriesName">
+                 <el-form-item label="车系名称：" prop="seriesId">
                       <fetch-select
                           :remote-method="remoteMethods.series"
                           v-model="form.seriesId"
@@ -38,21 +38,22 @@
                           clearable
                           filterable
                           remote
+                          @change="getSeriesName"
                           />
                     </el-form-item>
-                <el-form-item label="年款名称：" prop="yearTypeName">
+                <el-form-item label="年款名称：" prop="yearTypeId">
                   <fetch-select
                     :remote-method="listVehicleYearType"
                     remote
-                    v-model="form.yearTypeIds"
+                    v-model="form.yearTypeId"
                     placeholder="请选择"
                     labelKey="name"
                     valueKey="id"
                     clearable
-                    multiple
                     collapseTags
                     filterable
                     :options="yearTypeList"
+                    @change="getYearName"
                   />
                 </el-form-item>
                 <el-form-item label="预售急单设置 ：" prop="preSaleUrgentStatus">
@@ -96,6 +97,7 @@
                     placeholder="请输入"
                     v-model="form.remark"
                     clearable
+                    maxlength="100"
                   />
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
@@ -119,62 +121,32 @@
                 </el-form-item>
               </el-form>
               <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="主键：" prop="id">
-                  {{ form.id }}
-                </el-form-item>
-                <el-form-item label="创建者：" prop="creator">
-                  {{ form.creator }}
-                </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  {{ form.creatorName }}
-                </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
-                </el-form-item>
-                <el-form-item label="修改者：" prop="modifier">
-                  {{ form.modifier }}
-                </el-form-item>
-                <el-form-item label="修改者名称：" prop="modifierName">
-                  {{ form.modifierName }}
-                </el-form-item>
-                <el-form-item label="修改时间：" prop="updateTime">
-                  {{ form.updateTime }}
-                </el-form-item>
-                <el-form-item label="备注：" prop="remark">
-                  {{ form.remark }}
-                </el-form-item>
-                <el-form-item label="状态 0-禁用;1-启用：" prop="status">
-                  {{ form.status }}
-                </el-form-item>
-                <el-form-item label="状态变更描述：" prop="statusDesc">
-                  {{ form.statusDesc }}
-                </el-form-item>
-                <el-form-item label="车系ID：" prop="seriesId">
-                  {{ form.seriesId }}
                 </el-form-item>
                 <el-form-item label="车系名称：" prop="seriesName">
                   {{ form.seriesName }}
                 </el-form-item>
-                <el-form-item label="年款ID：" prop="yearTypeId">
-                  {{ form.yearTypeId }}
-                </el-form-item>
                 <el-form-item label="年款名称：" prop="yearTypeName">
                   {{ form.yearTypeName }}
                 </el-form-item>
-                <el-form-item label="预售急单设置 1-是;0-否：" prop="preSaleUrgentStatus">
-                  {{ form.preSaleUrgentStatus }}
+                <el-form-item label="预售急单设置：" prop="preSaleUrgentStatus">
+                  {{ form.preSaleUrgentStatusLabel }}
                 </el-form-item>
                 <el-form-item label="预售锁单时间要求：" prop="preSaleLockTime">
                   {{ form.preSaleLockTime }}
                 </el-form-item>
-                <el-form-item label="盲订急单设置 1-是;0-否：" prop="blindOrderUrgentStatus">
-                  {{ form.blindOrderUrgentStatus }}
+                <el-form-item label="盲订急单设置：" prop="blindOrderUrgentStatus">
+                  {{ form.blindOrderUrgentStatusLabel }}
                 </el-form-item>
                 <el-form-item label="盲订锁单时间要求：" prop="blindOrderLockTime">
                   {{ form.blindOrderLockTime }}
                 </el-form-item>
-                <el-form-item label="数据来源，150-新销服; 10-老销服：" prop="dataSource">
-                  {{ form.dataSource }}
+                 <el-form-item label="状态：" prop="status">
+                  {{ form.statusLabel }}
+                </el-form-item>
+                <el-form-item label="备注：" prop="remark">
+                  {{ form.remark }}
                 </el-form-item>
               </el-form>
             </div>
@@ -193,7 +165,7 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehretail/basicConfig/orderUrgentConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import EditTable from '@/libs/components/EditTable';
+// import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -244,7 +216,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '：' + this.form.id;
+      return '盲订急单配置管理：' + this.form.id;
     }
   },
   watch: {
@@ -268,7 +240,7 @@ export default {
       pageTitle: '盲订急单配置管理',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-orderUrgentConfig',
+      moduleKey: 'AISVR-orderUrgentConfig',
       loading: false,
       submitLoading: false,
       yearTypeList: [],
@@ -289,14 +261,8 @@ export default {
         seriesId: [
           { required: true, message: '请输入车系ID', trigger: 'change' }
         ],
-        seriesName: [
-          { required: true, message: '请输入车系名称', trigger: 'change' }
-        ],
         yearTypeId: [
           { required: true, message: '请选择年款ID', trigger: 'change' }
-        ],
-        yearTypeName: [
-          { required: true, message: '请选择年款名称', trigger: 'change' }
         ],
         preSaleUrgentStatus: [
           { required: true, message: '请选择预售急单设置 1-是;0-否', trigger: 'change' }
@@ -316,6 +282,13 @@ export default {
   mounted () {
   },
   methods: {
+    getSeriesName (val, obj) {
+      this.form.seriesName = obj.name;
+    },
+    getYearName (val, obj) {
+      console.log('getYearName:', val, obj);
+      this.form.yearTypeName = obj.name;
+    },
     async listVehicleYearType (query) {
       try {
         const res = await listVehicleYearType({ yearTypeNameLike: query });

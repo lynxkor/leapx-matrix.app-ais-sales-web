@@ -26,12 +26,11 @@
         <fetch-select
             :remote-method="listVehicleYearType"
             remote
-            v-model="form.yearTypeIds"
+            v-model="form.yearTypeId"
             placeholder="请选择"
             labelKey="name"
             valueKey="id"
             clearable
-            multiple
             collapseTags
             filterable
             :options="yearTypeList"
@@ -44,7 +43,6 @@
             v-model="form.preSaleUrgentStatus"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -56,7 +54,6 @@
             v-model="form.blindOrderUrgentStatus"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -67,7 +64,6 @@
           v-model="form.status"
           placeholder="请选择"
           clearable
-          multiple
           filterable
         />
       </el-form-item>
@@ -315,15 +311,15 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '预售&#x2F;盲订急单配置管理',
-        dataFetchPath: 'vehretail/web/basicConfig/orderUrgentConfig/page',
+        businessType: '盲订急单配置管理',
+        dataFetchPath: 'vr/web/order/orderUrgentConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '预售&#x2F;盲订急单配置管理.xlsx');
+            await downloadExcel(res.excelUrl, '盲订急单配置管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -417,10 +413,13 @@ export default {
     // 批量删除
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
+      this.$confirm(message, '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        dangerouslyUseHTMLString: true,
+        customClass: 'ais-leave-tips',
+        showClose: false
       }).then(() => {
         deleteItem(ids).then(() => {
           this.$message({

@@ -17,8 +17,16 @@
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <!-- <el-button size="small">按钮1</el-button>
-          <el-button size="small">按钮2</el-button> -->
+          <!-- <el-button size="small" type="primary" @click="handleEquityInquiry">权益查询</el-button> -->
+          <el-button size="small" type="primary" @click="handlePrintContractTermination">打印合同解除协议</el-button>
+          <el-button size="small" type="primary" @click="handleSetSpecialMark">设置特殊标识</el-button>
+          <el-button size="small" type="primary" @click="handleModifyConfiguration">修改配置</el-button>
+          <!-- <el-button size="small" type="primary" @click="handleManualVehicleAllocation">手工配车</el-button> -->
+          <el-button size="small" type="primary" @click="handleAutoLockVehicle">自动锁车</el-button>
+          <el-button size="small" type="primary" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
+          <el-button size="small" type="primary" @click="handleOrderUnsubscribe">订单退订</el-button>
+          <el-button size="small" type="primary" @click="handleCarOwnerChangeApplication">购车人变更申请</el-button>
+          <el-button size="small" type="primary" @click="handleQualityIssueUnbindApplication">质量问题解绑申请</el-button>
         </template>
         <!-- 固定悬浮导航栏 -->
         <div class="fixed-nav">
@@ -242,7 +250,6 @@
                   />
                 </el-form-item>
               </el-form>
-
               <generic-detail-display
                 :formData="form"
                 :fields="displayFields"
@@ -250,7 +257,6 @@
               />
             </div>
           </section>
-
           <section id="car-owner" class="common-section">
             <div class="common-section-header">
               <h2>购车人信息</h2>
@@ -262,7 +268,6 @@
               />
             </div>
           </section>
-
           <section id="order-fund" class="common-section">
             <div class="common-section-header">
               <h2>资金信息</h2>
@@ -274,7 +279,6 @@
               />
             </div>
           </section>
-
           <section id="materials" class="common-section">
             <div class="common-section-header">
               <h2>订单物料信息</h2>
@@ -286,7 +290,6 @@
               />
             </div>
           </section>
-
           <section id="lock-allocation" class="common-section">
             <div class="common-section-header">
               <h2>锁/配车信息</h2>
@@ -298,7 +301,6 @@
               />
             </div>
           </section>
-
           <section id="wholesale" class="common-section">
             <div class="common-section-header">
               <h2>批售信息</h2>
@@ -310,7 +312,6 @@
               />
             </div>
           </section>
-
           <section id="refund" class="common-section">
             <div class="common-section-header">
               <h2>订单取消信息</h2>
@@ -322,7 +323,6 @@
               />
             </div>
           </section>
-
           <section id="finance" class="common-section">
             <div class="common-section-header">
               <h2>附属信息</h2>
@@ -397,6 +397,16 @@
               </div>
             </div>
           </section>
+          <!-- 组件位置不要放在右侧栏组件 -->
+           <!-- 修改配置对话框 -->
+          <materials-dialog ref="materialsDialog" :row="form" @confirm="getDetailData" />
+          <!-- 购车协议对话框 -->
+          <purchase-agreement-dialog
+            ref="PurchaseAgreementDialog"
+            :visible.sync="agreementDialogVisible"
+            :content="agreementDialogContent"
+            title="零跑汽车购车协议"
+          />
         </el-main>
       </edit-base-container>
     </template>
@@ -409,7 +419,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getDetail, addOrUpdate, autoLock, querySnapShot, getOrderUnlockConfig } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -434,11 +444,13 @@ import {
 import ComponentTable from './components/ComponentTable';
 import GenericDetailDisplay from './components/GenericDetailDisplay';
 import NavTop from './components/NavTop';
-import { getEnum } from '@/api/common';
+import { getEnum, loginUserGet } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import MaterialsDialog from './components/MaterialsDialog';
+import PurchaseAgreementDialog from './components/PurchaseAgreementDialog';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -491,6 +503,8 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
+    PurchaseAgreementDialog,
+    MaterialsDialog,
     NavTop,
     ComponentTable,
     GenericDetailDisplay,
@@ -523,8 +537,10 @@ export default {
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-retailOrderInfo',
+      agreementDialogContent: '',
       loading: false,
       submitLoading: false,
+      accountFlag: false,
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
@@ -625,6 +641,9 @@ export default {
       activeSection: 'basic-info'
     };
   },
+  created () {
+    this.loginUserGet();
+  },
   mounted () {
     // 监听滚动事件，高亮当前所在区域
     this.$nextTick(() => {
@@ -636,6 +655,88 @@ export default {
     window.removeEventListener('scroll', this.handleScroll);
   },
   methods: {
+    // 权益查询
+    handleEquityInquiry () {
+      console.log('执行权益查询');
+    },
+    // 打印合同解除协议
+    handlePrintContractTermination () {
+      // 实现打印合同解除协议逻辑
+      console.log('打印合同解除协议');
+    },
+    // 设置特殊标识
+    handleSetSpecialMark () {
+      // 实现设置特殊标识逻辑
+      console.log('设置特殊标识');
+    },
+    // 修改配置
+    async  handleModifyConfiguration () {
+      this.businessId = this._id;
+      this.row = this.form;
+      const res = await getOrderUnlockConfig(this.row.retailOrderCode);
+      // 检查返回结果是否有效
+      if (!res || res.allowUnlockStatus !== 1 || res.allowManualCarStatus !== 1) {
+        this.$message.error('该门店没有取消配车权限');
+        return;
+      }
+      // 检查 accountFlag 和 unlockCount 的关系
+      if (this.accountFlag && this.row.unlockCount >= 1) {
+        this.$message.error('该订单取消配车次数已达上限');
+        return;
+      }
+      this.$refs.materialsDialog.show();
+    },
+    loginUserGet () {
+      loginUserGet().then(res => {
+        // true 店端 false厂端
+        this.accountFlag = res.accountFlag;
+      }).catch(() => {});
+    },
+    // 手工配车
+    handleManualVehicleAllocation () {
+      // 实现手工配车逻辑
+      console.log('手工配车');
+    },
+    // 自动锁车
+    handleAutoLockVehicle () {
+      const param = {
+        orderCode: this.form.mallOrderCode,
+        productCode: this.form.materials.productCode,
+        skuCode: this.form.materials.skuCode,
+      };
+      autoLock(param).then(response => {
+        this.$message.success('锁车成功');
+        this.getDetailData();
+      }).catch(() => {});
+    },
+    // 查看购车协议
+    handleViewPurchaseAgreement () {
+      // 2362166807179599872
+      // this.form.mallOrderCode
+      querySnapShot(this.form.mallOrderCode).then(response => {
+        console.log('response:', response);
+        this.agreementDialogContent = response;
+        this.$refs.PurchaseAgreementDialog.dialogVisible = true;
+      }).catch(() => {
+        this.$message.error('无购车权限');
+      });
+    },
+    // 订单退订
+    handleOrderUnsubscribe () {
+      // 实现订单退订逻辑
+      console.log('订单退订');
+    },
+    // 购车人变更申请
+    handleCarOwnerChangeApplication () {
+      // this.$router.push({
+      //   path: '/vehwholesale/basic/wholesaleProdScheduleActivity'
+      // });
+    },
+    // 质量问题解绑申请
+    handleQualityIssueUnbindApplication () {
+      // 实现质量问题解绑申请逻辑
+      console.log('质量问题解绑申请');
+    },
     // 将显示字段配置转换为表格列配置
     convertToTableColumns (displayFields) {
       return displayFields.map(field => ({
@@ -643,6 +744,29 @@ export default {
         title: field.label,
         width: field.label || 150 // 默认宽度，可根据需要调整
       }));
+    },
+    getDetailData () {
+      if (this._id) {
+        getDetail(this._id).then(response => {
+          const processedData = response;
+          processedData.finance = response.finance || { ...defaultForm.finance };
+          // 辅助函数：为数组中的每个对象添加saleDealerName字段
+          const addSaleDealerName = (array) => {
+            if (array && Array.isArray(array) && response.saleDealerName) {
+              return array.map(item => ({
+                ...item,
+                saleDealerName: response.saleDealerName,
+                paymentTime: response.paymentTime,
+              }));
+            }
+            return array || [];
+          };
+          processedData.statusTrackList = addSaleDealerName(response.statusTrackList);
+          processedData.lockRecordList = addSaleDealerName(response.lockRecordList);
+          Object.assign(this.form, processedData);
+          Object.assign(this.originalForm, processedData);
+        }).catch(() => {});
+      }
     },
     detailRequest () {
       const id = this._id;
@@ -663,8 +787,6 @@ export default {
           };
           processedData.statusTrackList = addSaleDealerName(response.statusTrackList);
           processedData.lockRecordList = addSaleDealerName(response.lockRecordList);
-          console.log('processedData.statusTrackList:', processedData.statusTrackList);
-          console.log('processedData.lockRecordList:', processedData.lockRecordList);
           return processedData;
         });
       }

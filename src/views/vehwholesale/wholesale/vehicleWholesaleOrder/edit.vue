@@ -20,7 +20,7 @@
           <el-button  size="small" type="primary" @click="handleCheckConfirm" >审核确认</el-button>
           <el-button  size="small" type="primary" @click="handleaAutoVehicleAllocation">自动配车</el-button>
           <el-button  size="small" type="primary" @click="handleManualVehicleAllocation">手工配车</el-button>
-          <!-- <el-button  size="small" type="primary" @click="handleDelete">删除</el-button> -->
+          <!-- <el-button  size="small" @click="handleDelete">删除</el-button> -->
           <el-button  size="small" type="primary" @click="handleCancel">作废</el-button>
         </template>
         <el-main>
@@ -238,7 +238,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <!-- <el-form-item label="批售订单号：" prop="wholesaleOrderCode">
                   {{ form.wholesaleOrderCode }}
                 </el-form-item> -->
@@ -521,7 +521,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="是否已锁定：" prop="lockStatusLabel">
                   {{ form.lockStatusLabel }}
                 </el-form-item>
@@ -565,8 +565,8 @@
                 <el-form-item label="取消配车说明：" prop="cancelAllocateRemark">
                   {{ form.cancelAllocateRemark }}
                 </el-form-item>
-                <el-form-item label="取消结算时间：" prop="cancelAllocateRemark">
-                  <!-- {{ form.cancelAllocateRemark }}  -->
+                <el-form-item label="取消结算时间：" prop="cancelSettleTime">
+                  {{ form.cancelSettleTime }}
                 </el-form-item>
                 <el-form-item label="首次取消配车时间：" prop="firstCancelAllocateTime">
                   {{ form.firstCancelAllocateTime }}
@@ -714,7 +714,7 @@
                 </el-form-item>
 
               </el-form>
-              <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="结算资金类型：" prop="settleFundTypeLabel">
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
@@ -797,12 +797,13 @@
     />
    <ManualVehicle
       :visible.sync="showManualVehicleDialog"
+      @confirmVin="confirmVin"
     />
   </div>
 </template>
 
 <script>
-import { getDetail, addOrUpdate, batchConfirmItem, batchSetAutoAllocateItem, batchCancelItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import { getDetail, addOrUpdate, batchConfirmItem, batchSetAutoAllocateItem, batchCancelItem, vinAllocateVehicleSubmitItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
@@ -966,7 +967,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '整车批售-批售主数据-整车批售订单管理',
+      pageTitle: '整车批售订单管理',
       pageType: 'edit',
       title: '批售订单号：' + form.wholesaleOrderCode,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
@@ -1008,6 +1009,18 @@ export default {
         {
           field: 'downPaymentRatio',
           title: '首付款比例%',
+        },
+        {
+          field: 'creditAccountStatusLabel',
+          title: '赊销账户状态',
+        },
+        {
+          field: 'effectiveTime',
+          title: '额度生效日期',
+        },
+        {
+          field: 'expireTime',
+          title: '额度失效日期',
         },
       ],
     };
@@ -1067,58 +1080,75 @@ export default {
       return true;
     },
     handleCheckConfirm () { //
-      const checkStatus = this.allAllowConfirm(this.form);
-      if (checkStatus) {
-        this.$confirm('是否需要对批售订单进行确认? 注意：确认订单结算资金类型', '操作提醒', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
+      // const checkStatus = this.allAllowConfirm(this.form);
+      // if (checkStatus) {
+      this.$confirm('是否需要对批售订单进行确认?', '操作提醒', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        batchConfirmItem({
+          idSet: [this.form.id]
         }).then(() => {
-          batchConfirmItem({
-            idSet: [this.form.id]
-          }).then(() => {
-            this.$message({
-              type: 'success',
-              message: '确认成功!'
-            });
-            this.getDetailData();
-          }).catch(() => {
-            this.$message({
-              type: 'error',
-              message: '确认失败!'
-            });
+          this.$message({
+            type: 'success',
+            message: '确认成功!'
           });
-        }).catch(() => {});
-      }
+          this.getDetailData();
+        }).catch(() => {
+          this.$message({
+            type: 'error',
+            message: '确认失败!'
+          });
+        });
+      }).catch(() => {});
+      // }
     },
     handleaAutoVehicleAllocation () { // 自动配车
-      const checkStatus = this.allAutoVehicleAllocation(this.form);
-      if (checkStatus) {
-        this.$confirm('是否需要对批售订单进行自动配车?', '操作提醒', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
+      // const checkStatus = this.allAutoVehicleAllocation(this.form);
+      // if (checkStatus) {
+      this.$confirm('是否需要对批售订单进行自动配车?', '操作提醒', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        batchSetAutoAllocateItem({
+          ids: [this.form.id],
+          needAutoAllocateCar: 1
         }).then(() => {
-          batchSetAutoAllocateItem({
-            ids: [this.form.id],
-            needAutoAllocateCar: 1
-          }).then(() => {
-            this.$message({
-              type: 'success',
-              message: '自动配车成功!'
-            });
-            this.getDetailData();
-          }).catch(() => {
-            this.$message({
-              type: 'error',
-              message: '自动配车失败!'
-            });
+          this.$message({
+            type: 'success',
+            message: '自动配车成功!'
           });
-        }).catch(() => {});
-      }
+          this.getDetailData();
+        }).catch(() => {
+          this.$message({
+            type: 'error',
+            message: '自动配车失败!'
+          });
+        });
+      }).catch(() => {});
+      // }
     },
     handleManualVehicleAllocation () { // 手工配车
       this.showManualVehicleDialog = true;
+    },
+    confirmVin (data) {
+      vinAllocateVehicleSubmitItem({
+        wholesaleOrderId: this.form.id,
+        vin: data.vin
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '自动配车成功!'
+        });
+        this.getDetailData();
+      }).catch(() => {
+        this.$message({
+          type: 'error',
+          message: '自动配车失败!'
+        });
+      });
     },
     handleDelete () { // 删除
 
@@ -1159,7 +1189,16 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        return getDetail(id).then((res) => {
+          // Map the nested properties to the top level for easier access in the table
+          res.dealerFundAccounts = res.dealerFundAccounts.map(account => ({
+            ...account,
+            creditAccountStatusLabel: account.creditSalesLimit?.creditAccountStatusLabel || '',
+            effectiveTime: account.creditSalesLimit?.effectiveTime || '',
+            expireTime: account.creditSalesLimit?.expireTime || ''
+          }));
+          return res;
+        }).catch(() => {});
       }
     },
     submitRequest () {

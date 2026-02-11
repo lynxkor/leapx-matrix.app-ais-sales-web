@@ -191,8 +191,8 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
        <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length !== 1" @click="handleUnlock">取消锁车</el-button>
-       <el-button v-if="canAddOrUpdate" size="small" @click="handleAdd">更换销售门店</el-button>
-       <el-button v-if="canAddOrUpdate" size="small" @click="handleAdd">更换交付门店</el-button>
+       <el-button v-if="canAddOrUpdate" size="small" @click="handleChangeDealer('sales')" :disabled="selectionList.length === 0">更换销售门店</el-button>
+       <el-button v-if="canAddOrUpdate" size="small" @click="handleChangeDealer('support')" :disabled="selectionList.length === 0">更换交付门店</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
@@ -222,7 +222,23 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload :visible="uploadDialogVisible" :id="'1'" @close="handleUploadDialogClose" />
     <!-- 取消锁车 -->
-     <UnlockDialog ref="unlockDialog" />
+     <UnlockDialog
+      ref="unlockDialog"
+      :businessId="businessId"
+      :row="row"
+      @refresh="getData"
+    />
+    <!-- 配置页 -->
+     <MaterialsDialog
+      ref="materialsDialog"
+      :row="row"
+      @confirm="getData"
+    />
+    <ChangeDealer
+      ref="changeDealerDialog"
+      :dataList="selectionList"
+      @changeDealer="changeDealerFun"
+    />
   </div>
 </template>
 
@@ -230,7 +246,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getList, deleteItem, enableItem, getOrderUnlockConfig, batchReplaceStore } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import {
   getTableConfig,
   tableAddOrUpdate,
@@ -253,6 +269,8 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
 import UnlockDialog from './components/UnlockDialog';
+import MaterialsDialog from './components/MaterialsDialog';
+import ChangeDealer from './components/ChangeDealer';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -315,12 +333,14 @@ export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
     UnlockDialog,
+    MaterialsDialog,
     TagInput,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    ChangeDealer
   },
   data () {
     return {
@@ -331,7 +351,9 @@ export default {
       form: {
         ...defaultForm
       },
-      accountFlag: null, // 账户标识  true: 是店端账号；false: 厂端账号
+      businessId: '',
+      row: {},
+      accountFlag: null,
       orgProps: {
         checkStrictly: true,
         emitPath: true,
@@ -459,6 +481,12 @@ export default {
             visible: true,
             fixed: 'right',
             buttons: [{
+              name: '修改配置',
+              click: (rowIndex, row) => {
+                this.changeConfiguration(row);
+              },
+              type: 'info'
+            }, {
               name: '编辑',
               click: (rowIndex, row) => {
                 this.$router.push({
@@ -485,11 +513,73 @@ export default {
     this.loginUserGet();
   },
   methods: {
-    handleUnlock () {
+    handleChangeDealer (type) {
+      if (type === 'sales') {
+        // 校验选择的订单状态是否都是 订单确认
+        const confirmOrders = this.selectionList.filter(item => item.orderStatus === 3);
+        if (confirmOrders.length !== this.selectionList.length) {
+          this.$message.error('请选择订单状态为 订单确认 的订单');
+          return;
+        }
+        this.$refs.changeDealerDialog.show(type);
+      } else {
+        // 校验选择的订单状态是否都是 3、4、30、40
+        const validOrders = this.selectionList.filter(item => [3, 5, 30, 40].includes(item.orderStatus));
+        if (validOrders.length !== this.selectionList.length) {
+          this.$message.error('请选择订单状态为 订单确认、订单取消、订单确认失败、订单取消失败 的订单');
+          return;
+        }
+        this.$refs.changeDealerDialog.show(type);
+      }
+    },
+    changeDealerFun (data) {
+      const param = {
+        saleStoreChangeType: data.saleStoreChangeType,
+        saleStoreChangeRemark: data.saleStoreChangeRemark,
+        orderIdList: data.dataList.map(item => item.id),
+        newStoreCode: data.storeInfo.storeCode,
+        changeType: data.type === 'sales' ? 1 : 2
+      };
+      batchReplaceStore(param).then(res => {
+        this.$message.success('变更成功');
+        this.getData();
+      });
+    },
+    async changeConfiguration (row) {
+      this.businessId = this._id;
+      this.row = row;
+      const res = await getOrderUnlockConfig(this.row.retailOrderCode);
+      // 检查返回结果是否有效
+      if (!res || res.allowUnlockStatus !== 1 || res.allowManualCarStatus !== 1) {
+        this.$message.error('该门店没有取消配车权限');
+        return;
+      }
+      // 检查 accountFlag 和 unlockCount 的关系
+      if (this.accountFlag && this.row.unlockCount >= 1) {
+        this.$message.error('该订单取消配车次数已达上限');
+        return;
+      }
+      this.$refs.materialsDialog.show();
+    },
+    async handleUnlock () {
+      this.businessId = this.selectionList[0]?.id;
+      this.row = this.selectionList[0];
+      const res = await getOrderUnlockConfig(this.row.retailOrderCode);
+      // 检查返回结果是否有效
+      if (!res || res.allowUnlockStatus !== 1 || res.allowManualCarStatus !== 1) {
+        this.$message.error('该门店没有取消配车权限');
+        return;
+      }
+      // 检查 accountFlag 和 unlockCount 的关系
+      if (this.accountFlag && this.row.unlockCount >= 1) {
+        this.$message.error('该订单取消配车次数已达上限');
+        return;
+      }
       this.$refs.unlockDialog.show();
     },
     loginUserGet () {
       loginUserGet().then(res => {
+        // true 店端 false厂端
         this.accountFlag = res.accountFlag;
       }).catch(() => {});
     },
@@ -690,10 +780,13 @@ export default {
     // 批量删除
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
+      this.$confirm(message, '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        dangerouslyUseHTMLString: true,
+        customClass: 'ais-leave-tips',
+        showClose: false
       }).then(() => {
         deleteItem(ids).then(() => {
           this.$message({

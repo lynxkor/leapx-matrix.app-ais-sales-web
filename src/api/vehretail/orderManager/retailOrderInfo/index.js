@@ -52,6 +52,14 @@ export function findCanUnlockOrderList (data) {
 }
 
 /**
+ * 批量更换订单门店
+ * @param {Object} data
+ */
+export function batchReplaceStore (data) {
+  return api.jsonPost(prefix + 'batchReplaceStore', data);
+}
+
+/**
  * 取消锁车-申请原因
  * @param {Object} data
  */
@@ -82,3 +90,43 @@ export function manualLock (data) {
 export function orderStatusNodes (data) {
   return api.jsonPost('vr/web/order/retailOrderInfo/orderStatus/nodes', data);
 };
+
+/**
+ * 取消锁车-选择配置
+ * @param {Object} data
+ */
+export function allowConfigChangeSkuPage (data) {
+  return api.jsonPost('vr/web/product/productSkuPrice/allowConfigChangeSkuPage', data);
+};
+
+/**
+ * 取消锁车-校验门店是否允许锁车
+ * @param {Object} data
+ */
+export function getOrderUnlockConfig (data) {
+  return api.jsonPost('vr/web/order/retailOrderUnlockConfig/unlock/getOrderUnlockConfig', data);
+};
+
+/**
+ * 自动锁车
+ * @param {Object} data
+ */
+export function autoLock (data) {
+  return api.jsonPost('vr/web/order/autoLock', data);
+};
+
+/**
+ * 获取零跑APP获取购车协议]
+ * @param {Object} data
+ */
+export function querySnapShot (data) {
+  return api.jsonPost('vr/web/order/retailOrderInfo/querySnapShot', data);
+};
+
+/**
+ * 订单配置修改
+ * @param {Object} data
+ */
+export function changeOrderMaterials (data) {
+  return api.jsonPost(prefix + 'changeOrderMaterials', data);
+}

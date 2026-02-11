@@ -1,22 +1,22 @@
 <template>
-  <edit-page-layout ref="editLayout" title="侧边栏标题" showPaneFooter>
+  <edit-page-layout ref="editLayout" title="侧边栏标题" show-pane-footer>
     <template #left>
       <!-- TIPS: 如果需要竖排，direction="vertical" -->
       <edit-base-container
         ref="containerRef"
         :id="_id"
         :title="title"
-        :isEditing.sync="isEditing"
+        :is-editing.sync="isEditing"
         :form.sync="form"
-        :originalForm.sync="originalForm"
-        :submitRequest="submitRequest"
-        :detailRequest="detailRequest"
+        :original-form.sync="originalForm"
+        :submit-request="submitRequest"
+        :detail-request="detailRequest"
       >
         <template #status>
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
         </template>
-        <template #extraButtons>
+        <template #extra-buttons>
           <!-- <el-button size="small">按钮1</el-button>
           <el-button size="small">按钮2</el-button> -->
         </template>
@@ -27,50 +27,88 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+              <el-form
+                :inline="true"
+                :model="form"
+                :rules="rules"
+                ref="ruleForm"
+                label-width="150px"
+                class="form-edit"
+                v-show="isEditing || !_id"
+              >
                 <el-form-item label="车型名称：" prop="modelName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.modelName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="年款名称：" prop="yearTypeName">
                   <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
-                    v-model="form.yearTypeName"
+                    :remote-method="remoteMethods.model"
+                    v-model="form.modelId"
                     placeholder="请选择"
                     clearable
+                    label-key="name"
+                    value-key="id"
                     filterable
+                    remote
+                    @change="getModelName"
+                  />
+                </el-form-item>
+                <el-form-item label="年款名称：" prop="yearTypeId">
+                  <fetch-select
+                    :remote-method="listVehicleYearType"
+                    remote
+                    v-model="form.yearTypeId"
+                    placeholder="请选择"
+                    label-key="name"
+                    value-key="id"
+                    clearable
+                    filterable
+                    :options="yearTypeList"
+                    @change="getYearName"
                   />
                 </el-form-item>
                 <el-form-item label="外观名称：">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.exteriorName"
+                  <fetch-select
+                    v-model="form.exteriorId"
                     clearable
+                    filterable
+                    remote
+                    label-key="name"
+                    value-key="id"
+                    :remote-method="remoteMethods.exterior"
+                    @change="getExteriorName"
                   />
                 </el-form-item>
-                 <el-form-item label="内饰名称：">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.interiorName"
+                <el-form-item label="内饰名称：">
+                  <fetch-select
+                    v-model="form.interiorId"
                     clearable
+                    filterable
+                    remote
+                    label-key="name"
+                    value-key="id"
+                    :remote-method="remoteMethods.interior"
+                    @change="getInteriorName"
                   />
                 </el-form-item>
-                 <el-form-item label="轮毂名称：" >
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.wheelHubName"
+                <el-form-item label="轮毂名称：">
+                  <fetch-select
+                    v-model="form.wheelHubId"
                     clearable
+                    filterable
+                    remote
+                    label-key="name"
+                    value-key="id"
+                    :remote-method="remoteMethods.wheel"
+                    @change="getWheelName"
                   />
                 </el-form-item>
                 <el-form-item label="选装包名称：">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.optionPackageName"
+                  <fetch-select
+                    v-model="form.optionPackageId"
                     clearable
+                    filterable
+                    remote
+                    label-key="name"
+                    value-key="id"
+                    :remote-method="remoteMethods.optional"
+                    @change="getOptionalName"
                   />
                 </el-form-item>
                 <el-form-item label="排产天数：" prop="productionDays">
@@ -97,7 +135,7 @@
                 <el-form-item label="状态：" prop="status">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="StatusEnum"
+                    enum-code="StatusEnum"
                     v-model="form.status"
                     placeholder="请选择"
                     clearable
@@ -105,69 +143,29 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="主键：" prop="id">
-                  {{ form.id }}
-                </el-form-item>
-                <el-form-item label="创建者：" prop="creator">
-                  {{ form.creator }}
-                </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  {{ form.creatorName }}
-                </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
-                  {{ form.createTime }}
-                </el-form-item>
-                <el-form-item label="修改者：" prop="modifier">
-                  {{ form.modifier }}
-                </el-form-item>
-                <el-form-item label="修改者名称：" prop="modifierName">
-                  {{ form.modifierName }}
-                </el-form-item>
-                <el-form-item label="修改时间：" prop="updateTime">
-                  {{ form.updateTime }}
-                </el-form-item>
-                <el-form-item label="备注：" prop="remark">
-                  {{ form.remark }}
-                </el-form-item>
-                <el-form-item label="状态 0-禁用;1-启用：" prop="status">
-                  {{ form.status }}
-                </el-form-item>
+              <el-form
+                label-width="150px"
+                :inline="true"
+                class="form-detail"
+                v-show="!(isEditing || !_id)"
+              >
                 <el-form-item label="状态变更描述：" prop="statusDesc">
                   {{ form.statusDesc }}
-                </el-form-item>
-                <el-form-item label="车型ID：" prop="modelId">
-                  {{ form.modelId }}
                 </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
                   {{ form.modelName }}
                 </el-form-item>
-                <el-form-item label="年款ID：" prop="yearTypeId">
-                  {{ form.yearTypeId }}
-                </el-form-item>
                 <el-form-item label="年款名称：" prop="yearTypeName">
                   {{ form.yearTypeName }}
-                </el-form-item>
-                <el-form-item label="外观ID：" prop="exteriorId">
-                  {{ form.exteriorId }}
                 </el-form-item>
                 <el-form-item label="外观名称：" prop="exteriorName">
                   {{ form.exteriorName }}
                 </el-form-item>
-                <el-form-item label="内饰ID：" prop="interiorId">
-                  {{ form.interiorId }}
-                </el-form-item>
                 <el-form-item label="内饰名称：" prop="interiorName">
                   {{ form.interiorName }}
                 </el-form-item>
-                <el-form-item label="轮毂ID：" prop="wheelHubId">
-                  {{ form.wheelHubId }}
-                </el-form-item>
                 <el-form-item label="轮毂名称：" prop="wheelHubName">
                   {{ form.wheelHubName }}
-                </el-form-item>
-                <el-form-item label="选装包ID：" prop="optionPackageId">
-                  {{ form.optionPackageId }}
                 </el-form-item>
                 <el-form-item label="选装包名称：" prop="optionPackageName">
                   {{ form.optionPackageName }}
@@ -178,8 +176,11 @@
                 <el-form-item label="BUFF天数：" prop="buffDays">
                   {{ form.buffDays }}
                 </el-form-item>
-                <el-form-item label="数据来源，150-新销服; 10-老销服：" prop="dataSource">
-                  {{ form.dataSource }}
+                <el-form-item label="备注：" prop="remark">
+                  {{ form.remark }}
+                </el-form-item>
+                <el-form-item label="状态 0-禁用;1-启用：" prop="status">
+                  {{ form.statusLabel }}
                 </el-form-item>
               </el-form>
             </div>
@@ -196,18 +197,28 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehretail/basicConfig/productionOfflineConfig/index';
+import {
+  getDetail,
+  addOrUpdate,
+} from '@/api/vehretail/basicConfig/productionOfflineConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum } from '@/api/common';
+import {
+  getEnum,
+  listVehicleModel,
+  vehicleExterior,
+  vehicleInterior,
+  vehicleWheelHub,
+  vehicleOptionPackage,
+  listVehicleYearType,
+} from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 
 const defaultForm = {
-  // 多选时字段有变化，自行修复
   id: '',
   creator: '',
   creatorName: '',
@@ -237,26 +248,25 @@ const defaultForm = {
 
 export default {
   name: 'productionOfflineConfigEdit',
-  // 集中视图预留
   props: {
     id: {
       type: [String, Number],
-      default: null
+      default: null,
     },
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
     EditPageLayout,
     EditBaseContainer,
-    FetchSelect
+    FetchSelect,
   },
   computed: {
     _id () {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '：' + this.form.id;
-    }
+      return '排产下线时效管理：' + this.form.id;
+    },
   },
   watch: {
     id: {
@@ -265,84 +275,90 @@ export default {
           this.$refs.containerRef.loadDetail();
         }
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   data () {
     const form = this.getDefautlForm();
     return {
+      remoteMethods: {
+        model: async (query) => {
+          return await listVehicleModel({ modelNameLike: query });
+        },
+        exterior: async (query) => {
+          return await vehicleExterior({ exteriorNameLike: query });
+        },
+        interior: async (query) => {
+          return await vehicleInterior({ interiorNameLike: query });
+        },
+        wheel: async (query) => {
+          return await vehicleWheelHub({ wheelHubNameLike: query });
+        },
+        optional: async (query) => {
+          return await vehicleOptionPackage({ optionPackageNameLike: query });
+        },
+      },
       pageTitle: '排产下线时效管理',
       pageType: 'edit',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-productionOfflineConfig',
+      moduleKey: 'AISVR-productionOfflineConfig',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
+      yearTypeList: [],
       originalForm: { ...form },
       defaultNewRow: {
         name: '',
       },
-      options: {
-        // 对应表格里选型枚举
-        // 如 type: [{label: 'xxx', value: 'xxx'}]
-      },
-      // TIPS: 复杂的表格输入项，参考 /dealerTeam/edit.vue
+      options: {},
       rules: {
         status: [
-          { required: true, message: '请选择状态 0-禁用;1-启用', trigger: 'change' }
-        ],
-        statusDesc: [
-          { required: true, message: '请选择状态变更描述', trigger: 'change' }
+          { required: true, message: '请选择状态 0-禁用;1-启用', trigger: 'change' },
         ],
         modelId: [
-          { required: true, message: '请输入车型ID', trigger: 'change' }
-        ],
-        modelName: [
-          { required: true, message: '请输入车型名称', trigger: 'change' }
+          { required: true, message: '请输入车型ID', trigger: 'change' },
         ],
         yearTypeId: [
-          { required: true, message: '请选择年款ID', trigger: 'change' }
-        ],
-        yearTypeName: [
-          { required: true, message: '请选择年款名称', trigger: 'change' }
-        ],
-        exteriorId: [
-          { required: true, message: '请输入外观ID', trigger: 'change' }
-        ],
-        exteriorName: [
-          { required: true, message: '请输入外观名称', trigger: 'change' }
-        ],
-        interiorId: [
-          { required: true, message: '请输入内饰ID', trigger: 'change' }
-        ],
-        interiorName: [
-          { required: true, message: '请输入内饰名称', trigger: 'change' }
-        ],
-        wheelHubId: [
-          { required: true, message: '请输入轮毂ID', trigger: 'change' }
-        ],
-        wheelHubName: [
-          { required: true, message: '请输入轮毂名称', trigger: 'change' }
-        ],
-        optionPackageId: [
-          { required: true, message: '请输入选装包ID', trigger: 'change' }
-        ],
-        optionPackageName: [
-          { required: true, message: '请输入选装包名称', trigger: 'change' }
+          { required: true, message: '请选择年款ID', trigger: 'change' },
         ],
         productionDays: [
-          { required: true, message: '请输入排产天数', trigger: 'change' }
+          { required: true, message: '请输入排产天数', trigger: 'change' },
         ],
         buffDays: [
-          { required: true, message: '请输入BUFF天数', trigger: 'change' }
-        ]
-      }
+          { required: true, message: '请输入BUFF天数', trigger: 'change' },
+        ],
+      },
     };
   },
-  mounted () {
-  },
+  mounted () {},
   methods: {
+    getExteriorName (val, obj) {
+      this.form.exteriorName = obj.name;
+    },
+    getInteriorName (val, obj) {
+      this.form.interiorName = obj.name;
+    },
+    getWheelName (val, obj) {
+      this.form.wheelHubName = obj.name;
+    },
+    getOptionalName (val, obj) {
+      this.form.optionPackageName = obj.name;
+    },
+    getYearName (val, obj) {
+      this.form.yearTypeName = obj.name;
+    },
+    getModelName (val, obj) {
+      this.form.modelName = obj.name;
+    },
+    async listVehicleYearType (query) {
+      try {
+        const res = await listVehicleYearType({ yearTypeNameLike: query });
+        this.yearTypeList = res;
+        return res;
+      } catch (error) {
+        console.error('Error fetching model list:', error);
+      }
+    },
     detailRequest () {
       const id = this._id;
       if (id) {
@@ -352,44 +368,32 @@ export default {
     submitRequest () {
       return addOrUpdate({ ...this.form });
     },
-    // 打开侧边栏
     openPane () {
       this.$refs.editLayout.openPane();
     },
-    // 详情表格相关数据
     handleAddRow () {
-      // 通过引用直接调用子组件方法
       this.$refs.editTable.addRow();
     },
     handleSaveTable (data) {
-      // 调用保存方法并处理结果
       return new Promise((resolve, reject) => {
-        this.$refs.editTable.saveAll().then(data => {
+        this.$refs.editTable.saveAll().then((data) => {
           resolve(data);
-        }).catch(error => {
+        }).catch((error) => {
           reject(error);
         });
       });
     },
     getDefautlForm () {
-      // TIPS: 此处可添加表单默认值，如当前用户信息等
-      // const userInfo = this.$store.state.user.userInfo;
       return {
-        ...defaultForm
-        // ownerId: userInfo.userId,
-        // ownerName: userInfo.userName,
+        ...defaultForm,
       };
     },
-    // 审核日志
-    // handleJumpAuditLog () {
-    //   this.$auditLog.show({ id: 123 });
-    // },
     async fetchOptions (code) {
       if (code) {
         return getEnum(code);
       }
       return [];
-    }
-  }
+    },
+  },
 };
 </script>
