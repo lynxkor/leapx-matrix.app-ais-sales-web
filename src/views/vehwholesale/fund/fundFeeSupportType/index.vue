@@ -151,12 +151,12 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'feeSupportTypeCode', label: '费用支持类型编码', visible: true, width: 200 },
-          { props: 'departmentTypeLabel', label: '部门', visible: true, width: 200 },
+          { props: 'feeSupportTypeCode', label: '费用支持类型编码', visible: true, width: 150 },
+          { props: 'departmentTypeLabel', label: '部门', visible: true, width: 120 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 100 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 120 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',

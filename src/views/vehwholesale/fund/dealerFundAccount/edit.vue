@@ -116,7 +116,7 @@
           </section>
           <section class="common-section">
             <div class="common-section-header">
-              <h2>余额信息</h2>
+              <h2 v-show="_id">余额信息</h2>
             </div>
             <div class="common-section-body">
               <el-form :inline="true" class="form-detail" label-width="150px">

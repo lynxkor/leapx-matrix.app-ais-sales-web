@@ -676,7 +676,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehwholesale/shipping/vehicleShippingPlanDetail/index';
+import { getDetail, addOrUpdateItem } from '@/api/vehwholesale/shipping/vehicleShippingPlanDetail/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 // import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
@@ -974,7 +974,7 @@ export default {
       }
     },
     submitRequest () {
-      return addOrUpdate({ ...this.form });
+      return addOrUpdateItem({ ...this.form });
     },
     // 打开侧边栏
     openPane () {
