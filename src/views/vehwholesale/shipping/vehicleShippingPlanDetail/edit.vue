@@ -9,6 +9,7 @@
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
+        :showEditBtn="false"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
       >
@@ -780,7 +781,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '新页面',
+      pageTitle: '发运计划明细',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-vehicleShippingPlanDetail',

@@ -1,13 +1,17 @@
 <template>
   <div>
-    <el-dialog title="取消配车" :visible.sync="dialogVisible" width="400px" :close-on-click-modal="false">
+    <el-dialog title="取消结算" :visible.sync="dialogVisible" width="400px" :close-on-click-modal="false">
         <el-form ref="SelectformRef" :model="Selectform"  >
-      <el-form-item label="取消配车类型：" prop="passOrReject">
-         <el-select v-model="Selectform.passOrReject" placeholder="请选择" clearable style="width: 100%">
-            <el-option label="通过" value='1'/>
-            <el-option label="驳回" value='0' />
-         </el-select>
-      </el-form-item>
+          <el-form-item label="取消结算类型：" prop="passOrReject">
+            <fetch-select
+              :request="fetchOptions"
+              enumCode="vw_wholesale_order_cancel_settle_type"
+              v-model="Selectform.cancelSettleType"
+              placeholder="请选择"
+              clearable
+              filterable
+            />
+          </el-form-item>
     </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button  @click="cancel()">取消</el-button>
@@ -18,8 +22,13 @@
 </template>
 
 <script>
+import { getEnum } from '@/api/common';
+import FetchSelect from '@/libs/components/FetchSelect';
 export default {
   name: 'BatchCancelSettleInput',
+  components: {
+    FetchSelect
+  },
   props: {
     visible: {
       type: Boolean,
@@ -32,9 +41,8 @@ export default {
   },
   data () {
     return {
-      statusDesc: '',
       Selectform: {
-        passOrReject: '',
+        cancelSettleType: ''
       },
     };
   },
@@ -51,19 +59,20 @@ export default {
   watch: {
     visible (newVal) {
       if (newVal) {
-        this.statusDesc = '';
+        this.Selectform.cancelSettleType = '';
       }
     }
   },
   methods: {
-    confirmCancel () {
-      if (!this.statusDesc || this.statusDesc.trim() === '') {
-        this.$message.error('配车说明不能为空');
-        return;
+    async fetchOptions (code) {
+      if (code) {
+        return getEnum(code);
       }
+      return [];
+    },
+    confirmCancel () {
       this.$emit('batchCancelSettle', {
-        idSet: this.cancelIds,
-        statusDesc: this.statusDesc
+        cancelSettleType: this.Selectform.cancelSettleType
       });
       this.dialogVisible = false;
     },

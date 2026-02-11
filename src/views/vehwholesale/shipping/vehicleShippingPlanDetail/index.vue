@@ -25,12 +25,18 @@
         <el-form-item label="销售门店">
           <tag-input v-model="form.saleDealerCodes" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="车系ID">
-          <el-input
-            placeholder="请输入"
-            v-model="form.seriesId"
+        <el-form-item label="车系">
+         <fetch-select
+            :remote-method="remoteMethods.series"
+            v-model="form.seriesIds"
+            placeholder="请选择"
+            labelKey="name"
+            valueKey="id"
             clearable
-          />
+            filterable
+            multiple
+            remote
+            />
         </el-form-item>
         <el-form-item label="数据来源">
           <el-input
@@ -130,10 +136,10 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd">
+      <el-button v-if="canAddOrUpdate" size="small" @click="handleaAdOrUpdate">
         创建发运计划
       </el-button>
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd">
+      <el-button v-if="canAddOrUpdate" size="small" @click="handleSwitch">
         设置定时任务开关
       </el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
@@ -164,6 +170,12 @@
       @close="handleUploadDialogClose"
       @getData="getData"
     />
+
+    <SwitchFlag
+      :visible.sync="showSwitchFlageDialog"
+      :cancel-ids="selectionList.map(item => item.id)"
+      @confirmSwitchFlag="timeSwitchFlag"
+    />
   </div>
 </template>
 
@@ -171,8 +183,8 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehwholesale/shipping/vehicleShippingPlanDetail/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getList, deleteItem, enableItem, addOrUpdateItem, setSwitchItem } from '@/api/vehwholesale/shipping/vehicleShippingPlanDetail/index';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -182,6 +194,7 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
+import SwitchFlag from './SwitchFlag.vue';
 import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
@@ -215,10 +228,16 @@ export default {
     FetchSelect,
     EditPage,
     Upload,
-    TagInput
+    TagInput,
+    SwitchFlag
   },
   data () {
     return {
+      remoteMethods: {
+        series: async (query) => {
+          return await vehicleSeriesList({ seriesNameLike: query, status: 1 });
+        }
+      },
       pageTitle: '发运计划明细',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
@@ -232,6 +251,7 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      showSwitchFlageDialog: false,
       clickItemId: '',
       optionObj: {
         id: 'vehicleShippingPlanDetailTable',
@@ -351,6 +371,39 @@ export default {
     this.getData();
   },
   methods: {
+    handleaAdOrUpdate () {
+      addOrUpdateItem({}).then(() => {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+        this.getData();
+      }).catch(() => {
+        this.$message({
+          type: 'error',
+          message: '删除失败!'
+        });
+      });
+    },
+    handleSwitch () {
+      this.showSwitchFlageDialog = true;
+    },
+    timeSwitchFlag (data) {
+      setSwitchItem({
+        status: data.status
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+        this.getData();
+      }).catch(() => {
+        this.$message({
+          type: 'error',
+          message: '删除失败!'
+        });
+      });
+    },
     repairItemSearch (query) { return listIdNames({ organizationNameLike: query, status: 1 }); },
     // 排序
     handleSortChange (value) {
