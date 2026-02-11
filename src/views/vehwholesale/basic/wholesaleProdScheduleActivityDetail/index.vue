@@ -27,7 +27,7 @@
           end-placeholder="结束日期"
         />
       </el-form-item>
-       <el-form-item label="门店名称">
+       <el-form-item label="门店名称" v-show="this.visibleCount === 3 || show">
         <tag-input v-model="form.dealerNames" placeholder="请输入" />
       </el-form-item>
       <!-- <el-form-item label="排产活动ID">

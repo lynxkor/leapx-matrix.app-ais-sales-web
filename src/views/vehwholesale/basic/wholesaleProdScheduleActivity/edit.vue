@@ -232,10 +232,10 @@
             <div>
               <el-form :inline="true" :model="detailForm" label-width="150px" class="form-edit">
                 <el-form-item label="门店编码：">
-                  <tag-input v-model="detailForm.dealerCodes" placeholder="请输入" />
+                  <tag-input v-model="detailForm.dealerCodes" placeholder="请输入" style="margin-top:4px"/>
                 </el-form-item>
                 <el-form-item label="门店名称：">
-                  <tag-input v-model="detailForm.dealerNames" placeholder="请输入" />
+                  <tag-input v-model="detailForm.dealerNames" placeholder="请输入" style="margin-top:4px"/>
                 </el-form-item>
                 <el-form-item label=" ">
                   <el-button size="medium" type="primary" @click="handleQuery">查询</el-button>
