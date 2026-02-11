@@ -145,7 +145,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
+                  path: '/vehwholesale/fund/fundFinancialOrganization/edit',
                   query: {
                     id: row.id
                   }
