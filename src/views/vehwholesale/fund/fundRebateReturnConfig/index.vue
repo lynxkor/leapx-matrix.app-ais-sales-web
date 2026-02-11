@@ -190,7 +190,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/fund/fundRebateReturnConfig/detail',
+                  path: '/vehwholesale/fund/fundRebateReturnConfig/edit',
                   query: {
                     id: row.id
                   }
