@@ -2158,7 +2158,7 @@ const routes = [
         name: '锁车资源共享配置管理详情',
         noResourceUrl: 'true'
       }
-    },{
+    }, {
       path: '/vehretail/bizMasterData/configMasterData/salesConfig',
       name: 'salesConfig',
       component: () => import('@/views/vehretail/bizMasterData/configMasterData/salesConfig/index.vue'),
