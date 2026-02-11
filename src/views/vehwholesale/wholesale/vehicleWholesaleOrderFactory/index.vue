@@ -15,7 +15,7 @@
         <el-form-item label="配车VIN码">
           <tag-input v-model="form.vins" placeholder="请输入" />
         </el-form-item>
-      <el-form-item label="订单状态">
+      <el-form-item label="订单状态" v-show="this.visibleCount === 3 || show">
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_wholesale_order_status"
@@ -347,25 +347,25 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleBatchConfirm">批量确认</el-button>
-      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleBatchSetAutoAllocate">批量配车</el-button> -->
-      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd">批量结算</el-button> -->
-      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd">批量取消结算</el-button> -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleBatchCancel">批量作废</el-button>
-      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd">批量取消配车</el-button> -->
-      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd">批量设置自动配车</el-button> -->
-      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" >批量设置不自动配车</el-button> -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleSetEmergencyOrder">设置急单</el-button>
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleCancelEmergencyOrder">取消急单</el-button>
-      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" >刷新价格</el-button> -->
-      <el-button v-if="canImport" size="small" type="primary" @click="handleImport">导入</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" type="primary" size="small" @click="exportExcel">导出</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" @click="handleBatchConfirm">批量确认</el-button>
+      <!-- <el-button v-if="canAddOrUpdate" size="small" @click="handleBatchSetAutoAllocate">批量配车</el-button> -->
+      <!-- <el-button v-if="canAddOrUpdate" size="small" @click="handleAdd">批量结算</el-button> -->
+      <!-- <el-button v-if="canAddOrUpdate" size="small" @click="handleAdd">批量取消结算</el-button> -->
+      <el-button v-if="canAddOrUpdate" size="small" @click="handleBatchCancel">批量作废</el-button>
+      <!-- <el-button v-if="canAddOrUpdate" size="small" @click="handleAdd">批量取消配车</el-button> -->
+      <!-- <el-button v-if="canAddOrUpdate" size="small" @click="handleAdd">批量设置自动配车</el-button> -->
+      <!-- <el-button v-if="canAddOrUpdate" size="small" >批量设置不自动配车</el-button> -->
+      <el-button v-if="canAddOrUpdate" size="small" @click="handleSetEmergencyOrder">设置急单</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" @click="handleCancelEmergencyOrder">取消急单</el-button>
+      <!-- <el-button v-if="canAddOrUpdate" size="small" >刷新价格</el-button> -->
+      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
       class="ais-table-c"
     >
       <div>
-        <el-tabs v-model="tabName" type="card" @tab-click="handleClickTab">
+        <el-tabs v-model="tabName" @tab-click="handleClickTab">
           <el-tab-pane label="全量" name="1"></el-tab-pane>
           <el-tab-pane label="未完成批售订单" name="2"></el-tab-pane>
           <el-tab-pane label="待处理现车批售" name="3"></el-tab-pane>
@@ -515,7 +515,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车批售-批售主数据-整车批售订单管理',
+      pageTitle: '整车批售订单管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-vehicleWholesaleOrderFactory',
@@ -983,7 +983,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '整车批售-批售主数据-整车批售订单管理',
+        businessType: '整车批售订单管理',
         dataFetchPath: 'vw/web/wholesale/vehicleWholesaleOrderFactory/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -991,7 +991,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车批售-批售主数据-整车批售订单管理.xlsx');
+            await downloadExcel(res.excelUrl, '整车批售订单管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -1174,5 +1174,8 @@ export default {
 
 <style lang="scss" scoped>
 .m-order-list {
+  ::v-deep .m-vxe-table-options{
+    top: -50px;
+  }
 }
 </style>

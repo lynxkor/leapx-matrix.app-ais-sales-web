@@ -292,25 +292,25 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchConfirm">批量确认</el-button>
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchAllocateVehicle">批量配车</el-button>
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchSettleSubmit">批量结算</el-button>
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchCancelSettle">批量取消结算</el-button>
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchCancel">批量作废</el-button>
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchCancelAllocateVehicle">批量取消配车</el-button>
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchSetAutoAllocate">批量设置自动配车</el-button>
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchSetNotAutoAllocate">批量设置不自动配车</el-button>
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleSetEmergencyOrder">设置急单</el-button>
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleCancelEmergencyOrder">取消急单</el-button>
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" >刷新价格</el-button>
-      <el-button v-if="canImport" size="small" type="primary" @click="handleImport">导入</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" type="primary" size="small" @click="exportExcel">导出</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length === 0" @click="handleBatchConfirm">批量确认</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length === 0" @click="handleBatchAllocateVehicle">批量配车</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length === 0" @click="handleBatchSettleSubmit">批量结算</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancelSettle">批量取消结算</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancel">批量作废</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancelAllocateVehicle">批量取消配车</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length === 0" @click="handleBatchSetAutoAllocate">批量设置自动配车</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length === 0" @click="handleBatchSetNotAutoAllocate">批量设置不自动配车</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length === 0" @click="handleSetEmergencyOrder">设置急单</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length === 0" @click="handleCancelEmergencyOrder">取消急单</el-button>
+      <el-button v-if="canAddOrUpdate" size="small" >刷新价格</el-button>
+      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
       class="ais-table-c"
     >
       <div>
-        <el-tabs v-model="tabName" type="card" @tab-click="handleClickTab">
+        <el-tabs v-model="tabName" @tab-click="handleClickTab">
           <el-tab-pane label="全量" name="1"></el-tab-pane>
           <el-tab-pane label="未完成批售订单" name="2"></el-tab-pane>
           <el-tab-pane label="待处理现车批售" name="3"></el-tab-pane>
@@ -484,7 +484,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车批售-批售主数据-整车批售订单管理',
+      pageTitle: '整车批售订单管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-vehicleWholesaleOrder',
@@ -1173,7 +1173,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '整车批售-批售主数据-整车批售订单管理',
+        businessType: '整车批售订单管理',
         dataFetchPath: 'vw/web/wholesale/vehicleWholesaleOrder/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -1181,7 +1181,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车批售-批售主数据-整车批售订单管理.xlsx');
+            await downloadExcel(res.excelUrl, '整车批售订单管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -1368,5 +1368,8 @@ export default {
 
 <style lang="scss" scoped>
 .m-order-list {
+  ::v-deep .m-vxe-table-options{
+    top: -50px;
+  }
 }
 </style>

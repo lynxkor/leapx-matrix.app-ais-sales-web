@@ -161,7 +161,7 @@
       class="ais-table-c"
     >
       <div>
-        <el-tabs v-model="tabName" type="card" @tab-click="handleClickTab">
+        <el-tabs v-model="tabName" @tab-click="handleClickTab">
           <el-tab-pane label="全部" name="1"></el-tab-pane>
           <el-tab-pane label="待门店审核" name="2"></el-tab-pane>
           <el-tab-pane label="待审现车批售" name="3"></el-tab-pane>
@@ -252,7 +252,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车批售-批售主数据-整车门店补货申请管理',
+      pageTitle: '整车门店补货申请管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-dealerVehicleReplenishApply',
@@ -423,7 +423,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '整车批售-批售主数据-整车门店补货申请管理',
+        businessType: '整车门店补货申请管理',
         dataFetchPath: 'vw/web/replenish/dealerVehicleReplenishApply/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -431,7 +431,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车批售-批售主数据-整车门店补货申请管理.xlsx');
+            await downloadExcel(res.excelUrl, '整车门店补货申请管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -627,5 +627,8 @@ export default {
 
 <style lang="scss" scoped>
 .m-vehicle-materials-list {
+  ::v-deep .m-vxe-table-options{
+    top: -50px;
+  }
 }
 </style>

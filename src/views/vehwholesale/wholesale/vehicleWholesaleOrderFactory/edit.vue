@@ -1044,7 +1044,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '整车批售-批售主数据-整车批售订单管理',
+      pageTitle: '整车批售订单管理',
       pageType: 'edit',
       title: '批售订单号：' + form.wholesaleOrderCode,
       // TIPS: 权限前缀 AISMC，根据实际情况修改

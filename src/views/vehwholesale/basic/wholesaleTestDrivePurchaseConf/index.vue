@@ -162,7 +162,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车批售-批售主数据-试驾车采购配置管理',
+      pageTitle: '试驾车采购配置管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleTestDrivePurchaseConf',
@@ -265,7 +265,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '整车批售-批售主数据-试驾车采购配置管理',
+        businessType: '试驾车采购配置管理',
         dataFetchPath: '/vw/web/basic/wholesaleTestDrivePurchaseConf/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -273,7 +273,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车批售-批售主数据-试驾车采购配置管理.xlsx');
+            await downloadExcel(res.excelUrl, '试驾车采购配置管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -366,7 +366,7 @@ export default {
     // 批量删除
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
-            const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
       this.$confirm(message, '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
