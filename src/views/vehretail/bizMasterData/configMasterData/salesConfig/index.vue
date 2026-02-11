@@ -120,7 +120,7 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehretail/bizMasterData/configMasterData/salesConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import EditTable from '@/libs/components/EditTable';
+// import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
@@ -128,7 +128,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-import { Divider } from '@leapmotor/element-ui';
+// import { Divider } from '@leapmotor/element-ui';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
