@@ -15,10 +15,10 @@
         <template #status>
           {{ form.replenishApplyDetailCode }}
         </template>
-        <template #extraButtons>
+        <!-- <template #extraButtons>
           <el-button size="small">按钮1</el-button>
           <el-button size="small">按钮2</el-button>
-        </template>
+        </template> -->
         <el-main>
           <section class="common-section">
             <div class="common-section-header">

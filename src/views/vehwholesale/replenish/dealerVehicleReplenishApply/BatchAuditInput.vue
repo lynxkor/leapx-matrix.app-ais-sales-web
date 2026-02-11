@@ -10,8 +10,8 @@
         show-word-limit
       />
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancelAudit">取消</el-button>
-        <el-button type="primary"  @click="factoryApproval">确认</el-button>
+        <el-button @click="cancelAudit" size="small">取消</el-button>
+        <el-button type="primary"  @click="factoryApproval" size="small">确认</el-button>
       </div>
     </el-dialog>
   </div>

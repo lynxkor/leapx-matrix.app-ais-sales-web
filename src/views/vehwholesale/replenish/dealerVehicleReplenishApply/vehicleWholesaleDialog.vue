@@ -55,11 +55,10 @@
           @reset="onReset"
         />
       </el-form>
-      <div class="ais-actions">
-        <!--  TIPS:根据产品增删功能按钮  -->
+      <!-- <div class="ais-actions">
           <span>
           </span>
-      </div>
+      </div> -->
       <section class="common-section">
         <div class="common-section-body">
           <div class="common-section-table">
@@ -272,10 +271,10 @@ export default {
       ];
     },
     visibleFilterFields () {
-      return this.filterFields.slice(0, 3);
+      return this.filterFields.slice(0, 2);
     },
     hiddenFilterFields () {
-      return this.filterFields.slice(3);
+      return this.filterFields.slice(2);
     },
     // 计算当前页数据
     currentTableData () {
