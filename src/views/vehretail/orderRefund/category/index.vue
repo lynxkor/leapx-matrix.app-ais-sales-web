@@ -179,7 +179,7 @@ export default {
       pageTitle: '整车零售订单退订原因分类管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISVR-orderRefundCategory',
+      moduleKey: 'AISVRROCA-retailOrderChangeReason',
       form: {
         ...defaultForm
       },

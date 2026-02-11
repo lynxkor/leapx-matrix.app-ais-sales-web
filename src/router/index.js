@@ -1618,7 +1618,7 @@ const routes = [
       }
     }, {
       path: '/vehretail/orderRefund/category',
-      name: 'orderRefund',
+      name: 'category',
       component: () => import('@/views/vehretail/orderRefund/category/index.vue'),
 
       meta: {
@@ -1627,7 +1627,7 @@ const routes = [
       }
     }, {
       path: '/vehretail/orderRefund/category/edit',
-      name: 'orderRefundEdit',
+      name: 'categoryEdit',
       component: () => import('@/views/vehretail/orderRefund/category/edit.vue'),
 
       meta: {
@@ -2138,6 +2138,24 @@ const routes = [
 
       meta: {
         name: '锁车资源共享配置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/orderRefund/changeReason',
+      name: 'changeReason',
+      component: () => import('@/views/vehretail/orderRefund/changeReason'),
+
+      meta: {
+        name: '变更原因',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/orderRefund/changeReason/edit',
+      name: 'changeReasonEdit',
+      component: () => import('@/views/vehretail/orderRefund/changeReason/edit.vue'),
+
+      meta: {
+        name: '变更原因详情',
         noResourceUrl: 'true'
       }
     }, {
