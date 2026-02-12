@@ -7,7 +7,7 @@ const prefix = 'vr/web/refund/orderRefundCategory/';
  * @param {Object} data
  */
 export function fetchCategoryList (data) {
-  return api.jsonPost(prefix + 'list', data);
+  return api.jsonPost(prefix + 'page', data);
 };
 
 /**

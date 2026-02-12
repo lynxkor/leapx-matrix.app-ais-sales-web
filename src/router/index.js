@@ -2034,6 +2034,60 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
+      path: '/vehretail/orderRefund/refundApply',
+      name: 'orderRefundApply',
+      component: () => import('@/views/vehretail/orderRefund/refundApply/index.vue'),
+
+      meta: {
+        name: '整车零售退订申请单管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/orderRefund/refundApply/edit',
+      name: 'orderRefundApplyEdit',
+      component: () => import('@/views/vehretail/orderRefund/refundApply/edit.vue'),
+
+      meta: {
+        name: '整车零售退订申请单管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/orderRefund/refundApprovalLog',
+      name: 'orderRefundApprovalLog',
+      component: () => import('@/views/vehretail/orderRefund/refundApprovalLog/index.vue'),
+
+      meta: {
+        name: '订单退订审批明细管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/orderRefund/refundapprovallog/edit',
+      name: 'orderRefundApprovalLogEdit',
+      component: () => import('@/views/vehretail/orderRefund/refundApprovalLog/edit.vue'),
+
+      meta: {
+        name: '订单退订审批明细管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/orderRefund/payRefundRecord',
+      name: 'orderPayRefundRecord',
+      component: () => import('@/views/vehretail/orderRefund/payRefundRecord/index.vue'),
+
+      meta: {
+        name: '订单退订退款记录管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/orderRefund/payRefundRecord/edit',
+      name: 'orderPayRefundRecordEdit',
+      component: () => import('@/views/vehretail/orderRefund/payRefundRecord/edit.vue'),
+
+      meta: {
+        name: '订单退订退款记录管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
       path: '/vehretail/basicConfig/storeBuildCapacityConfig',
       name: 'storeBuildCapacityConfig',
       component: () => import('@/views/vehretail/basicConfig/storeBuildCapacityConfig/index.vue'),
