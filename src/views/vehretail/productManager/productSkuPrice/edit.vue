@@ -306,7 +306,7 @@ export default {
         remote: true,
         reserveKeyword: true
       },
-      pageTitle: '销售管理-商品管理-商品SKU价格维护',
+      pageTitle: '商品SKU价格维护',
       pageType: 'edit',
       moduleKey: 'AISVR-productSkuPrice',
       isEditing: false,
@@ -358,7 +358,7 @@ export default {
     detailRequest () {
       const id = this._id;
       if (!this.id) {
-        this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销售管理-商品管理-商品SKU价格维护管理', `${id ? '详情' : '新建'}`]);
+        this.$store.commit('SET_ACTIVE_BREADCRUMB', ['商品SKU价格维护管理', `${id ? '详情' : '新建'}`]);
       }
       if (id) {
         return getDetail(id);

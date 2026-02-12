@@ -118,7 +118,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-基础配置-销售公司管理',
+      pageTitle: '销售公司管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundSaleCompany',
@@ -219,7 +219,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '账户管理-基础配置-销售公司管理',
+        businessType: '销售公司管理',
         dataFetchPath: '/vw/web/fund/fundSaleCompany/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -227,7 +227,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '账户管理-基础配置-销售公司管理.xlsx');
+            await downloadExcel(res.excelUrl, '销售公司管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

@@ -292,7 +292,7 @@ export default {
     };
 
     return {
-      pageTitle: '账户管理-赊销管理-赊销资费设置管理',
+      pageTitle: '赊销资费设置管理',
       pageType: 'edit',
       moduleKey: 'AISVW-fundCreditSalesFeeConfig',
       loading: false,

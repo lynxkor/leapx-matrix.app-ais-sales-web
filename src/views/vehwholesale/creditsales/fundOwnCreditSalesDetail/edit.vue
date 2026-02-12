@@ -359,7 +359,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '账户管理-赊销管理-自有资金赊销明细管理',
+      pageTitle: '自有资金赊销明细管理',
       pageType: 'edit',
       moduleKey: 'AISVW-fundOwnCreditSalesDetail',
       loading: false,

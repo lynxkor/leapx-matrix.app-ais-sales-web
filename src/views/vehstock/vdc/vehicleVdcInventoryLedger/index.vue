@@ -179,7 +179,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehstock/vdc/vehicleVdcInventoryLedger/detail',
+                  path: '/vehstock/vdc/vehicleVdcInventoryLedger/edit',
                   query: {
                     id: row.id
                   }
@@ -250,7 +250,8 @@ export default {
                 this.$router.push({
                   path: '/vehstock/vdc/vehicleVdcInventoryLedger/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },

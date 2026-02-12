@@ -295,7 +295,7 @@ export default {
     };
 
     return {
-      pageTitle: '账户管理-赊销管理-自有资金赊销配置管理',
+      pageTitle: '自有资金赊销配置管理',
       pageType: 'edit',
       moduleKey: 'AISVW-fundOwnCreditSalesConfig',
       auditSub: false,

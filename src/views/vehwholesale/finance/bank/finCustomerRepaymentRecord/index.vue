@@ -202,7 +202,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-银行融资信息-客户还款记录管理',
+      pageTitle: '客户还款记录管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-finCustomerRepaymentRecord',
@@ -313,7 +313,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '账户管理-银行融资信息-客户还款记录管理',
+        businessType: '客户还款记录管理',
         dataFetchPath: 'vehwholesale/web/finance/bank/finCustomerRepaymentRecord/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -321,7 +321,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '账户管理-银行融资信息-客户还款记录管理.xlsx');
+            await downloadExcel(res.excelUrl, '客户还款记录管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
