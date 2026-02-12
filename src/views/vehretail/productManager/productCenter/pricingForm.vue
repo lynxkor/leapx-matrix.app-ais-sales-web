@@ -1,5 +1,5 @@
 <template>
-  <el-form :model="form" ref="formRef" :rules="rules" label-position="right" >
+  <el-form :model="form" ref="formRef" :rules="rules" label-position="right" label-width="120px" :inline="true">
     <el-form-item label="SKU编码">
       <el-input v-model="form.productCode" placeholder="请输入SKU编码" disabled />
     </el-form-item>
@@ -34,8 +34,8 @@
       <el-input v-model="form.materialsCode" placeholder="请输入物料编码" />
     </el-form-item>
     <el-form-item>
-      <el-button @click="handleCancel">取消</el-button>
-      <el-button type="primary" @click="handleSubmit">提交</el-button>
+      <el-button size="small" @click="handleCancel">取消</el-button>
+      <el-button size="small" type="primary" @click="handleSubmit">提交</el-button>
     </el-form-item>
   </el-form>
 </template>

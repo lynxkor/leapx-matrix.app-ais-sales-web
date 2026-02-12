@@ -235,7 +235,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-整车返利-整车返利核算单明细管理',
+      pageTitle: '整车返利核算单明细管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-fundVehicleRebateBillDetail',
@@ -278,34 +278,34 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
-          { props: 'dealerName', label: '门店名称', visible: true, width: 200 },
-          { props: 'periodLabel', label: '周期', visible: true, width: 200 },
-          { props: 'year', label: '年度', visible: true, width: 200 },
-          { props: 'quarterLabel', label: '季度', visible: true, width: 200 },
-          { props: 'monthLabel', label: '月度', visible: true, width: 200 },
-          { props: 'rebateTypeLabel', label: '返利类型', visible: true, width: 200 },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260 },
+          { props: 'dealerName', label: '门店名称', visible: true, width: 240 },
+          { props: 'periodLabel', label: '周期', visible: true, width: 100 },
+          { props: 'year', label: '年度', visible: true, width: 100 },
+          { props: 'quarterLabel', label: '季度', visible: true, width: 100 },
+          { props: 'monthLabel', label: '月度', visible: true, width: 100 },
+          { props: 'rebateTypeLabel', label: '返利类型', visible: true, width: 120 },
           { props: 'vin', label: 'VIN号', visible: true, width: 200 },
           { props: 'bizOrderNo', label: '业务单据号', visible: true, width: 200 },
-          { props: 'rebateAmount', label: '核销金额', visible: true, width: 200 },
-          { props: 'accruedAmount', label: '预提金额', visible: true, width: 200 },
-          { props: 'modelName', label: '基本车型', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系', visible: true, width: 200 },
+          { props: 'rebateAmount', label: '核销金额', visible: true, width: 100 },
+          { props: 'accruedAmount', label: '预提金额', visible: true, width: 100 },
+          { props: 'modelName', label: '基本车型', visible: true, width: 120 },
+          { props: 'seriesName', label: '车系', visible: true, width: 100 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'billStatusLabel', label: '单据状态', visible: true, width: 200 },
-          { props: 'budgetItemName', label: '预算科目', visible: true, width: 200 },
-          { props: 'feeSupportTypeName', label: '费用支持类型', visible: true, width: 200 },
-          { props: 'auditorName', label: '初审人', visible: true, width: 200 },
+          { props: 'billStatusLabel', label: '单据状态', visible: true, width: 100 },
+          { props: 'budgetItemName', label: '预算科目', visible: true, width: 100 },
+          { props: 'feeSupportTypeName', label: '费用支持类型', visible: true, width: 150 },
+          { props: 'auditorName', label: '初审人', visible: true, width: 100 },
           { props: 'auditTime', label: '初审时间', visible: true, width: 200 },
           { props: 'auditOpinion', label: '初审意见', visible: true, width: 200 },
-          { props: 'reviewName', label: '复审人', visible: true, width: 200 },
+          { props: 'reviewName', label: '复审人', visible: true, width: 100 },
           { props: 'reviewTime', label: '复审时间', visible: true, width: 200 },
-          { props: 'reviewOpinion', label: '复审意见', visible: true, width: 200 },
-          { props: 'postedLabel', label: '是否入账', visible: true, width: 200 },
-          { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 200 },
+          { props: 'reviewOpinion', label: '复审意见', visible: true, width: 120 },
+          { props: 'postedLabel', label: '是否入账', visible: true, width: 100 },
+          { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 100 },
           { props: 'deliveryOrderCode', label: '交车单号', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 100 },
           // { props: 'modifierName', label: '更新人', visible: true, width: 200 },
           // { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
           // // { props: 'rebateBillDetailCode', label: '返利核算单明细编号', visible: true, width: 200 },
@@ -430,7 +430,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '账户管理-整车返利-整车返利核算单明细管理',
+        businessType: '整车返利核算单明细管理',
         dataFetchPath: '/vw/web/rebate/fundVehicleRebateBillDetail/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -438,7 +438,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '账户管理-整车返利-整车返利核算单明细管理.xlsx');
+            await downloadExcel(res.excelUrl, '整车返利核算单明细管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

@@ -1,6 +1,5 @@
 <template>
   <el-dialog :title="title" width="1000px" :visible.sync="dialogVisible">
-    <div class="page-common m-account-list">
       <h3 class="header-title">母公司名称:{{ dealerCompanyName }}</h3>
       <section class="common-section">
         <div class="common-section-body">
@@ -25,7 +24,6 @@
         <el-button size="small" @click="dialogVisible = false">取 消</el-button>
         <el-button size="small" type="primary" @click="confirm" :loading="submitLoading">确 定</el-button>
       </div>
-    </div>
   </el-dialog>
 </template>
 
@@ -76,7 +74,7 @@ export default {
   },
   data () {
     return {
-      title: '设置结算顺序',
+      title: '设置结算资金顺序',
       entOrderQuota: null,
       moduleKey: 'AISVW-dealerFundAccount',
       total: 0,
@@ -276,6 +274,9 @@ export default {
   }
 }
 .header-title {
+  font-size: 14px;
+  font-weight: normal;
   padding-bottom: 20px;
+  color: var(--leap-color-default-light-1);
 }
 </style>

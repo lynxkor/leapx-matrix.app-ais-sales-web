@@ -10,56 +10,152 @@
         label-position="right"
         class="ais-search-form"
       >
-        <el-form-item v-for="field in visibleFilterFields" :key="field.key" :label="field.label">
+        <el-form-item label="整车仓库：">
           <el-select
-            v-model="form[field.key]"
+            v-model="form.warehouseId"
             clearable
             filterable
-            :placeholder="`请选择${field.label.slice(0, -1)}`"
+            placeholder="请选择整车仓库"
             @change="filterTableData"
           >
             <el-option
-              v-for="item in dropdownOptions[field.optionsKey]"
+              v-for="item in dropdownOptions.warehouseList"
               :key="item.id"
               :label="item.name"
               :value="item.id"
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="物料描述：">
+          <el-input v-model="form.materialsDesc" clearable placeholder="请输入" @blur="filterTableData"/>
+        </el-form-item>
         <template v-if="show">
-          <el-form-item v-for="field in hiddenFilterFields" :key="field.key" :label="field.label">
+        <el-form-item label="车系：">
+          <el-select
+            v-model="form.seriesId"
+            clearable
+            filterable
+            placeholder="请选择车系"
+            @change="filterTableData"
+          >
+            <el-option
+              v-for="item in dropdownOptions.seriesList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="车型：">
+          <el-select
+            v-model="form.modelId"
+            clearable
+            filterable
+            placeholder="请选择车型"
+            @change="filterTableData"
+          >
+            <el-option
+              v-for="item in dropdownOptions.modelList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+          <el-form-item label="年款：">
             <el-select
-              v-model="form[field.key]"
+              v-model="form.yearTypeId"
               clearable
               filterable
-              :placeholder="`请选择${field.label.slice(0, -1)}`"
+              placeholder="请选择年款"
               @change="filterTableData"
             >
               <el-option
-                v-for="item in dropdownOptions[field.optionsKey]"
+                v-for="item in dropdownOptions.yearTypeList"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id"
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="物料描述：">
-            <el-input v-model="form.materialsDesc" clearable placeholder="请输入" @blur="filterTableData"/>
+          <el-form-item label="外观：">
+            <el-select
+              v-model="form.exteriorId"
+              clearable
+              filterable
+              placeholder="请选择外观"
+              @change="filterTableData"
+            >
+              <el-option
+                v-for="item in dropdownOptions.exteriorList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="内饰：">
+            <el-select
+              v-model="form.interiorId"
+              clearable
+              filterable
+              placeholder="请选择内饰"
+              @change="filterTableData"
+            >
+              <el-option
+                v-for="item in dropdownOptions.interiorList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="轮毂：">
+            <el-select
+              v-model="form.wheelHubId"
+              clearable
+              filterable
+              placeholder="请选择轮毂"
+              @change="filterTableData"
+            >
+              <el-option
+                v-for="item in dropdownOptions.wheelHubList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="选装包：">
+            <el-select
+              v-model="form.optionPackageId"
+              clearable
+              filterable
+              placeholder="请选择选装包"
+              @change="filterTableData"
+            >
+              <el-option
+                v-for="item in dropdownOptions.optionPackageList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
           </el-form-item>
         </template>
-        <page-search-action
-          v-model="show"
-          is-expandable
-          :loading="loading"
-          @submit="onSubmit"
-          @reset="onReset"
-        />
+        <el-form-item label="">
+          <el-button :loading="loading" size="medium" type="primary" plain class="btn-search" @click="onSubmit">查询</el-button>
+          <el-button size="medium" class="btn-reset" @click="onReset">重置</el-button>
+          <span style="padding-left: 10px;" class="icon-expand curPoint" @click="toggleShow">
+            {{ show ? "收起" : "展开"}}
+            <i :class="show ? 'iconfont icon-lxppc-up' : 'iconfont icon-lxppc-down'"></i>
+          </span>
+        </el-form-item>
       </el-form>
-      <div class="ais-actions">
-        <!--  TIPS:根据产品增删功能按钮  -->
+      <!-- <div class="ais-actions">
           <span>
           </span>
-      </div>
+      </div> -->
       <section class="common-section">
         <div class="common-section-body">
           <div class="common-section-table">
@@ -73,9 +169,9 @@
             height="auto"
             width="1000px"
             min-height="300px"
-            max-height="500px"
+            max-height="400px"
           >
-            <vxe-column field="checkbox" title="补货数量" align="center" width="15%">
+            <vxe-column field="checkbox" title="补货数量" align="center" width="150">
               <template v-slot="{ row }">
                 <el-input-number
                   :min="0"
@@ -87,9 +183,9 @@
                 />
               </template>
             </vxe-column>
-            <vxe-column field="modelName" title="车型" align="center" width="200" />
-            <vxe-column field="warehouseName" title="整车仓库" align="center" width="240" />
-            <vxe-column field="inventoryStatusLabel" title="库存状态" align="center" width="140">
+            <vxe-column field="modelName" title="车型" align="center" width="150" />
+            <vxe-column field="warehouseName" title="整车仓库" align="center" width="120" />
+            <vxe-column field="inventoryStatusLabel" title="库存状态" align="center" width="160">
               <template v-slot="{ row }">
                 <span
                   :class="getInventoryStatusClass(row.inventoryStatus)"
@@ -102,7 +198,7 @@
                 </span>
               </template>
             </vxe-column>
-            <vxe-column field="materialsDesc" title="物料描述" align="center" width="340" />
+            <vxe-column field="materialsDesc" title="物料描述" align="center" />
             <vxe-column field="optionPackageName" title="选装包" align="center" width="140" />
           </vxe-table>
           <el-pagination
@@ -126,21 +222,20 @@
         size="small"
         class="fund-form"
       >
-        <el-form-item label="结算资金类型：" prop="fundType">
-          <el-select
-            v-model="fundForm.fundType"
-            clearable
-            filterable
-            placeholder="请选择结算资金类型"
-          >
-            <el-option
+        <el-form-item label="结算资金类型：" prop="fundType" v-if="settleAccountList && settleAccountList.length > 0">
+          <el-radio-group v-model="fundForm.fundType" class="fund-type-radios" :rules="fundFormRules.fundType">
+            <el-radio
               v-for="item in settleAccountList"
               :key="item.id"
-              :label="getFundTypeLabel(item)"
-              :value="item.id"
-            />
-          </el-select>
+              :label="item.id"
+            >
+              {{ getFundTypeLabel(item) }}
+            </el-radio>
+          </el-radio-group>
         </el-form-item>
+        <div class="no-fund-type-section" v-else>
+          <p>暂无可用的结算资金类型</p>
+        </div>
       </el-form>
     </div>
     <div slot="footer" class="dialog-footer">
@@ -152,7 +247,7 @@
 
 <script>
 
-import PageSearchAction from '@/libs/components/AisPageSearchAction';
+// import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { listCanSettleAccount } from '@/api/vehwholesale/fund/account/index';
 import { getEnum } from '@/api/common';
 import { queryPlantWholesaleInStockInventory, plantWholesaleInStockCreateApply } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
@@ -217,7 +312,7 @@ export default {
   components: {
     // TagInput,
     // FetchSelect,
-    PageSearchAction
+    // PageSearchAction
   },
   data () {
     return {
@@ -261,6 +356,7 @@ export default {
   computed: {
     filterFields () {
       return [
+        { key: 'warehouseId', label: '整车仓库：', optionsKey: 'warehouseList' },
         { key: 'seriesId', label: '车系：', optionsKey: 'seriesList' },
         { key: 'modelId', label: '车型：', optionsKey: 'modelList' },
         { key: 'yearTypeId', label: '年款：', optionsKey: 'yearTypeList' },
@@ -268,16 +364,15 @@ export default {
         { key: 'interiorId', label: '内饰：', optionsKey: 'interiorList' },
         { key: 'wheelHubId', label: '轮毂：', optionsKey: 'wheelHubList' },
         { key: 'optionPackageId', label: '选装包：', optionsKey: 'optionPackageList' },
-        { key: 'warehouseId', label: '整车仓库：', optionsKey: 'warehouseList' }
       ];
     },
-    visibleFilterFields () {
-      return this.filterFields.slice(0, 3);
-    },
-    hiddenFilterFields () {
-      return this.filterFields.slice(3);
-    },
-    // 计算当前页数据
+    // visibleFilterFields () {
+    //   return this.filterFields.slice(0, 2);
+    // },
+    // hiddenFilterFields () {
+    //   return this.filterFields.slice(2);
+    // },
+    // // 计算当前页数据
     currentTableData () {
       const start = (this.pagination.currentPage - 1) * this.pagination.pageSize;
       const end = start + this.pagination.pageSize;
@@ -291,6 +386,9 @@ export default {
     },
     handleCurrentChange (val) {
       this.pagination.currentPage = val;
+    },
+    toggleShow () {
+      this.show = !this.show;
     },
     getFundTypeLabel (item) {
       return item.fundType === 2010 ? item.fundTypeLabel + '-' + item.financialOrganizationName : item.fundTypeLabel;
@@ -516,5 +614,19 @@ export default {
 .inventory-status-green {
   color: var(--leap-color-primary)!important;
   font-weight: bold;
+}
+.inventory-status-green {
+  color: var(--leap-color-primary)!important;
+  font-weight: bold;
+}
+.search-buttons {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.search-buttons .el-form-item {
+  margin-bottom: 0;
+  margin-left: 10px;
 }
 </style>

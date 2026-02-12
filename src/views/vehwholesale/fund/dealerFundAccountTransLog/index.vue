@@ -204,7 +204,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-整车资金-整车资金账户交易流水管理',
+      pageTitle: '整车资金账户交易流水管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-dealerFundAccountTransLog',
@@ -233,7 +233,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/fund/dealerFundAccountTransLog/detail',
+                  path: '/vehwholesale/fund/dealerFundAccountTransLog/edit',
                   query: {
                     id: row.id
                   }
@@ -242,10 +242,10 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 200 },
-          { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 200 },
-          { props: 'transactionTypeLabel', label: '交易类型', visible: true, width: 200 },
-          { props: 'transactionAmount', label: '交易金额', visible: true, width: 200 },
+          { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 100 },
+          { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 100 },
+          { props: 'transactionTypeLabel', label: '交易类型', visible: true, width: 100 },
+          { props: 'transactionAmount', label: '交易金额', visible: true, width: 100 },
           { props: 'transactionTime', label: '过账时间', visible: true, width: 200 },
           { props: 'transactionReceiptCode', label: '交易凭证号', visible: true, width: 200 },
           { props: 'lineNo', label: '行项目号', visible: true, width: 200 },
@@ -254,9 +254,9 @@ export default {
           { props: 'wholesaleOrderCode', label: '整车批售订单', visible: true, width: 200 },
           { props: 'entVehorderCode', label: '企业客户整车订单', visible: true, width: 200 },
           { props: 'deliveryOrderCode', label: '交车单', visible: true, width: 200 },
-          { props: 'dealerName', label: '门店名称', visible: true, width: 200 },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
-          { props: 'dealerComapnyCode', label: '母公司编码', visible: true, width: 200 },
+          { props: 'dealerName', label: '门店名称', visible: true, width: 240 },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260 },
+          { props: 'dealerComapnyCode', label: '母公司编码', visible: true, width: 150 },
           { props: 'fundAccountCode', label: '账户编号', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 }
         ],
@@ -301,7 +301,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '账户管理-整车资金-整车资金账户交易流水管理',
+        businessType: '整车资金账户交易流水管理',
         dataFetchPath: '/vw/web/fund/dealerFundAccountTransLog/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -309,7 +309,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '账户管理-整车资金-整车资金账户交易流水管理.xlsx');
+            await downloadExcel(res.excelUrl, '整车资金账户交易流水管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -399,10 +399,13 @@ export default {
     // 批量删除
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
+      this.$confirm(message, '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        dangerouslyUseHTMLString: true,
+        customClass: 'ais-leave-tips',
+        showClose: false
       }).then(() => {
         deleteItem(ids).then(() => {
           this.$message({

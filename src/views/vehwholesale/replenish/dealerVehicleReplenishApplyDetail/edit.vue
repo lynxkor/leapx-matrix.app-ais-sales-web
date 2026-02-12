@@ -15,10 +15,10 @@
         <template #status>
           {{ form.replenishApplyDetailCode }}
         </template>
-        <template #extraButtons>
+        <!-- <template #extraButtons>
           <el-button size="small">按钮1</el-button>
           <el-button size="small">按钮2</el-button>
-        </template>
+        </template> -->
         <el-main>
           <section class="common-section">
             <div class="common-section-header">
@@ -479,7 +479,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '整车批售-批售主数据-整车门店补货申请明细管理',
+      pageTitle: '整车门店补货申请明细管理',
       pageType: 'edit',
       title: '整车补货单号：' + form.replenishApplyCode,
       // TIPS: 权限前缀 AISMC，根据实际情况修改

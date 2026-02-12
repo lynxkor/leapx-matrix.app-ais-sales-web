@@ -3,7 +3,7 @@
     <el-dialog title="手动指定VIN配车" :visible.sync="dialogVisible" width="400px" :close-on-click-modal="false">
       <el-input
         v-model="vin"
-        placeholder="输入VIN码"
+        placeholder="输入17位长度的VIN码"
       />
       <div slot="footer" class="dialog-footer">
         <el-button  @click="cancel()">取消</el-button>
@@ -51,6 +51,9 @@ export default {
         this.$message.error('VIN码不能为空');
         return;
       }
+      this.$emit('confirmVin', {
+        vin: this.vin
+      });
       this.dialogVisible = false;
     },
     cancel () {

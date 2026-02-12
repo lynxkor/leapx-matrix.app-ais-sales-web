@@ -202,7 +202,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-银行融资信息-客户还款记录管理',
+      pageTitle: '客户还款记录管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-finCustomerRepaymentRecord',
@@ -313,7 +313,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '账户管理-银行融资信息-客户还款记录管理',
+        businessType: '客户还款记录管理',
         dataFetchPath: 'vehwholesale/web/finance/bank/finCustomerRepaymentRecord/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -321,7 +321,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '账户管理-银行融资信息-客户还款记录管理.xlsx');
+            await downloadExcel(res.excelUrl, '客户还款记录管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -421,10 +421,13 @@ export default {
     // 批量删除
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
+      this.$confirm(message, '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        dangerouslyUseHTMLString: true,
+        customClass: 'ais-leave-tips',
+        showClose: false
       }).then(() => {
         deleteItem(ids).then(() => {
           this.$message({

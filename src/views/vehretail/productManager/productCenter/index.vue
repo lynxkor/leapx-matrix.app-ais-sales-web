@@ -157,20 +157,20 @@ export default {
     return {
       exportExcelData: {
         productInfoImport: {
-          businessType: '销售管理-商品管理-商品中心管理',
-          title: '销售管理-商品管理-商品中心管理',
+          businessType: '商品中心管理',
+          title: '商品中心管理',
           dataFetchPath: '/vr/web/product/productInfo/page',
           loading: 'infoLoading'
         },
         productSkuPriceImport: {
-          businessType: '销售管理-商品管理-商品SKU价格维护管理',
-          title: '销售管理-商品管理-商品SKU价格维护管理',
+          businessType: '商品SKU价格维护管理',
+          title: '商品SKU价格维护管理',
           dataFetchPath: '/vr/web/product/productSku/page',
           loading: 'skuPriceLoading'
         },
       },
       currentImportType: '',
-      pageTitle: '销售管理-商品管理-商品中心',
+      pageTitle: '商品中心',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-productInfo',
@@ -199,12 +199,12 @@ export default {
             props: 'productCode',
             label: '商品编码',
             visible: true,
-            width: 200,
+            width: 150,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehretail/productManager/productCenter/detail',
+                  path: '/vehretail/productManager/productCenter/edit',
                   query: {
                     id: row.id
                   }
@@ -213,11 +213,11 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'productName', label: '商品名称', visible: true, width: 200 },
-          { props: 'productTypeLabel', label: '商品类型', visible: true, width: 200 },
-          { props: 'purchaseTypeLabel', label: '购车类型', visible: true, width: 200 },
-          { props: 'productStatusLabel', label: '商品状态', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者', visible: true, width: 200 },
+          { props: 'productName', label: '商品名称', visible: true, width: 180 },
+          { props: 'productTypeLabel', label: '商品类型', visible: true, width: 150 },
+          { props: 'purchaseTypeLabel', label: '购车类型', visible: true, width: 150 },
+          { props: 'productStatusLabel', label: '商品状态', visible: true, width: 120 },
+          { props: 'creatorName', label: '创建者', visible: true, width: 140 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
@@ -232,7 +232,8 @@ export default {
                 this.$router.push({
                   path: '/vehretail/productManager/productCenter/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },
@@ -430,10 +431,13 @@ export default {
     // 批量删除
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
+      this.$confirm(message, '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        dangerouslyUseHTMLString: true,
+        customClass: 'ais-leave-tips',
+        showClose: false
       }).then(() => {
         deleteItem(ids).then(() => {
           this.$message({

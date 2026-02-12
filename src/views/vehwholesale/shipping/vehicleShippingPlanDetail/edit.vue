@@ -9,6 +9,7 @@
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
+        :showEditBtn="false"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
       >
@@ -675,7 +676,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehwholesale/shipping/vehicleShippingPlanDetail/index';
+import { getDetail, addOrUpdateItem } from '@/api/vehwholesale/shipping/vehicleShippingPlanDetail/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 // import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
@@ -780,7 +781,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '新页面',
+      pageTitle: '发运计划明细',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-vehicleShippingPlanDetail',
@@ -973,7 +974,7 @@ export default {
       }
     },
     submitRequest () {
-      return addOrUpdate({ ...this.form });
+      return addOrUpdateItem({ ...this.form });
     },
     // 打开侧边栏
     openPane () {

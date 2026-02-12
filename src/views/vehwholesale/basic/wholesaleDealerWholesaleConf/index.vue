@@ -181,7 +181,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车批售-批售主数据-门店批售设置管理',
+      pageTitle: '门店批售设置管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleDealerWholesaleConf',
@@ -223,10 +223,10 @@ export default {
           { props: 'dealerCode', label: '门店编码', visible: true, width: 200 },
           { props: 'dealerName', label: '门店名称', visible: true, width: 200 },
           { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 200 },
-          { props: 'autoAllocationEnabledLabel', label: '开启自动配车', visible: true, width: 200 },
-          { props: 'autoSettlementEnabledLabel', label: '开启自动结算', visible: true, width: 200 },
-          { props: 'productionRequestEnabledLabel', label: '允许排产申请', visible: true, width: 200 },
-          { props: 'spotWholesaleEnabledLabel', label: '允许现车批售', visible: true, width: 200 },
+          { props: 'autoAllocationEnabledLabel', label: '开启自动配车', visible: true, width: 120 },
+          { props: 'autoSettlementEnabledLabel', label: '开启自动结算', visible: true, width: 120 },
+          { props: 'productionRequestEnabledLabel', label: '允许排产申请', visible: true, width: 120 },
+          { props: 'spotWholesaleEnabledLabel', label: '允许现车批售', visible: true, width: 120 },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
@@ -289,7 +289,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '整车批售-批售主数据-门店批售设置管理',
+        businessType: '门店批售设置管理',
         dataFetchPath: '/vw/web/basic/wholesaleDealerWholesaleConf/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -297,7 +297,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车批售-批售主数据-门店批售设置管理.xlsx');
+            await downloadExcel(res.excelUrl, '门店批售设置管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -397,10 +397,13 @@ export default {
     // 批量删除
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
+      this.$confirm(message, '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        dangerouslyUseHTMLString: true,
+        customClass: 'ais-leave-tips',
+        showClose: false
       }).then(() => {
         deleteItem(ids).then(() => {
           this.$message({

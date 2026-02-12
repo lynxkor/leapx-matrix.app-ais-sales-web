@@ -227,16 +227,16 @@
           <section class="common-section" v-if="!!_id">
             <div class="common-section-header">
               <h2>排产活动明细</h2>
-              <el-button size="medium" v-show="isEditing" type="primary" @click="handleAddRow">活动明细导入</el-button>
             </div>
             <div>
               <el-form :inline="true" :model="detailForm" label-width="150px" class="form-edit">
                 <el-form-item label="门店编码：">
-                  <tag-input v-model="detailForm.dealerCodes" placeholder="请输入" />
+                  <tag-input v-model="detailForm.dealerCodes" placeholder="请输入" style="margin-top:4px"/>
                 </el-form-item>
                 <el-form-item label="门店名称：">
-                  <tag-input v-model="detailForm.dealerNames" placeholder="请输入" />
+                  <tag-input v-model="detailForm.dealerNames" placeholder="请输入" style="margin-top:4px"/>
                 </el-form-item>
+                <el-button size="medium" @click="handleAddRow" style="margin-left: 5px;">活动明细导入</el-button>
                 <el-form-item label=" ">
                   <el-button size="medium" type="primary" @click="handleQuery">查询</el-button>
                   <el-button size="medium" @click="handleClear">清空</el-button>
@@ -404,7 +404,7 @@ export default {
       callback();
     };
     return {
-      pageTitle: '整车批售-批售主数据-排产专项活动管理',
+      pageTitle: '排产专项活动管理',
       pageType: 'edit',
       title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
@@ -433,43 +433,53 @@ export default {
       columns: [
         {
           field: 'dealerCode',
-          title: '门店编码'
+          title: '门店编码',
+          width: '120'
         },
         {
           field: 'dealerName',
           title: '门店名称',
+          width: '200'
         },
         {
           field: 'provinceName',
-          title: '省份'
+          title: '省份',
+          width: '100'
         },
         {
           field: 'cityName',
-          title: '城市'
+          title: '城市',
+          width: '100'
         },
         {
           field: 'applyOrderCategoryLabel',
-          title: '适用订单分类'
+          title: '适用订单分类',
+          width: '120'
         },
         {
           field: 'seriesName',
-          title: '车系'
+          title: '车系',
+          width: '100'
         },
         {
           field: 'yearTypeName',
-          title: '年款'
+          title: '年款',
+          width: '100'
         },
         {
           field: 'materialsCode',
-          title: '物料编码'
+          title: '物料编码',
+          width: '150'
         },
         {
           field: 'materialsDesc',
-          title: '物料描述'
+          title: '物料描述',
+          width: '300'
         },
         {
           field: 'totalQuotaQty',
           title: '额度',
+          width: '120',
           editable: true,
           editRender: {
             name: 'ElInput',
@@ -483,15 +493,18 @@ export default {
         },
         {
           field: 'usedQuotaQty',
-          title: '已提报数量'
+          title: '已提报数量',
+          width: '120'
         },
         {
           field: 'remainQuotaQty',
-          title: '剩余可用'
+          title: '剩余可用',
+          width: '120'
         },
         {
           field: 'createTime',
-          title: '创建时间'
+          title: '创建时间',
+          width: '200'
         },
       ],
       rules: {

@@ -15,7 +15,7 @@ export function getList (data) {
  * 新增或修改
  * @param {Object} data
  */
-export function addOrUpdate (data) {
+export function addOrUpdateItem (data) {
   return api.jsonPost(prefix + 'addOrUpdate', data);
 }
 
@@ -41,4 +41,12 @@ export function getDetail (data) {
  */
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
+}
+
+/**
+ * 设置定时任务开关
+ * @param {Object} data
+ */
+export function setSwitchItem (data) {
+  return api.jsonPost(prefix + 'setSwitch', data);
 }

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-dialog title="整车销售模式配置(批量)信息" :visible.sync="dialogVisible" width="700px" :close-on-click-modal="false">
-      <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
+    <el-dialog title="整车销售模式配置(批量)信息" :visible.sync="dialogVisible" width="600px" :close-on-click-modal="false">
+      <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" size="small">
         <el-form-item label="开票优惠类型" prop="invoiceDiscountType">
           <fetch-select
             :request="fetchOptions"

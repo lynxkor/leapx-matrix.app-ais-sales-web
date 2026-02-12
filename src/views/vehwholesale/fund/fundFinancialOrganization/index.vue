@@ -115,7 +115,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-基础配置-金融机构管理',
+      pageTitle: '金融机构管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundFinancialOrganization',
@@ -145,7 +145,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
+                  path: '/vehwholesale/fund/fundFinancialOrganization/edit',
                   query: {
                     id: row.id
                   }
@@ -154,16 +154,16 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'organizationCode', label: '金融机构编码', visible: true, width: 200 },
-          { props: 'settleFundTypeLabel', label: '资金结算类型', visible: true, width: 200 },
-          { props: 'sapFundType', label: 'SAP资金类型编码', visible: true, width: 200 },
-          { props: 'certificateShippingWayLabel', label: '合格证发运方式', visible: true, width: 200 },
-          { props: 'enableBankDirectConnectionLabel', label: '是否开启银企直连', visible: true, width: 200 },
-          { props: 'rebateUsageQuota', label: '开启返利使用额度', visible: true, width: 200 },
-          { props: 'createPurchaseRecordLabel', label: '是否是否生成采购记录', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'organizationCode', label: '金融机构编码', visible: true, width: 120 },
+          { props: 'settleFundTypeLabel', label: '资金结算类型', visible: true, width: 120 },
+          { props: 'sapFundType', label: 'SAP资金类型编码', visible: true, width: 150 },
+          { props: 'certificateShippingWayLabel', label: '合格证发运方式', visible: true, width: 150 },
+          { props: 'enableBankDirectConnectionLabel', label: '是否开启银企直连', visible: true, width: 180 },
+          { props: 'rebateUsageQuota', label: '开启返利使用额度', visible: true, width: 180 },
+          { props: 'createPurchaseRecordLabel', label: '是否是否生成采购记录', visible: true, width: 180 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 100 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 120 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',
@@ -219,7 +219,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '账户管理-基础配置-金融机构管理',
+        businessType: '金融机构管理',
         dataFetchPath: '/vw/web/fund/fundFinancialOrganization/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -227,7 +227,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '账户管理-基础配置-金融机构管理.xlsx');
+            await downloadExcel(res.excelUrl, '金融机构管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -320,10 +320,13 @@ export default {
     // 批量删除
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
+      this.$confirm(message, '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        dangerouslyUseHTMLString: true,
+        customClass: 'ais-leave-tips',
+        showClose: false
       }).then(() => {
         deleteItem(ids).then(() => {
           this.$message({

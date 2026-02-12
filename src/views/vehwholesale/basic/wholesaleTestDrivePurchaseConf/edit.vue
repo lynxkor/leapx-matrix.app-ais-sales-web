@@ -25,14 +25,6 @@
                   :disabled="!!_id"
                 />
               </el-form-item>
-              <el-form-item label="物料描述" prop="materialsDesc">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.materialsDesc"
-                  clearable
-                  :disabled="!!_id"
-                />
-              </el-form-item>
               <el-form-item label="车系" prop="seriesId">
                 <fetch-select
                   filterable
@@ -101,6 +93,18 @@
                   placeholder="请选择"
                   clearable
                   filterable
+                />
+              </el-form-item>
+              <el-form-item label="物料描述" prop="materialsDesc">
+                <el-input
+                  type="textarea"
+                  rows="4"
+                  placeholder="请输入"
+                  v-model="form.materialsDesc"
+                  clearable
+                  :disabled="!!_id"
+                  maxlength="500"
+                  show-word-limit
                 />
               </el-form-item>
             </el-form>
@@ -174,7 +178,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '整车批售-批售主数据-试驾车采购配置管理',
+      pageTitle: '试驾车采购配置管理',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleTestDrivePurchaseConf',
@@ -271,7 +275,7 @@ export default {
     },
     getDetailData () {
       const id = this.id || this.$route.query.id;
-      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车批售-批售主数据-试驾车采购配置管理', `${id ? '编辑' : '新建'}`]);
+      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['试驾车采购配置管理', `${id ? '编辑' : '新建'}`]);
       if (id) {
         getDetail(id).then(res => {
           this.loading = false;

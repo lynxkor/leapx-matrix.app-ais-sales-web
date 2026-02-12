@@ -262,7 +262,7 @@ export default {
           return await listVehicleModel({ modelNameLike: query });
         },
       },
-      pageTitle: '销售管理-商品管理-商品SKU价格维护',
+      pageTitle: '商品SKU价格维护',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-productSkuPrice',
@@ -293,7 +293,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehretail/productManager/productSkuPrice/detail',
+                  path: '/vehretail/productManager/productSkuPrice/edit',
                   query: {
                     id: row.id
                   }
@@ -302,25 +302,25 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'skuCode', label: 'SKU编码', visible: true, width: 200 },
-          { props: 'productCode', label: '商品编码', visible: true, width: 200 },
+          { props: 'skuCode', label: 'SKU编码', visible: true, width: 180 },
+          { props: 'productCode', label: '商品编码', visible: true, width: 150 },
           { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
-          { props: 'purchaseTypeLabel', label: '购车类型', visible: true, width: 200 },
-          { props: 'priceBeforeSubsidy', label: '补贴前价格', visible: true, width: 200 },
-          { props: 'priceAfterSubsidy', label: '补贴后价格', visible: true, width: 200 },
-          { props: 'subsidyAmount', label: '补贴金额', visible: true, width: 200 },
-          { props: 'deposit', label: '定金', visible: true, width: 200 },
-          { props: 'vehiclePrice', label: '整车价格', visible: true, width: 200 },
-          { props: 'priceCompareLabel', label: '价格对比', visible: true, width: 200 },
-          { props: 'allowConfigChangeLabel', label: '允许改配', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'startTime', label: '开始日期', visible: true, width: 200 },
-          { props: 'endTime', label: '截止日期', visible: true, width: 200 },
-          { props: 'description', label: '描述', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系', visible: true, width: 200 },
-          { props: 'modelName', label: '车型', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者', visible: true, width: 200 },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 240 },
+          { props: 'purchaseTypeLabel', label: '购车类型', visible: true, width: 100 },
+          { props: 'priceBeforeSubsidy', label: '补贴前价格', visible: true, width: 120 },
+          { props: 'priceAfterSubsidy', label: '补贴后价格', visible: true, width: 120 },
+          { props: 'subsidyAmount', label: '补贴金额', visible: true, width: 100 },
+          { props: 'deposit', label: '定金', visible: true, width: 100 },
+          { props: 'vehiclePrice', label: '整车价格', visible: true, width: 100 },
+          { props: 'priceCompareLabel', label: '价格对比', visible: true, width: 100 },
+          { props: 'allowConfigChangeLabel', label: '允许改配', visible: true, width: 100 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 80 },
+          { props: 'startTime', label: '开始日期', visible: true, width: 150 },
+          { props: 'endTime', label: '截止日期', visible: true, width: 150 },
+          { props: 'description', label: '描述', visible: true, width: 260 },
+          { props: 'seriesName', label: '车系', visible: true, width: 100 },
+          { props: 'modelName', label: '车型', visible: true, width: 100 },
+          { props: 'creatorName', label: '创建者', visible: true, width: 120 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           // { props: 'modifierName', label: '修改者', visible: true, width: 200 },
           { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
@@ -336,7 +336,8 @@ export default {
                 this.$router.push({
                   path: '/vehretail/productManager/productSkuPrice/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },
@@ -398,7 +399,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '销售管理-商品管理-商品SKU价格维护管理',
+        businessType: '商品SKU价格维护管理',
         dataFetchPath: '/vr/web/product/productSkuPrice/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -406,7 +407,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '销售管理-商品管理-商品SKU价格维护管理.xlsx');
+            await downloadExcel(res.excelUrl, '商品SKU价格维护管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -513,10 +514,13 @@ export default {
     // 批量删除
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
+      this.$confirm(message, '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        dangerouslyUseHTMLString: true,
+        customClass: 'ais-leave-tips',
+        showClose: false
       }).then(() => {
         deleteItem(ids).then(() => {
           this.$message({

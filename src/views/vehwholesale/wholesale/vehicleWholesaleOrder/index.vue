@@ -15,7 +15,7 @@
         <el-form-item label="配车VIN码">
           <tag-input v-model="form.vins" placeholder="请输入" />
         </el-form-item>
-      <el-form-item label="订单状态">
+      <el-form-item label="订单状态" v-show="this.visibleCount === 3 || show">
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_wholesale_order_status"
@@ -292,25 +292,27 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchConfirm">批量确认</el-button>
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchAllocateVehicle">批量配车</el-button>
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchSettleSubmit">批量结算</el-button>
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchCancelSettle">批量取消结算</el-button>
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchCancel">批量作废</el-button>
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchCancelAllocateVehicle">批量取消配车</el-button>
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchSetAutoAllocate">批量设置自动配车</el-button>
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleBatchSetNotAutoAllocate">批量设置不自动配车</el-button>
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleSetEmergencyOrder">设置急单</el-button>
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" :disabled="selectionList.length === 0" @click="handleCancelEmergencyOrder">取消急单</el-button>
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" >刷新价格</el-button>
-      <el-button v-if="canImport" size="small" type="primary" @click="handleImport">导入</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" type="primary" size="small" @click="exportExcel">导出</el-button>
+      <ButtonGroup collapseDirection="left">
+        <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length === 0" @click="handleBatchConfirm">批量确认</el-button>
+        <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length === 0" @click="handleBatchAllocateVehicle">批量配车</el-button>
+        <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length === 0" @click="handleBatchSettleSubmit">批量结算</el-button>
+        <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancelSettle">批量取消结算</el-button>
+        <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancel">批量作废</el-button>
+        <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancelAllocateVehicle">批量取消配车</el-button>
+        <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length === 0" @click="handleBatchSetAutoAllocate">批量设置自动配车</el-button>
+        <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length === 0" @click="handleBatchSetNotAutoAllocate">批量设置不自动配车</el-button>
+        <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length === 0" @click="handleSetEmergencyOrder">设置急单</el-button>
+        <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length === 0" @click="handleCancelEmergencyOrder">取消急单</el-button>
+        <el-button v-if="canAddOrUpdate" size="small" @click="handleRefreshPriceCoefficient">刷新价格</el-button>
+        <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+        <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      </ButtonGroup>
     </div>
     <div
       class="ais-table-c"
     >
       <div>
-        <el-tabs v-model="tabName" type="card" @tab-click="handleClickTab">
+        <el-tabs v-model="tabName" @tab-click="handleClickTab">
           <el-tab-pane label="全量" name="1"></el-tab-pane>
           <el-tab-pane label="未完成批售订单" name="2"></el-tab-pane>
           <el-tab-pane label="待处理现车批售" name="3"></el-tab-pane>
@@ -362,7 +364,7 @@
      <CancleBatchAllocateVehicleInput
       :visible.sync="showCancleBatchAllocateVehicleDialog"
       :cancel-ids="selectionList.map(item => item.id)"
-      @confirmBatchAllocateVehicle="confirmBatchAllocateVehicle"
+      @cancleBatchAllocateVehicle="cancleBatchAllocateVehicle"
     />
 
     <BatchCancelSettleInput
@@ -377,7 +379,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, batchConfirmItem, setEmergencyOrderItem, batchCancelItem, batchAllocateVehicleItem, batchSettleSubmitItem, batchCancelSettleItem, batchSetAutoAllocateItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import { getList, deleteItem, enableItem, batchConfirmItem, setEmergencyOrderItem, batchCancelItem, batchAllocateVehicleItem, batchSettleSubmitItem, batchCancelSettleItem, batchSetAutoAllocateItem, refreshPriceItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, vehicleModelList, cityPage, getProvinceTree, getParentCompany, getRigion } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -394,6 +396,7 @@ import CancleBatchAllocateVehicleInput from './CancleBatchAllocateVehicleInput.v
 import SetEmergencyOrderInput from './SetEmergencyOrderInput.vue';
 import BatchCancelSettleInput from './BatchCancelSettleInput.vue';
 import { listIdNames as listWholesaleProdScheduleActivity } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivity/index';
+import ButtonGroup from '@/libs/components/ButtonGroup';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -480,11 +483,12 @@ export default {
     SetEmergencyOrderInput,
     BatchAllocateVehicleInput,
     CancleBatchAllocateVehicleInput,
-    BatchCancelSettleInput
+    BatchCancelSettleInput,
+    ButtonGroup
   },
   data () {
     return {
-      pageTitle: '整车批售-批售主数据-整车批售订单管理',
+      pageTitle: '整车批售订单管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-vehicleWholesaleOrder',
@@ -507,6 +511,7 @@ export default {
       modelList: [],
       ALLOWED_STATUS: [0, 11],
       ALLOWED_CANCELALLOCATEVEHICLE_STATUS: [1, 5, 4],
+      ALLOW_REFRESH: [0, 1, 4, 5, 11],
       SETTLED_SUCCESSFULLY_STATUS: [3],
       uploadDialogVisible: false,
       clickItemId: '',
@@ -561,8 +566,8 @@ export default {
           { props: 'rebateCoefficient', label: '返利使用系数', visible: true, width: 200 },
           { props: 'usedRebateAmount', label: '使用返利金额', visible: true, width: 200 },
           { props: 'erpSaleOrderCode', label: 'ERP销售订单号', visible: true, width: 200 },
-          { props: 'erpDeliverOrder', label: 'ERP交货单', visible: true, width: 200 },
-          { props: 'erpInvoiceCode', label: 'ERP发票号', visible: true, width: 200 },
+          // { props: 'erpDeliverOrder', label: 'ERP交货单', visible: true, width: 200 },
+          // { props: 'erpInvoiceCode', label: 'ERP发票号', visible: true, width: 200 },
           { props: 'syncSapMsg', label: '同步SAP状态', visible: true, width: 200 },
           { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
@@ -604,18 +609,6 @@ export default {
             visible: true,
             fixed: 'right',
             buttons: [{
-              name: '编辑',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
-                  query: {
-                    id: row.id,
-                    isEditing: true
-                  }
-                });
-              },
-              type: 'info'
-            }, {
               name: '日志',
               click: (rowIndex, row) => {
                 this.$auditLog.show({ id: row.id });
@@ -635,6 +628,20 @@ export default {
     this.getCity();
   },
   methods: {
+    handleRefreshPriceCoefficient () {
+      refreshPriceItem({}).then(() => {
+        this.$message({
+          type: 'success',
+          message: '价格刷新成功!'
+        });
+        this.getData();
+      }).catch(() => {
+        this.$message({
+          type: 'error',
+          message: '价格刷新成功!'
+        });
+      });
+    },
     allAllocateVehicleConfirm (items) {
       if (items.length === 0) {
         this.$message({
@@ -662,11 +669,12 @@ export default {
       return true;
     },
     handleBatchAllocateVehicle () {
-      const items = this.selectionList.map(item => item) || [];
-      const allowStatus = this.allAllocateVehicleConfirm(items);
-      if (allowStatus) {
-        this.showBatchAllocateVehicleDialog = true;
-      }
+      this.showBatchAllocateVehicleDialog = true;
+      // const items = this.selectionList.map(item => item) || [];
+      // const allowStatus = this.allAllocateVehicleConfirm(items);
+      // if (allowStatus) {
+      //   this.showBatchAllocateVehicleDialog = true;
+      // }
     },
     allBatchSetAutoAllocateConfirm (items) {
       if (items.length === 0) {
@@ -696,31 +704,27 @@ export default {
     },
     handleBatchSetAutoAllocate () {
       const ids = this.selectionList.map(item => item.id) || [];
-      const items = this.selectionList.map(item => item) || [];
-      const allowStatus = this.allBatchSetAutoAllocateConfirm(items);
-      if (allowStatus) {
-        this.$confirm('是否确定要执行自动配车操作？', '操作提醒', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
+      this.$confirm('是否确定要执行自动配车操作？', '操作提醒', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        batchSetAutoAllocateItem({
+          ids: ids,
+          needAutoAllocateCar: 1
         }).then(() => {
-          batchSetAutoAllocateItem({
-            ids: ids,
-            needAutoAllocateCar: 1
-          }).then(() => {
-            this.$message({
-              type: 'success',
-              message: '确认成功!'
-            });
-            this.getData();
-          }).catch(() => {
-            this.$message({
-              type: 'error',
-              message: '确认失败!'
-            });
+          this.$message({
+            type: 'success',
+            message: '确认成功!'
           });
-        }).catch(() => {});
-      }
+          this.getData();
+        }).catch(() => {
+          this.$message({
+            type: 'error',
+            message: '确认失败!'
+          });
+        });
+      }).catch(() => {});
     },
     BatchSetNotAutoAllocateConfirm (items) {
       if (items.length === 0) {
@@ -750,31 +754,27 @@ export default {
     },
     handleBatchSetNotAutoAllocate () {
       const ids = this.selectionList.map(item => item.id) || [];
-      const items = this.selectionList.map(item => item) || [];
-      const allowStatus = this.BatchSetNotAutoAllocateConfirm(items);
-      if (allowStatus) {
-        this.$confirm('是否确定要执行自动配车操作？', '操作提醒', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
+      this.$confirm('是否确定要执行取消自动配车操作？', '操作提醒', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        batchSetAutoAllocateItem({
+          ids: ids,
+          needAutoAllocateCar: 0
         }).then(() => {
-          batchSetAutoAllocateItem({
-            ids: ids,
-            needAutoAllocateCar: 0
-          }).then(() => {
-            this.$message({
-              type: 'success',
-              message: '确认成功!'
-            });
-            this.getData();
-          }).catch(() => {
-            this.$message({
-              type: 'error',
-              message: '确认失败!'
-            });
+          this.$message({
+            type: 'success',
+            message: '确认成功!'
           });
-        }).catch(() => {});
-      }
+          this.getData();
+        }).catch(() => {
+          this.$message({
+            type: 'error',
+            message: '确认失败!'
+          });
+        });
+      }).catch(() => {});
     },
     handleBatchSettleSubmit () {
       const ids = this.selectionList.map(item => item.id) || [];
@@ -826,11 +826,12 @@ export default {
       return true;
     },
     handleBatchCancelSettle () {
-      const items = this.selectionList.map(item => item) || [];
-      const allowStatus = this.batchCancelSettleConfirm(items);
-      if (allowStatus) {
-        this.showBatchCancelSettleDialog = true;
-      }
+      this.showBatchCancelSettleDialog = true;
+      // const items = this.selectionList.map(item => item) || [];
+      // const allowStatus = this.batchCancelSettleConfirm(items);
+      // if (allowStatus) {
+      //   this.showBatchCancelSettleDialog = true;
+      // }
     },
     CancelAllocateVehicleConfirm (items) {
       if (items.length === 0) {
@@ -851,12 +852,26 @@ export default {
       }
       return true;
     },
+    cancleBatchAllocateVehicle (data) {
+      const ids = this.selectionList.map(item => item.id) || [];
+      return batchCancelSettleItem({
+        idSet: ids,
+        cancelAllocateVehicleType: data.cancelAllocateVehicleType
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '批量取消结算成功'
+        });
+        this.getData();
+      });
+    },
     handleBatchCancelAllocateVehicle () {
-      const items = this.selectionList.map(item => item) || [];
-      const allowStatus = this.CancelAllocateVehicleConfirm(items);
-      if (allowStatus) {
-        this.showCancleBatchAllocateVehicleDialog = true;
-      }
+      this.showCancleBatchAllocateVehicleDialog = true;
+      // const items = this.selectionList.map(item => item) || [];
+      // const allowStatus = this.CancelAllocateVehicleConfirm(items);
+      // if (allowStatus) {
+      //   this.showCancleBatchAllocateVehicleDialog = true;
+      // }
     },
     async getRegionList (params) {
       return getRigion({ orgName: params });
@@ -902,26 +917,26 @@ export default {
     },
     handleCancelEmergencyOrder () {
       const ids = this.selectionList.map(item => item.id) || [];
-      const items = this.selectionList.map(item => item) || [];
-      const allowStatus = this.allAllowCancelEmergency(items);
-      if (allowStatus) {
-        const params = {
-          emergencyOrder: 0,
-          ids: ids
-        };
-        setEmergencyOrderItem(params).then(() => {
-          this.$message({
-            type: 'success',
-            message: '取消急单成功!'
-          });
-          this.getData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '取消急单失败!'
-          });
+      // const items = this.selectionList.map(item => item) || [];
+      // const allowStatus = this.allAllowCancelEmergency(items);
+      // if (allowStatus) {
+      const params = {
+        emergencyOrder: 0,
+        ids: ids
+      };
+      setEmergencyOrderItem(params).then(() => {
+        this.$message({
+          type: 'success',
+          message: '取消急单成功!'
         });
-      }
+        this.getData();
+      }).catch(() => {
+        this.$message({
+          type: 'error',
+          message: '取消急单失败!'
+        });
+      });
+      // }
     },
     emergencyApproval (data) {
       return setEmergencyOrderItem(data).then(() => {
@@ -933,7 +948,11 @@ export default {
       });
     },
     batchCancelSettle (data) {
-      return batchCancelSettleItem(data).then(() => {
+      const ids = this.selectionList.map(item => item.id) || [];
+      return batchCancelSettleItem({
+        idSet: ids,
+        cancelSettleType: data.cancelSettleType
+      }).then(() => {
         this.$message({
           type: 'success',
           message: '批量取消结算成功'
@@ -1038,18 +1057,20 @@ export default {
       return true;
     },
     handleSetEmergencyOrder () {
-      const items = this.selectionList.map(item => item) || [];
-      const allowStatus = this.allAllowEmergency(items);
-      if (allowStatus) {
-        this.showSetEmergencyOrderDialog = true;
-      }
+      this.showSetEmergencyOrderDialog = true;
+      // const items = this.selectionList.map(item => item) || [];
+      // const allowStatus = this.allAllowEmergency(items);
+      // if (allowStatus) {
+      //   this.showSetEmergencyOrderDialog = true;
+      // }
     },
     handleBatchCancel () {
-      const items = this.selectionList.map(item => item) || [];
-      const allowStatus = this.allAllowCancel(items);
-      if (allowStatus) {
-        this.showBatchCancelDialog = true;
-      }
+      this.showBatchCancelDialog = true;
+      // const items = this.selectionList.map(item => item) || [];
+      // const allowStatus = this.allAllowCancel(items);
+      // if (allowStatus) {
+      //   this.showBatchCancelDialog = true;
+      // }
     },
     // 批量确认
     handleBatchConfirm () {
@@ -1173,7 +1194,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '整车批售-批售主数据-整车批售订单管理',
+        businessType: '整车批售订单管理',
         dataFetchPath: 'vw/web/wholesale/vehicleWholesaleOrder/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -1181,7 +1202,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车批售-批售主数据-整车批售订单管理.xlsx');
+            await downloadExcel(res.excelUrl, '整车批售订单管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -1309,10 +1330,13 @@ export default {
     // 批量删除
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
+      this.$confirm(message, '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        dangerouslyUseHTMLString: true,
+        customClass: 'ais-leave-tips',
+        showClose: false
       }).then(() => {
         deleteItem(ids).then(() => {
           this.$message({
@@ -1365,5 +1389,8 @@ export default {
 
 <style lang="scss" scoped>
 .m-order-list {
+  ::v-deep .m-vxe-table-options{
+    top: -50px;
+  }
 }
 </style>
