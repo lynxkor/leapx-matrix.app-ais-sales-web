@@ -39,17 +39,21 @@
             />
         </el-form-item>
         <el-form-item label="数据来源">
-          <el-input
-            placeholder="请输入"
-            v-model="form.dataSource"
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vehretail_data_source"
+            v-model="form.dataSources"
+            placeholder="请选择"
             clearable
+            multiple
+            filterable
           />
         </el-form-item>
         <el-form-item label="合格证发运方式">
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_deliverytype"
-            v-model="form.certificateShippingWay"
+            v-model="form.certificateShippingWays"
             placeholder="请选择"
             clearable
             multiple
@@ -106,7 +110,7 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="vehstock_ship_via"
-            v-model="form.deliveryWay"
+            v-model="form.deliveryWaies"
             placeholder="请选择"
             clearable
             multiple
@@ -117,7 +121,7 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_order_category"
-            v-model="form.orderCategory"
+            v-model="form.orderCategories"
             placeholder="请选择"
             clearable
             multiple

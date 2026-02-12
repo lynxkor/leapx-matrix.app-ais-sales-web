@@ -1,32 +1,6 @@
 <template>
   <div>
   <el-dialog
-    class="batchReview-dialog"
-    title=""
-    width="800px"
-    :visible.sync="dialogVisible"
-    @close="reviewClose"
-  >
-    <el-form ref="SelectformRef" :model="Selectform"  :label-width="formLabelWidth">
-      <el-form-item label="复审结果：" prop="passOrReject">
-         <el-select v-model="Selectform.passOrReject" placeholder="请选择" clearable style="width: 100%">
-            <el-option label="通过" value='1'/>
-            <el-option label="驳回" value='0' />
-         </el-select>
-      </el-form-item>
-      <el-form-item label="复审意见：" prop="opinion">
-        <el-input v-model="Selectform.opinion" autocomplete="off" />
-      </el-form-item>
-    </el-form>
-    <template v-slot:footer>
-      <div class="dialog-footer" >
-        <el-button :loading="submitLoading" type="primary" @click="submit()">确 定</el-button>
-        <el-button @click="reviewClose()">取 消</el-button>
-      </div>
-    </template>
-  </el-dialog>
-
-  <el-dialog
     class="filter-batchReview-dialog"
     title="筛选复审数据"
     width="800px"
@@ -79,8 +53,19 @@
       <el-form-item label="创建人" prop="creatorName">
         <el-input v-model="filterReviewform.creatorName" autocomplete="off" />
       </el-form-item>
-      <el-form-item label-width="0">
-        <el-input v-model="filterResult" autocomplete="off" disabled/>
+       <el-form-item label-width="40px" v-show="filterResult">
+        <div class="filter-result-container">
+          <span class="result-text">{{ filterResult }}</span>
+          <el-button
+            type="text"
+            size="small"
+            @click="reviewApp()"
+            class="refresh-btn"
+            v-if="filterResult"
+          >
+            <i class="el-icon-refresh"></i>
+          </el-button>
+        </div>
       </el-form-item>
     </el-form>
       <h3>复审结果</h3>
@@ -289,7 +274,7 @@ export default {
     },
     reviewApp () {
       statTotalRebate({ ...this.getFormData(this.filterReviewform) }).then(res => {
-        this.filterResult = `筛选初审记录数：${res.qty}, 合计核销金额：${res.totalRebateAmount}`;
+        this.filterResult = `筛选复审记录数：${res.qty}, 合计核销金额：${res.totalRebateAmount}`;
       }).catch(() => {});
     },
     reviewRej () {
@@ -351,6 +336,31 @@ export default {
 .batchReview-dialog {
   .el-input-number {
     width: 100%;
+  }
+}
+.filter-result-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: var(--leap-color-default-light-5);
+  border: 1px dashed var(--leap-color-default-light-3);
+  border-radius: 4px;
+}
+
+.result-text {
+  font-size: 14px;
+  color: var(--leap-color-default-light-1);
+  line-height: 1.5;
+}
+
+.refresh-btn {
+  padding: 0;
+  margin-left: 10px;
+  color: var(--leap-color-primary);
+  cursor: pointer;
+  &:hover {
+    color: var(--leap-color-primary-light-3);
   }
 }
 </style>

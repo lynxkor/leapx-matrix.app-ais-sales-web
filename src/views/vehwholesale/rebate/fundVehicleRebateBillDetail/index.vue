@@ -172,6 +172,10 @@
     <BatchReviewDialog
       ref="showBatchReview" @callReviewParentMethod="batchReviewgetData">
     </BatchReviewDialog>
+    <audit-dialog
+      ref="auditDialogRef"
+      @audit="handleAudit"
+    />
   </div>
 </template>
 
@@ -179,7 +183,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehwholesale/rebate/fundVehicleRebateBillDetail/index';
+import { getList, deleteItem, enableItem, reviewItem, auditItem } from '@/api/vehwholesale/rebate/fundVehicleRebateBillDetail/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelList, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -195,7 +199,7 @@ import TagInput from '@/libs/components/TagInput';
 import BatchAuditDialog from '../components/batchAudit';
 import BatchReviewDialog from '../components/batchReview';
 import dateranges from '@/libs/components/dateranges';
-
+import auditDialog from '@/libs/components/auditDialog';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   creatorName: '',
@@ -230,7 +234,8 @@ export default {
     TagInput,
     BatchAuditDialog,
     BatchReviewDialog,
-    dateranges
+    dateranges,
+    auditDialog
 
   },
   data () {
@@ -251,6 +256,7 @@ export default {
       exportLoading: false,
       uploadDialogVisible: false,
       batchAuditDialogVisible: false,
+      reviewFalg: false,
       clickItemId: '',
       optionObj: {
         id: 'fundVehicleRebateBillDetailTable',
@@ -548,11 +554,13 @@ export default {
       return arr.every(item => item === targetValue);
     },
     handleBatchReview () {
+      this.reviewFalg = true;
       const BatchReviewIds = this.selectionList.map(item => item.id) || [];
       if (BatchReviewIds.length > 0) {
         const billStatues = this.selectionList.map(item => item.billStatus) || [];
         if (this.isAllSpecifiedValue(billStatues, 1040)) {
-          this.$refs.showBatchReview.showOrHide('isSelect', BatchReviewIds);
+          // this.$refs.showBatchReview.showOrHide('isSelect', BatchReviewIds);
+          this.$refs.auditDialogRef.show();
         } else {
           this.$message({
             type: 'warning',
@@ -563,12 +571,33 @@ export default {
         this.$refs.showBatchReview.showOrHide('notSelect');
       }
     },
+    handleAudit (data) {
+      const ids = this.selectionList.map(item => item.id) || [];
+      let params = {
+        ids: ids,
+        opinion: data.remark,
+        passOrReject: data.result
+      };
+      if (this.reviewFalg) { // 批量复审
+        reviewItem(params).then(res => {
+          this.$message.success('批量复审成功');
+        }).catch(() => {});
+      } else { // 初审
+        auditItem(params).then(res => {
+          this.$message.success('批量初审成功');
+          this.getData();
+        }).catch(() => {});
+      }
+      this.getData();
+    },
     handleBatchAudit () {
+      this.reviewFalg = false;
       const BatchAuditIds = this.selectionList.map(item => item.id) || [];
       if (BatchAuditIds.length > 0) {
         const billStatuss = this.selectionList.map(item => item.billStatus) || [];
         if (this.isAllSpecifiedValue(billStatuss, 1020)) {
-          this.$refs.showBatchAudit.showOrHide('isSelect', BatchAuditIds);
+          // this.$refs.showBatchAudit.showOrHide('isSelect', BatchAuditIds);
+          this.$refs.auditDialogRef.show();
         } else {
           this.$message({
             type: 'warning',

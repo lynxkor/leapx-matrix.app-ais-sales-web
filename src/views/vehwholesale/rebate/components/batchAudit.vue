@@ -1,32 +1,6 @@
 <template>
   <div>
   <el-dialog
-    class="batchAudit-dialog"
-    title=""
-    width="800px"
-    :visible.sync="dialogVisible"
-    @close="close"
-  >
-    <el-form ref="SelectformRef" :model="Selectform"  :label-width="formLabelWidth">
-      <el-form-item label="初审结果1：" prop="passOrReject">
-         <el-select v-model="Selectform.passOrReject" placeholder="请选择" clearable style="width: 100%">
-            <el-option label="通过" value='1'/>
-            <el-option label="驳回" value='0' />
-         </el-select>
-      </el-form-item>
-      <el-form-item label="初审意见：" prop="opinion">
-        <el-input v-model="Selectform.opinion" autocomplete="off" />
-      </el-form-item>
-    </el-form>
-    <template v-slot:footer>
-      <div class="dialog-footer" >
-        <el-button :loading="submitLoading" type="primary" @click="submit()">确 定</el-button>
-        <el-button @click="close()">取 消</el-button>
-      </div>
-    </template>
-  </el-dialog>
-
-  <el-dialog
     class="filter-batchAudit-dialog"
     title="批量初审"
     width="800px"
