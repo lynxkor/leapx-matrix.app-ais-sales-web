@@ -170,7 +170,7 @@ export default {
       accountFlag: null, // 账户标识  true: 是店端账号；false: 厂端账号
       parentOrg: {}, // 父级组织
       dialogTpye: '',
-      pageTitle: '账户管理-整车资金-整车资金账户管理',
+      pageTitle: '整车资金账户管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-dealerFundAccount',
@@ -274,7 +274,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '账户管理-整车资金-整车资金账户管理',
+        businessType: '整车资金账户管理',
         dataFetchPath: '/vw/web/fund/dealerFundAccount/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -282,7 +282,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '账户管理-整车资金-整车资金账户管理.xlsx');
+            await downloadExcel(res.excelUrl, '整车资金账户管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

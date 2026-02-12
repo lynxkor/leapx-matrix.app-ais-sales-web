@@ -274,7 +274,7 @@ export default {
     };
 
     return {
-      pageTitle: '账户管理-赊销管理-自有资金赊销额度管理',
+      pageTitle: '自有资金赊销额度管理',
       pageType: 'edit',
       moduleKey: 'AISVW-fundOwnCreditSalesLimit',
       loading: false,

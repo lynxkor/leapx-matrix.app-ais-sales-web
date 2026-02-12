@@ -271,7 +271,7 @@ export default {
       callback();
     };
     return {
-      pageTitle: '账户管理-基础配置-返利自动返还设置管理',
+      pageTitle: '返利自动返还设置管理',
       pageType: 'edit',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundRebateReturnConfig',

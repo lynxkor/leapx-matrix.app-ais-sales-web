@@ -235,7 +235,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-整车返利-整车返利核算单明细管理',
+      pageTitle: '整车返利核算单明细管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-fundVehicleRebateBillDetail',
@@ -430,7 +430,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '账户管理-整车返利-整车返利核算单明细管理',
+        businessType: '整车返利核算单明细管理',
         dataFetchPath: '/vw/web/rebate/fundVehicleRebateBillDetail/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -438,7 +438,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '账户管理-整车返利-整车返利核算单明细管理.xlsx');
+            await downloadExcel(res.excelUrl, '整车返利核算单明细管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

@@ -236,7 +236,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '账户管理-基础配置-金融机构管理',
+      pageTitle: '金融机构管理',
       pageType: 'edit',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundFinancialOrganization',

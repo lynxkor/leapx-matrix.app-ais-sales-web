@@ -157,20 +157,20 @@ export default {
     return {
       exportExcelData: {
         productInfoImport: {
-          businessType: '销售管理-商品管理-商品中心管理',
-          title: '销售管理-商品管理-商品中心管理',
+          businessType: '商品中心管理',
+          title: '商品中心管理',
           dataFetchPath: '/vr/web/product/productInfo/page',
           loading: 'infoLoading'
         },
         productSkuPriceImport: {
-          businessType: '销售管理-商品管理-商品SKU价格维护管理',
-          title: '销售管理-商品管理-商品SKU价格维护管理',
+          businessType: '商品SKU价格维护管理',
+          title: '商品SKU价格维护管理',
           dataFetchPath: '/vr/web/product/productSku/page',
           loading: 'skuPriceLoading'
         },
       },
       currentImportType: '',
-      pageTitle: '销售管理-商品管理-商品中心',
+      pageTitle: '商品中心',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-productInfo',
