@@ -79,8 +79,19 @@
       <el-form-item label="创建人" prop="creatorName">
         <el-input v-model="filterForm.creatorName" autocomplete="off" />
       </el-form-item>
-      <el-form-item label-width="0">
-        <el-input v-model="filterResult" autocomplete="off" disabled/>
+      <el-form-item label-width="40px" v-show="filterResult">
+        <div class="filter-result-container">
+          <span class="result-text">{{ filterResult }}</span>
+          <el-button
+            type="text"
+            size="small"
+            @click="AuditApp()"
+            class="refresh-btn"
+            v-if="filterResult"
+          >
+            <i class="el-icon-refresh"></i>
+          </el-button>
+        </div>
       </el-form-item>
     </el-form>
     <h3>初审结果</h3>
@@ -221,7 +232,7 @@ export default {
       },
       Allform: {},
       submitLoading: false,
-      formLabelWidth: '120px',
+      formLabelWidth: '100px',
       selectIds: ''
     };
   },
@@ -337,10 +348,35 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .batchAudit-dialog {
   .el-input-number {
     width: 100%;
+  }
+}
+.filter-result-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: var(--leap-color-default-light-5);
+  border: 1px dashed var(--leap-color-default-light-3);
+  border-radius: 4px;
+}
+
+.result-text {
+  font-size: 14px;
+  color: var(--leap-color-default-light-1);
+  line-height: 1.5;
+}
+
+.refresh-btn {
+  padding: 0;
+  margin-left: 10px;
+  color: var(--leap-color-primary);
+  cursor: pointer;
+  &:hover {
+    color: var(--leap-color-primary-light-3);
   }
 }
 </style>
