@@ -285,9 +285,9 @@
           <section class="common-section">
             <div class="common-section-header">
               <h2>整车门店补货明细</h2>
-              <el-button size="small" @click="handleAddRow" v-show="isEditing || !_id"><i class="iconfont icon-lxppc-plus"></i>添加补货明细</el-button>
             </div>
             <div class="common-section-body">
+              <el-button size="small" @click="handleAddRow" style="margin-bottom: 10px;">添加补货明细</el-button>
               <div class="common-section-table">
                 <component-table
                   :tableData="form.details"
