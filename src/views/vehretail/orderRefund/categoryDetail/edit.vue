@@ -148,8 +148,8 @@ export default {
       // 提取公共配置
       selectOptions: {
         placeholder: '请选择',
-        labelKey: 'name',
-        valueKey: 'code',
+        labelKey: 'cateName',
+        valueKey: 'cateCode',
         clearable: true,
         // multiple: true,
         collapseTags: true,
