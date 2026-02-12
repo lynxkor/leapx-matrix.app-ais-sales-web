@@ -232,13 +232,13 @@
                   {{ form.vehicleWarehouseName }}
                 </el-form-item>
                 <el-form-item label="订单分类：" prop="orderCategory">
-                  {{ form.orderCategory }}
+                  {{ form.orderCategoryLabel }}
                 </el-form-item>
                 <el-form-item label="合格证是否质押：" prop="certificatePledged">
-                  {{ form.certificatePledged }}
+                  {{ form.certificatePledgedLabel }}
                 </el-form-item>
                 <el-form-item label="合格证发运方式：" prop="certificateShippingWay">
-                  {{ form.certificateShippingWay }}
+                  {{ form.certificateShippingWayLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构ID：" prop="financialOrganizationId">
                   {{ form.financialOrganizationId }}
@@ -250,19 +250,19 @@
                   {{ form.regionName }}
                 </el-form-item>
                 <el-form-item label="是否发运" prop="shipped">
-                  {{ form.shipped }}
+                  {{ form.shippedLabel }}
                 </el-form-item>
                 <el-form-item label="批售方式：" prop="wholesaleWay">
-                  {{ form.wholesaleWay }}
+                  {{ form.wholesaleWayLabel }}
                 </el-form-item>
                 <el-form-item label="合作类型：" prop="cooperateType">
-                  {{ form.cooperateType }}
+                  {{ form.cooperateTypeLabel }}
                 </el-form-item>
                 <el-form-item label="指定发运方式：" prop="deliveryWay">
-                  {{ form.deliveryWay }}
+                  {{ form.deliveryWayLabel }}
                 </el-form-item>
-                <el-form-item label="指定发运方式：" prop="actualDeliveryWay">
-                  {{ form.actualDeliveryWay }}
+                <el-form-item label="发运方式：" prop="actualDeliveryWay">
+                  {{ form.actualDeliveryWayLabel }}
                 </el-form-item>
                 <el-form-item label="批售订单号：" prop="wholesaleOrderCode">
                   {{ form.wholesaleOrderCode }}
@@ -283,7 +283,7 @@
                   {{ form.saleDealerName }}
                 </el-form-item>
                 <el-form-item label="是否需要同步WMS：" prop="needSyncWms">
-                  {{ form.needSyncWms }}
+                  {{ form.needSyncWmsLabel }}
                 </el-form-item>
                 <el-form-item label="承运记录编码：" prop="carrierRecordCode">
                   {{ form.carrierRecordCode }}
@@ -597,10 +597,10 @@
                   {{ form.financialOrganizationId }}
                 </el-form-item>
                 <el-form-item label="入库日期：" prop="needSyncWms">
-                  {{ form.needSyncWms }}
+                  <!-- {{ form.needSyncWms }} -->
                 </el-form-item>
                 <el-form-item label="出库日期：" prop="materialsId">
-                  {{ form.materialsId }}
+                  <!-- {{ form.materialsId }} -->
                 </el-form-item>
               </el-form>
             </div>
