@@ -17,7 +17,7 @@
           clearable
         /> -->
       </el-form-item>
-      <el-form-item label="母公司名称"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="母公司名称">
         <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
         <!-- <el-input
           placeholder="请输入"
@@ -25,18 +25,18 @@
           clearable
         /> -->
       </el-form-item>
+      <el-form-item label="资金类型" v-show="this.visibleCount === 3 || show">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="vw_fundtype"
+          v-model="form.fundTypes"
+          placeholder="请选择"
+          clearable
+          multiple
+          filterable
+        />
+      </el-form-item>
       <template v-if="show">
-        <el-form-item label="资金类型">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="vw_fundtype"
-            v-model="form.fundTypes"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
-          />
-        </el-form-item>
         <el-form-item label="金融机构名称">
           <fetch-select
             :remote-method="repairItemSearch"
