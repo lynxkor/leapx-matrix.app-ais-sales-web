@@ -18,15 +18,15 @@
         </template>
         <template #extraButtons>
           <!-- <el-button size="small" type="primary" @click="handleEquityInquiry">权益查询</el-button> -->
-          <el-button size="small" type="primary" @click="handlePrintContractTermination">打印合同解除协议</el-button>
-          <el-button size="small" type="primary" @click="handleSetSpecialMark">设置特殊标识</el-button>
-          <el-button size="small" type="primary" @click="handleModifyConfiguration">修改配置</el-button>
-          <!-- <el-button size="small" type="primary" @click="handleManualVehicleAllocation">手工配车</el-button> -->
-          <el-button size="small" type="primary" @click="handleAutoLockVehicle">自动锁车</el-button>
-          <el-button size="small" type="primary" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
-          <el-button size="small" type="primary" @click="handleOrderUnsubscribe">订单退订</el-button>
-          <el-button size="small" type="primary" @click="handleCarOwnerChangeApplication">购车人变更申请</el-button>
-          <el-button size="small" type="primary" @click="handleQualityIssueUnbindApplication">质量问题解绑申请</el-button>
+          <el-button size="small" @click="handlePrintContractTermination">打印合同解除协议</el-button>
+          <el-button size="small" @click="handleSetSpecialMark">设置特殊标识</el-button>
+          <el-button size="small" @click="handleModifyConfiguration">修改配置</el-button>
+          <!-- <el-button size="small" @click="handleManualVehicleAllocation">手工配车</el-button> -->
+          <el-button size="small" @click="handleAutoLockVehicle">自动锁车</el-button>
+          <el-button size="small" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
+          <el-button size="small" @click="handleOrderUnsubscribe">订单退订</el-button>
+          <el-button size="small" @click="handleCarOwnerChangeApplication">购车人变更申请</el-button>
+          <el-button size="small" @click="handleQualityIssueUnbindApplication">质量问题解绑申请</el-button>
         </template>
         <!-- 固定悬浮导航栏 -->
         <div class="fixed-nav">
@@ -44,29 +44,23 @@
         </div>
 
         <el-main>
-          <section id="retail-order-status" class="common-section">
-            <div class="common-section-header">
-              <h2>销服订单状态</h2>
-            </div>
-            <div class="common-section-body">
-              <NavTop :current="form.orderStatus" :navType="'order'" :retailOrderCode="form.retailOrderCode"/>
-            </div>
-          </section>
-          <section id="app-order-status" class="common-section">
-            <div class="common-section-header">
-              <h2>APP订单状态</h2>
-            </div>
-            <div class="common-section-body">
-              <NavTop :current="form.leapAppOrderStatus"/>
-            </div>
-          </section>
-          <section id="basic-info" class="common-section">
+          <NavTop
+            id="retail-order-status" class="common-section"
+            title="销服订单状态"
+            :current="form.orderStatus"
+            :navType="'order'"
+            :retailOrderCode="form.retailOrderCode"/>
+          <NavTop
+            id="retail-order-status" class="common-section"
+            title="APP订单状态"
+            :current="form.leapAppOrderStatus"/>
+          <section id="basic-info" class="common-section" v-id="isEditing || !_id">
             <div class="common-section-header">
               <h2>基础信息</h2>
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm1" label-width="180px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm1" label-width="180px" class="form-edit">
                 <el-form-item label="商城订单编号：" prop="mallOrderCode">
                   <el-input
                     placeholder="请输入"
@@ -250,85 +244,56 @@
                   />
                 </el-form-item>
               </el-form>
-              <generic-detail-display
-                :formData="form"
-                :fields="displayFields"
-                v-show="!(isEditing || !_id)"
-              />
             </div>
           </section>
-          <section id="car-owner" class="common-section">
-            <div class="common-section-header">
-              <h2>购车人信息</h2>
-            </div>
-            <div class="common-section-body">
-              <generic-detail-display
-                :formData="form.carOwner || {}"
-                :fields="carOwnerDisplayFields"
-              />
-            </div>
-          </section>
-          <section id="order-fund" class="common-section">
-            <div class="common-section-header">
-              <h2>资金信息</h2>
-            </div>
-            <div class="common-section-body">
-              <generic-detail-display
-                :formData="form.orderFund || {}"
-                :fields="orderFundDisplayFields"
-              />
-            </div>
-          </section>
-          <section id="materials" class="common-section">
-            <div class="common-section-header">
-              <h2>订单物料信息</h2>
-            </div>
-            <div class="common-section-body">
-              <generic-detail-display
-                :formData="form.materials || {}"
-                :fields="materialsDisplayFields"
-              />
-            </div>
-          </section>
-          <section id="lock-allocation" class="common-section">
-            <div class="common-section-header">
-              <h2>锁/配车信息</h2>
-            </div>
-            <div class="common-section-body">
-              <generic-detail-display
-                :formData="form"
-                :fields="lockAllocationDisplayFields"
-              />
-            </div>
-          </section>
-          <section id="wholesale" class="common-section">
-            <div class="common-section-header">
-              <h2>批售信息</h2>
-            </div>
-            <div class="common-section-body">
-              <generic-detail-display
-                :formData="form.wholesaleOrderDetail || {}"
-                :fields="wholesaleDisplayFields"
-              />
-            </div>
-          </section>
-          <section id="refund" class="common-section">
-            <div class="common-section-header">
-              <h2>订单取消信息</h2>
-            </div>
-            <div class="common-section-body">
-              <generic-detail-display
-                :formData="form.refundDetail || {}"
-                :fields="refundDisplayFields"
-              />
-            </div>
-          </section>
-          <section id="finance" class="common-section">
+          <generic-detail-display
+            :title="'基础信息'"
+            :formData="form"
+            :fields="displayFields"
+            v-if="!(isEditing || !_id)"
+          />
+          <generic-detail-display
+            id="car-owner" class="common-section"
+            :title="'购车人信息'"
+            :formData="form.carOwner || {}"
+            :fields="carOwnerDisplayFields"
+          />
+          <generic-detail-display
+            id="order-fund" class="common-section"
+            :title="'资金信息'"
+            :formData="form.orderFund || {}"
+            :fields="orderFundDisplayFields"
+          />
+          <generic-detail-display
+            id="materials" class="common-section"
+            :title="'订单物料信息'"
+            :formData="form.materials || {}"
+            :fields="materialsDisplayFields"
+          />
+          <generic-detail-display
+            id="lock-allocation" class="common-section"
+            :title="'锁/配车信息'"
+            :formData="form"
+            :fields="lockAllocationDisplayFields"
+          />
+          <generic-detail-display
+            id="wholesale" class="common-section"
+            :title="'批售信息'"
+            :formData="form.wholesaleOrderDetail || {}"
+            :fields="wholesaleDisplayFields"
+          />
+          <generic-detail-display
+            id="refund" class="common-section"
+            :title="'订单取消信息'"
+            :formData="form.refundDetail || {}"
+            :fields="refundDisplayFields"
+          />
+          <section id="finance" class="common-section" v-if="isEditing || !_id">
             <div class="common-section-header">
               <h2>附属信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" :model="form" ref="ruleForm2" label-width="180px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" ref="ruleForm2" label-width="180px" class="form-edit">
                 <el-form-item label="金融方案：">
                   <fetch-select
                     v-model="form.finance.financialPlan"
@@ -366,44 +331,35 @@
                   />
                 </el-form-item>
               </el-form>
-              <generic-detail-display
-                v-show="!(isEditing || !_id)"
-                :formData="form.finance || {}"
-                :fields="financeDisplayFields"
-              />
             </div>
           </section>
-          <section id="term" class="common-section">
-            <div class="common-section-header">
-              <h2>期限信息</h2>
-            </div>
-            <div class="common-section-body">
-              <generic-detail-display
-                :formData="form"
-                :fields="termDisplayFields"
-              />
-            </div>
-          </section>
-          <section v-for="(tableConfig, index) in tableConfigs" :key="index" class="common-section" :id="tableConfig.sectionId">
-            <div class="common-section-header">
-              <h2>{{ tableConfig.title }}</h2>
-            </div>
-            <div class="common-section-body">
-              <div class="common-section-table">
-                <component-table
-                  :tableDataExternal="form[tableConfig.field]"
-                  :columns="tableConfig.columns"
-                />
-              </div>
-            </div>
-          </section>
+          <generic-detail-display
+            id="finance" class="common-section"
+            :title="'附属信息'"
+            v-if="!(isEditing || !_id)"
+            :formData="form.finance || {}"
+            :fields="financeDisplayFields"
+          />
+          <generic-detail-display
+            id="term" class="common-section"
+            :title="'期限信息'"
+            :formData="form"
+            :fields="termDisplayFields"
+          />
+          <component-table
+            v-for="(tableConfig, index) in tableConfigs"
+            :key="index" class="common-section"
+            :id="tableConfig.sectionId"
+            :tableConfig="tableConfig"
+            :tableDataExternal="form[tableConfig.field]"
+            :columns="tableConfig.columns"
+          />
           <!-- 组件位置不要放在右侧栏组件 -->
            <!-- 修改配置对话框 -->
           <materials-dialog ref="materialsDialog" :row="form" @confirm="getDetailData" />
           <!-- 购车协议对话框 -->
           <purchase-agreement-dialog
             ref="PurchaseAgreementDialog"
-            :visible.sync="agreementDialogVisible"
             :content="agreementDialogContent"
             title="零跑汽车购车协议"
           />
@@ -714,7 +670,6 @@ export default {
       // 2362166807179599872
       // this.form.mallOrderCode
       querySnapShot(this.form.mallOrderCode).then(response => {
-        console.log('response:', response);
         this.agreementDialogContent = response;
         this.$refs.PurchaseAgreementDialog.dialogVisible = true;
       }).catch(() => {
