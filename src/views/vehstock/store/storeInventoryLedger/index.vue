@@ -10,7 +10,7 @@
         <fetch-select :request="fetchOptions" enumCode="vehstock_vechicle_status" v-model="form.vechicleStatusList"
           placeholder="请选择" clearable multiple filterable />
       </el-form-item>
-      <el-form-item label="物料描述">
+      <el-form-item label="物料描述" v-if="this.visibleCount === 3 || show">
         <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
       </el-form-item>
       <template v-if="show">
