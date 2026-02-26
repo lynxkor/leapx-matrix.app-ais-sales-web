@@ -47,11 +47,10 @@
                   :disabled="true"
                 />
               </el-form-item>
-              <el-form-item label="附件说明（文件上传TODO）" prop="changeDescFileId">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.changeDescFileId"
-                  clearable
+              <el-form-item label="附件说明" prop="changeDescFileId">
+                <AisAttachment
+                  :businessId="_id"
+                  ref="attchment"
                 />
               </el-form-item>
             </el-form>
@@ -74,6 +73,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -93,6 +93,9 @@ export default {
       type: [String, Number],
       default: null
     }
+  },
+  components: {
+    AisAttachment,
   },
   computed: {
     _id () {
