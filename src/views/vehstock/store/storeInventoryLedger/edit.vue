@@ -3,14 +3,15 @@
     <template #left>
       <!-- TIPS: 如果需要竖排，direction="vertical" -->
       <edit-base-container ref="containerRef" :id="_id" :title="title" :isEditing.sync="isEditing" :form.sync="form"
-        :originalForm.sync="originalForm" :submitRequest="submitRequest" :detailRequest="detailRequest">
+        :originalForm.sync="originalForm" :submitRequest="submitRequest" :showEditBtn="false"
+        :detailRequest="detailRequest">
         <template #status>
           <span class="status primary">状态</span>
         </template>
         <el-main>
           <section class="common-section">
             <div class="common-section-header">
-              <h2>基础信息</h2>
+              <h2>基本信息</h2>
             </div>
             <div class="common-section-body">
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
@@ -62,7 +63,15 @@
                 <el-form-item label="修改者名称：" prop="modifierName">
                   {{ form.modifierName }}
                 </el-form-item>
-
+              </el-form>
+            </div>
+          </section>
+          <section class="common-section">
+            <div class="common-section-header">
+              <h2>预留锁定信息</h2>
+            </div>
+            <div class="common-section-body">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="是否匹配订单：" prop="lockStatus">
                   {{ form.lockStatusLabel }}
                 </el-form-item>
@@ -93,7 +102,15 @@
                 <el-form-item label="解除预留操作人：" prop="cancelReservedUser">
                   {{ form.cancelReservedUser }}
                 </el-form-item>
-
+              </el-form>
+            </div>
+          </section>
+          <section class="common-section">
+            <div class="common-section-header">
+              <h2>关联单据</h2>
+            </div>
+            <div class="common-section-body">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="承运记录编码：" prop="carrierOrderDetailId">
                   {{ form.carrierOrderDetailId }}
                 </el-form-item>
@@ -118,7 +135,15 @@
                 <el-form-item label="赊销合格证快递单号：" prop="invoiceExpressNo">
                   {{ form.invoiceExpressNo }}
                 </el-form-item>
-
+              </el-form>
+            </div>
+          </section>
+          <section class="common-section">
+            <div class="common-section-header">
+              <h2>出入库信息</h2>
+            </div>
+            <div class="common-section-body">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="物流到店日期：" prop="vehicleArrivalOn">
                   {{ form.vehicleArrivalOn }}
                 </el-form-item>
@@ -188,7 +213,15 @@
                 <el-form-item label="出库类型：" prop="moveoutType">
                   {{ form.moveoutTypeLabel }}
                 </el-form-item>
-
+              </el-form>
+            </div>
+          </section>
+          <section class="common-section">
+            <div class="common-section-header">
+              <h2>跟踪信息</h2>
+            </div>
+            <div class="common-section-body">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="实车交车标识：" prop="vehdeLiveried">
                   {{ form.vehdeLiveriedLabel }}
                 </el-form-item>
@@ -216,7 +249,15 @@
                 <el-form-item label="异常记录时间：" prop="fenceCrossedOn">
                   {{ form.fenceCrossedOn }}
                 </el-form-item>
-
+              </el-form>
+            </div>
+          </section>
+          <section class="common-section">
+            <div class="common-section-header">
+              <h2>调拨情况</h2>
+            </div>
+            <div class="common-section-body">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="调拨单号：" prop="dealerCarTransferCode">
                   {{ form.dealerCarTransferCode }}
                 </el-form-item>
@@ -232,7 +273,15 @@
                 <el-form-item label="调入时间：" prop="moveinOn">
                   {{ form.moveinOn }}
                 </el-form-item>
-
+              </el-form>
+            </div>
+          </section>
+          <section class="common-section">
+            <div class="common-section-header">
+              <h2>物料信息</h2>
+            </div>
+            <div class="common-section-body">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="物料编码：" prop="materialsCode">
                   {{ form.materialsCode }}
                 </el-form-item>
@@ -274,14 +323,22 @@
           </section>
           <section class="common-section">
             <div class="common-section-header">
-              <h2>区块标题</h2>
+              <h2>车辆类型变更记录</h2>
               <el-button v-if="canAddOrUpdate" size="small" @click="handleAddRow"><i
                   class="iconfont icon-lxppc-plus"></i>添加</el-button>
             </div>
             <div class="common-section-body">
               <div class="common-section-table">
-                <edit-table ref="editTable" :columns="columns" :data="tableData" :defaultNewRow="defaultNewRow"
-                  :show-toolbar="false" :options="options" :auth="{ edit: canAddOrUpdate, delete: canDelete }" />
+                <edit-table
+                  ref="editTable"
+                  :columns="columns"
+                  :data="tableData"
+                  :show-toolbar="false"
+                  :show-pagination="true"
+                  :total="total"
+                  @current-page-change="pageChange"
+                  @page-size-change="sizeChange"
+                />
               </div>
             </div>
           </section>
@@ -297,7 +354,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehstock/store/storeInventoryLedger/index';
+import { getDetail, addOrUpdate, getRecord } from '@/api/vehstock/store/storeInventoryLedger/index';
 // import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
@@ -445,7 +502,15 @@ export default {
         }
       },
       immediate: true
-    }
+    },
+    'form.vin': {
+      handler (val) {
+        if (val) {
+          this.getList();
+        }
+      },
+      immediate: true
+    },
   },
   data () {
     const form = this.getDefautlForm();
@@ -460,41 +525,43 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
-      defaultNewRow: {
-        name: '',
+      tableObj: {
+        page: 1,
+        size: 20
       },
-      tableData: [
-        { id: 1, name: '张三', age: 25, email: 'zhangsan@example.com' },
-        { id: 2, name: '李四', age: 30, email: 'lisi@example.com' }
-      ],
-      options: {
-        // 对应表格里选型枚举
-        // 如 type: [{label: 'xxx', value: 'xxx'}]
-      },
+      total: 0,
+      tableData: [],
       // TIPS: 复杂的表格输入项，参考 /dealerTeam/edit.vue
       columns: [
         {
           field: 'name',
-          title: '姓名',
-          width: '33%',
-          editable: true,
-          editRender: { name: 'ElInput' },
-          rules: [
-            { required: true, message: '姓名不能为空', trigger: 'blur' }
-          ]
+          title: '记录号',
+          width: '17%',
         },
         {
-          field: 'age',
-          title: '年龄',
-          editable: true,
-          width: '33%',
-          editRender: { name: 'ElInput', props: { type: 'number' } }
+          field: 'vin',
+          title: '门店库存台账',
+          width: '17%',
         },
         {
-          field: 'email',
-          title: '邮箱',
-          width: '33%',
-          editRender: { name: 'ElInput' }
+          field: 'recordStatusLabel',
+          title: '记录状态',
+          width: '16%',
+        },
+        {
+          field: 'startTime',
+          title: '开始时间',
+          width: '17%',
+        },
+        {
+          field: 'endTime',
+          title: '结束时间',
+          width: '17%',
+        },
+        {
+          field: 'owner',
+          title: '负责人',
+          width: '16%',
         },
       ],
     };
@@ -548,7 +615,25 @@ export default {
         return getEnum(code);
       }
       return [];
-    }
+    },
+    async getList () {
+      const params = {
+        pageNum: this.tableObj.page,
+        pageSize: this.tableObj.size,
+        vin: this.form.vin
+      };
+      const res = await getRecord(params);
+      this.tableData = res.data.records || [];
+      this.total = res.data.total || 0;
+    },
+    pageChange (page) {
+      this.tableObj.page = page;
+      this.getList();
+    },
+    sizeChange (size) {
+      this.tableObj.size = size;
+      this.getList();
+    },
   }
 };
 </script>
