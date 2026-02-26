@@ -51,7 +51,7 @@
             :navType="'order'"
             :retailOrderCode="form.retailOrderCode"/>
           <NavTop
-            id="retail-order-status" class="common-section"
+            id="app-order-status" class="common-section"
             title="APP订单状态"
             :current="form.leapAppOrderStatus"/>
           <section id="basic-info" class="common-section" v-id="isEditing || !_id">
