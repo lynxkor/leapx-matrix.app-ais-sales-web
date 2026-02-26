@@ -297,7 +297,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
+          { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 240 },
           { props: 'auditStatusLabel', label: '审核状态', visible: true, width: 200 },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 200 },

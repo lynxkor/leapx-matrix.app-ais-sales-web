@@ -9,7 +9,7 @@
       <el-form-item label="PDI单号">
         <el-input placeholder="请输入" v-model="form.code" clearable />
       </el-form-item>
-      <el-form-item label="PDI类型">
+      <el-form-item label="PDI类型" v-if="this.visibleCount === 3 || show">
         <fetch-select :request="fetchOptions" enumCode="vehstock_veh_pdi_type" v-model="form.vehPdiType"
           placeholder="请选择" clearable filterable />
       </el-form-item>

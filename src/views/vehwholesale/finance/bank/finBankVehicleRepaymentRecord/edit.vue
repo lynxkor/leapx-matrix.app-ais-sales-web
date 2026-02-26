@@ -171,7 +171,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '账户管理-银行融资信息-银行还款车辆记录管理',
+      pageTitle: '银行还款车辆记录管理',
       pageType: 'edit',
       title: '物料编码：' + form.materialsCode,
       // TIPS: 权限前缀 AISVW，根据实际情况修改

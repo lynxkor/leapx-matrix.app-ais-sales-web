@@ -2,18 +2,17 @@
   <el-dialog
     class="m-materials-dialog"
     title="选择物料配置"
-    width="1400px"
+    width="1200px"
     :visible.sync="dialogVisible"
     @close="close"
     @closed="closed"
     append-to-body
     :z-index="2002"
   >
-    <div class="page-common m-account-list">
       <el-form
         ref="searchForm"
         :model="searchForm"
-        label-width="100px"
+        label-width="120px"
         :inline="true"
         size="small"
         label-position="right"
@@ -87,17 +86,18 @@
         </el-form-item>
       </el-form>
 
+    <div class="page-common m-account-list">
       <div class="table-container">
         <vxe-table
           ref="materialTable"
           :data="materialList"
-          height="400"
+          height="300"
           :radio-config="{ highlight: true }"
           @radio-change="handleRadioChange"
         >
           <vxe-column type="radio" width="60" align="center"></vxe-column>
-          <vxe-column field="materialsCode" title="物料编码" width="150" show-overflow-tooltip></vxe-column>
-          <vxe-column field="materialsDesc" title="物料描述" min-width="200" show-overflow-tooltip></vxe-column>
+          <vxe-column field="materialsCode" title="物料编码" width="200" show-overflow-tooltip></vxe-column>
+          <vxe-column field="materialsDesc" title="物料描述" min-width="360" show-overflow-tooltip></vxe-column>
           <vxe-column field="vehiclePrice" title="定价" width="120"></vxe-column>
           <vxe-column field="deposit" title="定金" width="120"></vxe-column>
           <vxe-column field="seriesName" title="车系" width="120"></vxe-column>
@@ -372,6 +372,9 @@ export default {
     margin-top: 20px;
   }
 
+  ::v-deep .el-input--small {
+    width: 215px;
+  }
   ::v-deep .el-form-item {
     margin-bottom: 12px;
     margin-right: 15px;

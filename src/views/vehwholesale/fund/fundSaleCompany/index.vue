@@ -118,7 +118,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-基础配置-销售公司管理',
+      pageTitle: '销售公司管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundSaleCompany',
@@ -157,14 +157,14 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'companyName', label: '销售公司名称', visible: true, width: 200 },
-          { props: 'wholesaleOnlyLabel', label: '批售专用', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'companyName', label: '销售公司名称', visible: true, width: 260 },
+          { props: 'wholesaleOnlyLabel', label: '批售专用', visible: true, width: 120 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 100 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 120 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改人', visible: true, width: 200 },
-          { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
+          { props: 'modifierName', label: '修改人', visible: true, width: 120 },
+          { props: 'updateTime', label: '修改时间', visible: true, width: 150 },
           {
             props: 'operate',
             label: '操作',
@@ -219,7 +219,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '账户管理-基础配置-销售公司管理',
+        businessType: '销售公司管理',
         dataFetchPath: '/vw/web/fund/fundSaleCompany/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -227,7 +227,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '账户管理-基础配置-销售公司管理.xlsx');
+            await downloadExcel(res.excelUrl, '销售公司管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

@@ -22,7 +22,7 @@
         <el-main>
           <section class="common-section">
             <div class="common-section-header">
-              <h2>基础信息</h2>
+              <h2 v-show="_id">余额信息</h2>
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
@@ -171,7 +171,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '账户管理-基础配置-费用支持类型管理',
+      pageTitle: '费用支持类型管理',
       pageType: 'edit',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundFeeSupportType',

@@ -11,7 +11,7 @@
           :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
           start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
-      <el-form-item label="是否锁零售单">
+      <el-form-item label="是否锁零售单" v-show="this.visibleCount === 3 || show">
         <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.allowLockRetail" placeholder="请选择"
           clearable filterable />
       </el-form-item>

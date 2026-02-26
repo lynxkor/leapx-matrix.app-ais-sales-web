@@ -160,7 +160,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-基础配置-返利自动返还设置管理',
+      pageTitle: '返利自动返还设置管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundRebateReturnConfig',
@@ -200,15 +200,15 @@ export default {
             }]
           },
           { props: 'rebateTypeLabel', label: '返利类型', visible: true, width: 200 },
-          { props: 'vehicleSeriesName', label: '车系名称', visible: true, width: 200 },
-          { props: 'budgetItemName', label: '预算科目', visible: true, width: 200 },
-          { props: 'feeSupportTypeName', label: '费用支持类型', visible: true, width: 200 },
-          { props: 'effectiveStartTime', label: '有效开始日期', visible: true, width: 200 },
-          { props: 'effectiveEndTime', label: '有效结束日期', visible: true, width: 200 },
+          { props: 'vehicleSeriesName', label: '车系名称', visible: true, width: 150 },
+          { props: 'budgetItemName', label: '预算科目', visible: true, width: 220 },
+          { props: 'feeSupportTypeName', label: '费用支持类型', visible: true, width: 150 },
+          { props: 'effectiveStartTime', label: '有效开始日期', visible: true, width: 150 },
+          { props: 'effectiveEndTime', label: '有效结束日期', visible: true, width: 150 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 100 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 100 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',
@@ -264,7 +264,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '账户管理-基础配置-返利自动返还设置管理',
+        businessType: '返利自动返还设置管理',
         dataFetchPath: '/vw/web/fund/fundRebateReturnConfig/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -272,7 +272,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '账户管理-基础配置-返利自动返还设置管理.xlsx');
+            await downloadExcel(res.excelUrl, '返利自动返还设置管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

@@ -168,7 +168,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-赊销管理-自有资金赊销明细管理',
+      pageTitle: '自有资金赊销明细管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundOwnCreditSalesDetail',
@@ -209,22 +209,22 @@ export default {
             }]
           },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
-          { props: 'dealerName', label: '门店名称', visible: true, width: 200 },
-          { props: 'wholesaleOrderCode', label: '整车批售订单', visible: true, width: 200 },
+          { props: 'dealerName', label: '门店名称', visible: true, width: 240 },
+          { props: 'wholesaleOrderCode', label: '整车批售订单', visible: true, width: 240 },
           { props: 'entVehorderCode', label: '企业客户整车订单', visible: true, width: 200 },
           { props: 'vin', label: 'VIN号', visible: true, width: 200 },
-          { props: 'wholesalePrice', label: '批售价/折扣价', visible: true, width: 200 },
-          { props: 'cashAmount', label: '现金金额', visible: true, width: 200 },
-          { props: 'rebateAmount', label: '返利金额', visible: true, width: 200 },
-          { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 200 },
-          { props: 'creditSalesAmount', label: '赊销金额', visible: true, width: 200 },
+          { props: 'wholesalePrice', label: '批售价/折扣价', visible: true, width: 150 },
+          { props: 'cashAmount', label: '现金金额', visible: true, width: 120 },
+          { props: 'rebateAmount', label: '返利金额', visible: true, width: 120 },
+          { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 120 },
+          { props: 'creditSalesAmount', label: '赊销金额', visible: true, width: 100 },
           { props: 'creditSalesTime', label: '赊销时间', visible: true, width: 200 },
-          { props: 'creditSalesDays', label: '赊销天数', visible: true, width: 200 },
+          { props: 'creditSalesDays', label: '赊销天数', visible: true, width: 100 },
           { props: 'repaymentTime', label: '还款时间', visible: true, width: 200 },
-          { props: 'creditSalesFee', label: '赊销费用', visible: true, width: 200 },
-          { props: 'certificateRedemptionApplyId', label: '合格证赎回申请', visible: true, width: 200 },
-          { props: 'overdueFee', label: '超期赊销费用', visible: true, width: 200 },
-          { props: 'penaltyFee', label: '违约金', visible: true, width: 200 },
+          { props: 'creditSalesFee', label: '赊销费用', visible: true, width: 100 },
+          { props: 'certificateRedemptionApplyId', label: '合格证赎回申请', visible: true, width: 120 },
+          { props: 'overdueFee', label: '超期赊销费用', visible: true, width: 120 },
+          { props: 'penaltyFee', label: '违约金', visible: true, width: 100 },
           // { props: 'voucherNo', label: '凭证号', visible: true, width: 200 },
           // { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
@@ -233,7 +233,7 @@ export default {
           // { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
           // { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           // { props: 'remark', label: '备注（说明）', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 100 },
           // { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },
           // { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200 },
           // { props: 'dealerCode', label: '门店编码', visible: true, width: 200 },
@@ -319,7 +319,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '账户管理-赊销管理-自有资金赊销明细管理',
+        businessType: '自有资金赊销明细管理',
         dataFetchPath: '/vw/web/creditsales/fundOwnCreditSalesDetail/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -327,7 +327,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '账户管理-赊销管理-自有资金赊销明细管理.xlsx');
+            await downloadExcel(res.excelUrl, '自有资金赊销明细管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

@@ -1,4 +1,10 @@
 <template>
+  <section class="common-section">
+            <div class="common-section-header">
+              <h2>{{ tableConfig.title }}</h2>
+            </div>
+            <div class="common-section-body">
+              <div class="common-section-table">
   <div class="component-table">
     <vxe-table
       ref="table"
@@ -36,12 +42,19 @@
       />
     </div>
   </div>
+              </div>
+            </div>
+          </section>
 </template>
 
 <script>
 export default {
   name: 'ComponentTable',
   props: {
+    tableConfig: {
+      type: Object,
+      default: () => {}
+    },
     // API方法，接收参数并返回Promise
     apiMethod: {
       type: Function,

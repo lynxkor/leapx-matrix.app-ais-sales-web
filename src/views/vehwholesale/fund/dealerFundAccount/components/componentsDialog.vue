@@ -1,97 +1,155 @@
 <template>
   <el-dialog :title="title" width="1200px" :visible.sync="dialogVisible" @close="handleClose">
-    <div class="page-common m-account-list">
+    <div>
       <el-form
         ref="form"
         :model="form"
-        label-width="120px"
-        :inline="true"
+        label-width="180px"
         size="small"
-        label-position="right"
-        class="ais-search-form"
       >
-      <el-form-item label="返利余额下限（万元）：" class="long_text" v-show="pageTpye === 'setRebateFlag'">
-        <el-input-number v-model="form.rebateBalanceMin" :controls="false" placeholder="请选择" clearable />
-      </el-form-item>
-        <el-form-item label="资金类型：" v-show="pageTpye === 'setRebateFlag'">
-          <fetch-select
-            :options="fundTypeList"
-            v-model="form.fundTypes"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
-          />
-        </el-form-item>
-        <el-form-item label="母公司名称：">
-          <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="是否允许企业订单结算：" class="long_text" v-show="pageTpye === 'setEntOrderSettleFlag'">
-           <fetch-select
-            :request="fetchOptions"
-            enumCode="BooleanEnum"
-            v-model="form.allowUseRebate"
-            placeholder="请选择"
-            clearable
-            filterable
-          />
-        </el-form-item>
-        <el-form-item label="资金类型：" v-show="pageTpye === 'setEntOrderSettleFlag'">
-          <fetch-select
-            :options="fundTypeList"
-            v-model="form.fundTypes"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
-          />
-        </el-form-item>
-        <el-form-item label="是否允许使用返利：" class="long_text" v-show="pageTpye === 'setRebateFlag'">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="BooleanEnum"
-            v-model="form.allowUseRebate"
-            placeholder="请选择"
-            clearable
-            filterable
-          />
-        </el-form-item>
-        <el-form-item label="金融机构：">
-          <fetch-select
-            :remote-method="repairItemSearch"
-            remote
-            reserve-keyword
-            labelKey="name"
-            valueKey="id"
-            v-model="form.financialOrganizationId"
-            placeholder="请选择"
-            clearable
-            filterable
-          />
-          <!-- <el-input v-model="form.allowProductionSchedule"></el-input> -->
-        </el-form-item>
-        <page-search-action
-          v-model="show"
-          :is-expandable="false"
-          :loading="loading"
-          @submit="onSubmit"
-          @reset="onReset"
-        />
-        <!-- <el-form-item label=" ">
-          <el-button :loading="loading" size="medium" class="btn-search" @click="submit">查询</el-button>
-          <el-button size="medium" class="btn-reset" @click="reset">重置</el-button>
-        </el-form-item> -->
+        <template v-if="pageTpye === 'setRebateFlag'">
+          <el-row>
+          <el-col :span="8">
+            <el-form-item label="返利余额下限（万元）：">
+              <el-input-number v-model="form.rebateBalanceMin" :controls="false" placeholder="请选择" clearable />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="资金类型：">
+              <fetch-select
+                :options="fundTypeList"
+                v-model="form.fundTypes"
+                placeholder="请选择"
+                clearable
+                multiple
+                filterable
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="母公司名称：">
+              <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          </el-row>
+          <el-row>
+          <el-col :span="8">
+            <el-form-item label="是否允许使用返利：">
+              <fetch-select
+                :request="fetchOptions"
+                enumCode="BooleanEnum"
+                v-model="form.allowUseRebate"
+                placeholder="请选择"
+                clearable
+                filterable
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="金融机构：">
+              <fetch-select
+                :remote-method="repairItemSearch"
+                remote
+                reserve-keyword
+                labelKey="name"
+                valueKey="id"
+                v-model="form.financialOrganizationId"
+                placeholder="请选择"
+                clearable
+                filterable
+              />
+            </el-form-item>
+          </el-col>
+        <el-col :span="8">
+          <el-form-item label="">
+          <el-button :loading="loading" size="small" type="primary" plain class="btn-search" @click="onSubmit">查询</el-button>
+          <el-button  size="small" class="btn-reset" @click="onReset">重置</el-button>
+          </el-form-item>
+        </el-col>
+          </el-row>
+        </template>
+        <template v-else-if="pageTpye === 'setEntOrderSettleFlag'">
+          <el-row>
+          <el-col :span="8">
+            <el-form-item label="母公司名称：">
+              <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="是否允许企业订单结算：">
+              <fetch-select
+                :request="fetchOptions"
+                enumCode="BooleanEnum"
+                v-model="form.allowUseRebate"
+                placeholder="请选择"
+                clearable
+                filterable
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="资金类型：">
+              <fetch-select
+                :options="fundTypeList"
+                v-model="form.fundTypes"
+                placeholder="请选择"
+                clearable
+                multiple
+                filterable
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="金融机构：">
+              <fetch-select
+                :remote-method="repairItemSearch"
+                remote
+                reserve-keyword
+                labelKey="name"
+                valueKey="id"
+                v-model="form.financialOrganizationId"
+                placeholder="请选择"
+                clearable
+                filterable
+              />
+            </el-form-item>
+          </el-col>
+        <el-col :span="8">
+          <el-form-item label="">
+          <el-button :loading="loading" size="small" type="primary" plain class="btn-search" @click="onSubmit">查询</el-button>
+          <el-button size="small" class="btn-reset" @click="onReset">重置</el-button>
+          </el-form-item>
+        </el-col>
+        </el-row>
+        </template>
       </el-form>
       <div class="ais-actions">
         <!--  TIPS:根据产品增删功能按钮  -->
           <span v-show="pageTpye === 'setEntOrderSettleFlag'">
             <el-button v-permission="moduleKey+'-setSettleSort'" :disabled="selectionList.length === 0" size="small" @click="setSettleSort">批量开启</el-button>
-            <el-button v-permission="moduleKey+'-setSettleSort'" :disabled="selectionList.length === 0" size="small" @click="setEntOrderSettleFlag(0)">批量关闭</el-button>
+            <el-popconfirm
+              style="padding: 0 10px;"
+              title="确定要批量关闭结算订单吗？"
+              @confirm="setEntOrderSettleFlag(0)"
+            >
+              <el-button v-permission="moduleKey+'-setSettleSort'" slot="reference" :disabled="selectionList.length === 0" size="small">批量关闭</el-button>
+            </el-popconfirm>
             <el-button v-permission="moduleKey+'-setSettleSort'" :disabled="selectionList.length === 0" size="small" @click="setSettleSort">系数调整</el-button>
           </span>
           <span v-show="pageTpye === 'setRebateFlag'">
-            <el-button v-permission="moduleKey+'-setRebateFlag'" :disabled="selectionList.length === 0" size="small" @click="handleBatchEnable(1)">批量启用</el-button>
-            <el-button v-permission="moduleKey+'-setRebateFlag'" :disabled="selectionList.length === 0" size="small" @click="handleBatchEnable(0)">批量停用</el-button>
+            <el-popconfirm
+              style="padding: 0 10px;"
+              title="确定要批量启用返利吗？"
+              @confirm="handleBatchEnable(1)"
+            >
+            <el-button v-permission="moduleKey+'-setRebateFlag'" slot="reference" :disabled="selectionList.length === 0" size="small">批量启用</el-button>
+            </el-popconfirm>
+            <el-popconfirm
+              title="确定要批量关闭返利吗？"
+              @confirm="handleBatchEnable(0)"
+            >
+            <el-button v-permission="moduleKey+'-setRebateFlag'" slot="reference" :disabled="selectionList.length === 0" size="small">批量关闭</el-button>
+            </el-popconfirm>
           </span>
       </div>
       <section class="common-section">
@@ -116,13 +174,16 @@
         <el-button size="small" @click="dialogVisible = false">取 消</el-button>
         <el-button size="small" type="primary" @click="confirm">确 定</el-button>
       </div> -->
-    </div>
-     <el-dialog
+    </div><el-dialog
       width="300px"
-      title="请输入调整后系数"
       :visible.sync="innerVisible"
-      append-to-body>
+      append-to-body
+      :show-header="false"
+      :close-on-click-modal="false"
+      custom-class="no-padding-dialog">
+      <div class="input-with-buttons">
         <div class="centered-input">
+          <div>请输入调整后系数</div>
           <el-input-number
             placeholder="请输入"
             v-model="entOrderQuota"
@@ -134,9 +195,10 @@
             @change="validateInput"
           />
         </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="entOrderQuotaCLose">取消</el-button>
-        <el-button size="small" type="primary" @click="entOrderQuotaSubmit">确定</el-button>
+        <div class="button-group">
+          <el-button size="small" @click="entOrderQuotaCLose">取消</el-button>
+          <el-button size="small" type="primary" @click="entOrderQuotaSubmit">确定</el-button>
+        </div>
       </div>
     </el-dialog>
   </el-dialog>
@@ -146,7 +208,6 @@
 
 import debounce from 'lodash.debounce';
 import EditTable from '@/libs/components/EditTable';
-import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, setEntOrderSettleFlag, setRebateFlag } from '@/api/vehwholesale/fund/account/index';
 import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import { getEnum } from '@/api/common';
@@ -189,23 +250,9 @@ export default {
   components: {
     TagInput,
     FetchSelect,
-    EditTable,
-    PageSearchAction
+    EditTable
   },
   computed: {
-    currentPageType () {
-      return this.pageTpye; // 将 pageTpye 转换为计算属性
-    }
-  },
-  watch: {
-    currentPageType: {
-      immediate: true, // 确保组件初始化时也能触发
-      handler (newVal) {
-        if (newVal) {
-          this.updateDialogContent(newVal); // 根据新的 pageTpye 更新内容
-        }
-      }
-    }
   },
   data () {
     return {
@@ -295,30 +342,30 @@ export default {
       this.debouncedGetData();
     },
     handleBatchEnable (val) {
-      let msg = val ? '启用' : '关闭';
-      this.$confirm(`确定要批量${msg}返利吗？`).then(() => {
-        let params = {
-          ids: this.selectionList.map(item => item.id),
-          allowUseRebate: val
-        };
-        setRebateFlag(params).then(res => {
-          let message = val ? '批量启用成功' : '批量关闭成功';
-          this.$message.success(message);
-          this.getData();
-        }).catch(() => {});
+      // let msg = val ? '启用' : '关闭';
+      // this.$confirm(`确定要批量${msg}返利吗？`).then(() => {
+      let params = {
+        ids: this.selectionList.map(item => item.id),
+        allowUseRebate: val
+      };
+      setRebateFlag(params).then(res => {
+        let message = val ? '批量启用成功' : '批量关闭成功';
+        this.$message.success(message);
+        this.getData();
       }).catch(() => {});
+      // }).catch(() => {});
     },
     setEntOrderSettleFlag (val) {
-      this.$confirm('确定要批量关闭结算订单吗？').then(() => {
-        let params = {
-          ids: this.selectionList.map(item => item.id),
-          allowEntOrderSettle: val
-        };
-        setEntOrderSettleFlag(params).then(res => {
-          this.$message.success('批量关闭成功');
-          this.getData();
-        }).catch(() => {});
+      // this.$confirm('确定要批量关闭结算订单吗？').then(() => {
+      let params = {
+        ids: this.selectionList.map(item => item.id),
+        allowEntOrderSettle: val
+      };
+      setEntOrderSettleFlag(params).then(res => {
+        this.$message.success('批量关闭成功');
+        this.getData();
       }).catch(() => {});
+      // }).catch(() => {});
     },
     setSettleSort () {
       console.log('this.selectionList:', this.selectionList);
@@ -413,7 +460,7 @@ export default {
   ::v-deep .el-form-item__label {
     line-height: 20px;
   }
-  ::v-deep .el-input-number--small {
+  ::v-deep .el-input-number--small,.el-input-number {
     width: 100%;
   }
 }
@@ -422,10 +469,41 @@ export default {
   display: flex;
   justify-content: flex-end;
 }
-/* 输入框居中样式 */
+
+/* 自定义无边距对话框样式 */
+::v-deep .no-padding-dialog {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  .el-dialog__body {
+    padding: 0;
+  }
+  .el-dialog__header {
+    display: none;
+  }
+  .el-dialog__footer {
+    display: none;
+  }
+}
+.input-with-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 24px 32px 12px 32px;
+}
 .centered-input {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+}
+
+::v-deep .el-input-number--small,.el-input-number {
+    width: 100%;
+  }
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-bottom: 10px;
 }
 </style>

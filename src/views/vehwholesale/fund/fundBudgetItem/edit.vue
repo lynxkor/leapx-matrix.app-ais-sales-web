@@ -159,7 +159,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '账户管理-基础配置-预算科目管理',
+      pageTitle: '预算科目管理',
       pageType: 'edit',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundBudgetItem',

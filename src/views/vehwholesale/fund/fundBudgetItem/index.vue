@@ -120,7 +120,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-基础配置-预算科目管理',
+      pageTitle: '预算科目管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundBudgetItem',
@@ -145,7 +145,7 @@ export default {
             props: 'budgetItemName',
             label: '预算科目名称',
             visible: true,
-            width: 200,
+            width: 180,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -159,12 +159,12 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'budgetItemCode', label: '预算科目编码', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'statusDesc', label: '说明', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
+          { props: 'budgetItemCode', label: '预算科目编码', visible: true, width: 120 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 100 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 150 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 120 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改人', visible: true, width: 200 },
+          { props: 'modifierName', label: '修改人', visible: true, width: 120 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
             props: 'operate',
@@ -220,7 +220,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '账户管理-基础配置-预算科目管理',
+        businessType: '预算科目管理',
         dataFetchPath: '/vw/web/fund/fundBudgetItem/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -228,7 +228,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '账户管理-基础配置-预算科目管理.xlsx');
+            await downloadExcel(res.excelUrl, '预算科目管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

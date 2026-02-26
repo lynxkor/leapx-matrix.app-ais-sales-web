@@ -172,6 +172,10 @@
     <BatchReviewDialog
       ref="showBatchReview" @callReviewParentMethod="batchReviewgetData">
     </BatchReviewDialog>
+    <audit-dialog
+      ref="auditDialogRef"
+      @audit="handleAudit"
+    />
   </div>
 </template>
 
@@ -179,7 +183,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehwholesale/rebate/fundVehicleRebateBillDetail/index';
+import { getList, deleteItem, enableItem, reviewItem, auditItem } from '@/api/vehwholesale/rebate/fundVehicleRebateBillDetail/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelList, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -195,7 +199,7 @@ import TagInput from '@/libs/components/TagInput';
 import BatchAuditDialog from '../components/batchAudit';
 import BatchReviewDialog from '../components/batchReview';
 import dateranges from '@/libs/components/dateranges';
-
+import auditDialog from '@/libs/components/auditDialog';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   creatorName: '',
@@ -230,12 +234,13 @@ export default {
     TagInput,
     BatchAuditDialog,
     BatchReviewDialog,
-    dateranges
+    dateranges,
+    auditDialog
 
   },
   data () {
     return {
-      pageTitle: '账户管理-整车返利-整车返利核算单明细管理',
+      pageTitle: '整车返利核算单明细管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-fundVehicleRebateBillDetail',
@@ -251,6 +256,7 @@ export default {
       exportLoading: false,
       uploadDialogVisible: false,
       batchAuditDialogVisible: false,
+      reviewFalg: false,
       clickItemId: '',
       optionObj: {
         id: 'fundVehicleRebateBillDetailTable',
@@ -278,34 +284,34 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
-          { props: 'dealerName', label: '门店名称', visible: true, width: 200 },
-          { props: 'periodLabel', label: '周期', visible: true, width: 200 },
-          { props: 'year', label: '年度', visible: true, width: 200 },
-          { props: 'quarterLabel', label: '季度', visible: true, width: 200 },
-          { props: 'monthLabel', label: '月度', visible: true, width: 200 },
-          { props: 'rebateTypeLabel', label: '返利类型', visible: true, width: 200 },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260 },
+          { props: 'dealerName', label: '门店名称', visible: true, width: 240 },
+          { props: 'periodLabel', label: '周期', visible: true, width: 100 },
+          { props: 'year', label: '年度', visible: true, width: 100 },
+          { props: 'quarterLabel', label: '季度', visible: true, width: 100 },
+          { props: 'monthLabel', label: '月度', visible: true, width: 100 },
+          { props: 'rebateTypeLabel', label: '返利类型', visible: true, width: 120 },
           { props: 'vin', label: 'VIN号', visible: true, width: 200 },
           { props: 'bizOrderNo', label: '业务单据号', visible: true, width: 200 },
-          { props: 'rebateAmount', label: '核销金额', visible: true, width: 200 },
-          { props: 'accruedAmount', label: '预提金额', visible: true, width: 200 },
-          { props: 'modelName', label: '基本车型', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系', visible: true, width: 200 },
+          { props: 'rebateAmount', label: '核销金额', visible: true, width: 100 },
+          { props: 'accruedAmount', label: '预提金额', visible: true, width: 100 },
+          { props: 'modelName', label: '基本车型', visible: true, width: 120 },
+          { props: 'seriesName', label: '车系', visible: true, width: 100 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'billStatusLabel', label: '单据状态', visible: true, width: 200 },
-          { props: 'budgetItemName', label: '预算科目', visible: true, width: 200 },
-          { props: 'feeSupportTypeName', label: '费用支持类型', visible: true, width: 200 },
-          { props: 'auditorName', label: '初审人', visible: true, width: 200 },
+          { props: 'billStatusLabel', label: '单据状态', visible: true, width: 100 },
+          { props: 'budgetItemName', label: '预算科目', visible: true, width: 100 },
+          { props: 'feeSupportTypeName', label: '费用支持类型', visible: true, width: 150 },
+          { props: 'auditorName', label: '初审人', visible: true, width: 100 },
           { props: 'auditTime', label: '初审时间', visible: true, width: 200 },
           { props: 'auditOpinion', label: '初审意见', visible: true, width: 200 },
-          { props: 'reviewName', label: '复审人', visible: true, width: 200 },
+          { props: 'reviewName', label: '复审人', visible: true, width: 100 },
           { props: 'reviewTime', label: '复审时间', visible: true, width: 200 },
-          { props: 'reviewOpinion', label: '复审意见', visible: true, width: 200 },
-          { props: 'postedLabel', label: '是否入账', visible: true, width: 200 },
-          { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 200 },
+          { props: 'reviewOpinion', label: '复审意见', visible: true, width: 120 },
+          { props: 'postedLabel', label: '是否入账', visible: true, width: 100 },
+          { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 100 },
           { props: 'deliveryOrderCode', label: '交车单号', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 100 },
           // { props: 'modifierName', label: '更新人', visible: true, width: 200 },
           // { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
           // // { props: 'rebateBillDetailCode', label: '返利核算单明细编号', visible: true, width: 200 },
@@ -430,7 +436,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '账户管理-整车返利-整车返利核算单明细管理',
+        businessType: '整车返利核算单明细管理',
         dataFetchPath: '/vw/web/rebate/fundVehicleRebateBillDetail/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -438,7 +444,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '账户管理-整车返利-整车返利核算单明细管理.xlsx');
+            await downloadExcel(res.excelUrl, '整车返利核算单明细管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -548,11 +554,13 @@ export default {
       return arr.every(item => item === targetValue);
     },
     handleBatchReview () {
+      this.reviewFalg = true;
       const BatchReviewIds = this.selectionList.map(item => item.id) || [];
       if (BatchReviewIds.length > 0) {
         const billStatues = this.selectionList.map(item => item.billStatus) || [];
         if (this.isAllSpecifiedValue(billStatues, 1040)) {
-          this.$refs.showBatchReview.showOrHide('isSelect', BatchReviewIds);
+          // this.$refs.showBatchReview.showOrHide('isSelect', BatchReviewIds);
+          this.$refs.auditDialogRef.show();
         } else {
           this.$message({
             type: 'warning',
@@ -563,12 +571,33 @@ export default {
         this.$refs.showBatchReview.showOrHide('notSelect');
       }
     },
+    handleAudit (data) {
+      const ids = this.selectionList.map(item => item.id) || [];
+      let params = {
+        ids: ids,
+        opinion: data.remark,
+        passOrReject: data.result
+      };
+      if (this.reviewFalg) { // 批量复审
+        reviewItem(params).then(res => {
+          this.$message.success('批量复审成功');
+        }).catch(() => {});
+      } else { // 初审
+        auditItem(params).then(res => {
+          this.$message.success('批量初审成功');
+          this.getData();
+        }).catch(() => {});
+      }
+      this.getData();
+    },
     handleBatchAudit () {
+      this.reviewFalg = false;
       const BatchAuditIds = this.selectionList.map(item => item.id) || [];
       if (BatchAuditIds.length > 0) {
         const billStatuss = this.selectionList.map(item => item.billStatus) || [];
         if (this.isAllSpecifiedValue(billStatuss, 1020)) {
-          this.$refs.showBatchAudit.showOrHide('isSelect', BatchAuditIds);
+          // this.$refs.showBatchAudit.showOrHide('isSelect', BatchAuditIds);
+          this.$refs.auditDialogRef.show();
         } else {
           this.$message({
             type: 'warning',

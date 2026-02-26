@@ -1,38 +1,13 @@
 <template>
   <div>
   <el-dialog
-    class="batchReview-dialog"
-    title=""
-    width="800px"
-    :visible.sync="dialogVisible"
-    @close="reviewClose"
-  >
-    <el-form ref="SelectformRef" :model="Selectform"  :label-width="formLabelWidth">
-      <el-form-item label="复审结果：" prop="passOrReject">
-         <el-select v-model="Selectform.passOrReject" placeholder="请选择" clearable style="width: 100%">
-            <el-option label="通过" value='1'/>
-            <el-option label="驳回" value='0' />
-         </el-select>
-      </el-form-item>
-      <el-form-item label="复审意见：" prop="opinion">
-        <el-input v-model="Selectform.opinion" autocomplete="off" />
-      </el-form-item>
-    </el-form>
-    <template v-slot:footer>
-      <div class="dialog-footer" style="text-align: center;">
-        <el-button :loading="submitLoading" type="primary" @click="submit()">确 定</el-button>
-        <el-button @click="reviewClose()">取 消</el-button>
-      </div>
-    </template>
-  </el-dialog>
-
-  <el-dialog
     class="filter-batchReview-dialog"
-    title="设置复审数据过滤条件"
+    title="筛选复审数据"
     width="800px"
     :visible.sync="filterDialogVisible"
     @close="close"
   >
+   <h3>筛选复审结果</h3>
     <el-form ref="filterReviewformRef" :model="filterReviewform"  :label-width="formLabelWidth">
       <el-form-item label="单据状态">
           <el-input type="text" v-model="billStatus" placeholder="请选择" style="width: 100%" disabled=""/>
@@ -78,52 +53,48 @@
       <el-form-item label="创建人" prop="creatorName">
         <el-input v-model="filterReviewform.creatorName" autocomplete="off" />
       </el-form-item>
-    </el-form>
-    <template v-slot:footer>
-      <div class="dialog-footer" style="text-align: center;">
-        <el-button :loading="submitLoading" type="primary" @click="reviewApp()">复审通过</el-button>
-        <el-button :loading="submitLoading"  @click="reviewRej()">复审驳回</el-button>
-      </div>
-    </template>
-  </el-dialog>
-
-   <el-dialog
-    class="audit-total-dialog"
-    title=""
-    width="800px"
-    :visible.sync="totalDialogVisible"
-    @close="reviewAppClose"
-  >
-    <el-form ref="reviewAllformRef" :model="reviewAllform"  :label-width="formLabelWidth">
-      <p>本次复审记录数： {{ reviewNum }}, 合计核销金额：{{ reviewCount }}</p>
-    </el-form>
-    <template v-slot:footer>
-      <div class="dialog-footer" style="text-align: center;">
-        <el-button :loading="submitLoading"  @click="reviewAppClose()">取消</el-button>
-        <el-button :loading="submitLoading" type="primary" @click="reviewAppSure()">复审确认</el-button>
-      </div>
-    </template>
-  </el-dialog>
-
-  <el-dialog
-    class="review-reject-dialog"
-    title=""
-    width="800px"
-    :visible.sync="reviewRejectlogVisible"
-    @close="reviewRejectClose"
-  >
-   <el-form ref="rejectformRef" :model="reviewRjectform"  :label-width="formLabelWidth">
-      <el-form-item label="复审结果：">
-        <el-input v-model="rejectPassOrReject" autocomplete="off" disabled=""/>
-      </el-form-item>
-      <el-form-item label="复审意见：" prop="opinion">
-        <el-input v-model="reviewRjectform.opinion" autocomplete="off" />
+       <el-form-item label-width="40px" v-show="filterResult">
+        <div class="filter-result-container">
+          <span class="result-text">{{ filterResult }}</span>
+          <el-button
+            type="text"
+            size="small"
+            @click="reviewApp()"
+            class="refresh-btn"
+            v-if="filterResult"
+          >
+            <i class="el-icon-refresh"></i>
+          </el-button>
+        </div>
       </el-form-item>
     </el-form>
+      <h3>复审结果</h3>
+     <el-form ref="reviewformRef" :model="reviewform"  :label-width="formLabelWidth" :rules="resultRules">
+      <el-form-item label="复审结果" prop="passOrReject">
+         <el-radio-group v-model="reviewform.passOrReject" @change="handleRadioChange">
+          <el-radio :label="1">通过</el-radio>
+          <el-radio :label="0">驳回</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item
+         :prop="reviewform.passOrReject === 0 ? 'opinion' : ''"
+      >
+        <template #label>
+          <span v-html="reviewform.passOrReject === 0 ? '<span style=\'color: red\'>*</span> 初审意见' : '初审意见'"></span>
+        </template>
+        <el-input
+          v-model="reviewform.opinion"
+          :rows="4"
+          placeholder="复审意见"
+          type="textarea"
+        />
+      </el-form-item>
+    </el-form>
+
     <template v-slot:footer>
-      <div class="dialog-footer" style="text-align: center;">
-        <el-button :loading="submitLoading" type="primary" @click="reviewRejectSubmit()">确 定</el-button>
-        <el-button @click="reviewRejectClose()">取 消</el-button>
+      <div class="dialog-footer" >
+        <el-button :loading="submitLoading"  @click="close()">取消</el-button>
+        <el-button :loading="submitLoading" type="primary" @click="reviewConfirm()">确认</el-button>
       </div>
     </template>
   </el-dialog>
@@ -160,12 +131,10 @@ export default {
     return {
       dialogVisible: this.batchReviewVisible,
       filterDialogVisible: this.filterBatchReviewVisible,
-      totalDialogVisible: false,
       reviewRejectlogVisible: false,
       rejectPassOrReject: '驳回',
-      reviewNum: 0,
-      reviewCount: 0,
       billStatus: '已初审',
+      filterResult: '',
       pickerOptions: {
         shortcuts: [{
           text: '最近一周',
@@ -193,13 +162,13 @@ export default {
           }
         }]
       },
+      reviewform: {
+        opinion: '',
+        passOrReject: ''
+      },
       Selectform: {
         opinion: '',
         passOrReject: '',
-      },
-      reviewRjectform: {
-        opinion: '',
-        passOrReject: 0
       },
       filterReviewform: {
         billStatus: 1040,
@@ -208,6 +177,27 @@ export default {
         bizOrderNo: '',
         budgetItemId: '',
         creatorName: ''
+      },
+      resultRules: {
+        passOrReject: [
+          { required: true, message: '请选择复审结果', trigger: 'blur' }
+        ],
+        opinion: [
+          {
+            validator: (rule, value, callback) => {
+              if (this.reviewform.passOrReject === 0) {
+                if (!value || value.trim() === '') {
+                  callback(new Error('复审意见为必填项'));
+                } else {
+                  callback();
+                }
+              } else {
+                callback();
+              }
+            },
+            trigger: ['blur', 'change']
+          }
+        ]
       },
       reviewAllform: {},
       submitLoading: false,
@@ -226,6 +216,15 @@ export default {
     }
   },
   methods: {
+    handleRadioChange (value) {
+      if (value === 1) {
+        this.$refs.reviewformRef.clearValidate('opinion');
+        this.reviewApp();
+      } else if (value === 0) {
+        this.filterResult = '';
+        this.$refs.reviewformRef.validateField('opinion');
+      }
+    },
     async getFundBudgetItemList (params) {
       return fundBudgetItemList({ budgetItemNameLike: params });
     },
@@ -249,17 +248,13 @@ export default {
     },
     close () {
       this.dialogVisible = false;
+      this.filterDialogVisible = false;
       this.$refs.filterReviewformRef.resetFields();
       this.filterReviewform.rebateType = '';
       this.filterReviewform.budgetItemId = '';
-    },
-    rejectClose () {
-      this.reviewRejectlogVisible = false;
-      this.$refs.reviewAllformRef.resetFields();
-    },
-    reviewRejectClose () {
-      this.reviewRejectlogVisible = false;
-      this.$refs.rejectformRef.resetFields();
+      this.$refs.reviewformRef.resetFields();
+      this.filterResult = '';
+      this.reviewform.opinion = '';
     },
     getFormData (val) {
       const data = { ...val };
@@ -278,23 +273,8 @@ export default {
       return data;
     },
     reviewApp () {
-      this.totalDialogVisible = true;
       statTotalRebate({ ...this.getFormData(this.filterReviewform) }).then(res => {
-        this.reviewNum = res.qty;
-        this.reviewCount = res.totalRebateAmount;
-      }).catch(() => {});
-    },
-    reviewAppClose () {
-      this.totalDialogVisible = false;
-    },
-    reviewAppSure () {
-      let approveParams = { ...this.getFormData(this.filterReviewform) };
-      approveParams.passOrReject = 1;
-      reviewItem(approveParams).then(res => {
-        this.totalDialogVisible = false;
-        this.filterDialogVisible = false;
-        this.$emit('callReviewParentMethod');
-        this.$message.success('批量复审成功');
+        this.filterResult = `筛选复审记录数：${res.qty}, 合计核销金额：${res.totalRebateAmount}`;
       }).catch(() => {});
     },
     reviewRej () {
@@ -306,21 +286,20 @@ export default {
       //   this.$message.success(复审成功');
       // }).catch(() => {});
     },
-    reviewRejectSubmit () {
-      let rejectParams = { ...this.filterReviewform, ...this.reviewRjectform };
-      // rejectParams.passOrReject = 0;
-      if (rejectParams.opinion === undefined || rejectParams.opinion === '' || rejectParams.opinion.length === 0) {
-        this.$message({
-          type: 'warning',
-          message: '复审意见必填!'
-        });
-      } else if (rejectParams.opinion && rejectParams.opinion.length > 0) {
-        reviewItem(rejectParams).then(res => {
-          this.$message.success('批量复审成功');
-          this.reviewRejectlogVisible = false;
-          this.filterDialogVisible = false;
-        }).catch(() => {});
-      }
+    reviewConfirm () {
+      this.$refs.reviewformRef.validate((valid) => {
+        if (valid) {
+          let params = { ...this.filterReviewform, ...this.reviewform };
+          reviewItem({ ...this.getFormData(params) }).then(res => {
+            this.$message.success('批量复审成功');
+            this.close();
+            this.$emit('callParentMethod');
+          }).catch(() => {});
+        } else {
+          this.$message.error('请完成必填项填写！');
+          return false;
+        }
+      });
     },
     submit () {
       let params = {
@@ -357,6 +336,31 @@ export default {
 .batchReview-dialog {
   .el-input-number {
     width: 100%;
+  }
+}
+.filter-result-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: var(--leap-color-default-light-5);
+  border: 1px dashed var(--leap-color-default-light-3);
+  border-radius: 4px;
+}
+
+.result-text {
+  font-size: 14px;
+  color: var(--leap-color-default-light-1);
+  line-height: 1.5;
+}
+
+.refresh-btn {
+  padding: 0;
+  margin-left: 10px;
+  color: var(--leap-color-primary);
+  cursor: pointer;
+  &:hover {
+    color: var(--leap-color-primary-light-3);
   }
 }
 </style>

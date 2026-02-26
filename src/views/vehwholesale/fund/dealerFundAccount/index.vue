@@ -17,7 +17,7 @@
           clearable
         /> -->
       </el-form-item>
-      <el-form-item label="母公司名称"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="母公司名称">
         <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
         <!-- <el-input
           placeholder="请输入"
@@ -25,18 +25,18 @@
           clearable
         /> -->
       </el-form-item>
+      <el-form-item label="资金类型" v-show="this.visibleCount === 3 || show">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="vw_fundtype"
+          v-model="form.fundTypes"
+          placeholder="请选择"
+          clearable
+          multiple
+          filterable
+        />
+      </el-form-item>
       <template v-if="show">
-        <el-form-item label="资金类型">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="vw_fundtype"
-            v-model="form.fundTypes"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
-          />
-        </el-form-item>
         <el-form-item label="金融机构名称">
           <fetch-select
             :remote-method="repairItemSearch"
@@ -170,7 +170,7 @@ export default {
       accountFlag: null, // 账户标识  true: 是店端账号；false: 厂端账号
       parentOrg: {}, // 父级组织
       dialogTpye: '',
-      pageTitle: '账户管理-整车资金-整车资金账户管理',
+      pageTitle: '整车资金账户管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-dealerFundAccount',
@@ -212,19 +212,19 @@ export default {
             props: 'dealerCompanyCode',
             label: '母公司编码',
             visible: true,
-            width: 200
+            width: 150
           },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
-          { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 200 },
-          { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 200 },
-          { props: 'settleSort', label: '资金结算顺序', visible: true, width: 200 },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260 },
+          { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 100 },
+          { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 120 },
+          { props: 'settleSort', label: '资金结算顺序', visible: true, width: 120 },
           { props: 'allowUseRebateLabel', label: '是否允许使用返利', visible: true, width: 200 },
           { props: 'allowEntOrderSettleLabel', label: '是否允许企业订单结算', visible: true, width: 200 },
           { props: 'entOrderQuota', label: '企业订单额度系数', visible: true, width: 200 },
-          { props: 'availableBalance', label: '可用余额', visible: true, width: 200 },
-          { props: 'frozenBalance', label: '冻结余额', visible: true, width: 200 },
-          { props: 'totalRechargeAmount', label: '累计充值金额', visible: true, width: 200 },
-          { props: 'totalSettleAmount', label: '累计结算金额', visible: true, width: 200 },
+          { props: 'availableBalance', label: '可用余额', visible: true, width: 100 },
+          { props: 'frozenBalance', label: '冻结余额', visible: true, width: 100 },
+          { props: 'totalRechargeAmount', label: '累计充值金额', visible: true, width: 100 },
+          { props: 'totalSettleAmount', label: '累计结算金额', visible: true, width: 150 },
           { props: 'lastTradeTime', label: '最近交易时间', visible: true, width: 200 },
           { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
@@ -274,7 +274,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '账户管理-整车资金-整车资金账户管理',
+        businessType: '整车资金账户管理',
         dataFetchPath: '/vw/web/fund/dealerFundAccount/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -282,7 +282,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '账户管理-整车资金-整车资金账户管理.xlsx');
+            await downloadExcel(res.excelUrl, '整车资金账户管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

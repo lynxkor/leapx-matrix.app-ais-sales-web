@@ -210,7 +210,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehstock/vdc/vehiclePo/detail',
+                  path: '/vehstock/vdc/vehiclePo/edit',
                   query: {
                     id: row.id
                   }

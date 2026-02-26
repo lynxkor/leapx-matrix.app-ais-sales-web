@@ -386,7 +386,7 @@ export default {
     detailRequest () {
       const id = this._id;
       if (!this.id) {
-        this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销售管理-商品管理-商品中心管理', `${id ? '详情' : '新建'}`]);
+        this.$store.commit('SET_ACTIVE_BREADCRUMB', ['商品中心管理', `${id ? '详情' : '新建'}`]);
       }
       if (id) {
         return getDetail({ productId: id }).then(res => {
