@@ -130,3 +130,11 @@ export function querySnapShot (data) {
 export function changeOrderMaterials (data) {
   return api.jsonPost(prefix + 'changeOrderMaterials', data);
 }
+
+/**
+ * 设置特殊备注
+ * @param {Object} data
+ */
+export function setSpecialRemark (data) {
+  return api.jsonPost(prefix + 'setSpecialRemark', data);
+}
