@@ -12,43 +12,35 @@
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
       >
-        <template #status>
-          <!-- 支持primary,warning,success,danger等状态 -->
-          <!-- <span class="status primary">状态</span> -->
-        </template>
-        <!-- <template #extraButtons>
-          <el-button size="small">按钮1111</el-button>
-          <el-button size="small">按钮2</el-button>
-        </template> -->
         <el-main>
           <section class="common-section">
             <div class="common-section-header">
               <h2>销售顾问配置</h2>
              <div>
-              <el-button size="small" type="primary">编辑</el-button>
+              <el-button size="small" type="primary" @click="editSalesConfig">编辑</el-button>
              </div>
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="销售顾问配置：" prop="id">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm2" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+                <el-form-item label="销售顾问配置：" prop="saleDeliveryUserConfigName">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.id"
+                    v-model="form.saleDeliveryUserConfigName"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="交付顾问配置：" prop="creator">
+                <el-form-item label="交付顾问配置：" prop="deliveryUserConfigName">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.creator"
+                    v-model="form.deliveryUserConfigName"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="交付衍生工程师配置：" prop="creatorName">
+                <el-form-item label="交付衍生工程师配置：" prop="deliveryDeriveConfigName">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.creatorName"
+                    v-model="form.deliveryDeriveConfigName"
                     clearable
                   />
                 </el-form-item>
@@ -60,46 +52,46 @@
               <h2>交付配置</h2>
              <div>
               <el-button size="small">取消</el-button>
-              <el-button size="small" type="primary">保存</el-button>
+              <el-button size="small" type="primary" @click="save">保存</el-button>
              </div>
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="赊销车辆是否还款：" prop="id">
+                <el-form-item label="赊销车辆是否还款：" prop="creditStatus">
                   <fetch-select
                       :request="fetchOptions"
                       enumCode="BooleanEnum"
-                      v-model="form.preSaleUrgentStatus"
+                      v-model="form.creditStatus"
                       placeholder="请选择"
                       clearable
                       filterable
                     />
                 </el-form-item>
-                <el-form-item label="融资车辆是否还款：" prop="creator">
+                <el-form-item label="融资车辆是否还款：" prop="financeStatus">
                   <fetch-select
                       :request="fetchOptions"
                       enumCode="BooleanEnum"
-                      v-model="form.preSaleUrgentStatus"
+                      v-model="form.financeStatus"
                       placeholder="请选择"
                       clearable
                       filterable
                     />
                 </el-form-item>
-                <el-form-item label="手机号注册校验：" prop="creatorName">
+                <el-form-item label="手机号注册校验：" prop="phoneRegisterStatus">
                  <fetch-select
                       :request="fetchOptions"
                       enumCode="BooleanEnum"
-                      v-model="form.preSaleUrgentStatus"
+                      v-model="form.phoneRegisterStatus"
                       placeholder="请选择"
                       clearable
                       filterable
                     />
                 </el-form-item>
-                  <el-form-item label="交车单分派通知：" prop="creatorName">
+                  <el-form-item label="交车单分派通知：" prop="deliveryAssignmentStatus">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.creatorName"
+                    v-model="form.deliveryAssignmentStatus"
                     clearable
                   />
                 </el-form-item>
@@ -109,16 +101,11 @@
         </el-main>
       </edit-base-container>
     </template>
-    <template #right>
-      <div class="page-common-edit">
-        <!-- 右侧栏组件，自行开发 -->
-      </div>
-    </template>
   </edit-page-layout>
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehretail/bizMasterData/configMasterData/salesConfig/index';
+import { getDetail, addOrUpdate, getsalesConfig } from '@/api/vehretail/bizMasterData/configMasterData/salesConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 // import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
@@ -203,57 +190,126 @@ export default {
       },
       // TIPS: 复杂的表格输入项，参考 /dealerTeam/edit.vue
       rules: {
-        id: [
-          { required: true, message: '请输入主键', trigger: 'change' }
-        ],
-        creator: [
-          { required: true, message: '请输入创建者', trigger: 'change' }
-        ],
-        creatorName: [
-          { required: true, message: '请输入创建者名称', trigger: 'change' }
-        ],
-        createTime: [
-          { required: true, message: '请选择创建时间', trigger: 'change' }
-        ],
-        modifier: [
-          { required: true, message: '请输入修改者', trigger: 'change' }
-        ],
-        modifierName: [
-          { required: true, message: '请输入修改者名称', trigger: 'change' }
-        ],
-        updateTime: [
-          { required: true, message: '请选择修改时间', trigger: 'change' }
-        ],
-        remark: [
-          { required: true, message: '请输入备注', trigger: 'change' }
-        ],
-        status: [
-          { required: true, message: '请选择状态', trigger: 'change' }
-        ],
-        statusDesc: [
-          { required: true, message: '请选择状态变更描述', trigger: 'change' }
-        ],
-        salesUserConfig: [
-          { required: true, message: '请输入销售顾问配置JSON数组:[{&quot;post_code&quot;:&quot;XS001&quot;,&quot;post_name&quot;:&quot;销售顾问&quot;},{&quot;post_code&quot;:&quot;XS002&quot;,&quot;post_name&quot;:&quot;高级销售顾问&quot;}]', trigger: 'change' }
-        ],
-        salesUserPostCodes: [
-          { required: true, message: '请输入销售顾问岗位编码，多个逗号拼接', trigger: 'change' }
+        saleDeliveryUserConfigName: [
+          { required: true, message: '请输入销售顾问配置', trigger: 'change' }
         ],
         deliveryUserConfig: [
-          { required: true, message: '请输入交付顾问配置JSON数组:[{&quot;post_code&quot;:&quot;XS001&quot;,&quot;post_name&quot;:&quot;销售顾问&quot;},{&quot;post_code&quot;:&quot;XS002&quot;,&quot;post_name&quot;:&quot;高级销售顾问&quot;}]', trigger: 'change' }
+          { required: true, message: '请输入交付顾问配置', trigger: 'change' }
         ],
         deliveryUserPostCodes: [
-          { required: true, message: '请输入交付顾问岗位编码，多个逗号拼接', trigger: 'change' }
+          { required: true, message: '交付衍生工程师配置', trigger: 'change' }
+        ]
+      },
+      rules2: {
+        financeStatus: [
+          { required: true, message: '请输入融资车辆是否还款', trigger: 'change' }
         ],
-        dataSource: [
-          { required: true, message: '请输入数据来源，150-新销服; 10-老销服', trigger: 'change' }
+        creditStatus: [
+          { required: true, message: '请输入赊销车辆是否还款', trigger: 'change' }
+        ],
+        phoneRegisterStatus: [
+          { required: true, message: '请输入手机号注册校验', trigger: 'change' }
+        ],
+        deliveryAssignmentStatus: [
+          { required: true, message: '交车单分派通知', trigger: 'blur' }
         ],
       }
     };
   },
   mounted () {
+    this.getData();
   },
   methods: {
+    getData () {
+      getsalesConfig({ pageNum: 1, pageSize: 20 })
+        .then(res => {
+          console.log(res);
+        }).finally(() => {
+          this.loading = false;
+        });
+    },
+    save () {
+      let params = [
+        {
+          salesConfigGroup: 'deliveryConfig',
+          salesConfigKey: 'credit',
+          salesConfigName: '赊销车辆是否还款',
+          salesConfigType: 'single',
+          saleConfigValue: [{ roleCode: 'xxxx', roleName: '销售顾问' }]
+        },
+        {
+          salesConfigGroup: 'deliveryConfig',
+          salesConfigKey: 'delivfinanceeryUser',
+          salesConfigName: '融资车辆是否还款',
+          salesConfigType: 'single',
+          saleConfigValue: [{ roleCode: 'xxxx', roleName: '销售顾问' }]
+        },
+        {
+          salesConfigGroup: 'deliveryConfig',
+          salesConfigKey: 'phoneRegister',
+          salesConfigName: '手机号注册校验',
+          salesConfigType: 'single',
+          saleConfigValue: [{ roleCode: 'xxxx', roleName: '销售顾问' }]
+        },
+        {
+          salesConfigGroup: 'deliveryConfig',
+          salesConfigKey: 'deliveryAssignment',
+          salesConfigName: '交车单分派通知',
+          salesConfigType: 'single',
+          saleConfigValue: [{ roleCode: 'xxxx', roleName: '销售顾问' }]
+        },
+      ];
+      addOrUpdate(params).then(() => {
+        this.$message({
+          type: 'success',
+          message: '成功!'
+        });
+        this.getData();
+      }).catch(() => {
+        this.$message({
+          type: 'error',
+          message: '失败!'
+        });
+      });
+    },
+
+    editSalesConfig () {
+      let params = [
+        {
+          salesConfigGroup: 'saleDeliveryUserConfig',
+          salesConfigKey: 'saleUser',
+          salesConfigName: '销售顾问配置',
+          salesConfigType: 'multiple',
+          saleConfigValue: [{ roleCode: 'xxxx', roleName: '销售顾问' }]
+        },
+        {
+          salesConfigGroup: 'saleDeliveryUserConfig',
+          salesConfigKey: 'deliveryUser',
+          salesConfigName: '交付顾问配置',
+          salesConfigType: 'multiple',
+          saleConfigValue: [{ roleCode: 'xxxx', roleName: '销售顾问' }]
+        },
+        {
+          salesConfigGroup: 'saleDeliveryUserConfig',
+          salesConfigKey: 'deliveryDerive',
+          salesConfigName: '交付衍生工程师配置',
+          salesConfigType: 'multiple',
+          saleConfigValue: [{ roleCode: 'xxxx', roleName: '销售顾问' }]
+        },
+      ];
+      addOrUpdate(params).then(() => {
+        this.$message({
+          type: 'success',
+          message: '成功!'
+        });
+        this.getData();
+      }).catch(() => {
+        this.$message({
+          type: 'error',
+          message: '失败!'
+        });
+      });
+    },
     detailRequest () {
       const id = this._id;
       if (id) {
