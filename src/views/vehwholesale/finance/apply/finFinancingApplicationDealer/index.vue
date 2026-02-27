@@ -9,7 +9,7 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="母公司名称"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="母公司名称" >
           <fetch-select
             :remote-method="getDealerParentOrgListByName"
             remote

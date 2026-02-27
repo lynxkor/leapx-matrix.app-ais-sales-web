@@ -42,7 +42,7 @@
             reserve-keyword
             labelKey="organizationName"
             valueKey="organizationCode"
-            v-model="form.fundFinancialOrganizationIds"
+            v-model="form.recFinancialOrganizationIds"
             placeholder="请选择"
             clearable
             multiple
@@ -321,7 +321,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '账户管理-车厂融资信息-经销商推荐函管理.xlsx');
+            await downloadExcel(res.excelUrl, '经销商推荐函管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

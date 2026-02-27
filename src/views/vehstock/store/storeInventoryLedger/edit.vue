@@ -622,8 +622,8 @@ export default {
         vin: this.form.vin
       };
       const res = await getRecord(params);
-      this.tableData = res.data.records || [];
-      this.total = res.data.total || 0;
+      this.tableData = res.records || [];
+      this.total = res.total || 0;
     },
     pageChange (page) {
       this.tableObj.page = page;
