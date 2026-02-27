@@ -330,7 +330,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '账户管理-车厂融资信息-客户采购记录.xlsx');
+            await downloadExcel(res.excelUrl, '客户采购记录.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
