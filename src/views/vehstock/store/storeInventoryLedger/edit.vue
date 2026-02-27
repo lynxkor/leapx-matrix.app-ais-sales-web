@@ -63,6 +63,9 @@
                 <el-form-item label="修改者名称：" prop="modifierName">
                   {{ form.modifierName }}
                 </el-form-item>
+                <el-form-item label="备注：" prop="remark">
+                  {{ form.remark }}
+                </el-form-item>
               </el-form>
             </div>
           </section>
@@ -128,6 +131,9 @@
                 </el-form-item>
                 <el-form-item label="结算资金类型：" prop="settlementFundType">
                   {{ form.settlementFundType }}
+                </el-form-item>
+                <el-form-item label="融资还款时间：" prop="financeRepayOn">
+                  {{ form.financeRepayOn }}
                 </el-form-item>
                 <el-form-item label="交车单号：" prop="deliverOrderId">
                   {{ form.deliverOrderId }}
@@ -312,11 +318,11 @@
                 <el-form-item label="电池电芯：" prop="batteryCellName">
                   {{ form.batteryCellName }}
                 </el-form-item>
-                <el-form-item label="年款：" prop="optionPackageName">
-                  {{ form.optionPackageName }}
-                </el-form-item>
-                <el-form-item label="选装包：" prop="yearTypeName">
+                <el-form-item label="年款：" prop="yearTypeName">
                   {{ form.yearTypeName }}
+                </el-form-item>
+                <el-form-item label="选装包：" prop="optionPackageName">
+                  {{ form.optionPackageName }}
                 </el-form-item>
               </el-form>
             </div>
