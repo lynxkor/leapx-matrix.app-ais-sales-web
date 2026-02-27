@@ -11,7 +11,7 @@
     >
       <el-form-item label="母公司名称"  v-show="this.visibleCount === 3 || show">
         <fetch-select
-            :remote-method="getParentCompany"
+            :remote-method="getDealerParentOrgListByName"
             remote
             v-model="form.dealerCompanyNames"
             placeholder="请选择"
@@ -24,7 +24,7 @@
       </el-form-item>
       <el-form-item label="母公司编码">
          <fetch-select
-            :remote-method="getParentCompany"
+            :remote-method="getDealerParentOrgListByCode"
             remote
             v-model="form.dealerCompanyCodes"
             placeholder="请选择"
@@ -274,15 +274,11 @@ export default {
     this.getData();
   },
   methods: {
-    async getParentCompany (query) {
-      try {
-        const res = await getParentCompany({ parentCompanyName: query });
-        console.log(res);
-        this.parentCompanyNames = res;
-        return res;
-      } catch (error) {
-        console.error('Error fetching series list:', error);
-      }
+    async getDealerParentOrgListByCode (params) {
+      return getParentCompany({ companyCode: params });
+    },
+    async getDealerParentOrgListByName (params) {
+      return getParentCompany({ companyName: params });
     },
     repairItemSearch (query) { return fundGetList({ organizationNameLike: query, status: 1 }); },
     handleListSelect (row) {

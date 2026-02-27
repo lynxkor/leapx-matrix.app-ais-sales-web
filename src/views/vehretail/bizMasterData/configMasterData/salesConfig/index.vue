@@ -22,27 +22,51 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm2" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm2" label-width="170px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="销售顾问配置：" prop="saleDeliveryUserConfigName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.saleDeliveryUserConfigName"
-                    clearable
-                  />
+                    <fetch-select
+                      :remote-method="listConfig"
+                      remote
+                      v-model="form.saleDeliveryUserConfigName"
+                      placeholder="请选择"
+                      labelKey="authorityName"
+                      valueKey="authorityCode"
+                      clearable
+                      collapseTags
+                      filterable
+                      multiple
+                      :options="configList"
+                    />
                 </el-form-item>
                 <el-form-item label="交付顾问配置：" prop="deliveryUserConfigName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.deliveryUserConfigName"
-                    clearable
-                  />
+                  <fetch-select
+                      :remote-method="listConfig"
+                      remote
+                      v-model="form.deliveryUserConfigName"
+                      placeholder="请选择"
+                      labelKey="authorityName"
+                      valueKey="authorityCode"
+                      clearable
+                      collapseTags
+                      filterable
+                      multiple
+                      :options="configList"
+                    />
                 </el-form-item>
                 <el-form-item label="交付衍生工程师配置：" prop="deliveryDeriveConfigName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.deliveryDeriveConfigName"
-                    clearable
-                  />
+                  <fetch-select
+                      :remote-method="listConfig"
+                      remote
+                      v-model="form.deliveryDeriveConfigName"
+                      placeholder="请选择"
+                      labelKey="authorityName"
+                      valueKey="authorityCode"
+                      clearable
+                      collapseTags
+                      filterable
+                      multiple
+                      :options="configList"
+                    />
                 </el-form-item>
               </el-form>
             </div>
@@ -57,7 +81,7 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" :rules="rules2" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="赊销车辆是否还款：" prop="creditStatus">
                   <fetch-select
                       :request="fetchOptions"
@@ -179,6 +203,7 @@ export default {
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
+      configList: [],
       form: { ...form },
       originalForm: { ...form },
       defaultNewRow: {
@@ -191,24 +216,24 @@ export default {
       // TIPS: 复杂的表格输入项，参考 /dealerTeam/edit.vue
       rules: {
         saleDeliveryUserConfigName: [
-          { required: true, message: '请输入销售顾问配置', trigger: 'change' }
+          { required: true, message: '请选择销售顾问配置', trigger: 'change' }
         ],
-        deliveryUserConfig: [
-          { required: true, message: '请输入交付顾问配置', trigger: 'change' }
+        deliveryUserConfigName: [
+          { required: true, message: '请选择交付顾问配置', trigger: 'change' }
         ],
-        deliveryUserPostCodes: [
-          { required: true, message: '交付衍生工程师配置', trigger: 'change' }
+        deliveryDeriveConfigName: [
+          { required: true, message: '请选择交付衍生工程师配置', trigger: 'change' }
         ]
       },
       rules2: {
         financeStatus: [
-          { required: true, message: '请输入融资车辆是否还款', trigger: 'change' }
+          { required: true, message: '请选择融资车辆是否还款', trigger: 'change' }
         ],
         creditStatus: [
-          { required: true, message: '请输入赊销车辆是否还款', trigger: 'change' }
+          { required: true, message: '请选择赊销车辆是否还款', trigger: 'change' }
         ],
         phoneRegisterStatus: [
-          { required: true, message: '请输入手机号注册校验', trigger: 'change' }
+          { required: true, message: '请选择手机号注册校验', trigger: 'change' }
         ],
         deliveryAssignmentStatus: [
           { required: true, message: '交车单分派通知', trigger: 'blur' }
@@ -217,16 +242,17 @@ export default {
     };
   },
   mounted () {
-    this.getData();
+    this.listConfig();
   },
   methods: {
-    getData () {
-      getsalesConfig({ pageNum: 1, pageSize: 20 })
-        .then(res => {
-          console.log(res);
-        }).finally(() => {
-          this.loading = false;
-        });
+    async listConfig (query) {
+      try {
+        const res = await getsalesConfig({ yearTypeNameLike: query, pageNum: 1, pageSize: 20 });
+        this.configList = res.records;
+        return res.records;
+      } catch (error) {
+        console.error('Error fetching model list:', error);
+      }
     },
     save () {
       let params = [
@@ -274,29 +300,14 @@ export default {
     },
 
     editSalesConfig () {
-      let params = [
-        {
-          salesConfigGroup: 'saleDeliveryUserConfig',
-          salesConfigKey: 'saleUser',
-          salesConfigName: '销售顾问配置',
-          salesConfigType: 'multiple',
-          saleConfigValue: [{ roleCode: 'xxxx', roleName: '销售顾问' }]
-        },
-        {
-          salesConfigGroup: 'saleDeliveryUserConfig',
-          salesConfigKey: 'deliveryUser',
-          salesConfigName: '交付顾问配置',
-          salesConfigType: 'multiple',
-          saleConfigValue: [{ roleCode: 'xxxx', roleName: '销售顾问' }]
-        },
-        {
-          salesConfigGroup: 'saleDeliveryUserConfig',
-          salesConfigKey: 'deliveryDerive',
-          salesConfigName: '交付衍生工程师配置',
-          salesConfigType: 'multiple',
-          saleConfigValue: [{ roleCode: 'xxxx', roleName: '销售顾问' }]
-        },
-      ];
+      let params = {
+        salesConfigGroup: 'saleDeliveryUserConfig',
+        salesConfigKey: 'saleUser',
+        salesConfigName: '销售顾问配置',
+        salesConfigType: 'multiple',
+        dataSource: 150,
+        saleConfigValue: "{ roleCode: 'xxxx', roleName: '销售顾问' }"
+      };
       addOrUpdate(params).then(() => {
         this.$message({
           type: 'success',

@@ -538,13 +538,6 @@
                 class="form-edit"
                 v-show="isEditing || !_id"
               >
-                <el-form-item label="VIN码：" prop="vin">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.vin"
-                    clearable
-                  />
-                </el-form-item>
                 <el-form-item label="库位代码：" prop="vin">
                   <el-input
                     placeholder="请输入"
@@ -587,9 +580,6 @@
                 class="form-detail"
                 v-show="!(isEditing || !_id)"
               >
-                <el-form-item label="VIN码：" prop="vin">
-                  {{ form.vin }}
-                </el-form-item>
                 <el-form-item label="库位代码：" prop="vehicleWarehouseCode">
                   {{ form.vehicleWarehouseCode }}
                 </el-form-item>
@@ -818,6 +808,7 @@ export default {
             rangePowerName: res.vehicleMaterials?.rangePowerName || '',
             exteriorName: res.vehicleMaterials?.exteriorName || '',
             interiorName: res.vehicleMaterials?.interiorName || '',
+            wheelHubName: res.vehicleMaterials?.wheelHubName || '',
             optionPackageName: res.vehicleMaterials?.optionPackageName || '',
             modelName: res.vehicleMaterials?.modelName || '',
             materialsDesc: res.vehicleMaterials?.materialsDesc || '',
