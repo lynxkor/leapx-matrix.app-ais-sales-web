@@ -81,12 +81,12 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules2" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="formStatus" :rules="rules2" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="赊销车辆是否还款：" prop="creditStatus">
                   <fetch-select
                       :request="fetchOptions"
                       enumCode="BooleanEnum"
-                      v-model="form.creditStatus"
+                      v-model="formStatus.creditStatus"
                       placeholder="请选择"
                       clearable
                       filterable
@@ -96,7 +96,7 @@
                   <fetch-select
                       :request="fetchOptions"
                       enumCode="BooleanEnum"
-                      v-model="form.financeStatus"
+                      v-model="formStatus.financeStatus"
                       placeholder="请选择"
                       clearable
                       filterable
@@ -106,18 +106,26 @@
                  <fetch-select
                       :request="fetchOptions"
                       enumCode="BooleanEnum"
-                      v-model="form.phoneRegisterStatus"
+                      v-model="formStatus.phoneRegisterStatus"
                       placeholder="请选择"
                       clearable
                       filterable
                     />
                 </el-form-item>
                   <el-form-item label="交车单分派通知：" prop="deliveryAssignmentStatus">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.deliveryAssignmentStatus"
-                    clearable
-                  />
+                     <fetch-select
+                      :remote-method="listConfig"
+                      remote
+                      v-model="formStatus.deliveryAssignmentStatus"
+                      placeholder="请选择"
+                      labelKey="authorityName"
+                      valueKey="authorityCode"
+                      clearable
+                      collapseTags
+                      filterable
+                      multiple
+                      :options="configList"
+                    />
                 </el-form-item>
               </el-form>
             </div>
@@ -205,6 +213,7 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       configList: [],
       form: { ...form },
+      formStatus: {},
       originalForm: { ...form },
       defaultNewRow: {
         name: '',
@@ -299,15 +308,40 @@ export default {
       });
     },
 
+    changeFormat (val) {
+      const transformedList = val.map(authorityCode => {
+        const selectedItem = this.configList.find(item => item.authorityCode === authorityCode);
+        return {
+          roleName: selectedItem ? selectedItem.authorityName : '',
+          roleCode: authorityCode
+        };
+      });
+      return transformedList;
+    },
     editSalesConfig () {
-      let params = {
-        salesConfigGroup: 'saleDeliveryUserConfig',
-        salesConfigKey: 'saleUser',
-        salesConfigName: '销售顾问配置',
-        salesConfigType: 'multiple',
-        dataSource: 150,
-        saleConfigValue: "{ roleCode: 'xxxx', roleName: '销售顾问' }"
-      };
+      let params = [
+        {
+          salesConfigGroup: 'saleDeliveryUserConfig',
+          salesConfigKey: 'saleUser',
+          salesConfigName: '销售顾问配置',
+          salesConfigType: 'multiple',
+          saleConfigValue: JSON.stringify(this.changeFormat(this.form.saleDeliveryUserConfigName))
+        },
+        {
+          salesConfigGroup: 'saleDeliveryUserConfig',
+          salesConfigKey: 'deliveryUser',
+          salesConfigName: '交付顾问配置',
+          salesConfigType: 'multiple',
+          saleConfigValue: JSON.stringify(this.changeFormat(this.form.deliveryUserConfigName))
+        },
+        {
+          salesConfigGroup: 'saleDeliveryUserConfig',
+          salesConfigKey: 'deliveryDerive',
+          salesConfigName: '交付衍生工程师配置',
+          salesConfigType: 'multiple',
+          saleConfigValue: JSON.stringify(this.changeFormat(this.form.deliveryDeriveConfigName))
+        },
+      ];
       addOrUpdate(params).then(() => {
         this.$message({
           type: 'success',
