@@ -50,5 +50,5 @@ const prefix2 = 'passport/authorityInfo/';
  * @param {Object} data
  */
 export function getsalesConfig (data) {
-  return api.jsonPost(prefix2 + 'page', data);
+  return api.get(prefix2 + 'page', data);
 }

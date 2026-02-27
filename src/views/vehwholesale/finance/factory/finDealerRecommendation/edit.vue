@@ -64,10 +64,13 @@
                       />
                 </el-form-item>
                  <el-form-item label="推荐额度(万元)：" prop="recAmount">
-                  <el-input
-                    placeholder="请输入"
+                  <el-input-number
+                    placeholder="请输入荐额度"
                     v-model="form.recAmount"
-                    clearable
+                    :precision="2"
+                    :step="0.01"
+                    :min="0"
+                    :controls="false"
                   />
                 </el-form-item>
                  <el-form-item label="推荐日期：" prop="recDate">
@@ -79,10 +82,14 @@
                   />
                 </el-form-item>
                 <el-form-item label="保证金比例%：" prop="depositRatio">
-                  <el-input
-                    placeholder="请输入"
+                  <el-input-number
+                    placeholder="请输入首保证金比例比例"
                     v-model="form.depositRatio"
-                    clearable
+                    :precision="2"
+                    :step="0.01"
+                    :min="0"
+                    :max="100"
+                    :controls="false"
                   />
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
@@ -107,23 +114,10 @@
                 </el-form-item>
                  <el-form-item label="同步时间：" prop="syncTime">
                   <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
                     v-model="form.syncTime"
                     :picker-options="pickerOptions"
+                    type="datetime"
                     value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    :disabled="isEditing===true"
-                  />
-                </el-form-item>
-                 <el-form-item label="修改时间：" prop="updateTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.updateTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
                     :disabled="isEditing===true"
                   />
                 </el-form-item>

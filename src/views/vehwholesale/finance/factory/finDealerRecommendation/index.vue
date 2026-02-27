@@ -11,7 +11,7 @@
     >
       <el-form-item label="母公司名称"  v-show="this.visibleCount === 3 || show">
         <fetch-select
-            :remote-method="getParentCompany"
+            :remote-method="getDealerParentOrgListByName"
             remote
             v-model="form.dealerCompanyNames"
             placeholder="请选择"
@@ -24,7 +24,7 @@
       </el-form-item>
       <el-form-item label="母公司编码">
          <fetch-select
-            :remote-method="getParentCompany"
+            :remote-method="getDealerParentOrgListByCode"
             remote
             v-model="form.dealerCompanyCodes"
             placeholder="请选择"
@@ -42,7 +42,7 @@
             reserve-keyword
             labelKey="organizationName"
             valueKey="organizationCode"
-            v-model="form.fundFinancialOrganizationIds"
+            v-model="form.recFinancialOrganizationIds"
             placeholder="请选择"
             clearable
             multiple
@@ -274,15 +274,11 @@ export default {
     this.getData();
   },
   methods: {
-    async getParentCompany (query) {
-      try {
-        const res = await getParentCompany({ parentCompanyName: query });
-        console.log(res);
-        this.parentCompanyNames = res;
-        return res;
-      } catch (error) {
-        console.error('Error fetching series list:', error);
-      }
+    async getDealerParentOrgListByCode (params) {
+      return getParentCompany({ companyCode: params });
+    },
+    async getDealerParentOrgListByName (params) {
+      return getParentCompany({ companyName: params });
     },
     repairItemSearch (query) { return fundGetList({ organizationNameLike: query, status: 1 }); },
     handleListSelect (row) {
@@ -325,7 +321,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '账户管理-车厂融资信息-经销商推荐函管理.xlsx');
+            await downloadExcel(res.excelUrl, '经销商推荐函管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
