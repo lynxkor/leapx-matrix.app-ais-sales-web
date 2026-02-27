@@ -324,8 +324,6 @@
           <section class="common-section">
             <div class="common-section-header">
               <h2>车辆类型变更记录</h2>
-              <el-button v-if="canAddOrUpdate" size="small" @click="handleAddRow"><i
-                  class="iconfont icon-lxppc-plus"></i>添加</el-button>
             </div>
             <div class="common-section-body">
               <div class="common-section-table">
@@ -581,11 +579,6 @@ export default {
     // 打开侧边栏
     openPane () {
       this.$refs.editLayout.openPane();
-    },
-    // 详情表格相关数据
-    handleAddRow () {
-      // 通过引用直接调用子组件方法
-      this.$refs.editTable.addRow();
     },
     handleSaveTable (data) {
       // 调用保存方法并处理结果
