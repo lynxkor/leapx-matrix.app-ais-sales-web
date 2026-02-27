@@ -111,6 +111,7 @@
 </template>
 
 <script>
+import debounce from 'lodash.debounce';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum, getTableConfig, tableAddOrUpdate, listOrgStoreInfo } from '@/api/common';
 import { LPVxeTable } from '@leapmotor/design';
@@ -215,7 +216,7 @@ export default {
     onReset () {
       this.searchForm = { ...defaultForm };
       this.optionObj.form.page = 1;
-      this.optionObj.form.pageSize = pageSize;
+      this.optionObj.form.size = pageSize;
       this.getData();
     },
     getFormData () {
@@ -232,7 +233,7 @@ export default {
     getData () {
       this.loading = true;
       this.selection = {};
-      const param = { ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size };
+      const param = { ...this.getFormData(), page: this.optionObj.form.page, size: this.optionObj.form.size };
       if (this.type === 'sales') {
         param.isSales = true;
       } else {
@@ -241,14 +242,13 @@ export default {
 
       listOrgStoreInfo(param)
         .then(res => {
-          console.log(res);
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item,
               deleteLoading: false
             };
           });
-          this.optionObj.total = res.total;
+          this.optionObj.total = res.totals;
         }).finally(() => {
           this.loading = false;
         });
@@ -268,6 +268,10 @@ export default {
       }
       this.debouncedGetData();
     },
+    // 需要防抖场景时使用
+    debouncedGetData: debounce(function () {
+      this.getData();
+    }, 300),
     saveOrUpdate (data) {
       return tableAddOrUpdate(data);
     },

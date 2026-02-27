@@ -10,7 +10,7 @@
         <fetch-select :request="fetchOptions" enumCode="vehstock_vechicle_status" v-model="form.vechicleStatusList"
           placeholder="请选择" clearable multiple filterable />
       </el-form-item>
-      <el-form-item label="物料描述">
+      <el-form-item label="物料描述" v-if="this.visibleCount === 3 || show">
         <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
       </el-form-item>
       <template v-if="show">
@@ -83,13 +83,21 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
+      <el-button size="small" @click="batchreseRvation('reserve')"
+      :disabled="selectionList.length === 0">批量预留</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="batchreseRvation('cancelReserve')"
+        :disabled="selectionList.length === 0">批量解预留</el-button>
+        <el-button v-if="canEnableOrDisable" size="small" @click="batchreseRvation('car')"
+        :disabled="selectionList.length === 0">运损车出库</el-button>
+        <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
+        :disabled="selectionList.length === 0">同门店移库</el-button>
+        <el-button v-if="canDelete" size="small" @click="handleBatchDelete"
+        :disabled="selectionList.length === 0">批量删除</el-button>
+      <!-- <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
         :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)"
         :disabled="selectionList.length === 0">批量停用</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete"
-        :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button> -->
     </div>
     <div class="ais-table-c">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed centralized
@@ -98,8 +106,13 @@
         <EditPage slot="centralizedViewSlot" :id="clickItemId" />
       </LPVxeTable>
     </div>
-    <!-- TIPS: 填入项目id即可 -->
-    <Upload :visible="uploadDialogVisible" :id="1" @close="handleUploadDialogClose" />
+    <BatchDialog
+      :visible="batchDialog"
+      :selectionId="selectionListIds"
+      :name="batchName"
+      @close="closeBatchDialog"
+      @submit="submitBatchReserve"
+    />
   </div>
 </template>
 
@@ -110,13 +123,13 @@ import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/store/storeInventoryLedger/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
-import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import BatchDialog from './BatchDialog.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -156,7 +169,7 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    BatchDialog
   },
   data () {
     return {
@@ -173,6 +186,9 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      batchDialog: false, // 批量操作弹窗
+      batchName: '', // 批量操作弹窗标题
+      selectionListIds: [], // 批量操作选中的行
       clickItemId: '',
       optionObj: {
         id: 'storeInventoryLedgerTable',
@@ -415,28 +431,19 @@ export default {
         apiFunc: enableItem,
         refreshFunc: this.getData
       });
-      // const ids = this.selectionList.map(item => item.id) || [];
-      // this.$confirm(`此操作将${status ? '启用' : '停用'}选中项，是否继续?`, '提示', {
-      //   confirmButtonText: '确定',
-      //   cancelButtonText: '取消',
-      //   type: 'warning'
-      // }).then(() => {
-      //   enableItem({
-      //     idSet: ids,
-      //     status
-      //   }).then(() => {
-      //     this.$message({
-      //       type: 'success',
-      //       message: '操作成功!'
-      //     });
-      //     this.getData();
-      //   }).catch(() => {
-      //     this.$message({
-      //       type: 'error',
-      //       message: '操作失败!'
-      //     });
-      //   });
-      // });
+    },
+    // 批量预留
+    batchreseRvation (val) {
+      this.selectionListIds = this.selectionList.map(item => item.id) || [];
+      this.batchName = val;
+      this.batchDialog = true;
+    },
+    closeBatchDialog () {
+      this.batchDialog = false;
+    },
+    submitBatchReserve () {
+      this.batchDialog = false;
+      this.getData();
     }
   }
 };

@@ -9,7 +9,7 @@
       <el-form-item label="VIN">
         <el-input placeholder="请输入" v-model="form.vin" clearable />
       </el-form-item>
-      <el-form-item label="物料编码">
+      <el-form-item label="物料编码" v-if="this.visibleCount === 3 || show">
         <el-input placeholder="请输入" v-model="form.materialsCode" clearable />
       </el-form-item>
       <template v-if="show">
