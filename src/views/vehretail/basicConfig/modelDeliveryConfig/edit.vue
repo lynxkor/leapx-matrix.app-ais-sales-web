@@ -81,9 +81,9 @@
                 <el-form-item label="开启交付日期："  v-if="form.openDeliveryStatus === '1'" prop="openDeliveryDate" >
                  <el-date-picker
                     v-model="form.openDeliveryDate"
-                    type="datetime"
+                    type="date"
                     :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
+                    value-format="yyyy-MM-dd"
                     placeholder="请选择开启交付日期时间"
                   />
                 </el-form-item>
@@ -262,11 +262,11 @@ export default {
         status: [
           { required: true, message: '请选择状态 0-禁用;1-启用', trigger: 'change' }
         ],
-        modelId: [
-          { required: true, message: '请输入车型ID', trigger: 'change' }
+        modelName: [
+          { required: true, message: '请输入车型', trigger: 'change' }
         ],
-        yearTypeId: [
-          { required: true, message: '请选择年款ID', trigger: 'change' }
+        yearTypeName: [
+          { required: true, message: '请选择年款', trigger: 'change' }
         ],
         openDeliveryStatus: [
           { required: true, message: '请选择是否开启交付 1-是;0-否', trigger: 'change' }

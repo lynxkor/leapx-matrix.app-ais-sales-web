@@ -1,7 +1,7 @@
 import api from '@/axios';
 
 // 根据项目名称（如maintain代表维保项目）手动修改前缀
-const prefix = 'vr/web/counselor/salesDeliveryUserConfig/page/';
+const prefix = 'vr/web/basicConfig/salesConfig/';
 
 /**
  * 查询列表
@@ -41,4 +41,14 @@ export function getDetail (data) {
  */
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
+}
+
+const prefix2 = 'passport/authorityInfo/';
+
+/**
+ * 获取salesConfig配置
+ * @param {Object} data
+ */
+export function getsalesConfig (data) {
+  return api.jsonPost(prefix2 + 'page', data);
 }

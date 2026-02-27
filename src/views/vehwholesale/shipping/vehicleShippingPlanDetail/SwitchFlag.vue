@@ -8,7 +8,7 @@
           inactive-color="#cccccc">
         </el-switch>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="confirm(false)">确认</el-button>
+        <el-button type="primary" @click="confirm(false)">确定</el-button>
       </div>
     </el-dialog>
   </div>
