@@ -1,28 +1,19 @@
 <template>
   <edit-page-layout ref="editLayout" title="侧边栏标题" showPaneFooter>
     <template #left>
-      <!-- TIPS: 如果需要竖排，direction="vertical" -->
-      <edit-base-container
-        ref="containerRef"
-        :id="_id"
-        :title="title"
-        :isEditing.sync="isEditing"
-        :form.sync="form"
-        :originalForm.sync="originalForm"
-        :submitRequest="submitRequest"
-        :detailRequest="detailRequest"
-      >
         <el-main>
           <section class="common-section">
             <div class="common-section-header">
               <h2>销售顾问配置</h2>
              <div>
-              <el-button size="small" type="primary" @click="editSalesConfig">编辑</el-button>
+              <el-button v-show="showEditBtn" size="small" @click="showEditBtn = !showEditBtn">取消</el-button>
+              <el-button v-show="showEditBtn" size="small" type="primary" @click="save">保存</el-button>
+              <el-button v-show="!showEditBtn" size="small" type="primary" @click="editSalesConfig">编辑</el-button>
              </div>
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm2" label-width="170px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm2" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="销售顾问配置：" prop="saleDeliveryUserConfigName">
                     <fetch-select
                       :remote-method="listConfig"
@@ -35,6 +26,7 @@
                       collapseTags
                       filterable
                       multiple
+                      :disabled="!showEditBtn"
                       :options="configList"
                     />
                 </el-form-item>
@@ -50,6 +42,7 @@
                       collapseTags
                       filterable
                       multiple
+                      :disabled="!showEditBtn"
                       :options="configList"
                     />
                 </el-form-item>
@@ -65,6 +58,7 @@
                       collapseTags
                       filterable
                       multiple
+                      :disabled="!showEditBtn"
                       :options="configList"
                     />
                 </el-form-item>
@@ -74,10 +68,6 @@
            <section class="common-section">
             <div class="common-section-header">
               <h2>交付配置</h2>
-             <div>
-              <el-button size="small">取消</el-button>
-              <el-button size="small" type="primary" @click="save">保存</el-button>
-             </div>
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
@@ -131,7 +121,6 @@
             </div>
           </section>
         </el-main>
-      </edit-base-container>
     </template>
   </edit-page-layout>
 </template>
@@ -141,12 +130,11 @@ import { getDetail, addOrUpdate, getsalesConfig } from '@/api/vehretail/bizMaste
 import FetchSelect from '@/libs/components/FetchSelect';
 // import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
-import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
-import commonMixins from '@/libs/mixins/commonMixins';
+// Deleted: import commonMixins from '@/libs/mixins/commonMixins';
 // import { Divider } from '@leapmotor/element-ui';
 
 const defaultForm = {
@@ -177,10 +165,10 @@ export default {
       default: null
     },
   },
-  mixins: [routeGuard, permissions, commonMixins],
+  // Deleted: mixins: [routeGuard, permissions, commonMixins],
+  mixins: [routeGuard, permissions],
   components: {
     EditPageLayout,
-    EditBaseContainer,
     FetchSelect
   },
   computed: {
@@ -189,16 +177,6 @@ export default {
     },
     title () {
       return '：' + this.form.id;
-    }
-  },
-  watch: {
-    id: {
-      handler (val) {
-        if (val && this.$refs.containerRef) {
-          this.$refs.containerRef.loadDetail();
-        }
-      },
-      immediate: true
     }
   },
   data () {
@@ -210,6 +188,7 @@ export default {
       moduleKey: 'AISVR-salesConfig',
       loading: false,
       submitLoading: false,
+      showEditBtn: false,
       yes_no_enum: YES_NO_ENUM,
       configList: [],
       form: { ...form },
@@ -252,6 +231,8 @@ export default {
   },
   mounted () {
     this.listConfig();
+  },
+  beforeDestroy () {
   },
   methods: {
     async listConfig (query) {
@@ -299,7 +280,7 @@ export default {
           type: 'success',
           message: '成功!'
         });
-        this.getData();
+        this.showEditBtn = !this.showEditBtn;
       }).catch(() => {
         this.$message({
           type: 'error',
@@ -319,41 +300,41 @@ export default {
       return transformedList;
     },
     editSalesConfig () {
-      let params = [
-        {
-          salesConfigGroup: 'saleDeliveryUserConfig',
-          salesConfigKey: 'saleUser',
-          salesConfigName: '销售顾问配置',
-          salesConfigType: 'multiple',
-          saleConfigValue: JSON.stringify(this.changeFormat(this.form.saleDeliveryUserConfigName))
-        },
-        {
-          salesConfigGroup: 'saleDeliveryUserConfig',
-          salesConfigKey: 'deliveryUser',
-          salesConfigName: '交付顾问配置',
-          salesConfigType: 'multiple',
-          saleConfigValue: JSON.stringify(this.changeFormat(this.form.deliveryUserConfigName))
-        },
-        {
-          salesConfigGroup: 'saleDeliveryUserConfig',
-          salesConfigKey: 'deliveryDerive',
-          salesConfigName: '交付衍生工程师配置',
-          salesConfigType: 'multiple',
-          saleConfigValue: JSON.stringify(this.changeFormat(this.form.deliveryDeriveConfigName))
-        },
-      ];
-      addOrUpdate(params).then(() => {
-        this.$message({
-          type: 'success',
-          message: '成功!'
-        });
-        this.getData();
-      }).catch(() => {
-        this.$message({
-          type: 'error',
-          message: '失败!'
-        });
-      });
+      // let params = [
+      //   {
+      //     salesConfigGroup: 'saleDeliveryUserConfig',
+      //     salesConfigKey: 'saleUser',
+      //     salesConfigName: '销售顾问配置',
+      //     salesConfigType: 'multiple',
+      //     saleConfigValue: JSON.stringify(this.changeFormat(this.form.saleDeliveryUserConfigName))
+      //   },
+      //   {
+      //     salesConfigGroup: 'saleDeliveryUserConfig',
+      //     salesConfigKey: 'deliveryUser',
+      //     salesConfigName: '交付顾问配置',
+      //     salesConfigType: 'multiple',
+      //     saleConfigValue: JSON.stringify(this.changeFormat(this.form.deliveryUserConfigName))
+      //   },
+      //   {
+      //     salesConfigGroup: 'saleDeliveryUserConfig',
+      //     salesConfigKey: 'deliveryDerive',
+      //     salesConfigName: '交付衍生工程师配置',
+      //     salesConfigType: 'multiple',
+      //     saleConfigValue: JSON.stringify(this.changeFormat(this.form.deliveryDeriveConfigName))
+      //   },
+      // ];
+      // addOrUpdate(params).then(() => {
+      //   this.$message({
+      //     type: 'success',
+      //     message: '成功!'
+      //   });
+      // }).catch(() => {
+      //   this.$message({
+      //     type: 'error',
+      //     message: '失败!'
+      //   });
+      // });
+      this.showEditBtn = !this.showEditBtn;
     },
     detailRequest () {
       const id = this._id;
@@ -405,3 +386,52 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.common-section{
+  margin: 16px 0;
+  // border-bottom: 1px solid var(--leap-color-default-light-4);
+  &-header{
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    h2{
+      font-size: 16px;
+      color: var(--leap-color-default-dark-1);
+      cursor: pointer;
+      padding-left: 5px;
+      // &::before {
+      //   content: "\e651";
+      //   font-family: 'iconfont';
+      //   font-weight: 500;
+      //   display: inline;
+      //   font-size: 16px;
+      // }
+      .btns{
+        padding-left: 16px;
+        padding-top: 12px;
+      }
+    }
+    &.fold{
+      margin-bottom: 0;
+      h2::before {
+        content: "\e64a";
+      }
+    }
+    .iconfont {
+      font-size: 14px;
+      margin-right: 4px;
+    }
+  }
+  &-body{
+    padding-left: 16px;
+    &.not-commit{
+      color: var(--leap-color-default-light-2);
+    }
+  }
+  &:last-child{
+    border-bottom: none;
+  }
+}
+</style>
