@@ -256,7 +256,7 @@ export default {
   methods: {
     async listConfig (query) {
       try {
-        const res = await getsalesConfig({ yearTypeNameLike: query, pageNum: 1, pageSize: 20 });
+        const res = await getsalesConfig({ authorityName: query, pageNum: 1, pageSize: 20 });
         this.configList = res.records;
         return res.records;
       } catch (error) {
