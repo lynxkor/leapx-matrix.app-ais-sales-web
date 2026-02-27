@@ -78,7 +78,7 @@
                      type="datetime"
                     v-model="form.recDate"
                     :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
+                    value-format="yyyy-MM-dd"
                   />
                 </el-form-item>
                 <el-form-item label="保证金比例%：" prop="depositRatio">
