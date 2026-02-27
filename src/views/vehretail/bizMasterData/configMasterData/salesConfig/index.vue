@@ -13,8 +13,8 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm2" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="销售顾问配置：" prop="saleDeliveryUserConfigName">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm2" label-width="160px" class="form-edit" v-show="isEditing || !_id">
+                <el-form-item label="销售顾问配置" prop="saleDeliveryUserConfigName">
                     <fetch-select
                       :remote-method="listConfig"
                       remote
@@ -30,7 +30,7 @@
                       :options="configList"
                     />
                 </el-form-item>
-                <el-form-item label="交付顾问配置：" prop="deliveryUserConfigName">
+                <el-form-item label="交付顾问配置" prop="deliveryUserConfigName">
                   <fetch-select
                       :remote-method="listConfig"
                       remote
@@ -42,11 +42,12 @@
                       collapseTags
                       filterable
                       multiple
+                      @change="handleChange"
                       :disabled="!showEditBtn"
                       :options="configList"
                     />
                 </el-form-item>
-                <el-form-item label="交付衍生工程师配置：" prop="deliveryDeriveConfigName">
+                <el-form-item label="交付衍生工程师配置" prop="deliveryDeriveConfigName">
                   <fetch-select
                       :remote-method="listConfig"
                       remote
@@ -71,7 +72,7 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="formStatus" :rules="rules2" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="formStatus" :rules="rules2" ref="ruleForm" label-width="160px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="赊销车辆是否还款：" prop="creditStatus">
                   <fetch-select
                       :request="fetchOptions"
@@ -126,7 +127,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, getsalesConfig } from '@/api/vehretail/bizMasterData/configMasterData/salesConfig/index';
+import { getRawList, addOrUpdate, getsalesConfig } from '@/api/vehretail/bizMasterData/configMasterData/salesConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 // import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
@@ -134,6 +135,7 @@ import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
+import { log } from 'vxe-pc-ui';
 // Deleted: import commonMixins from '@/libs/mixins/commonMixins';
 // import { Divider } from '@leapmotor/element-ui';
 
@@ -231,10 +233,20 @@ export default {
   },
   mounted () {
     this.listConfig();
+    this.getRawList();
   },
   beforeDestroy () {
   },
   methods: {
+    handleChange (val, row) {
+      console.log('val', val);
+      console.log('row', row);
+    },
+    getRawList () {
+      getRawList().then(res => {
+        console.log('getRawList:', res);
+      }).catch(() => {});
+    },
     async listConfig (query) {
       try {
         const res = await getsalesConfig({ authorityName: query, pageNum: 1, pageSize: 20 });
@@ -247,32 +259,53 @@ export default {
     save () {
       let params = [
         {
+          salesConfigGroup: 'saleDeliveryUserConfig',
+          salesConfigKey: 'saleUser',
+          salesConfigName: '销售顾问配置',
+          salesConfigType: 'multiple',
+          saleConfigValue: JSON.stringify(this.changeFormat(this.form.saleDeliveryUserConfigName))
+        },
+        {
+          salesConfigGroup: 'saleDeliveryUserConfig',
+          salesConfigKey: 'deliveryUser',
+          salesConfigName: '交付顾问配置',
+          salesConfigType: 'multiple',
+          saleConfigValue: JSON.stringify(this.changeFormat(this.form.deliveryUserConfigName))
+        },
+        {
+          salesConfigGroup: 'saleDeliveryUserConfig',
+          salesConfigKey: 'deliveryDerive',
+          salesConfigName: '交付衍生工程师配置',
+          salesConfigType: 'multiple',
+          saleConfigValue: JSON.stringify(this.changeFormat(this.form.deliveryDeriveConfigName))
+        },
+        {
           salesConfigGroup: 'deliveryConfig',
           salesConfigKey: 'credit',
           salesConfigName: '赊销车辆是否还款',
           salesConfigType: 'single',
-          saleConfigValue: [{ roleCode: 'xxxx', roleName: '销售顾问' }]
+          saleConfigValue: JSON.stringify([{ roleCode: 'xxxx', roleName: '销售顾问' }])
         },
         {
           salesConfigGroup: 'deliveryConfig',
           salesConfigKey: 'delivfinanceeryUser',
           salesConfigName: '融资车辆是否还款',
           salesConfigType: 'single',
-          saleConfigValue: [{ roleCode: 'xxxx', roleName: '销售顾问' }]
+          saleConfigValue: JSON.stringify([{ roleCode: 'xxxx', roleName: '销售顾问' }])
         },
         {
           salesConfigGroup: 'deliveryConfig',
           salesConfigKey: 'phoneRegister',
           salesConfigName: '手机号注册校验',
           salesConfigType: 'single',
-          saleConfigValue: [{ roleCode: 'xxxx', roleName: '销售顾问' }]
+          saleConfigValue: JSON.stringify([{ roleCode: 'xxxx', roleName: '销售顾问' }])
         },
         {
           salesConfigGroup: 'deliveryConfig',
           salesConfigKey: 'deliveryAssignment',
           salesConfigName: '交车单分派通知',
           salesConfigType: 'single',
-          saleConfigValue: [{ roleCode: 'xxxx', roleName: '销售顾问' }]
+          saleConfigValue: JSON.stringify([{ roleCode: 'xxxx', roleName: '销售顾问' }])
         },
       ];
       addOrUpdate(params).then(() => {
@@ -335,12 +368,6 @@ export default {
       //   });
       // });
       this.showEditBtn = !this.showEditBtn;
-    },
-    detailRequest () {
-      const id = this._id;
-      if (id) {
-        return getDetail(id);
-      }
     },
     submitRequest () {
       return addOrUpdate({ ...this.form });
