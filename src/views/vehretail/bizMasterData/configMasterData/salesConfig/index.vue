@@ -13,12 +13,12 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm2" label-width="160px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="formData" :rules="rules" ref="ruleForm2" label-width="160px" class="form-edit">
                 <el-form-item label="销售顾问配置" prop="saleDeliveryUserConfigName">
                     <fetch-select
                       :remote-method="listConfig"
                       remote
-                      v-model="form.saleDeliveryUserConfigName"
+                      v-model="formData.saleDeliveryUserConfigName"
                       placeholder="请选择"
                       labelKey="authorityName"
                       valueKey="authorityCode"
@@ -27,14 +27,14 @@
                       filterable
                       multiple
                       :disabled="!showEditBtn"
-                      :options="configList"
+                      @change="(val, row) => handleChange(val, row, 'saleUser')"
                     />
                 </el-form-item>
                 <el-form-item label="交付顾问配置" prop="deliveryUserConfigName">
                   <fetch-select
                       :remote-method="listConfig"
                       remote
-                      v-model="form.deliveryUserConfigName"
+                      v-model="formData.deliveryUserConfigName"
                       placeholder="请选择"
                       labelKey="authorityName"
                       valueKey="authorityCode"
@@ -42,16 +42,15 @@
                       collapseTags
                       filterable
                       multiple
-                      @change="handleChange"
+                      @change="(val, row) => handleChange(val, row, 'deliveryUser')"
                       :disabled="!showEditBtn"
-                      :options="configList"
                     />
                 </el-form-item>
                 <el-form-item label="交付衍生工程师配置" prop="deliveryDeriveConfigName">
                   <fetch-select
                       :remote-method="listConfig"
                       remote
-                      v-model="form.deliveryDeriveConfigName"
+                      v-model="formData.deliveryDeriveConfigName"
                       placeholder="请选择"
                       labelKey="authorityName"
                       valueKey="authorityCode"
@@ -60,7 +59,7 @@
                       filterable
                       multiple
                       :disabled="!showEditBtn"
-                      :options="configList"
+                      @change="(val, row) => handleChange(val, row, 'deliveryDerive')"
                     />
                 </el-form-item>
               </el-form>
@@ -72,42 +71,45 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="formStatus" :rules="rules2" ref="ruleForm" label-width="160px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="formData" :rules="rules" ref="ruleForm" label-width="160px" class="form-edit">
                 <el-form-item label="赊销车辆是否还款：" prop="creditStatus">
                   <fetch-select
                       :request="fetchOptions"
                       enumCode="BooleanEnum"
-                      v-model="formStatus.creditStatus"
+                      v-model="formData.creditStatus"
                       placeholder="请选择"
                       clearable
                       filterable
+                      @change="(val, row) => handleChange(val, row, 'credit')"
                     />
                 </el-form-item>
                 <el-form-item label="融资车辆是否还款：" prop="financeStatus">
                   <fetch-select
                       :request="fetchOptions"
                       enumCode="BooleanEnum"
-                      v-model="formStatus.financeStatus"
+                      v-model="formData.financeStatus"
                       placeholder="请选择"
                       clearable
                       filterable
+                      @change="(val, row) => handleChange(val, row, 'finance')"
                     />
                 </el-form-item>
                 <el-form-item label="手机号注册校验：" prop="phoneRegisterStatus">
                  <fetch-select
                       :request="fetchOptions"
                       enumCode="BooleanEnum"
-                      v-model="formStatus.phoneRegisterStatus"
+                      v-model="formData.phoneRegisterStatus"
                       placeholder="请选择"
                       clearable
                       filterable
+                      @change="(val, row) => handleChange(val, row, 'phoneRegister')"
                     />
                 </el-form-item>
                   <el-form-item label="交车单分派通知：" prop="deliveryAssignmentStatus">
                      <fetch-select
                       :remote-method="listConfig"
                       remote
-                      v-model="formStatus.deliveryAssignmentStatus"
+                      v-model="formData.deliveryAssignmentStatus"
                       placeholder="请选择"
                       labelKey="authorityName"
                       valueKey="authorityCode"
@@ -115,7 +117,7 @@
                       collapseTags
                       filterable
                       multiple
-                      :options="configList"
+                      @change="(val, row) => handleChange(val, row, 'deliveryAssignment')"
                     />
                 </el-form-item>
               </el-form>
@@ -193,8 +195,8 @@ export default {
       showEditBtn: false,
       yes_no_enum: YES_NO_ENUM,
       configList: [],
-      form: { ...form },
-      formStatus: {},
+      // 统一使用formData对象
+      formData: {},
       originalForm: { ...form },
       defaultNewRow: {
         name: '',
@@ -203,7 +205,8 @@ export default {
         // 对应表格里选型枚举
         // 如 type: [{label: 'xxx', value: 'xxx'}]
       },
-      // TIPS: 复杂的表格输入项，参考 /dealerTeam/edit.vue
+      // 存储从getRawList获取的原始数据
+      rawConfigData: [],
       rules: {
         saleDeliveryUserConfigName: [
           { required: true, message: '请选择销售顾问配置', trigger: 'change' }
@@ -213,9 +216,7 @@ export default {
         ],
         deliveryDeriveConfigName: [
           { required: true, message: '请选择交付衍生工程师配置', trigger: 'change' }
-        ]
-      },
-      rules2: {
+        ],
         financeStatus: [
           { required: true, message: '请选择融资车辆是否还款', trigger: 'change' }
         ],
@@ -232,141 +233,168 @@ export default {
     };
   },
   mounted () {
-    this.listConfig();
     this.getRawList();
   },
   beforeDestroy () {
   },
   methods: {
-    handleChange (val, row) {
+    // 处理fetch-select的change事件
+    handleChange (val, row, configKey) {
       console.log('val', val);
       console.log('row', row);
+      console.log('configKey', configKey);
+      // 找到对应的配置项
+      const configItem = this.rawConfigData.find(item => item.salesConfigKey === configKey);
+      if (!configItem) return;
+      // 处理多选和单选的情况
+      let roleData = [];
+      if (Array.isArray(row)) {
+        // 多选情况
+        roleData = row.map(item => {
+          // const selectedItem = this.configList.find(item => item.authorityCode === code);
+          return {
+            roleName: item.authorityName,
+            roleCode: item.authorityCode
+          };
+        });
+      } else if (val) {
+        // 单选情况
+        roleData = [{
+          roleName: val ? '是' : '否',
+          roleCode: val
+        }];
+      }
+      // 更新rawConfigData中的saleConfigValue
+      configItem.saleConfigValue = JSON.stringify(roleData);
     },
     getRawList () {
       getRawList().then(res => {
-        console.log('getRawList:', res);
+        console.log('getRawList:', res); if (!res || res.length === 0) {
+          this.rawConfigData = [
+            {
+              salesConfigGroup: 'saleDeliveryUserConfig',
+              salesConfigKey: 'saleUser',
+              salesConfigName: '销售顾问配置',
+              salesConfigType: 'multiple',
+              saleConfigValue: ''
+            },
+            {
+              salesConfigGroup: 'saleDeliveryUserConfig',
+              salesConfigKey: 'deliveryUser',
+              salesConfigName: '交付顾问配置',
+              salesConfigType: 'multiple',
+              saleConfigValue: ''
+            },
+            {
+              salesConfigGroup: 'saleDeliveryUserConfig',
+              salesConfigKey: 'deliveryDerive',
+              salesConfigName: '交付衍生工程师配置',
+              salesConfigType: 'multiple',
+              saleConfigValue: ''
+            },
+            {
+              salesConfigGroup: 'deliveryConfig',
+              salesConfigKey: 'credit',
+              salesConfigName: '赊销车辆是否还款',
+              salesConfigType: 'single',
+              saleConfigValue: JSON.stringify([{ roleCode: '', roleName: '' }])
+            },
+            {
+              salesConfigGroup: 'deliveryConfig',
+              salesConfigKey: 'finance',
+              salesConfigName: '融资车辆是否还款',
+              salesConfigType: 'single',
+              saleConfigValue: JSON.stringify([{ roleCode: '', roleName: '' }])
+            },
+            {
+              salesConfigGroup: 'deliveryConfig',
+              salesConfigKey: 'phoneRegister',
+              salesConfigName: '手机号注册校验',
+              salesConfigType: 'single',
+              saleConfigValue: JSON.stringify([{ roleCode: '', roleName: '' }])
+            },
+            {
+              salesConfigGroup: 'deliveryConfig',
+              salesConfigKey: 'deliveryAssignment',
+              salesConfigName: '交车单分派通知',
+              salesConfigType: 'multiple',
+              saleConfigValue: ''
+            }
+          ];
+        } else {
+          this.rawConfigData = res;
+        }
+        // 初始化formData用于表单验证
+        this.initFormData();
       }).catch(() => {});
     },
     async listConfig (query) {
+      return getsalesConfig({ authorityName: query, pageNum: 1, pageSize: 20 });
+    },
+    // 初始化formData用于表单验证规则
+    initFormData () {
+      this.formData = {
+        saleDeliveryUserConfigName: this.getConfigValue('saleUser'),
+        deliveryUserConfigName: this.getConfigValue('deliveryUser'),
+        deliveryDeriveConfigName: this.getConfigValue('deliveryDerive'),
+        creditStatus: this.getConfigValue('credit'),
+        financeStatus: this.getConfigValue('finance'),
+        phoneRegisterStatus: this.getConfigValue('phoneRegister'),
+        deliveryAssignmentStatus: this.getConfigValue('deliveryAssignment')
+      };
+    },
+    // 根据salesConfigKey获取对应的值用于表单绑定
+    getConfigValue (configKey) {
+      const item = this.rawConfigData.find(i => i.salesConfigKey === configKey);
+      if (!item) return '';
+
       try {
-        const res = await getsalesConfig({ authorityName: query, pageNum: 1, pageSize: 20 });
-        this.configList = res.records;
-        return res.records;
-      } catch (error) {
-        console.error('Error fetching model list:', error);
+        const configValue = JSON.parse(item.saleConfigValue);
+        if (item.salesConfigType === 'multiple') {
+          return configValue.map(role => role.roleCode);
+        } else {
+          return configValue[0]?.roleCode || '';
+        }
+      } catch (e) {
+        console.error('Error parsing config value:', e);
+        return '';
       }
     },
-    save () {
-      let params = [
-        {
-          salesConfigGroup: 'saleDeliveryUserConfig',
-          salesConfigKey: 'saleUser',
-          salesConfigName: '销售顾问配置',
-          salesConfigType: 'multiple',
-          saleConfigValue: JSON.stringify(this.changeFormat(this.form.saleDeliveryUserConfigName))
-        },
-        {
-          salesConfigGroup: 'saleDeliveryUserConfig',
-          salesConfigKey: 'deliveryUser',
-          salesConfigName: '交付顾问配置',
-          salesConfigType: 'multiple',
-          saleConfigValue: JSON.stringify(this.changeFormat(this.form.deliveryUserConfigName))
-        },
-        {
-          salesConfigGroup: 'saleDeliveryUserConfig',
-          salesConfigKey: 'deliveryDerive',
-          salesConfigName: '交付衍生工程师配置',
-          salesConfigType: 'multiple',
-          saleConfigValue: JSON.stringify(this.changeFormat(this.form.deliveryDeriveConfigName))
-        },
-        {
-          salesConfigGroup: 'deliveryConfig',
-          salesConfigKey: 'credit',
-          salesConfigName: '赊销车辆是否还款',
-          salesConfigType: 'single',
-          saleConfigValue: JSON.stringify([{ roleCode: 'xxxx', roleName: '销售顾问' }])
-        },
-        {
-          salesConfigGroup: 'deliveryConfig',
-          salesConfigKey: 'delivfinanceeryUser',
-          salesConfigName: '融资车辆是否还款',
-          salesConfigType: 'single',
-          saleConfigValue: JSON.stringify([{ roleCode: 'xxxx', roleName: '销售顾问' }])
-        },
-        {
-          salesConfigGroup: 'deliveryConfig',
-          salesConfigKey: 'phoneRegister',
-          salesConfigName: '手机号注册校验',
-          salesConfigType: 'single',
-          saleConfigValue: JSON.stringify([{ roleCode: 'xxxx', roleName: '销售顾问' }])
-        },
-        {
-          salesConfigGroup: 'deliveryConfig',
-          salesConfigKey: 'deliveryAssignment',
-          salesConfigName: '交车单分派通知',
-          salesConfigType: 'single',
-          saleConfigValue: JSON.stringify([{ roleCode: 'xxxx', roleName: '销售顾问' }])
-        },
-      ];
-      addOrUpdate(params).then(() => {
+    // 封装表单校验为 Promise
+    validateForm (refName) {
+      return new Promise((resolve) => {
+        this.$refs[refName].validate((valid) => {
+          resolve(valid);
+        });
+      });
+    },
+    async save () {
+      // 并行校验两个表单
+      const [valid1, valid2] = await Promise.all([
+        this.validateForm('ruleForm2'),
+        this.validateForm('ruleForm')
+      ]);
+      if (!valid1 || !valid2) {
+        return; // 任一表单校验失败则不提交
+      }
+
+      try {
+        await addOrUpdate(this.rawConfigData);
         this.$message({
           type: 'success',
           message: '成功!'
         });
         this.showEditBtn = !this.showEditBtn;
-      }).catch(() => {
+        this.getRawList();
+      } catch (error) {
         this.$message({
           type: 'error',
           message: '失败!'
         });
-      });
+      }
     },
 
-    changeFormat (val) {
-      const transformedList = val.map(authorityCode => {
-        const selectedItem = this.configList.find(item => item.authorityCode === authorityCode);
-        return {
-          roleName: selectedItem ? selectedItem.authorityName : '',
-          roleCode: authorityCode
-        };
-      });
-      return transformedList;
-    },
     editSalesConfig () {
-      // let params = [
-      //   {
-      //     salesConfigGroup: 'saleDeliveryUserConfig',
-      //     salesConfigKey: 'saleUser',
-      //     salesConfigName: '销售顾问配置',
-      //     salesConfigType: 'multiple',
-      //     saleConfigValue: JSON.stringify(this.changeFormat(this.form.saleDeliveryUserConfigName))
-      //   },
-      //   {
-      //     salesConfigGroup: 'saleDeliveryUserConfig',
-      //     salesConfigKey: 'deliveryUser',
-      //     salesConfigName: '交付顾问配置',
-      //     salesConfigType: 'multiple',
-      //     saleConfigValue: JSON.stringify(this.changeFormat(this.form.deliveryUserConfigName))
-      //   },
-      //   {
-      //     salesConfigGroup: 'saleDeliveryUserConfig',
-      //     salesConfigKey: 'deliveryDerive',
-      //     salesConfigName: '交付衍生工程师配置',
-      //     salesConfigType: 'multiple',
-      //     saleConfigValue: JSON.stringify(this.changeFormat(this.form.deliveryDeriveConfigName))
-      //   },
-      // ];
-      // addOrUpdate(params).then(() => {
-      //   this.$message({
-      //     type: 'success',
-      //     message: '成功!'
-      //   });
-      // }).catch(() => {
-      //   this.$message({
-      //     type: 'error',
-      //     message: '失败!'
-      //   });
-      // });
       this.showEditBtn = !this.showEditBtn;
     },
     submitRequest () {
