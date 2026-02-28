@@ -42,3 +42,43 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 门店库存台账批量预留
+ * @param {Object} data
+ */
+export function batchReserve (data) {
+  return api.jsonPost(prefix + 'batchReserve', data);
+}
+
+/**
+ * 门店库存台账批量解预留
+ * @param {Object} data
+ */
+export function batchCancelReserve (data) {
+  return api.jsonPost(prefix + 'batchCancelReserve', data);
+}
+
+/**
+ * 门店库存台账运损车出库
+ * @param {Object} data
+ */
+export function outbound (data) {
+  return api.jsonPost(prefix + 'outbound', data);
+}
+
+/**
+ * 门店库存台账同门店移库
+ * @param {Object} data
+ */
+export function move (data) {
+  return api.jsonPost(prefix + 'move', data);
+}
+
+/**
+ * 车辆类型变更记录分页查询
+ * @param {Object} data
+ */
+export function getRecord (data) {
+  return api.jsonPost('vehstock/web/store/vehicleTypeChangeRecord/page', data);
+};

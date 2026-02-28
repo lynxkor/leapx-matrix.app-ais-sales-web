@@ -292,7 +292,6 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <ButtonGroup collapseDirection="left">
         <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length === 0" @click="handleBatchConfirm">批量确认</el-button>
         <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length === 0" @click="handleBatchAllocateVehicle">批量配车</el-button>
         <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length === 0" @click="handleBatchSettleSubmit">批量结算</el-button>
@@ -306,7 +305,6 @@
         <el-button v-if="canAddOrUpdate" size="small" @click="handleRefreshPriceCoefficient">刷新价格</el-button>
         <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
         <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      </ButtonGroup>
     </div>
     <div
       class="ais-table-c"
@@ -396,7 +394,6 @@ import CancleBatchAllocateVehicleInput from './CancleBatchAllocateVehicleInput.v
 import SetEmergencyOrderInput from './SetEmergencyOrderInput.vue';
 import BatchCancelSettleInput from './BatchCancelSettleInput.vue';
 import { listIdNames as listWholesaleProdScheduleActivity } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivity/index';
-import ButtonGroup from '@/libs/components/ButtonGroup';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -483,8 +480,7 @@ export default {
     SetEmergencyOrderInput,
     BatchAllocateVehicleInput,
     CancleBatchAllocateVehicleInput,
-    BatchCancelSettleInput,
-    ButtonGroup
+    BatchCancelSettleInput
   },
   data () {
     return {

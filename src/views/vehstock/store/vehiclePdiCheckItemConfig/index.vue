@@ -9,7 +9,7 @@
       <el-form-item label="上级检查项id">
         <el-input placeholder="请输入" v-model="form.parentId" clearable />
       </el-form-item>
-      <el-form-item label="检查方式">
+      <el-form-item label="检查方式" v-if="this.visibleCount === 3 || show">
         <fetch-select :request="fetchOptions" enumCode="vehstock_check_mode" v-model="form.checkModeList" placeholder="请选择"
           clearable multiple filterable />
       </el-form-item>

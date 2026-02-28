@@ -191,8 +191,9 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
        <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length !== 1" @click="handleUnlock">取消锁车</el-button>
-       <el-button v-if="canAddOrUpdate" size="small" @click="handleChangeDealer('sales')" :disabled="selectionList.length === 0">更换销售门店</el-button>
-       <el-button v-if="canAddOrUpdate" size="small" @click="handleChangeDealer('support')" :disabled="selectionList.length === 0">更换交付门店</el-button>
+       <el-button v-permission="moduleKey+'-changeSaleDealer'" size="small" @click="handleChangeDealer('sales')" :disabled="selectionList.length === 0">更换销售门店</el-button>
+       <el-button v-permission="moduleKey+'-changeDeliveryDealer'" size="small" @click="handleChangeDealer('support')" :disabled="selectionList.length === 0">更换交付门店</el-button>
+       <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" @click="handleSetSpecialRemark" :disabled="selectionList.length !== 1">设置特殊备注</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
@@ -239,6 +240,31 @@
       :dataList="selectionList"
       @changeDealer="changeDealerFun"
     />
+
+    <!-- 设置特殊备注 -->
+    <el-dialog
+      ref="specialRemarkDialog"
+      width="30%"
+      :visible.sync="specialRemarkDialog.show"
+      :title="specialRemarkDialog.title"
+      @close="specialRemarkDialog.show = false"
+    >
+      <el-form :model="specialRemarkDialog.form" :rules="specialRemarkDialog.rules" ref="specialRemarkFormRef" label-width="120px">
+        <el-form-item label="特殊备注" prop="specialRemark">
+          <el-input
+            v-model="specialRemarkDialog.form.specialRemark"
+            type="textarea"
+            :autosize="{ minRows: 3, maxRows: 5 }"
+            maxlength="500"
+            show-word-limit
+          />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitSetSpecialRemark">确定</el-button>
+        <el-button @click="specialRemarkDialog.show = false">取消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -246,7 +272,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, getOrderUnlockConfig, batchReplaceStore } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getList, deleteItem, enableItem, getOrderUnlockConfig, batchReplaceStore, setSpecialRemark } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import {
   getTableConfig,
   tableAddOrUpdate,
@@ -410,7 +436,7 @@ export default {
             props: 'carBuyerName',
             label: '购车人姓名',
             visible: true,
-            width: 100,
+            width: 80,
             mask: true,
             // getValue: (row) => getDetailDecryptField(row.id, 'carBuyerName')
           },
@@ -418,7 +444,7 @@ export default {
             props: 'carBuyerPhone',
             label: '购车人手机号',
             visible: true,
-            width: 200,
+            width: 140,
             mask: true,
             // getValue: (row) => getDetailDecryptField(row.id, 'carBuyerPhone')
           },
@@ -426,53 +452,53 @@ export default {
             props: 'idCardNo',
             label: '证件号码',
             visible: true,
-            width: 200,
+            width: 220,
             mask: true,
             // getValue: (row) => getDetailDecryptField(row.id, 'idCardNo')
           },
-          { props: 'saleUserName', label: '订单销售顾问', visible: true, width: 200 },
-          { props: 'matchVin', label: '配车VIN码', visible: true, width: 200 },
-          { props: 'orderStatusLabel', label: '零售订单状态', visible: true, width: 200 },
-          { props: 'lockStatusLabel', label: '是否锁单', visible: true, width: 200 },
-          { props: 'lockTime', label: '锁单时间', visible: true, width: 200 },
-          { props: 'wholesaleBindStatus', label: '是否绑定批售', visible: true, width: 200 },
-          { props: 'priceAfterSubsidy', label: '补贴后价格', visible: true, width: 200 },
-          { props: 'depositAmount', label: '应收定金', visible: true, width: 200 },
-          { props: 'agentName', label: '代办联系人', visible: true, width: 200 },
-          { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 200 },
-          { props: 'saleDealerName', label: '订单销售门店', visible: true, width: 200 },
-          { props: 'provinceName', label: '销售门店-省', visible: true, width: 200 },
-          { props: 'cityName', label: '销售门店-市', visible: true, width: 200 },
-          { props: 'regionName', label: '所属区域或部门', visible: true, width: 200 },
-          { props: 'dealerCompanyName', label: '销售门店母公司', visible: true, width: 200 },
-          { props: 'deliveryDealerName', label: '订单交付门店', visible: true, width: 200 },
+          { props: 'saleUserName', label: '订单销售顾问', visible: true, width: 160 },
+          { props: 'matchVin', label: '配车VIN码', visible: true, width: 220 },
+          { props: 'orderStatusLabel', label: '零售订单状态', visible: true, width: 150 },
+          { props: 'lockStatusLabel', label: '是否锁单', visible: true, width: 120 },
+          { props: 'lockTime', label: '锁单时间', visible: true, width: 180 },
+          { props: 'wholesaleBindStatusLabel', label: '是否绑定批售', visible: true, width: 140 },
+          { props: 'priceAfterSubsidy', label: '补贴后价格', visible: true, width: 140 },
+          { props: 'depositAmount', label: '应收定金', visible: true, width: 120 },
+          { props: 'agentName', label: '代办联系人', visible: true, width: 140 },
+          { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 120 },
+          { props: 'saleDealerName', label: '订单销售门店', visible: true, width: 240 },
+          { props: 'provinceName', label: '销售门店-省', visible: true, width: 160 },
+          { props: 'cityName', label: '销售门店-市', visible: true, width: 160 },
+          { props: 'regionName', label: '所属区域或部门', visible: true, width: 160 },
+          { props: 'dealerCompanyName', label: '销售门店母公司', visible: true, width: 240 },
+          { props: 'deliveryDealerName', label: '订单交付门店', visible: true, width: 240 },
           { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
-          { props: 'modelName', label: '车型名称', visible: true, width: 200 },
-          { props: 'yearTypeName', label: '年款名称', visible: true, width: 200 },
+          { props: 'seriesName', label: '车系名称', visible: true, width: 120 },
+          { props: 'modelName', label: '车型名称', visible: true, width: 160 },
+          { props: 'yearTypeName', label: '年款名称', visible: true, width: 120 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 300 },
-          { props: 'rangePowerName', label: '选配动力', visible: true, width: 200 },
-          { props: 'drivingRangeName', label: '续航里程', visible: true, width: 200 },
-          { props: 'exteriorName', label: '外观名称', visible: true, width: 200 },
-          { props: 'interiorName', label: '内饰名称', visible: true, width: 200 },
-          { props: 'wheelHubName', label: '轮毂名称', visible: true, width: 200 },
-          { props: 'optionPackageName', label: '选装包名称', visible: true, width: 200 },
-          { props: 'lockCarTypeLabel', label: '锁车匹配类型', visible: true, width: 200 },
+          { props: 'rangePowerName', label: '选配动力', visible: true, width: 140 },
+          { props: 'drivingRangeName', label: '续航里程', visible: true, width: 140 },
+          { props: 'exteriorName', label: '外观名称', visible: true, width: 140 },
+          { props: 'interiorName', label: '内饰名称', visible: true, width: 140 },
+          { props: 'wheelHubName', label: '轮毂名称', visible: true, width: 140 },
+          { props: 'optionPackageName', label: '选装包名称', visible: true, width: 300 },
+          { props: 'lockCarTypeLabel', label: '锁车匹配类型', visible: true, width: 180 },
           { props: 'retailOrderCode', label: '订单编码', visible: true, width: 200 },
           { props: 'outTradeNo', label: '外部订单号', visible: true, width: 200 },
           { props: 'orderTime', label: '商城下单时间', visible: true, width: 200 },
           { props: 'paymentTime', label: '缴定金时间', visible: true, width: 200 },
           { props: 'rightsEnjoyDate', label: '权益享受日期', visible: true, width: 200 },
-          { props: 'wholesaleOrderStatusLabel', label: '批售订单状态', visible: true, width: 200 },
-          { props: 'unlockCount', label: '解绑次数', visible: true, width: 200 },
-          { props: 'changeConfigCount', label: '改配次数', visible: true, width: 200 },
+          { props: 'wholesaleOrderStatusLabel', label: '批售订单状态', visible: true, width: 160 },
+          { props: 'unlockCount', label: '解绑次数', visible: true, width: 120 },
+          { props: 'changeConfigCount', label: '改配次数', visible: true, width: 120 },
           { props: 'confirmedCount', label: '批售确认次数', visible: true, width: 200 },
-          { props: 'deliveryCycleMaxWeek', label: '交付周期上限', visible: true, width: 200 },
-          { props: 'initialDeliveryCycleDesc', label: '初始交付周期说明', visible: true, width: 200 },
-          { props: 'dynamicDeliveryCycleDesc', label: '动态交付周期说明', visible: true, width: 200 },
-          { props: 'orderSortTime', label: '订单排序时间', visible: true, width: 200 },
+          { props: 'deliveryCycleMaxWeek', label: '交付周期上限', visible: true, width: 160 },
+          { props: 'initialDeliveryCycleDesc', label: '初始交付周期说明', visible: true, width: 180 },
+          { props: 'dynamicDeliveryCycleDesc', label: '动态交付周期说明', visible: true, width: 180 },
+          { props: 'orderSortTime', label: '订单排序时间', visible: true, width: 160 },
           { props: 'deliveryTime', label: '交车时间', visible: true, width: 200 },
-          { props: 'orderUserId', label: '下单人UserID', visible: true, width: 200 },
+          { props: 'orderUserId', label: '下单人UserID', visible: true, width: 180 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',
@@ -502,6 +528,18 @@ export default {
           }
         ],
         total: 0
+      },
+      specialRemarkDialog: {
+        title: '设置特殊备注',
+        show: false,
+        form: {
+          specialRemark: ''
+        },
+        rules: {
+          specialRemark: [
+            { required: true, message: '请输入特殊备注', trigger: 'blur' }
+          ]
+        }
       }
     };
   },
@@ -513,6 +551,25 @@ export default {
     this.loginUserGet();
   },
   methods: {
+    handleSetSpecialRemark () {
+      this.specialRemarkDialog.show = true;
+    },
+    submitSetSpecialRemark () {
+      this.$refs.specialRemarkFormRef.validate(valid => {
+        if (valid) {
+          const orderId = this.selectionList[0].id;
+          const param = {
+            retailOrderId: orderId,
+            specialRemark: this.specialRemarkDialog.form.specialRemark
+          };
+          setSpecialRemark(param).then(res => {
+            this.$message.success('设置成功');
+            this.specialRemarkDialog.show = false;
+            this.getData();
+          });
+        }
+      });
+    },
     handleChangeDealer (type) {
       if (type === 'sales') {
         // 校验选择的订单状态是否都是 订单确认

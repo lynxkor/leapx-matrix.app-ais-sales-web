@@ -93,6 +93,14 @@ export function listOrgStoreInfo (data) {
 }
 
 /**
+ * 门店仓库模糊搜索
+ * @param {*} data
+ */
+export function listOrgWarehouseStoreInfo (data) {
+  return api.jsonPost('/network/portal/store/warehouse/page', data);
+}
+
+/**
  * 门店详情获取通过CODE
  * @param {*} data
  */

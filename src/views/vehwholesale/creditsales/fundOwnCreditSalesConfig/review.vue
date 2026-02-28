@@ -8,6 +8,7 @@
       <section class="common-section">
         <div class="common-section-header">
           <h2>基础信息</h2>
+          <el-button  size="small"  @click="handleBatchAudit">复核</el-button>
         </div>
         <div class="common-section-body">
           <!-- TIPS: 根据实际情况调整展示字段和宽度 -->
@@ -64,13 +65,13 @@
             <el-form-item label="复核时间：" prop="reviewTime">
               {{ info.reviewTime  }}
             </el-form-item>
-            <el-form-item label="复核意见：" prop="reviewOpinion" inline=false>
+            <!-- <el-form-item label="复核意见：" prop="reviewOpinion" inline=false>
               <el-input v-model="info.reviewOpinion"></el-input>
-            </el-form-item>
+            </el-form-item> -->
           </el-form>
         </div>
       </section>
-      <div>
+      <!-- <div>
       <el-container style="text-align: center;">
         <el-main>
           <el-footer height="60px">
@@ -79,7 +80,12 @@
         </el-footer>
         </el-main>
       </el-container>
-      </div>
+      </div> -->
+
+      <audit-dialog
+      ref="auditDialogRef"
+      @audit="handleAudit"
+    />
     </template>
   </div>
 </template>
@@ -89,11 +95,13 @@ import { getDetail, reviewItem } from '@/api/vehwholesale/creditsales/fundOwnCre
 import { YES_NO_ENUM_MAP } from '@/libs/constants';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import auditDialog from '@/libs/components/auditDialog';
 
 export default {
   name: 'fundOwnCreditSalesConfigDetail',
   mixins: [permissions, commonMixins],
   components: {
+    auditDialog
   },
   data () {
     return {
@@ -111,6 +119,9 @@ export default {
     this.getData();
   },
   methods: {
+    handleBatchAudit () {
+      this.$refs.auditDialogRef.show();
+    },
     getFormData (val) {
       const data = { ...val };
       Object.keys(val).forEach(key => {
@@ -119,6 +130,23 @@ export default {
         }
       });
       return data;
+    },
+    handleAudit (data) {
+      console.log('handleAudit', data);
+      const params = {
+        ids: [this.info.id],
+        reviewOpinion: data.remark,
+        passOrReject: data.result
+      };
+      reviewItem(params).then(() => {
+        this.$message({
+          type: 'success',
+          message: '复核成功!'
+        });
+        this.$router.push({
+          name: 'fundOwnCreditSalesConfig'
+        });
+      }).catch(() => {});
     },
     reviewCheck (type) {
       const params = {
