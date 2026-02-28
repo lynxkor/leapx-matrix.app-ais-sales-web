@@ -68,10 +68,24 @@
           <el-input placeholder="请输入" v-model="form.optionPackageId" clearable />
         </el-form-item>
         <el-form-item label="采购入库时间">
-          <el-input placeholder="请输入" v-model="form.poentryOn" clearable />
+          <el-date-picker
+            v-model="form.poentryOnTime"
+            type="daterange"
+            :picker-options="pickerOptions"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
         </el-form-item>
         <el-form-item label="入库时间">
-          <el-input placeholder="请输入" v-model="form.moveinDate" clearable />
+          <el-date-picker
+            v-model="form.moveinDateTime"
+            type="daterange"
+            :picker-options="pickerOptions"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
         </el-form-item>
         <el-form-item label="入库是否及时">
           <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.inboundTimeLy" placeholder="请选择"
@@ -393,11 +407,19 @@ export default {
         }
       });
 
-      if (this.form.createTime) {
-        delete data.createTime;
-        if (this.form.createTime.length > 1) {
-          data.createTimeStart = this.form.createTime[0];
-          data.createTimeEnd = this.form.createTime[1];
+      if (this.form.poentryOnTime) {
+        delete data.poentryOnTime;
+        if (this.form.poentryOnTime.length > 1) {
+          data.poentryOnStart = this.form.poentryOnTime[0];
+          data.poentryOnEnd = this.form.poentryOnTime[1];
+        }
+      }
+
+      if (this.form.moveinDateTime) {
+        delete data.moveinDateTime;
+        if (this.form.moveinDateTime.length > 1) {
+          data.moveinDateStart = this.form.moveinDateTime[0];
+          data.moveinDateEnd = this.form.moveinDateTime[1];
         }
       }
 
