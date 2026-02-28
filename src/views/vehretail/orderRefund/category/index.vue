@@ -203,12 +203,18 @@ export default {
             props: 'id',
             label: '主键',
             visible: false,
+            width: 200
+          },
+          {
+            props: 'cateCode',
+            label: '原因分类代码',
+            visible: true,
             width: 200,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehretail/orderRefund/edit',
+                  path: '/vehretail/orderRefund/category/edit',
                   query: {
                     id: row.id
                   }
@@ -217,14 +223,13 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'cateCode', label: '原因分类代码', visible: true, width: 200 },
           { props: 'cateName', label: '退订原因分类', visible: true, width: 200 },
           { props: 'selectorDisplayLabel', label: '下拉是否展示', visible: true, width: 200 },
           { props: 'originalRefundLabel', label: '原路退回允许选择', visible: true, width: 200 },
           { props: 'preApprovalLabel', label: '是否需要初审', visible: true, width: 200 },
           { props: 'finalApprovalLabel', label: '是否需要终审', visible: true, width: 200 },
           { props: 'refundTypeSelectLabel', label: '退款方式是否允许选择', visible: true, width: 200 },
-          { props: 'refundTypeDefault', label: '默认定金退款方式', visible: true, width: 200 },
+          { props: 'refundTypeDefaultLabel', label: '默认定金退回方式', visible: true, width: 200 },
           { props: 'refundAttachRequired', label: '退订附件上传要求', visible: true, width: 200 },
           { props: 'refundReasonDefault', label: '默认退订原因说明', visible: false, width: 200 },
           { props: 'refundReasonChangedLabel', label: '是否允许退订原因修改', visible: false, width: 200 },
