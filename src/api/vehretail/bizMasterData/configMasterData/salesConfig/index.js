@@ -12,6 +12,14 @@ export function getList (data) {
 };
 
 /**
+ * 查询列表
+ * @param {Object} data
+ */
+export function getRawList (data) {
+  return api.jsonPost(prefix + 'list', data);
+};
+
+/**
  * 新增或修改
  * @param {Object} data
  */
