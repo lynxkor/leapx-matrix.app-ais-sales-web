@@ -4,7 +4,7 @@
     <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
       class="ais-search-form">
       <el-form-item label="出库单号">
-        <el-input placeholder="请输入" v-model="form.name" clearable />
+        <el-input placeholder="请输入" v-model="form.nameLike" clearable />
       </el-form-item>
       <el-form-item label="VIN">
         <tag-input v-model="form.vinList" placeholder="请输入" />
@@ -14,7 +14,7 @@
       </el-form-item>
       <template v-if="show">
         <el-form-item label="物料描述">
-          <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
+          <el-input placeholder="请输入" v-model="form.materialsDescLike" clearable />
         </el-form-item>
         <el-form-item label="出库类型">
           <fetch-select :request="fetchOptions" enumCode="vehstock_moveout_type" v-model="form.moveoutTypeList"
@@ -74,10 +74,10 @@ import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  name: '',
+  nameLike: '',
   vinList: [],
   materialsCodeList: [],
-  materialsDesc: '',
+  materialsDescLike: '',
   moveoutTypeList: [],
   moveoutOn: '',
 };

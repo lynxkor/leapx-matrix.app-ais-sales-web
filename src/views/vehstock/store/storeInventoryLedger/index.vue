@@ -56,11 +56,29 @@
           <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.vehdeLiveried" placeholder="请选择"
             clearable filterable />
         </el-form-item>
-        <el-form-item label="销售门店编码">
-          <el-input placeholder="请输入" v-model="form.saleDealerCode" clearable />
+        <el-form-item label="销售门店">
+          <fetch-select
+            filterable
+            clearable
+            remote
+            collapseTags
+            v-model="form.saleDealerCode"
+            :remote-method="getDealerListByName"
+            value-key="storeCode"
+            label-key="storeName"
+          />
         </el-form-item>
-        <el-form-item label="交付门店编码">
-          <el-input placeholder="请输入" v-model="form.deliveryDealerCode" clearable />
+        <el-form-item label="交付门店">
+          <fetch-select
+            filterable
+            clearable
+            remote
+            collapseTags
+            v-model="form.deliveryDealerCode"
+            :remote-method="getDealerListByName"
+            value-key="storeCode"
+            label-key="storeName"
+          />
         </el-form-item>
         <el-form-item label="物料编码">
           <tag-input v-model="form.materialsCodeList" placeholder="请输入" />
@@ -185,7 +203,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/store/storeInventoryLedger/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleModel, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleSalesVersionList } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleModel, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleSalesVersionList, listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -405,6 +423,10 @@ export default {
       }
 
       return await listVehicleModel(params);
+    },
+    // 销售门店搜索
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
     },
     handleListSelect (row) {
       this.clickItemId = row.id;
