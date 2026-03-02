@@ -4,7 +4,7 @@ import store from './../store';
 
 const routerPush = VueRouter.prototype.push;
 // 修改原型对象中的push方法
-VueRouter.prototype.push = function push (location) {
+VueRouter.prototype.push = function push(location) {
   return routerPush.call(this, location).catch(error => error);
 };
 if (!window.VueRouter) Vue.use(VueRouter);
@@ -551,6 +551,14 @@ const routes = [
       meta: {
         name: '整车主数据-物料可配关系管理详情',
         noResourceUrl: 'true'
+      }
+    }, {
+      path: '/datacenter/materials/salesParameterConfig',
+      name: 'salesParameterConfig',
+      component: () => import('@/views/datacenter/materials/salesParameterConfig/index.vue'),
+      meta: {
+        name: '整车主数据-销售参数配置',
+        keepAlive: true
       }
     }, {
       path: '/datacenter/materials/vehicleSeries',
@@ -2265,7 +2273,7 @@ if (!window.__POWERED_BY_QIANKUN__) {
   });
 }
 
-function toLoginPage (to, next) {
+function toLoginPage(to, next) {
   if (window.__POWERED_BY_QIANKUN__) {
     window.location.href = '/login?redirect=' + to.fullPath;
   } else {
@@ -2277,7 +2285,7 @@ function toLoginPage (to, next) {
 }
 
 const appPrefix = process.env.VUE_APP_ROUTER_BASE;
-export function getRouter () {
+export function getRouter() {
   const router = new VueRouter({
     base: `${appPrefix}/`,
     mode: 'history',
@@ -2292,7 +2300,7 @@ export function getRouter () {
       }
       // 开发阶段先跳过权限验证
       if (localStorage.getItem('sourceUrl').includes(to.path) || to.meta.noResourceUrl) {
-      // if (true) {
+        // if (true) {
         next();
       } else {
         window.alert('你没有访问该页面的权限');

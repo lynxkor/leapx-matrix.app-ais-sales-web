@@ -6,8 +6,18 @@
       <el-form-item label="PDI检查项">
         <el-input placeholder="请输入" v-model="form.nameLike" clearable />
       </el-form-item>
-      <el-form-item label="上级检查项id">
-        <el-input placeholder="请输入" v-model="form.parentId" clearable />
+      <el-form-item label="上级检查项">
+        <fetch-select
+          :remote-method="getLayerTypeList"
+          remote
+          :options="layerTypeList"
+          placeholder="请输入"
+          v-model="form.parentId"
+          value-key="id"
+          label-key="name"
+          clearable
+          filterable
+        />
       </el-form-item>
       <el-form-item label="检查方式" v-if="this.visibleCount === 3 || show">
         <fetch-select :request="fetchOptions" enumCode="vehstock_check_mode" v-model="form.checkModeList" placeholder="请选择"
@@ -90,6 +100,7 @@ export default {
         ...defaultForm
       },
       selectionList: [],
+      layerTypeList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -266,6 +277,16 @@ export default {
         this.optionObj.form.size = num;
       }
       this.debouncedGetData();
+    },
+    // 获取上级检查项
+    async getLayerTypeList (keyword) {
+      try {
+        const res = await getList({ pageNum: 1, pageSize: 50, nameLike: keyword });
+        this.layerTypeList = res.records;
+        return res;
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
     },
     // 多选框选中数据
     handleSelectionChange (selection) {

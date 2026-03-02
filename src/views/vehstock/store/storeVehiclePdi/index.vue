@@ -4,10 +4,10 @@
     <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
       class="ais-search-form">
       <el-form-item label="VIN">
-        <el-input placeholder="请输入" v-model="form.vin" clearable />
+        <tag-input placeholder="请输入" v-model="form.vin" clearable />
       </el-form-item>
       <el-form-item label="PDI单号">
-        <el-input placeholder="请输入" v-model="form.code" clearable />
+        <tag-input placeholder="请输入" v-model="form.code" clearable />
       </el-form-item>
       <el-form-item label="PDI类型" v-if="this.visibleCount === 3 || show">
         <fetch-select :request="fetchOptions" enumCode="vehstock_veh_pdi_type" v-model="form.vehPdiType"
@@ -27,25 +27,73 @@
           placeholder="请选择" clearable filterable />
         </el-form-item>
         <el-form-item label="车系">
-          <el-input placeholder="请输入" v-model="form.seriesId" clearable />
+          <fetch-select
+            v-model="form.seriesIdList"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.series"
+          />
         </el-form-item>
         <el-form-item label="车型">
-          <el-input placeholder="请输入" v-model="form.modelId" clearable />
+          <fetch-select
+            v-model="form.modelIdList"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.model"
+          />
         </el-form-item>
+
         <el-form-item label="年款">
-          <el-input placeholder="请输入" v-model="form.yearTypeId" clearable />
+          <fetch-select
+            v-model="form.yearTypeIdList"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.yearType"
+          />
         </el-form-item>
-        <el-form-item label="销售门店编码">
-          <el-input placeholder="请输入" v-model="form.saleDealerCode" clearable />
+        <el-form-item label="销售门店">
+          <fetch-select
+            filterable
+            clearable
+            remote
+            collapseTags
+            v-model="form.saleDealerCode"
+            :remote-method="getDealerListByName"
+            value-key="storeCode"
+            label-key="storeName"
+          />
         </el-form-item>
-        <el-form-item label="交付门店编码">
-          <el-input placeholder="请输入" v-model="form.deliveryDealerCode" clearable />
+        <el-form-item label="交付门店">
+          <fetch-select
+            filterable
+            clearable
+            remote
+            collapseTags
+            v-model="form.deliveryDealerCode"
+            :remote-method="getDealerListByName"
+            value-key="storeCode"
+            label-key="storeName"
+          />
         </el-form-item>
-        <el-form-item label="PDI提交人ID">
-          <el-input placeholder="请输入" v-model="form.pdiSubmitById" clearable />
+        <el-form-item label="PDI提交人">
+          <fetch-select
+            remote
+            filterable
+            clearable
+            :remote-method="getPdiUser"
+            v-model="form.pdiSubmitById"
+            value-key="userId"
+            label-key="username"
+          />
         </el-form-item>
         <el-form-item label="PDI提交时间">
-          <el-input placeholder="请输入" v-model="form.pdiSubmitOn" clearable />
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+              v-model="form.pdiSubmitTime"
+              type="daterange"
+              :picker-options="pickerOptions"
+              range-separator="至"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+            />
         </el-form-item>
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
@@ -78,7 +126,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/store/storeVehiclePdi/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleModel, listVehicleYearType, listOrgStoreInfo, getUserByNameOrNo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -87,6 +135,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -103,6 +152,7 @@ const defaultForm = {
   deliveryDealerCode: '',
   pdiSubmitById: '',
   pdiSubmitOn: '',
+  pdiSubmitTime: [],
 };
 
 const pageSize = 20;
@@ -117,7 +167,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    TagInput
   },
   data () {
     return {
@@ -193,6 +244,30 @@ export default {
           }
         ],
         total: 0
+      },
+      // 提取公共配置
+      selectOptions: {
+        placeholder: '请选择',
+        labelKey: 'name',
+        valueKey: 'id',
+        clearable: true,
+        multiple: true,
+        collapseTags: true,
+        filterable: true,
+        remote: true,
+        reserveKeyword: true
+      },
+      // 远程搜索方法
+      remoteMethods: {
+        series: async (query) => {
+          return await vehicleSeriesList({ seriesNameLike: query });
+        },
+        model: async (query) => {
+          return await this.searchModel(query);
+        },
+        yearType: async (query) => {
+          return await listVehicleYearType({ yearTypeNameLike: query });
+        },
       }
     };
   },
@@ -224,6 +299,27 @@ export default {
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
       this.getData();
+    },
+    // 车型支持车系 ID 和 车型输入 方法
+    async searchModel (query) {
+      const params = {};
+
+      if (query) {
+        params.modelNameLike = query;
+      }
+
+      if (this.form.seriesIdList?.length) {
+        params.seriesIds = this.form.seriesIdList;
+      }
+
+      return await listVehicleModel(params);
+    },
+    // 销售门店搜索
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
+    },
+    async getPdiUser (params) {
+      return getUserByNameOrNo({ name: params });
     },
     exportExcel () {
       this.exportLoading = true;
@@ -302,6 +398,8 @@ export default {
       this.selectionList = selection;
     },
     getFormData () {
+      this.form.pdiSubmitOnStart = this.form.pdiSubmitTime ? this.form.pdiSubmitTime[0] : '';
+      this.form.pdiSubmitOnEnd = this.form.pdiSubmitTime ? this.form.pdiSubmitTime[1] : '';
       const data = { ...this.form };
 
       Object.keys(this.form).forEach(key => {
