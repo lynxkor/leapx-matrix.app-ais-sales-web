@@ -344,7 +344,7 @@ export default {
       }
       exportTable({
         businessType: '订单锁车解绑申请记录管理',
-        dataFetchPath: 'vehretail/web/orderManager/orderUnlockApply/page',
+        dataFetchPath: 'vr/web/lock/retailOrderUnlockApply/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
