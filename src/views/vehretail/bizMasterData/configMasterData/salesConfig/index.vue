@@ -124,7 +124,7 @@
               </el-form>
             </div>
           </section>
-          <AttachedFilesDialog ref="attachedFilesDialog"/>
+          <!-- <AttachedFilesDialog ref="attachedFilesDialog"/> -->
         </el-main>
     </template>
   </edit-page-layout>
@@ -139,7 +139,7 @@ import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
-import AttachedFilesDialog from './attachedFilesDialog.vue';
+// import AttachedFilesDialog from './attachedFilesDialog.vue';
 // Deleted: import commonMixins from '@/libs/mixins/commonMixins';
 // import { Divider } from '@leapmotor/element-ui';
 
@@ -174,7 +174,7 @@ export default {
   // Deleted: mixins: [routeGuard, permissions, commonMixins],
   mixins: [routeGuard, permissions],
   components: {
-    AttachedFilesDialog,
+    // AttachedFilesDialog,
     EditPageLayout,
     FetchSelect
   },
