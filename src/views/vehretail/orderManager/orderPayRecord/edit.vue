@@ -129,9 +129,6 @@
                 <el-form-item label="权益项名称：" prop="rightsItem">
                   {{ form.rightsItem }}
                 </el-form-item>
-                <el-form-item label="备注：" prop="remark">
-                  {{ form.remark }}
-                </el-form-item>
                 <el-form-item label="付款时间：" prop="paymentTime">
                   {{ form.paymentTime }}
                 </el-form-item>
@@ -164,6 +161,9 @@
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
+                </el-form-item>
+                <el-form-item label="备注：" prop="remark">
+                  {{ form.remark }}
                 </el-form-item>
               </el-form>
             </div>
