@@ -230,9 +230,9 @@ export default {
         },
         dataProp: [
           {
-            props: 'id',
-            label: '主键',
-            visible: false,
+            props: 'changeApplyCode',
+            label: '申请编号',
+            visible: true,
             width: 200,
             fixed: 'left',
             buttons: [{
@@ -247,7 +247,12 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'changeApplyCode', label: '申请编号', visible: true, width: 200 },
+          {
+            props: 'id',
+            label: '主键',
+            visible: false,
+            width: 200
+          },
           { props: 'retailOrderCode', label: '零售订单号', visible: true, width: 200 },
           { props: 'mallOrderCode', label: '商城订单编号', visible: true, width: 200 },
           { props: 'saleDealerCode', label: '销售门店编码', visible: false, width: 200 },

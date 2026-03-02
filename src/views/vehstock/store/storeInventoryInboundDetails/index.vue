@@ -21,7 +21,14 @@
             placeholder="请选择" clearable multiple filterable />
         </el-form-item>
         <el-form-item label="入库时间">
-          <el-input placeholder="请输入" v-model="form.moveinDate" clearable />
+          <el-date-picker
+            v-model="form.moveinDateTime"
+            type="daterange"
+            :picker-options="pickerOptions"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
         </el-form-item>
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
@@ -254,11 +261,11 @@ export default {
         }
       });
 
-      if (this.form.createTime) {
-        delete data.createTime;
-        if (this.form.createTime.length > 1) {
-          data.createTimeStart = this.form.createTime[0];
-          data.createTimeEnd = this.form.createTime[1];
+      if (this.form.moveinDateTime) {
+        delete data.moveinDateTime;
+        if (this.form.moveinDateTime.length > 1) {
+          data.moveinDateStart = this.form.moveinDateTime[0];
+          data.moveinDateEnd = this.form.moveinDateTime[1];
         }
       }
 

@@ -10,19 +10,19 @@
         :form.sync="form"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.applyStatus === 1010"
+        :showEditBtn="form.applyStatus === 1010 || form.applyStatus === 1040"
       >
         <template #extraButtons>
           <el-button
             @click="openCancelShow"
-            v-if="form.applyStatus === 1010 || form.applyStatus === 1050"
+            v-if="form.applyStatus === 1010 || form.applyStatus === 1040"
             v-permission="moduleKey + '-cancel'"
             size="small">
             作废
           </el-button>
           <el-button
             @click="openCommitShow"
-            v-if="form.applyStatus === 1010 || form.applyStatus === 1050"
+            v-if="form.applyStatus === 1010 || form.applyStatus === 1040"
             v-permission="moduleKey + '-commit'">
             提交审批
           </el-button>
@@ -31,7 +31,7 @@
             v-permission="moduleKey + '-approve'"
             v-if="form.applyStatus === 1"
           >
-            审批
+            审核
           </el-button>
         </template>
         <el-main>
@@ -519,10 +519,10 @@
               </el-table>
             </div>
         </section>
-          <audit-dialog
-            ref="auditRef"
-            @audit="handleAudit"
-          />
+        <audit-dialog
+          ref="auditRef"
+          @audit="handleAudit"
+        />
         </el-main>
       </edit-base-container>
     </template>
@@ -1164,6 +1164,8 @@ export default {
       this.$message.info(JSON.stringify(auditForm));
       auditForm.changeApplyId = this.form.id;
       auditForm.changeApplyCode = this.form.changeApplyCode;
+      auditForm.auditResult = auditForm.result;
+      auditForm.auditRemark = auditForm.remark;
       submit(auditForm);
     }
   },

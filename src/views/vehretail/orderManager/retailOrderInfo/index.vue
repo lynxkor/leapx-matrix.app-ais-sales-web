@@ -193,7 +193,6 @@
        <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length !== 1" @click="handleUnlock">取消锁车</el-button>
        <el-button v-permission="moduleKey+'-changeSaleDealer'" size="small" @click="handleChangeDealer('sales')" :disabled="selectionList.length === 0">更换销售门店</el-button>
        <el-button v-permission="moduleKey+'-changeDeliveryDealer'" size="small" @click="handleChangeDealer('support')" :disabled="selectionList.length === 0">更换交付门店</el-button>
-       <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" @click="handleSetSpecialRemark" :disabled="selectionList.length !== 1">设置特殊备注</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
@@ -240,31 +239,6 @@
       :dataList="selectionList"
       @changeDealer="changeDealerFun"
     />
-
-    <!-- 设置特殊备注 -->
-    <el-dialog
-      ref="specialRemarkDialog"
-      width="30%"
-      :visible.sync="specialRemarkDialog.show"
-      :title="specialRemarkDialog.title"
-      @close="specialRemarkDialog.show = false"
-    >
-      <el-form :model="specialRemarkDialog.form" :rules="specialRemarkDialog.rules" ref="specialRemarkFormRef" label-width="120px">
-        <el-form-item label="特殊备注" prop="specialRemark">
-          <el-input
-            v-model="specialRemarkDialog.form.specialRemark"
-            type="textarea"
-            :autosize="{ minRows: 3, maxRows: 5 }"
-            maxlength="500"
-            show-word-limit
-          />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitSetSpecialRemark">确定</el-button>
-        <el-button @click="specialRemarkDialog.show = false">取消</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -272,7 +246,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, getOrderUnlockConfig, batchReplaceStore, setSpecialRemark } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getList, deleteItem, enableItem, getOrderUnlockConfig, batchReplaceStore } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import {
   getTableConfig,
   tableAddOrUpdate,
@@ -528,18 +502,6 @@ export default {
           }
         ],
         total: 0
-      },
-      specialRemarkDialog: {
-        title: '设置特殊备注',
-        show: false,
-        form: {
-          specialRemark: ''
-        },
-        rules: {
-          specialRemark: [
-            { required: true, message: '请输入特殊备注', trigger: 'blur' }
-          ]
-        }
       }
     };
   },
@@ -551,25 +513,6 @@ export default {
     this.loginUserGet();
   },
   methods: {
-    handleSetSpecialRemark () {
-      this.specialRemarkDialog.show = true;
-    },
-    submitSetSpecialRemark () {
-      this.$refs.specialRemarkFormRef.validate(valid => {
-        if (valid) {
-          const orderId = this.selectionList[0].id;
-          const param = {
-            retailOrderId: orderId,
-            specialRemark: this.specialRemarkDialog.form.specialRemark
-          };
-          setSpecialRemark(param).then(res => {
-            this.$message.success('设置成功');
-            this.specialRemarkDialog.show = false;
-            this.getData();
-          });
-        }
-      });
-    },
     handleChangeDealer (type) {
       if (type === 'sales') {
         // 校验选择的订单状态是否都是 订单确认

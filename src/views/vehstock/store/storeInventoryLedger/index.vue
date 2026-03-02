@@ -68,10 +68,24 @@
           <el-input placeholder="请输入" v-model="form.optionPackageId" clearable />
         </el-form-item>
         <el-form-item label="采购入库时间">
-          <el-input placeholder="请输入" v-model="form.poentryOn" clearable />
+          <el-date-picker
+            v-model="form.poentryOnTime"
+            type="daterange"
+            :picker-options="pickerOptions"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
         </el-form-item>
         <el-form-item label="入库时间">
-          <el-input placeholder="请输入" v-model="form.moveinDate" clearable />
+          <el-date-picker
+            v-model="form.moveinDateTime"
+            type="daterange"
+            :picker-options="pickerOptions"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
         </el-form-item>
         <el-form-item label="入库是否及时">
           <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.inboundTimeLy" placeholder="请选择"
@@ -89,7 +103,7 @@
         :disabled="selectionList.length === 0">批量解预留</el-button>
         <el-button v-if="canEnableOrDisable" size="small" @click="batchreseRvation('car')"
         :disabled="selectionList.length === 0">运损车出库</el-button>
-        <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
+        <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchMove"
         :disabled="selectionList.length === 0">同门店移库</el-button>
         <el-button v-if="canDelete" size="small" @click="handleBatchDelete"
         :disabled="selectionList.length === 0">批量删除</el-button>
@@ -113,6 +127,13 @@
       @close="closeBatchDialog"
       @submit="submitBatchReserve"
     />
+    <MoveDialog
+      :visible="moveDialog"
+      :selectionId="selectionListIds"
+      :saleDealerCode="dealerCode"
+      @close="closeMoveDialog"
+      @submit="submitBatchMove"
+    />
   </div>
 </template>
 
@@ -130,6 +151,7 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import BatchDialog from './BatchDialog.vue';
+import MoveDialog from './MoveDialog.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -169,7 +191,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    BatchDialog
+    BatchDialog,
+    MoveDialog
   },
   data () {
     return {
@@ -189,6 +212,8 @@ export default {
       batchDialog: false, // 批量操作弹窗
       batchName: '', // 批量操作弹窗标题
       selectionListIds: [], // 批量操作选中的行
+      moveDialog: false, // 同门店移库弹窗
+      dealerCode: '', // 销售门店编码
       clickItemId: '',
       optionObj: {
         id: 'storeInventoryLedgerTable',
@@ -382,11 +407,19 @@ export default {
         }
       });
 
-      if (this.form.createTime) {
-        delete data.createTime;
-        if (this.form.createTime.length > 1) {
-          data.createTimeStart = this.form.createTime[0];
-          data.createTimeEnd = this.form.createTime[1];
+      if (this.form.poentryOnTime) {
+        delete data.poentryOnTime;
+        if (this.form.poentryOnTime.length > 1) {
+          data.poentryOnStart = this.form.poentryOnTime[0];
+          data.poentryOnEnd = this.form.poentryOnTime[1];
+        }
+      }
+
+      if (this.form.moveinDateTime) {
+        delete data.moveinDateTime;
+        if (this.form.moveinDateTime.length > 1) {
+          data.moveinDateStart = this.form.moveinDateTime[0];
+          data.moveinDateEnd = this.form.moveinDateTime[1];
         }
       }
 
@@ -444,7 +477,30 @@ export default {
     submitBatchReserve () {
       this.batchDialog = false;
       this.getData();
-    }
+    },
+    // 同门店移库
+    handleBatchMove () {
+      this.selectionListIds = this.selectionList.map(item => item.id) || [];
+      // 获取第一个数据的 code 作为基准
+      const firstCode = this.selectionList[0].saleDealerCode;
+      this.dealerCode = firstCode;
+      // 检查是否每一个数据的 code 都等于第一个数据的 code
+      const isAllSame = this.selectionList.every(item => item.saleDealerCode === firstCode);
+
+      if (!isAllSame) {
+        // 如果不一致，阻止操作并提示
+        return this.$message.error('只能选择相同销售门店名称的数据进行批量操作');
+      };
+      this.moveDialog = true;
+    },
+    closeMoveDialog () {
+      this.moveDialog = false;
+    },
+    submitBatchMove () {
+      this.moveDialog = false;
+      this.dealerCode = '';
+      this.getData();
+    },
   }
 };
 </script>
