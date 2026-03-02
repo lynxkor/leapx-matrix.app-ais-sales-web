@@ -244,7 +244,7 @@ export default {
       }
       exportTable({
         businessType: '订单锁车记录管理',
-        dataFetchPath: 'vehretail/web/orderManager/orderLockRecord/page',
+        dataFetchPath: 'vr/web/order/retailOrderLockRecord/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

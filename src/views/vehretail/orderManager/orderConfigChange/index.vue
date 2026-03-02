@@ -358,7 +358,7 @@ export default {
       }
       exportTable({
         businessType: '订单改配信息管理',
-        dataFetchPath: 'vehretail/web/orderManager/orderConfigChange/page',
+        dataFetchPath: 'vr/web/order/retailOrderConfigChange/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
