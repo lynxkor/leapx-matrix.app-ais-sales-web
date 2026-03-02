@@ -7,7 +7,7 @@ const prefix = 'vehstock/web/store/storeVehiclePdi/';
  * 查询列表
  * @param {Object} data
  */
-export function getList (data) {
+export function getList(data) {
   return api.jsonPost(prefix + 'page', data);
 };
 
@@ -15,7 +15,7 @@ export function getList (data) {
  * 新增或修改
  * @param {Object} data
  */
-export function addOrUpdate (data) {
+export function addOrUpdate(data) {
   return api.jsonPost(prefix + 'addOrUpdate', data);
 }
 
@@ -23,7 +23,7 @@ export function addOrUpdate (data) {
  * 删除
  * @param {Array<Number>} data
  */
-export function deleteItem (data) {
+export function deleteItem(data) {
   return api.jsonPost(prefix + 'delete', data);
 }
 
@@ -31,7 +31,7 @@ export function deleteItem (data) {
  * 查询
  * @param {Object} data
  */
-export function getDetail (data) {
+export function getDetail(data) {
   return api.jsonPost(prefix + 'get', data);
 }
 
@@ -39,6 +39,13 @@ export function getDetail (data) {
  * 启用停用
  * @param {Object} data
  */
-export function enableItem (data) {
+export function enableItem(data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
+}
+/**
+ * 门店整车PDI单检查项结果信息分页查询
+ * @param {Object} data
+ */
+export function storeVehiclePdiCheckItemPage(data) {
+  return api.jsonPost('vehstock/web/store/storeVehiclePdiCheckItem/page', data);
 }

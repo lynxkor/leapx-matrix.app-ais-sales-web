@@ -16,6 +16,7 @@
           <span class="status primary">状态</span>
         </template>
         <template #extraButtons>
+          <!-- <el-button type="primary" size="small"  @click="handleDownloadPDF">下载PDF单据</el-button> -->
         </template>
         <el-main>
           <section class="common-section">
@@ -136,19 +137,76 @@
           </section>
           <section class="common-section">
             <div class="common-section-header">
-              <h2>区块标题</h2>
-              <el-button v-if="canAddOrUpdate" size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>添加</el-button>
+              <h2>一级检查</h2>
+              <!-- <el-button v-if="canAddOrUpdate" size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>添加</el-button> -->
             </div>
             <div class="common-section-body">
               <div class="common-section-table">
-                <edit-table
-                  ref="editTable"
-                  :columns="columns"
-                  :data="tableData"
-                  :defaultNewRow="defaultNewRow"
-                  :show-toolbar="false"
-                  :options="options"
-                  :auth="{edit: canAddOrUpdate, delete: canDelete}"
+                <vxe-table
+                  ref="mainCheckTable"
+                  :data="mainCheckList"
+                  stripe
+                  border="inner"
+                  size="medium"
+                  :cell-style="getCellStyle"
+                  max-height="500px"
+                >
+                  <vxe-column field="name" title="检查项"></vxe-column>
+                  <vxe-column field="isUnusualLabel" title="是否异常"></vxe-column>
+                  <vxe-column field="isRepairedLabel" title="异常是否修复"></vxe-column>
+                  <vxe-column field="repairedOn" title="异常修复时间"></vxe-column>
+                  <vxe-column field="repairedDesc" title="修复说明" show-overflow-tooltip></vxe-column>
+                </vxe-table>
+                <el-pagination
+                  @size-change="mainCheckSizeChange"
+                  @current-change="mainCheckPageChange"
+                  :current-page="mainCheckPagination.page"
+                  :page-sizes="[10, 20, 50, 100]"
+                  :page-size="mainCheckPagination.size"
+                  layout="total, sizes, prev, pager, next, jumper"
+                  :total="mainCheckPagination.total"
+                />
+              </div>
+            </div>
+          </section>
+          <section>
+            <div class="common-section-header">
+              <h2>子项检查</h2>
+            </div>
+            <div class="common-section-body">
+              <div class="common-section-table">
+                <vxe-table
+                  ref="mainCheckTable"
+                  :data="childCheckList"
+                  stripe
+                  border="inner"
+                  size="medium"
+                  :cell-style="getCellStyle"
+                  max-height="500px"
+                >
+                  <vxe-column field="parentName" title="上级检查"></vxe-column>
+                  <vxe-column field="name" title="检查项目"></vxe-column>
+                  <vxe-column field="isUnusualLabel" title="是否异常"></vxe-column>
+                  <vxe-column field="ab" title="异常描述"  show-overflow-tooltip></vxe-column>
+                  <vxe-column field="damagedType" title="受损类型"></vxe-column>
+                  <vxe-column field="isRepairedLabel" title="异常是否修复"></vxe-column>
+                  <vxe-column field="repairedOn" title="异常修复时间"></vxe-column>
+                  <vxe-column field="repairedDesc" title="修复说明" show-overflow-tooltip></vxe-column>
+                  <vxe-column title="附件">
+                    <template slot-scope="scope">
+                      <span style="cursor: pointer; color: #4C4CD6;" @click="viewFile(scope.row)">查看</span>
+                    </template>
+                  </vxe-column>
+                  <vxe-column field="createTime" title="创建时间"></vxe-column>
+                </vxe-table>
+                <el-pagination
+                  @size-change="childCheckSizeChange"
+                  @current-change="childCheckPageChange"
+                  :current-page="childCheckPagination.page"
+                  :page-sizes="[10, 20, 50, 100]"
+                  :page-size="childCheckPagination.size"
+                  layout="total, sizes, prev, pager, next, jumper"
+                  :total="childCheckPagination.total"
                 />
               </div>
             </div>
@@ -161,11 +219,31 @@
         <!-- 右侧栏组件，自行开发 -->
       </div>
     </template>
+    <el-dialog
+      class="m-AuditLog-dialog"
+      title="附件"
+      :visible.sync="fileDialogVisible"
+      width="700px"
+      max-height="600px"
+      :close-on-click-modal="false"
+      append-to-body
+    >
+      <div style="display: inline-flex; align-items: center; flex-wrap: wrap">
+        <el-image v-for="(item, index) in viewPictureList" :key="index" :src="item" fit="fit"
+          :preview-src-list="viewPictureList"
+          :style="{
+            width: '200px',
+            height: '200px',
+            margin: `0 ${(index + 1) % 3 === 0 ? 0 : 20}px 20px 0`
+          }"
+        ></el-image>
+      </div>
+    </el-dialog>
   </edit-page-layout>
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehstock/store/storeVehiclePdi/index';
+import { getDetail, addOrUpdate, storeVehiclePdiCheckItemPage } from '@/api/vehstock/store/storeVehiclePdi/index';
 // import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
@@ -243,7 +321,7 @@ export default {
   components: {
     EditPageLayout,
     EditBaseContainer,
-    EditTable,
+    // EditTable,
     // FetchSelect
   },
   computed: {
@@ -259,11 +337,22 @@ export default {
         }
       },
       immediate: true
+    },
+    form: {
+      async handler (val) {
+        if (val) {
+          this.getMainCheckList();
+          this.getChildCheckList();
+        }
+      },
+      deep: true
     }
   },
   data () {
     const form = this.getDefautlForm();
     return {
+      fileDialogVisible: false,
+      viewPictureList: [],
       pageTitle: '门店整车PDI单',
       pageType: 'edit',
       title: '主键：' + form.id,
@@ -274,43 +363,22 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
-      defaultNewRow: {
-        name: '',
+      mainCheckList: [], // 一级检查项
+      mainCheckPagination: {
+        page: 1,
+        size: 20,
+        total: 0
       },
-      tableData: [
-        { id: 1, name: '张三', age: 25, email: 'zhangsan@example.com' },
-        { id: 2, name: '李四', age: 30, email: 'lisi@example.com' }
-      ],
+      childCheckList: [], // 子项检查
+      childCheckPagination: {
+        page: 1,
+        size: 20,
+        total: 0
+      },
       options: {
         // 对应表格里选型枚举
         // 如 type: [{label: 'xxx', value: 'xxx'}]
       },
-      // TIPS: 复杂的表格输入项，参考 /dealerTeam/edit.vue
-      columns: [
-        {
-          field: 'name',
-          title: '姓名',
-          width: '33%',
-          editable: true,
-          editRender: { name: 'ElInput' },
-          rules: [
-            { required: true, message: '姓名不能为空', trigger: 'blur' }
-          ]
-        },
-        {
-          field: 'age',
-          title: '年龄',
-          editable: true,
-          width: '33%',
-          editRender: { name: 'ElInput', props: { type: 'number' } }
-        },
-        {
-          field: 'email',
-          title: '邮箱',
-          width: '33%',
-          editRender: { name: 'ElInput' }
-        },
-      ],
       rules: {
       }
     };
@@ -318,6 +386,14 @@ export default {
   mounted () {
   },
   methods: {
+    // 是否异常=是，异常是否修复=否，则红色字体显示
+    getCellStyle (rowItem) {
+      if (rowItem.row.isUnusual == 1 && rowItem.row.isRepaired == 0) {
+        return {
+          color: '#B91919'
+        };
+      }
+    },
     detailRequest () {
       const id = this._id;
       if (id) {
@@ -364,7 +440,56 @@ export default {
         return getEnum(code);
       }
       return [];
-    }
+    },
+    // 一级检查分页
+    mainCheckPageChange (page) {
+      this.mainCheckPagination.page = page;
+      this.getMainCheckList();
+    },
+    mainCheckSizeChange (size) {
+      this.mainCheckPagination.size = size;
+      this.getMainCheckList();
+    },
+    // 一级检查项
+    async getMainCheckList () {
+      let res = await storeVehiclePdiCheckItemPage({
+        code: this.form.code,
+        layerType: '10',
+        pageNum: this.mainCheckPagination.page,
+        pageSize: this.mainCheckPagination.size
+      });
+      if (res) {
+        this.mainCheckList = res.records;
+        this.mainCheckPagination.total = res.total;
+      }
+    },
+    // 子级检查项
+    async getChildCheckList () {
+      let res = await storeVehiclePdiCheckItemPage({
+        code: this.form.code,
+        layerTypeList: ['20', '30'],
+        pageNum: this.childCheckPagination.page,
+        pageSize: this.childCheckPagination.size
+      });
+      if (res) {
+        this.childCheckList = res.records;
+        this.childCheckPagination.total = res.total;
+      }
+    },
+    // 子项检查分页
+    childCheckPageChange (page) {
+      this.childCheckPagination.page = page;
+      this.getChildCheckList();
+    },
+    childCheckSizeChange (size) {
+      this.childCheckPagination.size = size;
+      this.getChildCheckList();
+    },
+    viewFile (row) {
+      this.viewPictureList = (row.abnormalUrl && row.abnormalUrl.split(',')) || [];
+      this.fileDialogVisible = true;
+    },
+    handleDownloadPDF () { },
   }
 };
 </script>

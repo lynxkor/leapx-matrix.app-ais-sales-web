@@ -4,10 +4,10 @@
     <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
       class="ais-search-form">
       <el-form-item label="VIN">
-        <tag-input placeholder="请输入" v-model="form.vin" clearable />
+        <tag-input placeholder="请输入" v-model="form.vinList" clearable />
       </el-form-item>
       <el-form-item label="PDI单号">
-        <tag-input placeholder="请输入" v-model="form.code" clearable />
+        <tag-input placeholder="请输入" v-model="form.codeList" clearable />
       </el-form-item>
       <el-form-item label="PDI类型" v-if="this.visibleCount === 3 || show">
         <fetch-select :request="fetchOptions" enumCode="vehstock_veh_pdi_type" v-model="form.vehPdiType"
@@ -139,8 +139,8 @@ import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  code: '',
-  vin: '',
+  codeList: [],
+  vinList: [],
   vehPdiType: '',
   isPdiSubmit: '',
   isUnusual: '',
