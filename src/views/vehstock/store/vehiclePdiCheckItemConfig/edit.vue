@@ -472,9 +472,9 @@ export default {
     },
     // 上级检查项改变 联动层级
     handleLayerTypeChange (value, selectedOption) {
-      if (selectedOption && selectedOption.layerType == '10') {
+      if (selectedOption && selectedOption.layerType === '10') {
         this.form.layerType = '20';
-      } else if (selectedOption && selectedOption.layerType == '20') {
+      } else if (selectedOption && selectedOption.layerType === '20') {
         this.form.layerType = '30';
       } else {
         this.form.layerType = '10';

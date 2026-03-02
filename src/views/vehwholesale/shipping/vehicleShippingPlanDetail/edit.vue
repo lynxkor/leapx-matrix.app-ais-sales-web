@@ -538,10 +538,10 @@
                 class="form-edit"
                 v-show="isEditing || !_id"
               >
-                <el-form-item label="库位代码：" prop="vin">
+                <el-form-item label="库位代码：" prop="reservoirLocationCode">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.vin"
+                    v-model="form.reservoirLocationCode"
                     clearable
                   />
                 </el-form-item>
@@ -580,8 +580,8 @@
                 class="form-detail"
                 v-show="!(isEditing || !_id)"
               >
-                <el-form-item label="库位代码：" prop="vehicleWarehouseCode">
-                  {{ form.vehicleWarehouseCode }}
+                <el-form-item label="库位代码：" prop="reservoirLocationCode">
+                  {{ form.reservoirLocationCode }}
                 </el-form-item>
                 <el-form-item label="车辆库存状态：" prop="vdcInventoryStatusLabel">
                   {{ form.vdcInventoryStatusLabel }}
@@ -816,6 +816,7 @@ export default {
             inboundDateTime: res.vehicleVdcInventoryResp?.inboundDateTime || '',
             vehicleDeliveryStatusLabel: res.vehicleVdcInventoryResp?.vehicleDeliveryStatusLabel || '',
             vdcInventoryStatusLabel: res.vehicleVdcInventoryResp?.vdcInventoryStatusLabel || '',
+            reservoirLocationCode: res.wmsInventory?.reservoirLocationCode || '',
             outboundDateTime: res.vehicleVdcInventoryResp?.outboundDateTime || '',
             warehouseName: res.vehicleWarehouse?.warehouseName || '',
             warehouseCode: res.vehicleWarehouse?.warehouseCode || '',
