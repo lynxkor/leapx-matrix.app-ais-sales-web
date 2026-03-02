@@ -19,7 +19,7 @@
         <template #extraButtons>
           <!-- <el-button size="small" type="primary" @click="handleEquityInquiry">权益查询</el-button> -->
           <el-button size="small" @click="handlePrintContractTermination">打印合同解除协议</el-button>
-          <el-button size="small" @click="handleSetSpecialMark">设置特殊标识</el-button>
+          <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" @click="handleSetSpecialMark">设置特殊标识</el-button>
           <el-button size="small" @click="handleModifyConfiguration">修改配置</el-button>
           <!-- <el-button size="small" @click="handleManualVehicleAllocation">手工配车</el-button> -->
           <el-button size="small" @click="handleAutoLockVehicle">自动锁车</el-button>
@@ -371,11 +371,36 @@
         <!-- 右侧栏组件，自行开发 -->
       </div>
     </template>
+
+    <!-- 设置特殊备注 -->
+    <el-dialog
+      ref="specialRemarkDialog"
+      width="30%"
+      :visible.sync="specialRemarkDialog.show"
+      :title="specialRemarkDialog.title"
+      @close="specialRemarkDialog.show = false"
+    >
+      <el-form :model="specialRemarkDialog.form" :rules="specialRemarkDialog.rules" ref="specialRemarkFormRef" label-width="120px">
+        <el-form-item label="特殊备注" prop="specialRemark">
+          <el-input
+            v-model="specialRemarkDialog.form.specialRemark"
+            type="textarea"
+            :autosize="{ minRows: 3, maxRows: 5 }"
+            maxlength="500"
+            show-word-limit
+          />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitSetSpecialRemark">确定</el-button>
+        <el-button @click="specialRemarkDialog.show = false">取消</el-button>
+      </div>
+    </el-dialog>
   </edit-page-layout>
 </template>
 
 <script>
-import { getDetail, addOrUpdate, autoLock, querySnapShot, getOrderUnlockConfig } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getDetail, addOrUpdate, autoLock, querySnapShot, getOrderUnlockConfig, setSpecialRemark, getUnbindContractUrl } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -594,7 +619,19 @@ export default {
         { id: 'order-cancellation-record', title: '订单退订记录', href: '#order-cancellation-record' },
         { id: 'order-pay-record', title: '订单收款记录', href: '#order-pay-record' }
       ],
-      activeSection: 'basic-info'
+      activeSection: 'basic-info',
+      specialRemarkDialog: {
+        title: '设置特殊备注',
+        show: false,
+        form: {
+          specialRemark: ''
+        },
+        rules: {
+          specialRemark: [
+            { required: true, message: '请输入特殊备注', trigger: 'blur' }
+          ]
+        }
+      }
     };
   },
   created () {
@@ -618,12 +655,30 @@ export default {
     // 打印合同解除协议
     handlePrintContractTermination () {
       // 实现打印合同解除协议逻辑
-      console.log('打印合同解除协议');
+      getUnbindContractUrl(this._id).then(res => {
+        window.open(res);
+      });
     },
     // 设置特殊标识
     handleSetSpecialMark () {
-      // 实现设置特殊标识逻辑
-      console.log('设置特殊标识');
+      this.specialRemarkDialog.form.specialRemark = '';
+      this.specialRemarkDialog.show = true;
+    },
+    submitSetSpecialRemark () {
+      this.$refs.specialRemarkFormRef.validate(valid => {
+        if (valid) {
+          const orderId = this._id;
+          const param = {
+            retailOrderId: orderId,
+            specialRemark: this.specialRemarkDialog.form.specialRemark
+          };
+          setSpecialRemark(param).then(res => {
+            this.$message.success('设置成功');
+            this.specialRemarkDialog.show = false;
+            this.getDetailData();
+          });
+        }
+      });
     },
     // 修改配置
     async  handleModifyConfiguration () {

@@ -7,10 +7,10 @@
         <el-input placeholder="请输入" v-model="form.name" clearable />
       </el-form-item>
       <el-form-item label="VIN">
-        <el-input placeholder="请输入" v-model="form.vin" clearable />
+        <tag-input v-model="form.vinList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="物料编码" v-if="this.visibleCount === 3 || show">
-        <el-input placeholder="请输入" v-model="form.materialsCode" clearable />
+        <tag-input v-model="form.materialsCodeList" placeholder="请输入" />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="物料描述">
@@ -22,6 +22,7 @@
         </el-form-item>
         <el-form-item label="入库时间">
           <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
             v-model="form.moveinDateTime"
             type="daterange"
             :picker-options="pickerOptions"
@@ -68,13 +69,14 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   name: '',
-  vin: '',
-  materialsCode: '',
-  materialsDesc: '',
+  vinList: [],
+  materialsDescList: [],
+  materialsCodeList: [],
   moveTypeList: [],
   moveinDate: '',
 };
@@ -90,7 +92,8 @@ export default {
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
-    Upload
+    Upload,
+    TagInput
   },
   data () {
     return {
@@ -269,6 +272,14 @@ export default {
         }
       }
 
+      if (Array.isArray(this.form.vinList) && this.form.vinList.length <= 1) {
+        delete data.vinList;
+        data.vinLike = this.form.vinList[0] || '';
+      }
+      if (Array.isArray(this.form.materialsCodeList) && this.form.materialsCodeList.length <= 1) {
+        delete data.materialsCodeList;
+        data.materialsCodeLike = this.form.materialsCodeList[0] || '';
+      }
       return data;
     },
     async fetchOptions (code) {

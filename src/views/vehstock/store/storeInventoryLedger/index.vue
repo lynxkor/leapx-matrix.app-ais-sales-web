@@ -4,25 +4,41 @@
     <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
       class="ais-search-form">
       <el-form-item label="VIN">
-        <el-input placeholder="请输入" v-model="form.vin" clearable />
+        <tag-input v-model="form.vinList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="车辆状态">
         <fetch-select :request="fetchOptions" enumCode="vehstock_vechicle_status" v-model="form.vechicleStatusList"
           placeholder="请选择" clearable multiple filterable />
       </el-form-item>
       <el-form-item label="物料描述" v-if="this.visibleCount === 3 || show">
-        <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
+        <tag-input v-model="form.materialsDescList" placeholder="请输入" />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="出库时间">
-          <el-input placeholder="请输入" v-model="form.moveoutDate" clearable />
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.moveoutDateTime"
+            type="daterange"
+            :picker-options="pickerOptions"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
         </el-form-item>
         <el-form-item label="车辆物流状态">
           <fetch-select :request="fetchOptions" enumCode="vehstock_logistic_status" v-model="form.logisticStatusList"
             placeholder="请选择" clearable multiple filterable />
         </el-form-item>
         <el-form-item label="物流到店日期">
-          <el-input placeholder="请输入" v-model="form.vehicleArrivalOn" clearable />
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.vehicleArrivalOnTime"
+            type="daterange"
+            :picker-options="pickerOptions"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
         </el-form-item>
         <el-form-item label="是否预留">
           <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.reserved" placeholder="请选择"
@@ -47,28 +63,54 @@
           <el-input placeholder="请输入" v-model="form.deliveryDealerCode" clearable />
         </el-form-item>
         <el-form-item label="物料编码">
-          <el-input placeholder="请输入" v-model="form.materialsCode" clearable />
+          <tag-input v-model="form.materialsCodeList" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="车系ID">
-          <el-input placeholder="请输入" v-model="form.seriesId" clearable />
+        <el-form-item label="车系">
+          <fetch-select
+            v-model="form.seriesIdList"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.series"
+          />
         </el-form-item>
-        <el-form-item label="车型ID">
-          <el-input placeholder="请输入" v-model="form.modelId" clearable />
+
+        <el-form-item label="车型">
+          <fetch-select
+            v-model="form.modelIdList"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.model"
+          />
         </el-form-item>
-        <el-form-item label="外观ID">
-          <el-input placeholder="请输入" v-model="form.exteriorId" clearable />
+        <el-form-item label="外观">
+          <fetch-select
+            v-model="form.exteriorIdList"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.exterior"
+          />
         </el-form-item>
-        <el-form-item label="内饰ID">
-          <el-input placeholder="请输入" v-model="form.interiorId" clearable />
+        <el-form-item label="内饰">
+          <fetch-select
+            v-model="form.interiorIdList"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.interior"
+          />
         </el-form-item>
-        <el-form-item label="选配轮毂ID">
-          <el-input placeholder="请输入" v-model="form.wheelHubId" clearable />
+        <el-form-item label="选配轮毂">
+          <fetch-select
+            v-model="form.wheelHubIdList"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.wheel"
+          />
         </el-form-item>
-        <el-form-item label="选装包ID">
-          <el-input placeholder="请输入" v-model="form.optionPackageId" clearable />
+        <el-form-item label="选装包">
+          <fetch-select
+            v-model="form.optionPackageIdList"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.optional"
+          />
         </el-form-item>
         <el-form-item label="采购入库时间">
           <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
             v-model="form.poentryOnTime"
             type="daterange"
             :picker-options="pickerOptions"
@@ -79,6 +121,7 @@
         </el-form-item>
         <el-form-item label="入库时间">
           <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
             v-model="form.moveinDateTime"
             type="daterange"
             :picker-options="pickerOptions"
@@ -142,7 +185,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/store/storeInventoryLedger/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleModel, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleSalesVersionList } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -152,12 +195,13 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import BatchDialog from './BatchDialog.vue';
 import MoveDialog from './MoveDialog.vue';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  vin: '',
+  vinList: [],
   vechicleStatusList: [],
-  materialsDesc: '',
+  materialsDescList: [],
   moveoutDate: '',
   logisticStatusList: [],
   vehicleArrivalOn: '',
@@ -169,13 +213,13 @@ const defaultForm = {
   deliveryDealerCode: '',
   poentryOn: '',
   inboundTimeLy: '',
-  materialsCode: '',
-  seriesId: '',
-  modelId: '',
-  exteriorId: '',
-  interiorId: '',
-  wheelHubId: '',
-  optionPackageId: '',
+  materialsCodeList: [],
+  seriesIdList: [],
+  modelIdList: [],
+  exteriorIdList: [],
+  interiorIdList: [],
+  wheelHubIdList: [],
+  optionPackageIdList: [],
   moveinDate: '',
 };
 
@@ -192,7 +236,8 @@ export default {
     FetchSelect,
     EditPage,
     BatchDialog,
-    MoveDialog
+    MoveDialog,
+    TagInput
   },
   data () {
     return {
@@ -285,14 +330,82 @@ export default {
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
         ],
         total: 0
+      },
+      // 提取公共配置
+      selectOptions: {
+        placeholder: '请选择',
+        labelKey: 'name',
+        valueKey: 'id',
+        clearable: true,
+        multiple: true,
+        collapseTags: true,
+        filterable: true,
+        remote: true,
+        reserveKeyword: true
+      },
+      // 远程搜索方法
+      remoteMethods: {
+        series: async (query) => {
+          return await vehicleSeriesList({ seriesNameLike: query });
+        },
+        // model: async (query) => {
+        //   return await listVehicleModel({ modelNameLike: query });
+        // },
+        // 初始方法
+        model: async (query) => {
+          return await this.searchModel(query);
+        },
+        exterior: async (query) => {
+          return await vehicleExterior({ exteriorNameLike: query });
+        },
+        interior: async (query) => {
+          return await vehicleInterior({ interiorNameLike: query });
+        },
+        wheel: async (query) => {
+          return await vehicleWheelHub({ wheelHubNameLike: query });
+        },
+        optional: async (query) => {
+          return await vehicleOptionPackage({ optionPackageNameLike: query });
+        },
+        battery: async (query) => {
+          return await vehicleBatteryCell({ batteryCellNameLike: query });
+        },
+        announcement: async (query) => {
+          return await vehicleSalesVersionList({ registeredModelNameLike: query });
+        }
       }
     };
+  },
+  watch: {
+    'form.seriesIdList': {
+      handler (newVal) {
+        // 车系变化时清空车型选择
+        this.form.modelIdList = [];
+        this.searchModel();
+      },
+      deep: true,
+      immediate: true
+    },
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
   },
   methods: {
+    // 车型支持车系 ID 和 车型输入 方法
+    async searchModel (query) {
+      const params = {};
+
+      if (query) {
+        params.modelNameLike = query;
+      }
+
+      if (this.form.seriesIdList?.length) {
+        params.seriesIds = this.form.seriesIdList;
+      }
+
+      return await listVehicleModel(params);
+    },
     handleListSelect (row) {
       this.clickItemId = row.id;
     },
@@ -423,6 +536,33 @@ export default {
         }
       }
 
+      if (this.form.moveoutDateTime) {
+        delete data.moveoutDateTime;
+        if (this.form.moveoutDateTime.length > 1) {
+          data.moveoutDateStart = this.form.moveoutDateTime[0];
+          data.moveoutDateEnd = this.form.moveoutDateTime[1];
+        }
+      }
+
+      if (this.form.vehicleArrivalOnTime) {
+        delete data.vehicleArrivalOnTime;
+        if (this.form.vehicleArrivalOnTime.length > 1) {
+          data.vehicleArrivalOnStart = this.form.vehicleArrivalOnTime[0];
+          data.vehicleArrivalOnEnd = this.form.vehicleArrivalOnTime[1];
+        }
+      }
+      if (Array.isArray(this.form.vinList) && this.form.vinList.length <= 1) {
+        delete data.vinList;
+        data.vinLike = this.form.vinList[0] || '';
+      }
+      if (Array.isArray(this.form.materialsDescList) && this.form.materialsDescList.length <= 1) {
+        delete data.materialsDescList;
+        data.materialsDescLike = this.form.materialsDescList[0] || '';
+      }
+      if (Array.isArray(this.form.materialsCodeList) && this.form.materialsCodeList.length <= 1) {
+        delete data.materialsCodeList;
+        data.materialsCodeLike = this.form.materialsCodeList[0] || '';
+      }
       return data;
     },
     async fetchOptions (code) {
