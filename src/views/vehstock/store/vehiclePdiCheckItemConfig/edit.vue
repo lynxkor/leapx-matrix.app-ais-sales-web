@@ -171,7 +171,7 @@
                 <el-form-item label="上级检查项：" prop="parentName">
                   {{ form.parentName }}
                 </el-form-item>
-                <el-form-item label="层级：" prop="layerType>
+                <el-form-item label="层级：" prop="layerType">
                   {{ form.layerTypeLabel }}
                 </el-form-item>
                 <el-form-item label="同级排序：" prop="serialno">
