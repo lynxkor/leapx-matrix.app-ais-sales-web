@@ -9,6 +9,7 @@
               <el-button v-show="showEditBtn" size="small" @click="showEditBtn = !showEditBtn">取消</el-button>
               <el-button v-show="showEditBtn" size="small" type="primary" @click="save">保存</el-button>
               <el-button v-show="!showEditBtn" size="small" type="primary" @click="editSalesConfig">编辑</el-button>
+              <!-- <el-button size="small" type="primary" @click="showDialog">附件弹框</el-button> -->
              </div>
             </div>
             <div class="common-section-body">
@@ -123,6 +124,7 @@
               </el-form>
             </div>
           </section>
+          <AttachedFilesDialog ref="attachedFilesDialog"/>
         </el-main>
     </template>
   </edit-page-layout>
@@ -137,7 +139,7 @@ import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
-import { log } from 'vxe-pc-ui';
+import AttachedFilesDialog from './attachedFilesDialog.vue';
 // Deleted: import commonMixins from '@/libs/mixins/commonMixins';
 // import { Divider } from '@leapmotor/element-ui';
 
@@ -172,6 +174,7 @@ export default {
   // Deleted: mixins: [routeGuard, permissions, commonMixins],
   mixins: [routeGuard, permissions],
   components: {
+    AttachedFilesDialog,
     EditPageLayout,
     FetchSelect
   },
@@ -393,7 +396,9 @@ export default {
         });
       }
     },
-
+    showDialog () {
+      this.$refs.attachedFilesDialog.show();
+    },
     editSalesConfig () {
       this.showEditBtn = !this.showEditBtn;
     },
