@@ -245,7 +245,6 @@
 <script>
 import { getDetail, addOrUpdate, storeVehiclePdiCheckItemPage } from '@/api/vehstock/store/storeVehiclePdi/index';
 // import FetchSelect from '@/libs/components/FetchSelect';
-import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
@@ -388,7 +387,7 @@ export default {
   methods: {
     // 是否异常=是，异常是否修复=否，则红色字体显示
     getCellStyle (rowItem) {
-      if (rowItem.row.isUnusual == 1 && rowItem.row.isRepaired == 0) {
+      if (rowItem.row.isUnusual === 1 && rowItem.row.isRepaired === 0) {
         return {
           color: '#B91919'
         };

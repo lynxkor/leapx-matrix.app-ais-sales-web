@@ -4,7 +4,7 @@ import store from './../store';
 
 const routerPush = VueRouter.prototype.push;
 // 修改原型对象中的push方法
-VueRouter.prototype.push = function push(location) {
+VueRouter.prototype.push = function push (location) {
   return routerPush.call(this, location).catch(error => error);
 };
 if (!window.VueRouter) Vue.use(VueRouter);
@@ -2291,7 +2291,7 @@ if (!window.__POWERED_BY_QIANKUN__) {
   });
 }
 
-function toLoginPage(to, next) {
+function toLoginPage (to, next) {
   if (window.__POWERED_BY_QIANKUN__) {
     window.location.href = '/login?redirect=' + to.fullPath;
   } else {
@@ -2303,7 +2303,7 @@ function toLoginPage(to, next) {
 }
 
 const appPrefix = process.env.VUE_APP_ROUTER_BASE;
-export function getRouter() {
+export function getRouter () {
   const router = new VueRouter({
     base: `${appPrefix}/`,
     mode: 'history',
