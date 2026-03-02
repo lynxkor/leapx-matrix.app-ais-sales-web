@@ -68,10 +68,10 @@ export default {
     },
     async remoteMethod (query) {
       // 如果没传 query (即 getData 调用时)，使用默认的 saleDealerCode
-      const keyword = query !== undefined ? query : this.saleDealerCode;
+      const storeCode = query !== undefined ? query : this.saleDealerCode;
 
       const res = await listOrgWarehouseStoreInfo({
-        keyword,
+        storeCode,
         pageNum: 1,
         pageSize: 50
       });
