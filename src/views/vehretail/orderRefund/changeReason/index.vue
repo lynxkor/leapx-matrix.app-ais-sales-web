@@ -149,6 +149,12 @@ export default {
             label: '主键',
             visible: false,
             width: 200,
+          },
+          {
+            props: 'changeCode',
+            label: '变更原因代码',
+            visible: true,
+            width: 200,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -162,7 +168,6 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'changeCode', label: '变更原因代码', visible: true, width: 200 },
           { props: 'changeName', label: '变更原因名称', visible: true, width: 200 },
           { props: 'changeTypeLabel', label: '变更类型', visible: true, width: 200 },
           {

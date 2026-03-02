@@ -11,6 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="form.refundStatus === 1010 || form.refundStatus === 1040"
       >
         <template #status>
           <!-- 支持primary,warning,success,danger等状态 -->
@@ -19,6 +20,40 @@
         <template #extraButtons>
           <!-- <el-button size="small">按钮1</el-button>
           <el-button size="small">按钮2</el-button> -->
+          <el-button
+            @click="openCancelShow"
+            v-if="form.refundStatus === 1010 || form.applyStatus === 1040"
+            v-permission="moduleKey + '-cancel'"
+            size="small">
+            作废
+          </el-button>
+          <el-button
+            @click="openCommitShow"
+            v-if="form.refundStatus === 1010 || form.refundStatus === 1040"
+            v-permission="moduleKey + '-commit'">
+            提交审批
+          </el-button>
+          <el-button
+            @click="openPreAuditShow"
+            v-permission="moduleKey + '-preApprove'"
+            v-if="form.refundStatus === 1020"
+          >
+            初审
+          </el-button>
+          <el-button
+            @click="openAuditShow"
+            v-permission="moduleKey + '-approve'"
+            v-if="form.refundStatus === 1025"
+          >
+            审核
+          </el-button>
+          <el-button
+            @click="openFinalAuditShow"
+            v-permission="moduleKey + '-finalApprove'"
+            v-if="form.refundStatus === 1027"
+          >
+            终审
+          </el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -59,7 +94,7 @@
                     enumCode="order_fund_return_type"
                     v-model="form.depositRefundType"
                     placeholder="请选择"
-                    :disabled="!form.cateCode"
+                    :disabled="form.refundTypeSelect !== 1"
                     clearable
                     filterable
                   />
@@ -81,24 +116,32 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="退款银行：" prop="refundBank">
+                <el-form-item label="退款银行：" prop="refundBank"
+                              :rules="form.depositRefundType === '30' ? rules.refundBank: []">
                   <el-input
                     placeholder="请输入"
                     v-model="form.refundBank"
+                    :disabled="form.depositRefundType !== '30'"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="退款银行开户名：" prop="refundBankUser">
+                <el-form-item label="退款银行开户名：" prop="refundBankUser"
+                              :rules="form.depositRefundType === '30' ? rules.refundBankUser: []">
                   <el-input
                     placeholder="请输入"
                     v-model="form.refundBankUser"
+                    :disabled="form.depositRefundType !== '30'"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="退款银行账号：" prop="refundBankAccount">
+                <el-form-item
+                  label="退款银行账号："
+                              prop="refundBankAccount"
+                              :rules="form.depositRefundType === '30' ? rules.refundBankAccount: []">
                   <el-input
                     placeholder="请输入"
                     v-model="form.refundBankAccount"
+                    :disabled="form.depositRefundType !== '30'"
                     clearable
                   />
                 </el-form-item>
@@ -225,10 +268,10 @@
                 <el-form-item label="订单来源：" prop="orderSource">
                   {{ form.orderSource }}
                 </el-form-item>
-                <el-form-item label="定金退回方式：" prop="depositRefundType">
+                <el-form-item label="定金退回方式：" prop="depositRefundTypeLabel">
                   {{ form.depositRefundTypeLabel }}
                 </el-form-item>
-                <el-form-item label="是否有陪伴礼：" prop="enjoyGift">
+                <el-form-item label="是否有陪伴礼：" prop="enjoyGiftLabel">
                   {{ form.enjoyGiftLabel }}
                 </el-form-item>
                 <el-form-item label="陪伴礼账号：" prop="enjoyGiftAccount">
@@ -273,17 +316,23 @@
                 <el-form-item label="销售门店-市：" prop="cityName">
                   {{ form.cityName }}
                 </el-form-item>
-                <el-form-item label="退订方式：" prop="orderRefundType">
+                <el-form-item label="退订方式：" prop="orderRefundTypeLabel">
                   {{ form.orderRefundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="数据来源：" prop="dataSource">
                   {{ form.dataSource }}
                 </el-form-item>
-                <el-form-item label="退订原因二级分类编码：" prop="cateCode">
+                <el-form-item label="退订原因分类编码：" prop="cateCode">
+                  {{ form.cateCode }}
+                </el-form-item>
+                <el-form-item label="退订原因分类：" prop="cateName">
+                  {{ form.cateName }}
+                </el-form-item>
+                <el-form-item label="退订原因二级分类编码：" prop="subCateCode">
                   {{ form.subCateCode }}
                 </el-form-item>
-                <el-form-item label="退订原因二级分类：" prop="cateName">
-                  {{ form.cateName }}
+                <el-form-item label="退订原因二级分类：" prop="subCateName">
+                  {{ form.subCateName }}
                 </el-form-item>
               </el-form>
             </div>
@@ -460,46 +509,59 @@
               <h2>退款记录</h2>
             </div>
             <div>
-              <el-table :data="form.orderPayRefundRecordList" style="width: 100%" v-show="!(isEditing || !_id)">
+              <el-table :data="form.payRefundRecordList" style="width: 100%" v-show="!(isEditing || !_id)">
                 <el-table-column prop="payCode" label="收款编号" width="180"/>
                 <el-table-column prop="paySerialNumber" label="支付流水号" width="180"/>
-                <el-table-column prop="payCategory" label="收款类型" width="180"/>
+                <el-table-column prop="payCategoryLabel" label="收款类型" width="180"/>
                 <el-table-column prop="paymentAmount" label="付款金额" width="180"/>
-                <el-table-column prop="paymentType" label="支付方式" width="180"/>
-                <el-table-column prop="paymentWay" label="支付渠道" width="180"/>
+                <el-table-column prop="paymentTypeLabel" label="支付方式" width="180"/>
+                <el-table-column prop="paymentWayLabel" label="支付渠道" width="180"/>
                 <el-table-column prop="paymentTime" label="付款时间" width="180"/>
                 <el-table-column prop="refundTime" label="退款时间" width="180"/>
                 <el-table-column prop="refundResult" label="退款结果" width="180"/>
                 <el-table-column prop="refundRemark" label="退款说明" width="180"/>
               </el-table>
             </div>
-          </section><section class="common-section">
-          <div class="common-section-header" v-show="!(isEditing || !_id)">
-            <h2>审批明细</h2>
-          </div>
-          <div>
-            <el-table :data="form.approveLogList" style="width: 60%" v-show="!(isEditing || !_id)">
-              <el-table-column
-                prop="creatorName"
-                label="操作人"
-                width="180">
-              </el-table-column>
-              <el-table-column
-                prop="createTime"
-                label="操作时间"
-                width="180">
-              </el-table-column>
-              <el-table-column
-                prop="operateStatusLabel"
-                label="申请状态">
-              </el-table-column>
-              <el-table-column
-                prop="operateExplain"
-                label="审核意见">
-              </el-table-column>
-            </el-table>
-          </div>
-        </section>
+          </section>
+          <section class="common-section">
+            <div class="common-section-header" v-show="!(isEditing || !_id)">
+              <h2>审批明细</h2>
+            </div>
+            <div>
+              <el-table :data="form.approveLogList" style="width: 60%" v-show="!(isEditing || !_id)">
+                <el-table-column
+                  prop="creatorName"
+                  label="操作人"
+                  width="180">
+                </el-table-column>
+                <el-table-column
+                  prop="createTime"
+                  label="操作时间"
+                  width="180">
+                </el-table-column>
+                <el-table-column
+                  prop="operateStatusLabel"
+                  label="申请状态">
+                </el-table-column>
+                <el-table-column
+                  prop="operateExplain"
+                  label="审核意见">
+                </el-table-column>
+              </el-table>
+            </div>
+          </section>
+          <audit-dialog
+            ref="auditRefPre"
+            @audit="handlePreAudit"
+          />
+          <audit-dialog
+            ref="auditRef"
+            @audit="handleAudit"
+          />
+          <audit-dialog
+            ref="auditRefFinal"
+            @audit="handleFinalAudit"
+          />
         </el-main>
       </edit-base-container>
     </template>
@@ -512,7 +574,7 @@
 </template>
 
 <script>
-import { addOrUpdate, getDetail } from '@/api/vehretail/orderRefund/refundApply/index';
+import { addOrUpdate, getDetail, cancel, submit, preApprove, approve, finalApprove } from '@/api/vehretail/orderRefund/refundApply/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -524,6 +586,7 @@ import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import { getList as retailOrderPage } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import { fetchCategoryList } from '@/api/vehretail/orderRefund/category';
+import auditDialog from '@/libs/components/auditDialog/index.vue';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -542,7 +605,7 @@ const defaultForm = {
   retailOrderCode: '',
   mallOrderCode: '',
   orderSource: '',
-  depositRefundType: '',
+  depositRefundType: null,
   enjoyGift: '',
   enjoyGiftAccount: '',
   refundBank: '',
@@ -582,7 +645,8 @@ export default {
     EditPageLayout,
     EditBaseContainer,
     AisAttachment,
-    FetchSelect
+    FetchSelect,
+    auditDialog
   },
   computed: {
     _id () {
@@ -768,6 +832,7 @@ export default {
       this.form.cateName = val ? selectedOption.cateName : '';
       this.form.depositRefundType = val ? selectedOption.refundTypeDefault : null;
       this.form.refundAttachRequired = val ? selectedOption.refundAttachRequired : null;
+      this.form.refundTypeSelect = val ? selectedOption.refundTypeSelect : null;
     },
     async retailOrderSearch (val) {
       const params = {
@@ -813,6 +878,62 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    openCancelShow () {
+      this.$confirm('确认是否对数据进行作废?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 作废接口
+        cancel(this.form);
+      }).catch(() => {});
+    },
+    openCommitShow () {
+      this.$confirm('确认是否对数据进行提交审批?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 提交审批接口 判断是否需要初审
+        submit(this.form);
+      }).catch(() => {});
+    },
+    openPreAuditShow () {
+      this.$refs.auditRefPre.show();
+    },
+    // 提交初审审批结果
+    handlePreAudit (auditForm) {
+      this.$message.info(JSON.stringify(auditForm));
+      auditForm.id = this.form.id;
+      auditForm.refundCode = this.form.refundCode;
+      auditForm.auditResult = auditForm.result;
+      auditForm.auditContent = auditForm.remark;
+      preApprove(auditForm);
+    },
+    openAuditShow () {
+      this.$refs.auditRef.show();
+    },
+    // 提交审批结果
+    handleAudit (auditForm) {
+      this.$message.info(JSON.stringify(auditForm));
+      auditForm.id = this.form.id;
+      auditForm.refundCode = this.form.refundCode;
+      auditForm.auditResult = auditForm.result;
+      auditForm.auditContent = auditForm.remark;
+      approve(auditForm);
+    },
+    openFinalAuditShow () {
+      this.$refs.auditRefFinal.show();
+    },
+    // 提交审批结果
+    handleFinalAudit (auditForm) {
+      this.$message.info(JSON.stringify(auditForm));
+      auditForm.id = this.form.id;
+      auditForm.refundCode = this.form.refundCode;
+      auditForm.auditResult = auditForm.result;
+      auditForm.auditContent = auditForm.remark;
+      finalApprove(auditForm);
     }
   }
 };

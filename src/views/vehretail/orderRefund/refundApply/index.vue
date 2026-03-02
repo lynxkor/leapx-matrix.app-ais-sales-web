@@ -181,6 +181,12 @@ export default {
             props: 'id',
             label: '主键',
             visible: false,
+            width: 200
+          },
+          {
+            props: 'refundCode',
+            label: '退订申请单号',
+            visible: true,
             width: 200,
             fixed: 'left',
             buttons: [{
@@ -195,11 +201,15 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'refundCode', label: '退订申请单号', visible: true, width: 200 },
-          { props: 'refundStatus', label: '申请状态', visible: true, width: 200 },
+          { props: 'refundStatusLabel', label: '申请状态', visible: true, width: 200 },
           { props: 'retailOrderCode', label: '零售订单号', visible: true, width: 200 },
           { props: 'mallOrderCode', label: '商城订单编号', visible: true, width: 200 },
+          {
+            props: 'createTime',
+            label: '申请时间',
+            visible: true,
+            width: 200
+          },
           { props: 'cateCode', label: '退订原因分类编码', visible: true, width: 200 },
           {
             props: 'operate',
