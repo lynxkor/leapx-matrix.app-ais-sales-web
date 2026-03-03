@@ -342,7 +342,17 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '请输入PDI检查项', trigger: 'change' }
+          { required: true, message: '请输入PDI检查项', trigger: 'change' },
+          {
+            validator: (rule, value, callback) => {
+              if (value && value.includes(' ')) {
+                callback(new Error('不能包含空格'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur'
+          }
         ],
         parentId: [
           { required: false, message: '请输入上级检查项id', trigger: 'change' }
