@@ -29,7 +29,7 @@
                   <el-input
                     placeholder="请输入"
                     v-model="form.name"
-                    disabled
+                    :disabled="isEditing"
                     clearable
                   />
                 </el-form-item>
