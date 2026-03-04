@@ -78,6 +78,7 @@ export default {
         this.desc = '';
         this.$emit('submit');
       } catch (error) {
+        console.error('批量操作失败:', error);
       }
     },
   }

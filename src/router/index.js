@@ -2006,6 +2006,24 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
+      path: '/vehretail/orderManager/deliveryOrder',
+      name: 'deliveryOrder',
+      component: () => import('@/views/vehretail/orderManager/deliveryOrder/index.vue'),
+
+      meta: {
+        name: '交车单管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/orderManager/deliveryOrder/edit',
+      name: 'deliveryOrderEdit',
+      component: () => import('@/views/vehretail/orderManager/deliveryOrder/edit.vue'),
+
+      meta: {
+        name: '交车单管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
       path: '/vehretail/orderManager/orderConfigChange',
       name: 'orderConfigChange',
       component: () => import('@/views/vehretail/orderManager/orderConfigChange/index.vue'),
