@@ -16,8 +16,8 @@
           <span>{{ form.code }}</span>
         </template>
         <template #extraButtons>
-          <el-button size="small">按钮1</el-button>
-          <el-button size="small">按钮2</el-button>
+          <!-- <el-button size="small">按钮1</el-button>
+          <el-button size="small">按钮2</el-button> -->
         </template>
         <el-main>
           <section class="common-section">
@@ -46,7 +46,7 @@
                   {{ form.unifiedSocialCreditCode }}
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
-                  {{ form.status }}
+                  {{ form.statusLabel  }}
                 </el-form-item>
                 <el-form-item label="状态变更描述：" prop="statusDesc">
                   {{ form.statusDesc }}
