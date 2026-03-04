@@ -344,6 +344,26 @@ export default {
     },
     // 批量启用停用
     handleBatchEnable (status) {
+      const sameStatusItems = this.selectionList.filter(item => item.status === status);
+      const statusText = status === 1 ? '启用' : '停用';
+      // 检查所有选中项的状态是否都与要操作的目标状态不同
+      // 如果目标状态是1(启用)，那么所有项当前必须是0(停用)
+      // 如果目标状态是0(停用)，那么所有项当前必须是1(启用)
+      const isAllCanOperate = this.selectionList.every(item => {
+        const currentStatus = item.status;
+        // 如果当前状态和目标状态相同，说明已经是要操作的状态，不能操作
+        return currentStatus !== status;
+      });
+
+      if (!isAllCanOperate) {
+        this.$message({
+          type: 'warning',
+          message: sameStatusItems.length === this.selectionList.length
+            ? `选中的数据已经是${statusText}状态，无需重复操作！`
+            : `选中的数据中存在${statusText}状态的数据，无法批量${statusText}！`
+        });
+        return;
+      }
       handleBatchStatusChange.call(this, {
         selectionList: this.selectionList,
         targetStatus: status,
