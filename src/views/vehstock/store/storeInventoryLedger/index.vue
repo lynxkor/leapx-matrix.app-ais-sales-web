@@ -313,11 +313,11 @@ export default {
           { props: 'vehicleArrivalOn', label: '物流到店日期', visible: true, width: 200 },
           { props: 'inboundLatestDate', label: '要求入库截止日期', visible: true, width: 200 },
           { props: 'reservedLabel', label: '是否预留', visible: true, width: 200 },
-          { props: 'reserveDesc', label: '预留说明', visible: true, width: 200 },
+          { props: 'reserveDesc', label: '预留原因', visible: true, width: 200 },
           { props: 'reservationStatusLabel', label: '车辆类型', visible: true, width: 200 },
           { props: 'lockStatusLabel', label: '是否匹配订单', visible: true, width: 200 },
           { props: 'lockTime', label: '匹配时间', visible: true, width: 200 },
-          { props: 'isRepaidLabel', label: '融资是否还款', visible: true, width: 200 },
+          { props: 'isRepaidLabel', label: '是否还款', visible: true, width: 200 },
           { props: 'financeOrgName', label: '金融机构', visible: true, width: 200 },
           { props: 'settlementFundType', label: '结算资金类型', visible: true, width: 200 },
           { props: 'vehdeLiveriedLabel', label: '实车交车标识', visible: true, width: 200 },
@@ -341,7 +341,7 @@ export default {
           { props: 'receivedBy', label: '收车确认人', visible: true, width: 200 },
           { props: 'receivedOn', label: '收车确认时间', visible: true, width: 200 },
           { props: 'receivedplatformLabel', label: '收车操作来源', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          // { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
@@ -629,6 +629,41 @@ export default {
     },
     // 批量预留
     batchreseRvation (val) {
+      // 筛选已预留和未预留的车辆 1:已预留 0:未预留
+      const reservedList = this.selectionList.filter(item => Number(item.reserved) === 1);
+      const unreservedList = this.selectionList.filter(item => Number(item.reserved) === 0);
+      const vechicleStatusList = this.selectionList.filter(item => Number(item.vechicleStatus) !== 12);
+      if (val === 'reserve') {
+        // 批量预留时，检查是否存在已预留的车辆
+        if (reservedList.length > 0) {
+          const plates = reservedList.map(item => item.vin).join('、');
+          this.$message({
+            type: 'warning',
+            message: `选中的${plates}车辆存在预留，请检查！`
+          });
+          return;
+        }
+      } else if (val === 'cancelReserve') {
+        // 批量解预留时，检查是否存在未预留的车辆
+        if (unreservedList.length > 0) {
+          const plates = unreservedList.map(item => item.vin).join('、');
+          this.$message({
+            type: 'warning',
+            message: `选中的${plates}车辆未预留，请检查！`
+          });
+          return;
+        }
+      } else if (val === 'car') {
+        // 运损车出库
+        if (vechicleStatusList.length > 0) {
+          const plates = vechicleStatusList.map(item => item.vin).join('、');
+          this.$message({
+            type: 'warning',
+            message: `选中的${plates}车辆不符合运损车出库条件，请检查！`
+          });
+          return;
+        }
+      }
       this.selectionListIds = this.selectionList.map(item => item.id) || [];
       this.batchName = val;
       this.batchDialog = true;
@@ -651,8 +686,17 @@ export default {
 
       if (!isAllSame) {
         // 如果不一致，阻止操作并提示
-        return this.$message.error('只能选择相同销售门店名称的数据进行批量操作');
+        return this.$message.warning('只能选择相同销售门店名称的数据进行批量操作');
       };
+      // 车辆状态需要是：待提交PDI，PDI待修复，已入门店库
+      const plates = this.selectionList.filter(item => ![12, 20, 25].includes(item.vechicleStatus)).map(item => item.vin).join('、');
+      if (plates) {
+        this.$message({
+          type: 'warning',
+          message: `选中的${plates}车辆不符合移库条件，请检查！`
+        });
+        return;
+      }
       this.moveDialog = true;
     },
     closeMoveDialog () {

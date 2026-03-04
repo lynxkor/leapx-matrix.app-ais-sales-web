@@ -49,3 +49,9 @@ export function enableItem (data) {
 export function storeVehiclePdiCheckItemPage (data) {
   return api.jsonPost('vehstock/web/store/storeVehiclePdiCheckItem/page', data);
 }
+/**
+ * 门店整车PDI单导出pdf
+ */
+export function getPdiEntryDetails (data) {
+  return api.jsonPost('vehstock/web/store/storeVehiclePdi/getPdiEntryDetails', data);
+}

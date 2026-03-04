@@ -17,7 +17,7 @@
           <span class="status primary">状态</span>
         </template>
         <template #extraButtons>
-          <!-- <el-button type="primary" size="small"  @click="handleDownloadPDF">下载PDF单据</el-button> -->
+          <el-button type="primary" size="small"  @click="handleDownloadPDF">下载PDF单据</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -240,11 +240,22 @@
         ></el-image>
       </div>
     </el-dialog>
+    <el-dialog
+      title="下载PDF单据"
+      v-loading="showPdfItemLoading"
+      :visible.sync="showPdfItemVisible"
+      width="1200px"
+      :close-on-click-modal="false"
+      @cancel="showPdfItemVisible = false"
+      append-to-body
+    >
+      <PdfItem ref="childPdfItem" :form="form" :pdfData="pdfData"></PdfItem>
+    </el-dialog>
   </edit-page-layout>
 </template>
 
 <script>
-import { getDetail, addOrUpdate, storeVehiclePdiCheckItemPage } from '@/api/vehstock/store/storeVehiclePdi/index';
+import { getDetail, addOrUpdate, storeVehiclePdiCheckItemPage, getPdiEntryDetails } from '@/api/vehstock/store/storeVehiclePdi/index';
 // import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -253,6 +264,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import PdfItem from './component/pdfItem.vue';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -321,6 +333,7 @@ export default {
   components: {
     EditPageLayout,
     EditBaseContainer,
+    PdfItem,
     // EditTable,
     // FetchSelect
   },
@@ -351,6 +364,8 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
+      showPdfItemLoading: false,
+      showPdfItemVisible: false,
       fileDialogVisible: false,
       viewPictureList: [],
       pageTitle: '门店整车PDI单',
@@ -380,7 +395,8 @@ export default {
         // 如 type: [{label: 'xxx', value: 'xxx'}]
       },
       rules: {
-      }
+      },
+      pdfData: {}
     };
   },
   mounted () {
@@ -489,7 +505,18 @@ export default {
       this.viewPictureList = (row.abnormalUrl && row.abnormalUrl.split(',')) || [];
       this.fileDialogVisible = true;
     },
-    handleDownloadPDF () { },
+    handleDownloadPDF () {
+      this.showPdfItemVisible = true;
+      this.$nextTick(async () => {
+        this.showPdfItemLoading = true;
+        let res = await getPdiEntryDetails(this.form.id);
+        this.showPdfItemLoading = false;
+        this.pdfData = res;
+        if (this.$refs.childPdfItem && this.pdfData) {
+          this.$refs.childPdfItem.handlePdf();
+        }
+      });
+    },
   }
 };
 </script>
