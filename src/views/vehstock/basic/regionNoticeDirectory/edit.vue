@@ -54,7 +54,7 @@
                   :remote-method="serchModel"
                   @change="handleChangeModel"
                   value-key="id"
-                  label-key="registeredModelName"
+                  label-key="name"
                 />
               </el-form-item>
               <!-- <el-form-item label="销售公告车型名称：" prop="vehicleSalesVersionName">
@@ -245,7 +245,7 @@ export default {
       this.modelOptions = res?.map(item => {
         return {
           ...item,
-          label: item.registeredModelName,
+          label: item.name,
           value: item.id,
         };
       });

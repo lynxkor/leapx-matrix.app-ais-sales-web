@@ -13,7 +13,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          <span class="status primary">{{form.code}}</span>
+          <span >{{form.code}}</span>
         </template>
         <template #extraButtons>
           <el-button size="small">推送金融机构</el-button>

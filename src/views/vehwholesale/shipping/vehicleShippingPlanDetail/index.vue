@@ -62,10 +62,9 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="vehretail_data_source"
-            v-model="form.dataSources"
+            v-model="form.dataSource"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -131,6 +130,17 @@
             :request="fetchOptions"
             enumCode="vehstock_ship_via"
             v-model="form.deliveryWaies"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="发运方式">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vehstock_ship_via"
+            v-model="form.actualDeliveryWaies"
             placeholder="请选择"
             clearable
             multiple

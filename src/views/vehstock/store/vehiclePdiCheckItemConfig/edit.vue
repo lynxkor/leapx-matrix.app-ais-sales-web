@@ -30,6 +30,7 @@
                     placeholder="请输入"
                     v-model="form.name"
                     :disabled="isEditing"
+                    maxlength="500"
                     clearable
                   />
                 </el-form-item>
@@ -370,7 +371,7 @@ export default {
           { required: false, message: '请输入车系ID', trigger: 'change' }
         ],
         checkMode: [
-          { required: true, message: '请输入检查方式', trigger: 'change' }
+          { required: false, message: '请输入检查方式', trigger: 'change' }
         ],
         isAtlas: [
           { required: false, message: '请输入是否图谱', trigger: 'change' }
@@ -391,7 +392,7 @@ export default {
           { required: false, message: '图谱坐标right', trigger: 'change' }
         ],
         status: [
-          { required: true, message: '请选择状态', trigger: 'change' }
+          { required: false, message: '请选择状态', trigger: 'change' }
         ],
         effectiveOn: [
           { required: true, message: '请输入生效日期', trigger: 'change' }
@@ -482,9 +483,9 @@ export default {
     },
     // 上级检查项改变 联动层级
     handleLayerTypeChange (value, selectedOption) {
-      if (selectedOption && selectedOption.layerType === '10') {
+      if (selectedOption && Number(selectedOption.layerType) === 10) {
         this.form.layerType = '20';
-      } else if (selectedOption && selectedOption.layerType === '20') {
+      } else if (selectedOption && Number(selectedOption.layerType) === 20) {
         this.form.layerType = '30';
       } else {
         this.form.layerType = '10';

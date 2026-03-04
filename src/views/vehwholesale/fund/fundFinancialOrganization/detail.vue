@@ -34,7 +34,7 @@
             <el-form-item label="开启返利使用额度：" prop="rebateUsageQuota">
               {{ info.rebateUsageQuota  }}
             </el-form-item>
-            <el-form-item label="是否是否生成采购记录：" prop="createPurchaseRecord">
+            <el-form-item label="是否生成采购记录：" prop="createPurchaseRecord">
               {{ info.createPurchaseRecordLabel  }}
             </el-form-item>
             <el-form-item label="状态：" prop="status">

@@ -213,15 +213,15 @@ export default {
           });
 
           // 计算图片在 PDF 中的尺寸
-          // const A4_WIDTH = 210; // A4 宽度（mm）
-          // const A4_HEIGHT = 297; // A4 高度（mm）
+          //   const A4_WIDTH = 210; // A4 宽度（mm）
+          //   const A4_HEIGHT = 297; // A4 高度（mm）
           const pdfWidth = pdf.internal.pageSize.getWidth();
           const pdfHeight = pdf.internal.pageSize.getHeight();
           const imgWidth = canvas.width;
           const imgHeight = canvas.height;
           const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-          // let position = 10; // 初始绘制位置（顶部边距）
-          // let heightLeft = imgHeight; // 剩余高度（用于分页）
+          //   let position = 10; // 初始绘制位置（顶部边距）
+          //   let heightLeft = imgHeight; // 剩余高度（用于分页）
           const scaledWidth = imgWidth * ratio;
           const scaledHeight = imgHeight * ratio;
           const x = (pdfWidth - scaledWidth) / 2; // 水平居中
