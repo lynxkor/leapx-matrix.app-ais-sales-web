@@ -17,11 +17,11 @@
           {{ form.wholesaleOrderCode }}
         </template>
         <template #extraButtons >
-          <el-button  size="small" type="primary" @click="handleCheckConfirm" >审核确认</el-button>
-          <el-button  size="small" type="primary" @click="handleaAutoVehicleAllocation">自动配车</el-button>
-          <el-button  size="small" type="primary" @click="handleManualVehicleAllocation">手工配车</el-button>
+          <el-button  v-permission="moduleKey+'-batchConfirm'" size="small" type="primary" @click="handleCheckConfirm" >审核确认</el-button>
+          <el-button  v-permission="moduleKey+'-batchAllocateVehicle'"  size="small" type="primary" @click="handleaAutoVehicleAllocation">自动配车</el-button>
+          <el-button  v-permission="moduleKey+'-vinAllocateVehicle'" size="small" type="primary" @click="handleManualVehicleAllocation">手工配车</el-button>
           <!-- <el-button  size="small" @click="handleDelete">删除</el-button> -->
-          <el-button  size="small" type="primary" @click="handleCancel">作废</el-button>
+          <el-button  v-permission="moduleKey+'-batchCancel'" size="small" type="primary" @click="handleCancel">作废</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -311,7 +311,7 @@
                 <el-form-item label="未自动确认原因：" prop="noAutoConfirmReason">
                   {{ form.noAutoConfirmReason }}
                 </el-form-item>
-                <el-form-item label="允许锁零售单" prop="allowLockRetailLabel">
+                <el-form-item label="允许锁零售单：" prop="allowLockRetailLabel">
                   {{ form.allowLockRetailLabel }}
                 </el-form-item>
                  <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
@@ -619,7 +619,6 @@
                     v-model="form.financialOrganizationId"
                     placeholder="请选择"
                     clearable
-                    multiple
                     filterable
                     :disabled="form.settleFundType !== '2010'"
                   />

@@ -137,6 +137,17 @@
             filterable
           />
         </el-form-item>
+        <el-form-item label="发运方式">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vehstock_ship_via"
+            v-model="form.actualDeliveryWaies"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
+        </el-form-item>
         <el-form-item label="订单分类">
           <fetch-select
             :request="fetchOptions"
