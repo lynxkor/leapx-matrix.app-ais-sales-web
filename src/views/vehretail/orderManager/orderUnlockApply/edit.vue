@@ -384,6 +384,8 @@
                 <AisAttachment
                   :businessId="_id"
                   ref="attachment"
+                  configCode="mcs_unstockvin"
+                  attachType="附件资料"
                 />
               </div>
             </div>
