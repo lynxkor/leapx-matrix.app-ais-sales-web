@@ -2292,6 +2292,24 @@ const routes = [
         name: '新页面详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehretail/basicConfig/deliveryConfirmItemConfig',
+      name: 'deliveryConfirmItemConfig',
+      component: () => import('@/views/vehretail/basicConfig/deliveryConfirmItemConfig/index.vue'),
+
+      meta: {
+        name: '交车确认项配置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicconfig/deliveryconfirmitemconfig/edit',
+      name: 'deliveryConfirmItemConfigEdit',
+      component: () => import('@/views/vehretail/basicConfig/deliveryConfirmItemConfig/edit.vue'),
+
+      meta: {
+        name: '交车确认项配置管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];

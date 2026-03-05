@@ -284,7 +284,6 @@ export default {
   },
   methods: {
     modelBeforeListChange (val) {
-      console.log(val);
       this.form.yearTypeIdBefore = '';
       this.yearModelBeforeList = [];
       this.listVehicleYearType(val, 'before');
