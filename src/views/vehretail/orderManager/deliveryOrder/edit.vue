@@ -16,6 +16,19 @@
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
+          <el-button size="small" @click="handleAppointmentDelivery">预约交车</el-button>
+          <el-button size="small" @click="handleGenerateConfirmOrder">交车确认单生成</el-button>
+          <el-button size="small" @click="handleChangeAppointmentTime">更改预约时间</el-button>
+          <el-button size="small" @click="handleVerifyOrderRights">核销订单权益</el-button>
+          <el-button size="small" @click="handleVerifyWithdraw">核销撤回</el-button>
+          <el-button size="small" @click="handleAddPaymentRecord">添加收款记录</el-button>
+          <el-button size="small" @click="handleConfirmPayment">确认收款</el-button>
+          <el-button size="small" @click="handleRepushConfirmOrder">交车确认单补推</el-button>
+          <el-button size="small" @click="handleReSignConfirmOrder">交车确认单重签</el-button>
+          <el-button size="small" @click="handleViewConfirmOrder">查看交车确认单</el-button>
+          <el-button size="small" @click="handleUploadInvoice">上传发票</el-button>
+          <el-button size="small" @click="handlePaymentWithdraw">收款撤回</el-button>
+          <el-button size="small" @click="handleDeliveryWithdraw">交车撤回</el-button>
         </template>
         <el-main>
           <!-- 订单归属 -->
@@ -24,7 +37,7 @@
               <h2>订单归属</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" :label-width="labelWidth" class="form-edit">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm1" :label-width="labelWidth" class="form-edit">
                 <el-form-item label="订单销售门店：" prop="salesStoreId">
                   <fetch-select
                     :request="fetchOptions"
@@ -60,7 +73,7 @@
                 <el-form-item label="订单交付顾问：" prop="deliveryAdvisorId">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="delivery_advisor_enum"
+                    enumCode="vr_order_lock_type"
                     v-model="form.deliveryAdvisorId"
                     placeholder="请选择"
                     clearable
@@ -115,7 +128,7 @@
               <h2>交付信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" :label-width="labelWidth" class="form-edit">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm2" :label-width="labelWidth" class="form-edit">
                 <el-form-item label="门店应收金额：" prop="receivableAmount">
                   <el-input
                     placeholder="请输入"
@@ -262,6 +275,58 @@
           <generic-detail-display title="整车订单信息" :form-data="form" :fields="retailOrderFields" :label-width="labelWidth" section-key="retailOrder" />
           <!-- 实名认证信息 -->
           <generic-detail-display title="实名认证信息" :form-data="form" :fields="realNameAuthFields" :label-width="labelWidth" section-key="realNameAuth" />
+          <!-- 交车确认单 -->
+          <section class="common-section" v-show="isEditing || !_id">
+            <div class="common-section-header" data-section="deliveryInfo">
+              <h2>交付信息</h2>
+            </div>
+            <div class="common-section-body">
+              <el-form :inline="true" :model="form" :label-width="labelWidth" class="form-edit">
+                <el-form-item label="签署数据来源：">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.signatureDataSourceDesc"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="签署时间：">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.signatureTime"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="购车人手机是否注册：">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.buyerMobileRegisteredLabel"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="交车确认单状态：">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.deliveryConfirmStatusDesc"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="城市交付顺序：">
+                  <el-input-number
+                    placeholder="请输入"
+                    v-model="form.cityDeliveryOrder"
+                    clearable
+                    :controls="false"
+                    :min="cityDeliveryOrderMin"
+                    :step="1"
+                  />
+                </el-form-item>
+              </el-form>
+            </div>
+          </section>
           <!-- 交车确认单 -->
           <generic-detail-display title="交车确认单" :form-data="form" :fields="deliveryConfirmFields" :label-width="labelWidth" section-key="deliveryConfirm" />
           <!-- 收款记录&权益项抵扣记录 -->
@@ -433,6 +498,7 @@ export default {
       originalForm: { ...form },
       emptyText: '若要启用此内容，请创建记录',
       tableData: [],
+      cityDeliveryOrderMin: 0,
       rules: {
         deliveryAdvisorId: [
           { required: true, message: '请选择订单交付顾问', trigger: 'change' }
@@ -583,6 +649,7 @@ export default {
         }
       });
     });
+    this.loadCityDeliveryOrderMin();
   },
   methods: {
     detailRequest () {
@@ -591,8 +658,28 @@ export default {
         return getDetail(id);
       }
     },
-    submitRequest () {
-      return addOrUpdate({ ...this.form });
+    async submitRequest () {
+      // 将表单校验封装为 Promise 并并行执行
+      const validateForm = (formRef) => {
+        return new Promise((resolve) => {
+          if (formRef) {
+            formRef.validate(valid => {
+              resolve(valid);
+            });
+          } else {
+            resolve(true); // 如果没有引用，视为校验通过
+          }
+        });
+      };
+      const [ruleForm1Valid, ruleForm2Valid] = await Promise.all([
+        validateForm(this.$refs.ruleForm1),
+        validateForm(this.$refs.ruleForm2)
+      ]);
+      if (ruleForm1Valid && ruleForm2Valid) {
+        return addOrUpdate({ ...this.form });
+      } else {
+        return Promise.reject(new Error('表单校验未通过'));
+      }
     },
     // 打开侧边栏
     openPane () {
@@ -610,7 +697,64 @@ export default {
       return {
         ...defaultForm
       };
-    }
+    },
+    // 计算城市交付顺序的最小值
+    calculateCityDeliveryOrderMin (maxOrder) {
+      let nextOrder = maxOrder + 1;
+      // 如果末位为4，则再加1(为了吉利没有结尾4的交付顺序)
+      if (nextOrder % 10 === 4) {
+        nextOrder += 1;
+      }
+      return nextOrder;
+    },
+    // 加载城市交付顺序最小值
+    async loadCityDeliveryOrderMin () {
+      try {
+        // const vehicleData = {
+        //   vin: this.form.vin || this.$route.query.vin
+        // };
+        // 调用假接口获取当前城市最大交付顺序
+        // const response = await getMaxCityDeliveryOrder(vehicleData);
+        const response = 3;
+        const maxOrder = response.data || 0;
+        // 计算最小值
+        this.cityDeliveryOrderMin = this.calculateCityDeliveryOrderMin(maxOrder);
+        // 如果是新建记录且cityDeliveryOrder为空，设置默认值
+        if (!this._id && !this.form.cityDeliveryOrder) {
+          this.form.cityDeliveryOrder = this.cityDeliveryOrderMin;
+        }
+      } catch (error) {
+        console.error('获取城市交付顺序失败:', error);
+        // 如果失败，设置默认最小值为1
+        this.cityDeliveryOrderMin = 1;
+      }
+    },
+    // 预约交车
+    handleAppointmentDelivery () {},
+    // 交车确认单生成
+    handleGenerateConfirmOrder () {},
+    // 更改预约时间
+    handleChangeAppointmentTime () {},
+    // 核销订单权益
+    handleVerifyOrderRights () {},
+    // 核销撤回
+    handleVerifyWithdraw () {},
+    // 添加收款记录
+    handleAddPaymentRecord () {},
+    // 确认收款
+    handleConfirmPayment () {},
+    // 交车确认单补推
+    handleRepushConfirmOrder () {},
+    // 交车确认单重签
+    handleReSignConfirmOrder () {},
+    // 查看交车确认单
+    handleViewConfirmOrder () {},
+    // 上传发票
+    handleUploadInvoice () {},
+    // 收款撤回
+    handlePaymentWithdraw () {},
+    // 交车撤回
+    handleDeliveryWithdraw () {}
   }
 };
 </script>
