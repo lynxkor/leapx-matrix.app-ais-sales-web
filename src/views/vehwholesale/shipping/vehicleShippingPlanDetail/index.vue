@@ -62,10 +62,9 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="vehretail_data_source"
-            v-model="form.dataSources"
+            v-model="form.dataSource"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>

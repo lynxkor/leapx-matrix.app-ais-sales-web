@@ -2,7 +2,7 @@
     <el-dialog class="m-start-work-dialog" title="请选择门店仓库" width="50%" :visible.sync="dialogVisible" @close="close">
         <el-form ref="form" :model="form" label-width="80px" size="small">
             <el-form-item label="门店仓库：">
-                <el-select v-model="form.warehouseCode" placeholder="请选择门店" filterable remote reserve-keyword
+                <el-select v-model="form.warehouseCode" placeholder="请选择门店" filterable remote reserve-keyword clearable
                     :remote-method="remoteMethod" size="small" style="width:100%" @change="handleOrgChange">
                     <el-option v-for="item in warehouseList" :key="item.warehouseCode" :label="item.warehouseName"
                         :value="item.warehouseCode"></el-option>
@@ -67,6 +67,9 @@ export default {
       return this.remoteMethod();
     },
     async remoteMethod (query) {
+      if (query === '') {
+        return;
+      }
       // 如果没传 query (即 getData 调用时)，使用默认的 saleDealerCode
       const storeCode = query !== undefined ? query : this.saleDealerCode;
 

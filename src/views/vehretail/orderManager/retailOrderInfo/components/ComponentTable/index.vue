@@ -1,50 +1,50 @@
 <template>
   <section class="common-section">
-            <div class="common-section-header">
-              <h2>{{ tableConfig.title }}</h2>
-            </div>
-            <div class="common-section-body">
-              <div class="common-section-table">
-  <div class="component-table">
-    <vxe-table
-      ref="table"
-      :data="tableData"
-      stripe
-      resizable
-      border="inner"
-      size="medium"
-      height="auto"
-      min-height="200px"
-      max-height="300px"
-      width="1000px"
-      :loading="loading"
-      :checkbox-config="{ checkField: 'checked' }"
-    >
-      <vxe-column
-        v-for="column in columns"
-        :key="column.field || column.title"
-        :width="column.width"
-        :align="column.align || 'center'"
-        v-bind="column"
-      />
-    </vxe-table>
-
-    <!-- 分页组件 -->
-    <div v-if="showPagination" :style="{ textAlign: paginationAlign }">
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="pageSizes"
-        :page-size="pageSize"
-        :layout="paginationLayout"
-        :total="total"
-      />
+    <div class="common-section-header" :data-section="sectionKey">
+      <h2>{{ tableConfig.title }}</h2>
     </div>
-  </div>
-              </div>
-            </div>
-          </section>
+    <div class="common-section-body">
+      <div class="common-section-table">
+        <div class="component-table">
+          <vxe-table
+            ref="table"
+            :data="tableData"
+            stripe
+            resizable
+            border="inner"
+            size="medium"
+            height="auto"
+            min-height="200px"
+            max-height="300px"
+            width="1000px"
+            :loading="loading"
+            :checkbox-config="{ checkField: 'checked' }"
+          >
+            <vxe-column
+              v-for="column in columns"
+              :key="column.field || column.title"
+              :width="column.width"
+              :align="column.align || 'center'"
+              v-bind="column"
+            />
+          </vxe-table>
+
+          <!-- 分页组件 -->
+          <div v-if="showPagination" :style="{ textAlign: paginationAlign }">
+            <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="currentPage"
+              :page-sizes="pageSizes"
+              :page-size="pageSize"
+              :layout="paginationLayout"
+              :total="total"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script>
@@ -91,6 +91,11 @@ export default {
     tableDataExternal: {
       type: Array,
       default: null
+    },
+    // section 标识
+    sectionKey: {
+      type: String,
+      default: ''
     }
   },
   data () {
