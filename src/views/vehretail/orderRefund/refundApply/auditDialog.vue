@@ -195,8 +195,8 @@ export default {
       });
     },
     changeSubCategoryChange (val, selectedOption) {
-      this.auditForm.cateCode = val ? selectedOption.cateCode : '';
-      this.auditForm.cateName = val ? selectedOption.cateName : '';
+      this.auditForm.subCateCode = val ? selectedOption.subCateCode : '';
+      this.auditForm.subCateName = val ? selectedOption.subCateName : '';
     },
   }
 };
