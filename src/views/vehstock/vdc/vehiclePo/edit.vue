@@ -212,7 +212,7 @@
                   {{ form.zppNo }}
                 </el-form-item>
                 <el-form-item label="订单类型：" prop="orderType">
-                  form.orderType }}
+                  {{ form.orderType }}
                 </el-form-item>
               </el-form>
             </div>
@@ -354,6 +354,14 @@ export default {
       handler (val) {
         if (val && this.$refs.containerRef) {
           this.$refs.containerRef.loadDetail();
+        }
+      },
+      immediate: true
+    },
+    'form.id': {
+      handler (val) {
+        if (val) {
+          this.getTable();
         }
       },
       immediate: true

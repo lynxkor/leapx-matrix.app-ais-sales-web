@@ -1,5 +1,5 @@
 <template>
-  <edit-page-layout ref="editLayout" title="销售公司管理" showPaneFooter>
+  <edit-page-layout ref="editLayout" title="销售公司" showPaneFooter>
     <template #left>
       <edit-base-container
         ref="containerRef"
@@ -178,7 +178,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '销售公司管理',
+      pageTitle: '销售公司',
       pageType: 'edit',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundSaleCompany',

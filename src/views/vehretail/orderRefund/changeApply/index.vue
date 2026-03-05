@@ -207,7 +207,7 @@ export default {
         remote: true,
         reserveKeyword: true,
       },
-      pageTitle: '订单信息变更申请管理',
+      pageTitle: '订单变更申请',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVRROCA-retailOrderChangeApply',
@@ -230,9 +230,9 @@ export default {
         },
         dataProp: [
           {
-            props: 'id',
-            label: '主键',
-            visible: false,
+            props: 'changeApplyCode',
+            label: '申请编号',
+            visible: true,
             width: 200,
             fixed: 'left',
             buttons: [{
@@ -247,7 +247,12 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'changeApplyCode', label: '申请编号', visible: true, width: 200 },
+          {
+            props: 'id',
+            label: '主键',
+            visible: false,
+            width: 200
+          },
           { props: 'retailOrderCode', label: '零售订单号', visible: true, width: 200 },
           { props: 'mallOrderCode', label: '商城订单编号', visible: true, width: 200 },
           { props: 'saleDealerCode', label: '销售门店编码', visible: false, width: 200 },
@@ -349,7 +354,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '订单信息变更申请管理',
+        businessType: '订单变更申请',
         dataFetchPath: '/vr/web/order/retailOrderChangeApply/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -357,7 +362,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '订单信息变更申请管理.xlsx');
+            await downloadExcel(res.excelUrl, '订单变更申请.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

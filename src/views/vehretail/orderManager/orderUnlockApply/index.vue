@@ -181,7 +181,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '订单锁车解绑申请记录管理',
+      pageTitle: '锁车解绑申请',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-orderUnlockApply',
@@ -343,15 +343,15 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '订单锁车解绑申请记录管理',
-        dataFetchPath: 'vehretail/web/orderManager/orderUnlockApply/page',
+        businessType: '锁车解绑申请',
+        dataFetchPath: 'vr/web/lock/retailOrderUnlockApply/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '订单锁车解绑申请记录管理.xlsx');
+            await downloadExcel(res.excelUrl, '锁车解绑申请.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

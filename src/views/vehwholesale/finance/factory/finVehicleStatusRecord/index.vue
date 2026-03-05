@@ -232,7 +232,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-车厂融资信息-车辆状态记录管理',
+      pageTitle: '车辆状态记录',
       pageType: 'list',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-finVehicleStatusRecord',
@@ -349,7 +349,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '账户管理-车厂融资信息-车辆状态记录管理',
+        businessType: '车辆状态记录',
         dataFetchPath: 'vehwholesale/web/finance/factory/finVehicleStatusRecord/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -357,7 +357,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '账户管理-车厂融资信息-车辆状态记录管理.xlsx');
+            await downloadExcel(res.excelUrl, '车辆状态记录.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

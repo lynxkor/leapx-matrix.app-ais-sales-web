@@ -138,3 +138,11 @@ export function changeOrderMaterials (data) {
 export function setSpecialRemark (data) {
   return api.jsonPost(prefix + 'setSpecialRemark', data);
 }
+
+/**
+ * 获取合同解绑链接
+ * @param {Object} data
+ */
+export function getUnbindContractUrl (data) {
+  return api.jsonPost(prefix + 'getUnbindContractUrl', data);
+}

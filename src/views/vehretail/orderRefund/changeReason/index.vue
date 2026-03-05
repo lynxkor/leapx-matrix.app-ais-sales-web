@@ -122,7 +122,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车零售订单变更原因管理',
+      pageTitle: '订单变更原因',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVRROCA-retailOrderChangeReason',
@@ -149,6 +149,12 @@ export default {
             label: '主键',
             visible: false,
             width: 200,
+          },
+          {
+            props: 'changeCode',
+            label: '变更原因代码',
+            visible: true,
+            width: 200,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -162,7 +168,6 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'changeCode', label: '变更原因代码', visible: true, width: 200 },
           { props: 'changeName', label: '变更原因名称', visible: true, width: 200 },
           { props: 'changeTypeLabel', label: '变更类型', visible: true, width: 200 },
           {
@@ -261,7 +266,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '整车零售订单变更原因管理',
+        businessType: '订单变更原因',
         dataFetchPath: '/vr/web/order/retailOrderChangeReason/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -269,7 +274,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车零售订单变更原因管理.xlsx');
+            await downloadExcel(res.excelUrl, '订单变更原因.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

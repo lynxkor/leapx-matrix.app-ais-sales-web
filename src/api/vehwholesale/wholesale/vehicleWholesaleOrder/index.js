@@ -112,6 +112,15 @@ export function batchAllocateVehicleItem (data) {
 }
 
 /**
+ * 批量取消配车
+ * @param {Object} data
+ */
+
+export function batchCancleAllocateVehicleItem (data) {
+  return api.jsonPost(prefix + 'batchCancelAllocateVehicle', data);
+}
+
+/**
  * 刷新价格
  * @param {Object} data
  */

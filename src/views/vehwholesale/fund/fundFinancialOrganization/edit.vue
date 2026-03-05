@@ -1,5 +1,5 @@
 <template>
-  <edit-page-layout ref="editLayout" title="金融机构管理" showPaneFooter>
+  <edit-page-layout ref="editLayout" title="金融机构" showPaneFooter>
     <template #left>
       <edit-base-container
         ref="containerRef"
@@ -236,7 +236,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '金融机构管理',
+      pageTitle: '金融机构',
       pageType: 'edit',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundFinancialOrganization',

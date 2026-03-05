@@ -23,6 +23,13 @@
           filterable
         />
       </el-form-item>
+      <el-form-item label="退订原因分类">
+        <fetch-select
+          v-bind="selectCategoryOptions"
+          :remote-method="changeCategorySearch"
+          v-model="form.cateCode"
+        />
+      </el-form-item>
       <el-form-item label="商城订单编号">
         <tag-input v-model="form.mallOrderCodeList" placeholder="请输入" />
       </el-form-item>
@@ -30,12 +37,11 @@
         <el-form-item label="零售订单号">
           <tag-input v-model="form.retailOrderCodeList" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="退订原因分类">
-          <fetch-select
-            v-bind="selectCategoryOptions"
-            :remote-method="changeCategorySearch"
-            v-model="form.cateCode"
-          />
+        <el-form-item label="购车人手机号">
+          <tag-input v-model="form.buyerPhone" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="基础车型">
+          <tag-input v-model="form.modelName" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="申请时间">
           <el-date-picker
@@ -58,8 +64,16 @@
         :loading="loading"
         @submit="onSubmit"
         @reset="onReset"
-      />
+      />R
     </el-form>
+    <div class="ais-active">
+      <el-tabs v-model="refundStatusTab" @tab-click="handleRefundStatusClick">
+        <el-tab-pane label="全部申请" name="0" status="0" />
+        <el-tab-pane label="待初审" name="1020" status="1020" />
+        <el-tab-pane label="待审核" name="1025" status="1025"/>
+        <el-tab-pane label="待终审" name="1027" status="1027"/>
+      </el-tabs>
+    </div>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
@@ -121,7 +135,7 @@ const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   createTime: '',
   refundCode: '',
-  refundStatus: '',
+  refundStatus: null,
   retailOrderCode: '',
   mallOrderCode: '',
   cateCode: '',
@@ -155,13 +169,14 @@ export default {
         remote: true,
         reserveKeyword: true
       },
-      pageTitle: '整车零售退订申请单管理',
+      pageTitle: '订单退订申请',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVRRO-retailOrderRefund',
       form: {
         ...defaultForm
       },
+      refundStatusTab: '0',
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
@@ -181,6 +196,12 @@ export default {
             props: 'id',
             label: '主键',
             visible: false,
+            width: 200
+          },
+          {
+            props: 'refundCode',
+            label: '退订申请单号',
+            visible: true,
             width: 200,
             fixed: 'left',
             buttons: [{
@@ -195,11 +216,15 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'refundCode', label: '退订申请单号', visible: true, width: 200 },
-          { props: 'refundStatus', label: '申请状态', visible: true, width: 200 },
+          { props: 'refundStatusLabel', label: '申请状态', visible: true, width: 200 },
           { props: 'retailOrderCode', label: '零售订单号', visible: true, width: 200 },
           { props: 'mallOrderCode', label: '商城订单编号', visible: true, width: 200 },
+          {
+            props: 'createTime',
+            label: '申请时间',
+            visible: true,
+            width: 200
+          },
           { props: 'cateCode', label: '退订原因分类编码', visible: true, width: 200 },
           {
             props: 'operate',
@@ -255,6 +280,10 @@ export default {
     this.getData();
   },
   methods: {
+    handleRefundStatusClick (item) {
+      this.refundStatusTab = item.name;
+      this.getData();
+    },
     // 排序
     handleSortChange (value) {
       this.sortColumns = (value || []).map(item => {
@@ -297,7 +326,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '整车零售退订申请单管理',
+        businessType: '订单退订申请',
         dataFetchPath: '/vr/web/refund/retailOrderPayRefundRecord//page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -305,7 +334,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车零售退订申请单管理.xlsx');
+            await downloadExcel(res.excelUrl, '订单退订申请.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -325,7 +354,7 @@ export default {
     getData () {
       this.loading = true;
       this.selectionList = [];
-
+      this.form.refundStatus = this.refundStatusTab === '0' ? null : this.refundStatusTab;
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
           console.log(res);

@@ -553,6 +553,14 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
+      path: '/datacenter/materials/salesParameterConfig',
+      name: 'salesParameterConfig',
+      component: () => import('@/views/datacenter/materials/salesParameterConfig/index.vue'),
+      meta: {
+        name: '整车主数据-销售参数配置',
+        keepAlive: true
+      }
+    }, {
       path: '/datacenter/materials/vehicleSeries',
       name: 'vehicleSeries',
       component: () => import('@/views/datacenter/materials/vehicleSeries/index.vue'),
@@ -1854,6 +1862,24 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
+      path: '/vehretail/orderManager/orderPayRecord',
+      name: 'orderPayRecord',
+      component: () => import('@/views/vehretail/orderManager/orderPayRecord/index.vue'),
+
+      meta: {
+        name: '订单收款记录管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/ordermanager/orderPayRecord/edit',
+      name: 'orderPayRecordEdit',
+      component: () => import('@/views/vehretail/orderManager/orderPayRecord/edit.vue'),
+
+      meta: {
+        name: '订单收款记录管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
       path: '/vehstock/store/storeInventoryInboundDetails',
       name: 'storeInventoryInboundDetails',
       component: () => import('@/views/vehstock/store/storeInventoryInboundDetails/index.vue'),
@@ -1977,6 +2003,24 @@ const routes = [
 
       meta: {
         name: '订单锁车记录管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/orderManager/deliveryOrder',
+      name: 'deliveryOrder',
+      component: () => import('@/views/vehretail/orderManager/deliveryOrder/index.vue'),
+
+      meta: {
+        name: '交车单管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/orderManager/deliveryOrder/edit',
+      name: 'deliveryOrderEdit',
+      component: () => import('@/views/vehretail/orderManager/deliveryOrder/edit.vue'),
+
+      meta: {
+        name: '交车单管理详情',
         noResourceUrl: 'true'
       }
     }, {
@@ -2248,6 +2292,42 @@ const routes = [
         name: '新页面详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehretail/basicConfig/deliveryConfirmItemConfig',
+      name: 'deliveryConfirmItemConfig',
+      component: () => import('@/views/vehretail/basicConfig/deliveryConfirmItemConfig/index.vue'),
+
+      meta: {
+        name: '交车确认项配置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicconfig/deliveryconfirmitemconfig/edit',
+      name: 'deliveryConfirmItemConfigEdit',
+      component: () => import('@/views/vehretail/basicConfig/deliveryConfirmItemConfig/edit.vue'),
+
+      meta: {
+        name: '交车确认项配置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/wholesale/vehicleWholesaleOrderRecord',
+      name: 'vehicleWholesaleOrderRecord',
+      component: () => import('@/views/vehwholesale/wholesale/vehicleWholesaleOrderRecord/index.vue'),
+
+      meta: {
+        name: '整车批售-批售管理-批售配车结算记录管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/wholesale/vehiclewholesaleorderrecord/edit',
+      name: 'vehicleWholesaleOrderRecordEdit',
+      component: () => import('@/views/vehwholesale/wholesale/vehicleWholesaleOrderRecord/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售管理-批售配车结算记录管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
@@ -2292,7 +2372,7 @@ export function getRouter () {
       }
       // 开发阶段先跳过权限验证
       if (localStorage.getItem('sourceUrl').includes(to.path) || to.meta.noResourceUrl) {
-      // if (true) {
+        // if (true) {
         next();
       } else {
         window.alert('你没有访问该页面的权限');

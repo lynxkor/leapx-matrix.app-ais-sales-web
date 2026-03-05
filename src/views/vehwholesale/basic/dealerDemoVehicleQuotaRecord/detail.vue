@@ -99,7 +99,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '门店试驾车配额调整记录管理',
+      pageTitle: '门店试驾车配额调整记录',
       pageType: 'detail',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-dealerDemoVehicleQuotaRecord',
@@ -109,7 +109,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['门店试驾车配额调整记录管理', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['门店试驾车配额调整记录', '详情']);
     this.getData();
   },
   methods: {

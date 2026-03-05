@@ -14,7 +14,7 @@
         :showEditBtn="false"
       >
         <template #status>
-          <span class="status primary">{{ form.code }}</span>
+          <span>{{ form.code }}</span>
         </template>
         <!-- <template #extraButtons>
           <el-button size="small">按钮1</el-button>
@@ -446,7 +446,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '账户管理-车厂融资信息-客户采购记录',
+      pageTitle: '客户采购记录',
       pageType: 'edit',
       title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改

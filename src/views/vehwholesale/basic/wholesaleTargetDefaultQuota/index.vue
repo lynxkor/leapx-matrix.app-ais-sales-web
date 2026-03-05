@@ -111,7 +111,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '批售目标默认配额管理',
+      pageTitle: '批售目标默认配额',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleTargetDefaultQuota',
@@ -210,7 +210,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '批售目标默认配额管理',
+        businessType: '批售目标默认配额',
         dataFetchPath: '/vw/web/basic/wholesaleTargetDefaultQuota/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -218,7 +218,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '批售目标默认配额管理.xlsx');
+            await downloadExcel(res.excelUrl, '批售目标默认配额.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

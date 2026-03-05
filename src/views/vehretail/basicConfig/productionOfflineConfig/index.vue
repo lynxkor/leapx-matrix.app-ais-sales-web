@@ -185,7 +185,7 @@ export default {
           return await vehicleInterior({ interiorNameLike: query });
         },
       },
-      pageTitle: '排产下线时效管理',
+      pageTitle: '排产下线时效',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-productionOfflineConfig',
@@ -323,7 +323,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '排产下线时效管理',
+        businessType: '排产下线时效',
         dataFetchPath: 'vr/web/production/productionOfflineConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -331,7 +331,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '排产下线时效管理.xlsx');
+            await downloadExcel(res.excelUrl, '排产下线时效.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

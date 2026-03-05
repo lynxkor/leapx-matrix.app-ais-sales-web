@@ -101,20 +101,15 @@
                     />
                   </el-select>
                 </el-form-item>
-                <el-form-item label="默认定金退款方式：" prop="refundTypeDefault">
-                  <el-select
-                    placeholder="请选择"
+                <el-form-item label="默认定金退回方式：" prop="refundTypeDefault">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="order_fund_return_type"
                     v-model="form.refundTypeDefault"
+                    placeholder="请选择"
                     clearable
                     filterable
-                  >
-                    <el-option
-                      v-for="item in yes_no_enum"
-                      :key="Number(item.code)"
-                      :label="item.message"
-                      :value="Number(item.code)"
-                    />
-                  </el-select>
+                  />
                 </el-form-item>
                 <el-form-item label="退款方式是否允许选择：" prop="refundTypeSelect">
                   <el-select
@@ -203,22 +198,22 @@
                 <el-form-item label="退订原因分类：" prop="cateName">
                   {{ form.cateName }}
                 </el-form-item>
-                <el-form-item label="下拉是否展示：" prop="selectorDisplay">
+                <el-form-item label="下拉是否展示：" prop="selectorDisplayLabel">
                   {{ form.selectorDisplayLabel }}
                 </el-form-item>
-                <el-form-item label="原路退回允许选择：" prop="originalRefund">
+                <el-form-item label="原路退回允许选择：" prop="originalRefundLabel">
                   {{ form.originalRefundLabel }}
                 </el-form-item>
-                <el-form-item label="是否需要初审：" prop="preApproval">
+                <el-form-item label="是否需要初审：" prop="preApprovalLabel">
                   {{ form.preApprovalLabel }}
                 </el-form-item>
-                <el-form-item label="是否需要终审：" prop="finalApproval">
+                <el-form-item label="是否需要终审：" prop="finalApprovalLabel">
                   {{ form.finalApprovalLabel }}
                 </el-form-item>
-                <el-form-item label="默认定金退款方式：" prop="refundTypeDefault">
+                <el-form-item label="默认定金退回方式：" prop="refundTypeDefault">
                   {{ form.refundTypeDefault }}
                 </el-form-item>
-                <el-form-item label="退款方式是否允许选择：" prop="refundTypeSelect">
+                <el-form-item label="退款方式是否允许选择：" prop="refundTypeSelectLabel">
                   {{ form.refundTypeSelectLabel }}
                 </el-form-item>
                 <el-form-item label="退订附件上传要求：" prop="refundAttachRequired">
@@ -227,39 +222,39 @@
                 <el-form-item label="默认退订原因说明：" prop="refundReasonDefault">
                   {{ form.refundReasonDefault }}
                 </el-form-item>
-                <el-form-item label="是否允许退订原因修改：" prop="refundReasonChanged">
+                <el-form-item label="是否允许退订原因修改：" prop="refundReasonChangedLabel">
                   {{ form.refundReasonChangedLabel }}
                 </el-form-item>
-                <el-form-item v-if="form.cateCode === '1210'" label="超时订单自动审核通过：" prop="expireOrderAutoPass">
+                <el-form-item v-if="form.cateCode === '1210'" label="超时订单自动审核通过：" prop="expireOrderAutoPassLabel">
                   {{ form.expireOrderAutoPassLabel }}
                 </el-form-item>
                 <el-form-item v-if="form.cateCode === '1210'" label="超时订单时间设置：" prop="expireOrderTime">
                   {{ '【缴定金时间】距离当前超过 ' + form.expireOrderTime + ' 个月可自动审核通过' }}
                 </el-form-item>
-                <el-form-item label="主键：" prop="id">
-                  {{ form.id }}
-                </el-form-item>
-                <el-form-item label="创建者：" prop="creator">
-                  {{ form.creator }}
-                </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  {{ form.creatorName }}
-                </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
-                  {{ form.createTime }}
-                </el-form-item>
-                <el-form-item label="修改者：" prop="modifier">
-                  {{ form.modifier }}
-                </el-form-item>
-                <el-form-item label="修改者名称：" prop="modifierName">
-                  {{ form.modifierName }}
-                </el-form-item>
-                <el-form-item label="修改时间：" prop="updateTime">
-                  {{ form.updateTime }}
-                </el-form-item>
-                <el-form-item label="备注：" prop="remark">
-                  {{ form.remark }}
-                </el-form-item>
+<!--                <el-form-item label="主键：" prop="id">-->
+<!--                  {{ form.id }}-->
+<!--                </el-form-item>-->
+<!--                <el-form-item label="创建者：" prop="creator">-->
+<!--                  {{ form.creator }}-->
+<!--                </el-form-item>-->
+<!--                <el-form-item label="创建者名称：" prop="creatorName">-->
+<!--                  {{ form.creatorName }}-->
+<!--                </el-form-item>-->
+<!--                <el-form-item label="创建时间：" prop="createTime">-->
+<!--                  {{ form.createTime }}-->
+<!--                </el-form-item>-->
+<!--                <el-form-item label="修改者：" prop="modifier">-->
+<!--                  {{ form.modifier }}-->
+<!--                </el-form-item>-->
+<!--                <el-form-item label="修改者名称：" prop="modifierName">-->
+<!--                  {{ form.modifierName }}-->
+<!--                </el-form-item>-->
+<!--                <el-form-item label="修改时间：" prop="updateTime">-->
+<!--                  {{ form.updateTime }}-->
+<!--                </el-form-item>-->
+<!--                <el-form-item label="备注：" prop="remark">-->
+<!--                  {{ form.remark }}-->
+<!--                </el-form-item>-->
               </el-form>
             </div>
           </section>
@@ -276,7 +271,7 @@
 
 <script>
 import { addOrUpdate, getDetail } from '@/api/vehretail/orderRefund/category';
-// import FetchSelect from '@/libs/components/FetchSelect';
+import FetchSelect from '@/libs/components/FetchSelect';
 // import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -326,8 +321,8 @@ export default {
   components: {
     EditPageLayout,
     EditBaseContainer,
+    FetchSelect
     // EditTable,
-    // FetchSelect
   },
   computed: {
     _id () {
@@ -481,7 +476,7 @@ export default {
         refundTypeDefault: [
           {
             required: false,
-            message: '请选择默认定金退款方式',
+            message: '请选择默认定金退回方式',
             trigger: 'change',
           },
         ],

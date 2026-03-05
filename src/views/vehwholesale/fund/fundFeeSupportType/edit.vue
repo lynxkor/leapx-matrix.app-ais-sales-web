@@ -1,5 +1,5 @@
 <template>
-  <edit-page-layout ref="editLayout" title="费用支持类型管理" showPaneFooter>
+  <edit-page-layout ref="editLayout" title="费用支持类型" showPaneFooter>
     <template #left>
       <edit-base-container
         ref="containerRef"
@@ -171,7 +171,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '费用支持类型管理',
+      pageTitle: '费用支持类型',
       pageType: 'edit',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundFeeSupportType',

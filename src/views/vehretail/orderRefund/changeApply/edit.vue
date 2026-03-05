@@ -10,19 +10,19 @@
         :form.sync="form"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.applyStatus === 1010"
+        :showEditBtn="form.applyStatus === 1010 || form.applyStatus === 1040"
       >
         <template #extraButtons>
           <el-button
             @click="openCancelShow"
-            v-if="form.applyStatus === 1010 || form.applyStatus === 1050"
+            v-if="form.applyStatus === 1010 || form.applyStatus === 1040"
             v-permission="moduleKey + '-cancel'"
             size="small">
             作废
           </el-button>
           <el-button
             @click="openCommitShow"
-            v-if="form.applyStatus === 1010 || form.applyStatus === 1050"
+            v-if="form.applyStatus === 1010 || form.applyStatus === 1040"
             v-permission="moduleKey + '-commit'">
             提交审批
           </el-button>
@@ -31,7 +31,7 @@
             v-permission="moduleKey + '-approve'"
             v-if="form.applyStatus === 1"
           >
-            审批
+            审核
           </el-button>
         </template>
         <el-main>
@@ -306,7 +306,15 @@
                   {{ form.originalSaleDealerCode }}
                 </el-form-item>
                 <el-form-item label="原销售门店名称：" prop="originalSaleDealerName">
-                  {{ form.originalSaleDealerName }}
+                  <el-button
+                    class="link"
+                    @click="navigateToRoute({
+                      path: '/partner/channelManagement/shopBasicsMessage',
+                      query: {
+                        dealerCode: form.originalSaleDealerCode,
+                      },
+                    })"
+                    type="text">{{form.originalSaleDealerName}}</el-button>
                 </el-form-item>
                 <el-form-item label="原整车订单状态：" prop="originalOrderStatus">
                   {{ form.originalOrderStatusLabel }}
@@ -318,7 +326,15 @@
                   {{ form.saleDealerCode }}
                 </el-form-item>
                 <el-form-item label="销售门店名称：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-button
+                    class="link"
+                    @click="navigateToRoute({
+                      path: '/partner/channelManagement/shopBasicsMessage',
+                      query: {
+                        dealerCode: form.saleDealerCode,
+                      },
+                    })"
+                    type="text">{{form.saleDealerName}}</el-button>
                 </el-form-item>
                 <el-form-item label="缴定金时间：" prop="paymentTime">
                   {{ form.paymentTime }}
@@ -519,10 +535,10 @@
               </el-table>
             </div>
         </section>
-          <audit-dialog
-            ref="auditRef"
-            @audit="handleAudit"
-          />
+        <audit-dialog
+          ref="auditRef"
+          @audit="handleAudit"
+        />
         </el-main>
       </edit-base-container>
     </template>
@@ -664,7 +680,7 @@ export default {
         remote: true,
         reserveKeyword: true,
       },
-      pageTitle: '订单信息变更申请管理',
+      pageTitle: '订单变更申请',
       pageType: 'edit',
       title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
@@ -1161,9 +1177,11 @@ export default {
     },
     // 提交审批结果
     handleAudit (auditForm) {
-      this.$message.info(JSON.stringify(auditForm));
+      // this.$message.info(JSON.stringify(auditForm));
       auditForm.changeApplyId = this.form.id;
       auditForm.changeApplyCode = this.form.changeApplyCode;
+      auditForm.auditResult = auditForm.result;
+      auditForm.auditRemark = auditForm.remark;
       submit(auditForm);
     }
   },

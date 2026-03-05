@@ -1,5 +1,5 @@
 <template>
-  <edit-page-layout ref="editLayout" title="整车资金账户交易流水管理" showPaneFooter>
+  <edit-page-layout ref="editLayout" title="整车资金账户交易流水" showPaneFooter>
     <template #left>
       <edit-base-container
         ref="containerRef"
@@ -500,7 +500,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '整车资金账户交易流水管理',
+      pageTitle: '整车资金账户交易流水',
       pageType: 'edit',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-accountTranslog',

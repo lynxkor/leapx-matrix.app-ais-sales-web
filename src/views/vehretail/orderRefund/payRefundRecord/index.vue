@@ -266,7 +266,7 @@ export default {
       }
       exportTable({
         businessType: '订单退订退款记录管理',
-        dataFetchPath: 'vehretail/web/orderRefund/payRefundRecord/page',
+        dataFetchPath: 'vr/web/refund/retailOrderPayRefundRecord/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

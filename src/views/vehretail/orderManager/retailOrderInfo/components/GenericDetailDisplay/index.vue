@@ -1,18 +1,18 @@
 <!-- 新建文件: src/components/GenericDetailDisplay.vue -->
 <template>
-  <section id="car-owner" class="common-section">
-    <div class="common-section-header">
+  <section class="common-section">
+    <div class="common-section-header" :data-section="sectionKey">
       <h2>{{ title }}</h2>
     </div>
     <div class="common-section-body">
-    <el-form label-width="180px" :inline="true" class="form-detail">
+    <el-form :label-width="labelWidth" :inline="true" class="form-detail">
       <el-form-item
         v-for="field in fields"
         :key="field.key"
         :label="field.label + '：'"
         :prop="field.key"
       >
-        {{ formData[field.key] || '-' }}
+        {{ formData[field.key] || '' }}
       </el-form-item>
     </el-form>
     </div>
@@ -39,6 +39,16 @@ export default {
       type: Array,
       required: true,
       default: () => []
+    },
+    // 标签宽度
+    labelWidth: {
+      type: [String, Number],
+      default: '180px'
+    },
+    // section 标识
+    sectionKey: {
+      type: String,
+      default: ''
     }
   }
 };

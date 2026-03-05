@@ -42,3 +42,16 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+/**
+ * 门店整车PDI单检查项结果信息分页查询
+ * @param {Object} data
+ */
+export function storeVehiclePdiCheckItemPage (data) {
+  return api.jsonPost('vehstock/web/store/storeVehiclePdiCheckItem/page', data);
+}
+/**
+ * 门店整车PDI单导出pdf
+ */
+export function getPdiEntryDetails (data) {
+  return api.jsonPost('vehstock/web/store/storeVehiclePdi/getPdiEntryDetails', data);
+}

@@ -436,7 +436,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '订单改配信息管理详情';
+      return '订单改配信息详情';
     }
   },
   watch: {
@@ -452,7 +452,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '订单改配信息管理',
+      pageTitle: '订单改配信息',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-retailOrderConfigChange',

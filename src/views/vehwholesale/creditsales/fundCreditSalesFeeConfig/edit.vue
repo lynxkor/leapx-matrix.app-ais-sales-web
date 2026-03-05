@@ -1,5 +1,5 @@
 <template>
-  <edit-page-layout ref="editLayout" title="赊销资费设置管理" showPaneFooter>
+  <edit-page-layout ref="editLayout" title="赊销资费设置" showPaneFooter>
     <template #left>
       <edit-base-container
         ref="containerRef"
@@ -292,7 +292,7 @@ export default {
     };
 
     return {
-      pageTitle: '赊销资费设置管理',
+      pageTitle: '赊销资费设置',
       pageType: 'edit',
       moduleKey: 'AISVW-fundCreditSalesFeeConfig',
       loading: false,

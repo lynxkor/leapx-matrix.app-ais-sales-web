@@ -69,7 +69,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-基础配置-预算科目管理',
+      pageTitle: '预算科目',
       pageType: 'detail',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundBudgetItem',
@@ -79,7 +79,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['账户管理-基础配置-预算科目管理', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['预算科目', '详情']);
     this.getData();
   },
   methods: {

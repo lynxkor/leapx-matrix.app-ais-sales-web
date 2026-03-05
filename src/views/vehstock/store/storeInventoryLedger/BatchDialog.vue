@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { batchReserve, batchCancelReserve, outbound, move } from '@/api/vehstock/store/storeInventoryLedger/index';
+import { batchReserve, batchCancelReserve, outbound } from '@/api/vehstock/store/storeInventoryLedger/index';
 export default {
   name: 'batchDialog',
   props: {
@@ -78,6 +78,7 @@ export default {
         this.desc = '';
         this.$emit('submit');
       } catch (error) {
+        console.error('批量操作失败:', error);
       }
     },
   }

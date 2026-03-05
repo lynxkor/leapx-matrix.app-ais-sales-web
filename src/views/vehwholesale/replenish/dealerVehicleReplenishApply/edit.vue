@@ -450,7 +450,7 @@ export default {
     const routeOrderCategory = this.$route.query.orderCategory ? (this.$route.query.orderCategory) : '';
     form.orderCategory = routeOrderCategory;
     return {
-      pageTitle: '整车门店补货申请管理',
+      pageTitle: '整车门店补货申请',
       pageType: 'edit',
       pannelTitle: '',
       moduleKey: 'AISVW-dealerVehicleReplenishApply',

@@ -208,7 +208,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '销售目标跟踪管理',
+      pageTitle: '销售目标跟踪',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleSaleTargetTracking',
@@ -336,7 +336,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '销售目标跟踪管理',
+        businessType: '销售目标跟踪',
         dataFetchPath: '/vw/web/basic/wholesaleSaleTargetTracking/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -344,7 +344,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '销售目标跟踪管理.xlsx');
+            await downloadExcel(res.excelUrl, '销售目标跟踪.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

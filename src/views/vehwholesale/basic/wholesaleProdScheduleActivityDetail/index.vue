@@ -168,7 +168,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '排产专项活动明细管理',
+      pageTitle: '排产专项活动明细',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleProdScheduleActivityDetail',
@@ -296,7 +296,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '排产专项活动明细管理',
+        businessType: '排产专项活动明细',
         dataFetchPath: 'vw/web/basic/wholesaleProdScheduleActivityDetail/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -304,7 +304,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '排产专项活动明细管理.xlsx');
+            await downloadExcel(res.excelUrl, '排产专项活动明细.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
