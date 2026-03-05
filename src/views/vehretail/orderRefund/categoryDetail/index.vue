@@ -130,7 +130,7 @@ export default {
         remote: true,
         reserveKeyword: true
       },
-      pageTitle: '整车零售订单退订原因二级分类管理',
+      pageTitle: '退订原因二级分类',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-orderRefundCategoryDetail',
@@ -251,7 +251,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '整车零售订单退订原因二级分类管理',
+        businessType: '退订原因二级分类',
         dataFetchPath: '/vr/web/refund/orderRefundCategoryDetail/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -259,7 +259,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车零售订单退订原因二级分类管理.xlsx');
+            await downloadExcel(res.excelUrl, '退订原因二级分类.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

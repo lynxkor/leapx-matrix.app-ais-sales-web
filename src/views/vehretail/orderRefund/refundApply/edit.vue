@@ -735,7 +735,7 @@ export default {
         reserveKeyword: true
       },
       auditType: 'approve',
-      pageTitle: '整车零售退订申请单管理',
+      pageTitle: '订单退订申请',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
       moduleKey: 'AISVRRO-retailOrderRefund',

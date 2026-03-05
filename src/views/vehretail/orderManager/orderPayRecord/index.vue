@@ -145,7 +145,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '订单收款记录管理',
+      pageTitle: '订单收款记录',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-retailOrderPayRecord',
@@ -320,9 +320,9 @@ export default {
         reqParams.ids = ids;
       }
       // 根据当前激活的 tab 设置不同的业务类型和数据路径
-      let businessType = '订单收款记录管理';
+      let businessType = '订单收款记录';
       let dataFetchPath = 'vr/web/order/retailOrderPayRecord/page';
-      let fileName = '订单收款记录管理.xlsx';
+      let fileName = '订单收款记录.xlsx';
       if (this.activeName === 'depositRefund') {
         businessType = '定金退款记录';
         fileName = '定金退款记录.xlsx';

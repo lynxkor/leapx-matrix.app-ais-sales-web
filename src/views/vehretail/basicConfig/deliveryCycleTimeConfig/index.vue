@@ -284,7 +284,7 @@ export default {
     },
     handleAdd () {
       this.$router.push({
-        path: '/vehretail/basicConfig/deliveryCycleTimeConfig/edit'
+        path: '/vehretail/delivery/deliveryCycleTimeConfig/edit'
       });
     },
     onSubmit () {
@@ -306,7 +306,7 @@ export default {
       }
       exportTable({
         businessType: '交付周期时效信息',
-        dataFetchPath: 'vehretail/web/basicConfig/deliveryCycleTimeConfig/page',
+        dataFetchPath: 'vr/web/basicConfig/deliveryCycleTimeConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

@@ -487,7 +487,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '交车单管理',
+      pageTitle: '交车单',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name 为小写驼峰格式
       moduleKey: 'AISVR-deliveryOrder',

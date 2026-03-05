@@ -244,7 +244,7 @@ export default {
       }
       exportTable({
         businessType: '建店类型承载力配置',
-        dataFetchPath: 'vehretail/web/storeBuildCapacityConfig/page',
+        dataFetchPath: 'vr/web/store/storeBuildCapacityConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

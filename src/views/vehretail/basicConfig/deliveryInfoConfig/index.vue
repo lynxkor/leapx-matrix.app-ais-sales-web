@@ -257,7 +257,7 @@ export default {
       }
       exportTable({
         businessType: '交付信息配置',
-        dataFetchPath: 'vehretail/web/basicConfig/deliveryInfoConfig/page',
+        dataFetchPath: 'vr/web/delivery/deliveryInfoConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

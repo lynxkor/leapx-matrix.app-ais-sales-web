@@ -500,7 +500,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '订单锁车解绑申请记录管理',
+      pageTitle: '锁车解绑申请',
       pageType: 'edit',
       title: '申请单号：' + form.unlockApplyCode,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
