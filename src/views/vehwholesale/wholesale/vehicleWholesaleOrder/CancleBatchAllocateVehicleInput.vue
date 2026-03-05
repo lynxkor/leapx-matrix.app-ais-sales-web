@@ -5,7 +5,7 @@
           <el-form-item label="取消配车类型：" prop="passOrReject">
             <fetch-select
               :request="fetchOptions"
-              enumCode="vw_wholesale_order_cancel_settle_type"
+              enumCode="vw_wholesale_order_cancel_allocate_vehicle_type"
               v-model="Selectform.cancelAllocateVehicleType"
               placeholder="请选择"
               clearable
