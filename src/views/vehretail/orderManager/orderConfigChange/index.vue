@@ -85,7 +85,7 @@
             @change="modelAfterListChange"
           />
         </el-form-item>
-        <el-form-item label="修改后前年款名称">
+        <el-form-item label="修改后年款名称">
           <fetch-select
             :options="yearModelAfterList"
             v-model="form.yearTypeIdAfter"
