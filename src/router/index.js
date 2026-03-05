@@ -2310,6 +2310,24 @@ const routes = [
         name: '交车确认项配置管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehwholesale/wholesale/vehicleWholesaleOrderRecord',
+      name: 'vehicleWholesaleOrderRecord',
+      component: () => import('@/views/vehwholesale/wholesale/vehicleWholesaleOrderRecord/index.vue'),
+
+      meta: {
+        name: '整车批售-批售管理-批售配车结算记录管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/wholesale/vehiclewholesaleorderrecord/edit',
+      name: 'vehicleWholesaleOrderRecordEdit',
+      component: () => import('@/views/vehwholesale/wholesale/vehicleWholesaleOrderRecord/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售管理-批售配车结算记录管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];

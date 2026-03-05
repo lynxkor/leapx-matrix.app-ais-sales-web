@@ -160,7 +160,7 @@ export default {
           { props: 'certificateShippingWayLabel', label: '合格证发运方式', visible: true, width: 150 },
           { props: 'enableBankDirectConnectionLabel', label: '是否开启银企直连', visible: true, width: 180 },
           { props: 'rebateUsageQuota', label: '开启返利使用额度', visible: true, width: 180 },
-          { props: 'createPurchaseRecordLabel', label: '是否是否生成采购记录', visible: true, width: 180 },
+          { props: 'createPurchaseRecordLabel', label: '是否生成采购记录', visible: true, width: 180 },
           { props: 'statusLabel', label: '状态', visible: true, width: 100 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 120 },

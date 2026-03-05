@@ -65,7 +65,7 @@
                 </el-form-item>
                  <el-form-item label="推荐额度(万元)：" prop="recAmount">
                   <el-input-number
-                    placeholder="请输入荐额度"
+                    placeholder="请输入推荐额度"
                     v-model="form.recAmount"
                     :precision="2"
                     :step="0.01"
@@ -83,7 +83,7 @@
                 </el-form-item>
                 <el-form-item label="保证金比例%：" prop="depositRatio">
                   <el-input-number
-                    placeholder="请输入首保证金比例比例"
+                    placeholder="请输入保证金比例"
                     v-model="form.depositRatio"
                     :precision="2"
                     :step="0.01"
