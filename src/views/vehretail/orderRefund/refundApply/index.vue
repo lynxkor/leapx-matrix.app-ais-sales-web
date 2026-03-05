@@ -23,6 +23,13 @@
           filterable
         />
       </el-form-item>
+      <el-form-item label="退订原因分类">
+        <fetch-select
+          v-bind="selectCategoryOptions"
+          :remote-method="changeCategorySearch"
+          v-model="form.cateCode"
+        />
+      </el-form-item>
       <el-form-item label="商城订单编号">
         <tag-input v-model="form.mallOrderCodeList" placeholder="请输入" />
       </el-form-item>
@@ -30,12 +37,11 @@
         <el-form-item label="零售订单号">
           <tag-input v-model="form.retailOrderCodeList" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="退订原因分类">
-          <fetch-select
-            v-bind="selectCategoryOptions"
-            :remote-method="changeCategorySearch"
-            v-model="form.cateCode"
-          />
+        <el-form-item label="购车人手机号">
+          <tag-input v-model="form.buyerPhone" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="基础车型">
+          <tag-input v-model="form.modelName" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="申请时间">
           <el-date-picker
@@ -58,8 +64,16 @@
         :loading="loading"
         @submit="onSubmit"
         @reset="onReset"
-      />
+      />R
     </el-form>
+    <div class="ais-active">
+      <el-tabs v-model="refundStatusTab" @tab-click="handleRefundStatusClick">
+        <el-tab-pane label="全部申请" name="0" status="0" />
+        <el-tab-pane label="待初审" name="1020" status="1020" />
+        <el-tab-pane label="待审核" name="1025" status="1025"/>
+        <el-tab-pane label="待终审" name="1027" status="1027"/>
+      </el-tabs>
+    </div>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
@@ -121,7 +135,7 @@ const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   createTime: '',
   refundCode: '',
-  refundStatus: '',
+  refundStatus: null,
   retailOrderCode: '',
   mallOrderCode: '',
   cateCode: '',
@@ -162,6 +176,7 @@ export default {
       form: {
         ...defaultForm
       },
+      refundStatusTab: '0',
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
@@ -265,6 +280,10 @@ export default {
     this.getData();
   },
   methods: {
+    handleRefundStatusClick (item) {
+      this.refundStatusTab = item.name;
+      this.getData();
+    },
     // 排序
     handleSortChange (value) {
       this.sortColumns = (value || []).map(item => {
@@ -335,7 +354,7 @@ export default {
     getData () {
       this.loading = true;
       this.selectionList = [];
-
+      this.form.refundStatus = this.refundStatusTab === '0' ? null : this.refundStatusTab;
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
           console.log(res);

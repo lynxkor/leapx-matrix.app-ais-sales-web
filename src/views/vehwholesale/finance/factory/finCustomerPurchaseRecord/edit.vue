@@ -14,7 +14,7 @@
         :showEditBtn="false"
       >
         <template #status>
-          <span class="status primary">{{ form.code }}</span>
+          <span>{{ form.code }}</span>
         </template>
         <!-- <template #extraButtons>
           <el-button size="small">按钮1</el-button>
