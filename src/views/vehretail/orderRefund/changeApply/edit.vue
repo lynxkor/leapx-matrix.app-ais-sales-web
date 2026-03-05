@@ -306,7 +306,15 @@
                   {{ form.originalSaleDealerCode }}
                 </el-form-item>
                 <el-form-item label="原销售门店名称：" prop="originalSaleDealerName">
-                  {{ form.originalSaleDealerName }}
+                  <el-button
+                    class="link"
+                    @click="navigateToRoute({
+                      path: '/partner/channelManagement/shopBasicsMessage',
+                      query: {
+                        dealerCode: form.originalSaleDealerCode,
+                      },
+                    })"
+                    type="text">{{form.originalSaleDealerName}}</el-button>
                 </el-form-item>
                 <el-form-item label="原整车订单状态：" prop="originalOrderStatus">
                   {{ form.originalOrderStatusLabel }}
@@ -318,7 +326,15 @@
                   {{ form.saleDealerCode }}
                 </el-form-item>
                 <el-form-item label="销售门店名称：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-button
+                    class="link"
+                    @click="navigateToRoute({
+                      path: '/partner/channelManagement/shopBasicsMessage',
+                      query: {
+                        dealerCode: form.saleDealerCode,
+                      },
+                    })"
+                    type="text">{{form.saleDealerName}}</el-button>
                 </el-form-item>
                 <el-form-item label="缴定金时间：" prop="paymentTime">
                   {{ form.paymentTime }}
@@ -1161,7 +1177,7 @@ export default {
     },
     // 提交审批结果
     handleAudit (auditForm) {
-      this.$message.info(JSON.stringify(auditForm));
+      // this.$message.info(JSON.stringify(auditForm));
       auditForm.changeApplyId = this.form.id;
       auditForm.changeApplyCode = this.form.changeApplyCode;
       auditForm.auditResult = auditForm.result;
