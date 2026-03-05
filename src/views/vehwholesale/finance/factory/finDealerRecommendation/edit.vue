@@ -288,7 +288,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '账户管理-车厂融资信息-经销商推荐函管理',
+      pageTitle: '经销商推荐函',
       pageType: 'edit',
       title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改

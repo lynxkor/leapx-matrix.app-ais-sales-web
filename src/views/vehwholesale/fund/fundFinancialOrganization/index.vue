@@ -115,7 +115,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '金融机构管理',
+      pageTitle: '金融机构',
       pageType: 'list',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundFinancialOrganization',
@@ -219,7 +219,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '金融机构管理',
+        businessType: '金融机构',
         dataFetchPath: '/vw/web/fund/fundFinancialOrganization/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -227,7 +227,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '金融机构管理.xlsx');
+            await downloadExcel(res.excelUrl, '金融机构.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

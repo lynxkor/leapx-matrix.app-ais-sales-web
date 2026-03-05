@@ -200,7 +200,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '账户管理-车厂融资信息-车辆状态记录管理',
+      pageTitle: '车辆状态记录',
       pageType: 'edit',
       title: '编码：' + form.code,
       // TIPS: 权限前缀 AISVW，根据实际情况修改

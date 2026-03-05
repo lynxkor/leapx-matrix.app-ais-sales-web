@@ -180,7 +180,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-车厂融资信息-经销商推荐函',
+      pageTitle: '经销商推荐函',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-finDealerRecommendation',
@@ -313,7 +313,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '账户管理-车厂融资信息-经销商推荐函管理',
+        businessType: '经销商推荐函',
         dataFetchPath: 'vw/web/finance/factory/finDealerRecommendation/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -321,7 +321,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '经销商推荐函管理.xlsx');
+            await downloadExcel(res.excelUrl, '经销商推荐函.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

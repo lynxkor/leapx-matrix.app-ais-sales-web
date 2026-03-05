@@ -1,5 +1,5 @@
 <template>
-  <edit-page-layout ref="editLayout" title="自有资金赊销额度管理" showPaneFooter>
+  <edit-page-layout ref="editLayout" title="自有资金赊销额度" showPaneFooter>
     <template #left>
       <edit-base-container
         ref="containerRef"
@@ -274,7 +274,7 @@ export default {
     };
 
     return {
-      pageTitle: '自有资金赊销额度管理',
+      pageTitle: '自有资金赊销额度',
       pageType: 'edit',
       moduleKey: 'AISVW-fundOwnCreditSalesLimit',
       loading: false,

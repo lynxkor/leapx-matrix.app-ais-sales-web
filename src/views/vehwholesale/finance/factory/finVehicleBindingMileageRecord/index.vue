@@ -173,7 +173,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-车厂融资信息-车辆绑车及里程记录管理',
+      pageTitle: '车辆绑车及里程记录',
       pageType: 'list',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-finVehicleBindingMileageRecord',
@@ -284,7 +284,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '账户管理-车厂融资信息-车辆绑车及里程记录管理',
+        businessType: '车辆绑车及里程记录',
         dataFetchPath: 'vehwholesale/web/finance/factory/finVehicleBindingMileageRecord/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -292,7 +292,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '账户管理-车厂融资信息-车辆绑车及里程记录管理.xlsx');
+            await downloadExcel(res.excelUrl, '车辆绑车及里程记录.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

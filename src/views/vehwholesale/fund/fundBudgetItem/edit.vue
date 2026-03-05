@@ -1,5 +1,5 @@
 <template>
-  <edit-page-layout ref="editLayout" title="预算科目管理" showPaneFooter>
+  <edit-page-layout ref="editLayout" title="预算科目" showPaneFooter>
     <template #left>
       <edit-base-container
         ref="containerRef"
@@ -159,7 +159,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '预算科目管理',
+      pageTitle: '预算科目',
       pageType: 'edit',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundBudgetItem',

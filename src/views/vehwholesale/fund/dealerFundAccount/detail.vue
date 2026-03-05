@@ -123,7 +123,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-整车资金-整车资金账户管理',
+      pageTitle: '整车资金账户',
       pageType: 'detail',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-account',
@@ -157,7 +157,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['账户管理-整车资金-整车资金账户管理', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车资金账户', '详情']);
     this.getData();
   },
   methods: {
