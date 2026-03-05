@@ -147,7 +147,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '销售目标跟踪管理',
+      pageTitle: '销售目标跟踪',
       pageType: 'detail',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleSaleTargetTracking',
@@ -157,7 +157,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销售目标跟踪管理', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销售目标跟踪', '详情']);
     this.getData();
   },
   methods: {

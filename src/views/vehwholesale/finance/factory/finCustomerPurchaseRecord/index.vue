@@ -182,7 +182,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-车厂融资信息-客户采购记录',
+      pageTitle: '客户采购记录',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-finCustomerPurchaseRecord',
@@ -322,7 +322,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '账户管理-车厂融资信息-客户采购记录',
+        businessType: '客户采购记录',
         dataFetchPath: 'vw/web/finance/factory/finCustomerPurchaseRecord/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),

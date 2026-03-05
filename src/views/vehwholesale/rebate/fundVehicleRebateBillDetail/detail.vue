@@ -132,7 +132,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-整车返利-整车返利核算单明细管理',
+      pageTitle: '整车返利核算单明细',
       pageType: 'detail',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-fundVehicleRebateBillDetail',
@@ -142,7 +142,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['账户管理-整车返利-整车返利核算单明细管理', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车返利核算单明细', '详情']);
     this.getData();
   },
   methods: {

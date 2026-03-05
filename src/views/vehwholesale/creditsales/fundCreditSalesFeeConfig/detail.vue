@@ -100,7 +100,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-赊销管理-赊销资费设置管理',
+      pageTitle: '赊销资费设置',
       pageType: 'detail',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundCreditSalesFeeConfig',
@@ -110,7 +110,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['账户管理-赊销管理-赊销资费设置管理', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['赊销资费设置', '详情']);
     this.getData();
   },
   methods: {

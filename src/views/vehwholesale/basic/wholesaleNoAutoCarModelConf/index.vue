@@ -148,7 +148,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '不自动批售确认车型管理',
+      pageTitle: '不自动批售确认车型',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleNoAutoCarModelConf',
@@ -254,7 +254,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '不自动批售确认车型管理',
+        businessType: '不自动批售确认车型',
         dataFetchPath: '/vw/web/basic/wholesaleNoAutoCarModelConf/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -262,7 +262,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '不自动批售确认车型管理.xlsx');
+            await downloadExcel(res.excelUrl, '不自动批售确认车型.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
