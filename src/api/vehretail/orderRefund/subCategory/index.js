@@ -7,6 +7,14 @@ const prefix = 'vr/web/refund/orderRefundCategoryDetail/';
  * 查询列表
  * @param {Object} data
  */
+export function fetchSubCategoryList (data) {
+  return api.jsonPost(prefix + 'page', data);
+};
+
+/**
+ * 查询列表
+ * @param {Object} data
+ */
 export function getList (data) {
   return api.jsonPost(prefix + 'page', data);
 };

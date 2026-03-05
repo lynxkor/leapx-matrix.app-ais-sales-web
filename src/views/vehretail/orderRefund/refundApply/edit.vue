@@ -251,7 +251,15 @@
                   {{ form.refundCode }}
                 </el-form-item>
                 <el-form-item label="零售订单号：" prop="retailOrderCode">
-                  {{ form.retailOrderCode }}
+                  <el-button
+                    class="link"
+                    @click="navigateToRoute({
+                      path: '/vehretail/orderManager/retailOrderInfo',
+                      query: {
+                        retailOrderCode: form.retailOrderCode,
+                      },
+                    })"
+                    type="text">{{form.retailOrderCode}}</el-button>
                 </el-form-item>
                 <el-form-item label="商城订单编号：" prop="mallOrderCode">
                   {{ form.mallOrderCode }}
@@ -292,17 +300,33 @@
                 <el-form-item label="订单物料码：" prop="materialsCode">
                   {{ form.materialsCode }}
                 </el-form-item>
-                <el-form-item label="车型名称：" prop="modelName">
-                  {{ form.modelName }}
+                <el-form-item label="车型ID：" prop="modelId">
+                  {{ form.modelId }}
                 </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
-                  {{ form.modelName }}
+                  <el-button
+                    class="link"
+                    @click="navigateToRoute({
+                      path: '/partner/businessData/carType',
+                      query: {
+                        modelName: form.modelName,
+                      },
+                    })"
+                    type="text">{{form.modelName}}</el-button>
                 </el-form-item>
                 <el-form-item label="销售门店编码：" prop="originalSaleDealerCode">
                   {{ form.saleDealerCode }}
                 </el-form-item>
                 <el-form-item label="销售门店名称：" prop="originalSaleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-button
+                    class="link"
+                    @click="navigateToRoute({
+                      path: '/partner/channelManagement/shopBasicsMessage',
+                      query: {
+                        saleDealerName: form.saleDealerName,
+                      },
+                    })"
+                    type="text">{{form.saleDealerName}}</el-button>
                 </el-form-item>
                 <el-form-item label="销售门店-省编码：" prop="provinceCode">
                   {{ form.provinceCode }}
@@ -403,7 +427,15 @@
                   {{ form.allocationMaterialCode }}
                 </el-form-item>
                 <el-form-item label="销售门店：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-button
+                    class="link"
+                    @click="navigateToRoute({
+                      path: '/partner/channelManagement/shopBasicsMessage',
+                      query: {
+                        saleDealerName: form.saleDealerName,
+                      },
+                    })"
+                    type="text">{{form.saleDealerName}}</el-button>
                 </el-form-item>
                 <el-form-item label="交付门店名称：" prop="deliveryDealerName">
                   {{ form.deliveryDealerName }}
@@ -427,7 +459,15 @@
                   {{ form.seriesName }}
                 </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
-                  {{ form.modelName }}
+                  <el-button
+                    class="link"
+                    @click="navigateToRoute({
+                      path: '/partner/businessData/carType',
+                      query: {
+                        modelName: form.modelName,
+                      },
+                    })"
+                    type="text">{{form.modelName}}</el-button>
                 </el-form-item>
                 <el-form-item label="物料编码：" prop="materialsCode">
                   {{ form.materialsCode }}
@@ -530,11 +570,6 @@
             <div>
               <el-table :data="form.approveLogList" style="width: 60%" v-show="!(isEditing || !_id)">
                 <el-table-column
-                  prop="creatorName"
-                  label="操作人"
-                  width="180">
-                </el-table-column>
-                <el-table-column
                   prop="createTime"
                   label="操作时间"
                   width="180">
@@ -544,23 +579,22 @@
                   label="申请状态">
                 </el-table-column>
                 <el-table-column
+                  prop="operatorName"
+                  label="操作人"
+                  width="180">
+                </el-table-column>
+                <el-table-column
                   prop="operateExplain"
                   label="审核意见">
                 </el-table-column>
               </el-table>
             </div>
           </section>
-          <audit-dialog
-            ref="auditRefPre"
-            @audit="handlePreAudit"
-          />
-          <audit-dialog
+          <refund-apply-audit-dialog
+            :audit-type="auditType"
+            :main-cate-code="form.cateCode"
             ref="auditRef"
             @audit="handleAudit"
-          />
-          <audit-dialog
-            ref="auditRefFinal"
-            @audit="handleFinalAudit"
           />
         </el-main>
       </edit-base-container>
@@ -574,7 +608,15 @@
 </template>
 
 <script>
-import { addOrUpdate, getDetail, cancel, submit, preApprove, approve, finalApprove } from '@/api/vehretail/orderRefund/refundApply/index';
+import {
+  addOrUpdate,
+  approve,
+  cancel,
+  finalApprove,
+  getDetail,
+  preApprove,
+  submit
+} from '@/api/vehretail/orderRefund/refundApply/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -586,7 +628,7 @@ import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import { getList as retailOrderPage } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import { fetchCategoryList } from '@/api/vehretail/orderRefund/category';
-import auditDialog from '@/libs/components/auditDialog/index.vue';
+import RefundApplyAuditDialog from '@/views/vehretail/orderRefund/refundApply/auditDialog';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -642,11 +684,11 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
+    RefundApplyAuditDialog,
     EditPageLayout,
     EditBaseContainer,
     AisAttachment,
     FetchSelect,
-    auditDialog
   },
   computed: {
     _id () {
@@ -692,6 +734,7 @@ export default {
         remote: true,
         reserveKeyword: true
       },
+      auditType: 'approve',
       pageTitle: '整车零售退订申请单管理',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
@@ -896,44 +939,64 @@ export default {
         type: 'warning'
       }).then(() => {
         // 提交审批接口 判断是否需要初审
-        submit(this.form);
+        submit(this.form).then(res => {
+          // 重新加载详情数据
+          if (this.$refs.containerRef) {
+            this.$refs.containerRef.loadDetail();
+          }
+          // 或者关闭编辑状态
+          this.isEditing = false;
+        });
       }).catch(() => {});
     },
     openPreAuditShow () {
-      this.$refs.auditRefPre.show();
-    },
-    // 提交初审审批结果
-    handlePreAudit (auditForm) {
-      this.$message.info(JSON.stringify(auditForm));
-      auditForm.id = this.form.id;
-      auditForm.refundCode = this.form.refundCode;
-      auditForm.auditResult = auditForm.result;
-      auditForm.auditContent = auditForm.remark;
-      preApprove(auditForm);
+      this.auditType = 'preApprove';
+      this.$refs.auditRef.show();
     },
     openAuditShow () {
+      this.auditType = 'approve';
+      this.$refs.auditRef.show();
+    },
+    openFinalAuditShow () {
+      this.auditType = 'finalApprove';
       this.$refs.auditRef.show();
     },
     // 提交审批结果
     handleAudit (auditForm) {
-      this.$message.info(JSON.stringify(auditForm));
+      // this.$message.info(JSON.stringify(auditForm));
       auditForm.id = this.form.id;
       auditForm.refundCode = this.form.refundCode;
       auditForm.auditResult = auditForm.result;
-      auditForm.auditContent = auditForm.remark;
-      approve(auditForm);
-    },
-    openFinalAuditShow () {
-      this.$refs.auditRefFinal.show();
-    },
-    // 提交审批结果
-    handleFinalAudit (auditForm) {
-      this.$message.info(JSON.stringify(auditForm));
-      auditForm.id = this.form.id;
-      auditForm.refundCode = this.form.refundCode;
-      auditForm.auditResult = auditForm.result;
-      auditForm.auditContent = auditForm.remark;
-      finalApprove(auditForm);
+      auditForm.auditContent = auditForm.content;
+      auditForm.auditRemark = auditForm.remark;
+      if (this.auditType === 'approve') {
+        approve(auditForm).then(res => {
+          // 重新加载详情数据
+          if (this.$refs.containerRef) {
+            this.$refs.containerRef.loadDetail();
+          }
+          // 或者关闭编辑状态
+          this.isEditing = false;
+        });
+      } else if (this.auditType === 'preApprove') {
+        preApprove(auditForm).then(res => {
+          // 重新加载详情数据
+          if (this.$refs.containerRef) {
+            this.$refs.containerRef.loadDetail();
+          }
+          // 或者关闭编辑状态
+          this.isEditing = false;
+        });
+      } else if (this.auditType === 'finalApprove') {
+        finalApprove(auditForm).then(res => {
+          // 重新加载详情数据
+          if (this.$refs.containerRef) {
+            this.$refs.containerRef.loadDetail();
+          }
+          // 或者关闭编辑状态
+          this.isEditing = false;
+        });
+      }
     }
   }
 };
