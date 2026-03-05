@@ -252,7 +252,7 @@ export default {
           { props: 'creditSalesFee', label: '赊销费用', visible: true, width: 150 },
           { props: 'effectiveStartTime', label: '有效开始日期', visible: true, width: 200 },
           { props: 'effectiveEndTime', label: '有效结束日期', visible: true, width: 200 },
-          { props: 'remark', label: '备注', visible: true, width: 300 },
+          { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 100 },
           // { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },

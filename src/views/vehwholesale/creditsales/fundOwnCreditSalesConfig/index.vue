@@ -251,7 +251,7 @@ export default {
           { props: 'reviewName', label: '复核人', visible: true, width: 200 },
           { props: 'reviewTime', label: '复核时间', visible: true, width: 200 },
           { props: 'reviewOpinion', label: '复核意见', visible: true, width: 200 },
-          { props: 'remark', label: '备注', visible: true, width: 200 },
+          { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           // { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           // { props: 'auditStatusLabel', label: '配置状态', visible: true, width: 200 },
