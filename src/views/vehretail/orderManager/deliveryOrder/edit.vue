@@ -16,17 +16,15 @@
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <!-- <el-button size="small">按钮 1</el-button>
-          <el-button size="small">按钮 2</el-button> -->
         </template>
         <el-main>
           <!-- 订单归属 -->
-          <section class="common-section">
-            <div class="common-section-header">
+          <section class="common-section" v-show="isEditing || !_id">
+            <div class="common-section-header" data-section="orderBelonging">
               <h2>订单归属</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" :label-width="labelWidth" class="form-edit">
                 <el-form-item label="订单销售门店：" prop="salesStoreId">
                   <fetch-select
                     :request="fetchOptions"
@@ -101,39 +99,23 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="订单销售门店：">
-                  {{ form.salesStoreName }}
-                </el-form-item>
-                <el-form-item label="订单销售顾问：">
-                  {{ form.salesAdvisorName }}
-                </el-form-item>
-                <el-form-item label="订单交付门店：">
-                  {{ form.deliveryStoreName }}
-                </el-form-item>
-                <el-form-item label="订单交付顾问：">
-                  {{ form.deliveryAdvisorName }}
-                </el-form-item>
-                <el-form-item label="交付衍生工程师：">
-                  {{ form.deliveryDerivativeUserName }}
-                </el-form-item>
-                <el-form-item label="现场交付工程师：">
-                  {{ form.onSiteDeliveryUserName }}
-                </el-form-item>
-                <el-form-item label="专属服务门店：">
-                  {{ form.exclusiveServiceStoreName }}
-                </el-form-item>
-              </el-form>
             </div>
           </section>
-
+          <generic-detail-display
+            v-show="!(isEditing || !_id)"
+            title="订单归属"
+            :form-data="form"
+            :fields="orderBelongingFields"
+            :label-width="labelWidth"
+            section-key="orderBelonging"
+          />
           <!-- 交付信息 -->
-          <section class="common-section">
-            <div class="common-section-header">
+          <section class="common-section" v-show="isEditing || !_id">
+            <div class="common-section-header" data-section="deliveryInfo">
               <h2>交付信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" :label-width="labelWidth" class="form-edit">
                 <el-form-item label="门店应收金额：" prop="receivableAmount">
                   <el-input
                     placeholder="请输入"
@@ -184,8 +166,9 @@
                 </el-form-item>
                 <el-form-item label="保险方案：" prop="insurancePlan">
                   <fetch-select
-                    :request="fetchOptions"
-                    enumCode="insurance_plan_enum"
+                    :options="insurancePlanOptions"
+                    :valueKey="'value'"
+                    :labelKey="'label'"
                     v-model="form.insurancePlan"
                     placeholder="请选择"
                     clearable
@@ -194,8 +177,9 @@
                 </el-form-item>
                 <el-form-item label="保险办理进度：" prop="insuranceProgress">
                   <fetch-select
-                    :request="fetchOptions"
-                    enumCode="insurance_progress_enum"
+                    :options="insuranceProgressOptions"
+                    :valueKey="'value'"
+                    :labelKey="'label'"
                     v-model="form.insuranceProgress"
                     placeholder="请选择"
                     clearable
@@ -204,8 +188,9 @@
                 </el-form-item>
                 <el-form-item label="金融方案：" prop="financePlan">
                   <fetch-select
-                    :request="fetchOptions"
-                    enumCode="finance_plan_enum"
+                    :options="financePlanOptions"
+                    :valueKey="'value'"
+                    :labelKey="'label'"
                     v-model="form.financePlan"
                     placeholder="请选择"
                     clearable
@@ -214,8 +199,9 @@
                 </el-form-item>
                 <el-form-item label="金融按揭进度：" prop="financeProgress">
                   <fetch-select
-                    :request="fetchOptions"
-                    enumCode="finance_progress_enum"
+                    :options="financeProgressOptions"
+                    :valueKey="'value'"
+                    :labelKey="'label'"
                     v-model="form.financeProgress"
                     placeholder="请选择"
                     clearable
@@ -258,346 +244,47 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="门店应收金额：">
-                  {{ form.receivableAmount }}
-                </el-form-item>
-                <el-form-item label="门店优惠金额：">
-                  {{ form.discountAmount }}
-                </el-form-item>
-                <el-form-item label="机动车发票其他费用：">
-                  {{ form.otherAmount }}
-                </el-form-item>
-                <el-form-item label="权益抵扣总额：">
-                  {{ form.equityDeductionTotalAmount }}
-                </el-form-item>
-                <el-form-item label="开票金额：">
-                  {{ form.invoiceAmount }}
-                </el-form-item>
-                <el-form-item label="剩余应收款：">
-                  {{ form.remainingReceivableAmount }}
-                </el-form-item>
-                <el-form-item label="保险方案：">
-                  {{ form.insurancePlan }}
-                </el-form-item>
-                <el-form-item label="保险办理进度：">
-                  {{ form.insuranceProgress }}
-                </el-form-item>
-                <el-form-item label="金融方案：">
-                  {{ form.financePlan }}
-                </el-form-item>
-                <el-form-item label="金融按揭进度：">
-                  {{ form.financeProgress }}
-                </el-form-item>
-                <el-form-item label="交车时里程：">
-                  {{ form.deliveryMileage }}
-                </el-form-item>
-                <el-form-item label="交车时电量：">
-                  {{ form.deliveryBatteryPower }}
-                </el-form-item>
-                <el-form-item label="交车车机版本号：">
-                  {{ form.deliveryMachineVersion }}
-                </el-form-item>
-                <el-form-item label="交车版本升级时间：">
-                  {{ form.deliveryVersionUpgradeTime }}
-                </el-form-item>
-              </el-form>
             </div>
           </section>
-
+          <generic-detail-display
+            v-show="!(isEditing || !_id)"
+            title="交付信息"
+            :form-data="form"
+            :fields="deliveryInfoFields"
+            :label-width="labelWidth"
+            section-key="deliveryInfo"
+          />
           <!-- 基础信息 -->
-          <section class="common-section">
-            <div class="common-section-header">
-              <h2>基础信息</h2>
-            </div>
-            <div class="common-section-body">
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="交车单编号：" prop="deliveryOrderCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.deliveryOrderCode"
-                    clearable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="VIN 码：" prop="vin">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.vin"
-                    clearable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="整车物料：" prop="vehicleMaterial">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.vehicleMaterial"
-                    clearable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="整车订单：" prop="retailOrderCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.retailOrderCode"
-                    clearable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="交车时间：" prop="deliveryTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.deliveryTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="交车状态：" prop="status">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="delivery_order_status_enum"
-                    v-model="form.status"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.createTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    :disabled="true"
-                  />
-                </el-form-item>
-              </el-form>
-              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="交车单编号：">
-                  {{ form.deliveryOrderCode }}
-                </el-form-item>
-                <el-form-item label="VIN 码：">
-                  {{ form.vin }}
-                </el-form-item>
-                <el-form-item label="整车物料：">
-                  {{ form.vehicleMaterial }}
-                </el-form-item>
-                <el-form-item label="整车订单：">
-                  {{ form.retailOrderCode }}
-                </el-form-item>
-                <el-form-item label="交车时间：">
-                  {{ form.deliveryTime }}
-                </el-form-item>
-                <el-form-item label="交车状态：">
-                  {{ form.statusDesc }}
-                </el-form-item>
-                <el-form-item label="创建时间：">
-                  {{ form.createTime }}
-                </el-form-item>
-              </el-form>
-            </div>
-          </section>
-
+          <generic-detail-display title="基础信息" :form-data="form" :fields="basicInfoFields" :label-width="labelWidth" section-key="basicInfo" />
           <!-- 预约信息 -->
-          <section class="common-section">
-            <div class="common-section-header">
-              <h2>预约信息</h2>
-            </div>
-            <div class="common-section-body">
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="预约提车时间：" prop="appointmentTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.appointmentTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="是否延期预约：" prop="appointmentDelayStatus">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="yes_no_enum"
-                    v-model="form.appointmentDelayStatus"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="预约变更次数：" prop="appointmentChangeCount">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.appointmentChangeCount"
-                    clearable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="预约操作时间：" prop="appointmentOperationTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.appointmentOperationTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="预约备注：" prop="appointmentRemark">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.appointmentRemark"
-                    clearable
-                    :disabled="true"
-                    type="textarea"
-                    :rows="3"
-                  />
-                </el-form-item>
-                <el-form-item label="预约超时原因：" prop="appointmentTimeoutReason">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="timeout_reason_enum"
-                    v-model="form.appointmentTimeoutReason"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                    :disabled="true"
-                  />
-                </el-form-item>
-              </el-form>
-              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="预约提车时间：">
-                  {{ form.appointmentTime }}
-                </el-form-item>
-                <el-form-item label="是否延期预约：">
-                  {{ form.appointmentDelayStatus === 1 ? '是' : '否' }}
-                </el-form-item>
-                <el-form-item label="预约变更次数：">
-                  {{ form.appointmentChangeCount }}
-                </el-form-item>
-                <el-form-item label="预约操作时间：">
-                  {{ form.appointmentOperationTime }}
-                </el-form-item>
-                <el-form-item label="预约备注：">
-                  {{ form.appointmentRemark }}
-                </el-form-item>
-                <el-form-item label="预约超时原因：">
-                  {{ form.appointmentTimeoutReason }}
-                </el-form-item>
-              </el-form>
-            </div>
-          </section>
-
+          <generic-detail-display title="预约信息" :form-data="form" :fields="appointmentFields" :label-width="labelWidth" section-key="appointment" />
           <!-- 整车订单信息 -->
-          <section class="common-section">
-            <div class="common-section-header">
-              <h2>整车订单信息</h2>
-            </div>
-            <div class="common-section-body">
-              <el-form :inline="true" class="form-detail">
-                <el-form-item label="整车订单状态：">
-                  {{ form.retailOrderStatus }}
-                </el-form-item>
-                <el-form-item label="商城下单时间：">
-                  {{ form.orderCreateTime }}
-                </el-form-item>
-                <el-form-item label="商城订单编号：">
-                  {{ form.mallOrderCode }}
-                </el-form-item>
-                <el-form-item label="订单来源：">
-                  {{ form.orderSource }}
-                </el-form-item>
-                <el-form-item label="用户 ID：">
-                  {{ form.userId }}
-                </el-form-item>
-                <el-form-item label="购车人姓名：">
-                  {{ form.buyerName }}
-                </el-form-item>
-                <el-form-item label="购车人手机：">
-                  {{ form.buyerMobile }}
-                </el-form-item>
-                <el-form-item label="证件类型：">
-                  {{ form.idType }}
-                </el-form-item>
-                <el-form-item label="证件号码：">
-                  {{ form.idNumber }}
-                </el-form-item>
-                <el-form-item label="代办联系人：">
-                  {{ form.agentContact }}
-                </el-form-item>
-                <el-form-item label="整车指导价：">
-                  {{ form.vehicleGuidePrice }}
-                </el-form-item>
-                <el-form-item label="定金金额：">
-                  {{ form.depositAmount }}
-                </el-form-item>
-                <el-form-item label="订单物料码：">
-                  {{ form.orderMaterialCode }}
-                </el-form-item>
-                <el-form-item label="配车物料码：">
-                  {{ form.vehicleMaterialCode }}
-                </el-form-item>
-                <el-form-item label="销售门店：">
-                  {{ form.salesStoreName }}
-                </el-form-item>
-                <el-form-item label="交付门店：">
-                  {{ form.deliveryStoreName }}
-                </el-form-item>
-              </el-form>
-            </div>
-          </section>
-
+          <generic-detail-display title="整车订单信息" :form-data="form" :fields="retailOrderFields" :label-width="labelWidth" section-key="retailOrder" />
           <!-- 实名认证信息 -->
-          <section class="common-section">
-            <div class="common-section-header">
-              <h2>实名认证信息</h2>
-            </div>
-            <div class="common-section-body">
-              <el-form :inline="true" class="form-detail">
-                <el-form-item label="实名认证来源：">
-                  {{ form.realNameAuthSource === 1 ? '零小跑实名' : '零跑 APP 实名' }}
-                </el-form-item>
-                <el-form-item label="实名认证时间：">
-                  {{ form.realNameAuthTime }}
-                </el-form-item>
-              </el-form>
-            </div>
-          </section>
-
+          <generic-detail-display title="实名认证信息" :form-data="form" :fields="realNameAuthFields" :label-width="labelWidth" section-key="realNameAuth" />
           <!-- 交车确认单 -->
-          <section class="common-section">
-            <div class="common-section-header">
-              <h2>交车确认单</h2>
-            </div>
-            <div class="common-section-body">
-              <el-form :inline="true" class="form-detail">
-                <el-form-item label="签署数据来源：">
-                  {{ form.signatureDataSourceDesc }}
-                </el-form-item>
-                <el-form-item label="签署时间：">
-                  {{ form.signatureTime }}
-                </el-form-item>
-                <el-form-item label="购车人手机是否注册：">
-                  {{ form.buyerMobileRegistered === 1 ? '是' : '否' }}
-                </el-form-item>
-                <el-form-item label="交车确认单状态：">
-                  {{ form.deliveryConfirmStatusDesc }}
-                </el-form-item>
-                <el-form-item label="城市交付顺序：">
-                  {{ form.cityDeliveryOrder }}
-                </el-form-item>
-              </el-form>
-            </div>
-          </section>
+          <generic-detail-display title="交车确认单" :form-data="form" :fields="deliveryConfirmFields" :label-width="labelWidth" section-key="deliveryConfirm" />
+          <!-- 收款记录&权益项抵扣记录 -->
+          <component-table
+            :table-config="{ title: '收款记录&权益项抵扣记录' }"
+            :columns="paymentRecordColumns" section-key="paymentRecords"
+            :tableDataExternal="form.paymentRecords"
+            :showPagination="false"
+          />
+          <!-- 预约记录 -->
+          <component-table
+            :table-config="{ title: '预约记录' }"
+            :columns="appointmentRecordColumns" section-key="appointmentRecords"
+            :tableDataExternal="form.appointmentRecord"
+            :showPagination="false"
+          />
+          <!-- 附件清单 -->
+          <component-table
+            :table-config="{ title: '附件清单' }"
+            :columns="attachmentColumns" section-key="attachments"
+            :tableDataExternal="form.attachment"
+            :showPagination="false"
+          />
         </el-main>
       </edit-base-container>
     </template>
@@ -619,6 +306,8 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import GenericDetailDisplay from '@/views/vehretail/orderManager/retailOrderInfo/components/GenericDetailDisplay';
+import ComponentTable from '@/views/vehretail/orderManager/retailOrderInfo/components/ComponentTable';
 
 const defaultForm = {
   // 订单归属
@@ -706,6 +395,8 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
+    ComponentTable,
+    GenericDetailDisplay,
     EditPageLayout,
     EditBaseContainer,
     FetchSelect
@@ -749,10 +440,149 @@ export default {
         financePlan: [
           { required: true, message: '请选择金融方案', trigger: 'change' }
         ]
-      }
+      },
+      labelWidth: '150px',
+      // 保险方案枚举
+      insurancePlanOptions: [
+        { value: 1010, label: '自行投保' },
+        { value: 1020, label: '店内投保' }
+      ],
+      // 保险办理进度枚举
+      insuranceProgressOptions: [
+        { value: 1010, label: '保险沟通' },
+        { value: 1020, label: '保险确定' }
+      ],
+      // 金融方案枚举
+      financePlanOptions: [
+        { value: 1010, label: '全款购车' },
+        { value: 1020, label: '分期购车（非厂端金融）' },
+        { value: 1030, label: '分期购车（厂端金融）' }
+      ],
+      // 金融按揭进度枚举
+      financeProgressOptions: [
+        { value: 1010, label: '申请中' },
+        { value: 1020, label: '面签中' },
+        { value: 1030, label: '已放款' },
+        { value: 1040, label: '已办结' }
+      ],
+      orderBelongingFields: [
+        { key: 'salesStoreName', label: '订单销售门店' },
+        { key: 'salesAdvisorName', label: '订单销售顾问' },
+        { key: 'deliveryStoreName', label: '订单交付门店' },
+        { key: 'deliveryAdvisorName', label: '订单交付顾问' },
+        { key: 'deliveryDerivativeUserName', label: '交付衍生工程师' },
+        { key: 'onSiteDeliveryUserName', label: '现场交付工程师' },
+        { key: 'exclusiveServiceStoreName', label: '专属服务门店' }
+      ],
+      deliveryInfoFields: [
+        { key: 'receivableAmount', label: '门店应收金额' },
+        { key: 'discountAmount', label: '门店优惠金额' },
+        { key: 'otherAmount', label: '机动车发票其他费用' },
+        { key: 'equityDeductionTotalAmount', label: '权益抵扣总额' },
+        { key: 'invoiceAmount', label: '开票金额' },
+        { key: 'remainingReceivableAmount', label: '剩余应收款' },
+        { key: 'insurancePlan', label: '保险方案' },
+        { key: 'insuranceProgress', label: '保险办理进度' },
+        { key: 'financePlan', label: '金融方案' },
+        { key: 'financeProgress', label: '金融按揭进度' },
+        { key: 'deliveryMileage', label: '交车时里程' },
+        { key: 'deliveryBatteryPower', label: '交车时电量' },
+        { key: 'deliveryMachineVersion', label: '交车车机版本号' },
+        { key: 'deliveryVersionUpgradeTime', label: '交车版本升级时间' }
+      ],
+      retailOrderFields: [
+        { key: 'retailOrderStatus', label: '整车订单状态' },
+        { key: 'orderCreateTime', label: '商城下单时间' },
+        { key: 'mallOrderCode', label: '商城订单编号' },
+        { key: 'orderSource', label: '订单来源' },
+        { key: 'userId', label: '用户 ID' },
+        { key: 'buyerName', label: '购车人姓名' },
+        { key: 'buyerMobile', label: '购车人手机' },
+        { key: 'idType', label: '证件类型' },
+        { key: 'idNumber', label: '证件号码' },
+        { key: 'agentContact', label: '代办联系人' },
+        { key: 'vehicleGuidePrice', label: '整车指导价' },
+        { key: 'depositAmount', label: '定金金额' },
+        { key: 'orderMaterialCode', label: '订单物料码' },
+        { key: 'vehicleMaterialCode', label: '配车物料码' },
+        { key: 'salesStoreName', label: '销售门店' },
+        { key: 'deliveryStoreName', label: '交付门店' }
+      ],
+      realNameAuthFields: [
+        { key: 'realNameAuthSourceLabel', label: '实名认证来源' },
+        { key: 'realNameAuthTime', label: '实名认证时间' }
+      ],
+      deliveryConfirmFields: [
+        { key: 'signatureDataSourceDesc', label: '签署数据来源' },
+        { key: 'signatureTime', label: '签署时间' },
+        { key: 'buyerMobileRegisteredLabel', label: '购车人手机是否注册' },
+        { key: 'deliveryConfirmStatusDesc', label: '交车确认单状态' },
+        { key: 'cityDeliveryOrder', label: '城市交付顺序' }
+      ],
+      basicInfoFields: [
+        { key: 'deliveryOrderCode', label: '交车单编号' },
+        { key: 'vin', label: 'VIN 码' },
+        { key: 'vehicleMaterial', label: '整车物料' },
+        { key: 'retailOrderCode', label: '整车订单' },
+        { key: 'deliveryTime', label: '交车时间' },
+        { key: 'statusDesc', label: '交车状态' },
+        { key: 'createTime', label: '创建时间' }
+      ],
+      appointmentFields: [
+        { key: 'appointmentTime', label: '预约提车时间' },
+        { key: 'appointmentDelayStatusLabel', label: '是否延期预约' },
+        { key: 'appointmentChangeCount', label: '预约变更次数' },
+        { key: 'appointmentOperationTime', label: '预约操作时间' },
+        { key: 'appointmentRemark', label: '预约备注' },
+        { key: 'appointmentTimeoutReason', label: '预约超时原因' }
+      ],
+      // 收款记录&权益项抵扣记录列配置
+      paymentRecordColumns: [
+        { field: 'paymentCode', title: '收款编号', width: 150 },
+        { field: 'paymentTypeLabel', title: '收款类型', width: 120 },
+        { field: 'paymentAmount', title: '付款金额', width: 120 },
+        { field: 'paymentTime', title: '付款时间', width: 180 },
+        { field: 'paymentMethodLabel', title: '支付方式', width: 120 },
+        { field: 'payer', title: '支付人', width: 120 },
+        { field: 'mallSerialNumber', title: '商城流水号', width: 150 },
+        { field: 'rightsTypeLabel', title: '权益类型', width: 120 },
+        { field: 'rightsItemCode', title: '权益项编号', width: 150 },
+        { field: 'rightsGrantCode', title: '权益核销券码', width: 150 },
+        { field: 'remark', title: '备注', width: 200 },
+        { field: 'createTime', title: '创建时间', width: 180 }
+      ],
+      // 预约记录列配置
+      appointmentRecordColumns: [
+        { field: 'appointmentOperationTime', title: '预约操作时间', width: 200 },
+        { field: 'appointmentOperator', title: '预约操作人', width: 120 },
+        { field: 'appointmentTime', title: '预约时间', width: 200 },
+        { field: 'timeoutReasonLabel', title: '超时原因', width: 360 },
+        { field: 'changeTimeReasonLabel', title: '更改时间原因', width: 360 },
+        { field: 'appointmentRemark', title: '预约备注', width: 360 }
+      ],
+      // 附件清单列配置
+      attachmentColumns: [
+        { field: 'attachmentName', title: '附件名称', width: 360 },
+        { field: 'attachmentSuffix', title: '附件后缀', width: 160 },
+        { field: 'attachmentSizeKB', title: '附件大小(KB)', width: 180 },
+        { field: 'documentTypeLabel', title: '证件类型', width: 180 },
+        { field: 'ocrRecognitionStatus', title: 'OCR识别状态', width: 180 },
+        { field: 'createTime', title: '创建时间', width: 240 }
+      ]
     };
   },
   mounted () {
+    this.$nextTick(() => {
+      // 需要默认隐藏的 section 标识列表
+      const sectionsToHide = ['basicInfo', 'appointment', 'retailOrder', 'realNameAuth', 'deliveryConfirm', 'paymentRecords', 'appointmentRecords', 'attachments'];
+      sectionsToHide.forEach(sectionKey => {
+        const header = document.querySelector(`.common-section-header[data-section="${sectionKey}"]`);
+        if (header && !header.classList.contains('fold')) {
+          // 模拟点击，触发收起
+          this.addHeaderActions({ target: header.querySelector('h2') });
+        }
+      });
+    });
   },
   methods: {
     detailRequest () {

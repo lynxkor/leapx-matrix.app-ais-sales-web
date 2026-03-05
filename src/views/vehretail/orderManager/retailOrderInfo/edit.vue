@@ -54,7 +54,7 @@
             id="app-order-status" class="common-section"
             title="APP订单状态"
             :current="form.leapAppOrderStatus"/>
-          <section id="basic-info" class="common-section" v-id="isEditing || !_id">
+          <section id="basic-info" class="common-section" v-if="isEditing || !_id">
             <div class="common-section-header">
               <h2>基础信息</h2>
             </div>

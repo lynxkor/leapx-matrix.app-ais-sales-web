@@ -36,10 +36,10 @@
       </el-form-item>
       <template v-if="show">
         <el-form-item label="车型名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.vehicleModelName"
-            clearable
+          <fetch-select
+            :remote-method="remoteMethods.model"
+            v-model="form.modelId"
+            v-bind="selectOptions"
           />
         </el-form-item>
         <el-form-item label="订单交付顾问">
@@ -50,17 +50,29 @@
           />
         </el-form-item>
         <el-form-item label="订单销售门店">
-          <el-input
-            placeholder="请输入"
-            v-model="form.salesStoreName"
+          <fetch-select
+            filterable
             clearable
+            multiple
+            remote
+            collapseTags
+            v-model="form.saleDealerCode"
+            :remote-method="remoteMethods.getSaleDealer"
+            value-key="storeCode"
+            label-key="storeName"
           />
         </el-form-item>
         <el-form-item label="订单交付门店">
-          <el-input
-            placeholder="请输入"
-            v-model="form.deliveryStoreName"
+          <fetch-select
+            filterable
             clearable
+            multiple
+            remote
+            collapseTags
+            v-model="form.exclusiveServiceStoreCode"
+            :remote-method="remoteMethods.getServiceDealer"
+            value-key="storeCode"
+            label-key="storeName"
           />
         </el-form-item>
         <el-form-item label="购车人信息">
@@ -106,7 +118,6 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canAssign" size="small" type="primary" @click="handleAssign">分派</el-button>
     </div>
@@ -139,7 +150,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem } from '@/api/vehretail/orderManager/deliveryOrder/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -190,6 +201,19 @@ export default {
       loading: false,
       exportLoading: false,
       clickItemId: '',
+      // 远程搜索方法
+      remoteMethods: {
+        // 初始方法
+        model: async (query) => {
+          return await listVehicleModel({ modelNameLike: query, status: 1 });
+        },
+        getSaleDealer: async (query) => {
+          return await listOrgStoreInfo({ modelNameLike: query, isSales: true });
+        },
+        getServiceDealer: async (query) => {
+          return await listOrgStoreInfo({ modelNameLike: query, isSupportDeliver: true });
+        }
+      },
       optionObj: {
         id: 'deliveryOrderTable',
         dataList: [],
@@ -209,8 +233,7 @@ export default {
                 this.$router.push({
                   path: '/vehretail/orderManager/deliveryOrder/edit',
                   query: {
-                    id: row.id,
-                    isEditing: true
+                    id: row.id
                   }
                 });
               },
@@ -303,11 +326,6 @@ export default {
     },
     handleListSelect (row) {
       this.clickItemId = row.id;
-    },
-    handleAdd () {
-      this.$router.push({
-        path: '/vehretail/orderManager/deliveryOrder/edit'
-      });
     },
     // 分派按钮
     handleAssign () {
