@@ -2328,6 +2328,24 @@ const routes = [
         name: '整车批售-批售管理-批售配车结算记录管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehretail/basicConfig/deliveryScheduleTimeConfig',
+      name: 'deliveryScheduleTimeConfig',
+      component: () => import('@/views/vehretail/basicConfig/deliveryScheduleTimeConfig/index.vue'),
+
+      meta: {
+        name: '交付排程时间段配置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicconfig/deliveryscheduletimeconfig/edit',
+      name: 'deliveryScheduleTimeConfigEdit',
+      component: () => import('@/views/vehretail/basicConfig/deliveryScheduleTimeConfig/edit.vue'),
+
+      meta: {
+        name: '交付排程时间段配置管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
