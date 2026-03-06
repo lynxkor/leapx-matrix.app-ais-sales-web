@@ -1178,7 +1178,7 @@ export default {
     // 提交审批结果
     handleAudit (auditForm) {
       // this.$message.info(JSON.stringify(auditForm));
-      auditForm.changeApplyId = this.form.id;
+      auditForm.id = this.form.id;
       auditForm.changeApplyCode = this.form.changeApplyCode;
       auditForm.auditResult = auditForm.result;
       auditForm.auditRemark = auditForm.remark;
