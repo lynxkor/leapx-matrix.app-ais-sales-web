@@ -87,7 +87,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '不自动批售确认车型管理',
+      pageTitle: '不自动批售确认车型',
       pageType: 'detail',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleNoAutoCarModelConf',
@@ -97,7 +97,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['不自动批售确认车型管理', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['不自动批售确认车型', '详情']);
     this.getData();
   },
   methods: {

@@ -185,7 +185,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '锁车资源共享配置管理：' + this.form.id;
+      return '锁车资源共享配置：' + this.form.id;
     }
   },
   watch: {
@@ -201,7 +201,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '锁车资源共享配置管理',
+      pageTitle: '锁车资源共享配置',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-lockCarShareConfig',

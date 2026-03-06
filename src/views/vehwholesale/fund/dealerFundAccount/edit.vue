@@ -1,5 +1,5 @@
 <template>
-  <edit-page-layout ref="editLayout" title="整车资金账户管理" showPaneFooter>
+  <edit-page-layout ref="editLayout" title="整车资金账户" showPaneFooter>
     <template #left>
       <edit-base-container
         ref="containerRef"
@@ -268,7 +268,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车资金账户管理',
+      pageTitle: '整车资金账户',
       pageType: 'edit',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-account',
@@ -320,7 +320,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车资金账户管理', '编辑']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车资金账户', '编辑']);
   },
   methods: {
     detailRequest () {

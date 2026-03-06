@@ -149,7 +149,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem } from '@/api/vehretail/orderManager/deliveryOrder/index';
+import { getList } from '@/api/vehretail/orderManager/deliveryOrder/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -188,7 +188,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '交车单管理',
+      pageTitle: '交车单',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-deliveryOrder',
@@ -331,15 +331,15 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '交车单管理',
-        dataFetchPath: 'vehretail/delivery/deliveryOrder/page',
+        businessType: '交车单',
+        dataFetchPath: 'vr/web/delivery/deliveryOrder/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '交车单管理.xlsx');
+            await downloadExcel(res.excelUrl, '交车单.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

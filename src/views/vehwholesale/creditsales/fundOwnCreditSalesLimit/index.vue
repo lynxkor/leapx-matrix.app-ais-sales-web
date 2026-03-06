@@ -140,7 +140,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '自有资金赊销额度管理',
+      pageTitle: '自有资金赊销额度',
       pageType: 'list',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundOwnCreditSalesLimit',
@@ -273,7 +273,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '自有资金赊销额度管理',
+        businessType: '自有资金赊销额度',
         dataFetchPath: '/vw/web/creditsales/fundOwnCreditSalesLimit/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -281,7 +281,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '自有资金赊销额度管理.xlsx');
+            await downloadExcel(res.excelUrl, '自有资金赊销额度.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

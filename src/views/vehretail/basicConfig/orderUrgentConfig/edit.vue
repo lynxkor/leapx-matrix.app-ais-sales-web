@@ -216,7 +216,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '盲订急单配置管理：' + this.form.id;
+      return '盲订急单配置：' + this.form.id;
     }
   },
   watch: {
@@ -237,7 +237,7 @@ export default {
           return await vehicleSeriesList({ seriesNameLike: query, status: 1 });
         }
       },
-      pageTitle: '盲订急单配置管理',
+      pageTitle: '盲订急单配置',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-orderUrgentConfig',

@@ -1,5 +1,5 @@
 <template>
-  <edit-page-layout ref="editLayout" title="自有资金赊销配置管理" showPaneFooter>
+  <edit-page-layout ref="editLayout" title="自有资金赊销配置" showPaneFooter>
     <template #left>
       <edit-base-container
         ref="containerRef"
@@ -295,7 +295,7 @@ export default {
     };
 
     return {
-      pageTitle: '自有资金赊销配置管理',
+      pageTitle: '自有资金赊销配置',
       pageType: 'edit',
       moduleKey: 'AISVW-fundOwnCreditSalesConfig',
       auditSub: false,

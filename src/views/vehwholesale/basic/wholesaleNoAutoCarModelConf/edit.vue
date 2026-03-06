@@ -117,7 +117,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '不自动批售确认车型管理',
+      pageTitle: '不自动批售确认车型',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleNoAutoCarModelConf',
@@ -198,7 +198,7 @@ export default {
     },
     getDetailData () {
       const id = this.id || this.$route.query.id;
-      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['不自动批售确认车型管理', `${id ? '编辑' : '新建'}`]);
+      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['不自动批售确认车型', `${id ? '编辑' : '新建'}`]);
       if (id) {
         getDetail(id).then(res => {
           this.loading = false;

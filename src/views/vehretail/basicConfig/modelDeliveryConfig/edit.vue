@@ -208,7 +208,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '车型交付配置管理：' + this.form.id;
+      return '车型交付配置：' + this.form.id;
     }
   },
   watch: {
@@ -240,7 +240,7 @@ export default {
           return await listVehicleModel({ modelNameLike: query });
         },
       },
-      pageTitle: '车型交付配置管理',
+      pageTitle: '车型交付配置',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-modelDeliveryConfig',

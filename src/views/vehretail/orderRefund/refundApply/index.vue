@@ -169,7 +169,7 @@ export default {
         remote: true,
         reserveKeyword: true
       },
-      pageTitle: '整车零售退订申请单管理',
+      pageTitle: '订单退订申请',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVRRO-retailOrderRefund',
@@ -362,7 +362,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '整车零售退订申请单管理',
+        businessType: '订单退订申请',
         dataFetchPath: '/vr/web/refund/retailOrderPayRefundRecord//page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -370,7 +370,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车零售退订申请单管理.xlsx');
+            await downloadExcel(res.excelUrl, '订单退订申请.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

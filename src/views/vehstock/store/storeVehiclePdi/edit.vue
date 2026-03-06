@@ -17,7 +17,7 @@
           <span class="status primary">状态</span>
         </template>
         <template #extraButtons>
-          <el-button type="primary" size="small"  @click="handleDownloadPDF">下载PDF单据</el-button>
+          <el-button v-if="form.isPdiSubmit === 1 && form.isUnusual === 0" type="primary" size="small"  @click="handleDownloadPDF">下载PDF单据</el-button>
         </template>
         <el-main>
           <section class="common-section">

@@ -105,7 +105,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '门店试驾车配额管理',
+      pageTitle: '门店试驾车配额',
       pageType: 'detail',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleDealerTestDriveQuota',
@@ -115,7 +115,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['门店试驾车配额管理', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['门店试驾车配额', '详情']);
     this.getData();
   },
   methods: {

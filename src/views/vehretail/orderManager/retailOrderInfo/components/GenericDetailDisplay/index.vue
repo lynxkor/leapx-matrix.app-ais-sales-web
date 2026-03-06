@@ -1,6 +1,6 @@
 <!-- 新建文件: src/components/GenericDetailDisplay.vue -->
 <template>
-  <section id="car-owner" class="common-section">
+  <section class="common-section">
     <div class="common-section-header" :data-section="sectionKey">
       <h2>{{ title }}</h2>
     </div>

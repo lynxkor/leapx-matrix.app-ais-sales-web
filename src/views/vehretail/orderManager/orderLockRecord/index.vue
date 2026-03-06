@@ -153,7 +153,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '订单锁车记录管理',
+      pageTitle: '订单锁车记录',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-retailOrderPayRecord',
@@ -243,7 +243,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '订单锁车记录管理',
+        businessType: '订单锁车记录',
         dataFetchPath: 'vr/web/order/retailOrderLockRecord/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -251,7 +251,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '订单锁车记录管理.xlsx');
+            await downloadExcel(res.excelUrl, '订单锁车记录.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

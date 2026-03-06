@@ -21,6 +21,8 @@
           <el-button v-permission="moduleKey+'-batchAllocateVehicle'"  size="small" type="primary" @click="handleaAutoVehicleAllocation">自动配车</el-button>
           <el-button v-permission="moduleKey+'-vinAllocateVehicle'" size="small" type="primary" @click="handleManualVehicleAllocation">手工配车</el-button>
           <!-- <el-button  size="small" type="primary" @click="handleDelete">删除</el-button> -->
+          <el-button v-permission="moduleKey+'-batchSettleSubmit'" type="primary" size="small" @click="handleBatchSettleSubmit">提交结算</el-button>
+          <el-button v-permission="moduleKey+'-batchCancelSettle'" type="primary" size="small" @click="handleBatchCancelSettle">取消结算</el-button>
           <el-button v-permission="moduleKey+'-batchCancel'" size="small" type="primary" @click="handleCancel">作废</el-button>
         </template>
         <el-main>
@@ -333,8 +335,8 @@
                  <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
                   {{ form.replenishApplyDetailCode }}
                 </el-form-item>
-                 <el-form-item label="订单物料编码：" prop="orderMaterialCode">
-                  {{ form.orderMaterialCode }}
+                 <el-form-item label="订单物料编码：" prop="orderMaterialsCode">
+                  {{ form.orderMaterialsCode }}
                 </el-form-item>
                 <el-form-item label="指定发运方式：" prop="deliveryWayLabel">
                   {{ form.deliveryWayLabel }}
@@ -816,6 +818,11 @@
       :cancel-ids="[_id]"
       @confirm="cancelApproval"
     />
+    <BatchCancelSettleInput
+      :visible.sync="showBatchCancelSettleDialog"
+      ::cancel-ids="[_id]"
+      @batchCancelSettle="batchCancelSettle"
+    />
    <ManualVehicle
       :visible.sync="showManualVehicleDialog"
       @confirmVin="confirmVin"
@@ -824,7 +831,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, batchConfirmItem, batchSetAutoAllocateItem, batchCancelItem, vinAllocateVehicleSubmitItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import { getDetail, addOrUpdate, batchConfirmItem, batchSetAutoAllocateItem, batchCancelItem, vinAllocateVehicleSubmitItem, batchSettleSubmitItem, batchCancelSettleItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
@@ -837,6 +844,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import ManualVehicle from './ManualVehicle.vue';
 import BatchCancelInput from './BatchCancelInput.vue';
 import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import BatchCancelSettleInput from './BatchCancelSettleInput.vue';
 const defaultForm = {
   // 多选时字段有变化，自行修复
   wholesaleOrderCode: '',
@@ -969,6 +977,7 @@ export default {
     FetchSelect,
     ManualVehicle,
     BatchCancelInput,
+    BatchCancelSettleInput
   },
   computed: {
     _id () {
@@ -988,7 +997,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '整车批售订单管理',
+      pageTitle: '整车批售订单',
       pageType: 'edit',
       title: '批售订单号：' + form.wholesaleOrderCode,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
@@ -997,6 +1006,7 @@ export default {
       submitLoading: false,
       showManualVehicleDialog: false,
       showBatchCancelDialog: false,
+      showBatchCancelSettleDialog: false,
       yes_no_enum: YES_NO_ENUM,
       true_false_enum: TRUE_FALSE_ENUM,
       ALLOWED_STATUS: [0, 11],
@@ -1050,6 +1060,40 @@ export default {
     console.log('mounted', ManualVehicle.props);
   },
   methods: {
+    batchCancelSettle (data) {
+      const ids = [this._id];
+      return batchCancelSettleItem({
+        idSet: ids,
+        cancelSettleType: data.cancelSettleType
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '取消结算成功'
+        });
+        this.getData();
+      });
+    },
+    handleBatchCancelSettle () {
+      this.showBatchCancelSettleDialog = true;
+    },
+    handleBatchSettleSubmit () {
+      const ids = [this._id];
+      this.$confirm('是否需要对批售订单进行结算?', '操作提醒', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        batchSettleSubmitItem({
+          idSet: ids
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '结算成功!'
+          });
+          this.getDetailData();
+        });
+      }).catch(() => {});
+    },
     getDetailData () {
       if (this._id) {
         getDetail(this._id).then(res => {
@@ -1116,11 +1160,6 @@ export default {
             message: '确认成功!'
           });
           this.getDetailData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '确认失败!'
-          });
         });
       }).catch(() => {});
       // }
@@ -1142,11 +1181,6 @@ export default {
             message: '自动配车成功!'
           });
           this.getDetailData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '自动配车失败!'
-          });
         });
       }).catch(() => {});
       // }

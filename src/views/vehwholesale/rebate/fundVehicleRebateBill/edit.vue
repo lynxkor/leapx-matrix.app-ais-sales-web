@@ -463,7 +463,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '整车返利核算单明细管理',
+      pageTitle: '整车返利核算单明细',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-fundVehicleRebateBill',
@@ -625,7 +625,7 @@ export default {
     getDetailData () {
       const id = this._id;
       if (!this.id) {
-        this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车返利核算单明细管理', `${id ? '详情' : '新建'}`]);
+        this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车返利核算单明细', `${id ? '详情' : '新建'}`]);
       }
       if (id) {
         getDetail(id).then(res => {

@@ -113,7 +113,6 @@
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport('deliveryConfirmItemConfig')">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
     </div>
@@ -141,7 +140,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="'1'"
+      :id="'deliveryConfirmItemConfig'"
       @close="handleUploadDialogClose"
       @getData="getData"
     />
@@ -153,7 +152,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/basicConfig/deliveryConfirmItemConfig/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, listVehicleModel, vehicleModelYearTypeRelationDistinctYeayType, vehicleOptionPackage } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, listVehicleModel, vehicleModelYearTypeRelationDistinctYeayType } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -197,7 +196,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '交车确认项配置管理',
+      pageTitle: '交车确认项配置',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-deliveryConfirmItemConfig',
@@ -266,24 +265,6 @@ export default {
                 });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],
@@ -389,7 +370,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '交车确认项配置管理',
+        businessType: '交车确认项配置',
         dataFetchPath: 'vr/web/basicConfig/deliveryConfirmItemConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -397,7 +378,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '交车确认项配置管理.xlsx');
+            await downloadExcel(res.excelUrl, '交车确认项配置.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

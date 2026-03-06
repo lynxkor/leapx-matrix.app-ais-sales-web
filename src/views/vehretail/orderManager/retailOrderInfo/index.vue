@@ -344,7 +344,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车零售订单管理',
+      pageTitle: '门店整车订单',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-retailOrderInfo',
@@ -667,15 +667,15 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '整车零售订单管理',
-        dataFetchPath: 'web/vehretail/orderManager/retailOrderInfo/page',
+        businessType: '门店整车订单',
+        dataFetchPath: 'vr/web/order/retailOrderInfo/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车零售订单管理.xlsx');
+            await downloadExcel(res.excelUrl, '门店整车订单.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
