@@ -1065,12 +1065,14 @@ export default {
         batchSettleSubmitItem({
           idSet: ids
         }).then(() => {
+          console.log('handleBatchSettleSubmit', 'success');
           this.$message({
             type: 'success',
             message: '结算成功!'
           });
           this.getData();
         }).catch(() => {
+          console.log('handleBatchSettleSubmit', 'error');
           this.$message({
             type: 'error',
             message: '结算失败!'

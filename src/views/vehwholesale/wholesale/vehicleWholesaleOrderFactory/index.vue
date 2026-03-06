@@ -779,11 +779,6 @@ export default {
             message: '确认成功!'
           });
           this.getData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '确认失败!'
-          });
         });
       }).catch(() => {});
     },
@@ -829,11 +824,6 @@ export default {
             message: '确认成功!'
           });
           this.getData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '确认失败!'
-          });
         });
       }).catch(() => {});
     },
@@ -852,11 +842,6 @@ export default {
             message: '批量结算成功!'
           });
           this.getData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '批量结算失败!'
-          });
         });
       }).catch(() => {});
     },
@@ -1152,11 +1137,6 @@ export default {
               message: '确认成功!'
             });
             this.getData();
-          }).catch(() => {
-            this.$message({
-              type: 'error',
-              message: '确认失败!'
-            });
           });
         }).catch(() => {});
       }

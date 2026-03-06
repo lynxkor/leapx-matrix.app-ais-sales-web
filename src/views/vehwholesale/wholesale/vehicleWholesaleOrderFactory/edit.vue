@@ -1078,7 +1078,6 @@ export default {
     },
     handleBatchSettleSubmit () {
       const ids = [this._id];
-      console.log('handleBatchSettleSubmit', ids);
       this.$confirm('是否需要对批售订单进行结算?', '操作提醒', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -1091,12 +1090,7 @@ export default {
             type: 'success',
             message: '结算成功!'
           });
-          this.getData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '结算失败!'
-          });
+          this.getDetailData();
         });
       }).catch(() => {});
     },
@@ -1166,11 +1160,6 @@ export default {
             message: '确认成功!'
           });
           this.getDetailData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '确认失败!'
-          });
         });
       }).catch(() => {});
       // }
@@ -1192,11 +1181,6 @@ export default {
             message: '自动配车成功!'
           });
           this.getDetailData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '自动配车失败!'
-          });
         });
       }).catch(() => {});
       // }
