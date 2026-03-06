@@ -152,7 +152,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/basicConfig/deliveryConfirmItemConfig/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, listVehicleModel, vehicleModelYearTypeRelationDistinctYeayType, vehicleOptionPackage } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, listVehicleModel, vehicleModelYearTypeRelationDistinctYeayType } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
