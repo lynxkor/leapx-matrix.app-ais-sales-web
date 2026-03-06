@@ -29,7 +29,7 @@
           <el-button
             @click="openAuditShow"
             v-permission="moduleKey + '-approve'"
-            v-if="form.applyStatus === 1"
+            v-if="form.applyStatus === 1020"
           >
             审核
           </el-button>
