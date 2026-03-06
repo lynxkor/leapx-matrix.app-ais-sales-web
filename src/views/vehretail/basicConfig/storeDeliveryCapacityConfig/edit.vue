@@ -134,6 +134,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { log } from 'vxe-pc-ui';
 
 const defaultForm = {
   deliveryConfigCode: '',
@@ -216,7 +217,12 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        return getDetail(id).then(res => {
+          if (res && res.deliveryUserId !== null && res.deliveryUserId !== undefined) {
+            res.deliveryUserId = String(res.deliveryUserId);
+          }
+          return res;
+        }).catch(() => {});
       }
     },
     submitRequest () {

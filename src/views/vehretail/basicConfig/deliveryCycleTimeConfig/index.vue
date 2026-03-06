@@ -47,7 +47,8 @@
             filterable
             clearable
             remote
-            v-model="form.cityCode"
+            multiple
+            v-model="form.cityCodeList"
             :params="form.cityName"
             :remote-method="getCityList"
             value-key="areaCode"
@@ -59,7 +60,8 @@
             filterable
             clearable
             remote
-            v-model="form.provinceCode"
+            multiple
+            v-model="form.provinceCodeList"
             :remote-method="getProvince"
             value-key="code"
             label-key="name"

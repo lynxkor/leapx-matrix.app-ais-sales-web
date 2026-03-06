@@ -1871,7 +1871,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/ordermanager/orderPayRecord/edit',
+      path: '/vehretail/orderManager/orderPayRecord/edit',
       name: 'orderPayRecordEdit',
       component: () => import('@/views/vehretail/orderManager/orderPayRecord/edit.vue'),
 

@@ -193,7 +193,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehretail/ordermanager/orderPayRecord/edit',
+                  path: '/vehretail/orderManager/orderPayRecord/edit',
                   query: {
                     id: row.id,
                     type: this.activeName
@@ -244,7 +244,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehretail/ordermanager/orderPayRecord/edit',
+                  path: '/vehretail/orderManager/orderPayRecord/edit',
                   query: {
                     id: row.id,
                     type: this.activeName
@@ -290,7 +290,7 @@ export default {
     },
     handleAdd () {
       this.$router.push({
-        path: '/vehretail/ordermanager/orderPayRecord/edit'
+        path: '/vehretail/orderManager/orderPayRecord/edit'
       });
     },
     onSubmit () {
@@ -323,6 +323,7 @@ export default {
       let businessType = '订单收款记录';
       let dataFetchPath = 'vr/web/order/retailOrderPayRecord/page';
       let fileName = '订单收款记录.xlsx';
+      let currentOption = this.activeName === 'depositRefund' ? this.depositRefundOption : this.lowEquityOption;
       if (this.activeName === 'depositRefund') {
         businessType = '定金退款记录';
         fileName = '定金退款记录.xlsx';
@@ -335,7 +336,7 @@ export default {
         businessType,
         dataFetchPath,
         reqParams,
-        titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
+        titleMap: Object.fromEntries(currentOption.dataProp.filter(col => col.visible !== false).map(col => [col.props, col.label])),
         httpMethod: 'POST'
       }).then(async res => {
         if (res && res.excelUrl) {
