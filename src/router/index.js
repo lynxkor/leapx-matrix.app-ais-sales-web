@@ -2346,6 +2346,24 @@ const routes = [
         name: '交付排程时间段配置管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehretail/basicConfig/deliveryAppointmentTimeConfig',
+      name: 'deliveryAppointmentTimeConfig',
+      component: () => import('@/views/vehretail/basicConfig/deliveryAppointmentTimeConfig/index.vue'),
+
+      meta: {
+        name: '交付预约时效配置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicconfig/deliveryappointmenttimeconfig/edit',
+      name: 'deliveryAppointmentTimeConfigEdit',
+      component: () => import('@/views/vehretail/basicConfig/deliveryAppointmentTimeConfig/edit.vue'),
+
+      meta: {
+        name: '交付预约时效配置管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
