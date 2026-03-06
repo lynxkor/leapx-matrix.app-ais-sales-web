@@ -1,5 +1,5 @@
 <template>
-  <edit-page-layout ref="editLayout" title="自有资金赊销明细管理" showPaneFooter>
+  <edit-page-layout ref="editLayout" title="自有资金赊销明细" showPaneFooter>
     <template #left>
       <edit-base-container
         ref="containerRef"
@@ -359,7 +359,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '自有资金赊销明细管理',
+      pageTitle: '自有资金赊销明细',
       pageType: 'edit',
       moduleKey: 'AISVW-fundOwnCreditSalesDetail',
       loading: false,

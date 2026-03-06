@@ -85,7 +85,7 @@
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
-       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+       <el-button v-if="canImport" size="small" @click="handleImport('lockCarShareConfig')">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
@@ -112,7 +112,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="'1'"
+      :id="'lockCarShareConfig'"
       @close="handleUploadDialogClose"
       @getData="getData"
     />
@@ -160,7 +160,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '锁车资源共享配置管理',
+      pageTitle: '锁车资源共享配置',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-lockCarShareConfig',
@@ -287,7 +287,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '锁车资源共享配置管理',
+        businessType: '锁车资源共享配置',
         dataFetchPath: 'vr/web/lock/lockCarShareConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -295,7 +295,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '锁车资源共享配置管理.xlsx');
+            await downloadExcel(res.excelUrl, '锁车资源共享配置.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

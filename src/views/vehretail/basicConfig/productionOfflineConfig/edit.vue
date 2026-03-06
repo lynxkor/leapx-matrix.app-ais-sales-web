@@ -265,7 +265,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '排产下线时效管理：' + this.form.id;
+      return '排产下线时效：' + this.form.id;
     },
   },
   watch: {
@@ -298,7 +298,7 @@ export default {
           return await vehicleOptionPackage({ optionPackageNameLike: query });
         },
       },
-      pageTitle: '排产下线时效管理',
+      pageTitle: '排产下线时效',
       pageType: 'edit',
       moduleKey: 'AISVR-productionOfflineConfig',
       loading: false,

@@ -252,7 +252,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车门店补货申请管理',
+      pageTitle: '整车门店补货申请',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-dealerVehicleReplenishApply',
@@ -423,7 +423,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '整车门店补货申请管理',
+        businessType: '整车门店补货申请',
         dataFetchPath: 'vw/web/replenish/dealerVehicleReplenishApply/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -431,7 +431,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车门店补货申请管理.xlsx');
+            await downloadExcel(res.excelUrl, '整车门店补货申请.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

@@ -201,7 +201,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '赊销资费设置管理',
+      pageTitle: '赊销资费设置',
       pageType: 'list',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundCreditSalesFeeConfig',
@@ -252,7 +252,7 @@ export default {
           { props: 'creditSalesFee', label: '赊销费用', visible: true, width: 150 },
           { props: 'effectiveStartTime', label: '有效开始日期', visible: true, width: 200 },
           { props: 'effectiveEndTime', label: '有效结束日期', visible: true, width: 200 },
-          { props: 'remark', label: '备注', visible: true, width: 300 },
+          { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 100 },
           // { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
@@ -315,7 +315,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '赊销资费设置管理',
+        businessType: '赊销资费设置',
         dataFetchPath: '/vw/web/creditsales/fundCreditSalesFeeConfig/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -323,7 +323,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '赊销资费设置管理.xlsx');
+            await downloadExcel(res.excelUrl, '赊销资费设置.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

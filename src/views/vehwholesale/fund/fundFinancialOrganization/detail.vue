@@ -87,7 +87,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-基础配置-金融机构管理',
+      pageTitle: '金融机构',
       pageType: 'detail',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundFinancialOrganization',
@@ -97,7 +97,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['账户管理-基础配置-金融机构管理', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['金融机构', '详情']);
     this.getData();
   },
   methods: {

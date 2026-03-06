@@ -243,7 +243,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '销售目标跟踪管理',
+      pageTitle: '销售目标跟踪',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleSaleTargetTracking',
@@ -380,7 +380,7 @@ export default {
     },
     getDetailData () {
       const id = this.id || this.$route.query.id;
-      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销售目标跟踪管理', `${id ? '编辑' : '新建'}`]);
+      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销售目标跟踪', `${id ? '编辑' : '新建'}`]);
       if (id) {
         getDetail(id).then(res => {
           this.loading = false;

@@ -120,7 +120,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '预算科目管理',
+      pageTitle: '预算科目',
       pageType: 'list',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundBudgetItem',
@@ -220,7 +220,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '预算科目管理',
+        businessType: '预算科目',
         dataFetchPath: '/vw/web/fund/fundBudgetItem/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -228,7 +228,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '预算科目管理.xlsx');
+            await downloadExcel(res.excelUrl, '预算科目.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

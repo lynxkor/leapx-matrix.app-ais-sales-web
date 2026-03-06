@@ -31,7 +31,7 @@
         <!-- 固定悬浮导航栏 -->
         <div class="fixed-nav">
           <ul>
-            <li v-for="(navItem, index) in navItems" :key="index">
+            <li v-for="(navItem) in navItems" :key="navItem.id">
               <a
                 :href="navItem.href"
                 :class="{ active: activeSection === navItem.id }"
@@ -43,7 +43,7 @@
           </ul>
         </div>
 
-        <el-main>
+        <el-main ref="scrollContainer">
           <NavTop
             id="retail-order-status" class="common-section"
             title="销服订单状态"
@@ -514,7 +514,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '整车零售订单管理',
+      pageTitle: '门店整车订单',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-retailOrderInfo',
@@ -641,11 +641,19 @@ export default {
     // 监听滚动事件，高亮当前所在区域
     this.$nextTick(() => {
       this.handleScroll();
-      window.addEventListener('scroll', this.handleScroll);
+      // 监听 el-main 容器的滚动事件
+      const scrollContainer = this.$refs.scrollContainer.$el || this.$refs.scrollContainer;
+      if (scrollContainer) {
+        scrollContainer.addEventListener('scroll', this.handleScroll);
+      }
     });
   },
   beforeDestroy () {
-    window.removeEventListener('scroll', this.handleScroll);
+    // 移除 el-main 容器的滚动监听
+    const scrollContainer = this.$refs.scrollContainer.$el || this.$refs.scrollContainer;
+    if (scrollContainer) {
+      scrollContainer.removeEventListener('scroll', this.handleScroll);
+    }
   },
   methods: {
     // 权益查询
@@ -842,11 +850,21 @@ export default {
     scrollToSection (sectionId) {
       const element = document.getElementById(sectionId);
       if (element) {
-        // 使用更可靠的滚动方式
-        element.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
+        const scrollContainer = this.$refs.scrollContainer?.$el || this.$refs.scrollContainer;
+        if (scrollContainer) {
+          // 计算目标元素相对于滚动容器的位置
+          const containerRect = scrollContainer.getBoundingClientRect();
+          const elementRect = element.getBoundingClientRect();
+          // 计算目标位置：让元素顶部距离容器顶部有一定偏移，避免内容消失在上方
+          const scrollOffset = 20; // 额外的缓冲距离
+          const targetScrollTop = scrollContainer.scrollTop + (elementRect.top - containerRect.top) - scrollOffset;
+
+          // 平滑滚动到目标位置
+          scrollContainer.scrollTo({
+            top: targetScrollTop,
+            behavior: 'smooth'
+          });
+        }
         this.activeSection = sectionId;
       }
     },
@@ -854,25 +872,73 @@ export default {
     handleScroll () {
       const sections = this.navItems.map(item => item.id);
       let currentSection = 'basic-info';
+      let currentIndex = 0;
+      // 获取滚动容器的 scrollTop（el-main 容器）
+      const scrollContainer = this.$refs.scrollContainer?.$el || this.$refs.scrollContainer;
+      if (!scrollContainer) return;
 
-      // 获取页面顶部偏移量（考虑固定导航栏的高度）
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+      const scrollTop = scrollContainer.scrollTop;
+      const containerRect = scrollContainer.getBoundingClientRect();
+      // 可视区域的上边界（通常为 0，如果有固定头部则需要调整）
+      const viewportTop = 0;
+      // 可视区域的下边界
+      const viewportBottom = containerRect.height;
+      // 中间点，用于判断哪个区域在视野中心
+      const viewportMiddle = viewportTop + (viewportBottom - viewportTop) / 3;
 
+      // 找到在可视区域内最靠近顶部的元素
       for (let i = 0; i < sections.length; i++) {
         const element = document.getElementById(sections[i]);
         if (element) {
-          const offsetTop = element.offsetTop;
-          const height = element.offsetHeight;
+          const elementRect = element.getBoundingClientRect();
+          // 元素相对于滚动容器顶部的位置
+          const elementTop = elementRect.top - containerRect.top + scrollTop;
+          const elementBottom = elementRect.bottom - containerRect.top + scrollTop;
+          // const elementHeight = elementBottom - elementTop;
+          // 判断元素是否在可视区域内
+          const isInViewport = elementTop < scrollTop + viewportBottom && elementBottom > scrollTop + viewportTop;
 
-          // 检查当前滚动位置是否在该区域内
-          if (scrollTop >= offsetTop - 100 && scrollTop < offsetTop + height - 100) {
-            currentSection = sections[i];
-            break;
+          if (isInViewport) {
+            // 如果元素顶部在可视区域内或接近顶部，则选中它
+            if (elementTop <= scrollTop + viewportMiddle) {
+              currentSection = sections[i];
+              currentIndex = i;
+            } else if (currentIndex === 0 || i === 0) {
+              // 如果还没有找到合适的区域，选择第一个在可视区域内的
+              currentSection = sections[i];
+              currentIndex = i;
+            }
           }
         }
       }
 
       this.activeSection = currentSection;
+
+      // 滚动 fixed-nav，让当前激活的导航项保持在可视区域内
+      this.$nextTick(() => {
+        this.scrollNavToActive(currentIndex);
+      });
+    },
+    // 滚动导航栏到激活项
+    scrollNavToActive (currentIndex) {
+      const navContainer = document.querySelector('.fixed-nav');
+      if (!navContainer) return;
+
+      const navLinks = navContainer.querySelectorAll('a');
+      const activeLink = navLinks[currentIndex];
+      if (!activeLink) return;
+
+      const navRect = navContainer.getBoundingClientRect();
+      const linkRect = activeLink.getBoundingClientRect();
+
+      // 如果激活项在可视区域上方，向上滚动
+      if (linkRect.top < navRect.top) {
+        navContainer.scrollTop -= (navRect.top - linkRect.top);
+      }
+      // 如果激活项在可视区域下方，向下滚动
+      if (linkRect.bottom > navRect.bottom) {
+        navContainer.scrollTop += (linkRect.bottom - navRect.bottom);
+      }
     },
     // 审核日志
     // handleJumpAuditLog () {
@@ -948,7 +1014,6 @@ export default {
 
 .common-section {
   margin-bottom: 20px;
-  scroll-margin-top: 80px; /* 为锚点跳转留出空间 */
-  min-height: 100px;
+  scroll-margin-top: 20px; /* 为锚点跳转留出空间，与 scrollToSection 中的 scrollOffset 保持一致 */
 }
 </style>

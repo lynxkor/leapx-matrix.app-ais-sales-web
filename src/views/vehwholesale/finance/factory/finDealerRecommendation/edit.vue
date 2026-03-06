@@ -65,7 +65,7 @@
                 </el-form-item>
                  <el-form-item label="推荐额度(万元)：" prop="recAmount">
                   <el-input-number
-                    placeholder="请输入荐额度"
+                    placeholder="请输入推荐额度"
                     v-model="form.recAmount"
                     :precision="2"
                     :step="0.01"
@@ -83,7 +83,7 @@
                 </el-form-item>
                 <el-form-item label="保证金比例%：" prop="depositRatio">
                   <el-input-number
-                    placeholder="请输入首保证金比例比例"
+                    placeholder="请输入保证金比例"
                     v-model="form.depositRatio"
                     :precision="2"
                     :step="0.01"
@@ -288,7 +288,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '账户管理-车厂融资信息-经销商推荐函管理',
+      pageTitle: '经销商推荐函',
       pageType: 'edit',
       title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改

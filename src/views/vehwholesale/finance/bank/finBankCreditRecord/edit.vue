@@ -183,7 +183,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '银行授信记录管理',
+      pageTitle: '银行授信记录',
       pageType: 'edit',
       title: '编码：' + form.code,
       // TIPS: 权限前缀 AISVW，根据实际情况修改

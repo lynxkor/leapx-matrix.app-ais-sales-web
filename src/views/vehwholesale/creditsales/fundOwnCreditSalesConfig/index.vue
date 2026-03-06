@@ -198,7 +198,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '自有资金赊销配置管理',
+      pageTitle: '自有资金赊销配置',
       pageType: 'list',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundOwnCreditSalesConfig',
@@ -251,7 +251,7 @@ export default {
           { props: 'reviewName', label: '复核人', visible: true, width: 200 },
           { props: 'reviewTime', label: '复核时间', visible: true, width: 200 },
           { props: 'reviewOpinion', label: '复核意见', visible: true, width: 200 },
-          { props: 'remark', label: '备注', visible: true, width: 200 },
+          { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           // { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           // { props: 'auditStatusLabel', label: '配置状态', visible: true, width: 200 },
@@ -365,7 +365,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '自有资金赊销配置管理',
+        businessType: '自有资金赊销配置',
         dataFetchPath: '/vw/web/creditsales/fundOwnCreditSalesConfig/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -373,7 +373,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '自有资金赊销配置管理.xlsx');
+            await downloadExcel(res.excelUrl, '自有资金赊销配置.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

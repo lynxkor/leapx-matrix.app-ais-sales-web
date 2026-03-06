@@ -96,7 +96,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-整车资金-整车资金账户交易流水管理',
+      pageTitle: '整车资金账户交易流水',
       pageType: 'detail',
       // TIPS: 权限前缀 AISWH，根据实际情况修改
       moduleKey: 'AISWH-accountTranslog',
@@ -106,7 +106,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['账户管理-整车资金-整车资金账户交易流水管理', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车资金账户交易流水', '详情']);
     this.getData();
   },
   methods: {

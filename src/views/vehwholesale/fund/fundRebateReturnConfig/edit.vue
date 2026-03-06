@@ -1,5 +1,5 @@
 <template>
-  <edit-page-layout ref="editLayout" title="返利自动返还设置管理" showPaneFooter>
+  <edit-page-layout ref="editLayout" title="返利自动返还设置" showPaneFooter>
     <template #left>
       <edit-base-container
         ref="containerRef"
@@ -271,7 +271,7 @@ export default {
       callback();
     };
     return {
-      pageTitle: '返利自动返还设置管理',
+      pageTitle: '返利自动返还设置',
       pageType: 'edit',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundRebateReturnConfig',
