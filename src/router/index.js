@@ -2364,6 +2364,24 @@ const routes = [
         name: '交付预约时效配置管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehretail/basicConfig/storeDeliveryAllocationConfig',
+      name: 'storeDeliveryAllocationConfig',
+      component: () => import('@/views/vehretail/basicConfig/storeDeliveryAllocationConfig/index.vue'),
+
+      meta: {
+        name: '门店交付分派配置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicconfig/storedeliveryallocationconfig/edit',
+      name: 'storeDeliveryAllocationConfigEdit',
+      component: () => import('@/views/vehretail/basicConfig/storeDeliveryAllocationConfig/edit.vue'),
+
+      meta: {
+        name: '门店交付分派配置管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
