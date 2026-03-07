@@ -221,6 +221,8 @@ export default {
             fixed: 'right',
             buttons: [{
               name: '删除',
+              popconfirmConfirmButtonType: 'danger',
+              popconfirmConfirmButtonText: '删除',
               popconfirmTitle: '确认删除选中预留配置明细数据？',
               click: (rowIndex, row) => {
                 deleteItem([row.id]).then(() => {
