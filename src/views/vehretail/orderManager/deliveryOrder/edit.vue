@@ -31,6 +31,10 @@
           <el-button size="small" @click="handleDeliveryWithdraw">交车撤回</el-button>
         </template>
         <el-main>
+          <!--  -->
+          <NavTop
+            title="交车单步骤"
+            :current="2"/>
           <!-- 订单归属 -->
           <section class="common-section" v-show="isEditing || !_id">
             <div class="common-section-header" data-section="orderBelonging">
@@ -373,6 +377,7 @@ import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import GenericDetailDisplay from '@/views/vehretail/orderManager/retailOrderInfo/components/GenericDetailDisplay';
 import ComponentTable from '@/views/vehretail/orderManager/retailOrderInfo/components/ComponentTable';
+import NavTop from './components/NavTop';
 
 const defaultForm = {
   // 订单归属
@@ -460,6 +465,7 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
+    NavTop,
     ComponentTable,
     GenericDetailDisplay,
     EditPageLayout,

@@ -147,7 +147,7 @@ export default {
     return {
       pageTitle: '交付信息配置',
       pageType: 'edit',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
+      // TIPS: 权限前缀 AISMC， 根据实际情况修改
       moduleKey: 'AISVR-deliveryInfoConfig',
       loading: false,
       submitLoading: false,
@@ -196,7 +196,7 @@ export default {
       // const userInfo = this.$store.state.user.userInfo;
       return {
         ...defaultForm,
-        status: 1 // 默认启用
+        status: 1 // 默认启用1
         // ownerId: userInfo.userId,
         // ownerName: userInfo.userName,
       };

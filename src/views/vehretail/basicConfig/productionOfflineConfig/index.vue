@@ -209,8 +209,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'id',
-            label: '主键',
+            props: 'modelName',
+            label: '车型名称',
             visible: false,
             width: 200,
             fixed: 'left',
@@ -227,7 +227,7 @@ export default {
             }]
           },
           { props: 'yearTypeName', label: '年款名称', visible: true, width: 200 },
-          { props: 'modelName', label: '车型名称', visible: true, width: 200 },
+          // { props: 'modelName', label: '车型名称', visible: true, width: 200 },
           { props: 'productionDays', label: '排产天数', visible: true, width: 200 },
           { props: 'buffDays', label: 'BUFF天数', visible: true, width: 200 },
           { props: 'exteriorName', label: '外观名称', visible: true, width: 200 },
