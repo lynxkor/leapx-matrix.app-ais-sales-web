@@ -216,7 +216,12 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        return getDetail(id).then(res => {
+          if (res && res.deliveryUserId !== null && res.deliveryUserId !== undefined) {
+            res.deliveryUserId = String(res.deliveryUserId);
+          }
+          return res;
+        }).catch(() => {});
       }
     },
     submitRequest () {

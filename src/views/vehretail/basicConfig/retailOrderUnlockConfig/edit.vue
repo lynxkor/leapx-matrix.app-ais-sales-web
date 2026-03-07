@@ -74,7 +74,7 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="状态：" prop="status">
+                <el-form-item label="状态：">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="StatusEnum"
@@ -84,7 +84,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
+                <el-form-item label="创建时间：">
                   <el-input v-model="form.createTime" disabled placeholder="新增自动生成" />
                 </el-form-item>
               </el-form>

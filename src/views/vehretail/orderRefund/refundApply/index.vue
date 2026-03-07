@@ -64,7 +64,7 @@
         :loading="loading"
         @submit="onSubmit"
         @reset="onReset"
-      />R
+      />
     </el-form>
     <div class="ais-active">
       <el-tabs v-model="refundStatusTab" @tab-click="handleRefundStatusClick">
@@ -216,16 +216,49 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'refundStatusLabel', label: '申请状态', visible: true, width: 200 },
           { props: 'retailOrderCode', label: '零售订单号', visible: true, width: 200 },
           { props: 'mallOrderCode', label: '商城订单编号', visible: true, width: 200 },
+          { props: 'refundStatusLabel', label: '申请状态', visible: true, width: 200, sortable: true },
+          { props: 'buyerName', label: '购车人名称', visible: true, width: 200, sortable: true },
+          { props: 'buyerPhone', label: '购车人手机', visible: true, width: 200, sortable: true },
           {
             props: 'createTime',
             label: '申请时间',
             visible: true,
+            width: 200,
+            sortable: true
+          },
+          {
+            props: 'creator',
+            label: '申请人',
+            visible: true,
             width: 200
           },
-          { props: 'cateCode', label: '退订原因分类编码', visible: true, width: 200 },
+          { props: 'submitTime', label: '提交时间', visible: true, width: 200, sortable: true },
+          { props: 'approveUser', label: '审核人', visible: true, width: 200, sortable: true },
+          { props: 'approveTime', label: '审核时间', visible: true, width: 200 },
+          { props: 'orderRefundTypeLabel', label: '退订方式', visible: true, width: 200 },
+          { props: 'cateName', label: '退订原因分类', visible: true, width: 200, sortable: true },
+          { props: 'refundReason', label: '退订原因说明', visible: true, width: 200 },
+          { props: 'saleDealerName', label: '销售门店', visible: true, width: 200 },
+          { props: 'provinceName', label: '省', visible: true, width: 200 },
+          { props: 'cityName', label: '市', visible: true, width: 200 },
+          { props: 'saleDealerName', label: '销售门店', visible: true, width: 200, sortable: true },
+          { props: 'modelName', label: '基本车型', visible: true, width: 200, sortable: true },
+          { props: 'refundBank', label: '退款银行', visible: true, width: 200 },
+          { props: 'refundBankUser', label: '银行开户名', visible: true, width: 200 },
+          { props: 'refundBankAccount', label: '退款银行账号', visible: true, width: 200 },
+          { props: 'enjoyGiftLabel', label: '是否有陪伴礼', visible: true, width: 200 },
+          { props: 'orderUserName', label: '下单人', visible: true, width: 200 },
+          { props: 'orderStatusLabel', label: '整车订单状态', visible: true, width: 200 },
+          { props: 'orderCancelTime', label: '订单取消时间', visible: true, width: 200, sortable: true },
+          { props: 'orderCancelDescp', label: '订单取消说明', visible: true, width: 200 },
+          { props: 'orderSource', label: '订单来源', visible: true, width: 200 },
+          { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 200 },
+          { props: 'depositRefundTypeLabel', label: '定金退回方式', visible: true, width: 200 },
+          { props: 'firstSubmitTime', label: '首次提交时间', visible: true, width: 200, sortable: true },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
+
           {
             props: 'operate',
             label: '操作',
@@ -270,10 +303,10 @@ export default {
         total: 0
       },
       sortColumns: [
-        // {
-        // column: 'create_time',
-        // sort: 'DESC'
-        // }
+        {
+          column: 'create_time',
+          sort: 'DESC'
+        }
       ]
     };
   },
@@ -290,7 +323,10 @@ export default {
     handleSortChange (value) {
       this.sortColumns = (value || []).map(item => {
         return {
-          column: (item.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+          column: (item.field || '').replace(/([A-Z])/g, '_$1')
+            .toLowerCase()
+            .replace(/^_/, '')
+            .replace('_label', ''),
           sort: (item.order || '').toUpperCase()
         };
       });

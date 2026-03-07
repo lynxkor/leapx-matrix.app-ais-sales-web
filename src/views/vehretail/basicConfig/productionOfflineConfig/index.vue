@@ -98,7 +98,7 @@
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-if="canImport" size="small" @click="handleImport('productionOfflineConfig')">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
@@ -125,7 +125,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      id='import'
+      id='productionOfflineConfig'
       @close="handleUploadDialogClose"
       @getData="getData"
     />
@@ -209,8 +209,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'id',
-            label: '主键',
+            props: 'modelName',
+            label: '车型名称',
             visible: false,
             width: 200,
             fixed: 'left',
@@ -227,7 +227,7 @@ export default {
             }]
           },
           { props: 'yearTypeName', label: '年款名称', visible: true, width: 200 },
-          { props: 'modelName', label: '车型名称', visible: true, width: 200 },
+          // { props: 'modelName', label: '车型名称', visible: true, width: 200 },
           { props: 'productionDays', label: '排产天数', visible: true, width: 200 },
           { props: 'buffDays', label: 'BUFF天数', visible: true, width: 200 },
           { props: 'exteriorName', label: '外观名称', visible: true, width: 200 },

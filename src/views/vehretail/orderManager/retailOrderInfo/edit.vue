@@ -805,6 +805,14 @@ export default {
           };
           processedData.statusTrackList = addSaleDealerName(response.statusTrackList);
           processedData.lockRecordList = addSaleDealerName(response.lockRecordList);
+          // 先更新 form，让子组件有机会修改数据
+          Object.assign(this.form, processedData);
+          // 等待子组件渲染完成并处理完数据后，再更新 originalForm
+          this.$nextTick(() => {
+            setTimeout(() => {
+              Object.assign(this.originalForm, this.form);
+            }, 500);
+          });
           return processedData;
         });
       }
