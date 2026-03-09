@@ -356,6 +356,14 @@
           />
         </el-main>
       </edit-base-container>
+      <!-- 预约交车对话框组件 -->
+      <delivery-appointment-dialog
+        ref="deliveryAppointmentDialog"
+        :deliveryAdvisorId="form.deliveryAdvisorId"
+        :deliveryCityId="form.deliveryStoreId"
+        :orderCreateTime="form.orderCreateTime"
+        @refresh="getDetail"
+      />
     </template>
     <template #right>
       <div class="page-common-edit">
@@ -378,6 +386,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import GenericDetailDisplay from '@/views/vehretail/orderManager/retailOrderInfo/components/GenericDetailDisplay';
 import ComponentTable from '@/views/vehretail/orderManager/retailOrderInfo/components/ComponentTable';
 import NavTop from './components/NavTop';
+import DeliveryAppointmentDialog from './components/DeliveryAppointmentDialog';
 
 const defaultForm = {
   // 订单归属
@@ -470,7 +479,8 @@ export default {
     GenericDetailDisplay,
     EditPageLayout,
     EditBaseContainer,
-    FetchSelect
+    FetchSelect,
+    DeliveryAppointmentDialog
   },
   computed: {
     _id () {
@@ -664,6 +674,11 @@ export default {
         return getDetail(id);
       }
     },
+    getDetail () {
+      getDetail(this._id).then(res => {
+        this.form = res;
+      }).catch(() => {});
+    },
     async submitRequest () {
       // 将表单校验封装为 Promise 并并行执行
       const validateForm = (formRef) => {
@@ -736,7 +751,50 @@ export default {
       }
     },
     // 预约交车
-    handleAppointmentDelivery () {},
+    async handleAppointmentDelivery () {
+      // 1. 校验当前表单是否填写
+      const validateForm = (formRef) => {
+        return new Promise((resolve) => {
+          if (formRef) {
+            formRef.validate(valid => {
+              resolve(valid);
+            });
+          } else {
+            resolve(true);
+          }
+        });
+      };
+      const [ruleForm1Valid, ruleForm2Valid] = await Promise.all([
+        validateForm(this.$refs.ruleForm1),
+        validateForm(this.$refs.ruleForm2)
+      ]);
+      if (!ruleForm1Valid || !ruleForm2Valid) {
+        this.$message.warning('请先填写并保存表单信息');
+        return;
+      }
+
+      // 2. 调用接口校验购车人手机号是否注册
+      try {
+        const isRegistered = await this.checkBuyerMobileRegistered();
+        // 3. 传给对话框组件
+        this.$refs.deliveryAppointmentDialog.open(isRegistered);
+      } catch (error) {
+        console.error('校验手机号注册状态失败:', error);
+        this.$message.error('校验手机号注册状态失败');
+      }
+    },
+    // 校验购车人手机号是否注册（模拟接口）
+    async checkBuyerMobileRegistered () {
+      // 模拟接口返回
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          // 模拟随机返回注册或未注册
+          const mockRegistered = Math.random() > 0.5;
+          console.log('模拟校验结果：isRegistered =', mockRegistered);
+          resolve(mockRegistered);
+        }, 500);
+      });
+    },
     // 交车确认单生成
     handleGenerateConfirmOrder () {},
     // 更改预约时间
