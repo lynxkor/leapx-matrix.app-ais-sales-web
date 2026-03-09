@@ -753,15 +753,21 @@ export default {
     // 质量问题解绑申请
     handleQualityIssueUnbindApplication () {
       // 实现质量问题解绑申请逻辑
-      console.log('质量问题解绑申请');
       const id = this._id;
-      this.$router.push({
-        path: '/vehretail/orderManager/orderUnlockApply/edit',
-        query: {
-          needAddId: id,
-          isAdding: true
-        }
-      });
+      const saleMode = this.form.saleMode;
+      const orderStatus = this.form.orderStatus;
+      // 只有销售模式为批售单且订单状态为车辆在途或等待交车时才能申请质量问题解绑
+      if (saleMode === 1 && (orderStatus === 6 || orderStatus === 7)) {
+        this.$router.push({
+          path: '/vehretail/orderManager/orderUnlockApply/edit',
+          query: {
+            needAddId: id,
+            isAdding: true
+          }
+        });
+      } else {
+        this.$message.error('该订单不是批售单或订单状态不是车辆在途或等待交车，不能进行质量问题解绑申请');
+      }
     },
     // 将显示字段配置转换为表格列配置
     convertToTableColumns (displayFields) {
