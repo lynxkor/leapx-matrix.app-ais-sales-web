@@ -30,18 +30,24 @@
           v-model="form.cateCode"
         />
       </el-form-item>
-      <el-form-item label="商城订单编号">
-        <tag-input v-model="form.mallOrderCodeList" placeholder="请输入" />
+      <el-form-item label="购车人姓名">
+        <tag-input v-model="form.buyerName" placeholder="请输入" />
+      </el-form-item>
+      <el-form-item label="购车人手机号">
+        <tag-input v-model="form.buyerPhone" placeholder="请输入" />
       </el-form-item>
       <template v-if="show">
-        <el-form-item label="零售订单号">
-          <tag-input v-model="form.retailOrderCodeList" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="购车人手机号">
-          <tag-input v-model="form.buyerPhone" placeholder="请输入" />
+        <el-form-item label="销售门店">
+          <tag-input v-model="form.saleDealerName" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="基础车型">
           <tag-input v-model="form.modelName" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="商城订单编号">
+          <tag-input v-model="form.mallOrderCodeList" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="整车订单号">
+          <tag-input v-model="form.retailOrderCodeList" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="申请时间">
           <el-date-picker
@@ -68,7 +74,7 @@
     </el-form>
     <div class="ais-active">
       <el-tabs v-model="refundStatusTab" @tab-click="handleRefundStatusClick">
-        <el-tab-pane label="全部申请" name="0" status="0" />
+        <el-tab-pane label="全部用户退订申请" name="0" status="0" />
         <el-tab-pane label="待初审" name="1020" status="1020" />
         <el-tab-pane label="待审核" name="1025" status="1025"/>
         <el-tab-pane label="待终审" name="1027" status="1027"/>
@@ -77,11 +83,13 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-if="canImport" size="small" @click="handleImport">导入定金退回方式</el-button>
+      <el-button v-if="canImport" size="small" @click="handleImport">导入退订退款结果</el-button>
+<!--      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>-->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+<!--      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>-->
+<!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>-->
+<!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>-->
     </div>
     <div
       class="ais-table-c"
@@ -216,13 +224,12 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'retailOrderCode', label: '零售订单号', visible: true, width: 200 },
-          { props: 'mallOrderCode', label: '商城订单编号', visible: true, width: 200 },
           { props: 'refundStatusLabel', label: '申请状态', visible: true, width: 200, sortable: true },
           { props: 'buyerName', label: '购车人名称', visible: true, width: 200, sortable: true },
           { props: 'buyerPhone', label: '购车人手机', visible: true, width: 200, sortable: true },
+          { props: 'saleUserName', label: '订单销售顾问', visible: true, width: 200, sortable: true },
           {
-            props: 'createTime',
+            props: 'applyTime',
             label: '申请时间',
             visible: true,
             width: 200,
@@ -243,19 +250,22 @@ export default {
           { props: 'saleDealerName', label: '销售门店', visible: true, width: 200 },
           { props: 'provinceName', label: '省', visible: true, width: 200 },
           { props: 'cityName', label: '市', visible: true, width: 200 },
-          { props: 'saleDealerName', label: '销售门店', visible: true, width: 200, sortable: true },
           { props: 'modelName', label: '基本车型', visible: true, width: 200, sortable: true },
           { props: 'refundBank', label: '退款银行', visible: true, width: 200 },
           { props: 'refundBankUser', label: '银行开户名', visible: true, width: 200 },
           { props: 'refundBankAccount', label: '退款银行账号', visible: true, width: 200 },
+          { props: 'retailOrderCode', label: '零售订单号', visible: true, width: 200 },
+          { props: 'mallOrderCode', label: '商城订单编号', visible: true, width: 200 },
           { props: 'enjoyGiftLabel', label: '是否有陪伴礼', visible: true, width: 200 },
-          { props: 'orderUserName', label: '下单人', visible: true, width: 200 },
+          // { props: 'orderUserName', label: '下单人', visible: true, width: 200 },
+          { props: 'orderUserId', label: '下单人ID', visible: true, width: 200 },
           { props: 'orderStatusLabel', label: '整车订单状态', visible: true, width: 200 },
           { props: 'orderCancelTime', label: '订单取消时间', visible: true, width: 200, sortable: true },
           { props: 'orderCancelDescp', label: '订单取消说明', visible: true, width: 200 },
           { props: 'orderSource', label: '订单来源', visible: true, width: 200 },
           { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 200 },
           { props: 'depositRefundTypeLabel', label: '定金退回方式', visible: true, width: 200 },
+          { props: 'paymentTime', label: '缴定金时间', visible: true, width: 200, sortable: true },
           { props: 'firstSubmitTime', label: '首次提交时间', visible: true, width: 200, sortable: true },
           { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
 
@@ -265,37 +275,21 @@ export default {
             type: 'operate',
             visible: true,
             fixed: 'right',
-            buttons: [{
-              name: '编辑',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehretail/orderRefund/refundApply/edit',
-                  query: {
-                    id: row.id,
-                    isEditing: true
-                  }
-                });
-              },
-              type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
-            }]
+            buttons: [
+              // {
+              //   name: '编辑',
+              //   click: (rowIndex, row) => {
+              //     this.$router.push({
+              //       path: '/vehretail/orderRefund/refundApply/edit',
+              //       query: {
+              //         id: row.id,
+              //         isEditing: true
+              //       }
+              //     });
+              //   },
+              //   type: 'info'
+              // }
+            ]
           }
         ],
         total: 0
