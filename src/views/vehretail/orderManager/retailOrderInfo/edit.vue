@@ -754,6 +754,14 @@ export default {
     handleQualityIssueUnbindApplication () {
       // 实现质量问题解绑申请逻辑
       console.log('质量问题解绑申请');
+      const id = this._id;
+      this.$router.push({
+        path: '/vehretail/orderManager/orderUnlockApply/edit',
+        query: {
+          needAddId: id,
+          isAdding: true
+        }
+      });
     },
     // 将显示字段配置转换为表格列配置
     convertToTableColumns (displayFields) {
