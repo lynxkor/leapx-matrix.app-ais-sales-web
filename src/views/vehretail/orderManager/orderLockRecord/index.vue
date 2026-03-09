@@ -29,7 +29,7 @@
           label-key="storeName"
         />
       </el-form-item>
-      <el-form-item label="零售订单号">
+      <el-form-item label="整车订单">
         <tag-input
           placeholder="请输入"
           v-model="form.retailOrderCodeList"
