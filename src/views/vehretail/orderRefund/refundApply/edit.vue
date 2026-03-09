@@ -161,14 +161,12 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="是否停产：" prop="discontinueStatus">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="BooleanEnum"
-                    v-model="form.discontinueStatus"
-                    placeholder="请选择"
+                <el-form-item label="是否停产">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.discontinueStatusLabel"
                     clearable
-                    filterable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="销售门店编码：" prop="saleDealerCode">
@@ -665,6 +663,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import { getList as retailOrderPage } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import { fetchCategoryList } from '@/api/vehretail/orderRefund/category';
 import RefundApplyAuditDialog from '@/views/vehretail/orderRefund/refundApply/auditDialog';
+import { getList as getMaterialInfoList } from '@/api/datacenter/materials/vehicleMaterials/index';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -937,6 +936,7 @@ export default {
       this.form.saleDealerCode = val ? selectedOption.saleDealerCode : '';
       this.form.saleDealerName = val ? selectedOption.saleDealerName : '';
       this.form.materialsCode = val ? selectedOption.materialsCode : '';
+      this.form.discontinueStatusLabel = null;
       this.form.paymentTime = val ? selectedOption.paymentTime : '';
       this.form.deliveryTime = val ? selectedOption.deliveryTime : '';
       this.form.deliveryStatus = val && selectedOption.deliveryTime ? 1 : 0;
@@ -947,6 +947,16 @@ export default {
       this.form.provinceName = val ? selectedOption.provinceName : '';
       this.form.cityCode = val ? selectedOption.cityCode : '';
       this.form.cityName = val ? selectedOption.cityName : '';
+      // 查询物料是否停产
+      if (this.form.materialsCode) {
+        getMaterialInfoList({ materialsCodeLike: this.form.materialsCode, pageSize: 1 })
+          .then(res => {
+            if (res.records && res.records.length > 0) {
+              this.form.discontinueStatusLabel = res.records[0].discontinueStatusLabel;
+              this.$message.info(this.form.discontinueStatusLabel);
+            }
+          });
+      }
     },
     // 审核日志
     // handleJumpAuditLog () {
