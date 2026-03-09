@@ -194,7 +194,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车批售-批售管理-批售配车结算记录管理',
+      pageTitle: '批售配车结算记录',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-vehicleWholesaleOrderRecord',
@@ -322,7 +322,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '整车批售-批售管理-批售配车结算记录管理',
+        businessType: '批售配车结算记录',
         dataFetchPath: 'vw/web/wholesale/vehicleWholesaleOrderRecord/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -330,7 +330,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车批售-批售管理-批售配车结算记录管理.xlsx');
+            await downloadExcel(res.excelUrl, '批售配车结算记录.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
