@@ -40,7 +40,6 @@
           v-model="form.orderStatus"
           placeholder="请选择"
           clearable
-          multiple
           filterable
         />
       </el-form-item>
