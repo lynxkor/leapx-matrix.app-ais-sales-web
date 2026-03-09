@@ -40,7 +40,6 @@
           v-model="form.orderStatus"
           placeholder="请选择"
           clearable
-          multiple
           filterable
         />
       </el-form-item>
@@ -235,7 +234,7 @@ export default {
             }]
           },
           { props: 'modelName', label: '车型名称', visible: true, width: 200 },
-          { props: 'yearTypeId', label: '年款名称', visible: true, width: 200 },
+          { props: 'yearTypeName', label: '年款名称', visible: true, width: 200 },
           { props: 'orderStatusLabel', label: '订单状态', visible: true, width: 200 },
           { props: 'allowUnlockStatusLabel', label: '允许门店取消锁车', visible: true, width: 200 },
           { props: 'allowManualCarStatusLabel', label: '允许门店手工配车', visible: true, width: 200 },

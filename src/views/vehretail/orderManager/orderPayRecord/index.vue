@@ -66,6 +66,7 @@
     </div>
     <div class="ais-table-c" v-if="activeName === 'depositRefund'">
       <LPVxeTable
+        :key="1"
         ref="tableRef"
         v-loading="loading"
         is-checkbox
@@ -84,6 +85,7 @@
     </div>
     <div class="ais-table-c" v-if="activeName === 'benefitWriteOff'">
       <LPVxeTable
+        :key="2"
         ref="tableRef"
         v-loading="loading"
         is-checkbox
@@ -256,8 +258,8 @@ export default {
           },
           { props: 'deliveryNote', label: '交车单', visible: true, width: 120 },
           { props: 'vin', label: 'VIN码', visible: true, width: 180 },
-          { props: 'payCategory', label: '收款类型', visible: true, width: 120 },
-          { props: 'rightsType', label: '权益类型', visible: true, width: 120 },
+          { props: 'payCategoryLabel', label: '收款类型', visible: true, width: 120 },
+          { props: 'rightsTypeLabel', label: '权益类型', visible: true, width: 120 },
           { props: 'paymentAmount', label: '付款金额', visible: true, width: 120 },
           { props: 'rightsItem', label: '权益项名称', visible: true, width: 150 },
           { props: 'remark', label: '备注', visible: true, width: 120 },

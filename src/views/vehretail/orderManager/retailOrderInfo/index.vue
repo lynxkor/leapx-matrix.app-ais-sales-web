@@ -199,6 +199,12 @@
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button> -->
     </div>
+    <div class="ais-active">
+      <el-tabs v-model="activeTab" @tab-click="handleClick">
+        <el-tab-pane label="全部" name="all" />
+        <el-tab-pane label="未交付" name="undelivered" />
+      </el-tabs>
+    </div>
     <div
       class="ais-table-c"
     >
@@ -274,6 +280,7 @@ import ChangeDealer from './components/ChangeDealer';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  orderStatusList: [],
   area: [],
   mallOrderCodeList: [],
   wholesaleOrderCodeList: [],
@@ -364,6 +371,7 @@ export default {
       areaOptions: JSON.parse(localStorage.areaTree),
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
+      activeTab: 'all',
       show: false,
       loading: false,
       exportLoading: false,
@@ -435,6 +443,7 @@ export default {
           { props: 'orderStatusLabel', label: '零售订单状态', visible: true, width: 150 },
           { props: 'lockStatusLabel', label: '是否锁单', visible: true, width: 120 },
           { props: 'lockTime', label: '锁单时间', visible: true, width: 180 },
+          { props: 'wholesaleOrderCode', label: '批售订单号', visible: true, width: 200 },
           { props: 'wholesaleBindStatusLabel', label: '是否绑定批售', visible: true, width: 140 },
           { props: 'priceAfterSubsidy', label: '补贴后价格', visible: true, width: 140 },
           { props: 'depositAmount', label: '应收定金', visible: true, width: 120 },
@@ -513,6 +522,15 @@ export default {
     this.loginUserGet();
   },
   methods: {
+    handleClick () {
+      // 根据选中 tab 设置 orderStatusList
+      if (this.activeTab === 'all') {
+        this.form.orderStatusList = [];
+      } else if (this.activeTab === 'undelivered') {
+        this.form.orderStatusList = [35, 30, 40, 6, 7, 10];
+      }
+      this.getData();
+    },
     handleChangeDealer (type) {
       if (type === 'sales') {
         // 校验选择的订单状态是否都是 订单确认
@@ -655,6 +673,7 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
+      this.activeTab = 'all';
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
       this.getData();
