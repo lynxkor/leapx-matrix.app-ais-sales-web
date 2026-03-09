@@ -706,6 +706,7 @@ const defaultForm = {
   orderCancelTime: '',
   orderCancelReason: '',
   orderCancelDescp: '',
+  discontinueStatusLabel: '',
 };
 
 export default {
@@ -952,8 +953,10 @@ export default {
         getMaterialInfoList({ materialsCodeLike: this.form.materialsCode, pageSize: 1 })
           .then(res => {
             if (res.records && res.records.length > 0) {
-              this.form.discontinueStatusLabel = res.records[0].discontinueStatusLabel;
-              this.$message.info(this.form.discontinueStatusLabel);
+              this.$nextTick(() => {
+                this.$message.info(JSON.stringify(res.records[0]));
+                this.form.discontinueStatusLabel = res.records[0].discontinueStatusLabel;
+              });
             }
           });
       }
