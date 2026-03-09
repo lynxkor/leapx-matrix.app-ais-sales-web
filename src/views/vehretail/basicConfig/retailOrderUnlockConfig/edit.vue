@@ -40,7 +40,15 @@
                   />
                 </el-form-item>
                 <el-form-item label="年款名称：" prop="yearTypeId">
-                  <fetch-select :options="yearModelList" v-model="form.yearTypeIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
+                  <fetch-select
+                    :options="yearModelList"
+                    v-model="form.yearTypeId"
+                    placeholder="请选择"
+                    labelKey="label"
+                    valueKey="value"
+                    clearable
+                    @change="yearListChange"
+                    filterable/>
                   <!-- <fetch-select
                     :remote-method="remoteMethods.yearType"
                     v-model="form.yearTypeId"
@@ -54,7 +62,6 @@
                     v-model="form.orderStatus"
                     placeholder="请选择"
                     clearable
-                    multiple
                     filterable
                   />
                 </el-form-item>
@@ -253,10 +260,14 @@ export default {
     this.listVehicleYearType();
   },
   methods: {
-    modelListChange (val) {
+    modelListChange (val, row) {
       this.form.yearTypeId = '';
+      this.form.modelName = row.name;
       this.yearModelList = [];
       this.listVehicleYearType(val);
+    },
+    yearListChange (val, row) {
+      this.form.yearTypeName = row.yearTypeName;
     },
     async listVehicleYearType (val) {
       const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelId: val, limitSize: 50 });
