@@ -193,12 +193,17 @@
        <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length !== 1" @click="handleUnlock">取消锁车</el-button>
        <el-button v-permission="moduleKey+'-changeSaleDealer'" size="small" @click="handleChangeDealer('sales')" :disabled="selectionList.length === 0">更换销售门店</el-button>
        <el-button v-permission="moduleKey+'-changeDeliveryDealer'" size="small" @click="handleChangeDealer('support')" :disabled="selectionList.length === 0">更换交付门店</el-button>
-       <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" @click="handleSetSpecialRemark" :disabled="selectionList.length !== 1">设置特殊备注</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button> -->
+    </div>
+    <div class="ais-active">
+      <el-tabs v-model="activeTab" @tab-click="handleClick">
+        <el-tab-pane label="全部" name="all" />
+        <el-tab-pane label="未交付" name="undelivered" />
+      </el-tabs>
     </div>
     <div
       class="ais-table-c"
@@ -240,31 +245,6 @@
       :dataList="selectionList"
       @changeDealer="changeDealerFun"
     />
-
-    <!-- 设置特殊备注 -->
-    <el-dialog
-      ref="specialRemarkDialog"
-      width="30%"
-      :visible.sync="specialRemarkDialog.show"
-      :title="specialRemarkDialog.title"
-      @close="specialRemarkDialog.show = false"
-    >
-      <el-form :model="specialRemarkDialog.form" :rules="specialRemarkDialog.rules" ref="specialRemarkFormRef" label-width="120px">
-        <el-form-item label="特殊备注" prop="specialRemark">
-          <el-input
-            v-model="specialRemarkDialog.form.specialRemark"
-            type="textarea"
-            :autosize="{ minRows: 3, maxRows: 5 }"
-            maxlength="500"
-            show-word-limit
-          />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitSetSpecialRemark">确定</el-button>
-        <el-button @click="specialRemarkDialog.show = false">取消</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -272,7 +252,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, getOrderUnlockConfig, batchReplaceStore, setSpecialRemark } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getList, deleteItem, enableItem, getOrderUnlockConfig, batchReplaceStore } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import {
   getTableConfig,
   tableAddOrUpdate,
@@ -300,6 +280,7 @@ import ChangeDealer from './components/ChangeDealer';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  orderStatusList: [],
   area: [],
   mallOrderCodeList: [],
   wholesaleOrderCodeList: [],
@@ -370,7 +351,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车零售订单管理',
+      pageTitle: '门店整车订单',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-retailOrderInfo',
@@ -390,6 +371,7 @@ export default {
       areaOptions: JSON.parse(localStorage.areaTree),
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
+      activeTab: 'all',
       show: false,
       loading: false,
       exportLoading: false,
@@ -461,6 +443,7 @@ export default {
           { props: 'orderStatusLabel', label: '零售订单状态', visible: true, width: 150 },
           { props: 'lockStatusLabel', label: '是否锁单', visible: true, width: 120 },
           { props: 'lockTime', label: '锁单时间', visible: true, width: 180 },
+          { props: 'wholesaleOrderCode', label: '批售订单号', visible: true, width: 200 },
           { props: 'wholesaleBindStatusLabel', label: '是否绑定批售', visible: true, width: 140 },
           { props: 'priceAfterSubsidy', label: '补贴后价格', visible: true, width: 140 },
           { props: 'depositAmount', label: '应收定金', visible: true, width: 120 },
@@ -528,18 +511,6 @@ export default {
           }
         ],
         total: 0
-      },
-      specialRemarkDialog: {
-        title: '设置特殊备注',
-        show: false,
-        form: {
-          specialRemark: ''
-        },
-        rules: {
-          specialRemark: [
-            { required: true, message: '请输入特殊备注', trigger: 'blur' }
-          ]
-        }
       }
     };
   },
@@ -551,24 +522,14 @@ export default {
     this.loginUserGet();
   },
   methods: {
-    handleSetSpecialRemark () {
-      this.specialRemarkDialog.show = true;
-    },
-    submitSetSpecialRemark () {
-      this.$refs.specialRemarkFormRef.validate(valid => {
-        if (valid) {
-          const orderId = this.selectionList[0].id;
-          const param = {
-            retailOrderId: orderId,
-            specialRemark: this.specialRemarkDialog.form.specialRemark
-          };
-          setSpecialRemark(param).then(res => {
-            this.$message.success('设置成功');
-            this.specialRemarkDialog.show = false;
-            this.getData();
-          });
-        }
-      });
+    handleClick () {
+      // 根据选中 tab 设置 orderStatusList
+      if (this.activeTab === 'all') {
+        this.form.orderStatusList = [];
+      } else if (this.activeTab === 'undelivered') {
+        this.form.orderStatusList = [35, 30, 40, 6, 7, 10];
+      }
+      this.getData();
     },
     handleChangeDealer (type) {
       if (type === 'sales') {
@@ -712,6 +673,7 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
+      this.activeTab = 'all';
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
       this.getData();
@@ -724,15 +686,15 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '整车零售订单管理',
-        dataFetchPath: 'web/vehretail/orderManager/retailOrderInfo/page',
+        businessType: '门店整车订单',
+        dataFetchPath: 'vr/web/order/retailOrderInfo/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车零售订单管理.xlsx');
+            await downloadExcel(res.excelUrl, '门店整车订单.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

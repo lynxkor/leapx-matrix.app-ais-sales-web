@@ -9,18 +9,39 @@
       label-width="180px"
       class="ais-search-form"
     >
-      <el-form-item label="订单信息变更申请编号">
+      <el-form-item label="申请编号">
         <tag-input v-model="form.changeApplyCodeList" placeholder="请输入" />
-      </el-form-item>
-      <el-form-item label="零售订单号">
-        <tag-input v-model="form.retailOrderCodeList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="商城订单编号"  v-show="this.visibleCount === 3 || show">
         <tag-input v-model="form.mallOrderCodeList" placeholder="请输入" />
       </el-form-item>
+      <el-form-item label="订单销售门店">
+        <tag-input v-model="form.saleDealerNameList" placeholder="请输入" />
+      </el-form-item>
       <template v-if="show">
-        <el-form-item label="销售门店编码">
-          <tag-input v-model="form.saleDealerNameList" placeholder="请输入" />
+        <el-form-item label="申请状态">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vehretail_order_change_apply_status"
+            v-model="form.applyStatusList"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="原购车人手机号码">
+          <tag-input v-model="form.originalBuyerPhoneList" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="变更后购车人手机号码">
+          <tag-input v-model="form.newBuyerPhoneList" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="变更原因">
+          <fetch-select
+            v-bind="selectReasonOptions"
+            :remote-method="changeReasonSearch"
+            v-model="form.changeReasonCode"
+          />
         </el-form-item>
         <el-form-item label="缴定金时间">
           <el-date-picker
@@ -48,22 +69,11 @@
             @change="handleDeliveryTimeChange"
           />
         </el-form-item>
-        <el-form-item label="车型ID">
+        <el-form-item label="基本车型">
           <el-input
             placeholder="请输入"
-            v-model="form.modelId"
+            v-model="form.modelName"
             clearable
-          />
-        </el-form-item>
-        <el-form-item label="申请状态">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="vehretail_order_change_apply_status"
-            v-model="form.applyStatusList"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
           />
         </el-form-item>
         <el-form-item label="变更类型">
@@ -76,25 +86,8 @@
             filterable
           />
         </el-form-item>
-        <el-form-item label="变更原因">
-          <fetch-select
-            v-bind="selectReasonOptions"
-            :remote-method="changeReasonSearch"
-            v-model="form.changeReasonCode"
-          />
-        </el-form-item>
-        <el-form-item label="变更说明">
-          <el-input
-            placeholder="请输入"
-            v-model="form.changeExplain"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="原购车人手机号码">
-          <tag-input v-model="form.originalBuyerPhoneList" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="变更后购车人手机号码">
-          <tag-input v-model="form.newBuyerPhoneList" placeholder="请输入" />
+        <el-form-item label="门店整车订单">
+          <tag-input v-model="form.retailOrderCodeList" placeholder="请输入" />
         </el-form-item>
       </template>
       <page-search-action
@@ -109,11 +102,11 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+<!--      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>-->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+<!--      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>-->
+<!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>-->
+<!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>-->
     </div>
     <div
       class="ais-table-c"
@@ -207,7 +200,7 @@ export default {
         remote: true,
         reserveKeyword: true,
       },
-      pageTitle: '订单信息变更申请管理',
+      pageTitle: '订单变更申请',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVRROCA-retailOrderChangeApply',
@@ -230,9 +223,9 @@ export default {
         },
         dataProp: [
           {
-            props: 'id',
-            label: '主键',
-            visible: false,
+            props: 'changeApplyCode',
+            label: '申请编号',
+            visible: true,
             width: 200,
             fixed: 'left',
             buttons: [{
@@ -247,71 +240,56 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'changeApplyCode', label: '申请编号', visible: true, width: 200 },
-          { props: 'retailOrderCode', label: '零售订单号', visible: true, width: 200 },
           { props: 'mallOrderCode', label: '商城订单编号', visible: true, width: 200 },
-          { props: 'saleDealerCode', label: '销售门店编码', visible: false, width: 200 },
-          { props: 'saleDealerName', label: '订单销售门店名称', visible: true, width: 200 },
+          // { props: 'retailOrderCode', label: '门店整车订单', visible: false, width: 200 },
+          // { props: 'saleDealerCode', label: '销售门店编码', visible: false, width: 200 },
+          { props: 'saleDealerName', label: '订单销售门店', visible: true, width: 200 },
           { props: 'paymentTime', label: '缴定金时间', visible: true, width: 200 },
           { props: 'deliveryTime', label: '交车时间', visible: true, width: 200 },
-          { props: 'modelId', label: '车型ID', visible: false, width: 200 },
-          { props: 'modelName', label: '车型名称', visible: true, width: 200 },
+          // { props: 'modelId', label: '车型ID', visible: false, width: 200 },
+          { props: 'modelName', label: '基本车型', visible: true, width: 200 },
           { props: 'applyStatusLabel', label: '申请状态', visible: true, width: 200 },
           { props: 'changeTypeLabel', label: '变更类型', visible: true, width: 200 },
           { props: 'changeReason', label: '变更原因', visible: true, width: 200 },
           { props: 'changeExplain', label: '变更说明', visible: true, width: 200 },
+          { props: 'originalBuyerName', label: '原购车人名称', visible: true, width: 200 },
           { props: 'originalBuyerPhone', label: '原购车人手机号码', visible: true, width: 200 },
-          { props: 'originalIdCardTypeLabel', label: '原证件类型', visible: true, width: 200 },
           { props: 'originalIdCardNo', label: '原购车人证件号码', visible: true, width: 200 },
+          { props: 'originalIdCardTypeLabel', label: '原购车人证件类型', visible: true, width: 200 },
           { props: 'originalAgentName', label: '原代办人', visible: true, width: 200 },
-          { props: 'originalSaleDealerCode', label: '原销售门店编码', visible: true, width: 200 },
-          { props: 'originalSaleDealerName', label: '原销售门店名称', visible: true, width: 200 },
+          // { props: 'originalSaleDealerCode', label: '原销售门店编码', visible: false, width: 200 },
+          { props: 'originalSaleDealerName', label: '原销售门店', visible: true, width: 200 },
           { props: 'deliveryStatusLabel', label: '是否完成交车', visible: true, width: 200 },
-          { props: 'originalOrderStatusLabel', label: '原整车订单状态', visible: true, width: 200 },
-          { props: 'originalMaterialsCode', label: '原订单物料码', visible: true, width: 200 },
           { props: 'newBuyerName', label: '变更后购车人姓名', visible: true, width: 200 },
           { props: 'newBuyerPhone', label: '变更后购车人手机号码', visible: true, width: 200 },
-          { props: 'newIdCardTypeLabel', label: '变更后购车人证件类型', visible: true, width: 200 },
           { props: 'newIdCardNo', label: '变更后购车人证件号码', visible: true, width: 200 },
+          { props: 'newIdCardTypeLabel', label: '变更后购车人证件类型', visible: true, width: 200 },
           { props: 'newAgentName', label: '变更后代办人', visible: true, width: 200 },
-          { props: 'newSaleDealerCode', label: '变更后销售门店编码', visible: true, width: 200 },
-          { props: 'newSaleDealerName', label: '变更后销售门店名称', visible: true, width: 200 },
+          // { props: 'newSaleDealerCode', label: '变更后销售门店编码', visible: false, width: 200 },
+          { props: 'newSaleDealerName', label: '变更后销售门店', visible: true, width: 200 },
+          // { props: 'originalOrderStatusLabel', label: '原整车订单状态', visible: false, width: 200 },
+          // { props: 'originalMaterialsCode', label: '原订单物料码', visible: false, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
             type: 'operate',
             visible: true,
             fixed: 'right',
-            buttons: [{
-              name: '编辑',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehretail/orderRefund/changeApply/edit',
-                  query: {
-                    id: row.id
-                  }
-                });
-              },
-              type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
-            }]
+            buttons: [
+              // {
+              //   name: '编辑',
+              //   click: (rowIndex, row) => {
+              //     this.$router.push({
+              //       path: '/vehretail/orderRefund/changeApply/edit',
+              //       query: {
+              //         id: row.id
+              //       }
+              //     });
+              //   },
+              //   type: 'info'
+              // }
+            ]
           }
         ],
         total: 0
@@ -349,7 +327,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '订单信息变更申请管理',
+        businessType: '订单变更申请',
         dataFetchPath: '/vr/web/order/retailOrderChangeApply/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -357,7 +335,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '订单信息变更申请管理.xlsx');
+            await downloadExcel(res.excelUrl, '订单变更申请.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

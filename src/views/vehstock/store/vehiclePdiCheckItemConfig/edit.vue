@@ -29,14 +29,24 @@
                   <el-input
                     placeholder="请输入"
                     v-model="form.name"
+                    :disabled="isEditing"
+                    maxlength="500"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="上级检查项id：" prop="parentId">
-                  <el-input
+                <el-form-item label="上级检查项：" prop="parentId">
+                  <fetch-select
+                    :remote-method="getLayerTypeList"
+                    remote
+                    :options="layerTypeList"
+                    :params="form.parentName"
                     placeholder="请输入"
                     v-model="form.parentId"
+                    value-key="id"
+                    label-key="name"
                     clearable
+                    filterable
+                    @change="handleLayerTypeChange"
                   />
                 </el-form-item>
                 <el-form-item label="层级："  prop="layerType">
@@ -45,6 +55,7 @@
                     enumCode="vehstock_layer_type"
                     v-model="form.layerType"
                     placeholder="请选择"
+                    disabled
                     clearable
                     filterable
                   />
@@ -56,18 +67,18 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="车型ID：" prop="modelId">
-                  <el-input
-                    placeholder="请输入"
+                <el-form-item label="车型：" prop="modelId">
+                  <fetch-select
                     v-model="form.modelId"
-                    clearable
+                    v-bind="selectOptions"
+                    :remote-method="remoteMethods.model"
                   />
                 </el-form-item>
-                <el-form-item label="车系ID：" prop="seriesId">
-                  <el-input
-                    placeholder="请输入"
+                <el-form-item label="车系：" prop="seriesId">
+                  <fetch-select
                     v-model="form.seriesId"
-                    clearable
+                    v-bind="selectOptions"
+                    :remote-method="remoteMethods.series"
                   />
                 </el-form-item>
                 <el-form-item label="检查方式：" prop="checkMode">
@@ -136,16 +147,20 @@
                   />
                 </el-form-item>
                 <el-form-item label="生效日期：" prop="effectiveOn">
-                  <el-input
-                    placeholder="请输入"
+                  <el-date-picker
                     v-model="form.effectiveOn"
+                    type="date"
+                    value-format="yyyy-MM-dd"
+                    placeholder="请选择生效日期"
                     clearable
                   />
                 </el-form-item>
                 <el-form-item label="失效日期：" prop="expiredOn">
-                  <el-input
-                    placeholder="请输入"
+                  <el-date-picker
                     v-model="form.expiredOn"
+                    type="date"
+                    value-format="yyyy-MM-dd"
+                    placeholder="请选择失效日期"
                     clearable
                   />
                 </el-form-item>
@@ -214,12 +229,12 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehstock/store/vehiclePdiCheckItemConfig/index';
+import { getDetail, addOrUpdate, getList } from '@/api/vehstock/store/vehiclePdiCheckItemConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 // import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum } from '@/api/common';
+import { getEnum, vehicleSeriesList, listVehicleModel } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -240,7 +255,7 @@ const defaultForm = {
   name: '',
   parentId: '',
   parentName: '',
-  layerType: '',
+  layerType: '10',
   serialno: '',
   modelId: '',
   modelName: '',
@@ -286,7 +301,7 @@ export default {
         }
       },
       immediate: true
-    }
+    },
   },
   data () {
     const form = this.getDefautlForm();
@@ -301,12 +316,44 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
+      layerTypeList: [], // 新增编辑页面上级检查项
       defaultNewRow: {
         name: '',
       },
+      // 提取公共配置
+      selectOptions: {
+        placeholder: '请选择',
+        labelKey: 'name',
+        valueKey: 'id',
+        clearable: true,
+        multiple: false,
+        collapseTags: true,
+        filterable: true,
+        remote: true,
+        reserveKeyword: true
+      },
+      // 远程搜索方法
+      remoteMethods: {
+        series: async (query) => {
+          return await vehicleSeriesList({ seriesNameLike: query });
+        },
+        model: async (query) => {
+          return await this.searchModel(query);
+        },
+      },
       rules: {
         name: [
-          { required: true, message: '请输入PDI检查项', trigger: 'change' }
+          { required: true, message: '请输入PDI检查项', trigger: 'change' },
+          {
+            validator: (rule, value, callback) => {
+              if (value && value.includes(' ')) {
+                callback(new Error('不能包含空格'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur'
+          }
         ],
         parentId: [
           { required: false, message: '请输入上级检查项id', trigger: 'change' }
@@ -324,7 +371,7 @@ export default {
           { required: false, message: '请输入车系ID', trigger: 'change' }
         ],
         checkMode: [
-          { required: true, message: '请输入检查方式', trigger: 'change' }
+          { required: false, message: '请输入检查方式', trigger: 'change' }
         ],
         isAtlas: [
           { required: false, message: '请输入是否图谱', trigger: 'change' }
@@ -345,7 +392,7 @@ export default {
           { required: false, message: '图谱坐标right', trigger: 'change' }
         ],
         status: [
-          { required: true, message: '请选择状态', trigger: 'change' }
+          { required: false, message: '请选择状态', trigger: 'change' }
         ],
         effectiveOn: [
           { required: true, message: '请输入生效日期', trigger: 'change' }
@@ -366,6 +413,10 @@ export default {
       }
     },
     submitRequest () {
+      if (this.form.expiredOn && new Date(this.form.expiredOn) < new Date(this.form.effectiveOn)) {
+        this.$message.error('失效日期不可小于生效日期，请检查！');
+        return false;
+      }
       return addOrUpdate({ ...this.form });
     },
     // 打开侧边栏
@@ -405,7 +456,41 @@ export default {
         return getEnum(code);
       }
       return [];
-    }
+    },
+    // 车型支持车系 ID 和 车型输入 方法
+    async searchModel (query) {
+      const params = {};
+
+      if (query) {
+        params.modelNameLike = query;
+      }
+
+      if (this.form.seriesIdList?.length) {
+        params.seriesIds = this.form.seriesIdList;
+      }
+
+      return await listVehicleModel(params);
+    },
+    // 获取上级检查项
+    async getLayerTypeList (keyword) {
+      try {
+        const res = await getList({ pageNum: 1, pageSize: 50, layerTypeList: ['20', '10'], nameLike: keyword });
+        this.layerTypeList = res.records;
+        return res;
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
+    },
+    // 上级检查项改变 联动层级
+    handleLayerTypeChange (value, selectedOption) {
+      if (selectedOption && Number(selectedOption.layerType) === 10) {
+        this.form.layerType = '20';
+      } else if (selectedOption && Number(selectedOption.layerType) === 20) {
+        this.form.layerType = '30';
+      } else {
+        this.form.layerType = '10';
+      }
+    },
   }
 };
 </script>

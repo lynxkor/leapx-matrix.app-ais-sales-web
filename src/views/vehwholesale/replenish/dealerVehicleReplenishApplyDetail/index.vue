@@ -203,7 +203,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车门店补货明细管理',
+      pageTitle: '整车门店补货明细',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-dealerVehicleReplenishApplyDetail',
@@ -285,6 +285,8 @@ export default {
               type: 'info'
             }, {
               name: '删除',
+              popconfirmConfirmButtonType: 'danger',
+              popconfirmConfirmButtonText: '删除',
               popconfirmTitle: '此操作将永久删除, 是否继续?',
               click: (rowIndex, row) => {
                 deleteItem([row.id]).then(() => {
@@ -343,7 +345,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '整车门店补货明细管理',
+        businessType: '整车门店补货明细',
         dataFetchPath: 'vw/web/replenish/dealerVehicleReplenishApplyDetail/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -351,7 +353,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车门店补货明细管理.xlsx');
+            await downloadExcel(res.excelUrl, '整车门店补货明细.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

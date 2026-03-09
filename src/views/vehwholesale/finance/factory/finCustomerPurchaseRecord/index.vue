@@ -11,7 +11,7 @@
     >
     <el-form-item label="母公司名称">
        <fetch-select
-            :remote-method="getParentCompany"
+            :remote-method="getDealerParentOrgListByName"
             remote
             v-model="form.dealerCompanyNames"
             placeholder="请选择"
@@ -50,7 +50,7 @@
       <template v-if="show">
         <el-form-item label="母公司编码">
            <fetch-select
-            :remote-method="getParentCompany"
+            :remote-method="getDealerParentOrgListByCode"
             remote
             v-model="form.dealerCompanyCodes"
             placeholder="请选择"
@@ -182,7 +182,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-车厂融资信息-客户采购记录',
+      pageTitle: '客户采购记录',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-finCustomerPurchaseRecord',
@@ -241,7 +241,7 @@ export default {
           { props: 'syncCount', label: '推送次数', visible: true, width: 200 },
           { props: 'financingDataSourceLabel', label: '融资数据来源', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'remark', label: '备注', visible: true, width: 200 },
+          { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 }
         ],
         total: 0
@@ -257,15 +257,12 @@ export default {
     this.fetchfinancingDataSourceOptions();
   },
   methods: {
-    async getParentCompany (query) {
-      try {
-        const res = await getParentCompany({ parentCompanyName: query });
-        console.log(res);
-        this.parentCompanyNames = res;
-        return res;
-      } catch (error) {
-        console.error('Error fetching series list:', error);
-      }
+
+    async getDealerParentOrgListByCode (params) {
+      return getParentCompany({ companyCode: params });
+    },
+    async getDealerParentOrgListByName (params) {
+      return getParentCompany({ companyName: params });
     },
     repairItemSearch (query) { return fundGetList({ organizationNameLike: query, status: 1 }); },
     async fetchEnumsOptions () {
@@ -325,7 +322,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '账户管理-车厂融资信息-客户采购记录',
+        businessType: '客户采购记录',
         dataFetchPath: 'vw/web/finance/factory/finCustomerPurchaseRecord/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -333,7 +330,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '账户管理-车厂融资信息-客户采购记录.xlsx');
+            await downloadExcel(res.excelUrl, '客户采购记录.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

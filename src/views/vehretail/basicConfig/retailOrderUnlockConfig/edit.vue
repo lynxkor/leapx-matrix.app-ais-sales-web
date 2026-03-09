@@ -40,7 +40,15 @@
                   />
                 </el-form-item>
                 <el-form-item label="年款名称：" prop="yearTypeId">
-                  <fetch-select :options="yearModelList" v-model="form.yearTypeIdSet" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
+                  <fetch-select
+                    :options="yearModelList"
+                    v-model="form.yearTypeId"
+                    placeholder="请选择"
+                    labelKey="label"
+                    valueKey="value"
+                    clearable
+                    @change="yearListChange"
+                    filterable/>
                   <!-- <fetch-select
                     :remote-method="remoteMethods.yearType"
                     v-model="form.yearTypeId"
@@ -54,7 +62,6 @@
                     v-model="form.orderStatus"
                     placeholder="请选择"
                     clearable
-                    multiple
                     filterable
                   />
                 </el-form-item>
@@ -74,7 +81,7 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="状态：" prop="status">
+                <el-form-item label="状态：">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="StatusEnum"
@@ -84,7 +91,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
+                <el-form-item label="创建时间：">
                   <el-input v-model="form.createTime" disabled placeholder="新增自动生成" />
                 </el-form-item>
               </el-form>
@@ -197,7 +204,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '订单解绑配车配置管理',
+      pageTitle: '订单解绑配车配置',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-retailOrderUnlockConfig',
@@ -253,10 +260,14 @@ export default {
     this.listVehicleYearType();
   },
   methods: {
-    modelListChange (val) {
+    modelListChange (val, row) {
       this.form.yearTypeId = '';
+      this.form.modelName = row.name;
       this.yearModelList = [];
       this.listVehicleYearType(val);
+    },
+    yearListChange (val, row) {
+      this.form.yearTypeName = row.yearTypeName;
     },
     async listVehicleYearType (val) {
       const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelId: val, limitSize: 50 });

@@ -19,11 +19,31 @@
         <tag-input v-model="form.vins" placeholder="请输入" />
       </el-form-item>
       <template v-if="show">
-        <el-form-item label="大区">
-          <tag-input v-model="form.regionNames" placeholder="请输入" />
+          <el-form-item label="大区">
+          <fetch-select
+            filterable
+            clearable
+            remote
+            multiple
+            v-model="form.regionCodes"
+            :remote-method="getRegionList"
+            value-key="orgCode"
+            label-key="orgName"
+          />
         </el-form-item>
         <el-form-item label="销售门店">
-          <tag-input v-model="form.saleDealerCodes" placeholder="请输入" />
+          <fetch-select
+            filterable
+            clearable
+            multiple
+            remote
+            collapseTags
+            v-model="form.saleDealerCodes"
+            :remote-method="getDealerListByName"
+            value-key="storeCode"
+            label-key="storeName"
+          />
+          <!-- <tag-input v-model="form.saleDealerCodes" placeholder="请输入" /> -->
         </el-form-item>
         <el-form-item label="车系">
          <fetch-select
@@ -42,10 +62,9 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="vehretail_data_source"
-            v-model="form.dataSources"
+            v-model="form.dataSource"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -53,7 +72,7 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_deliverytype"
-            v-model="form.certificateShippingWays"
+            v-model="form.certificateShippingWaies"
             placeholder="请选择"
             clearable
             multiple
@@ -68,7 +87,7 @@
                 reserve-keyword
                 labelKey="name"
                 valueKey="id"
-                v-model="form.fundFinancialOrganizationIds"
+                v-model="form.financialOrganizationIds"
                 placeholder="请选择"
                 clearable
                 filterable
@@ -88,7 +107,7 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_wholesale_way"
-            v-model="form.wholesaleWays"
+            v-model="form.wholesaleWaies"
             placeholder="请选择"
             clearable
             multiple
@@ -99,7 +118,7 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="ws_cooperation_type"
-            v-model="form.cooperateType"
+            v-model="form.cooperateTypes"
             placeholder="请选择"
             clearable
             multiple
@@ -111,6 +130,17 @@
             :request="fetchOptions"
             enumCode="vehstock_ship_via"
             v-model="form.deliveryWaies"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="发运方式">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vehstock_ship_via"
+            v-model="form.actualDeliveryWaies"
             placeholder="请选择"
             clearable
             multiple
@@ -188,7 +218,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, addOrUpdateItem, setSwitchItem } from '@/api/vehwholesale/shipping/vehicleShippingPlanDetail/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, getRigion, listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -290,7 +320,7 @@ export default {
           { props: 'needSyncWmsLabel', label: '是否需要同步WMS', visible: true, width: 200 },
           { props: 'certificatePledgedLabel', label: '合格证是否质押', visible: true, width: 200 },
           { props: 'certificateShippingWayLabel', label: '合格证发运方式', visible: true, width: 200 },
-          { props: 'financialOrganizationId', label: '金融机构', visible: true, width: 200 },
+          { props: 'organizationName', label: '金融机构', visible: true, width: 200 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 200 },
           { props: 'cooperateTypeLabel', label: '合作类型', visible: true, width: 200 },
           { props: 'deliveryWayLabel', label: '指定发运方式', visible: true, width: 200 },
@@ -304,21 +334,22 @@ export default {
           { props: 'address', label: '交车地址', visible: true, width: 200 },
           { props: 'pickupContactName', label: '接车人', visible: true, width: 200 },
           { props: 'pickupContactMobile', label: '接车人电话', visible: true, width: 200 },
-          // { props: 'regionName', label: '大区', visible: true, width: 200 },
+          { props: 'regionName', label: '大区', visible: true, width: 200 },
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
-          { props: '', label: '门店仓库', visible: true, width: 200 },
+          { props: 'dealerWarehouseName', label: '门店仓库', visible: true, width: 200 },
           { props: 'deliveryDealerName', label: '交付门店', visible: true, width: 200 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'carrierRecordCode', label: '承运记录编码', visible: true, width: 200 },
           { props: 'entCustomerName', label: '企业客户', visible: true, width: 200 },
-          { props: '', label: '企业下单时间', visible: true, width: 200 },
-          { props: 'materialsId', label: '物料描述', visible: true, width: 200 },
+          { props: 'entCustomerOrderTime', label: '企业下单时间', visible: true, width: 200 },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           { props: 'drivingRangeName', label: '选配续航', visible: true, width: 200 },
           { props: 'rangePowerName', label: '选配动力', visible: true, width: 200 },
           { props: 'exteriorName', label: '外饰风格', visible: true, width: 200 },
           { props: 'interiorName', label: '内饰风格', visible: true, width: 200 },
-          { props: '', label: '车型名称', visible: true, width: 200 },
+          { props: 'modelName', label: '车型名称', visible: true, width: 200 },
           { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
+          { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           // {
@@ -375,17 +406,23 @@ export default {
     this.getData();
   },
   methods: {
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params, isSales: true });
+    },
+    async getRegionList (params) {
+      return getRigion({ orgName: params });
+    },
     handleaAdOrUpdate () {
       addOrUpdateItem({}).then(() => {
         this.$message({
           type: 'success',
-          message: '删除成功!'
+          message: '创建发运计划成功!'
         });
         this.getData();
       }).catch(() => {
         this.$message({
           type: 'error',
-          message: '删除失败!'
+          message: '创建发运计划失败!'
         });
       });
     },
@@ -398,13 +435,13 @@ export default {
       }).then(() => {
         this.$message({
           type: 'success',
-          message: '删除成功!'
+          message: '设置定时任务开关成功!'
         });
         this.getData();
       }).catch(() => {
         this.$message({
           type: 'error',
-          message: '删除失败!'
+          message: '设置定时任务开关失败!'
         });
       });
     },
@@ -479,13 +516,19 @@ export default {
     getData () {
       this.loading = true;
       this.selectionList = [];
-
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
-          console.log(res);
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item,
+              drivingRangeName: item.vehicleMaterials?.drivingRangeName || '',
+              rangePowerName: item.vehicleMaterials?.rangePowerName || '',
+              exteriorName: item.vehicleMaterials?.exteriorName || '',
+              interiorName: item.vehicleMaterials?.interiorName || '',
+              wheelHubName: item.vehicleMaterials?.wheelHubName || '',
+              modelName: item.vehicleMaterials?.modelName || '',
+              materialsDesc: item.vehicleMaterials?.materialsDesc || '',
+              organizationName: item.financialOrganization?.organizationName || '',
               deleteLoading: false
             };
           });

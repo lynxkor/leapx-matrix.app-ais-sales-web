@@ -19,23 +19,18 @@
         </el-select>
       </el-form-item>
       <el-form-item label="销售公告车型名称">
-        <el-select
+        <fetch-select
           v-model="form.vehicleRegisteredModelId"
           filterable
           clearable
           remote
           reserve-keyword
+          :options="modelOptions"
           placeholder="请选择"
           :remote-method="serchModel"
-          collapse-tags
-          >
-          <el-option
-            v-for="item in modelOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
+          value-key="value"
+          label-key="label"
+        />
       </el-form-item>
       <el-form-item label="状态" v-if="visibleCount === 3 || show">
           <fetch-select
@@ -212,6 +207,8 @@ export default {
               type: 'info'
             }, {
               name: '删除',
+              popconfirmConfirmButtonType: 'danger',
+              popconfirmConfirmButtonText: '删除',
               popconfirmTitle: '此操作将永久删除, 是否继续?',
               click: (rowIndex, row) => {
                 deleteItem([row.id]).then(() => {
@@ -355,8 +352,9 @@ export default {
       const res = await vehicleSalesVersionList({ registeredModelNameLike: query, size: 100 });
       this.modelOptions = res?.map(item => {
         return {
-          label: item.registeredModelName,
-          value: item.id
+          ...item,
+          label: item.name,
+          value: item.id,
         };
       });
     },

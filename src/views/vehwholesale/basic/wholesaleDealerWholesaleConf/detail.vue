@@ -96,7 +96,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '门店批售设置管理',
+      pageTitle: '门店批售设置',
       pageType: 'detail',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleDealerWholesaleConf',
@@ -106,7 +106,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['门店批售设置管理', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['门店批售设置', '详情']);
     this.getData();
   },
   methods: {

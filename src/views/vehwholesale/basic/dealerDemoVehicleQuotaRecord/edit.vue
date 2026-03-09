@@ -106,7 +106,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '门店试驾车配额调整记录管理',
+      pageTitle: '门店试驾车配额调整记录',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-dealerDemoVehicleQuotaRecord',
@@ -138,7 +138,7 @@ export default {
     },
     getDetailData () {
       const id = this.id || this.$route.query.id;
-      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['门店试驾车配额调整记录管理', `${id ? '编辑' : '新建'}`]);
+      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['门店试驾车配额调整记录', `${id ? '编辑' : '新建'}`]);
       if (id) {
         getDetail(id).then(res => {
           this.loading = false;

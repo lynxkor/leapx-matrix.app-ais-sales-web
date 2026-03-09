@@ -4,24 +4,32 @@
     <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
       class="ais-search-form">
       <el-form-item label="出库单号">
-        <el-input placeholder="请输入" v-model="form.name" clearable />
+        <el-input placeholder="请输入" v-model="form.nameLike" clearable />
       </el-form-item>
       <el-form-item label="VIN">
-        <el-input placeholder="请输入" v-model="form.vin" clearable />
+        <tag-input v-model="form.vinList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="物料编码" v-if="this.visibleCount === 3 || show">
-        <el-input placeholder="请输入" v-model="form.materialsCode" clearable />
+        <tag-input v-model="form.materialsCodeList" placeholder="请输入" />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="物料描述">
-          <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
+          <el-input placeholder="请输入" v-model="form.materialsDescLike" clearable />
         </el-form-item>
         <el-form-item label="出库类型">
           <fetch-select :request="fetchOptions" enumCode="vehstock_moveout_type" v-model="form.moveoutTypeList"
             placeholder="请选择" clearable multiple filterable />
         </el-form-item>
         <el-form-item label="出库时间">
-          <el-input placeholder="请输入" v-model="form.moveoutOn" clearable />
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.moveoutOnTime"
+            type="daterange"
+            :picker-options="pickerOptions"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
         </el-form-item>
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
@@ -62,13 +70,14 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  name: '',
-  vin: '',
-  materialsCode: '',
-  materialsDesc: '',
+  nameLike: '',
+  vinList: [],
+  materialsCodeList: [],
+  materialsDescLike: '',
   moveoutTypeList: [],
   moveoutOn: '',
 };
@@ -84,7 +93,8 @@ export default {
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
-    Upload
+    Upload,
+    TagInput
   },
   data () {
     return {
@@ -255,14 +265,22 @@ export default {
         }
       });
 
-      if (this.form.createTime) {
-        delete data.createTime;
-        if (this.form.createTime.length > 1) {
-          data.createTimeStart = this.form.createTime[0];
-          data.createTimeEnd = this.form.createTime[1];
+      if (this.form.moveoutOnTime) {
+        delete data.moveoutOnTime;
+        if (this.form.moveoutOnTime.length > 1) {
+          data.moveoutOnStart = this.form.moveoutOnTime[0];
+          data.moveoutOnEnd = this.form.moveoutOnTime[1];
         }
       }
 
+      if (Array.isArray(this.form.vinList) && this.form.vinList.length <= 1) {
+        delete data.vinList;
+        data.vinLike = this.form.vinList[0] || '';
+      }
+      if (Array.isArray(this.form.materialsCodeList) && this.form.materialsCodeList.length <= 1) {
+        delete data.materialsCodeList;
+        data.materialsCodeLike = this.form.materialsCodeList[0] || '';
+      }
       return data;
     },
     async fetchOptions (code) {

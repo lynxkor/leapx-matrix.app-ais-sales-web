@@ -6,8 +6,18 @@
       <el-form-item label="PDI检查项">
         <el-input placeholder="请输入" v-model="form.nameLike" clearable />
       </el-form-item>
-      <el-form-item label="上级检查项id">
-        <el-input placeholder="请输入" v-model="form.parentId" clearable />
+      <el-form-item label="上级检查项">
+        <fetch-select
+          :remote-method="getLayerTypeList"
+          remote
+          :options="layerTypeList"
+          placeholder="请输入"
+          v-model="form.parentId"
+          value-key="id"
+          label-key="name"
+          clearable
+          filterable
+        />
       </el-form-item>
       <el-form-item label="检查方式" v-if="this.visibleCount === 3 || show">
         <fetch-select :request="fetchOptions" enumCode="vehstock_check_mode" v-model="form.checkModeList" placeholder="请选择"
@@ -90,6 +100,7 @@ export default {
         ...defaultForm
       },
       selectionList: [],
+      layerTypeList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -267,6 +278,16 @@ export default {
       }
       this.debouncedGetData();
     },
+    // 获取上级检查项
+    async getLayerTypeList (keyword) {
+      try {
+        const res = await getList({ pageNum: 1, pageSize: 50, nameLike: keyword });
+        this.layerTypeList = res.records;
+        return res;
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
+    },
     // 多选框选中数据
     handleSelectionChange (selection) {
       this.selectionList = selection;
@@ -323,6 +344,26 @@ export default {
     },
     // 批量启用停用
     handleBatchEnable (status) {
+      const sameStatusItems = this.selectionList.filter(item => item.status === status);
+      const statusText = status === 1 ? '启用' : '停用';
+      // 检查所有选中项的状态是否都与要操作的目标状态不同
+      // 如果目标状态是1(启用)，那么所有项当前必须是0(停用)
+      // 如果目标状态是0(停用)，那么所有项当前必须是1(启用)
+      const isAllCanOperate = this.selectionList.every(item => {
+        const currentStatus = item.status;
+        // 如果当前状态和目标状态相同，说明已经是要操作的状态，不能操作
+        return currentStatus !== status;
+      });
+
+      if (!isAllCanOperate) {
+        this.$message({
+          type: 'warning',
+          message: sameStatusItems.length === this.selectionList.length
+            ? `选中的数据已经是${statusText}状态，无需重复操作！`
+            : `选中的数据中存在${statusText}状态的数据，无法批量${statusText}！`
+        });
+        return;
+      }
       handleBatchStatusChange.call(this, {
         selectionList: this.selectionList,
         targetStatus: status,

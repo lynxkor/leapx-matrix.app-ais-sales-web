@@ -34,7 +34,7 @@
             <el-form-item label="开启返利使用额度：" prop="rebateUsageQuota">
               {{ info.rebateUsageQuota  }}
             </el-form-item>
-            <el-form-item label="是否是否生成采购记录：" prop="createPurchaseRecord">
+            <el-form-item label="是否生成采购记录：" prop="createPurchaseRecord">
               {{ info.createPurchaseRecordLabel  }}
             </el-form-item>
             <el-form-item label="状态：" prop="status">
@@ -87,7 +87,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-基础配置-金融机构管理',
+      pageTitle: '金融机构',
       pageType: 'detail',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-fundFinancialOrganization',
@@ -97,7 +97,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['账户管理-基础配置-金融机构管理', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['金融机构', '详情']);
     this.getData();
   },
   methods: {

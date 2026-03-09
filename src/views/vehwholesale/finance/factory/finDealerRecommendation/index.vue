@@ -11,7 +11,7 @@
     >
       <el-form-item label="母公司名称"  v-show="this.visibleCount === 3 || show">
         <fetch-select
-            :remote-method="getParentCompany"
+            :remote-method="getDealerParentOrgListByName"
             remote
             v-model="form.dealerCompanyNames"
             placeholder="请选择"
@@ -24,7 +24,7 @@
       </el-form-item>
       <el-form-item label="母公司编码">
          <fetch-select
-            :remote-method="getParentCompany"
+            :remote-method="getDealerParentOrgListByCode"
             remote
             v-model="form.dealerCompanyCodes"
             placeholder="请选择"
@@ -42,7 +42,7 @@
             reserve-keyword
             labelKey="organizationName"
             valueKey="organizationCode"
-            v-model="form.fundFinancialOrganizationIds"
+            v-model="form.recFinancialOrganizationIds"
             placeholder="请选择"
             clearable
             multiple
@@ -57,7 +57,6 @@
             v-model="form.syncStatus"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -180,7 +179,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '账户管理-车厂融资信息-经销商推荐函',
+      pageTitle: '经销商推荐函',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-finDealerRecommendation',
@@ -230,7 +229,7 @@ export default {
           { props: 'syncResult', label: '同步结果', visible: true, width: 200 },
           { props: 'syncTime', label: '同步时间', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'remark', label: '备注（说明）', visible: true, width: 200 },
+          { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
@@ -274,15 +273,11 @@ export default {
     this.getData();
   },
   methods: {
-    async getParentCompany (query) {
-      try {
-        const res = await getParentCompany({ parentCompanyName: query });
-        console.log(res);
-        this.parentCompanyNames = res;
-        return res;
-      } catch (error) {
-        console.error('Error fetching series list:', error);
-      }
+    async getDealerParentOrgListByCode (params) {
+      return getParentCompany({ companyCode: params });
+    },
+    async getDealerParentOrgListByName (params) {
+      return getParentCompany({ companyName: params });
     },
     repairItemSearch (query) { return fundGetList({ organizationNameLike: query, status: 1 }); },
     handleListSelect (row) {
@@ -317,7 +312,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '账户管理-车厂融资信息-经销商推荐函管理',
+        businessType: '经销商推荐函',
         dataFetchPath: 'vw/web/finance/factory/finDealerRecommendation/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -325,7 +320,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '账户管理-车厂融资信息-经销商推荐函管理.xlsx');
+            await downloadExcel(res.excelUrl, '经销商推荐函.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

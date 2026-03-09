@@ -47,11 +47,11 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+<!--      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>-->
+<!--      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>-->
+<!--      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>-->
+<!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>-->
+<!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>-->
     </div>
     <div
       class="ais-table-c"
@@ -88,14 +88,14 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehretail/orderRefund/changeReason';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { deleteItem, enableItem, getList } from '@/api/vehretail/orderRefund/changeReason';
+import { exportTable, getEnum, getTableConfig, tableAddOrUpdate } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
+import { downloadExcel, handleBatchStatusChange } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 
@@ -122,7 +122,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车零售订单变更原因管理',
+      pageTitle: '订单变更原因',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVRROCA-retailOrderChangeReason',
@@ -149,6 +149,12 @@ export default {
             label: '主键',
             visible: false,
             width: 200,
+          },
+          {
+            props: 'changeCode',
+            label: '变更原因代码',
+            visible: true,
+            width: 200,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -162,46 +168,30 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'changeCode', label: '变更原因代码', visible: true, width: 200 },
           { props: 'changeName', label: '变更原因名称', visible: true, width: 200 },
           { props: 'changeTypeLabel', label: '变更类型', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
           {
             props: 'operate',
             label: '操作',
             type: 'operate',
             visible: true,
             fixed: 'right',
-            buttons: [{
-              name: '编辑',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehretail/orderRefund/changeReason/edit',
-                  query: {
-                    id: row.id,
-                    isEditing: true
-                  }
-                });
-              },
-              type: 'info'
-            }, {
-              name: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
-            }]
+            buttons: [
+              // {
+              //   name: '编辑',
+              //   click: (rowIndex, row) => {
+              //     this.$router.push({
+              //       path: '/vehretail/orderRefund/changeReason/edit',
+              //       query: {
+              //         id: row.id,
+              //         isEditing: true
+              //       }
+              //     });
+              //   },
+              //   type: 'info'
+              // }
+            ]
           }
         ],
         total: 0
@@ -261,7 +251,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '整车零售订单变更原因管理',
+        businessType: '订单变更原因',
         dataFetchPath: '/vr/web/order/retailOrderChangeReason/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -269,7 +259,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车零售订单变更原因管理.xlsx');
+            await downloadExcel(res.excelUrl, '订单变更原因.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

@@ -152,10 +152,10 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="门店仓库xx：" prop="vehicleWarehouseName">
+                <el-form-item label="门店仓库：" prop="dealerWarehouseName">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.vehicleWarehouseName"
+                    v-model="form.dealerWarehouseName"
                     clearable
                   />
                 </el-form-item>
@@ -180,7 +180,7 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="企业整车订单号：" prop="entVehicleOrderCode">
+                <el-form-item label="企业客户订单号：" prop="entVehicleOrderCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.entVehicleOrderCode"
@@ -228,7 +228,7 @@
                 <el-form-item label="VIN码：" prop="vin">
                   {{ form.vin }}
                 </el-form-item>
-                <el-form-item label="整车仓库名称：" prop="vehicleWarehouseName">
+                <el-form-item label="整车仓库：" prop="vehicleWarehouseName">
                   {{ form.vehicleWarehouseName }}
                 </el-form-item>
                 <el-form-item label="订单分类：" prop="orderCategory">
@@ -240,16 +240,16 @@
                 <el-form-item label="合格证发运方式：" prop="certificateShippingWay">
                   {{ form.certificateShippingWayLabel }}
                 </el-form-item>
-                <el-form-item label="金融机构ID：" prop="financialOrganizationId">
-                  {{ form.financialOrganizationId }}
+                <el-form-item label="金融机构：" prop="organizationName">
+                  {{ form.organizationName }}
                 </el-form-item>
-                <el-form-item label="车系名称：" prop="seriesName">
+                <el-form-item label="车系：" prop="seriesName">
                   {{ form.seriesName }}
                 </el-form-item>
-                <el-form-item label="大区：" prop="regionName">
+                <el-form-item label="所属大区：" prop="regionName">
                   {{ form.regionName }}
                 </el-form-item>
-                <el-form-item label="是否发运" prop="shipped">
+                <el-form-item label="是否发运：" prop="shipped">
                   {{ form.shippedLabel }}
                 </el-form-item>
                 <el-form-item label="批售方式：" prop="wholesaleWay">
@@ -267,23 +267,26 @@
                 <el-form-item label="批售订单号：" prop="wholesaleOrderCode">
                   {{ form.wholesaleOrderCode }}
                 </el-form-item>
-                <el-form-item label="发运计划明细编码：" prop="shippingPlanDetailCode">
+                <el-form-item label="发运计划：" prop="shippingPlanDetailCode">
                   {{ form.shippingPlanDetailCode }}
                 </el-form-item>
-                <el-form-item label="销售门店名称：" prop="saleDealerName">
+                <el-form-item label="销售门店：" prop="saleDealerName">
                   {{ form.saleDealerName }}
                 </el-form-item>
-                <el-form-item label="门店仓库：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                <el-form-item label="门店仓库：" prop="dealerWarehouseName">
+                  {{ form.dealerWarehouseName }}
                 </el-form-item>
-                <el-form-item label="交付门店：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                <el-form-item label="交付门店：" prop="deliveryDealerName">
+                  {{ form.deliveryDealerName }}
                 </el-form-item>
                 <el-form-item label="收货时间：" prop="saleDealerName">
                   {{ form.saleDealerName }}
                 </el-form-item>
                 <el-form-item label="是否需要同步WMS：" prop="needSyncWms">
                   {{ form.needSyncWmsLabel }}
+                </el-form-item>
+                <el-form-item label="企业客户订单号：" prop="wholesaleOrderCode">
+                  {{ form.wholesaleOrderCode }}
                 </el-form-item>
                 <el-form-item label="承运记录编码：" prop="carrierRecordCode">
                   {{ form.carrierRecordCode }}
@@ -294,7 +297,7 @@
                 <el-form-item label="作废时间：" prop="cancelTime">
                   {{ form.cancelTime }}
                 </el-form-item>
-                <el-form-item label="备注" prop="remark">
+                <el-form-item label="备注：" prop="remark">
                   {{ form.remark }}
                 </el-form-item>
               </el-form>
@@ -420,66 +423,66 @@
                 class="form-edit"
                 v-show="isEditing || !_id"
               >
-                <el-form-item label="整车仓库名称：" prop="vehicleWarehouseName">
+                <el-form-item label="整车仓库名称：" prop="warehouseName">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.vehicleWarehouseName"
+                    v-model="form.warehouseName"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="整车仓库编码：" prop="vehicleWarehouseCode">
+                <el-form-item label="整车仓库编码：" prop="warehouseCode">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.vehicleWarehouseCode"
+                    v-model="form.warehouseCode"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="整车工厂：" prop="vehicleWarehouseName">
+                <el-form-item label="整车工厂：" prop="factoryNames">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.vehicleWarehouseName"
+                    v-model="form.factoryNames"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="是否冻结：" prop="vehicleWarehouseName">
+                <el-form-item label="是否冻结：" prop="status">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.vehicleWarehouseName"
+                    v-model="form.status"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="仓库分类：" prop="vehicleWarehouseName">
+                <el-form-item label="仓库分类：" prop="warehouseType">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.vehicleWarehouseName"
+                    v-model="form.warehouseType"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="仓库地址：" prop="vehicleWarehouseName">
+                <el-form-item label="仓库地址：" prop="vehicleWareaddress">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.vehicleWarehouseName"
+                    v-model="form.vehicleWareaddress"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="省份：" prop="vehicleWarehouseName">
+                <el-form-item label="省份：" prop="province">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.vehicleWarehouseName"
+                    v-model="form.province"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="城市：" prop="vehicleWarehouseName">
+                <el-form-item label="城市：" prop="city">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.vehicleWarehouseName"
+                    v-model="form.city"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="区县：" prop="vehicleWarehouseName">
+                <el-form-item label="区县：" prop="country">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.vehicleWarehouseName"
+                    v-model="form.country"
                     clearable
                   />
                 </el-form-item>
@@ -490,32 +493,32 @@
                 class="form-detail"
                 v-show="!(isEditing || !_id)"
               >
-                <el-form-item label="整车仓库名称：" prop="vehicleWarehouseName">
-                  {{ form.vehicleWarehouseName }}
+                <el-form-item label="仓库名称：" prop="warehouseName">
+                  {{ form.warehouseName }}
                 </el-form-item>
-                <el-form-item label="整车仓库编码：" prop="vehicleWarehouseCode">
-                  {{ form.vehicleWarehouseCode }}
+                <el-form-item label="仓库编码：" prop="warehouseCode">
+                  {{ form.warehouseCode }}
                 </el-form-item>
-                <el-form-item label="整车工厂：" prop="vehicleWarehouseCode">
-                  {{ form.vehicleWarehouseCode }}
+                <el-form-item label="整车工厂：" prop="factoryNames">
+                  {{ form.factoryNames }}
                 </el-form-item>
-                <el-form-item label="是否冻结：" prop="vehicleWarehouseName">
-                  {{ form.vehicleWarehouseName }}
+                <el-form-item label="是否冻结：" prop="statusLabel">
+                  {{ form.statusLabel }}
                 </el-form-item>
-                <el-form-item label="仓库分类：" prop="vehicleWarehouseCode">
-                  {{ form.vehicleWarehouseCode }}
+                <el-form-item label="仓库分类：" prop="warehouseTypeLabel">
+                  {{ form.warehouseTypeLabel }}
                 </el-form-item>
-                <el-form-item label="仓库地址：" prop="vehicleWarehouseName">
-                  {{ form.vehicleWarehouseName }}
+                <el-form-item label="仓库地址：" prop="vehicleWareaddress">
+                  {{ form.vehicleWareaddress }}
                 </el-form-item>
-                <el-form-item label="省份：" prop="vehicleWarehouseCode">
-                  {{ form.vehicleWarehouseCode }}
+                <el-form-item label="省份：" prop="province">
+                  {{ form.province }}
                 </el-form-item>
-                <el-form-item label="城市：" prop="vehicleWarehouseName">
-                  {{ form.vehicleWarehouseName }}
+                <el-form-item label="城市：" prop="city">
+                  {{ form.city }}
                 </el-form-item>
-                <el-form-item label="区县：" prop="vehicleWarehouseName">
-                  {{ form.vehicleWarehouseName }}
+                <el-form-item label="区县：" prop="country">
+                  {{ form.country }}
                 </el-form-item>
               </el-form>
             </div>
@@ -535,45 +538,38 @@
                 class="form-edit"
                 v-show="isEditing || !_id"
               >
-                <el-form-item label="VIN码：" prop="vin">
+                <el-form-item label="库位代码：" prop="reservoirLocationCode">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.vin"
+                    v-model="form.reservoirLocationCode"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="席位代码：" prop="vin">
+                <el-form-item label="车辆库存状态：" prop="vdcInventoryStatusLabel">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.vin"
+                    v-model="form.vdcInventoryStatusLabel"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="车辆库存状态：" prop="vin">
+                <el-form-item label="车辆交付状态：" prop="vehicleDeliveryStatusLabel">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.vin"
+                    v-model="form.vehicleDeliveryStatusLabel"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="车辆交付状态：" prop="vin">
+                <el-form-item label="入库日期：" prop="inboundDateTime">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.vin"
+                    v-model="form.inboundDateTime"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="入库日期：" prop="vin">
+                <el-form-item label="出库日期：" prop="outboundDateTime">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.vin"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="出库日期：" prop="vin">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.vin"
+                    v-model="form.outboundDateTime"
                     clearable
                   />
                 </el-form-item>
@@ -584,23 +580,20 @@
                 class="form-detail"
                 v-show="!(isEditing || !_id)"
               >
-                <el-form-item label="VIN码：" prop="vin">
-                  {{ form.vin }}
+                <el-form-item label="库位代码：" prop="reservoirLocationCode">
+                  {{ form.reservoirLocationCode }}
                 </el-form-item>
-                <el-form-item label="席位代码：" prop="vehicleWarehouseCode">
-                  {{ form.vehicleWarehouseCode }}
+                <el-form-item label="车辆库存状态：" prop="vdcInventoryStatusLabel">
+                  {{ form.vdcInventoryStatusLabel }}
                 </el-form-item>
-                <el-form-item label="车辆库存状态：" prop="vehicleWarehouseName">
-                  {{ form.vehicleWarehouseName }}
+                <el-form-item label="车辆交付状态：" prop="vehicleDeliveryStatusLabel">
+                  {{ form.vehicleDeliveryStatusLabel }}
                 </el-form-item>
-                <el-form-item label="车辆交付状态：" prop="financialOrganizationId">
-                  {{ form.financialOrganizationId }}
+                <el-form-item label="入库日期：" prop="inboundDateTime">
+                  {{ form.inboundDateTime }}
                 </el-form-item>
-                <el-form-item label="入库日期：" prop="needSyncWms">
-                  <!-- {{ form.needSyncWms }} -->
-                </el-form-item>
-                <el-form-item label="出库日期：" prop="materialsId">
-                  <!-- {{ form.materialsId }} -->
+                <el-form-item label="出库日期：" prop="outboundDateTime">
+                  {{ form.outboundDateTime }}
                 </el-form-item>
               </el-form>
             </div>
@@ -634,32 +627,32 @@
                 class="form-detail"
                 v-show="!(isEditing || !_id)"
               >
-                <el-form-item label="车系名称：" prop="seriesName">
+                <el-form-item label="车系：" prop="seriesName">
                   {{ form.seriesName }}
                 </el-form-item>
-                <el-form-item label="车型：" prop="certificatePledged">
-                  {{ form.certificatePledged }}
+                <el-form-item label="车型：" prop="modelName">
+                  {{ form.modelName }}
                 </el-form-item>
-                <el-form-item label="物料描述：" prop="certificateShippingWay">
-                  {{ form.certificateShippingWay }}
+                <el-form-item label="物料描述：" prop="materialsDesc">
+                  {{ form.materialsDesc }}
                 </el-form-item>
-                <el-form-item label="选配续航：" prop="orderCategory">
-                  {{ form.orderCategory }}
+                <el-form-item label="选配续航：" prop="drivingRangeName">
+                  {{ form.drivingRangeName }}
                 </el-form-item>
-                <el-form-item label="选配动力：" prop="wholesaleWay">
-                  {{ form.wholesaleWay }}
+                <el-form-item label="选配动力：" prop="rangePowerName">
+                  {{ form.rangePowerName }}
                 </el-form-item>
-                <el-form-item label="外饰风格：" prop="saleCompanyId">
-                  {{ form.saleCompanyId }}
+                <el-form-item label="外饰风格：" prop="exteriorName">
+                  {{ form.exteriorName }}
                 </el-form-item>
-                <el-form-item label="内饰风格：" prop="saleDealerCode">
-                  {{ form.saleDealerCode }}
+                <el-form-item label="内饰风格：" prop="interiorName">
+                  {{ form.interiorName }}
                 </el-form-item>
-                <el-form-item label="选配轮毂：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                <el-form-item label="选配轮毂：" prop="wheelHubName">
+                  {{ form.wheelHubName }}
                 </el-form-item>
-                <el-form-item label="选装包：" prop="wholesaleOrderCode">
-                  {{ form.wholesaleOrderCode }}
+                <el-form-item label="选装包：" prop="optionPackageName">
+                  {{ form.optionPackageName }}
                 </el-form-item>
               </el-form>
             </div>
@@ -798,170 +791,7 @@ export default {
         // 如 type: [{label: 'xxx', value: 'xxx'}]
       },
       // TIPS: 复杂的表格输入项，参考 /dealerTeam/edit.vue
-      rules: {
-        id: [
-          { required: true, message: '请输入主键', trigger: 'change' }
-        ],
-        creator: [
-          { required: true, message: '请输入创建者', trigger: 'change' }
-        ],
-        creatorName: [
-          { required: true, message: '请输入创建者名称', trigger: 'change' }
-        ],
-        createTime: [
-          { required: true, message: '请选择创建时间', trigger: 'change' }
-        ],
-        modifier: [
-          { required: true, message: '请输入修改者', trigger: 'change' }
-        ],
-        modifierName: [
-          { required: true, message: '请输入修改者名称', trigger: 'change' }
-        ],
-        updateTime: [
-          { required: true, message: '请选择修改时间', trigger: 'change' }
-        ],
-        remark: [
-          { required: true, message: '请输入备注', trigger: 'change' }
-        ],
-        status: [
-          { required: true, message: '请选择状态', trigger: 'change' }
-        ],
-        statusDesc: [
-          { required: true, message: '请选择状态变更描述', trigger: 'change' }
-        ],
-        dataSource: [
-          { required: true, message: '请输入数据来源，150:新销服; 老销服:10', trigger: 'change' }
-        ],
-        shippingPlanDetailCode: [
-          { required: true, message: '请输入发运计划明细编码', trigger: 'change' }
-        ],
-        shipped: [
-          { required: true, message: '请输入是否发运', trigger: 'change' }
-        ],
-        vin: [
-          { required: true, message: '请输入VIN码', trigger: 'change' }
-        ],
-        vehicleWarehouseCode: [
-          { required: true, message: '请输入整车仓库编码', trigger: 'change' }
-        ],
-        vehicleWarehouseName: [
-          { required: true, message: '请输入整车仓库名称', trigger: 'change' }
-        ],
-        financialOrganizationId: [
-          { required: true, message: '请输入金融机构ID', trigger: 'change' }
-        ],
-        needSyncWms: [
-          { required: true, message: '请输入是否需要同步WMS', trigger: 'change' }
-        ],
-        materialsId: [
-          { required: true, message: '请输入物料ID', trigger: 'change' }
-        ],
-        seriesId: [
-          { required: true, message: '请输入车系ID', trigger: 'change' }
-        ],
-        seriesName: [
-          { required: true, message: '请输入车系名称', trigger: 'change' }
-        ],
-        certificatePledged: [
-          { required: true, message: '请输入合格证是否质押', trigger: 'change' }
-        ],
-        certificateShippingWay: [
-          { required: true, message: '请输入合格证发运方式', trigger: 'change' }
-        ],
-        orderCategory: [
-          { required: true, message: '请输入订单分类', trigger: 'change' }
-        ],
-        wholesaleWay: [
-          { required: true, message: '请输入批售方式', trigger: 'change' }
-        ],
-        saleCompanyId: [
-          { required: true, message: '请输入销售公司', trigger: 'change' }
-        ],
-        saleDealerCode: [
-          { required: true, message: '请输入销售门店编码', trigger: 'change' }
-        ],
-        saleDealerName: [
-          { required: true, message: '请输入销售门店名称', trigger: 'change' }
-        ],
-        wholesaleOrderCode: [
-          { required: true, message: '请输入批售订单号', trigger: 'change' }
-        ],
-        entVehicleOrderCode: [
-          { required: true, message: '请输入企业整车订单号', trigger: 'change' }
-        ],
-        deliveryWay: [
-          { required: true, message: '请输入指定发运方式', trigger: 'change' }
-        ],
-        cooperateType: [
-          { required: true, message: '请选择合作类型', trigger: 'change' }
-        ],
-        actualDeliveryWay: [
-          { required: true, message: '请输入指定发运方式,来源WMS接口【车辆出库状态同步】的发运方式', trigger: 'change' }
-        ],
-        regionCode: [
-          { required: true, message: '请输入所属大区', trigger: 'change' }
-        ],
-        regionName: [
-          { required: true, message: '请输入大区', trigger: 'change' }
-        ],
-        provinceCode: [
-          { required: true, message: '请输入省code', trigger: 'change' }
-        ],
-        provinceName: [
-          { required: true, message: '请输入省', trigger: 'change' }
-        ],
-        cityCode: [
-          { required: true, message: '请输入市code', trigger: 'change' }
-        ],
-        cityName: [
-          { required: true, message: '请输入市', trigger: 'change' }
-        ],
-        districtCode: [
-          { required: true, message: '请输入区&#x2F;县编码', trigger: 'change' }
-        ],
-        districtName: [
-          { required: true, message: '请输入区&#x2F;县名称', trigger: 'change' }
-        ],
-        address: [
-          { required: true, message: '请输入交车地址', trigger: 'change' }
-        ],
-        fullAddress: [
-          { required: true, message: '请输入省市区+详细地址', trigger: 'change' }
-        ],
-        longitude: [
-          { required: true, message: '请输入经度', trigger: 'change' }
-        ],
-        latitude: [
-          { required: true, message: '请输入维度', trigger: 'change' }
-        ],
-        pickupContactName: [
-          { required: true, message: '请输入接车联系人', trigger: 'change' }
-        ],
-        pickupContactMobile: [
-          { required: true, message: '请输入接车联系电话', trigger: 'change' }
-        ],
-        cancelUserName: [
-          { required: true, message: '请输入作废人', trigger: 'change' }
-        ],
-        cancelUserId: [
-          { required: true, message: '请输入作废人', trigger: 'change' }
-        ],
-        cancelTime: [
-          { required: true, message: '请选择作废时间', trigger: 'change' }
-        ],
-        cancelDesc: [
-          { required: true, message: '请输入取消说明', trigger: 'change' }
-        ],
-        carrierRecordCode: [
-          { required: true, message: '请输入承运记录编码', trigger: 'change' }
-        ],
-        entCustomerName: [
-          { required: true, message: '请输入企业客户名称', trigger: 'change' }
-        ],
-        entCustomerCode: [
-          { required: true, message: '请输入企业客户编码', trigger: 'change' }
-        ]
-      }
+      rules: {}
     };
   },
   mounted () {
@@ -970,7 +800,35 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        return getDetail(id).then((res) => {
+          console.log(res);
+          return {
+            ...res,
+            drivingRangeName: res.vehicleMaterials?.drivingRangeName || '',
+            rangePowerName: res.vehicleMaterials?.rangePowerName || '',
+            exteriorName: res.vehicleMaterials?.exteriorName || '',
+            interiorName: res.vehicleMaterials?.interiorName || '',
+            wheelHubName: res.vehicleMaterials?.wheelHubName || '',
+            optionPackageName: res.vehicleMaterials?.optionPackageName || '',
+            modelName: res.vehicleMaterials?.modelName || '',
+            materialsDesc: res.vehicleMaterials?.materialsDesc || '',
+            organizationName: res.financialOrganization?.organizationName || '',
+            inboundDateTime: res.vehicleVdcInventoryResp?.inboundDateTime || '',
+            vehicleDeliveryStatusLabel: res.vehicleVdcInventoryResp?.vehicleDeliveryStatusLabel || '',
+            vdcInventoryStatusLabel: res.vehicleVdcInventoryResp?.vdcInventoryStatusLabel || '',
+            reservoirLocationCode: res.wmsInventory?.reservoirLocationCode || '',
+            outboundDateTime: res.vehicleVdcInventoryResp?.outboundDateTime || '',
+            warehouseName: res.vehicleWarehouse?.warehouseName || '',
+            warehouseCode: res.vehicleWarehouse?.warehouseCode || '',
+            factoryNames: res.vehicleWarehouse?.factoryNames || '',
+            statusLabel: res.vehicleWarehouse?.statusLabel || '',
+            warehouseTypeLabel: res.vehicleWarehouse?.warehouseTypeLabel || '',
+            vehicleWareaddress: res.vehicleWarehouse?.address || '',
+            province: res.vehicleWarehouse?.province || '',
+            city: res.vehicleWarehouse?.city || '',
+            country: res.vehicleWarehouse?.country || '',
+          };
+        });
       }
     },
     submitRequest () {

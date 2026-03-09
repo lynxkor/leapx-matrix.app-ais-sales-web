@@ -9,9 +9,9 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="母公司名称"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="母公司名称" >
           <fetch-select
-            :remote-method="getParentCompany"
+            :remote-method="getDealerParentOrgListByName"
             remote
             v-model="form.dealerCompanyNames"
             placeholder="请选择"
@@ -24,7 +24,7 @@
       </el-form-item>
       <el-form-item label="母公司编码">
         <fetch-select
-            :remote-method="getParentCompany"
+            :remote-method="getDealerParentOrgListByCode"
             remote
             v-model="form.dealerCompanyCodes"
             placeholder="请选择"
@@ -52,7 +52,7 @@
       <template v-if="show">
         <el-form-item label="主体母公司名称">
            <fetch-select
-            :remote-method="getParentCompany"
+            :remote-method="getDealerParentOrgListByName"
             remote
             v-model="form.mainDealerCompanyNames"
             placeholder="请选择"
@@ -65,7 +65,7 @@
         </el-form-item>
         <el-form-item label="主体公司编码">
           <fetch-select
-            :remote-method="getParentCompany"
+            :remote-method="getDealerParentOrgListByCode"
             remote
             v-model="form.mainDealerCompanyCodes"
             placeholder="请选择"
@@ -240,7 +240,7 @@ export default {
           { props: 'mainDealerCompanyName', label: '主体母公司名称', visible: true, width: 200 },
           { props: 'mainDealerCompanyCode', label: '主体公司编码', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'remark', label: '备注', visible: true, width: 200 },
+          { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
@@ -279,17 +279,12 @@ export default {
     this.getData();
   },
   methods: {
-    async getParentCompany (query) {
-      try {
-        const res = await getParentCompany({ parentCompanyName: query });
-        console.log(res);
-        this.parentCompanyNames = res;
-        return res;
-      } catch (error) {
-        console.error('Error fetching series list:', error);
-      }
+    async getDealerParentOrgListByCode (params) {
+      return getParentCompany({ companyCode: params });
     },
-
+    async getDealerParentOrgListByName (params) {
+      return getParentCompany({ companyName: params });
+    },
     repairItemSearch (query) { return fundGetList({ organizationNameLike: query, status: 1 }); },
     handleListSelect (row) {
       this.clickItemId = row.id;

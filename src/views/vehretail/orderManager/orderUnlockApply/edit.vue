@@ -62,7 +62,7 @@
                     :params="form.retailOrderCode"
                     remote
                     reserve-keyword
-                    v-model="form.retailOrderCode"
+                    v-model="form.retailOrderId"
                     placeholder="请选择"
                     clearable
                     filterable
@@ -374,21 +374,18 @@
               </el-form>
             </div>
           </section>
-          <section class="common-section">
+          <section class="common-section" v-if="!isAdding">
             <div class="common-section-header">
               <h2>关联附件</h2>
-              <el-button v-if="canAddOrUpdate" size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>添加</el-button>
             </div>
             <div class="common-section-body">
               <div class="common-section-table">
-                <edit-table
-                  ref="editTable"
-                  :columns="columns"
-                  :data="tableData"
-                  :defaultNewRow="defaultNewRow"
-                  :show-toolbar="false"
-                  :options="options"
-                  :auth="{edit: canAddOrUpdate, delete: canDelete}"
+                <!--附件上传组件 -->
+                <AisAttachment
+                  :businessId="_id"
+                  ref="attachment"
+                  configCode="mcs_unstockvin"
+                  attachType="附件资料"
                 />
               </div>
             </div>
@@ -407,7 +404,6 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehretail/orderManager/orderUnlockApply/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
@@ -417,6 +413,7 @@ import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import { getOptionList } from '@/api/vehretail/basicConfig/retailOrderUnlockReasonConfig/index';
 import { findCanUnlockOrderList, getDetail as getRetailOrderDetail } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -479,8 +476,8 @@ export default {
   components: {
     EditPageLayout,
     EditBaseContainer,
-    EditTable,
-    FetchSelect
+    FetchSelect,
+    AisAttachment
   },
   computed: {
     _id () {
@@ -503,7 +500,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '订单锁车解绑申请记录管理',
+      pageTitle: '锁车解绑申请',
       pageType: 'edit',
       title: '申请单号：' + form.unlockApplyCode,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
@@ -567,6 +564,30 @@ export default {
     };
   },
   mounted () {
+  },
+  created () {
+    const id = this.$route.query.needAddId;
+    const isAdding = this.$route.query.isAdding;
+    if (id && isAdding) {
+      getRetailOrderDetail(id).then(res => {
+        // 直接更新表单数据
+        this.form.retailOrderId = res.id || '';
+        this.form.retailOrderCode = res.retailOrderCode || '';
+        this.form.mallOrderCode = res.mallOrderCode || '';
+        this.form.saleDealerName = res.saleDealerName || '';
+        this.form.saleDealerCode = res.saleDealerCode || '';
+        this.form.carBuyerName = res.carOwner.carBuyerName || '';
+        this.form.idCardNo = res.carOwner.idCardNo || '';
+        this.form.paymentTime = res.orderFund.paymentTime || '';
+        this.form.lockTime = res.lockTime || '';
+        this.form.vin = res.matchVin || '';
+        this.form.wholesaleOrderCode = res.wholesaleOrderCode || '';
+        this.form.orderStatus = res.orderStatus || '';
+        this.form.orderStatusLabel = res.orderStatusLabel || '';
+        this.form.unlockReason = '车辆质量问题';
+        this.form.unlockReasonCode = 'DJY006';
+      });
+    }
   },
   methods: {
     handleRetailOrderCodeChange (val) {

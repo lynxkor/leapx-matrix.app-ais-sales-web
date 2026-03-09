@@ -19,7 +19,7 @@
         <template #extraButtons>
           <!-- <el-button size="small" type="primary" @click="handleEquityInquiry">权益查询</el-button> -->
           <el-button size="small" @click="handlePrintContractTermination">打印合同解除协议</el-button>
-          <el-button size="small" @click="handleSetSpecialMark">设置特殊标识</el-button>
+          <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" @click="handleSetSpecialMark">设置特殊标识</el-button>
           <el-button size="small" @click="handleModifyConfiguration">修改配置</el-button>
           <!-- <el-button size="small" @click="handleManualVehicleAllocation">手工配车</el-button> -->
           <el-button size="small" @click="handleAutoLockVehicle">自动锁车</el-button>
@@ -31,7 +31,7 @@
         <!-- 固定悬浮导航栏 -->
         <div class="fixed-nav">
           <ul>
-            <li v-for="(navItem, index) in navItems" :key="index">
+            <li v-for="(navItem) in navItems" :key="navItem.id">
               <a
                 :href="navItem.href"
                 :class="{ active: activeSection === navItem.id }"
@@ -43,7 +43,7 @@
           </ul>
         </div>
 
-        <el-main>
+        <el-main ref="scrollContainer">
           <NavTop
             id="retail-order-status" class="common-section"
             title="销服订单状态"
@@ -54,7 +54,7 @@
             id="app-order-status" class="common-section"
             title="APP订单状态"
             :current="form.leapAppOrderStatus"/>
-          <section id="basic-info" class="common-section" v-id="isEditing || !_id">
+          <section id="basic-info" class="common-section" v-if="isEditing || !_id">
             <div class="common-section-header">
               <h2>基础信息</h2>
             </div>
@@ -371,11 +371,36 @@
         <!-- 右侧栏组件，自行开发 -->
       </div>
     </template>
+
+    <!-- 设置特殊备注 -->
+    <el-dialog
+      ref="specialRemarkDialog"
+      width="30%"
+      :visible.sync="specialRemarkDialog.show"
+      :title="specialRemarkDialog.title"
+      @close="specialRemarkDialog.show = false"
+    >
+      <el-form :model="specialRemarkDialog.form" :rules="specialRemarkDialog.rules" ref="specialRemarkFormRef" label-width="120px">
+        <el-form-item label="特殊备注" prop="specialRemark">
+          <el-input
+            v-model="specialRemarkDialog.form.specialRemark"
+            type="textarea"
+            :autosize="{ minRows: 3, maxRows: 5 }"
+            maxlength="500"
+            show-word-limit
+          />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitSetSpecialRemark">确定</el-button>
+        <el-button @click="specialRemarkDialog.show = false">取消</el-button>
+      </div>
+    </el-dialog>
   </edit-page-layout>
 </template>
 
 <script>
-import { getDetail, addOrUpdate, autoLock, querySnapShot, getOrderUnlockConfig } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getDetail, addOrUpdate, autoLock, querySnapShot, getOrderUnlockConfig, setSpecialRemark, getUnbindContractUrl } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -489,7 +514,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '整车零售订单管理',
+      pageTitle: '门店整车订单',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-retailOrderInfo',
@@ -594,7 +619,19 @@ export default {
         { id: 'order-cancellation-record', title: '订单退订记录', href: '#order-cancellation-record' },
         { id: 'order-pay-record', title: '订单收款记录', href: '#order-pay-record' }
       ],
-      activeSection: 'basic-info'
+      activeSection: 'basic-info',
+      specialRemarkDialog: {
+        title: '设置特殊备注',
+        show: false,
+        form: {
+          specialRemark: ''
+        },
+        rules: {
+          specialRemark: [
+            { required: true, message: '请输入特殊备注', trigger: 'blur' }
+          ]
+        }
+      }
     };
   },
   created () {
@@ -604,11 +641,19 @@ export default {
     // 监听滚动事件，高亮当前所在区域
     this.$nextTick(() => {
       this.handleScroll();
-      window.addEventListener('scroll', this.handleScroll);
+      // 监听 el-main 容器的滚动事件
+      const scrollContainer = this.$refs.scrollContainer.$el || this.$refs.scrollContainer;
+      if (scrollContainer) {
+        scrollContainer.addEventListener('scroll', this.handleScroll);
+      }
     });
   },
   beforeDestroy () {
-    window.removeEventListener('scroll', this.handleScroll);
+    // 移除 el-main 容器的滚动监听
+    const scrollContainer = this.$refs.scrollContainer.$el || this.$refs.scrollContainer;
+    if (scrollContainer) {
+      scrollContainer.removeEventListener('scroll', this.handleScroll);
+    }
   },
   methods: {
     // 权益查询
@@ -618,12 +663,30 @@ export default {
     // 打印合同解除协议
     handlePrintContractTermination () {
       // 实现打印合同解除协议逻辑
-      console.log('打印合同解除协议');
+      getUnbindContractUrl(this._id).then(res => {
+        window.open(res);
+      });
     },
     // 设置特殊标识
     handleSetSpecialMark () {
-      // 实现设置特殊标识逻辑
-      console.log('设置特殊标识');
+      this.specialRemarkDialog.form.specialRemark = '';
+      this.specialRemarkDialog.show = true;
+    },
+    submitSetSpecialRemark () {
+      this.$refs.specialRemarkFormRef.validate(valid => {
+        if (valid) {
+          const orderId = this._id;
+          const param = {
+            retailOrderId: orderId,
+            specialRemark: this.specialRemarkDialog.form.specialRemark
+          };
+          setSpecialRemark(param).then(res => {
+            this.$message.success('设置成功');
+            this.specialRemarkDialog.show = false;
+            this.getDetailData();
+          });
+        }
+      });
     },
     // 修改配置
     async  handleModifyConfiguration () {
@@ -691,6 +754,14 @@ export default {
     handleQualityIssueUnbindApplication () {
       // 实现质量问题解绑申请逻辑
       console.log('质量问题解绑申请');
+      const id = this._id;
+      this.$router.push({
+        path: '/vehretail/orderManager/orderUnlockApply/edit',
+        query: {
+          needAddId: id,
+          isAdding: true
+        }
+      });
     },
     // 将显示字段配置转换为表格列配置
     convertToTableColumns (displayFields) {
@@ -742,6 +813,14 @@ export default {
           };
           processedData.statusTrackList = addSaleDealerName(response.statusTrackList);
           processedData.lockRecordList = addSaleDealerName(response.lockRecordList);
+          // 先更新 form，让子组件有机会修改数据
+          Object.assign(this.form, processedData);
+          // 等待子组件渲染完成并处理完数据后，再更新 originalForm
+          this.$nextTick(() => {
+            setTimeout(() => {
+              Object.assign(this.originalForm, this.form);
+            }, 500);
+          });
           return processedData;
         });
       }
@@ -787,11 +866,21 @@ export default {
     scrollToSection (sectionId) {
       const element = document.getElementById(sectionId);
       if (element) {
-        // 使用更可靠的滚动方式
-        element.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
+        const scrollContainer = this.$refs.scrollContainer?.$el || this.$refs.scrollContainer;
+        if (scrollContainer) {
+          // 计算目标元素相对于滚动容器的位置
+          const containerRect = scrollContainer.getBoundingClientRect();
+          const elementRect = element.getBoundingClientRect();
+          // 计算目标位置：让元素顶部距离容器顶部有一定偏移，避免内容消失在上方
+          const scrollOffset = 20; // 额外的缓冲距离
+          const targetScrollTop = scrollContainer.scrollTop + (elementRect.top - containerRect.top) - scrollOffset;
+
+          // 平滑滚动到目标位置
+          scrollContainer.scrollTo({
+            top: targetScrollTop,
+            behavior: 'smooth'
+          });
+        }
         this.activeSection = sectionId;
       }
     },
@@ -799,25 +888,73 @@ export default {
     handleScroll () {
       const sections = this.navItems.map(item => item.id);
       let currentSection = 'basic-info';
+      let currentIndex = 0;
+      // 获取滚动容器的 scrollTop（el-main 容器）
+      const scrollContainer = this.$refs.scrollContainer?.$el || this.$refs.scrollContainer;
+      if (!scrollContainer) return;
 
-      // 获取页面顶部偏移量（考虑固定导航栏的高度）
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+      const scrollTop = scrollContainer.scrollTop;
+      const containerRect = scrollContainer.getBoundingClientRect();
+      // 可视区域的上边界（通常为 0，如果有固定头部则需要调整）
+      const viewportTop = 0;
+      // 可视区域的下边界
+      const viewportBottom = containerRect.height;
+      // 中间点，用于判断哪个区域在视野中心
+      const viewportMiddle = viewportTop + (viewportBottom - viewportTop) / 3;
 
+      // 找到在可视区域内最靠近顶部的元素
       for (let i = 0; i < sections.length; i++) {
         const element = document.getElementById(sections[i]);
         if (element) {
-          const offsetTop = element.offsetTop;
-          const height = element.offsetHeight;
+          const elementRect = element.getBoundingClientRect();
+          // 元素相对于滚动容器顶部的位置
+          const elementTop = elementRect.top - containerRect.top + scrollTop;
+          const elementBottom = elementRect.bottom - containerRect.top + scrollTop;
+          // const elementHeight = elementBottom - elementTop;
+          // 判断元素是否在可视区域内
+          const isInViewport = elementTop < scrollTop + viewportBottom && elementBottom > scrollTop + viewportTop;
 
-          // 检查当前滚动位置是否在该区域内
-          if (scrollTop >= offsetTop - 100 && scrollTop < offsetTop + height - 100) {
-            currentSection = sections[i];
-            break;
+          if (isInViewport) {
+            // 如果元素顶部在可视区域内或接近顶部，则选中它
+            if (elementTop <= scrollTop + viewportMiddle) {
+              currentSection = sections[i];
+              currentIndex = i;
+            } else if (currentIndex === 0 || i === 0) {
+              // 如果还没有找到合适的区域，选择第一个在可视区域内的
+              currentSection = sections[i];
+              currentIndex = i;
+            }
           }
         }
       }
 
       this.activeSection = currentSection;
+
+      // 滚动 fixed-nav，让当前激活的导航项保持在可视区域内
+      this.$nextTick(() => {
+        this.scrollNavToActive(currentIndex);
+      });
+    },
+    // 滚动导航栏到激活项
+    scrollNavToActive (currentIndex) {
+      const navContainer = document.querySelector('.fixed-nav');
+      if (!navContainer) return;
+
+      const navLinks = navContainer.querySelectorAll('a');
+      const activeLink = navLinks[currentIndex];
+      if (!activeLink) return;
+
+      const navRect = navContainer.getBoundingClientRect();
+      const linkRect = activeLink.getBoundingClientRect();
+
+      // 如果激活项在可视区域上方，向上滚动
+      if (linkRect.top < navRect.top) {
+        navContainer.scrollTop -= (navRect.top - linkRect.top);
+      }
+      // 如果激活项在可视区域下方，向下滚动
+      if (linkRect.bottom > navRect.bottom) {
+        navContainer.scrollTop += (linkRect.bottom - navRect.bottom);
+      }
     },
     // 审核日志
     // handleJumpAuditLog () {
@@ -893,7 +1030,6 @@ export default {
 
 .common-section {
   margin-bottom: 20px;
-  scroll-margin-top: 80px; /* 为锚点跳转留出空间 */
-  min-height: 100px;
+  scroll-margin-top: 20px; /* 为锚点跳转留出空间，与 scrollToSection 中的 scrollOffset 保持一致 */
 }
 </style>

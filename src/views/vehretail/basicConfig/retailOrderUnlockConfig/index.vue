@@ -40,7 +40,6 @@
           v-model="form.orderStatus"
           placeholder="请选择"
           clearable
-          multiple
           filterable
         />
       </el-form-item>
@@ -173,7 +172,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '订单解绑配车配置管理',
+      pageTitle: '订单解绑配车配置',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-retailOrderUnlockConfig',
@@ -235,7 +234,7 @@ export default {
             }]
           },
           { props: 'modelName', label: '车型名称', visible: true, width: 200 },
-          { props: 'yearTypeId', label: '年款名称', visible: true, width: 200 },
+          { props: 'yearTypeName', label: '年款名称', visible: true, width: 200 },
           { props: 'orderStatusLabel', label: '订单状态', visible: true, width: 200 },
           { props: 'allowUnlockStatusLabel', label: '允许门店取消锁车', visible: true, width: 200 },
           { props: 'allowManualCarStatusLabel', label: '允许门店手工配车', visible: true, width: 200 },
@@ -343,15 +342,15 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '订单解绑配车配置管理',
-        dataFetchPath: 'vehretail/web/basicConfig/retailOrderUnlockConfig/page',
+        businessType: '订单解绑配车配置',
+        dataFetchPath: 'vr/web/order/retailOrderUnlockConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '订单解绑配车配置管理.xlsx');
+            await downloadExcel(res.excelUrl, '订单解绑配车配置.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

@@ -4,7 +4,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="排产专项活动管理："
+        title="排产专项活动："
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -406,7 +406,7 @@ export default {
       callback();
     };
     return {
-      pageTitle: '排产专项活动管理',
+      pageTitle: '排产专项活动',
       pageType: 'edit',
       title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改

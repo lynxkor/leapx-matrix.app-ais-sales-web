@@ -10,28 +10,28 @@
         :form.sync="form"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.applyStatus === 1010"
+        :showEditBtn="form.applyStatus === 1010 || form.applyStatus === 1040"
       >
         <template #extraButtons>
           <el-button
             @click="openCancelShow"
-            v-if="form.applyStatus === 1010 || form.applyStatus === 1050"
+            v-if="form.applyStatus === 1010 || form.applyStatus === 1040"
             v-permission="moduleKey + '-cancel'"
             size="small">
             作废
           </el-button>
           <el-button
             @click="openCommitShow"
-            v-if="form.applyStatus === 1010 || form.applyStatus === 1050"
+            v-if="form.applyStatus === 1010 || form.applyStatus === 1040"
             v-permission="moduleKey + '-commit'">
             提交审批
           </el-button>
           <el-button
             @click="openAuditShow"
             v-permission="moduleKey + '-approve'"
-            v-if="form.applyStatus === 1"
+            v-if="form.applyStatus === 1020"
           >
-            审批
+            审核
           </el-button>
         </template>
         <el-main>
@@ -43,7 +43,7 @@
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="180px" class="form-edit"
                        v-show="isEditing || !_id">
-                <el-form-item label="订单变更申请编号：" prop="changeApplyCode">
+                <el-form-item label="申请编号：" prop="changeApplyCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.changeApplyCode"
@@ -59,7 +59,7 @@
                     :disabled="form.changeApplyCode"
                   />
                 </el-form-item>
-                <el-form-item label="零售订单号：" prop="retailOrderCode">
+                <el-form-item label="门店整车订单：" prop="retailOrderCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.retailOrderCode"
@@ -105,17 +105,17 @@
                 </el-form-item>
               </el-form>
               <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="订单变更申请编号：" prop="changeApplyCode">
+                <el-form-item label="申请编号：" prop="changeApplyCode">
                   {{ form.changeApplyCode }}
                 </el-form-item>
-                <el-form-item label="零售订单ID：" prop="retailOrderId">
-                  {{ form.retailOrderId }}
-                </el-form-item>
-                <el-form-item label="零售订单号：" prop="retailOrderCode">
-                  {{ form.retailOrderCode }}
-                </el-form-item>
+<!--                <el-form-item label="零售订单ID：" prop="retailOrderId">-->
+<!--                  {{ form.retailOrderId }}-->
+<!--                </el-form-item>-->
                 <el-form-item label="商城订单编号：" prop="mallOrderCode">
                   {{ form.mallOrderCode }}
+                </el-form-item>
+                <el-form-item label="门店整车订单：" prop="retailOrderCode">
+                  {{ form.retailOrderCode }}
                 </el-form-item>
                 <el-form-item label="变更类型：" prop="changeType">
                   {{ form.changeTypeLabel }}
@@ -126,11 +126,11 @@
                 <el-form-item label="变更说明：" prop="changeExplain">
                   {{ form.changeExplain }}
                 </el-form-item>
-                <el-form-item label="申请状态：" prop="applyStatus">
-                  {{ form.applyStatusLabel }}
-                </el-form-item>
                 <el-form-item label="负责人：" prop="creatorName">
                   {{ form.creatorName }}
+                </el-form-item>
+                <el-form-item label="申请状态：" prop="applyStatus">
+                  {{ form.applyStatusLabel }}
                 </el-form-item>
                 <el-form-item label="数据来源：" prop="dataSource">
                   {{ form.dataSourceLabel }}
@@ -161,7 +161,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="原证件类型：" prop="originalIdCardType">
+                <el-form-item label="原购车人证件类型：" prop="originalIdCardType">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vehretail_id_card_type"
@@ -188,23 +188,61 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="原销售门店编码：" prop="originalSaleDealerCode">
+                <el-form-item label="是否完成交车：" prop="deliveryStatus">
+                  <el-select
+                    placeholder="请选择"
+                    v-model="form.deliveryStatus"
+                    clearable
+                    filterable
+                    disabled
+                  >
+                    <el-option
+                      v-for="item in yes_no_enum"
+                      :key="Number(item.code)"
+                      :label="item.message"
+                      :value="Number(item.code)"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="缴定金时间：" prop="paymentTime">
+                  <el-date-picker
+                    :default-time="['00:00:00', '23:59:59']"
+                    v-model="form.paymentTime"
+                    :picker-options="pickerOptions"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="交车时间：" prop="deliveryTime">
+                  <el-date-picker
+                    :default-time="['00:00:00', '23:59:59']"
+                    v-model="form.deliveryTime"
+                    :picker-options="pickerOptions"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="订单销售门店编码：" prop="saleDealerCode">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.originalSaleDealerCode"
+                    v-model="form.saleDealerCode"
                     clearable
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="原销售门店名称：" prop="originalSaleDealerName">
+                <el-form-item label="订单销售门店名称：" prop="saleDealerName">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.originalSaleDealerName"
+                    v-model="form.saleDealerName"
                     clearable
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="原整车订单状态：" prop="originalOrderStatus">
+                <el-form-item label="整车订单状态：" prop="originalOrderStatus">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vehretail_order_status"
@@ -223,64 +261,26 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="销售门店编码：" prop="saleDealerCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.saleDealerCode"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="销售门店名称：" prop="saleDealerName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.saleDealerName"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="是否完成交车：" prop="deliveryStatus">
-                  <el-select
-                    placeholder="请选择"
-                    v-model="form.deliveryStatus"
-                    clearable
-                    filterable
-                    disabled
-                  >
-                    <el-option
-                      v-for="item in yes_no_enum"
-                      :key="Number(item.code)"
-                      :label="item.message"
-                      :value="Number(item.code)"
-                    />
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="交车时间：" prop="deliveryTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.deliveryTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="缴定金时间：" prop="paymentTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.paymentTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="车型名称：" prop="modelName">
+                <el-form-item label="基本车型：" prop="modelName">
                   <el-input
                     placeholder="请输入"
                     v-model="form.modelName"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="原销售门店编码：" prop="originalSaleDealerCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.originalSaleDealerCode"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="原销售门店名称：" prop="originalSaleDealerName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.originalSaleDealerName"
                     clearable
                     disabled
                   />
@@ -293,7 +293,7 @@
                 <el-form-item label="原购车人手机号码：" prop="originalBuyerPhone">
                   {{ form.originalBuyerPhone }}
                 </el-form-item>
-                <el-form-item label="原证件类型：" prop="originalIdCardType">
+                <el-form-item label="原购车人证件类型：" prop="originalIdCardType">
                   {{ form.originalIdCardTypeLabel }}
                 </el-form-item>
                 <el-form-item label="原购车人证件号码：" prop="originalIdCardNo">
@@ -306,19 +306,35 @@
                   {{ form.originalSaleDealerCode }}
                 </el-form-item>
                 <el-form-item label="原销售门店名称：" prop="originalSaleDealerName">
-                  {{ form.originalSaleDealerName }}
+                  <el-button
+                    class="link"
+                    @click="navigateToRoute({
+                      path: '/partner/channelManagement/shopBasicsMessage',
+                      query: {
+                        dealerCode: form.originalSaleDealerCode,
+                      },
+                    })"
+                    type="text">{{form.originalSaleDealerName}}</el-button>
                 </el-form-item>
-                <el-form-item label="原整车订单状态：" prop="originalOrderStatus">
+                <el-form-item label="整车订单状态：" prop="originalOrderStatus">
                   {{ form.originalOrderStatusLabel }}
                 </el-form-item>
                 <el-form-item label="原订单物料码：" prop="originalMaterialsCode">
                   {{ form.originalMaterialsCode }}
                 </el-form-item>
-                <el-form-item label="销售门店编码：" prop="saleDealerCode">
+                <el-form-item label="订单销售门店编码：" prop="saleDealerCode">
                   {{ form.saleDealerCode }}
                 </el-form-item>
-                <el-form-item label="销售门店名称：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                <el-form-item label="订单销售门店名称：" prop="saleDealerName">
+                  <el-button
+                    class="link"
+                    @click="navigateToRoute({
+                      path: '/partner/channelManagement/shopBasicsMessage',
+                      query: {
+                        dealerCode: form.saleDealerCode,
+                      },
+                    })"
+                    type="text">{{form.saleDealerName}}</el-button>
                 </el-form-item>
                 <el-form-item label="缴定金时间：" prop="paymentTime">
                   {{ form.paymentTime }}
@@ -332,7 +348,7 @@
                 <el-form-item label="车型ID：" prop="modelId">
                   {{ form.modelId }}
                 </el-form-item>
-                <el-form-item label="车型名称：" prop="modelName">
+                <el-form-item label="基本车型：" prop="modelName">
                   {{ form.modelName }}
                 </el-form-item>
               </el-form>
@@ -345,7 +361,7 @@
             <div class="common-section-body">
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm2" label-width="180px" class="form-edit"
                        v-show="isEditing || !_id">
-                <el-form-item label="变更后购车人姓名：" prop="newBuyerName">
+                <el-form-item label="变更后购车人名称：" prop="newBuyerName">
                   <el-input
                     placeholder="请输入"
                     v-model="form.newBuyerName"
@@ -412,7 +428,7 @@
                 </el-form-item>
               </el-form>
               <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="变更后购车人姓名：" prop="newBuyerName">
+                <el-form-item label="变更后购车人名称：" prop="newBuyerName">
                   {{ form.newBuyerName }}
                 </el-form-item>
                 <el-form-item label="变更后购车人手机号码：" prop="newBuyerPhone">
@@ -462,13 +478,13 @@
                 <el-form-item label="申请时间：" prop="createTime">
                 {{ form.createTime }}
               </el-form-item>
-                <el-form-item label="提交人ID：" prop="submitUserId">
-                  {{ form.submitUserId }}
-                </el-form-item>
-                <el-form-item label="提交人姓名：" prop="submitUserName">
+<!--                <el-form-item label="提交人ID：" prop="submitUserId">-->
+<!--                  {{ form.submitUserId }}-->
+<!--                </el-form-item>-->
+                <el-form-item label="提交人：" prop="submitUserName">
                   {{ form.submitUserName }}
                 </el-form-item>
-                <el-form-item label="提交审批时间：" prop="submitTime">
+                <el-form-item label="提交时间：" prop="submitTime">
                   {{ form.submitTime }}
                 </el-form-item>
               </el-form>
@@ -480,10 +496,10 @@
             </div>
             <div class="common-section-body">
               <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="审核人ID：" prop="auditorId">
-                  {{ form.auditorId }}
-                </el-form-item>
-                <el-form-item label="审核人姓名：" prop="auditorName">
+<!--                <el-form-item label="审核人ID：" prop="auditorId">-->
+<!--                  {{ form.auditorId }}-->
+<!--                </el-form-item>-->
+                <el-form-item label="审核人：" prop="auditorName">
                   {{ form.auditorName }}
                 </el-form-item>
                 <el-form-item label="审核时间：" prop="auditTime">
@@ -519,10 +535,10 @@
               </el-table>
             </div>
         </section>
-          <audit-dialog
-            ref="auditRef"
-            @audit="handleAudit"
-          />
+        <audit-dialog
+          ref="auditRef"
+          @audit="handleAudit"
+        />
         </el-main>
       </edit-base-container>
     </template>
@@ -537,7 +553,7 @@
 </template>
 
 <script>
-import { addOrUpdate, cancel, getDetail, submit } from '@/api/vehretail/orderRefund/orderChange/index';
+import { addOrUpdate, audit, cancel, getDetail, submit } from '@/api/vehretail/orderRefund/orderChange/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -664,7 +680,7 @@ export default {
         remote: true,
         reserveKeyword: true,
       },
-      pageTitle: '订单信息变更申请管理',
+      pageTitle: '订单变更申请',
       pageType: 'edit',
       title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
@@ -769,7 +785,7 @@ export default {
         retailOrderCode: [
           {
             required: true,
-            message: '请输入零售订单号',
+            message: '请输入门店整车订单',
             trigger: 'change',
           },
         ],
@@ -790,14 +806,14 @@ export default {
         saleDealerCode: [
           {
             required: false,
-            message: '请输入销售门店编码',
+            message: '请输入订单销售门店编码',
             trigger: 'change',
           },
         ],
         saleDealerName: [
           {
             required: false,
-            message: '请输入销售门店名称',
+            message: '请输入订单销售门店名称',
             trigger: 'change',
           },
         ],
@@ -825,7 +841,7 @@ export default {
         modelName: [
           {
             required: false,
-            message: '请输入车型名称',
+            message: '请输入基本车型',
             trigger: 'change',
           },
         ],
@@ -874,7 +890,7 @@ export default {
         originalIdCardType: [
           {
             required: false,
-            message: '请选择原证件类型：身份证-1, 护照-2, 驾驶证-3, 港澳来往内地通行证-4, 军官证-5, 组织机构代码-6, 统一社会信用代码-7, 台湾通行证-20',
+            message: '请选择原购车人证件类型：身份证-1, 护照-2, 驾驶证-3, 港澳来往内地通行证-4, 军官证-5, 组织机构代码-6, 统一社会信用代码-7, 台湾通行证-20',
             trigger: 'change',
           },
         ],
@@ -916,7 +932,7 @@ export default {
         originalOrderStatus: [
           {
             required: true,
-            message: '请选择原整车订单状态：3-订单确认;5-生产中;30-待门店向工厂付款;40-车辆发运准备中;6-车辆在途;7-等待交车;9-交车完成;10-退订中;15-退款中;99-作废',
+            message: '请选择整车订单状态：3-订单确认;5-生产中;30-待门店向工厂付款;40-车辆发运准备中;6-车辆在途;7-等待交车;9-交车完成;10-退订中;15-退款中;99-作废',
             trigger: 'change',
           },
         ],
@@ -930,7 +946,7 @@ export default {
         newBuyerName: [
           {
             required: false,
-            message: '请输入变更后购车人姓名',
+            message: '请输入变更后购车人名称',
             trigger: 'change',
           },
         ],
@@ -1161,10 +1177,12 @@ export default {
     },
     // 提交审批结果
     handleAudit (auditForm) {
-      this.$message.info(JSON.stringify(auditForm));
-      auditForm.changeApplyId = this.form.id;
+      // this.$message.info(JSON.stringify(auditForm));
+      auditForm.id = this.form.id;
       auditForm.changeApplyCode = this.form.changeApplyCode;
-      submit(auditForm);
+      auditForm.auditResult = auditForm.result;
+      auditForm.auditRemark = auditForm.remark;
+      audit(auditForm);
     }
   },
 };

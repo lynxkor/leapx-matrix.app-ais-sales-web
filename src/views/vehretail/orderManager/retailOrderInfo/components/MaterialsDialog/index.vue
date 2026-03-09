@@ -344,23 +344,19 @@ export default {
 
     // 内部提交处理方法
     async handleInternalSubmit () {
-      try {
-        // 这里可以添加内部提交逻辑
-        // 例如调用某个 API 接口保存选择的物料
-        const params = {
-          orderInfoId: this.row.id,
-          changeProductSkuPriceId: this.selectedRow.id,
-        };
-        await changeOrderMaterials(params);
+      // 这里可以添加内部提交逻辑
+      // 例如调用某个 API 接口保存选择的物料
+      const params = {
+        orderInfoId: this.row.id,
+        changeProductSkuPriceId: this.selectedRow.id,
+      };
+      await changeOrderMaterials(params);
 
-        // 显示成功消息
-        this.$message.success('物料选择成功');
+      // 显示成功消息
+      this.$message.success('物料选择成功');
 
-        // 关闭对话框
-        this.close();
-      } catch (error) {
-        this.$message.error('提交失败：' + error.message);
-      }
+      // 关闭对话框
+      this.close();
     }
   }
 };

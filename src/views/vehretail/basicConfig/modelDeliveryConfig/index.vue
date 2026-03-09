@@ -125,10 +125,10 @@
         :option-obj="optionObj"
         :get-config="getConfig"
         :save-or-update="saveOrUpdate"
-        @pagination-change="paginationChange"
-        @handle-select="handleSelectionChange"
-        @list-select="handleListSelect"
-        @sort-change="handleSortChange"
+        @paginationChange="paginationChange"
+        @handleSelect="handleSelectionChange"
+        @listSelect="handleListSelect"
+        @sortChange="handleSortChange"
       >
         <EditPage slot="centralized-view-slot" :id="clickItemId" />
       </LPVxeTable>
@@ -199,7 +199,7 @@ export default {
           return await listVehicleModel({ modelNameLike: query });
         },
       },
-      pageTitle: '车型交付配置管理',
+      pageTitle: '车型交付配置',
       pageType: 'list',
       moduleKey: 'AISVR-modelDeliveryConfig',
       form: {
@@ -222,8 +222,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'id',
-            label: '主键',
+            props: 'modelName',
+            label: '车型名称',
             visible: false,
             width: 200,
             fixed: 'left',
@@ -242,7 +242,7 @@ export default {
             ],
           },
           { props: 'cityName', label: '城市', visible: true, width: 200 },
-          { props: 'modelName', label: '车型名称', visible: true, width: 200 },
+          // { props: 'modelName', label: '车型名称', visible: true, width: 200 },
           { props: 'yearTypeName', label: '年款名称', visible: true, width: 200 },
           { props: 'openDeliveryStatusLabel', label: '是否开启交付', visible: true, width: 200 },
           { props: 'openDeliveryDate', label: '开启交付日期', visible: true, width: 200 },
@@ -334,7 +334,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '车型交付配置管理',
+        businessType: '车型交付配置',
         dataFetchPath: 'vr/web/model/modelDeliveryConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -343,7 +343,7 @@ export default {
         .then(async (res) => {
           if (res && res.excelUrl) {
             try {
-              await downloadExcel(res.excelUrl, '车型交付配置管理.xlsx');
+              await downloadExcel(res.excelUrl, '车型交付配置.xlsx');
             } catch (error) {
               this.$message({
                 type: 'error',

@@ -162,7 +162,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '试驾车采购配置管理',
+      pageTitle: '试驾车采购配置',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleTestDrivePurchaseConf',
@@ -265,7 +265,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '试驾车采购配置管理',
+        businessType: '试驾车采购配置',
         dataFetchPath: '/vw/web/basic/wholesaleTestDrivePurchaseConf/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -273,7 +273,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '试驾车采购配置管理.xlsx');
+            await downloadExcel(res.excelUrl, '试驾车采购配置.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

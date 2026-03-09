@@ -56,7 +56,6 @@
             v-model="form.status"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -154,7 +153,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '订单解绑原因配置管理',
+      pageTitle: '订单解绑原因配置',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-retailOrderUnlockReasonConfig',
@@ -264,15 +263,15 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '订单解绑原因配置管理',
-        dataFetchPath: 'vehretail/web/basicConfig/retailOrderUnlockReasonConfig/page',
+        businessType: '订单解绑原因配置',
+        dataFetchPath: 'vr/web/order/retailOrderUnlockReasonConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '订单解绑原因配置管理.xlsx');
+            await downloadExcel(res.excelUrl, '订单解绑原因配置.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

@@ -16,8 +16,8 @@
           <span>{{ form.code }}</span>
         </template>
         <template #extraButtons>
-          <el-button size="small">按钮1</el-button>
-          <el-button size="small">按钮2</el-button>
+          <!-- <el-button size="small">按钮1</el-button>
+          <el-button size="small">按钮2</el-button> -->
         </template>
         <el-main>
           <section class="common-section">
@@ -46,7 +46,7 @@
                   {{ form.unifiedSocialCreditCode }}
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
-                  {{ form.status }}
+                  {{ form.statusLabel  }}
                 </el-form-item>
                 <el-form-item label="状态变更描述：" prop="statusDesc">
                   {{ form.statusDesc }}
@@ -187,7 +187,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '账户管理-车厂融资信息-车辆绑车及里程记录管理',
+      pageTitle: '车辆绑车及里程记录',
       pageType: 'edit',
       title: '编码：' + form.code,
       // TIPS: 权限前缀 AISVW，根据实际情况修改

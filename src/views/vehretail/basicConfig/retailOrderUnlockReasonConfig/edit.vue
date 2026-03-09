@@ -210,7 +210,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '订单解绑原因配置管理',
+      pageTitle: '订单解绑原因配置',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-retailOrderUnlockReasonConfig',
