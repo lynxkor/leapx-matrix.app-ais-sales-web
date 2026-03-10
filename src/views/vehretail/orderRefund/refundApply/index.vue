@@ -115,10 +115,16 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="'1'"
+      :id="'orderRefundDepositRefundTypeImport'"
       @close="handleUploadDialogClose"
       @getData="getData"
     />
+    <Upload
+    :visible="uploadDialogVisible1"
+    :id="'orderPayRefundRecordResultImport'"
+    @close="handleUploadDialogClose1"
+    @getData="getData"
+  />
   </div>
 </template>
 
@@ -191,6 +197,7 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      uploadDialogVisible1: false,
       clickItemId: '',
       optionObj: {
         id: 'refundTable',
@@ -332,6 +339,9 @@ export default {
     },
     handleUploadDialogClose () {
       this.uploadDialogVisible = false;
+    },
+    handleUploadDialogClose1 () {
+      this.uploadDialogVisible1 = false;
     },
     handleAdd () {
       this.$router.push({

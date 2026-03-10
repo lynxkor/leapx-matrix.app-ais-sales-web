@@ -2562,6 +2562,42 @@ const routes = [
         name: '门店交付分派配置管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehwholesale/replenish/entVehicleReplenishOrder',
+      name: 'entVehicleReplenishOrder',
+      component: () => import('@/views/vehwholesale/replenish/entVehicleReplenishOrder/index.vue'),
+
+      meta: {
+        name: '整车销售-企业客户订单-企业客户补货订单管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/replenish/entvehiclereplenishorder/edit',
+      name: 'entVehicleReplenishOrderEdit',
+      component: () => import('@/views/vehwholesale/replenish/entVehicleReplenishOrder/edit.vue'),
+
+      meta: {
+        name: '整车销售-企业客户订单-企业客户补货订单管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/entorder/entVehicleOrder',
+      name: 'entVehicleOrder',
+      component: () => import('@/views/vehwholesale/entorder/entVehicleOrder/index.vue'),
+
+      meta: {
+        name: '整车销售-企业客户订单-企业客户整车订单管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/entorder/entvehicleorder/edit',
+      name: 'entVehicleOrderEdit',
+      component: () => import('@/views/vehwholesale/entorder/entVehicleOrder/edit.vue'),
+
+      meta: {
+        name: '整车销售-企业客户订单-企业客户整车订单管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];

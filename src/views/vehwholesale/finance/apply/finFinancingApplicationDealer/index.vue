@@ -240,7 +240,7 @@ export default {
           { props: 'mainDealerCompanyName', label: '主体母公司名称', visible: true, width: 200 },
           { props: 'mainDealerCompanyCode', label: '主体公司编码', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {

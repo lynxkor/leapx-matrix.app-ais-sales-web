@@ -140,18 +140,10 @@
                     disabled
                   />
                 </el-form-item>
-                 <el-form-item label="状态变更描述：" prop="statusDesc">
+                 <el-form-item label="说明：" prop="statusDesc">
                  <el-input
                     placeholder="请输入"
                     v-model="form.statusDesc"
-                    :disabled="isEditing===true"
-                    clearable
-                  />
-                </el-form-item>
-                  <el-form-item label="备注（说明）：" prop="remark">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.remark"
                     :disabled="isEditing===true"
                     clearable
                   />
@@ -198,7 +190,7 @@
                   {{ form.statusLabel }}
                 </el-form-item>
                  <el-form-item label="备注（说明）：">
-                  {{ form.remark }}
+                  {{ form.statusDesc }}
                 </el-form-item>
               </el-form>
             </div>
