@@ -32,7 +32,7 @@
     <!-- 确认预约提车时间对话框 -->
     <el-dialog
       :visible.sync="appointmentVisible"
-      title="请确认预约提车时间"
+      :title="currentMode === 'change' ? '请确认预约提车时间' : '请确认预约提车时间'"
       width="680px"
       :close-on-click-modal="false"
     >
@@ -45,10 +45,17 @@
         <el-form-item label="所选日期排程数：">
           <span>{{ scheduleCount }}</span>
         </el-form-item>
+
+        <!-- 更改预约时间模式特有字段：调整前预约时间 -->
+        <el-form-item v-if="currentMode === 'change'" label="调整前预约时间：">
+          <span>{{ appointmentForm.originalAppointmentTime }}</span>
+        </el-form-item>
+
+        <!-- 调整后预约时间（更改模式）或预约提车时间（预约模式） -->
         <el-row>
           <el-col :span="10">
             <el-form-item
-              label="预约提车时间："
+              :label="currentMode === 'change' ? '调整后预约时间：' : '预约提车时间：'"
               prop="appointmentDate"
             >
               <el-date-picker
@@ -77,19 +84,21 @@
             </el-form-item>
           </el-col>
         </el-row>
+
+        <!-- 更改时间原因/超时原因 -->
         <el-form-item
-          label="超时原因："
-          prop="timeoutReason"
+          :label="currentMode === 'change' ? '更改时间原因：' : '超时原因：'"
+          prop="changeReason"
         >
           <el-select
-            v-model="appointmentForm.timeoutReason"
+            v-model="appointmentForm.changeReason"
             placeholder="请选择"
             clearable
-            :disabled="!isTimeoutRequired"
+            :disabled="!isChangeReasonRequired"
             style="width: 240px;"
           >
             <el-option
-              v-for="item in timeoutReasonOptions"
+              v-for="item in changeReasonOptions"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -135,6 +144,22 @@ export default {
     orderCreateTime: {
       type: String,
       default: ''
+    },
+    // 模式：'book' - 预约交车，'change' - 更改预约时间
+    mode: {
+      type: String,
+      default: 'book',
+      validator: (value) => ['book', 'change'].includes(value)
+    },
+    // 原预约时间（更改模式时使用）
+    originalAppointmentTime: {
+      type: String,
+      default: ''
+    },
+    // 订单 ID（更改模式时使用）
+    orderId: {
+      type: [String, Number],
+      default: ''
     }
   },
   data () {
@@ -154,9 +179,9 @@ export default {
       }
     };
 
-    const validateTimeoutReason = (_rule, _value, callback) => {
-      if (this.isTimeoutRequired && !this.appointmentForm.timeoutReason) {
-        callback(new Error('请选择超时原因'));
+    const validateChangeReason = (_rule, _value, callback) => {
+      if (this.isChangeReasonRequired && !this.appointmentForm.changeReason) {
+        callback(new Error('请选择' + (this.currentMode === 'change' ? '更改时间原因' : '超时原因')));
       } else {
         callback();
       }
@@ -167,11 +192,14 @@ export default {
       appointmentVisible: false,
       countdown: 5,
       countdownTimer: null,
+      // 内部模式状态，优先使用 internalMode，如果没有设置则使用 prop 的 mode
+      internalMode: 'book',
       appointmentForm: {
         appointmentDate: '',
         appointmentTime: '',
-        timeoutReason: '',
-        remark: ''
+        changeReason: '',
+        remark: '',
+        originalAppointmentTime: ''
       },
       appointmentRules: {
         appointmentDate: [
@@ -180,16 +208,16 @@ export default {
         appointmentTime: [
           { required: true, validator: validateAppointmentTime, trigger: 'change' }
         ],
-        timeoutReason: [
-          { required: true, validator: validateTimeoutReason, trigger: 'change' }
+        changeReason: [
+          { required: true, validator: validateChangeReason, trigger: 'change' }
         ]
       },
       // 排程数
       scheduleCount: 0,
-      // 是否超时必填
-      isTimeoutRequired: false,
-      // 超时原因选项
-      timeoutReasonOptions: [],
+      // 是否需要选择原因
+      isChangeReasonRequired: false,
+      // 原因选项（超时原因/更改时间原因）
+      changeReasonOptions: [],
       // 时间段选项
       timeSlots: [],
       // 交付预约时效（秒）
@@ -210,9 +238,15 @@ export default {
       submitLoading: false
     };
   },
+  computed: {
+    // 使用内部模式或外部传入的 mode
+    currentMode () {
+      return this.internalMode || this.mode;
+    }
+  },
   mounted () {
-    // 加载超时原因选项
-    this.loadTimeoutReasonOptions();
+    // 加载原因选项
+    this.loadChangeReasonOptions();
     // 加载交付预约时效
     this.loadDeliveryAppointmentTimeout();
   },
@@ -227,6 +261,7 @@ export default {
     },
     // 打开预约对话框
     openAppointment () {
+      this.internalMode = 'book';
       this.resetForm();
       this.loadScheduleCount();
       this.appointmentVisible = true;
@@ -250,13 +285,20 @@ export default {
         this.openReminder();
       }
     },
-    // 加载超时原因选项（模拟接口）
-    async loadTimeoutReasonOptions () {
+    // 打开更改预约时间
+    openChangeAppointment (data = {}) {
+      this.internalMode = 'change';
+      this.resetForm();
+      this.appointmentForm.originalAppointmentTime = data.originalAppointmentTime || this.originalAppointmentTime;
+      this.appointmentVisible = true;
+    },
+    // 加载原因选项（模拟接口）
+    async loadChangeReasonOptions () {
       try {
         // 替换为真实接口
-        // const response = await getTimeoutReasonOptions(this.deliveryCityId);
-        // 模拟数据
-        this.timeoutReasonOptions = [
+        // const response = await getChangeReasonOptions(this.deliveryCityId);
+        // 模拟数据 - 超时原因和更改时间原因共用一套选项
+        this.changeReasonOptions = [
           { value: '1', label: '客户原因 - 时间冲突' },
           { value: '2', label: '客户原因 - 行程变更' },
           { value: '3', label: '门店原因 - 车辆未到店' },
@@ -264,7 +306,7 @@ export default {
           { value: '5', label: '其他原因' }
         ];
       } catch (error) {
-        console.error('加载超时原因选项失败:', error);
+        console.error('加载原因选项失败:', error);
       }
     },
     // 加载交付预约时效（模拟接口）
@@ -316,11 +358,12 @@ export default {
       this.appointmentForm = {
         appointmentDate: '',
         appointmentTime: '',
-        timeoutReason: '',
-        remark: ''
+        changeReason: '',
+        remark: '',
+        originalAppointmentTime: this.currentMode === 'change' ? this.originalAppointmentTime : ''
       };
       this.scheduleCount = 0;
-      this.isTimeoutRequired = false;
+      this.isChangeReasonRequired = false;
       this.timeSlots = [];
       if (this.$refs.appointmentForm) {
         this.$refs.appointmentForm.clearValidate();
@@ -420,7 +463,7 @@ export default {
     // 检查是否超时
     checkTimeout () {
       if (!this.appointmentForm.appointmentDate || !this.orderCreateTime) {
-        this.isTimeoutRequired = false;
+        this.isChangeReasonRequired = false;
         return;
       }
 
@@ -431,18 +474,18 @@ export default {
         // 计算时间差（秒）
         const timeDiff = (appointmentDateTime - orderCreateTime) / 1000;
 
-        // 如果预约时间 - 交车单创建时间 > 交付预约时效，则超时原因必填
-        const wasRequired = this.isTimeoutRequired;
-        this.isTimeoutRequired = timeDiff > this.deliveryAppointmentTimeout;
+        // 如果预约时间 - 交车单创建时间 > 交付预约时效，则原因必填
+        const wasRequired = this.isChangeReasonRequired;
+        this.isChangeReasonRequired = timeDiff > this.deliveryAppointmentTimeout;
 
         // 如果从必填变为非必填，清空已选值和校验
-        if (wasRequired && !this.isTimeoutRequired) {
-          this.appointmentForm.timeoutReason = '';
-          this.$refs.appointmentForm?.clearValidate('timeoutReason');
+        if (wasRequired && !this.isChangeReasonRequired) {
+          this.appointmentForm.changeReason = '';
+          this.$refs.appointmentForm?.clearValidate('changeReason');
         }
       } catch (error) {
         console.error('检查超时失败:', error);
-        this.isTimeoutRequired = false;
+        this.isChangeReasonRequired = false;
       }
     },
     // 关闭对话框
@@ -454,19 +497,31 @@ export default {
       try {
         await this.$refs.appointmentForm.validate();
         this.submitLoading = true;
-        // 调用提交预约接口
-        // const params = {
-        //   deliveryAdvisorId: this.deliveryAdvisorId,
-        //   appointmentTime: `${this.appointmentForm.appointmentDate} ${this.appointmentForm.appointmentTime}`,
-        //   timeoutReason: this.appointmentForm.timeoutReason,
-        //   remark: this.appointmentForm.remark
-        // };
-        // await submitAppointment(params);
+
+        const params = {
+          deliveryAdvisorId: this.deliveryAdvisorId,
+          deliveryCityId: this.deliveryCityId,
+          orderId: this.orderId,
+          appointmentTime: `${this.appointmentForm.appointmentDate} ${this.appointmentForm.appointmentTime}`,
+          changeReason: this.appointmentForm.changeReason,
+          remark: this.appointmentForm.remark
+        };
+
+        // 根据模式调用不同接口
+        if (this.currentMode === 'change') {
+          // 更改预约时间接口
+          // await changeAppointment(params);
+          console.log('调用更改预约时间接口:', params);
+        } else {
+          // 预约交车接口
+          // await submitAppointment(params);
+          console.log('调用预约交车接口:', params);
+        }
 
         // 模拟提交
         await new Promise(resolve => setTimeout(resolve, 500));
 
-        this.$message.success('预约成功');
+        this.$message.success(this.currentMode === 'change' ? '更改预约时间成功' : '预约成功');
         this.closeAppointment();
         this.$emit('refresh');
       } catch (error) {

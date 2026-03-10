@@ -16,19 +16,20 @@
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button size="small" @click="handleAppointmentDelivery">预约交车</el-button>
-          <el-button size="small" @click="handleGenerateConfirmOrder">交车确认单生成</el-button>
-          <el-button size="small" @click="handleChangeAppointmentTime">更改预约时间</el-button>
-          <el-button size="small" @click="handleVerifyOrderRights">核销订单权益</el-button>
-          <el-button size="small" @click="handleVerifyWithdraw">核销撤回</el-button>
-          <el-button size="small" @click="handleAddPaymentRecord">添加收款记录</el-button>
-          <el-button size="small" @click="handleConfirmPayment">确认收款</el-button>
-          <el-button size="small" @click="handleRepushConfirmOrder">交车确认单补推</el-button>
-          <el-button size="small" @click="handleReSignConfirmOrder">交车确认单重签</el-button>
-          <el-button size="small" @click="handleViewConfirmOrder">查看交车确认单</el-button>
-          <el-button size="small" @click="handleUploadInvoice">上传发票</el-button>
-          <el-button size="small" @click="handlePaymentWithdraw">收款撤回</el-button>
-          <el-button size="small" @click="handleDeliveryWithdraw">交车撤回</el-button>
+          <el-button v-permission="moduleKey+'-appointment'" size="small" @click="handleAppointmentDelivery">预约交车</el-button>
+          <el-button v-permission="moduleKey+'-deliveryConfirm'" size="small" :loading="buttonLoading['generateConfirmOrder']" @click="handleGenerateConfirmOrder">交车确认单生成</el-button>
+          <el-button v-permission="moduleKey+'-changeAppointmentTime'" size="small" @click="handleChangeAppointmentTime">更改预约时间</el-button>
+          <el-button v-permission="moduleKey+'-cancelOrderRights'" size="small" @click="handleVerifyOrderRights">核销订单权益</el-button>
+          <el-button v-permission="moduleKey+'-revertCancelOrderRights'" size="small" :loading="buttonLoading['verifyWithdraw']" @click="handleVerifyWithdraw">核销撤回</el-button>
+          <el-button v-permission="moduleKey+'-addPaymentRecord'" size="small" @click="handleAddPaymentRecord">添加收款记录</el-button>
+          <el-button v-permission="moduleKey+'-confirmPayment'" size="small" @click="handleConfirmPayment">确认收款</el-button>
+          <el-button v-permission="moduleKey+'-deliveryConfirmPush'" size="small" @click="handleRepushConfirmOrder">交车确认单补推</el-button>
+          <el-button v-permission="moduleKey+'-deliveryConfirmResign'" size="small" @click="handleReSignConfirmOrder">交车确认单重签</el-button>
+          <el-button v-permission="moduleKey+'-viewDeliveryConfirm'" size="small" @click="handleViewConfirmOrder">查看交车确认单</el-button>
+          <el-button v-permission="moduleKey+'-uploadInvoice'" size="small" @click="handleUploadInvoice">上传发票</el-button>
+          <el-button v-permission="moduleKey+'-cancelPayment'" size="small" @click="handlePaymentWithdraw">收款撤回</el-button>
+          <el-button v-permission="moduleKey+'-cancelDelivery'" size="small" @click="handleDeliveryWithdraw">交车撤回</el-button>
+          <!-- <el-button v-permission="'AISVR-retailOrderPayRecord' + '-delete'" size="small" @click="handleDelete">删除</el-button> -->
         </template>
         <el-main>
           <!--  -->
@@ -335,11 +336,21 @@
           <generic-detail-display title="交车确认单" :form-data="form" :fields="deliveryConfirmFields" :label-width="labelWidth" section-key="deliveryConfirm" />
           <!-- 收款记录&权益项抵扣记录 -->
           <component-table
+            ref="paymentRecordTable"
             :table-config="{ title: '收款记录&权益项抵扣记录' }"
             :columns="paymentRecordColumns" section-key="paymentRecords"
-            :tableDataExternal="form.paymentRecords"
-            :showPagination="false"
-          />
+            :api-method="getPaymentRecordList"
+            :extra-params="{ retailOrderId: _id }"
+            :showPagination="true"
+          >
+            <template v-slot:operation_default="{ row }">
+              <el-button
+                type="text"
+                style="color: #67c23a;"
+                @click="handleDeletePaymentRecord(row)"
+              >删除</el-button>
+            </template>
+          </component-table>
           <!-- 预约记录 -->
           <component-table
             :table-config="{ title: '预约记录' }"
@@ -362,7 +373,48 @@
         :deliveryAdvisorId="form.deliveryAdvisorId"
         :deliveryCityId="form.deliveryStoreId"
         :orderCreateTime="form.orderCreateTime"
+        :orderId="_id"
+        :originalAppointmentTime="form.appointmentTime"
         @refresh="getDetail"
+      />
+      <!-- 核销权益对话框组件 -->
+      <verify-order-rights-dialog
+        ref="verifyOrderRightsDialog"
+        :orderId="_id"
+        @refresh="getDetail"
+      />
+      <!-- 收款记录对话框组件 -->
+      <payment-record-dialog
+        ref="paymentRecordDialog"
+        :orderId="_id"
+        :financePlan="form.financePlan"
+        @refresh="getDetail"
+      />
+      <!-- 消息提醒对话框 -->
+      <message-dialog
+        ref="messageDialog"
+        type="warning"
+        :show-cancel="true"
+        confirm-text="确定"
+        cancel-text="取消"
+        @confirm="handleReSignConfirmOrderConfirm"
+      />
+      <!-- 成功消息提醒对话框 -->
+      <message-dialog
+        ref="successMessageDialog"
+        type="success"
+        :show-cancel="false"
+        confirm-text="确定"
+        @confirm="handleSuccessMessageConfirm"
+      />
+      <!-- 确认收款消息提醒对话框 -->
+      <message-dialog
+        ref="confirmPaymentDialog"
+        type="warning"
+        :show-cancel="true"
+        confirm-text="确定"
+        cancel-text="取消"
+        @confirm="handleConfirmPaymentConfirm"
       />
     </template>
     <template #right>
@@ -374,7 +426,8 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehretail/orderManager/deliveryOrder/index';
+import { getDetail, addOrUpdate, validateInvoiceAmount, validateRemainingReceivable, validateUnverifiedRights, confirmPayment } from '@/api/vehretail/orderManager/deliveryOrder/index';
+import { getList as getPaymentRecordList, deleteItem as deletePaymentRecord } from '@/api/vehretail/orderManager/orderPayRecord/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -387,6 +440,9 @@ import GenericDetailDisplay from '@/views/vehretail/orderManager/retailOrderInfo
 import ComponentTable from '@/views/vehretail/orderManager/retailOrderInfo/components/ComponentTable';
 import NavTop from './components/NavTop';
 import DeliveryAppointmentDialog from './components/DeliveryAppointmentDialog';
+import VerifyOrderRightsDialog from './components/VerifyOrderRightsDialog';
+import PaymentRecordDialog from './components/PaymentRecordDialog';
+import MessageDialog from '@/libs/components/MessageDialog';
 
 const defaultForm = {
   // 订单归属
@@ -480,7 +536,10 @@ export default {
     EditPageLayout,
     EditBaseContainer,
     FetchSelect,
-    DeliveryAppointmentDialog
+    DeliveryAppointmentDialog,
+    VerifyOrderRightsDialog,
+    PaymentRecordDialog,
+    MessageDialog
   },
   computed: {
     _id () {
@@ -509,12 +568,16 @@ export default {
       moduleKey: 'AISVR-deliveryOrder',
       loading: false,
       submitLoading: false,
+      // 按钮 loading 状态集合
+      buttonLoading: {},
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
       emptyText: '若要启用此内容，请创建记录',
       tableData: [],
       cityDeliveryOrderMin: 0,
+      // 当前确认收款数据
+      currentConfirmPaymentData: {},
       rules: {
         deliveryAdvisorId: [
           { required: true, message: '请选择订单交付顾问', trigger: 'change' }
@@ -631,7 +694,8 @@ export default {
         { field: 'rightsItemCode', title: '权益项编号', width: 150 },
         { field: 'rightsGrantCode', title: '权益核销券码', width: 150 },
         { field: 'remark', title: '备注', width: 200 },
-        { field: 'createTime', title: '创建时间', width: 180 }
+        { field: 'createTime', title: '创建时间', width: 180 },
+        { field: 'operation', title: '操作', width: 80, fixed: 'right', slots: { default: 'operation_default' } }
       ],
       // 预约记录列配置
       appointmentRecordColumns: [
@@ -668,6 +732,16 @@ export default {
     this.loadCityDeliveryOrderMin();
   },
   methods: {
+    // 统一按钮 loading 管理工具方法
+    // 用法：await this.withLoading('btnName', async () => { await api.xxx() })
+    async withLoading (actionName, fn) {
+      this.$set(this.buttonLoading, actionName, true);
+      try {
+        return await fn();
+      } finally {
+        this.$delete(this.buttonLoading, actionName);
+      }
+    },
     detailRequest () {
       const id = this._id;
       if (id) {
@@ -753,25 +827,25 @@ export default {
     // 预约交车
     async handleAppointmentDelivery () {
       // 1. 校验当前表单是否填写
-      const validateForm = (formRef) => {
-        return new Promise((resolve) => {
-          if (formRef) {
-            formRef.validate(valid => {
-              resolve(valid);
-            });
-          } else {
-            resolve(true);
-          }
-        });
-      };
-      const [ruleForm1Valid, ruleForm2Valid] = await Promise.all([
-        validateForm(this.$refs.ruleForm1),
-        validateForm(this.$refs.ruleForm2)
-      ]);
-      if (!ruleForm1Valid || !ruleForm2Valid) {
-        this.$message.warning('请先填写并保存表单信息');
-        return;
-      }
+      // const validateForm = (formRef) => {
+      //   return new Promise((resolve) => {
+      //     if (formRef) {
+      //       formRef.validate(valid => {
+      //         resolve(valid);
+      //       });
+      //     } else {
+      //       resolve(true);
+      //     }
+      //   });
+      // };
+      // const [ruleForm1Valid, ruleForm2Valid] = await Promise.all([
+      //   validateForm(this.$refs.ruleForm1),
+      //   validateForm(this.$refs.ruleForm2)
+      // ]);
+      // if (!ruleForm1Valid || !ruleForm2Valid) {
+      //   this.$message.warning('请先填写并保存表单信息');
+      //   return;
+      // }
 
       // 2. 调用接口校验购车人手机号是否注册
       try {
@@ -796,21 +870,174 @@ export default {
       });
     },
     // 交车确认单生成
-    handleGenerateConfirmOrder () {},
+    async handleGenerateConfirmOrder () {
+      await this.withLoading('generateConfirmOrder', async () => {
+        await this.checkBuyerMobileRegistered();
+        // 3. 成功后显示提示
+        this.$confirm(`
+          <div class="ais-leave-tips-main">
+              <i class="iconfont icon-lxppc-prompt"></i>交车确认单提醒
+            </div>
+            <div class="ais-leave-tips-sub">交车确认单创建成功，请通知用户打开零跑 APP 站内信完成签署</div>
+        `, '', {
+          dangerouslyUseHTMLString: true,
+          confirmButtonText: '确定',
+          cancelButtonText: '',
+          showCancelButton: false,
+          showClose: false,
+          customClass: 'ais-leave-tips',
+        }).then(() => {}).catch(() => {});
+      });
+    },
     // 更改预约时间
-    handleChangeAppointmentTime () {},
+    handleChangeAppointmentTime () {
+      // if (!this.form.appointmentTime) {
+      //   this.$message.warning('当前订单暂无预约时间，请使用「预约交车」功能');
+      //   return;
+      // }
+      // 以更改预约时间模式打开对话框
+      this.$refs.deliveryAppointmentDialog.openChangeAppointment({
+        originalAppointmentTime: this.form.appointmentTime
+      });
+    },
     // 核销订单权益
-    handleVerifyOrderRights () {},
+    handleVerifyOrderRights () {
+      if (!this._id) {
+        this.$message.warning('请先保存订单信息');
+        return;
+      }
+      this.$refs.verifyOrderRightsDialog.open();
+    },
     // 核销撤回
-    handleVerifyWithdraw () {},
+    async handleVerifyWithdraw () {
+      await this.withLoading('verifyWithdraw', async () => {
+        await getDetail(this._id);
+        this.$message.success('订单权益核销撤回成功');
+      });
+    },
     // 添加收款记录
-    handleAddPaymentRecord () {},
+    handleAddPaymentRecord () {
+      if (!this._id) {
+        this.$message.warning('请先保存订单信息');
+        return;
+      }
+      this.$refs.paymentRecordDialog.open();
+    },
     // 确认收款
-    handleConfirmPayment () {},
+    async handleConfirmPayment () {
+      this.currentConfirmPaymentData = {}; // 重置当前确认收款数据
+      await this.withLoading('confirmPayment', async () => {
+        try {
+          // 1. 校验开票金额：开票金额 = 补贴后价格 - 门店优惠金额 - 权益抵扣金额 + 机动车发票其他费用
+          const invoiceAmountParams = {
+            id: this._id,
+            invoiceAmount: this.form.invoiceAmount,
+            subsidyPrice: this.form.receivableAmount, // 补贴后价格使用门店应收金额
+            discountAmount: this.form.discountAmount,
+            equityDeductionTotalAmount: this.form.equityDeductionTotalAmount,
+            otherAmount: this.form.otherAmount
+          };
+          const invoiceAmountResult = await validateInvoiceAmount(invoiceAmountParams);
+          if (!invoiceAmountResult) {
+            this.$message.error('交车订单付款记录不等于订单金额，不能确认收款');
+            return;
+          }
+
+          // 2. 校验剩余应收款：剩余应收款 = 门店应收金额 - 收款类型为尾款/贷款/贷款首付款记录之和 = 0
+          const remainingReceivableParams = {
+            id: this._id,
+            remainingReceivableAmount: this.form.remainingReceivableAmount,
+            receivableAmount: this.form.receivableAmount
+          };
+          const remainingReceivableResult = await validateRemainingReceivable(remainingReceivableParams);
+          if (!remainingReceivableResult) {
+            this.$message.error('交车订单付款记录不等于订单金额，不能确认收款');
+            return;
+          }
+
+          // 3. 校验是否存在未核销权益
+          const unverifiedRightsParams = {
+            id: this._id
+          };
+          const unverifiedRightsResult = await validateUnverifiedRights(unverifiedRightsParams);
+
+          if (!unverifiedRightsResult.hasUnverifiedRights) {
+            // 没有未核销权益，直接调用确认收款接口
+            await this.submitConfirmPayment();
+          } else {
+            // 存在未核销权益，弹出二次确认对话框
+            this.currentConfirmPaymentData.skipValidation = true;
+            this.$refs.confirmPaymentDialog.open({
+              title: '确认收款提醒',
+              description: '该订单存在未核销的权益，请先核销权益再进行确认收款，是否继续确认收款？',
+              type: 'warning',
+              showCancel: true,
+              confirmText: '确定',
+              cancelText: '取消'
+            });
+          }
+        } catch (error) {
+          console.error('确认收款校验失败:', error);
+          // 接口 1 或 2 失败时，显示错误提示
+          // if (error.message) {
+          //   this.$message.error(error.message);
+          // }
+        }
+      });
+    },
+    // 确认收款 - 确认回调（二次确认框的确认按钮回调）
+    async handleConfirmPaymentConfirm () {
+      // 用户点击二次确认框的确定按钮，执行确认收款
+      await this.submitConfirmPayment();
+    },
+    // 执行确认收款接口调用
+    async submitConfirmPayment () {
+      try {
+        await confirmPayment({ id: this._id });
+        this.$message.success('确认收款成功');
+        this.getDetail();
+        // 重置跳过校验标志
+        this.currentConfirmPaymentData.skipValidation = false;
+      } catch (error) {
+        console.error('确认收款失败:', error);
+        this.$message.error('确认收款失败');
+      }
+    },
     // 交车确认单补推
     handleRepushConfirmOrder () {},
     // 交车确认单重签
-    handleReSignConfirmOrder () {},
+    handleReSignConfirmOrder () {
+      this.$refs.messageDialog.open({
+        title: '交车确认单重签',
+        description: '确认重新生成用户交车确认单进行签署',
+        type: 'warning',
+        showCancel: true,
+        confirmText: '确定',
+        cancelText: '取消'
+      });
+    },
+    // 交车确认单重签 - 确认回调
+    async handleReSignConfirmOrderConfirm () {
+      try {
+        // 调用接口更新状态
+        // await updateDeliveryConfirmStatus({ id: this._id });
+        // 成功调用接口后，打开成功提示弹框进行二次提醒
+        this.$refs.successMessageDialog.open({
+          title: '交车确认单提醒',
+          description: '交车确认单创建成功，请联系用户进行签署',
+          type: 'success',
+          showCancel: false
+        });
+        this.getDetail();
+      } catch (error) {
+        console.error('交车确认单重签失败:', error);
+        this.$message.error('交车确认单重签失败');
+      }
+    },
+    // 交车确认单重签 - 二次弹框确认后回调（可选）
+    handleSuccessMessageConfirm () {
+      // 如需在用户点击成功弹框的确定按钮后执行额外操作，可在此添加
+    },
     // 查看交车确认单
     handleViewConfirmOrder () {},
     // 上传发票
@@ -818,7 +1045,48 @@ export default {
     // 收款撤回
     handlePaymentWithdraw () {},
     // 交车撤回
-    handleDeliveryWithdraw () {}
+    handleDeliveryWithdraw () {},
+    handleDelete () {},
+    // 判断收款记录是否可以删除
+    canDeletePaymentRecord (row) {
+      // 已预约状态的可以删除
+      if (row.status !== '1010') {
+        return false;
+      }
+      // 收款类型为门店优惠/贷款/尾款/贷款首付款/机动车发票其他费用可以删除
+      const allowDeleteTypes = ['1020', '1030', '1040', '1050'];
+      if (!allowDeleteTypes.includes(row.paymentType)) {
+        return false;
+      }
+      return true;
+    },
+    // 删除收款记录
+    async handleDeletePaymentRecord (row) {
+      if (!row.id) {
+        this.$message.warning('收款记录 ID 不存在');
+        return;
+      }
+      try {
+        await this.$confirm('确认删除该收款记录吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        });
+      } catch (error) {
+        return;
+      }
+      try {
+        await deletePaymentRecord([row.id]);
+        this.$message.success('删除成功');
+        // 刷新表格
+        if (this.$refs.paymentRecordTable) {
+          this.$refs.paymentRecordTable.refresh();
+        }
+      } catch (error) {
+        console.error('删除收款记录失败:', error);
+        this.$message.error('删除失败');
+      }
+    }
   }
 };
 </script>
