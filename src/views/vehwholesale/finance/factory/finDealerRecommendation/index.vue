@@ -9,7 +9,7 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="母公司名称"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="母公司名称">
         <fetch-select
             :remote-method="getDealerParentOrgListByName"
             remote
@@ -229,7 +229,7 @@ export default {
           { props: 'syncResult', label: '同步结果', visible: true, width: 200 },
           { props: 'syncTime', label: '同步时间', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {

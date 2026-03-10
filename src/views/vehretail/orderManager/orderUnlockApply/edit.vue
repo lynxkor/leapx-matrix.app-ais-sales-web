@@ -62,7 +62,7 @@
                     :params="form.retailOrderCode"
                     remote
                     reserve-keyword
-                    v-model="form.retailOrderCode"
+                    v-model="form.retailOrderId"
                     placeholder="请选择"
                     clearable
                     filterable
@@ -374,7 +374,7 @@
               </el-form>
             </div>
           </section>
-          <section class="common-section">
+          <section class="common-section" v-if="!isAdding">
             <div class="common-section-header">
               <h2>关联附件</h2>
             </div>
@@ -564,6 +564,30 @@ export default {
     };
   },
   mounted () {
+  },
+  created () {
+    const id = this.$route.query.needAddId;
+    const isAdding = this.$route.query.isAdding;
+    if (id && isAdding) {
+      getRetailOrderDetail(id).then(res => {
+        // 直接更新表单数据
+        this.form.retailOrderId = res.id || '';
+        this.form.retailOrderCode = res.retailOrderCode || '';
+        this.form.mallOrderCode = res.mallOrderCode || '';
+        this.form.saleDealerName = res.saleDealerName || '';
+        this.form.saleDealerCode = res.saleDealerCode || '';
+        this.form.carBuyerName = res.carOwner.carBuyerName || '';
+        this.form.idCardNo = res.carOwner.idCardNo || '';
+        this.form.paymentTime = res.orderFund.paymentTime || '';
+        this.form.lockTime = res.lockTime || '';
+        this.form.vin = res.matchVin || '';
+        this.form.wholesaleOrderCode = res.wholesaleOrderCode || '';
+        this.form.orderStatus = res.orderStatus || '';
+        this.form.orderStatusLabel = res.orderStatusLabel || '';
+        this.form.unlockReason = '车辆质量问题';
+        this.form.unlockReasonCode = 'DJY006';
+      });
+    }
   },
   methods: {
     handleRetailOrderCodeChange (val) {

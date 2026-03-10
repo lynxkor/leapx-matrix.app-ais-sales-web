@@ -41,7 +41,7 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="下拉是否展示：" prop="selectorDisplay">
+                <el-form-item label="下拉选中是否展示：" prop="selectorDisplay">
                   <el-select
                     placeholder="请选择"
                     v-model="form.selectorDisplay"
@@ -111,7 +111,7 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="退款方式是否允许选择：" prop="refundTypeSelect">
+                <el-form-item label="退还方式是否允许选择：" prop="refundTypeSelect">
                   <el-select
                     placeholder="请选择"
                     v-model="form.refundTypeSelect"
@@ -140,7 +140,7 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="是否允许退订原因修改：" prop="refundReasonChanged">
+                <el-form-item label="是否允许修改退订原因：" prop="refundReasonChanged">
                   <el-select
                     placeholder="请选择"
                     v-model="form.refundReasonChanged"
@@ -213,7 +213,7 @@
                 <el-form-item label="默认定金退回方式：" prop="refundTypeDefault">
                   {{ form.refundTypeDefault }}
                 </el-form-item>
-                <el-form-item label="退款方式是否允许选择：" prop="refundTypeSelectLabel">
+                <el-form-item label="退还方式是否允许选择：" prop="refundTypeSelectLabel">
                   {{ form.refundTypeSelectLabel }}
                 </el-form-item>
                 <el-form-item label="退订附件上传要求：" prop="refundAttachRequired">
@@ -222,7 +222,7 @@
                 <el-form-item label="默认退订原因说明：" prop="refundReasonDefault">
                   {{ form.refundReasonDefault }}
                 </el-form-item>
-                <el-form-item label="是否允许退订原因修改：" prop="refundReasonChangedLabel">
+                <el-form-item label="是否允许修改退订原因：" prop="refundReasonChangedLabel">
                   {{ form.refundReasonChangedLabel }}
                 </el-form-item>
                 <el-form-item v-if="form.cateCode === '1210'" label="超时订单自动审核通过：" prop="expireOrderAutoPassLabel">
@@ -483,7 +483,7 @@ export default {
         refundTypeSelect: [
           {
             required: false,
-            message: '请选择退款方式是否允许选择',
+            message: '请选择退还方式是否允许选择',
             trigger: 'change',
           },
         ],
@@ -504,7 +504,7 @@ export default {
         refundReasonChanged: [
           {
             required: false,
-            message: '请输入是否允许退订原因修改',
+            message: '请输入是否允许修改退订原因',
             trigger: 'change',
           },
         ],

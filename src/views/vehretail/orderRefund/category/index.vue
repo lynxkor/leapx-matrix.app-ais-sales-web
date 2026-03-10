@@ -16,7 +16,7 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="下拉是否展示">
+      <el-form-item label="下拉选项是否展示">
         <el-select
           placeholder="请选择"
           v-model="form.selectorDisplay"
@@ -31,7 +31,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="原路退回允许选择">
+      <el-form-item label="原路退回是否允许选择">
         <el-select
           placeholder="请选择"
           v-model="form.originalRefund"
@@ -100,11 +100,11 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+<!--      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>-->
+<!--      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>-->
+<!--      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>-->
+<!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>-->
+<!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>-->
     </div>
     <div
       class="ais-table-c"
@@ -224,7 +224,7 @@ export default {
             }]
           },
           { props: 'cateName', label: '退订原因分类', visible: true, width: 200 },
-          { props: 'selectorDisplayLabel', label: '下拉是否展示', visible: true, width: 200 },
+          { props: 'selectorDisplayLabel', label: '下拉选项是否展示', visible: true, width: 200 },
           { props: 'originalRefundLabel', label: '原路退回允许选择', visible: true, width: 200 },
           { props: 'preApprovalLabel', label: '是否需要初审', visible: true, width: 200 },
           { props: 'finalApprovalLabel', label: '是否需要终审', visible: true, width: 200 },
@@ -242,38 +242,20 @@ export default {
             type: 'operate',
             visible: true,
             fixed: 'right',
-            buttons: [{
-              name: '编辑',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehretail/orderRefund/category/edit',
-                  query: {
-                    id: row.id
-                  }
-                });
-              },
-              type: 'info'
-            }, {
-              name: '删除',
-              popconfirmConfirmButtonType: 'danger',
-              popconfirmConfirmButtonText: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
-            }]
+            buttons: [
+              // {
+              //   name: '编辑',
+              //   click: (rowIndex, row) => {
+              //     this.$router.push({
+              //       path: '/vehretail/orderRefund/category/edit',
+              //       query: {
+              //         id: row.id
+              //       }
+              //     });
+              //   },
+              //   type: 'info'
+              // }
+            ]
           }
         ],
         total: 0

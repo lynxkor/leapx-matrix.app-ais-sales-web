@@ -30,7 +30,7 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item
-        v-if="auditType === 'approve' && auditForm.result === 1"
+        v-show="auditType === 'approve' && auditForm.result === 1"
         :rules="auditType === 'approve' ? rules.refundBank: []"
         label="原因二级分类："
         prop="subCateCode">
@@ -188,7 +188,7 @@ export default {
         }
       });
     },
-    async changeSubCategorySearch (val) {
+    async changeSubCategorySearch () {
       return fetchSubCategoryList({
         pageSize: 1000,
         cateCode: this.mainCateCode

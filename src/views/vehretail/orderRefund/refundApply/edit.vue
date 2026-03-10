@@ -22,7 +22,7 @@
           <el-button size="small">按钮2</el-button> -->
           <el-button
             @click="openCancelShow"
-            v-if="form.refundStatus === 1010 || form.applyStatus === 1040"
+            v-if="form.refundStatus === 1010 || form.refundStatus === 1040"
             v-permission="moduleKey + '-cancel'"
             size="small">
             作废
@@ -63,21 +63,21 @@
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="零售订单号：" prop="retailOrderCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.retailOrderCode"
-                    disabled
-                    clearable
-                  />
-                </el-form-item>
                 <el-form-item label="商城订单编号：" prop="mallOrderCode">
                   <fetch-select
                     v-bind="selectOptions"
                     :remote-method="retailOrderSearch"
                     v-model="form.mallOrderCode"
                     @change="retailOrderChange"
-                    :disabled="form.id"
+                    :disabled="form.id && form.id.length > 0"
+                  />
+                </el-form-item>
+                <el-form-item label="整车订单：" prop="retailOrderCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.retailOrderCode"
+                    disabled
+                    clearable
                   />
                 </el-form-item>
                 <el-form-item label="退订原因分类：" prop="cateCode">
@@ -125,7 +125,7 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="退款银行开户名：" prop="refundBankUser"
+                <el-form-item label="银行开户名：" prop="refundBankUser"
                               :rules="form.depositRefundType === '30' ? rules.refundBankUser: []">
                   <el-input
                     placeholder="请输入"
@@ -161,10 +161,10 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="车型名称：" prop="modelName">
+                <el-form-item label="是否停产">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.modelName"
+                    v-model="form.discontinueStatusLabel"
                     clearable
                     disabled
                   />
@@ -177,7 +177,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="销售门店名称：" prop="saleDealerName">
+                <el-form-item label="销售门店：" prop="saleDealerName">
                   <el-input
                     placeholder="请输入"
                     v-model="form.saleDealerName"
@@ -185,7 +185,15 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="销售门店-省编码：" prop="provinceCode">
+                <el-form-item label="基本车型：" prop="modelName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.modelName"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="省编码：" prop="provinceCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.provinceCode"
@@ -193,7 +201,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="销售门店-省：" prop="provinceName">
+                <el-form-item label="省：" prop="provinceName">
                   <el-input
                     placeholder="请输入"
                     v-model="form.provinceName"
@@ -201,7 +209,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="销售门店-市编码：" prop="cityCode">
+                <el-form-item label="市编码：" prop="cityCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.cityCode"
@@ -209,7 +217,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="销售门店-市：" prop="cityName">
+                <el-form-item label="市：" prop="cityName">
                   <el-input
                     placeholder="请输入"
                     v-model="form.cityName"
@@ -236,6 +244,15 @@
                     clearable
                   />
                 </el-form-item>
+
+                <el-form-item label="数据来源：" prop="dataSource">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.dataSource"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
                 <el-form-item label="退订附件上传要求：" prop="refundAttachRequired">
                   <el-input
                     placeholder="请输入"
@@ -247,10 +264,14 @@
                 </el-form-item>
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+                <el-form-item label="商城订单编号：" prop="mallOrderCode">
+                  {{ form.mallOrderCode }}
+                  <span @click="openFinancialOrderShow" style="color: #00b2f2">查询金融订单</span>
+                </el-form-item>
                 <el-form-item label="退订申请单号：" prop="refundCode">
                   {{ form.refundCode }}
                 </el-form-item>
-                <el-form-item label="零售订单号：" prop="retailOrderCode">
+                <el-form-item label="整车订单：" prop="retailOrderCode">
                   <el-button
                     class="link"
                     @click="navigateToRoute({
@@ -261,9 +282,6 @@
                     })"
                     type="text">{{form.retailOrderCode}}</el-button>
                 </el-form-item>
-                <el-form-item label="商城订单编号：" prop="mallOrderCode">
-                  {{ form.mallOrderCode }}
-                </el-form-item>
                 <el-form-item label="退订原因分类编码：" prop="cateCode">
                   {{ form.cateCode }}
                 </el-form-item>
@@ -272,9 +290,6 @@
                 </el-form-item>
                 <el-form-item label="申请单状态：" prop="refundStatusLabel">
                   {{ form.refundStatusLabel }}
-                </el-form-item>
-                <el-form-item label="订单来源：" prop="orderSource">
-                  {{ form.orderSource }}
                 </el-form-item>
                 <el-form-item label="定金退回方式：" prop="depositRefundTypeLabel">
                   {{ form.depositRefundTypeLabel }}
@@ -288,7 +303,7 @@
                 <el-form-item label="退款银行：" prop="refundBank">
                   {{ form.refundBank }}
                 </el-form-item>
-                <el-form-item label="退款银行开户名：" prop="refundBankUser">
+                <el-form-item label="银行开户名：" prop="refundBankUser">
                   {{ form.refundBankUser }}
                 </el-form-item>
                 <el-form-item label="退款银行账号：" prop="refundBankAccount">
@@ -299,11 +314,12 @@
                 </el-form-item>
                 <el-form-item label="订单物料码：" prop="materialsCode">
                   {{ form.materialsCode }}
+                  <span @click="openVehicleStockShow" style="color: #00b2f2">查询库存车</span>
                 </el-form-item>
                 <el-form-item label="车型ID：" prop="modelId">
                   {{ form.modelId }}
                 </el-form-item>
-                <el-form-item label="车型名称：" prop="modelName">
+                <el-form-item label="基本车型：" prop="modelName">
                   <el-button
                     class="link"
                     @click="navigateToRoute({
@@ -317,7 +333,7 @@
                 <el-form-item label="销售门店编码：" prop="originalSaleDealerCode">
                   {{ form.saleDealerCode }}
                 </el-form-item>
-                <el-form-item label="销售门店名称：" prop="originalSaleDealerName">
+                <el-form-item label="销售门店：" prop="originalSaleDealerName">
                   <el-button
                     class="link"
                     @click="navigateToRoute({
@@ -328,23 +344,20 @@
                     })"
                     type="text">{{form.saleDealerName}}</el-button>
                 </el-form-item>
-                <el-form-item label="销售门店-省编码：" prop="provinceCode">
+                <el-form-item label="省编码：" prop="provinceCode">
                   {{ form.provinceCode }}
                 </el-form-item>
-                <el-form-item label="销售门店-省：" prop="provinceName">
+                <el-form-item label="省：" prop="provinceName">
                   {{ form.provinceName }}
                 </el-form-item>
-                <el-form-item label="销售门店-市编码：" prop="cityCode">
+                <el-form-item label="市编码：" prop="cityCode">
                   {{ form.cityCode }}
                 </el-form-item>
-                <el-form-item label="销售门店-市：" prop="cityName">
+                <el-form-item label="市：" prop="cityName">
                   {{ form.cityName }}
                 </el-form-item>
                 <el-form-item label="退订方式：" prop="orderRefundTypeLabel">
                   {{ form.orderRefundTypeLabel }}
-                </el-form-item>
-                <el-form-item label="数据来源：" prop="dataSource">
-                  {{ form.dataSource }}
                 </el-form-item>
                 <el-form-item label="退订原因分类编码：" prop="cateCode">
                   {{ form.cateCode }}
@@ -357,6 +370,12 @@
                 </el-form-item>
                 <el-form-item label="退订原因二级分类：" prop="subCateName">
                   {{ form.subCateName }}
+                </el-form-item>
+                <el-form-item label="数据来源：" prop="dataSource">
+                  {{ form.dataSourceLabel }}
+                </el-form-item>
+                <el-form-item label="创建时间：" prop="createTime">
+                  {{ form.createTime }}
                 </el-form-item>
               </el-form>
             </div>
@@ -380,7 +399,7 @@
               <h2>订单信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail1" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail1">
                 <el-form-item label="整车订单状态：" prop="orderStatus">
                   {{ form.orderStatusLabel }}
                 </el-form-item>
@@ -389,6 +408,9 @@
                 </el-form-item>
                 <el-form-item label="商城下单时间：" prop="orderTime">
                   {{ form.orderTime }}
+                </el-form-item>
+                <el-form-item label="订单来源：" prop="orderSource">
+                  {{ form.orderSourceLabel }}
                 </el-form-item>
                 <el-form-item label="下单用户ID：" prop="orderUserId">
                   {{ form.orderUserId }}
@@ -405,7 +427,7 @@
                 <el-form-item label="证件类型：" prop="idCardTypeLabel">
                   {{ form.idCardTypeLabel }}
                 </el-form-item>
-                <el-form-item label="购车人证件号码：" prop="idCardNo">
+                <el-form-item label="证件号码：" prop="idCardNo">
                   {{ form.idCardNo }}
                 </el-form-item>
                 <el-form-item label="代办联系人：" prop="agentName">
@@ -455,10 +477,10 @@
                 <el-form-item label="订单取消说明：" prop="orderCancelDescp">
                   {{ form.orderCancelDescp }}
                 </el-form-item>
-                <el-form-item label="车系名称：" prop="seriesName">
+                <el-form-item label="基本车系：" prop="seriesName">
                   {{ form.seriesName }}
                 </el-form-item>
-                <el-form-item label="车型名称：" prop="modelName">
+                <el-form-item label="基本车型：" prop="modelName">
                   <el-button
                     class="link"
                     @click="navigateToRoute({
@@ -496,6 +518,9 @@
                 <el-form-item label="选装包名称：" prop="optionPackageName">
                   {{ form.optionPackageName }}
                 </el-form-item>
+                <el-form-item label="特殊备注：" prop="remark">
+                  {{ form.remark }}
+                </el-form-item>
               </el-form>
             </div>
           </section>
@@ -505,6 +530,12 @@
             </div>
             <div class="common-section-body">
               <el-form :inline="true" class="form-detail2" v-show="!(isEditing || !_id)">
+                <el-form-item label="申请人：" prop="creator">
+                  {{ form.creatorName }}
+                </el-form-item>
+                <el-form-item label="申请时间：" prop="createTime">
+                  {{ form.createTime }}
+                </el-form-item>
                 <el-form-item label="提交人：" prop="submitUser">
                   {{ form.submitUser }}
                 </el-form-item>
@@ -540,6 +571,9 @@
                 </el-form-item>
                 <el-form-item label="首次提交时间：" prop="firstSubmitTime">
                   {{ form.firstSubmitTime }}
+                </el-form-item>
+                <el-form-item label="取消时间：" prop="orderCancelTime">
+                  {{ form.orderCancelTime }}
                 </el-form-item>
               </el-form>
             </div>
@@ -629,6 +663,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import { getList as retailOrderPage } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import { fetchCategoryList } from '@/api/vehretail/orderRefund/category';
 import RefundApplyAuditDialog from '@/views/vehretail/orderRefund/refundApply/auditDialog';
+import { getList as getMaterialInfoList } from '@/api/datacenter/materials/vehicleMaterials/index';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -671,6 +706,7 @@ const defaultForm = {
   orderCancelTime: '',
   orderCancelReason: '',
   orderCancelDescp: '',
+  discontinueStatusLabel: '',
 };
 
 export default {
@@ -757,7 +793,7 @@ export default {
           { required: false, message: '请选择申请单状态 1010:草稿 1020:已提交 1025:已初审 1027:待终审 1030:已通过 1040:已驳回 1050:已作废', trigger: 'change' }
         ],
         retailOrderCode: [
-          { required: true, message: '请输入零售订单号', trigger: 'change' }
+          { required: true, message: '请输入整车订单', trigger: 'change' }
         ],
         mallOrderCode: [
           { required: true, message: '请输入商城订单编号', trigger: 'change' }
@@ -778,7 +814,7 @@ export default {
           { required: true, message: '请输入退款银行', trigger: 'change' }
         ],
         refundBankUser: [
-          { required: true, message: '请输入退款银行开户名', trigger: 'change' }
+          { required: true, message: '请输入银行开户名', trigger: 'change' }
         ],
         refundBankAccount: [
           { required: true, message: '请输入退款银行账号', trigger: 'change' }
@@ -901,6 +937,7 @@ export default {
       this.form.saleDealerCode = val ? selectedOption.saleDealerCode : '';
       this.form.saleDealerName = val ? selectedOption.saleDealerName : '';
       this.form.materialsCode = val ? selectedOption.materialsCode : '';
+      this.form.discontinueStatusLabel = null;
       this.form.paymentTime = val ? selectedOption.paymentTime : '';
       this.form.deliveryTime = val ? selectedOption.deliveryTime : '';
       this.form.deliveryStatus = val && selectedOption.deliveryTime ? 1 : 0;
@@ -911,6 +948,18 @@ export default {
       this.form.provinceName = val ? selectedOption.provinceName : '';
       this.form.cityCode = val ? selectedOption.cityCode : '';
       this.form.cityName = val ? selectedOption.cityName : '';
+      // 查询物料是否停产
+      if (this.form.materialsCode) {
+        getMaterialInfoList({ materialsCodeLike: this.form.materialsCode, pageSize: 1 })
+          .then(res => {
+            if (res.records && res.records.length > 0) {
+              this.$nextTick(() => {
+                this.$message.info(JSON.stringify(res.records[0]));
+                this.form.discontinueStatusLabel = res.records[0].discontinueStatusLabel;
+              });
+            }
+          });
+      }
     },
     // 审核日志
     // handleJumpAuditLog () {
@@ -921,6 +970,12 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    openFinancialOrderShow () {
+      this.$message.info('金融订单-待前端同事协助');
+    },
+    openVehicleStockShow () {
+      this.$message.info('库存车-待前端同事协助');
     },
     openCancelShow () {
       this.$confirm('确认是否对数据进行作废?', '提示', {

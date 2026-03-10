@@ -14,6 +14,7 @@
       >
         <template #status>
           {{ form.replenishApplyCode }}
+          <span class="status primary">{{ form.auditStatusLabel }}</span>
         </template>
         <template #extraButtons>
           <el-button size="small" @click="handleSubmit" :disabled="!form.permission.submit">提交补货申请</el-button>
