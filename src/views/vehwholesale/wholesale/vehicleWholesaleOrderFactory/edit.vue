@@ -625,8 +625,7 @@
                <el-form :inline="true" :model="form" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="结算资金类型：" prop="settleFundType">
                   <fetch-select
-                    :request="fetchOptions"
-                    enumCode="vw_fundtype"
+                   :options="settleFundTypeOptions"
                     v-model="form.settleFundType"
                     placeholder="请选择"
                     clearable
@@ -1010,6 +1009,7 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       true_false_enum: TRUE_FALSE_ENUM,
       ALLOWED_STATUS: [0, 11],
+      settleFundTypeOptions: [],
       form: { ...form },
       originalForm: { ...form },
       defaultNewRow: {
@@ -1058,8 +1058,21 @@ export default {
   },
   mounted () {
     console.log('mounted', ManualVehicle.props);
+    this.fetchSettleFundTypeOptions();
   },
   methods: {
+    async fetchSettleFundTypeOptions () {
+      const response = await getEnum('vw_fundtype');
+      this.settleFundTypeOptions = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['1050', '1010', '2010'].includes(codeStr + '');
+      }).map(item => {
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
+    },
     batchCancelSettle (data) {
       const ids = [this._id];
       return batchCancelSettleItem({
