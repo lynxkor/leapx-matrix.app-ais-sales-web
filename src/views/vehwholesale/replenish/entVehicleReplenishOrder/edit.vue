@@ -37,17 +37,22 @@
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="订单分类：" prop="orderCategory">
-                  <el-input
-                    placeholder="请输入"
+                  <fetch-select
+                    :options="orderCategoryOptions"
                     v-model="form.orderCategory"
+                    placeholder="请选择订单分类"
                     clearable
+                    filterable
                   />
                 </el-form-item>
                 <el-form-item label="验收方式：" prop="acceptanceMethod">
-                  <el-input
-                    placeholder="请输入"
+                   <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vw_acceptance_method"
                     v-model="form.acceptanceMethod"
+                    placeholder="请选择"
                     clearable
+                    filterable
                   />
                 </el-form-item>
                 <el-form-item label="销售市场：" prop="salesMarket">
@@ -114,6 +119,7 @@
                   <el-date-picker
                     :default-time="['00:00:00', '23:59:59']"
                     v-model="form.orderTime"
+                    type="datetime"
                     :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"
@@ -137,13 +143,15 @@
                   />
                 </el-form-item>
                  <el-form-item label="创建时间：" prop="createTime">
-                  <el-date-picker
+                   <el-date-picker
                     :default-time="['00:00:00', '23:59:59']"
+                    type="datetime"
                     v-model="form.createTime"
                     :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                    disabled
                   />
                 </el-form-item>
               </el-form>
@@ -214,21 +222,21 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="省code：" prop="provinceCode">
+                <el-form-item label="省：" prop="provinceCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.provinceCode"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="市code：" prop="cityCode">
+                <el-form-item label="市：" prop="cityCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.cityCode"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="区&#x2F;县编码：" prop="districtCode">
+                <el-form-item label="区县编码：" prop="districtCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.districtCode"
@@ -436,7 +444,7 @@ const defaultForm = {
   id: '',
   creator: '',
   creatorName: '',
-  createTime: '',
+  createTime: new Date(),
   modifier: '',
   modifierName: '',
   updateTime: '',
@@ -523,6 +531,7 @@ export default {
       submitLoading: false,
       showAddDetailDialog: false,
       yes_no_enum: YES_NO_ENUM,
+      orderCategoryOptions: [],
       form: { ...form },
       originalForm: { ...form },
       emptyText: '若要启用此内容，请创建记录',
@@ -531,56 +540,14 @@ export default {
         { id: 2, name: '标准价格', age: 30, email: 'lisi@example.com' }
       ],
       rules: {
-        id: [
-          { required: true, message: '请输入主键', trigger: 'change' }
-        ],
-        creator: [
-          { required: true, message: '请输入创建者', trigger: 'change' }
-        ],
-        creatorName: [
-          { required: true, message: '请输入创建者名称', trigger: 'change' }
-        ],
-        createTime: [
-          { required: true, message: '请选择创建时间', trigger: 'change' }
-        ],
-        modifier: [
-          { required: true, message: '请输入修改者', trigger: 'change' }
-        ],
-        modifierName: [
-          { required: true, message: '请输入修改者名称', trigger: 'change' }
-        ],
-        updateTime: [
-          { required: true, message: '请选择修改时间', trigger: 'change' }
-        ],
-        remark: [
-          { required: true, message: '请输入订单备注', trigger: 'change' }
-        ],
-        status: [
-          { required: true, message: '请选择状态', trigger: 'change' }
-        ],
-        statusDesc: [
-          { required: true, message: '请选择状态变更描述', trigger: 'change' }
-        ],
-        dataSource: [
-          { required: true, message: '请输入数据来源，150:新销服; 老销服:10', trigger: 'change' }
-        ],
-        entReplenishOrderCode: [
-          { required: true, message: '请输入企业客户补货订单编号', trigger: 'change' }
-        ],
-        entCustomerCode: [
-          { required: true, message: '请输入企业客户编码', trigger: 'change' }
+        orderCategory: [
+          { required: true, message: '请输入订单分类', trigger: 'change' }
         ],
         entCustomerName: [
           { required: true, message: '请输入企业客户名称', trigger: 'change' }
         ],
-        orderCategory: [
-          { required: true, message: '请输入订单分类', trigger: 'change' }
-        ],
-        acceptanceMethod: [
-          { required: true, message: '请输入验收方式', trigger: 'change' }
-        ],
-        salesMarket: [
-          { required: true, message: '请输入销售市场', trigger: 'change' }
+        saleCompanyId: [
+          { required: true, message: '请输入销售公司', trigger: 'change' }
         ],
         creditSaleFlag: [
           { required: true, message: '请输入是否赊销，1是，0否', trigger: 'change' }
@@ -591,81 +558,31 @@ export default {
         settleFundType: [
           { required: true, message: '请选择结算资金类型', trigger: 'change' }
         ],
-        financialOrganizationId: [
-          { required: true, message: '请输入金融机构', trigger: 'change' }
-        ],
         orderTime: [
           { required: true, message: '请选择订单时间', trigger: 'change' }
         ],
-        saleDealerCode: [
-          { required: true, message: '请输入销售门店编码', trigger: 'change' }
-        ],
-        saleDealerName: [
-          { required: true, message: '请输入销售门店名称', trigger: 'change' }
-        ],
-        saleUserName: [
-          { required: true, message: '请输入销售人员名称', trigger: 'change' }
-        ],
-        provinceCode: [
-          { required: true, message: '请输入省code', trigger: 'change' }
-        ],
-        provinceName: [
-          { required: true, message: '请输入省', trigger: 'change' }
-        ],
-        cityCode: [
-          { required: true, message: '请输入市code', trigger: 'change' }
-        ],
-        cityName: [
-          { required: true, message: '请输入市', trigger: 'change' }
-        ],
-        districtCode: [
-          { required: true, message: '请输入区&#x2F;县编码', trigger: 'change' }
-        ],
-        districtName: [
-          { required: true, message: '请输入区&#x2F;县名称', trigger: 'change' }
-        ],
-        address: [
-          { required: true, message: '请输入交车地址', trigger: 'change' }
-        ],
-        fullAddress: [
-          { required: true, message: '请输入省市区+详细地址', trigger: 'change' }
-        ],
-        longitude: [
-          { required: true, message: '请输入经度', trigger: 'change' }
-        ],
-        latitude: [
-          { required: true, message: '请输入维度', trigger: 'change' }
-        ],
-        pickupContactName: [
-          { required: true, message: '请输入接车联系人', trigger: 'change' }
-        ],
-        pickupContactMobile: [
-          { required: true, message: '请输入接车联系电话', trigger: 'change' }
-        ],
-        auditorName: [
-          { required: true, message: '请输入审核人', trigger: 'change' }
-        ],
-        auditorUserId: [
-          { required: true, message: '请输入审核人', trigger: 'change' }
-        ],
-        auditTime: [
-          { required: true, message: '请选择审核时间', trigger: 'change' }
-        ],
-        auditOpinion: [
-          { required: true, message: '请输入审核意见', trigger: 'change' }
-        ],
-        auditStatus: [
-          { required: true, message: '请选择审核状态', trigger: 'change' }
-        ],
-        saleCompanyId: [
-          { required: true, message: '请输入销售公司', trigger: 'change' }
+        createTime: [
+          { required: true, message: '请选择创建时间', trigger: 'change' }
         ],
       }
     };
   },
   mounted () {
+    this.fetchOrderCategoryOptions();
   },
   methods: {
+    async fetchOrderCategoryOptions () {
+      const response = await getEnum('vw_eordertype');
+      this.orderCategoryOptions = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['1', '8', '21'].includes(codeStr + '');
+      }).map(item => {
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
+    },
     handleAddDetail () {
       this.showAddDetailDialog = true;
     },

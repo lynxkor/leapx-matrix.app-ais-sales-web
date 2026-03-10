@@ -2410,7 +2410,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/entorder/entVehicleOrder/edit',
+      path: '/vehwholesale/entorder/entvehicleorder/edit',
       name: 'entVehicleOrderEdit',
       component: () => import('@/views/vehwholesale/entorder/entVehicleOrder/edit.vue'),
 

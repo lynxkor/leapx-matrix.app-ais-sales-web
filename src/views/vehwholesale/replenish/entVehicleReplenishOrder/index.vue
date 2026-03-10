@@ -85,8 +85,8 @@
         <el-form-item label="验收方式">
           <fetch-select
             :request="fetchOptions"
-            enumCode="vw_fundtype"
-            v-model="form.acceptanceMethod"
+            enumCode="vw_acceptance_method"
+            v-model="form.acceptanceMethods"
             placeholder="请选择"
             clearable
             multiple
