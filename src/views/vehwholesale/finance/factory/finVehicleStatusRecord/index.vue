@@ -350,7 +350,7 @@ export default {
       }
       exportTable({
         businessType: '车辆状态记录',
-        dataFetchPath: 'vehwholesale/web/finance/factory/finVehicleStatusRecord/page',
+        dataFetchPath: 'vw/web/finance/factory/finVehicleStatusRecord/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

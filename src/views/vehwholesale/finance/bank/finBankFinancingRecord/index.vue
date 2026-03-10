@@ -321,7 +321,7 @@ export default {
       }
       exportTable({
         businessType: '银行融资记录',
-        dataFetchPath: 'vehwholesale/web/finance/bank/finBankFinancingRecord/page',
+        dataFetchPath: 'vw/web/finance/bank/finBankFinancingRecord/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

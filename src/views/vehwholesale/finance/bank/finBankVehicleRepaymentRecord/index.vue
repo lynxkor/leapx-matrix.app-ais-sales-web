@@ -306,7 +306,7 @@ export default {
       }
       exportTable({
         businessType: '银行还款车辆记录',
-        dataFetchPath: 'vehwholesale/web/finance/bank/finBankVehicleRepaymentRecord/page',
+        dataFetchPath: 'vw/web/finance/bank/finBankVehicleRepaymentRecord/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
