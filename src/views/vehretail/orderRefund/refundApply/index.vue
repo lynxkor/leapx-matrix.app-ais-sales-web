@@ -136,19 +136,19 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import {LPVxeTable} from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { deleteItem, enableItem, getList, batchAudit } from '@/api/vehretail/orderRefund/refundApply/index';
-import { exportTable, getEnum, getTableConfig, tableAddOrUpdate } from '@/api/common';
+import {batchAudit, deleteItem, enableItem, getList} from '@/api/vehretail/orderRefund/refundApply/index';
+import {exportTable, getEnum, getTableConfig, tableAddOrUpdate} from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
-import { YES_NO_ENUM } from '@/libs/constants';
+import {YES_NO_ENUM} from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import { downloadExcel, handleBatchStatusChange } from '@/libs/utils';
+import {downloadExcel, handleBatchStatusChange} from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
-import { fetchCategoryList } from '@/api/vehretail/orderRefund/category';
+import {fetchCategoryList} from '@/api/vehretail/orderRefund/category';
 import TagInput from '@/libs/components/TagInput';
 import auditDialog from '@/libs/components/auditDialog/index.vue';
 
@@ -398,13 +398,9 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       const reqParams = this.getFormData() || {};
-      if (this.selectionList.length > 0) {
-        const ids = this.selectionList.map(item => item.id) || [];
-        reqParams.ids = ids;
-      }
       exportTable({
         businessType: '订单退订申请',
-        dataFetchPath: '/vr/web/refund/retailOrderPayRefundRecord//page',
+        dataFetchPath: '/vr/web/refund/retailOrderRefund/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -491,6 +487,9 @@ export default {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
+      }
+      if (this.selectionList.length > 0) {
+        data.ids = this.selectionList.map(item => item.id);
       }
       // 排序字段
       data.sortColumns = this.sortColumns;

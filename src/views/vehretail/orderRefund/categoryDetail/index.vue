@@ -324,6 +324,9 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
+      if (this.selectionList.length > 0) {
+        data.ids = this.selectionList.map(item => item.id);
+      }
 
       return data;
     },

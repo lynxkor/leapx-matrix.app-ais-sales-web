@@ -266,7 +266,7 @@
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="商城订单编号：" prop="mallOrderCode">
                   {{ form.mallOrderCode }}
-                  <span @click="openFinancialOrderShow" style="color: #00b2f2">查询金融订单</span>
+                  <el-button size="small" type="primary" plain @click="openFinancialOrderShow">查询金融订单</el-button>
                 </el-form-item>
                 <el-form-item label="退订申请单号：" prop="refundCode">
                   {{ form.refundCode }}
@@ -314,7 +314,7 @@
                 </el-form-item>
                 <el-form-item label="订单物料码：" prop="materialsCode">
                   {{ form.materialsCode }}
-                  <span @click="openVehicleStockShow" style="color: #00b2f2">查询库存车</span>
+                  <el-button size="small" type="primary" plain @click="openVehicleStockShow">查询库存车</el-button>
                 </el-form-item>
                 <el-form-item label="车型ID：" prop="modelId">
                   {{ form.modelId }}
@@ -388,8 +388,8 @@
               <!--附件上传组件 -->
               <AisAttachment
                 :businessId="_id"
-                :readonly="!(isEditing || !_id)"
-                configCode="mcs_vehorderapplylog"
+                :readonly="!isEditing"
+                configCode="mcs_vehorderrefund"
                 attachType="订单信息变更申请附件"
               />
             </div>
@@ -630,6 +630,8 @@
             ref="auditRef"
             @audit="handleAudit"
           />
+          <financial-order-dialog ref="financialOrderDialog" />
+          <vehicle-stock-dialog ref="vehicleStockDialog" />
         </el-main>
       </edit-base-container>
     </template>
@@ -664,6 +666,8 @@ import { getList as retailOrderPage } from '@/api/vehretail/orderManager/retailO
 import { fetchCategoryList } from '@/api/vehretail/orderRefund/category';
 import RefundApplyAuditDialog from '@/views/vehretail/orderRefund/refundApply/auditDialog';
 import { getList as getMaterialInfoList } from '@/api/datacenter/materials/vehicleMaterials/index';
+import FinancialOrderDialog from './components/FinancialOrderDialog.vue';
+import VehicleStockDialog from './components/VehicleStockDialog.vue';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -720,6 +724,8 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
+    VehicleStockDialog,
+    FinancialOrderDialog,
     RefundApplyAuditDialog,
     EditPageLayout,
     EditBaseContainer,
@@ -830,6 +836,22 @@ export default {
         ]
       }
     };
+  },
+  created () {
+    const mallOrderCode = this.$route.query.mallOrderCode;
+    if (mallOrderCode) {
+      this.form.mallOrderCode = mallOrderCode;
+      const params = {
+        pageSize: 1,
+        orderStatusExcludeList: [0, 99],
+        mallOrderCodeLike: mallOrderCode
+      };
+      retailOrderPage(params).then(res => {
+        if (res.total > 0) {
+          this.retailOrderChange(mallOrderCode, res.records[0]);
+        }
+      });
+    }
   },
   mounted () {
   },
@@ -954,7 +976,7 @@ export default {
           .then(res => {
             if (res.records && res.records.length > 0) {
               this.$nextTick(() => {
-                this.$message.info(JSON.stringify(res.records[0]));
+                // this.$message.info(JSON.stringify(res.records[0]));
                 this.form.discontinueStatusLabel = res.records[0].discontinueStatusLabel;
               });
             }
@@ -972,10 +994,10 @@ export default {
       return [];
     },
     openFinancialOrderShow () {
-      this.$message.info('金融订单-待前端同事协助');
+      this.$refs.financialOrderDialog.show(this.form.mallOrderCode);
     },
     openVehicleStockShow () {
-      this.$message.info('库存车-待前端同事协助');
+      this.$refs.vehicleStockDialog.show(this.form.materialsCode);
     },
     openCancelShow () {
       this.$confirm('确认是否对数据进行作废?', '提示', {
@@ -984,7 +1006,10 @@ export default {
         type: 'warning'
       }).then(() => {
         // 作废接口
-        cancel(this.form);
+        cancel(this.form).then(res => {
+          // 重新加载详情数据
+          this.reloadDetail();
+        });
       }).catch(() => {});
     },
     openCommitShow () {
@@ -996,11 +1021,7 @@ export default {
         // 提交审批接口 判断是否需要初审
         submit(this.form).then(res => {
           // 重新加载详情数据
-          if (this.$refs.containerRef) {
-            this.$refs.containerRef.loadDetail();
-          }
-          // 或者关闭编辑状态
-          this.isEditing = false;
+          this.reloadDetail();
         });
       }).catch(() => {});
     },
@@ -1027,31 +1048,27 @@ export default {
       if (this.auditType === 'approve') {
         approve(auditForm).then(res => {
           // 重新加载详情数据
-          if (this.$refs.containerRef) {
-            this.$refs.containerRef.loadDetail();
-          }
-          // 或者关闭编辑状态
-          this.isEditing = false;
+          this.reloadDetail();
         });
       } else if (this.auditType === 'preApprove') {
         preApprove(auditForm).then(res => {
           // 重新加载详情数据
-          if (this.$refs.containerRef) {
-            this.$refs.containerRef.loadDetail();
-          }
-          // 或者关闭编辑状态
-          this.isEditing = false;
+          this.reloadDetail();
         });
       } else if (this.auditType === 'finalApprove') {
         finalApprove(auditForm).then(res => {
           // 重新加载详情数据
-          if (this.$refs.containerRef) {
-            this.$refs.containerRef.loadDetail();
-          }
-          // 或者关闭编辑状态
-          this.isEditing = false;
+          this.reloadDetail();
         });
       }
+    },
+    reloadDetail () {
+      this.$message.success('操作成功');
+      if (this.$refs.containerRef) {
+        this.$refs.containerRef.loadDetail();
+      }
+      // 或者关闭编辑状态
+      this.isEditing = false;
     }
   }
 };

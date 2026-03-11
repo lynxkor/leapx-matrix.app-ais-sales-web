@@ -24,8 +24,24 @@
           <!-- <el-button size="small" @click="handleManualVehicleAllocation">手工配车</el-button> -->
           <el-button size="small" @click="handleAutoLockVehicle">自动锁车</el-button>
           <el-button size="small" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
-          <el-button size="small" @click="handleOrderUnsubscribe">订单退订</el-button>
-          <el-button size="small" @click="handleCarOwnerChangeApplication">购车人变更申请</el-button>
+          <el-button size="small"
+                     @click="navigateToRoute({
+                      path: '/vehretail/orderRefund/refundApply/edit',
+                      query: {
+                        mallOrderCode: form.mallOrderCode,
+                      },
+                    }, true)">
+            订单退订
+          </el-button>
+          <el-button size="small"
+                     @click="navigateToRoute({
+                      path: '/vehretail/orderRefund/changeApply/edit',
+                      query: {
+                        mallOrderCode: form.mallOrderCode,
+                      },
+                    }, true)">
+            购车人变更申请
+          </el-button>
           <el-button size="small" @click="handleQualityIssueUnbindApplication">质量问题解绑申请</el-button>
         </template>
         <!-- 固定悬浮导航栏 -->
@@ -742,7 +758,12 @@ export default {
     // 订单退订
     handleOrderUnsubscribe () {
       // 实现订单退订逻辑
-      console.log('订单退订');
+      navigateToRoute({
+        path: '/vehretail/orderManager/retailOrderInfo',
+        query: {
+          retailOrderCode: form.retailOrderCode,
+        },
+      });
     },
     // 购车人变更申请
     handleCarOwnerChangeApplication () {
