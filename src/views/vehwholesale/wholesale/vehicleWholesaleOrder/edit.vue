@@ -809,7 +809,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, batchConfirmItem, batchSetAutoAllocateItem, batchCancelItem, vinAllocateVehicleSubmitItem, batchSettleSubmitItem, batchCancelSettleItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import { getDetail, addOrUpdate, batchConfirmItem, batchSetAutoAllocateItem, batchCancelItem, vinAllocateVehicleCheckItem, vinAllocateVehicleSubmitItem, batchSettleSubmitItem, batchCancelSettleItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
@@ -1184,11 +1184,6 @@ export default {
             message: '自动配车成功!'
           });
           this.getDetailData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '自动配车失败!'
-          });
         });
       }).catch(() => {});
       // }
@@ -1196,20 +1191,32 @@ export default {
     handleManualVehicleAllocation () { // 手工配车
       this.showManualVehicleDialog = true;
     },
+    confirmVinSubmit (params, notice) {
+      this.$confirm(notice, '操作提醒', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        vinAllocateVehicleSubmitItem(params).then(() => {
+          this.$message({
+            type: 'success',
+            message: '自动配车成功!'
+          });
+          this.getDetailData();
+        });
+      }).catch(() => {});
+    },
     confirmVin (data) {
-      vinAllocateVehicleSubmitItem({
+      const params = {
         wholesaleOrderId: this.form.id,
         vin: data.vin
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '自动配车成功!'
-        });
-        this.getDetailData();
+      };
+      vinAllocateVehicleCheckItem(params).then((res) => {
+        this.confirmVinSubmit(params, res);
       }).catch(() => {
         this.$message({
           type: 'error',
-          message: '自动配车失败!'
+          message: '自动配车校验失败!'
         });
       });
     },

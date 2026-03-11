@@ -94,5 +94,5 @@ export function networkParentCompanyItem (data) {
  */
 const prefixDetail = 'vw/web/replenish/entVehicleReplenishOrderDetail/';
 export function addOrUpdateDetail (data) {
-  return api.jsonPost(prefixNetwork + 'addOrUpdate', data);
+  return api.jsonPost(prefixDetail + 'addOrUpdate', data);
 }

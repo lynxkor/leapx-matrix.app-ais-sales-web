@@ -172,6 +172,11 @@
       @close="handleUploadDialogClose"
       @getData="getData"
     />
+      <BatchCancelInput
+      :visible.sync="showBatchCancelDialog"
+      :cancel-ids="selectionList.map(item => item.id)"
+      @confirm="cancelApproval"
+    />
   </div>
 </template>
 
@@ -179,7 +184,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehwholesale/entorder/entVehicleOrder/index';
+import { getList, deleteItem, enableItem, batchAllocateSubmit, batchCancelAllocateSubmit, batchCancelOrders, batchCancelSettleSubmit, batchSettleSubmit } from '@/api/vehwholesale/entorder/entVehicleOrder/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -190,8 +195,9 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
-import { listDealersForParentCompany, networkParentCompanyItem, batchCancelAllocateSubmit, batchAllocateSubmit } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
+import { listDealersForParentCompany, networkParentCompanyItem  } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
 import { getList as companyList } from '@/api/vehwholesale/fund/fundSaleCompany/index';
+import BatchCancelInput from './BatchCancelInput.vue';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   status: '',
@@ -218,7 +224,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    BatchCancelInput
   },
   data () {
     return {
@@ -232,6 +239,7 @@ export default {
       selectionList: [],
       orderCategoryOptions: [],
       saleCompanyOptions: [],
+      showBatchCancelDialog: false,
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -249,7 +257,7 @@ export default {
           {
             props: 'entOrderCode',
             label: '企业客户整车订单号',
-            visible: false,
+            visible: true,
             width: 200,
             fixed: 'left',
             buttons: [{
@@ -308,47 +316,7 @@ export default {
           // { props: 'erpSaleOrderCode', label: '选配轮毂', visible: true, width: 200 },
           // { props: 'erpSaleOrderCode', label: '选配动力', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'erpSaleOrderCodeLabel', label: '退车标识', visible: true, width: 200 },
-          {
-            props: 'operate',
-            label: '操作',
-            type: 'operate',
-            visible: true,
-            fixed: 'right',
-            buttons: [{
-              name: '编辑',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/entorder/entVehicleOrder/edit',
-                  query: {
-                    id: row.id,
-                    isEditing: true
-                  }
-                });
-              },
-              type: 'info'
-            }, {
-              name: '删除',
-              popconfirmConfirmButtonType: 'danger',
-              popconfirmConfirmButtonText: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
-            }]
-          }
+          { props: 'erpSaleOrderCodeLabel', label: '退车标识', visible: true, width: 200 }
         ],
         total: 0
       },
@@ -375,37 +343,63 @@ export default {
     handleBatchSetNotAutoAllocate () {
     },
     handleBatchSetAutoAllocate () {},
-    handleBatchCancel () {},
-    handleBatchCancelSettle () {},
+    handleBatchCancel () {
+      this.showBatchCancelDialog = true;
+    },
+    cancelApproval (data) {
+      console.log('cancelApproval', data);
+      return batchCancelOrders(data).then(() => {
+        this.$message({
+          type: 'success',
+          message: '批量作废成功'
+        });
+        this.getData();
+      });
+    },
+    handleBatchCancelSettle () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      batchCancelSettleSubmit({
+        idSet: ids,
+      }).then(() => {
+        this.$message.success('批量取消结算成功');
+      });
+    },
     handleBatchSettleSubmit () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      batchSettleSubmit({
+        idSet: ids,
+      }).then(() => {
+        this.$message.success('批量结算成功');
+      });
     },
     handleBatchAllocateVehicle () {
+      console.log('handleBatchAllocateVehicle////////////');
       const ids = this.selectionList.map(item => item.id) || [];
       batchAllocateSubmit({
-        idSet: [ids],
+        idSet: ids,
       }).then(() => {
         this.$message.success('批量配车成功');
-        this.getDetailData();
       });
     },
     handleBatchCancelAllocateVehicle () {
       const ids = this.selectionList.map(item => item.id) || [];
-      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
-      this.$confirm(message, '', {
+      this.$confirm('此操作将批量取消配车, 是否继续?', '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         showClose: false
       }).then(() => {
-        deleteItem(ids).then(() => {
+        batchCancelAllocateSubmit({
+          idSet: ids
+        }).then(() => {
           this.$message({
             type: 'success',
-            message: '删除成功!'
+            message: '取消配车成功!'
           });
           this.getData();
         }).catch(() => {
           this.$message({
             type: 'error',
-            message: '删除失败!'
+            message: '取消配车失败!'
           });
         });
       }).catch(() => {});

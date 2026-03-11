@@ -285,7 +285,7 @@ export default {
       }
       exportTable({
         businessType: '车辆绑车及里程记录',
-        dataFetchPath: 'vehwholesale/web/finance/factory/finVehicleBindingMileageRecord/page',
+        dataFetchPath: 'vw/web/finance/factory/finVehicleBindingMileageRecord/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

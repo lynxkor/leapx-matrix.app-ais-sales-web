@@ -11,11 +11,17 @@
         class="ais-search-form"
       >
         <el-form-item label="整车物料编码：" :rules="rules" ref="materialsCode">
-          <el-input
-            placeholder="请输入"
-            v-model="form.materialsCode"
-            clearable
-          />
+          <fetch-select
+                :options="materialsList"
+                v-model="form.materialsCode"
+                placeholder="请选择"
+                optionKey="id"
+                labelKey="materialsCode"
+                valueKey="materialsCode"
+                @change="materialsSelect"
+                remote
+                clearable
+                filterable/>
         </el-form-item>
         <el-form-item label="标准价格：">
           <el-input-number
@@ -83,6 +89,8 @@
 <script>
 import { getEnum } from '@/api/common';
 import permissions from '@/libs/mixins/permissions';
+import { getList } from '@/api/datacenter/materials/vehicleMaterials/index';
+import FetchSelect from '@/libs/components/FetchSelect';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
 };
@@ -94,12 +102,16 @@ export default {
       default: false
     },
   },
+  components: {
+    FetchSelect,
+  },
   data () {
     return {
       title: '企业客户补货订单明细',
       moduleKey: 'AISVW-entVehicleReplenishOrder',
       loading: false,
       submitLoading: false,
+      materialsList: [],
       show: false,
       form: {
         ...defaultForm
@@ -143,7 +155,19 @@ export default {
       }
     }
   },
+  created () {
+    this.getEnum();
+    this.materialsMethod();
+  },
   methods: {
+    materialsSelect (val, row) {
+      this.form.materialsId = row.id;
+    },
+    async materialsMethod (query) {
+      const res = await getList({ materialsCodeLike: query, pageSize: 20, status: 1, statusIncludeList: ['1'] });
+      this.materialsList = res.records;
+      console.log('materialsCodeRemoteMethod', res);
+    },
     handleClose () {
       this.form = { ...defaultForm }; // 重置表单数据
       this.tableData = []; // 清空表格数据
@@ -178,11 +202,12 @@ export default {
       this.dialogVisible = false;
     },
     handleSubmit () {
-      this.$refs.entOrderDetail.validate((valid) => {
-        if (valid) {
-          this.submitLoading = true;
-        }
-      });
+      this.$emit('addConfirm', this.form);
+      // this.$refs.entOrderDetail.validate((valid) => {
+      //   if (valid) {
+      //     this.submitLoading = true;
+      //   }
+      // });
     },
   }
 };

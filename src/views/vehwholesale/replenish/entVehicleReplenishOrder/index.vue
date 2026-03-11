@@ -13,14 +13,13 @@
         <fetch-select
               :remote-method="listNetworkParentCompany"
               remote
-              v-model="form.entCustomerName"
+              v-model="form.entCustomerCodes"
               placeholder="请选择"
               labelKey="companyName"
               valueKey="companyCode"
               clearable
               collapseTags
               filterable
-              @change="(val, row) => handleChange(val, row)"
         />
       </el-form-item>
       <el-form-item label="销售公司">
@@ -182,7 +181,7 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
-
+import { getList as companyList } from '@/api/vehwholesale/fund/fundSaleCompany/index';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   entCustomerName: '',
@@ -331,8 +330,12 @@ export default {
     this.fetchOrderCategoryOptions();
     this.getData();
     this.listNetworkParentCompany();
+    this.getCompanyList();
   },
   methods: {
+    getCompanyList (query) {
+      return companyList({ companyNameLike: query, status: 1 });
+    },
     async showDropdown () {
       this.dropdownLoading = true;
       try {
@@ -344,11 +347,6 @@ export default {
         this.dropdownLoading = false;
         this.validatedOrderategoryList = [];
       }
-    },
-    handleChange (val, row) {
-      listDealersForParentCompany({ companyCode: val }).then(res => {
-        this.saleCompanyOptions = res;
-      });
     },
     async listNetworkParentCompany (query) {
       return networkParentCompanyItem({ parentCompanyName: query, pageNum: 1, pageSize: 20 });

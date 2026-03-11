@@ -2293,6 +2293,141 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
+      path: '/vehretail/financeSubsidy/vrFinancePlan',
+      name: 'vrFinancePlan',
+      component: () => import('@/views/vehretail/financeSubsidy/vrFinancePlan/index.vue'),
+
+      meta: {
+        name: '整车零售-金融补贴-金融方案-适用金融产品管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/financeSubsidy/vrFinanceOrder',
+      name: 'vrFinanceOrder',
+      component: () => import('@/views/vehretail/financeSubsidy/vrFinanceOrder/index.vue'),
+
+      meta: {
+        name: '整车零售-金融补贴-金融订单管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/financesubsidy/vrfinanceorder/edit',
+      name: 'vrFinanceOrderEdit',
+      component: () => import('@/views/vehretail/financeSubsidy/vrFinanceOrder/edit.vue'),
+
+      meta: {
+        name: '整车零售-金融补贴-金融订单管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/financeSubsidy/vrFinanceProduct',
+      name: 'vrFinanceProduct',
+      component: () => import('@/views/vehretail/financeSubsidy/vrFinanceProduct/index.vue'),
+
+      meta: {
+        name: '整车零售-金融补贴-金融产品管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/financeSubsidy/vrFinanceProduct/edit',
+      name: 'vrFinanceProductEdit',
+      component: () => import('@/views/vehretail/financeSubsidy/vrFinanceProduct/edit.vue'),
+
+      meta: {
+        name: '整车零售-金融补贴-金融产品管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/financeSubsidy/financePlan',
+      name: 'financePlan',
+      component: () => import('@/views/vehretail/financeSubsidy/vrFinancePlan/index.vue'),
+
+      meta: {
+        name: '整车零售-金融补贴-金融方案-适用金融产品管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/financeSubsidy/financePlan/edit',
+      name: 'financePlanEdit',
+      component: () => import('@/views/vehretail/financeSubsidy/vrFinancePlan/edit.vue'),
+
+      meta: {
+        name: '整车零售-金融补贴-金融方案-适用金融产品管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/basicConfig/vrEquityCategory',
+      name: 'vrEquityCategory',
+      component: () => import('@/views/vehretail/basicConfig/vrEquityCategory/index.vue'),
+
+      meta: {
+        name: '整车零售-基础设置-权益大类管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicConfig/vrEquityCategory/edit',
+      name: 'vrEquityCategoryEdit',
+      component: () => import('@/views/vehretail/basicConfig/vrEquityCategory/edit.vue'),
+
+      meta: {
+        name: '整车零售-基础设置-权益大类管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/orderManager/vrEquityApply',
+      name: 'vrEquityApply',
+      component: () => import('@/views/vehretail/orderManager/vrEquityApply/index.vue'),
+
+      meta: {
+        name: '整车零售-订单管理-订单权益申请管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/orderManager/vrEquityApply/edit',
+      name: 'vrEquityApplyEdit',
+      component: () => import('@/views/vehretail/orderManager/vrEquityApply/edit.vue'),
+
+      meta: {
+        name: '整车零售-订单管理-订单权益申请管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/orderManager/vrGroupbuyOrderEquityApply',
+      name: 'vrGroupbuyOrderEquityApply',
+      component: () => import('@/views/vehretail/orderManager/vrGroupbuyOrderEquityApply/index.vue'),
+
+      meta: {
+        name: '整车零售-订单管理-团购订单权益申请管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/orderManager/vrGroupbuyOrderEquityApply/edit',
+      name: 'vrGroupbuyOrderEquityApplyEdit',
+      component: () => import('@/views/vehretail/orderManager/vrGroupbuyOrderEquityApply/edit.vue'),
+
+      meta: {
+        name: '整车零售-订单管理-团购订单权益申请管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/orderManager/vrGroupbuyEnterprisePolicy',
+      name: 'vrGroupbuyEnterprisePolicy',
+      component: () => import('@/views/vehretail/orderManager/vrGroupbuyEnterprisePolicy/index.vue'),
+
+      meta: {
+        name: '整车零售-订单管理-团购企业优惠政策管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/orderManager/vrGroupbuyEnterprisePolicy/edit',
+      name: 'vrGroupbuyEnterprisePolicyEdit',
+      component: () => import('@/views/vehretail/orderManager/vrGroupbuyEnterprisePolicy/edit.vue'),
+
+      meta: {
+        name: '整车零售-订单管理-团购企业优惠政策管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
       path: '/vehretail/basicConfig/deliveryConfirmItemConfig',
       name: 'deliveryConfirmItemConfig',
       component: () => import('@/views/vehretail/basicConfig/deliveryConfirmItemConfig/index.vue'),
@@ -2311,6 +2446,42 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
+      path: '/vehretail/orderManager/vrGroupbuyEnterpriseCustomer',
+      name: 'vrGroupbuyEnterpriseCustomer',
+      component: () => import('@/views/vehretail/orderManager/vrGroupbuyEnterpriseCustomer/index.vue'),
+
+      meta: {
+        name: '整车零售-订单管理-团购企业客户管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/orderManager/vrGroupbuyEnterpriseCustomer/edit',
+      name: 'vrGroupbuyEnterpriseCustomerEdit',
+      component: () => import('@/views/vehretail/orderManager/vrGroupbuyEnterpriseCustomer/edit.vue'),
+
+      meta: {
+        name: '整车零售-订单管理-团购企业客户管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/orderManager/vrSpecialVehicleEquityApply',
+      name: 'vrSpecialVehicleEquityApply',
+      component: () => import('@/views/vehretail/orderManager/vrSpecialVehicleEquityApply/index.vue'),
+
+      meta: {
+        name: '整车零售-订单管理-特殊车辆权益申请管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/orderManager/vrRetailOrderBackRecord',
+      name: 'vrRetailOrderBackRecord',
+      component: () => import('@/views/vehretail/orderManager/vrRetailOrderBackRecord/index.vue'),
+
+      meta: {
+        name: '整车零售-订单管理-整车零售订单管理-回退记录',
+        keepAlive: true
+      }
+    }, {
       path: '/vehwholesale/wholesale/vehicleWholesaleOrderRecord',
       name: 'vehicleWholesaleOrderRecord',
       component: () => import('@/views/vehwholesale/wholesale/vehicleWholesaleOrderRecord/index.vue'),
@@ -2327,6 +2498,15 @@ const routes = [
       meta: {
         name: '整车批售-批售管理-批售配车结算记录管理详情',
         noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/orderManager/vrSpecialVehicle',
+      name: 'vrSpecialVehicle',
+      component: () => import('@/views/vehretail/orderManager/vrSpecialVehicle/index.vue'),
+
+      meta: {
+        name: '整车零售-订单管理-特殊车辆清单管理',
+        keepAlive: true
       }
     }, {
       path: '/vehretail/basicConfig/deliveryScheduleTimeConfig',

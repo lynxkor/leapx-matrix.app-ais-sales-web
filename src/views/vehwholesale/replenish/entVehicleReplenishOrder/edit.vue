@@ -77,9 +77,21 @@
                 />
                 </el-form-item>
                  <el-form-item label="销售公司：" prop="saleCompanyId">
+                    <fetch-select
+                      filterable
+                      clearable
+                      remote
+                      v-model="form.saleCompanyId"
+                      :params="form.saleCompanyName"
+                      :remote-method="getCompanyList"
+                      value-key="id"
+                      label-key="companyName"
+                    />
+                </el-form-item>
+                 <el-form-item label="销售门店：" prop="saleDealerName">
                    <fetch-select
                       :options="saleCompanyOptions"
-                      v-model="form.saleCompanyId"
+                      v-model="form.saleDealerName"
                       placeholder="销售公司"
                       labelKey="storeName"
                       valueKey="storeId"
@@ -88,14 +100,6 @@
                       @change="getOtherInfoBysaleCompany"
                     />
                 </el-form-item>
-                 <el-form-item label="销售门店：" prop="saleDealerName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.saleDealerName"
-                    clearable
-                  />
-                </el-form-item>
-
                 <el-form-item label="订单金额：" prop="totalAmount">
                   <el-input-number
                     placeholder="请输入订单金额"
@@ -474,8 +478,9 @@
   <Upload :visible="uploadDialogVisible" templateUrl="" uploadUrl="" @close="handleUploadDialogClose" />
   <AddEntVehicleReplishOrderDetail  :visible.sync="showAddDetailDialog"
       :order-ids="[_id]"
-      @addConfirm="addConfirm"></AddEntVehicleReplishOrderDetail>
-      <audit-dialog
+      @addConfirm="addConfirm">
+  </AddEntVehicleReplishOrderDetail>
+<audit-dialog
       ref="auditRef"
       @audit="handleBatchAudit"
       :auditDataList="[_id]"
@@ -498,6 +503,7 @@ import AddEntVehicleReplishOrderDetail from './addEntVehicleReplishOrderDetail.v
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import auditDialog from '@/libs/components/auditDialog';
 import Upload from '@/libs/components/UploadDialog';
+import { getList as companyList } from '@/api/vehwholesale/fund/fundSaleCompany/index';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -643,8 +649,12 @@ export default {
     this.fetchOrderCategoryOptions();
     this.fetchSettleFundTypeOptions();
     this.listNetworkParentCompany();
+    // this.getCompanyList();
   },
   methods: {
+    getCompanyList (query) {
+      return companyList({ companyNameLike: query, status: 1 });
+    },
     handleUploadDialogClose () {
       this.uploadDialogVisible = false;
     },
@@ -712,12 +722,6 @@ export default {
             type: 'success',
             message: '删除成功!'
           });
-          this.getData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '删除失败!'
-          });
         });
       }).catch(() => {});
     },
@@ -770,12 +774,15 @@ export default {
       this.form.saleDealerCode = row.storeCode;
       this.form.address = row.storeBuildAddress;
     },
-    handleChange (val, row) {
-      this.form.entCustomerName = row.companyName;
-      this.form.entCustomerCode = row.companyCode;
+    getDealersForParentCompany (val) {
       listDealersForParentCompany({ companyCode: val }).then(res => {
         this.saleCompanyOptions = res;
       });
+    },
+    handleChange (val, row) {
+      this.form.entCustomerName = row.companyName;
+      this.form.entCustomerCode = row.companyCode;
+      this.getDealersForParentCompany(this.val);
     },
     iscreditSaleFlag (val) {
       if (val === '2010') {
@@ -819,7 +826,20 @@ export default {
     handleAddDetail () {
       this.showAddDetailDialog = true;
     },
-    addConfirm () {},
+    addConfirm (data) {
+      data.entReplenishOrderId = this.form.id;
+      addOrUpdateDetail(data).then(() => {
+        this.$message({
+          type: 'success',
+          message: '添加成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'error',
+          message: '添加失败!'
+        });
+      });
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

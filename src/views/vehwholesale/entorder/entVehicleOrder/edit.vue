@@ -11,6 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="false"
       >
         <template #status>
           <span>{{ form.entOrderCode }}</span>
@@ -18,6 +19,12 @@
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
+          <el-button size="small" type="primary" @click="handleCheckConfirm" >查询整车账户余额</el-button>
+          <el-button size="small" type="primary" @click="handleCheckConfirm" >配车</el-button>
+          <el-button size="small" type="primary" @click="handleCheckConfirm" >取消配车</el-button>
+          <el-button size="small" type="primary" @click="handleCheckConfirm" >提交结算</el-button>
+          <el-button size="small" type="primary" @click="handleCheckConfirm" >取消结算</el-button>
+          <el-button size="small" type="primary" @click="handleCheckConfirm" >保存</el-button>
           <!-- <el-button size="small">按钮1</el-button>
           <el-button size="small">按钮2</el-button> -->
         </template>
@@ -154,7 +161,7 @@
                     clearable
                   />
                 </el-form-item>
-                 <el-form-item label="订单物料ID，下单时物料ID：" prop="orderMaterialsId">
+                 <el-form-item label="订单物料ID：" prop="orderMaterialsId">
                   <el-input
                     placeholder="请输入"
                     v-model="form.orderMaterialsId"
@@ -231,7 +238,7 @@
                  <el-form-item label="企业客户补货订单编号：" prop="entReplenishOrderCode">
                   {{ form.entReplenishOrderCode }}
                 </el-form-item>
-                 <el-form-item label="CBU订单号，目前是第七大区CBU订单：" prop="cbuOrderCode">
+                 <el-form-item label="CBU订单号：" prop="cbuOrderCode">
                   {{ form.cbuOrderCode }}
                 </el-form-item>
                  <el-form-item label="销售公司：" prop="saleCompanyId">
@@ -243,8 +250,8 @@
                  <el-form-item label="销售门店名称：" prop="saleDealerName">
                   {{ form.saleDealerName }}
                 </el-form-item>
-                 <el-form-item label="订单分类：" prop="orderCategory">
-                  {{ form.orderCategory }}
+                 <el-form-item label="订单分类：" prop="orderCategoryLabel">
+                  {{ form.orderCategoryLabel }}
                 </el-form-item>
                  <el-form-item label="车辆属性：" prop="vehicleAttribute">
                   {{ form.vehicleAttribute }}
@@ -255,14 +262,14 @@
                  <el-form-item label="开票日期：" prop="invoiceTime">
                   {{ form.invoiceTime }}
                 </el-form-item>
-                <el-form-item label="数据来源" prop="dataSource">
-                  {{ form.dataSource }}
+                <el-form-item label="数据来源" prop="dataSourceLabel">
+                  {{ form.dataSourceLabel }}
                 </el-form-item>
                  <el-form-item label="订单时间：" prop="orderTime">
                   {{ form.orderTime }}
                 </el-form-item>
-                  <el-form-item label="订单状态：" prop="status">
-                  {{ form.status }}
+                  <el-form-item label="订单状态：" prop="statusLabel">
+                  {{ form.statusLabel }}
                 </el-form-item>
                 <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
                   {{ form.emergencyOrderTime }}
@@ -270,7 +277,7 @@
                 <el-form-item label="急单备注：" prop="emergencyOrderRemark">
                   {{ form.emergencyOrderRemark }}
                 </el-form-item>
-                  <el-form-item label="订单物料ID，下单时物料ID：" prop="orderMaterialsId">
+                  <el-form-item label="订单物料：" prop="orderMaterialsId">
                   {{ form.orderMaterialsId }}
                 </el-form-item>
                 <el-form-item label="下单物料描述：" prop="orderMaterialsDesc">
@@ -291,8 +298,8 @@
                 <el-form-item label="销售市场：" prop="salesMarket">
                   {{ form.salesMarket }}
                 </el-form-item>
-                <el-form-item label="验收方式：" prop="acceptanceMethod">
-                  {{ form.acceptanceMethod }}
+                <el-form-item label="验收方式：" prop="acceptanceMethodLabel">
+                  {{ form.acceptanceMethodLabel }}
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
@@ -597,7 +604,7 @@
                  <el-form-item label="是否还款：" prop="clearedFlag">
                   {{ form.clearedFlag }}
                 </el-form-item>
-                <el-form-item label="是否赊销，1是，0否：" prop="creditSaleFlag">
+                <el-form-item label="是否赊销：" prop="creditSaleFlag">
                   {{ form.creditSaleFlag }}
                 </el-form-item>
                  <el-form-item label="是否创建发运计划：" prop="creditSaleFlag">
@@ -722,55 +729,6 @@
                   {{ form.latitude }}
                 </el-form-item>
               </el-form>
-            </div>
-          </section>
-          <section class="common-section" v-if="_id">
-            <div class="common-section-header">
-              <h2>子表标题</h2>
-            </div>
-            <div class="common-section-body">
-              <div class="common-section-header">
-                <div class="ais-select-group">
-                  <fetch-select
-                    style="width: 300px;"
-                    :remote-method="queryListData"
-                    remote
-                    placeholder="请选择"
-                    clearable
-                    value-key="id"
-                    label-key="name"
-                    @change="handleAddTableData"
-                  />
-                  <el-button type="primary" size="small">添加</el-button>
-                </div>
-              </div>
-              <div class="common-section-table">
-                <vxe-table
-                  ref="tableRef"
-                  stripe
-                  :data="tableData"
-                  show-overflow
-                  resizable
-                  border="inner"
-                  size="medium"
-                  min-height="0"
-                  max-height="400px"
-                >
-                  <vxe-column field="name" title="名称" min-width="30%" />
-                  <vxe-column field="age" title="年龄" min-width="30%" />
-                  <vxe-column field="email" title="邮箱" min-width="30%" />
-                  <vxe-column title="操作" width="100" v-if="canDelete">
-                    <template #default="{ rowIndex }">
-                      <el-popconfirm title="确定要删除吗？" @confirm="handleDeleteRow(rowIndex)">
-                        <span slot="reference" type="text" size="small" class="btn-delete">删除</span>
-                      </el-popconfirm>
-                    </template>
-                  </vxe-column>
-                  <template #empty>
-                    <div class="m-vxe-table-empty-text">{{emptyText}}</div>
-                  </template>
-                </vxe-table>
-              </div>
             </div>
           </section>
         </el-main>
@@ -921,11 +879,6 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
-      emptyText: '若要启用此内容，请创建记录',
-      tableData: [
-        { id: 1, name: '张三', age: 25, email: 'zhangsan@example.com' },
-        { id: 2, name: '李四', age: 30, email: 'lisi@example.com' }
-      ],
       rules: {
         id: [
           { required: true, message: '请输入主键', trigger: 'change' }
@@ -1060,7 +1013,7 @@ export default {
           { required: true, message: '请输入销售市场', trigger: 'change' }
         ],
         creditSaleFlag: [
-          { required: true, message: '请输入是否赊销，1是，0否', trigger: 'change' }
+          { required: true, message: '请输入是否赊销', trigger: 'change' }
         ],
         vehicleAttribute: [
           { required: true, message: '请输入车辆属性', trigger: 'change' }
@@ -1081,7 +1034,7 @@ export default {
           { required: true, message: '请输入订单物料编码', trigger: 'change' }
         ],
         orderMaterialsId: [
-          { required: true, message: '请输入订单物料ID，下单时物料ID', trigger: 'change' }
+          { required: true, message: '请输入订单物料ID', trigger: 'change' }
         ],
         orderMaterialsDesc: [
           { required: true, message: '请输入下单物料描述', trigger: 'change' }
@@ -1108,7 +1061,7 @@ export default {
           { required: true, message: '请输入关联交易价格比例', trigger: 'change' }
         ],
         cbuOrderCode: [
-          { required: true, message: '请输入CBU订单号，目前是第七大区CBU订单', trigger: 'change' }
+          { required: true, message: '请输入CBU订单号', trigger: 'change' }
         ],
         emergencyOrderTime: [
           { required: true, message: '请选择设置急单时间', trigger: 'change' }

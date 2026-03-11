@@ -31,17 +31,17 @@
         />
       </el-form-item>
       <el-form-item label="购车人姓名">
-        <tag-input v-model="form.buyerName" placeholder="请输入" />
+        <el-input v-model="form.buyerName" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="购车人手机号">
-        <tag-input v-model="form.buyerPhone" placeholder="请输入" />
+        <el-input v-model="form.buyerPhone" placeholder="请输入" />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="销售门店">
-          <tag-input v-model="form.saleDealerName" placeholder="请输入" />
+          <el-input v-model="form.saleDealerName" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="基础车型">
-          <tag-input v-model="form.modelName" placeholder="请输入" />
+          <el-input v-model="form.modelName" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="商城订单编号">
           <tag-input v-model="form.mallOrderCodeList" placeholder="请输入" />
@@ -83,8 +83,9 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入定金退回方式</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入退订退款结果</el-button>
+      <el-button v-if="canImport" size="small" @click="handleDepositRefundTypeImport">导入定金退回方式</el-button>
+      <el-button v-if="canImport" size="small" @click="handleFundResultImport">导入退订退款结果</el-button>
+      <el-button v-if="refundStatusTab !== '0'" size="small" @click="openBatchAuditShow">批量审核</el-button>
 <!--      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>-->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
 <!--      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>-->
@@ -115,9 +116,20 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="'1'"
+      :id="'orderRefundDepositRefundTypeImport'"
       @close="handleUploadDialogClose"
       @getData="getData"
+    />
+    <Upload
+      :visible="uploadDialogVisible1"
+      :id="'orderPayRefundRecordResultImport'"
+      @close="handleUploadDialogClose1"
+      @getData="getData"
+    />
+    <!--  批量审核  -->
+    <audit-dialog
+      ref="auditRef"
+      @audit="handleBatchAudit"
     />
   </div>
 </template>
@@ -126,18 +138,19 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehretail/orderRefund/refundApply/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { deleteItem, enableItem, getList, batchAudit } from '@/api/vehretail/orderRefund/refundApply/index';
+import { exportTable, getEnum, getTableConfig, tableAddOrUpdate } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
+import { downloadExcel, handleBatchStatusChange } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import { fetchCategoryList } from '@/api/vehretail/orderRefund/category';
 import TagInput from '@/libs/components/TagInput';
+import auditDialog from '@/libs/components/auditDialog/index.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -162,7 +175,8 @@ export default {
     FetchSelect,
     EditPage,
     Upload,
-    TagInput
+    TagInput,
+    auditDialog
   },
   data () {
     return {
@@ -191,6 +205,7 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      uploadDialogVisible1: false,
       clickItemId: '',
       optionObj: {
         id: 'refundTable',
@@ -327,11 +342,43 @@ export default {
     handleListSelect (row) {
       this.clickItemId = row.id;
     },
-    handleImport () {
+    handleDepositRefundTypeImport () {
       this.uploadDialogVisible = true;
     },
     handleUploadDialogClose () {
       this.uploadDialogVisible = false;
+    },
+    handleFundResultImport () {
+      this.uploadDialogVisible1 = true;
+    },
+    handleUploadDialogClose1 () {
+      this.uploadDialogVisible1 = false;
+    },
+    openBatchAuditShow () {
+      if (this.selectionList.length === 0) {
+        this.$message.error('请选择要批量审核的退订申请！');
+        return;
+      }
+      this.$refs.auditRef.show();
+    },
+    // 提交审批结果
+    handleBatchAudit (auditForm) {
+      if (this.selectionList.length === 0) {
+        this.$message.error('请选择要批量审核的退订申请！');
+        return;
+      }
+      // 申请单号列表
+      const refundCodeList = this.selectionList.map(item => item.refundCode) || [];
+      const idList = this.selectionList.map(item => item.id) || [];
+      auditForm.refundCodeList = refundCodeList;
+      auditForm.idList = idList;
+      auditForm.auditResult = auditForm.result;
+      auditForm.auditContent = auditForm.remark;
+      auditForm.refundStatus = this.refundStatusTab;
+      this.$message.info(JSON.stringify(auditForm));
+      batchAudit(auditForm).then(res => {
+        this.getData();
+      });
     },
     handleAdd () {
       this.$router.push({
