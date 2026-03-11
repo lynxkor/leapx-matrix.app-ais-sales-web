@@ -26,7 +26,11 @@
               :width="column.width"
               :align="column.align || 'center'"
               v-bind="column"
-            />
+            >
+              <template v-slot:default="slotData">
+                <slot :name="column.slots?.default" v-bind="slotData" />
+              </template>
+            </vxe-column>
           </vxe-table>
 
           <!-- 分页组件 -->
