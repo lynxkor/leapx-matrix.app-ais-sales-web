@@ -43,78 +43,62 @@
             </div>
             <div class="common-section-body">
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm1" :label-width="labelWidth" class="form-edit">
-                <el-form-item label="订单销售门店：" prop="salesStoreId">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="store_enum"
-                    v-model="form.salesStoreId"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                    :disabled="true"
-                  />
+                <el-form-item label="订单销售门店：" prop="salesStoreName">
+                  <el-input v-model="form.salesStoreName" disabled />
                 </el-form-item>
                 <el-form-item label="订单销售顾问：" prop="salesAdvisorId">
                   <fetch-select
-                    :request="fetchOptions"
-                    enumCode="sales_advisor_enum"
-                    v-model="form.salesAdvisorId"
-                    placeholder="请选择"
-                    clearable
                     filterable
+                    clearable
+                    remote
+                    v-model="form.salesAdvisorId"
+                    :remote-method="remoteMethods.saleUser"
+                    value-key="userId"
+                    label-key="username"
+                    @change="(val, row) => handleSaleUserChange(val,row, 'saleUser')"
                   />
                 </el-form-item>
-                <el-form-item label="订单交付门店：" prop="deliveryStoreId">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="store_enum"
-                    v-model="form.deliveryStoreId"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                    :disabled="true"
-                  />
+                <el-form-item label="订单交付门店：" prop="deliveryStoreName">
+                  <el-input v-model="form.deliveryStoreName" disabled />
                 </el-form-item>
                 <el-form-item label="订单交付顾问：" prop="deliveryAdvisorId">
                   <fetch-select
-                    :request="fetchOptions"
-                    enumCode="vr_order_lock_type"
-                    v-model="form.deliveryAdvisorId"
-                    placeholder="请选择"
-                    clearable
                     filterable
+                    clearable
+                    remote
+                    v-model="form.deliveryAdvisorId"
+                    :remote-method="remoteMethods.deliveryUser"
+                    value-key="userId"
+                    label-key="username"
+                    @change="(val, row) => handleSaleUserChange(val,row, 'deliveryUser')"
                   />
                 </el-form-item>
                 <el-form-item label="交付衍生工程师：" prop="deliveryDerivativeUserId">
                   <fetch-select
-                    :request="fetchOptions"
-                    enumCode="delivery_engineer_enum"
-                    v-model="form.deliveryDerivativeUserId"
-                    placeholder="请选择"
-                    clearable
                     filterable
+                    clearable
+                    remote
+                    v-model="form.deliveryAdvisorId"
+                    :remote-method="remoteMethods.deliveryDerive"
+                    value-key="userId"
+                    label-key="username"
+                    @change="(val, row) => handleSaleUserChange(val,row, 'deliveryDerive')"
                   />
                 </el-form-item>
                 <el-form-item label="现场交付工程师：" prop="onSiteDeliveryUserId">
                   <fetch-select
-                    :request="fetchOptions"
-                    enumCode="onsite_engineer_enum"
-                    v-model="form.onSiteDeliveryUserId"
-                    placeholder="请选择"
-                    clearable
                     filterable
+                    clearable
+                    remote
+                    v-model="form.onSiteDeliveryUserId"
+                    :remote-method="remoteMethods.deliveryUser"
+                    value-key="userId"
+                    label-key="username"
+                    @change="(val, row) => handleSaleUserChange(val,row, 'deliveryUser')"
                   />
                 </el-form-item>
-                <el-form-item label="专属服务门店：" prop="exclusiveServiceStoreId">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="service_store_enum"
-                    v-model="form.exclusiveServiceStoreId"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                    :disabled="true"
-                  />
+                <el-form-item label="专属服务门店：">
+                  <el-input v-model="form.exclusiveServiceStoreName" disabled />
                 </el-form-item>
               </el-form>
             </div>
@@ -427,11 +411,14 @@
 
 <script>
 import { getDetail, addOrUpdate, validateInvoiceAmount, validateRemainingReceivable, validateUnverifiedRights, confirmPayment } from '@/api/vehretail/orderManager/deliveryOrder/index';
-import { getList as getPaymentRecordList, deleteItem as deletePaymentRecord } from '@/api/vehretail/orderManager/orderPayRecord/index';
+import {
+  getList as getPaymentRecordList,
+  deleteItem as deletePaymentRecord
+} from '@/api/vehretail/orderManager/orderPayRecord/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum } from '@/api/common';
+import { engineerList } from '@/libs/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -578,6 +565,23 @@ export default {
       cityDeliveryOrderMin: 0,
       // 当前确认收款数据
       currentConfirmPaymentData: {},
+      // 远程搜索方法
+      remoteMethods: {
+        // 初始方法
+        saleUser: async (query) => {
+          console.log('saleUser query:', query);
+          return await engineerList({ username: query, salesConfigKey: 'saleUser', orgCodeList: ['100088'] });
+        },
+        deliveryUser: async (query) => {
+          return await engineerList({ username: query, salesConfigKey: 'deliveryUser', orgCodeList: ['100088'] });
+        },
+        deliveryDerive: async (query) => {
+          return await engineerList({ username: query, salesConfigKey: 'deliveryDerive', orgCodeList: ['100088'] });
+        },
+        listParentForOption: async (query) => {
+          return await engineerList({ username: query, salesConfigKey: 'deliveryDerive', orgCodeList: ['100088'] });
+        },
+      },
       rules: {
         deliveryAdvisorId: [
           { required: true, message: '请选择订单交付顾问', trigger: 'change' }
@@ -732,6 +736,12 @@ export default {
     this.loadCityDeliveryOrderMin();
   },
   methods: {
+    getPaymentRecordList,
+    handleSaleUserChange (val, row, name) {
+      console.log('val', val);
+      console.log('row', row);
+      console.log('name', name + 'Name');
+    },
     // 统一按钮 loading 管理工具方法
     // 用法：await this.withLoading('btnName', async () => { await api.xxx() })
     async withLoading (actionName, fn) {
@@ -780,12 +790,12 @@ export default {
     openPane () {
       this.$refs.editLayout.openPane();
     },
-    async fetchOptions (code) {
-      if (code) {
-        return getEnum(code);
-      }
-      return [];
-    },
+    // async fetchOptions (code) {
+    //   if (code) {
+    //     return getEnum(code);
+    //   }
+    //   return [];
+    // },
     getDefautlForm () {
       // TIPS: 此处可添加表单默认值，如当前用户信息等
       // const userInfo = this.$store.state.user.userInfo;

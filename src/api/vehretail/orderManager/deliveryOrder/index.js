@@ -43,6 +43,7 @@ export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
 
+// 假接口 （记得删除）=====================================================================================================
 /**
  * 校验开票金额
  * @param {Object} data
@@ -73,4 +74,54 @@ export function validateUnverifiedRights (data) {
  */
 export function confirmPayment (data) {
   return api.jsonPost(prefix + 'confirmPayment', data);
+}
+
+// 假接口 （记得删除）=====================================================================================================
+
+/**
+ * 交车单预约交车所选日期排程数
+ * @param {Object} data
+ */
+export function deliveryOrderScheduledNum (data) {
+  return api.jsonPost(prefix + 'deliveryOrderScheduledNum', data);
+}
+
+/**
+ * 校验购车人手机号是否注册零跑APP
+ * @param {Object} data
+ */
+export function checkCarBuyerPhoneRegistered (data) {
+  return api.jsonPost(prefix + 'checkCarBuyerPhoneRegistered', data);
+}
+
+/**
+ * 预约交车
+ * @param {Object} data
+ */
+export function appointment (data) {
+  return api.jsonPost(prefix + 'appointment', data);
+}
+
+/**
+ * 更改预约时间
+ * @param {Object} data
+ */
+export function changeAppointmentTime (data) {
+  return api.jsonPost(prefix + 'changeAppointmentTime', data);
+}
+
+/**
+ * 分派
+ * @param {Object} data
+ */
+export function assign (data) {
+  return api.jsonPost(prefix + 'assign', data);
+}
+
+/**
+ * 校验交付工程师单月交付订单数量是否超过交付承载力
+ * @param {Object} data
+ */
+export function checkOverDeliveryCapacity (data) {
+  return api.jsonPost(prefix + 'checkOverDeliveryCapacity', data);
 }
