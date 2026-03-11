@@ -242,7 +242,7 @@ export default {
     },
     queryCompanyList (queryString) {
       return new Promise(resolve => {
-        // TODO: 根据实际接口实现公司列表查询
+        // 根据实际接口实现公司列表查询
         // companyList({ companyNameLike: queryString, limitSize: 20 }).then(res => {
         //   resolve(res || []);
         // });
@@ -251,7 +251,7 @@ export default {
     },
     querySeriesList (queryString) {
       return new Promise(resolve => {
-        // TODO: 根据实际接口实现车系列表查询
+        // 根据实际接口实现车系列表查询
         // seriesList({ seriesNameLike: queryString, limitSize: 20 }).then(res => {
         //   resolve(res || []);
         // });
