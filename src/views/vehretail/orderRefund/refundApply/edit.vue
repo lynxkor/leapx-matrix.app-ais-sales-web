@@ -388,8 +388,8 @@
               <!--附件上传组件 -->
               <AisAttachment
                 :businessId="_id"
-                :readonly="!(isEditing || !_id)"
-                configCode="mcs_vehorderapplylog"
+                :readonly="!isEditing"
+                configCode="mcs_vehorderrefund"
                 attachType="订单信息变更申请附件"
               />
             </div>
@@ -837,6 +837,22 @@ export default {
       }
     };
   },
+  created () {
+    const mallOrderCode = this.$route.query.mallOrderCode;
+    if (mallOrderCode) {
+      this.form.mallOrderCode = mallOrderCode;
+      const params = {
+        pageSize: 1,
+        orderStatusExcludeList: [0, 99],
+        mallOrderCodeLike: mallOrderCode
+      };
+      retailOrderPage(params).then(res => {
+        if (res.total > 0) {
+          this.retailOrderChange(mallOrderCode, res.records[0]);
+        }
+      });
+    }
+  },
   mounted () {
   },
   methods: {
@@ -960,7 +976,7 @@ export default {
           .then(res => {
             if (res.records && res.records.length > 0) {
               this.$nextTick(() => {
-                this.$message.info(JSON.stringify(res.records[0]));
+                // this.$message.info(JSON.stringify(res.records[0]));
                 this.form.discontinueStatusLabel = res.records[0].discontinueStatusLabel;
               });
             }
@@ -990,7 +1006,10 @@ export default {
         type: 'warning'
       }).then(() => {
         // 作废接口
-        cancel(this.form);
+        cancel(this.form).then(res => {
+          // 重新加载详情数据
+          this.reloadDetail();
+        });
       }).catch(() => {});
     },
     openCommitShow () {
@@ -1002,11 +1021,7 @@ export default {
         // 提交审批接口 判断是否需要初审
         submit(this.form).then(res => {
           // 重新加载详情数据
-          if (this.$refs.containerRef) {
-            this.$refs.containerRef.loadDetail();
-          }
-          // 或者关闭编辑状态
-          this.isEditing = false;
+          this.reloadDetail();
         });
       }).catch(() => {});
     },
@@ -1033,31 +1048,27 @@ export default {
       if (this.auditType === 'approve') {
         approve(auditForm).then(res => {
           // 重新加载详情数据
-          if (this.$refs.containerRef) {
-            this.$refs.containerRef.loadDetail();
-          }
-          // 或者关闭编辑状态
-          this.isEditing = false;
+          this.reloadDetail();
         });
       } else if (this.auditType === 'preApprove') {
         preApprove(auditForm).then(res => {
           // 重新加载详情数据
-          if (this.$refs.containerRef) {
-            this.$refs.containerRef.loadDetail();
-          }
-          // 或者关闭编辑状态
-          this.isEditing = false;
+          this.reloadDetail();
         });
       } else if (this.auditType === 'finalApprove') {
         finalApprove(auditForm).then(res => {
           // 重新加载详情数据
-          if (this.$refs.containerRef) {
-            this.$refs.containerRef.loadDetail();
-          }
-          // 或者关闭编辑状态
-          this.isEditing = false;
+          this.reloadDetail();
         });
       }
+    },
+    reloadDetail () {
+      this.$message.success('操作成功');
+      if (this.$refs.containerRef) {
+        this.$refs.containerRef.loadDetail();
+      }
+      // 或者关闭编辑状态
+      this.isEditing = false;
     }
   }
 };

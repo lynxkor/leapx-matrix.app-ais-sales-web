@@ -86,6 +86,9 @@
             filterable
           />
         </el-form-item>
+        <el-form-item label="变更说明">
+          <el-input v-model="form.changeExplain" placeholder="请输入" />
+        </el-form-item>
         <el-form-item label="门店整车订单">
           <tag-input v-model="form.retailOrderCodeList" placeholder="请输入" />
         </el-form-item>
@@ -415,6 +418,9 @@ export default {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
+      }
+      if (this.selectionList.length > 0) {
+        data.ids = this.selectionList.map(item => item.id);
       }
 
       return data;

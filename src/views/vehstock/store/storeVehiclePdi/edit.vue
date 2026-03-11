@@ -13,16 +13,13 @@
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
       >
-        <template #status>
-          <span class="status primary">状态</span>
-        </template>
         <template #extraButtons>
           <el-button v-if="form.isPdiSubmit === 1 && form.isUnusual === 0" type="primary" size="small"  @click="handleDownloadPDF">下载PDF单据</el-button>
         </template>
         <el-main>
           <section class="common-section">
             <div class="common-section-header">
-              <h2>基础信息</h2>
+              <h2>基本信息</h2>
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
@@ -96,6 +93,15 @@
                 <el-form-item label="选配包：" prop="optionPackageName">
                   {{ form.optionPackageName }}
                 </el-form-item>
+              </el-form>
+            </div>
+          </section>
+          <section class="common-section">
+            <div class="common-section-header">
+              <h2>门店信息</h2>
+            </div>
+            <div class="common-section-body">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="销售门店名称：" prop="saleDealerName">
                   {{ form.saleDealerName }}
                 </el-form-item>
@@ -111,6 +117,15 @@
                 <el-form-item label="市：" prop="cityName">
                   {{ form.cityName }}
                 </el-form-item>
+              </el-form>
+            </div>
+          </section>
+          <section class="common-section">
+            <div class="common-section-header">
+              <h2>PDI信息</h2>
+            </div>
+            <div class="common-section-body">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="PDI是否完成提交：" prop="isPdiSubmit">
                   {{ form.isPdiSubmitLabel }}
                 </el-form-item>
@@ -132,7 +147,6 @@
                 <el-form-item label="异常修复确认时间：" prop="repairedOn">
                   {{ form.repairedOn }}
                 </el-form-item>
-
               </el-form>
             </div>
           </section>
@@ -195,7 +209,8 @@
                   <vxe-column field="repairedDesc" title="修复说明" show-overflow-tooltip></vxe-column>
                   <vxe-column title="附件">
                     <template slot-scope="scope">
-                      <span style="cursor: pointer; color: #4C4CD6;" @click="viewFile(scope.row)">查看</span>
+                      <span v-if="scope.row.abnormalUrl" style="cursor: pointer; color: #4C4CD6;" @click="viewFile(scope.row)">查看</span>
+                      <span v-else>--</span>
                     </template>
                   </vxe-column>
                   <vxe-column field="createTime" title="创建时间"></vxe-column>
@@ -472,7 +487,8 @@ export default {
         code: this.form.code,
         layerType: '10',
         pageNum: this.mainCheckPagination.page,
-        pageSize: this.mainCheckPagination.size
+        pageSize: this.mainCheckPagination.size,
+        isUnusualFrontDisplay: 1
       });
       if (res) {
         this.mainCheckList = res.records;
@@ -485,7 +501,8 @@ export default {
         code: this.form.code,
         layerTypeList: ['20', '30'],
         pageNum: this.childCheckPagination.page,
-        pageSize: this.childCheckPagination.size
+        pageSize: this.childCheckPagination.size,
+        isUnusualFrontDisplay: 1
       });
       if (res) {
         this.childCheckList = res.records;
