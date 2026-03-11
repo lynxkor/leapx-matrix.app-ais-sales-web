@@ -316,7 +316,7 @@ export default {
     },
     // 销售门店搜索
     async getDealerListByName (params) {
-      return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
+      return listOrgStoreInfo({ storeName: params, isSales: true });
     },
     async getPdiUser (params) {
       return getUserByNameOrNo({ name: params });
