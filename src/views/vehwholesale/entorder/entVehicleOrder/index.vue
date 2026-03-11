@@ -10,17 +10,30 @@
       class="ais-search-form"
     >
      <el-form-item label="企业客户名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.entCustomerName"
-          clearable
+       <fetch-select
+              :remote-method="listNetworkParentCompany"
+              remote
+              v-model="form.entCustomerCodes"
+              placeholder="请选择"
+              labelKey="companyName"
+              valueKey="companyCode"
+              clearable
+              collapseTags
+              filterable
+              multiple
         />
       </el-form-item>
       <el-form-item label="销售公司">
-          <el-input
-            placeholder="请输入"
-            v-model="form.saleCompanyId"
+         <fetch-select
+            filterable
             clearable
+            remote
+            multiple
+            v-model="form.saleCompanyIds"
+            :params="form.saleCompanyName"
+            :remote-method="getCompanyList"
+            value-key="id"
+            label-key="companyName"
           />
         </el-form-item>
         <el-form-item label="企业客户补货订单编号">
@@ -45,7 +58,7 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_fundtype"
-            v-model="form.settleFundType"
+            v-model="form.settleFundTypes"
             placeholder="请选择"
             clearable
             multiple
@@ -82,7 +95,7 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_ent_vehicle_order_status"
-          v-model="form.status"
+          v-model="form.statuses"
           placeholder="请选择"
           clearable
           multiple
@@ -90,17 +103,23 @@
         />
       </el-form-item>
        <el-form-item label="验收方式">
-          <el-input
-            placeholder="请输入"
-            v-model="form.acceptanceMethod"
-            clearable
-          />
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="vw_acceptance_method"
+          v-model="form.acceptanceMethod"
+          placeholder="请选择"
+          clearable
+          filterable
+        />
         </el-form-item>
       <el-form-item label="数据来源">
-        <el-input
-          placeholder="请输入"
+       <fetch-select
+          :request="fetchOptions"
+          enumCode="vehretail_data_source"
           v-model="form.dataSource"
+          placeholder="请选择"
           clearable
+          filterable
         />
       </el-form-item>
       </template>
@@ -115,8 +134,15 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <el-button  size="small" :disabled="selectionList.length === 0" @click="handleBatchAllocateVehicle">批量配车</el-button>
+      <el-button  size="small" :disabled="selectionList.length === 0" @click="handleBatchCancelAllocateVehicle">取消配车</el-button>
+      <el-button  size="small" :disabled="selectionList.length === 0" @click="handleBatchSettleSubmit">批量结算</el-button>
+      <el-button  size="small" :disabled="selectionList.length === 0" @click="handleBatchCancelSettle">取消结算</el-button>
+      <el-button  size="small" :disabled="selectionList.length === 0" @click="handleBatchCancel">批量作废</el-button>
+      <el-button  size="small" :disabled="selectionList.length === 0" @click="handleBatchSetAutoAllocate">批量设置自动配车</el-button>
+      <el-button  size="small" :disabled="selectionList.length === 0" @click="handleBatchSetNotAutoAllocate">批量设置不自动配车</el-button>
+      <el-button  size="small" :disabled="selectionList.length === 0" @click="handleSetEmergencyOrder">设置急单</el-button>
+      <el-button  size="small" :disabled="selectionList.length === 0" @click="handleCancelEmergencyOrder">取消急单</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -164,7 +190,8 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
-
+import { listDealersForParentCompany, networkParentCompanyItem, batchCancelAllocateSubmit, batchAllocateSubmit } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
+import { getList as companyList } from '@/api/vehwholesale/fund/fundSaleCompany/index';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   status: '',
@@ -204,6 +231,7 @@ export default {
       },
       selectionList: [],
       orderCategoryOptions: [],
+      saleCompanyOptions: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -336,8 +364,55 @@ export default {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
     this.fetchOrderCategoryOptions();
+    this.getCompanyList();
   },
   methods: {
+    getCompanyList (query) {
+      return companyList({ companyNameLike: query, status: 1 });
+    },
+    handleCancelEmergencyOrder () {},
+    handleSetEmergencyOrder () {},
+    handleBatchSetNotAutoAllocate () {
+    },
+    handleBatchSetAutoAllocate () {},
+    handleBatchCancel () {},
+    handleBatchCancelSettle () {},
+    handleBatchSettleSubmit () {
+    },
+    handleBatchAllocateVehicle () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      batchAllocateSubmit({
+        idSet: [ids],
+      }).then(() => {
+        this.$message.success('批量配车成功');
+        this.getDetailData();
+      });
+    },
+    handleBatchCancelAllocateVehicle () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
+      this.$confirm(message, '', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        showClose: false
+      }).then(() => {
+        deleteItem(ids).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.getData();
+        }).catch(() => {
+          this.$message({
+            type: 'error',
+            message: '删除失败!'
+          });
+        });
+      }).catch(() => {});
+    },
+    async listNetworkParentCompany (query) {
+      return networkParentCompanyItem({ parentCompanyName: query, pageNum: 1, pageSize: 20 });
+    },
     async repairItemSearch (query) {
       return fundGetList({ organizationNameLike: query, status: 1 });
     },

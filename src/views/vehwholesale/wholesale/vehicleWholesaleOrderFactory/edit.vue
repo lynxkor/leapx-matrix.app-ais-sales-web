@@ -643,6 +643,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    @change="getNewfinancialOrganization"
                     :disabled="form.settleFundType !== '2010'"
                   />
                 </el-form-item>
@@ -1268,6 +1269,10 @@ export default {
           return res;
         }).catch(() => {});
       }
+    },
+    getNewfinancialOrganization (val, row) {
+      this.form.financialOrganizationId = row.id;
+      this.form.financialOrganizationName = row.name;
     },
     submitRequest () {
       return addOrUpdate({ ...this.form });

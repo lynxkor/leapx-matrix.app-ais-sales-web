@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" width="1200px" :visible.sync="dialogVisible" @close="handleClose" :close-on-click-modal="false">
+  <el-dialog :title="title" width="1200px" :visible.sync="dialogVisible" :close-on-click-modal="false">
     <div class="page-common">
        <el-form
         ref="form"
@@ -11,29 +11,20 @@
         class="ais-search-form"
       >
         <el-form-item label="整车物料编码：" :rules="rules" ref="materialsCode">
-          <el-select
+          <el-input
+            placeholder="请输入"
             v-model="form.materialsCode"
             clearable
-            filterable
-            placeholder="请选择整车仓库"
-            @change="filterTableData"
-          >
-            <el-option
-              v-for="item in dropdownOptions.warehouseList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            />
-          </el-select>
+          />
         </el-form-item>
         <el-form-item label="标准价格：">
           <el-input-number
-                  :controls="false"
                   placeholder="请输入"
                   v-model="form.standardPrice"
-                  clearable
-                  :min="0"
-                  :precision="0"
+                   :precision="2"
+                    :step="0.01"
+                    :min="0"
+                    :controls="false"
                 />
         </el-form-item>
         <el-form-item label="企业客户补货订单：">
@@ -41,42 +32,42 @@
         </el-form-item>
          <el-form-item label="销售价格：">
             <el-input-number
-                  :controls="false"
                   placeholder="请输入"
                   v-model="form.salesPrice"
-                  clearable
-                  :min="0"
-                  :precision="0"
+                  :precision="2"
+                    :step="0.01"
+                    :min="0"
+                    :controls="false"
                 />
         </el-form-item>
         <el-form-item label="关联交易不含税价：">
             <el-input-number
-                  :controls="false"
                   placeholder="请输入"
                   v-model="form.relatedTxnExTaxPrice"
-                  clearable
-                  :min="0"
-                  :precision="0"
+                   :precision="2"
+                    :step="0.01"
+                    :min="0"
+                    :controls="false"
                 />
         </el-form-item>
         <el-form-item label="关联交易价格比例：">
             <el-input-number
-                  :controls="false"
                   placeholder="请输入"
                   v-model="form.relatedTxnPriceRate"
-                  clearable
-                  :min="0"
-                  :precision="0"
+                   :precision="2"
+                    :step="0.01"
+                    :min="0"
+                    :controls="false"
                 />
         </el-form-item>
         <el-form-item label="数量：">
           <el-input-number
-                  :controls="false"
                   placeholder="请输入"
                   v-model="form.qty"
-                  clearable
-                  :min="0"
-                  :precision="0"
+                   :precision="2"
+                    :step="0.01"
+                    :min="0"
+                    :controls="false"
                 />
         </el-form-item>
 
@@ -90,7 +81,6 @@
 </template>
 
 <script>
-
 import { getEnum } from '@/api/common';
 import permissions from '@/libs/mixins/permissions';
 const defaultForm = {
@@ -99,12 +89,10 @@ const defaultForm = {
 export default {
   name: 'AddEntVehicleReplishOrderDetail',
   props: {
-  },
-  mixins: [permissions],
-  components: {
-    // TagInput,
-    // FetchSelect,
-    // PageSearchAction
+    visible: {
+      type: Boolean,
+      default: false
+    },
   },
   data () {
     return {
@@ -113,7 +101,6 @@ export default {
       loading: false,
       submitLoading: false,
       show: false,
-      dialogVisible: false,
       form: {
         ...defaultForm
       },
@@ -139,6 +126,22 @@ export default {
     };
   },
   computed: {
+    dialogVisible: {
+      get () {
+        console.log('visible', this.visible);
+        return this.visible;
+      },
+      set (val) {
+        this.$emit('update:visible', val);
+      }
+    }
+  },
+  watch: {
+    visible (newVal) {
+      if (newVal) {
+        this.vin = '';
+      }
+    }
   },
   methods: {
     handleClose () {
@@ -156,14 +159,12 @@ export default {
     },
     async dialogshow () {
       await this.getData();
-      this.dialogVisible = true;
     },
     async getEnum () {
       const response = await getEnum('vw_stock_status');
       console.log('response:', response);
     },
     confirm () {
-      this.dialogVisible = true;
       this.$refs.editTable.clearSelection();
       this.$emit('addConfirm', this.form);
     },
@@ -175,7 +176,6 @@ export default {
     },
     handleCancel () {
       this.dialogVisible = false;
-      this.handleClose();
     },
     handleSubmit () {
       this.$refs.entOrderDetail.validate((valid) => {

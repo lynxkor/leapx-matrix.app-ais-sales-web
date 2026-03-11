@@ -649,11 +649,15 @@
                   />
                 </el-form-item>
                  <el-form-item label="省：" prop="provinceName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.provinceName"
-                    clearable
-                  />
+                   <fetch-select
+                      filterable
+                      clearable
+                      remote
+                      v-model="form.provinceName"
+                      :remote-method="getProvince"
+                      value-key="code"
+                      label-key="name"
+                    />
                 </el-form-item>
                 <el-form-item label="市：" prop="cityName">
                   <el-input

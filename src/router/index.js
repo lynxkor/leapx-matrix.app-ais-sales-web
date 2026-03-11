@@ -2418,6 +2418,24 @@ const routes = [
         name: '整车销售-企业客户订单-企业客户整车订单管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehwholesale/entorder/entTransactionTaxPriceConfig',
+      name: 'entTransactionTaxPriceConfig',
+      component: () => import('@/views/vehwholesale/entorder/entTransactionTaxPriceConfig/index.vue'),
+
+      meta: {
+        name: '整车批售-企业订单管理-关联交易计算比例管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/entorder/enttransactiontaxpriceconfig/edit',
+      name: 'entTransactionTaxPriceConfigEdit',
+      component: () => import('@/views/vehwholesale/entorder/entTransactionTaxPriceConfig/edit.vue'),
+
+      meta: {
+        name: '整车批售-企业订单管理-关联交易计算比例管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
