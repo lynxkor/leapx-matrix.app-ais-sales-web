@@ -22,7 +22,7 @@
           <el-button size="small">按钮2</el-button> -->
           <el-button
             @click="openCancelShow"
-            v-if="form.refundStatus === 1010 || form.applyStatus === 1040"
+            v-if="form.refundStatus === 1010 || form.refundStatus === 1040"
             v-permission="moduleKey + '-cancel'"
             size="small">
             作废
