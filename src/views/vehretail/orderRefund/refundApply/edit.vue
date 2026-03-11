@@ -266,7 +266,7 @@
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="商城订单编号：" prop="mallOrderCode">
                   {{ form.mallOrderCode }}
-                  <span @click="openFinancialOrderShow" style="color: #00b2f2">查询金融订单</span>
+                  <el-button size="small" type="primary" plain @click="openFinancialOrderShow">查询金融订单</el-button>
                 </el-form-item>
                 <el-form-item label="退订申请单号：" prop="refundCode">
                   {{ form.refundCode }}
@@ -314,7 +314,7 @@
                 </el-form-item>
                 <el-form-item label="订单物料码：" prop="materialsCode">
                   {{ form.materialsCode }}
-                  <span @click="openVehicleStockShow" style="color: #00b2f2">查询库存车</span>
+                  <el-button size="small" type="primary" plain @click="openVehicleStockShow">查询库存车</el-button>
                 </el-form-item>
                 <el-form-item label="车型ID：" prop="modelId">
                   {{ form.modelId }}
@@ -630,6 +630,8 @@
             ref="auditRef"
             @audit="handleAudit"
           />
+          <financial-order-dialog ref="financialOrderDialog" />
+          <vehicle-stock-dialog ref="vehicleStockDialog" />
         </el-main>
       </edit-base-container>
     </template>
@@ -664,6 +666,8 @@ import { getList as retailOrderPage } from '@/api/vehretail/orderManager/retailO
 import { fetchCategoryList } from '@/api/vehretail/orderRefund/category';
 import RefundApplyAuditDialog from '@/views/vehretail/orderRefund/refundApply/auditDialog';
 import { getList as getMaterialInfoList } from '@/api/datacenter/materials/vehicleMaterials/index';
+import FinancialOrderDialog from './components/FinancialOrderDialog.vue';
+import VehicleStockDialog from './components/VehicleStockDialog.vue';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -720,6 +724,8 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
+    VehicleStockDialog,
+    FinancialOrderDialog,
     RefundApplyAuditDialog,
     EditPageLayout,
     EditBaseContainer,
@@ -988,10 +994,10 @@ export default {
       return [];
     },
     openFinancialOrderShow () {
-      this.$message.info('金融订单-待前端同事协助');
+      this.$refs.financialOrderDialog.show(this.form.mallOrderCode);
     },
     openVehicleStockShow () {
-      this.$message.info('库存车-待前端同事协助');
+      this.$refs.vehicleStockDialog.show(this.form.materialsCode);
     },
     openCancelShow () {
       this.$confirm('确认是否对数据进行作废?', '提示', {
