@@ -97,7 +97,7 @@ export default {
     },
     // 金融方案
     financePlan: {
-      type: String,
+      type: [String, Number],
       default: ''
     }
   },
@@ -165,7 +165,7 @@ export default {
     initTableData () {
       // 全款购车：仅展示尾款、机动车发票其他费用、门店优惠
       // 分期购车：展示贷款首付款、贷款、机动车发票其他费用、门店优惠
-      const isFullPayment = this.financePlan === '1010';
+      const isFullPayment = this.financePlan === '1010' || this.financePlan === 1010;
 
       if (isFullPayment) {
         this.tableData = [

@@ -20,9 +20,9 @@ export default {
       type: String,
       default: ''
     },
-    current: {
-      type: [Number, String],
-      default: 0
+    stepHighlight: {
+      type: Object,
+      default: () => ({})
     },
     // navType: {
     //   type: String,
@@ -68,11 +68,21 @@ export default {
       // this.$emit('change', id);
     },
     isActive (code) {
-      const currentCode = Number(this.current);
-      const currentIndex = this.list.findIndex(item => item.code === currentCode);
-      const targetIndex = this.list.findIndex(item => item.code === code);
-      if (currentIndex === -1) return false;
-      return targetIndex !== -1 && targetIndex <= currentIndex;
+      // 根据 stepHighlight 字段控制高亮
+      const highlightMap = {
+        1: 'appointmentDeliveryHighlight', // 预约交车
+        7: 'uploadInvoiceHighlight', // 上传发票
+        8: 'deliveryCompleteHighlight' // 交车完成
+      };
+      const highlightKey = highlightMap[code];
+      if (highlightKey && this.stepHighlight) {
+        return !!this.stepHighlight[highlightKey];
+      }
+      // code 2-6 受 confirmPaymentHighlight 控制
+      if (code >= 2 && code <= 6 && this.stepHighlight) {
+        return !!this.stepHighlight.confirmPaymentHighlight;
+      }
+      return false;
     }
   }
 };

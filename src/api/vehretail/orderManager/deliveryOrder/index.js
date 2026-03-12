@@ -125,3 +125,35 @@ export function assign (data) {
 export function checkOverDeliveryCapacity (data) {
   return api.jsonPost(prefix + 'checkOverDeliveryCapacity', data);
 }
+
+/**
+ * 交车确认单生成
+ * @param {Object} data
+ */
+export function deliveryConfirm (data) {
+  return api.jsonPost(prefix + 'deliveryConfirm', data);
+}
+
+/**
+ * 核销订单权益列表
+ * @param {Object} data
+ */
+export function openGrantQuery (data) {
+  return api.jsonPost(prefix + 'openGrantQuery', data);
+}
+
+/**
+ * 核销订单权益
+ * @param {Object} data
+ */
+export function writeOff (data) {
+  return api.jsonPost(prefix + 'writeOff', data);
+}
+
+/**
+ * 添加收款记录
+ * @param {Object} data
+ */
+export function addPayRecord (data) {
+  return api.jsonPost(prefix + 'addPayRecord', data);
+}
