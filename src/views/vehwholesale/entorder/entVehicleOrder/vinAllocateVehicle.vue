@@ -11,7 +11,7 @@
         class="ais-search-form"
       >
         <el-form-item label="VIN：">
-          <el-input v-model="form.materialsDesc" clearable placeholder="请输入" @blur="filterTableData"/>
+          <el-input v-model="vinCode" clearable placeholder="请输入"/>
         </el-form-item>
         <el-form-item label="">
           <el-button :loading="loading" size="medium" type="primary" plain class="btn-search" @click="onSubmit">查询</el-button>
@@ -21,20 +21,40 @@
       <section class="common-section">
         <div class="common-section-body">
           <div class="common-section-table">
-           <LPVxeTable
-            ref="tableRef"
-            v-loading="loading"
-            is-checkbox
-            is-page
-            checkboxFixed
-            centralized
-            :option-obj="optionObj"
-            :get-config="getConfig"
-            :save-or-update="saveOrUpdate"
-            @paginationChange="paginationChange"
-            @handleSelect="handleSelectionChange"
+            <vxe-table
+            ref="table"
+            :data="tableData"
+            stripe
+            resizable
+            border="inner"
+            size="medium"
+            height="auto"
+            width="1000px"
+            min-height="300px"
+            max-height="400px"
+            @checkbox-change="handleCheckboxChange"
+            @checkbox-all="handleCheckboxAll"
           >
-          </LPVxeTable>
+            <vxe-column type="checkbox" width="50" fixed="left" />
+            <vxe-column field="vin" title="VIN" align="center" width="150" />
+            <vxe-column field="materialsCode" title="整车物料编码" align="center" width="120" />
+            <vxe-column field="reservedLabel" title="销售预留" align="center"  width="150"/>
+            <vxe-column field="reservedTypeLabel" title="销售预留类型" align="center" width="150" />
+             <vxe-column field="vin11" title="整车物料预留" align="center" width="150" />
+            <vxe-column field="logisticsReservedLabel" title="整车物料预留类型" align="center" width="150" />
+            <vxe-column field="vehicleDeliveryStatusLabel" title="车辆交付状态" align="center"  width="150"/>
+            <vxe-column field="inboundDateTime" title="VDC入库时间" align="center" width="150" />
+          </vxe-table>
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pagination.currentPage"
+            :page-sizes="[10, 20, 50, 100]"
+            :page-size="pagination.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="pagination.total"
+            style="margin-top: 20px;">
+          </el-pagination>
           </div>
         </div>
       </section>
@@ -49,37 +69,29 @@
 <script>
 
 import { listCanSettleAccount } from '@/api/vehwholesale/fund/account/index';
-import { getTableConfig, tableAddOrUpdate, getEnum } from '@/api/common';
-import { plantWholesaleInStockCreateApply } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
-import { getList, vinAllocateVehicleQueryInventory } from '@/api/vehwholesale/entorder/entVehicleOrder/index';
+import { vinAllocateVehicleQueryInventory } from '@/api/vehwholesale/entorder/entVehicleOrder/index';
 import permissions from '@/libs/mixins/permissions';
-import { LPVxeTable } from '@leapmotor/design';
-const pageSize = 20;
-const mockConfig = {
-  data: null
-};
 const defaultForm = {
-
+  // TIPS:多选时字段名称会有变化，自行校对
 };
+
 export default {
   name: 'vinAllocateVehicle',
   props: {
     visible: {
       type: Boolean,
       default: false
-    },
-    cancelIds: {
-      type: Array,
-      default: () => []
     }
   },
   mixins: [permissions],
   components: {
-    LPVxeTable
+    // TagInput,
+    // FetchSelect,
+    // PageSearchAction
   },
   data () {
     return {
-      title: '企业客户整车订单配车',
+      title: '企业客户整车订单',
       moduleKey: 'AISVW-entVehicleOrder',
       loading: false,
       submitLoading: false,
@@ -87,33 +99,12 @@ export default {
       form: {
         ...defaultForm
       },
-      tableData: [],
-      originalTableData: [],
-      optionObj: {
-        id: 'entVehicleOrderTable',
-        dataList: [],
-        form: {
-          page: 1,
-          size: pageSize
-        },
-        dataProp: [
-          { props: 'vin', label: 'VIN码', visible: true, width: 200 },
-          { props: 'materialsCode', label: '整车物料编码', visible: true, width: 200 },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
-          { props: 'orderCategorLabel', label: '销售预留', visible: true, width: 200 },
-          { props: 'needAutoAllocateCarLabel', label: '销售部预留类型', visible: true, width: 200 },
-          { props: 'createTime', label: '整车物料预留', visible: true, width: 200 },
-          { props: 'logisticsReservedLabel', label: '整车物流预留类型', visible: true, width: 200 },
-          { props: 'vehicleDeliveryStatusLabel', label: '车辆交付状态', visible: true, width: 200 },
-          { props: 'inboundDateTime', label: 'VDC入库时间', visible: true, width: 200 }
-        ],
-        total: 0
+      fundForm: {
+        fundType: ''
       },
-      sortColumns: [
-        // {
-        // column: 'create_time',
-        // sort: 'DESC'
-        // }
+      vinCode: '',
+      tableData: [
+        { vin: 'vin1' }
       ],
       // 添加分页相关数据
       pagination: {
@@ -122,9 +113,6 @@ export default {
         total: 0
       },
     };
-  },
-  created () {
-    this.getData();
   },
   computed: {
     dialogVisible: {
@@ -142,32 +130,19 @@ export default {
       return this.tableData.slice(start, end);
     }
   },
+  created () {
+    this.getData();
+  },
   methods: {
-    saveOrUpdate (data) {
-      return tableAddOrUpdate(data);
+    // 单选框变化
+    handleCheckboxChange ({ records }) {
+      this.selectedRows = records;
+      console.log('选中的行:', this.selectedRows);
     },
-    getConfig () {
-      return new Promise((resolve, reject) => {
-        getTableConfig(this.optionObj.id).then(data => {
-          resolve({ data });
-        }).catch(err => {
-          // 容错：此处如果接口挂了，也不应该影响正常使用
-          console.error(err);
-          resolve(mockConfig);
-        });
-      });
-    },
-    paginationChange (type, num) {
-      if (type === 'page') {
-        this.optionObj.form.page = num;
-      } else {
-        this.optionObj.form.size = num;
-      }
-      this.debouncedGetData();
-    },
-    // 多选框选中数据
-    handleSelectionChange (selection) {
-      this.selectionList = selection;
+    // 全选框变化
+    handleCheckboxAll ({ records }) {
+      this.selectedRows = records;
+      console.log('全选的行:', this.selectedRows);
     },
     handleSizeChange (val) {
       this.pagination.pageSize = val;
@@ -179,39 +154,9 @@ export default {
     toggleShow () {
       this.show = !this.show;
     },
-    filterTableData () {
-      let filteredData = [...this.originalTableData];
-
-      // 下拉框过滤条件
-      const filters = {
-        seriesId: 'seriesId',
-        modelId: 'modelId'
-      };
-
-      // 应用下拉框筛选
-      Object.entries(filters).forEach(([formKey, dataKey]) => {
-        if (this.form[formKey]) {
-          filteredData = filteredData.filter(item => item[dataKey] === this.form[formKey]);
-        }
-      });
-
-      // 应用物料描述模糊搜索
-      if (this.form.materialsDesc) {
-        const searchStr = this.form.materialsDesc.toLowerCase().trim();
-        filteredData = filteredData.filter(item =>
-          item.materialsDesc && item.materialsDesc.toLowerCase().includes(searchStr)
-        );
-      }
-
-      this.tableData = filteredData;
-      this.pagination.total = filteredData.length;
-      this.pagination.currentPage = 1;
-    },
     listCanSettleAccount () {
-      // 这里只能查出20条
       // 厂端不允许点开查询的 但是产品坚持要可以打开在最后一步骤提交校验
       listCanSettleAccount({}).then(res => {
-        this.settleAccountList = res || [];
       }).catch(err => { console.log(err); });
     },
     handleClose () {
@@ -219,87 +164,55 @@ export default {
       this.tableData = []; // 清空表格数据
     },
     onSubmit () {
-      this.filterTableData();
+      this.getData();
     },
     onReset () {
       this.form = { ...defaultForm };
       this.fundForm = { fundType: '' };
-      this.filterTableData();
     },
-    getFormData () {
-      const data = { ...this.form };
-      Object.keys(this.form).forEach(key => {
-        if (data[key] === '' || data[key] === null) {
-          delete data[key];
-        }
-      });
-      if (Array.isArray(this.form.dealerCompanyNames) && this.form.dealerCompanyNames.length <= 1) {
-        delete data.dealerCompanyNames;
-        data.dealerCompanyNameLike = this.form.dealerCompanyNames[0] || '';
-      };
-      return data;
-    },
-    getData () {
+    async getData () {
       this.loading = true;
-      this.selectionList = [];
-      vinAllocateVehicleQueryInventory({
-        vin: '',
-        entOrderId: 1
-      })
-        .then(res => {
-          this.optionObj.dataList = res.records.map(item => {
-            return {
-              ...item,
-              deleteLoading: false
-            };
-          });
-          this.optionObj.total = res.total;
-        }).finally(() => {
-          this.loading = false;
+      console.log(this._id);
+      try {
+        const res = await vinAllocateVehicleQueryInventory({
+          entOrderId: this._id,
+          vin: this.vinCode
         });
+        const data = res || {};
+        // 设置表格数据
+        this.tableData = [{
+          vin: 1,
+        }];
+        this.pagination.total = this.tableData.length;
+        this.pagination.currentPage = 1;
+      } catch (error) {
+        console.error('加载数据失败:', error);
+      } finally {
+        this.loading = false;
+      }
     },
-    async getEnum () {
-      const response = await getEnum('vw_stock_status');
-      console.log('response:', response);
+
+    async dialogshow () {
+      await this.getData();
+      await this.listCanSettleAccount();
+      this.dialogVisible = true;
     },
     confirm () {
       this.dialogVisible = true;
       this.$refs.editTable.clearSelection();
       this.$emit('confirm', this.form);
     },
-    async fetchOptions (code) {
-      if (code) {
-        return getEnum(code);
-      }
-      return [];
-    },
     handleCancel () {
       this.dialogVisible = false;
       this.handleClose();
     },
     handleSubmit () {
-      this.$refs.fundForm.validate((valid) => {
-        if (valid) {
-          this.submitLoading = true;
-          let params = {
-            materialsList: this.tableData.filter(row => row.applyQty > 0).map(ele => {
-              return {
-                warehouseCode: ele.warehouseCode,
-                materialDesc: ele.materialsDesc,
-                applyQty: ele.applyQty
-              };
-            }),
-            fundAccountId: this.fundForm.fundType
-          };
-          plantWholesaleInStockCreateApply(params).then(res => {
-            this.$emit('confirm');
-            this.submitLoading = false;
-            this.dialogVisible = false;
-          }).catch(() => {
-            this.submitLoading = false;
-          });
-        }
-      });
+      if (this.selectedRows.length !== 1) {
+        this.$message.error('请选择一条数据！');
+        return;
+      }
+      this.dialogVisible = true;
+      this.$emit('confirm', this.selectedRows[0].vin);
     },
   }
 };

@@ -19,11 +19,11 @@
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button size="small" type="primary" @click="handleCheckConfirm" >查询整车账户余额</el-button>
-          <el-button size="small" type="primary" @click="handlevinAllocateVehicle" >配车</el-button>
-          <el-button size="small" type="primary" @click="handleCheckConfirm" >取消配车</el-button>
-          <el-button size="small" type="primary" @click="handlebatchSettleSubmit" >提交结算</el-button>
-          <el-button size="small" type="primary" @click="handlebatchCancelSettleSubmit" >取消结算</el-button>
+          <el-button size="small" @click="handleCheckConfirm" >查询整车账户余额</el-button>
+          <el-button size="small" @click="handlevinAllocateVehicle" >配车</el-button>
+          <el-button size="small" @click="handlebatchCancelAllocateSubmit" >取消配车</el-button>
+          <el-button size="small" @click="handlebatchSettleSubmit" >提交结算</el-button>
+          <el-button size="small" @click="handlebatchCancelSettleSubmit" >取消结算</el-button>
           <!-- <el-button size="small">按钮1</el-button>
           <el-button size="small">按钮2</el-button> -->
         </template>
@@ -795,14 +795,14 @@
   </edit-page-layout>
 
   <vinAllocateVehicle :visible.sync="showvinAllocateVehicleDialog"
-      :cancel-ids="[_id]"
+      @confirm="vinConfirm"
       >
     </vinAllocateVehicle>
   </div>
 </template>
 
 <script>
-import { getDetail, addOrUpdate, batchCancelSettleSubmit, batchSettleSubmit } from '@/api/vehwholesale/entorder/entVehicleOrder/index';
+import { getDetail, addOrUpdate, batchCancelSettleSubmit, batchSettleSubmit, batchCancelAllocateSubmit, vinAllocateVehicleItem } from '@/api/vehwholesale/entorder/entVehicleOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -946,6 +946,38 @@ export default {
   mounted () {
   },
   methods: {
+    vinConfirm (data) {
+      const params = {
+        entOrderId: this._id,
+        vin: data,
+      };
+      console.log(params);
+      vinAllocateVehicleItem(params).then(() => {
+        this.$message({
+          type: 'success',
+          message: '批量设置急单成功'
+        });
+        this.getData();
+      });
+    },
+    handlebatchCancelAllocateSubmit () {
+      const ids = [this._id];
+      this.$confirm('此操作将取消配车, 是否继续?', '', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        showClose: false
+      }).then(() => {
+        batchCancelAllocateSubmit({
+          idSet: ids
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '取消配车成功!'
+          });
+          this.getData();
+        });
+      }).catch(() => {});
+    },
     handlebatchCancelSettleSubmit () {
       batchCancelSettleSubmit({
         idSet: [this._id],

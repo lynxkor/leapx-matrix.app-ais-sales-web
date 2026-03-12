@@ -12,6 +12,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="form.orderCategory === 1 || form.orderCategory === 8"
       >
         <template #status>
           {{ form.replenishApplyCode }}
@@ -19,12 +20,12 @@
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button  size="small" type="primary" @click="handleAddDetail" >添加补货明细</el-button>
-           <el-button  size="small" type="primary" @click="handleCheckSubmit" >提交审批</el-button>
-          <el-button  size="small" type="primary" @click="handleCheckStatus" >审核</el-button>
-          <el-button  size="small" type="primary" @click="handleCancel" >作废</el-button>
-          <el-button size="small" type="primary" @click="handleUpload" >上传附件</el-button>
-          <el-button  size="small" type="primary" @click="handleDelete" >删除</el-button>
+          <el-button  size="small" @click="handleAddDetail" >添加补货明细</el-button>
+           <el-button  size="small" @click="handleCheckSubmit" >提交审批</el-button>
+          <el-button  size="small" @click="handleCheckStatus" >审核</el-button>
+          <el-button  size="small" @click="handleCancel" >作废</el-button>
+          <!-- <el-button size="small" >附件上传</el-button> -->
+          <el-button  size="small" @click="handleDelete" >删除</el-button>
           <!-- <el-button size="small">按钮1</el-button>
           <el-button size="small">按钮2</el-button> -->
         </template>
@@ -43,6 +44,7 @@
                     placeholder="请选择订单分类"
                     clearable
                     filterable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="验收方式：" prop="acceptanceMethod">
@@ -440,7 +442,14 @@
             </div>
             <div class="common-section-body">
               <div class="common-section-table">
-                <vxe-table
+                <!-- 附件上传组件 -->
+                <AisAttachment
+                  :businessId="_id"
+                  configCode="mcs_spmusedprtdestory_apply"
+                  attachType="其他"
+                  ref="attachment"
+                />
+                <!-- <vxe-table
                   ref="tableRef"
                   stripe
                   :data="tableData"
@@ -462,7 +471,7 @@
                       </el-popconfirm>
                     </template>
                   </vxe-column>
-                </vxe-table>
+                </vxe-table> -->
               </div>
             </div>
           </section>
@@ -478,9 +487,10 @@
   <Upload :visible="uploadDialogVisible" templateUrl="" uploadUrl="" @close="handleUploadDialogClose" />
   <AddEntVehicleReplishOrderDetail  :visible.sync="showAddDetailDialog"
       :order-ids="[_id]"
+      :orderInfo="form"
       @addConfirm="addConfirm">
   </AddEntVehicleReplishOrderDetail>
-<audit-dialog
+    <audit-dialog
       ref="auditRef"
       @audit="handleBatchAudit"
       :auditDataList="[_id]"
@@ -504,6 +514,7 @@ import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrg
 import auditDialog from '@/libs/components/auditDialog';
 import Upload from '@/libs/components/UploadDialog';
 import { getList as companyList } from '@/api/vehwholesale/fund/fundSaleCompany/index';
+import AisAttachment from '@/libs/components/AisAttachment';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -568,7 +579,8 @@ export default {
     FetchSelect,
     AddEntVehicleReplishOrderDetail,
     auditDialog,
-    Upload
+    Upload,
+    AisAttachment
   },
   computed: {
     _id () {
@@ -761,7 +773,7 @@ export default {
       return networkParentCompanyItem({ parentCompanyName: query, pageNum: 1, pageSize: 20 });
     },
     getOtherInfoBysaleCompany (val, row) {
-      console.log('getOtherInfoBysaleCompany', val, row);
+      console.log(val, row);
       this.form.latitude = row.latitude;
       this.form.longitude = row.longitude;
       this.form.provinceCode = row.provinceCode;
@@ -780,9 +792,10 @@ export default {
       });
     },
     handleChange (val, row) {
+      console.log(val, row);
       this.form.entCustomerName = row.companyName;
       this.form.entCustomerCode = row.companyCode;
-      this.getDealersForParentCompany(this.val);
+      this.getDealersForParentCompany(val);
     },
     iscreditSaleFlag (val) {
       if (val === '2010') {
@@ -843,7 +856,7 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        getDetail(id).then(res => {
+        return getDetail(id).then(res => {
           res.detailList = res.detailList.map(detail => ({
             ...detail,
             materialsDesc: detail.vehicleMaterials.materialsDesc || '',
@@ -858,7 +871,6 @@ export default {
             roofName: detail.vehicleMaterials.roofName || '',
             optionPackageName: detail.vehicleMaterials.optionPackageName || '',
           }));
-          console.log('res', res.detailList);
           this.tableData = res.detailList;
           return res;
         });

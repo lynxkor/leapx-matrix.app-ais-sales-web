@@ -106,3 +106,11 @@ export function setAutoAllocate (data) {
 export function setEmergencyOrder (data) {
   return api.jsonPost(prefix + 'setEmergencyOrder', data);
 }
+
+/**
+ * 配车
+ * @param {Object} data
+ */
+export function vinAllocateVehicleItem (data) {
+  return api.jsonPost(prefix + 'vinAllocateVehicle', data);
+}

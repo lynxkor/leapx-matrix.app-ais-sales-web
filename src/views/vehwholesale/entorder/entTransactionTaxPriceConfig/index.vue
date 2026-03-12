@@ -18,6 +18,7 @@
             :params="form.saleCompanyName"
             :remote-method="getCompanyList"
             value-key="id"
+            multiple
             label-key="companyName"
           />
       </el-form-item>
@@ -179,7 +180,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'saleCompanyId', label: '销售公司', visible: true, width: 200 },
+          { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200 },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'txnTaxPriceRate', label: '关联交易价格比例', visible: true, width: 200 },
           { props: 'expireTime', label: '失效时间', visible: true, width: 200 },

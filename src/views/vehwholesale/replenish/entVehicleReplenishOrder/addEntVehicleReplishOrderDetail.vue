@@ -3,7 +3,7 @@
     <div class="page-common">
        <el-form
         ref="form"
-        :model="form"
+        :model="materialsform"
         label-width="150px"
         :inline="true"
         size="small"
@@ -12,21 +12,20 @@
       >
         <el-form-item label="整车物料编码：" :rules="rules" ref="materialsCode">
           <fetch-select
-                :options="materialsList"
-                v-model="form.materialsCode"
-                placeholder="请选择"
-                optionKey="id"
-                labelKey="materialsCode"
-                valueKey="materialsCode"
-                @change="materialsSelect"
-                remote
-                clearable
-                filterable/>
+            filterable
+            clearable
+            remote
+            v-model="materialsform.materialsCode"
+            :remote-method="getVehicleMaterialsList"
+            value-key="id"
+            label-key="materialsCode"
+            @change="materialsSelect"
+          />
         </el-form-item>
         <el-form-item label="标准价格：">
           <el-input-number
                   placeholder="请输入"
-                  v-model="form.standardPrice"
+                  v-model="materialsform.standardPrice"
                    :precision="2"
                     :step="0.01"
                     :min="0"
@@ -34,12 +33,12 @@
                 />
         </el-form-item>
         <el-form-item label="企业客户补货订单：">
-          <el-input v-model="form.entReplenishOrderId" clearable placeholder="请输入"/>
+          <el-input v-model="materialsform.entReplenishOrderId" clearable placeholder="请输入"/>
         </el-form-item>
          <el-form-item label="销售价格：">
             <el-input-number
                   placeholder="请输入"
-                  v-model="form.salesPrice"
+                  v-model="materialsform.salesPrice"
                   :precision="2"
                     :step="0.01"
                     :min="0"
@@ -49,32 +48,37 @@
         <el-form-item label="关联交易不含税价：">
             <el-input-number
                   placeholder="请输入"
-                  v-model="form.relatedTxnExTaxPrice"
+                  v-model="materialsform.relatedTxnExTaxPrice"
                    :precision="2"
                     :step="0.01"
                     :min="0"
                     :controls="false"
+                    :disabled="isType"
                 />
         </el-form-item>
         <el-form-item label="关联交易价格比例：">
             <el-input-number
                   placeholder="请输入"
-                  v-model="form.relatedTxnPriceRate"
+                  v-model="materialsform.relatedTxnPriceRate"
+                   :precision="2"
+                    :step="0.01"
+                    :min="0"
+                    :controls="false"
+                    :disabled="isType"
+                />
+        </el-form-item>
+        <el-form-item label="数量：">
+          <el-input-number
+                  placeholder="请输入"
+                  v-model="materialsform.qty"
                    :precision="2"
                     :step="0.01"
                     :min="0"
                     :controls="false"
                 />
         </el-form-item>
-        <el-form-item label="数量：">
-          <el-input-number
-                  placeholder="请输入"
-                  v-model="form.qty"
-                   :precision="2"
-                    :step="0.01"
-                    :min="0"
-                    :controls="false"
-                />
+        <el-form-item label="销售市场：">
+          <el-input v-model="materialsform.salesMarket" clearable placeholder="请输入" :disabled="isType"/>
         </el-form-item>
 
       </el-form>
@@ -87,9 +91,8 @@
 </template>
 
 <script>
-import { getEnum } from '@/api/common';
+import { getEnum, vehicleMaterials } from '@/api/common';
 import permissions from '@/libs/mixins/permissions';
-import { getList } from '@/api/datacenter/materials/vehicleMaterials/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -101,6 +104,10 @@ export default {
       type: Boolean,
       default: false
     },
+    orderInfo: {
+      type: Object,
+      default: null
+    }
   },
   components: {
     FetchSelect,
@@ -111,9 +118,9 @@ export default {
       moduleKey: 'AISVW-entVehicleReplenishOrder',
       loading: false,
       submitLoading: false,
-      materialsList: [],
+      isType: false,
       show: false,
-      form: {
+      materialsform: {
         ...defaultForm
       },
       rules: {
@@ -140,7 +147,6 @@ export default {
   computed: {
     dialogVisible: {
       get () {
-        console.log('visible', this.visible);
         return this.visible;
       },
       set (val) {
@@ -153,28 +159,40 @@ export default {
       if (newVal) {
         this.vin = '';
       }
+    },
+    orderInfo (val) {
+      if (val) {
+        if (val.orderCategory === 1 || val.orderCategory === 8) {
+          this.isType = true;
+        } else if (this.orderInfo.orderCategory === 21) {
+          this.isType = false;
+        }
+      }
     }
   },
   created () {
     this.getEnum();
-    this.materialsMethod();
+    this.getVehicleMaterialsList();
   },
   methods: {
-    materialsSelect (val, row) {
-      this.form.materialsId = row.id;
+    async getVehicleMaterialsList (params) {
+      return vehicleMaterials({ materialsCodeLike: params, status: 1 });
     },
-    async materialsMethod (query) {
-      const res = await getList({ materialsCodeLike: query, pageSize: 20, status: 1, statusIncludeList: ['1'] });
-      this.materialsList = res.records;
-      console.log('materialsCodeRemoteMethod', res);
+    materialsSelect (val, row) {
+      this.materialsform.materialsId = row.id;
+      if (this.orderInfo.orderCategory === 1 || this.orderInfo.status === 8) {
+        this.materialsform.standardPrice = this.orderInfo.price;
+      } else if (this.orderInfo.orderCategory === 21) {
+        this.materialsform.standardPrice = row.standardPrice;
+      }
     },
     handleClose () {
-      this.form = { ...defaultForm }; // 重置表单数据
+      this.materialsform = { ...defaultForm }; // 重置表单数据
       this.tableData = []; // 清空表格数据
     },
     getFormData () {
-      const data = { ...this.form };
-      Object.keys(this.form).forEach(key => {
+      const data = { ...this.materialsform };
+      Object.keys(this.materialsform).forEach(key => {
         if (data[key] === '' || data[key] === null) {
           delete data[key];
         }
@@ -190,7 +208,7 @@ export default {
     },
     confirm () {
       this.$refs.editTable.clearSelection();
-      this.$emit('addConfirm', this.form);
+      this.$emit('addConfirm', this.materialsform);
     },
     async fetchOptions (code) {
       if (code) {
@@ -202,7 +220,7 @@ export default {
       this.dialogVisible = false;
     },
     handleSubmit () {
-      this.$emit('addConfirm', this.form);
+      this.$emit('addConfirm', this.materialsform);
       // this.$refs.entOrderDetail.validate((valid) => {
       //   if (valid) {
       //     this.submitLoading = true;
