@@ -136,19 +136,19 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import {LPVxeTable} from '@leapmotor/design';
+import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import {batchAudit, deleteItem, enableItem, getList} from '@/api/vehretail/orderRefund/refundApply/index';
-import {exportTable, getEnum, getTableConfig, tableAddOrUpdate} from '@/api/common';
+import { batchAudit, deleteItem, enableItem, getList } from '@/api/vehretail/orderRefund/refundApply/index';
+import { exportTable, getEnum, getTableConfig, tableAddOrUpdate } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
-import {YES_NO_ENUM} from '@/libs/constants';
+import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import {downloadExcel, handleBatchStatusChange} from '@/libs/utils';
+import { downloadExcel, handleBatchStatusChange } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
-import {fetchCategoryList} from '@/api/vehretail/orderRefund/category';
+import { fetchCategoryList } from '@/api/vehretail/orderRefund/category';
 import TagInput from '@/libs/components/TagInput';
 import auditDialog from '@/libs/components/auditDialog/index.vue';
 

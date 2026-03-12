@@ -177,6 +177,11 @@
       :cancel-ids="selectionList.map(item => item.id)"
       @confirm="cancelApproval"
     />
+    <SetEmergencyOrderInput
+      :visible.sync="showSetEmergencyOrderDialog"
+      :emergency-ids="selectionList.map(item => item.id)"
+      @confirm="emergencyApproval"
+    />
   </div>
 </template>
 
@@ -184,7 +189,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, batchAllocateSubmit, batchCancelAllocateSubmit, batchCancelOrders, batchCancelSettleSubmit, batchSettleSubmit } from '@/api/vehwholesale/entorder/entVehicleOrder/index';
+import { getList, deleteItem, enableItem, batchAllocateSubmit, batchCancelAllocateSubmit, batchCancelOrders, batchCancelSettleSubmit, batchSettleSubmit, setAutoAllocate, setEmergencyOrder } from '@/api/vehwholesale/entorder/entVehicleOrder/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -195,9 +200,10 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
-import { listDealersForParentCompany, networkParentCompanyItem  } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
+import { networkParentCompanyItem } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
 import { getList as companyList } from '@/api/vehwholesale/fund/fundSaleCompany/index';
 import BatchCancelInput from './BatchCancelInput.vue';
+import SetEmergencyOrderInput from './SetEmergencyOrderInput.vue';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   status: '',
@@ -225,7 +231,8 @@ export default {
     FetchSelect,
     EditPage,
     Upload,
-    BatchCancelInput
+    BatchCancelInput,
+    SetEmergencyOrderInput
   },
   data () {
     return {
@@ -240,6 +247,7 @@ export default {
       orderCategoryOptions: [],
       saleCompanyOptions: [],
       showBatchCancelDialog: false,
+      showSetEmergencyOrderDialog: false,
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -307,14 +315,14 @@ export default {
           { props: 'relatedTxnExTaxPrice', label: '关联交易不含税价', visible: true, width: 200 },
           { props: 'materialsCode', label: '配车物料编码', visible: true, width: 200 },
           { props: 'erpSaleOrderCode', label: 'ERP销售订单号', visible: true, width: 200 },
-          // { props: 'erpSaleOrderCode', label: '车型', visible: true, width: 200 },
-          // { props: 'erpSaleOrderCode', label: '年款', visible: true, width: 200 },
-          // { props: 'erpSaleOrderCode', label: '物料描述', visible: true, width: 200 },
-          // { props: 'erpSaleOrderCode', label: '选配续航', visible: true, width: 200 },
-          // { props: 'erpSaleOrderCode', label: '外饰风格', visible: true, width: 200 },
-          // { props: 'erpSaleOrderCode', label: '内饰风格', visible: true, width: 200 },
-          // { props: 'erpSaleOrderCode', label: '选配轮毂', visible: true, width: 200 },
-          // { props: 'erpSaleOrderCode', label: '选配动力', visible: true, width: 200 },
+          { props: 'modelName', label: '车型', visible: true, width: 200 },
+          { props: 'yearTypeName', label: '年款', visible: true, width: 200 },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
+          { props: 'drivingRangeName', label: '选配续航', visible: true, width: 200 },
+          { props: 'exteriorName', label: '外饰风格', visible: true, width: 200 },
+          { props: 'interiorName', label: '内饰风格', visible: true, width: 200 },
+          { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 200 },
+          { props: 'rangePowerName', label: '选配动力', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'erpSaleOrderCodeLabel', label: '退车标识', visible: true, width: 200 }
         ],
@@ -335,14 +343,78 @@ export default {
     this.getCompanyList();
   },
   methods: {
+    emergencyApproval (data) {
+      return setEmergencyOrder(data).then(() => {
+        this.$message({
+          type: 'success',
+          message: '批量设置急单成功'
+        });
+        this.getData();
+      });
+    },
     getCompanyList (query) {
       return companyList({ companyNameLike: query, status: 1 });
     },
-    handleCancelEmergencyOrder () {},
-    handleSetEmergencyOrder () {},
-    handleBatchSetNotAutoAllocate () {
+    handleCancelEmergencyOrder () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      const params = {
+        emergencyOrder: 0,
+        ids: ids
+      };
+      setEmergencyOrder(params).then(() => {
+        this.$message({
+          type: 'success',
+          message: '取消急单成功!'
+        });
+        this.getData();
+      }).catch(() => {
+        this.$message({
+          type: 'error',
+          message: '取消急单失败!'
+        });
+      });
     },
-    handleBatchSetAutoAllocate () {},
+    handleSetEmergencyOrder () {
+      this.showSetEmergencyOrderDialog = true;
+    },
+    handleBatchSetNotAutoAllocate () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      this.$confirm('是否确定要执行取消自动配车操作？', '操作提醒', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        setAutoAllocate({
+          ids: ids,
+          needAutoAllocateCar: 0
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '确认成功!'
+          });
+          this.getData();
+        });
+      }).catch(() => {});
+    },
+    handleBatchSetAutoAllocate () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      this.$confirm('是否确定要执行自动配车操作？', '操作提醒', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        setAutoAllocate({
+          ids: ids,
+          needAutoAllocateCar: 1
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '确认成功!'
+          });
+          this.getData();
+        });
+      }).catch(() => {});
+    },
     handleBatchCancel () {
       this.showBatchCancelDialog = true;
     },
@@ -373,7 +445,6 @@ export default {
       });
     },
     handleBatchAllocateVehicle () {
-      console.log('handleBatchAllocateVehicle////////////');
       const ids = this.selectionList.map(item => item.id) || [];
       batchAllocateSubmit({
         idSet: ids,
@@ -497,8 +568,17 @@ export default {
         .then(res => {
           console.log(res);
           this.optionObj.dataList = res.records.map(item => {
+            const vehicleMaterials = item.vehicleMaterialsDo || {};
             return {
               ...item,
+              modelName: vehicleMaterials.modelName || '',
+              materialsDesc: vehicleMaterials.materialsDesc || '',
+              drivingRangeName: vehicleMaterials.drivingRangeName || '',
+              rangePowerName: vehicleMaterials.rangePowerName || '',
+              exteriorName: vehicleMaterials.exteriorName || '',
+              interiorName: vehicleMaterials.interiorName || '',
+              wheelHubName: vehicleMaterials.wheelHubName || '',
+              yearTypeName: vehicleMaterials.yearTypeName || '',
               deleteLoading: false
             };
           });

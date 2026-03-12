@@ -4,7 +4,7 @@
        <el-form
         ref="form"
         :model="form"
-        label-width="80px"
+        label-width="150px"
         :inline="true"
         size="small"
         label-position="right"
@@ -214,4 +214,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+::v-deep .el-input-number {
+  width: 100%;
+}
 </style>

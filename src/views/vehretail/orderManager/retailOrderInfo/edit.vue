@@ -758,10 +758,10 @@ export default {
     // 订单退订
     handleOrderUnsubscribe () {
       // 实现订单退订逻辑
-      navigateToRoute({
+      this.navigateToRoute({
         path: '/vehretail/orderManager/retailOrderInfo',
         query: {
-          retailOrderCode: form.retailOrderCode,
+          retailOrderCode: this.form.retailOrderCode,
         },
       });
     },

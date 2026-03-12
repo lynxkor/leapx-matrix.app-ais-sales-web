@@ -129,7 +129,7 @@ import { getDetail, addOrUpdate } from '@/api/vehretail/basicConfig/storeDeliver
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum, listOrgStoreInfo, getUserByNameOrNo, searchEngineer } from '@/api/common';
+import { getEnum, listOrgStoreInfo, searchEngineer } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
