@@ -5,7 +5,6 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :showEditBtn="false"

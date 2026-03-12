@@ -365,10 +365,10 @@
                 <el-form-item label="退订原因分类：" prop="cateName">
                   {{ form.cateName }}
                 </el-form-item>
-                <el-form-item label="退订原因二级分类编码：" prop="subCateCode">
+                <el-form-item label="原因二级分类编码：" prop="subCateCode">
                   {{ form.subCateCode }}
                 </el-form-item>
-                <el-form-item label="退订原因二级分类：" prop="subCateName">
+                <el-form-item label="原因二级分类：" prop="subCateName">
                   {{ form.subCateName }}
                 </el-form-item>
                 <el-form-item label="数据来源：" prop="dataSource">
@@ -777,7 +777,7 @@ export default {
         reserveKeyword: true
       },
       auditType: 'approve',
-      pageTitle: '订单退订申请',
+      pageTitle: '用户退订申请',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
       moduleKey: 'AISVRRO-retailOrderRefund',

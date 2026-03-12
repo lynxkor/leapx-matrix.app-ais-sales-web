@@ -117,7 +117,7 @@
       </LPVxeTable>
     </div>
     <!-- TIPS: 填入项目id即可 -->
-    <Upload :visible="uploadDialogVisible" :id="1" @close="handleUploadDialogClose" />
+    <Upload :visible="uploadDialogVisible" :id="'1'" @close="handleUploadDialogClose" />
   </div>
 </template>
 
@@ -416,6 +416,23 @@ export default {
         }
       }
 
+      if (Array.isArray(this.form.vinList) && this.form.vinList.length <= 1) {
+        delete data.vinList;
+        data.vinLike = this.form.vinList[0] || '';
+      }
+      if (Array.isArray(this.form.codeList) && this.form.codeList.length <= 1) {
+        delete data.codeList;
+        data.codeLike = this.form.codeList[0] || '';
+      }
+
+      if (this.form.saleDealerCode) { // // 销售门店增加这两个参数
+        data.buildStoreType = ['16', '17', '15', '3'];
+        data.isSales = true;
+      }
+      if (this.form.deliveryDealerCode) { // 交付门店增加这两个参数
+        data.buildStoreType = ['16', '17', '15', '3', '13', '8'];
+        data.isSupportDeliver = true;
+      }
       return data;
     },
     async fetchOptions (code) {

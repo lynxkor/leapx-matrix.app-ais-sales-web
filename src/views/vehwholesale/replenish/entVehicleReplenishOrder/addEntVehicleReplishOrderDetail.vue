@@ -1,39 +1,36 @@
 <template>
-  <el-dialog :title="title" width="1200px" :visible.sync="dialogVisible" @close="handleClose" :close-on-click-modal="false">
+  <el-dialog :title="title" width="1200px" :visible.sync="dialogVisible" :close-on-click-modal="false">
     <div class="page-common">
        <el-form
         ref="form"
         :model="form"
-        label-width="80px"
+        label-width="150px"
         :inline="true"
         size="small"
         label-position="right"
         class="ais-search-form"
       >
         <el-form-item label="整车物料编码：" :rules="rules" ref="materialsCode">
-          <el-select
-            v-model="form.materialsCode"
-            clearable
-            filterable
-            placeholder="请选择整车仓库"
-            @change="filterTableData"
-          >
-            <el-option
-              v-for="item in dropdownOptions.warehouseList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            />
-          </el-select>
+          <fetch-select
+                :options="materialsList"
+                v-model="form.materialsCode"
+                placeholder="请选择"
+                optionKey="id"
+                labelKey="materialsCode"
+                valueKey="materialsCode"
+                @change="materialsSelect"
+                remote
+                clearable
+                filterable/>
         </el-form-item>
         <el-form-item label="标准价格：">
           <el-input-number
-                  :controls="false"
                   placeholder="请输入"
                   v-model="form.standardPrice"
-                  clearable
-                  :min="0"
-                  :precision="0"
+                   :precision="2"
+                    :step="0.01"
+                    :min="0"
+                    :controls="false"
                 />
         </el-form-item>
         <el-form-item label="企业客户补货订单：">
@@ -41,42 +38,42 @@
         </el-form-item>
          <el-form-item label="销售价格：">
             <el-input-number
-                  :controls="false"
                   placeholder="请输入"
                   v-model="form.salesPrice"
-                  clearable
-                  :min="0"
-                  :precision="0"
+                  :precision="2"
+                    :step="0.01"
+                    :min="0"
+                    :controls="false"
                 />
         </el-form-item>
         <el-form-item label="关联交易不含税价：">
             <el-input-number
-                  :controls="false"
                   placeholder="请输入"
                   v-model="form.relatedTxnExTaxPrice"
-                  clearable
-                  :min="0"
-                  :precision="0"
+                   :precision="2"
+                    :step="0.01"
+                    :min="0"
+                    :controls="false"
                 />
         </el-form-item>
         <el-form-item label="关联交易价格比例：">
             <el-input-number
-                  :controls="false"
                   placeholder="请输入"
                   v-model="form.relatedTxnPriceRate"
-                  clearable
-                  :min="0"
-                  :precision="0"
+                   :precision="2"
+                    :step="0.01"
+                    :min="0"
+                    :controls="false"
                 />
         </el-form-item>
         <el-form-item label="数量：">
           <el-input-number
-                  :controls="false"
                   placeholder="请输入"
                   v-model="form.qty"
-                  clearable
-                  :min="0"
-                  :precision="0"
+                   :precision="2"
+                    :step="0.01"
+                    :min="0"
+                    :controls="false"
                 />
         </el-form-item>
 
@@ -90,21 +87,23 @@
 </template>
 
 <script>
-
 import { getEnum } from '@/api/common';
 import permissions from '@/libs/mixins/permissions';
+import { getList } from '@/api/datacenter/materials/vehicleMaterials/index';
+import FetchSelect from '@/libs/components/FetchSelect';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
 };
 export default {
   name: 'AddEntVehicleReplishOrderDetail',
   props: {
+    visible: {
+      type: Boolean,
+      default: false
+    },
   },
-  mixins: [permissions],
   components: {
-    // TagInput,
-    // FetchSelect,
-    // PageSearchAction
+    FetchSelect,
   },
   data () {
     return {
@@ -112,8 +111,8 @@ export default {
       moduleKey: 'AISVW-entVehicleReplenishOrder',
       loading: false,
       submitLoading: false,
+      materialsList: [],
       show: false,
-      dialogVisible: false,
       form: {
         ...defaultForm
       },
@@ -139,8 +138,36 @@ export default {
     };
   },
   computed: {
+    dialogVisible: {
+      get () {
+        console.log('visible', this.visible);
+        return this.visible;
+      },
+      set (val) {
+        this.$emit('update:visible', val);
+      }
+    }
+  },
+  watch: {
+    visible (newVal) {
+      if (newVal) {
+        this.vin = '';
+      }
+    }
+  },
+  created () {
+    this.getEnum();
+    this.materialsMethod();
   },
   methods: {
+    materialsSelect (val, row) {
+      this.form.materialsId = row.id;
+    },
+    async materialsMethod (query) {
+      const res = await getList({ materialsCodeLike: query, pageSize: 20, status: 1, statusIncludeList: ['1'] });
+      this.materialsList = res.records;
+      console.log('materialsCodeRemoteMethod', res);
+    },
     handleClose () {
       this.form = { ...defaultForm }; // 重置表单数据
       this.tableData = []; // 清空表格数据
@@ -156,14 +183,12 @@ export default {
     },
     async dialogshow () {
       await this.getData();
-      this.dialogVisible = true;
     },
     async getEnum () {
       const response = await getEnum('vw_stock_status');
       console.log('response:', response);
     },
     confirm () {
-      this.dialogVisible = true;
       this.$refs.editTable.clearSelection();
       this.$emit('addConfirm', this.form);
     },
@@ -175,18 +200,21 @@ export default {
     },
     handleCancel () {
       this.dialogVisible = false;
-      this.handleClose();
     },
     handleSubmit () {
-      this.$refs.entOrderDetail.validate((valid) => {
-        if (valid) {
-          this.submitLoading = true;
-        }
-      });
+      this.$emit('addConfirm', this.form);
+      // this.$refs.entOrderDetail.validate((valid) => {
+      //   if (valid) {
+      //     this.submitLoading = true;
+      //   }
+      // });
     },
   }
 };
 </script>
 
 <style lang="scss" scoped>
+::v-deep .el-input-number {
+  width: 100%;
+}
 </style>

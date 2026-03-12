@@ -1,6 +1,6 @@
 import api from '@/axios';
 
-const prefix = 'vehretail/web/basicConfig/vrEquityCategory/';
+const prefix = 'vr/web/basicConfig/vrEquityCategory/';
 
 /**
  * 查询列表

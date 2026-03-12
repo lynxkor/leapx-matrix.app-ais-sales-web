@@ -189,20 +189,14 @@
                   />
                 </el-form-item>
                 <el-form-item label="是否完成交车：" prop="deliveryStatus">
-                  <el-select
-                    placeholder="请选择"
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="BooleanEnum"
                     v-model="form.deliveryStatus"
+                    placeholder="请选择"
                     clearable
                     filterable
-                    disabled
-                  >
-                    <el-option
-                      v-for="item in yes_no_enum"
-                      :key="Number(item.code)"
-                      :label="item.message"
-                      :value="Number(item.code)"
-                    />
-                  </el-select>
+                  />
                 </el-form-item>
                 <el-form-item label="缴定金时间：" prop="paymentTime">
                   <el-date-picker
@@ -643,6 +637,9 @@ export default {
     _id () {
       return this.id || this.$route.query.id || this.form.id;
     },
+    title () {
+      return '主键：' + this.form.id;
+    }
   },
   watch: {
     id: {
@@ -680,9 +677,8 @@ export default {
         remote: true,
         reserveKeyword: true,
       },
-      pageTitle: '订单变更申请',
+      pageTitle: '订单信息变更申请',
       pageType: 'edit',
-      title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVRROCA-retailOrderChangeApply',
       loading: false,

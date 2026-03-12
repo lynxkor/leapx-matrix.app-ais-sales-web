@@ -42,3 +42,67 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 批量配车
+ * @param {Object} data
+ */
+export function batchAllocateSubmit (data) {
+  return api.jsonPost(prefix + 'batchAllocateSubmit', data);
+}
+
+/**
+ * 批量取消配车
+ * @param {Object} data
+ */
+export function batchCancelAllocateSubmit (data) {
+  return api.jsonPost(prefix + 'batchCancelAllocateSubmit', data);
+}
+
+/**
+ * 批量结算
+ * @param {Object} data
+ */
+export function batchSettleSubmit (data) {
+  return api.jsonPost(prefix + 'batchSettleSubmit', data);
+}
+
+/**
+ * 批量取消结算
+ * @param {Object} data
+ */
+export function batchCancelSettleSubmit (data) {
+  return api.jsonPost(prefix + 'batchCancelSettleSubmit', data);
+}
+
+/**
+ * 批量作废
+ * @param {Object} data
+ */
+export function batchCancelOrders (data) {
+  return api.jsonPost(prefix + 'batchCancelOrders', data);
+}
+
+/**
+ * 配车查询库存
+ * @param {Object} data
+ */
+export function vinAllocateVehicleQueryInventory (data) {
+  return api.jsonPost(prefix + 'vinAllocateVehicleQueryInventory', data);
+}
+
+/**
+ * 批量设置/取消自动配车
+ * @param {Object} data
+ */
+export function setAutoAllocate (data) {
+  return api.jsonPost(prefix + 'setAutoAllocate', data);
+}
+
+/**
+ * 批量设置/取消急单
+ * @param {Object} data
+ */
+export function setEmergencyOrder (data) {
+  return api.jsonPost(prefix + 'setEmergencyOrder', data);
+}

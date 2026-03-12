@@ -136,19 +136,19 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import {LPVxeTable} from '@leapmotor/design';
+import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import {batchAudit, deleteItem, enableItem, getList} from '@/api/vehretail/orderRefund/refundApply/index';
-import {exportTable, getEnum, getTableConfig, tableAddOrUpdate} from '@/api/common';
+import { batchAudit, deleteItem, enableItem, getList } from '@/api/vehretail/orderRefund/refundApply/index';
+import { exportTable, getEnum, getTableConfig, tableAddOrUpdate } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
-import {YES_NO_ENUM} from '@/libs/constants';
+import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import {downloadExcel, handleBatchStatusChange} from '@/libs/utils';
+import { downloadExcel, handleBatchStatusChange } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
-import {fetchCategoryList} from '@/api/vehretail/orderRefund/category';
+import { fetchCategoryList } from '@/api/vehretail/orderRefund/category';
 import TagInput from '@/libs/components/TagInput';
 import auditDialog from '@/libs/components/auditDialog/index.vue';
 
@@ -191,7 +191,7 @@ export default {
         remote: true,
         reserveKeyword: true
       },
-      pageTitle: '订单退订申请',
+      pageTitle: '用户退订申请',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVRRO-retailOrderRefund',
@@ -375,8 +375,9 @@ export default {
       auditForm.auditResult = auditForm.result;
       auditForm.auditContent = auditForm.remark;
       auditForm.refundStatus = this.refundStatusTab;
-      this.$message.info(JSON.stringify(auditForm));
+      // this.$message.info(JSON.stringify(auditForm));
       batchAudit(auditForm).then(res => {
+        this.$message.success('批量审核成功');
         this.getData();
       });
     },
@@ -399,7 +400,7 @@ export default {
       this.exportLoading = true;
       const reqParams = this.getFormData() || {};
       exportTable({
-        businessType: '订单退订申请',
+        businessType: '用户退订申请',
         dataFetchPath: '/vr/web/refund/retailOrderRefund/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -407,7 +408,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '订单退订申请.xlsx');
+            await downloadExcel(res.excelUrl, '用户退订申请.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

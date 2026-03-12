@@ -343,3 +343,11 @@ export function getRigion (data) {
 export function getParentCompany (data) {
   return api.jsonPost('/network/portal/parentCompany/list', data);
 }
+
+/**
+ * 销售顾问/交付顾问/交付衍生工程师 列表查询
+ * @param {*} data
+ */
+export function searchEngineer (data) {
+  return api.jsonPost('/vr/web/order/common/userList', data);
+}

@@ -17,70 +17,50 @@
         />
       </el-form-item>
       <el-form-item label="下拉选项是否展示">
-        <el-select
-          placeholder="请选择"
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="BooleanEnum"
           v-model="form.selectorDisplay"
+          placeholder="请选择"
           clearable
           filterable
-        >
-          <el-option
-            v-for="item in yes_no_enum"
-            :key="Number(item.code)"
-            :label="item.message"
-            :value="Number(item.code)"
-          />
-        </el-select>
+        />
       </el-form-item>
       <el-form-item label="原路退回是否允许选择">
-        <el-select
-          placeholder="请选择"
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="BooleanEnum"
           v-model="form.originalRefund"
+          placeholder="请选择"
           clearable
           filterable
-        >
-          <el-option
-            v-for="item in yes_no_enum"
-            :key="Number(item.code)"
-            :label="item.message"
-            :value="Number(item.code)"
-          />
-        </el-select>
+        />
       </el-form-item>
       <el-form-item label="是否需要初审">
-        <el-select
-          placeholder="请选择"
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="BooleanEnum"
           v-model="form.preApproval"
+          placeholder="请选择"
           clearable
           filterable
-        >
-          <el-option
-            v-for="item in yes_no_enum"
-            :key="Number(item.code)"
-            :label="item.message"
-            :value="Number(item.code)"
-          />
-        </el-select>
+        />
       </el-form-item>
       <el-form-item label="是否需要终审">
-        <el-select
-          placeholder="请选择"
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="BooleanEnum"
           v-model="form.finalApproval"
+          placeholder="请选择"
           clearable
           filterable
-        >
-          <el-option
-            v-for="item in yes_no_enum"
-            :key="Number(item.code)"
-            :label="item.message"
-            :value="Number(item.code)"
-          />
-        </el-select>
+        />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="退款方式是否允许选择">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
+            enumCode="BooleanEnum"
             v-model="form.refundTypeSelect"
             placeholder="请选择"
             clearable
