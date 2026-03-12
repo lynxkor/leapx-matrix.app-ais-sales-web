@@ -585,6 +585,14 @@ export default {
         delete data.materialsCodeList;
         data.materialsCodeLike = this.form.materialsCodeList[0] || '';
       }
+      if (this.form.saleDealerCode) { // 销售门店增加这两个参数
+        data.buildStoreType = ['16', '17', '15', '3'];
+        data.isSales = true;
+      }
+      if (this.form.deliveryDealerCode) { // 交付门店增加这两个参数
+        data.buildStoreType = ['16', '17', '15', '3', '13', '8'];
+        data.isSupportDeliver = true;
+      }
       return data;
     },
     async fetchOptions (code) {
