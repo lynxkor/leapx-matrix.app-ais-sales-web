@@ -412,17 +412,17 @@
                   <vxe-column field="salesPrice" title="销售价格"  />
                   <vxe-column field="relatedTxnExTaxPrice" title="关联交易不含税价" />
                   <vxe-column field="materialsCode" title="整车物料编码" />
-                  <vxe-column field="email" title="物料描述" />
-                  <vxe-column field="email" title="车型" />
-                  <vxe-column field="email" title="选配续航" />
-                  <vxe-column field="email" title="选配动力" />
-                  <vxe-column field="email" title="外饰风格" />
-                  <vxe-column field="email" title="内饰风格" />
-                  <vxe-column field="email" title="选配轮毂" />
-                  <vxe-column field="email" title="电池电芯" />
-                  <vxe-column field="email" title="年款" />
-                  <vxe-column field="email" title="车顶风格" />
-                  <vxe-column field="email" title="选装包" />
+                  <vxe-column field="materialsDesc" title="物料描述" />
+                  <vxe-column field="modelName" title="车型" />
+                  <vxe-column field="drivingRangeName" title="选配续航" />
+                  <vxe-column field="rangePowerName" title="选配动力" />
+                  <vxe-column field="exteriorName" title="外饰风格" />
+                  <vxe-column field="interiorName" title="内饰风格" />
+                  <vxe-column field="wheelHubName" title="选配轮毂" />
+                  <vxe-column field="batteryCellName" title="电池电芯" />
+                  <vxe-column field="yearTypeName" title="年款" />
+                  <vxe-column field="roofName" title="车顶风格" />
+                  <vxe-column field="optionPackageName" title="选装包" />
                   <vxe-column title="操作" width="100" v-if="canDelete">
                     <template #default="{ rowIndex }">
                       <el-popconfirm title="确定要删除吗？" @confirm="handleDeleteRow(rowIndex)">
@@ -843,7 +843,25 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        getDetail(id).then(res => {
+          res.detailList = res.detailList.map(detail => ({
+            ...detail,
+            materialsDesc: detail.vehicleMaterials.materialsDesc || '',
+            modelName: detail.vehicleMaterials.modelName || '',
+            drivingRangeName: detail.vehicleMaterials.drivingRangeName || '',
+            rangePowerName: detail.vehicleMaterials.rangePowerName || '',
+            exteriorName: detail.vehicleMaterials.exteriorName || '',
+            interiorName: detail.vehicleMaterials.interiorName || '',
+            wheelHubName: detail.vehicleMaterials.wheelHubName || '',
+            batteryCellName: detail.vehicleMaterials.batteryCellName || '',
+            yearTypeName: detail.vehicleMaterials.yearTypeName || '',
+            roofName: detail.vehicleMaterials.roofName || '',
+            optionPackageName: detail.vehicleMaterials.optionPackageName || '',
+          }));
+          console.log('res', res.detailList);
+          this.tableData = res.detailList;
+          return res;
+        });
       }
     },
     submitRequest () {
@@ -855,7 +873,7 @@ export default {
     },
     // 删除子表数据
     handleDeleteRow (index) {
-      const item = this.tableData[index];
+      // const item = this.tableData[index];
       this.tableData.splice(index, 1);
       // 根据需求调用接口
       // deletePartVehModel([item.id]).then(res => {

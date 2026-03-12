@@ -82,3 +82,27 @@ export function batchCancelSettleSubmit (data) {
 export function batchCancelOrders (data) {
   return api.jsonPost(prefix + 'batchCancelOrders', data);
 }
+
+/**
+ * 配车查询库存
+ * @param {Object} data
+ */
+export function vinAllocateVehicleQueryInventory (data) {
+  return api.jsonPost(prefix + 'vinAllocateVehicleQueryInventory', data);
+}
+
+/**
+ * 批量设置/取消自动配车
+ * @param {Object} data
+ */
+export function setAutoAllocate (data) {
+  return api.jsonPost(prefix + 'setAutoAllocate', data);
+}
+
+/**
+ * 批量设置/取消急单
+ * @param {Object} data
+ */
+export function setEmergencyOrder (data) {
+  return api.jsonPost(prefix + 'setEmergencyOrder', data);
+}
