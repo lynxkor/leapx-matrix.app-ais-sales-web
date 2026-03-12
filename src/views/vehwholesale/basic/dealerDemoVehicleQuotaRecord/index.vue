@@ -144,7 +144,7 @@ export default {
     //   exportTable({
     //     businessType: '门店试驾车配额调整记录',
     //     dataFetchPath: 'vehwholesale/web/basic/dealerDemoVehicleQuotaRecord/page',
-    //     reqParams: this.getFormData(),
+    //     reqParams,
     //     titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
     //     httpMethod: 'POST'
     //   }).then(async res => {
