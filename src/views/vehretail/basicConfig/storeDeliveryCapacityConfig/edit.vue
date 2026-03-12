@@ -129,7 +129,7 @@ import { getDetail, addOrUpdate } from '@/api/vehretail/basicConfig/storeDeliver
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum, listOrgStoreInfo, getUserByNameOrNo } from '@/api/common';
+import { getEnum, listOrgStoreInfo, getUserByNameOrNo, searchEngineer } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -247,10 +247,10 @@ export default {
       return [];
     },
     async getDealerListByName (params) {
-      return await listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
+      return await listOrgStoreInfo({ storeName: params, isSupportDeliver: true });
     },
     querySearchAsync (queryString) {
-      return getUserByNameOrNo({ name: queryString });
+      return searchEngineer({ orgCodeList: [this.form.deliveryDealerCode], username: queryString, salesConfigKey: 'deliveryUser' });
     },
     handleDeclearChange (val, record) { if (record) { this.form.deliveryDealerName = record.storeName; } },
     handleUserChange (val, record) { if (record) { this.form.deliveryUserName = record.username; } }

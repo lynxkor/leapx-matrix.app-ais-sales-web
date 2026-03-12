@@ -2382,6 +2382,24 @@ const routes = [
         name: '门店交付分派配置管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehretail/basicConfig/activationModeConfig',
+      name: 'activationModeConfig',
+      component: () => import('@/views/vehretail/basicConfig/activationModeConfig/index.vue'),
+
+      meta: {
+        name: '激活模式配置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicconfig/activationmodeconfig/edit',
+      name: 'activationModeConfigEdit',
+      component: () => import('@/views/vehretail/basicConfig/activationModeConfig/edit.vue'),
+
+      meta: {
+        name: '激活模式配置管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
