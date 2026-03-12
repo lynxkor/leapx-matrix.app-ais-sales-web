@@ -342,9 +342,9 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '退订原因分类管理',
+      pageTitle: '退订原因分类',
       pageType: 'edit',
-      title: '退订原因分类管理',
+      title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-orderRefundCategory',
       loading: false,

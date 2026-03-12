@@ -26,7 +26,7 @@
           <el-button size="small" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
           <el-button size="small"
                      @click="navigateToRoute({
-                      path: '/vehretail/orderRefund/refundApply/edit',
+                      path: '/sales/vehretail/orderRefund/refundApply/edit',
                       query: {
                         mallOrderCode: form.mallOrderCode,
                       },
@@ -35,7 +35,7 @@
           </el-button>
           <el-button size="small"
                      @click="navigateToRoute({
-                      path: '/vehretail/orderRefund/changeApply/edit',
+                      path: '/sales/vehretail/orderRefund/changeApply/edit',
                       query: {
                         mallOrderCode: form.mallOrderCode,
                       },
