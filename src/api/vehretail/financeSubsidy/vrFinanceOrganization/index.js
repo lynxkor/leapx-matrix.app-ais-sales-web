@@ -1,6 +1,6 @@
 import api from '@/axios';
 
-const prefix = 'vehretail/web/financeSubsidy/vrFinanceOrganization/';
+const prefix = 'vr/web/financeSubsidy/vrFinanceOrganization/';
 
 /**
  * 查询列表
