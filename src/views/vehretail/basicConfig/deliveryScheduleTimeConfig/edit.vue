@@ -44,18 +44,26 @@
                   />
                 </el-form-item>
                 <el-form-item label="开始时间：" prop="startTime">
-                  <el-input
+                  <el-time-select
                     v-model="form.startTime"
-                    clearable
-                    placeholder="请输入开始时间"
-                  />
+                    :picker-options="{
+                      start: '00:00',
+                      step: '00:15',
+                      end: '24:00'
+                    }"
+                    placeholder="选择时间">
+                  </el-time-select>
                 </el-form-item>
                 <el-form-item label="结束时间：" prop="endTime">
-                  <el-input
+                  <el-time-select
                     v-model="form.endTime"
-                    clearable
-                    placeholder="请输入结束时间"
-                  />
+                    :picker-options="{
+                      start: '00:00',
+                      step: '00:15',
+                      end: '24:00'
+                    }"
+                    placeholder="选择时间">
+                  </el-time-select>
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
                   <fetch-select
