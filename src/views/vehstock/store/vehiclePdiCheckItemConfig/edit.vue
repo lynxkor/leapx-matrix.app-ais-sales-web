@@ -62,8 +62,10 @@
                 </el-form-item>
                 <el-form-item label="同级排序：" prop="serialno">
                   <el-input
+                    type="number"
                     placeholder="请输入"
                     v-model="form.serialno"
+                    @input="val => form.serialno = val.replace(/[^1-9\d]|^0|e|E|\.|-|\+/g, '')"
                     clearable
                   />
                 </el-form-item>
@@ -110,36 +112,44 @@
                 </el-form-item>
                 <el-form-item label="图谱坐标top：" prop="atlasCoordTop">
                   <el-input
+                    type="number"
                     placeholder="请输入"
                     v-model="form.atlasCoordTop"
+                    @input="val => form.atlasCoordTop = val.replace(/[^-+0-9.]|e|E|(\.\d*\.)|^(\.+)|(-+.*-+)/g, '')"
                     clearable
                   />
                 </el-form-item>
                 <el-form-item label="图谱坐标left：" prop="atlasCoordLeft">
                   <el-input
+                    type="number"
                     placeholder="请输入"
                     v-model="form.atlasCoordLeft"
+                    @input="val => form.atlasCoordLeft = val.replace(/[^-+0-9.]|e|E|(\.\d*\.)|^(\.+)|(-+.*-+)/g, '')"
                     clearable
                   />
                 </el-form-item>
                 <el-form-item label="图谱坐标bottom：" prop="atlasCoordBottom">
                   <el-input
+                    type="number"
                     placeholder="请输入"
                     v-model="form.atlasCoordBottom"
+                    @input="val => form.atlasCoordBottom = val.replace(/[^-+0-9.]|e|E|(\.\d*\.)|^(\.+)|(-+.*-+)/g, '')"
                     clearable
                   />
                 </el-form-item>
                 <el-form-item label="图谱坐标right：" prop="atlasCoordRight">
                   <el-input
+                    type="number"
                     placeholder="请输入"
                     v-model="form.atlasCoordRight"
+                    @input="val => form.atlasCoordRight = val.replace(/[^-+0-9.]|e|E|(\.\d*\.)|^(\.+)|(-+.*-+)/g, '')"
                     clearable
                   />
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="BooleanEnum"
+                    enumCode="StatusEnum"
                     v-model="form.status"
                     placeholder="请选择"
                     clearable
@@ -362,7 +372,20 @@ export default {
           { required: true, message: '请选择层级', trigger: 'change' }
         ],
         serialno: [
-          { required: false, message: '请输入同级排序', trigger: 'change' }
+          { required: false, message: '请输入同级排序', trigger: 'change' },
+          {
+            validator: (rule, value, callback) => {
+              if (!value) {
+                return callback();
+              }
+              if (!/^[1-9]\d*$/.test(value)) {
+                callback(new Error('请输入正整数（仅允许数字，且不能以0开头）'));
+              } else {
+                callback();
+              }
+            },
+            trigger: ['blur', 'change'],
+          }
         ],
         modelId: [
           { required: false, message: '请输入车型ID', trigger: 'change' }

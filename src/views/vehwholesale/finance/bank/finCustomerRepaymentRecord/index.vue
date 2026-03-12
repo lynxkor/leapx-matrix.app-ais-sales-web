@@ -314,7 +314,7 @@ export default {
       }
       exportTable({
         businessType: '客户还款记录',
-        dataFetchPath: 'vehwholesale/web/finance/bank/finCustomerRepaymentRecord/page',
+        dataFetchPath: 'vw/web/finance/bank/finCustomerRepaymentRecord/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

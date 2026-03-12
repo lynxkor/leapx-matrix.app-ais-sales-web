@@ -841,7 +841,7 @@ export default {
       }).then(() => {
         this.$message({
           type: 'success',
-          message: '批量取消结算成功'
+          message: '批量取消配车成功'
         });
         this.getData();
       });

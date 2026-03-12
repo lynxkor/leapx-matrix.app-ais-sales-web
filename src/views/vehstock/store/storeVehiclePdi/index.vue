@@ -316,7 +316,7 @@ export default {
     },
     // 销售门店搜索
     async getDealerListByName (params) {
-      return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
+      return listOrgStoreInfo({ storeName: params, isSales: true });
     },
     async getPdiUser (params) {
       return getUserByNameOrNo({ name: params });
@@ -416,6 +416,14 @@ export default {
         }
       }
 
+      if (Array.isArray(this.form.vinList) && this.form.vinList.length <= 1) {
+        delete data.vinList;
+        data.vinLike = this.form.vinList[0] || '';
+      }
+      if (Array.isArray(this.form.codeList) && this.form.codeList.length <= 1) {
+        delete data.codeList;
+        data.codeLike = this.form.codeList[0] || '';
+      }
       return data;
     },
     async fetchOptions (code) {

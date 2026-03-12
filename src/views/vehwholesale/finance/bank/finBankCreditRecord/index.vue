@@ -319,7 +319,7 @@ export default {
       }
       exportTable({
         businessType: '银行授信记录',
-        dataFetchPath: 'vehwholesale/web/finance/bank/page',
+        dataFetchPath: 'vw/web/finance/bank/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
