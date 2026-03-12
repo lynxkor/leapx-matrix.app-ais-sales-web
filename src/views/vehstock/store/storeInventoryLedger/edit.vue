@@ -2,12 +2,12 @@
   <edit-page-layout ref="editLayout" title="侧边栏标题" showPaneFooter>
     <template #left>
       <!-- TIPS: 如果需要竖排，direction="vertical" -->
-      <edit-base-container ref="containerRef" :id="_id" :title="title" :isEditing.sync="isEditing" :form.sync="form"
+      <edit-base-container ref="containerRef" :id="_id" :isEditing.sync="isEditing" :form.sync="form"
         :originalForm.sync="originalForm" :submitRequest="submitRequest" :showEditBtn="false"
         :detailRequest="detailRequest">
-        <template #status>
+        <!-- <template #status>
           <span class="status primary">状态</span>
-        </template>
+        </template> -->
         <el-main>
           <section class="common-section">
             <div class="common-section-header">
@@ -521,7 +521,7 @@ export default {
     return {
       pageTitle: '门店库存台账',
       pageType: 'edit',
-      title: '主键：' + form.id,
+      title: '门店库存台账' + form.vin,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISMC-storeInventoryLedger',
       loading: false,
