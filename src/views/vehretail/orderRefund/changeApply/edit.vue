@@ -189,20 +189,14 @@
                   />
                 </el-form-item>
                 <el-form-item label="是否完成交车：" prop="deliveryStatus">
-                  <el-select
-                    placeholder="请选择"
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="BooleanEnum"
                     v-model="form.deliveryStatus"
+                    placeholder="请选择"
                     clearable
                     filterable
-                    disabled
-                  >
-                    <el-option
-                      v-for="item in yes_no_enum"
-                      :key="Number(item.code)"
-                      :label="item.message"
-                      :value="Number(item.code)"
-                    />
-                  </el-select>
+                  />
                 </el-form-item>
                 <el-form-item label="缴定金时间：" prop="paymentTime">
                   <el-date-picker
