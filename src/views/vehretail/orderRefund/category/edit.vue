@@ -42,64 +42,44 @@
                   />
                 </el-form-item>
                 <el-form-item label="下拉选中是否展示：" prop="selectorDisplay">
-                  <el-select
-                    placeholder="请选择"
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="BooleanEnum"
                     v-model="form.selectorDisplay"
+                    placeholder="请选择"
                     clearable
                     filterable
-                  >
-                    <el-option
-                      v-for="item in yes_no_enum"
-                      :key="Number(item.code)"
-                      :label="item.message"
-                      :value="Number(item.code)"
-                    />
-                  </el-select>
+                  />
                 </el-form-item>
                 <el-form-item label="原路退回允许选择：" prop="originalRefund">
-                  <el-select
-                    placeholder="请选择"
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="BooleanEnum"
                     v-model="form.originalRefund"
+                    placeholder="请选择"
                     clearable
                     filterable
-                  >
-                    <el-option
-                      v-for="item in yes_no_enum"
-                      :key="Number(item.code)"
-                      :label="item.message"
-                      :value="Number(item.code)"
-                    />
-                  </el-select>
+                  />
                 </el-form-item>
                 <el-form-item label="是否需要初审：" prop="preApproval">
-                  <el-select
-                    placeholder="请选择"
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="BooleanEnum"
                     v-model="form.preApproval"
+                    placeholder="请选择"
                     clearable
                     filterable
-                  >
-                    <el-option
-                      v-for="item in yes_no_enum"
-                      :key="Number(item.code)"
-                      :label="item.message"
-                      :value="Number(item.code)"
-                    />
-                  </el-select>
+                  />
                 </el-form-item>
                 <el-form-item label="是否需要终审：" prop="finalApproval">
-                  <el-select
-                    placeholder="请选择"
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="BooleanEnum"
                     v-model="form.finalApproval"
+                    placeholder="请选择"
                     clearable
                     filterable
-                  >
-                    <el-option
-                      v-for="item in yes_no_enum"
-                      :key="Number(item.code)"
-                      :label="item.message"
-                      :value="Number(item.code)"
-                    />
-                  </el-select>
+                  />
                 </el-form-item>
                 <el-form-item label="默认定金退回方式：" prop="refundTypeDefault">
                   <fetch-select
@@ -112,19 +92,14 @@
                   />
                 </el-form-item>
                 <el-form-item label="退还方式是否允许选择：" prop="refundTypeSelect">
-                  <el-select
-                    placeholder="请选择"
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="BooleanEnum"
                     v-model="form.refundTypeSelect"
+                    placeholder="请选择"
                     clearable
                     filterable
-                  >
-                    <el-option
-                      v-for="item in yes_no_enum"
-                      :key="Number(item.code)"
-                      :label="item.message"
-                      :value="Number(item.code)"
-                    />
-                  </el-select>
+                  />
                 </el-form-item>
                 <el-form-item label="退订附件上传要求：" prop="refundAttachRequired">
                   <el-input
@@ -141,34 +116,24 @@
                   />
                 </el-form-item>
                 <el-form-item label="是否允许修改退订原因：" prop="refundReasonChanged">
-                  <el-select
-                    placeholder="请选择"
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="BooleanEnum"
                     v-model="form.refundReasonChanged"
+                    placeholder="请选择"
                     clearable
                     filterable
-                  >
-                    <el-option
-                      v-for="item in yes_no_enum"
-                      :key="Number(item.code)"
-                      :label="item.message"
-                      :value="Number(item.code)"
-                    />
-                  </el-select>
+                  />
                 </el-form-item>
                 <el-form-item v-show="form.cateCode === '1210'" label="超时订单自动审核通过：" prop="expireOrderAutoPass">
-                  <el-select
-                    placeholder="请选择"
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="BooleanEnum"
                     v-model="form.expireOrderAutoPass"
+                    placeholder="请选择"
                     clearable
                     filterable
-                  >
-                    <el-option
-                      v-for="item in yes_no_enum"
-                      :key="Number(item.code)"
-                      :label="item.message"
-                      :value="Number(item.code)"
-                    />
-                  </el-select>
+                  />
                 </el-form-item>
                 <el-form-item
                   v-if="form.cateCode === '1210'"
@@ -296,15 +261,23 @@ const defaultForm = {
   cateCode: '',
   cateName: '',
   selectorDisplay: '',
+  selectorDisplayLabel: '',
   originalRefund: '',
+  originalRefundLabel: '',
   preApproval: '',
+  preApprovalLabel: '',
   finalApproval: '',
+  finalApprovalLabel: '',
   refundTypeDefault: '',
+  refundTypeDefaultLabel: '',
   refundTypeSelect: '',
+  refundTypeSelectLabel: '',
   refundAttachRequired: '',
   refundReasonDefault: '',
   refundReasonChanged: '',
+  refundReasonChangedLabel: '',
   expireOrderAutoPass: '',
+  expireOrderAutoPassLabel: '',
   expireOrderTime: '',
 };
 
