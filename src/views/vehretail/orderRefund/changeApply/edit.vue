@@ -643,6 +643,9 @@ export default {
     _id () {
       return this.id || this.$route.query.id || this.form.id;
     },
+    title () {
+      return '主键：' + this.form.id;
+    }
   },
   watch: {
     id: {
@@ -682,7 +685,6 @@ export default {
       },
       pageTitle: '订单信息变更申请',
       pageType: 'edit',
-      title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVRROCA-retailOrderChangeApply',
       loading: false,

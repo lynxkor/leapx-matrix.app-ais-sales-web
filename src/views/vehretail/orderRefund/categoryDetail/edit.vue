@@ -106,6 +106,9 @@ export default {
   computed: {
     _id () {
       return this.id || this.$route.query.id || this.form.id;
+    },
+    title () {
+      return '主键：' + this.form.id;
     }
   },
   watch: {
@@ -135,7 +138,6 @@ export default {
       },
       pageTitle: '原因二级分类',
       pageType: 'edit',
-      title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-orderRefundCategoryDetail',
       loading: false,

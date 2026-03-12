@@ -31,7 +31,7 @@
       </el-form-item>
       <el-form-item
         v-show="auditType === 'approve' && auditForm.result === 1"
-        :rules="auditType === 'approve' ? rules.refundBank: []"
+        :rules="auditType === 'approve' && auditForm.result === 1 ? rules.refundBank: []"
         label="原因二级分类："
         prop="subCateCode">
         <fetch-select
