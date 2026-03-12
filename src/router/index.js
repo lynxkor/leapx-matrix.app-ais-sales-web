@@ -2634,6 +2634,24 @@ const routes = [
         name: '激活模式配置管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehretail/basicConfig/deliveryQuestionnaireConfig',
+      name: 'deliveryQuestionnaireConfig',
+      component: () => import('@/views/vehretail/basicConfig/deliveryQuestionnaireConfig/index.vue'),
+
+      meta: {
+        name: '交付满意度问卷配置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicconfig/deliveryquestionnaireconfig/edit',
+      name: 'deliveryQuestionnaireConfigEdit',
+      component: () => import('@/views/vehretail/basicConfig/deliveryQuestionnaireConfig/edit.vue'),
+
+      meta: {
+        name: '交付满意度问卷配置管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
