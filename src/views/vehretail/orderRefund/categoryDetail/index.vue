@@ -130,7 +130,7 @@ export default {
         remote: true,
         reserveKeyword: true
       },
-      pageTitle: '退订原因二级分类',
+      pageTitle: '原因二级分类',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-orderRefundCategoryDetail',
@@ -172,8 +172,8 @@ export default {
             }]
           },
           { props: 'subCateName', label: '原因二级分类', visible: true, width: 200 },
-          { props: 'cateCode', label: '原因分类编码', visible: true, width: 200 },
-          { props: 'cateName', label: '原因分类', visible: true, width: 200 },
+          { props: 'cateCode', label: '所属退订原因分类编码', visible: false, width: 200 },
+          { props: 'cateName', label: '所属退订原因分类', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',
@@ -235,7 +235,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '退订原因二级分类',
+        businessType: '原因二级分类',
         dataFetchPath: '/vr/web/refund/orderRefundCategoryDetail/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -243,7 +243,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '退订原因二级分类.xlsx');
+            await downloadExcel(res.excelUrl, '原因二级分类.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -323,6 +323,9 @@ export default {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
+      }
+      if (this.selectionList.length > 0) {
+        data.ids = this.selectionList.map(item => item.id);
       }
 
       return data;

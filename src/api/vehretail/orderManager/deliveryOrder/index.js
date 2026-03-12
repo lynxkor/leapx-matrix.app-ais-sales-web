@@ -42,3 +42,35 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 校验开票金额
+ * @param {Object} data
+ */
+export function validateInvoiceAmount (data) {
+  return api.jsonPost(prefix + 'validateInvoiceAmount', data);
+}
+
+/**
+ * 校验剩余应收款
+ * @param {Object} data
+ */
+export function validateRemainingReceivable (data) {
+  return api.jsonPost(prefix + 'validateRemainingReceivable', data);
+}
+
+/**
+ * 校验未核销权益
+ * @param {Object} data
+ */
+export function validateUnverifiedRights (data) {
+  return api.jsonPost(prefix + 'validateUnverifiedRights', data);
+}
+
+/**
+ * 确认收款
+ * @param {Object} data
+ */
+export function confirmPayment (data) {
+  return api.jsonPost(prefix + 'confirmPayment', data);
+}

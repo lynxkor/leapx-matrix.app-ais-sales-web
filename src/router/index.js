@@ -2598,6 +2598,60 @@ const routes = [
         name: '整车销售-企业客户订单-企业客户整车订单管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehwholesale/entorder/entTransactionTaxPriceConfig',
+      name: 'entTransactionTaxPriceConfig',
+      component: () => import('@/views/vehwholesale/entorder/entTransactionTaxPriceConfig/index.vue'),
+
+      meta: {
+        name: '整车批售-企业订单管理-关联交易计算比例管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/entorder/enttransactiontaxpriceconfig/edit',
+      name: 'entTransactionTaxPriceConfigEdit',
+      component: () => import('@/views/vehwholesale/entorder/entTransactionTaxPriceConfig/edit.vue'),
+
+      meta: {
+        name: '整车批售-企业订单管理-关联交易计算比例管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/basicConfig/activationModeConfig',
+      name: 'activationModeConfig',
+      component: () => import('@/views/vehretail/basicConfig/activationModeConfig/index.vue'),
+
+      meta: {
+        name: '激活模式配置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicconfig/activationmodeconfig/edit',
+      name: 'activationModeConfigEdit',
+      component: () => import('@/views/vehretail/basicConfig/activationModeConfig/edit.vue'),
+
+      meta: {
+        name: '激活模式配置管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/basicConfig/deliveryQuestionnaireConfig',
+      name: 'deliveryQuestionnaireConfig',
+      component: () => import('@/views/vehretail/basicConfig/deliveryQuestionnaireConfig/index.vue'),
+
+      meta: {
+        name: '交付满意度问卷配置管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/basicconfig/deliveryquestionnaireconfig/edit',
+      name: 'deliveryQuestionnaireConfigEdit',
+      component: () => import('@/views/vehretail/basicConfig/deliveryQuestionnaireConfig/edit.vue'),
+
+      meta: {
+        name: '交付满意度问卷配置管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];

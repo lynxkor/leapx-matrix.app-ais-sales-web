@@ -31,17 +31,17 @@
         />
       </el-form-item>
       <el-form-item label="购车人姓名">
-        <tag-input v-model="form.buyerName" placeholder="请输入" />
+        <el-input v-model="form.buyerName" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="购车人手机号">
-        <tag-input v-model="form.buyerPhone" placeholder="请输入" />
+        <el-input v-model="form.buyerPhone" placeholder="请输入" />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="销售门店">
-          <tag-input v-model="form.saleDealerName" placeholder="请输入" />
+          <el-input v-model="form.saleDealerName" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="基础车型">
-          <tag-input v-model="form.modelName" placeholder="请输入" />
+          <el-input v-model="form.modelName" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="商城订单编号">
           <tag-input v-model="form.mallOrderCodeList" placeholder="请输入" />
@@ -85,6 +85,7 @@
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <el-button v-if="canImport" size="small" @click="handleDepositRefundTypeImport">导入定金退回方式</el-button>
       <el-button v-if="canImport" size="small" @click="handleFundResultImport">导入退订退款结果</el-button>
+      <el-button v-if="refundStatusTab !== '0'" size="small" @click="openBatchAuditShow">批量审核</el-button>
 <!--      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>-->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
 <!--      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>-->
@@ -120,11 +121,16 @@
       @getData="getData"
     />
     <Upload
-    :visible="uploadDialogVisible1"
-    :id="'orderPayRefundRecordResultImport'"
-    @close="handleUploadDialogClose1"
-    @getData="getData"
-  />
+      :visible="uploadDialogVisible1"
+      :id="'orderPayRefundRecordResultImport'"
+      @close="handleUploadDialogClose1"
+      @getData="getData"
+    />
+    <!--  批量审核  -->
+    <audit-dialog
+      ref="auditRef"
+      @audit="handleBatchAudit"
+    />
   </div>
 </template>
 
@@ -132,18 +138,19 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehretail/orderRefund/refundApply/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { batchAudit, deleteItem, enableItem, getList } from '@/api/vehretail/orderRefund/refundApply/index';
+import { exportTable, getEnum, getTableConfig, tableAddOrUpdate } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
+import { downloadExcel, handleBatchStatusChange } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import { fetchCategoryList } from '@/api/vehretail/orderRefund/category';
 import TagInput from '@/libs/components/TagInput';
+import auditDialog from '@/libs/components/auditDialog/index.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -168,7 +175,8 @@ export default {
     FetchSelect,
     EditPage,
     Upload,
-    TagInput
+    TagInput,
+    auditDialog
   },
   data () {
     return {
@@ -183,7 +191,7 @@ export default {
         remote: true,
         reserveKeyword: true
       },
-      pageTitle: '订单退订申请',
+      pageTitle: '用户退订申请',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVRRO-retailOrderRefund',
@@ -346,6 +354,33 @@ export default {
     handleUploadDialogClose1 () {
       this.uploadDialogVisible1 = false;
     },
+    openBatchAuditShow () {
+      if (this.selectionList.length === 0) {
+        this.$message.error('请选择要批量审核的退订申请！');
+        return;
+      }
+      this.$refs.auditRef.show();
+    },
+    // 提交审批结果
+    handleBatchAudit (auditForm) {
+      if (this.selectionList.length === 0) {
+        this.$message.error('请选择要批量审核的退订申请！');
+        return;
+      }
+      // 申请单号列表
+      const refundCodeList = this.selectionList.map(item => item.refundCode) || [];
+      const idList = this.selectionList.map(item => item.id) || [];
+      auditForm.refundCodeList = refundCodeList;
+      auditForm.idList = idList;
+      auditForm.auditResult = auditForm.result;
+      auditForm.auditContent = auditForm.remark;
+      auditForm.refundStatus = this.refundStatusTab;
+      // this.$message.info(JSON.stringify(auditForm));
+      batchAudit(auditForm).then(res => {
+        this.$message.success('批量审核成功');
+        this.getData();
+      });
+    },
     handleAdd () {
       this.$router.push({
         path: '/vehretail/orderRefund/refundApply/edit'
@@ -364,20 +399,16 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       const reqParams = this.getFormData() || {};
-      if (this.selectionList.length > 0) {
-        const ids = this.selectionList.map(item => item.id) || [];
-        reqParams.ids = ids;
-      }
       exportTable({
-        businessType: '订单退订申请',
-        dataFetchPath: '/vr/web/refund/retailOrderPayRefundRecord//page',
+        businessType: '用户退订申请',
+        dataFetchPath: '/vr/web/refund/retailOrderRefund/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '订单退订申请.xlsx');
+            await downloadExcel(res.excelUrl, '用户退订申请.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -457,6 +488,9 @@ export default {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
+      }
+      if (this.selectionList.length > 0) {
+        data.ids = this.selectionList.map(item => item.id);
       }
       // 排序字段
       data.sortColumns = this.sortColumns;

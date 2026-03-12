@@ -82,3 +82,11 @@ export function approve (data) {
 export function finalApprove (data) {
   return api.jsonPost(prefix + 'finalApprove', data);
 }
+
+/**
+ * 批量审核
+ * @param {Object} data
+ */
+export function batchAudit (data) {
+  return api.jsonPost(prefix + 'batchAudit', data);
+}

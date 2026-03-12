@@ -122,7 +122,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '订单变更原因',
+      pageTitle: '订单信息变更原因',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVRROCA-retailOrderChangeReason',
@@ -251,7 +251,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '订单变更原因',
+        businessType: '订单信息变更原因',
         dataFetchPath: '/vr/web/order/retailOrderChangeReason/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -259,7 +259,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '订单变更原因.xlsx');
+            await downloadExcel(res.excelUrl, '订单信息变更原因.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -339,6 +339,9 @@ export default {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
+      }
+      if (this.selectionList.length > 0) {
+        data.ids = this.selectionList.map(item => item.id);
       }
       // 排序字段
       data.sortColumns = this.sortColumns;

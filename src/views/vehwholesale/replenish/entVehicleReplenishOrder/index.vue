@@ -10,24 +10,36 @@
       class="ais-search-form"
     >
       <el-form-item label="企业客户名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.entCustomerName"
-          clearable
+        <fetch-select
+              :remote-method="listNetworkParentCompany"
+              remote
+              v-model="form.entCustomerCodes"
+              placeholder="请选择"
+              labelKey="companyName"
+              valueKey="companyCode"
+              clearable
+              collapseTags
+              filterable
         />
       </el-form-item>
       <el-form-item label="销售公司">
-          <el-input
-            placeholder="请输入"
-            v-model="form.saleCompanyId"
+        <fetch-select
+            filterable
             clearable
+            remote
+            multiple
+            v-model="form.saleCompanyIds"
+            :params="form.saleCompanyName"
+            :remote-method="getCompanyList"
+            value-key="id"
+            label-key="companyName"
           />
         </el-form-item>
            <el-form-item label="审核状态">
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_ent_vehicle_replenish_order_audit_status"
-            v-model="form.auditStatus"
+            v-model="form.auditStatuses"
             placeholder="请选择"
             clearable
             multiple
@@ -49,7 +61,7 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_fundtype"
-            v-model="form.settleFundType"
+            v-model="form.settleFundTypes"
             placeholder="请选择"
             clearable
             multiple
@@ -58,17 +70,17 @@
         </el-form-item>
          <el-form-item label="金融机构">
            <fetch-select
-          :remote-method="repairItemSearch"
-          remote
-          multiple
-          reserve-keyword
-          labelKey="organizationName"
-          valueKey="organizationCode"
-          v-model="form.fundFinancialOrganizationIds"
-          placeholder="请选择"
-          clearable
-          filterable
-        />
+            :remote-method="repairItemSearch"
+            remote
+            multiple
+            reserve-keyword
+            labelKey="organizationName"
+            valueKey="organizationCode"
+            v-model="form.fundFinancialOrganizationIds"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
         </el-form-item>
         <el-form-item label="订单时间">
           <el-date-picker
@@ -105,7 +117,22 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
+        <el-dropdown trigger="click" style="margin: 0 10px;" @command="handleAdd">
+        <el-button size="small" type="primary" @click="showDropdown">
+          {{ dropdownLoading ? '加载中...' : '企业客户补货订单' }}
+          <i class="iconfont icon-lxppc-down" />
+        </el-button>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item
+            v-for="(item, index) in validatedOrderategoryList"
+            :key="index"
+            :command="item.code">
+            {{ item.message }}
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+
+      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
@@ -143,7 +170,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
+import { getList, deleteItem, enableItem, networkParentCompanyItem, listDealersForParentCompany } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -154,13 +181,13 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
-
+import { getList as companyList } from '@/api/vehwholesale/fund/fundSaleCompany/index';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   entCustomerName: '',
   orderCategory: '',
   acceptanceMethod: '',
-  settleFundType: 1010,
+  settleFundTypes: ['1010'],
   financialOrganizationId: '',
   orderTime: '',
   auditStatus: '',
@@ -192,11 +219,15 @@ export default {
       },
       selectionList: [],
       orderCategoryOptions: [],
+      orderategoryList: [],
+      validatedOrderategoryList: [],
+      saleCompanyOptions: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      dropdownLoading: false,
       clickItemId: '',
       optionObj: {
         id: 'entVehicleReplenishOrderTable',
@@ -298,9 +329,28 @@ export default {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.fetchOrderCategoryOptions();
     this.getData();
+    this.listNetworkParentCompany();
+    this.getCompanyList();
   },
   methods: {
-
+    getCompanyList (query) {
+      return companyList({ companyNameLike: query, status: 1 });
+    },
+    async showDropdown () {
+      this.dropdownLoading = true;
+      try {
+        // 又不要校验了
+        // await createRequestValid();
+        this.dropdownLoading = false;
+        this.validatedOrderategoryList = [...this.orderCategoryOptions];
+      } catch (error) {
+        this.dropdownLoading = false;
+        this.validatedOrderategoryList = [];
+      }
+    },
+    async listNetworkParentCompany (query) {
+      return networkParentCompanyItem({ parentCompanyName: query, pageNum: 1, pageSize: 20 });
+    },
     async fetchOrderCategoryOptions () {
       const response = await getEnum('vw_eordertype');
       this.orderCategoryOptions = response.filter(item => {
@@ -335,9 +385,12 @@ export default {
     handleUploadDialogClose () {
       this.uploadDialogVisible = false;
     },
-    handleAdd () {
+    handleAdd (code) {
       this.$router.push({
-        path: '/vehwholesale/replenish/entVehicleReplenishOrder/edit'
+        path: '/vehwholesale/replenish/entVehicleReplenishOrder/edit',
+        query: {
+          orderCategory: code
+        }
       });
     },
     onSubmit () {

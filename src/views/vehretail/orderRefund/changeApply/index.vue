@@ -86,6 +86,9 @@
             filterable
           />
         </el-form-item>
+        <el-form-item label="变更说明">
+          <el-input v-model="form.changeExplain" placeholder="请输入" />
+        </el-form-item>
         <el-form-item label="门店整车订单">
           <tag-input v-model="form.retailOrderCodeList" placeholder="请输入" />
         </el-form-item>
@@ -200,7 +203,7 @@ export default {
         remote: true,
         reserveKeyword: true,
       },
-      pageTitle: '订单变更申请',
+      pageTitle: '订单信息变更申请',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVRROCA-retailOrderChangeApply',
@@ -327,7 +330,7 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       exportTable({
-        businessType: '订单变更申请',
+        businessType: '订单信息变更申请',
         dataFetchPath: '/vr/web/order/retailOrderChangeApply/page',
         reqParams: this.getFormData(),
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -335,7 +338,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '订单变更申请.xlsx');
+            await downloadExcel(res.excelUrl, '订单信息变更申请.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -415,6 +418,9 @@ export default {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
+      }
+      if (this.selectionList.length > 0) {
+        data.ids = this.selectionList.map(item => item.id);
       }
 
       return data;

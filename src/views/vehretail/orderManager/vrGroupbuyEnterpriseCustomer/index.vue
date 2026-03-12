@@ -285,10 +285,6 @@ export default {
   }
 };
 </script>
-  }
-};
-</script>
-
 <style lang="scss" scoped>
 .m-vr-groupbuy-enterprise-customer-list {
 }

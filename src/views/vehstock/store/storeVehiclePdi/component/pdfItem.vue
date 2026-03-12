@@ -20,7 +20,7 @@
             <div class="pdi_result">
                 <div class="pdi_result_item" style="height: 661px;">
                     <div class="marginB20">
-                        <span class="marginR30">外观检查是否正常</span>
+                        <span class="marginR30">外观检查是否异常</span>
                         <span v-if="visualInspectionCheck">√</span><span class="marginR30"> 是</span>
                         <span v-if="!visualInspectionCheck">√</span><span class="marginR30"> 否</span>
                     </div>
@@ -36,7 +36,7 @@
                 </div>
                 <div class="pdi_result_item" style="height: 661px;">
                     <div class="marginB20">
-                        <span class="marginR30">玻璃检查是否正常</span>
+                        <span class="marginR30">玻璃检查是否异常</span>
                         <span v-if="glassInspectionCheck">√</span><span class="marginR30"> 是</span>
                         <span v-if="!glassInspectionCheck">√</span><span class="marginR30"> 否</span>
                     </div>
@@ -58,7 +58,7 @@
                         :data="vehicleInspectionCheckList"
                         style="width: 100%"
                     >
-                        <el-table-column label="是否正常" width="210">
+                        <el-table-column label="是否异常" width="210">
                             <template slot-scope="scope">
                                 <span style="color: #002226;">{{ scope.$index + 1 }}、{{ scope.row.name }}</span>
                             </template>
@@ -83,7 +83,7 @@
                         :data="functionalInspectionCheckList"
                         style="width: 100%"
                     >
-                        <el-table-column label="是否正常" width="210">
+                        <el-table-column label="是否异常" width="210">
                             <template slot-scope="scope">
                                 <span style="color: #002226;">{{ scope.$index + 1 }}、{{ scope.row.name }}</span>
                             </template>

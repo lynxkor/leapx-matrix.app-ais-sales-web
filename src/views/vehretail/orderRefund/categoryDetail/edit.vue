@@ -26,7 +26,7 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="原因分类：" prop="cateCode">
+                <el-form-item label="所属退订原因分类：" prop="cateCode">
                   <fetch-select
                     v-bind="selectOptions"
                     :remote-method="fetchCategorySelectorList"
@@ -40,6 +40,9 @@
                 </el-form-item>
                 <el-form-item label="原因二级分类：" prop="subCateName">
                   {{ form.subCateName }}
+                </el-form-item>
+                <el-form-item label="所属退订原因分类：" prop="cateName">
+                  {{ form.cateName }}
                 </el-form-item>
               </el-form>
             </div>
@@ -103,6 +106,9 @@ export default {
   computed: {
     _id () {
       return this.id || this.$route.query.id || this.form.id;
+    },
+    title () {
+      return '主键：' + this.form.id;
     }
   },
   watch: {
@@ -130,9 +136,8 @@ export default {
         remote: true,
         reserveKeyword: true
       },
-      pageTitle: '退订原因二级分类管理',
+      pageTitle: '原因二级分类',
       pageType: 'edit',
-      title: '退订原因二级分类管理',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-orderRefundCategoryDetail',
       loading: false,

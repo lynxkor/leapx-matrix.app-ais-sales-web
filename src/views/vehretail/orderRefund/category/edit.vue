@@ -328,6 +328,9 @@ export default {
     _id () {
       return this.id || this.$route.query.id || this.form.id;
     },
+    title () {
+      return '主键：' + this.form.id;
+    }
   },
   watch: {
     id: {
@@ -342,9 +345,8 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '退订原因分类管理',
+      pageTitle: '退订原因分类',
       pageType: 'edit',
-      title: '退订原因分类管理',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-orderRefundCategory',
       loading: false,

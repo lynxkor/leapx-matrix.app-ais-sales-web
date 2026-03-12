@@ -369,7 +369,7 @@
                     maxlength="20"
                     show-word-limit
                     clearable
-                    :disabled="form.originalOrderStatus === 9"
+                    :disabled="form.originalOrderStatus >= 9"
                   />
                 </el-form-item>
                 <el-form-item label="变更后购车人手机号码：" prop="newBuyerPhone">
@@ -377,7 +377,6 @@
                     type="pho"
                     placeholder="请输入"
                     v-model="form.newBuyerPhone"
-                    :disabled="form.originalOrderStatus === 9"
                     clearable
                   />
                 </el-form-item>
@@ -396,7 +395,7 @@
                   <el-input
                     placeholder="请输入"
                     v-model="form.newIdCardNo"
-                    type="textarea"
+                    type="text"
                     maxlength="100"
                     show-word-limit
                     :disabled="form.originalOrderStatus === 9"
@@ -407,6 +406,7 @@
                   <el-input
                     placeholder="请输入"
                     v-model="form.newAgentName"
+                    :disabled="form.originalOrderStatus === 9"
                     type="text"
                     maxlength="20"
                     show-word-limit
@@ -460,7 +460,7 @@
               <!--附件上传组件 -->
               <AisAttachment
                 :businessId="_id"
-                :readonly="!(isEditing || !_id)"
+                :readonly="!isEditing"
                 configCode="mcs_vehorderapplylog"
                 attachType="订单信息变更申请附件"
               />
@@ -643,6 +643,9 @@ export default {
     _id () {
       return this.id || this.$route.query.id || this.form.id;
     },
+    title () {
+      return '主键：' + this.form.id;
+    }
   },
   watch: {
     id: {
@@ -680,9 +683,8 @@ export default {
         remote: true,
         reserveKeyword: true,
       },
-      pageTitle: '订单变更申请',
+      pageTitle: '订单信息变更申请',
       pageType: 'edit',
-      title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVRROCA-retailOrderChangeApply',
       loading: false,
@@ -1049,6 +1051,22 @@ export default {
       },
     };
   },
+  created () {
+    const mallOrderCode = this.$route.query.mallOrderCode;
+    if (mallOrderCode) {
+      this.form.mallOrderCode = mallOrderCode;
+      const params = {
+        pageSize: 1,
+        orderStatusExcludeList: [0, 99],
+        mallOrderCodeLike: mallOrderCode
+      };
+      retailOrderPage(params).then(res => {
+        if (res.total > 0) {
+          this.retailOrderChange(mallOrderCode, res.records[0]);
+        }
+      });
+    }
+  },
   mounted () {
   },
   methods: {
@@ -1159,7 +1177,9 @@ export default {
         type: 'warning'
       }).then(() => {
         // 作废接口
-        cancel(this.form);
+        cancel(this.form).then(() => {
+          this.reloadDetail();
+        });
       }).catch(() => {});
     },
     openCommitShow () {
@@ -1169,7 +1189,9 @@ export default {
         type: 'warning'
       }).then(() => {
         // 提交审批接口
-        submit(this.form);
+        submit(this.form).then(() => {
+          this.reloadDetail();
+        });
       }).catch(() => {});
     },
     openAuditShow () {
@@ -1182,7 +1204,17 @@ export default {
       auditForm.changeApplyCode = this.form.changeApplyCode;
       auditForm.auditResult = auditForm.result;
       auditForm.auditRemark = auditForm.remark;
-      audit(auditForm);
+      audit(auditForm).then(() => {
+        this.reloadDetail();
+      });
+    },
+    reloadDetail () {
+      this.$message.success('操作成功');
+      if (this.$refs.containerRef) {
+        this.$refs.containerRef.loadDetail();
+      }
+      // 或者关闭编辑状态
+      this.isEditing = false;
     }
   },
 };
