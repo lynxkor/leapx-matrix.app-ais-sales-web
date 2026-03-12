@@ -20,6 +20,7 @@
               clearable
               collapseTags
               filterable
+              multiple
         />
       </el-form-item>
       <el-form-item label="销售公司">
@@ -394,6 +395,13 @@ export default {
       });
     },
     onSubmit () {
+      console.log('onSubmit', this.form);
+      if (this.form.settleFundTypes.length > 0 && this.form.settleFundTypes.includes('2010') && this.form.fundFinancialOrganizationIds.length === 0) {
+        return this.$message({
+          type: 'error',
+          message: '结算资金类型选择【融资】，金融机构必填!'
+        });
+      }
       this.optionObj.form.page = 1;
       this.getData();
     },
