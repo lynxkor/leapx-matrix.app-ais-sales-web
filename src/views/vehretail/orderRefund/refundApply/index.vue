@@ -375,8 +375,9 @@ export default {
       auditForm.auditResult = auditForm.result;
       auditForm.auditContent = auditForm.remark;
       auditForm.refundStatus = this.refundStatusTab;
-      this.$message.info(JSON.stringify(auditForm));
+      // this.$message.info(JSON.stringify(auditForm));
       batchAudit(auditForm).then(res => {
+        this.$message.success('批量审核成功');
         this.getData();
       });
     },
