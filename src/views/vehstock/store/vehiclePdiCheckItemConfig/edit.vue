@@ -11,9 +11,9 @@
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
       >
-        <template #status>
+        <!-- <template #status>
           <span class="status primary">状态</span>
-        </template>
+        </template> -->
         <template #extraButtons>
         </template>
         <el-main>
