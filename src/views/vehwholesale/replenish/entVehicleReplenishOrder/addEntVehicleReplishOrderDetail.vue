@@ -92,7 +92,6 @@
 
 <script>
 import { getEnum, vehicleMaterials } from '@/api/common';
-import permissions from '@/libs/mixins/permissions';
 import FetchSelect from '@/libs/components/FetchSelect';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -114,7 +113,7 @@ export default {
   },
   data () {
     return {
-      title: '企业客户补货订单明细',
+      title: '企业客户补货订单',
       moduleKey: 'AISVW-entVehicleReplenishOrder',
       loading: false,
       submitLoading: false,

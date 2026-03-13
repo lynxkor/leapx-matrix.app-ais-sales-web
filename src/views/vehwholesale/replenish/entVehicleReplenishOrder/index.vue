@@ -211,7 +211,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车销售-企业客户订单-企业客户补货订单管理',
+      pageTitle: '企业客户补货订单',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-entVehicleReplenishOrder',

@@ -197,7 +197,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '整车批售-企业订单管理-关联交易计算比例管理',
+      pageTitle: '关联交易计算比例',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
       moduleKey: 'AISVW-entTransactionTaxPriceConfig',

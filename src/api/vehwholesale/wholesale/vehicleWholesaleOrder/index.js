@@ -137,3 +137,11 @@ export function batchCancleAllocateVehicleItem (data) {
 export function refreshPriceItem (data) {
   return api.jsonPost(prefix + 'refreshPrice', data);
 }
+
+/**
+ * 查询SAP账户余额
+ * @param {Object} data
+ */
+export function querySAPAccountBalance (data) {
+  return api.jsonPost(prefix + 'querySAPAccountBalance', data);
+}

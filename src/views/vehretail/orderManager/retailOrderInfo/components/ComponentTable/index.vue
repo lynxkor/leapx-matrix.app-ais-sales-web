@@ -51,7 +51,6 @@
 </template>
 
 <script>
-import { log } from 'vxe-pc-ui';
 
 export default {
   name: 'ComponentTable',
