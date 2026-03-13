@@ -77,7 +77,7 @@
             reserve-keyword
             labelKey="organizationName"
             valueKey="organizationCode"
-            v-model="form.fundFinancialOrganizationIds"
+            v-model="form.fundFinancialOrganizationCodes"
             placeholder="请选择"
             clearable
             filterable
@@ -396,7 +396,7 @@ export default {
     },
     onSubmit () {
       console.log('onSubmit', this.form);
-      if (this.form.settleFundTypes.length > 0 && this.form.settleFundTypes.includes('2010') && this.form.fundFinancialOrganizationIds.length === 0) {
+      if (this.form.settleFundTypes.length > 0 && this.form.settleFundTypes.includes('2010') && this.form.fundFinancialOrganizationCodes.length === 0) {
         return this.$message({
           type: 'error',
           message: '结算资金类型选择【融资】，金融机构必填!'

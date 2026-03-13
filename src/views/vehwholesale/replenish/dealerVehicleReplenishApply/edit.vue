@@ -288,7 +288,7 @@
               <h2>整车门店补货明细</h2>
             </div>
             <div class="common-section-body">
-              <el-button size="small" @click="handleAddRow" style="margin-bottom: 10px;">添加补货明细</el-button>
+              <el-button size="small" @click="handleAddRow" style="margin-bottom: 10px;" v-show = "form.permission.edit">添加补货明细</el-button>
               <div class="common-section-table">
                 <component-table
                   :tableData="form.details"

@@ -219,11 +219,16 @@ export default {
           { props: 'financeProductStatusLabel', label: '金融产品状态', visible: true, width: 150 },
           { props: 'financeProductTypeLabel', label: '金融产品类型', visible: true, width: 150 },
           { props: 'updateTime', label: '最近更新时间', visible: true, width: 180 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 180 }
+          { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true }
         ],
         total: 0
       },
-      sortColumns: []
+      sortColumns: [
+        {
+          column: 'create_time',
+          sort: 'DESC'
+        }
+      ]
     };
   },
   created () {

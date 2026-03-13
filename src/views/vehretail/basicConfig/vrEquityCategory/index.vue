@@ -125,7 +125,7 @@ export default {
           { props: 'applicationConditions', label: '申请条件', visible: true, width: 180 },
           { props: 'statusLabel', label: '状态', visible: true, width: 120 },
           { props: 'creatorName', label: '创建人', visible: true, width: 120 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 180 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true },
           {
             props: 'operate',
             label: '操作',
@@ -169,7 +169,12 @@ export default {
         ],
         total: 0
       },
-      sortColumns: []
+      sortColumns: [
+        {
+          column: 'create_time',
+          sort: 'DESC'
+        }
+      ]
     };
   },
   created () {

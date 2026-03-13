@@ -89,22 +89,19 @@
                   {{ form.code }}
                 </el-form-item>
                 <el-form-item label="数据来源：">
-                  {{ form.dataSource }}
+                  {{ form.dataSourceLabel }}
                 </el-form-item>
                 <el-form-item label="金融方案类型：">
-                  {{ form.financePlanType }}
+                  {{ form.financePlanTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融产品状态：">
-                  {{ form.status }}
+                  {{ form.statusLabel }}
                 </el-form-item>
                 <el-form-item label="优先级：">
                   {{ form.priority }}
                 </el-form-item>
                 <el-form-item label="最近更新时间：">
                   {{ form.updateTime }}
-                </el-form-item>
-                <el-form-item label="创建时间：">
-                  {{ form.createTime }}
                 </el-form-item>
               </el-form>
             </div>
@@ -114,21 +111,6 @@
               <h2>金融方案-适用车型</h2>
             </div>
             <div class="common-section-body">
-              <div class="common-section-header">
-                <div class="ais-select-group">
-                  <fetch-select
-                    style="width: 300px;"
-                    :remote-method="queryVehicleList"
-                    remote
-                    placeholder="请选择适用车型"
-                    clearable
-                    value-key="id"
-                    label-key="modelName"
-                    @change="handleAddVehicleData"
-                  />
-                  <el-button type="primary" size="small" @click="handleAddVehicle">添加</el-button>
-                </div>
-              </div>
               <div class="common-section-table">
                 <vxe-table
                   ref="vehicleTableRef"
@@ -168,21 +150,6 @@
               <h2>金融方案-适用金融产品</h2>
             </div>
             <div class="common-section-body">
-              <div class="common-section-header">
-                <div class="ais-select-group">
-                  <fetch-select
-                    style="width: 300px;"
-                    :remote-method="queryProductList"
-                    remote
-                    placeholder="请选择金融产品"
-                    clearable
-                    value-key="id"
-                    label-key="productName"
-                    @change="handleAddProductData"
-                  />
-                  <el-button type="primary" size="small" @click="handleAddProduct">添加</el-button>
-                </div>
-              </div>
               <div class="common-section-table">
                 <vxe-table
                   ref="productTableRef"
@@ -249,7 +216,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehretail/financeSubsidy/vrFinancePlan/index';
+import { getDetail } from '@/api/vehretail/financeSubsidy/vrFinancePlan/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -326,23 +293,7 @@ export default {
       originalForm: { ...form },
       emptyText: '若要启用此内容，请创建记录',
       vehicleTableData: [],
-      productTableData: [],
-      rules: {
-        financePlanName: [
-          { required: true, message: '请输入金融方案名称', trigger: 'blur' },
-          { max: 50, message: '长度不能超过50个字符', trigger: 'blur' }
-        ],
-        code: [
-          { required: true, message: '请输入金融方案编码', trigger: 'blur' },
-          { max: 50, message: '长度不能超过50个字符', trigger: 'blur' }
-        ],
-        financePlanType: [
-          { required: true, message: '请选择金融方案类型', trigger: 'change' }
-        ],
-        status: [
-          { required: true, message: '请选择状态', trigger: 'change' }
-        ]
-      }
+      productTableData: []
     };
   },
   methods: {
@@ -367,79 +318,12 @@ export default {
         });
       }
     },
-    submitRequest () {
-      // 合并表单数据和子表数据
-      const formData = {
-        ...this.form,
-        vehicleList: this.vehicleTableData,
-        productList: this.productTableData
-      };
-      return addOrUpdate(formData);
-    },
     // 打开侧边栏
     openPane () {
       this.$refs.editLayout.openPane();
     },
-    // 删除适用车型数据
-    handleDeleteVehicleRow (index) {
-      this.vehicleTableData.splice(index, 1);
-    },
-    // 删除适用金融产品数据
-    handleDeleteProductRow (index) {
-      this.productTableData.splice(index, 1);
-    },
-    // 查询适用车型列表
-    queryVehicleList (queryString) {
-      return new Promise(resolve => {
-        // 根据需求调用接口获取车型列表
-        resolve([]);
-      });
-    },
-    // 查询金融产品列表
-    queryProductList (queryString) {
-      return new Promise(resolve => {
-        // 根据需求调用接口获取金融产品列表
-        resolve([]);
-      });
-    },
-    // 新增适用车型数据
-    handleAddVehicleData (val, record) {
-      if (!record) {
-        this.$message.warning('请先选择数据');
-        return;
-      }
-      // 检查是否已存在
-      const exists = this.vehicleTableData.some(item => item.id === record.id);
-      if (exists) {
-        this.$message.warning('请勿重复添加');
-        return;
-      }
-      this.vehicleTableData.push(record);
-    },
-    // 新增适用金融产品数据
-    handleAddProductData (val, record) {
-      if (!record) {
-        this.$message.warning('请先选择数据');
-        return;
-      }
-      // 检查是否已存在
-      const exists = this.productTableData.some(item => item.id === record.id);
-      if (exists) {
-        this.$message.warning('请勿重复添加');
-        return;
-      }
-      this.productTableData.push(record);
-    },
-    // 添加适用车型
-    handleAddVehicle() {
-      // 实现添加适用车型的逻辑
-    },
-    // 添加适用金融产品
-    handleAddProduct() {
-      // 实现添加适用金融产品的逻辑
-    },
     // 跳转到车型详情
-    goToVehicleDetail(vehicleId) {
+    goToVehicleDetail (vehicleId) {
       // 实现跳转到车型详情页面的逻辑
       this.$router.push({
         path: '/vehretail/basicConfig/partVehModel/detail',
@@ -447,7 +331,7 @@ export default {
       });
     },
     // 跳转到金融产品详情
-    goToProductDetail(productId) {
+    goToProductDetail (productId) {
       // 实现跳转到金融产品详情页面的逻辑
       this.$router.push({
         path: '/vehretail/financeSubsidy/vrFinanceProduct/detail',

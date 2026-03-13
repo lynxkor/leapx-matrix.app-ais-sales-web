@@ -187,7 +187,7 @@ export default {
           },
           { props: 'mallOrderCode', label: '商城订单号', visible: true, width: 180 },
           { props: 'installmentOrderCode', label: '分期订单号', visible: true, width: 180 },
-          { props: 'dataSource', label: '数据来源', visible: true, width: 120 },
+          { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 120 },
           { props: 'dealerHasCommissionLabel', label: '门店有无金融返佣', visible: true, width: 150 },
           { props: 'discountLabel', label: '是否贴息', visible: true, width: 120 },
           { props: 'financeOrderStatusLabel', label: '金融订单状态', visible: true, width: 150 },
@@ -227,11 +227,16 @@ export default {
           { props: 'auditTime', label: '审核时间', visible: true, width: 180 },
           { props: 'auditOpinion', label: '审核意见', visible: true, width: 150 },
           { props: 'cancelReason', label: '取消原因', visible: true, width: 150 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 180 }
+          { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true }
         ],
         total: 0
       },
-      sortColumns: []
+      sortColumns: [
+        {
+          column: 'create_time',
+          sort: 'DESC'
+        }
+      ]
     };
   },
   created () {

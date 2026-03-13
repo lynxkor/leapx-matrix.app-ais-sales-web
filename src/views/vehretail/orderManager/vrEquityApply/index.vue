@@ -339,11 +339,16 @@ export default {
           { props: 'originalOwnerPhone', label: '原车主手机号', visible: true, width: 150 },
           { props: 'firstAuditTime', label: '初审时间', visible: true, width: 180 },
           { props: 'auditTime', label: '审核时间', visible: true, width: 180 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 180 }
+          { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true }
         ],
         total: 0
       },
-      sortColumns: []
+      sortColumns: [
+        {
+          column: 'create_time',
+          sort: 'DESC'
+        }
+      ]
     };
   },
   created () {

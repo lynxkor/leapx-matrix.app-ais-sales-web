@@ -799,7 +799,7 @@ export default {
     },
     iscreditSaleFlag (val) {
       if (val === '2010') {
-        this.rules.fundFinancialOrganizationId = [
+        this.rules.fundFinancialOrganizationCode = [
           { required: true, message: '请输入金融机构', trigger: 'change' }
         ];
         this.form.creditSaleFlag = 0;

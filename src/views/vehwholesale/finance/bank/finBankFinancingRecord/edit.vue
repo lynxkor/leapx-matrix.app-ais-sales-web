@@ -116,7 +116,7 @@ const defaultForm = {
   code: '',
   dealerCompanyCode: '',
   dealerCompanyName: '',
-  fundFinancialOrganizationIds: [],
+  fundFinancialOrganizationCodes: [],
   financingAmount: '',
   financingType: '',
   iouNumber: '',
@@ -143,7 +143,7 @@ const defaultForm = {
   updateTime: '',
   dataSource: '',
   ownerOrgId: '',
-  fundFinancialOrganizationId: '',
+  fundFinancialOrganizationCode: '',
   dealerName: '',
 };
 

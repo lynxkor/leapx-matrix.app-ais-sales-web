@@ -132,7 +132,7 @@ const defaultForm = {
   vehicleNetworkMileage: '',
   isVehicleBound: '',
   bindingDate: '',
-  fundFinancialOrganizationIds: [],
+  fundFinancialOrganizationCodes: [],
   syncStatus: '',
   syncResult: '',
   syncCount: '',
@@ -151,7 +151,7 @@ const defaultForm = {
   remark: '',
   dataSource: '',
   ownerOrgId: '',
-  fundFinancialOrganizationId: '',
+  fundFinancialOrganizationCode: '',
   syncTime: '',
 };
 

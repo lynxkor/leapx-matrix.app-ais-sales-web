@@ -48,14 +48,14 @@
                     disabled
                   />
                 </el-form-item>
-                 <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationId">
+                 <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationCode">
                   <fetch-select
                       :remote-method="repairItemSearch"
                       remote
                       reserve-keyword
                       labelKey="organizationName"
                       valueKey="organizationCode"
-                      v-model="form.fundFinancialOrganizationId"
+                      v-model="form.fundFinancialOrganizationCode"
                       placeholder="请选择"
                       clearable
                       filterable
@@ -205,7 +205,7 @@ const defaultForm = {
   dealerCompanyCode: '',
   isCooperation: 1,
   fundFinancialOrganizationName: '',
-  fundFinancialOrganizationId: '',
+  fundFinancialOrganizationCode: '',
   mainDealerCompanyName: '',
   mainDealerCompanyCode: '',
 };
@@ -315,7 +315,7 @@ export default {
         // fundFinancialOrganizationName: [
         //   { required: true, message: '请输入融资金融机构', trigger: 'change' }
         // ],
-        fundFinancialOrganizationId: [
+        fundFinancialOrganizationCode: [
           { required: true, message: '请输入融资金融机构ID', trigger: 'change' }
         ],
         mainDealerCompanyName: [

@@ -13,6 +13,7 @@
           <fetch-select
             :remote-method="getDealerParentOrgListByName"
             remote
+            :param="form.dealerCompanyName"
             v-model="form.dealerCompanyNames"
             placeholder="请选择"
             labelKey="companyName"
@@ -42,7 +43,7 @@
             reserve-keyword
             labelKey="organizationName"
             valueKey="organizationCode"
-            v-model="form.fundFinancialOrganizationIds"
+            v-model="form.fundFinancialOrganizationCodes"
             placeholder="请选择"
             clearable
             multiple
@@ -54,6 +55,7 @@
            <fetch-select
             :remote-method="getDealerParentOrgListByName"
             remote
+            :param="form.mainDealerCompanyName"
             v-model="form.mainDealerCompanyNames"
             placeholder="请选择"
             labelKey="companyName"
@@ -173,7 +175,7 @@ const defaultForm = {
   dealerCompanyName: '',
   dealerCompanyCode: '',
   isCooperation: '',
-  fundFinancialOrganizationId: '',
+  fundFinancialOrganizationCode: '',
   mainDealerCompanyName: '',
   mainDealerCompanyCode: '',
 };

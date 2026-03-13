@@ -15,6 +15,7 @@
             remote
             v-model="form.dealerCompanyNames"
             placeholder="请选择"
+            :param="form.dealerCompanyName"
             labelKey="companyName"
             valueKey="companyName"
             clearable
