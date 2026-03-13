@@ -123,21 +123,14 @@
                   min-height="0"
                   max-height="400px"
                 >
-                  <vxe-column field="financeProductName" title="金融产品" min-width="15%" />
-                  <vxe-column field="applicableModels" title="适用车型" min-width="20%">
+                  <vxe-column field="financePlanName" title="金融方案" min-width="15%" />
+                  <vxe-column field="applicableModel" title="适用车型" min-width="20%">
                     <template #default="{ row }">
-                      <span @click="goToVehicleDetail(row.applicableModelId)" style="color: var(--leap-color-primary); cursor: pointer;">{{ row.applicableModels }}</span>
+                      <span @click="goToVehicleDetail(row.modelId)" style="color: var(--leap-color-primary); cursor: pointer;">{{ row.applicableModel }}</span>
                     </template>
                   </vxe-column>
                   <vxe-column field="modelName" title="车型名称" min-width="20%" />
                   <vxe-column field="createTime" title="创建时间" min-width="20%" />
-                  <vxe-column title="操作" width="100" v-if="canDelete">
-                    <template #default="{ rowIndex }">
-                      <el-popconfirm title="确定要删除吗？" @confirm="handleDeleteVehicleRow(rowIndex)">
-                        <span slot="reference" type="text" size="small" class="btn-delete">删除</span>
-                      </el-popconfirm>
-                    </template>
-                  </vxe-column>
                   <template #empty>
                     <div class="m-vxe-table-empty-text">{{emptyText}}</div>
                   </template>
@@ -165,28 +158,17 @@
                   <vxe-column field="financePlanName" title="金融方案" min-width="10%" />
                   <vxe-column field="financeProductName" title="金融产品" min-width="15%">
                     <template #default="{ row }">
-                      <span @click="goToProductDetail(row.productId)" style="color: var(--leap-color-primary); cursor: pointer;">{{ row.financeProductName }}</span>
+                      <span @click="goToProductDetail(row.financeProductId)" style="color: var(--leap-color-primary); cursor: pointer;">{{ row.financeProductName }}</span>
                     </template>
                   </vxe-column>
                   <vxe-column field="financeProductCode" title="金融产品编码" min-width="15%" />
                   <vxe-column field="financeOrganizationName" title="金融机构" min-width="10%" />
                   <vxe-column field="financeOrganizationCode" title="金融机构编码" min-width="10%" />
                   <vxe-column field="installmentPeriods" title="分期期数" min-width="8%" />
-                  <vxe-column field="isDefaultProduct" title="默认金融产品" min-width="8%">
-                    <template #default="{ row }">
-                      {{ yes_no_enum_map[row.isDefaultProduct] }}
-                    </template>
-                  </vxe-column>
+                  <vxe-column field="defaultFinanceProductLabel" title="默认金融产品" min-width="8%" />
                   <vxe-column field="defaultDownPaymentRatio" title="默认首付比例(%)" min-width="10%" />
                   <vxe-column field="defaultFinalPaymentRatio" title="默认尾款比例(%)" min-width="10%" />
                   <vxe-column field="createTime" title="创建时间" min-width="10%" />
-                  <vxe-column title="操作" width="100" v-if="canDelete">
-                    <template #default="{ rowIndex }">
-                      <el-popconfirm title="确定要删除吗？" @confirm="handleDeleteProductRow(rowIndex)">
-                        <span slot="reference" type="text" size="small" class="btn-delete">删除</span>
-                      </el-popconfirm>
-                    </template>
-                  </vxe-column>
                   <template #empty>
                     <div class="m-vxe-table-empty-text">{{emptyText}}</div>
                   </template>
@@ -326,7 +308,7 @@ export default {
     goToVehicleDetail (vehicleId) {
       // 实现跳转到车型详情页面的逻辑
       this.$router.push({
-        path: '/vehretail/basicConfig/partVehModel/detail',
+        path: '/datacenter/materials/vehicleModel/detail',
         query: { id: vehicleId }
       });
     },
@@ -334,7 +316,7 @@ export default {
     goToProductDetail (productId) {
       // 实现跳转到金融产品详情页面的逻辑
       this.$router.push({
-        path: '/vehretail/financeSubsidy/vrFinanceProduct/detail',
+        path: '/vehretail/financeSubsidy/vrFinanceProduct/edit',
         query: { id: productId }
       });
     },
