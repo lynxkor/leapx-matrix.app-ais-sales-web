@@ -298,7 +298,7 @@ export default {
     },
     handleAdd () {
       this.$router.push({
-        path: '/vehwholesale/finance/bank/edit'
+        path: '/vehwholesale/finance/bank/finBankCreditRecord/edit'
       });
     },
     onSubmit () {
@@ -319,7 +319,7 @@ export default {
       }
       exportTable({
         businessType: '银行授信记录',
-        dataFetchPath: 'vw/web/finance/bank/page',
+        dataFetchPath: 'vw/web/finance/bank/finBankCreditRecord/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
