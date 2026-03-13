@@ -32,7 +32,7 @@
               filterable
             />
       </el-form-item>
-      <el-form-item label="创建时间">
+      <el-form-item label="创建时间" v-show="this.visibleCount === 3 || show">
         <el-date-picker
          :default-time="['00:00:00', '23:59:59']"
           v-model="form.createTime"
@@ -139,7 +139,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车批售-企业订单管理-关联交易计算比例管理',
+      pageTitle: '关联交易计算比例',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-entTransactionTaxPriceConfig',

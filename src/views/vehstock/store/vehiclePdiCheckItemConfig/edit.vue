@@ -5,16 +5,15 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
       >
-        <template #status>
+        <!-- <template #status>
           <span class="status primary">状态</span>
-        </template>
+        </template> -->
         <template #extraButtons>
         </template>
         <el-main>

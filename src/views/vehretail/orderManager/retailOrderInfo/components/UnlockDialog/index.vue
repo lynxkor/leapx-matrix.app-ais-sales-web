@@ -35,8 +35,8 @@
       </el-select>
     </el-form-item>
     <el-form-item label="需绑定VIN号：" prop="bindVin" v-if="shouldShowVinField">
-      <el-input v-model="form.bindVin" class="unification-input" readonly />
-      <el-button size="small" type="primary" @click="showVinDialog()">选择车辆</el-button>
+      <el-input v-model="form.bindVin" disabled class="unification-input" readonly />
+      <el-button size="small" type="primary" :disabled="form.orderHandleType !== 20" @click="showVinDialog()">选择车辆</el-button>
     </el-form-item>
     <el-form-item label="备注：" prop="remark">
       <el-input
@@ -67,6 +67,12 @@
       @confirm="onMaterialsSelected"
       :use-external-confirm="true"
     />
+    <!-- VIN 选择对话框 -->
+    <VinDialog
+      ref="vinDialog"
+      @confirm="onVinSelected"
+      :use-external-confirm="true"
+    />
   </el-dialog>
 </template>
 
@@ -75,6 +81,7 @@
 import { unlockReasonList, perUnlock } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import MaterialsDialog from '../MaterialsDialog'; // 引入物料选择对话框
+import VinDialog from '../VinDialog'; // 引入 VIN 选择对话框
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 
 const defaultForm = {
@@ -105,7 +112,8 @@ export default {
   components: {
     AisAttachment,
     FetchSelect,
-    MaterialsDialog
+    MaterialsDialog,
+    VinDialog
   },
   data () {
     return {
@@ -153,6 +161,9 @@ export default {
     }
   },
   methods: {
+    showVinDialog () {
+      this.$refs.vinDialog.show();
+    },
     handleUnlockReasonCodeChange (val, row) {
       this.form.unlockReason = row.unlockReason;
       this.form.reasonExplain = row.reasonExplain;
@@ -171,6 +182,10 @@ export default {
     onMaterialsSelected (material) {
       this.form.materialsCode = material.materialsCode;
       this.form.materialsDesc = material.materialsDesc;
+    },
+    // VIN 选择确认回调
+    onVinSelected (vehicle) {
+      this.form.bindVin = vehicle.vin;
     },
     close () {
       this.dialogVisible = false;

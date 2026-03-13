@@ -341,11 +341,6 @@ export default {
         }
       }
 
-      if (Array.isArray(this.form.batteryCellNameList) && this.form.batteryCellNameList.length <= 1) {
-        delete data.batteryCellNameList;
-        data.batteryCellNameLike = this.form.batteryCellNameList[0] || '';
-      }
-
       return data;
     },
     async fetchOptions (code) {

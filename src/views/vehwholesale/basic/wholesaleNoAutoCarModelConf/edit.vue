@@ -11,12 +11,12 @@
             <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
             <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
-              <el-form-item label="车型" prop="modelId">
+              <el-form-item label="车型" prop="modelName">
                 <fetch-select
                   filterable
                   clearable
                   remote
-                  v-model="form.modelId"
+                  v-model="form.modelName"
                   :remote-method="getModelIdList"
                   value-key="id"
                   label-key="name"

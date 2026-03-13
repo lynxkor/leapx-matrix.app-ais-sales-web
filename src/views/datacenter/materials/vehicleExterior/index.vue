@@ -333,10 +333,6 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
-      if (Array.isArray(this.form.exteriorNameList) && this.form.exteriorNameList.length <= 1) {
-        delete data.exteriorNameList;
-        data.exteriorNameLike = this.form.exteriorNameList[0] || '';
-      }
 
       return data;
     },

@@ -19,11 +19,11 @@
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button size="small" @click="handleCheckConfirm" >查询整车账户余额</el-button>
-          <el-button size="small" @click="handlevinAllocateVehicle" >配车</el-button>
-          <el-button size="small" @click="handlebatchCancelAllocateSubmit" >取消配车</el-button>
-          <el-button size="small" @click="handlebatchSettleSubmit" >提交结算</el-button>
-          <el-button size="small" @click="handlebatchCancelSettleSubmit" >取消结算</el-button>
+          <el-button v-permission="moduleKey+'-querySapAccount'" size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
+          <el-button v-permission="moduleKey+'-vinAllocateVehicle'" size="small" @click="handlevinAllocateVehicle" >配车</el-button>
+          <el-button v-permission="moduleKey+'-batchCancelAllocateSubmit'" size="small" @click="handlebatchCancelAllocateSubmit" >取消配车</el-button>
+          <el-button v-permission="moduleKey+'-batchSettleSubmit'" size="small" @click="handlebatchSettleSubmit" >提交结算</el-button>
+          <el-button v-permission="moduleKey+'-batchCancelSettleSubmit'" size="small" @click="handlebatchCancelSettleSubmit" >取消结算</el-button>
           <!-- <el-button size="small">按钮1</el-button>
           <el-button size="small">按钮2</el-button> -->
         </template>
@@ -51,7 +51,6 @@
                     disabled
                   />
                 </el-form-item>
-
                 <el-form-item label="第七大区CBU订单：" prop="cbuOrderCode">
                   <el-input
                     placeholder="请输入"
@@ -798,11 +797,17 @@
       @confirm="vinConfirm"
       >
     </vinAllocateVehicle>
+
+     <component-table
+        :tableData="accountData"
+        :columns="detailsColumns"
+        :visible.sync="showComponentTabelDialog"
+      />
   </div>
 </template>
 
 <script>
-import { getDetail, addOrUpdate, batchCancelSettleSubmit, batchSettleSubmit, batchCancelAllocateSubmit, vinAllocateVehicleItem } from '@/api/vehwholesale/entorder/entVehicleOrder/index';
+import { getDetail, addOrUpdate, batchCancelSettleSubmit, batchSettleSubmit, batchCancelAllocateSubmit, vinAllocateVehicleItem, querySAPAccountBalance } from '@/api/vehwholesale/entorder/entVehicleOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -812,6 +817,7 @@ import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import vinAllocateVehicle from './vinAllocateVehicle.vue';
+import ComponentTable from './ComponentTable.vue';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -908,7 +914,8 @@ export default {
     EditPageLayout,
     EditBaseContainer,
     FetchSelect,
-    vinAllocateVehicle
+    vinAllocateVehicle,
+    ComponentTable
   },
   computed: {
     _id () {
@@ -931,21 +938,41 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '整车销售-企业客户订单-企业客户整车订单管理',
+      pageTitle: '企业客户整车订单',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
       moduleKey: 'AISVW-entVehicleOrder',
       loading: false,
       submitLoading: false,
       showvinAllocateVehicleDialog: false,
+      showComponentTabelDialog: false,
       yes_no_enum: YES_NO_ENUM,
+      accountData: [],
       form: { ...form },
-      originalForm: { ...form }
+      originalForm: { ...form },
+      detailsColumns: [
+        { field: 'dealerCompanyName', title: '销售公司' },
+        { field: 'gtext', title: '资金类型' },
+        { field: 'availableBalance', title: '可用余额' },
+        { field: 'creditAmount', title: '赊销金额' },
+        { field: 'chargeAmount', title: '充值金额' },
+        { field: 'frozenAmount', title: '占用余额' },
+      ],
     };
   },
   mounted () {
   },
   methods: {
+    handlequerySAPAccountBalance () {
+      const params = {
+        id: this._id,
+      };
+      querySAPAccountBalance(params).then((res) => {
+        console.log(res);
+        this.accountData = res;
+        this.showComponentTabelDialog = true;
+      });
+    },
     vinConfirm (data) {
       const params = {
         entOrderId: this._id,

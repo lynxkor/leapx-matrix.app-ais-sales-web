@@ -2338,21 +2338,21 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehretail/financeSubsidy/financePlan',
+      path: '/vehretail/financeSubsidy/vrFinancePlan',
       name: 'financePlan',
       component: () => import('@/views/vehretail/financeSubsidy/vrFinancePlan/index.vue'),
 
       meta: {
-        name: '整车零售-金融补贴-金融方案-适用金融产品管理',
+        name: '整车零售-金融补贴-金融方案',
         keepAlive: true
       }
     }, {
-      path: '/vehretail/financeSubsidy/financePlan/edit',
+      path: '/vehretail/financeSubsidy/vrFinancePlan/edit',
       name: 'financePlanEdit',
       component: () => import('@/views/vehretail/financeSubsidy/vrFinancePlan/edit.vue'),
 
       meta: {
-        name: '整车零售-金融补贴-金融方案-适用金融产品管理详情',
+        name: '整车零售-金融补贴-金融方案详情',
         noResourceUrl: 'true'
       }
     }, {

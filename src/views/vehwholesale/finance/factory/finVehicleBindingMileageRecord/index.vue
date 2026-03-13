@@ -45,7 +45,7 @@
           multiple
           labelKey="organizationName"
           valueKey="organizationCode"
-          v-model="form.fundFinancialOrganizationIds"
+          v-model="form.fundFinancialOrganizationCodes"
           placeholder="请选择"
           clearable
           filterable
@@ -149,7 +149,7 @@ const defaultForm = {
   financingDataSource: '',
   vins: [],
   isVehicleBound: '',
-  fundFinancialOrganizationIds: [],
+  fundFinancialOrganizationCodes: [],
   syncStatus: '',
   createTime: '',
   status: '1',

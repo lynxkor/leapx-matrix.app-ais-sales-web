@@ -240,6 +240,9 @@ export default {
         modelName: [
           { required: true, message: '请输入车型名称，不可重复', trigger: 'blur' }
         ],
+        seriesId: [
+          { required: true, message: '请输入车系名称', trigger: 'change' }
+        ],
         yearTypeName: [
           { required: true, message: '请选择年型名称', trigger: 'change' }
         ],

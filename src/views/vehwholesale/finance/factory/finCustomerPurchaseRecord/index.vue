@@ -14,6 +14,7 @@
             :remote-method="getDealerParentOrgListByName"
             remote
             v-model="form.dealerCompanyNames"
+            :param="form.dealerCompanyName"
             placeholder="请选择"
             labelKey="companyName"
             valueKey="companyName"
@@ -29,14 +30,14 @@
             reserve-keyword
             labelKey="organizationName"
             valueKey="organizationCode"
-            v-model="form.fundFinancialOrganizationIds"
+            v-model="form.fundFinancialOrganizationCodes"
             placeholder="请选择"
             clearable
             multiple
             filterable
           />
     </el-form-item>
-    <el-form-item label="同步状态">
+    <el-form-item label="同步状态" v-show="this.visibleCount === 3 || show">
       <fetch-select
          :request="fetchOptions"
           enumCode="vw_sync_status"
@@ -159,7 +160,7 @@ const defaultForm = {
   status: '1',
   dataMonth: '',
   dealerCompanyCode: '',
-  fundFinancialOrganizationId: '',
+  fundFinancialOrganizationCode: '',
   dealerCompanyName: '',
   syncStatus: '',
   financingDataSource: '',

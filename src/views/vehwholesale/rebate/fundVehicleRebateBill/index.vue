@@ -27,7 +27,7 @@
             deftTime="本月"
             ref="transactionTime"/>
       </el-form-item>
-      <el-form-item label="母公司名称"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="母公司名称" v-show="this.visibleCount === 3 || show">
         <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
       </el-form-item>
       <template v-if="show">

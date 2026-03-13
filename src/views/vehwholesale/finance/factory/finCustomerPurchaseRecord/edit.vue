@@ -159,10 +159,10 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="融资金融机构ID：" prop="fundFinancialOrganizationId">
+                <el-form-item label="融资金融机构ID：" prop="fundFinancialOrganizationCode">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.fundFinancialOrganizationId"
+                    v-model="form.fundFinancialOrganizationCode"
                     clearable
                   />
                 </el-form-item>
@@ -394,8 +394,8 @@ const defaultForm = {
   dealerCompanyCodes: '',
   dealerCompanyCodeLike: '',
   fundFinancialOrganizationName: '',
-  fundFinancialOrganizationId: '',
-  fundFinancialOrganizationIds: '',
+  fundFinancialOrganizationCode: '',
+  fundFinancialOrganizationCodes: '',
   dealerCompanyName: '',
   dealerCompanyNames: '',
   dealerCompanyNameLike: '',
@@ -536,7 +536,7 @@ export default {
         fundFinancialOrganizationName: [
           { required: true, message: '请输入融资金融机构', trigger: 'change' }
         ],
-        fundFinancialOrganizationId: [
+        fundFinancialOrganizationCode: [
           { required: true, message: '请输入融资金融机构ID', trigger: 'change' }
         ],
         dealerCompanyName: [

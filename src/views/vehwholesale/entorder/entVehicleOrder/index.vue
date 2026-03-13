@@ -36,7 +36,7 @@
             label-key="companyName"
           />
         </el-form-item>
-        <el-form-item label="企业客户补货订单编号">
+        <el-form-item label="企业客户补货订单编号" v-show="this.visibleCount === 3 || show">
           <el-input
             placeholder="请输入"
             v-model="form.entReplenishOrderCode"
@@ -73,7 +73,7 @@
           reserve-keyword
           labelKey="organizationName"
           valueKey="organizationCode"
-          v-model="form.fundFinancialOrganizationIds"
+          v-model="form.fundFinancialOrganizationCodes"
           placeholder="请选择"
           clearable
           filterable
@@ -134,15 +134,15 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button  size="small" :disabled="selectionList.length === 0" @click="handleBatchAllocateVehicle">批量配车</el-button>
-      <el-button  size="small" :disabled="selectionList.length === 0" @click="handleBatchCancelAllocateVehicle">取消配车</el-button>
-      <el-button  size="small" :disabled="selectionList.length === 0" @click="handleBatchSettleSubmit">批量结算</el-button>
-      <el-button  size="small" :disabled="selectionList.length === 0" @click="handleBatchCancelSettle">取消结算</el-button>
-      <el-button  size="small" :disabled="selectionList.length === 0" @click="handleBatchCancel">批量作废</el-button>
-      <el-button  size="small" :disabled="selectionList.length === 0" @click="handleBatchSetAutoAllocate">批量设置自动配车</el-button>
-      <el-button  size="small" :disabled="selectionList.length === 0" @click="handleBatchSetNotAutoAllocate">批量设置不自动配车</el-button>
-      <el-button  size="small" :disabled="selectionList.length === 0" @click="handleSetEmergencyOrder">设置急单</el-button>
-      <el-button  size="small" :disabled="selectionList.length === 0" @click="handleCancelEmergencyOrder">取消急单</el-button>
+      <el-button v-permission="moduleKey+'-batchAllocateSubmit'" size="small" :disabled="selectionList.length === 0" @click="handleBatchAllocateVehicle">批量配车</el-button>
+      <el-button v-permission="moduleKey+'-batchCancelAllocateSubmit'" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancelAllocateVehicle">取消配车</el-button>
+      <el-button v-permission="moduleKey+'-batchSettleSubmit'" size="small" :disabled="selectionList.length === 0" @click="handleBatchSettleSubmit">批量结算</el-button>
+      <el-button v-permission="moduleKey+'-batchCancelSettleSubmit'" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancelSettle">取消结算</el-button>
+      <el-button v-permission="moduleKey+'-batchCancelOrders'" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancel">批量作废</el-button>
+      <el-button v-permission="moduleKey+'-setAutoAllocate'" size="small" :disabled="selectionList.length === 0" @click="handleBatchSetAutoAllocate">批量设置自动配车</el-button>
+      <el-button v-permission="moduleKey+'-setAutoAllocate'" size="small" :disabled="selectionList.length === 0" @click="handleBatchSetNotAutoAllocate">批量设置不自动配车</el-button>
+      <el-button v-permission="moduleKey+'-setEmergencyOrder'" size="small" :disabled="selectionList.length === 0" @click="handleSetEmergencyOrder">设置急单</el-button>
+      <el-button v-permission="moduleKey+'-setEmergencyOrder'" size="small" :disabled="selectionList.length === 0" @click="handleCancelEmergencyOrder">取消急单</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -236,7 +236,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车销售-企业客户订单-企业客户整车订单管理',
+      pageTitle: '企业客户整车订单',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-entVehicleOrder',
@@ -296,7 +296,7 @@ export default {
           { props: 'allocateStatusLabel', label: '配车状态', visible: true, width: 200 },
           { props: 'settleStatusLabel', label: '结算状态', visible: true, width: 200 },
           { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 200 },
-          { props: 'fundFinancialOrganizationId', label: '金融机构', visible: true, width: 200 },
+          { props: 'fundFinancialOrganizationCode', label: '金融机构', visible: true, width: 200 },
           { props: 'acceptanceMethodLabel', label: '验收方式', visible: true, width: 200 },
           { props: 'salesMarket', label: '销售市场', visible: true, width: 200 },
           { props: 'vin', label: '配车VIN码', visible: true, width: 200 },

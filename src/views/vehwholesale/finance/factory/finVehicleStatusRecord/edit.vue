@@ -144,7 +144,7 @@ const defaultForm = {
   dealerCode: '',
   dealerName: '',
   unifiedSocialCreditCode: '',
-  fundFinancialOrganizationIds: [],
+  fundFinancialOrganizationCodes: [],
   materialsCode: '',
   materialsDesc: '',
   shipmentDate: '',
@@ -164,7 +164,7 @@ const defaultForm = {
   remark: '',
   dataSource: '',
   ownerOrgId: '',
-  fundFinancialOrganizationId: '',
+  fundFinancialOrganizationCode: '',
   syncTime: '',
 };
 

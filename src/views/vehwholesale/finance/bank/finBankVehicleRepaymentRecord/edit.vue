@@ -115,7 +115,7 @@ const defaultForm = {
   code: '',
   dealerCompanyCode: '',
   dealerCompanyName: '',
-  fundFinancialOrganizationIds: [],
+  fundFinancialOrganizationCodes: [],
   vin: '',
   repaymentDate: '',
   materialsDesc: '',
@@ -136,7 +136,7 @@ const defaultForm = {
   remark: '',
   dataSource: '',
   ownerOrgId: '',
-  fundFinancialOrganizationId: '',
+  fundFinancialOrganizationCode: '',
 };
 
 export default {

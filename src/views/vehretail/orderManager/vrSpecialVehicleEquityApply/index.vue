@@ -145,7 +145,7 @@ export default {
     return {
       pageTitle: '整车零售-订单管理-特殊车辆权益申请管理',
       pageType: 'list',
-      moduleKey: 'AISMC-vrSpecialVehicleEquityApply',
+      moduleKey: 'AISVR-vrSpecialVehicleEquityApply',
       form: {
         ...defaultForm
       },

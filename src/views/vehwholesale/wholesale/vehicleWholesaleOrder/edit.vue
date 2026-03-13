@@ -17,13 +17,14 @@
           {{ form.wholesaleOrderCode }}
         </template>
         <template #extraButtons >
-          <el-button  v-permission="moduleKey+'-batchConfirm'" size="small" type="primary" @click="handleCheckConfirm" >审核确认</el-button>
-          <el-button  v-permission="moduleKey+'-batchAllocateVehicle'"  size="small" type="primary" @click="handleaAutoVehicleAllocation">自动配车</el-button>
-          <el-button  v-permission="moduleKey+'-vinAllocateVehicle'" size="small" type="primary" @click="handleManualVehicleAllocation">手工配车</el-button>
+          <el-button  v-permission="moduleKey+'-querySapAccount'" size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
+          <el-button  v-permission="moduleKey+'-batchConfirm'" size="small" @click="handleCheckConfirm" >审核确认</el-button>
+          <el-button  v-permission="moduleKey+'-batchAllocateVehicle'"  size="small" @click="handleaAutoVehicleAllocation">自动配车</el-button>
+          <el-button  v-permission="moduleKey+'-vinAllocateVehicle'" size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
           <!-- <el-button  size="small" @click="handleDelete">删除</el-button> -->
-          <el-button v-permission="moduleKey+'-batchSettleSubmit'" type="primary" size="small" @click="handleBatchSettleSubmit">提交结算</el-button>
-          <el-button v-permission="moduleKey+'-batchCancelSettle'" type="primary" size="small" @click="handleBatchCancelSettle">取消结算</el-button>
-          <el-button  v-permission="moduleKey+'-batchCancel'" size="small" type="primary" @click="handleCancel">作废</el-button>
+          <el-button v-permission="moduleKey+'-batchSettleSubmit'"  size="small" @click="handleBatchSettleSubmit">提交结算</el-button>
+          <el-button v-permission="moduleKey+'-batchCancelSettle'" size="small" @click="handleBatchCancelSettle">取消结算</el-button>
+          <el-button  v-permission="moduleKey+'-batchCancel'" size="small" @click="handleCancel">作废</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -168,12 +169,11 @@
                 </el-form-item>
                    <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
                   <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
+                    type="datetime"
                     v-model="form.emergencyOrderTime"
                     :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
+                    placeholder="选择日期时间"
                   />
                 </el-form-item>
                   <!-- <el-form-item label="急单备注：" prop="emergencyOrderRemark">
@@ -688,7 +688,21 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="赊销欠款：" prop="creditSaleFlag">
+                <el-form-item label="首付款比例：" prop="downPaymentRatio">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.downPaymentRatio"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="融资金额/赊销欠款：" prop="creditSalesAmount">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.creditSalesAmount"
+                    clearable
+                    disabled
+                  />
                   <!-- todo 后续版本添加字段 -->
                    <!-- <el-radio-group v-model="form.creditSaleFlag" disabled>
                     <el-radio v-for="item in true_false_enum" :key="item.code" :label="item.code">{{ item.message }}</el-radio>
@@ -743,12 +757,15 @@
                 <el-form-item label="使用返利金额：" prop="usedRebateAmount">
                   {{ form.usedRebateAmount }}
                 </el-form-item>
-                 <el-form-item label="使用现金金额：" prop="usedCashAmount">
+                <el-form-item label="使用现金金额：" prop="usedCashAmount">
                   {{ form.usedCashAmount }}
                 </el-form-item>
-                 <el-form-item label="赊销欠款：" prop="creditSaleFlag">
+                <el-form-item label="首付款比例：" prop="downPaymentRatio">
+                  {{ form.downPaymentRatio }}
+                </el-form-item>
+                 <el-form-item label="融资金额/赊销欠款：" prop="creditSalesAmount">
                   <!-- todo 后续版本添加字段 -->
-                  <!-- {{ form.creditSaleFlagLabel }} -->
+                  {{ form.creditSalesAmount }}
                 </el-form-item>
                   <el-form-item label="是否赊销：" prop="creditSaleFlagLabel">
                   {{ form.creditSaleFlagLabel }}
@@ -805,11 +822,16 @@
       :visible.sync="showManualVehicleDialog"
       @confirmVin="confirmVin"
     />
+    <component-table
+      :tableData="accountData"
+      :columns="detailsColumns"
+      :visible.sync="showComponentTabelDialog"
+    />
   </div>
 </template>
 
 <script>
-import { getDetail, addOrUpdate, batchConfirmItem, batchSetAutoAllocateItem, batchCancelItem, vinAllocateVehicleCheckItem, vinAllocateVehicleSubmitItem, batchSettleSubmitItem, batchCancelSettleItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import { getDetail, addOrUpdate, batchConfirmItem, batchSetAutoAllocateItem, batchCancelItem, vinAllocateVehicleCheckItem, vinAllocateVehicleSubmitItem, batchSettleSubmitItem, batchCancelSettleItem, querySAPAccountBalance } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
@@ -823,6 +845,7 @@ import ManualVehicle from './ManualVehicle.vue';
 import BatchCancelInput from './BatchCancelInput.vue';
 import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import BatchCancelSettleInput from './BatchCancelSettleInput.vue';
+import ComponentTable from './ComponentTable.vue';
 const defaultForm = {
   // 多选时字段有变化，自行修复
   wholesaleOrderCode: '',
@@ -955,7 +978,8 @@ export default {
     FetchSelect,
     ManualVehicle,
     BatchCancelInput,
-    BatchCancelSettleInput
+    BatchCancelSettleInput,
+    ComponentTable
   },
   computed: {
     _id () {
@@ -985,10 +1009,20 @@ export default {
       showManualVehicleDialog: false,
       showBatchCancelDialog: false,
       showBatchCancelSettleDialog: false,
+      showComponentTabelDialog: false,
       yes_no_enum: YES_NO_ENUM,
       true_false_enum: TRUE_FALSE_ENUM,
       ALLOWED_STATUS: [0, 11],
       settleFundTypeOptions: [],
+      accountData: [],
+      detailsColumns: [
+        { field: 'dealerCompanyName', title: '销售公司' },
+        { field: 'gtext', title: '资金类型' },
+        { field: 'availableBalance', title: '可用余额' },
+        { field: 'creditAmount', title: '赊销金额' },
+        { field: 'chargeAmount', title: '充值金额' },
+        { field: 'frozenAmount', title: '占用余额' },
+      ],
       form: { ...form },
       originalForm: { ...form },
       defaultNewRow: {
@@ -1040,6 +1074,16 @@ export default {
     this.fetchSettleFundTypeOptions();
   },
   methods: {
+    handlequerySAPAccountBalance () {
+      const params = {
+        id: this._id,
+      };
+      querySAPAccountBalance(params).then((res) => {
+        console.log(res);
+        this.accountData = res;
+        this.showComponentTabelDialog = true;
+      });
+    },
     async fetchSettleFundTypeOptions () {
       const response = await getEnum('vw_fundtype');
       this.settleFundTypeOptions = response.filter(item => {
@@ -1181,7 +1225,7 @@ export default {
         }).then(() => {
           this.$message({
             type: 'success',
-            message: '自动配车成功!'
+            message: '配车成功!'
           });
           this.getDetailData();
         });
@@ -1200,7 +1244,7 @@ export default {
         vinAllocateVehicleSubmitItem(params).then(() => {
           this.$message({
             type: 'success',
-            message: '自动配车成功!'
+            message: '配车成功!'
           });
           this.getDetailData();
         });
@@ -1216,7 +1260,7 @@ export default {
       }).catch(() => {
         this.$message({
           type: 'error',
-          message: '自动配车校验失败!'
+          message: '配车校验失败!'
         });
       });
     },

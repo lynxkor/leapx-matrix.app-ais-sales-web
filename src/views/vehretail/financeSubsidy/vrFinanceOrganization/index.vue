@@ -77,7 +77,7 @@ export default {
     return {
       pageTitle: '整车零售-金融补贴-金融机构管理',
       pageType: 'list',
-      moduleKey: 'AISMC-vrFinanceOrganization',
+      moduleKey: 'AISVR-vrFinanceOrganization',
       form: {
         ...defaultForm
       },
@@ -113,11 +113,16 @@ export default {
           },
           { props: 'code', label: '金融机构编码', visible: true, width: 180 },
           { props: 'dataSource', label: '数据来源', visible: true, width: 120 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 180 }
+          { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true }
         ],
         total: 0
       },
-      sortColumns: []
+      sortColumns: [
+        {
+          column: 'create_time',
+          sort: 'DESC'
+        }
+      ]
     };
   },
   created () {
