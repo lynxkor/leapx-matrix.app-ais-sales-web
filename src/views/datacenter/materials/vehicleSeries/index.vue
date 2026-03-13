@@ -394,10 +394,6 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
-      if (Array.isArray(this.form.seriesNameList) && this.form.seriesNameList.length <= 1) {
-        delete data.seriesNameList;
-        data.seriesNameLike = this.form.seriesNameList[0] || '';
-      }
 
       return data;
     },

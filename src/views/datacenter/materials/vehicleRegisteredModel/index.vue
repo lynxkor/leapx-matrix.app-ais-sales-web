@@ -341,16 +341,6 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
-
-      if (Array.isArray(this.form.registeredModelNameList) && this.form.registeredModelNameList.length <= 1) {
-        delete data.registeredModelNameList;
-        data.registeredModelNameLike = this.form.registeredModelNameList[0] || '';
-      }
-
-      if (Array.isArray(this.form.registeredModelCodeList) && this.form.registeredModelCodeList.length <= 1) {
-        delete data.registeredModelCodeList;
-        data.registeredModelCodeLike = this.form.registeredModelCodeList[0] || '';
-      }
       return data;
     },
     async fetchOptions (code) {

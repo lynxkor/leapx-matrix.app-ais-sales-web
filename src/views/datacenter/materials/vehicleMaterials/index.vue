@@ -539,16 +539,6 @@ export default {
         }
       }
 
-      if (Array.isArray(this.form.materialsDescSet) && this.form.materialsDescSet.length <= 1) {
-        delete data.materialsDescSet;
-        data.materialsDescLike = this.form.materialsDescSet[0] || '';
-      }
-
-      if (Array.isArray(this.form.materialsCodeSet) && this.form.materialsCodeSet.length <= 1) {
-        delete data.materialsCodeSet;
-        data.materialsCodeLike = this.form.materialsCodeSet[0] || '';
-      }
-
       return data;
     },
     async fetchOptions (code) {
