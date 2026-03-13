@@ -225,7 +225,7 @@ export default {
     return {
       pageTitle: '整车零售-订单管理-整车零售订单管理-回退记录',
       pageType: 'list',
-      moduleKey: 'AISMC-vrRetailOrderBackRecord',
+      moduleKey: 'AISVR-vrRetailOrderBackRecord',
       form: {
         ...defaultForm
       },

@@ -275,7 +275,7 @@ export default {
     return {
       pageTitle: '整车零售-订单管理-订单权益申请管理',
       pageType: 'list',
-      moduleKey: 'AISMC-vrEquityApply',
+      moduleKey: 'AISVR-vrEquityApply',
       form: {
         ...defaultForm
       },

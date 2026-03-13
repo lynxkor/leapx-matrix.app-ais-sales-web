@@ -171,7 +171,7 @@ export default {
     return {
       pageTitle: '整车零售-金融补贴-金融产品管理',
       pageType: 'list',
-      moduleKey: 'AISMC-vrFinanceProduct',
+      moduleKey: 'AISVR-vrFinanceProduct',
       form: {
         ...defaultForm
       },

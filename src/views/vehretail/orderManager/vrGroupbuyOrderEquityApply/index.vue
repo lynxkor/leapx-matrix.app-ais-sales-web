@@ -162,7 +162,7 @@ export default {
     return {
       pageTitle: '整车零售-订单管理-团购订单权益申请管理',
       pageType: 'list',
-      moduleKey: 'AISMC-vrGroupbuyOrderEquityApply',
+      moduleKey: 'AISVR-vrGroupbuyOrderEquityApply',
       form: {
         ...defaultForm
       },

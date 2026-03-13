@@ -12,14 +12,14 @@
       <el-form-item label="金融方案名称">
         <el-input
           placeholder="请输入"
-          v-model="form.vrFinancePlanName"
+          v-model="form.financePlanName"
           clearable
         />
       </el-form-item>
       <el-form-item label="金融方案类型">
         <fetch-select
           :request="fetchOptions"
-          enumCode="vrFinancePlanTypeEnum"
+          enumCode="financePlanTypeEnum"
           v-model="form.vrFinancePlanType"
           placeholder="请选择"
           clearable
@@ -93,8 +93,8 @@ import EditPage from './edit.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  vrFinancePlanName: '',
-  vrFinancePlanType: ''
+  financePlanName: '',
+  financePlanType: ''
 };
 
 const pageSize = 20;
@@ -116,7 +116,7 @@ export default {
       pageTitle: '整车零售-金融补贴-金融方案-适用金融产品管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-vrFinancePlan',
+      moduleKey: 'AISVR-vrFinancePlan',
       form: {
         ...defaultForm
       },
@@ -153,9 +153,9 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'vrFinancePlanName', label: '金融方案名称', visible: true, width: 200 },
-          { props: 'dataSource', label: '数据来源', visible: true, width: 200 },
-          { props: 'vrFinancePlanTypeLabel', label: '金融方案类型', visible: true, width: 200 },
+          { props: 'financePlanName', label: '金融方案名称', visible: true, width: 200 },
+          { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 200 },
+          { props: 'financePlanTypeLabel', label: '金融方案类型', visible: true, width: 200 },
           { props: 'statusLabel', label: '金融产品状态', visible: true, width: 200 },
           { props: 'priority', label: '优先级', visible: true, width: 200 },
           { props: 'updateTime', label: '最近更新时间', visible: true, width: 200 },
