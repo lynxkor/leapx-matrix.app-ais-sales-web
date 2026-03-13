@@ -31,7 +31,7 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item label="配置状态">
+        <el-form-item label="配置状态" v-show="this.visibleCount === 3 || show">
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_credit_sales_config_audit_status"
@@ -364,10 +364,15 @@ export default {
     },
     exportExcel () {
       this.exportLoading = true;
+      const reqParams = this.getFormData() || {};
+      if (this.selectionList.length > 0) {
+        const ids = this.selectionList.map(item => item.id) || [];
+        reqParams.ids = ids;
+      }
       exportTable({
         businessType: '自有资金赊销配置',
         dataFetchPath: '/vw/web/creditsales/fundOwnCreditSalesConfig/page',
-        reqParams: this.getFormData(),
+        reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
       }).then(async res => {

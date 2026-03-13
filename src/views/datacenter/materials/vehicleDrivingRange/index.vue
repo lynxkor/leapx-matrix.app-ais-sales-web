@@ -227,10 +227,15 @@ export default {
     },
     exportExcel () {
       this.exportLoading = true;
+      const reqParams = this.getFormData() || {};
+      if (this.selectionList.length > 0) {
+        const ids = this.selectionList.map(item => item.id) || [];
+        reqParams.ids = ids;
+      }
       exportTable({
         httpMethod: 'POST',
         dataFetchPath: '/datacenter/web/materials/vehicleDrivingRange/page',
-        reqParams: this.getFormData(),
+        reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols())
       }).then(async res => {
         if (res) {
@@ -322,11 +327,6 @@ export default {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
-      }
-
-      if (Array.isArray(this.form.drivingRangeNameList) && this.form.drivingRangeNameList.length <= 1) {
-        delete data.drivingRangeNameList;
-        data.drivingRangeNameLike = this.form.drivingRangeNameList[0] || '';
       }
 
       return data;

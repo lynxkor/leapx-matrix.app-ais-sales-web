@@ -24,7 +24,7 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item label="赊销账户状态">
+        <el-form-item label="赊销账户状态" v-show="this.visibleCount === 3 || show">
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_fund_own_credit_sales_limit_status"
@@ -272,10 +272,15 @@ export default {
     },
     exportExcel () {
       this.exportLoading = true;
+      const reqParams = this.getFormData() || {};
+      if (this.selectionList.length > 0) {
+        const ids = this.selectionList.map(item => item.id) || [];
+        reqParams.ids = ids;
+      }
       exportTable({
         businessType: '自有资金赊销额度',
         dataFetchPath: '/vw/web/creditsales/fundOwnCreditSalesLimit/page',
-        reqParams: this.getFormData(),
+        reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
       }).then(async res => {

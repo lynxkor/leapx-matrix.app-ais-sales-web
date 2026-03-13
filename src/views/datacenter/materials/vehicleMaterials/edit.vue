@@ -11,9 +11,11 @@
               <el-form-item label="物料编码：" prop="materialsCode">
                 <el-input placeholder="请输入" v-model="form.materialsCode" clearable maxlength="30" />
               </el-form-item>
-              <el-form-item label="物料描述：" prop="materialsDesc">
+              <el-form-item label="物料描述：" prop="materialsDesc" :style="{ width: visibleCount === 3 ? '75%' : '65%' }">
                 <el-input placeholder="请输入" v-model="form.materialsDesc" clearable disabled  maxlength="100" />
               </el-form-item>
+              <!-- <el-form-item label=" " />
+              <el-form-item label=" " v-show="visibleCount === 3" /> -->
               <el-form-item label="车系：" prop="seriesId">
                 <fetch-select
                   :remote-method="repairItemSearch"
@@ -29,8 +31,7 @@
                   @change="seriesListChange" />
               </el-form-item>
               <el-form-item label="车型：" prop="modelId">
-                <fetch-select :options="modelList" v-model="form.modelId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable
-            @change="modelListChange" />
+                <fetch-select :options="modelList" v-model="form.modelId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable @change="modelListChange" />
               </el-form-item>
               <el-form-item label="年款：" prop="yearTypeId">
                 <fetch-select :options="yearTypeList" v-model="form.yearTypeId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
@@ -124,6 +125,7 @@ import { getEnum, vehicleSeriesList, vehicleModelList, vehicleExterior, vehicleI
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import responsive from '@/libs/mixins/responsive';
 import { fetchAndFormatData } from '@/libs/utils';
 
 const defaultForm = {
@@ -194,7 +196,7 @@ export default {
   components: {
     FetchSelect,
   },
-  mixins: [routeGuard, permissions, commonMixins],
+  mixins: [routeGuard, permissions, commonMixins, responsive],
   data () {
     return {
       moduleKey: 'AISDC-vehicleMaterials',

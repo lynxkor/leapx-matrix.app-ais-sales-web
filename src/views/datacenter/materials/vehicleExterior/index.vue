@@ -232,9 +232,14 @@ export default {
     },
     exportExcel () {
       this.exportLoading = true;
+      const reqParams = this.getFormData() || {};
+      if (this.selectionList.length > 0) {
+        const ids = this.selectionList.map(item => item.id) || [];
+        reqParams.ids = ids;
+      }
       exportTable({
         dataFetchPath: '/datacenter/web/materials/vehicleExterior/page',
-        reqParams: this.getFormData(),
+        reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
       }).then(async res => {
@@ -327,10 +332,6 @@ export default {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
-      }
-      if (Array.isArray(this.form.exteriorNameList) && this.form.exteriorNameList.length <= 1) {
-        delete data.exteriorNameList;
-        data.exteriorNameLike = this.form.exteriorNameList[0] || '';
       }
 
       return data;

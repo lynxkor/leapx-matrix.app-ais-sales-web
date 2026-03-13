@@ -19,7 +19,7 @@
                   maxlength="30"
                 />
               </el-form-item>
-              <el-form-item label="品牌名称" prop="brandName">
+              <el-form-item label="品牌名称" prop="brandId">
                  <fetch-select
                   :params="form.brandName"
                   v-model="form.brandId"

@@ -19,11 +19,11 @@
           deftTime="本月"
         />
     </el-form-item>
-    <el-form-item label="VIN">
+    <el-form-item label="VIN" v-show="this.visibleCount === 3 || show">
       <tag-input v-model="form.vins" placeholder="请输入" />
     </el-form-item>
     <template v-if="show">
-    <el-form-item label="门店名称">
+    <el-form-item label="门店名称" >
       <tag-input v-model="form.dealerNames" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="整车批售订单">
@@ -318,10 +318,15 @@ export default {
     },
     exportExcel () {
       this.exportLoading = true;
+      const reqParams = this.getFormData() || {};
+      if (this.selectionList.length > 0) {
+        const ids = this.selectionList.map(item => item.id) || [];
+        reqParams.ids = ids;
+      }
       exportTable({
         businessType: '自有资金赊销明细',
         dataFetchPath: '/vw/web/creditsales/fundOwnCreditSalesDetail/page',
-        reqParams: this.getFormData(),
+        reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
       }).then(async res => {

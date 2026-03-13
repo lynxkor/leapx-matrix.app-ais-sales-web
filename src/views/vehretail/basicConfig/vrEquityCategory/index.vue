@@ -86,7 +86,7 @@ export default {
     return {
       pageTitle: '整车零售-基础设置-权益大类管理',
       pageType: 'list',
-      moduleKey: 'AISMC-vrEquityCategory',
+      moduleKey: 'AISVR-vrEquityCategory',
       form: {
         ...defaultForm
       },

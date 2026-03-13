@@ -33,9 +33,7 @@
         </template>
         <el-main>
           <!--  -->
-          <NavTop
-            title="交车单步骤"
-            :current="2"/>
+          <NavTop title="交车单步骤" :step-highlight="form.deliveryOrderStepResp"/>
           <!-- 订单归属 -->
           <section class="common-section" v-show="isEditing || !_id">
             <div class="common-section-header" data-section="orderBelonging">
@@ -43,78 +41,62 @@
             </div>
             <div class="common-section-body">
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm1" :label-width="labelWidth" class="form-edit">
-                <el-form-item label="订单销售门店：" prop="salesStoreId">
+                <el-form-item label="订单销售门店：" prop="saleDealerName">
+                  <el-input v-model="form.saleDealerName" disabled />
+                </el-form-item>
+                <el-form-item label="订单销售顾问：" prop="saleUserId">
                   <fetch-select
-                    :request="fetchOptions"
-                    enumCode="store_enum"
-                    v-model="form.salesStoreId"
-                    placeholder="请选择"
-                    clearable
                     filterable
-                    :disabled="true"
+                    clearable
+                    remote
+                    v-model="form.saleUserId"
+                    :remote-method="remoteMethods.saleUser"
+                    value-key="userId"
+                    label-key="username"
+                    @change="(val, row) => handleSaleUserChange(val,row, 'saleUser')"
                   />
                 </el-form-item>
-                <el-form-item label="订单销售顾问：" prop="salesAdvisorId">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="sales_advisor_enum"
-                    v-model="form.salesAdvisorId"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                  />
+                <el-form-item label="订单交付门店：" prop="deliveryDealerName">
+                  <el-input v-model="form.deliveryDealerName" disabled />
                 </el-form-item>
-                <el-form-item label="订单交付门店：" prop="deliveryStoreId">
+                <el-form-item label="订单交付顾问：" prop="deliveryUserId">
                   <fetch-select
-                    :request="fetchOptions"
-                    enumCode="store_enum"
-                    v-model="form.deliveryStoreId"
-                    placeholder="请选择"
-                    clearable
                     filterable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="订单交付顾问：" prop="deliveryAdvisorId">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="vr_order_lock_type"
-                    v-model="form.deliveryAdvisorId"
-                    placeholder="请选择"
                     clearable
-                    filterable
+                    remote
+                    v-model="form.deliveryUserId"
+                    :remote-method="remoteMethods.deliveryUser"
+                    value-key="userId"
+                    label-key="username"
+                    @change="(val, row) => handleSaleUserChange(val,row, 'deliveryUser')"
                   />
                 </el-form-item>
                 <el-form-item label="交付衍生工程师：" prop="deliveryDerivativeUserId">
                   <fetch-select
-                    :request="fetchOptions"
-                    enumCode="delivery_engineer_enum"
-                    v-model="form.deliveryDerivativeUserId"
-                    placeholder="请选择"
-                    clearable
                     filterable
+                    clearable
+                    remote
+                    v-model="form.deliveryDerivativeUserId"
+                    :remote-method="remoteMethods.deliveryDerive"
+                    value-key="userId"
+                    label-key="username"
+                    @change="(val, row) => handleSaleUserChange(val,row, 'deliveryDerivativeUser')"
                   />
                 </el-form-item>
                 <el-form-item label="现场交付工程师：" prop="onSiteDeliveryUserId">
                   <fetch-select
-                    :request="fetchOptions"
-                    enumCode="onsite_engineer_enum"
-                    v-model="form.onSiteDeliveryUserId"
-                    placeholder="请选择"
-                    clearable
                     filterable
+                    clearable
+                    remote
+                    v-model="form.onSiteDeliveryUserId"
+                    :remote-method="remoteMethods.deliveryUser"
+                    value-key="userId"
+                    label-key="username"
+                    @change="(val, row) => handleSaleUserChange(val,row, 'onSiteDeliveryUser')"
                   />
                 </el-form-item>
-                <el-form-item label="专属服务门店：" prop="exclusiveServiceStoreId">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="service_store_enum"
-                    v-model="form.exclusiveServiceStoreId"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                    :disabled="true"
-                  />
+                <el-form-item label="专属服务门店：">
+                  <el-input v-model="form.exclusiveServiceStoreName" disabled />
                 </el-form-item>
               </el-form>
             </div>
@@ -182,12 +164,12 @@
                     :disabled="true"
                   />
                 </el-form-item>
-                <el-form-item label="保险方案：" prop="insurancePlan">
+                <el-form-item label="保险方案：" prop="insuranceScheme">
                   <fetch-select
-                    :options="insurancePlanOptions"
+                    :options="insuranceSchemeOptions"
                     :valueKey="'value'"
                     :labelKey="'label'"
-                    v-model="form.insurancePlan"
+                    v-model="form.insuranceScheme"
                     placeholder="请选择"
                     clearable
                     filterable
@@ -204,23 +186,23 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="金融方案：" prop="financePlan">
+                <el-form-item label="金融方案：" prop="financialScheme">
                   <fetch-select
-                    :options="financePlanOptions"
+                    :options="financialSchemeOptions"
                     :valueKey="'value'"
                     :labelKey="'label'"
-                    v-model="form.financePlan"
+                    v-model="form.financialScheme"
                     placeholder="请选择"
                     clearable
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="金融按揭进度：" prop="financeProgress">
+                <el-form-item label="金融按揭进度：" prop="financialMortgageProgress">
                   <fetch-select
-                    :options="financeProgressOptions"
+                    :options="financialMortgageProgressOptions"
                     :valueKey="'value'"
                     :labelKey="'label'"
-                    v-model="form.financeProgress"
+                    v-model="form.financialMortgageProgress"
                     placeholder="请选择"
                     clearable
                     filterable
@@ -370,10 +352,11 @@
       <!-- 预约交车对话框组件 -->
       <delivery-appointment-dialog
         ref="deliveryAppointmentDialog"
-        :deliveryAdvisorId="form.deliveryAdvisorId"
-        :deliveryCityId="form.deliveryStoreId"
-        :orderCreateTime="form.orderCreateTime"
+        :deliveryUserId="form.deliveryUserId"
+        :deliveryCityId="form.deliveryDealerCode"
+        :createTime="form.createTime"
         :orderId="_id"
+        :orderCode="form.deliveryOrderCode"
         :originalAppointmentTime="form.appointmentTime"
         @refresh="getDetail"
       />
@@ -387,7 +370,7 @@
       <payment-record-dialog
         ref="paymentRecordDialog"
         :orderId="_id"
-        :financePlan="form.financePlan"
+        :financePlan="form.financialScheme"
         @refresh="getDetail"
       />
       <!-- 消息提醒对话框 -->
@@ -426,12 +409,23 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, validateInvoiceAmount, validateRemainingReceivable, validateUnverifiedRights, confirmPayment } from '@/api/vehretail/orderManager/deliveryOrder/index';
-import { getList as getPaymentRecordList, deleteItem as deletePaymentRecord } from '@/api/vehretail/orderManager/orderPayRecord/index';
+import {
+  getDetail,
+  addOrUpdate,
+  validateInvoiceAmount,
+  validateRemainingReceivable,
+  validateUnverifiedRights,
+  confirmPayment,
+  checkCarBuyerPhoneRegistered, // 校验购车人手机号是否注册零跑APP
+} from '@/api/vehretail/orderManager/deliveryOrder/index';
+import {
+  getList as getPaymentRecordList,
+  deleteItem as deletePaymentRecord
+} from '@/api/vehretail/orderManager/orderPayRecord/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum } from '@/api/common';
+import { engineerList } from '@/libs/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -446,14 +440,14 @@ import MessageDialog from '@/libs/components/MessageDialog';
 
 const defaultForm = {
   // 订单归属
-  salesStoreId: '',
-  salesStoreName: '',
-  salesAdvisorId: '',
-  salesAdvisorName: '',
-  deliveryStoreId: '',
-  deliveryStoreName: '',
-  deliveryAdvisorId: '',
-  deliveryAdvisorName: '',
+  saleDealerCode: '',
+  saleDealerName: '',
+  saleUserId: '',
+  saleUserName: '',
+  deliveryDealerCode: '',
+  deliveryDealerName: '',
+  deliveryUserId: '',
+  deliveryUserName: '',
   deliveryDerivativeUserId: '',
   deliveryDerivativeUserName: '',
   onSiteDeliveryUserId: '',
@@ -467,10 +461,10 @@ const defaultForm = {
   equityDeductionTotalAmount: '',
   invoiceAmount: '',
   remainingReceivableAmount: '',
-  insurancePlan: '',
+  insuranceScheme: '',
   insuranceProgress: '',
-  financePlan: '',
-  financeProgress: '',
+  financialScheme: '',
+  financialMortgageProgress: '',
   deliveryMileage: '',
   deliveryBatteryPower: '',
   deliveryMachineVersion: '',
@@ -578,43 +572,66 @@ export default {
       cityDeliveryOrderMin: 0,
       // 当前确认收款数据
       currentConfirmPaymentData: {},
+      // 远程搜索方法
+      remoteMethods: {
+        // 初始方法
+        saleUser: async (query) => {
+          if (!query || query.length < 2) return [];
+          return await engineerList({ username: query, salesConfigKey: 'saleUser', orgCodeList: [this.form.saleDealerCode] });
+        },
+        deliveryUser: async (query) => {
+          if (!query || query.length < 2) return [];
+          return await engineerList({ username: query, salesConfigKey: 'deliveryUser', orgCodeList: [this.form.deliveryDealerCode] });
+        },
+        deliveryDerive: async (query) => {
+          if (!query || query.length < 2) return [];
+          return await engineerList({ username: query, salesConfigKey: 'deliveryDerive', orgCodeList: [this.form.deliveryDealerCode] });
+        },
+        listParentForOption: async (query) => {
+          if (!query || query.length < 2) return [];
+          return await engineerList({ username: query, salesConfigKey: 'deliveryDerive', orgCodeList: [this.form.deliveryDealerCode] });
+        },
+      },
       rules: {
-        deliveryAdvisorId: [
+        saleUserId: [
           { required: true, message: '请选择订单交付顾问', trigger: 'change' }
         ],
-        financePlan: [
+        deliveryUserId: [
+          { required: true, message: '请选择订单交付顾问', trigger: 'change' }
+        ],
+        financialScheme: [
           { required: true, message: '请选择金融方案', trigger: 'change' }
         ]
       },
       labelWidth: '150px',
       // 保险方案枚举
-      insurancePlanOptions: [
-        { value: 1010, label: '自行投保' },
-        { value: 1020, label: '店内投保' }
+      insuranceSchemeOptions: [
+        { value: '1010', label: '自行投保' },
+        { value: '1020', label: '店内投保' }
       ],
       // 保险办理进度枚举
       insuranceProgressOptions: [
-        { value: 1010, label: '保险沟通' },
-        { value: 1020, label: '保险确定' }
+        { value: '1010', label: '保险沟通' },
+        { value: '1020', label: '保险确定' }
       ],
       // 金融方案枚举
-      financePlanOptions: [
-        { value: 1010, label: '全款购车' },
-        { value: 1020, label: '分期购车（非厂端金融）' },
-        { value: 1030, label: '分期购车（厂端金融）' }
+      financialSchemeOptions: [
+        { value: '1010', label: '全款购车' },
+        { value: '1020', label: '分期购车（非厂端金融）' },
+        { value: '1030', label: '分期购车（厂端金融）' }
       ],
       // 金融按揭进度枚举
-      financeProgressOptions: [
-        { value: 1010, label: '申请中' },
-        { value: 1020, label: '面签中' },
-        { value: 1030, label: '已放款' },
-        { value: 1040, label: '已办结' }
+      financialMortgageProgressOptions: [
+        { value: '1010', label: '申请中' },
+        { value: '1020', label: '面签中' },
+        { value: '1030', label: '已放款' },
+        { value: '1040', label: '已办结' }
       ],
       orderBelongingFields: [
-        { key: 'salesStoreName', label: '订单销售门店' },
-        { key: 'salesAdvisorName', label: '订单销售顾问' },
-        { key: 'deliveryStoreName', label: '订单交付门店' },
-        { key: 'deliveryAdvisorName', label: '订单交付顾问' },
+        { key: 'saleDealerName', label: '订单销售门店' },
+        { key: 'saleUserName', label: '订单销售顾问' },
+        { key: 'deliveryDealerName', label: '订单交付门店' },
+        { key: 'deliveryUserName', label: '订单交付顾问' },
         { key: 'deliveryDerivativeUserName', label: '交付衍生工程师' },
         { key: 'onSiteDeliveryUserName', label: '现场交付工程师' },
         { key: 'exclusiveServiceStoreName', label: '专属服务门店' }
@@ -626,10 +643,10 @@ export default {
         { key: 'equityDeductionTotalAmount', label: '权益抵扣总额' },
         { key: 'invoiceAmount', label: '开票金额' },
         { key: 'remainingReceivableAmount', label: '剩余应收款' },
-        { key: 'insurancePlan', label: '保险方案' },
+        { key: 'insuranceScheme', label: '保险方案' },
         { key: 'insuranceProgress', label: '保险办理进度' },
-        { key: 'financePlan', label: '金融方案' },
-        { key: 'financeProgress', label: '金融按揭进度' },
+        { key: 'financialSchemeLabel', label: '金融方案' },
+        { key: 'financialMortgageProgress', label: '金融按揭进度' },
         { key: 'deliveryMileage', label: '交车时里程' },
         { key: 'deliveryBatteryPower', label: '交车时电量' },
         { key: 'deliveryMachineVersion', label: '交车车机版本号' },
@@ -642,7 +659,7 @@ export default {
         { key: 'orderSource', label: '订单来源' },
         { key: 'userId', label: '用户 ID' },
         { key: 'buyerName', label: '购车人姓名' },
-        { key: 'buyerMobile', label: '购车人手机' },
+        { key: 'carBuyerPhone', label: '购车人手机' },
         { key: 'idType', label: '证件类型' },
         { key: 'idNumber', label: '证件号码' },
         { key: 'agentContact', label: '代办联系人' },
@@ -650,8 +667,8 @@ export default {
         { key: 'depositAmount', label: '定金金额' },
         { key: 'orderMaterialCode', label: '订单物料码' },
         { key: 'vehicleMaterialCode', label: '配车物料码' },
-        { key: 'salesStoreName', label: '销售门店' },
-        { key: 'deliveryStoreName', label: '交付门店' }
+        { key: 'saleDealerName', label: '销售门店' },
+        { key: 'deliveryDealerName', label: '交付门店' }
       ],
       realNameAuthFields: [
         { key: 'realNameAuthSourceLabel', label: '实名认证来源' },
@@ -732,6 +749,10 @@ export default {
     this.loadCityDeliveryOrderMin();
   },
   methods: {
+    getPaymentRecordList,
+    handleSaleUserChange (val, row, name) {
+      this.form[name + 'Name'] = row.username;
+    },
     // 统一按钮 loading 管理工具方法
     // 用法：await this.withLoading('btnName', async () => { await api.xxx() })
     async withLoading (actionName, fn) {
@@ -753,39 +774,74 @@ export default {
         this.form = res;
       }).catch(() => {});
     },
+    // 允许提交的字段白名单 (与 API 字段名一致)
+    getSubmitFields () {
+      return [
+        'id',
+        'saleUserId',
+        'saleUserName',
+        'deliveryUserId',
+        'deliveryUserName',
+        'deliveryDerivativeUserId',
+        'deliveryDerivativeUserName',
+        'onSiteDeliveryUserId',
+        'onSiteDeliveryUserName',
+        'insuranceScheme',
+        'insuranceProgress',
+        'financialScheme',
+        'financialMortgageProgress',
+        'cityDeliveryOrder',
+        'remark'
+      ];
+    },
+    // 过滤提交参数，只保留允许的字段
+    filterSubmitParams (form) {
+      const allowedFields = this.getSubmitFields();
+      const params = {};
+      allowedFields.forEach(field => {
+        const value = form[field];
+        // 只提交非空值
+        if (value !== undefined && value !== null && value !== '') {
+          params[field] = value;
+        }
+      });
+      params.id = this._id;
+      return params;
+    },
     async submitRequest () {
       // 将表单校验封装为 Promise 并并行执行
       const validateForm = (formRef) => {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
           if (formRef) {
             formRef.validate(valid => {
-              resolve(valid);
+              if (valid) {
+                resolve(true);
+              } else {
+                reject(new Error('表单校验失败'));
+              }
             });
           } else {
             resolve(true); // 如果没有引用，视为校验通过
           }
         });
       };
-      const [ruleForm1Valid, ruleForm2Valid] = await Promise.all([
+      await Promise.all([
         validateForm(this.$refs.ruleForm1),
         validateForm(this.$refs.ruleForm2)
       ]);
-      if (ruleForm1Valid && ruleForm2Valid) {
-        return addOrUpdate({ ...this.form });
-      } else {
-        return Promise.reject(new Error('表单校验未通过'));
-      }
+      const submitParams = this.filterSubmitParams(this.form);
+      return addOrUpdate(submitParams);
     },
     // 打开侧边栏
     openPane () {
       this.$refs.editLayout.openPane();
     },
-    async fetchOptions (code) {
-      if (code) {
-        return getEnum(code);
-      }
-      return [];
-    },
+    // async fetchOptions (code) {
+    //   if (code) {
+    //     return getEnum(code);
+    //   }
+    //   return [];
+    // },
     getDefautlForm () {
       // TIPS: 此处可添加表单默认值，如当前用户信息等
       // const userInfo = this.$store.state.user.userInfo;
@@ -827,29 +883,28 @@ export default {
     // 预约交车
     async handleAppointmentDelivery () {
       // 1. 校验当前表单是否填写
-      // const validateForm = (formRef) => {
-      //   return new Promise((resolve) => {
-      //     if (formRef) {
-      //       formRef.validate(valid => {
-      //         resolve(valid);
-      //       });
-      //     } else {
-      //       resolve(true);
-      //     }
-      //   });
-      // };
-      // const [ruleForm1Valid, ruleForm2Valid] = await Promise.all([
-      //   validateForm(this.$refs.ruleForm1),
-      //   validateForm(this.$refs.ruleForm2)
-      // ]);
-      // if (!ruleForm1Valid || !ruleForm2Valid) {
-      //   this.$message.warning('请先填写并保存表单信息');
-      //   return;
-      // }
-
+      const validateForm = (formRef) => {
+        return new Promise((resolve) => {
+          if (formRef) {
+            formRef.validate(valid => {
+              resolve(valid);
+            });
+          } else {
+            resolve(true);
+          }
+        });
+      };
+      const [ruleForm1Valid, ruleForm2Valid] = await Promise.all([
+        validateForm(this.$refs.ruleForm1),
+        validateForm(this.$refs.ruleForm2)
+      ]);
+      if (!ruleForm1Valid || !ruleForm2Valid) {
+        this.$message.warning('请先填写并保存表单信息');
+        return;
+      }
       // 2. 调用接口校验购车人手机号是否注册
       try {
-        const isRegistered = await this.checkBuyerMobileRegistered();
+        const isRegistered = await checkCarBuyerPhoneRegistered(this.form.carBuyerPhone);
         // 3. 传给对话框组件
         this.$refs.deliveryAppointmentDialog.open(isRegistered);
       } catch (error) {
@@ -857,22 +912,10 @@ export default {
         this.$message.error('校验手机号注册状态失败');
       }
     },
-    // 校验购车人手机号是否注册（模拟接口）
-    async checkBuyerMobileRegistered () {
-      // 模拟接口返回
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          // 模拟随机返回注册或未注册
-          const mockRegistered = Math.random() > 0.5;
-          console.log('模拟校验结果：isRegistered =', mockRegistered);
-          resolve(mockRegistered);
-        }, 500);
-      });
-    },
     // 交车确认单生成
     async handleGenerateConfirmOrder () {
       await this.withLoading('generateConfirmOrder', async () => {
-        await this.checkBuyerMobileRegistered();
+        await checkCarBuyerPhoneRegistered(this.form.carBuyerPhone); ;
         // 3. 成功后显示提示
         this.$confirm(`
           <div class="ais-leave-tips-main">
@@ -891,10 +934,10 @@ export default {
     },
     // 更改预约时间
     handleChangeAppointmentTime () {
-      // if (!this.form.appointmentTime) {
-      //   this.$message.warning('当前订单暂无预约时间，请使用「预约交车」功能');
-      //   return;
-      // }
+      if (!this.form.appointmentTime) {
+        this.$message.warning('当前订单暂无预约时间，请使用「预约交车」功能');
+        return;
+      }
       // 以更改预约时间模式打开对话框
       this.$refs.deliveryAppointmentDialog.openChangeAppointment({
         originalAppointmentTime: this.form.appointmentTime

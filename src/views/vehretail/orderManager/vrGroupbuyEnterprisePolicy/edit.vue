@@ -200,7 +200,7 @@ export default {
     return {
       pageTitle: '整车零售-订单管理-团购企业优惠政策管理',
       pageType: 'edit',
-      moduleKey: 'AISMC-vrGroupbuyEnterprisePolicy',
+      moduleKey: 'AISVR-vrGroupbuyEnterprisePolicy',
       loading: false,
       submitLoading: false,
       form: { ...form },

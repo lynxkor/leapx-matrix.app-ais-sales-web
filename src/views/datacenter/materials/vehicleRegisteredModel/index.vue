@@ -240,10 +240,15 @@ export default {
     },
     exportExcel () {
       this.exportLoading = true;
+      const reqParams = this.getFormData() || {};
+      if (this.selectionList.length > 0) {
+        const ids = this.selectionList.map(item => item.id) || [];
+        reqParams.ids = ids;
+      }
       exportTable({
         httpMethod: 'POST',
         dataFetchPath: '/datacenter/web/materials/vehicleRegisteredModel/page',
-        reqParams: this.getFormData(),
+        reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols())
       }).then(async res => {
         if (res) {
@@ -335,16 +340,6 @@ export default {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
-      }
-
-      if (Array.isArray(this.form.registeredModelNameList) && this.form.registeredModelNameList.length <= 1) {
-        delete data.registeredModelNameList;
-        data.registeredModelNameLike = this.form.registeredModelNameList[0] || '';
-      }
-
-      if (Array.isArray(this.form.registeredModelCodeList) && this.form.registeredModelCodeList.length <= 1) {
-        delete data.registeredModelCodeList;
-        data.registeredModelCodeLike = this.form.registeredModelCodeList[0] || '';
       }
       return data;
     },

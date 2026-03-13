@@ -17,7 +17,6 @@
             min-height="200px"
             max-height="300px"
             width="1000px"
-            :loading="loading"
             :checkbox-config="{ checkField: 'checked' }"
           >
             <vxe-column
@@ -52,6 +51,8 @@
 </template>
 
 <script>
+import { log } from 'vxe-pc-ui';
+
 export default {
   name: 'ComponentTable',
   props: {
@@ -173,8 +174,9 @@ export default {
         };
 
         const response = await this.apiMethod(params);
-        this.internalTableData = response.data || [];
-        this.total = response.total || response.count || 0;
+        console.log('Response:', response);
+        this.internalTableData = response.data || response.records || response || [];
+        this.total = response.totals || response.count || 0;
       } catch (error) {
         console.error('Failed to load data:', error);
         this.internalTableData = [];

@@ -52,10 +52,14 @@
                   />
                 </el-form-item>
                  <el-form-item label="关联交易价格比例：" prop="txnTaxPriceRate">
-                  <el-input
-                    placeholder="请输入"
+                  <el-input-number
                     v-model="form.txnTaxPriceRate"
-                    clearable
+                    placeholder="请输入"
+                    :precision="2"
+                    :step="0.01"
+                    :min="0"
+                    :max="100"
+                    :controls="false"
                   />
                 </el-form-item>
                  <el-form-item label="生效时间：" prop="effectiveTime">
@@ -86,8 +90,8 @@
                 <el-form-item label="销售公司：" prop="saleCompanyId">
                   {{ form.saleCompanyId }}
                 </el-form-item>
-                 <el-form-item label="订单分类：" prop="orderCategory">
-                  {{ form.orderCategory }}
+                 <el-form-item label="订单分类：" prop="orderCategoryLabel">
+                  {{ form.orderCategoryLabel }}
                 </el-form-item>
                 <el-form-item label="关联交易价格比例：" prop="txnTaxPriceRate">
                   {{ form.txnTaxPriceRate }}
@@ -106,6 +110,9 @@
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
+                </el-form-item>
+                <el-form-item label="更新时间：" prop="updateTime">
+                  {{ form.updateTime }}
                 </el-form-item>
               </el-form>
             </div>
@@ -248,6 +255,10 @@ export default {
       }
     },
     submitRequest () {
+      if (this.form.effectiveTime && new Date(this.form.expireTime) < new Date(this.form.effectiveTime)) {
+        this.$message.error('失效日期不可小于生效日期，请检查！');
+        return false;
+      }
       return addOrUpdate({ ...this.form });
     },
     // 打开侧边栏

@@ -426,9 +426,14 @@ export default {
     },
     exportExcel () {
       this.exportLoading = true;
+      const reqParams = this.getFormData() || {};
+      if (this.selectionList.length > 0) {
+        const ids = this.selectionList.map(item => item.id) || [];
+        reqParams.ids = ids;
+      }
       exportTable({
         dataFetchPath: '/datacenter/web/materials/vehicleMaterials/page',
-        reqParams: this.getFormData(),
+        reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols())
       }).then(async res => {
         if (res) {
@@ -532,16 +537,6 @@ export default {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
-      }
-
-      if (Array.isArray(this.form.materialsDescSet) && this.form.materialsDescSet.length <= 1) {
-        delete data.materialsDescSet;
-        data.materialsDescLike = this.form.materialsDescSet[0] || '';
-      }
-
-      if (Array.isArray(this.form.materialsCodeSet) && this.form.materialsCodeSet.length <= 1) {
-        delete data.materialsCodeSet;
-        data.materialsCodeLike = this.form.materialsCodeSet[0] || '';
       }
 
       return data;

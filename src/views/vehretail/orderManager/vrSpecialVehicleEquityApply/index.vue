@@ -145,7 +145,7 @@ export default {
     return {
       pageTitle: '整车零售-订单管理-特殊车辆权益申请管理',
       pageType: 'list',
-      moduleKey: 'AISMC-vrSpecialVehicleEquityApply',
+      moduleKey: 'AISVR-vrSpecialVehicleEquityApply',
       form: {
         ...defaultForm
       },
@@ -163,7 +163,7 @@ export default {
         dataProp: [
           { props: 'code', label: '权益申请编号', visible: true, width: 200, fixed: 'left' },
           { props: 'vin', label: 'VIN', visible: true, width: 200 },
-          { props: 'applyStatus', label: '申请状态', visible: true, width: 120 },
+          { props: 'applyStatusLabel', label: '申请状态', visible: true, width: 120 },
           { props: 'applyTime', label: '申请时间', visible: true, width: 180 },
           { props: 'materialsCode', label: '整车物料码', visible: true, width: 180 },
           { props: 'modelName', label: '基本车型', visible: true, width: 150 },

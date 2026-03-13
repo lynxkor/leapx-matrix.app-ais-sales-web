@@ -17,6 +17,7 @@
               <el-form :inline="true" :model="formData" :rules="rules" ref="ruleForm2" label-width="160px" class="form-edit">
                 <el-form-item label="销售顾问配置" prop="saleDeliveryUserConfigName">
                     <fetch-select
+                      ref="saleUserSelect"
                       :remote-method="listConfig"
                       remote
                       v-model="formData.saleDeliveryUserConfigName"
@@ -33,6 +34,7 @@
                 </el-form-item>
                 <el-form-item label="交付顾问配置" prop="deliveryUserConfigName">
                   <fetch-select
+                      ref="deliveryUserSelect"
                       :remote-method="listConfig"
                       remote
                       v-model="formData.deliveryUserConfigName"
@@ -43,12 +45,13 @@
                       collapseTags
                       filterable
                       multiple
-                      @change="(val, row) => handleChange(val, row, 'deliveryUser')"
                       :disabled="!showEditBtn"
+                      @change="(val, row) => handleChange(val, row, 'deliveryUser')"
                     />
                 </el-form-item>
                 <el-form-item label="交付衍生工程师配置" prop="deliveryDeriveConfigName">
                   <fetch-select
+                      ref="deliveryDeriveSelect"
                       :remote-method="listConfig"
                       remote
                       v-model="formData.deliveryDeriveConfigName"
@@ -108,6 +111,7 @@
                 </el-form-item>
                   <el-form-item label="交车单分派通知：" prop="deliveryAssignmentStatus">
                      <fetch-select
+                      ref="deliveryAssignmentSelect"
                       :remote-method="listConfig"
                       remote
                       v-model="formData.deliveryAssignmentStatus"
@@ -210,6 +214,9 @@ export default {
       },
       // 存储从getRawList获取的原始数据
       rawConfigData: [],
+      originalConfigData: [], // 存储查询后原始数据的快照（用于取消时恢复和提交时比对）
+      // 存储用户修改过的配置（key: salesConfigKey, value: saleConfigValue）
+      modifiedConfigMap: {},
       rules: {
         saleDeliveryUserConfigName: [
           { required: true, message: '请选择销售顾问配置', trigger: 'change' }
@@ -243,36 +250,38 @@ export default {
   methods: {
     // 处理fetch-select的change事件
     handleChange (val, row, configKey) {
-      console.log('val', val);
-      console.log('row', row);
-      console.log('configKey', configKey);
+      console.log('handleChange - val:', val);
+      console.log('handleChange - row:', row);
+      console.log('handleChange - configKey:', configKey);
       // 找到对应的配置项
       const configItem = this.rawConfigData.find(item => item.salesConfigKey === configKey);
       if (!configItem) return;
       // 处理多选和单选的情况
       let roleData = [];
-      if (Array.isArray(row)) {
-        // 多选情况
-        roleData = row.map(item => {
-          // const selectedItem = this.configList.find(item => item.authorityCode === code);
+      if (Array.isArray(val)) {
+        // 多选情况：val 是选中的 value 数组（所有选中项）
+        roleData = val.map(v => {
+          const option = Array.isArray(row) ? row.find(opt => opt.authorityCode === v) : null;
           return {
-            roleName: item.authorityName,
-            roleCode: item.authorityCode
+            roleName: option ? option.authorityName : '',
+            roleCode: v
           };
         });
-      } else if (val) {
-        // 单选情况
+      } else if (val !== undefined && val !== null && val !== '') {
+        // 单选情况（BooleanEnum 等）
         roleData = [{
-          roleName: val ? '是' : '否',
+          roleName: val === '1' || val === true || val === '是' ? '是' : '否',
           roleCode: val
         }];
       }
-      // 更新rawConfigData中的saleConfigValue
+      // 更新 rawConfigData 中的 saleConfigValue
       configItem.saleConfigValue = JSON.stringify(roleData);
+      console.log('更新后的 saleConfigValue:', configItem.saleConfigValue);
     },
     getRawList () {
       getRawList().then(res => {
-        console.log('getRawList:', res); if (!res || res.length === 0) {
+        console.log('getRawList:', res);
+        if (!res || res.length === 0) {
           this.rawConfigData = [
             {
               salesConfigGroup: 'saleDeliveryUserConfig',
@@ -327,8 +336,25 @@ export default {
         } else {
           this.rawConfigData = res;
         }
+        // 保存原始数据快照，用于取消时恢复和提交时比对
+        this.originalConfigData = JSON.parse(JSON.stringify(this.rawConfigData));
         // 初始化formData用于表单验证
         this.initFormData();
+        // 下一帧加载远程选项，用于回显已选择的数据
+        this.$nextTick(() => {
+          if (this.$refs.saleUserSelect) {
+            this.$refs.saleUserSelect.loadRemoteMethod();
+          }
+          if (this.$refs.deliveryUserSelect) {
+            this.$refs.deliveryUserSelect.loadRemoteMethod();
+          }
+          if (this.$refs.deliveryDeriveSelect) {
+            this.$refs.deliveryDeriveSelect.loadRemoteMethod();
+          }
+          if (this.$refs.deliveryAssignmentSelect) {
+            this.$refs.deliveryAssignmentSelect.loadRemoteMethod();
+          }
+        });
       }).catch(() => {});
     },
     async listConfig (query) {
@@ -400,6 +426,36 @@ export default {
       this.$refs.attachedFilesDialog.show();
     },
     editSalesConfig () {
+      // 如果是点击编辑按钮（从 false 变为 true），需要保存当前原始数据快照
+      if (!this.showEditBtn) {
+        this.showEditBtn = !this.showEditBtn;
+      } else {
+        // 如果是点击取消按钮（从 true 变为 false），需要恢复原始数据
+        this.cancelEdit();
+      }
+    },
+    // 取消编辑，恢复原始数据
+    cancelEdit () {
+      // 恢复原始数据
+      this.rawConfigData = JSON.parse(JSON.stringify(this.originalConfigData));
+      // 重新初始化 formData
+      this.initFormData();
+      // 重新加载远程选项，用于回显已选择的数据
+      this.$nextTick(() => {
+        if (this.$refs.saleUserSelect) {
+          this.$refs.saleUserSelect.loadRemoteMethod();
+        }
+        if (this.$refs.deliveryUserSelect) {
+          this.$refs.deliveryUserSelect.loadRemoteMethod();
+        }
+        if (this.$refs.deliveryDeriveSelect) {
+          this.$refs.deliveryDeriveSelect.loadRemoteMethod();
+        }
+        if (this.$refs.deliveryAssignmentSelect) {
+          this.$refs.deliveryAssignmentSelect.loadRemoteMethod();
+        }
+      });
+      // 关闭编辑模式
       this.showEditBtn = !this.showEditBtn;
     },
     submitRequest () {

@@ -28,7 +28,7 @@
         :limtNum="3"
         ref="transactionTime"/>
    </el-form-item>
-   <el-form-item label="VIN">
+   <el-form-item label="VIN" v-show="this.visibleCount === 3 || show">
       <tag-input v-model="form.vins" placeholder="请输入" />
     </el-form-item>
   <template v-if="show">
@@ -435,10 +435,15 @@ export default {
     },
     exportExcel () {
       this.exportLoading = true;
+      const reqParams = this.getFormData() || {};
+      if (this.selectionList.length > 0) {
+        const ids = this.selectionList.map(item => item.id) || [];
+        reqParams.ids = ids;
+      }
       exportTable({
         businessType: '整车返利核算单明细',
         dataFetchPath: '/vw/web/rebate/fundVehicleRebateBillDetail/page',
-        reqParams: this.getFormData(),
+        reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
       }).then(async res => {

@@ -16,7 +16,7 @@
             <el-form-item label="物料编码：" prop="materialsCode">
               {{ info.materialsCode  }}
             </el-form-item>
-            <el-form-item label="物料描述：" prop="materialsDesc">
+            <el-form-item label="物料描述：" prop="materialsDesc" :style="{ width: visibleCount === 3 ? '75%' : '65%' }">
               {{ info.materialsDesc  }}
             </el-form-item>
             <el-form-item label="车系：" prop="modelName">
@@ -109,12 +109,13 @@
 import { getDetail } from '@/api/datacenter/materials/vehicleMaterials/index';
 import { YES_NO_ENUM_MAP } from '@/libs/constants';
 import permissions from '@/libs/mixins/permissions';
+import responsive from '@/libs/mixins/responsive';
 
 export default {
   name: 'vehicleMaterialsDetail',
   components: {
   },
-  mixins: [permissions],
+  mixins: [permissions, responsive],
   data () {
     return {
       loading: true,

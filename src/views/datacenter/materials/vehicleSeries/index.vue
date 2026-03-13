@@ -292,10 +292,15 @@ export default {
     },
     exportExcel () {
       this.exportLoading = true;
+      const reqParams = this.getFormData() || {};
+      if (this.selectionList.length > 0) {
+        const ids = this.selectionList.map(item => item.id) || [];
+        reqParams.ids = ids;
+      }
       exportTable({
         businessType: '车系',
         dataFetchPath: '/datacenter/web/materials/vehicleSeries/page',
-        reqParams: this.getFormData(),
+        reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
       }).then(async res => {
@@ -388,10 +393,6 @@ export default {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
-      }
-      if (Array.isArray(this.form.seriesNameList) && this.form.seriesNameList.length <= 1) {
-        delete data.seriesNameList;
-        data.seriesNameLike = this.form.seriesNameList[0] || '';
       }
 
       return data;

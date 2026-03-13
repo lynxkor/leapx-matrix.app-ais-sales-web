@@ -171,7 +171,7 @@ export default {
     return {
       pageTitle: '整车零售-金融补贴-金融产品管理',
       pageType: 'list',
-      moduleKey: 'AISMC-vrFinanceProduct',
+      moduleKey: 'AISVR-vrFinanceProduct',
       form: {
         ...defaultForm
       },
@@ -214,10 +214,10 @@ export default {
           { props: 'minFinalPaymentRatio', label: '最低尾款比例(%)', visible: true, width: 150 },
           { props: 'maxDownPaymentRatio', label: '最高首付比例(%)', visible: true, width: 150 },
           { props: 'maxFinalPaymentRatio', label: '最高尾款比例(%)', visible: true, width: 150 },
-          { props: 'interestFeeMode', label: '息费模式', visible: true, width: 120 },
-          { props: 'interestPaymentMethod', label: '付息方式', visible: true, width: 120 },
-          { props: 'financeProductStatus', label: '金融产品状态', visible: true, width: 150 },
-          { props: 'financeProductType', label: '金融产品类型', visible: true, width: 150 },
+          { props: 'interestFeeModeLabel', label: '息费模式', visible: true, width: 120 },
+          { props: 'interestPaymentMethodLabel', label: '付息方式', visible: true, width: 120 },
+          { props: 'financeProductStatusLabel', label: '金融产品状态', visible: true, width: 150 },
+          { props: 'financeProductTypeLabel', label: '金融产品类型', visible: true, width: 150 },
           { props: 'updateTime', label: '最近更新时间', visible: true, width: 180 },
           { props: 'createTime', label: '创建时间', visible: true, width: 180 }
         ],

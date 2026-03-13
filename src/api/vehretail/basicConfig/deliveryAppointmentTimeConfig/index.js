@@ -42,3 +42,11 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 根据城市code获取配置
+ * @param {Object} data
+ */
+export function findByCityCode (data) {
+  return api.jsonPost(prefix + 'findByCityCode', data);
+}

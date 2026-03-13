@@ -162,7 +162,7 @@ export default {
     return {
       pageTitle: '整车零售-订单管理-团购订单权益申请管理',
       pageType: 'list',
-      moduleKey: 'AISMC-vrGroupbuyOrderEquityApply',
+      moduleKey: 'AISVR-vrGroupbuyOrderEquityApply',
       form: {
         ...defaultForm
       },
@@ -196,9 +196,9 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'auditStatus', label: '申请单状态', visible: true, width: 120 },
+          { props: 'auditStatusLabel', label: '申请单状态', visible: true, width: 120 },
           { props: 'dealerName', label: '销售门店', visible: true, width: 150 },
-          { props: 'cooperationType', label: '合作类型', visible: true, width: 120 },
+          { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 120 },
           { props: 'regionName', label: '所属区域或部门', visible: true, width: 150 },
           { props: 'applicant', label: '申请人', visible: true, width: 120 },
           { props: 'applicationTime', label: '申请日期', visible: true, width: 180 },
