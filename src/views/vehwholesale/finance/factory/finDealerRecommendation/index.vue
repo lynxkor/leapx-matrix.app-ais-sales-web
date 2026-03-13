@@ -35,7 +35,7 @@
             multiple
             />
         </el-form-item>
-        <el-form-item label="推荐金融机构">
+        <el-form-item label="推荐金融机构" v-show="this.visibleCount === 3 || show">
          <fetch-select
             :remote-method="repairItemSearch"
             remote

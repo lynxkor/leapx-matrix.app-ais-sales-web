@@ -36,7 +36,7 @@
             filterable
           />
     </el-form-item>
-    <el-form-item label="同步状态">
+    <el-form-item label="同步状态" v-show="this.visibleCount === 3 || show">
       <fetch-select
          :request="fetchOptions"
           enumCode="vw_sync_status"

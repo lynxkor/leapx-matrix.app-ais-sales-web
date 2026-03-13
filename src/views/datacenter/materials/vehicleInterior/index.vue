@@ -333,10 +333,6 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
-      if (Array.isArray(this.form.interiorNameList) && this.form.interiorNameList.length <= 1) {
-        delete data.interiorNameList;
-        data.interiorNameLike = this.form.interiorNameList[0] || '';
-      }
 
       return data;
     },

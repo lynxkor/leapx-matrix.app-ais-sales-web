@@ -32,7 +32,7 @@
               filterable
             />
       </el-form-item>
-      <el-form-item label="创建时间">
+      <el-form-item label="创建时间" v-show="this.visibleCount === 3 || show">
         <el-date-picker
          :default-time="['00:00:00', '23:59:59']"
           v-model="form.createTime"

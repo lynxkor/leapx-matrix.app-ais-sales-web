@@ -329,11 +329,6 @@ export default {
         }
       }
 
-      if (Array.isArray(this.form.drivingRangeNameList) && this.form.drivingRangeNameList.length <= 1) {
-        delete data.drivingRangeNameList;
-        data.drivingRangeNameLike = this.form.drivingRangeNameList[0] || '';
-      }
-
       return data;
     },
     async fetchOptions (code) {

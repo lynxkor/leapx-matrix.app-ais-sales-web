@@ -36,7 +36,7 @@
             label-key="companyName"
           />
         </el-form-item>
-        <el-form-item label="企业客户补货订单编号">
+        <el-form-item label="企业客户补货订单编号" v-show="this.visibleCount === 3 || show">
           <el-input
             placeholder="请输入"
             v-model="form.entReplenishOrderCode"

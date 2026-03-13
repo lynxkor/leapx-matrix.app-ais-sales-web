@@ -36,7 +36,7 @@
             label-key="companyName"
           />
         </el-form-item>
-           <el-form-item label="审核状态">
+           <el-form-item label="审核状态" v-show="this.visibleCount === 3 || show">
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_ent_vehicle_replenish_order_audit_status"
