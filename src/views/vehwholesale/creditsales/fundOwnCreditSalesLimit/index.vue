@@ -24,7 +24,7 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item label="赊销账户状态">
+        <el-form-item label="赊销账户状态" v-show="this.visibleCount === 3 || show">
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_fund_own_credit_sales_limit_status"

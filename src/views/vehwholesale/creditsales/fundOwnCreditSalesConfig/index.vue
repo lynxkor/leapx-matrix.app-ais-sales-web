@@ -31,7 +31,7 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item label="配置状态">
+        <el-form-item label="配置状态" v-show="this.visibleCount === 3 || show">
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_credit_sales_config_audit_status"
