@@ -131,7 +131,7 @@ export default {
     return {
       pageTitle: '整车零售-订单管理-特殊车辆清单管理',
       pageType: 'list',
-      moduleKey: 'AISMC-vrSpecialVehicle',
+      moduleKey: 'AISVR-vrSpecialVehicle',
       form: {
         ...defaultForm
       },

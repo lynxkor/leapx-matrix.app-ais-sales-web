@@ -168,7 +168,7 @@
                 </el-form-item>
                 <el-form-item label="结算资金类型：" prop="settleFundType">
                   <fetch-select
-                    :request="fetchOptions"
+                    :options="settleFundTypeOptions"
                     enumCode="vw_fundtype"
                     v-model="form.settleFundType"
                     placeholder="请选择结算资金类型"
@@ -288,7 +288,7 @@
               <h2>整车门店补货明细</h2>
             </div>
             <div class="common-section-body">
-              <el-button size="small" @click="handleAddRow" style="margin-bottom: 10px;">添加补货明细</el-button>
+              <el-button size="small" @click="handleAddRow" style="margin-bottom: 10px;" v-show = "(form.permission.edit && _id) || !_id">添加补货明细</el-button>
               <div class="common-section-table">
                 <component-table
                   :tableData="form.details"
@@ -456,6 +456,7 @@ export default {
       pannelTitle: '',
       moduleKey: 'AISVW-dealerVehicleReplenishApply',
       orderCategoryOptions: [],
+      settleFundTypeOptions: [],
       prodScheduleActivityOptions: [],
       loading: false,
       submitLoading: false,
@@ -545,6 +546,7 @@ export default {
   },
   mounted () {
     this.fetchOrderCategoryOptions();
+    this.fetchsettleFundTypeOptions();
   },
   methods: {
     handleDeleteDetailRow (row, rowIndex) {
@@ -702,6 +704,18 @@ export default {
         };
       });
     },
+    async fetchsettleFundTypeOptions () {
+      const response = await getEnum('vw_fundtype');
+      this.settleFundTypeOptions = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['1010', '1050', '2010'].includes(codeStr + '');
+      }).map(item => {
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
+    },
     async handleChangeDealer (val, record) {
       this.form.saleDealerName = record?.storeName || '';
       this.form.saleDealerCode = record?.storeCode || '';
@@ -737,9 +751,12 @@ export default {
       if (val + '' !== '2010') {
         this.form.financialOrganizationId = '';
       }
-      if (val + '' === '1050' && !this._id) {
+      if (val + '' === '1050') {
         this.form.isCreditSale = 1;
+      } else {
+        this.form.isCreditSale = 0;
       }
+      console.log('结算资金类型改变:', val);
     },
     async getDealerListByName (params) {
       return await listOrgStoreInfo({ storeName: params, isWholesaleSale: true });

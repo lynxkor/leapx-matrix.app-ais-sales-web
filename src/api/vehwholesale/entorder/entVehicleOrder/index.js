@@ -114,3 +114,11 @@ export function setEmergencyOrder (data) {
 export function vinAllocateVehicleItem (data) {
   return api.jsonPost(prefix + 'vinAllocateVehicle', data);
 }
+
+/**
+ * 查询SAP账户余额
+ * @param {Object} data
+ */
+export function querySAPAccountBalance (data) {
+  return api.jsonPost(prefix + 'querySAPAccountBalance', data);
+}

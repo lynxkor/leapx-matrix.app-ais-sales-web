@@ -77,7 +77,7 @@
             reserve-keyword
             labelKey="organizationName"
             valueKey="organizationCode"
-            v-model="form.fundFinancialOrganizationIds"
+            v-model="form.fundFinancialOrganizationCodes"
             placeholder="请选择"
             clearable
             filterable
@@ -211,7 +211,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车销售-企业客户订单-企业客户补货订单管理',
+      pageTitle: '企业客户补货订单',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-entVehicleReplenishOrder',
@@ -396,7 +396,7 @@ export default {
     },
     onSubmit () {
       console.log('onSubmit', this.form);
-      if (this.form.settleFundTypes.length > 0 && this.form.settleFundTypes.includes('2010') && this.form.fundFinancialOrganizationIds.length === 0) {
+      if (this.form.settleFundTypes.length > 0 && this.form.settleFundTypes.includes('2010') && this.form.fundFinancialOrganizationCodes.length === 0) {
         return this.$message({
           type: 'error',
           message: '结算资金类型选择【融资】，金融机构必填!'

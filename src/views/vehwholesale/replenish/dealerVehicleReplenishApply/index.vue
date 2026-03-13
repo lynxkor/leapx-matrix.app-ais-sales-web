@@ -104,7 +104,7 @@
         </el-form-item>
         <el-form-item label="结算资金类型">
           <fetch-select
-            :request="fetchOptions"
+            :options="settleFundTypeOptions"
             enumCode="vw_fundtype"
             v-model="form.settleFundType"
             placeholder="请选择"
@@ -261,6 +261,7 @@ export default {
       },
       selectionList: [],
       orderCategoryOptions: [],
+      settleFundTypeOptions: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -353,6 +354,7 @@ export default {
   },
   mounted () {
     this.fetchOrderCategoryOptions();
+    this.fetchsettleFundTypeOptions();
   },
   methods: {
     async vehicleWholesale () {
@@ -620,6 +622,18 @@ export default {
         return ['0', '2', '20'].includes(codeStr);
       }).map(item => {
         // 确保 code 字段是字符串类型
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
+    },
+    async fetchsettleFundTypeOptions () {
+      const response = await getEnum('vw_fundtype');
+      this.settleFundTypeOptions = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['1010', '1050', '2010'].includes(codeStr + '');
+      }).map(item => {
         return {
           ...item,
           code: String(item.code)

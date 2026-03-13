@@ -28,6 +28,7 @@
           remote
           multiple
           v-model="form.dealerCompanyCodes"
+          :param="form.dealerCompanyName"
           :remote-method="getDealerParentOrgListByName"
           value-key="companyCode"
           label-key="companyName"
@@ -41,7 +42,7 @@
           reserve-keyword
             labelKey="organizationName"
             valueKey="organizationCode"
-          v-model="form.fundFinancialOrganizationIds"
+          v-model="form.fundFinancialOrganizationCodes"
           placeholder="请选择"
           clearable
           filterable
@@ -178,7 +179,7 @@ const defaultForm = {
   dealerCompanyCode: '',
   dealerCompanyCodes: [],
   dealerCompanyName: '',
-  fundFinancialOrganizationIds: [],
+  fundFinancialOrganizationCodes: [],
   limitEffectiveDate: '',
   limitExpiryDate: '',
   businessMode: '',

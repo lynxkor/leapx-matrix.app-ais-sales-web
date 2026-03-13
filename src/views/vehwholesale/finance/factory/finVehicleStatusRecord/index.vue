@@ -63,6 +63,7 @@
           remote
           multiple
           v-model="form.mainDealerCompanyCodes"
+          :param="form.dealerCompanyName"
           :remote-method="getDealerParentOrgListByName"
           value-key="companyCode"
           label-key="companyName"
@@ -76,7 +77,7 @@
             multiple
             labelKey="organizationName"
             valueKey="organizationCode"
-            v-model="form.fundFinancialOrganizationIds"
+            v-model="form.fundFinancialOrganizationCodes"
             placeholder="请选择"
             clearable
             filterable
@@ -206,7 +207,7 @@ const defaultForm = {
   dealerCompanyCode: '',
   dealerCompanyCodes: [],
   dealerCompanyName: '',
-  fundFinancialOrganizationIds: [],
+  fundFinancialOrganizationCodes: [],
   shipmentDate: '',
   receiveDate: '',
   syncStatus: '',

@@ -302,7 +302,7 @@ export default {
     return {
       pageTitle: '整车零售-金融补贴-金融订单管理',
       pageType: 'edit',
-      moduleKey: 'AISMC-vrFinanceOrder',
+      moduleKey: 'AISVR-vrFinanceOrder',
       form: { ...form },
       originalForm: { ...form }
     };
