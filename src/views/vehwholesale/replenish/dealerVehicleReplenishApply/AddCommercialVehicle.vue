@@ -81,10 +81,9 @@
             resizable
             border="inner"
             size="medium"
-            height="auto"
             width="1000px"
             min-height="300px"
-            max-height="1000px"
+            max-height="800px"
             :checkbox-config="{ checkField: 'checked' }"
           >
             <vxe-column field="checkbox" title="数量" align="center" width="140">

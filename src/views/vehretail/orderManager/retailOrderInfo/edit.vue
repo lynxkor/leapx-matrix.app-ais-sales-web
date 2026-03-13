@@ -21,8 +21,8 @@
           <el-button size="small" @click="handlePrintContractTermination">打印合同解除协议</el-button>
           <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" @click="handleSetSpecialMark">设置特殊标识</el-button>
           <el-button size="small" @click="handleModifyConfiguration">修改配置</el-button>
-          <!-- <el-button size="small" @click="handleManualVehicleAllocation">手工配车</el-button> -->
-          <el-button size="small" @click="handleAutoLockVehicle">自动锁车</el-button>
+          <el-button size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
+          <el-button size="small" v-if="form.lockStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
           <el-button size="small" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
           <el-button size="small"
                      @click="navigateToRoute({
@@ -94,15 +94,7 @@
                   />
                 </el-form-item>
                 <el-form-item label="订单状态：" prop="orderStatus">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
-                    v-model="form.orderStatus"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                    :disabled="!canEditField('orderStatus')"
-                  />
+                  <el-input v-model="form.orderStatusLabel" disabled />
                 </el-form-item>
                 <el-form-item label="商城下单时间：" prop="orderTime">
                   <el-date-picker
@@ -166,12 +158,22 @@
                     :disabled="!canEditField('saleDealerName')"
                   />
                 </el-form-item>
-                <el-form-item label="订单销售顾问：" prop="saleUserName">
-                  <el-input
+                <el-form-item label="订单销售顾问：" prop="saleUserId">
+                  <fetch-select
+                    filterable
+                    clearable
+                    remote
+                    v-model="form.saleUserId"
+                    :remote-method="remoteMethods.saleUser"
+                    value-key="userId"
+                    label-key="username"
+                    @change="(val, row) => handleSaleUserChange(val,row, 'saleUser')"
+                  />
+                  <!-- <el-input
                     placeholder="请输入"
                     v-model="form.saleUserName"
                     clearable
-                  />
+                  /> -->
                 </el-form-item>
                 <el-form-item label="订单交付门店：" prop="deliveryDealerName">
                   <el-input
@@ -182,10 +184,15 @@
                   />
                 </el-form-item>
                 <el-form-item label="订单交付顾问：" prop="deliveryUserName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.deliveryUserName"
+                  <fetch-select
+                    filterable
                     clearable
+                    remote
+                    v-model="form.deliveryUserId"
+                    :remote-method="remoteMethods.deliveryUser"
+                    value-key="userId"
+                    label-key="username"
+                    @change="(val, row) => handleSaleUserChange(val,row, 'deliveryUser')"
                   />
                 </el-form-item>
                 <el-form-item label="是否预售订单：" prop="preSaleOrderLabel">
@@ -316,7 +323,7 @@
                     placeholder="请选择"
                     clearable
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="vr_finance_plan_type"
                     filterable
                   />
                 </el-form-item>
@@ -373,6 +380,8 @@
           <!-- 组件位置不要放在右侧栏组件 -->
            <!-- 修改配置对话框 -->
           <materials-dialog ref="materialsDialog" :row="form" @confirm="getDetailData" />
+          <!-- VIN 选择对话框 -->
+          <vin-dialog ref="vinDialog" :row="form" @confirm="onVinSelected" />
           <!-- 购车协议对话框 -->
           <purchase-agreement-dialog
             ref="PurchaseAgreementDialog"
@@ -441,13 +450,14 @@ import {
 import ComponentTable from './components/ComponentTable';
 import GenericDetailDisplay from './components/GenericDetailDisplay';
 import NavTop from './components/NavTop';
-import { getEnum, loginUserGet } from '@/api/common';
+import { getEnum, loginUserGet, engineerList } from '@/libs/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import MaterialsDialog from './components/MaterialsDialog';
 import PurchaseAgreementDialog from './components/PurchaseAgreementDialog';
+import VinDialog from './components/VinDialog';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -502,6 +512,7 @@ export default {
   components: {
     PurchaseAgreementDialog,
     MaterialsDialog,
+    VinDialog,
     NavTop,
     ComponentTable,
     GenericDetailDisplay,
@@ -541,6 +552,18 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
+      // 远程搜索方法
+      remoteMethods: {
+        // 初始方法
+        saleUser: async (query) => {
+          if (!query || query.length < 2) return [];
+          return await engineerList({ username: query, salesConfigKey: 'saleUser', orgCodeList: [this.form.saleDealerCode] });
+        },
+        deliveryUser: async (query) => {
+          if (!query || query.length < 2) return [];
+          return await engineerList({ username: query, salesConfigKey: 'deliveryUser', orgCodeList: [this.form.deliveryDealerCode] });
+        },
+      },
       rules: {
         saleUserName: [
           { required: true, message: '请输入订单销售顾问', trigger: 'change' }
@@ -672,6 +695,9 @@ export default {
     }
   },
   methods: {
+    handleSaleUserChange (val, row, name) {
+      this.form[name + 'Name'] = row.username;
+    },
     // 权益查询
     handleEquityInquiry () {
       console.log('执行权益查询');
@@ -729,8 +755,13 @@ export default {
     },
     // 手工配车
     handleManualVehicleAllocation () {
-      // 实现手工配车逻辑
-      console.log('手工配车');
+      this.$refs.vinDialog.show();
+    },
+    // VIN 选择确认回调
+    onVinSelected (vehicle) {
+      console.log('选中的车辆:', vehicle);
+      // 根据实际需求处理选中的车辆数据
+      this.$message.success('已选择车辆：' + vehicle.vin);
     },
     // 自动锁车
     handleAutoLockVehicle () {
