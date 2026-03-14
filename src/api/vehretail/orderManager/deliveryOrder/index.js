@@ -157,3 +157,11 @@ export function writeOff (data) {
 export function addPayRecord (data) {
   return api.jsonPost(prefix + 'addPayRecord', data);
 }
+
+/**
+ * 上传发票
+ * @param {Object} data
+ */
+export function uploadInvoice (data) {
+  return api.jsonPost(prefix + 'uploadInvoice', data);
+}

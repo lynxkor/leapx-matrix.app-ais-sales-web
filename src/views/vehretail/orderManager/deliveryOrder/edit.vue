@@ -26,7 +26,7 @@
           <el-button v-permission="moduleKey+'-deliveryConfirmPush'" size="small" @click="handleRepushConfirmOrder">交车确认单补推</el-button>
           <el-button v-permission="moduleKey+'-deliveryConfirmResign'" size="small" @click="handleReSignConfirmOrder">交车确认单重签</el-button>
           <el-button v-permission="moduleKey+'-viewDeliveryConfirm'" size="small" @click="handleViewConfirmOrder">查看交车确认单</el-button>
-          <el-button v-permission="moduleKey+'-uploadInvoice'" size="small" @click="handleUploadInvoice">上传发票</el-button>
+          <el-button v-if="form.status === 5" v-permission="moduleKey+'-uploadInvoice'" size="small" @click="handleUploadInvoice">上传发票</el-button>
           <el-button v-permission="moduleKey+'-cancelPayment'" size="small" @click="handlePaymentWithdraw">收款撤回</el-button>
           <el-button v-permission="moduleKey+'-cancelDelivery'" size="small" @click="handleDeliveryWithdraw">交车撤回</el-button>
           <!-- <el-button v-permission="'AISVR-retailOrderPayRecord' + '-delete'" size="small" @click="handleDelete">删除</el-button> -->
@@ -416,8 +416,9 @@ import {
   validateRemainingReceivable,
   validateUnverifiedRights,
   confirmPayment,
-  checkCarBuyerPhoneRegistered, // 校验购车人手机号是否注册零跑APP
+  checkCarBuyerPhoneRegistered, uploadInvoice, // 校验购车人手机号是否注册零跑APP
 } from '@/api/vehretail/orderManager/deliveryOrder/index';
+import { getList as getInvoiceList } from '@/api/vehretail/orderManager/deliveryInvoice/index';
 import {
   getList as getPaymentRecordList,
   deleteItem as deletePaymentRecord
@@ -1084,7 +1085,55 @@ export default {
     // 查看交车确认单
     handleViewConfirmOrder () {},
     // 上传发票
-    handleUploadInvoice () {},
+    handleUploadInvoice () {
+      if (this.form.deliveryConfirmStatus !== 10 && this.form.deliveryConfirmStatus !== 15) {
+        this.$confirm('未生成交车确认单，是否生成交车确认单进行签署', '交车确认单生成提醒', {
+          distinguishCancelAndClose: true,
+          cancelButtonText: '取消',
+          confirmButtonText: '确定',
+          type: 'warning'
+        }).then(() => {
+          this.doUploadInvoice(false);
+        }).catch(action  => {
+          if (action !== 'cancel') {
+            return;
+          }
+          this.doUploadInvoice(true);
+        });
+      } else {
+        // 查询是否已存在开票记录
+        getInvoiceList({ page: 1, size: 1, deliveryOrderId: this.form.deliveryOrderId }).then(res => {
+          if (res.records && res.records.length > 0) {
+            this.$router.push({
+              path: '/vehretail/orderManager/deliveryInvoice/edit',
+              query: {
+                id: res.records[0].id
+              }
+            });
+          } else {
+            this.$confirm('未生成整车开票记录，请确认是否生成', '上传发票', {
+              distinguishCancelAndClose: true,
+              cancelButtonText: '取消',
+              confirmButtonText: '确定',
+              type: 'warning'
+            }).then(() => {
+              this.doUploadInvoice(true);
+            });
+          }
+        });
+      }
+    },
+    doUploadInvoice (onlyGenerateInvoice) {
+      uploadInvoice({
+        deliveryOrderId: this.form.deliveryOrderId,
+        retailOrderId: this.form.retailOrderId,
+        onlyGenerateInvoice: onlyGenerateInvoice,
+      }).then(res => {
+        this.$message.success('上传发票成功');
+        // 重新加载详情数据
+        this.reloadDetail();
+      });
+    },
     // 收款撤回
     handlePaymentWithdraw () {},
     // 交车撤回
