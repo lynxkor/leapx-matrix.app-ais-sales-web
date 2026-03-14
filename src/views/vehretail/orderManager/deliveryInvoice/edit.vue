@@ -569,7 +569,7 @@
 
           <!-- 弹框底部按钮 -->
           <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handleSave" :disabled="!canSave">保存</el-button>
+        <el-button type="primary" @click="handleConfirmUpload">保存</el-button>
         <el-button @click="dialogVisible = false">取消</el-button>
       </span>
         </el-dialog>
@@ -584,7 +584,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, deleteItem } from '@/api/vehretail/orderManager/deliveryInvoice/index';
+import {getDetail, addOrUpdate, deleteItem, confirmUpload} from '@/api/vehretail/orderManager/deliveryInvoice/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -838,6 +838,17 @@ export default {
   mounted () {
   },
   methods: {
+    handleConfirmUpload () {
+      if (this.doComparisonData().length > 0) {
+        this.$message.warning('识别信息与校验信息不一致,请重新确认！');
+      } else {
+        confirmUpload(this.form.id).then(res => {
+          this.$message.success('交车完成成功');
+          // 重新加载详情数据
+          this.reloadDetail();
+        });
+      }
+    },
     openDialogShow () {
       // 比对数据
       const comparisonData = this.doComparisonData();
