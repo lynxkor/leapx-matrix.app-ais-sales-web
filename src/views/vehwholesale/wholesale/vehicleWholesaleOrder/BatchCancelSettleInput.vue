@@ -8,7 +8,6 @@
               enumCode="vw_wholesale_order_cancel_settle_type"
               v-model="Selectform.cancelSettleType"
               placeholder="请选择"
-              clearable
               filterable
             />
           </el-form-item>
@@ -42,7 +41,7 @@ export default {
   data () {
     return {
       Selectform: {
-        cancelSettleType: ''
+        cancelSettleType: '20'
       },
     };
   },
@@ -59,7 +58,7 @@ export default {
   watch: {
     visible (newVal) {
       if (newVal) {
-        this.Selectform.cancelSettleType = '';
+        this.Selectform.cancelSettleType = this.Selectform.cancelSettleType || '20';
       }
     }
   },

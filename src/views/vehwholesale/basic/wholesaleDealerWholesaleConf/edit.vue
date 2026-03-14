@@ -31,7 +31,7 @@
                   :disabled="!!_id"
                 />
               </el-form-item>
-              <el-form-item label="门店名称" prop="dealerName">
+              <el-form-item label="门店名称" prop="dealerName" v-show="!!_id">
                 <fetch-select
                   filterable
                   clearable
@@ -91,6 +91,7 @@
                   clearable
                   remote
                   v-model="form.dealerParentOrgId"
+                  :params="form.dealerParentOrgName"
                   :remote-method="getDealerParentOrgList"
                   value-key="companyCode"
                   label-key="companyName"

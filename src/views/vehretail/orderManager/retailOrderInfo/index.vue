@@ -193,7 +193,7 @@
        <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length !== 1" @click="handleUnlock">取消锁车</el-button>
        <el-button v-permission="moduleKey+'-changeSaleDealer'" size="small" @click="handleChangeDealer('sales')" :disabled="selectionList.length === 0">更换销售门店</el-button>
        <el-button v-permission="moduleKey+'-changeDeliveryDealer'" size="small" @click="handleChangeDealer('support')" :disabled="selectionList.length === 0">更换交付门店</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <!-- <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button> -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
@@ -225,8 +225,6 @@
         <EditPage slot="centralizedViewSlot" :id="clickItemId"/>
       </LPVxeTable>
     </div>
-    <!-- TIPS: 填入项目id即可 -->
-    <Upload :visible="uploadDialogVisible" :id="'1'" @close="handleUploadDialogClose" />
     <!-- 取消锁车 -->
      <UnlockDialog
       ref="unlockDialog"
@@ -252,7 +250,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, getOrderUnlockConfig, batchReplaceStore } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getList, getOrderUnlockConfig, batchReplaceStore } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import {
   getTableConfig,
   tableAddOrUpdate,
@@ -266,11 +264,10 @@ import {
   loginUserGet,
 } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
-import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
+import { downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
@@ -346,7 +343,6 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload,
     ChangeDealer
   },
   data () {
@@ -375,7 +371,6 @@ export default {
       show: false,
       loading: false,
       exportLoading: false,
-      uploadDialogVisible: false,
       clickItemId: '',
       modelList: [],
       yearModelList: [],
@@ -527,7 +522,7 @@ export default {
       if (this.activeTab === 'all') {
         this.form.orderStatusList = [];
       } else if (this.activeTab === 'undelivered') {
-        this.form.orderStatusList = [35, 30, 40, 6, 7, 10];
+        this.form.orderStatusList = [3, 5, 6, 7, 9, 30, 40];
       }
       this.getData();
     },
@@ -585,7 +580,7 @@ export default {
       const res = await getOrderUnlockConfig(this.row.retailOrderCode);
       // 检查返回结果是否有效
       if (!res || res.allowUnlockStatus !== 1 || res.allowManualCarStatus !== 1) {
-        this.$message.error('该门店没有取消配车权限');
+        this.$message.error('未绑定批售订单状态为订单确认的订单才能更换门店');
         return;
       }
       // 检查 accountFlag 和 unlockCount 的关系
@@ -655,17 +650,6 @@ export default {
     },
     handleListSelect (row) {
       this.clickItemId = row.id;
-    },
-    handleImport () {
-      this.uploadDialogVisible = true;
-    },
-    handleUploadDialogClose () {
-      this.uploadDialogVisible = false;
-    },
-    handleAdd () {
-      this.$router.push({
-        path: '/vehretail/orderManager/retailOrderInfo/edit'
-      });
     },
     onSubmit () {
       this.optionObj.form.page = 1;
@@ -795,40 +779,6 @@ export default {
         return getEnum(code);
       }
       return [];
-    },
-    // 批量删除
-    handleBatchDelete () {
-      const ids = this.selectionList.map(item => item.id) || [];
-      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
-      this.$confirm(message, '', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        dangerouslyUseHTMLString: true,
-        customClass: 'ais-leave-tips',
-        showClose: false
-      }).then(() => {
-        deleteItem(ids).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-          this.getData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '删除失败!'
-          });
-        });
-      }).catch(() => {});
-    },
-    // 批量启用停用
-    handleBatchEnable (status) {
-      handleBatchStatusChange.call(this, {
-        selectionList: this.selectionList,
-        targetStatus: status,
-        apiFunc: enableItem,
-        refreshFunc: this.getData
-      });
     },
     async getIsSalesCode (params) {
       return listOrgStoreInfo({ keyword: params, isSales: true });

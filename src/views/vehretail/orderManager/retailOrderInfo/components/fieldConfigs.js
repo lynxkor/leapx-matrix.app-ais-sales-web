@@ -2,7 +2,7 @@
 export const retailOrderDisplayFields = [
   { key: 'mallOrderCode', label: '商城订单编号' },
   { key: 'retailOrderCode', label: '整车订单号' },
-  { key: 'orderStatus', label: '订单状态' },
+  { key: 'orderStatusLabel', label: '订单状态' },
   { key: 'orderTime', label: '商城下单时间' },
   { key: 'createTime', label: '创建时间' },
   { key: 'compositeOrderCode', label: '综合订单编码' },
@@ -28,7 +28,7 @@ export const retailOrderDisplayFields = [
 export const carOwnerDisplayFields = [
   { key: 'carBuyerName', label: '购车人姓名' },
   { key: 'carBuyerPhone', label: '购车人手机' },
-  { key: 'idCardType', label: '证件类型' },
+  { key: 'idCardTypeLabel', label: '证件类型' },
   { key: 'idCardNo', label: '证件号码' },
   { key: 'agentName', label: '代办联系人' },
   { key: 'orderUserName', label: '下单人姓名' },
@@ -66,7 +66,7 @@ export const materialsDisplayFields = [
 export const lockAllocationDisplayFields = [
   { key: 'lockCarType', label: '锁车类型' },
   { key: 'lockType', label: '锁车匹配类型' },
-  { key: 'lockStatus', label: '是否锁单' },
+  { key: 'lockStatusLabel', label: '是否锁单' },
   { key: 'lockTime', label: '锁单时间' },
   { key: 'materialsCode', label: '订单物料码' },
   { key: 'allocationMaterialCode', label: '配车物料编码' },

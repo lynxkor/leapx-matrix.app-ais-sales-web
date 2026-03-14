@@ -2670,6 +2670,24 @@ const routes = [
         name: '交付满意度问卷配置管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehretail/orderManager/deliveryInvoice',
+      name: 'deliveryInvoice',
+      component: () => import('@/views/vehretail/orderManager/deliveryInvoice/index.vue'),
+
+      meta: {
+        name: '整车开票记录',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/ordermanager/deliveryinvoice/edit',
+      name: 'deliveryInvoiceEdit',
+      component: () => import('@/views/vehretail/orderManager/deliveryInvoice/edit.vue'),
+
+      meta: {
+        name: '整车开票记录',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
