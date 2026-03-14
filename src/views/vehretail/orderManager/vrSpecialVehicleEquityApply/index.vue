@@ -176,7 +176,7 @@ export default {
           { props: 'ocrInvoiceDate', label: '发票识别的开票日期', visible: true, width: 180 },
           { props: 'ocrInvoiceAmount', label: '发票识别的开票金额', visible: true, width: 150 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 180 }
+          { props: 'createTime', label: '创建时间', visible: true, width: 180, fixed: 'right' }
         ],
         total: 0
       },

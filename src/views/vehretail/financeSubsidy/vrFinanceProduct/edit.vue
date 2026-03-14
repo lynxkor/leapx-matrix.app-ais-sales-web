@@ -51,16 +51,16 @@
             <div class="common-section-body">
               <el-form :inline="true" class="form-detail">
                 <el-form-item label="金融产品类型：">
-                  {{ form.financeProductType }}
+                  {{ form.financeProductTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融产品状态：">
-                  {{ form.financeProductStatus }}
+                  {{ form.financeProductStatusLabel }}
                 </el-form-item>
                 <el-form-item label="付息方式：">
-                  {{ form.interestPaymentMethod }}
+                  {{ form.interestPaymentMethodLabel }}
                 </el-form-item>
                 <el-form-item label="息费模式：">
-                  {{ form.interestFeeMode }}
+                  {{ form.interestFeeModeLabel }}
                 </el-form-item>
                 <el-form-item label="最低首付比例(%)：">
                   {{ form.minDownPaymentRatio }}

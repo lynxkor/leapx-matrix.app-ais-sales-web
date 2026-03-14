@@ -156,7 +156,7 @@ export default {
           { props: 'interiorStyle', label: '内饰风格', visible: true, width: 150 },
           { props: 'vehicleYearType', label: '车辆年型(L)', visible: true, width: 150 },
           { props: 'optionPackage', label: '选装包', visible: true, width: 150 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 180 }
+          { props: 'createTime', label: '创建时间', visible: true, width: 180, fixed: 'right' }
         ],
         total: 0
       },

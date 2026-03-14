@@ -522,7 +522,7 @@ export default {
       if (this.activeTab === 'all') {
         this.form.orderStatusList = [];
       } else if (this.activeTab === 'undelivered') {
-        this.form.orderStatusList = [35, 30, 40, 6, 7, 10];
+        this.form.orderStatusList = [3, 5, 6, 7, 9, 30, 40];
       }
       this.getData();
     },
@@ -580,7 +580,7 @@ export default {
       const res = await getOrderUnlockConfig(this.row.retailOrderCode);
       // 检查返回结果是否有效
       if (!res || res.allowUnlockStatus !== 1 || res.allowManualCarStatus !== 1) {
-        this.$message.error('该门店没有取消配车权限');
+        this.$message.error('未绑定批售订单状态为订单确认的订单才能更换门店');
         return;
       }
       // 检查 accountFlag 和 unlockCount 的关系

@@ -299,6 +299,12 @@ export default {
                 });
               },
               type: 'info'
+            }, {
+              name: '日志',
+              click: (rowIndex, row) => {
+                this.$auditLog.show({ id: row.id });
+              },
+              type: 'info'
             }]
           }
         ],

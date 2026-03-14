@@ -158,47 +158,7 @@ export default {
           { props: 'statusLabel', label: '金融产品状态', visible: true, width: 200 },
           { props: 'priority', label: '优先级', visible: true, width: 200 },
           { props: 'updateTime', label: '最近更新时间', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
-          {
-            props: 'operate',
-            label: '操作',
-            type: 'operate',
-            visible: true,
-            fixed: 'right',
-            buttons: [{
-              name: '编辑',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehretail/financeSubsidy/vrFinancePlan/edit',
-                  query: {
-                    id: row.id,
-                    isEditing: true
-                  }
-                });
-              },
-              type: 'info'
-            }, {
-              name: '删除',
-              popconfirmConfirmButtonType: 'danger',
-              popconfirmConfirmButtonText: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
-            }]
-          }
+          { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true, fixed: 'right' }
         ],
         total: 0
       },

@@ -50,7 +50,8 @@
               <el-form-item label="附件说明" prop="changeDescFileId">
                 <AisAttachment
                   :businessId="_id"
-                  ref="attchment"
+                  attachType="配额调整说明"
+                  configCode="dealer_demo_vehicle_quota_record"
                 />
               </el-form-item>
             </el-form>

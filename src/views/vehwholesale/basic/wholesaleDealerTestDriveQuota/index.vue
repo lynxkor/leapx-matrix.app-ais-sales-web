@@ -140,6 +140,22 @@
         @handleSelect="handleSelectionChange"
       />
     </div>
+    <!-- 日志弹窗 -->
+    <el-dialog
+      title="门店试驾车配额调整记录"
+      :visible.sync="logDialogVisible"
+      width="80%"
+      :modal-append-to-body="false"
+      :before-close="handleLogDialogClose"
+      class="dialog-with-table"
+    >
+      <LPVxeTable
+        ref="logTableRef"
+        v-loading="logLoading"
+        :option-obj="logOptionObj"
+        :get-config="getLogConfig"
+      />
+    </el-dialog>
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
@@ -155,6 +171,7 @@ import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleDealerTestDriveQuota/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo, listVehicleYearType, vehicleModelLineList, vehicleSeriesList } from '@/api/common';
+import { getList as getLogList } from '@/api/vehwholesale/basic/dealerDemoVehicleQuotaRecord/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -175,6 +192,7 @@ const defaultForm = {
 };
 
 const pageSize = 20;
+const logPageSize = 20;
 const mockConfig = {
   data: null
 };
@@ -202,6 +220,9 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      logDialogVisible: false,
+      logLoading: false,
+      currentRowId: null,
       optionObj: {
         id: 'wholesaleDealerTestDriveQuotaTable',
         dataList: [],
@@ -271,16 +292,33 @@ export default {
             }, {
               name: '日志',
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/basic/dealerDemoVehicleQuotaRecord',
-                  query: {
-                    id: row.id
-                  }
-                });
+                this.openLogDialog(row);
               },
               type: 'info'
             }]
           }
+        ],
+        total: 0
+      },
+      logOptionObj: {
+        id: 'dealerDemoVehicleQuotaRecordTable',
+        dataList: [],
+        dataProp: [
+          {
+            props: 'changeBeforeQty',
+            label: '变化前数量',
+            visible: true,
+            width: 200,
+          },
+          { props: 'changeAfterQty', label: '变化后数量', visible: true, width: 200 },
+          { props: 'changeQty', label: '变化数量', visible: true, width: 200 },
+          { props: 'changeTime', label: '变化时间', visible: true, width: 200 },
+          { props: 'logDataSourceLabel', label: '数据来源', visible: true, width: 200 },
+          { props: 'relatedFormCode', label: '相关单号', visible: true, width: 200 },
+          { props: 'changeDesc', label: '调整说明', visible: true, width: 200 },
+          { props: 'changeDescFileId', label: '附件调整说明', visible: true, width: 200 },
+          { props: 'responsibleName', label: '负责人', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
         ],
         total: 0
       }
@@ -488,7 +526,43 @@ export default {
     },
     async getVehicleYearTypeList (params) {
       return listVehicleYearType({ yearTypeNameLike: params, status: 1 });
-    }
+    },
+    // 日志弹窗相关方法
+    openLogDialog (row) {
+      this.currentRowId = row.id;
+      this.logDialogVisible = true;
+      this.getLogData();
+    },
+    handleLogDialogClose () {
+      this.logDialogVisible = false;
+    },
+    getLogData () {
+      this.logLoading = true;
+
+      getLogList({
+        relatedId: this.currentRowId
+      })
+        .then(res => {
+          this.logOptionObj.dataList = res.records.map(item => {
+            return {
+              ...item
+            };
+          });
+        }).finally(() => {
+          this.logLoading = false;
+        });
+    },
+    getLogConfig () {
+      return new Promise((resolve, reject) => {
+        getTableConfig(this.logOptionObj.id).then(data => {
+          resolve({ data });
+        }).catch(err => {
+          // 容错：此处如果接口挂了，也不应该影响正常使用
+          console.error(err);
+          resolve(mockConfig);
+        });
+      });
+    },
   }
 };
 </script>
@@ -496,5 +570,45 @@ export default {
 <style lang="scss" scoped>
   ::v-deep .el-input-number {
     width: 100%;
+  }
+
+  ::v-deep .dialog-with-table {
+    .el-dialog {
+      margin-top: 6vh !important;
+      height: 70vh;
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+
+      .el-dialog__body {
+        flex: 1;
+        overflow: auto;
+        padding: 10px 20px !important;
+        display: flex;
+        flex-direction: column;
+
+        .ais-table-c {
+          flex: 1;
+          min-height: 400px;
+          display: flex;
+          flex-direction: column;
+
+          .vxe-table--render-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+          }
+
+          .vxe-table--main-wrapper {
+            flex: 1;
+            min-height: 350px;
+          }
+
+          .vxe-table--footer-wrapper {
+            flex-shrink: 0;
+          }
+        }
+      }
+    }
   }
 </style>

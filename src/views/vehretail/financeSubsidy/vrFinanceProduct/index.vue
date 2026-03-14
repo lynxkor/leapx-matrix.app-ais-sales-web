@@ -57,44 +57,40 @@
         <el-form-item label="息费模式">
           <fetch-select
             :request="fetchOptions"
-            enumCode="finance_interest_fee_mode"
+            enumCode="vr_interest_fee_mode"
             v-model="form.interestFeeMode"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
         <el-form-item label="付息方式">
           <fetch-select
             :request="fetchOptions"
-            enumCode="finance_interest_payment_method"
+            enumCode="vr_interest_payment_method"
             v-model="form.interestPaymentMethod"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
         <el-form-item label="金融产品状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="finance_product_status"
+            enumCode="StatusEnum"
             v-model="form.financeProductStatus"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
         <el-form-item label="金融产品类型">
           <fetch-select
             :request="fetchOptions"
-            enumCode="finance_product_type"
+            enumCode="vr_finance_product_type"
             v-model="form.financeProductType"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -206,7 +202,7 @@ export default {
             }]
           },
           { props: 'code', label: '金融产品编码', visible: true, width: 180 },
-          { props: 'dataSource', label: '数据来源', visible: true, width: 120 },
+          { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 120 },
           { props: 'financeOrganizationName', label: '金融机构', visible: true, width: 150 },
           { props: 'effectiveDate', label: '生效日期', visible: true, width: 180 },
           { props: 'expireDate', label: '失效日期', visible: true, width: 180 },
@@ -219,7 +215,7 @@ export default {
           { props: 'financeProductStatusLabel', label: '金融产品状态', visible: true, width: 150 },
           { props: 'financeProductTypeLabel', label: '金融产品类型', visible: true, width: 150 },
           { props: 'updateTime', label: '最近更新时间', visible: true, width: 180 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true }
+          { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true, fixed: 'right' }
         ],
         total: 0
       },
@@ -329,6 +325,13 @@ export default {
       const data = { ...this.form };
       Object.keys(this.form).forEach(key => {
         if (data[key] === '' || data[key] === null) {
+          delete data[key];
+        }
+        if (key === 'effectiveDate' || key === 'expireDate') {
+          if (data[key] && Array.isArray(data[key]) && data[key].length === 2) {
+            data[`${key}Start`] = data[key][0];
+            data[`${key}End`] = data[key][1];
+          }
           delete data[key];
         }
       });

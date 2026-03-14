@@ -339,7 +339,48 @@ export default {
           { props: 'originalOwnerPhone', label: '原车主手机号', visible: true, width: 150 },
           { props: 'firstAuditTime', label: '初审时间', visible: true, width: 180 },
           { props: 'auditTime', label: '审核时间', visible: true, width: 180 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true }
+          { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true },
+          {
+            props: 'operate',
+            label: '操作',
+            type: 'operate',
+            visible: true,
+            fixed: 'right',
+            width: 150,
+            buttons: [{
+              name: '编辑',
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehretail/orderManager/vrEquityApply/edit',
+                  query: {
+                    id: row.id,
+                    isEditing: true
+                  }
+                });
+              },
+              type: 'info'
+            }, {
+              name: '删除',
+              popconfirmConfirmButtonType: 'danger',
+              popconfirmConfirmButtonText: '删除',
+              popconfirmTitle: '此操作将永久删除, 是否继续?',
+              click: (rowIndex, row) => {
+                deleteItem([row.id]).then(() => {
+                  this.$message({
+                    type: 'success',
+                    message: '删除成功!'
+                  });
+                  this.getData();
+                }).catch(() => {
+                  this.$message({
+                    type: 'error',
+                    message: '删除失败!'
+                  });
+                });
+              },
+              type: 'danger'
+            }]
+          }
         ],
         total: 0
       },

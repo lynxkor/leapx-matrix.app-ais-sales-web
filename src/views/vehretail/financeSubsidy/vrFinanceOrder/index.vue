@@ -52,10 +52,14 @@
       </el-form-item>
       <template v-if="show">
         <el-form-item label="所属区域或部门">
-          <el-input
-            placeholder="请输入"
-            v-model="form.regionName"
+          <fetch-select
+            filterable
             clearable
+            remote
+            v-model="form.regionName"
+            :remote-method="getRegionList"
+            value-key="orgName"
+            label-key="orgName"
           />
         </el-form-item>
         <el-form-item label="合作伙伴名称">
@@ -96,13 +100,16 @@
       <LPVxeTable
         ref="tableRef"
         v-loading="loading"
+        is-checkbox
         is-page
         centralized
+        checkboxFixed
         :option-obj="optionObj"
         :get-config="getConfig"
         @paginationChange="paginationChange"
         @listSelect="handleListSelect"
         @sortChange="handleSortChange"
+        @handleSelect="handleSelectionChange"
       >
         <EditPage slot="centralizedViewSlot" :id="clickItemId"/>
       </LPVxeTable>
@@ -115,12 +122,13 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList } from '@/api/vehretail/financeSubsidy/vrFinanceOrder/index';
-import { getTableConfig, tableAddOrUpdate, exportTable } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getRigion } from '@/api/common';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import FetchSelect from '@/libs/components/FetchSelect';
 
 const defaultForm = {
   installmentOrderCode: '',
@@ -145,7 +153,8 @@ export default {
   components: {
     PageSearchAction,
     LPVxeTable,
-    EditPage
+    EditPage,
+    FetchSelect
   },
   data () {
     return {
@@ -159,6 +168,7 @@ export default {
       loading: false,
       exportLoading: false,
       clickItemId: '',
+      selectionList: [],
       optionObj: {
         id: 'vrFinanceOrderTable',
         dataList: [],
@@ -227,7 +237,7 @@ export default {
           { props: 'auditTime', label: '审核时间', visible: true, width: 180 },
           { props: 'auditOpinion', label: '审核意见', visible: true, width: 150 },
           { props: 'cancelReason', label: '取消原因', visible: true, width: 150 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true }
+          { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true, fixed: 'right' }
         ],
         total: 0
       },
@@ -256,6 +266,10 @@ export default {
     handleListSelect (row) {
       this.clickItemId = row.id;
     },
+    // 多选框选中数据
+    handleSelectionChange (selection) {
+      this.selectionList = selection;
+    },
     onSubmit () {
       this.optionObj.form.page = 1;
       this.getData();
@@ -269,9 +283,13 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       const reqParams = this.getFormData() || {};
+      if (this.selectionList.length > 0) {
+        const ids = this.selectionList.map(item => item.id) || [];
+        reqParams.ids = ids;
+      }
       exportTable({
         businessType: '整车零售-金融补贴-金融订单管理',
-        dataFetchPath: 'vehretail/web/financeSubsidy/vrFinanceOrder/page',
+        dataFetchPath: 'vr/web/financeSubsidy/vrFinanceOrder/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -297,6 +315,8 @@ export default {
     },
     getData () {
       this.loading = true;
+      this.selectionList = [];
+
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
           this.optionObj.dataList = res.records.map(item => {
@@ -342,7 +362,10 @@ export default {
       });
       data.sortColumns = this.sortColumns;
       return data;
-    }
+    },
+    async getRegionList (params) {
+      return getRigion({ orgName: params });
+    },
   }
 };
 </script>
