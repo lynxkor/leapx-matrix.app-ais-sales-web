@@ -924,7 +924,7 @@ export default {
       return comparisonData;
     },
     openDeleteShow () {
-      this.$confirm('确认是否对数据进行删除?', '提示', {
+      this.$confirm('确认是否删除该整车开票记录?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
