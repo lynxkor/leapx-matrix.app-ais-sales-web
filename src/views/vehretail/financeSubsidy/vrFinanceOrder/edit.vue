@@ -28,7 +28,7 @@
                   {{ form.installmentOrderCode }}
                 </el-form-item>
                 <el-form-item label="金融订单状态：">
-                  {{ form.financeOrderStatus }}
+                  {{ form.financeOrderStatusLabel }}
                 </el-form-item>
                 <el-form-item label="VIN码：">
                   {{ form.vin }}
@@ -76,7 +76,7 @@
                   {{ form.remark }}
                 </el-form-item>
                 <el-form-item label="数据来源：">
-                  {{ form.dataSource }}
+                  {{ form.dataSourceLabel }}
                 </el-form-item>
                 <el-form-item label="创建时间：">
                   {{ form.createTime }}
@@ -102,7 +102,7 @@
                   {{ form.phoneNumber }}
                 </el-form-item>
                 <el-form-item label="证件类型：">
-                  {{ form.idType }}
+                  {{ form.idTypeLabel }}
                 </el-form-item>
                 <el-form-item label="身份证号：">
                   {{ form.idNumber }}

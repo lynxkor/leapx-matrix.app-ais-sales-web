@@ -131,10 +131,20 @@
                   </vxe-column>
                   <vxe-column field="modelName" title="车型名称" min-width="20%" />
                   <vxe-column field="createTime" title="创建时间" min-width="20%" />
+                  <vxe-column title="操作" width="100" v-if="canDelete">
+                    <template #default="{ rowIndex }">
+                      <el-popconfirm title="确定要删除吗？" @confirm="handleDeleteVehicleRow(rowIndex)">
+                        <span slot="reference" type="text" size="small" class="btn-delete">删除</span>
+                      </el-popconfirm>
+                    </template>
+                  </vxe-column>
                   <template #empty>
                     <div class="m-vxe-table-empty-text">{{emptyText}}</div>
                   </template>
                 </vxe-table>
+              </div>
+              <div class="common-section-statistics">
+                共{{ vehicleTableData.length }}条记录
               </div>
             </div>
           </section>
@@ -169,10 +179,20 @@
                   <vxe-column field="defaultDownPaymentRatio" title="默认首付比例(%)" min-width="10%" />
                   <vxe-column field="defaultFinalPaymentRatio" title="默认尾款比例(%)" min-width="10%" />
                   <vxe-column field="createTime" title="创建时间" min-width="10%" />
+                  <vxe-column title="操作" width="100" v-if="canDelete">
+                    <template #default="{ rowIndex }">
+                      <el-popconfirm title="确定要删除吗？" @confirm="handleDeleteProductRow(rowIndex)">
+                        <span slot="reference" type="text" size="small" class="btn-delete">删除</span>
+                      </el-popconfirm>
+                    </template>
+                  </vxe-column>
                   <template #empty>
                     <div class="m-vxe-table-empty-text">{{emptyText}}</div>
                   </template>
                 </vxe-table>
+              </div>
+              <div class="common-section-statistics">
+                共{{ productTableData.length }}条记录
               </div>
             </div>
           </section>
@@ -198,7 +218,7 @@
 </template>
 
 <script>
-import { getDetail } from '@/api/vehretail/financeSubsidy/vrFinancePlan/index';
+import { getDetail, addOrUpdate } from '@/api/vehretail/financeSubsidy/vrFinancePlan/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -248,6 +268,9 @@ export default {
     },
     title () {
       return '金融方案编码：' + (this.form.code || '');
+    },
+    canDelete () {
+      return !!this._id;
     }
   },
   watch: {
@@ -275,7 +298,21 @@ export default {
       originalForm: { ...form },
       emptyText: '若要启用此内容，请创建记录',
       vehicleTableData: [],
-      productTableData: []
+      productTableData: [],
+      rules: {
+        financePlanName: [
+          { required: true, message: '请输入金融方案名称', trigger: 'blur' }
+        ],
+        code: [
+          { required: true, message: '请输入金融方案编码', trigger: 'blur' }
+        ],
+        financePlanType: [
+          { required: true, message: '请选择金融方案类型', trigger: 'change' }
+        ],
+        status: [
+          { required: true, message: '请选择金融产品状态', trigger: 'change' }
+        ]
+      }
     };
   },
   methods: {
@@ -338,7 +375,30 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    submitRequest (data) {
+      return addOrUpdate(data);
+    },
+    // 删除适用车型行
+    handleDeleteVehicleRow (rowIndex) {
+      this.vehicleTableData.splice(rowIndex, 1);
+    },
+    // 删除金融产品行
+    handleDeleteProductRow (rowIndex) {
+      this.productTableData.splice(rowIndex, 1);
     }
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.common-section-statistics {
+  margin-top: 10px;
+  padding: 8px 15px;
+  background-color: #f5f7fa;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #606266;
+}
+</style>

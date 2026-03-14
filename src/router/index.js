@@ -2338,6 +2338,24 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
+      path: '/vehretail/financeSubsidy/vrFinanceOrganization',
+      name: 'financePlan',
+      component: () => import('@/views/vehretail/financeSubsidy/vrFinanceOrganization/index.vue'),
+
+      meta: {
+        name: '整车零售-金融补贴-金融机构',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/financeSubsidy/vrFinanceOrganization/edit',
+      name: 'financePlanEdit',
+      component: () => import('@/views/vehretail/financeSubsidy/vrFinanceOrganization/edit.vue'),
+
+      meta: {
+        name: '整车零售-金融补贴-金融机构详情',
+        noResourceUrl: 'true'
+      }
+    }, {
       path: '/vehretail/financeSubsidy/vrFinancePlan',
       name: 'financePlan',
       component: () => import('@/views/vehretail/financeSubsidy/vrFinancePlan/index.vue'),

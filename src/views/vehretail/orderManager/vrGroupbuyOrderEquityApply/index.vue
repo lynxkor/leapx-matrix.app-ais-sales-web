@@ -218,7 +218,28 @@ export default {
           { props: 'reviewAuditTime', label: '复审时间', visible: true, width: 180 },
           { props: 'finalAuditTime', label: '终审时间', visible: true, width: 180 },
           { props: 'remark', label: '备注', visible: true, width: 150 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 180 }
+          { props: 'createTime', label: '创建时间', visible: true, width: 180 },
+          {
+            props: 'operate',
+            label: '操作',
+            type: 'operate',
+            visible: true,
+            fixed: 'right',
+            width: 150,
+            buttons: [{
+              name: '编辑',
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehretail/orderManager/vrGroupbuyOrderEquityApply/edit',
+                  query: {
+                    id: row.id,
+                    isEditing: true
+                  }
+                });
+              },
+              type: 'info'
+            }]
+          }
         ],
         total: 0
       },

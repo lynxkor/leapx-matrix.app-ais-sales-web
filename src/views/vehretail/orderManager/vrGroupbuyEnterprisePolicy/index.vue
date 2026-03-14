@@ -159,7 +159,7 @@ export default {
           { props: 'validEndTime', label: '有效截止时间', visible: true, width: 180 },
           { props: 'creatorName', label: '负责人', visible: true, width: 120 },
           { props: 'remark', label: '备注', visible: true, width: 150 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 180 }
+          { props: 'createTime', label: '创建时间', visible: true, width: 180, fixed: 'right' }
         ],
         total: 0
       },
