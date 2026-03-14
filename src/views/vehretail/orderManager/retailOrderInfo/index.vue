@@ -522,7 +522,7 @@ export default {
       if (this.activeTab === 'all') {
         this.form.orderStatusList = [];
       } else if (this.activeTab === 'undelivered') {
-        this.form.orderStatusList = [35, 30, 40, 6, 7, 10];
+        this.form.orderStatusList = [3, 5, 6, 7, 9, 30, 40];
       }
       this.getData();
     },
