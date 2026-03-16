@@ -550,7 +550,7 @@ export default {
         saleStoreChangeType: data.saleStoreChangeType,
         saleStoreChangeRemark: data.saleStoreChangeRemark,
         orderIdList: data.dataList.map(item => item.id),
-        newStoreCode: data.storeInfo.storeCode,
+        newStoreCode: data.storeCode,
         changeType: data.type === 'sales' ? 1 : 2
       };
       batchReplaceStore(param).then(res => {
