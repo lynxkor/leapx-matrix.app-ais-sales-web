@@ -7,10 +7,11 @@
         :id="_id"
         :title="title"
         :form.sync="form"
+        :isEditing.sync="isEditing"
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="false"
+        :showEditBtn="form.applyStatus === 1010 || form.applyStatus === 1040"
       >
         <el-main>
           <section class="common-section">
@@ -19,7 +20,7 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isAdding">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing">
                 <el-form-item label="申请单号：" prop="unlockApplyCode">
                   <el-input
                     v-model="form.unlockApplyCode"
@@ -286,7 +287,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail" v-show="!isAdding">
+              <el-form :inline="true" class="form-detail" v-show="!isEditing">
                 <el-form-item label="申请单号：" prop="unlockApplyCode">
                   {{ form.unlockApplyCode }}
                 </el-form-item>
@@ -485,6 +486,9 @@ export default {
     },
     isAdding () {
       return this.$route.query.isAdding;
+    },
+    isEditing () {
+      return this.isAdding || this.form.applyStatus === 1040 || this.form.applyStatus === 1020;
     },
   },
   watch: {
