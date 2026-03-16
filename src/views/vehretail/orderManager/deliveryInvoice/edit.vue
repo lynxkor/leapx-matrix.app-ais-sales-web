@@ -584,7 +584,7 @@
 </template>
 
 <script>
-import {getDetail, addOrUpdate, deleteItem, confirmUpload} from '@/api/vehretail/orderManager/deliveryInvoice/index';
+import { getDetail, addOrUpdate, deleteItem, confirmUpload } from '@/api/vehretail/orderManager/deliveryInvoice/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';

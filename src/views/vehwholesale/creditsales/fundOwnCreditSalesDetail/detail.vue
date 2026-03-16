@@ -13,20 +13,19 @@
         <div class="common-section-body">
           <!-- TIPS: 根据实际情况调整展示字段和宽度 -->
           <el-form :inline="true" ref="ruleForm" label-width="150px">
-
             <!-- // 自有资金赊销额度的编号 -->
-            <el-form-item label="赊销账户编号：" prop="fundAccountCode">
-              {{ info.fundAccountCode  }}
+            <el-form-item label="赊销账户编号：" prop="creditSalesDetailCode">
+              {{ info.creditSalesDetailCode  }}
             </el-form-item>
             <el-form-item label="母公司名称：" prop="dealerCompanyName">
               {{ info.dealerCompanyName  }}
             </el-form-item>
-            <el-form-item label="资金账户编号：" prop="fundAccountId">
+            <el-form-item label="资金账户编号：" prop="fundAccountCode">
               <!-- 整车资金账户的编号 -->
-              {{ info.fundAccountId  }}
+              {{ info.fundAccountCode  }}
             </el-form-item>
-            <el-form-item label="赊销明细编号：" prop="creditSalesDetailCode">
-              {{ info.creditSalesDetailCode  }}
+            <el-form-item label="赊销额度编号：" prop="creditSalesLimitCode">
+              {{ info.creditSalesLimitCode  }}
             </el-form-item>
             <el-form-item label="创建时间：" prop="createTime">
               {{ info.createTime  }}
