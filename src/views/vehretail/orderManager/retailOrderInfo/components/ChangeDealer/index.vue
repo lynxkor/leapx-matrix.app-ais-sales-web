@@ -3,10 +3,10 @@
     :visible.sync="dialogShow"
     append-to-body
     :title="dialogTitle"
-    width="70%"
+    width="40%"
     @close="close"
   >
-    <el-form ref="dialogForm" :model="dialogForm" :rules="type === 'sales' ? rules : {}">
+    <el-form ref="dialogForm" :model="dialogForm" :rules="type === 'sales' ? rules : {}" label-position="left">
       <el-row>
         <el-form-item
           v-if="dataList && dataList.length > 0"
@@ -23,86 +23,68 @@
         </el-form-item>
       </el-row>
       <el-row v-show="type === 'sales'">
-        <el-col :span="8">
-          <el-form-item
-            label="变更原因"
-            prop="saleStoreChangeType"
-            class="form-item-top-layout"
-          >
-            <fetch-select
-              :request="fetchOptions"
-              enumCode="vr_store_change_type"
-              v-model="dialogForm.saleStoreChangeType"
-              placeholder="请选择"
-              clearable
-              filterable
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item
-            label="变更说明"
-            prop="saleStoreChangeRemark"
-            label-position="top"
-            :rules="this.dialogForm.saleStoreChangeType === '2' ? this.rules.saleStoreChangeRemark : []"
-          >
-            <el-input
-              v-model="dialogForm.saleStoreChangeRemark"
-              :rows="2"
-              maxlength="500"
-              placeholder="变更说明"
-              show-word-limit
-              type="textarea"
-            />
-          </el-form-item>
+        <el-form-item
+          label="变更原因"
+          prop="saleStoreChangeType"
+        >
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vr_store_change_type"
+            v-model="dialogForm.saleStoreChangeType"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
+      </el-row>
+      <el-row v-show="type === 'sales'">
+        <el-form-item
+          label="变更说明"
+          prop="saleStoreChangeRemark"
+          label-position="left"
+          :rules="this.dialogForm.saleStoreChangeType === '2' ? this.rules.saleStoreChangeRemark : []"
+        >
+          <el-input
+            v-model="dialogForm.saleStoreChangeRemark"
+            :rows="4"
+            maxlength="500"
+            placeholder="变更说明"
+            show-word-limit
+            type="textarea"
+            style="width: 60%"
+          />
+        </el-form-item>
+      </el-row>
+      <el-row>
+        <el-form-item
+          label="更换门店"
+          prop="storeCode"
+        >
+          <fetch-select
+            :remote-method="getData"
+            remote
+            v-model="dialogForm.storeCode"
+            placeholder="请选择"
+            clearable
+            filterable
+            value-key="storeCode"
+            label-key="storeName"
+            @change="handleStoreCodeChange"
+            sub-label-key="storeCode"
+          />
+        </el-form-item>
+      </el-row>
+      <!-- 选中门店信息展示 -->
+      <el-row>
+        <el-col :span="24">
+          <div class="selected-store-info">
+            <span class="store-name">{{ dialogForm.storeName || '' }}</span>
+            <span class="store-code">{{ dialogForm.storeCode || '' }}</span>
+            <span class="store-status">{{ dialogForm.cooperationTypeLabel || '' }}</span>
+          </div>
         </el-col>
       </el-row>
     </el-form>
-    <div class="page-common">
-      <el-form
-        :inline="true"
-        :model="searchForm"
-        size="small"
-        label-position="right"
-        label-width="150px"
-        class="ais-search-form"
-      >
-        <el-form-item label="门店编码" prop="storeCode">
-          <el-input v-model="searchForm.storeCode" placeholder="请输入门店编码" clearable />
-        </el-form-item>
-        <el-form-item label="门店名称" prop="storeName">
-          <el-input v-model="searchForm.storeName" placeholder="请输入门店名称" clearable />
-        </el-form-item>
-        <page-search-action
-          v-model="showOption"
-          is-expandable
-          :loading="loading"
-          @submit="onSubmit"
-          @reset="onReset"
-          width="100px"
-        />
-      </el-form>
-      <div class="ais-actions">
-      </div>
-      <div
-        class="ais-table-c"
-      >
-        <LPVxeTable
-          ref="tableRef"
-          v-loading="loading"
-          is-radio
-          is-page
-          checkboxFixed
-          :option-obj="optionObj"
-          :get-config="getConfig"
-          :save-or-update="saveOrUpdate"
-          @paginationChange="paginationChange"
-          @handleSelect="handleSelectionChange"
-        >
-          <EditPage slot="centralizedViewSlot" :id="clickItemId"/>
-        </LPVxeTable>
-      </div>
-    </div>
     <div slot="footer" class="dialog-footer">
       <el-button @click="close"> 取消 </el-button>
       <el-button type="primary" @click="changeDealer"> 确定 </el-button>
@@ -111,27 +93,13 @@
 </template>
 
 <script>
-import debounce from 'lodash.debounce';
 import FetchSelect from '@/libs/components/FetchSelect';
-import { getEnum, getTableConfig, tableAddOrUpdate, listOrgStoreInfo } from '@/api/common';
-import { LPVxeTable } from '@leapmotor/design';
-import PageSearchAction from '@/libs/components/AisPageSearchAction';
-
-const pageSize = 20;
-const mockConfig = {
-  data: null
-};
-const defaultForm = {
-  storeCode: '',
-  storeName: ''
-};
+import { getEnum, tableAddOrUpdate, listOrgStoreInfo } from '@/api/common';
 
 export default {
   name: 'ChangeDealer',
   components: {
     FetchSelect,
-    LPVxeTable,
-    PageSearchAction
   },
   props: {
     dataList: {
@@ -146,42 +114,29 @@ export default {
   data () {
     return {
       showOption: false,
-      loading: false,
       dialogShow: false,
       dialogForm: {
         saleStoreChangeType: null,
-        saleStoreChangeRemark: ''
+        saleStoreChangeRemark: '',
+        storeCode: '',
+        storeName: '',
+        cooperationTypeLabel: '',
       },
-      searchForm: { ...defaultForm },
       rules: {
         saleStoreChangeType: [
           { required: true, message: '请选择变更原因', trigger: 'change' }
         ],
         saleStoreChangeRemark: [
           { required: true, message: '请输入变更说明', trigger: 'blur' }
-        ]
-      },
-      clickItemId: '',
-      optionObj: {
-        id: 'changeDealerTable',
-        dataList: [],
-        form: {
-          page: 1,
-          size: pageSize
-        },
-        dataProp: [
-          { props: 'storeCode', label: '门店编码', visible: true, width: 200 },
-          { props: 'storeName', label: '门店名称', visible: true, width: 200 },
-          { props: 'buildStoreType', label: '建店类型', visible: true, width: 200 },
         ],
-        total: 0
+        storeCode: [
+          { required: true, message: '请选择更换门店', trigger: 'change' }
+        ],
       },
       type: 'sales',
-      selection: {}
     };
   },
   created () {
-    this.getData();
   },
   computed: {
     displayDialogData () {
@@ -209,82 +164,31 @@ export default {
     }
   },
   methods: {
-    onSubmit () {
-      this.optionObj.form.page = 1;
-      this.getData();
-    },
-    onReset () {
-      this.searchForm = { ...defaultForm };
-      this.optionObj.form.page = 1;
-      this.optionObj.form.size = pageSize;
-      this.getData();
-    },
-    getFormData () {
-      const data = { ...this.searchForm };
-
-      Object.keys(this.searchForm).forEach(key => {
-        if (data[key] === '' || data[key] === null) {
-          delete data[key];
-        }
-      });
-
-      return data;
-    },
-    getData () {
-      this.loading = true;
+    getData (keyword) {
       this.selection = {};
-      const param = { ...this.getFormData(), page: this.optionObj.form.page, size: this.optionObj.form.size };
+      const param = { keyword: keyword };
       if (this.type === 'sales') {
         param.isSales = true;
       } else {
         param.isSupportDeliver = true;
       }
 
-      listOrgStoreInfo(param)
-        .then(res => {
-          this.optionObj.dataList = res.records.map(item => {
-            return {
-              ...item,
-              deleteLoading: false
-            };
-          });
-          this.optionObj.total = res.totals;
-        }).finally(() => {
-          this.loading = false;
-        });
+      return listOrgStoreInfo(param);
     },
-    handleListSelect (row) {
-      this.clickItemId = row.id;
-    },
-    // 多选框选中数据
-    handleSelectionChange (selection) {
-      this.selection = selection;
-    },
-    paginationChange (type, num) {
-      if (type === 'page') {
-        this.optionObj.form.page = num;
+    handleStoreCodeChange (val, obj) {
+      if (val && obj) {
+        this.dialogForm.storeCode = obj.storeCode;
+        this.dialogForm.storeName = obj.storeName;
+        this.dialogForm.cooperationTypeLabel = obj.cooperationTypeLabel;
       } else {
-        this.optionObj.form.size = num;
+        // 清空选择时，清空所有相关变量
+        this.dialogForm.storeCode = '';
+        this.dialogForm.storeName = '';
+        this.dialogForm.cooperationTypeLabel = '';
       }
-      this.debouncedGetData();
     },
-    // 需要防抖场景时使用
-    debouncedGetData: debounce(function () {
-      this.getData();
-    }, 300),
     saveOrUpdate (data) {
       return tableAddOrUpdate(data);
-    },
-    getConfig () {
-      return new Promise((resolve, reject) => {
-        getTableConfig(this.optionObj.id).then(data => {
-          resolve({ data });
-        }).catch(err => {
-          // 容错：此处如果接口挂了，也不应该影响正常使用
-          console.error(err);
-          resolve(mockConfig);
-        });
-      });
     },
     async fetchOptions (code) {
       if (code) {
@@ -300,20 +204,15 @@ export default {
     close () {
       this.dialogShow = false;
       this.dialogForm = { result: '', remark: '' };
-      this.selection = {};
       this.$nextTick(() => {
         this.$refs.dialogForm.clearValidate();
       });
     },
     changeDealer () {
-      if (!this.selection || Object.keys(this.selection).length === 0) {
-        this.$message.error('请选择更换的门店');
-        return;
-      }
       this.$refs.dialogForm.validate((valid) => {
         if (valid) {
           // 将审核数据列表也传递给父组件
-          this.$emit('changeDealer', { ...this.dialogForm, storeInfo: this.selection, dataList: this.dataList, type: this.type });
+          this.$emit('changeDealer', { ...this.dialogForm, storeCode: this.dialogForm.storeCode, dataList: this.dataList, type: this.type });
           this.close();
         }
       });
@@ -323,33 +222,50 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.page-common {
-  height: calc(100% - 18rem);
-}
-::v-deep .el-dialog {
-  padding: 0 20px !important;
-  height: 80rem;
-}
-::v-deep .el-dialog__body {
-  padding: 0 20px !important;
-  height: calc(100% - 12rem);
-}
-::v-deep .el-form-item {
-  margin-bottom: 20px;
-}
-/* 强制 label 换行，与控件上下排列 */
-.form-item-top-layout {
+/* 选中门店信息展示样式 */
+.selected-store-info {
+  background-color: #F8F8F8;
+  border: 1px solid #e1f3d8;
+  border-radius: 4px;
+  padding: 10px 15px;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  gap: 20px;
+  margin-top: 10px;
+  min-height: 40px;
+
+  .store-name {
+    font-size: 14px;
+    color: #303133;
+    font-weight: 500;
+  }
+
+  .store-code {
+    font-size: 14px;
+    color: #303133;
+    font-weight: 500;
+  }
+
+  .store-status {
+    font-size: 14px;
+    color: #303133;
+    font-weight: 500;
+  }
 }
-/* 调整 label 与控件的间距（可选） */
-.form-item-top-layout .el-form-item__label {
-  margin-bottom: 8px;
-  margin-right: 0 !important;  /* 清除默认右侧间距 */
-}
-/* 让控件占满宽度（可选） */
-.form-item-top-layout .el-form-item__content {
-  width: 100%;
+
+/* 下拉选项样式 */
+.store-option {
+  padding: 8px 10px;
+
+  .store-option-name {
+    font-size: 14px;
+    color: #303133;
+    margin-bottom: 4px;
+  }
+
+  .store-option-code {
+    font-size: 12px;
+    color: #909399;
+  }
 }
 </style>
