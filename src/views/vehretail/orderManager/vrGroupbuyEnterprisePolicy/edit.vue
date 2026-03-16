@@ -29,6 +29,7 @@
                     placeholder="请选择公司"
                     clearable
                     filterable
+                    @change="(val, record) => {form.companyName = record?.name || ''}"
                   />
                 </el-form-item>
                 <el-form-item label="车系：" prop="seriesId">
@@ -41,7 +42,6 @@
                     :remote-method="getVehicleSeriesList"
                     value-key="id"
                     label-key="name"
-                    :disabled="!!_id"
                     @change="(val, record) => {form.seriesName = record?.name || ''}"
                   />
                 </el-form-item>
@@ -202,6 +202,74 @@ export default {
   },
   data () {
     const form = this.getDefautlForm();
+
+    // 验证优惠金额格式
+    const validateDiscountAmount = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入优惠金额'));
+        return;
+      }
+
+      const numValue = parseFloat(value);
+      if (isNaN(numValue)) {
+        callback(new Error('请输入有效的数字'));
+        return;
+      }
+
+      if (numValue < 0.00 || numValue > 100000000000.00) {
+        callback(new Error('输入一个介于 0.00 到 100,000,000,000.00 之间的值'));
+        return;
+      }
+
+      // 检查是否为两位小数
+      if (!/^\d+(\.\d{1,2})?$/.test(value)) {
+        callback(new Error('优惠金额最多保留两位小数'));
+        return;
+      }
+
+      callback();
+    };
+
+    // 验证优惠券长度
+    const validateCouponName = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入优惠券'));
+        return;
+      }
+
+      if (value.length > 100) {
+        callback(new Error('优惠券名称最多可输入100字'));
+        return;
+      }
+
+      callback();
+    };
+
+    // 验证备注长度
+    const validateRemark = (rule, value, callback) => {
+      if (value && value.length > 1000) {
+        callback(new Error('备注最多可输入1000字'));
+        return;
+      }
+
+      callback();
+    };
+
+    // 验证时间范围
+    const validateTimeRange = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请选择有效截止时间'));
+        return;
+      }
+
+      if (this.form.validStartTime && value <= this.form.validStartTime) {
+        callback(new Error('【有效开始日期】必须小于【有效截止日期】'));
+        return;
+      }
+
+      callback();
+    };
+
     return {
       pageTitle: '整车零售-订单管理-团购企业优惠政策管理',
       pageType: 'edit',
@@ -218,16 +286,19 @@ export default {
           { required: true, message: '请选择车系', trigger: 'change' }
         ],
         couponName: [
-          { required: true, message: '请输入优惠券', trigger: 'blur' }
+          { validator: validateCouponName, trigger: 'blur', required: true }
         ],
         discountAmount: [
-          { required: true, message: '请输入优惠金额', trigger: 'blur' }
+          { validator: validateDiscountAmount, trigger: 'blur', required: true }
         ],
         validStartTime: [
           { required: true, message: '请选择有效开始时间', trigger: 'change' }
         ],
         validEndTime: [
-          { required: true, message: '请选择有效截止时间', trigger: 'change' }
+          { validator: validateTimeRange, trigger: 'change', required: true }
+        ],
+        remark: [
+          { validator: validateRemark, trigger: 'blur' }
         ]
       }
     };

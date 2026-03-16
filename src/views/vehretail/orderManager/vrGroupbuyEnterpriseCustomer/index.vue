@@ -21,18 +21,16 @@
           v-model="form.isCooperation"
           placeholder="请选择"
           clearable
-          multiple
           filterable
         />
       </el-form-item>
       <el-form-item label="团购企业类型">
         <fetch-select
           :request="fetchOptions"
-          enumCode="groupbuy_enterprise_type"
-          v-model="form.enterpriseType"
+          enumCode="vr_group_company_type"
+          v-model="form.groupCompanyType"
           placeholder="请选择"
           clearable
-          multiple
           filterable
         />
       </el-form-item>
@@ -88,7 +86,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList } from '@/api/vehretail/orderManager/vrGroupbuyEnterpriseCustomer/index';
-import { getTableConfig, exportTable } from '@/api/common';
+import { getTableConfig, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -100,7 +98,7 @@ import EditPage from './edit.vue';
 const defaultForm = {
   companyName: '',
   isCooperation: '',
-  enterpriseType: '',
+  groupCompanyType: '',
   contactPerson: '',
   contactPhone: ''
 };
@@ -157,17 +155,22 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'isCooperation', label: '是否合作', visible: true, width: 120 },
+          { props: 'isCooperationLabel', label: '是否合作', visible: true, width: 120 },
           { props: 'contactPerson', label: '联系人', visible: true, width: 120 },
           { props: 'contactPhone', label: '联系人手机号码', visible: true, width: 150 },
-          { props: 'enterpriseType', label: '团购企业类型', visible: true, width: 150 },
+          { props: 'groupCompanyTypeLabel', label: '团购企业类型', visible: true, width: 150 },
           { props: 'remark', label: '备注', visible: true, width: 150 },
           { props: 'creatorName', label: '创建人', visible: true, width: 120 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 180 }
+          { props: 'createTime', label: '创建时间', visible: true, width: 180, fixed: 'right', sortable: true }
         ],
         total: 0
       },
-      sortColumns: []
+      sortColumns: [
+        {
+          column: 'create_time',
+          sort: 'DESC'
+        }
+      ]
     };
   },
   created () {
@@ -278,10 +281,10 @@ export default {
     },
     async fetchOptions (code) {
       if (code) {
-        return this.$getEnum(code);
+        return getEnum(code);
       }
       return [];
-    }
+    },
   }
 };
 </script>

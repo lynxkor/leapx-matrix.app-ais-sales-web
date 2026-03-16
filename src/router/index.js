@@ -2491,6 +2491,15 @@ const routes = [
         keepAlive: true
       }
     }, {
+      path: '/vehretail/orderManager/vrSpecialVehicleEquityApply/edit',
+      name: 'vrSpecialVehicleEquityApplyEdit',
+      component: () => import('@/views/vehretail/orderManager/vrSpecialVehicleEquityApply/edit.vue'),
+
+      meta: {
+        name: '整车零售-订单管理-特殊车辆权益申请管理',
+        noResourceUrl: 'true'
+      }
+    }, {
       path: '/vehretail/orderManager/vrRetailOrderBackRecord',
       name: 'vrRetailOrderBackRecord',
       component: () => import('@/views/vehretail/orderManager/vrRetailOrderBackRecord/index.vue'),
