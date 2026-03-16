@@ -33,7 +33,7 @@
                 <el-form-item label="申请条件：" prop="applicationConditions">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="application_conditions"
+                    enumCode="vr_benefit_application_condition"
                     v-model="form.applicationConditions"
                     placeholder="请选择"
                     clearable
@@ -42,20 +42,12 @@
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
                   <fetch-select
-                    :options="yes_no_enum"
+                    :request="fetchOptions"
+                    enumCode="StatusEnum"
                     v-model="form.status"
                     placeholder="请选择"
                     clearable
                     filterable
-                  />
-                </el-form-item>
-                <el-form-item label="备注：" prop="remark">
-                  <el-input
-                    type="textarea"
-                    :rows="3"
-                    placeholder="请输入"
-                    v-model="form.remark"
-                    clearable
                   />
                 </el-form-item>
               </el-form>
@@ -64,16 +56,10 @@
                   {{ form.equityCategoryName }}
                 </el-form-item>
                 <el-form-item label="申请条件：">
-                  {{ form.applicationConditions }}
+                  {{ form.applicationConditionsLabel }}
                 </el-form-item>
                 <el-form-item label="状态：">
-                  {{ yes_no_enum_map[form.status] }}
-                </el-form-item>
-                <el-form-item label="备注：">
-                  {{ form.remark }}
-                </el-form-item>
-                <el-form-item label="创建时间：">
-                  {{ form.createTime }}
+                  {{ form.statusLabel }}
                 </el-form-item>
               </el-form>
             </div>
@@ -106,6 +92,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import FetchSelect from '@/libs/components/FetchSelect';
 
 const defaultForm = {
   id: '',
@@ -136,7 +123,8 @@ export default {
   mixins: [routeGuard, permissions, commonMixins],
   components: {
     EditPageLayout,
-    EditBaseContainer
+    EditBaseContainer,
+    FetchSelect
   },
   computed: {
     _id () {
