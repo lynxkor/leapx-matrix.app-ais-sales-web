@@ -80,7 +80,7 @@
           <div class="selected-store-info">
             <span class="store-name">{{ dialogForm.storeName || '' }}</span>
             <span class="store-code">{{ dialogForm.storeCode || '' }}</span>
-            <span class="store-status">{{ dialogForm.statusName || '' }}</span>
+            <span class="store-status">{{ dialogForm.cooperationTypeLabel || '' }}</span>
           </div>
         </el-col>
       </el-row>
@@ -120,7 +120,7 @@ export default {
         saleStoreChangeRemark: '',
         storeCode: '',
         storeName: '',
-        statusName: '',
+        cooperationTypeLabel: '',
       },
       rules: {
         saleStoreChangeType: [
@@ -179,12 +179,12 @@ export default {
       if (val && obj) {
         this.dialogForm.storeCode = obj.storeCode;
         this.dialogForm.storeName = obj.storeName;
-        this.dialogForm.statusName = obj.statusName;
+        this.dialogForm.cooperationTypeLabel = obj.cooperationTypeLabel;
       } else {
         // 清空选择时，清空所有相关变量
         this.dialogForm.storeCode = '';
         this.dialogForm.storeName = '';
-        this.dialogForm.statusName = '';
+        this.dialogForm.cooperationTypeLabel = '';
       }
     },
     saveOrUpdate (data) {
