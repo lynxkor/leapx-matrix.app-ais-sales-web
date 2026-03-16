@@ -204,7 +204,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
+                this.navigateToRoute({
                   path: '/datacenter/vehicle/vehicleProfile/edit',
                   query: {
                     id: row.vinId
@@ -257,7 +257,7 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
+                this.navigateToRoute({
                   path: '/partner/channelManagement/shopBasicsMessageDetails',
                   query: {
                     id: row.ownerOrgId
