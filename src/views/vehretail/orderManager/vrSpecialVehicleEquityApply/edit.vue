@@ -8,12 +8,33 @@
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
+        :submitRequest="submitRequest"
         :detailRequest="detailRequest"
       >
         <template #status>
           <span class="status primary">{{ form.applyStatusLabel }}</span>
         </template>
         <el-main>
+          <!-- 置顶字段 -->
+          <section class="common-section" style="margin-bottom: 20px;">
+            <div class="common-section-body">
+              <el-row :gutter="20">
+                <el-col :span="8">
+                  <div class="top-field">
+                    <label>权益申请编号：</label>
+                    <span>{{ form.code }}</span>
+                  </div>
+                </el-col>
+                <el-col :span="8">
+                  <div class="top-field">
+                    <label>申请状态：</label>
+                    <span>{{ form.applyStatusLabel }}</span>
+                  </div>
+                </el-col>
+              </el-row>
+            </div>
+          </section>
+
           <!-- 基础信息 -->
           <section class="common-section">
             <div class="common-section-header">
@@ -185,7 +206,7 @@
 </template>
 
 <script>
-import { getDetail } from '@/api/vehretail/orderManager/vrSpecialVehicleEquityApply/index';
+import { getDetail, addOrUpdate } from '@/api/vehretail/orderManager/vrSpecialVehicleEquityApply/index';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import routeGuard from '@/libs/mixins/routeGuard';
@@ -212,20 +233,20 @@ const defaultForm = {
   originalOwnerIdTypeLabel: '', // 原车主证件类型标签
   originalOwnerIdNumber: '', // 原车主证件号码
   originalOwnerChannelId: '', // 原车主渠道ID号
-  originalOwnerPlateNo: '', // 原车主车牌号
+  originalOwnerPlateNumber: '', // 原车主车牌号
   originalSaleDate: '', // 原销售日期
   newOwnerName: '', // 新车主名称
   newOwnerPhone: '', // 新车主手机号码
   newOwnerIdType: null, // 新车主证件类型
   newOwnerIdTypeLabel: '', // 新车主证件类型标签
   newOwnerIdNumber: '', // 新车主证件号码
-  newOwnerPlateNo: '', // 新车主车牌号
-  ocrIdCardName: '', // 证件识别的证件名称
-  ocrIdCardNumber: '', // 证件识别的证件号码
+  newOwnerPlateNumber: '', // 新车主车牌号
+  ocrIdName: '', // 证件识别的证件名称
+  ocrIdNumber: '', // 证件识别的证件号码
   ocrInvoiceName: '', // 发票识别的开票名称
   ocrInvoiceIdNumber: '', // 发票识别的证件号码
   ocrInvoiceVin: '', // 发票识别的发票VIN
-  ocrInvoiceNo: '', // 发票识别的发票号码
+  ocrInvoiceNumber: '', // 发票识别的发票号码
   ocrInvoiceDate: '', // 发票识别的开票日期
   ocrInvoiceAmount: '', // 发票识别的开票金额
   remark: '', // 备注
@@ -234,7 +255,8 @@ const defaultForm = {
   applicationTime: '', // 申请时间
   approver: '', // 审批人
   approveTime: '', // 审批时间
-  approveRemark: '' // 审批意见
+  approveRemark: '', // 审批意见
+  applyUserName: '' // 申请人姓名
 };
 
 export default {
@@ -255,7 +277,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '权益申请单号：' + (this.form.code || '');
+      return '特殊车辆权益申请编号：' + (this.form.code || '');
     }
   },
   watch: {
@@ -288,6 +310,9 @@ export default {
         return getDetail(id);
       }
     },
+    submitRequest() {
+      return addOrUpdate({ ...this.form });
+    },
     getDefaultForm () {
       return {
         ...defaultForm
@@ -297,4 +322,108 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.common-section {
+  margin-bottom: 24px;
+
+  .common-section-header {
+    padding-bottom: 12px;
+    border-bottom: 1px solid #ebeef5;
+    margin-bottom: 16px;
+
+    h2 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: bold;
+      color: #303133;
+    }
+  }
+
+  .common-section-body {
+    .form-detail {
+      .el-form-item {
+        margin-right: 30px;
+        margin-bottom: 18px;
+        width: 40%;
+
+        .el-form-item__label {
+          color: #909399;
+          font-weight: normal;
+        }
+
+        .el-form-item__content {
+          color: #303133;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
+
+.top-field {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+
+  label {
+    font-weight: bold;
+    width: 120px;
+    flex-shrink: 0;
+  }
+
+  span {
+    flex: 1;
+    margin-left: 8px;
+  }
+}
+
+.status {
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: #e6f7ff;
+  color: #1890ff;
+  border: 1px solid #91d5ff;
+
+  &.warning {
+    background: #fffbe6;
+    color: #fa8c16;
+    border-color: #ffe58f;
+  }
+
+  &.success {
+    background: #f6ffed;
+    color: #52c41a;
+    border-color: #b7eb8f;
+  }
+
+  &.danger {
+    background: #fff2f0;
+    color: #f5222d;
+    border-color: #ffccc7;
+  }
+
+  &.info {
+    background: #f0f0f0;
+    color: #595959;
+    border-color: #d9d9d9;
+  }
+}
+
+.page-common-edit {
+  .common-section {
+    margin-bottom: 24px;
+
+    .common-section-header {
+      padding-bottom: 12px;
+      border-bottom: 1px solid #ebeef5;
+      margin-bottom: 16px;
+
+      h2 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: bold;
+        color: #303133;
+      }
+    }
+  }
+}
 </style>
