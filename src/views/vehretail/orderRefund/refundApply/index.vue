@@ -251,7 +251,7 @@ export default {
             sortable: true
           },
           {
-            props: 'creator',
+            props: 'creatorName',
             label: '申请人',
             visible: true,
             width: 200
