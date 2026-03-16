@@ -26,7 +26,3 @@ debug.log
 
 # yapi数据临时文件
 /bin/generate.json
-
-# 临时文件
-/src/views/vehretail/bizMasterData/configMasterData/salesConfig/AttachedFilesDialog.vue
-/src/views/vehretail/bizMasterData/configMasterData/salesConfig/condition.vue

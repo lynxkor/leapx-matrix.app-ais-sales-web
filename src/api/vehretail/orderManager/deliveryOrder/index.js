@@ -43,31 +43,6 @@ export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
 
-// 假接口 （记得删除）=====================================================================================================
-/**
- * 校验开票金额
- * @param {Object} data
- */
-export function validateInvoiceAmount (data) {
-  return api.jsonPost(prefix + 'validateInvoiceAmount', data);
-}
-
-/**
- * 校验剩余应收款
- * @param {Object} data
- */
-export function validateRemainingReceivable (data) {
-  return api.jsonPost(prefix + 'validateRemainingReceivable', data);
-}
-
-/**
- * 校验未核销权益
- * @param {Object} data
- */
-export function validateUnverifiedRights (data) {
-  return api.jsonPost(prefix + 'validateUnverifiedRights', data);
-}
-
 /**
  * 确认收款
  * @param {Object} data
@@ -75,8 +50,6 @@ export function validateUnverifiedRights (data) {
 export function confirmPayment (data) {
   return api.jsonPost(prefix + 'confirmPayment', data);
 }
-
-// 假接口 （记得删除）=====================================================================================================
 
 /**
  * 交车单预约交车所选日期排程数
@@ -156,4 +129,108 @@ export function writeOff (data) {
  */
 export function addPayRecord (data) {
   return api.jsonPost(prefix + 'addPayRecord', data);
+}
+
+/**
+ * 核销撤回
+ * @param {Object} data
+ */
+export function cancelWriteOff (data) {
+  return api.jsonPost(prefix + 'cancelWriteOff', data);
+}
+
+/**
+ * 核销撤回
+ * @param {Object} data
+ */
+export function revertCancelOrderRights (data) {
+  return api.jsonPost(prefix + 'revertCancelOrderRights', data);
+}
+
+/**
+ * 核销订单权益
+ * @param {Object} data
+ */
+export function cancelOrderRights (data) {
+  return api.jsonPost(prefix + 'cancelOrderRights', data);
+}
+
+/**
+ * 确认收款-校验剩余应收款-卡点
+ * @param {Object} data
+ */
+export function validateRemainingReceivableAmount (data) {
+  return api.jsonPost(prefix + 'validateRemainingReceivableAmount', data);
+}
+
+/**
+ * 确认收款-校验开票金额-卡点
+ * @param {Object} data
+ */
+export function validateInvoiceAmount (data) {
+  return api.jsonPost(prefix + 'validateInvoiceAmount', data);
+}
+
+/**
+ * 交车确认单补推
+ * @param {Object} data
+ */
+export function deliveryConfirmPush (data) {
+  return api.jsonPost(prefix + 'deliveryConfirmPush', data);
+}
+
+/**
+ * 查看交车确认单
+ * @param {Object} data
+ */
+export function viewDeliveryConfirm (data) {
+  return api.jsonPost(prefix + 'viewDeliveryConfirm', data);
+}
+
+/**
+ * 交车确认单重签
+ * @param {Object} data
+ */
+export function deliveryConfirmResign (data) {
+  return api.jsonPost(prefix + 'deliveryConfirmResign', data);
+}
+
+/**
+ * 收款撤回
+ * @param {Object} data
+ */
+export function cancelPayment (data) {
+  return api.jsonPost(prefix + 'cancelPayment', data);
+}
+
+/**
+ * 上传发票
+ * @param {Object} data
+ */
+export function uploadInvoice (data) {
+  return api.jsonPost(prefix + 'uploadInvoice', data);
+}
+
+/**
+ * 交车撤回
+ * @param {Object} data
+ */
+export function cancelDelivery (data) {
+  return api.jsonPost(prefix + 'cancelDelivery', data);
+}
+
+/**
+ * 删除收款记录
+ * @param {Object} data
+ */
+export function deletePayRecord (data) {
+  return api.jsonPost(prefix + 'deletePayRecord', data);
+}
+
+/**
+ * 交车完成
+ * @param {Object} data
+ */
+export function completeDelivery (data) {
+  return api.jsonPost(prefix + 'completeDelivery', data);
 }

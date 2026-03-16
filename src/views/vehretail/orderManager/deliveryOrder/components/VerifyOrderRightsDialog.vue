@@ -75,12 +75,25 @@
   </div>
 </template>
 
-<script>
+<script>import {
+  openGrantQuery, // 核销订单权益列表
+  writeOff, // 核销订单权益
+} from '@/api/vehretail/orderManager/deliveryOrder/index';
 export default {
   name: 'VerifyOrderRightsDialog',
   props: {
     // 订单 ID
     orderId: {
+      type: [String, Number],
+      default: ''
+    },
+    // 订单用户 ID
+    orderUserId: {
+      type: [String, Number],
+      default: ''
+    },
+    // 商城订单code
+    shopCode: {
       type: [String, Number],
       default: ''
     }
@@ -126,66 +139,69 @@ export default {
       this.loading = true;
       try {
         // 模拟接口调用
-        // const response = await getOrderRightsList(this.orderId);
+        const response = await openGrantQuery({
+          userId: this.orderUserId,
+          shopCode: this.shopCode,
+        });
+        console.log('loadRightsList', response);
+        this.tableData = response;
         // 模拟数据
-        await new Promise(resolve => setTimeout(resolve, 500));
-        this.tableData = [
-          {
-            rightsId: 'LEAP2323923657923462',
-            rightsName: '盲订优惠券',
-            couponType: '满减卡',
-            discountAmount: '100,000.00',
-            receiveTime: '2023-07-12 12:12:12',
-            validPeriod: '2023-07-12 12:12:12',
-            statusLabel: '未核销',
-            status: '1',
-            description: '这是一条权益说明',
-            applicableVehicle: '',
-            checked: false
-          },
-          {
-            rightsId: 'LEAP2323923657923463',
-            rightsName: '盲订优惠券',
-            couponType: '满减卡',
-            discountAmount: '100,000.00',
-            receiveTime: '2023-07-12 12:12:12',
-            validPeriod: '2023-07-12 12:12:12',
-            statusLabel: '已核销',
-            status: '2',
-            description: '这是一条权益说明',
-            applicableVehicle: '',
-            checked: false
-          },
-          {
-            rightsId: 'LEAP2323923657923464',
-            rightsName: '盲订优惠券',
-            couponType: '满减卡',
-            discountAmount: '100,000.00',
-            receiveTime: '2023-07-12 12:12:12',
-            validPeriod: '2023-07-12 12:12:12',
-            statusLabel: '未核销',
-            status: '1',
-            description: '这是一条权益说明',
-            applicableVehicle: '',
-            checked: false
-          },
-          {
-            rightsId: 'LEAP2323923657923465',
-            rightsName: '盲订优惠券',
-            couponType: '满减卡',
-            discountAmount: '100,000.00',
-            receiveTime: '2023-07-12 12:12:12',
-            validPeriod: '2023-07-12 12:12:12',
-            statusLabel: '已核销',
-            status: '2',
-            description: '这是一条权益说明',
-            applicableVehicle: '',
-            checked: false
-          }
-        ];
+        // this.tableData = [
+        //   {
+        //     rightsId: 'LEAP2323923657923462',
+        //     rightsName: '盲订优惠券',
+        //     couponType: '满减卡',
+        //     discountAmount: '100,000.00',
+        //     receiveTime: '2023-07-12 12:12:12',
+        //     validPeriod: '2023-07-12 12:12:12',
+        //     statusLabel: '未核销',
+        //     status: '1',
+        //     description: '这是一条权益说明',
+        //     applicableVehicle: '',
+        //     checked: false
+        //   },
+        //   {
+        //     rightsId: 'LEAP2323923657923463',
+        //     rightsName: '盲订优惠券',
+        //     couponType: '满减卡',
+        //     discountAmount: '100,000.00',
+        //     receiveTime: '2023-07-12 12:12:12',
+        //     validPeriod: '2023-07-12 12:12:12',
+        //     statusLabel: '已核销',
+        //     status: '2',
+        //     description: '这是一条权益说明',
+        //     applicableVehicle: '',
+        //     checked: false
+        //   },
+        //   {
+        //     rightsId: 'LEAP2323923657923464',
+        //     rightsName: '盲订优惠券',
+        //     couponType: '满减卡',
+        //     discountAmount: '100,000.00',
+        //     receiveTime: '2023-07-12 12:12:12',
+        //     validPeriod: '2023-07-12 12:12:12',
+        //     statusLabel: '未核销',
+        //     status: '1',
+        //     description: '这是一条权益说明',
+        //     applicableVehicle: '',
+        //     checked: false
+        //   },
+        //   {
+        //     rightsId: 'LEAP2323923657923465',
+        //     rightsName: '盲订优惠券',
+        //     couponType: '满减卡',
+        //     discountAmount: '100,000.00',
+        //     receiveTime: '2023-07-12 12:12:12',
+        //     validPeriod: '2023-07-12 12:12:12',
+        //     statusLabel: '已核销',
+        //     status: '2',
+        //     description: '这是一条权益说明',
+        //     applicableVehicle: '',
+        //     checked: false
+        //   }
+        // ];
       } catch (error) {
         console.error('加载权益列表失败:', error);
-        this.$message.error('加载权益列表失败');
       } finally {
         this.loading = false;
       }
@@ -204,33 +220,33 @@ export default {
       try {
         this.submitLoading = true;
         // 模拟接口调用
-        // const params = {
-        //   orderId: this.orderId,
-        //   rightsIds: checkedRows.map(row => row.rightsId)
-        // };
-        // const response = await submitVerifyRights(params);
-        // const data = response.data;
+        const params = {
+          orderId: this.orderId,
+          openWriteOffRights: checkedRows
+        };
+        const response = await writeOff(params);
+        const data = response.data;
 
         // 模拟接口返回
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // await new Promise(resolve => setTimeout(resolve, 500));
         // 假设接口返回格式：{ successList: [], failList: [] }
-        const data = {
-          successList: checkedRows.slice(0, 1), // 模拟 1 条成功
-          failList: [
-            {
-              rightsId: checkedRows[1]?.rightsId || 'YH20252338975329872956',
-              failReason: '核销申请信息与权益使用配置的规则不符，不允许锁定及核销'
-            },
-            {
-              rightsId: checkedRows[2]?.rightsId || 'YH20252338975329872957',
-              failReason: '权益已过期，无法核销'
-            },
-            {
-              rightsId: checkedRows[3]?.rightsId || 'YH20252338975329872958',
-              failReason: '该权益不适用于当前订单'
-            }
-          ]
-        };
+        // const data = {
+        //   successList: checkedRows.slice(0, 1), // 模拟 1 条成功
+        //   failList: [
+        //     {
+        //       rightsId: checkedRows[1]?.rightsId || 'YH20252338975329872956',
+        //       failReason: '核销申请信息与权益使用配置的规则不符，不允许锁定及核销'
+        //     },
+        //     {
+        //       rightsId: checkedRows[2]?.rightsId || 'YH20252338975329872957',
+        //       failReason: '权益已过期，无法核销'
+        //     },
+        //     {
+        //       rightsId: checkedRows[3]?.rightsId || 'YH20252338975329872958',
+        //       failReason: '该权益不适用于当前订单'
+        //     }
+        //   ]
+        // };
 
         // 关闭当前弹框
         this.close();
