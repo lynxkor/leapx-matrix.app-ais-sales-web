@@ -112,8 +112,8 @@ export default {
             }]
           },
           { props: 'code', label: '金融机构编码', visible: true, width: 180 },
-          { props: 'dataSource', label: '数据来源', visible: true, width: 120 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true }
+          { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 120 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true, fixed: 'right' }
         ],
         total: 0
       },
@@ -157,7 +157,7 @@ export default {
       const reqParams = this.getFormData() || {};
       exportTable({
         businessType: '整车零售-金融补贴-金融机构管理',
-        dataFetchPath: 'vehretail/web/financeSubsidy/vrFinanceOrganization/page',
+        dataFetchPath: 'vr/web/financeSubsidy/vrFinanceOrganization/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

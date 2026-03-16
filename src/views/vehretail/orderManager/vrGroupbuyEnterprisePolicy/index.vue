@@ -16,10 +16,15 @@
         />
       </el-form-item>
       <el-form-item label="车系">
-        <el-input
-          placeholder="请输入"
-          v-model="form.seriesName"
+        <fetch-select
+          filterable
           clearable
+          remote
+          v-model="form.seriesId"
+          :params="form.seriesName"
+          :remote-method="getVehicleSeriesList"
+          value-key="id"
+          label-key="name"
         />
       </el-form-item>
       <el-form-item label="优惠券">
@@ -87,12 +92,13 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList } from '@/api/vehretail/orderManager/vrGroupbuyEnterprisePolicy/index';
-import { getTableConfig, exportTable } from '@/api/common';
+import { getTableConfig, exportTable, vehicleSeriesList } from '@/api/common';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import FetchSelect from '@/libs/components/FetchSelect';
 
 const defaultForm = {
   companyName: '',
@@ -112,7 +118,8 @@ export default {
   components: {
     PageSearchAction,
     LPVxeTable,
-    EditPage
+    EditPage,
+    FetchSelect
   },
   data () {
     return {
@@ -138,7 +145,7 @@ export default {
             props: 'companyName',
             label: '公司名称',
             visible: true,
-            width: 180,
+            width: 240,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -159,7 +166,7 @@ export default {
           { props: 'validEndTime', label: '有效截止时间', visible: true, width: 180 },
           { props: 'creatorName', label: '负责人', visible: true, width: 120 },
           { props: 'remark', label: '备注', visible: true, width: 150 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 180 }
+          { props: 'createTime', label: '创建时间', visible: true, width: 180, fixed: 'right' }
         ],
         total: 0
       },
@@ -287,7 +294,10 @@ export default {
 
       data.sortColumns = this.sortColumns;
       return data;
-    }
+    },
+    async getVehicleSeriesList (params) {
+      return vehicleSeriesList({ seriesNameLike: params, status: 1 });
+    },
   }
 };
 </script>

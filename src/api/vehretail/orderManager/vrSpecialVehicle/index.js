@@ -1,6 +1,6 @@
 import api from '@/axios';
 
-const prefix = 'vr/web/orderManager/vrSpecialVehicle/';
+const prefix = 'vr/web/order/vrSpecialVehicle/';
 
 /**
  * 查询列表

@@ -18,7 +18,7 @@
         </template>
         <template #extraButtons>
           <!-- <el-button size="small" type="primary" @click="handleEquityInquiry">权益查询</el-button> -->
-          <el-button size="small" @click="handlePrintContractTermination">打印合同解除协议</el-button>
+          <el-button size="small" :loading="printLoading" @click="handlePrintContractTermination">打印合同解除协议</el-button>
           <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" @click="handleSetSpecialMark">设置特殊标识</el-button>
           <el-button size="small" @click="handleModifyConfiguration">修改配置</el-button>
           <el-button size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
@@ -549,6 +549,7 @@ export default {
       loading: false,
       submitLoading: false,
       accountFlag: false,
+      printLoading: false, // 打印合同解除协议的loading状态
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
@@ -705,8 +706,11 @@ export default {
     // 打印合同解除协议
     handlePrintContractTermination () {
       // 实现打印合同解除协议逻辑
+      this.printLoading = true;
       getUnbindContractUrl(this._id).then(res => {
         window.open(res);
+      }).finally(() => {
+        this.printLoading = false;
       });
     },
     // 设置特殊标识

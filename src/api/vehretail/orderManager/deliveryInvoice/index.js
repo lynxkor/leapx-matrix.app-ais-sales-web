@@ -42,3 +42,11 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 确认上传
+ * @param {Object} data
+ */
+export function confirmUpload (data) {
+  return api.jsonPost(prefix + 'confirmUpload', data);
+}

@@ -445,7 +445,7 @@
                 <!-- 附件上传组件 -->
                 <AisAttachment
                   :businessId="_id"
-                  configCode="mcs_spmusedprtdestory_apply"
+                  configCode="ent_vehicle_replenish_order"
                   attachType="其他"
                   ref="attachment"
                 />

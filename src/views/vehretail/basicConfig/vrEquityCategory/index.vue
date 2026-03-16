@@ -122,50 +122,10 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'applicationConditions', label: '申请条件', visible: true, width: 180 },
+          { props: 'applicationConditionsLabel', label: '申请条件', visible: true, width: 180 },
           { props: 'statusLabel', label: '状态', visible: true, width: 120 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 120 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true },
-          {
-            props: 'operate',
-            label: '操作',
-            type: 'operate',
-            visible: true,
-            fixed: 'right',
-            buttons: [{
-              name: '编辑',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehretail/financeSubsidy/vrEquityCategory/edit',
-                  query: {
-                    id: row.id,
-                    isEditing: true
-                  }
-                });
-              },
-              type: 'info'
-            }, {
-              name: '删除',
-              popconfirmConfirmButtonType: 'danger',
-              popconfirmConfirmButtonText: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
-            }]
-          }
+          { props: 'creatorName', label: '创建人', visible: true, width: 180 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true, fixed: 'right' }
         ],
         total: 0
       },
@@ -202,7 +162,7 @@ export default {
     },
     handleAdd () {
       this.$router.push({
-        path: '/vehretail/financeSubsidy/vrEquityCategory/edit'
+        path: '/vehretail/basicConfig/vrEquityCategory/edit'
       });
     },
     onSubmit () {

@@ -23,6 +23,7 @@
                     :remote-method="queryCompanyList"
                     remote
                     v-model="form.companyId"
+                    :params="form.companyName"
                     value-key="id"
                     label-key="name"
                     placeholder="请选择公司"
@@ -32,14 +33,16 @@
                 </el-form-item>
                 <el-form-item label="车系：" prop="seriesId">
                   <fetch-select
-                    :remote-method="querySeriesList"
+                    filterable
+                    clearable
                     remote
                     v-model="form.seriesId"
+                    :params="form.seriesName"
+                    :remote-method="getVehicleSeriesList"
                     value-key="id"
                     label-key="name"
-                    placeholder="请选择车系"
-                    clearable
-                    filterable
+                    :disabled="!!_id"
+                    @change="(val, record) => {form.seriesName = record?.name || ''}"
                   />
                 </el-form-item>
                 <el-form-item label="优惠券：" prop="couponName">
@@ -150,6 +153,8 @@ import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { vehicleSeriesList } from '@/api/common';
+import { getSelect } from '@/api/vehretail/orderManager/vrGroupbuyEnterpriseCustomer/index';
 
 const defaultForm = {
   companyId: '',
@@ -240,28 +245,17 @@ export default {
     openPane () {
       this.$refs.editLayout.openPane();
     },
-    queryCompanyList (queryString) {
-      return new Promise(resolve => {
-        // 根据实际接口实现公司列表查询
-        // companyList({ companyNameLike: queryString, limitSize: 20 }).then(res => {
-        //   resolve(res || []);
-        // });
-        resolve([]);
-      });
-    },
-    querySeriesList (queryString) {
-      return new Promise(resolve => {
-        // 根据实际接口实现车系列表查询
-        // seriesList({ seriesNameLike: queryString, limitSize: 20 }).then(res => {
-        //   resolve(res || []);
-        // });
-        resolve([]);
-      });
-    },
     getDefautlForm () {
       return {
         ...defaultForm
       };
+    },
+    async getVehicleSeriesList (params) {
+      return vehicleSeriesList({ seriesNameLike: params, status: 1 });
+    },
+    async queryCompanyList (params) {
+      const res = await getSelect({ companyName: params, limitSize: 10, isCooperation: 1 });
+      return res || [];
     }
   }
 };

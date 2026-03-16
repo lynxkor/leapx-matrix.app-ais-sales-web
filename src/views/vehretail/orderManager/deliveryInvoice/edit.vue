@@ -20,7 +20,7 @@
           <!-- <el-button size="small">按钮1</el-button>
           <el-button size="small">按钮2</el-button> -->
           <el-button
-            @click="openDeliveryShow2"
+            @click="openDialogShow"
             v-if="form.status === 0"
             size="small">
             交车完成
@@ -476,6 +476,103 @@
             </div>
           </section>
         </el-main>
+        <!-- 比对确认弹框 -->
+        <el-dialog
+          title="附件识别字段错误"
+          :visible.sync="dialogVisible"
+          width="60%"
+          class="comparison-dialog"
+        >
+          <div class="comparison-content">
+            <!-- 比对说明 -->
+            <!-- 比对表格 -->
+            <el-table
+              :data="comparisonData"
+              style="width: 100%"
+              border
+              stripe
+              :header-cell-style="{ background: '#f5f7fa', color: '#606266' }"
+            >
+              <!-- 识别字段列 -->
+              <el-table-column
+                prop="fieldName"
+                label="识别字段"
+                width="270"
+                align="center"
+              >
+              </el-table-column>
+              <!-- 识别信息列 -->
+              <el-table-column
+                prop="recognizedValue"
+                label="识别信息"
+                width="270"
+                align="center"
+              >
+                <template slot-scope="scope">
+              <span :class="{ 'warning-value': scope.row.isHighlighted }">
+                {{ scope.row.recognizedValue }}
+              </span>
+                </template>
+              </el-table-column>
+              <!-- 检验字段列 -->
+              <el-table-column
+                prop="checkField"
+                label="检验字段"
+                width="270"
+                align="center"
+              >
+              </el-table-column>
+              <!-- 校验信息列 -->
+              <el-table-column
+                prop="checkValue"
+                label="校验信息"
+                width="270"
+                align="center"
+              >
+                <template slot-scope="scope">
+              <span :class="{ 'warning-value': scope.row.isHighlighted }">
+                {{ scope.row.checkValue }}
+              </span>
+                </template>
+              </el-table-column>
+
+              <!-- 比对结果列 -->
+<!--              <el-table-column-->
+<!--                label="比对结果"-->
+<!--                width="120"-->
+<!--                align="center"-->
+<!--              >-->
+<!--                <template slot-scope="scope">-->
+<!--                  <el-tag-->
+<!--                    :type="scope.row.recognizedValue === scope.row.checkValue ? 'success' : 'danger'"-->
+<!--                    size="small"-->
+<!--                    effect="light"-->
+<!--                  >-->
+<!--                    {{ scope.row.recognizedValue === scope.row.checkValue ? '一致' : '不一致' }}-->
+<!--                  </el-tag>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+            </el-table>
+
+            <!-- 差异项统计 -->
+<!--            <div class="diff-summary mt-20" v-if="diffCount > 0">-->
+<!--              <el-card shadow="hover" :body-style="{ padding: '12px 20px' }">-->
+<!--                <div class="summary-content">-->
+<!--                  <el-icon class="el-icon-warning-outline warning-icon"></el-icon>-->
+<!--                  <span class="summary-text">共发现 <strong>{{ diffCount }}</strong> 处不一致信息，请仔细核对</span>-->
+<!--                </div>-->
+<!--              </el-card>-->
+<!--            </div>-->
+
+            <!-- 备注说明 -->
+          </div>
+
+          <!-- 弹框底部按钮 -->
+          <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handleConfirmUpload">保存</el-button>
+        <el-button @click="dialogVisible = false">取消</el-button>
+      </span>
+        </el-dialog>
       </edit-base-container>
     </template>
     <template #right>
@@ -487,7 +584,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, deleteItem } from '@/api/vehretail/orderManager/deliveryInvoice/index';
+import {getDetail, addOrUpdate, deleteItem, confirmUpload} from '@/api/vehretail/orderManager/deliveryInvoice/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -595,6 +692,8 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
+      dialogVisible: false,
+      comparisonData: [],
       pageTitle: '整车开票记录',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
@@ -739,8 +838,93 @@ export default {
   mounted () {
   },
   methods: {
+    handleConfirmUpload () {
+      if (this.doComparisonData().length > 0) {
+        this.$message.warning('识别信息与校验信息不一致,请重新确认！');
+      } else {
+        confirmUpload(this.form.id).then(res => {
+          this.$message.success('交车完成成功');
+          // 重新加载详情数据
+          this.reloadDetail();
+        });
+      }
+    },
+    openDialogShow () {
+      // 比对数据
+      const comparisonData = this.doComparisonData();
+      if (comparisonData.length > 0) {
+        this.comparisonData = comparisonData;
+        this.dialogVisible = true;
+      }
+    },
+    doComparisonData () {
+      const comparisonData = [];
+      // i.发票VIN=配车VIN,ii.开票名称=购车人姓名,iii.车主证件号码=证件号码,发票金额=开票金额,证件识别的客户姓名=购车人姓名,证件识别的证件号码=证件号码,车主证件类型=证件类型
+      if (!this.form.vin || !this.form.matchVin || this.form.vin !== this.form.matchVin) {
+        comparisonData.push({
+          fieldName: '发票VIN',
+          recognizedValue: this.form.vin,
+          checkField: '配车VIN',
+          checkValue: this.form.matchVin,
+          isHighlighted: true
+        });
+      }
+      if (!this.form.invoiceName || !this.form.orderCarBuyerName || this.form.invoiceName !== this.form.orderCarBuyerName) {
+        comparisonData.push({
+          fieldName: '开票名称',
+          recognizedValue: this.form.invoiceName,
+          checkField: '购车人姓名',
+          checkValue: this.form.orderCarBuyerName,
+          isHighlighted: true
+        });
+      }
+      if (!this.form.idCardNo || !this.form.orderIdCardNo || this.form.idCardNo !== this.form.orderIdCardNo) {
+        comparisonData.push({
+          fieldName: '车主证件号码',
+          recognizedValue: this.form.idCardNo,
+          checkField: '证件号码',
+          checkValue: this.form.orderIdCardNo,
+        });
+      }
+      if (!this.form.invoiceAmount || !this.form.deliveryOrderInvoiceAmount || this.form.invoiceAmount !== this.form.deliveryOrderInvoiceAmount) {
+        comparisonData.push({
+          fieldName: '发票金额',
+          recognizedValue: this.form.price,
+          checkField: '开票金额',
+          checkValue: this.form.deliveryOrderInvoiceAmount,
+          isHighlighted: true
+        });
+      }
+      if (!this.form.carBuyerName || !this.form.orderCarBuyerName || this.form.carBuyerName !== this.form.orderCarBuyerName) {
+        comparisonData.push({
+          fieldName: '证件识别的客户姓名',
+          recognizedValue: this.form.carBuyerName,
+          checkField: '购车人姓名',
+          checkValue: this.form.orderCarBuyerName,
+          isHighlighted: true
+        });
+      }
+      if (!this.form.idCardNo || !this.form.orderIdCardNo || this.form.idCardNo !== this.form.orderIdCardNo) {
+        comparisonData.push({
+          fieldName: '证件识别的证件号码',
+          recognizedValue: this.form.idCardNo,
+          checkField: '证件号码',
+          checkValue: this.form.orderIdCardNo,
+          isHighlighted: true
+        });
+      }
+      if (!this.form.idCardTypeLabel || !this.form.orderIdCardTypeLabel || this.form.idCardTypeLabel !== this.form.orderIdCardTypeLabel) {
+        comparisonData.push({
+          fieldName: '车主证件类型',
+          recognizedValue: this.form.idCardTypeLabel,
+          checkField: '证件类型',
+          checkValue: this.form.orderIdCardTypeLabel,
+        });
+      }
+      return comparisonData;
+    },
     openDeleteShow () {
-      this.$confirm('确认是否对数据进行删除?', '提示', {
+      this.$confirm('确认是否删除该整车开票记录?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

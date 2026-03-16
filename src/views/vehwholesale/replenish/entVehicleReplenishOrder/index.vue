@@ -171,7 +171,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, networkParentCompanyItem, listDealersForParentCompany } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
+import { getList, deleteItem, enableItem, networkParentCompanyItem } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';

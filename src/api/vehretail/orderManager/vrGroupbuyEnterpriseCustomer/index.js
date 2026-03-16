@@ -1,6 +1,14 @@
 import api from '@/axios';
 
-const prefix = 'vr/web/orderManager/vrGroupbuyEnterpriseCustomer/';
+const prefix = 'vr/web/order/vrGroupbuyEnterpriseCustomer/';
+
+/**
+ * 查询列表
+ * @param {Object} data
+ */
+export function getSelect (data) {
+  return api.jsonPost(prefix + 'list', data);
+};
 
 /**
  * 查询列表
