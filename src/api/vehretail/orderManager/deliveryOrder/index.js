@@ -119,8 +119,8 @@ export function openGrantQuery (data) {
  * 核销订单权益
  * @param {Object} data
  */
-export function writeOff (data) {
-  return api.jsonPost(prefix + 'writeOff', data);
+export function cancelOrderRights (data) {
+  return api.jsonPost(prefix + 'cancelOrderRights', data);
 }
 
 /**
@@ -145,14 +145,6 @@ export function cancelWriteOff (data) {
  */
 export function revertCancelOrderRights (data) {
   return api.jsonPost(prefix + 'revertCancelOrderRights', data);
-}
-
-/**
- * 核销订单权益
- * @param {Object} data
- */
-export function cancelOrderRights (data) {
-  return api.jsonPost(prefix + 'cancelOrderRights', data);
 }
 
 /**

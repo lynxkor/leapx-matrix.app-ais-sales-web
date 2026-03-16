@@ -16,22 +16,20 @@
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button v-permission="moduleKey+'-appointment'" size="small" @click="handleAppointmentDelivery">预约交车</el-button>
-          <el-button v-permission="moduleKey+'-deliveryConfirm'" size="small" :loading="buttonLoading['generateConfirmOrder']" @click="handleGenerateConfirmOrder">交车确认单生成</el-button>
-          <el-button v-permission="moduleKey+'-changeAppointmentTime'" size="small" @click="handleChangeAppointmentTime">更改预约时间</el-button>
-          <!-- 没通 -->
-          <el-button v-permission="moduleKey+'-cancelOrderRights'" size="small" @click="handleVerifyOrderRights">核销订单权益</el-button>
-          <!-- 没数据 -->
-          <el-button v-permission="moduleKey+'-revertCancelOrderRights'" size="small" :loading="buttonLoading['verifyWithdraw']" @click="handleVerifyWithdraw">核销撤回</el-button>
-          <el-button v-permission="moduleKey+'-addPaymentRecord'" size="small" @click="handleAddPaymentRecord">添加收款记录</el-button>
-          <!-- 同样，权益接口没通 -->
-          <el-button v-permission="moduleKey+'-confirmPayment'" size="small" @click="handleConfirmPayment">确认收款</el-button>
-          <el-button v-permission="moduleKey+'-deliveryConfirmPush'" size="small" :loading="buttonLoading['repushConfirmOrder']" @click="handleRepushConfirmOrder">交车确认单补推</el-button>
-          <el-button v-permission="moduleKey+'-deliveryConfirmResign'" size="small" @click="handleReSignConfirmOrder">交车确认单重签</el-button>
-          <el-button v-permission="moduleKey+'-viewDeliveryConfirm'" size="small" @click="handleViewConfirmOrder">查看交车确认单</el-button>
+          <!-- 交车状态： 1-待预约 2-待检测 3-已检测 4-已预约 5-已收尾款 6-车联网已开通 7-交车完成 99-作废 -->
+          <el-button v-if="form.status === 1" v-permission="moduleKey+'-appointment'" size="small" @click="handleAppointmentDelivery">预约交车</el-button>
+          <el-button v-if="form.status === 5" v-permission="moduleKey+'-deliveryConfirm'" size="small" :loading="buttonLoading['generateConfirmOrder']" @click="handleGenerateConfirmOrder">交车确认单生成</el-button>
+          <el-button v-if="form.status === 4" v-permission="moduleKey+'-changeAppointmentTime'" size="small" @click="handleChangeAppointmentTime">更改预约时间</el-button>
+          <el-button v-if="form.status === 4" v-permission="moduleKey+'-cancelOrderRights'" size="small" @click="handleVerifyOrderRights">核销订单权益</el-button>
+          <el-button v-if="form.status === 4 && form.payRightsList && form.payRightsList.some(item => item.paymentType === 1060 || item.paymentType === '1060')" v-permission="moduleKey+'-revertCancelOrderRights'" size="small" :loading="buttonLoading['verifyWithdraw']" @click="handleVerifyWithdraw">核销撤回</el-button>
+          <el-button v-if="form.status === 4" v-permission="moduleKey+'-addPaymentRecord'" size="small" @click="handleAddPaymentRecord">添加收款记录</el-button>
+          <el-button v-if="form.status === 4" v-permission="moduleKey+'-confirmPayment'" size="small" @click="handleConfirmPayment">确认收款</el-button>
+          <el-button v-if="form.status === 4 && form.deliveryConfirmPdfUrl" v-permission="moduleKey+'-deliveryConfirmPush'" size="small" :loading="buttonLoading['repushConfirmOrder']" @click="handleRepushConfirmOrder">交车确认单补推</el-button>
+          <el-button v-if="form.status !== 7 && from.status !== 99 && form.deliveryConfirmStatus === 15" v-permission="moduleKey+'-deliveryConfirmResign'" size="small" @click="handleReSignConfirmOrder">交车确认单重签</el-button>
+          <el-button v-if="form.deliveryConfirmStatus === 15" v-permission="moduleKey+'-viewDeliveryConfirm'" size="small" @click="handleViewConfirmOrder">查看交车确认单</el-button>
           <el-button v-if="form.status === 5" v-permission="moduleKey+'-uploadInvoice'" size="small" @click="handleUploadInvoice">上传发票</el-button>
-          <el-button v-permission="moduleKey+'-cancelPayment'" size="small" @click="handlePaymentWithdraw">收款撤回</el-button>
-          <el-button v-permission="moduleKey+'-cancelDelivery'" size="small" @click="handleDeliveryWithdraw">交车撤回</el-button>
+          <el-button v-if="form.status === 5" v-permission="moduleKey+'-cancelPayment'" size="small" @click="handlePaymentWithdraw">收款撤回</el-button>
+          <el-button v-if="form.status === 7" v-permission="moduleKey+'-cancelDelivery'" size="small" @click="handleDeliveryWithdraw">交车撤回</el-button>
         </template>
         <el-main>
           <!--  -->
@@ -367,6 +365,7 @@
         ref="verifyOrderRightsDialog"
         :orderId="_id"
         :orderUserId="form.orderUserId"
+        :deliveryOrderId="form.deliveryOrderId"
         :shopCode="form.mallOrderCode"
         @refresh="getDetail"
       />
@@ -948,7 +947,9 @@ export default {
           showCancelButton: false,
           showClose: false,
           customClass: 'ais-leave-tips',
-        }).then(() => {}).catch(() => {});
+        }).then(() => {
+          this.getDetail();
+        }).catch(() => {});
       });
     },
     // 更改预约时间
@@ -978,6 +979,7 @@ export default {
           retailOrderId: this.form.retailOrderId,
         });
         this.$message.success('订单权益核销撤回成功');
+        this.getDetail();
       });
     },
     // 添加收款记录
@@ -1069,6 +1071,7 @@ export default {
       await this.withLoading('repushConfirmOrder', async () => {
         await deliveryConfirmPush({ deliveryOrderId: this.form.deliveryOrderId, retailOrderId: this.form.retailOrderId });
         this.$message.success('交车确认单补推成功');
+        this.getDetail();
       });
     },
     // 交车确认单重签
@@ -1157,25 +1160,22 @@ export default {
       }).then(res => {
         this.$message.success('上传发票成功');
         // 重新加载详情数据
-        this.reloadDetail();
+        this.getDetail();
       });
     },
     // 收款撤回
-    handlePaymentWithdraw () {},
+    handlePaymentWithdraw () {
+      cancelPayment({ deliveryOrderId: this.form.deliveryOrderId, retailOrderId: this.form.retailOrderId }).then(res => {
+        this.$message.success('收款撤回成功');
+        this.getDetail();
+      }).catch(() => {});
+    },
     // 交车撤回
-    handleDeliveryWithdraw () {},
-    // 判断收款记录是否可以删除
-    canDeletePaymentRecord (row) {
-      // 已预约状态的可以删除
-      if (row.status !== '1010') {
-        return false;
-      }
-      // 收款类型为门店优惠/贷款/尾款/贷款首付款/机动车发票其他费用可以删除
-      const allowDeleteTypes = ['1020', '1030', '1040', '1050'];
-      if (!allowDeleteTypes.includes(row.paymentType)) {
-        return false;
-      }
-      return true;
+    handleDeliveryWithdraw () {
+      cancelDelivery({ deliveryOrderId: this.form.deliveryOrderId, retailOrderId: this.form.retailOrderId }).then(res => {
+        this.$message.success('交车撤回成功');
+        this.getDetail();
+      }).catch(() => {});
     },
     // 删除收款记录
     async handleDeletePaymentRecord (row) {

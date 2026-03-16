@@ -13,18 +13,26 @@
           ref="rightsTable"
           :data="tableData"
           :height="400"
-          :checkbox-config="{ checkField: 'checked', checkMethod: ({ row }) => row.status !== '2' }"
+          :checkbox-config="{ checkField: 'checked', checkMethod: ({ row }) => row.status !== 2 }"
         >
           <vxe-column type="checkbox" width="60" fixed="left" />
-          <vxe-column field="rightsId" title="权益 ID" width="200" />
+          <vxe-column field="rightsGrantCode" title="权益 ID" width="200" />
           <vxe-column field="rightsName" title="权益名称" width="150" />
-          <vxe-column field="couponType" title="卡券类型" width="120" />
-          <vxe-column field="discountAmount" title="满减金额" width="120"  />
-          <vxe-column field="receiveTime" title="领券时间" width="180" />
-          <vxe-column field="validPeriod" title="有效期" width="180" />
-          <vxe-column field="statusLabel" title="状态" width="100" />
-          <vxe-column field="description" title="权益说明" min-width="200" />
-          <vxe-column field="applicableVehicle" title="适用车型" min-width="150" />
+          <vxe-column field="cardType" title="卡券类型" width="120">
+            <template v-slot="{ row }">
+              <span>{{ row.cardType = 'fullcut' ? '满减卡' : row.cardType = 'discount' ? '折扣卡' : '' }}</span>
+            </template>
+          </vxe-column>
+          <vxe-column field="paymentAmount" title="满减金额" width="120"  />
+          <vxe-column field="createDate" title="领券时间" width="180" />
+          <vxe-column field="expiryDate" title="有效期" width="180" />
+          <vxe-column field="rightsStatus" title="状态" width="100">
+            <template v-slot="{ row }">
+              <span>{{ {'1': '待生效', '2': '可使用', '3': '已锁定', '4': '已使用', '5': '已失效', '6': '已回收'}[row.rightsStatus] || row.rightsStatus }}</span>
+            </template>
+          </vxe-column>
+          <vxe-column field="rightsDesc" title="权益说明" min-width="200" />
+          <!-- <vxe-column field="applicableVehicle" title="适用车型" min-width="150" /> -->
         </vxe-table>
       </div>
       <div slot="footer" class="dialog-footer">
@@ -47,23 +55,36 @@
         </div>
         <div class="result-list">
           <!-- 成功信息 -->
-          <div v-if="successList.length > 0" class="result-item success-item">
+          <div v-if="resultData.consumeSuccessCount > 0" class="result-item success-item">
             <span class="result-status success">
-              核销成功：{{ totalSuccess }}条
+              核销成功：{{ resultData.consumeSuccessCount }}条
             </span>
           </div>
-          <!-- 失败信息 -->
-          <div v-if="failList.length > 0" class="result-item fail-item">
+          <!-- 锁定失败信息 -->
+          <div v-if="resultData.lockErrCount > 0" class="result-item fail-item">
             <span class="result-status fail">
-              权益锁定失败：{{ totalFail }}条
+              权益锁定失败：{{ resultData.lockErrCount }}条
             </span>
-            <div class="fail-details">
-              <div v-for="(item, index) in failList" :key="index" class="fail-detail-item">
-                <div class="fail-reason">
-                  <span>锁定失败原因：{{ item.reason }}</span>
-                  <span v-if="item.rightsId">{{ item.rightsId }}</span>
-                </div>
-              </div>
+            <div v-if="resultData.lockErr" class="fail-details">
+              <span class="fail-reason">{{ resultData.lockErr }}</span>
+            </div>
+          </div>
+          <!-- 核销失败信息 -->
+          <div v-if="resultData.consumeErrCount > 0" class="result-item fail-item">
+            <span class="result-status fail">
+              核销失败：{{ resultData.consumeErrCount }}条
+            </span>
+            <div v-if="resultData.consumeErr" class="fail-details">
+              <span class="fail-reason">{{ resultData.consumeErr }}</span>
+            </div>
+          </div>
+          <!-- 其他失败信息 -->
+          <div v-if="resultData.otherErrCount > 0" class="result-item fail-item">
+            <span class="result-status fail">
+              其他失败：{{ resultData.otherErrCount }}条
+            </span>
+            <div v-if="resultData.otherErr" class="fail-details">
+              <span class="fail-reason">{{ resultData.otherErr }}</span>
             </div>
           </div>
         </div>
@@ -77,13 +98,18 @@
 
 <script>import {
   openGrantQuery, // 核销订单权益列表
-  writeOff, // 核销订单权益
+  cancelOrderRights, // 核销订单权益
 } from '@/api/vehretail/orderManager/deliveryOrder/index';
 export default {
   name: 'VerifyOrderRightsDialog',
   props: {
     // 订单 ID
     orderId: {
+      type: [String, Number],
+      default: ''
+    },
+    // 交车单
+    deliveryOrderId: {
       type: [String, Number],
       default: ''
     },
@@ -105,18 +131,18 @@ export default {
       loading: false,
       submitLoading: false,
       tableData: [],
-      failList: [],
-      successList: []
+      resultData: {
+        consumeSuccessCount: 0,
+        lockErrCount: 0,
+        consumeErrCount: 0,
+        otherErrCount: 0,
+        lockErr: '',
+        consumeErr: '',
+        otherErr: ''
+      }
     };
   },
-  computed: {
-    totalSuccess () {
-      return this.successList.reduce((sum, item) => sum + (item.count || 0), 0);
-    },
-    totalFail () {
-      return this.failList.reduce((sum, item) => sum + (item.count || 0), 0);
-    }
-  },
+  computed: {},
   methods: {
     // 打开对话框
     open () {
@@ -131,8 +157,7 @@ export default {
     // 关闭结果对话框
     closeResult () {
       this.resultVisible = false;
-      this.failList = [];
-      this.successList = [];
+      this.resultData = {};
     },
     // 加载权益列表（模拟接口）
     async loadRightsList () {
@@ -219,34 +244,12 @@ export default {
       }
       try {
         this.submitLoading = true;
-        // 模拟接口调用
         const params = {
-          orderId: this.orderId,
+          deliveryOrderId: this.orderId,
           openWriteOffRights: checkedRows
         };
-        const response = await writeOff(params);
-        const data = response.data;
-
-        // 模拟接口返回
-        // await new Promise(resolve => setTimeout(resolve, 500));
-        // 假设接口返回格式：{ successList: [], failList: [] }
-        // const data = {
-        //   successList: checkedRows.slice(0, 1), // 模拟 1 条成功
-        //   failList: [
-        //     {
-        //       rightsId: checkedRows[1]?.rightsId || 'YH20252338975329872956',
-        //       failReason: '核销申请信息与权益使用配置的规则不符，不允许锁定及核销'
-        //     },
-        //     {
-        //       rightsId: checkedRows[2]?.rightsId || 'YH20252338975329872957',
-        //       failReason: '权益已过期，无法核销'
-        //     },
-        //     {
-        //       rightsId: checkedRows[3]?.rightsId || 'YH20252338975329872958',
-        //       failReason: '该权益不适用于当前订单'
-        //     }
-        //   ]
-        // };
+        const response = await cancelOrderRights(params);
+        const data = response.data || response;
 
         // 关闭当前弹框
         this.close();
@@ -262,24 +265,15 @@ export default {
     },
     // 显示结果弹框
     showResult (data) {
-      this.failList = [];
-      this.successList = [];
-      // 处理失败列表 - 每条失败记录单独显示
-      if (data.failList && data.failList.length > 0) {
-        data.failList.forEach(item => {
-          this.failList.push({
-            count: 1,
-            reason: item.failReason || '核销申请信息与权益使用配置的规则不符，不允许锁定及核销',
-            rightsId: item.rightsId
-          });
-        });
-      }
-      // 处理成功列表
-      if (data.successList && data.successList.length > 0) {
-        this.successList.push({
-          count: data.successList.length
-        });
-      }
+      this.resultData = {
+        consumeSuccessCount: data.consumeSuccessCount || 0,
+        lockErrCount: data.lockErrCount || 0,
+        lockErr: data.lockErr || '',
+        consumeErrCount: data.consumeErrCount || 0,
+        consumeErr: data.consumeErr || '',
+        otherErrCount: data.otherErrCount || 0,
+        otherErr: data.otherErr || ''
+      };
       this.resultVisible = true;
     },
     // 关闭结果弹框

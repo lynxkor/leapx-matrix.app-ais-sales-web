@@ -119,7 +119,7 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canAssign" size="small" type="primary" @click="handleAssign">分派</el-button>
+      <el-button v-permission="moduleKey +'-assign'" :disabled="selectionList.length !== 1" size="small" @click="handleAssign">分派</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -142,6 +142,7 @@
         <EditPage slot="centralizedViewSlot" :id="clickItemId"/>
       </LPVxeTable>
     </div>
+    <AssignDialog ref="assignDialog" @success="getData" />
   </div>
 </template>
 
@@ -158,6 +159,7 @@ import permissions from '@/libs/mixins/permissions';
 import { downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import AssignDialog from './components/AssignDialog.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -184,7 +186,8 @@ export default {
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
-    EditPage
+    EditPage,
+    AssignDialog
   },
   data () {
     return {
@@ -311,7 +314,11 @@ export default {
     },
     // 分派按钮
     handleAssign () {
-      this.$message.info('分派功能待实现');
+      if (!this.selectionList || this.selectionList.length === 0) {
+        this.$message('请选择要分派的交车单');
+        return;
+      }
+      this.$refs.assignDialog.open(this.selectionList);
     },
     onSubmit () {
       this.optionObj.form.page = 1;
