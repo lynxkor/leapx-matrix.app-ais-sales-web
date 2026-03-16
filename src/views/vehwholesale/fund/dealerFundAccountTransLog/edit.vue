@@ -94,7 +94,7 @@
 
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehwholesale/fund/accountTranslog/index';
-import FetchSelect from '@/libs/components/FetchSelect';
+// import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
