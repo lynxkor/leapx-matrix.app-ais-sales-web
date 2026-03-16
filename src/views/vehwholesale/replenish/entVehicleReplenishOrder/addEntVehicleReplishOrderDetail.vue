@@ -33,7 +33,7 @@
                 />
         </el-form-item>
         <el-form-item label="企业客户补货订单：">
-          <el-input v-model="materialsform.entReplenishOrderId" clearable placeholder="请输入"/>
+          <el-input v-model="materialsform.entReplenishOrderId" clearable placeholder="请输入" disabled/>
         </el-form-item>
          <el-form-item label="销售价格：">
             <el-input-number
@@ -53,7 +53,7 @@
                     :step="0.01"
                     :min="0"
                     :controls="false"
-                    :disabled="isType"
+                    disabled
                 />
         </el-form-item>
         <el-form-item label="关联交易价格比例：">
@@ -64,7 +64,7 @@
                     :step="0.01"
                     :min="0"
                     :controls="false"
-                    :disabled="isType"
+                    disabled
                 />
         </el-form-item>
         <el-form-item label="数量：">
@@ -77,10 +77,6 @@
                     :controls="false"
                 />
         </el-form-item>
-        <el-form-item label="销售市场：">
-          <el-input v-model="materialsform.salesMarket" clearable placeholder="请输入" :disabled="isType"/>
-        </el-form-item>
-
       </el-form>
     </div>
     <div slot="footer" class="dialog-footer">
@@ -113,7 +109,7 @@ export default {
   },
   data () {
     return {
-      title: '企业客户补货订单',
+      title: '企业客户补货订单明细',
       moduleKey: 'AISVW-entVehicleReplenishOrder',
       loading: false,
       submitLoading: false,
@@ -161,6 +157,8 @@ export default {
     },
     orderInfo (val) {
       if (val) {
+        console.log(val);
+        this.materialsform.entReplenishOrderId = val.entReplenishOrderCode;
         if (val.orderCategory === 1 || val.orderCategory === 8) {
           this.isType = true;
         } else if (this.orderInfo.orderCategory === 21) {

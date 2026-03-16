@@ -100,7 +100,7 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="状态变更描述：" prop="statusDesc">
+                <el-form-item label="说明：" prop="statusDesc">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="xxx"

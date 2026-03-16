@@ -256,7 +256,7 @@ export default {
           { props: 'businessModeLabel', label: '业务模式', visible: true, width: 200 },
           { props: 'repaymentRecordCode', label: '还款记录编号', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 200 },
           { props: 'dealerName', label: '经销商名称', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
