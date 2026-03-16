@@ -7,7 +7,7 @@
         :id="_id"
         :title="title"
         :form.sync="form"
-        :isEditing.sync="isEditing"
+        :isEditing.sync="canEditing"
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
@@ -20,7 +20,7 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="canEditing">
                 <el-form-item label="申请单号：" prop="unlockApplyCode">
                   <el-input
                     v-model="form.unlockApplyCode"
@@ -287,7 +287,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail" v-show="!isEditing">
+              <el-form :inline="true" class="form-detail" v-show="!canEditing">
                 <el-form-item label="申请单号：" prop="unlockApplyCode">
                   {{ form.unlockApplyCode }}
                 </el-form-item>
@@ -487,9 +487,6 @@ export default {
     isAdding () {
       return this.$route.query.isAdding;
     },
-    isEditing () {
-      return this.isAdding || this.form.applyStatus === 1040 || this.form.applyStatus === 1020;
-    },
   },
   watch: {
     id: {
@@ -564,7 +561,8 @@ export default {
         applyDesc: [
           { required: true, message: '请输入申请说明', trigger: 'change' }
         ],
-      }
+      },
+      canEditing: true,
     };
   },
   mounted () {
@@ -572,6 +570,7 @@ export default {
   created () {
     const id = this.$route.query.needAddId;
     const isAdding = this.$route.query.isAdding;
+    this.canEditing = isAdding || (this.$route.query.isEditing && (this.form.applyStatus === 1040 || this.form.applyStatus === 1010));
     if (id && isAdding) {
       getRetailOrderDetail(id).then(res => {
         // 直接更新表单数据
