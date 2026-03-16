@@ -76,8 +76,8 @@
             multiple
             reserve-keyword
             labelKey="organizationName"
-            valueKey="organizationCode"
-            v-model="form.fundFinancialOrganizationCodes"
+            valueKey="id"
+            v-model="form.financialOrganizationIds"
             placeholder="请选择"
             clearable
             filterable
@@ -260,13 +260,13 @@ export default {
           { props: 'saleCompanyId', label: '销售公司', visible: true, width: 200 },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 200 },
-          { props: 'financialOrganizationId', label: '金融机构', visible: true, width: 200 },
+          { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 200 },
           { props: 'orderTime', label: '订单时间', visible: true, width: 200 },
           { props: 'pickupContactName', label: '接车联系人', visible: true, width: 200 },
           { props: 'pickupContactMobile', label: '接车联系电话', visible: true, width: 200 },
-          { props: 'provinceName', label: '省', visible: true, width: 200 },
-          { props: 'cityName', label: '市', visible: true, width: 200 },
-          { props: 'districtName', label: '区县名称', visible: true, width: 200 },
+          { props: 'provinceName', label: '省份', visible: true, width: 200 },
+          { props: 'cityName', label: '城市', visible: true, width: 200 },
+          { props: 'districtName', label: '区/县', visible: true, width: 200 },
           { props: 'address', label: '交车地址', visible: true, width: 200 },
           { props: 'longitude', label: '经度', visible: true, width: 200 },
           { props: 'latitude', label: '维度', visible: true, width: 200 },

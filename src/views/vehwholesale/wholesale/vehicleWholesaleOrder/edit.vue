@@ -106,20 +106,25 @@
                   />
                 </el-form-item>
                   <el-form-item label="订单分类：" prop="orderCategory">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.orderCategories"
-                    clearable
-                    disabled
-                  />
+                   <fetch-select
+                      :options="orderCategoryOptions"
+                      v-model="form.orderCategory"
+                      placeholder="请选择"
+                      clearable
+                      filterable
+                      disabled
+                    />
                 </el-form-item>
                    <el-form-item label="批售方式：" prop="wholesaleWay">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.wholesaleWay"
-                    clearable
-                    disabled
-                  />
+                  <fetch-select
+                      :request="fetchOptions"
+                      enumCode="vw_wholesale_way"
+                      v-model="form.wholesaleWay"
+                      placeholder="请选择批售方式"
+                      clearable
+                      filterable
+                      disabled
+                    />
                 </el-form-item>
                    <el-form-item label="订单时间：" prop="orderTime">
                   <el-date-picker
@@ -332,7 +337,7 @@
                 <el-form-item label="是否已锁定：" prop="lockStatus">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="BooleanEnum"
                     v-model="form.lockStatus"
                     placeholder="请选择"
                     clearable
@@ -360,12 +365,15 @@
                   />
                 </el-form-item>
                   <el-form-item label="配车方式：" prop="allocateWay">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.allocateWay"
-                    clearable
-                    disabled
-                  />
+                    <fetch-select
+                      :request="fetchOptions"
+                      enumCode="vw_allocate_way"
+                      v-model="form.allocateWay"
+                      placeholder="请选择"
+                      clearable
+                      filterable
+                      disabled
+                    />
                 </el-form-item>
                    <el-form-item label="配车VIN码：" prop="vin">
                   <el-input
@@ -405,13 +413,16 @@
                     disabled
                   />
                 </el-form-item>
-                    <el-form-item label="结算方式：" prop="settleWay">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.settleWay"
-                    clearable
-                    disabled
-                  />
+                  <el-form-item label="结算方式：" prop="settleWay">
+                   <fetch-select
+                      :request="fetchOptions"
+                      enumCode="vw_wholesale_settle_way"
+                      v-model="form.settleWay"
+                      placeholder="请选择"
+                      clearable
+                      filterable
+                      disabled
+                    />
                 </el-form-item>
                    <el-form-item label="首次配车时间：" prop="firstAllocateTime">
                   <el-date-picker
@@ -474,12 +485,15 @@
                   />
                 </el-form-item>
                 <el-form-item label="是否创建发运单计划：" prop="createdShippingPlan">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.createdShippingPlan"
-                    clearable
-                    disabled
-                  />
+                  <fetch-select
+                      :request="fetchOptions"
+                      enumCode="BooleanEnum"
+                      v-model="form.createdShippingPlan"
+                      placeholder="请选择"
+                      clearable
+                      filterable
+                      disabled
+                    />
                 </el-form-item>
                  <el-form-item label="作废说明：" prop="cancelRemark">
                   <el-input
@@ -498,7 +512,7 @@
                   <el-form-item label="车辆交付状态：" prop="deliveryStatus">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="mcs_vehicledeliverystatus"
+                    enumCode="vw_vehicle_delivery_status"
                     v-model="form.deliveryStatus"
                     placeholder="请选择"
                     clearable
@@ -1014,6 +1028,7 @@ export default {
       true_false_enum: TRUE_FALSE_ENUM,
       ALLOWED_STATUS: [0, 11],
       settleFundTypeOptions: [],
+      orderCategoryOptions: [],
       accountData: [],
       detailsColumns: [
         { field: 'dealerCompanyName', title: '销售公司' },
@@ -1072,8 +1087,26 @@ export default {
   mounted () {
     console.log('mounted', ManualVehicle.props);
     this.fetchSettleFundTypeOptions();
+    this.fetchOrderCategoryOptions();
   },
   methods: {
+    async fetchOrderCategoryOptions () {
+      const response = await getEnum('vw_order_category');
+      // 过滤出 code 为 0、2、20 的数据，且确保 code 是字符串类型
+      // 0 商品车订单
+      // 2 试驾车订单
+      // 20 展车订单
+      this.orderCategoryOptions = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['0', '2', '20'].includes(codeStr);
+      }).map(item => {
+        // 确保 code 字段是字符串类型
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
+    },
     handlequerySAPAccountBalance () {
       const params = {
         id: this._id,

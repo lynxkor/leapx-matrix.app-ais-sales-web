@@ -51,7 +51,7 @@
                     filterable
                   />
                 </el-form-item>
-                 <el-form-item label="关联交易价格比例：" prop="txnTaxPriceRate">
+                 <el-form-item label="关联交易价格比例(%)：" prop="txnTaxPriceRate">
                   <el-input-number
                     v-model="form.txnTaxPriceRate"
                     placeholder="请输入"
@@ -64,17 +64,17 @@
                 </el-form-item>
                  <el-form-item label="生效时间：" prop="effectiveTime">
                     <el-date-picker
-                    type="date"
+                    type="datetime"
                     v-model="form.effectiveTime"
-                    value-format="yyyy-MM-dd"
+                     value-format="yyyy-MM-dd HH:mm:ss"
                     placeholder="请选择额度生效日期"
                   />
                 </el-form-item>
                 <el-form-item label="失效时间：" prop="expireTime">
                   <el-date-picker
-                    type="date"
+                    type="datetime"
                     v-model="form.expireTime"
-                    value-format="yyyy-MM-dd"
+                     value-format="yyyy-MM-dd HH:mm:ss"
                     placeholder="请选择额度失效时间"
                   />
                 </el-form-item>

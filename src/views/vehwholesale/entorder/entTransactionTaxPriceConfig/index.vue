@@ -45,11 +45,19 @@
         />
       </el-form-item>
       <template v-if="show">
-        <el-form-item label="关联交易价格比例">
-          <el-input
-            placeholder="请输入"
+        <el-form-item label="关联交易价格比例(%)">
+          <el-input-number
             v-model="form.txnTaxPriceRate"
-            clearable
+            :allow-empty="true"
+            :controls="false"
+            :min="0"
+            :max="100"
+            :precision="2"
+            :step="0.01"
+            placeholder="请输入"
+            :formatter="(value) => value === undefined ? '' : value.toFixed(2)"
+            :parser="(value) => value === '' ? undefined : Number(value)"
+            style="width: 100%;"
           />
         </el-form-item>
       </template>
@@ -120,7 +128,7 @@ const defaultForm = {
   createTime: '',
   saleCompanyId: '',
   orderCategory: '',
-  txnTaxPriceRate: '',
+  txnTaxPriceRate: undefined,
 };
 
 const pageSize = 20;
