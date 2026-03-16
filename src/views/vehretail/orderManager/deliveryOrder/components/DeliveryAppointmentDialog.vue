@@ -597,7 +597,6 @@ export default {
           // 预约交车接口
           await appointment(params);
         }
-
         this.$message.success(this.currentMode === 'change' ? '更改预约时间成功' : '预约成功');
         this.closeAppointment();
         this.$emit('refresh');

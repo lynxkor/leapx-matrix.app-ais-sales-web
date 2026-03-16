@@ -48,14 +48,14 @@
                     disabled
                   />
                 </el-form-item>
-                  <el-form-item label="推荐金融机构：" prop="recFinancialOrganizationId">
+                  <el-form-item label="推荐金融机构：" prop="recFinancialOrganizationName">
                     <fetch-select
                      :remote-method="repairItemSearch"
                       remote
                       reserve-keyword
                       labelKey="organizationName"
                       valueKey="organizationCode"
-                      v-model="form.fundFinancialOrganizationCode"
+                      v-model="form.recFinancialOrganizationName"
                       placeholder="请选择"
                       clearable
                       filterable
@@ -333,6 +333,8 @@ export default {
   methods: {
     getfundFinancialOrganizationName (fundFinancialOrganizationName, obj) {
       this.form.recFinancialOrganizationName = obj.organizationName;
+      this.form.recFinancialOrganizationId = obj.id;
+      this.form.fundFinancialOrganizationName = obj.organizationName;
     },
     repairItemSearch (query) { return fundGetList({ organizationNameLike: query, status: 1 }); },
     async getParentCompany (query) {

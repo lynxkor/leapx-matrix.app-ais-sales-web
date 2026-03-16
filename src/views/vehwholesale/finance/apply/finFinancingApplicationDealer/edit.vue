@@ -55,7 +55,7 @@
                       reserve-keyword
                       labelKey="organizationName"
                       valueKey="organizationCode"
-                      v-model="form.fundFinancialOrganizationCode"
+                      v-model="form.fundFinancialOrganizationName"
                       placeholder="请选择"
                       clearable
                       filterable
@@ -315,8 +315,8 @@ export default {
         // fundFinancialOrganizationName: [
         //   { required: true, message: '请输入融资金融机构', trigger: 'change' }
         // ],
-        fundFinancialOrganizationCode: [
-          { required: true, message: '请输入融资金融机构ID', trigger: 'change' }
+        fundFinancialOrganizationName: [
+          { required: true, message: '请输入融资金融机构', trigger: 'change' }
         ],
         mainDealerCompanyName: [
           { required: true, message: '请输入主体母公司名称', trigger: 'change' }
@@ -368,6 +368,8 @@ export default {
     },
     getfundFinancialOrganizationName (fundFinancialOrganizationName, obj) {
       this.form.fundFinancialOrganizationName = obj.organizationName;
+      this.form.fundFinancialOrganizationId = obj.id;
+      this.form.fundFinancialOrganizationCode = obj.organizationCode;
     },
     detailRequest () {
       const id = this._id;
