@@ -54,7 +54,7 @@
                 <el-form-item label="状态：" prop="status">
                   {{ form.statusLabel }}
                 </el-form-item>
-                <el-form-item label="状态变更描述：" prop="statusDesc">
+                <el-form-item label="说明：" prop="statusDesc">
                   {{ form.statusDesc }}
                 </el-form-item>
               </el-form>

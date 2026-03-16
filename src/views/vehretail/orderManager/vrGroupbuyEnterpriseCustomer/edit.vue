@@ -23,6 +23,7 @@
                     placeholder="请输入公司名称"
                     v-model="form.companyName"
                     clearable
+                    maxlength="50"
                   />
                 </el-form-item>
                 <el-form-item label="公司编号：" prop="companyCode">
@@ -30,18 +31,24 @@
                     placeholder="请输入公司编号"
                     v-model="form.companyCode"
                     clearable
+                    maxlength="50"
+                    :disabled="_id"
                   />
                 </el-form-item>
                 <el-form-item label="是否合作：" prop="isCooperation">
-                  <el-radio-group v-model="form.isCooperation">
-                    <el-radio v-for="item in yes_no_enum" :key="item.code" :label="item.code">{{ item.message }}</el-radio>
-                  </el-radio-group>
+                  <fetch-select
+                    :options="yes_no_enum"
+                    v-model="form.isCooperation"
+                    placeholder="请选择是否合作"
+                    clearable
+                    filterable
+                  />
                 </el-form-item>
-                <el-form-item label="团购企业类型：" prop="enterpriseType">
+                <el-form-item label="团购企业类型：" prop="groupCompanyType">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="groupbuy_enterprise_type"
-                    v-model="form.enterpriseType"
+                    enumCode="vr_group_company_type"
+                    v-model="form.groupCompanyType"
                     placeholder="请选择团购企业类型"
                     clearable
                     filterable
@@ -52,6 +59,7 @@
                     placeholder="请输入联系人姓名"
                     v-model="form.contactPerson"
                     clearable
+                    maxlength="50"
                   />
                 </el-form-item>
                 <el-form-item label="联系人手机号码：" prop="contactPhone">
@@ -68,6 +76,7 @@
                     placeholder="请输入备注"
                     v-model="form.remark"
                     clearable
+                    maxlength="1000"
                   />
                 </el-form-item>
               </el-form>
@@ -79,10 +88,10 @@
                   {{ form.companyCode }}
                 </el-form-item>
                 <el-form-item label="是否合作：">
-                  {{ yes_no_enum_map[form.isCooperation] }}
+                  {{ form.isCooperationLabel }}
                 </el-form-item>
                 <el-form-item label="团购企业类型：">
-                  {{ form.enterpriseType }}
+                  {{ form.groupCompanyTypeLabel }}
                 </el-form-item>
                 <el-form-item label="联系人：">
                   {{ form.contactPerson }}
@@ -145,7 +154,7 @@ const defaultForm = {
   companyName: '',
   companyCode: '',
   isCooperation: '',
-  enterpriseType: '',
+  groupCompanyType: '',
   contactPerson: '',
   contactPhone: '',
   remark: ''
@@ -172,9 +181,6 @@ export default {
     title () {
       return '公司名称：' + (this.form.companyName || '');
     },
-    yes_no_enum_map () {
-      return Object.fromEntries(this.yes_no_enum.map(item => [item.code, item.message]));
-    }
   },
   watch: {
     id: {
@@ -188,6 +194,25 @@ export default {
   },
   data () {
     const form = this.getDefautlForm();
+
+    // 验证手机号格式
+    const validatePhone = (rule, value, callback) => {
+      if (!value) {
+        // 如果值为空且不是必填项，则不显示错误
+        callback();
+        return;
+      }
+
+      // 手机号正则表达式：支持中国大陆手机号格式
+      const phoneRegex = /^1[3-9]\d{9}$/;
+      if (!phoneRegex.test(value)) {
+        callback(new Error('请输入正确的手机号码格式'));
+        return;
+      }
+
+      callback();
+    };
+
     return {
       pageTitle: '整车零售-订单管理-团购企业客户管理',
       pageType: 'edit',
@@ -205,16 +230,16 @@ export default {
           { required: true, message: '请输入公司编号', trigger: 'blur' }
         ],
         isCooperation: [
-          { required: true, message: '请选择是否合作', trigger: 'change' }
+          { required: false, message: '请选择是否合作', trigger: 'change' }
         ],
-        enterpriseType: [
-          { required: true, message: '请选择团购企业类型', trigger: 'change' }
+        groupCompanyType: [
+          { required: false, message: '请选择团购企业类型', trigger: 'change' }
         ],
         contactPerson: [
-          { required: true, message: '请输入联系人', trigger: 'blur' }
+          { required: false, message: '请输入联系人', trigger: 'blur' }
         ],
         contactPhone: [
-          { required: true, message: '请输入联系人手机号码', trigger: 'blur' }
+          { validator: validatePhone, trigger: 'blur', required: false }
         ]
       }
     };

@@ -218,7 +218,7 @@ export default {
           { props: 'reviewAuditTime', label: '复审时间', visible: true, width: 180 },
           { props: 'finalAuditTime', label: '终审时间', visible: true, width: 180 },
           { props: 'remark', label: '备注', visible: true, width: 150 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 180 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true },
           {
             props: 'operate',
             label: '操作',
@@ -243,7 +243,12 @@ export default {
         ],
         total: 0
       },
-      sortColumns: []
+      sortColumns: [
+        {
+          column: 'create_time',
+          sort: 'DESC'
+        }
+      ]
     };
   },
   created () {

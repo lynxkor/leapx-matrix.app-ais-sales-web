@@ -242,7 +242,7 @@ export default {
           { props: 'syncCount', label: '推送次数', visible: true, width: 200 },
           { props: 'financingDataSourceLabel', label: '融资数据来源', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 }
         ],
         total: 0

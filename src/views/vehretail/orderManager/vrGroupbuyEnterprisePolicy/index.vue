@@ -9,10 +9,16 @@
       class="ais-search-form"
     >
       <el-form-item label="公司名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.companyName"
+        <fetch-select
+          :remote-method="queryCompanyList"
+          remote
+          v-model="form.companyId"
+          :params="form.companyName"
+          value-key="id"
+          label-key="name"
+          placeholder="请选择公司"
           clearable
+          filterable
         />
       </el-form-item>
       <el-form-item label="车系">
@@ -99,6 +105,7 @@ import { downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import FetchSelect from '@/libs/components/FetchSelect';
+import { getSelect } from '@/api/vehretail/orderManager/vrGroupbuyEnterpriseCustomer/index';
 
 const defaultForm = {
   companyName: '',
@@ -166,11 +173,16 @@ export default {
           { props: 'validEndTime', label: '有效截止时间', visible: true, width: 180 },
           { props: 'creatorName', label: '负责人', visible: true, width: 120 },
           { props: 'remark', label: '备注', visible: true, width: 150 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 180, fixed: 'right' }
+          { props: 'createTime', label: '创建时间', visible: true, width: 180, fixed: 'right', sortable: true }
         ],
         total: 0
       },
-      sortColumns: []
+      sortColumns: [
+        {
+          column: 'create_time',
+          sort: 'DESC'
+        }
+      ]
     };
   },
   created () {
@@ -298,6 +310,10 @@ export default {
     async getVehicleSeriesList (params) {
       return vehicleSeriesList({ seriesNameLike: params, status: 1 });
     },
+    async queryCompanyList (params) {
+      const res = await getSelect({ companyName: params, limitSize: 10, isCooperation: 1 });
+      return res || [];
+    }
   }
 };
 </script>

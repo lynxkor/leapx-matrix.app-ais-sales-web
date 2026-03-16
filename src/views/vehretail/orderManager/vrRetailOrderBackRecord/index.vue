@@ -267,11 +267,16 @@ export default {
           { props: 'newStatus', label: '新订单状态', visible: true, width: 150 },
           { props: 'operationDescription', label: '操作描述', visible: true, width: 200 },
           { props: 'operationTime', label: '操作时间', visible: true, width: 180 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 180 }
+          { props: 'createTime', label: '创建时间', visible: true, width: 180, fixed: 'right', sortable: true }
         ],
         total: 0
       },
-      sortColumns: []
+      sortColumns: [
+        {
+          column: 'create_time',
+          sort: 'DESC'
+        }
+      ]
     };
   },
   created () {

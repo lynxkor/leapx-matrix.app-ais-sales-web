@@ -12,7 +12,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.orderCategory === 1 || form.orderCategory === 8"
+        :showEditBtn="form.auditStatus === 0 || form.orderCategory === 4"
       >
         <template #status>
           {{ form.replenishApplyCode }}
@@ -20,14 +20,18 @@
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button  size="small" @click="handleAddDetail" >添加补货明细</el-button>
-           <el-button  size="small" @click="handleCheckSubmit" >提交审批</el-button>
-          <el-button  size="small" @click="handleCheckStatus" >审核</el-button>
-          <el-button  size="small" @click="handleCancel" >作废</el-button>
-          <!-- <el-button size="small" >附件上传</el-button> -->
-          <el-button  size="small" @click="handleDelete" >删除</el-button>
-          <!-- <el-button size="small">按钮1</el-button>
-          <el-button size="small">按钮2</el-button> -->
+          <el-button  :type="form.submitAuditButton ? 'primary' : ''" size="small" @click="handleAddDetail" >添加补货明细</el-button>
+          <el-button  :type="form.submitAuditButton ? 'primary' : ''" @click="handleCheckSubmit" >提交审批</el-button>
+          <el-button  :type="form.auditButton ? 'primary' : ''" @click="handleCheckStatus" >审核</el-button>
+          <el-button  :type="form.cancelButton ? 'primary' : ''" size="small" @click="handleCancel" >作废</el-button>
+          <el-button  v-if="canDelete" size="small" :type="form.deleteButton ? 'primary' : ''" @click="handleDelete" >删除</el-button>
+
+          <!-- <el-button v-permission="moduleKey+'-addDetail'"  :type="form.submitAuditButton ? 'primary' : ''" size="small" @click="handleAddDetail" >添加补货明细</el-button>
+          <el-button v-permission="moduleKey+'-batchSubmitAudit'" :type="form.submitAuditButton ? 'primary' : ''" @click="handleCheckSubmit" >提交审批</el-button>
+          <el-button v-permission="moduleKey+'-batchAudit'" :type="form.auditButton ? 'primary' : ''" @click="handleCheckStatus" >审核</el-button>
+          <el-button v-permission="moduleKey+'-batchCancel'" :type="form.cancelButton ? 'primary' : ''" size="small" @click="handleCancel" >作废</el-button>
+          <el-button  v-if="canDelete" size="small" :type="form.deleteButton ? 'primary' : ''" @click="handleDelete" >删除</el-button>
+           -->
         </template>
         <el-main>
           <section class="common-section">
@@ -58,10 +62,13 @@
                   />
                 </el-form-item>
                 <el-form-item label="销售市场：" prop="salesMarket">
-                  <el-input
-                    placeholder="请输入"
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vw_sale_market_type"
                     v-model="form.salesMarket"
+                    placeholder="请选择"
                     clearable
+                    filterable
                   />
                 </el-form-item>
                  <el-form-item label="企业客户名称：" prop="entCustomerName">
@@ -147,12 +154,12 @@
                 </el-form-item>
                 <el-form-item label="订单时间：" prop="orderTime">
                   <el-date-picker
-                    v-model="form.orderTime"
-                    type="date"
-                    value-format="yyyy-MM-dd"
-                    placeholder="请选择订单时间"
-                    clearable
-                  />
+                      type="datetime"
+                      v-model="form.orderTime"
+                      value-format="yyyy-MM-dd HH:mm:ss"
+                      placeholder="选择日期时间"
+                      clearable
+                    />
                 </el-form-item>
                  <el-form-item label="销售人员：" prop="saleUserName">
                   <el-input
@@ -250,7 +257,7 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="省份：" prop="provinceCode">
+                <el-form-item label="省份：" prop="provinceName">
                    <fetch-select
                       filterable
                       clearable
@@ -262,7 +269,7 @@
                       @change="handleChangeProvince"
                     />
                 </el-form-item>
-                <el-form-item label="城市：" prop="cityCode">
+                <el-form-item label="城市：" prop="cityName">
                     <fetch-select
                         filterable
                         clearable
@@ -273,11 +280,11 @@
                         @change="handleChangeDistrict"
                       />
                 </el-form-item>
-                <el-form-item label="区县编码：" prop="districtCode">
+                <el-form-item label="区县编码：" prop="districtName">
                    <fetch-select
                         filterable
                         clearable
-                        v-model="form.districtCode"
+                        v-model="form.districtName"
                         :options="districtOptions"
                         value-key="code"
                         label-key="name"
@@ -500,7 +507,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, networkParentCompanyItem, listDealersForParentCompany, addOrUpdateDetail, batchCancel, batchSubmitAudit, batchAudit, deleteItem } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
+import { getDetail, addOrUpdate, networkParentCompanyItem, listDealersForParentCompany, addOrUpdateDetail, batchCancel, batchSubmitAudit, batchAudit, deleteItem, getGeoLocationByFullAddress } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -535,9 +542,9 @@ const defaultForm = {
   orderCategory: '',
   acceptanceMethod: '',
   salesMarket: '',
-  creditSaleFlag: '',
+  creditSaleFlag: 0,
   totalAmount: '',
-  settleFundType: '',
+  settleFundType: '1010',
   financialOrganizationId: '',
   orderTime: '',
   saleDealerCode: '',
@@ -598,6 +605,15 @@ export default {
         }
       },
       immediate: true
+    },
+    'form.address': {
+      handler (newVal) {
+        // 大客户且地址有值时，防抖调用地址解析
+        if (newVal && this.companyCustomerTypeName === '大客户') {
+          this.handleParseAddress(newVal);
+        }
+      },
+      deep: true
     }
   },
   data () {
@@ -613,6 +629,7 @@ export default {
       submitLoading: false,
       showAddDetailDialog: false,
       uploadDialogVisible: false,
+      companyCustomerTypeName: '',
       yes_no_enum: YES_NO_ENUM,
       orderCategoryOptions: [],
       settleFundTypeOptions: [],
@@ -664,6 +681,20 @@ export default {
     // this.getCompanyList();
   },
   methods: {
+    // 地址解析
+    handleParseAddress (val) {
+      let params = {
+        cityName: this.form.cityName,
+        districtName: this.form.districtName,
+        provinceName: this.form.provinceName,
+        address: val
+      };
+      return getGeoLocationByFullAddress(params).then((res) => {
+        console.log(res);
+        this.form.longitude = res.longitude;
+        this.form.latitude = res.latitude;
+      });
+    },
     getCompanyList (query) {
       return companyList({ companyNameLike: query, status: 1 });
     },
@@ -682,15 +713,19 @@ export default {
       return batchAudit(params).then(() => {
         this.$message({
           type: 'success',
-          message: '批量审核成功'
+          message: '审核成功'
         });
-        this.getData();
+        this.detailRequest();
       });
     },
     handleCheckStatus () {
       this.$refs.auditRef.show();
     },
     handleCheckSubmit () {
+      if (this.tableData.length === 0) {
+        this.$message.error('请添加明细后提交');
+        return;
+      }
       this.$confirm('确认是否对数据进行提交审批?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -704,6 +739,7 @@ export default {
           if (this.$refs.containerRef) {
             this.$refs.containerRef.loadDetail();
           }
+          this.detailRequest();
           // 或者关闭编辑状态
           this.isEditing = false;
         });
@@ -715,7 +751,7 @@ export default {
         idSet: [this._id],
       }).then(() => {
         this.$message.success('作废成功');
-        this.getDetailData();
+        this.detailRequest();
       });
     },
 
@@ -795,6 +831,7 @@ export default {
       console.log(val, row);
       this.form.entCustomerName = row.companyName;
       this.form.entCustomerCode = row.companyCode;
+      this.companyCustomerTypeName = row.companyCustomerTypeName;
       this.getDealersForParentCompany(val);
     },
     iscreditSaleFlag (val) {
@@ -846,6 +883,7 @@ export default {
           type: 'success',
           message: '添加成功!'
         });
+        this.detailRequest();
       }).catch(() => {
         this.$message({
           type: 'error',

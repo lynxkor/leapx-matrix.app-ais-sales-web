@@ -24,45 +24,75 @@
       </el-form-item>
       <template v-if="show">
         <el-form-item label="整车车型">
-          <el-input
-            placeholder="请输入"
-            v-model="form.modelName"
+          <fetch-select
+            filterable
             clearable
+            remote
+            collapseTags
+            v-model="form.modelId"
+            :remote-method="getVehicleModelList"
+            value-key="id"
+            label-key="label"
           />
         </el-form-item>
         <el-form-item label="基本车系">
-          <el-input
-            placeholder="请输入"
-            v-model="form.seriesName"
+          <fetch-select
+            filterable
             clearable
+            remote
+            collapseTags
+            v-model="form.seriesId"
+            :remote-method="getVehicleSeriesList"
+            value-key="id"
+            label-key="label"
           />
         </el-form-item>
         <el-form-item label="外饰风格">
-          <el-input
-            placeholder="请输入"
-            v-model="form.exteriorStyle"
+          <fetch-select
+            filterable
             clearable
+            remote
+            collapseTags
+            v-model="form.exteriorStyle"
+            :remote-method="getVehicleExteriorList"
+            value-key="name"
+            label-key="label"
           />
         </el-form-item>
         <el-form-item label="内饰风格">
-          <el-input
-            placeholder="请输入"
-            v-model="form.interiorStyle"
+          <fetch-select
+            filterable
             clearable
+            remote
+            collapseTags
+            v-model="form.interiorStyle"
+            :remote-method="getVehicleInteriorList"
+            value-key="name"
+            label-key="label"
           />
         </el-form-item>
         <el-form-item label="车辆年型(L)">
-          <el-input
-            placeholder="请输入"
-            v-model="form.vehicleYearType"
+          <fetch-select
+            filterable
             clearable
+            remote
+            collapseTags
+            v-model="form.vehicleYearTypeId"
+            :remote-method="getVehicleYearTypeList"
+            value-key="id"
+            label-key="label"
           />
         </el-form-item>
         <el-form-item label="选装包">
-          <el-input
-            placeholder="请输入"
-            v-model="form.optionPackage"
+          <fetch-select
+            filterable
             clearable
+            remote
+            collapseTags
+            v-model="form.optionPackageId"
+            :remote-method="getVehicleOptionPackageList"
+            value-key="id"
+            label-key="label"
           />
         </el-form-item>
       </template>
@@ -82,13 +112,16 @@
       <LPVxeTable
         ref="tableRef"
         v-loading="loading"
+        is-checkbox
         is-page
         centralized
+        checkboxFixed
         :option-obj="optionObj"
         :get-config="getConfig"
         @paginationChange="paginationChange"
         @listSelect="handleListSelect"
         @sortChange="handleSortChange"
+        @handleSelect="handleSelectionChange"
       />
     </div>
   </div>
@@ -99,7 +132,8 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList } from '@/api/vehretail/orderManager/vrSpecialVehicle/index';
-import { getTableConfig, exportTable } from '@/api/common';
+import { getTableConfig, exportTable, vehicleSeriesList, vehicleExterior, vehicleInterior, vehicleModelList, listVehicleYearType, vehicleOptionPackage } from '@/api/common';
+import FetchSelect from '@/libs/components/FetchSelect';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { downloadExcel } from '@/libs/utils';
@@ -108,12 +142,12 @@ import commonMixins from '@/libs/mixins/commonMixins';
 const defaultForm = {
   vin: '',
   materialsCode: '',
-  modelName: '',
-  seriesName: '',
+  modelId: '',
+  seriesId: '',
   exteriorStyle: '',
   interiorStyle: '',
-  vehicleYearType: '',
-  optionPackage: ''
+  vehicleYearTypeId: '',
+  optionPackageId: ''
 };
 
 const pageSize = 20;
@@ -125,7 +159,8 @@ export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
     PageSearchAction,
-    LPVxeTable
+    LPVxeTable,
+    FetchSelect
   },
   data () {
     return {
@@ -139,6 +174,14 @@ export default {
       loading: false,
       exportLoading: false,
       clickItemId: '',
+      selectionList: [],
+      // 下拉选项数据
+      seriesList: [],
+      modelList: [],
+      yearTypeList: [],
+      exteriorList: [],
+      interiorList: [],
+      optionPackageList: [],
       optionObj: {
         id: 'vrSpecialVehicleTable',
         dataList: [],
@@ -147,25 +190,64 @@ export default {
           size: pageSize
         },
         dataProp: [
-          { props: 'vin', label: 'VIN', visible: true, width: 200, fixed: 'left' },
+          {
+            props: 'vin',
+            label: 'VIN',
+            visible: true,
+            width: 200,
+            fixed: 'left',
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/vehicle/vehicleProfile/edit',
+                  query: {
+                    id: row.vinId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'materialsCode', label: '整车物料码', visible: true, width: 180 },
           { props: 'materialsDesc', label: '整车物料描述', visible: true, width: 200 },
-          { props: 'modelName', label: '整车车型', visible: true, width: 150 },
+          {
+            props: 'modelName',
+            label: '整车车型',
+            visible: true,
+            width: 150,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleModel/detail',
+                  query: {
+                    id: row.modelId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'seriesName', label: '基本车系', visible: true, width: 150 },
           { props: 'exteriorStyle', label: '外饰风格', visible: true, width: 150 },
           { props: 'interiorStyle', label: '内饰风格', visible: true, width: 150 },
           { props: 'vehicleYearType', label: '车辆年型(L)', visible: true, width: 150 },
           { props: 'optionPackage', label: '选装包', visible: true, width: 150 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 180, fixed: 'right' }
+          { props: 'createTime', label: '创建时间', visible: true, width: 180, fixed: 'right', sortable: true }
         ],
         total: 0
       },
-      sortColumns: []
+      sortColumns: [
+        {
+          column: 'create_time',
+          sort: 'DESC'
+        }
+      ]
     };
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
+    this.initDropdownData();
   },
   methods: {
     handleSortChange (value) {
@@ -179,6 +261,10 @@ export default {
     },
     handleListSelect (row) {
       this.clickItemId = row.id;
+    },
+    // 多选框选中数据
+    handleSelectionChange (selection) {
+      this.selectionList = selection;
     },
     onSubmit () {
       this.optionObj.form.page = 1;
@@ -195,7 +281,7 @@ export default {
       const reqParams = this.getFormData() || {};
       exportTable({
         businessType: '整车零售-订单管理-特殊车辆清单管理',
-        dataFetchPath: 'vehretail/web/orderManager/vrSpecialVehicle/page',
+        dataFetchPath: 'vr/web/order/vrSpecialVehicle/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -263,6 +349,144 @@ export default {
       });
       data.sortColumns = this.sortColumns;
       return data;
+    },
+
+    // 初始化下拉选项数据
+    async initDropdownData () {
+      await Promise.all([
+        this.getVehicleSeriesList(),
+        this.getVehicleModelList(),
+        this.getVehicleYearTypeList(),
+        this.getVehicleExteriorList(),
+        this.getVehicleInteriorList(),
+        this.getVehicleOptionPackageList()
+      ]);
+    },
+
+    // 获取车辆系列列表
+    async getVehicleSeriesList (query = '') {
+      try {
+        const res = await vehicleSeriesList({
+          seriesNameLike: query,
+          limitSize: 1000
+        });
+        this.seriesList = res.map(item => {
+          return {
+            ...item,
+            label: item.name,
+            value: item.name // 使用name作为value，因为v-model绑定的是name字段
+          };
+        });
+        return this.seriesList;
+      } catch (error) {
+        console.error('获取车辆系列列表失败:', error);
+        return [];
+      }
+    },
+
+    // 获取车型列表
+    async getVehicleModelList (query = '') {
+      try {
+        const res = await vehicleModelList({
+          modelNameLike: query,
+          limitSize: 1000
+        });
+        this.modelList = res.map(item => {
+          return {
+            ...item,
+            label: item.name,
+            value: item.name // 使用name作为value，因为v-model绑定的是name字段
+          };
+        });
+        return this.modelList;
+      } catch (error) {
+        console.error('获取车型列表失败:', error);
+        return [];
+      }
+    },
+
+    // 获取年款列表
+    async getVehicleYearTypeList (query = '') {
+      try {
+        const res = await listVehicleYearType({
+          yearTypeNameLike: query,
+          limitSize: 1000
+        });
+        this.yearTypeList = res.map(item => {
+          return {
+            ...item,
+            label: item.name,
+            value: item.name // 使用name作为value
+          };
+        });
+        return this.yearTypeList;
+      } catch (error) {
+        console.error('获取年款列表失败:', error);
+        return [];
+      }
+    },
+
+    // 获取外饰风格列表
+    async getVehicleExteriorList (query = '') {
+      try {
+        const res = await vehicleExterior({
+          exteriorNameLike: query,
+          limitSize: 1000
+        });
+        this.exteriorList = res.map(item => {
+          return {
+            ...item,
+            label: item.name,
+            value: item.name // 使用name作为value
+          };
+        });
+        return this.exteriorList;
+      } catch (error) {
+        console.error('获取外饰风格列表失败:', error);
+        return [];
+      }
+    },
+
+    // 获取内饰风格列表
+    async getVehicleInteriorList (query = '') {
+      try {
+        const res = await vehicleInterior({
+          interiorNameLike: query,
+          limitSize: 1000
+        });
+        this.interiorList = res.map(item => {
+          return {
+            ...item,
+            label: item.name,
+            value: item.name // 使用name作为value
+          };
+        });
+        return this.interiorList;
+      } catch (error) {
+        console.error('获取内饰风格列表失败:', error);
+        return [];
+      }
+    },
+
+    // 获取选装包列表
+    async getVehicleOptionPackageList (query = '') {
+      try {
+        const res = await vehicleOptionPackage({
+          optionPackageNameLike: query,
+          limitSize: 1000
+        });
+        this.optionPackageList = res.map(item => {
+          return {
+            ...item,
+            label: item.name,
+            value: item.name // 使用name作为value
+          };
+        });
+        return this.optionPackageList;
+      } catch (error) {
+        console.error('获取选装包列表失败:', error);
+        return [];
+      }
     }
   }
 };

@@ -18,11 +18,10 @@
       <el-form-item label="申请状态">
         <fetch-select
           :request="fetchOptions"
-          enumCode="orderEquityApplyStatusEnum"
+          enumCode="vr_special_vehicle_benefit_status"
           v-model="form.applyStatus"
           placeholder="请选择"
           clearable
-          multiple
           filterable
         />
       </el-form-item>
@@ -34,17 +33,27 @@
         />
       </el-form-item>
       <el-form-item label="基本车型">
-        <el-input
-          placeholder="请输入"
-          v-model="form.modelName"
+        <fetch-select
+          filterable
           clearable
+          remote
+          collapseTags
+          v-model="form.modelId"
+          :remote-method="getVehicleModelList"
+          value-key="id"
+          label-key="label"
         />
       </el-form-item>
       <el-form-item label="销售门店">
-        <el-input
-          placeholder="请输入"
-          v-model="form.saleDealerName"
+        <fetch-select
+          filterable
           clearable
+          remote
+          collapseTags
+          v-model="form.saleDealerCode"
+          :remote-method="getDealerList"
+          value-key="storeCode"
+          label-key="label"
         />
       </el-form-item>
       <template v-if="show">
@@ -70,10 +79,13 @@
           />
         </el-form-item>
         <el-form-item label="新车主证件类型">
-          <el-input
-            placeholder="请输入"
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vehretail_id_card_type"
             v-model="form.newOwnerIdType"
+            placeholder="请选择新车主证件类型"
             clearable
+            filterable
           />
         </el-form-item>
       </template>
@@ -87,19 +99,24 @@
       />
     </el-form>
     <div class="ais-actions">
+      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <el-button v-if="canList" :disabled="selectionList.length <= 0" size="small" @click="batchOperation">批量操作</el-button>
     </div>
     <div class="ais-table-c">
       <LPVxeTable
         ref="tableRef"
         v-loading="loading"
+        is-checkbox
         is-page
         centralized
+        checkboxFixed
         :option-obj="optionObj"
         :get-config="getConfig"
         @paginationChange="paginationChange"
         @listSelect="handleListSelect"
         @sortChange="handleSortChange"
+        @handleSelect="handleSelectionChange"
       />
     </div>
   </div>
@@ -110,7 +127,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList } from '@/api/vehretail/orderManager/vrSpecialVehicleEquityApply/index';
-import { getTableConfig, exportTable } from '@/api/common';
+import { getTableConfig, exportTable, getEnum, vehicleModelList, listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
@@ -121,8 +138,8 @@ const defaultForm = {
   vin: '',
   applyStatus: '',
   materialsCode: '',
-  modelName: '',
-  saleDealerName: '',
+  modelId: '',
+  saleDealerCode: '',
   originalOwnerName: '',
   newOwnerName: '',
   newOwnerIdNumber: '',
@@ -153,6 +170,7 @@ export default {
       loading: false,
       exportLoading: false,
       clickItemId: '',
+      selectionList: [],
       optionObj: {
         id: 'vrSpecialVehicleEquityApplyTable',
         dataList: [],
@@ -161,26 +179,133 @@ export default {
           size: pageSize
         },
         dataProp: [
-          { props: 'code', label: '权益申请编号', visible: true, width: 200, fixed: 'left' },
-          { props: 'vin', label: 'VIN', visible: true, width: 200 },
+          {
+            props: 'code',
+            label: '权益申请编号',
+            visible: true,
+            width: 200,
+            fixed: 'left',
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehretail/orderManager/vrSpecialVehicleEquityApply/edit',
+                  query: {
+                    id: row.id
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'vin',
+            label: 'VIN',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.navigateToRoute({
+                  path: '/datacenter/vehicle/vehicleProfile/edit',
+                  query: {
+                    id: row.vinId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'applyStatusLabel', label: '申请状态', visible: true, width: 120 },
           { props: 'applyTime', label: '申请时间', visible: true, width: 180 },
-          { props: 'materialsCode', label: '整车物料码', visible: true, width: 180 },
-          { props: 'modelName', label: '基本车型', visible: true, width: 150 },
-          { props: 'saleDealerName', label: '销售门店', visible: true, width: 150 },
+          {
+            props: 'materialsCode',
+            label: '整车物料码',
+            visible: true,
+            width: 180,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleMaterials/detail',
+                  query: {
+                    id: row.materialsId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'modelName',
+            label: '基本车型',
+            visible: true,
+            width: 150,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleModel/detail',
+                  query: {
+                    id: row.modelId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'saleDealerName',
+            label: '销售门店',
+            visible: true,
+            width: 240,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.navigateToRoute({
+                  path: '/partner/channelManagement/shopBasicsMessageDetails',
+                  query: {
+                    id: row.ownerOrgId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'originalOwnerName', label: '原车主名称', visible: true, width: 150 },
           { props: 'newOwnerName', label: '新车主名称', visible: true, width: 150 },
           { props: 'newOwnerPhone', label: '新车主手机号', visible: true, width: 150 },
           { props: 'newOwnerIdNumber', label: '新车主证件号码', visible: true, width: 180 },
-          { props: 'newOwnerIdType', label: '新车主证件类型', visible: true, width: 150 },
+          { props: 'newOwnerIdTypeLabel', label: '新车主证件类型', visible: true, width: 150 },
           { props: 'ocrInvoiceDate', label: '发票识别的开票日期', visible: true, width: 180 },
           { props: 'ocrInvoiceAmount', label: '发票识别的开票金额', visible: true, width: 150 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 180, fixed: 'right' }
+          { props: 'createTime', label: '创建时间', visible: true, width: 180, fixed: 'right', sortable: true },
+          {
+            props: 'operate',
+            label: '操作',
+            type: 'operate',
+            visible: true,
+            fixed: 'right',
+            width: 150,
+            buttons: [{
+              name: '编辑',
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehretail/orderManager/vrSpecialVehicleEquityApply/edit',
+                  query: {
+                    id: row.id,
+                    isEditing: true
+                  }
+                });
+              },
+              type: 'info'
+            }]
+          }
         ],
         total: 0
       },
-      sortColumns: []
+      sortColumns: [
+        {
+          column: 'create_time',
+          sort: 'DESC'
+        }
+      ]
     };
   },
   created () {
@@ -200,6 +325,15 @@ export default {
     handleListSelect (row) {
       this.clickItemId = row.id;
     },
+    // 多选框选中数据
+    handleSelectionChange (selection) {
+      this.selectionList = selection;
+    },
+    handleAdd () {
+      this.$router.push({
+        path: '/vehretail/orderManager/vrSpecialVehicleEquityApply/edit'
+      });
+    },
     onSubmit () {
       this.optionObj.form.page = 1;
       this.getData();
@@ -215,7 +349,7 @@ export default {
       const reqParams = this.getFormData() || {};
       exportTable({
         businessType: '整车零售-订单管理-特殊车辆权益申请管理',
-        dataFetchPath: 'vehretail/web/orderManager/vrSpecialVehicleEquityApply/page',
+        dataFetchPath: 'vr/web/order/vrSpecialVehicleEquityApply/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -276,7 +410,7 @@ export default {
     },
     getFormData () {
       const data = { ...this.form };
-      Object.keys(this.form).forEach(key => {
+      Object.keys(data).forEach(key => {
         if (data[key] === '' || data[key] === null) {
           delete data[key];
         }
@@ -284,12 +418,73 @@ export default {
       data.sortColumns = this.sortColumns;
       return data;
     },
+    // 获取车型列表
+    async getVehicleModelList (query = '') {
+      try {
+        const res = await vehicleModelList({
+          modelNameLike: query,
+          limitSize: 1000
+        });
+        return res.map(item => {
+          return {
+            ...item,
+            label: item.name,
+            value: item.id // 使用id作为值
+          };
+        });
+      } catch (error) {
+        console.error('获取车型列表失败:', error);
+        return [];
+      }
+    },
+
+    // 获取销售门店列表
+    async getDealerList (query = '') {
+      try {
+        const res = await listOrgStoreInfo({
+          storeName: query,
+          pageSize: 1000
+        });
+        return res.records.map(item => {
+          return {
+            ...item,
+            label: item.storeName,
+            value: item.storeCode // 使用storeCode作为值
+          };
+        });
+      } catch (error) {
+        console.error('获取销售门店列表失败:', error);
+        return [];
+      }
+    },
+
+    // 批量操作
+    batchOperation () {
+      if (this.selectionList.length <= 0) {
+        this.$message.warning('请至少选择一项进行操作');
+        return;
+      }
+
+      const ids = this.selectionList.map(item => item.id);
+      this.$confirm(`确定要对选中的 ${this.selectionList.length} 项执行批量操作吗？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 这里可以添加实际的批量操作逻辑
+        console.log('批量操作的ID:', ids);
+        this.$message.success('批量操作功能待实现');
+      }).catch(() => {
+        // 取消操作
+      });
+    },
+
     async fetchOptions (code) {
       if (code) {
-        return this.$getEnum(code);
+        return getEnum(code);
       }
       return [];
-    }
+    },
   }
 };
 </script>

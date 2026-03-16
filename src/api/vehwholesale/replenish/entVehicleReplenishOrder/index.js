@@ -80,6 +80,15 @@ export function batchCancel (data) {
 }
 
 /**
+ * 接车人地址解析fullAddress=省+市+区+详细地址
+ * getGeoLocationByFullAddress
+ * @param {Object} data
+ */
+export function getGeoLocationByFullAddress (data) {
+  return api.jsonPost(prefix + 'getGeoLocationByFullAddress', data);
+}
+
+/**
  * 企业客户名称，模糊查询【网发门店母公司信息】
  * @param {Object} data
  */

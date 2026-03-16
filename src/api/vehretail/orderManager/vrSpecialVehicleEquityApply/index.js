@@ -9,3 +9,19 @@ const prefix = 'vr/web/order/vrSpecialVehicleEquityApply/';
 export function getList (data) {
   return api.jsonPost(prefix + 'page', data);
 };
+
+/**
+ * 查询详情
+ * @param {Object} data
+ */
+export function getDetail (data) {
+  return api.jsonPost(prefix + 'get', data);
+};
+
+/**
+ * 新增或修改
+ * @param {Object} data
+ */
+export function addOrUpdate (data) {
+  return api.jsonPost(prefix + 'addOrUpdate', data);
+};
