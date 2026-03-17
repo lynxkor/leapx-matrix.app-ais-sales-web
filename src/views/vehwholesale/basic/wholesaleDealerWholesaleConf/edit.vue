@@ -328,7 +328,7 @@ export default {
       }
     },
     async getDealerParentOrgList (params) {
-      return getParentCompany({ companyName: params });
+      return getParentCompany({ parentCompanyName: params });
     }
   }
 };

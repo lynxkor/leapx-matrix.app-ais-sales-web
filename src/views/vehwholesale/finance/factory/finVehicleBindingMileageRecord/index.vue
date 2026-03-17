@@ -11,8 +11,7 @@
     >
       <el-form-item label="融资数据来源">
         <fetch-select
-          :request="fetchOptions"
-          enumCode="vw_financing_data_source"
+          :options="financingDataSourceOptions"
           v-model="form.financingDataSource"
           placeholder="请选择"
           clearable
@@ -188,6 +187,12 @@ export default {
       exportLoading: false,
       uploadDialogVisible: false,
       clickItemId: '',
+      financingDataSourceOptions: [
+        { code: '20', message: '在库车里程' },
+        { code: '10', message: '首次人车绑定' },
+        { code: '60', message: '交车完成' },
+        { code: '80', message: '在库车经纬度' },
+      ],
       optionObj: {
         id: 'finVehicleBindingMileageRecordTable',
         dataList: [],
@@ -272,6 +277,7 @@ export default {
       });
     },
     onSubmit () {
+      this.optionObj.form.page = 1;
       this.getData();
     },
     onReset () {

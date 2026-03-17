@@ -309,6 +309,7 @@ export default {
       });
     },
     onSubmit () {
+      this.optionObj.form.page = 1;
       this.getData();
     },
     onReset () {
@@ -410,19 +411,18 @@ export default {
           delete data[key];
         }
       });
-
       if (this.form.createTime) {
-        delete data.createTime;
         if (this.form.createTime.length > 1) {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
+          delete data.createTime;
         }
       }
       if (this.form.accountDate) {
-        delete data.accountDate;
         if (this.form.accountDate.length > 1) {
           data.accountDateStart = this.form.accountDate[0];
           data.accountDateEnd = this.form.accountDate[1];
+          delete data.accountDate;
         }
       }
 
@@ -494,10 +494,10 @@ export default {
       return fundGetList({ organizationNameLike: query, status: 1 });
     },
     async getDealerParentOrgListByCode (params) {
-      return getParentCompany({ companyCode: params });
+      return getParentCompany({ parentCompanyCode: params });
     },
     async getDealerParentOrgListByName (params) {
-      return getParentCompany({ companyName: params });
+      return getParentCompany({ parentCompanyName: params });
     }
   }
 };

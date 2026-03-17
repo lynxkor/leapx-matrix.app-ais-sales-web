@@ -303,6 +303,7 @@ export default {
       });
     },
     onSubmit () {
+      this.optionObj.form.page = 1;
       this.getData();
     },
     onReset () {
@@ -495,10 +496,10 @@ export default {
       return fundGetList({ organizationNameLike: query, status: 1 });
     },
     async getDealerParentOrgListByCode (params) {
-      return getParentCompany({ companyCode: params });
+      return getParentCompany({ parentCompanyCode: params });
     },
     async getDealerParentOrgListByName (params) {
-      return getParentCompany({ companyName: params });
+      return getParentCompany({ parentCompanyName: params });
     }
   }
 };

@@ -11,8 +11,7 @@
     >
       <el-form-item label="融资数据来源">
         <fetch-select
-          :request="fetchOptions"
-          enumCode="vw_financing_data_source"
+          :options="financingDataSourceOptions"
           v-model="form.financingDataSource"
           placeholder="请选择"
           clearable
@@ -241,6 +240,10 @@ export default {
       form: {
         ...defaultForm
       },
+      financingDataSourceOptions: [
+        { code: '30', message: '整车批售订单' },
+        { code: '40', message: '企业客户订单' }
+      ],
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
@@ -338,6 +341,7 @@ export default {
       });
     },
     onSubmit () {
+      this.optionObj.form.page = 1;
       this.getData();
     },
     onReset () {
@@ -534,10 +538,10 @@ export default {
       return fundGetList({ organizationNameLike: query, status: 1 });
     },
     async getDealerParentOrgListByCode (params) {
-      return getParentCompany({ companyCode: params });
+      return getParentCompany({ parentCompanyCode: params });
     },
     async getDealerParentOrgListByName (params) {
-      return getParentCompany({ companyName: params });
+      return getParentCompany({ parentCompanyName: params });
     }
   }
 };

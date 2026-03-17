@@ -927,7 +927,7 @@ export default {
     },
     async getParentCompany (query) {
       try {
-        const res = await getParentCompany({ companyName: query });
+        const res = await getParentCompany({ parentCompanyName: query });
         console.log(res);
         this.parentCompanyNames = res;
         return res;

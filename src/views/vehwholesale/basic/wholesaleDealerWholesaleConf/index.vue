@@ -462,7 +462,7 @@ export default {
       return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
     },
     async getDealerParentOrgList (params) {
-      return getParentCompany({ companyName: params });
+      return getParentCompany({ parentCompanyName: params });
     }
   }
 };

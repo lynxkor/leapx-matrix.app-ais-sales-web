@@ -338,7 +338,7 @@ export default {
     repairItemSearch (query) { return fundGetList({ organizationNameLike: query, status: 1 }); },
     async getParentCompany (query) {
       try {
-        const res = await getParentCompany({ companyName: query });
+        const res = await getParentCompany({ parentCompanyName: query });
         this.parentCompanyNames = res;
         return res;
       } catch (error) {
