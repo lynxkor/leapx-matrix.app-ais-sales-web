@@ -27,10 +27,10 @@
           clearable
           remote
           multiple
-          v-model="form.dealerCompanyCodes"
+          v-model="form.dealerCompanyNames"
           :param="form.dealerCompanyName"
           :remote-method="getDealerParentOrgListByName"
-          value-key="companyCode"
+          value-key="companyName"
           label-key="companyName"
         />
       </el-form-item>
@@ -180,7 +180,7 @@ const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   dealerCompanyCode: '',
   dealerCompanyCodes: [],
-  dealerCompanyName: '',
+  dealerCompanyNames: [],
   fundFinancialOrganizationCodes: [],
   financingType: '',
   iouNumber: '',

@@ -61,10 +61,9 @@
           clearable
           remote
           multiple
-          v-model="form.mainDealerCompanyCodes"
-          :param="form.dealerCompanyName"
+          v-model="form.mainDealerCompanyNames"
           :remote-method="getDealerParentOrgListByName"
-          value-key="companyCode"
+          value-key="companyName"
           label-key="companyName"
         />
       </el-form-item>
@@ -203,9 +202,8 @@ const defaultForm = {
   orderCodes: [],
   vehiclestatus: '1',
   vins: [],
-  dealerCompanyCode: '',
-  dealerCompanyCodes: [],
-  dealerCompanyName: '',
+  mainDealerCompanyCodes: [],
+  mainDealerCompanyNames: [],
   fundFinancialOrganizationCodes: [],
   shipmentDate: '',
   receiveDate: '',
