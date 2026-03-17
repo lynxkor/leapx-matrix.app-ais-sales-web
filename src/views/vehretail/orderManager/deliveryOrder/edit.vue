@@ -25,7 +25,7 @@
           <el-button v-if="form.status === 4" v-permission="moduleKey+'-addPaymentRecord'" size="small" @click="handleAddPaymentRecord">添加收款记录</el-button>
           <el-button v-if="form.status === 4" v-permission="moduleKey+'-confirmPayment'" size="small" @click="handleConfirmPayment">确认收款</el-button>
           <el-button v-if="form.status === 4 && form.deliveryConfirmPdfUrl" v-permission="moduleKey+'-deliveryConfirmPush'" size="small" :loading="buttonLoading['repushConfirmOrder']" @click="handleRepushConfirmOrder">交车确认单补推</el-button>
-          <el-button v-if="form.status !== 7 && from.status !== 99 && form.deliveryConfirmStatus === 15" v-permission="moduleKey+'-deliveryConfirmResign'" size="small" @click="handleReSignConfirmOrder">交车确认单重签</el-button>
+          <el-button v-if="form.status !== 7 && form.status !== 99 && form.deliveryConfirmStatus === 15" v-permission="moduleKey+'-deliveryConfirmResign'" size="small" @click="handleReSignConfirmOrder">交车确认单重签</el-button>
           <el-button v-if="form.deliveryConfirmStatus === 15" v-permission="moduleKey+'-viewDeliveryConfirm'" size="small" @click="handleViewConfirmOrder">查看交车确认单</el-button>
           <el-button v-if="form.status === 5" v-permission="moduleKey+'-uploadInvoice'" size="small" @click="handleUploadInvoice">上传发票</el-button>
           <el-button v-if="form.status === 5" v-permission="moduleKey+'-cancelPayment'" size="small" @click="handlePaymentWithdraw">收款撤回</el-button>

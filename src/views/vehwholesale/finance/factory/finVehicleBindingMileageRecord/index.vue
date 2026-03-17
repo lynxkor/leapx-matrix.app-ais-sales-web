@@ -11,8 +11,7 @@
     >
       <el-form-item label="融资数据来源">
         <fetch-select
-          :request="fetchOptions"
-          enumCode="vw_financing_data_source"
+          :options="financingDataSourceOptions"
           v-model="form.financingDataSource"
           placeholder="请选择"
           clearable
@@ -138,6 +137,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
+import { getTimeRangeByTypeFormat } from '@/libs/utils/time';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
@@ -187,6 +187,12 @@ export default {
       exportLoading: false,
       uploadDialogVisible: false,
       clickItemId: '',
+      financingDataSourceOptions: [
+        { code: '20', message: '在库车里程' },
+        { code: '10', message: '首次人车绑定' },
+        { code: '60', message: '交车完成' },
+        { code: '80', message: '在库车经纬度' },
+      ],
       optionObj: {
         id: 'finVehicleBindingMileageRecordTable',
         dataList: [],
@@ -250,6 +256,9 @@ export default {
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
+    // 初始化创建时间为最近三个月
+    const { startTime, endTime } = getTimeRangeByTypeFormat('最近三个月');
+    this.form.createTime = [startTime, endTime];
     this.getData();
   },
   methods: {
@@ -268,6 +277,7 @@ export default {
       });
     },
     onSubmit () {
+      this.optionObj.form.page = 1;
       this.getData();
     },
     onReset () {

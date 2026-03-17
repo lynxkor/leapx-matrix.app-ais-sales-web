@@ -91,7 +91,7 @@
                 <el-form-item label="授信记录编码：" prop="creditRecordCode">
                   {{ form.creditRecordCode }}
                 </el-form-item>
-                <el-form-item label="备注（说明）：" prop="remark">
+                <el-form-item label="备注：" prop="remark">
                   {{ form.remark }}
                 </el-form-item>
               </el-form>

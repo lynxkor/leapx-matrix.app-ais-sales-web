@@ -8,9 +8,9 @@
         title="经销商推荐函："
         :isEditing.sync="isEditing"
         :form.sync="form"
-        :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :dataTransform="dataTransform"
       >
         <template #status>
           <span >{{form.code}}</span>
@@ -289,7 +289,6 @@ export default {
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
-      originalForm: { ...form },
       defaultNewRow: {
         name: '',
       },
@@ -339,7 +338,7 @@ export default {
     repairItemSearch (query) { return fundGetList({ organizationNameLike: query, status: 1 }); },
     async getParentCompany (query) {
       try {
-        const res = await getParentCompany({ companyName: query });
+        const res = await getParentCompany({ parentCompanyName: query });
         this.parentCompanyNames = res;
         return res;
       } catch (error) {
@@ -365,7 +364,10 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        return getDetail(id).then(res => {
+          console.log('接口返回的原始数据:', res);
+          return res;
+        });
       }
     },
     submitRequest () {
@@ -409,6 +411,15 @@ export default {
     // handleJumpAuditLog () {
     //   this.$auditLog.show({ id: 123 });
     // },
+    dataTransform (data) {
+      // 处理接口返回的数据，确保格式与 defaultForm 一致
+      // 避免 el-input-number 等组件导致的数据格式变化
+      return {
+        ...data,
+        recAmount: data.recAmount !== undefined && data.recAmount !== null ? Number(data.recAmount) : '',
+        depositRatio: data.depositRatio !== undefined && data.depositRatio !== null ? Number(data.depositRatio) : '',
+      };
+    },
     async fetchOptions (code) {
       if (code) {
         return getEnum(code);

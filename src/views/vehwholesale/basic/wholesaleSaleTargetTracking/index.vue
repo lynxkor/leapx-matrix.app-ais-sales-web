@@ -502,7 +502,7 @@ export default {
       // });
     },
     async getDealerParentOrgList (params) {
-      return getParentCompany({ companyName: params });
+      return getParentCompany({ parentCompanyName: params });
     },
     async getRegionList (params) {
       return getRigion({ orgName: params });

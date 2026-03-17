@@ -43,7 +43,7 @@ export default {
     return {
       statusDesc: '',
       Selectform: {
-        cancelAllocateVehicleType: '',
+        cancelAllocateVehicleType: '40',
       },
     };
   },
@@ -60,7 +60,7 @@ export default {
   watch: {
     visible (newVal) {
       if (newVal) {
-        this.Selectform.cancelAllocateVehicleType = '';
+        this.Selectform.cancelAllocateVehicleType = this.Selectform.cancelAllocateVehicleType || '40';
       }
     }
   },

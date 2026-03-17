@@ -11,8 +11,7 @@
     >
       <el-form-item label="融资数据来源">
         <fetch-select
-          :request="fetchOptions"
-          enumCode="vw_financing_data_source"
+          :options="financingDataSourceOptions"
           v-model="form.financingDataSource"
           placeholder="请选择"
           clearable
@@ -62,10 +61,9 @@
           clearable
           remote
           multiple
-          v-model="form.mainDealerCompanyCodes"
-          :param="form.dealerCompanyName"
+          v-model="form.mainDealerCompanyNames"
           :remote-method="getDealerParentOrgListByName"
-          value-key="companyCode"
+          value-key="companyName"
           label-key="companyName"
         />
       </el-form-item>
@@ -192,6 +190,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
+import { getTimeRangeByTypeFormat } from '@/libs/utils/time';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
@@ -204,9 +203,8 @@ const defaultForm = {
   orderCodes: [],
   vehiclestatus: '1',
   vins: [],
-  dealerCompanyCode: '',
-  dealerCompanyCodes: [],
-  dealerCompanyName: '',
+  mainDealerCompanyCodes: [],
+  mainDealerCompanyNames: [],
   fundFinancialOrganizationCodes: [],
   shipmentDate: '',
   receiveDate: '',
@@ -240,6 +238,10 @@ export default {
       form: {
         ...defaultForm
       },
+      financingDataSourceOptions: [
+        { code: '30', message: '整车批售订单' },
+        { code: '40', message: '企业客户订单' }
+      ],
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
@@ -316,6 +318,9 @@ export default {
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
+    // 初始化创建时间为最近三个月
+    const { startTime, endTime } = getTimeRangeByTypeFormat('最近三个月');
+    this.form.createTime = [startTime, endTime];
     this.getData();
   },
   methods: {
@@ -334,6 +339,7 @@ export default {
       });
     },
     onSubmit () {
+      this.optionObj.form.page = 1;
       this.getData();
     },
     onReset () {
@@ -530,10 +536,10 @@ export default {
       return fundGetList({ organizationNameLike: query, status: 1 });
     },
     async getDealerParentOrgListByCode (params) {
-      return getParentCompany({ companyCode: params });
+      return getParentCompany({ parentCompanyCode: params });
     },
     async getDealerParentOrgListByName (params) {
-      return getParentCompany({ companyName: params });
+      return getParentCompany({ parentCompanyName: params });
     }
   }
 };

@@ -27,10 +27,10 @@
           clearable
           remote
           multiple
-          v-model="form.dealerCompanyCodes"
+          v-model="form.dealerCompanyNames"
           :param="form.dealerCompanyName"
           :remote-method="getDealerParentOrgListByName"
-          value-key="companyCode"
+          value-key="companyName"
           label-key="companyName"
         />
       </el-form-item>
@@ -167,6 +167,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
+import { getTimeRangeByTypeFormat } from '@/libs/utils/time';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
@@ -176,7 +177,7 @@ const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   dealerCompanyCode: '',
   dealerCompanyCodes: [],
-  dealerCompanyName: '',
+  dealerCompanyNames: [],
   fundFinancialOrganizationCodes: [],
   repaymentDate: '',
   financingType: '',
@@ -280,6 +281,9 @@ export default {
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
+    // 初始化创建时间为最近三个月
+    const { startTime, endTime } = getTimeRangeByTypeFormat('最近三个月');
+    this.form.createTime = [startTime, endTime];
     this.getData();
   },
   methods: {
@@ -298,6 +302,7 @@ export default {
       });
     },
     onSubmit () {
+      this.optionObj.form.page = 1;
       this.getData();
     },
     onReset () {
@@ -479,10 +484,10 @@ export default {
       return fundGetList({ organizationNameLike: query, status: 1 });
     },
     async getDealerParentOrgListByCode (params) {
-      return getParentCompany({ companyCode: params });
+      return getParentCompany({ parentCompanyCode: params });
     },
     async getDealerParentOrgListByName (params) {
-      return getParentCompany({ companyName: params });
+      return getParentCompany({ parentCompanyName: params });
     }
   }
 };

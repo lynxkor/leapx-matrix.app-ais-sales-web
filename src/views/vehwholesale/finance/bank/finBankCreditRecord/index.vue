@@ -27,10 +27,10 @@
           clearable
           remote
           multiple
-          v-model="form.dealerCompanyCodes"
+          v-model="form.dealerCompanyNames"
           :param="form.dealerCompanyName"
           :remote-method="getDealerParentOrgListByName"
-          value-key="companyCode"
+          value-key="companyName"
           label-key="companyName"
         />
       </el-form-item>
@@ -178,7 +178,7 @@ const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   dealerCompanyCode: '',
   dealerCompanyCodes: [],
-  dealerCompanyName: '',
+  dealerCompanyNames: [],
   fundFinancialOrganizationCodes: [],
   limitEffectiveDate: '',
   limitExpiryDate: '',
@@ -303,6 +303,7 @@ export default {
       });
     },
     onSubmit () {
+      this.optionObj.form.page = 1;
       this.getData();
     },
     onReset () {
@@ -495,10 +496,10 @@ export default {
       return fundGetList({ organizationNameLike: query, status: 1 });
     },
     async getDealerParentOrgListByCode (params) {
-      return getParentCompany({ companyCode: params });
+      return getParentCompany({ parentCompanyCode: params });
     },
     async getDealerParentOrgListByName (params) {
-      return getParentCompany({ companyName: params });
+      return getParentCompany({ parentCompanyName: params });
     }
   }
 };

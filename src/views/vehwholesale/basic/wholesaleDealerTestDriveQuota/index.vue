@@ -192,7 +192,7 @@ const defaultForm = {
 };
 
 const pageSize = 20;
-const logPageSize = 20;
+// const logPageSize = 20;
 const mockConfig = {
   data: null
 };
