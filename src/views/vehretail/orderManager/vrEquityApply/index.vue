@@ -52,84 +52,100 @@
           />
         </el-form-item>
         <el-form-item label="销售门店">
-          <el-input
-            placeholder="请输入"
-            v-model="form.saleDealerName"
+          <fetch-select
+            filterable
             clearable
+            remote
+            collapse-tags
+            v-model="form.saleDealerCode"
+            :remote-method="getDealerList"
+            value-key="storeCode"
+            label-key="label"
           />
         </el-form-item>
-        <el-form-item label="基本车型">
-          <el-input
-            placeholder="请输入"
-            v-model="form.modelName"
+        <el-form-item label="原车基本车型">
+          <fetch-select
+            filterable
             clearable
+            remote
+            collapse-tags
+            v-model="form.originalModelId"
+            :remote-method="getVehicleModelList"
+            value-key="id"
+            label-key="label"
           />
         </el-form-item>
         <el-form-item label="订单物料码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.materialsCode"
+          <fetch-select
+            filterable
             clearable
+            remote
+            collapse-tags
+            v-model="form.materialsCode"
+            :remote-method="getMaterialsCodeList"
+            value-key="value"
+            label-key="label"
           />
         </el-form-item>
         <el-form-item label="申请单状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="header_mcs_applystatus"
+            enumCode="vr_order_benefit_apply_status"
             v-model="form.auditStatus"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
         <el-form-item label="权益大类">
-          <el-input
-            placeholder="请输入"
-            v-model="form.equityCategoryName"
+          <fetch-select
+            filterable
             clearable
+            remote
+            collapse-tags
+            v-model="form.equityCategoryId"
+            :remote-method="getEquityCategoryList"
+            value-key="id"
+            label-key="name"
           />
         </el-form-item>
         <el-form-item label="置换类型">
           <fetch-select
             :request="fetchOptions"
-            enumCode="mcs_replacetype"
+            enumCode="vr_order_benefit_replacement_type"
             v-model="form.replacementType"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
         <el-form-item label="发放类型">
           <fetch-select
             :request="fetchOptions"
-            enumCode="issue_type"
+            enumCode="vr_order_benefit_issue_type"
             v-model="form.issueType"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
         <el-form-item label="合作类型">
           <fetch-select
             :request="fetchOptions"
-            enumCode="cooperation_type"
+            enumCode="vr_cooperation_type"
             v-model="form.cooperationType"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
         <el-form-item label="是否发放">
           <fetch-select
-            :options="yes_no_enum"
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
             v-model="form.isIssued"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -225,10 +241,10 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem } from '@/api/vehretail/orderManager/vrEquityApply/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleModelList, listOrgStoreInfo, vehicleMaterials } from '@/api/common';
+import { getSelect as getEquityCategoryListApi } from '@/api/vehretail/basicConfig/vrEquityCategory/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
-import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { downloadExcel } from '@/libs/utils';
@@ -242,11 +258,11 @@ const defaultForm = {
   agentContact: '',
   buyerName: '',
   buyerPhone: '',
-  saleDealerName: '',
-  modelName: '',
+  saleDealerCode: '', // 改为使用门店编码
+  originalModelId: '',
   materialsCode: '',
   auditStatus: '',
-  equityCategoryName: '',
+  equityCategoryId: '', // 改为使用权益分类ID
   replacementType: '',
   issueType: '',
   cooperationType: '',
@@ -280,7 +296,6 @@ export default {
         ...defaultForm
       },
       selectionList: [],
-      yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
       exportLoading: false,
@@ -319,7 +334,23 @@ export default {
           { props: 'depositTime', label: '缴定金时间', visible: true, width: 180 },
           { props: 'lockTime', label: '锁单时间', visible: true, width: 180 },
           { props: 'agentContact', label: '代办联系人', visible: true, width: 150 },
-          { props: 'equityCategoryName', label: '权益大类', visible: true, width: 150 },
+          {
+            props: 'equityCategoryName',
+            label: '权益大类',
+            visible: true,
+            width: 150,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehretail/basicConfig/vrEquityCategory/edit',
+                  query: {
+                    id: row.equityCategoryId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'replacementTypeLabel', label: '置换类型', visible: true, width: 120 },
           { props: 'otherBrand', label: '其他品牌', visible: true, width: 150 },
           { props: 'discountAmount', label: '优惠金额', visible: true, width: 120 },
@@ -328,13 +359,65 @@ export default {
           { props: 'issueTypeLabel', label: '发放类型', visible: true, width: 120 },
           { props: 'originalBenefitDate', label: '原权益享受日期', visible: true, width: 150 },
           { props: 'changedBenefitDate', label: '变更后权益日期', visible: true, width: 150 },
-          { props: 'saleDealerName', label: '销售门店', visible: true, width: 150 },
+          {
+            props: 'saleDealerName',
+            label: '销售门店',
+            visible: true,
+            width: 150,
+            buttons: [{
+              click: (rowIndex, row) => {
+                if (row.saleDealerCode) {
+                  this.navigateToRoute({
+                    path: '/partner/channelManagement/shopBasicsMessageDetails',
+                    query: {
+                      id: row.ownerOrgId
+                    }
+                  });
+                }
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 120 },
-          { props: 'materialsCode', label: '订单物料码', visible: true, width: 200 },
+          {
+            props: 'materialsCode',
+            label: '订单物料码',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleMaterials/detail',
+                  query: {
+                    id: row.materialsId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           { props: 'buyerName', label: '购车人姓名', visible: true, width: 120 },
           { props: 'buyerPhone', label: '购车人手机号', visible: true, width: 150 },
-          { props: 'originalVin', label: '原车VIN号', visible: true, width: 200 },
+          {
+            props: 'originalVin',
+            label: '原车VIN号',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                if (row.originalVin) {
+                  this.navigateToRoute({
+                    path: '/service/datacenter/vehicle/vehicleProfile/edit',
+                    query: {
+                      vin: row.originalVin
+                    }
+                  });
+                }
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'originalOwnerName', label: '原车车主', visible: true, width: 120 },
           { props: 'originalOwnerPhone', label: '原车主手机号', visible: true, width: 150 },
           { props: 'firstAuditTime', label: '初审时间', visible: true, width: 180 },
@@ -359,26 +442,6 @@ export default {
                 });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmConfirmButtonType: 'danger',
-              popconfirmConfirmButtonText: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
             }]
           }
         ],
@@ -439,7 +502,7 @@ export default {
       }
       exportTable({
         businessType: '整车零售-订单管理-订单权益申请管理',
-        dataFetchPath: 'vehretail/web/orderManager/vrEquityApply/page',
+        dataFetchPath: 'vr/web/order/vrEquityApply/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -570,6 +633,86 @@ export default {
           });
         });
       }).catch(() => {});
+    },
+
+    // 获取车型列表
+    async getVehicleModelList (query = '') {
+      try {
+        const res = await vehicleModelList({
+          modelNameLike: query,
+          limitSize: 1000
+        });
+        return res.map(item => {
+          return {
+            ...item,
+            label: item.name,
+            value: item.name // 使用name作为值
+          };
+        });
+      } catch (error) {
+        console.error('获取车型列表失败:', error);
+        return [];
+      }
+    },
+
+    // 获取销售门店列表
+    async getDealerList (query = '') {
+      try {
+        const res = await listOrgStoreInfo({
+          storeName: query,
+          pageSize: 1000
+        });
+        return res.records.map(item => {
+          return {
+            ...item,
+            label: item.storeName,
+            value: item.storeCode // 使用storeCode作为值
+          };
+        });
+      } catch (error) {
+        console.error('获取销售门店列表失败:', error);
+        return [];
+      }
+    },
+
+    // 获取物料码列表
+    async getMaterialsCodeList (query = '') {
+      try {
+        const res = await vehicleMaterials({
+          materialsCodeLike: query,
+          pageSize: 1000
+        });
+        return res.map(item => {
+          return {
+            ...item,
+            label: item.materialsCode,
+            value: item.materialsCode
+          };
+        });
+      } catch (error) {
+        console.error('获取物料码列表失败:', error);
+        return [];
+      }
+    },
+
+    // 获取权益分类列表
+    async getEquityCategoryList (query = '') {
+      try {
+        const res = await getEquityCategoryListApi({
+          equityCategoryName: query,
+          pageSize: 1000
+        });
+        return res.map(item => {
+          return {
+            ...item,
+            label: item.name,
+            value: item.id
+          };
+        });
+      } catch (error) {
+        console.error('获取权益分类列表失败:', error);
+        return [];
+      }
     }
   }
 };

@@ -258,7 +258,7 @@ export default {
           { props: 'limitEffectiveDate', label: '额度生效日期', visible: true, width: 200 },
           { props: 'limitExpiryDate', label: '额度失效日期', visible: true, width: 200 },
           { props: 'businessModeLabel', label: '业务模式', visible: true, width: 200 },
-          { props: 'remark', label: '备注（说明）', visible: true, width: 200 },
+          { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'creditRecordCode', label: '授信记录编码', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },

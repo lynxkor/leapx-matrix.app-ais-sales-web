@@ -205,7 +205,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.navigateToRoute({
-                  path: '/datacenter/vehicle/vehicleProfile/edit',
+                  path: '/service/datacenter/vehicle/vehicleProfile/edit',
                   query: {
                     id: row.vinId
                   }

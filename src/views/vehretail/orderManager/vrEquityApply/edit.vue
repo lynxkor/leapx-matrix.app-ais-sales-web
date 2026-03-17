@@ -12,12 +12,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          <span v-if="form.auditStatus === 10" class="status">草稿</span>
-          <span v-else-if="form.auditStatus === 20" class="status warning">驳回</span>
-          <span v-else-if="form.auditStatus === 30" class="status">已提交</span>
-          <span v-else-if="form.auditStatus === 40" class="status">已初审</span>
-          <span v-else-if="form.auditStatus === 60" class="status success">已终审</span>
-          <span v-else-if="form.auditStatus === 70" class="status danger">作废</span>
+          <span class="status primary"> {{ form.auditStatusLabel }}</span>
         </template>
         <template #extraButtons>
           <el-button v-if="canEditDraft && canAddOrUpdate" size="small" @click="handleCancel">作废</el-button>
@@ -113,19 +108,19 @@
                   {{ form.code }}
                 </el-form-item>
                 <el-form-item label="商城订单号：">
-                  <el-link type="primary" @click="handleViewStoreDetail">{{ form.mallOrderNo }}</el-link>
+                  {{ form.mallOrderNo }}
                 </el-form-item>
                 <el-form-item label="整车订单编号：">
                   {{ form.vehicleOrderNo }}
                 </el-form-item>
                 <el-form-item label="原车VIN号：">
-                  <el-link type="primary" @click="handleViewVehicleDetail">{{ form.originalVin }}</el-link>
+                  {{ form.originalVin }}
                 </el-form-item>
                 <el-form-item label="权益大类：">
                   {{ form.equityCategoryName }}
                 </el-form-item>
                 <el-form-item label="置换类型：">
-                  {{ getEnumLabel('mcs_replacetype', form.replacementType) }}
+                  {{ form.replacementTypeLabel }}
                 </el-form-item>
                 <el-form-item label="优惠金额：">
                   {{ form.discountAmount }}
@@ -152,17 +147,12 @@
               <h2>附件材料</h2>
             </div>
             <div class="common-section-body">
-              <el-upload
-                class="upload-demo"
-                action=""
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                :file-list="fileList"
-                :auto-upload="false"
-              >
-                <el-button size="small" type="primary" slot="trigger">选择文件</el-button>
-                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-              </el-upload>
+              <AisAttachment
+                :businessId="_id"
+                attachType="订单权益申请附件"
+                configCode="vr_equity_apply"
+                :readonly="!(isEditing || !_id)"
+              />
             </div>
           </section>
 
@@ -310,7 +300,7 @@
                   {{ form.buyerPhone }}
                 </el-form-item>
                 <el-form-item label="购车人证件类型：">
-                  {{ form.buyerIdType }}
+                  {{ form.buyerIdTypeLabel }}
                 </el-form-item>
                 <el-form-item label="购车人证件号码：">
                   {{ form.buyerIdNumber }}
@@ -322,7 +312,7 @@
                   {{ form.saleDealerName }}
                 </el-form-item>
                 <el-form-item label="合作类型：">
-                  {{ getEnumLabel('cooperation_type', form.cooperationType) }}
+                  {{ form.cooperationTypeLabel }}
                 </el-form-item>
                 <el-form-item label="所属区域：">
                   {{ form.regionName }}
@@ -453,7 +443,7 @@
                   {{ form.expectedIssueDate }}
                 </el-form-item>
                 <el-form-item label="发放类型：">
-                  {{ getEnumLabel('issue_type', form.issueType) }}
+                  {{ form.issueTypeLabel }}
                 </el-form-item>
               </el-form>
             </div>
@@ -493,7 +483,7 @@
                   {{ form.originalOwnerPhone }}
                 </el-form-item>
                 <el-form-item label="原车主证件类型：">
-                  {{ form.originalOwnerIdType }}
+                  {{ form.originalOwnerIdTypeLabel }}
                 </el-form-item>
                 <el-form-item label="原车主证件号码：">
                   {{ form.originalOwnerIdNumber }}
@@ -545,10 +535,10 @@
           <h3>申请概况</h3>
           <div style="margin-top: 10px; padding: 15px; background: #f5f7fa; border-radius: 4px;">
             <div><strong>申请单号:</strong> {{ form.code || '-' }}</div>
-            <div style="margin-top: 8px;"><strong>申请状态:</strong> {{ getAuditStatusLabel(form.auditStatus) }}</div>
+            <div style="margin-top: 8px;"><strong>申请状态:</strong> {{ form.auditStatusLabel || '-' }}</div>
             <div style="margin-top: 8px;"><strong>商城订单:</strong> {{ form.mallOrderNo || '-' }}</div>
             <div style="margin-top: 8px;"><strong>权益大类:</strong> {{ form.equityCategoryName || '-' }}</div>
-            <div style="margin-top: 8px;"><strong>置换类型:</strong> {{ getEnumLabel('mcs_replacetype', form.replacementType) || '-' }}</div>
+            <div style="margin-top: 8px;"><strong>置换类型:</strong> {{ form.replacementTypeLabel || '-' }}</div>
             <div style="margin-top: 8px;"><strong>优惠金额:</strong> {{ form.discountAmount || '-' }}</div>
             <div style="margin-top: 8px;"><strong>销售门店:</strong> {{ form.saleDealerName || '-' }}</div>
             <div style="margin-top: 8px;"><strong>提交时间:</strong> {{ form.submitTime || '-' }}</div>
@@ -568,6 +558,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 
 const defaultForm = {
   id: '',
@@ -655,7 +646,8 @@ export default {
   mixins: [routeGuard, permissions, commonMixins],
   components: {
     EditPageLayout,
-    EditBaseContainer
+    EditBaseContainer,
+    AisAttachment
   },
   computed: {
     _id () {
@@ -664,30 +656,6 @@ export default {
     title () {
       return '订单权益申请单号：' + (this.form.code || '');
     },
-    canEditDraft () {
-      // 草稿或驳回状态下可以作废
-      return this.form.auditStatus === 10 || this.form.auditStatus === 20;
-    },
-    canSubmitApproval () {
-      // 草稿或驳回状态下可以提交审批
-      return (this.form.auditStatus === 10 || this.form.auditStatus === 20) && this.isEditing;
-    },
-    canFirstAudit () {
-      // 已提交状态下显示初审
-      return this.form.auditStatus === 30;
-    },
-    canAudit () {
-      // 已初审状态下显示审核
-      return this.form.auditStatus === 40;
-    },
-    canRecall () {
-      // 已终审状态下可以撤回
-      return this.form.auditStatus === 60;
-    },
-    canEditIssue () {
-      // 只有已终审状态才能编辑发放信息
-      return this.form.auditStatus === 60;
-    }
   },
   watch: {
     id: {
@@ -714,7 +682,7 @@ export default {
       fileList: [],
       rules: {
         code: [
-          { required: true, message: '请输入订单权益申请单号', trigger: 'change' }
+          { required: false, message: '请输入订单权益申请单号', trigger: 'change' }
         ],
         mallOrderNo: [
           { required: true, message: '请输入商城订单号', trigger: 'change' }
@@ -775,16 +743,6 @@ export default {
         ...defaultForm
       };
     },
-    handleViewStoreDetail () {
-      // 跳转到门店详情
-      // this.$router.push({ path: '/store/management/storeDetail', query: { id: xxx } });
-      this.$message.info('跳转门店详情功能待实现');
-    },
-    handleViewVehicleDetail () {
-      // 跳转到车辆档案详情
-      // this.$router.push({ path: '/vehicle/archive/detail', query: { vin: this.form.originalVin } });
-      this.$message.info('跳转车辆档案详情功能待实现');
-    },
     handleCancel () {
       this.$confirm('确认要作废此申请吗？', '提示', {
         confirmButtonText: '确定',
@@ -840,21 +798,6 @@ export default {
     },
     handleRemove (file, fileList) {
       console.log(file, fileList);
-    },
-    getEnumLabel (enumCode, value) {
-      // 根据enumCode获取对应的枚举映射
-      return value;
-    },
-    getAuditStatusLabel (status) {
-      const statusMap = {
-        10: '草稿',
-        20: '驳回',
-        30: '已提交',
-        40: '已初审',
-        60: '已终审',
-        70: '作废'
-      };
-      return statusMap[status] || '-';
     },
     async fetchOptions (code) {
       if (code) {
