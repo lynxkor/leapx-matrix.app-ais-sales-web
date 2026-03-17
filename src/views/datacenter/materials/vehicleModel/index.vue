@@ -20,17 +20,18 @@
         multiple
         collapseTags
         filterable
-        @change="modelLineIdChange"
       />
     </el-form-item>
     <el-form-item label="车系名称">
       <fetch-select
-        :options="vehicleSeriesIdList"
         v-model="form.seriesIdList"
+        :remote-method="vehicleSeriesSearch"
         placeholder="请选择"
         labelKey="name"
         valueKey="id"
         clearable
+        remote
+        reserve-keyword
         multiple
         collapseTags
         filterable
@@ -102,11 +103,6 @@
       <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
-      <!-- 审批节点 -->
-       <!-- <el-button size="small" @click="batchAuditSubmit()" :disabled="selectionList.length === 0">提交草稿</el-button>
-       <el-button size="small" @click="batchAuditWithdraw()" :disabled="selectionList.length === 0">撤回流程</el-button>
-       <el-button size="small" @click="batchAudit()" :disabled="selectionList.length === 0">审核</el-button>
-       <el-button size="small" @click="batchReverseAudit()" :disabled="selectionList.length === 0">反审核</el-button> -->
     </div>
     <div
       class="ais-table-c"
@@ -298,82 +294,26 @@ export default {
     this.getVehicleModelLineList();
   },
   methods: {
-    // /**
-    //  * 审核操作
-    //  * @param remark 审核说明
-    //  */
-    // auditFun (auditForm) {
-    //   const params = {
-    //     ids: this.selection.map((item) => item.id),
-    //     ...auditForm
-    //   };
-    //   listVehicleModel(8, params).then(() => {
-    //     this.$message.success('审核成功');
-    //     this.getData();
-    //   });
-    // },
-    // batchAuditSubmit () {
-    //   batchAuditHandler(
-    //     this.selectionList,
-    //     this.$message.error,
-    //     this.$confirm,
-    //     {
-    //       expectedStatus: 1, // 草稿状态
-    //       errorMessage: '请选择审核状态数据',
-    //       successMessage: '提交成功',
-    //       confirmMessage: '确认撤回中的记录？'
-    //     }
-    //   );
-    // },
-    // batchAuditWithdraw () {
-    //   batchAuditHandler(
-    //     this.selectionList,
-    //     this.$message.error,
-    //     this.$confirm,
-    //     {
-    //       expectedStatus: 1, // 草稿状态
-    //       errorMessage: '请选择审核状态数据',
-    //       successMessage: '撤回成功',
-    //       confirmMessage: '确认撤回中的记录？'
-    //     }
-    //   );
-    // },
-    // batchAudit () {
-    //   if (
-    //     !this.selectionList ||
-    //     this.selectionList.length === 0
-    //   ) {
-    //     this.$message.error('请选择审核记录');
-    //     return;
-    //   }
-    //   if (
-    //     this.selectionList.find((item) => item.status !== 1)
-    //   ) {
-    //     this.$message.error('请选择审核中的记录');
-    //     return;
-    //   }
-    //   this.$refs.auditRef.show();
-    // },
-    // batchReverseAudit () {},
     modelNameSearch (query) {
       return listVehicleModel({ modelNameLike: query, size: 100 });
     },
-    modelLineIdChange (query) {
-      if (query && query.length) {
-        let params = {
-          modelLineIds: query,
-          size: 100
-        };
-        vehicleSeriesList(params).then(res => {
-          this.vehicleSeriesIdList = res;
-        }).catch(() => {});
-      } else {
-        this.form.seriesIdList = [];
-        // this.form.idSet = [];
-        this.vehicleSeriesIdList = [];
-        // this.listVehicleModelList = [];
-      }
+    vehicleSeriesSearch (query) {
+      return vehicleSeriesList({ seriesNameLike: query, size: 100 });
     },
+    // modelLineIdChange (query) {
+    //   if (query && query.length) {
+    //     let params = {
+    //       modelLineIds: query,
+    //       size: 100
+    //     };
+    //     vehicleSeriesList(params).then(res => {
+    //       this.vehicleSeriesIdList = res;
+    //     }).catch(() => {});
+    //   } else {
+    //     this.form.seriesIdList = [];
+    //     this.vehicleSeriesIdList = [];
+    //   }
+    // },
     seriesIdChange (val) {
       if (val && val.length) {
         let params = {
