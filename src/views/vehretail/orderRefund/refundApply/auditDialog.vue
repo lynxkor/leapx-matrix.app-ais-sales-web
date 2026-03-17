@@ -24,14 +24,14 @@
         label="审核结果"
         prop="result"
       >
-        <el-radio-group v-model="auditForm.result">
+        <el-radio-group v-model="auditForm.result" @change="changeAuditResultRadio">
           <el-radio :label="1">通过</el-radio>
           <el-radio :label="0">不通过</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item
-        v-show="auditType === 'approve' && auditForm.result === 1"
-        :rules="auditType === 'approve' && auditForm.result === 1 ? rules.refundBank: []"
+        v-show="auditType === 'approve' && auditForm.result === 1 && approveSubCateShow"
+        :rules="auditType === 'approve' && auditForm.result === 1 && approveSubCateShow ? rules.refundBank: []"
         label="原因二级分类："
         prop="subCateCode">
         <fetch-select
@@ -121,6 +121,7 @@ export default {
         remote: true,
         reserveKeyword: true
       },
+      approveSubCateShow: false,
       auditShow: false,
       auditForm: {
         result: '',
@@ -198,6 +199,16 @@ export default {
       this.auditForm.subCateCode = val ? selectedOption.subCateCode : '';
       this.auditForm.subCateName = val ? selectedOption.subCateName : '';
     },
+    changeAuditResultRadio (val) {
+      if (this.auditType === 'approve' && val === 1) {
+        fetchSubCategoryList({
+          pageSize: 1000,
+          cateCode: this.mainCateCode
+        }).then(res => {
+          this.approveSubCateShow = res.total > 0;
+        });
+      }
+    }
   }
 };
 </script>
