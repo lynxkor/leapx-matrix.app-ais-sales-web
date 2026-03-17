@@ -320,10 +320,10 @@
           <component-table
             ref="paymentRecordTable"
             :table-config="{ title: '收款记录&权益项抵扣记录' }"
-            :columns="paymentRecordColumns" section-key="paymentRecords"
+            :columns="paymentRecordColumns"
             :api-method="getPaymentRecordList"
-            :extra-params="{ retailOrderId: _id }"
-            :showPagination="true"
+            :extra-params="{ retailOrderCode: form.retailOrderCode }"
+            section-key="paymentRecords"
           >
             <template v-slot:operation_default="{ row }">
               <el-button
@@ -336,14 +336,16 @@
           <!-- 预约记录 -->
           <component-table
             :table-config="{ title: '预约记录' }"
-            :columns="appointmentRecordColumns" section-key="appointmentRecords"
-            :tableDataExternal="form.appointmentRecord"
+            :columns="appointmentRecordColumns"
+            section-key="appointmentRecords"
+            :tableDataExternal="form.appointmentRecordList"
             :showPagination="false"
           />
           <!-- 附件清单 -->
           <component-table
             :table-config="{ title: '附件清单' }"
-            :columns="attachmentColumns" section-key="attachments"
+            :columns="attachmentColumns"
+            section-key="attachments"
             :tableDataExternal="form.attachment"
             :showPagination="false"
           />
@@ -431,15 +433,12 @@ import {
   checkCarBuyerPhoneRegistered, // 校验购车人手机号是否注册零跑APP
 } from '@/api/vehretail/orderManager/deliveryOrder/index';
 import { getList as getInvoiceList } from '@/api/vehretail/orderManager/deliveryInvoice/index';
-import {
-  getList as getPaymentRecordList,
-  deleteItem as deletePaymentRecord
-} from '@/api/vehretail/orderManager/orderPayRecord/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { engineerList } from '@/libs/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
+import { getList as getPaymentRecordList, deleteItem as deletePaymentRecord } from '@/api/vehretail/orderManager/orderPayRecord/index';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
@@ -656,30 +655,30 @@ export default {
         { key: 'equityDeductionTotalAmount', label: '权益抵扣总额' },
         { key: 'invoiceAmount', label: '开票金额' },
         { key: 'remainingReceivableAmount', label: '剩余应收款' },
-        { key: 'insuranceScheme', label: '保险方案' },
-        { key: 'insuranceProgress', label: '保险办理进度' },
+        { key: 'insuranceSchemeLabel', label: '保险方案' },
+        { key: 'insuranceProgressLabel', label: '保险办理进度' },
         { key: 'financialSchemeLabel', label: '金融方案' },
-        { key: 'financialMortgageProgress', label: '金融按揭进度' },
+        { key: 'financialMortgageProgressLabel', label: '金融按揭进度' },
         { key: 'deliveryMileage', label: '交车时里程' },
         { key: 'deliveryBatteryPower', label: '交车时电量' },
         { key: 'deliveryMachineVersion', label: '交车车机版本号' },
         { key: 'deliveryVersionUpgradeTime', label: '交车版本升级时间' }
       ],
       retailOrderFields: [
-        { key: 'retailOrderStatus', label: '整车订单状态' },
-        { key: 'orderCreateTime', label: '商城下单时间' },
+        { key: 'orderStatusLabel', label: '整车订单状态' },
+        { key: 'orderTime', label: '商城下单时间' },
         { key: 'mallOrderCode', label: '商城订单编号' },
-        { key: 'orderSource', label: '订单来源' },
-        { key: 'userId', label: '用户 ID' },
-        { key: 'buyerName', label: '购车人姓名' },
+        { key: 'orderSourceLabel', label: '订单来源' },
+        { key: 'orderUserId', label: '用户 ID' },
+        { key: 'carBuyerName', label: '购车人姓名' },
         { key: 'carBuyerPhone', label: '购车人手机' },
-        { key: 'idType', label: '证件类型' },
-        { key: 'idNumber', label: '证件号码' },
-        { key: 'agentContact', label: '代办联系人' },
-        { key: 'vehicleGuidePrice', label: '整车指导价' },
+        { key: 'idCardTypeLabel', label: '证件类型' },
+        { key: 'idCardNo', label: '证件号码' },
+        { key: 'agentName', label: '代办联系人' },
+        { key: 'guidePrice', label: '整车指导价' },
         { key: 'depositAmount', label: '定金金额' },
         { key: 'orderMaterialCode', label: '订单物料码' },
-        { key: 'vehicleMaterialCode', label: '配车物料码' },
+        { key: 'allocationMaterialCode', label: '配车物料码' },
         { key: 'saleDealerName', label: '销售门店' },
         { key: 'deliveryDealerName', label: '交付门店' }
       ],
@@ -688,19 +687,19 @@ export default {
         { key: 'realNameAuthTime', label: '实名认证时间' }
       ],
       deliveryConfirmFields: [
-        { key: 'signatureDataSourceDesc', label: '签署数据来源' },
+        { key: 'signatureDataSourceLabel', label: '签署数据来源' },
         { key: 'signatureTime', label: '签署时间' },
         { key: 'buyerMobileRegisteredLabel', label: '购车人手机是否注册' },
-        { key: 'deliveryConfirmStatusDesc', label: '交车确认单状态' },
+        { key: 'deliveryConfirmStatusLabel', label: '交车确认单状态' },
         { key: 'cityDeliveryOrder', label: '城市交付顺序' }
       ],
       basicInfoFields: [
         { key: 'deliveryOrderCode', label: '交车单编号' },
         { key: 'vin', label: 'VIN 码' },
-        { key: 'vehicleMaterial', label: '整车物料' },
+        { key: 'materialsCode', label: '整车物料' },
         { key: 'retailOrderCode', label: '整车订单' },
         { key: 'deliveryTime', label: '交车时间' },
-        { key: 'statusDesc', label: '交车状态' },
+        { key: 'statusLabel', label: '交车状态' },
         { key: 'createTime', label: '创建时间' }
       ],
       appointmentFields: [
@@ -709,23 +708,7 @@ export default {
         { key: 'appointmentChangeCount', label: '预约变更次数' },
         { key: 'appointmentOperationTime', label: '预约操作时间' },
         { key: 'appointmentRemark', label: '预约备注' },
-        { key: 'appointmentTimeoutReason', label: '预约超时原因' }
-      ],
-      // 收款记录&权益项抵扣记录列配置
-      paymentRecordColumns: [
-        { field: 'paymentCode', title: '收款编号', width: 150 },
-        { field: 'paymentTypeLabel', title: '收款类型', width: 120 },
-        { field: 'paymentAmount', title: '付款金额', width: 120 },
-        { field: 'paymentTime', title: '付款时间', width: 180 },
-        { field: 'paymentMethodLabel', title: '支付方式', width: 120 },
-        { field: 'payer', title: '支付人', width: 120 },
-        { field: 'mallSerialNumber', title: '商城流水号', width: 150 },
-        { field: 'rightsTypeLabel', title: '权益类型', width: 120 },
-        { field: 'rightsItemCode', title: '权益项编号', width: 150 },
-        { field: 'rightsGrantCode', title: '权益核销券码', width: 150 },
-        { field: 'remark', title: '备注', width: 200 },
-        { field: 'createTime', title: '创建时间', width: 180 },
-        { field: 'operation', title: '操作', width: 80, fixed: 'right', slots: { default: 'operation_default' } }
+        { key: 'appointmentTimeoutReasonLabel', label: '预约超时原因' }
       ],
       // 预约记录列配置
       appointmentRecordColumns: [
@@ -744,6 +727,22 @@ export default {
         { field: 'documentTypeLabel', title: '证件类型', width: 180 },
         { field: 'ocrRecognitionStatus', title: 'OCR识别状态', width: 180 },
         { field: 'createTime', title: '创建时间', width: 240 }
+      ],
+      // 收款记录列配置
+      paymentRecordColumns: [
+        { field: 'payCode', title: '收款编号', width: 180 },
+        { field: 'payCategoryLabel', title: '收款类型', width: 120 },
+        { field: 'paymentAmount', title: '付款金额', width: 120 },
+        { field: 'paymentTime', title: '付款时间', width: 180 },
+        { field: 'paymentTypeLabel', title: '支付方式', width: 120 },
+        { field: 'payerName', title: '支付人', width: 120 },
+        { field: 'outTradeNo', title: '商城流水号', width: 200 },
+        { field: 'rightsTypeLabel', title: '权益类型', width: 120 },
+        { field: 'rightsItemCode', title: '权益项编号', width: 150 },
+        { field: 'rightsGrantCode', title: '权益核销券码', width: 150 },
+        { field: 'remark', title: '备注', width: 200 },
+        { field: 'createTime', title: '创建时间', width: 180 },
+        { field: 'operation', title: '操作', width: 80, fixed: 'right', slots: { default: 'operation_default' } }
       ]
     };
   },
@@ -1195,13 +1194,12 @@ export default {
       try {
         await deletePaymentRecord([row.id]);
         this.$message.success('删除成功');
-        // 刷新表格
-        if (this.$refs.paymentRecordTable) {
-          this.$refs.paymentRecordTable.refresh();
-        }
+        // 刷新表格数据
+        this.$refs.paymentRecordTable?.refresh();
+        // 触发自定义事件，通知父组件（如果需要）
+        this.$emit('deleted', row);
       } catch (error) {
-        console.error('删除收款记录失败:', error);
-        this.$message.error('删除失败');
+        console.error('Delete failed:', error);
       }
     }
   }
