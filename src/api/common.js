@@ -341,7 +341,7 @@ export function getRigion (data) {
  * @param {*} data
  */
 export function getParentCompany (data) {
-  return api.jsonPost('/network/portal/parentCompany/list', data);
+  return api.jsonPost('/network/portal/parentCompany/pageWithoutAuth', data);
 }
 
 /**
