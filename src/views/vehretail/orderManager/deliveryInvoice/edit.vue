@@ -930,8 +930,7 @@ export default {
     openUploadShow1 () {
       // 通过 ref 调用组件内部方法打开弹框
       this.$refs.uploadDialogRef.open({
-        title: '上传附件',
-        width: '600px'
+        title: '附件管理',
       });
     },
     handleUploadConfirm () {
@@ -974,7 +973,7 @@ export default {
     },
     // 删除子表数据
     handleDeleteRow (index) {
-      const item = this.tableData[index];
+      // const item = this.tableData[index];
       this.tableData.splice(index, 1);
       // 根据需求调用接口
       // deletePartVehModel([item.id]).then(res => {
