@@ -25,9 +25,9 @@
             size="small">
             交车完成
           </el-button>
+          <!-- v-if="form.status === 0" -->
           <el-button
             @click="openUploadShow1"
-            v-if="form.status === 0"
             size="small">
             上传附件
           </el-button>
@@ -573,6 +573,8 @@
         <el-button @click="dialogVisible = false">取消</el-button>
       </span>
         </el-dialog>
+        <!-- 上传附件弹框 (通过 ref 调用组件内部方法打开) -->
+        <simple-dialog ref="uploadDialogRef" @confirm="handleUploadConfirm" :id="_id"></simple-dialog>
       </edit-base-container>
     </template>
     <template #right>
@@ -588,6 +590,7 @@ import { getDetail, addOrUpdate, deleteItem, confirmUpload } from '@/api/vehreta
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
+import SimpleDialog from './SimpleDialog.vue';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
@@ -669,7 +672,8 @@ export default {
   components: {
     EditPageLayout,
     EditBaseContainer,
-    FetchSelect
+    FetchSelect,
+    SimpleDialog
   },
   computed: {
     _id () {
@@ -923,7 +927,20 @@ export default {
       }
       return comparisonData;
     },
-    openUploadShow1 () {},
+    openUploadShow1 () {
+      // 通过 ref 调用组件内部方法打开弹框
+      this.$refs.uploadDialogRef.open({
+        title: '附件管理',
+      });
+    },
+    handleUploadConfirm () {
+      // 点击保存按钮的回调
+      this.$message.success('保存成功');
+      this.$refs.uploadDialogRef.close();
+    },
+    handleUploadDialogClose () {
+      // 弹框关闭后的回调
+    },
     openDeleteShow () {
       this.$confirm('确认是否删除该整车开票记录?', '提示', {
         confirmButtonText: '确定',
@@ -956,7 +973,7 @@ export default {
     },
     // 删除子表数据
     handleDeleteRow (index) {
-      const item = this.tableData[index];
+      // const item = this.tableData[index];
       this.tableData.splice(index, 1);
       // 根据需求调用接口
       // deletePartVehModel([item.id]).then(res => {
