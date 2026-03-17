@@ -923,6 +923,7 @@ export default {
       }
       return comparisonData;
     },
+    openUploadShow1 () {},
     openDeleteShow () {
       this.$confirm('确认是否删除该整车开票记录?', '提示', {
         confirmButtonText: '确定',

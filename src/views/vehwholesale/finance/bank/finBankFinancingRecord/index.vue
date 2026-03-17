@@ -172,6 +172,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
+import { getTimeRangeByTypeFormat } from '@/libs/utils/time';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
@@ -188,7 +189,7 @@ const defaultForm = {
   businessMode: '',
   financingApplicationCode: '',
   status: '1',
-  createTime: '',
+  createTime: [],
 };
 
 const pageSize = 20;
@@ -287,6 +288,9 @@ export default {
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
+    // 初始化创建时间为最近三个月
+    const { startTime, endTime } = getTimeRangeByTypeFormat('最近三个月');
+    this.form.createTime = [startTime, endTime];
     this.getData();
   },
   methods: {
