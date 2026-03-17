@@ -127,7 +127,14 @@
           <fetch-select :options="yes_no_enum" v-model="form.wholesaleBindStatus" placeholder="请选择" clearable />
         </el-form-item>
         <el-form-item label="批售订单状态">
-          <fetch-select :options="yes_no_enum" v-model="form.wholesaleOrderStatus" placeholder="请选择" clearable />
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vw_wholesale_order_status"
+            v-model="form.wholesaleOrderStatus"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
         </el-form-item>
         <el-form-item label="订单排序时间">
           <el-date-picker

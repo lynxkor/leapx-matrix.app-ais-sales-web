@@ -310,7 +310,7 @@ export default {
         return getDetail(id);
       }
     },
-    submitRequest() {
+    submitRequest () {
       return addOrUpdate({ ...this.form });
     },
     getDefaultForm () {
