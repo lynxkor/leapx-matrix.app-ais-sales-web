@@ -643,6 +643,7 @@
             </div>
           </section>
         </el-main>
+        <auditDialog ref="auditInput" @audit="handleAuditSubmit" :auditTitle='form.auditStatus === 30 ? "初审" : "审核"'/>
       </edit-base-container>
     </template>
     <template #right>
@@ -709,6 +710,7 @@ import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 import FetchSelect from '@/libs/components/FetchSelect';
+import auditDialog from '@/libs/components/auditDialog';
 
 const defaultForm = {
   id: '',
@@ -796,7 +798,8 @@ export default {
     EditPageLayout,
     EditBaseContainer,
     AisAttachment,
-    FetchSelect
+    FetchSelect,
+    auditDialog
   },
   computed: {
     _id () {
@@ -926,15 +929,18 @@ export default {
       });
     },
     async handleAudit () {
-      this.$confirm('确认要审核吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(async () => {
-        await approve(this._id);
-        this.$message.success('审核成功');
-        this.$refs.containerRef.loadDetail();
+      this.$refs.auditInput.show();
+    },
+
+    async handleAuditSubmit (data) {
+      await approve({
+        id: this._id,
+        isAudit: data.result,
+        auditStatus: this.form.auditStatus,
+        auditOpinion: data.content || data.remark
       });
+      this.$message.success('审核成功');
+      this.$refs.containerRef.loadDetail();
     },
     async handleRecall () {
       // 先进行撤回审批验证
