@@ -297,12 +297,6 @@
                  <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
                   {{ form.replenishApplyDetailCode }}
                 </el-form-item>
-                <el-form-item label="订单物料编码：" prop="materialsCode">
-                  {{ form.materialsCode }}
-                </el-form-item>
-                <el-form-item label="指定发运方式：" prop="deliveryWayLabel">
-                  {{ form.deliveryWayLabel }}
-                </el-form-item>
               </el-form>
             </div>
           </section>

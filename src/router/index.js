@@ -2715,6 +2715,24 @@ const routes = [
         name: '门店库存调拨白名单详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehstock/store/storeInventoryTransfer',
+      name: 'storeInventoryTransfer',
+      component: () => import('@/views/vehstock/store/storeInventoryTransfer/index.vue'),
+
+      meta: {
+        name: '门店库存调拨管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/store/storeinventorytransfer/edit',
+      name: 'storeInventoryTransferEdit',
+      component: () => import('@/views/vehstock/store/storeInventoryTransfer/edit.vue'),
+
+      meta: {
+        name: '门店库存调拨管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
