@@ -387,7 +387,7 @@
             <div class="common-section-header">
               <h2>退订附件</h2>
             </div>
-            <div class="common-section-table">
+            <div class="common-section-table" style="width: 90px;">
               <!--附件上传组件 -->
               <AisAttachment
                 ref="attachment"
