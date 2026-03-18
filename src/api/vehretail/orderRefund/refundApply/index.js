@@ -90,3 +90,11 @@ export function finalApprove (data) {
 export function batchAudit (data) {
   return api.jsonPost(prefix + 'batchAudit', data);
 }
+
+/**
+ * 合法性校验
+ * @param {Object} data
+ */
+export function legalVerification (data) {
+  return api.jsonPost(prefix + 'legalVerification', data);
+}

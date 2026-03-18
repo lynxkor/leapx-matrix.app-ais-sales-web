@@ -1161,11 +1161,6 @@ export default {
             message: '结算成功!'
           });
           this.getData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '结算失败!'
-          });
         });
       }).catch(() => {});
     },
@@ -1235,11 +1230,6 @@ export default {
             message: '确认成功!'
           });
           this.getDetailData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '确认失败!'
-          });
         });
       }).catch(() => {});
       // }

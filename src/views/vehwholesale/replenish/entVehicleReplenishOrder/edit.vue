@@ -356,6 +356,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="审核人：" prop="auditorUserId">
@@ -363,6 +364,7 @@
                     placeholder="请输入"
                     v-model="form.auditorUserId"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="审核时间：" prop="auditTime">
@@ -373,6 +375,7 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="审核意见：" prop="auditOpinion">
@@ -380,6 +383,7 @@
                     placeholder="请输入"
                     v-model="form.auditOpinion"
                     clearable
+                    disabled
                   />
                 </el-form-item>
               </el-form>
