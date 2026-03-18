@@ -390,6 +390,7 @@
             <div class="common-section-table">
               <!--附件上传组件 -->
               <AisAttachment
+                ref="attachment"
                 :businessId="_id"
                 :readonly="!isEditing"
                 configCode="mcs_vehorderrefund"
@@ -866,7 +867,14 @@ export default {
         return getDetail(id);
       }
     },
-    submitRequest () {
+    async submitRequest () {
+      // 校验：当 refundStatus 为 1010 或 1040 且有_id 时，附件必须上传
+      if ((this.form.refundStatus === 1010 || this.form.refundStatus === 1040) && this._id) {
+        const attachmentList = this.$refs.containerRef.$refs.attachment?.getFileList() || [];
+        if (attachmentList.length === 0) {
+          throw new Error('请上传退订附件');
+        }
+      }
       return addOrUpdate({ ...this.form });
     },
     // 打开侧边栏

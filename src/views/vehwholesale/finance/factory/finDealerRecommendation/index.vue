@@ -42,7 +42,7 @@
             remote
             reserve-keyword
             labelKey="organizationName"
-            valueKey="organizationCode"
+            valueKey="id"
             v-model="form.recFinancialOrganizationIds"
             placeholder="请选择"
             clearable

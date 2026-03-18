@@ -236,7 +236,7 @@ export default {
           },
           { props: 'operateTypeLabel', label: '操作类型', visible: true, width: 200 },
           { props: 'cancelAllocateTime', label: '取消配车时间', visible: true, width: 200 },
-          { props: 'cancelAllocateVehicleTypeLabel', label: '取消配车说明', visible: true, width: 200 },
+          { props: 'cancelAllocateVehicleTypeLabel', label: '取消配车类型', visible: true, width: 200 },
           { props: 'cancelSettleTime', label: '取消结算时间', visible: true, width: 200 },
           { props: 'cancelSettleTypeLabel', label: '取消结算说明', visible: true, width: 200 },
           { props: 'saleDealerName', label: '销售门店', visible: true, width: 200 },

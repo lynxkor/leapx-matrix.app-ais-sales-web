@@ -132,11 +132,6 @@ export default {
             message: '提交成功!'
           });
           this.getData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '提交失败!'
-          });
         });
       }).catch(() => {});
     },

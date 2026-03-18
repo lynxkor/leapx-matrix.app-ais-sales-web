@@ -315,8 +315,8 @@ export default {
         status: [
           { required: true, message: '请选择状态 0-禁用;1-启用', trigger: 'change' },
         ],
-        modelId: [
-          { required: true, message: '请输入车型ID', trigger: 'change' },
+        modelName: [
+          { required: true, message: '请输入车型', trigger: 'change' },
         ],
         yearTypeId: [
           { required: true, message: '请选择年款ID', trigger: 'change' },
