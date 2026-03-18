@@ -351,7 +351,7 @@
       <delivery-appointment-dialog
         ref="deliveryAppointmentDialog"
         :deliveryUserId="form.deliveryUserId"
-        :deliveryCityId="form.deliveryDealerCode"
+        :deliveryCityId="form.deliveryCityCode"
         :createTime="form.createTime"
         :orderId="_id"
         :orderCode="form.deliveryOrderCode"
