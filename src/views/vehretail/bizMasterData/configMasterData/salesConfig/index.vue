@@ -84,6 +84,7 @@
                       placeholder="请选择"
                       clearable
                       filterable
+                      :disabled="!showEditBtn"
                       @change="(val, row) => handleChange(val, row, 'credit')"
                     />
                 </el-form-item>
@@ -95,6 +96,7 @@
                       placeholder="请选择"
                       clearable
                       filterable
+                      :disabled="!showEditBtn"
                       @change="(val, row) => handleChange(val, row, 'finance')"
                     />
                 </el-form-item>
@@ -106,6 +108,7 @@
                       placeholder="请选择"
                       clearable
                       filterable
+                      :disabled="!showEditBtn"
                       @change="(val, row) => handleChange(val, row, 'phoneRegister')"
                     />
                 </el-form-item>
@@ -121,6 +124,7 @@
                       clearable
                       collapseTags
                       filterable
+                      :disabled="!showEditBtn"
                       multiple
                       @change="(val, row) => handleChange(val, row, 'deliveryAssignment')"
                     />
