@@ -662,6 +662,36 @@
         </div>
       </div>
     </template>
+
+    <!-- 申请记录弹窗 -->
+    <el-dialog
+      title="申请记录"
+      :visible.sync="logDialogVisible"
+      width="60%"
+      min-height="70%"
+      :modal-append-to-body="false"
+      :before-close="handleLogDialogClose"
+      class="dialog-with-table"
+    >
+      <vxe-table
+        ref="logTableRef"
+        v-loading="logLoading"
+        :data="logOptionObj.dataList"
+        height="400"
+        stripe
+        :resizable="true"
+      >
+        <vxe-column type="seq" title="序号" width="80" fixed="left"></vxe-column>
+        <vxe-column field="submitTime" title="提交时间" min-width="150"></vxe-column>
+        <vxe-column field="auditStatusLabel" title="申请单状态" min-width="100"></vxe-column>
+        <vxe-column field="equityCategoryName" title="权益大类" min-width="100"></vxe-column>
+        <vxe-column field="replacementTypeLabel" title="置换类型" min-width="100"></vxe-column>
+        <vxe-column field="discountAmount" title="优惠金额" min-width="100"></vxe-column>
+        <vxe-column field="isIssuedLabel" title="是否发放" min-width="100"></vxe-column>
+        <vxe-column field="expectedIssueDate" title="发放日期" min-width="120"></vxe-column>
+        <vxe-column field="issueTypeLabel" title="发放类型" min-width="100"></vxe-column>
+      </vxe-table>
+    </el-dialog>
   </edit-page-layout>
 </template>
 
@@ -799,6 +829,13 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       fileList: [],
+      logDialogVisible: false,
+      logLoading: false,
+      logOptionObj: {
+        id: 'vrEquityApplyRecordTable',
+        dataList: [],
+        total: 0
+      },
       rules: {
         code: [
           { required: false, message: '请输入订单权益申请单号', trigger: 'change' }
@@ -872,13 +909,9 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        try {
-          await invalid({ id: this.form.id });
-          this.$message.success('作废成功');
-          this.$refs.containerRef.loadDetail();
-        } catch (error) {
-          this.$message.error('作废失败：' + (error.message || '未知错误'));
-        }
+        await invalid(this._id);
+        this.$message.success('作废成功');
+        this.$refs.containerRef.loadDetail();
       });
     },
     async handleSubmitApproval () {
@@ -887,13 +920,9 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        try {
-          await submit({ id: this.form.id });
-          this.$message.success('提交成功');
-          this.$refs.containerRef.loadDetail();
-        } catch (error) {
-          this.$message.error('提交失败：' + (error.message || '未知错误'));
-        }
+        await submit(this._id);
+        this.$message.success('提交成功');
+        this.$refs.containerRef.loadDetail();
       });
     },
     async handleAudit () {
@@ -902,36 +931,23 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        try {
-          await approve({ id: this.form.id });
-          this.$message.success('审核成功');
-          this.$refs.containerRef.loadDetail();
-        } catch (error) {
-          this.$message.error('审核失败：' + (error.message || '未知错误'));
-        }
+        await approve(this._id);
+        this.$message.success('审核成功');
+        this.$refs.containerRef.loadDetail();
       });
     },
     async handleRecall () {
-      try {
-        // 先进行撤回审批验证
-        await cancelApproveValid({ id: this.form.id });
-
-        this.$confirm('撤回后将无法恢复，请确认是否撤回', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(async () => {
-          try {
-            await cancelApprove({ id: this.form.id });
-            this.$message.success('撤回成功');
-            this.$refs.containerRef.loadDetail();
-          } catch (error) {
-            this.$message.error('撤回失败：' + (error.message || '未知错误'));
-          }
-        });
-      } catch (error) {
-        this.$message.error('撤回验证失败：' + (error.message || '未知错误'));
-      }
+      // 先进行撤回审批验证
+      await cancelApproveValid(this._id);
+      this.$confirm('撤回后将无法恢复，请确认是否撤回', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        await cancelApprove(this._id);
+        this.$message.success('撤回成功');
+        this.$refs.containerRef.loadDetail();
+      });
     },
     async fetchOptions (code) {
       if (code) {
@@ -965,13 +981,8 @@ export default {
 
     // 权益大类变化时的处理
     async handleEquityCategoryChange (categoryId, record) {
-      try {
-        await this.validateSelectedVehicleOrder();
-        this.form.equityCategoryName = record?.name || '';
-      } catch (error) {
-        console.error('获取权益分类信息失败:', error);
-        this.$message.error('获取权益分类信息失败');
-      }
+      await this.validateSelectedVehicleOrder();
+      this.form.equityCategoryName = record?.name || '';
     },
 
     // 置换类型变化时的处理
@@ -1047,41 +1058,110 @@ export default {
     // 原车VIN号变化时的处理
     async handleOriginalVinChange (query, record) {
       // if (this.form.replacementType === 10 && (this.form.equityCategoryName === '新标专项' || this.form.equityCategoryName === '增值换购')) {
-        this.form.originalVinId = record.id || '';
-        this.form.originalOwnerName = record.vehicleProfileOwnerResp.ownerName || '';
-        this.form.originalOwnerPhone = record.vehicleProfileOwnerResp.mobilephone || '';
-        this.form.originalOwnerIdType = record.vehicleProfileOwnerResp.idcardType || '';
-        this.form.originalOwnerIdNumber = record.vehicleProfileOwnerResp.idcardNo || '';
-        this.form.originalMaterialsCode = record.vehicleMaterialCode || '';
-        this.form.originalMaterialsId = record.vehicleMaterialId || '';
-        this.form.originalModelName = record.vehicleModelName || '';
-        this.form.originalModelId = record.vehicleModelId || '';
+      this.form.originalVinId = record.id || '';
+      this.form.originalOwnerName = record.vehicleProfileOwnerResp.ownerName || '';
+      this.form.originalOwnerPhone = record.vehicleProfileOwnerResp.mobilephone || '';
+      this.form.originalOwnerIdType = record.vehicleProfileOwnerResp.idcardType || '';
+      this.form.originalOwnerIdNumber = record.vehicleProfileOwnerResp.idcardNo || '';
+      this.form.originalMaterialsCode = record.vehicleMaterialCode || '';
+      this.form.originalMaterialsId = record.vehicleMaterialId || '';
+      this.form.originalModelName = record.vehicleModelName || '';
+      this.form.originalModelId = record.vehicleModelId || '';
       // }
     },
 
     // 查看申请记录
     async auditLog () {
       try {
-        const records = await approveRecord({ id: this.form.id });
-        // 这里可以打开一个弹窗显示审批记录
-        this.$alert(JSON.stringify(records, null, 2), '审批记录', {
-          confirmButtonText: '确定',
-          type: 'info',
-          dangerouslyUseHTMLString: true
-        });
+        this.logDialogVisible = true;
+        this.getLogData();
       } catch (error) {
         this.$message.error('获取审批记录失败：' + (error.message || '未知错误'));
       }
     },
+
+    // 日志弹窗相关方法
+    handleLogDialogClose () {
+      this.logDialogVisible = false;
+    },
+
+    async getLogData () {
+      this.logLoading = true;
+
+      try {
+        // 获取申请记录列表
+        const response = await approveRecord(this._id);
+
+        // 处理返回的数据，因为API返回的是列表
+        let records = [];
+        if (Array.isArray(response)) {
+          records = response;
+        } else if (response && response.records) {
+          records = response.records;
+        } else {
+          records = [];
+        }
+        this.logOptionObj.dataList = records;
+
+        this.logOptionObj.total = this.logOptionObj.dataList.length;
+      } catch (error) {
+        this.$message.error('获取申请记录失败：' + (error.message || '未知错误'));
+        this.logOptionObj.dataList = [];
+        this.logOptionObj.total = 0;
+      } finally {
+        this.logLoading = false;
+      }
+    },
+
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.page-common-edit {
-  h3 {
-    margin: 0 0 15px;
-    font-size: 16px;
-  }
-}
+// .page-common-edit {
+//   h3 {
+//     margin: 0 0 15px;
+//     font-size: 16px;
+//   }
+// }
+
+// ::v-deep .dialog-with-table {
+//   .el-dialog {
+//     margin-top: 6vh !important;
+//     height: 70vh;
+//     min-height: 500px;
+//     display: flex;
+//     flex-direction: column;
+
+//     .el-dialog__body {
+//       flex: 1;
+//       overflow: auto;
+//       padding: 10px 20px !important;
+//       display: flex;
+//       flex-direction: column;
+
+//       .ais-table-c {
+//         flex: 1;
+//         min-height: 400px;
+//         display: flex;
+//         flex-direction: column;
+
+//         .vxe-table--render-wrapper {
+//           flex: 1;
+//           display: flex;
+//           flex-direction: column;
+//         }
+
+//         .vxe-table--main-wrapper {
+//           flex: 1;
+//           min-height: 350px;
+//         }
+
+//         .vxe-table--footer-wrapper {
+//           flex-shrink: 0;
+//         }
+//       }
+//     }
+//   }
+// }
 </style>
