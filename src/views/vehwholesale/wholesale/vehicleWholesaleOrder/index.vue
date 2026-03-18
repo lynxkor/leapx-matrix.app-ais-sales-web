@@ -774,7 +774,7 @@ export default {
         }).then(() => {
           this.$message({
             type: 'success',
-            message: '批量结算成功!'
+            message: '结算成功!'
           });
           this.getData();
         });
@@ -841,7 +841,7 @@ export default {
       }).then(() => {
         this.$message({
           type: 'success',
-          message: '批量取消配车成功'
+          message: '取消配车成功'
         });
         this.getData();
       });
@@ -911,19 +911,13 @@ export default {
           message: '取消急单成功!'
         });
         this.getData();
-      }).catch(() => {
-        this.$message({
-          type: 'error',
-          message: '取消急单失败!'
-        });
       });
-      // }
     },
     emergencyApproval (data) {
       return setEmergencyOrderItem(data).then(() => {
         this.$message({
           type: 'success',
-          message: '批量设置急单成功'
+          message: '设置急单成功'
         });
         this.getData();
       });
@@ -936,7 +930,7 @@ export default {
       }).then(() => {
         this.$message({
           type: 'success',
-          message: '批量取消结算成功'
+          message: '取消结算成功'
         });
         this.getData();
       });
@@ -945,7 +939,7 @@ export default {
       return batchAllocateVehicleItem(data).then(() => {
         this.$message({
           type: 'success',
-          message: '批量配车成功'
+          message: '配车成功'
         });
         this.getData();
       });
@@ -954,7 +948,7 @@ export default {
       return batchCancelItem(data).then(() => {
         this.$message({
           type: 'success',
-          message: '批量作废成功'
+          message: '作废成功'
         });
         this.getData();
       });
