@@ -93,7 +93,7 @@
                   filterable
                 />
               </el-form-item>
-              <el-form-item label="返利核算单明细编号" prop="rebateBillDetailCode">
+              <el-form-item label="整车返利核算单明细编号" prop="rebateBillDetailCode">
                 <el-input
                   placeholder="请输入"
                   v-model="form.rebateBillDetailCode"
@@ -463,7 +463,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '整车返利核算单明细',
+      pageTitle: '整车返利核算单',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-fundVehicleRebateBill',

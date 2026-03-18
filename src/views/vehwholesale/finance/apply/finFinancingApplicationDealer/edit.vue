@@ -342,11 +342,6 @@ export default {
             type: 'success',
             message: '成功!'
           });
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '失败!'
-          });
         });
       }).catch(() => {});
     },

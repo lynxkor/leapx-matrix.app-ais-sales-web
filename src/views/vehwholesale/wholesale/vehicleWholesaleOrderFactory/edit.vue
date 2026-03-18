@@ -57,18 +57,10 @@
                   />
                 </el-form-item>
 
-                 <el-form-item label="销售门店编码：" prop="saleDealerCode">
+                 <el-form-item label="销售门店名称：" prop="saleDealerName">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.saleDealerCode"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="交付门店编码：" prop="deliveryDealerCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.deliveryDealerCode"
+                    v-model="form.saleDealerName"
                     clearable
                     disabled
                   />
@@ -263,21 +255,14 @@
                 <el-form-item label="确认状态：" prop="confirmStatusLabel">
                   {{ form.confirmStatusLabel }}
                 </el-form-item>
-                <el-form-item label="销售门店编码：" prop="saleDealerCode">
-                  {{ form.saleDealerCode }}
+                <el-form-item label="销售门店编码：" prop="saleDealerName">
+                  {{ form.saleDealerName }}
                 </el-form-item>
                   <el-form-item label="销售门店名称：" prop="saleDealerName">
                   {{ form.saleDealerName }}
                 </el-form-item>
-                <el-form-item label="交付门店编码：" prop="deliveryDealerCode">
-                  {{ form.deliveryDealerCode }}
-                </el-form-item>
                 <el-form-item label="交付门店名称：" prop="deliveryDealerName">
                   {{ form.deliveryDealerName }}
-                </el-form-item>
-
-                <el-form-item label="门店仓库编码：" prop="dealerWarehouseCode">
-                  {{ form.dealerWarehouseCode }}
                 </el-form-item>
                 <el-form-item label="门店仓库名称：" prop="dealerWarehouseName">
                   {{ form.dealerWarehouseName }}
@@ -534,6 +519,33 @@
                     disabled
                   />
                 </el-form-item>
+                <el-form-item label="是否需要自动配车：" prop="needAutoAllocateCar">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="BooleanEnum"
+                    v-model="form.needAutoAllocateCar"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="整车物流预留：" prop="logisticsReserveLabel">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.logisticsReserveLabel"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="物流预留备注：" prop="logisticsReserveRemark">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.logisticsReserveRemark"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
                 <el-form-item label="初始交付周期说明：" prop="initDeliveryCycleDesc">
                   <el-input
                     placeholder="请输入"
@@ -546,6 +558,22 @@
                   <el-input
                     placeholder="请输入"
                     v-model="form.dynamicDeliveryCycleDesc"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="电池电芯(订单物料)：" prop="orderBatteryCellName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.orderBatteryCellName"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="电池电芯(配车物料)：" prop="batteryCellName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.batteryCellName"
                     clearable
                     disabled
                   />
@@ -613,11 +641,26 @@
                 <el-form-item label="车辆交付状态：" prop="deliveryStatusLabel">
                   {{ form.deliveryStatusLabel }}
                 </el-form-item>
+                <el-form-item label="是否需要自动配车：" prop="needAutoAllocateCarLabel">
+                  {{ form.needAutoAllocateCarLabel }}
+                </el-form-item>
+                <el-form-item label="整车物流预留：" prop="logisticsReserveLabel">
+                  {{ form.logisticsReserveLabel }}
+                </el-form-item>
+                <el-form-item label="物流预留备注：" prop="logisticsReserveRemark">
+                  {{ form.logisticsReserveRemark }}
+                </el-form-item>
                   <el-form-item label="初始交付周期说明：" prop="initDeliveryCycleDesc">
                   {{ form.initDeliveryCycleDesc }}
                 </el-form-item>
                 <el-form-item label="动态交付周期说明：" prop="dynamicDeliveryCycleDesc">
                   {{ form.dynamicDeliveryCycleDesc }}
+                </el-form-item>
+                <el-form-item label="电池电芯(订单物料)：" prop="orderBatteryCellName">
+                  {{ form.orderBatteryCellName }}
+                </el-form-item>
+                <el-form-item label="电池电芯(配车物料)：" prop="batteryCellName">
+                  {{ form.batteryCellName }}
                 </el-form-item>
               </el-form>
             </div>

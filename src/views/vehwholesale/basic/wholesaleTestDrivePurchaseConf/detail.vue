@@ -31,8 +31,8 @@
             <el-form-item label="选装包：" prop="optionPackageName">
               {{ info.optionPackageName  }}
             </el-form-item>
-            <el-form-item label="允许试驾车批售：" prop="allowTestDriveWholesale">
-              {{ info.allowTestDriveWholesale  }}
+            <el-form-item label="允许试驾车批售：" prop="allowTestDriveWholesaleLabel">
+              {{ info.allowTestDriveWholesaleLabel  }}
             </el-form-item>
             <el-form-item label="修改者名称：" prop="modifierName">
               {{ info.modifierName  }}

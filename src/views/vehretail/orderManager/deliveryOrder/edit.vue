@@ -334,28 +334,24 @@
             </template>
           </component-table>
           <!-- 预约记录 -->
-          <component-table
-            :table-config="{ title: '预约记录' }"
-            :columns="appointmentRecordColumns"
-            section-key="appointmentRecords"
-            :tableDataExternal="form.appointmentRecordList"
-            :showPagination="false"
-          />
-          <!-- 附件清单 -->
-          <component-table
-            :table-config="{ title: '附件清单' }"
-            :columns="attachmentColumns"
-            section-key="attachments"
-            :tableDataExternal="form.attachment"
-            :showPagination="false"
-          />
+          <section class="common-section">
+            <div class="common-section-header" data-section="orderBelonging">
+              <h2>预约记录</h2>
+            </div>
+            <div class="common-section-body">
+              <AisAttachmentList
+                :businessId="form.deliveryInvoiceId"
+                :readonly="!isEditing"
+              />
+            </div>
+          </section>
         </el-main>
       </edit-base-container>
       <!-- 预约交车对话框组件 -->
       <delivery-appointment-dialog
         ref="deliveryAppointmentDialog"
         :deliveryUserId="form.deliveryUserId"
-        :deliveryCityId="form.deliveryDealerCode"
+        :deliveryCityId="form.deliveryCityCode"
         :createTime="form.createTime"
         :orderId="_id"
         :orderCode="form.deliveryOrderCode"
@@ -449,6 +445,7 @@ import DeliveryAppointmentDialog from './components/DeliveryAppointmentDialog';
 import VerifyOrderRightsDialog from './components/VerifyOrderRightsDialog';
 import PaymentRecordDialog from './components/PaymentRecordDialog';
 import MessageDialog from '@/libs/components/MessageDialog';
+import AisAttachmentList from '@/libs/components/AisAttachmentList';
 
 const defaultForm = {
   // 订单归属
@@ -545,7 +542,8 @@ export default {
     DeliveryAppointmentDialog,
     VerifyOrderRightsDialog,
     PaymentRecordDialog,
-    MessageDialog
+    MessageDialog,
+    AisAttachmentList
   },
   computed: {
     _id () {
@@ -718,15 +716,6 @@ export default {
         { field: 'timeoutReasonLabel', title: '超时原因', width: 360 },
         { field: 'changeTimeReasonLabel', title: '更改时间原因', width: 360 },
         { field: 'appointmentRemark', title: '预约备注', width: 360 }
-      ],
-      // 附件清单列配置
-      attachmentColumns: [
-        { field: 'attachmentName', title: '附件名称', width: 360 },
-        { field: 'attachmentSuffix', title: '附件后缀', width: 160 },
-        { field: 'attachmentSizeKB', title: '附件大小(KB)', width: 180 },
-        { field: 'documentTypeLabel', title: '证件类型', width: 180 },
-        { field: 'ocrRecognitionStatus', title: 'OCR识别状态', width: 180 },
-        { field: 'createTime', title: '创建时间', width: 240 }
       ],
       // 收款记录列配置
       paymentRecordColumns: [
