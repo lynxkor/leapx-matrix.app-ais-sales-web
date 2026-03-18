@@ -690,7 +690,10 @@ export default {
   },
   methods: {
     handleRefreshPriceCoefficient () {
-      refreshPriceItem({}).then(() => {
+      const ids = this.selectionList.map(item => item.id) || [];
+      refreshPriceItem({
+        idSet: ids
+      }).then(() => {
         this.$message({
           type: 'success',
           message: '价格刷新成功!'
