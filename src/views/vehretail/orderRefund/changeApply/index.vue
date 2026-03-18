@@ -144,14 +144,14 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehretail/orderRefund/orderChange/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { deleteItem, enableItem, getList } from '@/api/vehretail/orderRefund/orderChange/index';
+import { exportTable, getEnum, getTableConfig, tableAddOrUpdate } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
+import { downloadExcel, handleBatchStatusChange } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
@@ -432,7 +432,14 @@ export default {
     },
     async fetchOptions (code) {
       if (code) {
-        return getEnum(code);
+        if (code === 'vehretail_order_change_apply_status') {
+          // 对结果进行过滤
+          let res = [];
+          res = await getEnum(code);
+          return res.filter(item => !(item.code === '1025' || item.code === '1027'));
+        } else {
+          return getEnum(code);
+        }
       }
       return [];
     },

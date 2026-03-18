@@ -23,6 +23,9 @@
                   <el-input
                     placeholder="请输入"
                     v-model="form.subCateName"
+                    type="text"
+                    maxlength="50"
+                    show-word-limit
                     clearable
                   />
                 </el-form-item>

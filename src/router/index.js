@@ -2697,6 +2697,24 @@ const routes = [
         name: '整车开票记录',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehstock/basic/storeInventoryTransferWhitelist',
+      name: 'storeInventoryTransferWhitelist',
+      component: () => import('@/views/vehstock/basic/storeInventoryTransferWhitelist/index.vue'),
+
+      meta: {
+        name: '门店库存调拨白名单',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/basic/storeinventorytransferwhitelist/edit',
+      name: 'storeInventoryTransferWhitelistEdit',
+      component: () => import('@/views/vehstock/basic/storeInventoryTransferWhitelist/edit.vue'),
+
+      meta: {
+        name: '门店库存调拨白名单详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];

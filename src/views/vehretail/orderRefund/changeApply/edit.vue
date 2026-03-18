@@ -196,6 +196,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="缴定金时间：" prop="paymentTime">

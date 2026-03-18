@@ -38,6 +38,9 @@
                   <el-input
                     placeholder="请输入"
                     v-model="form.cateName"
+                    type="text"
+                    maxlength="50"
+                    show-word-limit
                     clearable
                   />
                 </el-form-item>
@@ -46,16 +49,6 @@
                     :request="fetchOptions"
                     enumCode="BooleanEnum"
                     v-model="form.selectorDisplay"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                  />
-                </el-form-item>
-                <el-form-item label="原路退回允许选择：" prop="originalRefund">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="BooleanEnum"
-                    v-model="form.originalRefund"
                     placeholder="请选择"
                     clearable
                     filterable
@@ -166,17 +159,14 @@
                 <el-form-item label="下拉是否展示：" prop="selectorDisplayLabel">
                   {{ form.selectorDisplayLabel }}
                 </el-form-item>
-                <el-form-item label="原路退回允许选择：" prop="originalRefundLabel">
-                  {{ form.originalRefundLabel }}
-                </el-form-item>
                 <el-form-item label="是否需要初审：" prop="preApprovalLabel">
                   {{ form.preApprovalLabel }}
                 </el-form-item>
                 <el-form-item label="是否需要终审：" prop="finalApprovalLabel">
                   {{ form.finalApprovalLabel }}
                 </el-form-item>
-                <el-form-item label="默认定金退回方式：" prop="refundTypeDefault">
-                  {{ form.refundTypeDefault }}
+                <el-form-item label="默认定金退回方式：" prop="refundTypeDefaultLabel">
+                  {{ form.refundTypeDefaultLabel }}
                 </el-form-item>
                 <el-form-item label="退还方式是否允许选择：" prop="refundTypeSelectLabel">
                   {{ form.refundTypeSelectLabel }}
@@ -260,23 +250,23 @@ const defaultForm = {
   statusDesc: '',
   cateCode: '',
   cateName: '',
-  selectorDisplay: '',
+  selectorDisplay: 0,
   selectorDisplayLabel: '',
-  originalRefund: '',
+  originalRefund: 0,
   originalRefundLabel: '',
-  preApproval: '',
+  preApproval: 0,
   preApprovalLabel: '',
-  finalApproval: '',
+  finalApproval: 0,
   finalApprovalLabel: '',
-  refundTypeDefault: '',
+  refundTypeDefault: 10,
   refundTypeDefaultLabel: '',
-  refundTypeSelect: '',
+  refundTypeSelect: 0,
   refundTypeSelectLabel: '',
   refundAttachRequired: '',
   refundReasonDefault: '',
-  refundReasonChanged: '',
+  refundReasonChanged: 0,
   refundReasonChangedLabel: '',
-  expireOrderAutoPass: '',
+  expireOrderAutoPass: 0,
   expireOrderAutoPassLabel: '',
   expireOrderTime: '',
 };
@@ -424,13 +414,6 @@ export default {
           {
             required: false,
             message: '请输入下拉是否展示',
-            trigger: 'change',
-          },
-        ],
-        originalRefund: [
-          {
-            required: false,
-            message: '请输入原路退回允许选择',
             trigger: 'change',
           },
         ],

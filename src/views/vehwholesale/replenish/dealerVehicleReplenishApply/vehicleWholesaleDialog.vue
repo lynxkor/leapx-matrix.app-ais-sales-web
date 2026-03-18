@@ -247,14 +247,10 @@
 
 <script>
 
-// import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { listCanSettleAccount } from '@/api/vehwholesale/fund/account/index';
 import { getEnum } from '@/api/common';
 import { queryPlantWholesaleInStockInventory, plantWholesaleInStockCreateApply } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
-
-// import FetchSelect from '@/libs/components/FetchSelect';
 import permissions from '@/libs/mixins/permissions';
-// import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   seriesId: '', // 车系ID
@@ -267,43 +263,6 @@ const defaultForm = {
   optionPackageId: '', // 选装包ID
   materialsDesc: '', // 物料描述
 };
-// 测试数据
-// const mockInStockInventoryData = [
-//   {
-//     seriesId: '9C9D922E-0543-EE11-B13B-CAB212903EA5',
-//     modelId: '101',
-//     yearTypeId: '2023',
-//     exteriorId: 'red',
-//     interiorId: 'C298D93A-6ACA-F011-B0B8-D75101E5D01E',
-//     wheelHubId: 'hub1',
-//     warehouseCode: 'WH001',
-//     optionPackageId: 'pkg1',
-//     materialsDesc: '豪华版红色轿车配黑色内饰',
-//     modelName: '奥迪A4',
-//     warehouseName: '上海仓库',
-//     inventoryStatus: '0',
-//     inventoryQty: 5,
-//     optionPackageName: '豪华包',
-//     applyQty: 0
-//   },
-//   {
-//     seriesId: '9C9D922E-0543-EE11-B13B-CAB212903EA5',
-//     modelId: '102',
-//     yearTypeId: '2023',
-//     exteriorId: 'F75370E5-21A5-EE11-B156-E3C14957A562',
-//     interiorId: 'C298D93A-6ACA-F011-B0B8-D75101E5D01Ebeige',
-//     wheelHubId: 'hub2',
-//     warehouseCode: 'WH001',
-//     optionPackageId: 'pkg2',
-//     materialsDesc: '标准版白色SUV配米色内饰',
-//     modelName: '奥迪Q5',
-//     warehouseName: '上海仓库',
-//     inventoryStatus: '1',
-//     inventoryQty: 10,
-//     optionPackageName: '舒适包',
-//     applyQty: 0
-//   }
-// ];
 export default {
   name: 'vehicleWholesaleDialog',
   props: {
@@ -396,6 +355,14 @@ export default {
     filterTableData () {
       let filteredData = [...this.originalTableData];
 
+      // 整车仓库用 warehouseName 判断
+      if (this.form.warehouseId) {
+        const warehouse = this.dropdownOptions.warehouseList.find(w => w.id === this.form.warehouseId);
+        if (warehouse) {
+          filteredData = filteredData.filter(item => item.warehouseName === warehouse.name);
+        }
+      }
+
       // 下拉框过滤条件
       const filters = {
         seriesId: 'seriesId',
@@ -404,8 +371,7 @@ export default {
         exteriorId: 'exteriorId',
         interiorId: 'interiorId',
         wheelHubId: 'wheelHubId',
-        optionPackageId: 'optionPackageId',
-        warehouseId: 'warehouseId'
+        optionPackageId: 'optionPackageId'
       };
 
       // 应用下拉框筛选
@@ -468,8 +434,8 @@ export default {
       this.loading = true;
       try {
         const res = await queryPlantWholesaleInStockInventory({});
-        console.log('res:', res);
-        const data = res || {};
+        // 注意：res 是 { code, msg, data } 结构，需要取 res.data
+        const data = (res?.data) || res || {};
         this.dropdownOptions = {
           warehouseList: data.warehouseList || [],
           seriesList: data.seriesList || [],

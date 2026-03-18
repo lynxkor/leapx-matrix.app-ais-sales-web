@@ -22,12 +22,15 @@
             <vxe-column
               v-for="column in columns"
               :key="column.field || column.title"
+              :field="column.field"
+              :title="column.title"
               :width="column.width"
               :align="column.align || 'center'"
-              v-bind="column"
+              :fixed="column.fixed"
             >
               <template v-slot:default="slotData">
-                <slot :name="column.slots?.default" v-bind="slotData" />
+                <slot v-if="column.slots?.default" :name="column.slots.default" v-bind="slotData" />
+                <span v-else>{{ slotData.row[column.field] }}</span>
               </template>
             </vxe-column>
           </vxe-table>
@@ -157,6 +160,10 @@ export default {
       this.internalTableData = this.tableDataExternal;
     }
   },
+  mounted () {
+    console.log('ComponentTable mounted - columns:', this.columns);
+    console.log('ComponentTable mounted - tableData:', this.tableData);
+  },
   methods: {
     // 加载数据
     async loadData () {
@@ -167,14 +174,19 @@ export default {
       this.loading = true;
       try {
         const params = {
-          page: this.currentPage,
-          limit: this.pageSize,
+          pageNum: this.currentPage,
+          pageSize: this.pageSize,
           ...this.extraParams
         };
 
         const response = await this.apiMethod(params);
-        console.log('Response:', response);
-        this.internalTableData = response.data || response.records || response || [];
+        console.log('ComponentTable Response:', response);
+        const dataList = response.data || response.records || response || [];
+        console.log('ComponentTable tableData:', dataList);
+        if (dataList.length > 0) {
+          console.log('ComponentTable first row data:', dataList[0]);
+        }
+        this.internalTableData = dataList;
         this.total = response.totals || response.count || 0;
       } catch (error) {
         console.error('Failed to load data:', error);

@@ -26,16 +26,6 @@
           filterable
         />
       </el-form-item>
-      <el-form-item label="原路退回是否允许选择">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="BooleanEnum"
-          v-model="form.originalRefund"
-          placeholder="请选择"
-          clearable
-          filterable
-        />
-      </el-form-item>
       <el-form-item label="是否需要初审">
         <fetch-select
           :request="fetchOptions"
@@ -57,7 +47,7 @@
         />
       </el-form-item>
       <template v-if="show">
-        <el-form-item label="退款方式是否允许选择">
+        <el-form-item label="退还方式是否允许选择">
           <fetch-select
             :request="fetchOptions"
             enumCode="BooleanEnum"
@@ -205,10 +195,9 @@ export default {
           },
           { props: 'cateName', label: '退订原因分类', visible: true, width: 200 },
           { props: 'selectorDisplayLabel', label: '下拉选项是否展示', visible: true, width: 200 },
-          { props: 'originalRefundLabel', label: '原路退回允许选择', visible: true, width: 200 },
           { props: 'preApprovalLabel', label: '是否需要初审', visible: true, width: 200 },
           { props: 'finalApprovalLabel', label: '是否需要终审', visible: true, width: 200 },
-          { props: 'refundTypeSelectLabel', label: '退款方式是否允许选择', visible: true, width: 200 },
+          { props: 'refundTypeSelectLabel', label: '退还方式是否允许选择', visible: true, width: 200 },
           { props: 'refundTypeDefaultLabel', label: '默认定金退回方式', visible: true, width: 200 },
           { props: 'refundAttachRequired', label: '退订附件上传要求', visible: true, width: 200 },
           { props: 'refundReasonDefault', label: '默认退订原因说明', visible: false, width: 200 },
