@@ -45,7 +45,7 @@
                 </el-form-item>
                 <el-form-item label="结算资金类型：" prop="settleFundType">
                   <fetch-select
-                    :request="fetchOptions"
+                    :options="fundTypeOptions"
                     enumCode="vw_fundtype"
                     v-model="form.settleFundType"
                     placeholder="请选择结算资金类型"
@@ -242,6 +242,19 @@ export default {
       moduleKey: 'AISVW-fundFinancialOrganization',
       loading: false,
       submitLoading: false,
+      fundTypeOptions: [],
+      shippingWayOptions: [],
+      enableBankDirectConnectionOptions: [],
+      createPurchaseRecordOptions: [],
+      statusOptions: [],
+      // yes_no_enum_map: YES_NO_ENUM_MAP,
+      isEditing: false,
+      isDetail: false,
+      isAdd: false,
+      isEdit: false,
+      isDelete: false,
+      isImport: false,
+
       form: { ...form },
       originalForm: { ...form },
       rules: {
@@ -278,8 +291,21 @@ export default {
     };
   },
   mounted () {
+    this.fetchsettleFundTypeOptions();
   },
   methods: {
+    async fetchsettleFundTypeOptions () {
+      const response = await getEnum('vw_fundtype');
+      this.fundTypeOptions = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['1010', '1050', '2010'].includes(codeStr + '');
+      }).map(item => {
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

@@ -308,7 +308,7 @@ export default {
       }
       exportTable({
         businessType: '交付周期时效信息',
-        dataFetchPath: 'vr/web/basicConfig/deliveryCycleTimeConfig/page',
+        dataFetchPath: 'vr/web/delivery/deliveryCycleTimeConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

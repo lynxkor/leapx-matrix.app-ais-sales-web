@@ -282,7 +282,7 @@
                  <el-form-item label="开票日期：" prop="invoiceTime">
                   {{ form.invoiceTime }}
                 </el-form-item>
-                <el-form-item label="数据来源" prop="dataSourceLabel">
+                <el-form-item label="数据来源：" prop="dataSourceLabel">
                   {{ form.dataSourceLabel }}
                 </el-form-item>
                  <el-form-item label="订单时间：" prop="orderTime">
@@ -420,7 +420,7 @@
                 <el-form-item label="结算资金类型：" prop="settleFundType">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="vw_fundtype"
                     v-model="form.settleFundType"
                     placeholder="请选择"
                     clearable
@@ -428,10 +428,17 @@
                   />
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationId">
-                  <el-input
-                    placeholder="请输入"
+                  <fetch-select
+                    :remote-method="repairItemSearch"
+                    remote
+                    multiple
+                    reserve-keyword
+                    labelKey="organizationName"
+                    valueKey="id"
                     v-model="form.financialOrganizationId"
+                    placeholder="请选择"
                     clearable
+                    filterable
                   />
                 </el-form-item>
                  <el-form-item label="合格证是否质押：" prop="certificatePledged">
@@ -611,23 +618,23 @@
                 <el-form-item label="ERP销售订单号：" prop="erpSaleOrderCode">
                   {{ form.erpSaleOrderCode }}
                 </el-form-item>
-                 <el-form-item label="是否需要自动配车：" prop="needAutoAllocateCar">
-                  {{ form.needAutoAllocateCar }}
+                 <el-form-item label="是否需要自动配车：" prop="needAutoAllocateCarLabel">
+                  {{ form.needAutoAllocateCarLabel }}
                 </el-form-item>
-                <el-form-item label="配车状态：" prop="allocateStatus">
-                  {{ form.allocateStatus }}
+                <el-form-item label="配车状态：" prop="allocateStatusLabel">
+                  {{ form.allocateStatusLabel }}
                 </el-form-item>
-                 <el-form-item label="结算资金类型：" prop="settleFundType">
-                  {{ form.settleFundType }}
+                 <el-form-item label="结算资金类型：" prop="settleFundTypeLabel">
+                  {{ form.settleFundTypeLabel }}
                 </el-form-item>
-                <el-form-item label="金融机构：" prop="financialOrganizationId">
-                  {{ form.financialOrganizationId }}
+                <el-form-item label="金融机构：" prop="financialOrganizationName">
+                  {{ form.financialOrganizationName }}
                 </el-form-item>
-                <el-form-item label="合格证是否质押：" prop="certificatePledged">
-                  {{ form.certificatePledged }}
+                <el-form-item label="合格证是否质押：" prop="certificatePledgedLabel">
+                  {{ form.certificatePledgedLabel }}
                 </el-form-item>
-                 <el-form-item label="结算状态：" prop="settleStatus">
-                  {{ form.settleStatus }}
+                 <el-form-item label="结算状态：" prop="settleStatusLabel">
+                  {{ form.settleStatusLabel }}
                 </el-form-item>
                 <el-form-item label="标准价格：" prop="standardPrice">
                   {{ form.standardPrice }}
@@ -647,35 +654,35 @@
                  <el-form-item label="融资金额/赊销金额：" prop="creditSalesAmount">
                   {{ form.creditSalesAmount }}
                 </el-form-item>
-                 <el-form-item label="是否还款：" prop="clearedFlag">
-                  {{ form.clearedFlag }}
+                 <el-form-item label="是否还款：" prop="clearedFlagLabel">
+                  {{ form.clearedFlagLabel }}
                 </el-form-item>
-                <el-form-item label="是否赊销：" prop="creditSaleFlag">
-                  {{ form.creditSaleFlag }}
+                <el-form-item label="是否赊销：" prop="creditSaleFlagLabel">
+                  {{ form.creditSaleFlagLabel }}
                 </el-form-item>
-                 <el-form-item label="是否创建发运计划：" prop="creditSaleFlag">
-                  {{ form.creditSaleFlag }}
+                 <el-form-item label="是否创建发运计划：" prop="creditSaleFlagLabel">
+                  {{ form.creditSaleFlagLabel }}
                 </el-form-item>
-                 <el-form-item label="是否存在结算失败记录：" prop="hasSettleFailed">
-                  {{ form.hasSettleFailed }}
+                 <el-form-item label="是否存在结算失败记录：" prop="hasSettleFailedLabel">
+                  {{ form.hasSettleFailedLabel }}
                 </el-form-item>
-                 <el-form-item label="是否需要同步SAP：" prop="needAsyncSap">
-                  {{ form.needAsyncSap }}
+                 <el-form-item label="是否需要同步SAP：" prop="needAsyncSapLabel">
+                  {{ form.needAsyncSapLabel }}
                 </el-form-item>
-                <el-form-item label="同步状态：" prop="orderSyncStatus">
-                  {{ form.orderSyncStatus }}
+                <el-form-item label="同步状态：" prop="orderSyncStatusLabel">
+                  {{ form.orderSyncStatusLabel }}
                 </el-form-item>
                 <el-form-item label="同步结果：" prop="needAsyncSap">
                   {{ form.needAsyncSap }}
                 </el-form-item>
-                <el-form-item label="退车标识：" prop="needAsyncSap">
-                  {{ form.needAsyncSap }}
+                <el-form-item label="退车标识：" prop="needAsyncSapLabel">
+                  {{ form.needAsyncSapLabel }}
                 </el-form-item>
                   <el-form-item label="特殊车提报：" prop="specialRemark">
                   {{ form.specialRemark }}
                 </el-form-item>
-                 <el-form-item label="终端状态：" prop="terminalStatus">
-                  {{ form.terminalStatus }}
+                 <el-form-item label="终端状态：" prop="terminalStatusLabel">
+                  {{ form.terminalStatusLabel }}
                 </el-form-item>
               </el-form>
             </div>
@@ -818,6 +825,7 @@ import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import vinAllocateVehicle from './vinAllocateVehicle.vue';
 import ComponentTable from './ComponentTable.vue';
+import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -963,6 +971,9 @@ export default {
   mounted () {
   },
   methods: {
+    async repairItemSearch (query) {
+      return fundGetList({ organizationNameLike: query, status: 1 });
+    },
     handlequerySAPAccountBalance () {
       const params = {
         id: this._id,
