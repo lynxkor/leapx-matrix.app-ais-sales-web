@@ -46,46 +46,62 @@ export function enableItem (data) {
  * 提交审批
  * @param {Object} data
  */
-export function submitApproval (data) {
-  return api.jsonPost(prefix + 'submitApproval', data);
-}
-
-/**
- * 初审
- * @param {Object} data
- */
-export function firstAudit (data) {
-  return api.jsonPost(prefix + 'firstAudit', data);
+export function submit (data) {
+  return api.jsonPost(prefix + 'submit', data);
 }
 
 /**
  * 审核
  * @param {Object} data
  */
-export function audit (data) {
-  return api.jsonPost(prefix + 'audit', data);
+export function approve (data) {
+  return api.jsonPost(prefix + 'approve', data);
+}
+
+/**
+ * 订单权益申请整单校验
+ * @param {Object} data
+ */
+export function selectedVehicleOrderValid (data) {
+  return api.jsonPost(prefix + 'selectedVehicleOrderValid', data);
+}
+
+/**
+ * 订单权益申请发放信息导入
+ * @param {Object} data
+ */
+export function importExcelForIssueInfo (data) {
+  return api.jsonPost(prefix + 'importExcelForIssueInfo', data);
 }
 
 /**
  * 作废
  * @param {Object} data
  */
-export function cancelItem (data) {
-  return api.jsonPost(prefix + 'cancel', data);
+export function invalid (data) {
+  return api.jsonPost(prefix + 'invalid', data);
 }
 
 /**
  * 审核撤回
  * @param {Object} data
  */
-export function recallApproval (data) {
-  return api.jsonPost(prefix + 'recallApproval', data);
+export function cancelApprove (data) {
+  return api.jsonPost(prefix + 'cancelApprove', data);
 }
 
 /**
- * 上传附件
- * @param {FormData} data
+ * 订单权益申请撤销审批验证
+ * @param {Object} data
  */
-export function uploadAttachment (data) {
-  return api.post(prefix + 'uploadAttachment', data);
+export function cancelApproveValid (data) {
+  return api.jsonPost(prefix + 'cancelApproveValid', data);
+}
+
+/**
+ * 订单权益申请审批记录查询
+ * @param {Object} data
+ */
+export function approveRecord (data) {
+  return api.jsonPost(prefix + 'approveRecord', data);
 }

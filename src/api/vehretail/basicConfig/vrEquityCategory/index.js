@@ -14,6 +14,10 @@ export function getSelect (data) {
   return api.jsonPost(prefix + 'list', data);
 };
 
+export function listByAuth (data) {
+  return api.jsonPost(prefix + 'listByAuth', data);
+}
+
 /**
  * 新增或修改
  * @param {Object} data
