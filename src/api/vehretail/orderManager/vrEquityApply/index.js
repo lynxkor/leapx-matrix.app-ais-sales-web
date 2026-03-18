@@ -67,14 +67,6 @@ export function selectedVehicleOrderValid (data) {
 }
 
 /**
- * 订单权益申请发放信息导入
- * @param {Object} data
- */
-export function importExcelForIssueInfo (data) {
-  return api.jsonPost(prefix + 'importExcelForIssueInfo', data);
-}
-
-/**
  * 作废
  * @param {Object} data
  */

@@ -483,7 +483,8 @@
           </section>
 
           <!-- 跨月权益 -->
-          <section class="common-section" v-if="form.equityCategoryName === '跨月权益'">
+          <!-- <section class="common-section" v-if="form.equityCategoryName === '跨月权益'"> -->
+          <section class="common-section" >
             <div class="common-section-header">
               <h2>跨月权益</h2>
             </div>
@@ -531,12 +532,66 @@
           </section>
 
           <!-- 原车车主信息 -->
-          <section class="common-section" >
+          <!-- <section class="common-section" v-if="form.replacementType === 10 && (form.equityCategoryName === '新标专项' || form.equityCategoryName === '增值换购')"> -->
+          <section class="common-section">
             <div class="common-section-header">
               <h2>原车车主信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ownerForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+                <el-form-item label="原车车主姓名：" prop="originalOwnerName">
+                  <el-input
+                    placeholder="请输入原车车主姓名"
+                    v-model="form.originalOwnerName"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="原车车主手机号：" prop="originalOwnerPhone">
+                  <el-input
+                    placeholder="请输入原车车主手机号"
+                    v-model="form.originalOwnerPhone"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="原车主证件类型：" prop="originalOwnerIdType">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vehretail_id_card_type"
+                    v-model="form.originalOwnerIdType"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="原车主证件号码：" prop="originalOwnerIdNumber">
+                  <el-input
+                    placeholder="请输入原车主证件号码"
+                    v-model="form.originalOwnerIdNumber"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="原车物料码：" prop="originalMaterialsCode">
+                  <el-input
+                    placeholder="请输入原车物料码"
+                    v-model="form.originalMaterialsCode"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="基本车型：" prop="originalModelName">
+                  <el-input
+                    placeholder="请输入基本车型"
+                    v-model="form.originalModelName"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="原车车主姓名：">
                   {{ form.originalOwnerName }}
                 </el-form-item>
@@ -611,13 +666,13 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, selectedVehicleOrderValid } from '@/api/vehretail/orderManager/vrEquityApply/index';
+import { getDetail, addOrUpdate, selectedVehicleOrderValid, submit, approve, invalid, cancelApprove, cancelApproveValid, approveRecord } from '@/api/vehretail/orderManager/vrEquityApply/index';
 import { getList as getRetailOrderList, getDetail as getRetailOrderDetail } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import { listByAuth as getEquityCategoryListApi } from '@/api/vehretail/basicConfig/vrEquityCategory/index';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
-import { getList as getVehicleProfileList, getDetail as getVehicleProfileDetail } from '@/api/datacenter/vehicle/vehicleProfile/index.js';
+import { getList as getVehicleProfileList } from '@/api/datacenter/vehicle/vehicleProfile/index.js';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -640,7 +695,7 @@ const defaultForm = {
   code: '',
   ownerOrgId: null,
   mallOrderNo: '',
-  vehicleOrderCode: '',
+  vehicleOrderNo: '',
   originalVin: '',
   equityCategoryId: null,
   equityCategoryName: '',
@@ -681,7 +736,6 @@ const defaultForm = {
   changedBenefitDate: '',
   oaProcessNo: '',
   originalOwnerName: '',
-  originalOwnerId: '',
   originalOwnerPhone: '',
   originalOwnerIdType: null,
   originalOwnerIdNumber: '',
@@ -762,7 +816,7 @@ export default {
           { required: true, message: '请选择权益大类', trigger: 'change' }
         ],
         replacementType: [
-          { required: true, message: '请选择置换类型', trigger: 'change' }
+          { required: false, message: '请选择置换类型', trigger: 'change' }
         ],
         discountAmount: [
           { required: true, message: '请输入优惠金额', trigger: 'change' },
@@ -812,51 +866,72 @@ export default {
         ...defaultForm
       };
     },
-    handleCancel () {
+    async handleCancel () {
       this.$confirm('确认要作废此申请吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        // 调用作废API
-        // cancelItem({ id: this.form.id }).then(() => {
-        //   this.$message.success('作废成功');
-        //   this.$refs.containerRef.loadDetail();
-        // });
-        this.$message.success('作废成功');
+      }).then(async () => {
+        try {
+          await invalid({ id: this.form.id });
+          this.$message.success('作废成功');
+          this.$refs.containerRef.loadDetail();
+        } catch (error) {
+          this.$message.error('作废失败：' + (error.message || '未知错误'));
+        }
       });
     },
-    handleSubmitApproval () {
+    async handleSubmitApproval () {
       this.$confirm('确认要提交审批吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        // 调用提交审批API
-        // submitApproval({ id: this.form.id }).then(() => {
-        //   this.$message.success('提交成功');
-        //   this.$refs.containerRef.loadDetail();
-        // });
-        this.$message.success('提交成功');
+      }).then(async () => {
+        try {
+          await submit({ id: this.form.id });
+          this.$message.success('提交成功');
+          this.$refs.containerRef.loadDetail();
+        } catch (error) {
+          this.$message.error('提交失败：' + (error.message || '未知错误'));
+        }
       });
     },
-    handleAudit () {
-      // 审核功能待实现
-      this.$message.info('审核功能待实现');
-    },
-    handleRecall () {
-      this.$confirm('撤回后将无法恢复，请确认是否撤回', '提示', {
+    async handleAudit () {
+      this.$confirm('确认要审核吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        // 调用审核撤回API
-        // recallApproval({ id: this.form.id }).then(() => {
-        //   this.$message.success('撤回成功');
-        //   this.$refs.containerRef.loadDetail();
-        // });
-        this.$message.success('撤回成功');
+      }).then(async () => {
+        try {
+          await approve({ id: this.form.id });
+          this.$message.success('审核成功');
+          this.$refs.containerRef.loadDetail();
+        } catch (error) {
+          this.$message.error('审核失败：' + (error.message || '未知错误'));
+        }
       });
+    },
+    async handleRecall () {
+      try {
+        // 先进行撤回审批验证
+        await cancelApproveValid({ id: this.form.id });
+
+        this.$confirm('撤回后将无法恢复，请确认是否撤回', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async () => {
+          try {
+            await cancelApprove({ id: this.form.id });
+            this.$message.success('撤回成功');
+            this.$refs.containerRef.loadDetail();
+          } catch (error) {
+            this.$message.error('撤回失败：' + (error.message || '未知错误'));
+          }
+        });
+      } catch (error) {
+        this.$message.error('撤回验证失败：' + (error.message || '未知错误'));
+      }
     },
     async fetchOptions (code) {
       if (code) {
@@ -927,6 +1002,7 @@ export default {
       this.form.buyerIdType = order.carOwner.idCardType || '';
       this.form.buyerIdNumber = order.carOwner.idCardNo || '';
       this.form.orderUserId = order.orderUserId || '';
+      this.form.ownerOrgId = order.saleOrgId || '';
       this.form.saleDealerName = order.saleDealerName || '';
       this.form.saleDealerCode = order.saleDealerCode || '';
       this.form.cooperationType = order.cooperationType || '';
@@ -956,17 +1032,12 @@ export default {
       }
       try {
         // 调用校验接口
-        const result = await selectedVehicleOrderValid({
+        await selectedVehicleOrderValid({
           mallOrderNo: this.form.mallOrderNo,
           equityCategoryId: this.form.equityCategoryId,
           replacementType: this.form.replacementType
         });
-
-        // 如果接口返回错误，清空相关字段
-        // 注意：这里假设接口返回错误时会抛出异常，或者返回特定格式的数据表示校验失败
-        // 如果接口返回特定格式的数据来表示校验失败，需要根据实际返回格式调整判断逻辑
       } catch (error) {
-        console.error('整车订单校验失败:', error);
         // 显示错误消息
         const errorMessage = error.message || '整车订单校验失败，请检查选择的商城订单号、权益大类和置换类型组合是否有效';
         this.$message.error(errorMessage);
@@ -975,17 +1046,33 @@ export default {
 
     // 原车VIN号变化时的处理
     async handleOriginalVinChange (query, record) {
-      if (this.form.replacementType === 10 && (this.form.equityCategoryName === '新标专项' || this.form.equityCategoryName === '增值换购')) {
+      // if (this.form.replacementType === 10 && (this.form.equityCategoryName === '新标专项' || this.form.equityCategoryName === '增值换购')) {
+        this.form.originalVinId = record.id || '';
         this.form.originalOwnerName = record.vehicleProfileOwnerResp.ownerName || '';
         this.form.originalOwnerPhone = record.vehicleProfileOwnerResp.mobilephone || '';
         this.form.originalOwnerIdType = record.vehicleProfileOwnerResp.idcardType || '';
-        this.form.originalOwnerIdNumber = record.vehicleProfileOwnerResp.idCardNo || '';
+        this.form.originalOwnerIdNumber = record.vehicleProfileOwnerResp.idcardNo || '';
         this.form.originalMaterialsCode = record.vehicleMaterialCode || '';
         this.form.originalMaterialsId = record.vehicleMaterialId || '';
         this.form.originalModelName = record.vehicleModelName || '';
         this.form.originalModelId = record.vehicleModelId || '';
+      // }
+    },
+
+    // 查看申请记录
+    async auditLog () {
+      try {
+        const records = await approveRecord({ id: this.form.id });
+        // 这里可以打开一个弹窗显示审批记录
+        this.$alert(JSON.stringify(records, null, 2), '审批记录', {
+          confirmButtonText: '确定',
+          type: 'info',
+          dangerouslyUseHTMLString: true
+        });
+      } catch (error) {
+        this.$message.error('获取审批记录失败：' + (error.message || '未知错误'));
       }
-    }
+    },
   }
 };
 </script>
