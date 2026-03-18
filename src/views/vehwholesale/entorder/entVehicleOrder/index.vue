@@ -72,8 +72,8 @@
           multiple
           reserve-keyword
           labelKey="organizationName"
-          valueKey="organizationCode"
-          v-model="form.fundFinancialOrganizationCodes"
+          valueKey="id"
+          v-model="form.financialOrganizationIds"
           placeholder="请选择"
           clearable
           filterable
@@ -296,7 +296,7 @@ export default {
           { props: 'allocateStatusLabel', label: '配车状态', visible: true, width: 200 },
           { props: 'settleStatusLabel', label: '结算状态', visible: true, width: 200 },
           { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 200 },
-          { props: 'fundFinancialOrganizationCode', label: '金融机构', visible: true, width: 200 },
+          { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 200 },
           { props: 'acceptanceMethodLabel', label: '验收方式', visible: true, width: 200 },
           { props: 'salesMarket', label: '销售市场', visible: true, width: 200 },
           { props: 'vin', label: '配车VIN码', visible: true, width: 200 },

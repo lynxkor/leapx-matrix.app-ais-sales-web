@@ -257,7 +257,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, getOrderUnlockConfig, batchReplaceStore } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getList, getOrderUnlockConfig, batchReplaceStore, getDetailDecryptField } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import {
   getTableConfig,
   tableAddOrUpdate,
@@ -422,7 +422,7 @@ export default {
             visible: true,
             width: 80,
             mask: true,
-            // getValue: (row) => getDetailDecryptField(row.id, 'carBuyerName')
+            getValue: (row) => getDetailDecryptField(row.id, 'carBuyerName')
           },
           {
             props: 'carBuyerPhone',
@@ -430,7 +430,7 @@ export default {
             visible: true,
             width: 140,
             mask: true,
-            // getValue: (row) => getDetailDecryptField(row.id, 'carBuyerPhone')
+            getValue: (row) => getDetailDecryptField(row.id, 'carBuyerPhone')
           },
           {
             props: 'idCardNo',
@@ -438,7 +438,7 @@ export default {
             visible: true,
             width: 220,
             mask: true,
-            // getValue: (row) => getDetailDecryptField(row.id, 'idCardNo')
+            getValue: (row) => getDetailDecryptField(row.id, 'idCardNo')
           },
           { props: 'saleUserName', label: '订单销售顾问', visible: true, width: 160 },
           { props: 'matchVin', label: '配车VIN码', visible: true, width: 220 },

@@ -227,6 +227,18 @@ export default {
         }
       },
       immediate: true
+    },
+    'form.preSaleUrgentStatus': {
+      handler (val) {
+        if (val === 1 || val === '1') {
+          this.rules.preSaleLockTime = [
+            { required: true, message: '请选择预售锁单时间要求', trigger: 'change' }
+          ];
+        } else {
+          this.rules.preSaleLockTime = [];
+        }
+      },
+      immediate: true
     }
   },
   data () {
@@ -267,9 +279,7 @@ export default {
         preSaleUrgentStatus: [
           { required: true, message: '请选择预售急单设置 1-是;0-否', trigger: 'change' }
         ],
-        preSaleLockTime: [
-          { required: true, message: '请选择预售锁单时间要求', trigger: 'change' }
-        ],
+        preSaleLockTime: [],
         blindOrderUrgentStatus: [
           { required: true, message: '请选择盲订急单设置 1-是;0-否', trigger: 'change' }
         ],

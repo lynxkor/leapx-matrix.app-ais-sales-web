@@ -66,3 +66,11 @@ export function submit (data) {
 export function audit (data) {
   return api.jsonPost(prefix + 'audit', data);
 }
+
+/**
+ * 合法性校验
+ * @param {Object} data
+ */
+export function legalVerification (data) {
+  return api.jsonPost(prefix + 'legalVerification', data);
+}

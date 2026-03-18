@@ -38,10 +38,10 @@
             <vxe-column type="checkbox" width="50" fixed="left" />
             <vxe-column field="vin" title="VIN" align="center" width="150" />
             <vxe-column field="materialsCode" title="整车物料编码" align="center" width="120" />
-            <vxe-column field="reservedLabel" title="销售预留" align="center"  width="150"/>
+            <vxe-column field="materialsDesc" title="物料描述" align="center"  width="150"/>
+            <vxe-column field="reservedLabel" title="销售预留" align="center" width="150" />
             <vxe-column field="reservedTypeLabel" title="销售预留类型" align="center" width="150" />
-             <vxe-column field="vin11" title="整车物料预留" align="center" width="150" />
-            <vxe-column field="logisticsReservedLabel" title="整车物料预留类型" align="center" width="150" />
+            <vxe-column field="logisticsReservedLabel" title="整车物流预留" align="center" width="150" />
             <vxe-column field="vehicleDeliveryStatusLabel" title="车辆交付状态" align="center"  width="150"/>
             <vxe-column field="inboundDateTime" title="VDC入库时间" align="center" width="150" />
           </vxe-table>
@@ -104,7 +104,6 @@ export default {
       },
       vinCode: '',
       tableData: [
-        { vin: 'vin1' }
       ],
       // 添加分页相关数据
       pagination: {
@@ -172,17 +171,13 @@ export default {
     },
     async getData () {
       this.loading = true;
-      console.log(this._id);
       try {
         const res = await vinAllocateVehicleQueryInventory({
-          entOrderId: this._id,
-          vin: this.vinCode
+          entOrderId: this._id
         });
         const data = res || {};
         // 设置表格数据
-        this.tableData = [{
-          vin: 1,
-        }];
+        this.tableData = res.records;
         this.pagination.total = this.tableData.length;
         this.pagination.currentPage = 1;
       } catch (error) {

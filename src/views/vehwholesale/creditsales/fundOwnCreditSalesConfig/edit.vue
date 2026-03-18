@@ -7,7 +7,7 @@
         :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
-        :originalForm.sync="originalForm"
+        :dataTransform="dataTransform"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
       >
@@ -331,6 +331,15 @@ export default {
   mounted () {
   },
   methods: {
+    dataTransform (data) {
+      // 处理接口返回的数据，确保格式与 defaultForm 一致
+      // 避免 el-input-number 等组件导致的数据格式变化
+      return {
+        ...data,
+        creditAmount: data.creditAmount !== undefined && data.creditAmount !== null ? Number(data.creditAmount) : '',
+        downPaymentRatio: data.downPaymentRatio !== undefined && data.downPaymentRatio !== null ? Number(data.downPaymentRatio) : '',
+      };
+    },
     getDealerCompanyCode (dealerCompanyCode, obj) {
       this.form.dealerCompanyCode = obj.companyCode;
       gdclItem({ dealerCompanyCode: obj.companyCode }).then((res) => {
@@ -394,11 +403,6 @@ export default {
             message: '提交成功!'
           });
           this.$refs.containerRef.loadDetail();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '提交失败!'
-          });
         });
       }).catch(() => {});
     },

@@ -43,12 +43,15 @@
              <el-form-item label="合计核销金额：" prop="totalRebateAmount">
               {{ info.totalRebateAmount  }}
             </el-form-item>
+            <el-form-item label="返利类型：" prop="rebateTypeLabel">
+              {{ info.rebateTypeLabel  }}
+            </el-form-item>
           </el-form>
         </div>
       </section>
         <section class="common-section">
         <div class="common-section-header">
-          <h2>返利核算单明细</h2>
+          <h2>整车返利核算单明细</h2>
         </div>
         <div class="common-section-body">
           <edit-table
@@ -83,7 +86,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车返利核算单明细',
+      pageTitle: '整车返利核算单',
       pageType: 'detail',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-fundVehicleRebateBill',
@@ -97,7 +100,7 @@ export default {
       },
       total: 0,
       columns: [
-        { field: 'rebateBillDetailCode', title: '返利核算单明细编号', width: 240 },
+        { field: 'rebateBillDetailCode', title: '整车返利核算单明细编号', width: 240 },
         { field: 'vin', title: 'VIN号', width: 120 },
         { field: 'bizOrderNo', title: '业务单据号', width: 160 },
         { field: 'rebateAmount', title: '核销金额', width: 200 },

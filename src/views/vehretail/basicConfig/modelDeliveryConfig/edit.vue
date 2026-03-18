@@ -78,7 +78,7 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="开启交付日期："  v-if="form.openDeliveryStatus === '1'" prop="openDeliveryDate" >
+                <el-form-item label="开启交付日期："  v-if="form.openDeliveryStatus === 1" prop="openDeliveryDate" >
                  <el-date-picker
                     v-model="form.openDeliveryDate"
                     type="date"

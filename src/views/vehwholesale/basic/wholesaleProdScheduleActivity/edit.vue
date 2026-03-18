@@ -8,7 +8,6 @@
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
-        :showBackBtn="showBackBtn"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
       >

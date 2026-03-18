@@ -161,7 +161,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="是否停产">
+                <el-form-item label="是否停产：">
                   <el-input
                     placeholder="请输入"
                     v-model="form.discontinueStatusLabel"
@@ -282,9 +282,9 @@
                     })"
                     type="text">{{form.retailOrderCode}}</el-button>
                 </el-form-item>
-                <el-form-item label="退订原因分类编码：" prop="cateCode">
-                  {{ form.cateCode }}
-                </el-form-item>
+<!--                <el-form-item label="退订原因分类编码：" prop="cateCode">-->
+<!--                  {{ form.cateCode }}-->
+<!--                </el-form-item>-->
                 <el-form-item label="退订原因分类：" prop="cateName">
                   {{ form.cateName }}
                 </el-form-item>
@@ -316,6 +316,9 @@
                   {{ form.materialsCode }}
                   <el-button size="small" type="primary" plain @click="openVehicleStockShow">查询库存车</el-button>
                 </el-form-item>
+                <el-form-item label="是否停产：" prop="discontinueStatusLabel">
+                  {{ form.discontinueStatusLabel}}
+                </el-form-item>
                 <el-form-item label="车型ID：" prop="modelId">
                   {{ form.modelId }}
                 </el-form-item>
@@ -330,9 +333,9 @@
                     })"
                     type="text">{{form.modelName}}</el-button>
                 </el-form-item>
-                <el-form-item label="销售门店编码：" prop="originalSaleDealerCode">
-                  {{ form.saleDealerCode }}
-                </el-form-item>
+<!--                <el-form-item label="销售门店编码：" prop="originalSaleDealerCode">-->
+<!--                  {{ form.saleDealerCode }}-->
+<!--                </el-form-item>-->
                 <el-form-item label="销售门店：" prop="originalSaleDealerName">
                   <el-button
                     class="link"
@@ -344,30 +347,30 @@
                     })"
                     type="text">{{form.saleDealerName}}</el-button>
                 </el-form-item>
-                <el-form-item label="省编码：" prop="provinceCode">
-                  {{ form.provinceCode }}
-                </el-form-item>
+<!--                <el-form-item label="省编码：" prop="provinceCode">-->
+<!--                  {{ form.provinceCode }}-->
+<!--                </el-form-item>-->
                 <el-form-item label="省：" prop="provinceName">
                   {{ form.provinceName }}
                 </el-form-item>
-                <el-form-item label="市编码：" prop="cityCode">
-                  {{ form.cityCode }}
-                </el-form-item>
+<!--                <el-form-item label="市编码：" prop="cityCode">-->
+<!--                  {{ form.cityCode }}-->
+<!--                </el-form-item>-->
                 <el-form-item label="市：" prop="cityName">
                   {{ form.cityName }}
                 </el-form-item>
                 <el-form-item label="退订方式：" prop="orderRefundTypeLabel">
                   {{ form.orderRefundTypeLabel }}
                 </el-form-item>
-                <el-form-item label="退订原因分类编码：" prop="cateCode">
-                  {{ form.cateCode }}
-                </el-form-item>
+<!--                <el-form-item label="退订原因分类编码：" prop="cateCode">-->
+<!--                  {{ form.cateCode }}-->
+<!--                </el-form-item>-->
                 <el-form-item label="退订原因分类：" prop="cateName">
                   {{ form.cateName }}
                 </el-form-item>
-                <el-form-item label="原因二级分类编码：" prop="subCateCode">
-                  {{ form.subCateCode }}
-                </el-form-item>
+<!--                <el-form-item label="原因二级分类编码：" prop="subCateCode">-->
+<!--                  {{ form.subCateCode }}-->
+<!--                </el-form-item>-->
                 <el-form-item label="原因二级分类：" prop="subCateName">
                   {{ form.subCateName }}
                 </el-form-item>
@@ -384,9 +387,10 @@
             <div class="common-section-header">
               <h2>退订附件</h2>
             </div>
-            <div class="common-section-table">
+            <div class="common-section-table" style="width: 100px;">
               <!--附件上传组件 -->
               <AisAttachment
+                ref="attachment"
                 :businessId="_id"
                 :readonly="!isEditing"
                 configCode="mcs_vehorderrefund"
@@ -410,7 +414,7 @@
                   {{ form.orderTime }}
                 </el-form-item>
                 <el-form-item label="订单来源：" prop="orderSource">
-                  {{ form.orderSourceLabel }}
+                  {{ form.orderSource }}
                 </el-form-item>
                 <el-form-item label="下单用户ID：" prop="orderUserId">
                   {{ form.orderUserId }}
@@ -651,7 +655,8 @@ import {
   finalApprove,
   getDetail,
   preApprove,
-  submit
+  submit,
+  legalVerification
 } from '@/api/vehretail/orderRefund/refundApply/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
@@ -862,7 +867,14 @@ export default {
         return getDetail(id);
       }
     },
-    submitRequest () {
+    async submitRequest () {
+      // 校验：当 refundStatus 为 1010 或 1040 且有_id 时，附件必须上传
+      if ((this.form.refundStatus === 1010 || this.form.refundStatus === 1040) && this._id) {
+        const attachmentList = this.$refs.containerRef.$refs.attachment?.getFileList() || [];
+        if (attachmentList.length === 0) {
+          throw new Error('请上传退订附件');
+        }
+      }
       return addOrUpdate({ ...this.form });
     },
     // 打开侧边栏
@@ -926,7 +938,7 @@ export default {
       };
     },
     async changeCategorySearch (val) {
-      return await fetchCategoryList({ pageSize: 1000 });
+      return await fetchCategoryList({ pageSize: 1000, selectorDisplay: 1 });
     },
     changeCategoryChange (val, selectedOption) {
       this.form.cateCode = val ? selectedOption.cateCode : '';
@@ -944,6 +956,19 @@ export default {
       return await retailOrderPage(params);
     },
     retailOrderChange (val, selectedOption) {
+      if (val) {
+        legalVerification(selectedOption.retailOrderCode)
+          .then(res => {
+            this.refreshOrderInfo(val, selectedOption);
+          })
+          .catch(() => {
+            this.refreshOrderInfo(null, selectedOption);
+          });
+      } else {
+        this.refreshOrderInfo(null, selectedOption);
+      }
+    },
+    refreshOrderInfo (val, selectedOption) {
       this.form.retailOrderCode = val ? selectedOption.retailOrderCode : '';
       this.form.mallOrderCode = val ? selectedOption.mallOrderCode : '';
       this.form.saleOrgId = val ? selectedOption.saleOrgId : '';
@@ -951,25 +976,32 @@ export default {
       this.form.saleDealerName = val ? selectedOption.saleDealerName : '';
       this.form.modelId = val ? selectedOption.modelId : '';
       this.form.modelName = val ? selectedOption.modelName : '';
+      this.form.orderUserId = val ? selectedOption.orderUserId : '';
       this.form.orderUserName = val ? selectedOption.orderUserName : '';
       this.form.orderUserPhone = val ? selectedOption.orderUserPhone : '';
-      this.form.idCardType = val ? selectedOption.idCardType : 1;
+      this.form.buyerName = val ? selectedOption.carBuyerName : '';
+      this.form.buyerPhone = val ? selectedOption.carBuyerPhone : '';
+      this.form.idCardType = val ? selectedOption.idCardType : null;
+      this.form.idCardTypeLabel = val ? selectedOption.idCardTypeLabel : null;
       this.form.idCardNo = val ? selectedOption.idCardNo : '';
       this.form.agentName = val ? selectedOption.agentName : '';
       this.form.saleDealerCode = val ? selectedOption.saleDealerCode : '';
       this.form.saleDealerName = val ? selectedOption.saleDealerName : '';
       this.form.materialsCode = val ? selectedOption.materialsCode : '';
       this.form.discontinueStatusLabel = null;
+      this.form.orderTime = val ? selectedOption.orderTime : '';
       this.form.paymentTime = val ? selectedOption.paymentTime : '';
       this.form.deliveryTime = val ? selectedOption.deliveryTime : '';
       this.form.deliveryStatus = val && selectedOption.deliveryTime ? 1 : 0;
       this.form.dataSource = val ? selectedOption.dataSource : null;
       this.form.orderSource = val ? selectedOption.orderSource : null;
       this.form.orderStatus = val ? selectedOption.orderStatus : null;
+      this.form.orderStatusLabel = val ? selectedOption.orderStatusLabel : null;
       this.form.provinceCode = val ? selectedOption.provinceCode : '';
       this.form.provinceName = val ? selectedOption.provinceName : '';
       this.form.cityCode = val ? selectedOption.cityCode : '';
       this.form.cityName = val ? selectedOption.cityName : '';
+      this.form.depositAmount = val ? selectedOption.depositAmount : '';
       // 查询物料是否停产
       if (this.form.materialsCode) {
         getMaterialInfoList({ materialsCodeLike: this.form.materialsCode, pageSize: 1 })

@@ -57,18 +57,10 @@
                   />
                 </el-form-item>
 
-                 <el-form-item label="销售门店编码：" prop="saleDealerCode">
+                 <el-form-item label="销售门店：" prop="saleDealerName">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.saleDealerCode"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="交付门店编码：" prop="deliveryDealerCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.deliveryDealerCode"
+                    v-model="form.saleDealerName"
                     clearable
                     disabled
                   />
@@ -77,14 +69,6 @@
                   <el-input
                     placeholder="请输入"
                     v-model="form.deliveryDealerName"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                    <el-form-item label="门店仓库编码：" prop="dealerWarehouseCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.dealerWarehouseCode"
                     clearable
                     disabled
                   />
@@ -181,14 +165,14 @@
                     placeholder="选择日期时间"
                   />
                 </el-form-item>
-                  <!-- <el-form-item label="急单备注：" prop="emergencyOrderRemark">
+                  <el-form-item label="急单备注：" prop="emergencyOrderRemark">
                   <el-input
                     placeholder="请输入"
                     v-model="form.emergencyOrderRemark"
                     clearable
                     maxlength="300"
                   />
-                </el-form-item> -->
+                </el-form-item>
                 <el-form-item label="确认说明：" prop="confirmRemark">
                   <el-input
                     placeholder="请输入"
@@ -236,7 +220,7 @@
                       disabled
                     />
                 </el-form-item>
-                   <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
+                <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.replenishApplyDetailCode"
@@ -255,21 +239,11 @@
                 <el-form-item label="确认状态：" prop="confirmStatusLabel">
                   {{ form.confirmStatusLabel }}
                 </el-form-item>
-                <el-form-item label="销售门店编码：" prop="saleDealerCode">
-                  {{ form.saleDealerCode }}
-                </el-form-item>
-                  <el-form-item label="销售门店名称：" prop="saleDealerName">
+                <el-form-item label="销售门店：" prop="saleDealerName">
                   {{ form.saleDealerName }}
-                </el-form-item>
-                <el-form-item label="交付门店编码：" prop="deliveryDealerCode">
-                  {{ form.deliveryDealerCode }}
                 </el-form-item>
                 <el-form-item label="交付门店名称：" prop="deliveryDealerName">
                   {{ form.deliveryDealerName }}
-                </el-form-item>
-
-                <el-form-item label="门店仓库编码：" prop="dealerWarehouseCode">
-                  {{ form.dealerWarehouseCode }}
                 </el-form-item>
                 <el-form-item label="门店仓库名称：" prop="dealerWarehouseName">
                   {{ form.dealerWarehouseName }}
@@ -302,10 +276,9 @@
                 <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
                   {{ form.emergencyOrderTime }}
                 </el-form-item>
-
-                 <!-- <el-form-item label="急单备注：" prop="emergencyOrderRemark">
+                 <el-form-item label="急单备注：" prop="emergencyOrderRemark">
                   {{ form.emergencyOrderRemark }}
-                </el-form-item> -->
+                </el-form-item>
                    <el-form-item label="确认说明：" prop="confirmRemark">
                   {{ form.confirmRemark }}
                 </el-form-item>
@@ -1161,11 +1134,6 @@ export default {
             message: '结算成功!'
           });
           this.getData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '结算失败!'
-          });
         });
       }).catch(() => {});
     },
@@ -1235,11 +1203,6 @@ export default {
             message: '确认成功!'
           });
           this.getDetailData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '确认失败!'
-          });
         });
       }).catch(() => {});
       // }

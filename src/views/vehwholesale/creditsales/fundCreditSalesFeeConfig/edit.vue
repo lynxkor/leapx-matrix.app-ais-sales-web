@@ -350,12 +350,12 @@ export default {
     submitRequest () {
       // 提交时移除只读字段
       const submitForm = { ...this.form };
-      const readOnlyFields = ['creatorName', 'createTime', 'modifierName', 'updateTime',
-        'seriesName', 'yearTypeName', 'downPaymentRatio', 'useRebateLabel',
-        'statusLabel', 'creditSalesFeeConfigCode'];
-      readOnlyFields.forEach(field => {
-        delete submitForm[field];
-      });
+      // const readOnlyFields = ['creatorName', 'createTime', 'modifierName', 'updateTime',
+      //   'seriesName', 'yearTypeName', 'downPaymentRatio', 'useRebateLabel',
+      //   'statusLabel', 'creditSalesFeeConfigCode'];
+      // readOnlyFields.forEach(field => {
+      //   delete submitForm[field];
+      // });
 
       // 验证日期范围
       const startDate = new Date(this.form.effectiveStartTime);

@@ -24,7 +24,7 @@
             </template>
           </vxe-column>
           <vxe-column field="paymentAmount" title="满减金额" width="120"  />
-          <vxe-column field="createDate" title="领券时间" width="180" />
+          <vxe-column field="effectDate" title="领券时间" width="180" />
           <vxe-column field="expiryDate" title="有效期" width="180" />
           <vxe-column field="rightsStatus" title="状态" width="100">
             <template v-slot="{ row }">
