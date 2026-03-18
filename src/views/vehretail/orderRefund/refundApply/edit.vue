@@ -654,7 +654,8 @@ import {
   finalApprove,
   getDetail,
   preApprove,
-  submit
+  submit,
+  legalVerification
 } from '@/api/vehretail/orderRefund/refundApply/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
@@ -947,6 +948,19 @@ export default {
       return await retailOrderPage(params);
     },
     retailOrderChange (val, selectedOption) {
+      if (val) {
+        legalVerification(selectedOption.retailOrderCode)
+          .then(res => {
+            this.refreshOrderInfo(val, selectedOption);
+          })
+          .catch(() => {
+            this.refreshOrderInfo(null, selectedOption);
+          });
+      } else {
+        this.refreshOrderInfo(null, selectedOption);
+      }
+    },
+    refreshOrderInfo (val, selectedOption) {
       this.form.retailOrderCode = val ? selectedOption.retailOrderCode : '';
       this.form.mallOrderCode = val ? selectedOption.mallOrderCode : '';
       this.form.saleOrgId = val ? selectedOption.saleOrgId : '';
