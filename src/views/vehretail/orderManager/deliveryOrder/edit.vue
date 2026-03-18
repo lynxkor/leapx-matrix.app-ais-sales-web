@@ -334,7 +334,7 @@
             </template>
           </component-table>
           <!-- 预约记录 -->
-          <section class="common-section">
+          <section class="common-section" section-key="appointmentRecords">
             <div class="common-section-header" data-section="orderBelonging">
               <h2>预约记录</h2>
             </div>

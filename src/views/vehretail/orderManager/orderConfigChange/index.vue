@@ -209,7 +209,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '订单改配信息',
+      pageTitle: '整车订单改配记录',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-retailOrderConfigChange',
@@ -356,7 +356,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '订单改配信息',
+        businessType: '整车订单改配记录',
         dataFetchPath: 'vr/web/order/retailOrderConfigChange/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -364,7 +364,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '订单改配信息.xlsx');
+            await downloadExcel(res.excelUrl, '整车订单改配记录.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

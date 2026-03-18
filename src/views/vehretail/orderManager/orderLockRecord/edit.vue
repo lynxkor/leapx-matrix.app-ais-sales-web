@@ -276,7 +276,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '订单锁车记录详情';
+      return '门店订单锁车记录详情';
     }
   },
   watch: {
@@ -292,7 +292,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '订单锁车记录',
+      pageTitle: '门店订单锁车记录',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-retailOrderPayRecord',
