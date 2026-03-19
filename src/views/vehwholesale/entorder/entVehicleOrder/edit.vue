@@ -59,14 +59,6 @@
                     disabled
                   />
                 </el-form-item>
-                 <el-form-item label="销售公司：" prop="saleCompanyId">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.saleCompanyId"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
                   <el-form-item label="企业客户名称：" prop="entCustomerName">
                   <el-input
                     placeholder="请输入"
@@ -84,17 +76,9 @@
                   />
                 </el-form-item>
                 <el-form-item label="订单分类：" prop="orderCategory">
-                  <el-input
+                   <el-input
                     placeholder="请输入"
-                    v-model="form.orderCategory"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="订单分类：" prop="orderCategory">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.orderCategory"
+                    v-model="form.orderCategoryLabel"
                     clearable
                     disabled
                   />
@@ -104,6 +88,7 @@
                     placeholder="请输入"
                     v-model="form.vehicleAttribute"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="税务发票号：" prop="taxInvoiceCode">
@@ -128,7 +113,7 @@
                 <el-form-item label="数据来源：" prop="dataSource">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.dataSource"
+                    v-model="form.dataSourceLabel"
                     clearable
                     disabled
                   />
@@ -147,7 +132,7 @@
                  <el-form-item label="订单状态：" prop="status">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="vr_order_status"
                     v-model="form.status"
                     placeholder="请选择"
                     clearable
@@ -157,12 +142,11 @@
                 </el-form-item>
                  <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
                   <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
+                    type="datetime"
                     v-model="form.emergencyOrderTime"
                     :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
+                    placeholder="选择日期时间"
                   />
                 </el-form-item>
                   <el-form-item label="急单备注：" prop="emergencyOrderRemark">
@@ -170,12 +154,13 @@
                     placeholder="请输入"
                     v-model="form.emergencyOrderRemark"
                     clearable
+                    disabled
                   />
                 </el-form-item>
-                 <el-form-item label="订单物料ID：" prop="orderMaterialsId">
+                 <el-form-item label="订单物料：" prop="materialsCode">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.orderMaterialsId"
+                    v-model="form.materialsCode"
                     clearable
                     disabled
                   />
@@ -261,9 +246,6 @@
                  <el-form-item label="CBU订单号：" prop="cbuOrderCode">
                   {{ form.cbuOrderCode }}
                 </el-form-item>
-                 <el-form-item label="销售公司：" prop="saleCompanyId">
-                  {{ form.saleCompanyId }}
-                </el-form-item>
                  <el-form-item label="企业客户名称：" prop="entCustomerName">
                   {{ form.entCustomerName }}
                 </el-form-item>
@@ -297,8 +279,8 @@
                 <el-form-item label="急单备注：" prop="emergencyOrderRemark">
                   {{ form.emergencyOrderRemark }}
                 </el-form-item>
-                  <el-form-item label="订单物料：" prop="orderMaterialsId">
-                  {{ form.orderMaterialsId }}
+                  <el-form-item label="订单物料：" prop="materialsCode">
+                  {{ form.materialsCode }}
                 </el-form-item>
                 <el-form-item label="下单物料描述：" prop="orderMaterialsDesc">
                   {{ form.orderMaterialsDesc }}
@@ -361,10 +343,10 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="整车仓库：" prop="materialsCode">
+                <el-form-item label="整车仓库：" prop="warehouseName">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.materialsCode"
+                    v-model="form.warehouseName"
                     clearable
                     disabled
                   />
@@ -412,7 +394,7 @@
                  <el-form-item label="配车状态：" prop="allocateStatus">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="vw_ent_vehicle_order_allocate_status"
                     v-model="form.allocateStatus"
                     placeholder="请选择"
                     clearable
@@ -442,6 +424,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    :disabled="form.settleFundType !== '2010'"
                   />
                 </el-form-item>
                  <el-form-item label="合格证是否质押：" prop="certificatePledged">
@@ -452,9 +435,10 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    disabled
                   />
                 </el-form-item>
-                 <el-form-item label="结算状态：" prop="settleStatus">
+                 <!-- <el-form-item label="结算状态：" prop="settleStatus">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vw_ent_vehicle_order_settle_status"
@@ -464,7 +448,7 @@
                     filterable
                     disabled
                   />
-                </el-form-item>
+                </el-form-item> -->
                   <el-form-item label="标准价格：" prop="standardPrice">
                   <el-input
                     placeholder="请输入"
@@ -521,6 +505,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="是否赊销：" prop="creditSaleFlag">
@@ -531,6 +516,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="是否创建发运计划：" prop="createdShippingPlanLabel">
@@ -541,6 +527,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    disabled
                   />
                 </el-form-item>
                  <el-form-item label="是否存在结算失败记录：" prop="hasSettleFailed">
@@ -551,6 +538,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    disabled
                   />
                 </el-form-item>
                  <el-form-item label="是否需要同步SAP：" prop="needAsyncSap">
@@ -561,6 +549,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="订单同步状态：" prop="orderSyncStatus">
@@ -590,6 +579,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="特殊车提报：" prop="specialRemark">
@@ -623,8 +613,8 @@
                 <el-form-item label="配车时间：" prop="allocateTime">
                   {{ form.allocateTime }}
                 </el-form-item>
-                <el-form-item label="整车仓库：" prop="allocateTime">
-                  {{ form.allocateTime }}
+                <el-form-item label="整车仓库：" prop="warehouseName">
+                  {{ form.warehouseName }}
                 </el-form-item>
                 <el-form-item label="结算时间：" prop="settleTime">
                   {{ form.settleTime }}
@@ -751,6 +741,7 @@
                     placeholder="请输入"
                     v-model="form.districtName"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="交车地址：" prop="address">
@@ -817,7 +808,7 @@
     </template>
   </edit-page-layout>
 
-  <vinAllocateVehicle :visible.sync="showvinAllocateVehicleDialog" ref="vinAllocateVehicleDialog"
+  <vinAllocateVehicle :visible.sync="showvinAllocateVehicleDialog" ref="vinAllocateVehicleDialog" :id="_id"
       @confirm="vinConfirm"
       >
     </vinAllocateVehicle>
@@ -972,6 +963,7 @@ export default {
       showvinAllocateVehicleDialog: false,
       showComponentTabelDialog: false,
       yes_no_enum: YES_NO_ENUM,
+      orderCategoryOptions: [],
       accountData: [],
       form: { ...form },
       originalForm: { ...form },
@@ -988,6 +980,24 @@ export default {
   mounted () {
   },
   methods: {
+    async fetchOrderCategoryOptions () {
+      const response = await getEnum('vw_order_category');
+      console.log('response:', response);
+      // 过滤出 code 为 0、2、20 的数据，且确保 code 是字符串类型
+      // 0 商品车订单
+      // 2 试驾车订单
+      // 20 展车订单
+      this.orderCategoryOptions = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['0', '2', '20'].includes(codeStr);
+      }).map(item => {
+        // 确保 code 字段是字符串类型
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
+    },
     async repairItemSearch (query) {
       return fundGetList({ organizationNameLike: query, status: 1 });
     },
@@ -1049,7 +1059,7 @@ export default {
     },
     handleCheckConfirm () {},
     handlevinAllocateVehicle () {
-      this.$refs.vinAllocateVehicleDialog.getData(this._id);
+      this.$refs.vinAllocateVehicleDialog.getData();
       this.showvinAllocateVehicleDialog = true;
     },
     detailRequest () {
