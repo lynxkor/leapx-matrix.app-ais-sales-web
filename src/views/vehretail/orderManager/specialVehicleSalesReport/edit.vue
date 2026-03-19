@@ -17,10 +17,8 @@
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button v-if="canSubmit && form.status === 0" size="small" @click="handleSubmit">提交</el-button>
-          <el-button v-if="canCancel && form.status === 0" size="small" @click="handleCancel">作废</el-button>
-          <el-button v-if="canRevoke && form.status === 1" size="small" @click="handleRevoke">撤回</el-button>
-          <el-button v-if="canAdjustVehicleAttribute && form.status === 1" size="small" @click="handleAdjustVehicleAttribute">调整车辆属性</el-button>
+          <!-- <el-button size="small">按钮1</el-button>
+          <el-button size="small">按钮2</el-button> -->
         </template>
         <el-main>
           <section class="common-section">
@@ -627,7 +625,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, submitReport, cancelReport, revokeReport, adjustVehicleAttribute } from '@/api/vehretail/orderManager/specialVehicleSalesReport/index';
+import { getDetail, addOrUpdate } from '@/api/vehretail/orderManager/specialVehicleSalesReport/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -713,19 +711,6 @@ export default {
     },
     title () {
       return '主键：' + this.form.id;
-    },
-    // 权限控制
-    canSubmit () {
-      return this.hasPermission(`${this.moduleKey}:submit`);
-    },
-    canCancel () {
-      return this.hasPermission(`${this.moduleKey}:cancel`);
-    },
-    canRevoke () {
-      return this.hasPermission(`${this.moduleKey}:revocation`);
-    },
-    canAdjustVehicleAttribute () {
-      return this.hasPermission(`${this.moduleKey}:vehicleAttribute`);
     }
   },
   watch: {
@@ -930,9 +915,10 @@ export default {
     },
     // 删除子表数据
     handleDeleteRow (index) {
+      const item = this.tableData[index];
       this.tableData.splice(index, 1);
       // 根据需求调用接口
-      // deletePartVehModel([this.tableData[index].id]).then(res => {
+      // deletePartVehModel([item.id]).then(res => {
       //   this.$message.success('删除成功');
       //   this.tableData.splice(index, 1);
       // });
@@ -987,123 +973,6 @@ export default {
     // handleJumpAuditLog () {
     //   this.$auditLog.show({ id: 123 });
     // },
-
-    // 提交操作
-    handleSubmit () {
-      this.$confirm(`确定要提交【${this.form.specialReportCode || this.form.id}】吗？`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        submitReport({ id: this.form.id }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '提交成功!'
-          });
-          // 重新加载详情
-          this.$refs.containerRef.loadDetail();
-        }).catch(error => {
-          this.$message({
-            type: 'error',
-            message: error.message || '提交失败!'
-          });
-        });
-      }).catch(() => {
-        // 用户取消操作
-      });
-    },
-
-    // 作废操作
-    handleCancel () {
-      this.$prompt('请输入作废说明', '作废说明', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPattern: /^.{1,200}$/,
-        inputErrorMessage: '作废说明不能为空且不能超过200个字符',
-        inputPlaceholder: '请输入作废说明'
-      }).then(({ value }) => {
-        cancelReport({
-          id: this.form.id,
-          remark: value
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '作废成功!'
-          });
-          // 重新加载详情
-          this.$refs.containerRef.loadDetail();
-        }).catch(error => {
-          this.$message({
-            type: 'error',
-            message: error.message || '作废失败!'
-          });
-        });
-      }).catch(() => {
-        // 用户取消操作
-      });
-    },
-
-    // 撤回操作
-    handleRevoke () {
-      this.$prompt('请输入撤回说明', '撤回说明', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPattern: /^.{1,200}$/,
-        inputErrorMessage: '撤回说明不能为空且不能超过200个字符',
-        inputPlaceholder: '请输入撤回说明'
-      }).then(({ value }) => {
-        revokeReport({
-          id: this.form.id,
-          remark: value
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '撤回成功!'
-          });
-          // 重新加载详情
-          this.$refs.containerRef.loadDetail();
-        }).catch(error => {
-          this.$message({
-            type: 'error',
-            message: error.message || '撤回失败!'
-          });
-        });
-      }).catch(() => {
-        // 用户取消操作
-      });
-    },
-
-    // 调整车辆属性操作
-    handleAdjustVehicleAttribute () {
-      this.$prompt('请输入新的车辆属性值', '调整车辆属性', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputValue: this.form.vehicleAttribute,
-        inputPattern: /^\d+$/,
-        inputErrorMessage: '请输入有效的数字',
-        inputPlaceholder: '请输入车辆属性值（如：1-家用 2-营运 4-B级车 10-J级车 20-J1级车 30-专车 60-报废灭失）'
-      }).then(({ value }) => {
-        adjustVehicleAttribute({
-          id: this.form.id,
-          vehicleAttribute: parseInt(value)
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '调整车辆属性成功!'
-          });
-          // 重新加载详情
-          this.$refs.containerRef.loadDetail();
-        }).catch(error => {
-          this.$message({
-            type: 'error',
-            message: error.message || '调整车辆属性失败!'
-          });
-        });
-      }).catch(() => {
-        // 用户取消操作
-      });
-    },
-
     async fetchOptions (code) {
       if (code) {
         return getEnum(code);
