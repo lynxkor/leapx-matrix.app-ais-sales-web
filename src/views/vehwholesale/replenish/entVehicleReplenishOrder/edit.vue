@@ -135,7 +135,7 @@
                       remote
                       reserve-keyword
                       labelKey="organizationName"
-                      valueKey="organizationCode"
+                      valueKey="id"
                       v-model="form.financialOrganizationId"
                       placeholder="请选择"
                       clearable
