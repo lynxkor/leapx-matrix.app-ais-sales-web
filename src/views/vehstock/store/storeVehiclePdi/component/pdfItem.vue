@@ -21,8 +21,8 @@
                 <div class="pdi_result_item" style="height: 661px;">
                     <div class="marginB20">
                         <span class="marginR30">外观检查是否异常</span>
-                        <span v-if="visualInspectionCheck">√</span><span class="marginR30"> 是</span>
-                        <span v-if="!visualInspectionCheck">√</span><span class="marginR30"> 否</span>
+                        <span></span><span class="marginR30"> 是</span>
+                        <span>√</span><span class="marginR30"> 否</span>
                     </div>
                     <div class="pdi_result_img">
                         <img src="../img/appearance_bg.png" alt="" style="width: 100%;height: 100%;" />
@@ -37,8 +37,8 @@
                 <div class="pdi_result_item" style="height: 661px;">
                     <div class="marginB20">
                         <span class="marginR30">玻璃检查是否异常</span>
-                        <span v-if="glassInspectionCheck">√</span><span class="marginR30"> 是</span>
-                        <span v-if="!glassInspectionCheck">√</span><span class="marginR30"> 否</span>
+                        <span></span><span class="marginR30"> 是</span>
+                        <span>√</span><span class="marginR30"> 否</span>
                     </div>
                     <div class="pdi_result_img">
                         <img src="../img/glass_bg.png" alt="" style="width: 100%;height: 100%;" />
@@ -65,12 +65,12 @@
                         </el-table-column>
                         <el-table-column label="是">
                             <template slot-scope="scope">
-                                <img :src="scope.row.isUnusual == 1 ? checkedImg : uncheckImg" alt="" style="width: 20px; height: 20px;">
+                                <img :src="scope.row.isUnusual == 1 ? uncheckImg : uncheckImg" alt="" style="width: 20px; height: 20px;">
                             </template>
                         </el-table-column>
                         <el-table-column label="否">
                             <template slot-scope="scope">
-                                <img :src="scope.row.isUnusual == 0 ? checkedImg : uncheckImg" alt="" style="width: 20px; height: 20px;">
+                                <img :src="scope.row.isUnusual == 0 ? checkedImg : checkedImg" alt="" style="width: 20px; height: 20px;">
                             </template>
                         </el-table-column>
                     </el-table>
@@ -90,12 +90,12 @@
                         </el-table-column>
                         <el-table-column label="是">
                             <template slot-scope="scope">
-                                <img :src="scope.row.isUnusual == 1 ? checkedImg : uncheckImg" alt="" style="width: 20px; height: 20px;">
+                                <img :src="scope.row.isUnusual == 1 ? uncheckImg : uncheckImg" alt="" style="width: 20px; height: 20px;">
                             </template>
                         </el-table-column>
                         <el-table-column label="否">
                             <template slot-scope="scope">
-                                <img :src="scope.row.isUnusual == 0 ? checkedImg : uncheckImg" alt="" style="width: 20px; height: 20px;">
+                                <img :src="scope.row.isUnusual == 0 ? checkedImg : checkedImg" alt="" style="width: 20px; height: 20px;">
                             </template>
                         </el-table-column>
                     </el-table>
@@ -303,11 +303,11 @@ export default {
                 color: #191A1B;
                 white-space: nowrap;
             }
-            .inspect-item-content-error{
-                border: 0.5px solid #B91919;
-                background: #B91919;
-                color: #FFFFFF;
-            }
+            // .inspect-item-content-error{
+            //     border: 0.5px solid #B91919;
+            //     background: #B91919;
+            //     color: #FFFFFF;
+            // }
         }
         .marginB20{
             margin-bottom: 20px;
