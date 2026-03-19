@@ -400,10 +400,13 @@
                   />
                 </el-form-item>
                  <el-form-item label="是否需要自动配车：" prop="needAutoAllocateCar">
-                  <el-input
-                    placeholder="请输入"
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="BooleanEnum"
                     v-model="form.needAutoAllocateCar"
+                    placeholder="请选择"
                     clearable
+                    filterable
                   />
                 </el-form-item>
                  <el-form-item label="配车状态：" prop="allocateStatus">
@@ -442,17 +445,19 @@
                   />
                 </el-form-item>
                  <el-form-item label="合格证是否质押：" prop="certificatePledged">
-                  <el-input
-                    placeholder="请输入"
+                   <fetch-select
+                    :request="fetchOptions"
+                    enumCode="BooleanEnum"
                     v-model="form.certificatePledged"
+                    placeholder="请选择"
                     clearable
-                    disabled
+                    filterable
                   />
                 </el-form-item>
                  <el-form-item label="结算状态：" prop="settleStatus">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="vw_ent_vehicle_order_settle_status"
                     v-model="form.settleStatus"
                     placeholder="请选择"
                     clearable
@@ -509,49 +514,59 @@
                   />
                 </el-form-item>
                  <el-form-item label="是否还款：" prop="clearedFlag">
-                  <el-input
-                    placeholder="请输入"
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="BooleanEnum"
                     v-model="form.clearedFlag"
+                    placeholder="请选择"
                     clearable
-                    disabled
+                    filterable
                   />
                 </el-form-item>
                 <el-form-item label="是否赊销：" prop="creditSaleFlag">
-                  <el-input
-                    placeholder="请输入"
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="BooleanEnum"
                     v-model="form.creditSaleFlag"
+                    placeholder="请选择"
                     clearable
-                    disabled
+                    filterable
                   />
                 </el-form-item>
                 <el-form-item label="是否创建发运计划：" prop="creditSaleFlag">
-                  <el-input
-                    placeholder="请输入"
+                 <fetch-select
+                    :request="fetchOptions"
+                    enumCode="BooleanEnum"
                     v-model="form.creditSaleFlag"
+                    placeholder="请选择"
                     clearable
-                    disabled
+                    filterable
                   />
                 </el-form-item>
                  <el-form-item label="是否存在结算失败记录：" prop="hasSettleFailed">
-                  <el-input
-                    placeholder="请输入"
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="BooleanEnum"
                     v-model="form.hasSettleFailed"
+                    placeholder="请选择"
                     clearable
-                    disabled
+                    filterable
                   />
                 </el-form-item>
                  <el-form-item label="是否需要同步SAP：" prop="needAsyncSap">
-                  <el-input
-                    placeholder="请输入"
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="BooleanEnum"
                     v-model="form.needAsyncSap"
+                    placeholder="请选择"
                     clearable
-                    disabled
+                    filterable
                   />
                 </el-form-item>
                 <el-form-item label="订单同步状态：" prop="orderSyncStatus">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="vw_ent_vehicle_order_sync_status"
                     v-model="form.orderSyncStatus"
                     placeholder="请选择"
                     clearable
@@ -568,11 +583,13 @@
                   />
                 </el-form-item>
                   <el-form-item label="退车标识：" prop="vehicleReturnFlag">
-                  <el-input
-                    placeholder="请输入"
+                   <fetch-select
+                    :request="fetchOptions"
+                    enumCode="BooleanEnum"
                     v-model="form.vehicleReturnFlag"
+                    placeholder="请选择"
                     clearable
-                    disabled
+                    filterable
                   />
                 </el-form-item>
                 <el-form-item label="特殊车提报：" prop="specialRemark">
@@ -586,7 +603,7 @@
                  <el-form-item label="终端状态：" prop="terminalStatus">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="vr_special_vehicle_benefit_status"
                     v-model="form.terminalStatus"
                     placeholder="请选择"
                     clearable
