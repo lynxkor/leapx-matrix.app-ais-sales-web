@@ -375,6 +375,7 @@
             :id="tableConfig.sectionId"
             :tableConfig="tableConfig"
             :tableDataExternal="form[tableConfig.field]"
+            :extraParams="{ retailOrderCode: form.retailOrderCode }"
             :columns="tableConfig.columns"
             :apiMethod="tableConfig.apiMethod"
           />
@@ -432,6 +433,10 @@ import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getList as orderConfigChangeList } from '@/api/vehretail/orderManager/orderConfigChange/index';
 import { getList as orderChangeList } from '@/api/vehretail/orderRefund/orderChange/index';
+import { getList as orderUnlockApplyList } from '@/api/vehretail/orderManager/orderUnlockApply/index';
+import { getList as orderLockRecordList } from '@/api/vehretail/orderManager/orderLockRecord/index';
+import { getList as orderCancellationRecordList } from '@/api/vehretail/orderRefund/refundApply/index';
+import { getList as orderPayRecordList } from '@/api/vehretail/orderManager/orderPayRecord/index';
 import {
   retailOrderDisplayFields,
   carOwnerDisplayFields,
@@ -594,31 +599,31 @@ export default {
       tableConfigs: [
         {
           title: '整车订单改配信息',
-          field: 'configChangeList',
+          // field: 'configChangeList',
           sectionId: 'modification-record',
           columns: this.convertToTableColumns(modificationRecordDisplayFields),
-          apiMethod: null // 后续引入API方法
+          apiMethod: orderConfigChangeList // 后续引入API方法
         },
         {
           title: '订单信息变更申请',
-          field: 'changeApplyList',
+          // field: 'changeApplyList',
           sectionId: 'order-change-application',
           columns: this.convertToTableColumns(orderChangeApplicationDisplayFields),
-          apiMethod: null // 后续引入API方法
+          apiMethod: orderChangeList // 后续引入API方法
         },
         {
           title: '锁车解绑申请记录',
-          field: 'unlockApplyList',
+          // field: 'unlockApplyList',
           sectionId: 'unlock-application-record',
           columns: this.convertToTableColumns(unlockApplicationRecordDisplayFields),
-          apiMethod: null // 后续引入API方法
+          apiMethod: orderUnlockApplyList // 后续引入API方法
         },
         {
           title: '锁车记录',
-          field: 'lockRecordList',
+          // field: 'lockRecordList',
           sectionId: 'lock-car-record',
           columns: this.convertToTableColumns(lockCarRecordDisplayFields),
-          apiMethod: null // 后续引入API方法
+          apiMethod: orderLockRecordList // 后续引入API方法
         },
         {
           title: '订单透明化状态跟踪',
@@ -629,17 +634,17 @@ export default {
         },
         {
           title: '订单退订记录',
-          field: 'refundList',
+          // field: 'refundList',
           sectionId: 'order-cancellation-record',
           columns: this.convertToTableColumns(orderCancellationRecordDisplayFields),
-          apiMethod: null // 后续引入API方法
+          apiMethod: orderCancellationRecordList // 后续引入API方法
         },
         {
           title: '订单收款记录',
-          field: 'payRecordList',
+          // field: 'payRecordList',
           sectionId: 'order-pay-record',
           columns: this.convertToTableColumns(orderPaymentRecordDisplayFields),
-          apiMethod: null // 后续引入API方法
+          apiMethod: orderPayRecordList // 后续引入API方法
         }
       ],
       navItems: [
@@ -699,6 +704,10 @@ export default {
     }
   },
   methods: {
+    orderPayRecordList,
+    orderCancellationRecordList,
+    orderLockRecordList,
+    orderUnlockApplyList,
     orderConfigChangeList,
     orderChangeList,
     handleSaleUserChange (val, row, name) {
