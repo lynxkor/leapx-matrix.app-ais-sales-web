@@ -370,8 +370,8 @@
             :fields="termDisplayFields"
           />
           <component-table
-            v-for="(tableConfig, index) in tableConfigs"
-            :key="index" class="common-section"
+            v-for="tableConfig in tableConfigs"
+            :key="tableConfig.sectionId" class="common-section"
             :id="tableConfig.sectionId"
             :tableConfig="tableConfig"
             :tableDataExternal="form[tableConfig.field]"
