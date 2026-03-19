@@ -164,6 +164,17 @@
                     disabled
                   />
                 </el-form-item>
+                <el-form-item label="是否紧急订单：" prop="emergencyOrder">
+                   <fetch-select
+                      :request="fetchOptions"
+                      enumCode="BooleanEnum"
+                      v-model="form.emergencyOrder"
+                      placeholder="请选择"
+                      clearable
+                      filterable
+                      disabled
+                    />
+                </el-form-item>
                 <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
                   <el-date-picker
                     type="datetime"
@@ -171,6 +182,14 @@
                     :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd HH:mm:ss"
                     placeholder="选择日期时间"
+                  />
+                </el-form-item>
+                <el-form-item label="急单备注：" prop="emergencyOrderRemark">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.emergencyOrderRemark"
+                    clearable
+                    maxlength="300"
                   />
                 </el-form-item>
                 <el-form-item label="确认说明：" prop="confirmRemark">
@@ -255,10 +274,7 @@
                 <el-form-item label="确认状态：" prop="confirmStatusLabel">
                   {{ form.confirmStatusLabel }}
                 </el-form-item>
-                <el-form-item label="销售门店编码：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
-                </el-form-item>
-                  <el-form-item label="销售门店名称：" prop="saleDealerName">
+                <el-form-item label="销售门店：" prop="saleDealerName">
                   {{ form.saleDealerName }}
                 </el-form-item>
                 <el-form-item label="交付门店名称：" prop="deliveryDealerName">
@@ -291,14 +307,15 @@
                 <el-form-item label="开票日期：" prop="invoiceTime">
                   {{ form.invoiceTime }}
                 </el-form-item>
-
+                <el-form-item label="是否紧急订单：" prop="emergencyOrderLabel">
+                  {{ form.emergencyOrderLabel }}
+                </el-form-item>
                 <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
                   {{ form.emergencyOrderTime }}
                 </el-form-item>
-
-                 <!-- <el-form-item label="急单备注：" prop="emergencyOrderRemark">
+                  <el-form-item label="急单备注：" prop="emergencyOrderRemark">
                   {{ form.emergencyOrderRemark }}
-                </el-form-item> -->
+                </el-form-item>
                    <el-form-item label="确认说明：" prop="confirmRemark">
                   {{ form.confirmRemark }}
                 </el-form-item>

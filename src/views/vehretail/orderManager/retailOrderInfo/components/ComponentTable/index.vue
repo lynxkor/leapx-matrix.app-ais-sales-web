@@ -125,10 +125,15 @@ export default {
   watch: {
     // 监听额外参数变化，重新加载数据
     extraParams: {
-      handler () {
+      handler (newVal, oldVal) {
         // 只有当没有外部传入数据时才重新加载
         if (this.tableDataExternal === null || this.tableDataExternal === undefined) {
-          this.loadData();
+          // 比较新旧参数值是否真的变化了，避免父组件重新渲染导致的不必要调用
+          const newStr = JSON.stringify(newVal || {});
+          const oldStr = JSON.stringify(oldVal || {});
+          if (newStr !== oldStr) {
+            this.loadData();
+          }
         }
       },
       deep: true
@@ -147,7 +152,9 @@ export default {
           this.internalTableData = newVal;
         }
       },
-      deep: true
+      // 移除 deep: true，避免数组内对象属性变化时触发 watch
+      // 外部传入新数组引用时仍会触发更新
+      immediate: true
     }
   },
   created () {

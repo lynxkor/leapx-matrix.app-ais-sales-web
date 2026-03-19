@@ -111,6 +111,7 @@
                   :remote-method="getDealerParentOrgList"
                   value-key="companyCode"
                   label-key="companyName"
+                  :param="form.dealerParentOrgName"
                   @change="(val, record) => {form.dealerParentOrgName = record?.companyName || ''}"
                 />
               </el-form-item>

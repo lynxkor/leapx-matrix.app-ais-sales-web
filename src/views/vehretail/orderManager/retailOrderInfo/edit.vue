@@ -20,7 +20,7 @@
           <!-- <el-button size="small" type="primary" @click="handleEquityInquiry">权益查询</el-button> -->
           <el-button size="small" :loading="printLoading" @click="handlePrintContractTermination">打印合同解除协议</el-button>
           <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" @click="handleSetSpecialMark">设置特殊标识</el-button>
-          <el-button size="small" @click="handleModifyConfiguration">修改配置</el-button>
+          <el-button size="small" v-if="form.orderStatus !== 9" @click="handleModifyConfiguration">修改配置</el-button>
           <el-button size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
           <el-button size="small" v-if="form.lockStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
           <el-button size="small" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
@@ -370,11 +370,12 @@
             :fields="termDisplayFields"
           />
           <component-table
-            v-for="(tableConfig, index) in tableConfigs"
-            :key="index" class="common-section"
+            v-for="tableConfig in tableConfigs"
+            :key="tableConfig.sectionId" class="common-section"
             :id="tableConfig.sectionId"
             :tableConfig="tableConfig"
             :tableDataExternal="form[tableConfig.field]"
+            :extraParams="{ retailOrderCode: form.retailOrderCode }"
             :columns="tableConfig.columns"
             :apiMethod="tableConfig.apiMethod"
           />
@@ -432,6 +433,10 @@ import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getList as orderConfigChangeList } from '@/api/vehretail/orderManager/orderConfigChange/index';
 import { getList as orderChangeList } from '@/api/vehretail/orderRefund/orderChange/index';
+import { getList as orderUnlockApplyList } from '@/api/vehretail/orderManager/orderUnlockApply/index';
+import { getList as orderLockRecordList } from '@/api/vehretail/orderManager/orderLockRecord/index';
+import { getList as refundApplyList } from '@/api/vehretail/orderRefund/refundApply/index';
+import { getList as orderPayRecordList } from '@/api/vehretail/orderManager/orderPayRecord/index';
 import {
   retailOrderDisplayFields,
   carOwnerDisplayFields,
@@ -594,31 +599,31 @@ export default {
       tableConfigs: [
         {
           title: '整车订单改配信息',
-          field: 'configChangeList',
+          // field: 'configChangeList',
           sectionId: 'modification-record',
           columns: this.convertToTableColumns(modificationRecordDisplayFields),
-          apiMethod: null // 后续引入API方法
+          apiMethod: orderConfigChangeList // 后续引入API方法
         },
         {
           title: '订单信息变更申请',
-          field: 'changeApplyList',
+          // field: 'changeApplyList',
           sectionId: 'order-change-application',
           columns: this.convertToTableColumns(orderChangeApplicationDisplayFields),
-          apiMethod: null // 后续引入API方法
+          apiMethod: orderChangeList // 后续引入API方法
         },
         {
           title: '锁车解绑申请记录',
-          field: 'unlockApplyList',
+          // field: 'unlockApplyList',
           sectionId: 'unlock-application-record',
           columns: this.convertToTableColumns(unlockApplicationRecordDisplayFields),
-          apiMethod: null // 后续引入API方法
+          apiMethod: orderUnlockApplyList // 后续引入API方法
         },
         {
           title: '锁车记录',
-          field: 'lockRecordList',
+          // field: 'lockRecordList',
           sectionId: 'lock-car-record',
           columns: this.convertToTableColumns(lockCarRecordDisplayFields),
-          apiMethod: null // 后续引入API方法
+          apiMethod: orderLockRecordList // 后续引入API方法
         },
         {
           title: '订单透明化状态跟踪',
@@ -629,17 +634,17 @@ export default {
         },
         {
           title: '订单退订记录',
-          field: 'refundList',
+          // field: 'refundList',
           sectionId: 'order-cancellation-record',
           columns: this.convertToTableColumns(orderCancellationRecordDisplayFields),
-          apiMethod: null // 后续引入API方法
+          apiMethod: refundApplyList // 后续引入API方法
         },
         {
           title: '订单收款记录',
-          field: 'payRecordList',
+          // field: 'payRecordList',
           sectionId: 'order-pay-record',
           columns: this.convertToTableColumns(orderPaymentRecordDisplayFields),
-          apiMethod: null // 后续引入API方法
+          apiMethod: orderPayRecordList // 后续引入API方法
         }
       ],
       navItems: [
@@ -699,6 +704,10 @@ export default {
     }
   },
   methods: {
+    orderPayRecordList,
+    refundApplyList,
+    orderLockRecordList,
+    orderUnlockApplyList,
     orderConfigChangeList,
     orderChangeList,
     handleSaleUserChange (val, row, name) {
@@ -745,13 +754,13 @@ export default {
       this.row = this.form;
       const res = await getOrderUnlockConfig(this.row.retailOrderCode);
       // 检查返回结果是否有效
-      if (!res || res.allowUnlockStatus !== 1 || res.allowManualCarStatus !== 1) {
-        this.$message.error('该门店没有取消配车权限');
+      if (!res || res.allowManualCarStatus !== 1) {
+        this.$message.error('未绑定批售订单状态为订单确认的订单才能更换门店');
         return;
       }
-      // 检查 accountFlag 和 unlockCount 的关系
-      if (this.accountFlag && this.row.unlockCount >= 1) {
-        this.$message.error('该订单取消配车次数已达上限');
+      // 检查 accountFlag 和 changeConfigCount 的关系
+      if (this.accountFlag && this.row.changeConfigCount >= 1) {
+        this.$message.error('该订单修改配车次数已达上限');
         return;
       }
       this.$refs.materialsDialog.show();
