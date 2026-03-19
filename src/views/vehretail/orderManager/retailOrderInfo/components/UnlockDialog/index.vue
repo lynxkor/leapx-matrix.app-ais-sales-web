@@ -119,6 +119,7 @@ export default {
     return {
       dialogVisible: false,
       form: { ...defaultForm },
+      vinForm: {},
       rules: {
         unlockReasonCode: [
           { required: true, message: '请选择申请原因', trigger: 'change' }
@@ -162,7 +163,7 @@ export default {
   },
   methods: {
     showVinDialog () {
-      this.$refs.vinDialog.show();
+      this.$refs.vinDialog.show(this.vinForm);
     },
     handleUnlockReasonCodeChange (val, row) {
       this.form.unlockReason = row.unlockReason;
@@ -188,14 +189,16 @@ export default {
       this.form.bindVin = vehicle.vin;
     },
     close () {
+      this.vinForm = {};
       this.dialogVisible = false;
     },
     closed () {
       this.$refs.form.resetFields();
       this.form = { ...defaultForm };
     },
-    show () {
+    show (params) {
       this.dialogVisible = true;
+      this.vinForm = params;
       this.unlockReasonList();
     },
     submit () {

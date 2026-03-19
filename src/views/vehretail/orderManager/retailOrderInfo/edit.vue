@@ -381,7 +381,7 @@
            <!-- 修改配置对话框 -->
           <materials-dialog ref="materialsDialog" :row="form" @confirm="getDetailData" />
           <!-- VIN 选择对话框 -->
-          <vin-dialog ref="vinDialog" :row="form" @confirm="onVinSelected" />
+          <vin-dialog ref="vinDialog" :row="form" @confirm="onVinSelected" :submitParams="{ retailOrderId: _id, retailOrderCode: form.retailOrderCode }" />
           <!-- 购车协议对话框 -->
           <purchase-agreement-dialog
             ref="PurchaseAgreementDialog"
@@ -759,7 +759,10 @@ export default {
     },
     // 手工配车
     handleManualVehicleAllocation () {
-      this.$refs.vinDialog.show();
+      this.$refs.vinDialog.show({
+        meterlsCode: this.form.materials.materialsCode,
+        saleDealerCode: this.form.saleDealerCode
+      });
     },
     // VIN 选择确认回调
     onVinSelected (vehicle) {
