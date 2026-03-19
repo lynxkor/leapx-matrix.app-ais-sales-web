@@ -49,6 +49,7 @@
                     placeholder="请选择订单分类"
                     clearable
                     filterable
+                    disabled
                   />
                 </el-form-item>
                  <el-form-item label="关联交易价格比例(%)：" prop="txnTaxPriceRate">
