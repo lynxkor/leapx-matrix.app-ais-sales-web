@@ -570,13 +570,13 @@ export default {
       this.row = row;
       const res = await getOrderUnlockConfig(this.row.retailOrderCode);
       // 检查返回结果是否有效
-      if (!res || res.allowUnlockStatus !== 1 || res.allowManualCarStatus !== 1) {
-        this.$message.error('该门店没有取消配车权限');
+      if (!res || res.allowManualCarStatus !== 1) {
+        this.$message.error('该门店没有修改配车权限');
         return;
       }
-      // 检查 accountFlag 和 unlockCount 的关系
-      if (this.accountFlag && this.row.unlockCount >= 1) {
-        this.$message.error('该订单取消配车次数已达上限');
+      // 检查 accountFlag 和 changeConfigCount 的关系
+      if (this.accountFlag && this.row.changeConfigCount >= 1) {
+        this.$message.error('该订单修改配车次数已达上限');
         return;
       }
       this.$refs.materialsDialog.show();
@@ -586,7 +586,7 @@ export default {
       this.row = this.selectionList[0];
       const res = await getOrderUnlockConfig(this.row.retailOrderCode);
       // 检查返回结果是否有效
-      if (!res || res.allowUnlockStatus !== 1 || res.allowManualCarStatus !== 1) {
+      if (!res || res.allowUnlockStatus !== 1) {
         this.$message.error('未绑定批售订单状态为订单确认的订单才能更换门店');
         return;
       }
