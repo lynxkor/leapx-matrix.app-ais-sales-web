@@ -164,6 +164,17 @@
                     disabled
                   />
                 </el-form-item>
+                <el-form-item label="是否紧急订单：" prop="emergencyOrder">
+                   <fetch-select
+                      :request="fetchOptions"
+                      enumCode="BooleanEnum"
+                      v-model="form.emergencyOrder"
+                      placeholder="请选择"
+                      clearable
+                      filterable
+                      disabled
+                    />
+                </el-form-item>
                 <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
                   <el-date-picker
                     type="datetime"
@@ -295,6 +306,9 @@
                 </el-form-item>
                 <el-form-item label="开票日期：" prop="invoiceTime">
                   {{ form.invoiceTime }}
+                </el-form-item>
+                <el-form-item label="是否紧急订单：" prop="emergencyOrderLabel">
+                  {{ form.emergencyOrderLabel }}
                 </el-form-item>
                 <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
                   {{ form.emergencyOrderTime }}
