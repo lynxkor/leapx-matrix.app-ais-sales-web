@@ -10,11 +10,7 @@
       class="ais-search-form"
     >
       <el-form-item label="VIN码">
-        <el-input
-          placeholder="请输入"
-          v-model="form.vin"
-          clearable
-        />
+         <tag-input v-model="form.vinList" clearable placeholder="请输入" />
       </el-form-item>
       <el-form-item label="交车状态">
         <fetch-select
@@ -28,11 +24,7 @@
         />
       </el-form-item>
       <el-form-item label="交车单编号" v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.deliveryOrderCode"
-          clearable
-        />
+        <tag-input v-model="form.deliveryOrderCodeList" clearable placeholder="请输入" />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="车型名称">
@@ -160,19 +152,21 @@ import { downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import AssignDialog from './components/AssignDialog.vue';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   deliveryOrderCode: '',
   status: '',
-  vin: '',
+  vinList: [],
   vehicleModelName: '',
   deliveryAdvisorName: '',
   salesStoreName: '',
   deliveryStoreName: '',
   buyerName: '',
   appointmentTime: '',
-  createTime: ''
+  createTime: '',
+  deliveryOrderCodeList: []
 };
 
 const pageSize = 20;
@@ -187,7 +181,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    AssignDialog
+    AssignDialog,
+    TagInput
   },
   data () {
     return {
@@ -433,6 +428,14 @@ export default {
           data.appointmentTimeStart = this.form.appointmentTime[0];
           data.appointmentTimeEnd = this.form.appointmentTime[1];
         }
+      }
+      if (Array.isArray(this.form.vinList) && this.form.vinList.length <= 1) {
+        delete data.vinList;
+        data.vinLike = this.form.vinList[0] || '';
+      }
+      if (Array.isArray(this.form.deliveryOrderCodeList) && this.form.deliveryOrderCodeList.length <= 1) {
+        delete data.deliveryOrderCodeList;
+        data.deliveryOrderCodeLike = this.form.deliveryOrderCodeList[0] || '';
       }
       // 排序字段
       data.sortColumns = this.sortColumns;
