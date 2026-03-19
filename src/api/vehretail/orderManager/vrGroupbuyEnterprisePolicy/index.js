@@ -41,3 +41,11 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 根据车系获取匹配的公司名称列表
+ * @param {Object} data
+ */
+export function getMatchingCompanyNamesBySeries (data) {
+  return api.jsonPost(prefix + 'getMatchingCompanyNamesBySeries', data);
+}

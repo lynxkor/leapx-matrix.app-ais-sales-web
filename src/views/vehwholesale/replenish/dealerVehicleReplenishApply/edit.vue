@@ -648,11 +648,6 @@ export default {
         delete params.mainData[field];
       });
 
-      if (!this.form.details || this.form.details.length <= 0) {
-        this.$message.error('请至少添加一条补货明细');
-        return Promise.reject(new Error('请至少添加一条补货明细'));
-      }
-
       if ((this.form.orderCategory === '2' || this.form.orderCategory === 2) && this.form.applyTotalQty !== 1) {
         this.$message.error('试驾车订单申请不能大于1');
         return Promise.reject(new Error('试驾车订单申请不能大于1'));
