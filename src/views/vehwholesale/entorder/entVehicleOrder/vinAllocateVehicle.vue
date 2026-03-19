@@ -130,7 +130,7 @@ export default {
     }
   },
   created () {
-    this.getData();
+    // this.getData();
   },
   methods: {
     // 单选框变化
@@ -169,11 +169,12 @@ export default {
       this.form = { ...defaultForm };
       this.fundForm = { fundType: '' };
     },
-    async getData () {
+    async getData (orderId) {
       this.loading = true;
+      console.log(orderId);
       try {
         const res = await vinAllocateVehicleQueryInventory({
-          entOrderId: this._id
+          entOrderId: orderId
         });
         const data = res || {};
         // 设置表格数据

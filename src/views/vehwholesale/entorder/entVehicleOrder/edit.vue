@@ -817,7 +817,7 @@
     </template>
   </edit-page-layout>
 
-  <vinAllocateVehicle :visible.sync="showvinAllocateVehicleDialog"
+  <vinAllocateVehicle :visible.sync="showvinAllocateVehicleDialog" ref="vinAllocateVehicleDialog"
       @confirm="vinConfirm"
       >
     </vinAllocateVehicle>
@@ -1049,6 +1049,7 @@ export default {
     },
     handleCheckConfirm () {},
     handlevinAllocateVehicle () {
+      this.$refs.vinAllocateVehicleDialog.getData(this._id);
       this.showvinAllocateVehicleDialog = true;
     },
     detailRequest () {

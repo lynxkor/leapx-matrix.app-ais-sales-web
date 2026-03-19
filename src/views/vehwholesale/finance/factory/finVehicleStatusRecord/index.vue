@@ -325,6 +325,7 @@ export default {
     this.getData();
   },
   methods: {
+    handleBatchSync () {},
     handleListSelect (row) {
       this.clickItemId = row.id;
     },
