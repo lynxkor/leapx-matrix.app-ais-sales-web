@@ -65,12 +65,12 @@
                   @change="(val, record) => {form.vehicleModelLine = record?.name || ''}"
                 />
               </el-form-item>
-              <el-form-item label="车系" prop="seriesId">
+              <el-form-item label="车系" prop="seriesName">
                 <fetch-select
                   filterable
                   clearable
                   remote
-                  v-model="form.seriesId"
+                  v-model="form.seriesName"
                   :remote-method="getVehicleSeriesList"
                   value-key="id"
                   label-key="name"

@@ -24,7 +24,7 @@
           <el-button  :type="form.submitAuditButton ? 'primary' : ''" @click="handleCheckSubmit" >提交审批</el-button>
           <el-button  :type="form.auditButton ? 'primary' : ''" @click="handleCheckStatus" >审核</el-button>
           <el-button  :type="form.cancelButton ? 'primary' : ''" size="small" @click="handleCancel" >作废</el-button>
-          <el-button  v-if="canDelete" size="small" :type="form.deleteButton ? 'primary' : ''" @click="handleDelete" >删除</el-button>
+          <el-button  v-if="form.auditStatus === 0" size="small" :type="form.deleteButton ? 'primary' : ''" @click="handleDelete" >删除</el-button>
 
           <!-- <el-button v-permission="moduleKey+'-addDetail'"  :type="form.submitAuditButton ? 'primary' : ''" size="small" @click="handleAddDetail" >添加补货明细</el-button>
           <el-button v-permission="moduleKey+'-batchSubmitAudit'" :type="form.submitAuditButton ? 'primary' : ''" @click="handleCheckSubmit" >提交审批</el-button>
@@ -135,7 +135,7 @@
                       remote
                       reserve-keyword
                       labelKey="organizationName"
-                      valueKey="organizationCode"
+                      valueKey="id"
                       v-model="form.financialOrganizationId"
                       placeholder="请选择"
                       clearable
