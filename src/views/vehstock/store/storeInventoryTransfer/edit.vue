@@ -171,16 +171,16 @@ export default {
     FetchSelect
   },
   computed: {
-    _id() {
+    _id () {
       return this.id || this.$route.query.id || this.form.id;
     },
-    title() {
+    title () {
       return '主键：' + this.form.id;
     }
   },
   watch: {
     id: {
-      handler(val) {
+      handler (val) {
         if (val && this.$refs.containerRef) {
           this.$refs.containerRef.loadDetail();
         }
@@ -188,7 +188,7 @@ export default {
       immediate: true
     }
   },
-  data() {
+  data () {
     const form = this.getDefautlForm();
     return {
       pageTitle: '门店库存调拨管理',
@@ -230,24 +230,24 @@ export default {
       }
     };
   },
-  mounted() {
+  mounted () {
   },
   methods: {
-    detailRequest() {
+    detailRequest () {
       const id = this._id;
       if (id) {
         return getDetail(id);
       }
     },
-    submitRequest() {
+    submitRequest () {
       return addOrUpdate({ ...this.form });
     },
     // 打开侧边栏
-    openPane() {
+    openPane () {
       this.$refs.editLayout.openPane();
     },
     // 删除子表数据
-    handleDeleteRow(index) {
+    handleDeleteRow (index) {
       const item = this.tableData[index];
       this.tableData.splice(index, 1);
       // 根据需求调用接口
@@ -257,7 +257,7 @@ export default {
       // });
     },
     // 查询新增项的列表
-    queryListData(queryString) {
+    queryListData (queryString) {
       return new Promise(resolve => {
         // 根据需求调用接口
         // sparePartList({ partCodeOrNameLike: queryString, status: 1, limitSize: 20 }).then(res => {
@@ -270,7 +270,7 @@ export default {
       });
     },
     // 新增子表数据
-    handleAddTableData(val, record) {
+    handleAddTableData (val, record) {
       if (!record) {
         this.$message.warning('请先选择数据');
         return;
@@ -293,7 +293,7 @@ export default {
       //   this.detailRequest();
       // });
     },
-    getDefautlForm() {
+    getDefautlForm () {
       // TIPS: 此处可添加表单默认值，如当前用户信息等
       // const userInfo = this.$store.state.user.userInfo;
       return {
@@ -306,7 +306,7 @@ export default {
     // handleJumpAuditLog () {
     //   this.$auditLog.show({ id: 123 });
     // },
-    async fetchOptions(code) {
+    async fetchOptions (code) {
       if (code) {
         return getEnum(code);
       }

@@ -595,7 +595,10 @@ export default {
         this.$message.error('该订单取消配车次数已达上限');
         return;
       }
-      this.$refs.unlockDialog.show();
+      this.$refs.unlockDialog.show({
+        meterlsCode: this.row.materialsCode,
+        saleDealerCode: this.row.saleDealerCode
+      });
     },
     loginUserGet () {
       loginUserGet().then(res => {
