@@ -595,6 +595,10 @@ export default {
   },
   methods: {
     handleRetailOrderCodeChange (val) {
+      if (!val) {
+        return;
+      }
+      this.form.retailOrderCode = val;
       getRetailOrderDetail(val).then(res => {
         this.form.retailOrderId = res.id || '';
         this.form.retailOrderCode = res.retailOrderCode || '';
