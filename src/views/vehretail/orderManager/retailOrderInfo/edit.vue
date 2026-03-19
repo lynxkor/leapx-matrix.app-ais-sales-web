@@ -20,7 +20,7 @@
           <!-- <el-button size="small" type="primary" @click="handleEquityInquiry">权益查询</el-button> -->
           <el-button size="small" :loading="printLoading" @click="handlePrintContractTermination">打印合同解除协议</el-button>
           <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" @click="handleSetSpecialMark">设置特殊标识</el-button>
-          <el-button size="small" @click="handleModifyConfiguration">修改配置</el-button>
+          <el-button size="small" v-if="form.orderStatus !== 9" @click="handleModifyConfiguration">修改配置</el-button>
           <el-button size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
           <el-button size="small" v-if="form.lockStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
           <el-button size="small" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
@@ -745,13 +745,13 @@ export default {
       this.row = this.form;
       const res = await getOrderUnlockConfig(this.row.retailOrderCode);
       // 检查返回结果是否有效
-      if (!res || res.allowUnlockStatus !== 1 || res.allowManualCarStatus !== 1) {
-        this.$message.error('该门店没有取消配车权限');
+      if (!res || res.allowManualCarStatus !== 1) {
+        this.$message.error('未绑定批售订单状态为订单确认的订单才能更换门店');
         return;
       }
-      // 检查 accountFlag 和 unlockCount 的关系
-      if (this.accountFlag && this.row.unlockCount >= 1) {
-        this.$message.error('该订单取消配车次数已达上限');
+      // 检查 accountFlag 和 changeConfigCount 的关系
+      if (this.accountFlag && this.row.changeConfigCount >= 1) {
+        this.$message.error('该订单修改配车次数已达上限');
         return;
       }
       this.$refs.materialsDialog.show();

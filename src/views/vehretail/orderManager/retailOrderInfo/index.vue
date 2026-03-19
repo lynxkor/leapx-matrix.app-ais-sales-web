@@ -196,15 +196,10 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
        <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length !== 1" @click="handleUnlock">取消锁车</el-button>
        <el-button v-permission="moduleKey+'-changeSaleDealer'" size="small" @click="handleChangeDealer('sales')" :disabled="selectionList.length === 0">更换销售门店</el-button>
        <el-button v-permission="moduleKey+'-changeDeliveryDealer'" size="small" @click="handleChangeDealer('support')" :disabled="selectionList.length === 0">更换交付门店</el-button>
-      <!-- <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button> -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button> -->
     </div>
     <div class="ais-active">
       <el-tabs v-model="activeTab" @tab-click="handleClick">
@@ -595,10 +590,13 @@ export default {
         this.$message.error('该订单取消配车次数已达上限');
         return;
       }
+      const param = {
+        [this.accountFlag ? 'storeUnlockStatus' : 'factoryUnlockStatus']: '1'
+      };
       this.$refs.unlockDialog.show({
         meterlsCode: this.row.materialsCode,
         saleDealerCode: this.row.saleDealerCode
-      });
+      }, param);
     },
     loginUserGet () {
       loginUserGet().then(res => {
