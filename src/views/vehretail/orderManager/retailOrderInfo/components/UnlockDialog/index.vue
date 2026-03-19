@@ -78,7 +78,8 @@
 
 <script>
 
-import { unlockReasonList, perUnlock } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { perUnlock } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getList } from '@/api/vehretail/basicConfig/retailOrderUnlockReasonConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import MaterialsDialog from '../MaterialsDialog'; // 引入物料选择对话框
 import VinDialog from '../VinDialog'; // 引入 VIN 选择对话框
@@ -119,6 +120,7 @@ export default {
     return {
       dialogVisible: false,
       form: { ...defaultForm },
+      vinForm: {},
       rules: {
         unlockReasonCode: [
           { required: true, message: '请选择申请原因', trigger: 'change' }
@@ -162,15 +164,15 @@ export default {
   },
   methods: {
     showVinDialog () {
-      this.$refs.vinDialog.show();
+      this.$refs.vinDialog.show(this.vinForm);
     },
     handleUnlockReasonCodeChange (val, row) {
       this.form.unlockReason = row.unlockReason;
       this.form.reasonExplain = row.reasonExplain;
     },
-    unlockReasonList () {
-      unlockReasonList().then(res => {
-        this.unlockReasonOptions = res;
+    getList (params) {
+      getList({ ...params, pageNum: 1 }).then(res => {
+        this.unlockReasonOptions = res.records;
       }).catch(() => {
       });
     },
@@ -188,15 +190,17 @@ export default {
       this.form.bindVin = vehicle.vin;
     },
     close () {
+      this.vinForm = {};
       this.dialogVisible = false;
     },
     closed () {
       this.$refs.form.resetFields();
       this.form = { ...defaultForm };
     },
-    show () {
+    show (params, unlockReason) {
       this.dialogVisible = true;
-      this.unlockReasonList();
+      this.vinForm = params;
+      this.getList(unlockReason);
     },
     submit () {
       this.$refs.form.validate(valid => {

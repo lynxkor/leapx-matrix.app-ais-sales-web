@@ -196,15 +196,10 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
        <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length !== 1" @click="handleUnlock">取消锁车</el-button>
        <el-button v-permission="moduleKey+'-changeSaleDealer'" size="small" @click="handleChangeDealer('sales')" :disabled="selectionList.length === 0">更换销售门店</el-button>
        <el-button v-permission="moduleKey+'-changeDeliveryDealer'" size="small" @click="handleChangeDealer('support')" :disabled="selectionList.length === 0">更换交付门店</el-button>
-      <!-- <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button> -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button> -->
     </div>
     <div class="ais-active">
       <el-tabs v-model="activeTab" @tab-click="handleClick">
@@ -570,13 +565,13 @@ export default {
       this.row = row;
       const res = await getOrderUnlockConfig(this.row.retailOrderCode);
       // 检查返回结果是否有效
-      if (!res || res.allowUnlockStatus !== 1 || res.allowManualCarStatus !== 1) {
-        this.$message.error('该门店没有取消配车权限');
+      if (!res || res.allowManualCarStatus !== 1) {
+        this.$message.error('未绑定批售订单状态为订单确认的订单才能更换门店');
         return;
       }
-      // 检查 accountFlag 和 unlockCount 的关系
-      if (this.accountFlag && this.row.unlockCount >= 1) {
-        this.$message.error('该订单取消配车次数已达上限');
+      // 检查 accountFlag 和 changeConfigCount 的关系
+      if (this.accountFlag && this.row.changeConfigCount >= 1) {
+        this.$message.error('该订单修改配车次数已达上限');
         return;
       }
       this.$refs.materialsDialog.show();
@@ -586,8 +581,8 @@ export default {
       this.row = this.selectionList[0];
       const res = await getOrderUnlockConfig(this.row.retailOrderCode);
       // 检查返回结果是否有效
-      if (!res || res.allowUnlockStatus !== 1 || res.allowManualCarStatus !== 1) {
-        this.$message.error('未绑定批售订单状态为订单确认的订单才能更换门店');
+      if (!res || res.allowUnlockStatus !== 1) {
+        this.$message.error('该门店没有消配配车权限');
         return;
       }
       // 检查 accountFlag 和 unlockCount 的关系
@@ -595,7 +590,13 @@ export default {
         this.$message.error('该订单取消配车次数已达上限');
         return;
       }
-      this.$refs.unlockDialog.show();
+      const param = {
+        [this.accountFlag ? 'storeUnlockStatus' : 'factoryUnlockStatus']: '1'
+      };
+      this.$refs.unlockDialog.show({
+        meterlsCode: this.row.materialsCode,
+        saleDealerCode: this.row.saleDealerCode
+      }, param);
     },
     loginUserGet () {
       loginUserGet().then(res => {

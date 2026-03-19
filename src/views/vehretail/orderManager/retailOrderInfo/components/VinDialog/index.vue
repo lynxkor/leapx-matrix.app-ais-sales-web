@@ -71,13 +71,14 @@
 
 <script>
 import { getList } from '@/api/vehstock/store/storeInventoryLedger/index';
+import { manualLock } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 
 const defaultSearchForm = {
   vinLike: '',
   // 固定筛选条件
-  logisticStatusList: [12, 16, 20], // 已入门店库/在途/待提交 PDI
-  lockStatus: 0, // 未锁定
-  reservationStatus: 20 // 正常车辆
+  vechicleStatusList: ['11', '12', '20'], // 已入门店库/在途/待提交 PDI
+  lockStatus: '0', // 未锁定
+  reservationStatusList: ['30'] // 正常车辆
 };
 
 export default {
@@ -88,6 +89,10 @@ export default {
       default: false
     },
     row: {
+      type: Object,
+      default: null
+    },
+    submitParams: {
       type: Object,
       default: null
     }
@@ -117,8 +122,9 @@ export default {
   },
   methods: {
     // 打开对话框
-    show () {
+    show (params) {
       this.dialogVisible = true;
+      this.searchForm = { ...params, ...this.searchForm };
       this.loadData();
     },
 
@@ -207,8 +213,13 @@ export default {
 
     // 内部提交处理方法
     handleInternalSubmit () {
-      this.$message.success('车辆选择成功');
-      this.close();
+      manualLock({
+        ...this.submitParams,
+        ...this.selectedRow
+      }).then(res => {
+        this.$message.success('车辆选择成功');
+        this.close();
+      }).catch(() => {});
     }
   }
 };

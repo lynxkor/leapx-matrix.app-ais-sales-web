@@ -169,14 +169,6 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="销售门店编码：" prop="saleDealerCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.saleDealerCode"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
                 <el-form-item label="销售门店：" prop="saleDealerName">
                   <el-input
                     placeholder="请输入"
@@ -193,26 +185,10 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="省编码：" prop="provinceCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.provinceCode"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
                 <el-form-item label="省：" prop="provinceName">
                   <el-input
                     placeholder="请输入"
                     v-model="form.provinceName"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="市编码：" prop="cityCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.cityCode"
                     clearable
                     disabled
                   />
@@ -742,7 +718,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '退订申请单号：' + this.form.refundCode;
     }
   },
   watch: {
@@ -976,6 +952,8 @@ export default {
       this.form.saleDealerName = val ? selectedOption.saleDealerName : '';
       this.form.modelId = val ? selectedOption.modelId : '';
       this.form.modelName = val ? selectedOption.modelName : '';
+      this.form.seriesId = val ? selectedOption.seriesId : '';
+      this.form.seriesName = val ? selectedOption.seriesName : '';
       this.form.orderUserId = val ? selectedOption.orderUserId : '';
       this.form.orderUserName = val ? selectedOption.orderUserName : '';
       this.form.orderUserPhone = val ? selectedOption.orderUserPhone : '';
