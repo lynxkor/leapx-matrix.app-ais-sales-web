@@ -938,10 +938,10 @@ export default {
             this.refreshOrderInfo(val, selectedOption);
           })
           .catch(() => {
-            this.refreshOrderInfo(null, selectedOption);
+            this.$refs.ruleForm.resetFields();
           });
       } else {
-        this.refreshOrderInfo(null, selectedOption);
+        this.$refs.ruleForm.resetFields();
       }
     },
     refreshOrderInfo (val, selectedOption) {
