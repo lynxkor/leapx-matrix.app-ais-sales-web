@@ -87,8 +87,8 @@
                 </el-form-item> -->
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="销售公司：" prop="saleCompanyId">
-                  {{ form.saleCompanyId }}
+                <el-form-item label="销售公司：" prop="saleCompanyName">
+                  {{ form.saleCompanyName }}
                 </el-form-item>
                  <el-form-item label="订单分类：" prop="orderCategoryLabel">
                   {{ form.orderCategoryLabel }}
@@ -155,7 +155,7 @@ const defaultForm = {
   dataSource: '',
   code: '',
   saleCompanyId: '',
-  orderCategory: '',
+  orderCategory: 21,
   txnTaxPriceRate: '',
   effectiveTime: '',
   expireTime: '',
