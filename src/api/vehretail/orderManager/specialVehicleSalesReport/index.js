@@ -42,3 +42,51 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 提交特殊车辆销售报告
+ * @param {Object} data
+ */
+export function submitReport (data) {
+  return api.jsonPost(prefix + 'submit', data);
+}
+
+/**
+ * 作废特殊车辆销售报告
+ * @param {Object} data
+ */
+export function cancelReport (data) {
+  return api.jsonPost(prefix + 'cancel', data);
+}
+
+/**
+ * 撤回特殊车辆销售报告
+ * @param {Object} data
+ */
+export function revokeReport (data) {
+  return api.jsonPost(prefix + 'revocation', data);
+}
+
+/**
+ * 批量作废特殊车辆销售报告
+ * @param {Object} data
+ */
+export function batchCancelReports (data) {
+  return api.jsonPost(prefix + 'batchCancel', data);
+}
+
+/**
+ * 批量撤回特殊车辆销售报告
+ * @param {Object} data
+ */
+export function batchRevokeReports (data) {
+  return api.jsonPost(prefix + 'batchRevocation', data);
+}
+
+/**
+ * 调整车辆属性
+ * @param {Object} data
+ */
+export function adjustVehicleAttribute (data) {
+  return api.jsonPost(prefix + 'vehicleAttribute', data);
+}

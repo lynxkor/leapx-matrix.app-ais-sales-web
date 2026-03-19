@@ -156,7 +156,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '变更原因代码：' + this.form.changeCode;
     }
   },
   watch: {
