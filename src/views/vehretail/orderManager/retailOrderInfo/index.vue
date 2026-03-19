@@ -563,12 +563,6 @@ export default {
     async changeConfiguration (row) {
       this.businessId = this._id;
       this.row = row;
-      const res = await getOrderUnlockConfig(this.row.retailOrderCode);
-      // 检查返回结果是否有效
-      if (!res || res.allowManualCarStatus !== 1) {
-        this.$message.error('未绑定批售订单状态为订单确认的订单才能更换门店');
-        return;
-      }
       // 检查 accountFlag 和 changeConfigCount 的关系
       if (this.accountFlag && this.row.changeConfigCount >= 1) {
         this.$message.error('该订单修改配车次数已达上限');
