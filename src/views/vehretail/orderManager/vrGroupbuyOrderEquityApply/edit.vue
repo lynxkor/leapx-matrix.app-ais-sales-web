@@ -797,13 +797,17 @@ export default {
       immediate: true
     },
   },
+  mounted () {
+    if (this._id) {
+      this.getApprovalDetailList();
+      this.getStepInfo(this._id);
+    }
+  },
   methods: {
     detailRequest () {
       const id = this._id;
       if (id) {
         const detail = getDetail(id);
-        this.getApprovalDetailList();
-        this.getStepInfo(id);
         return detail;
       }
     },
@@ -913,7 +917,7 @@ export default {
     },
     // 获取流程步骤信息
     async getStepInfo (id) {
-      this.stepInfoList = (await queryStepInfo({ id }))?.stepInfoList || [];
+      this.stepInfoList = await queryStepInfo(id);
     },
     async fetchOptions (code) {
       if (code) {

@@ -945,10 +945,9 @@ export default {
           })
           .catch(() => {
             this.$refs.ruleForm.resetFields();
-            // this.refreshOrderInfo(null, selectedOption);
           });
       } else {
-        this.refreshOrderInfo(null, selectedOption);
+        this.$refs.ruleForm.resetFields();
       }
     },
     refreshOrderInfo (val, selectedOption) {
