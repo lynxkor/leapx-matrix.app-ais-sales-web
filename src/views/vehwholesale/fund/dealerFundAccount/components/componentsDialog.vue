@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" width="1200px" :visible.sync="dialogVisible" @close="handleClose">
+  <el-dialog :title="title" width="75%" :visible.sync="dialogVisible" @close="handleClose">
     <div>
       <el-form
         ref="form"
