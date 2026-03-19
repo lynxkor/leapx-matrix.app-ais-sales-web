@@ -79,7 +79,7 @@ export default {
     EditPage,
     Upload
   },
-  data() {
+  data () {
     return {
       pageTitle: '门店库存调拨管理',
       pageType: 'list',
@@ -188,13 +188,13 @@ export default {
       ]
     };
   },
-  created() {
+  created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
   },
   methods: {
     // 排序
-    handleSortChange(value) {
+    handleSortChange (value) {
       this.sortColumns = (value || []).map(item => {
         return {
           column: (item.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
@@ -203,31 +203,31 @@ export default {
       });
       this.getData();
     },
-    handleListSelect(row) {
+    handleListSelect (row) {
       this.clickItemId = row.id;
     },
-    handleImport() {
+    handleImport () {
       this.uploadDialogVisible = true;
     },
-    handleUploadDialogClose() {
+    handleUploadDialogClose () {
       this.uploadDialogVisible = false;
     },
-    handleAdd() {
+    handleAdd () {
       this.$router.push({
         path: '/vehstock/store/storeInventoryTransfer/edit'
       });
     },
-    onSubmit() {
+    onSubmit () {
       this.optionObj.form.page = 1;
       this.getData();
     },
-    onReset() {
+    onReset () {
       this.form = { ...defaultForm };
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
       this.getData();
     },
-    exportExcel() {
+    exportExcel () {
       this.exportLoading = true;
       const reqParams = this.getFormData() || {};
       if (this.selectionList.length > 0) {
@@ -260,7 +260,7 @@ export default {
         this.exportLoading = false;
       });
     },
-    getData() {
+    getData () {
       this.loading = true;
       this.selectionList = [];
 
@@ -282,7 +282,7 @@ export default {
     debouncedGetData: debounce(function () {
       this.getData();
     }, 300),
-    getConfig() {
+    getConfig () {
       return new Promise((resolve, reject) => {
         getTableConfig(this.optionObj.id).then(data => {
           resolve({ data });
@@ -293,10 +293,10 @@ export default {
         });
       });
     },
-    saveOrUpdate(data) {
+    saveOrUpdate (data) {
       return tableAddOrUpdate(data);
     },
-    paginationChange(type, num) {
+    paginationChange (type, num) {
       if (type === 'page') {
         this.optionObj.form.page = num;
       } else {
@@ -305,10 +305,10 @@ export default {
       this.debouncedGetData();
     },
     // 多选框选中数据
-    handleSelectionChange(selection) {
+    handleSelectionChange (selection) {
       this.selectionList = selection;
     },
-    getFormData() {
+    getFormData () {
       const data = { ...this.form };
 
       Object.keys(this.form).forEach(key => {
@@ -328,14 +328,14 @@ export default {
       data.sortColumns = this.sortColumns;
       return data;
     },
-    async fetchOptions(code) {
+    async fetchOptions (code) {
       if (code) {
         return getEnum(code);
       }
       return [];
     },
     // 批量删除
-    handleBatchDelete() {
+    handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
       const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
       this.$confirm(message, '', {
@@ -360,7 +360,7 @@ export default {
       }).catch(() => { });
     },
     // 批量启用停用
-    handleBatchEnable(status) {
+    handleBatchEnable (status) {
       handleBatchStatusChange.call(this, {
         selectionList: this.selectionList,
         targetStatus: status,

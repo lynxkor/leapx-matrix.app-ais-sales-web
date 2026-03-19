@@ -30,12 +30,12 @@
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
 
-                <el-form-item label="销售公司：" prop="saleCompanyId">
+                <el-form-item label="销售公司：" prop="saleCompanyName">
                    <fetch-select
                       filterable
                       clearable
                       remote
-                      v-model="form.saleCompanyId"
+                      v-model="form.saleCompanyName"
                       :params="form.saleCompanyName"
                       :remote-method="getCompanyList"
                       value-key="id"
@@ -210,7 +210,7 @@ export default {
       emptyText: '若要启用此内容，请创建记录',
       tableData: [],
       rules: {
-        saleCompanyId: [
+        saleCompanyName: [
           { required: true, message: '请输入销售公司', trigger: 'change' }
         ],
         orderCategory: [
