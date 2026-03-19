@@ -10,53 +10,28 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="form.permissions.edit"
       >
         <template #status>
-          <span v-if="form.auditStatus === 10" class="status">草稿</span>
-          <span v-else-if="form.auditStatus === 20" class="status warning">驳回</span>
-          <span v-else-if="form.auditStatus === 30" class="status">已提交</span>
-          <span v-else-if="form.auditStatus === 40" class="status">已初审</span>
-          <span v-else-if="form.auditStatus === 50" class="status">已复审</span>
-          <span v-else-if="form.auditStatus === 60" class="status success">已终审</span>
-          <span v-else-if="form.auditStatus === 70" class="status danger">作废</span>
+          <span class="status primary"> {{ form.auditStatusLabel }}</span>
         </template>
         <template #extraButtons>
-          <el-button v-if="canSubmitApproval && canAddOrUpdate" size="small" type="primary" @click="handleSubmitApproval">提交审批</el-button>
+          <el-button v-if = "form.permissions.cancel" size="small" @click="handleViewAuditUsers">查看审核人员</el-button>
+          <el-button v-if = "form.permissions.cancel" size="small" @click="handleCancel">作废</el-button>
+          <el-button v-if = "form.permissions.submit" size="small" @click="handleSubmitApproval">提交审批</el-button>
+          <el-button v-if = "form.permissions.audit" size="small" @click="handleAudit">审核</el-button>
+          <el-button v-if = "form.permissions.auditRevoke" size="small" @click="handleRecall">审核撤回</el-button>
         </template>
         <el-main>
           <!-- 审核步骤条 -->
           <section class="common-section" v-if="_id">
             <div class="common-section-body">
-              <div class="audit-steps">
-                <div class="steps-header" v-if="showViewAuditUsers">
-                  <el-button type="text" @click="handleViewAuditUsers">查看审核人员</el-button>
+              <div v-for="(step, index) in stepInfoList" :key="index" class="step-wrapper">
+                <div class="step-item" :class="getStepClassByStepInfo(step.status, step.isCome)">
+                  <div class="step-circle">{{ index + 1 }}</div>
+                  <div class="step-label">{{ step.name }}</div>
                 </div>
-                <div class="steps-container">
-                  <div class="step-item" :class="getStepClass(1)">
-                    <div class="step-circle">1</div>
-                    <div class="step-label">草稿</div>
-                  </div>
-                  <div class="step-line" :class="getLineClass(1)"></div>
-                  <div class="step-item" :class="getStepClass(2)">
-                    <div class="step-circle">2</div>
-                    <div class="step-label">门店提交</div>
-                  </div>
-                  <div class="step-line" :class="getLineClass(2)"></div>
-                  <div class="step-item" :class="getStepClass(3)">
-                    <div class="step-circle">3</div>
-                    <div class="step-label">{{ getFirstAuditLabel }}</div>
-                  </div>
-                  <div class="step-line" :class="getLineClass(3)"></div>
-                  <div class="step-item" :class="getStepClass(4)">
-                    <div class="step-circle">4</div>
-                    <div class="step-label">{{ getReviewAuditLabel }}</div>
-                  </div>
-                  <div class="step-line" :class="getLineClass(4)"></div>
-                  <div class="step-item" :class="getStepClass(5)">
-                    <div class="step-circle">5</div>
-                    <div class="step-label">业务负责人(终审)</div>
-                  </div>
-                </div>
+                <div v-if="index < stepInfoList.length - 1" class="step-line" :class="getLineClassByStepInfo(step.status, step.isCome)"></div>
               </div>
             </div>
           </section>
@@ -67,24 +42,132 @@
               <h2>基础信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+                <el-form-item label="团购权益申请单号：" prop="code">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.code"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="商城订单编号：" prop="mallOrderCode">
+                  <fetch-select
+                    filterable
+                    clearable
+                    remote
+                    v-model="form.mallOrderCode"
+                    :remote-method="getRetailOrderListByNo"
+                    value-key="mallOrderCode"
+                    label-key="mallOrderCode"
+                    placeholder="请选择商城订单号"
+                    @change="handleMallOrderCodeChange"
+                  />
+                </el-form-item>
+                <el-form-item label="整车订单号：" prop="vehicleOrderNo">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.vehicleOrderNo"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="订单物料码：" prop="orderMaterialsCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.orderMaterialsCode"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="销售门店：" prop="dealerName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.dealerName"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="合作类型：" prop="cooperationType">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vr_cooperation_type"
+                    v-model="form.cooperationType"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="车型：" prop="modelName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.modelName"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="车系：" prop="seriesName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.seriesName"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="购车人姓名：" prop="buyerName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.buyerName"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="购车人手机号码：" prop="buyerPhone">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.buyerPhone"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="下单人用户ID号：" prop="userId">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.userId"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="备注：" prop="remark">
+                  <el-input
+                    type="textarea"
+                    :rows="3"
+                    placeholder="请输入"
+                    v-model="form.remark"
+                    clearable
+                    maxlength="1000"
+                  />
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="团购权益申请单号：">
                   {{ form.code }}
                 </el-form-item>
                 <el-form-item label="商城订单编号：">
-                  <el-link type="primary" @click="handleViewOrderDetail">{{ form.mallOrderCode }}</el-link>
+                  {{ form.mallOrderCode }}
                 </el-form-item>
                 <el-form-item label="整车订单号：">
                   {{ form.vehicleOrderNo || '-' }}
                 </el-form-item>
                 <el-form-item label="订单物料码：">
-                  <el-link type="primary" @click="handleViewMaterialDetail">{{ form.orderMaterialsCode }}</el-link>
+                  {{ form.orderMaterialsCode }}
                 </el-form-item>
                 <el-form-item label="销售门店：">
-                  <el-link type="primary" @click="handleViewStoreDetail">{{ form.dealerName }}</el-link>
+                  {{ form.dealerName }}
                 </el-form-item>
                 <el-form-item label="合作类型：">
-                  {{ getEnumLabel('cooperation_type', form.cooperationType) }}
+                  {{ form.cooperationTypeLabel || '-' }}
                 </el-form-item>
                 <el-form-item label="车型：">
                   {{ form.modelName || '-' }}
@@ -114,7 +197,44 @@
               <h2>销售门店</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail">
+              <el-form :inline="true" :model="form" :rules="rules" ref="dealerForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+                <el-form-item label="门店名称：" prop="dealerName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.dealerName"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="门店编码：" prop="dealerCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.dealerCode"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="合作类型：" prop="cooperationType">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vr_cooperation_type"
+                    v-model="form.cooperationType"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="所属区域或部门：" prop="regionName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.regionName"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="门店名称：">
                   {{ form.dealerName }}
                 </el-form-item>
@@ -122,7 +242,7 @@
                   {{ form.dealerCode }}
                 </el-form-item>
                 <el-form-item label="合作类型：">
-                  {{ getEnumLabel('cooperation_type', form.cooperationType) }}
+                  {{ form.cooperationTypeLabel || '-' }}
                 </el-form-item>
                 <el-form-item label="所属区域或部门：">
                   {{ form.regionName }}
@@ -137,7 +257,38 @@
               <h2>公司信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail">
+              <el-form :inline="true" :model="form" :rules="rules" ref="companyForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+                <el-form-item label="公司名称：" prop="companyName">
+                  <fetch-select
+                    :request="getEnterpriseList"
+                    v-model="form.companyName"
+                    placeholder="请选择公司"
+                    clearable
+                    filterable
+                    value-key="companyName"
+                    label-key="companyName"
+                    @change="handleCompanyChange"
+                  />
+                </el-form-item>
+                <el-form-item label="优惠金额：" prop="discountAmount">
+                  <el-input-number
+                    v-model="form.discountAmount"
+                    :precision="2"
+                    :step="0.01"
+                    :min="0"
+                    :max="100000000000"
+                    placeholder="请输入"
+                  />
+                </el-form-item>
+                <el-form-item label="优惠券：" prop="couponName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.couponName"
+                    clearable
+                  />
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="公司名称：">
                   {{ form.companyName }}
                 </el-form-item>
@@ -157,19 +308,12 @@
               <h2>附件材料</h2>
             </div>
             <div class="common-section-body">
-              <div v-if="attachmentList && attachmentList.length > 0">
-                <div v-for="(item, index) in attachmentList" :key="index" class="attachment-item">
-                  <div v-if="isImage(item.fileType)" class="attachment-preview">
-                    <img :src="item.fileUrl" :alt="item.fileName" />
-                  </div>
-                  <div class="attachment-info">
-                    <div class="file-name">{{ item.fileName }}</div>
-                    <div class="file-size">{{ formatFileSize(item.fileSize) }}</div>
-                    <div class="file-type">{{ item.fileType }}</div>
-                  </div>
-                </div>
-              </div>
-              <div v-else class="no-attachment">暂无附件</div>
+              <AisAttachment
+                :businessId="_id"
+                attachType="团购订单权益申请附件"
+                configCode="vr_groupbuy_order_equity_apply"
+                :readonly="!(isEditing || !_id)"
+              />
             </div>
           </section>
 
@@ -179,7 +323,17 @@
               <h2>整车物料</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail">
+              <el-form :inline="true" :model="form" :rules="rules" ref="materialForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+                <el-form-item label="物料描述：" prop="materialsDesc">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.materialsDesc"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="物料描述：">
                   {{ form.materialsDesc }}
                 </el-form-item>
@@ -193,9 +347,173 @@
               <h2>整车订单信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail">
+              <el-form :inline="true" :model="form" :rules="rules" ref="orderForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+                <el-form-item label="整车订单状态：" prop="vehicleOrderStatus">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vr_order_status"
+                    v-model="form.vehicleOrderStatus"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="商城下单时间：" prop="mallOrderTime">
+                  <el-date-picker
+                    v-model="form.mallOrderTime"
+                    type="datetime"
+                    placeholder="请选择"
+                    format="yyyy-MM-dd HH:mm:ss"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="商城订单编号：" prop="mallOrderCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.mallOrderCode"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="订单来源：" prop="orderSource">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vr_order_source"
+                    v-model="form.orderSource"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="用户ID：" prop="userId">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.userId"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="购车人姓名：" prop="buyerName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.buyerName"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="购车人手机：" prop="buyerPhone">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.buyerPhone"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="证件类型：" prop="idType">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vr_id_type"
+                    v-model="form.idType"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="证件号码：" prop="idNumber">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.idNumber"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="代办联系人：" prop="agentContact">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.agentContact"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="补贴后价格：" prop="discountedPrice">
+                  <el-input-number
+                    v-model="form.discountedPrice"
+                    :precision="2"
+                    :step="0.01"
+                    :min="0"
+                    :max="100000000000"
+                    placeholder="请输入"
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="定金金额：" prop="depositAmount">
+                  <el-input-number
+                    v-model="form.depositAmount"
+                    :precision="2"
+                    :step="0.01"
+                    :min="0"
+                    :max="100000000000"
+                    placeholder="请输入"
+                  />
+                </el-form-item>
+                <el-form-item label="交车时间：" prop="deliveryTime">
+                  <el-date-picker
+                    v-model="form.deliveryTime"
+                    type="datetime"
+                    placeholder="请选择"
+                    format="yyyy-MM-dd HH:mm:ss"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                  />
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true" :model="form" :rules="rules" ref="orderForm2" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+                <el-form-item label="订单物料码：" prop="orderMaterialsCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.orderMaterialsCode"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="配车物料码：" prop="allocationMaterialsCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.allocationMaterialsCode"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="销售门店：" prop="saleDealerCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.saleDealerCode"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="交付门店：" prop="deliveryDealerCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.deliveryDealerCode"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="交车VIN码：" prop="deliveryVin">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.deliveryVin"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="整车订单状态：">
-                  {{ form.vehicleOrderStatus }}
+                  {{ form.vehicleOrderStatusLabel || '-' }}
                 </el-form-item>
                 <el-form-item label="商城下单时间：">
                   {{ form.mallOrderTime }}
@@ -204,7 +522,7 @@
                   {{ form.mallOrderCode }}
                 </el-form-item>
                 <el-form-item label="订单来源：">
-                  {{ form.orderSource }}
+                  {{ form.orderSourceLabel || '-' }}
                 </el-form-item>
                 <el-form-item label="用户ID：">
                   {{ form.userId }}
@@ -216,7 +534,7 @@
                   {{ form.buyerPhone }}
                 </el-form-item>
                 <el-form-item label="证件类型：">
-                  {{ form.idType }}
+                  {{ form.idTypeLabel || '-' }}
                 </el-form-item>
                 <el-form-item label="证件号码：">
                   {{ form.idNumber }}
@@ -234,21 +552,21 @@
                   {{ form.deliveryTime }}
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="订单物料码：">
-                  <el-link type="primary" @click="handleViewOrderMaterialDetail">{{ form.orderMaterialsCode }}</el-link>
+                  {{ form.orderMaterialsCode }}
                 </el-form-item>
                 <el-form-item label="配车物料码：">
-                  <el-link type="primary" @click="handleViewAllocationMaterialDetail">{{ form.allocationMaterialsCode }}</el-link>
+                  {{ form.allocationMaterialsCode }}
                 </el-form-item>
                 <el-form-item label="销售门店：">
-                  <el-link type="primary" @click="handleViewSaleStoreDetail">{{ form.saleDealerCode }}</el-link>
+                  {{ form.saleDealerCode }}
                 </el-form-item>
                 <el-form-item label="交付门店：">
-                  <el-link type="primary" @click="handleViewDeliveryStoreDetail">{{ form.deliveryDealerCode }}</el-link>
+                  {{ form.deliveryDealerCode }}
                 </el-form-item>
                 <el-form-item label="交车VIN码：">
-                  <el-link type="primary" @click="handleViewVehicleDetail">{{ form.deliveryVin }}</el-link>
+                  {{ form.deliveryVin }}
                 </el-form-item>
               </el-form>
             </div>
@@ -260,7 +578,37 @@
               <h2>申请信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail">
+              <el-form :inline="true" :model="form" :rules="rules" ref="applyForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+                <el-form-item label="申请人：" prop="applicant">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.applicant"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="申请时间：" prop="applicationTime">
+                  <el-date-picker
+                    v-model="form.applicationTime"
+                    type="datetime"
+                    placeholder="请选择"
+                    format="yyyy-MM-dd HH:mm:ss"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="提交时间：" prop="submitTime">
+                  <el-date-picker
+                    v-model="form.submitTime"
+                    type="datetime"
+                    placeholder="请选择"
+                    format="yyyy-MM-dd HH:mm:ss"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    :disabled="true"
+                  />
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="申请人：">
                   {{ form.applicant }}
                 </el-form-item>
@@ -273,27 +621,6 @@
               </el-form>
             </div>
           </section>
-
-          <!-- 审批信息 -->
-          <section class="common-section">
-            <div class="common-section-header">
-              <h2>审批信息</h2>
-            </div>
-            <div class="common-section-body">
-              <el-form :inline="true" class="form-detail">
-                <el-form-item label="初审时间：">
-                  {{ form.firstAuditTime || '-' }}
-                </el-form-item>
-                <el-form-item label="复审时间：">
-                  {{ form.reviewAuditTime || '-' }}
-                </el-form-item>
-                <el-form-item label="终审时间：">
-                  {{ form.finalAuditTime || '-' }}
-                </el-form-item>
-              </el-form>
-            </div>
-          </section>
-
           <!-- 审批明细 -->
           <section class="common-section" v-if="_id">
             <div class="common-section-header">
@@ -324,6 +651,7 @@
             </div>
           </section>
         </el-main>
+        <auditDialog ref="auditInput" @audit="handleAuditSubmit" :auditTitle='getAuditTitle()'/>
       </edit-base-container>
     </template>
     <template #right>
@@ -332,10 +660,10 @@
           <h3>申请概况</h3>
           <div style="margin-top: 10px; padding: 15px; background: #f5f7fa; border-radius: 4px;">
             <div><strong>申请单号:</strong> {{ form.code || '-' }}</div>
-            <div style="margin-top: 8px;"><strong>申请状态:</strong> {{ getAuditStatusLabel(form.auditStatus) }}</div>
+            <div style="margin-top: 8px;"><strong>申请状态:</strong> {{ form.auditStatusLabel }}</div>
             <div style="margin-top: 8px;"><strong>销售门店:</strong> {{ form.dealerName || '-' }}</div>
-            <div style="margin-top: 8px;"><strong>合作类型:</strong> {{ getEnumLabel('cooperation_type', form.cooperationType) || '-' }}</div>
-            <div style="margin-top: 8px;"><strong>商城订单:</strong> {{ form.mallOrderCode || '-' }}</div>
+            <div style="margin-top: 8px;"><strong>合作类型:</strong> {{ form.cooperationTypeLabel || '-' }}</div>
+            <div style="margin-top: 8px;"><strong>商城订单号:</strong> <el-link type="primary" @click="handleViewMallOrderDetail">{{ form.mallOrderCode || '-' }}</el-link></div>
             <div style="margin-top: 8px;"><strong>购车人:</strong> {{ form.buyerName || '-' }}</div>
             <div style="margin-top: 8px;"><strong>公司名称:</strong> {{ form.companyName || '-' }}</div>
             <div style="margin-top: 8px;"><strong>优惠金额:</strong> {{ form.discountAmount || '-' }}</div>
@@ -343,17 +671,24 @@
         </div>
       </div>
     </template>
+
   </edit-page-layout>
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehretail/orderManager/vrGroupbuyOrderEquityApply/index';
+import { getDetail, addOrUpdate, submit, invalid, approve, selectedVehicleOrderValid, queryAuditor, queryStepInfo } from '@/api/vehretail/orderManager/vrGroupbuyOrderEquityApply/index';
+import { getList as getApprovalDetailList } from '@/api/vehretail/orderManager/vrGroupbuyOrderEquityApplyLog/index';
+import { getMatchingCompanyNamesBySeries as getEnterprisePolicyList } from '@/api/vehretail/orderManager/vrGroupbuyEnterprisePolicy/index';
+import { getList as getRetailOrderList } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import auditDialog from '@/libs/components/auditDialog';
+import AisAttachment from '@/libs/components/AisAttachment/index.vue';
+import FetchSelect from '@/libs/components/FetchSelect';
 
 const defaultForm = {
   id: '',
@@ -371,22 +706,22 @@ const defaultForm = {
   ownerOrgId: null,
   dealerName: '',
   dealerCode: '',
-  cooperationType: null,
+  cooperationType: '',
   regionName: '',
   companyName: '',
   discountAmount: null,
   couponName: '',
   materialsCode: '',
   materialsDesc: '',
-  vehicleOrderStatus: null,
+  vehicleOrderStatus: '',
   mallOrderTime: '',
   mallOrderCode: '',
   orderSource: '',
   userId: '',
   buyerName: '',
   buyerPhone: '',
-  idType: null,
   idNumber: '',
+  idType: '',
   agentContact: '',
   discountedPrice: null,
   depositAmount: null,
@@ -400,11 +735,9 @@ const defaultForm = {
   applicantId: '',
   applicationTime: '',
   submitTime: '',
-  firstAuditTime: '',
-  reviewAuditTime: '',
-  finalAuditTime: '',
   auditStatus: null,
-  vehicleOrderNo: ''
+  vehicleOrderNo: '',
+  permissions: {},
 };
 
 export default {
@@ -418,7 +751,10 @@ export default {
   mixins: [routeGuard, permissions, commonMixins],
   components: {
     EditPageLayout,
-    EditBaseContainer
+    EditBaseContainer,
+    auditDialog,
+    AisAttachment,
+    FetchSelect
   },
   computed: {
     _id () {
@@ -427,44 +763,6 @@ export default {
     title () {
       return '团购订单权益申请编号：' + (this.form.code || '');
     },
-    canSubmitApproval () {
-      // 草稿状态可以提交审批
-      return this.form.auditStatus === 10;
-    },
-    showViewAuditUsers () {
-      // 初审、复审、终审时显示查看审核人员
-      return [30, 40, 50].includes(this.form.auditStatus);
-    },
-    getFirstAuditLabel () {
-      // 根据合作类型返回初审岗位
-      if (this.form.cooperationType === 30) {
-        // 直营店
-        return '店长(初审)';
-      } else {
-        // 合作伙伴或二网
-        return '城市经理(初审)';
-      }
-    },
-    getReviewAuditLabel () {
-      // 根据合作类型返回复审岗位
-      if (this.form.cooperationType === 30) {
-        // 直营店
-        return '直营城市总经理(复审)';
-      } else {
-        // 合作伙伴或二网
-        return '大区经理(复审)';
-      }
-    }
-  },
-  watch: {
-    id: {
-      handler (val) {
-        if (val && this.$refs.containerRef) {
-          this.$refs.containerRef.loadDetail();
-        }
-      },
-      immediate: true
-    }
   },
   data () {
     const form = this.getDefautlForm();
@@ -477,23 +775,36 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       approvalDetailList: [],
-      attachmentList: []
+      stepInfoList: [],
+      auditorList: [],
+      rules: {
+        companyName: [
+          { required: true, message: '请选择公司名称', trigger: 'change' }
+        ],
+        mallOrderCode: [
+          { required: true, message: '请选择商城订单号', trigger: 'change' }
+        ]
+      }
     };
+  },
+  watch: {
+    id: {
+      handler (val) {
+        if (val && this.$refs.containerRef) {
+          this.$refs.containerRef.loadDetail();
+        }
+      },
+      immediate: true
+    },
   },
   methods: {
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id).then(res => {
-          // 如果后端返回了审批明细和附件数据
-          if (res.approvalDetailList && Array.isArray(res.approvalDetailList)) {
-            this.approvalDetailList = res.approvalDetailList;
-          }
-          if (res.attachmentList && Array.isArray(res.attachmentList)) {
-            this.attachmentList = res.attachmentList;
-          }
-          return res;
-        });
+        const detail = getDetail(id);
+        this.getApprovalDetailList();
+        this.getStepInfo(id);
+        return detail;
       }
     },
     submitRequest () {
@@ -507,253 +818,146 @@ export default {
         ...defaultForm
       };
     },
-    getStepClass (step) {
-      const statusMap = {
-        10: 1, // 草稿
-        30: 2, // 已提交
-        40: 3, // 已初审
-        50: 4, // 已复审
-        60: 5, // 已终审
-        20: this.getRejectStep(), // 驳回
-        70: 1 // 作废
-      };
-      const currentStep = statusMap[this.form.auditStatus] || 1;
-
-      if (step < currentStep) {
-        return 'step-finished';
-      } else if (step === currentStep) {
-        return 'step-current';
-      } else {
-        return 'step-pending';
+    getAuditTitle () {
+      if (this.form.auditStatus === 30 || this.form.auditStatus === '30') {
+        return '初审';
       }
-    },
-    getLineClass (step) {
-      const statusMap = {
-        10: 1,
-        30: 2,
-        40: 3,
-        50: 4,
-        60: 5,
-        20: this.getRejectStep(),
-        70: 1
-      };
-      const currentStep = statusMap[this.form.auditStatus] || 1;
-
-      if (step < currentStep - 1) {
-        return 'line-finished';
-      } else if (step === currentStep - 1) {
-        return 'line-current';
-      } else {
-        return 'line-pending';
+      if (this.form.auditStatus === 40 || this.form.auditStatus === '40') {
+        return '复审';
       }
+      return '终审';
     },
-    getRejectStep () {
-      // 被驳回时，停留在当前步骤
-      if ([20, 30].includes(this.form.auditStatus)) return 2;
-      if (this.form.auditStatus === 40) return 3;
-      if (this.form.auditStatus === 50) return 4;
-      return 1;
+    // 查看审核人员
+    async handleViewAuditUsers () {
+      this.auditorList = await queryAuditor({
+        cooperationType: this.form.cooperationType,
+        auditStatus: null,
+        dealerCode: this.form.dealerCode
+      }) || [];
     },
-    handleSubmitApproval () {
+    // 公司下拉
+    async getEnterpriseList () {
+      const result = await getEnterprisePolicyList({
+        pageNum: 1,
+        pageSize: 20,
+        companyName: this.form.companyName,
+        seriesId: this.form.seriesId,
+      });
+      return result;
+    },
+
+    // 商城订单号下拉
+    async getRetailOrderListByNo (query = '') {
+      const result = await getRetailOrderList({
+        mallOrderCode: query,
+        pageSize: 20
+      });
+      return result;
+    },
+
+    // 处理商城订单号选择变化
+    async handleMallOrderCodeChange (value, record) {
+      selectedVehicleOrderValid({
+        mallOrderCode: value,
+        excludeSelf: this._id
+      });
+      this.fillOrderInfo(record);
+    },
+
+    // 处理公司选择变化
+    async handleCompanyChange (value, record) {
+      this.fillCompanyInfo(record);
+    },
+
+    // 作废
+    async handleCancel () {
+      this.$confirm('确认要作废此申请吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        await invalid(this._id);
+        this.$message.success('作废成功');
+        this.$refs.containerRef.loadDetail();
+      });
+    },
+    // 提交审批
+    async handleSubmitApproval () {
       this.$confirm('确认要提交审批吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        // 调用提交审批API
-        // submitApproval({ id: this.form.id }).then(() => {
-        //   this.$message.success('提交成功');
-        //   this.$refs.containerRef.loadDetail();
-        // });
+      }).then(async () => {
+        await submit(this._id);
         this.$message.success('提交成功');
+        this.$refs.containerRef.loadDetail();
       });
     },
-    handleViewAuditUsers () {
-      // 调用获取审核人员API并显示弹窗
-      // getAuditUsers({ cooperationType: this.form.cooperationType }).then(res => {
-      //   // 显示弹窗
-      // });
-      this.$message.info('查看审核人员功能待实现');
+    // 审批
+    async handleAudit () {
+      this.$refs.auditInput.show();
     },
-    handleViewOrderDetail () {
-      this.$message.info('跳转整车订单详情功能待实现');
+    async handleAuditSubmit (data) {
+      await approve({
+        id: this._id,
+        isAudit: data.result,
+        auditStatus: this.form.auditStatus,
+        auditOpinion: data.content || data.remark
+      });
+      this.$message.success('审核成功');
+      this.$refs.containerRef.loadDetail();
     },
-    handleViewMaterialDetail () {
-      this.$message.info('跳转物料详情功能待实现');
+    // 获取审批明细
+    async getApprovalDetailList () {
+      this.approvalDetailList = await getApprovalDetailList({ groupbuyOrderEquityApplyId: this._id }) || [];
     },
-    handleViewStoreDetail () {
-      this.$message.info('跳转门店详情功能待实现');
-    },
-    handleViewOrderMaterialDetail () {
-      this.$message.info('跳转订单物料详情功能待实现');
-    },
-    handleViewAllocationMaterialDetail () {
-      this.$message.info('跳转配车物料详情功能待实现');
-    },
-    handleViewSaleStoreDetail () {
-      this.$message.info('跳转销售门店详情功能待实现');
-    },
-    handleViewDeliveryStoreDetail () {
-      this.$message.info('跳转交付门店详情功能待实现');
-    },
-    handleViewVehicleDetail () {
-      this.$message.info('跳转车辆档案详情功能待实现');
-    },
-    getEnumLabel (enumCode, value) {
-      return value;
-    },
-    getAuditStatusLabel (status) {
-      const statusMap = {
-        10: '草稿',
-        20: '驳回',
-        30: '已提交',
-        40: '已初审',
-        50: '已复审',
-        60: '已终审',
-        70: '作废'
-      };
-      return statusMap[status] || '-';
-    },
-    isImage (type) {
-      return ['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(type.toLowerCase());
-    },
-    formatFileSize (size) {
-      if (!size) return '-';
-      if (size < 1024) return size + ' B';
-      if (size < 1024 * 1024) return (size / 1024).toFixed(2) + ' KB';
-      return (size / 1024 / 1024).toFixed(2) + ' MB';
+    // 获取流程步骤信息
+    async getStepInfo (id) {
+      this.stepInfoList = (await queryStepInfo({ id }))?.stepInfoList || [];
     },
     async fetchOptions (code) {
       if (code) {
         return getEnum(code);
       }
       return [];
+    },
+    // 根据订单号填充订单信息
+    async fillOrderInfo (orderInfo) {
+      // 填充订单相关字段（公司信息除外）
+      this.$set(this.form, 'vehicleOrderNo', orderInfo?.vehicleOrderNo || '');
+      this.$set(this.form, 'orderMaterialsCode', orderInfo?.orderMaterialsCode || '');
+      this.$set(this.form, 'dealerName', orderInfo?.dealerName || '');
+      this.$set(this.form, 'cooperationType', orderInfo?.cooperationType || '');
+      this.$set(this.form, 'modelName', orderInfo?.modelName || '');
+      this.$set(this.form, 'seriesName', orderInfo?.seriesName || '');
+      this.$set(this.form, 'buyerName', orderInfo?.buyerName || '');
+      this.$set(this.form, 'buyerPhone', orderInfo?.buyerPhone || '');
+      this.$set(this.form, 'userId', orderInfo?.userId || '');
+      this.$set(this.form, 'materialsDesc', orderInfo?.materialsDesc || '');
+      this.$set(this.form, 'vehicleOrderStatus', orderInfo?.vehicleOrderStatus || '');
+      this.$set(this.form, 'mallOrderTime', orderInfo?.mallOrderTime || '');
+      this.$set(this.form, 'orderSource', orderInfo?.orderSource);
+      this.$set(this.form, 'idType', orderInfo?.idType);
+      this.$set(this.form, 'idNumber', orderInfo?.idNumber);
+      this.$set(this.form, 'discountedPrice', orderInfo?.discountedPrice);
+      this.$set(this.form, 'depositAmount', orderInfo?.depositAmount);
+      this.$set(this.form, 'deliveryTime', orderInfo?.deliveryTime);
+      this.$set(this.form, 'allocationMaterialsCode', orderInfo?.allocationMaterialsCode);
+      this.$set(this.form, 'saleDealerCode', orderInfo?.saleDealerCode);
+      this.$set(this.form, 'deliveryDealerCode', orderInfo?.deliveryDealerCode);
+      this.$set(this.form, 'deliveryVin', orderInfo?.deliveryVin);
+      this.$set(this.form, 'agentContact', orderInfo?.agentContact);
+    },
+
+    // 根据公司信息填充公司字段
+    async fillCompanyInfo (companyInfo) {
+      this.$set(this.form, 'companyName', companyInfo?.companyName || '');
+      this.$set(this.form, 'discountAmount', companyInfo?.discountAmount || null);
+      this.$set(this.form, 'couponName', companyInfo?.couponName || '');
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.page-common-edit {
-  h3 {
-    margin: 0 0 15px;
-    font-size: 16px;
-  }
-}
-
-.audit-steps {
-  .steps-header {
-    margin-bottom: 10px;
-  }
-  .steps-container {
-    display: flex;
-    align-items: center;
-    padding: 20px;
-    background: #f5f7fa;
-    border-radius: 4px;
-  }
-  .step-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    z-index: 1;
-    &.step-finished {
-      .step-circle {
-        background: #1a73e8;
-        color: #fff;
-      }
-      .step-label {
-        color: #1a73e8;
-      }
-    }
-    &.step-current {
-      .step-circle {
-        background: #e53935;
-        color: #fff;
-        border: 2px solid #e53935;
-      }
-      .step-label {
-        color: #e53935;
-        font-weight: bold;
-      }
-    }
-    &.step-pending {
-      .step-circle {
-        background: #e0e0e0;
-        color: #666;
-      }
-      .step-label {
-        color: #999;
-      }
-    }
-  }
-  .step-circle {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    margin-bottom: 8px;
-    border: 2px solid #1a73e8;
-    background: #fff;
-    color: #1a73e8;
-  }
-  .step-label {
-    font-size: 12px;
-    color: #666;
-    white-space: nowrap;
-  }
-  .step-line {
-    flex: 1;
-    height: 2px;
-    margin: 0 20px;
-    &.line-finished {
-      background: #1a73e8;
-    }
-    &.line-current {
-      background: #e53935;
-    }
-    &.line-pending {
-      background: #e0e0e0;
-    }
-  }
-}
-
-.attachment-item {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  margin-bottom: 10px;
-  .attachment-preview {
-    width: 60px;
-    height: 60px;
-    margin-right: 10px;
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 4px;
-    }
-  }
-  .attachment-info {
-    .file-name {
-      font-weight: bold;
-      margin-bottom: 4px;
-    }
-    .file-size, .file-type {
-      font-size: 12px;
-      color: #999;
-    }
-  }
-}
-
-.no-attachment {
-  text-align: center;
-  color: #999;
-  padding: 20px;
-}
 </style>

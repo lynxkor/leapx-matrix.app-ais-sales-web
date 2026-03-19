@@ -1083,7 +1083,8 @@ export default {
       await selectedVehicleOrderValid({
         mallOrderNo: this.form.mallOrderNo,
         equityCategoryId: this.form.equityCategoryId,
-        replacementType: this.form.replacementType
+        replacementType: this.form.replacementType,
+        excludeSelf: this._id
       });
     },
 
