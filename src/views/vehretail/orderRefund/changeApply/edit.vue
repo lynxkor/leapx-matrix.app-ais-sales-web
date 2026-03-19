@@ -548,7 +548,14 @@
 </template>
 
 <script>
-import { addOrUpdate, audit, cancel, getDetail, submit } from '@/api/vehretail/orderRefund/orderChange/index';
+import {
+  addOrUpdate,
+  audit,
+  cancel,
+  getDetail,
+  legalVerification,
+  submit
+} from '@/api/vehretail/orderRefund/orderChange/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -1132,6 +1139,19 @@ export default {
       return await retailOrderPage(params);
     },
     retailOrderChange (val, selectedOption) {
+      if (val) {
+        legalVerification(selectedOption.retailOrderCode)
+          .then(res => {
+            this.refreshOrderInfo(val, selectedOption);
+          })
+          .catch(() => {
+            this.refreshOrderInfo(null, selectedOption);
+          });
+      } else {
+        this.refreshOrderInfo(null, selectedOption);
+      }
+    },
+    refreshOrderInfo (val, selectedOption) {
       this.form.retailOrderId = val ? selectedOption.id : '';
       this.form.retailOrderCode = val ? selectedOption.retailOrderCode : '';
       this.form.mallOrderCode = val ? selectedOption.mallOrderCode : '';

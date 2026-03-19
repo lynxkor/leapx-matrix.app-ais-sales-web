@@ -30,12 +30,12 @@
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
 
-                <el-form-item label="销售公司：" prop="saleCompanyId">
+                <el-form-item label="销售公司：" prop="saleCompanyName">
                    <fetch-select
                       filterable
                       clearable
                       remote
-                      v-model="form.saleCompanyId"
+                      v-model="form.saleCompanyName"
                       :params="form.saleCompanyName"
                       :remote-method="getCompanyList"
                       value-key="id"
@@ -49,6 +49,7 @@
                     placeholder="请选择订单分类"
                     clearable
                     filterable
+                    disabled
                   />
                 </el-form-item>
                  <el-form-item label="关联交易价格比例(%)：" prop="txnTaxPriceRate">
@@ -87,8 +88,8 @@
                 </el-form-item> -->
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="销售公司：" prop="saleCompanyId">
-                  {{ form.saleCompanyId }}
+                <el-form-item label="销售公司：" prop="saleCompanyName">
+                  {{ form.saleCompanyName }}
                 </el-form-item>
                  <el-form-item label="订单分类：" prop="orderCategoryLabel">
                   {{ form.orderCategoryLabel }}
@@ -155,7 +156,7 @@ const defaultForm = {
   dataSource: '',
   code: '',
   saleCompanyId: '',
-  orderCategory: '',
+  orderCategory: 21,
   txnTaxPriceRate: '',
   effectiveTime: '',
   expireTime: '',
@@ -210,7 +211,7 @@ export default {
       emptyText: '若要启用此内容，请创建记录',
       tableData: [],
       rules: {
-        saleCompanyId: [
+        saleCompanyName: [
           { required: true, message: '请输入销售公司', trigger: 'change' }
         ],
         orderCategory: [

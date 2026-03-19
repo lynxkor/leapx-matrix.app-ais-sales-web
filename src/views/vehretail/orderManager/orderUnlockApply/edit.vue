@@ -569,8 +569,9 @@ export default {
   },
   created () {
     const id = this.$route.query.needAddId;
-    const isAdding = this.$route.query.isAdding;
-    this.canEditing = isAdding || (this.$route.query.isEditing && (this.form.applyStatus === 1040 || this.form.applyStatus === 1010));
+    const isAdding = this.$route.query.isAdding === 'true';
+    const isEditing = this.$route.query.isEditing === 'true';
+    this.canEditing = isAdding || (isEditing && (this.form.applyStatus === 1040 || this.form.applyStatus === 1010));
     if (id && isAdding) {
       getRetailOrderDetail(id).then(res => {
         // 直接更新表单数据
@@ -614,7 +615,12 @@ export default {
       return findCanUnlockOrderList({ retailOrderCode: params });
     },
     async unlockReasonSearch (params) {
-      return getOptionList({ searchKey: params });
+      const isAdding = this.$route.query.isAdding === 'true';
+      if (isAdding) {
+        return getOptionList({ searchKey: params, unlockReasonCode: 'DJY006' });
+      } else {
+        return getOptionList({ searchKey: params });
+      }
     },
     detailRequest () {
       const id = this._id;

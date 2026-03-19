@@ -33,6 +33,9 @@
                  <el-form-item label="母公司名称：" prop="dealerCompanyName">
                   {{ form.dealerCompanyName }}
                 </el-form-item>
+                <el-form-item label="销售公司：" prop="saleCompanyName">
+              {{ form.saleCompanyName  }}
+            </el-form-item>
                 <el-form-item label="资金类型：" prop="fundTypeLabel">
                   {{ form.fundTypeLabel }}
                 </el-form-item>

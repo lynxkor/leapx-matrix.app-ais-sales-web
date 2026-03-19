@@ -2689,7 +2689,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/ordermanager/deliveryinvoice/edit',
+      path: '/vehretail/ordermanager/deliveryInvoice/edit',
       name: 'deliveryInvoiceEdit',
       component: () => import('@/views/vehretail/orderManager/deliveryInvoice/edit.vue'),
 
@@ -2713,6 +2713,60 @@ const routes = [
 
       meta: {
         name: '门店库存调拨白名单详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/orderManager/soldPlateInfo',
+      name: 'soldPlateInfo',
+      component: () => import('@/views/vehretail/orderManager/soldPlateInfo/index.vue'),
+
+      meta: {
+        name: '已售上牌车辆资料',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/orderManager/soldPlateInfo/edit',
+      name: 'soldPlateInfoEdit',
+      component: () => import('@/views/vehretail/orderManager/soldPlateInfo/edit.vue'),
+
+      meta: {
+        name: '已售上牌车辆资料详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/orderManager/specialVehicleSalesReport',
+      name: 'specialVehicleSalesReport',
+      component: () => import('@/views/vehretail/orderManager/specialVehicleSalesReport/index.vue'),
+
+      meta: {
+        name: '特殊车辆销售提报',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/orderManager/specialVehicleSalesReport/edit',
+      name: 'specialVehicleSalesReportEdit',
+      component: () => import('@/views/vehretail/orderManager/specialVehicleSalesReport/edit.vue'),
+
+      meta: {
+        name: '特殊车辆销售提报详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/store/storeInventoryTransfer',
+      name: 'storeInventoryTransfer',
+      component: () => import('@/views/vehstock/store/storeInventoryTransfer/index.vue'),
+
+      meta: {
+        name: '门店库存调拨管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/store/storeinventorytransfer/edit',
+      name: 'storeInventoryTransferEdit',
+      component: () => import('@/views/vehstock/store/storeInventoryTransfer/edit.vue'),
+
+      meta: {
+        name: '门店库存调拨管理详情',
         noResourceUrl: 'true'
       }
     }]

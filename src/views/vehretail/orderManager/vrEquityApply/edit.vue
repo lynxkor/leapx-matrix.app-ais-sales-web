@@ -10,21 +10,17 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="form.permissions.edit"
       >
         <template #status>
-          <span v-if="form.auditStatus === 10" class="status">草稿</span>
-          <span v-else-if="form.auditStatus === 20" class="status warning">驳回</span>
-          <span v-else-if="form.auditStatus === 30" class="status">已提交</span>
-          <span v-else-if="form.auditStatus === 40" class="status">已初审</span>
-          <span v-else-if="form.auditStatus === 60" class="status success">已终审</span>
-          <span v-else-if="form.auditStatus === 70" class="status danger">作废</span>
+          <span class="status primary"> {{ form.auditStatusLabel }}</span>
         </template>
         <template #extraButtons>
-          <el-button v-if="canEditDraft && canAddOrUpdate" size="small" @click="handleCancel">作废</el-button>
-          <el-button v-if="canSubmitApproval" size="small" type="primary" @click="handleSubmitApproval">提交审批</el-button>
-          <el-button v-if="canFirstAudit" size="small" type="primary" @click="handleFirstAudit">初审</el-button>
-          <el-button v-if="canAudit" size="small" type="primary" @click="handleAudit">审核</el-button>
-          <el-button v-if="canRecall" size="small" @click="handleRecall">审核撤回</el-button>
+          <el-button size="small" @click="auditLog">申请记录</el-button>
+          <el-button v-if = "form.permissions.cancel" size="small" @click="handleCancel">作废</el-button>
+          <el-button v-if = "form.permissions.submit" size="small" @click="handleSubmitApproval">提交审批</el-button>
+          <el-button v-if = "form.permissions.audit" size="small" @click="handleAudit">审核</el-button>
+          <el-button v-if = "form.permissions.auditRevoke" size="small" @click="handleRecall">审核撤回</el-button>
         </template>
         <el-main>
           <!-- 基础信息 -->
@@ -43,10 +39,16 @@
                   />
                 </el-form-item>
                 <el-form-item label="商城订单号：" prop="mallOrderNo">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.mallOrderNo"
+                  <fetch-select
+                    filterable
                     clearable
+                    remote
+                    v-model="form.mallOrderNo"
+                    :remote-method="getRetailOrderListByNo"
+                    value-key="mallOrderCode"
+                    label-key="mallOrderCode"
+                    placeholder="请选择商城订单号"
+                    @change="handleMallOrderNoChange"
                   />
                 </el-form-item>
                 <el-form-item label="整车订单编号：" prop="vehicleOrderNo">
@@ -54,33 +56,47 @@
                     placeholder="请输入"
                     v-model="form.vehicleOrderNo"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="原车VIN号：" prop="originalVin">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.originalVin"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="权益大类：" prop="equityCategoryName">
                   <fetch-select
-                    :request="fetchOptions"
-                    enumCode="equity_category"
-                    v-model="form.equityCategoryId"
-                    placeholder="请选择"
-                    clearable
                     filterable
+                    clearable
+                    remote
+                    v-model="form.originalVin"
+                    :remote-method="getOriginalVinList"
+                    value-key="vin"
+                    label-key="vin"
+                    placeholder="请选择原车VIN号"
+                    :disabled="form.replacementType == 20"
+                    @change="handleOriginalVinChange"
                   />
                 </el-form-item>
-                <el-form-item label="置换类型：" prop="replacementType">
+                <el-form-item label="权益大类：" prop="equityCategoryId">
+                  <fetch-select
+                    filterable
+                    clearable
+                    remote
+                    reserve-keyword
+                    :options="equityCategoryOptions"
+                    v-model="form.equityCategoryId"
+                    :param="form.equityCategoryName"
+                    value-key="id"
+                    label-key="name"
+                    placeholder="请选择权益大类"
+                    @change="handleEquityCategoryChange"
+                  />
+                </el-form-item>
+                <el-form-item label="置换类型：" prop="replacementType" v-show="form.equityCategoryName === '增换购券' || form.equityCategoryName === '新标专项'">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="mcs_replacetype"
+                    enumCode="vr_order_benefit_replacement_type"
                     v-model="form.replacementType"
                     placeholder="请选择"
                     clearable
                     filterable
+                    @change="handleReplacementTypeChange"
                   />
                 </el-form-item>
                 <el-form-item label="优惠金额：" prop="discountAmount">
@@ -88,6 +104,8 @@
                     v-model="form.discountAmount"
                     :precision="2"
                     :step="0.01"
+                    :min="0"
+                    :max="100000000000"
                     placeholder="请输入"
                   />
                 </el-form-item>
@@ -96,6 +114,8 @@
                     placeholder="请输入"
                     v-model="form.otherBrand"
                     clearable
+                    :disabled="form.replacementType == 10"
+                    maxlength="50"
                   />
                 </el-form-item>
                 <el-form-item label="备注：" prop="remark">
@@ -105,6 +125,7 @@
                     placeholder="请输入"
                     v-model="form.remark"
                     clearable
+                    maxlength="1000"
                   />
                 </el-form-item>
               </el-form>
@@ -113,19 +134,19 @@
                   {{ form.code }}
                 </el-form-item>
                 <el-form-item label="商城订单号：">
-                  <el-link type="primary" @click="handleViewStoreDetail">{{ form.mallOrderNo }}</el-link>
+                  {{ form.mallOrderNo }}
                 </el-form-item>
                 <el-form-item label="整车订单编号：">
                   {{ form.vehicleOrderNo }}
                 </el-form-item>
                 <el-form-item label="原车VIN号：">
-                  <el-link type="primary" @click="handleViewVehicleDetail">{{ form.originalVin }}</el-link>
+                  {{ form.originalVin }}
                 </el-form-item>
                 <el-form-item label="权益大类：">
                   {{ form.equityCategoryName }}
                 </el-form-item>
                 <el-form-item label="置换类型：">
-                  {{ getEnumLabel('mcs_replacetype', form.replacementType) }}
+                  {{ form.replacementTypeLabel }}
                 </el-form-item>
                 <el-form-item label="优惠金额：">
                   {{ form.discountAmount }}
@@ -152,17 +173,12 @@
               <h2>附件材料</h2>
             </div>
             <div class="common-section-body">
-              <el-upload
-                class="upload-demo"
-                action=""
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                :file-list="fileList"
-                :auto-upload="false"
-              >
-                <el-button size="small" type="primary" slot="trigger">选择文件</el-button>
-                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-              </el-upload>
+              <AisAttachment
+                :businessId="_id"
+                attachType="订单权益申请附件"
+                configCode="vr_equity_apply"
+                :readonly="!(isEditing || !_id)"
+              />
             </div>
           </section>
 
@@ -178,6 +194,7 @@
                     placeholder="请输入"
                     v-model="form.mallOrderNo"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="缴定金时间：" prop="depositTime">
@@ -186,6 +203,7 @@
                     type="datetime"
                     value-format="yyyy-MM-dd HH:mm:ss"
                     placeholder="选择日期时间"
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="锁单时间：" prop="lockTime">
@@ -194,6 +212,7 @@
                     type="datetime"
                     value-format="yyyy-MM-dd HH:mm:ss"
                     placeholder="选择日期时间"
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="代办联系人：" prop="agentContact">
@@ -201,6 +220,7 @@
                     placeholder="请输入"
                     v-model="form.agentContact"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="购车人姓名：" prop="buyerName">
@@ -208,13 +228,7 @@
                     placeholder="请输入"
                     v-model="form.buyerName"
                     clearable
-                  />
-                </el-form-item>
-                <el-form-item label="用户ID：" prop="buyerUserId">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.buyerUserId"
-                    clearable
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="购车人手机号码：" prop="buyerPhone">
@@ -222,16 +236,18 @@
                     placeholder="请输入"
                     v-model="form.buyerPhone"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="购车人证件类型：" prop="buyerIdType">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="id_type"
+                    enumCode="vehretail_id_card_type"
                     v-model="form.buyerIdType"
                     placeholder="请选择"
                     clearable
                     filterable
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="购车人证件号码：" prop="buyerIdNumber">
@@ -239,6 +255,7 @@
                     placeholder="请输入"
                     v-model="form.buyerIdNumber"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="下单人ID：" prop="orderUserId">
@@ -246,6 +263,7 @@
                     placeholder="请输入"
                     v-model="form.orderUserId"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="销售门店：" prop="saleDealerName">
@@ -253,16 +271,18 @@
                     placeholder="请输入"
                     v-model="form.saleDealerName"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="合作类型：" prop="cooperationType">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="cooperation_type"
+                    enumCode="vr_cooperation_type"
                     v-model="form.cooperationType"
                     placeholder="请选择"
                     clearable
                     filterable
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="所属区域：" prop="regionName">
@@ -270,6 +290,7 @@
                     placeholder="请输入"
                     v-model="form.regionName"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="省：" prop="provinceName">
@@ -277,6 +298,7 @@
                     placeholder="请输入"
                     v-model="form.provinceName"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="市：" prop="cityName">
@@ -284,6 +306,7 @@
                     placeholder="请输入"
                     v-model="form.cityName"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
               </el-form>
@@ -303,14 +326,11 @@
                 <el-form-item label="购车人姓名：">
                   {{ form.buyerName }}
                 </el-form-item>
-                <el-form-item label="用户ID：">
-                  {{ form.buyerUserId }}
-                </el-form-item>
                 <el-form-item label="购车人手机号码：">
                   {{ form.buyerPhone }}
                 </el-form-item>
                 <el-form-item label="购车人证件类型：">
-                  {{ form.buyerIdType }}
+                  {{ form.buyerIdTypeLabel }}
                 </el-form-item>
                 <el-form-item label="购车人证件号码：">
                   {{ form.buyerIdNumber }}
@@ -322,7 +342,7 @@
                   {{ form.saleDealerName }}
                 </el-form-item>
                 <el-form-item label="合作类型：">
-                  {{ getEnumLabel('cooperation_type', form.cooperationType) }}
+                  {{ form.cooperationTypeLabel }}
                 </el-form-item>
                 <el-form-item label="所属区域：">
                   {{ form.regionName }}
@@ -349,6 +369,7 @@
                     placeholder="请输入"
                     v-model="form.materialsCode"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="物料描述：" prop="materialsDesc">
@@ -356,6 +377,7 @@
                     placeholder="请输入"
                     v-model="form.materialsDesc"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="基本车系：" prop="seriesName">
@@ -363,6 +385,7 @@
                     placeholder="请输入"
                     v-model="form.seriesName"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="基本车型：" prop="modelName">
@@ -370,6 +393,7 @@
                     placeholder="请输入"
                     v-model="form.modelName"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="车辆年型：" prop="vehicleYearType">
@@ -377,6 +401,7 @@
                     placeholder="请输入"
                     v-model="form.vehicleYearType"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="选装包：" prop="optionPackageName">
@@ -384,6 +409,7 @@
                     placeholder="请输入"
                     v-model="form.optionPackageName"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
               </el-form>
@@ -416,7 +442,7 @@
               <h2>发放信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" :model="form" :rules="rules" ref="issueForm" label-width="150px" class="form-edit" v-show="isEditing || !_id || canEditIssue">
+              <el-form :inline="true" :model="form" :rules="rules" ref="issueForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="是否发放：" prop="isIssued">
                   <fetch-select
                     :options="yes_no_enum"
@@ -424,6 +450,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    :disabled="!form.permissions.editIssue"
                   />
                 </el-form-item>
                 <el-form-item label="预计发放日期：" prop="expectedIssueDate">
@@ -432,40 +459,70 @@
                     type="date"
                     value-format="yyyy-MM-dd"
                     placeholder="选择日期"
+                    :disabled="!form.permissions.editIssue"
                   />
                 </el-form-item>
                 <el-form-item label="发放类型：" prop="issueType">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="issue_type"
+                    enumCode="vr_order_benefit_issue_type"
                     v-model="form.issueType"
                     placeholder="请选择"
                     clearable
                     filterable
+                    :disabled="!form.permissions.editIssue"
                   />
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id || canEditIssue)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="是否发放：">
-                  {{ yes_no_enum_map[form.isIssued] }}
+                  {{ form.isIssuedLabel }}
                 </el-form-item>
                 <el-form-item label="预计发放日期：">
                   {{ form.expectedIssueDate }}
                 </el-form-item>
                 <el-form-item label="发放类型：">
-                  {{ getEnumLabel('issue_type', form.issueType) }}
+                  {{ form.issueTypeLabel }}
                 </el-form-item>
               </el-form>
             </div>
           </section>
 
           <!-- 跨月权益 -->
-          <section class="common-section">
+          <section class="common-section" v-if="form.equityCategoryName === '跨月权益'">
             <div class="common-section-header">
               <h2>跨月权益</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail">
+              <el-form :inline="true" :model="form" :rules="rules" ref="benefitForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+                <el-form-item label="原权益享受日期：" prop="originalBenefitDate">
+                  <el-date-picker
+                    v-model="form.originalBenefitDate"
+                    type="date"
+                    value-format="yyyy-MM-dd"
+                    placeholder="选择日期"
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="变更后权益日期：" prop="changedBenefitDate">
+                  <el-date-picker
+                    v-model="form.changedBenefitDate"
+                    type="date"
+                    value-format="yyyy-MM-dd"
+                    placeholder="选择日期"
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="OA流程编号：" prop="oaProcessNo">
+                  <el-input
+                    placeholder="请输入OA流程编号"
+                    v-model="form.oaProcessNo"
+                    clearable
+                    maxlength="50"
+                  />
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="原权益享受日期：">
                   {{ form.originalBenefitDate }}
                 </el-form-item>
@@ -480,12 +537,65 @@
           </section>
 
           <!-- 原车车主信息 -->
-          <section class="common-section">
+          <section class="common-section" v-if="form.replacementType == 10 && (form.equityCategoryName === '新标专项' || form.equityCategoryName === '增值换购')">
             <div class="common-section-header">
               <h2>原车车主信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ownerForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+                <el-form-item label="原车车主姓名：" prop="originalOwnerName">
+                  <el-input
+                    placeholder="请输入原车车主姓名"
+                    v-model="form.originalOwnerName"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="原车车主手机号：" prop="originalOwnerPhone">
+                  <el-input
+                    placeholder="请输入原车车主手机号"
+                    v-model="form.originalOwnerPhone"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="原车主证件类型：" prop="originalOwnerIdType">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vehretail_id_card_type"
+                    v-model="form.originalOwnerIdType"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="原车主证件号码：" prop="originalOwnerIdNumber">
+                  <el-input
+                    placeholder="请输入原车主证件号码"
+                    v-model="form.originalOwnerIdNumber"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="原车物料码：" prop="originalMaterialsCode">
+                  <el-input
+                    placeholder="请输入原车物料码"
+                    v-model="form.originalMaterialsCode"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="基本车型：" prop="originalModelName">
+                  <el-input
+                    placeholder="请输入基本车型"
+                    v-model="form.originalModelName"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="原车车主姓名：">
                   {{ form.originalOwnerName }}
                 </el-form-item>
@@ -493,7 +603,7 @@
                   {{ form.originalOwnerPhone }}
                 </el-form-item>
                 <el-form-item label="原车主证件类型：">
-                  {{ form.originalOwnerIdType }}
+                  {{ form.originalOwnerIdTypeLabel }}
                 </el-form-item>
                 <el-form-item label="原车主证件号码：">
                   {{ form.originalOwnerIdNumber }}
@@ -537,6 +647,7 @@
             </div>
           </section>
         </el-main>
+        <auditDialog ref="auditInput" @audit="handleAuditSubmit" :auditTitle='form.auditStatus === 30 ? "初审" : "审核"'/>
       </edit-base-container>
     </template>
     <template #right>
@@ -545,10 +656,10 @@
           <h3>申请概况</h3>
           <div style="margin-top: 10px; padding: 15px; background: #f5f7fa; border-radius: 4px;">
             <div><strong>申请单号:</strong> {{ form.code || '-' }}</div>
-            <div style="margin-top: 8px;"><strong>申请状态:</strong> {{ getAuditStatusLabel(form.auditStatus) }}</div>
+            <div style="margin-top: 8px;"><strong>申请状态:</strong> {{ form.auditStatusLabel || '-' }}</div>
             <div style="margin-top: 8px;"><strong>商城订单:</strong> {{ form.mallOrderNo || '-' }}</div>
             <div style="margin-top: 8px;"><strong>权益大类:</strong> {{ form.equityCategoryName || '-' }}</div>
-            <div style="margin-top: 8px;"><strong>置换类型:</strong> {{ getEnumLabel('mcs_replacetype', form.replacementType) || '-' }}</div>
+            <div style="margin-top: 8px;"><strong>置换类型:</strong> {{ form.replacementTypeLabel || '-' }}</div>
             <div style="margin-top: 8px;"><strong>优惠金额:</strong> {{ form.discountAmount || '-' }}</div>
             <div style="margin-top: 8px;"><strong>销售门店:</strong> {{ form.saleDealerName || '-' }}</div>
             <div style="margin-top: 8px;"><strong>提交时间:</strong> {{ form.submitTime || '-' }}</div>
@@ -556,18 +667,54 @@
         </div>
       </div>
     </template>
+
+    <!-- 申请记录弹窗 -->
+    <el-dialog
+      title="申请记录"
+      :visible.sync="logDialogVisible"
+      width="60%"
+      min-height="70%"
+      :modal-append-to-body="false"
+      :before-close="handleLogDialogClose"
+      class="dialog-with-table"
+    >
+      <vxe-table
+        ref="logTableRef"
+        v-loading="logLoading"
+        :data="logOptionObj.dataList"
+        height="400"
+        stripe
+        :resizable="true"
+      >
+        <vxe-column type="seq" title="序号" width="80" fixed="left"></vxe-column>
+        <vxe-column field="submitTime" title="提交时间" min-width="150"></vxe-column>
+        <vxe-column field="auditStatusLabel" title="申请单状态" min-width="100"></vxe-column>
+        <vxe-column field="equityCategoryName" title="权益大类" min-width="100"></vxe-column>
+        <vxe-column field="replacementTypeLabel" title="置换类型" min-width="100"></vxe-column>
+        <vxe-column field="discountAmount" title="优惠金额" min-width="100"></vxe-column>
+        <vxe-column field="isIssuedLabel" title="是否发放" min-width="100"></vxe-column>
+        <vxe-column field="expectedIssueDate" title="发放日期" min-width="120"></vxe-column>
+        <vxe-column field="issueTypeLabel" title="发放类型" min-width="100"></vxe-column>
+      </vxe-table>
+    </el-dialog>
   </edit-page-layout>
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehretail/orderManager/vrEquityApply/index';
+import { getDetail, addOrUpdate, selectedVehicleOrderValid, submit, approve, invalid, cancelApprove, cancelApproveValid, approveRecord } from '@/api/vehretail/orderManager/vrEquityApply/index';
+import { getList as getRetailOrderList, getDetail as getRetailOrderDetail } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { listByAuth as getEquityCategoryListApi } from '@/api/vehretail/basicConfig/vrEquityCategory/index';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
+import { getList as getVehicleProfileList } from '@/api/datacenter/vehicle/vehicleProfile/index.js';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import AisAttachment from '@/libs/components/AisAttachment/index.vue';
+import FetchSelect from '@/libs/components/FetchSelect';
+import auditDialog from '@/libs/components/auditDialog';
 
 const defaultForm = {
   id: '',
@@ -598,7 +745,6 @@ const defaultForm = {
   lockTime: '',
   agentContact: '',
   buyerName: '',
-  buyerUserId: '',
   buyerPhone: '',
   buyerIdType: null,
   buyerIdNumber: '',
@@ -626,7 +772,6 @@ const defaultForm = {
   changedBenefitDate: '',
   oaProcessNo: '',
   originalOwnerName: '',
-  originalOwnerId: '',
   originalOwnerPhone: '',
   originalOwnerIdType: null,
   originalOwnerIdNumber: '',
@@ -641,7 +786,8 @@ const defaultForm = {
   auditorUserId: '',
   auditTime: '',
   auditOpinion: '',
-  auditStatus: null
+  auditStatus: null,
+  permissions: {}
 };
 
 export default {
@@ -655,7 +801,10 @@ export default {
   mixins: [routeGuard, permissions, commonMixins],
   components: {
     EditPageLayout,
-    EditBaseContainer
+    EditBaseContainer,
+    AisAttachment,
+    FetchSelect,
+    auditDialog
   },
   computed: {
     _id () {
@@ -664,30 +813,6 @@ export default {
     title () {
       return '订单权益申请单号：' + (this.form.code || '');
     },
-    canEditDraft () {
-      // 草稿或驳回状态下可以作废
-      return this.form.auditStatus === 10 || this.form.auditStatus === 20;
-    },
-    canSubmitApproval () {
-      // 草稿或驳回状态下可以提交审批
-      return (this.form.auditStatus === 10 || this.form.auditStatus === 20) && this.isEditing;
-    },
-    canFirstAudit () {
-      // 已提交状态下显示初审
-      return this.form.auditStatus === 30;
-    },
-    canAudit () {
-      // 已初审状态下显示审核
-      return this.form.auditStatus === 40;
-    },
-    canRecall () {
-      // 已终审状态下可以撤回
-      return this.form.auditStatus === 60;
-    },
-    canEditIssue () {
-      // 只有已终审状态才能编辑发放信息
-      return this.form.auditStatus === 60;
-    }
   },
   watch: {
     id: {
@@ -698,6 +823,9 @@ export default {
       },
       immediate: true
     }
+  },
+  mounted () {
+    this.getEquityCategoryList();
   },
   data () {
     const form = this.getDefautlForm();
@@ -712,56 +840,70 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       fileList: [],
+      equityCategoryOptions: [], // 权益类别选项列表
+      logDialogVisible: false,
+      logLoading: false,
+      logOptionObj: {
+        id: 'vrEquityApplyRecordTable',
+        dataList: [],
+        total: 0
+      },
       rules: {
         code: [
-          { required: true, message: '请输入订单权益申请单号', trigger: 'change' }
+          { required: false, message: '请输入订单权益申请单号', trigger: 'change' }
         ],
         mallOrderNo: [
           { required: true, message: '请输入商城订单号', trigger: 'change' }
         ],
         vehicleOrderNo: [
-          { required: true, message: '请输入整车订单编号', trigger: 'change' }
+          { message: '请输入整车订单编号', trigger: 'change' }
         ],
         originalVin: [
-          { required: true, message: '请输入原车VIN号', trigger: 'change' }
+          { required: true, validator: this.validateOriginalVin, trigger: 'change' }
         ],
         equityCategoryId: [
           { required: true, message: '请选择权益大类', trigger: 'change' }
         ],
         replacementType: [
-          { required: true, message: '请选择置换类型', trigger: 'change' }
+          { required: false, message: '请选择置换类型', trigger: 'change' }
         ],
         discountAmount: [
-          { required: true, message: '请输入优惠金额', trigger: 'change' }
+          { required: true, message: '请输入优惠金额', trigger: 'change' },
+          { type: 'number', min: 0, max: 100000000000, message: '输入一个介于 0.00 到 100,000,000,000.00 之间的值', trigger: 'blur' }
         ],
         buyerName: [
-          { required: true, message: '请输入购车人姓名', trigger: 'change' }
+          { message: '请输入购车人姓名', trigger: 'change' }
         ],
         buyerPhone: [
-          { required: true, message: '请输入购车人手机号码', trigger: 'change' }
+          { message: '请输入购车人手机号码', trigger: 'change' }
         ],
         saleDealerName: [
-          { required: true, message: '请输入销售门店', trigger: 'change' }
+          { message: '请输入销售门店', trigger: 'change' }
         ],
         materialsCode: [
-          { required: true, message: '请输入订单物料码', trigger: 'change' }
+          { message: '请输入订单物料码', trigger: 'change' }
+        ],
+        otherBrand: [
+          { required: true, validator: this.validateOtherBrand, trigger: 'blur' },
+          { max: 50, message: '其他品牌不能超过50个字符', trigger: 'blur' }
+        ],
+        remark: [
+          { max: 1000, message: '备注不能超过1000个字符', trigger: 'blur' }
+        ],
+        oaProcessNo: [
+          { required: true, message: '请输入OA流程编号', trigger: 'blur' },
         ]
       }
     };
   },
-  mounted () {
-    this.initEnumMaps();
-  },
   methods: {
-    initEnumMaps () {
-      this.yes_no_enum.forEach(item => {
-        this.yes_no_enum_map[item.code] = item.message;
-      });
-    },
-    detailRequest () {
+    async detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        // 先加载权益类别选项，确保FetchSelect能正确显示
+        await this.getEquityCategoryList();
+        const detail = await getDetail(id);
+        return detail;
       }
     },
     submitRequest () {
@@ -775,102 +917,313 @@ export default {
         ...defaultForm
       };
     },
-    handleViewStoreDetail () {
-      // 跳转到门店详情
-      // this.$router.push({ path: '/store/management/storeDetail', query: { id: xxx } });
-      this.$message.info('跳转门店详情功能待实现');
-    },
-    handleViewVehicleDetail () {
-      // 跳转到车辆档案详情
-      // this.$router.push({ path: '/vehicle/archive/detail', query: { vin: this.form.originalVin } });
-      this.$message.info('跳转车辆档案详情功能待实现');
-    },
-    handleCancel () {
+    async handleCancel () {
       this.$confirm('确认要作废此申请吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        // 调用作废API
-        // cancelItem({ id: this.form.id }).then(() => {
-        //   this.$message.success('作废成功');
-        //   this.$refs.containerRef.loadDetail();
-        // });
+      }).then(async () => {
+        await invalid(this._id);
         this.$message.success('作废成功');
+        this.$refs.containerRef.loadDetail();
       });
     },
-    handleSubmitApproval () {
+    async handleSubmitApproval () {
       this.$confirm('确认要提交审批吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        // 调用提交审批API
-        // submitApproval({ id: this.form.id }).then(() => {
-        //   this.$message.success('提交成功');
-        //   this.$refs.containerRef.loadDetail();
-        // });
+      }).then(async () => {
+        await submit(this._id);
         this.$message.success('提交成功');
+        this.$refs.containerRef.loadDetail();
       });
     },
-    handleFirstAudit () {
-      // 初审功能待实现
-      this.$message.info('初审功能待实现');
+    async handleAudit () {
+      this.$refs.auditInput.show();
     },
-    handleAudit () {
-      // 审核功能待实现
-      this.$message.info('审核功能待实现');
+
+    async handleAuditSubmit (data) {
+      await approve({
+        id: this._id,
+        isAudit: data.result,
+        auditStatus: this.form.auditStatus,
+        auditOpinion: data.content || data.remark
+      });
+      this.$message.success('审核成功');
+      this.$refs.containerRef.loadDetail();
     },
-    handleRecall () {
+    async handleRecall () {
+      // 先进行撤回审批验证
+      await cancelApproveValid(this._id);
       this.$confirm('撤回后将无法恢复，请确认是否撤回', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        // 调用审核撤回API
-        // recallApproval({ id: this.form.id }).then(() => {
-        //   this.$message.success('撤回成功');
-        //   this.$refs.containerRef.loadDetail();
-        // });
+      }).then(async () => {
+        await cancelApprove(this._id);
         this.$message.success('撤回成功');
+        this.$refs.containerRef.loadDetail();
       });
-    },
-    handlePreview (file) {
-      console.log(file);
-    },
-    handleRemove (file, fileList) {
-      console.log(file, fileList);
-    },
-    getEnumLabel (enumCode, value) {
-      // 根据enumCode获取对应的枚举映射
-      return value;
-    },
-    getAuditStatusLabel (status) {
-      const statusMap = {
-        10: '草稿',
-        20: '驳回',
-        30: '已提交',
-        40: '已初审',
-        60: '已终审',
-        70: '作废'
-      };
-      return statusMap[status] || '-';
     },
     async fetchOptions (code) {
       if (code) {
         return getEnum(code);
       }
       return [];
+    },
+
+    // 获取零售订单列表
+    async getRetailOrderListByNo (query = '') {
+      return await getRetailOrderList({
+        mallOrderCode: query,
+        pageSize: 20
+      });
+    },
+
+    // 获取权益类别列表
+    async getEquityCategoryList () {
+      const response = await getEquityCategoryListApi(
+        { orderStatus: this.form.orderStatus }
+      );
+      const options = Array.isArray(response) ? response : (response.records || []);
+      // 更新本地存储的选项
+      this.equityCategoryOptions = options;
+      return options;
+    },
+
+    // 获取原车VIN列表
+    async getOriginalVinList (query = '') {
+      return await getVehicleProfileList({
+        searchVin: query,
+        pageSize: 20
+      });
+    },
+
+    // 权益大类变化时的处理
+    async handleEquityCategoryChange (categoryId, record) {
+      await this.validateSelectedVehicleOrder();
+      this.form.equityCategoryName = record?.name || '';
+    },
+
+    // 置换类型变化时的处理
+    async handleReplacementTypeChange (replacementType) {
+      await this.validateSelectedVehicleOrder();
+      if (replacementType === '10' || replacementType === 10) {
+        this.form.otherBrand = '';
+      } else if (replacementType === '20' || replacementType === 20) {
+        this.form.originalVin = '';
+        this.form.originalOwnerName = '';
+        this.form.originalOwnerPhone = '';
+        this.form.originalOwnerIdType = null;
+        this.form.originalOwnerIdNumber = '';
+        this.form.originalMaterialsCode = '';
+        this.form.originalModelName = '';
+        this.form.originalModelId = '';
+        this.form.originalVinId = '';
+        this.form.originalMaterialsId = '';
+      }
+    },
+
+    // 商城订单号变化时的处理
+    async handleMallOrderNoChange (value, record) {
+      // 校验选中的整车订单是否有效
+      await this.validateSelectedVehicleOrder();
+      this.form.equityCategoryId = null;
+      this.form.equityCategoryName = '';
+      this.form.orderId = record?.id || null;
+
+      // 根据商城订单号获取订单详情
+      const order = await getRetailOrderDetail(
+        this.form.orderId,
+      );
+      // 更新订单相关信息
+      this.form.mallOrderNo = order.mallOrderCode || '';
+      this.form.vehicleOrderNo = order.retailOrderCode || '';
+      this.form.depositTime = order.paymentTime || '';
+      this.form.lockTime = order.lockTime || '';
+      this.form.agentContact = order.carOwner.agentName || '';
+      this.form.buyerName = order.carOwner.carBuyerName || '';
+      this.form.buyerPhone = order.carOwner.carBuyerPhone || '';
+      this.form.buyerIdType = order.carOwner.idCardType || '';
+      this.form.buyerIdNumber = order.carOwner.idCardNo || '';
+      this.form.orderUserId = order.orderUserId || '';
+      this.form.ownerOrgId = order.saleOrgId || '';
+      this.form.saleDealerName = order.saleDealerName || '';
+      this.form.saleDealerCode = order.saleDealerCode || '';
+      this.form.cooperationType = order.cooperationType || '';
+      this.form.regionName = order.regionName || '';
+      this.form.provinceName = order.provinceName || '';
+      this.form.cityName = order.cityName || '';
+      this.form.materialsId = order.materials.materialsId || '';
+      this.form.materialsCode = order.materials.materialsCode || '';
+      this.form.materialsDesc = order.materials.materialsDesc || '';
+      this.form.seriesName = order.materials.seriesName || '';
+      this.form.seriesId = order.materials.seriesId || '';
+      this.form.modelName = order.materials.modelName || '';
+      this.form.modelId = order.materials.modelId || '';
+      this.form.vehicleYearType = order.materials.yearTypeName || '';
+      this.form.vehicleYearTypeId = order.materials.yearTypeId || '';
+      this.form.optionPackageId = order.materials.optionPackageId || '';
+      this.form.optionPackageName = order.materials.optionPackageName || '';
+      this.form.orderStatus = order.orderStatus || null;
+      this.form.originalBenefitDate = order.rightsEnjoyDate || '';
+
+      // 重新查询权益类别列表，更新下拉框选项
+      await this.getEquityCategoryList();
+    },
+
+    // 校验选中的整车订单是否有效
+    async validateSelectedVehicleOrder () {
+      // 检查三个关键字段是否都有值
+      if (!this.form.mallOrderNo || !this.form.equityCategoryId || !this.form.replacementType) {
+        return;
+      }
+      // 调用校验接口
+      await selectedVehicleOrderValid({
+        mallOrderNo: this.form.mallOrderNo,
+        equityCategoryId: this.form.equityCategoryId,
+        replacementType: this.form.replacementType
+      });
+    },
+
+    // 原车VIN号变化时的处理
+    async handleOriginalVinChange (query, record) {
+      if ((this.form.replacementType === 10 || this.form.replacementType === '10') && (this.form.equityCategoryName === '新标专项' || this.form.equityCategoryName === '增值换购')) {
+        this.form.originalVinId = record.id || '';
+        this.form.originalOwnerName = record.vehicleProfileOwnerResp.ownerName || '';
+        this.form.originalOwnerPhone = record.vehicleProfileOwnerResp.mobilephone || '';
+        this.form.originalOwnerIdType = record.vehicleProfileOwnerResp.idcardType || '';
+        this.form.originalOwnerIdNumber = record.vehicleProfileOwnerResp.idcardNo || '';
+        this.form.originalMaterialsCode = record.vehicleMaterialCode || '';
+        this.form.originalMaterialsId = record.vehicleMaterialId || '';
+        this.form.originalModelName = record.vehicleModelName || '';
+        this.form.originalModelId = record.vehicleModelId || '';
+      }
+    },
+
+    // 查看申请记录
+    async auditLog () {
+      try {
+        this.logDialogVisible = true;
+        this.getLogData();
+      } catch (error) {
+        this.$message.error('获取审批记录失败：' + (error.message || '未知错误'));
+      }
+    },
+
+    // 日志弹窗相关方法
+    handleLogDialogClose () {
+      this.logDialogVisible = false;
+    },
+
+    async getLogData () {
+      this.logLoading = true;
+
+      try {
+        // 获取申请记录列表
+        const response = await approveRecord(this._id);
+
+        // 处理返回的数据，因为API返回的是列表
+        let records = [];
+        if (Array.isArray(response)) {
+          records = response;
+        } else if (response && response.records) {
+          records = response.records;
+        } else {
+          records = [];
+        }
+        this.logOptionObj.dataList = records;
+
+        this.logOptionObj.total = this.logOptionObj.dataList.length;
+      } catch (error) {
+        this.$message.error('获取申请记录失败：' + (error.message || '未知错误'));
+        this.logOptionObj.dataList = [];
+        this.logOptionObj.total = 0;
+      } finally {
+        this.logLoading = false;
+      }
+    },
+
+    // 自定义验证规则：当其他品牌不禁用时，必须填写
+    validateOtherBrand (rule, value, callback) {
+      // 当置换类型不是10时，其他品牌字段是启用状态，此时为必填
+      if (this.form.replacementType !== 10 && this.form.replacementType !== '10') {
+        if (!value || value.trim() === '') {
+          callback(new Error('其他品牌不能为空'));
+        } else {
+          callback();
+        }
+      } else {
+        // 当置换类型是10时，字段被禁用，不需要验证
+        callback();
+      }
+    },
+
+    // 自定义验证规则：当原车VIN号不禁用时，必须填写
+    validateOriginalVin (rule, value, callback) {
+      // 当置换类型不是20时，原车VIN号字段是启用状态，此时为必填
+      if (this.form.replacementType !== '20' || this.form.replacementType !== 20) {
+        if (!value || value.trim() === '') {
+          callback(new Error('请选择原车VIN号'));
+        } else {
+          callback();
+        }
+      } else {
+        // 当置换类型是20时，字段被禁用，不需要验证
+        callback();
+      }
     }
+
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.page-common-edit {
-  h3 {
-    margin: 0 0 15px;
-    font-size: 16px;
-  }
-}
+// .page-common-edit {
+//   h3 {
+//     margin: 0 0 15px;
+//     font-size: 16px;
+//   }
+// }
+
+// ::v-deep .dialog-with-table {
+//   .el-dialog {
+//     margin-top: 6vh !important;
+//     height: 70vh;
+//     min-height: 500px;
+//     display: flex;
+//     flex-direction: column;
+
+//     .el-dialog__body {
+//       flex: 1;
+//       overflow: auto;
+//       padding: 10px 20px !important;
+//       display: flex;
+//       flex-direction: column;
+
+//       .ais-table-c {
+//         flex: 1;
+//         min-height: 400px;
+//         display: flex;
+//         flex-direction: column;
+
+//         .vxe-table--render-wrapper {
+//           flex: 1;
+//           display: flex;
+//           flex-direction: column;
+//         }
+
+//         .vxe-table--main-wrapper {
+//           flex: 1;
+//           min-height: 350px;
+//         }
+
+//         .vxe-table--footer-wrapper {
+//           flex-shrink: 0;
+//         }
+//       }
+//     }
+//   }
+// }
 </style>
