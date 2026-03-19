@@ -646,7 +646,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '申请编号：' + this.form.changeApplyCode;
     }
   },
   watch: {
