@@ -188,13 +188,13 @@ export const orderTransparencyTrackingDisplayFields = [
 
 // 订单退订记录字段配置
 export const orderCancellationRecordDisplayFields = [
-  { key: 'cancellationApplicationNumber', label: '退订申请单号' },
-  { key: 'applicationStatus', label: '申请单状态' },
-  { key: 'applicationTime', label: '申请时间' },
-  { key: 'applicant', label: '申请人' },
-  { key: 'cancellationMethod', label: '退订方式' },
-  { key: 'cancellationReasonCategory', label: '退订原因分类' },
-  { key: 'cancellationReasonDescription', label: '退订原因说明' }
+  { key: 'refundCode', label: '退订申请单号' },
+  { key: 'refundStatusLabel', label: '申请单状态' },
+  { key: 'applyTime', label: '申请时间' },
+  { key: 'creator', label: '申请人' },
+  { key: 'orderRefundTypeLabel', label: '退订方式' },
+  { key: 'subCateName', label: '退订原因分类' },
+  { key: 'refundReason', label: '退订原因说明' }
 ];
 
 // 订单收款记录字段配置
