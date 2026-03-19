@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" width="1000px" :visible.sync="dialogVisible">
+  <el-dialog :title="title" width="75%" :visible.sync="dialogVisible">
       <h3 class="header-title">母公司名称:{{ dealerCompanyName }}</h3>
       <section class="common-section">
         <div class="common-section-body">
