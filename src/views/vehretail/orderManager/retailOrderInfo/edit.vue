@@ -376,6 +376,7 @@
             :tableConfig="tableConfig"
             :tableDataExternal="form[tableConfig.field]"
             :columns="tableConfig.columns"
+            :apiMethod="tableConfig.apiMethod"
           />
           <!-- 组件位置不要放在右侧栏组件 -->
            <!-- 修改配置对话框 -->
@@ -429,6 +430,8 @@ import { getDetail, addOrUpdate, autoLock, querySnapShot, getOrderUnlockConfig, 
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
+import { getList as orderConfigChangeList } from '@/api/vehretail/orderManager/orderConfigChange/index';
+import { getList as orderChangeList } from '@/api/vehretail/orderRefund/orderChange/index';
 import {
   retailOrderDisplayFields,
   carOwnerDisplayFields,
@@ -591,7 +594,7 @@ export default {
       tableConfigs: [
         {
           title: '整车订单改配信息',
-          field: '整车订单改配信息',
+          field: 'configChangeList',
           sectionId: 'modification-record',
           columns: this.convertToTableColumns(modificationRecordDisplayFields),
           apiMethod: null // 后续引入API方法
@@ -696,6 +699,8 @@ export default {
     }
   },
   methods: {
+    orderConfigChangeList,
+    orderChangeList,
     handleSaleUserChange (val, row, name) {
       this.form[name + 'Name'] = row.username;
     },
