@@ -617,7 +617,7 @@ export default {
     async unlockReasonSearch (params) {
       const isAdding = this.$route.query.isAdding === 'true';
       if (isAdding) {
-        return getOptionList({ searchKey: params, unlockReasonCode: 'DJY006' });
+        return getOptionList({ searchKey: params, storeApplyStatus: 1 });
       } else {
         return getOptionList({ searchKey: params });
       }

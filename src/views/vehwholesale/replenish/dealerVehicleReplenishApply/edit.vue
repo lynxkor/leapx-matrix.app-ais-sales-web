@@ -288,7 +288,7 @@
               <h2>整车门店补货明细</h2>
             </div>
             <div class="common-section-body">
-              <el-button size="small" @click="handleAddRow" style="margin-bottom: 10px;" v-show = "form.permission.edit && _id">添加补货明细</el-button>
+              <el-button size="small" @click="handleAddRow" style="margin-bottom: 10px;" v-show = "form.permission.edit && _id && isEditing">添加补货明细</el-button>
               <div class="common-section-table">
                 <component-table
                   :tableData="form.details"
@@ -647,6 +647,10 @@ export default {
       readOnlyFields.forEach(field => {
         delete params.mainData[field];
       });
+      if ((!this.form.details || this.form.details.length <= 0) && this._id) {
+        this.$message.error('请至少添加一条补货明细');
+        return Promise.reject(new Error('请至少添加一条补货明细'));
+      }
 
       if ((this.form.orderCategory === '2' || this.form.orderCategory === 2) && this.form.applyTotalQty !== 1) {
         this.$message.error('试驾车订单申请不能大于1');

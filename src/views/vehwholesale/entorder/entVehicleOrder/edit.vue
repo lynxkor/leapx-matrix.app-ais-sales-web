@@ -273,8 +273,8 @@
                  <el-form-item label="订单分类：" prop="orderCategoryLabel">
                   {{ form.orderCategoryLabel }}
                 </el-form-item>
-                 <el-form-item label="车辆属性：" prop="vehicleAttribute">
-                  {{ form.vehicleAttribute }}
+                 <el-form-item label="车辆属性：" prop="vehicleAttributeLabel">
+                  {{ form.vehicleAttributeLabel }}
                 </el-form-item>
                  <el-form-item label="税务发票号：" prop="taxInvoiceCode">
                   {{ form.taxInvoiceCode }}
@@ -533,11 +533,11 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="是否创建发运计划：" prop="creditSaleFlag">
+                <el-form-item label="是否创建发运计划：" prop="createdShippingPlanLabel">
                  <fetch-select
                     :request="fetchOptions"
                     enumCode="BooleanEnum"
-                    v-model="form.creditSaleFlag"
+                    v-model="form.createdShippingPlanLabel"
                     placeholder="请选择"
                     clearable
                     filterable
@@ -677,8 +677,8 @@
                 <el-form-item label="是否赊销：" prop="creditSaleFlagLabel">
                   {{ form.creditSaleFlagLabel }}
                 </el-form-item>
-                 <el-form-item label="是否创建发运计划：" prop="creditSaleFlagLabel">
-                  {{ form.creditSaleFlagLabel }}
+                 <el-form-item label="是否创建发运计划：" prop="createdShippingPlanLabel">
+                  {{ form.createdShippingPlanLabel }}
                 </el-form-item>
                  <el-form-item label="是否存在结算失败记录：" prop="hasSettleFailedLabel">
                   {{ form.hasSettleFailedLabel }}
