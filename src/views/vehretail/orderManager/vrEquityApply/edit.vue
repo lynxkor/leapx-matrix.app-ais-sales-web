@@ -10,16 +10,17 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="form.permissions.edit"
       >
         <template #status>
           <span class="status primary"> {{ form.auditStatusLabel }}</span>
         </template>
         <template #extraButtons>
           <el-button size="small" @click="auditLog">申请记录</el-button>
-          <el-button size="small" @click="handleCancel">作废</el-button>
-          <el-button size="small" @click="handleSubmitApproval">提交审批</el-button>
-          <el-button size="small" @click="handleAudit">审核</el-button>
-          <el-button size="small" @click="handleRecall">审核撤回</el-button>
+          <el-button v-if = "form.permissions.cancel" size="small" @click="handleCancel">作废</el-button>
+          <el-button v-if = "form.permissions.submit" size="small" @click="handleSubmitApproval">提交审批</el-button>
+          <el-button v-if = "form.permissions.audit" size="small" @click="handleAudit">审核</el-button>
+          <el-button v-if = "form.permissions.auditRevoke" size="small" @click="handleRecall">审核撤回</el-button>
         </template>
         <el-main>
           <!-- 基础信息 -->
@@ -68,17 +69,19 @@
                     value-key="vin"
                     label-key="vin"
                     placeholder="请选择原车VIN号"
-                    :disabled="form.replacementType === 20"
+                    :disabled="form.replacementType == 20"
                     @change="handleOriginalVinChange"
                   />
                 </el-form-item>
-                <el-form-item label="权益大类：" prop="equityCategoryName">
+                <el-form-item label="权益大类：" prop="equityCategoryId">
                   <fetch-select
                     filterable
                     clearable
                     remote
+                    reserve-keyword
+                    :options="equityCategoryOptions"
                     v-model="form.equityCategoryId"
-                    :remote-method="getEquityCategoryList"
+                    :param="form.equityCategoryName"
                     value-key="id"
                     label-key="name"
                     placeholder="请选择权益大类"
@@ -111,7 +114,7 @@
                     placeholder="请输入"
                     v-model="form.otherBrand"
                     clearable
-                    :disabled="form.replacementType === 10"
+                    :disabled="form.replacementType == 10"
                     maxlength="50"
                   />
                 </el-form-item>
@@ -439,7 +442,7 @@
               <h2>发放信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" :model="form" :rules="rules" ref="issueForm" label-width="150px" class="form-edit" v-show="isEditing || !_id || canEditIssue">
+              <el-form :inline="true" :model="form" :rules="rules" ref="issueForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="是否发放：" prop="isIssued">
                   <fetch-select
                     :options="yes_no_enum"
@@ -447,6 +450,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    :disabled="!form.permissions.editIssue"
                   />
                 </el-form-item>
                 <el-form-item label="预计发放日期：" prop="expectedIssueDate">
@@ -455,6 +459,7 @@
                     type="date"
                     value-format="yyyy-MM-dd"
                     placeholder="选择日期"
+                    :disabled="!form.permissions.editIssue"
                   />
                 </el-form-item>
                 <el-form-item label="发放类型：" prop="issueType">
@@ -465,10 +470,11 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    :disabled="!form.permissions.editIssue"
                   />
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id || canEditIssue)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="是否发放：">
                   {{ form.isIssuedLabel }}
                 </el-form-item>
@@ -483,8 +489,7 @@
           </section>
 
           <!-- 跨月权益 -->
-          <!-- <section class="common-section" v-if="form.equityCategoryName === '跨月权益'"> -->
-          <section class="common-section" >
+          <section class="common-section" v-if="form.equityCategoryName === '跨月权益'">
             <div class="common-section-header">
               <h2>跨月权益</h2>
             </div>
@@ -532,8 +537,7 @@
           </section>
 
           <!-- 原车车主信息 -->
-          <!-- <section class="common-section" v-if="form.replacementType === 10 && (form.equityCategoryName === '新标专项' || form.equityCategoryName === '增值换购')"> -->
-          <section class="common-section">
+          <section class="common-section" v-if="form.replacementType == 10 && (form.equityCategoryName === '新标专项' || form.equityCategoryName === '增值换购')">
             <div class="common-section-header">
               <h2>原车车主信息</h2>
             </div>
@@ -782,7 +786,8 @@ const defaultForm = {
   auditorUserId: '',
   auditTime: '',
   auditOpinion: '',
-  auditStatus: null
+  auditStatus: null,
+  permissions: {}
 };
 
 export default {
@@ -819,6 +824,9 @@ export default {
       immediate: true
     }
   },
+  mounted () {
+    this.getEquityCategoryList();
+  },
   data () {
     const form = this.getDefautlForm();
     return {
@@ -832,6 +840,7 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       fileList: [],
+      equityCategoryOptions: [], // 权益类别选项列表
       logDialogVisible: false,
       logLoading: false,
       logOptionObj: {
@@ -850,7 +859,7 @@ export default {
           { message: '请输入整车订单编号', trigger: 'change' }
         ],
         originalVin: [
-          { required: true, message: '请选择原车VIN号', trigger: 'change' }
+          { required: true, validator: this.validateOriginalVin, trigger: 'change' }
         ],
         equityCategoryId: [
           { required: true, message: '请选择权益大类', trigger: 'change' }
@@ -875,6 +884,7 @@ export default {
           { message: '请输入订单物料码', trigger: 'change' }
         ],
         otherBrand: [
+          { required: true, validator: this.validateOtherBrand, trigger: 'blur' },
           { max: 50, message: '其他品牌不能超过50个字符', trigger: 'blur' }
         ],
         remark: [
@@ -886,13 +896,14 @@ export default {
       }
     };
   },
-  mounted () {
-  },
   methods: {
-    detailRequest () {
+    async detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        // 先加载权益类别选项，确保FetchSelect能正确显示
+        await this.getEquityCategoryList();
+        const detail = await getDetail(id);
+        return detail;
       }
     },
     submitRequest () {
@@ -972,9 +983,13 @@ export default {
 
     // 获取权益类别列表
     async getEquityCategoryList () {
-      return await getEquityCategoryListApi(
+      const response = await getEquityCategoryListApi(
         { orderStatus: this.form.orderStatus }
       );
+      const options = Array.isArray(response) ? response : (response.records || []);
+      // 更新本地存储的选项
+      this.equityCategoryOptions = options;
+      return options;
     },
 
     // 获取原车VIN列表
@@ -994,6 +1009,20 @@ export default {
     // 置换类型变化时的处理
     async handleReplacementTypeChange (replacementType) {
       await this.validateSelectedVehicleOrder();
+      if (replacementType === '10' || replacementType === 10) {
+        this.form.otherBrand = '';
+      } else if (replacementType === '20' || replacementType === 20) {
+        this.form.originalVin = '';
+        this.form.originalOwnerName = '';
+        this.form.originalOwnerPhone = '';
+        this.form.originalOwnerIdType = null;
+        this.form.originalOwnerIdNumber = '';
+        this.form.originalMaterialsCode = '';
+        this.form.originalModelName = '';
+        this.form.originalModelId = '';
+        this.form.originalVinId = '';
+        this.form.originalMaterialsId = '';
+      }
     },
 
     // 商城订单号变化时的处理
@@ -1039,6 +1068,9 @@ export default {
       this.form.optionPackageName = order.materials.optionPackageName || '';
       this.form.orderStatus = order.orderStatus || null;
       this.form.originalBenefitDate = order.rightsEnjoyDate || '';
+
+      // 重新查询权益类别列表，更新下拉框选项
+      await this.getEquityCategoryList();
     },
 
     // 校验选中的整车订单是否有效
@@ -1047,33 +1079,27 @@ export default {
       if (!this.form.mallOrderNo || !this.form.equityCategoryId || !this.form.replacementType) {
         return;
       }
-      try {
-        // 调用校验接口
-        await selectedVehicleOrderValid({
-          mallOrderNo: this.form.mallOrderNo,
-          equityCategoryId: this.form.equityCategoryId,
-          replacementType: this.form.replacementType
-        });
-      } catch (error) {
-        // 显示错误消息
-        const errorMessage = error.message || '整车订单校验失败，请检查选择的商城订单号、权益大类和置换类型组合是否有效';
-        this.$message.error(errorMessage);
-      }
+      // 调用校验接口
+      await selectedVehicleOrderValid({
+        mallOrderNo: this.form.mallOrderNo,
+        equityCategoryId: this.form.equityCategoryId,
+        replacementType: this.form.replacementType
+      });
     },
 
     // 原车VIN号变化时的处理
     async handleOriginalVinChange (query, record) {
-      // if (this.form.replacementType === 10 && (this.form.equityCategoryName === '新标专项' || this.form.equityCategoryName === '增值换购')) {
-      this.form.originalVinId = record.id || '';
-      this.form.originalOwnerName = record.vehicleProfileOwnerResp.ownerName || '';
-      this.form.originalOwnerPhone = record.vehicleProfileOwnerResp.mobilephone || '';
-      this.form.originalOwnerIdType = record.vehicleProfileOwnerResp.idcardType || '';
-      this.form.originalOwnerIdNumber = record.vehicleProfileOwnerResp.idcardNo || '';
-      this.form.originalMaterialsCode = record.vehicleMaterialCode || '';
-      this.form.originalMaterialsId = record.vehicleMaterialId || '';
-      this.form.originalModelName = record.vehicleModelName || '';
-      this.form.originalModelId = record.vehicleModelId || '';
-      // }
+      if ((this.form.replacementType === 10 || this.form.replacementType === '10') && (this.form.equityCategoryName === '新标专项' || this.form.equityCategoryName === '增值换购')) {
+        this.form.originalVinId = record.id || '';
+        this.form.originalOwnerName = record.vehicleProfileOwnerResp.ownerName || '';
+        this.form.originalOwnerPhone = record.vehicleProfileOwnerResp.mobilephone || '';
+        this.form.originalOwnerIdType = record.vehicleProfileOwnerResp.idcardType || '';
+        this.form.originalOwnerIdNumber = record.vehicleProfileOwnerResp.idcardNo || '';
+        this.form.originalMaterialsCode = record.vehicleMaterialCode || '';
+        this.form.originalMaterialsId = record.vehicleMaterialId || '';
+        this.form.originalModelName = record.vehicleModelName || '';
+        this.form.originalModelId = record.vehicleModelId || '';
+      }
     },
 
     // 查看申请记录
@@ -1118,6 +1144,36 @@ export default {
         this.logLoading = false;
       }
     },
+
+    // 自定义验证规则：当其他品牌不禁用时，必须填写
+    validateOtherBrand (rule, value, callback) {
+      // 当置换类型不是10时，其他品牌字段是启用状态，此时为必填
+      if (this.form.replacementType !== 10 && this.form.replacementType !== '10') {
+        if (!value || value.trim() === '') {
+          callback(new Error('其他品牌不能为空'));
+        } else {
+          callback();
+        }
+      } else {
+        // 当置换类型是10时，字段被禁用，不需要验证
+        callback();
+      }
+    },
+
+    // 自定义验证规则：当原车VIN号不禁用时，必须填写
+    validateOriginalVin (rule, value, callback) {
+      // 当置换类型不是20时，原车VIN号字段是启用状态，此时为必填
+      if (this.form.replacementType !== '20' || this.form.replacementType !== 20) {
+        if (!value || value.trim() === '') {
+          callback(new Error('请选择原车VIN号'));
+        } else {
+          callback();
+        }
+      } else {
+        // 当置换类型是20时，字段被禁用，不需要验证
+        callback();
+      }
+    }
 
   }
 };

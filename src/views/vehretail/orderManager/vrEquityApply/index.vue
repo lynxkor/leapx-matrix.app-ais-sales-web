@@ -229,7 +229,7 @@
     </div>
     <Upload
       :visible="uploadDialogVisible"
-      :id="'1'"
+      :id="'importExcelForIssueInfo'"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -431,6 +431,7 @@ export default {
             width: 150,
             buttons: [{
               name: '编辑',
+              show: (row) => row.permissions.edit,
               click: (rowIndex, row) => {
                 this.$router.push({
                   path: '/vehretail/orderManager/vrEquityApply/edit',
