@@ -78,7 +78,7 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="开启交付日期："  v-if="form.openDeliveryStatus === 1" prop="openDeliveryDate" >
+                <el-form-item label="开启交付日期："  prop="openDeliveryDate" >
                  <el-date-picker
                     v-model="form.openDeliveryDate"
                     type="date"
@@ -221,6 +221,7 @@ export default {
       immediate: true
     },
     'form.openDeliveryStatus' (newVal) {
+      console.log(newVal);
       this.$refs.ruleForm.clearValidate('openDeliveryDate');
       if (newVal === '1') {
         this.rules.openDeliveryDate[0].required = true;

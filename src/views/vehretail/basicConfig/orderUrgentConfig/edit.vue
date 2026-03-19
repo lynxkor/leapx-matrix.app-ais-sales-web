@@ -136,7 +136,7 @@
                 <el-form-item label="预售锁单时间要求：" prop="preSaleLockTime">
                   {{ form.preSaleLockTime }}
                 </el-form-item>
-                <el-form-item label="盲订急单设置：" prop="blindOrderUrgentStatus">
+                <el-form-item label="盲订急单设置：" prop="blindOrderUrgentStatusLabel">
                   {{ form.blindOrderUrgentStatusLabel }}
                 </el-form-item>
                 <el-form-item label="盲订锁单时间要求：" prop="blindOrderLockTime">
@@ -239,6 +239,18 @@ export default {
         }
       },
       immediate: true
+    },
+    'form.blindOrderUrgentStatus': {
+      handler (val) {
+        if (val === 1 || val === '1') {
+          this.rules.blindOrderLockTime = [
+            { required: true, message: '请选择盲订锁单时间要求', trigger: 'change' }
+          ];
+        } else {
+          this.rules.blindOrderLockTime = [];
+        }
+      },
+      immediate: true
     }
   },
   data () {
@@ -280,9 +292,7 @@ export default {
           { required: true, message: '请选择预售急单设置 1-是;0-否', trigger: 'change' }
         ],
         preSaleLockTime: [],
-        blindOrderUrgentStatus: [
-          { required: true, message: '请选择盲订急单设置 1-是;0-否', trigger: 'change' }
-        ],
+        blindOrderUrgentStatus: [],
         blindOrderLockTime: [
           { required: true, message: '请选择盲订锁单时间要求', trigger: 'change' }
         ],

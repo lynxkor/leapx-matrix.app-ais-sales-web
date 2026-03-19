@@ -370,8 +370,8 @@
             :fields="termDisplayFields"
           />
           <component-table
-            v-for="(tableConfig, index) in tableConfigs"
-            :key="index" class="common-section"
+            v-for="tableConfig in tableConfigs"
+            :key="tableConfig.sectionId" class="common-section"
             :id="tableConfig.sectionId"
             :tableConfig="tableConfig"
             :tableDataExternal="form[tableConfig.field]"
@@ -435,7 +435,7 @@ import { getList as orderConfigChangeList } from '@/api/vehretail/orderManager/o
 import { getList as orderChangeList } from '@/api/vehretail/orderRefund/orderChange/index';
 import { getList as orderUnlockApplyList } from '@/api/vehretail/orderManager/orderUnlockApply/index';
 import { getList as orderLockRecordList } from '@/api/vehretail/orderManager/orderLockRecord/index';
-import { getList as orderCancellationRecordList } from '@/api/vehretail/orderRefund/refundApply/index';
+import { getList as refundApplyList } from '@/api/vehretail/orderRefund/refundApply/index';
 import { getList as orderPayRecordList } from '@/api/vehretail/orderManager/orderPayRecord/index';
 import {
   retailOrderDisplayFields,
@@ -637,7 +637,7 @@ export default {
           // field: 'refundList',
           sectionId: 'order-cancellation-record',
           columns: this.convertToTableColumns(orderCancellationRecordDisplayFields),
-          apiMethod: orderCancellationRecordList // 后续引入API方法
+          apiMethod: refundApplyList // 后续引入API方法
         },
         {
           title: '订单收款记录',
@@ -705,7 +705,7 @@ export default {
   },
   methods: {
     orderPayRecordList,
-    orderCancellationRecordList,
+    refundApplyList,
     orderLockRecordList,
     orderUnlockApplyList,
     orderConfigChangeList,
