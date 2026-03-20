@@ -203,8 +203,8 @@
                 <el-form-item label="企业客户名称：" prop="entCustomerName">
                   {{ form.entCustomerName }}
                 </el-form-item>
-                <el-form-item label="销售公司：" prop="saleCompanyId">
-                  {{ form.saleCompanyId }}
+                <el-form-item label="销售公司：" prop="saleCompanyName">
+                  {{ form.saleCompanyName }}
                 </el-form-item>
                  <el-form-item label="销售门店名称：" prop="saleDealerName">
                   {{ form.saleDealerName }}

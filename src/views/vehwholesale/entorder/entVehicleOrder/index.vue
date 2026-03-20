@@ -281,7 +281,7 @@ export default {
             }]
           },
           { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 200 },
-          { props: 'saleCompanyId', label: '销售公司', visible: true, width: 200 },
+          { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200 },
           { props: 'entCustomerName', label: '企业客户名称', visible: true, width: 200 },
           { props: 'orderCategorLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'needAutoAllocateCarLabel', label: '是否需要自动配车', visible: true, width: 200 },
