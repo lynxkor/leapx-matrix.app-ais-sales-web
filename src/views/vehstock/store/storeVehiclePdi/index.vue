@@ -104,10 +104,10 @@
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete"
         :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
+      <!-- <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
         :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)"
-        :disabled="selectionList.length === 0">批量停用</el-button>
+        :disabled="selectionList.length === 0">批量停用</el-button> -->
     </div>
     <div class="ais-table-c">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed centralized
@@ -229,7 +229,6 @@ export default {
           { props: 'pdiSubmitOn', label: 'PDI提交时间', visible: true, width: 200 },
           { props: 'repairedBy', label: '异常修复确认人', visible: true, width: 200 },
           { props: 'repairedOn', label: '异常修复确认时间', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
