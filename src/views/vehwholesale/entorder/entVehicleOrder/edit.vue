@@ -130,13 +130,10 @@
                   />
                 </el-form-item>
                  <el-form-item label="订单状态：" prop="status">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="vr_order_status"
-                    v-model="form.status"
-                    placeholder="请选择"
+                   <el-input
+                    placeholder="请输入"
+                    v-model="form.statusLabel"
                     clearable
-                    filterable
                     disabled
                   />
                 </el-form-item>
