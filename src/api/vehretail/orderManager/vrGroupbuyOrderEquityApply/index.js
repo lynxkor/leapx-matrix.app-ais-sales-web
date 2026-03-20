@@ -35,49 +35,57 @@ export function getDetail (data) {
 }
 
 /**
+ * 团购订单权益申请步骤条信息查询
+ * @param {Object} data
+ */
+export function queryStepInfo (data) {
+  return api.jsonPost(prefix + 'queryStepInfo', data);
+}
+
+/**
+ * 团购订单权益申请审核人员查询
+ * @param {Object} data
+ */
+export function queryAuditor (data) {
+  return api.jsonPost(prefix + 'queryAuditor', data);
+}
+
+/**
  * 提交审批
  * @param {Object} data
  */
-export function submitApproval (data) {
-  return api.jsonPost(prefix + 'submitApproval', data);
+export function submit (data) {
+  return api.jsonPost(prefix + 'submit', data);
 }
 
 /**
- * 初审
+ * 审批
  * @param {Object} data
  */
-export function firstAudit (data) {
-  return api.jsonPost(prefix + 'firstAudit', data);
+export function approve (data) {
+  return api.jsonPost(prefix + 'approve', data);
 }
 
-/**
- * 复审
- * @param {Object} data
- */
-export function reviewAudit (data) {
-  return api.jsonPost(prefix + 'reviewAudit', data);
-}
-
-/**
- * 终审
- * @param {Object} data
- */
-export function finalAudit (data) {
-  return api.jsonPost(prefix + 'finalAudit', data);
-}
-
-/**
- * 获取审核人员列表
- * @param {Object} data
- */
-export function getAuditUsers (data) {
-  return api.jsonPost(prefix + 'getAuditUsers', data);
-}
-
-/**
+/*
  * 获取审批明细
  * @param {Object} data
  */
 export function getApprovalDetailList (data) {
   return api.jsonPost(prefix + 'getApprovalDetailList', data);
+}
+
+/**
+ * 作废
+ * @param {Object} data
+ */
+export function invalid (data) {
+  return api.jsonPost(prefix + 'invalid', data);
+}
+
+/**
+ * 团购订单权益申请整车订单号校验
+ * @param {Object} data
+ */
+export function selectedVehicleOrderValid (data) {
+  return api.jsonPost(prefix + 'selectedVehicleOrderValid', data);
 }

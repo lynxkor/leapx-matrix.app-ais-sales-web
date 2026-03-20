@@ -81,7 +81,11 @@ export default {
     visible: {
       type: Boolean,
       default: false
-    }
+    },
+    id: {
+      type: String,
+      default: ''
+    },
   },
   mixins: [permissions],
   components: {
@@ -130,7 +134,8 @@ export default {
     }
   },
   created () {
-    this.getData();
+    // this.getData();
+    this.vinCode = '';
   },
   methods: {
     // 单选框变化
@@ -161,23 +166,24 @@ export default {
     handleClose () {
       this.form = { ...defaultForm }; // 重置表单数据
       this.tableData = []; // 清空表格数据
+      this.vinCode = '';
     },
     onSubmit () {
       this.getData();
     },
     onReset () {
-      this.form = { ...defaultForm };
-      this.fundForm = { fundType: '' };
+      this.vinCode = '';
+      this.getData();
     },
     async getData () {
       this.loading = true;
       try {
         const res = await vinAllocateVehicleQueryInventory({
-          entOrderId: this._id
+          entOrderId: this.id,
+          vin: this.vinCode
         });
-        const data = res || {};
         // 设置表格数据
-        this.tableData = res.records;
+        this.tableData = res;
         this.pagination.total = this.tableData.length;
         this.pagination.currentPage = 1;
       } catch (error) {

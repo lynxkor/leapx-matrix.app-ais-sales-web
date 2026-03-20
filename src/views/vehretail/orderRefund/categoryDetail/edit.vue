@@ -111,7 +111,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '原因二级分类编码：' + this.form.subCateCode;
     }
   },
   watch: {

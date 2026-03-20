@@ -2769,6 +2769,24 @@ const routes = [
         name: '门店库存调拨管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehstock/store/storeTransferInbound',
+      name: 'storeTransferInbound',
+      component: () => import('@/views/vehstock/store/storeTransferInbound/index.vue'),
+
+      meta: {
+        name: '门店调拨入库',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/store/storetransferinbound/edit',
+      name: 'storeTransferInboundEdit',
+      component: () => import('@/views/vehstock/store/storeTransferInbound/edit.vue'),
+
+      meta: {
+        name: '门店调拨入库详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];

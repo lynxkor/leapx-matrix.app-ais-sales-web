@@ -646,7 +646,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '申请编号：' + this.form.changeApplyCode;
     }
   },
   watch: {
@@ -1145,10 +1145,14 @@ export default {
             this.refreshOrderInfo(val, selectedOption);
           })
           .catch(() => {
-            this.refreshOrderInfo(null, selectedOption);
+            this.$refs.ruleForm.resetFields();
+            this.$refs.ruleForm1.resetFields();
+            this.$refs.ruleForm2.resetFields();
           });
       } else {
-        this.refreshOrderInfo(null, selectedOption);
+        this.$refs.ruleForm.resetFields();
+        this.$refs.ruleForm1.resetFields();
+        this.$refs.ruleForm2.resetFields();
       }
     },
     refreshOrderInfo (val, selectedOption) {

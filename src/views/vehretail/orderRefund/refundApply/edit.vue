@@ -169,14 +169,6 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="销售门店编码：" prop="saleDealerCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.saleDealerCode"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
                 <el-form-item label="销售门店：" prop="saleDealerName">
                   <el-input
                     placeholder="请输入"
@@ -193,26 +185,10 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="省编码：" prop="provinceCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.provinceCode"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
                 <el-form-item label="省：" prop="provinceName">
                   <el-input
                     placeholder="请输入"
                     v-model="form.provinceName"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="市编码：" prop="cityCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.cityCode"
                     clearable
                     disabled
                   />
@@ -742,7 +718,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '退订申请单号：' + this.form.refundCode;
     }
   },
   watch: {
@@ -804,7 +780,7 @@ export default {
           { required: false, message: '请选择申请单状态 1010:草稿 1020:已提交 1025:已初审 1027:待终审 1030:已通过 1040:已驳回 1050:已作废', trigger: 'change' }
         ],
         retailOrderCode: [
-          { required: true, message: '请输入整车订单', trigger: 'change' }
+          { required: true, message: '请输入整车订单', trigger: 'blur' }
         ],
         mallOrderCode: [
           { required: true, message: '请输入商城订单编号', trigger: 'change' }
@@ -870,12 +846,18 @@ export default {
     async submitRequest () {
       // 校验：当 refundStatus 为 1010 或 1040 且有_id 时，附件必须上传
       if ((this.form.refundStatus === 1010 || this.form.refundStatus === 1040) && this._id) {
-        const attachmentList = this.$refs.containerRef.$refs.attachment?.getFileList() || [];
-        if (attachmentList.length === 0) {
-          throw new Error('请上传退订附件');
+        // 等待一下确保文件列表已更新
+        await this.$nextTick();
+        const attachmentList = this.$refs.attachment?.getFileList() || [];
+        if (!attachmentList || attachmentList.length === 0) {
+          this.$message.warning('请上传退订附件');
+          return Promise.reject(new Error('请上传退订附件'));
         }
       }
-      return addOrUpdate({ ...this.form });
+      const res = await addOrUpdate({ ...this.form });
+      // 保存成功后退出编辑状态
+      this.isEditing = false;
+      return res;
     },
     // 打开侧边栏
     openPane () {
@@ -962,10 +944,10 @@ export default {
             this.refreshOrderInfo(val, selectedOption);
           })
           .catch(() => {
-            this.refreshOrderInfo(null, selectedOption);
+            this.$refs.ruleForm.resetFields();
           });
       } else {
-        this.refreshOrderInfo(null, selectedOption);
+        this.$refs.ruleForm.resetFields();
       }
     },
     refreshOrderInfo (val, selectedOption) {
@@ -976,6 +958,8 @@ export default {
       this.form.saleDealerName = val ? selectedOption.saleDealerName : '';
       this.form.modelId = val ? selectedOption.modelId : '';
       this.form.modelName = val ? selectedOption.modelName : '';
+      this.form.seriesId = val ? selectedOption.seriesId : '';
+      this.form.seriesName = val ? selectedOption.seriesName : '';
       this.form.orderUserId = val ? selectedOption.orderUserId : '';
       this.form.orderUserName = val ? selectedOption.orderUserName : '';
       this.form.orderUserPhone = val ? selectedOption.orderUserPhone : '';

@@ -273,7 +273,7 @@ export default {
       }
       exportTable({
         businessType: '交付满意度问卷配置管理',
-        dataFetchPath: 'vehretail/web/basicConfig/deliveryQuestionnaireConfig/page',
+        dataFetchPath: 'vr/web/basicConfig/deliveryQuestionnaireConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

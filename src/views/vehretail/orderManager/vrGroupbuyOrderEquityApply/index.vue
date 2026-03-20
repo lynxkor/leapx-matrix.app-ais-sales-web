@@ -16,31 +16,51 @@
         />
       </el-form-item>
       <el-form-item label="订单物料码">
-        <el-input
-          placeholder="请输入"
-          v-model="form.orderMaterialsCode"
+        <fetch-select
+          filterable
           clearable
+          remote
+          collapse-tags
+          v-model="form.orderMaterialsCode"
+          :remote-method="getMaterialsCodeList"
+          value-key="value"
+          label-key="label"
         />
       </el-form-item>
       <el-form-item label="车型">
-        <el-input
-          placeholder="请输入"
-          v-model="form.modelName"
+        <fetch-select
+          filterable
           clearable
+          remote
+          collapse-tags
+          v-model="form.modelId"
+          :remote-method="getVehicleModelList"
+          value-key="id"
+          label-key="label"
         />
       </el-form-item>
       <el-form-item label="车系">
-        <el-input
-          placeholder="请输入"
-          v-model="form.seriesName"
+        <fetch-select
+          filterable
           clearable
+          remote
+          collapse-tags
+          v-model="form.seriesId"
+          :remote-method="getVehicleSeriesList"
+          value-key="id"
+          label-key="label"
         />
       </el-form-item>
       <el-form-item label="销售门店">
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerName"
+        <fetch-select
+          filterable
           clearable
+          remote
+          collapse-tags
+          v-model="form.dealerCode"
+          :remote-method="getDealerList"
+          value-key="storeCode"
+          label-key="label"
         />
       </el-form-item>
       <template v-if="show">
@@ -105,11 +125,14 @@
       <LPVxeTable
         ref="tableRef"
         v-loading="loading"
+        is-checkbox
         is-page
+        checkboxFixed
         centralized
         :option-obj="optionObj"
         :get-config="getConfig"
         @paginationChange="paginationChange"
+        @handleSelect="handleSelectionChange"
         @listSelect="handleListSelect"
         @sortChange="handleSortChange"
       >
@@ -124,7 +147,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList } from '@/api/vehretail/orderManager/vrGroupbuyOrderEquityApply/index';
-import { getTableConfig, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, exportTable, getEnum, vehicleModelList, vehicleSeriesList, listOrgStoreInfo, vehicleMaterials } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
@@ -135,9 +158,9 @@ import EditPage from './edit.vue';
 const defaultForm = {
   mallOrderCode: '',
   orderMaterialsCode: '',
-  modelName: '',
-  seriesName: '',
-  dealerName: '',
+  modelId: '',
+  seriesId: '',
+  dealerCode: '',
   auditStatus: '',
   cooperationType: '',
   companyName: '',
@@ -156,7 +179,7 @@ export default {
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
-    EditPage
+    EditPage,
   },
   data () {
     return {
@@ -166,6 +189,7 @@ export default {
       form: {
         ...defaultForm
       },
+      selectionList: [],
       show: false,
       loading: false,
       exportLoading: false,
@@ -196,14 +220,50 @@ export default {
               type: 'primary'
             }]
           },
+          {
+            props: 'dealerName',
+            label: '销售门店',
+            visible: true,
+            width: 240,
+            buttons: [{
+              click: (rowIndex, row) => {
+                if (row.saleDealerCode) {
+                  this.navigateToRoute({
+                    path: '/vehretail/orderManager/retailOrderInfo/edit',
+                    query: {
+                      id: row.ownerOrgId
+                    }
+                  });
+                }
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'auditStatusLabel', label: '申请单状态', visible: true, width: 120 },
-          { props: 'dealerName', label: '销售门店', visible: true, width: 150 },
           { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 120 },
           { props: 'regionName', label: '所属区域或部门', visible: true, width: 150 },
           { props: 'applicant', label: '申请人', visible: true, width: 120 },
           { props: 'applicationTime', label: '申请日期', visible: true, width: 180 },
-          { props: 'mallOrderCode', label: '商城订单号', visible: true, width: 200 },
-          { props: 'orderMaterialsCode', label: '订单物料码', visible: true, width: 200 },
+          {
+            props: 'mallOrderCode',
+            label: '商城订单号',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                if (row.saleDealerCode) {
+                  this.navigateToRoute({
+                    path: '/partner/channelManagement/shopBasicsMessageDetails',
+                    query: {
+                      id: row.retailOrderId
+                    }
+                  });
+                }
+              },
+              type: 'primary'
+            }]
+          },
+          { props: 'materialsCode', label: '订单物料码', visible: true, width: 200 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           { props: 'buyerName', label: '购车人姓名', visible: true, width: 120 },
           { props: 'buyerPhone', label: '购车人手机号', visible: true, width: 150 },
@@ -214,9 +274,6 @@ export default {
           { props: 'couponName', label: '优惠券', visible: true, width: 120 },
           { props: 'discountAmount', label: '优惠金额', visible: true, width: 120 },
           { props: 'submitTime', label: '提交日期', visible: true, width: 180 },
-          { props: 'firstAuditTime', label: '初审时间', visible: true, width: 180 },
-          { props: 'reviewAuditTime', label: '复审时间', visible: true, width: 180 },
-          { props: 'finalAuditTime', label: '终审时间', visible: true, width: 180 },
           { props: 'remark', label: '备注', visible: true, width: 150 },
           { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true },
           {
@@ -286,9 +343,13 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       const reqParams = this.getFormData() || {};
+      if (this.selectionList.length > 0) {
+        const ids = this.selectionList.map(item => item.id) || [];
+        reqParams.ids = ids;
+      }
       exportTable({
         businessType: '整车零售-订单管理-团购订单权益申请管理',
-        dataFetchPath: 'vehretail/web/orderManager/vrGroupbuyOrderEquityApply/page',
+        dataFetchPath: 'vr/web/order/vrGroupbuyOrderEquityApply/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -314,6 +375,8 @@ export default {
     },
     getData () {
       this.loading = true;
+      this.selectionList = [];
+
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
           this.optionObj.dataList = res.records.map(item => {
@@ -354,14 +417,109 @@ export default {
           delete data[key];
         }
       });
+
+      // 将新的字段名映射回后端期望的字段名
+      if (data.modelId) {
+        data.modelName = data.modelId; // 后端可能仍需要原始字段名
+      }
+      if (data.seriesId) {
+        data.seriesName = data.seriesId;
+      }
+      if (data.dealerCode) {
+        data.dealerName = data.dealerCode;
+      }
+
       data.sortColumns = this.sortColumns;
       return data;
+    },
+    handleSelectionChange (selection) {
+      this.selectionList = selection;
     },
     async fetchOptions (code) {
       if (code) {
         return getEnum(code);
       }
       return [];
+    },
+
+    // 获取车型列表
+    async getVehicleModelList (query = '') {
+      try {
+        const res = await vehicleModelList({
+          modelNameLike: query,
+          pageSize: 20
+        });
+        return res.records.map(item => {
+          return {
+            ...item,
+            label: item.name,
+            value: item.id
+          };
+        });
+      } catch (error) {
+        console.error('获取车型列表失败:', error);
+        return [];
+      }
+    },
+
+    // 获取车系列表
+    async getVehicleSeriesList (query = '') {
+      try {
+        const res = await vehicleSeriesList({
+          seriesNameLike: query,
+          pageSize: 20
+        });
+        return res.records.map(item => {
+          return {
+            ...item,
+            label: item.name,
+            value: item.id
+          };
+        });
+      } catch (error) {
+        console.error('获取车系列表失败:', error);
+        return [];
+      }
+    },
+
+    // 获取销售门店列表
+    async getDealerList (query = '') {
+      try {
+        const res = await listOrgStoreInfo({
+          storeName: query,
+          pageSize: 20
+        });
+        return res.records.map(item => {
+          return {
+            ...item,
+            label: item.storeName,
+            value: item.storeCode
+          };
+        });
+      } catch (error) {
+        console.error('获取销售门店列表失败:', error);
+        return [];
+      }
+    },
+
+    // 获取物料码列表
+    async getMaterialsCodeList (query = '') {
+      try {
+        const res = await vehicleMaterials({
+          materialsCodeLike: query,
+          pageSize: 20
+        });
+        return res.records.map(item => {
+          return {
+            ...item,
+            label: item.materialsCode,
+            value: item.materialsCode
+          };
+        });
+      } catch (error) {
+        console.error('获取物料码列表失败:', error);
+        return [];
+      }
     }
   }
 };

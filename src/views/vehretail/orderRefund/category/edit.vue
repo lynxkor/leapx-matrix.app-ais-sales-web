@@ -292,7 +292,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '原因分类代码：' + this.form.cateCode;
     }
   },
   watch: {
@@ -433,7 +433,7 @@ export default {
         ],
         refundTypeDefault: [
           {
-            required: false,
+            required: true,
             message: '请选择默认定金退回方式',
             trigger: 'change',
           },

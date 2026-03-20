@@ -595,6 +595,10 @@ export default {
   },
   methods: {
     handleRetailOrderCodeChange (val) {
+      if (!val) {
+        return;
+      }
+      this.form.retailOrderCode = val;
       getRetailOrderDetail(val).then(res => {
         this.form.retailOrderId = res.id || '';
         this.form.retailOrderCode = res.retailOrderCode || '';
@@ -617,7 +621,7 @@ export default {
     async unlockReasonSearch (params) {
       const isAdding = this.$route.query.isAdding === 'true';
       if (isAdding) {
-        return getOptionList({ searchKey: params, unlockReasonCode: 'DJY006' });
+        return getOptionList({ searchKey: params, storeApplyStatus: 1 });
       } else {
         return getOptionList({ searchKey: params });
       }
