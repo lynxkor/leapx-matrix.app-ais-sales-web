@@ -257,7 +257,7 @@ export default {
             }]
           },
           { props: 'entCustomerName', label: '企业客户名称', visible: true, width: 200 },
-          { props: 'saleCompanyId', label: '销售公司', visible: true, width: 200 },
+          { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200 },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 200 },
           { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 200 },

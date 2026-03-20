@@ -212,7 +212,7 @@ export default {
         this.$message.error('请选择一条数据！');
         return;
       }
-      this.dialogVisible = true;
+      this.dialogVisible = false;
       this.$emit('confirm', this.selectedRows[0].vin);
     },
   }

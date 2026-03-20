@@ -22,7 +22,7 @@
           <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" @click="handleSetSpecialMark">设置特殊标识</el-button>
           <el-button size="small" v-if="form.orderStatus !== 9" @click="handleModifyConfiguration">修改配置</el-button>
           <el-button size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
-          <el-button size="small" v-if="form.lockStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
+          <el-button size="small" v-if="form.wholesaleBindStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
           <el-button size="small" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
           <el-button size="small"
                      @click="navigateToRoute({
