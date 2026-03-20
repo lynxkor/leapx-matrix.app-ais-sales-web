@@ -107,6 +107,15 @@
                 <el-form-item label="PDI单号：" prop="pdiNo">
                   {{ form.pdiNo }}
                 </el-form-item>
+                <el-form-item label="PDI是否完成提交：" prop="pdiNo">
+                  {{ form.isPdiSubmitLabel }}
+                </el-form-item>
+                <el-form-item label="车辆是否存在异常：" prop="pdiNo">
+                  {{ form.isUnusuallabel }}
+                </el-form-item>
+                <el-form-item label="车辆异常是否修复：" prop="pdiNo">
+                  {{ form.isRepairedLabel }}
+                </el-form-item>
                 <el-form-item label="单据状态：" prop="auditStatus">
                   {{ form.auditStatusLabel }}
                 </el-form-item>
