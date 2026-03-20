@@ -1952,6 +1952,24 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
+      path: '/vehretail/orderManager/orderBackStatusRecord',
+      name: 'orderBackStatusRecord',
+      component: () => import('@/views/vehretail/orderManager/orderBackStatusRecord/index.vue'),
+
+      meta: {
+        name: '回退订单状态记录查询管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/orderManager/orderBackStatusRecord/edit',
+      name: 'orderBackStatusRecordEdit',
+      component: () => import('@/views/vehretail/orderManager/retailOrderInfo/edit.vue'),
+
+      meta: {
+        name: '回退订单状态记录查询详情',
+        noResourceUrl: 'true'
+      }
+    }, {
       path: '/vehretail/basicConfig/deliveryCycleTimeConfig',
       name: 'deliveryCycleTimeConfig',
       component: () => import('@/views/vehretail/basicConfig/deliveryCycleTimeConfig/index.vue'),

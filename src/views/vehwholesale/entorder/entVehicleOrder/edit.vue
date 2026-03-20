@@ -1013,7 +1013,6 @@ export default {
         entOrderId: this._id,
         vin: data,
       };
-      console.log(params);
       vinAllocateVehicleItem(params).then(() => {
         this.$message({
           type: 'success',

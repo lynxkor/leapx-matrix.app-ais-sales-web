@@ -163,3 +163,11 @@ export function getDetailDecryptField (id, field) {
     });
   });
 }
+
+/**
+ * 回退订单状态记录查询
+ * @param {Object} data
+ */
+export function queryOrderStatusBackRecord (data) {
+  return api.jsonPost(prefix + 'queryOrderStatusBackRecord', data);
+}
