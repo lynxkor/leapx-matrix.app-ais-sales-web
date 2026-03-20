@@ -164,6 +164,7 @@
                     v-model="form.isCreditSale"
                     placeholder="请选择是否赊销"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="结算资金类型：" prop="settleFundType">

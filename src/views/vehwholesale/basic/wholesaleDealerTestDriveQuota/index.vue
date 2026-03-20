@@ -29,9 +29,9 @@
             multiple
             remote
             collapseTags
-            v-model="form.dealerCodes"
+            v-model="form.dealerNames"
             :remote-method="getDealerListByName"
-            value-key="storeCode"
+            value-key="storeName"
             label-key="storeName"
           />
         </el-form-item>
@@ -182,7 +182,8 @@ import commonMixins from '@/libs/mixins/commonMixins';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  dealerCodes: '',
+  dealerCodes: [],
+  dealerNames: [],
   vehicleYearTypeId: '',
   vehicleModelLineId: '',
   seriesIds: '',
