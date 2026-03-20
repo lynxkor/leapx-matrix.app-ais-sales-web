@@ -332,7 +332,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'mallOrderCode', label: '商城订单号', visible: true, width: 200, fixed: 'left' },
+          { props: 'mallOrderCode', label: '商城订单号', visible: true, width: 200 },
           {
             props: 'saleDealerName',
             label: '订单销售门店',
@@ -391,7 +391,8 @@ export default {
           { props: '', label: '原始订单状态', visible: true, width: 150 },
           { props: 'orderStatusLabel', label: '新订单状态', visible: true, width: 150 },
           { props: '', label: '操作描述', visible: true, width: 300 },
-          { props: '', label: '操作时间', visible: true, width: 200 }
+          { props: '', label: '操作时间', visible: true, width: 200 },
+          { props: '', label: '操作人', visible: true, width: 120, fixed: 'right' }
         ],
         total: 0
       }
