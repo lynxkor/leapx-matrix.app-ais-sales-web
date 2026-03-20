@@ -23,10 +23,28 @@
         />
       </el-form-item>
       <el-form-item label="销售门店">
-        <el-input v-model="form.saleDealerName" placeholder="请输入销售门店" />
+        <fetch-select
+          filterable
+          clearable
+          remote
+          v-model="form.saleDealerCode"
+          :remote-method="saleDealerSearch"
+          value-key="storeCode"
+          label-key="storeName"
+          placeholder="请选择"
+        />
       </el-form-item>
       <el-form-item label="交付门店">
-        <el-input v-model="form.deliveryDealerName" placeholder="请输入交付门店" />
+        <fetch-select
+          filterable
+          clearable
+          remote
+          v-model="form.deliveryDealerCode"
+          :remote-method="saleDealerSearch"
+          value-key="storeCode"
+          label-key="storeName"
+          placeholder="请选择"
+        />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="车型名称">
@@ -79,7 +97,7 @@
 <!--      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>-->
 <!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>-->
 <!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>-->
-      <el-button size="small" @click="handleBatchCancel">作废</el-button>
+      <el-button size="small" @click="openBatchCancel">作废</el-button>
       <el-button size="small" @click="handleBatchRevoke">撤回</el-button>
     </div>
     <div
@@ -110,6 +128,10 @@
       @close="handleUploadDialogClose"
       @getData="getData"
     />
+    <cancel-dialog
+      ref="cancelDialogRef"
+      @audit="handleBatchCancel"
+    />
   </div>
 </template>
 
@@ -118,7 +140,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, submitReport, cancelReport, revokeReport, adjustVehicleAttribute, batchCancelReports, batchRevokeReports } from '@/api/vehretail/orderManager/specialVehicleSalesReport/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -128,6 +150,7 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import TagInput from '@/libs/components/TagInput';
 import EditPage from './edit.vue';
+import CancelDialog from '@/views/vehretail/orderManager/specialVehicleSalesReport/cancelDialog';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -146,7 +169,8 @@ export default {
     FetchSelect,
     EditPage,
     TagInput,
-    Upload
+    Upload,
+    CancelDialog
   },
   computed: {
 
@@ -598,7 +622,10 @@ export default {
     },
 
     // 批量作废操作
-    handleBatchCancel () {
+    openBatchCancel () {
+      this.$refs.cancelDialogRef.show();
+    },
+    handleBatchCancel (auditForm) {
       if (this.selectionList.length === 0) {
         this.$message.warning('请选择要批量作废的记录！');
         return;
@@ -610,32 +637,16 @@ export default {
         this.$message.warning('只能对草稿状态的记录进行批量作废操作！');
         return;
       }
-
-      this.$prompt('请输入作废说明', '批量作废说明', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPattern: /^.{1,200}$/,
-        inputErrorMessage: '作废说明不能为空且不能超过200个字符',
-        inputPlaceholder: '请输入作废说明'
-      }).then(({ value }) => {
-        const ids = this.selectionList.map(item => item.id);
-        batchCancelReports({
-          ids: ids,
-          remark: value
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '批量作废成功!'
-          });
-          this.getData();
-        }).catch(error => {
-          this.$message({
-            type: 'error',
-            message: error.message || '批量作废失败!'
-          });
+      const ids = this.selectionList.map(item => item.id);
+      batchCancelReports({
+        ids: ids,
+        cancelRemark: auditForm.cancelRemark
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '批量作废成功!'
         });
-      }).catch(() => {
-        // 用户取消操作
+        this.getData();
       });
     },
 
@@ -645,40 +656,29 @@ export default {
         this.$message.warning('请选择要批量撤回的记录！');
         return;
       }
-
       // 检查所选记录是否都是已提交状态
       const invalidRecords = this.selectionList.filter(item => item.status !== '1' && item.status !== 1);
       if (invalidRecords.length > 0) {
         this.$message.warning('只能对已提交状态的记录进行批量撤回操作！');
         return;
       }
-
-      this.$prompt('请输入撤回说明', '批量撤回说明', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPattern: /^.{1,200}$/,
-        inputErrorMessage: '撤回说明不能为空且不能超过200个字符',
-        inputPlaceholder: '请输入撤回说明'
-      }).then(({ value }) => {
-        const ids = this.selectionList.map(item => item.id);
-        batchRevokeReports({
-          ids: ids,
-          remark: value
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '批量撤回成功!'
-          });
-          this.getData();
-        }).catch(error => {
-          this.$message({
-            type: 'error',
-            message: error.message || '批量撤回失败!'
-          });
+      const ids = this.selectionList.map(item => item.id);
+      batchRevokeReports({
+        ids: ids
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '批量撤回成功!'
         });
-      }).catch(() => {
-        // 用户取消操作
+        this.getData();
       });
+    },
+    async saleDealerSearch () {
+      const params = {
+        isSales: true,
+        pageSize: 5000
+      };
+      return await listOrgStoreInfo(params);
     }
   }
 };

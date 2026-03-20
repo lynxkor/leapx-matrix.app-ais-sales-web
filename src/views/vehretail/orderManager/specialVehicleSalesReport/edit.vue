@@ -11,16 +11,19 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="form.status === 0"
       >
         <template #status>
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button v-if="canSubmit && form.status === 0" size="small" @click="handleSubmit">提交</el-button>
-          <el-button v-if="canCancel && form.status === 0" size="small" @click="handleCancel">作废</el-button>
-          <el-button v-if="canRevoke && form.status === 1" size="small" @click="handleRevoke">撤回</el-button>
-          <el-button v-if="canAdjustVehicleAttribute && form.status === 1" size="small" @click="handleAdjustVehicleAttribute">调整车辆属性</el-button>
+          <el-button v-if="form.status === 1" size="small" @click="handleSoldPlateInfo">添加上牌信息</el-button>
+          <el-button v-if="form.status === 1" size="small" @click="openAdjustVehicleAttribute">调整车辆属性</el-button>
+          <el-button v-if="form.status === 0" size="small" @click="handleAttachment">添加附件</el-button>
+          <el-button v-if="form.status === 0" size="small" @click="handleSubmit">提交</el-button>
+<!--          <el-button v-if="form.status === 0" size="small" @click="handleCancel">作废</el-button>-->
+<!--          <el-button v-if="form.status === 1" size="small" @click="handleRevoke">撤回</el-button>-->
         </template>
         <el-main>
           <section class="common-section">
@@ -349,26 +352,64 @@
             </div>
             <div class="common-section-body">
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm2" label-width="180px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="销售门店：" prop="saleDealerName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.saleDealerName"
+                <el-form-item label="销售门店：" prop="saleDealerCode">
+                  <el-select
+                    filterable
                     clearable
-                  />
+                    remote
+                    reserve-keyword
+                    v-model="form.saleDealerCode"
+                    :loading="saleDealerLoading"
+                    :remote-method="(query) => { saleDealerSearch(1, query) }"
+                    placeholder="请选择"
+                    @change="handleSaleDealerChange"
+                  >
+                    <el-option
+                      v-for="item of saleDealerList"
+                      :key="item.storeCode"
+                      :value="item.storeCode"
+                      :label="item.storeName"
+                    />
+                  </el-select>
                 </el-form-item>
-                <el-form-item label="交付门店：" prop="deliveryDealerName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.deliveryDealerName"
+                <el-form-item label="交付门店：" prop="deliveryDealerCode">
+                  <el-select
+                    filterable
                     clearable
-                  />
+                    remote
+                    reserve-keyword
+                    v-model="form.deliveryDealerCode"
+                    :loading="deliveryDealerLoading"
+                    :remote-method="(query) => { deliveryDealerSearch(1, query) }"
+                    placeholder="请选择"
+                    @change="handleDeliveryDealerChange"
+                  >
+                    <el-option
+                      v-for="item of deliveryDealerList"
+                      :key="item.storeCode"
+                      :value="item.storeCode"
+                      :label="item.storeName"
+                    />
+                  </el-select>
                 </el-form-item>
-                <el-form-item label="专属服务门店：" prop="exclusiveServiceStoreName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.exclusiveServiceStoreName"
+                <el-form-item label="专属服务门店：" prop="exclusiveServiceStoreCode">
+                  <el-select
+                    filterable
                     clearable
-                  />
+                    remote
+                    reserve-keyword
+                    v-model="form.exclusiveServiceStoreCode"
+                    :loading="exclusiveServiceStoreLoading"
+                    :remote-method="(query) => { exclusiveServiceStoreSearchSearch(1, query) }"
+                    @change="handleExclusiveServiceStoreChange"
+                  >
+                    <el-option
+                      v-for="item of exclusiveServiceStoreList"
+                      :key="item.storeCode"
+                      :value="item.storeCode"
+                      :label="item.storeName"
+                    />
+                  </el-select>
                 </el-form-item>
                 <el-form-item label="发票号码：" prop="invoiceNo">
                   <el-input
@@ -427,6 +468,9 @@
               </el-form>
             </div>
           </section>
+          <vehicle-attribute-dialog
+            ref="vehicleAttributeRef"
+            @audit="handleAdjustVehicleAttribute"/>
         </el-main>
       </edit-base-container>
     </template>
@@ -440,16 +484,17 @@
 
 <script>
 import { getDetail, addOrUpdate, submitReport, cancelReport, revokeReport, adjustVehicleAttribute } from '@/api/vehretail/orderManager/specialVehicleSalesReport/index';
+import { getList as getStoreInventory } from '@/api/vehstock/store/storeInventoryLedger/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum } from '@/api/common';
+import { getEnum, listOrgStoreInfo } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import { getList as getVehicleProfileList } from '@/api/datacenter/vehicle/vehicleProfile/index.js';
-
+import VehicleAttributeDialog from '@/views/vehretail/orderManager/specialVehicleSalesReport/vehicleAttributeDialog';
 const defaultForm = {
   // 多选时字段有变化，自行修复
   id: null,
@@ -518,6 +563,7 @@ export default {
   components: {
     EditPageLayout,
     EditBaseContainer,
+    VehicleAttributeDialog,
     FetchSelect
   },
   computed: {
@@ -713,7 +759,16 @@ export default {
         dataSource: [
           { required: false, message: '请输入数据来源，150-新销服; 10-老销服', trigger: 'change' }
         ],
-      }
+      },
+      // 交付门店
+      saleDealerLoading: false,
+      saleDealerList: [],
+      // 交付门店
+      deliveryDealerLoading: false,
+      deliveryDealerList: [],
+      // 交付门店
+      exclusiveServiceStoreLoading: false,
+      exclusiveServiceStoreList: []
     };
   },
   mounted () {
@@ -734,7 +789,7 @@ export default {
     },
     // 删除子表数据
     handleDeleteRow (index) {
-      const item = this.tableData[index];
+      // const item = this.tableData[index];
       this.tableData.splice(index, 1);
       // 根据需求调用接口
       // deletePartVehModel([item.id]).then(res => {
@@ -793,8 +848,73 @@ export default {
     //   this.$auditLog.show({ id: 123 });
     // },
 
+    // 添加上牌信息
+    handleSoldPlateInfo () {
+    },
+    // 添加附件
+    handleAttachment () {
+    },
+    compareAttachFields () {
+      let differentFields = '';
+      if (!this.form.ocrCarBuyerName || !this.form.carBuyerName || this.form.ocrCarBuyerName !== this.form.carBuyerName) {
+        differentFields += '证件识别的客户姓名与车主姓名<br>';
+      }
+      if (!this.form.ocrCarBuyerIdCardNo || !this.form.carBuyerIdCardNo || this.form.ocrCarBuyerIdCardNo !== this.form.carBuyerIdCardNo) {
+        differentFields += '证件识别的证件号码与车主证件号码<br>';
+      }
+      if (!this.form.invoiceCertificateNo || !this.form.certificateNo || this.form.invoiceCertificateNo !== this.form.certificateNo) {
+        differentFields += '发票合格证号与合格证号<br>';
+      }
+      if (!this.form.invoiceEnginenNumber || !this.form.enginenNumber || this.form.invoiceEnginenNumber !== this.form.enginenNumber) {
+        differentFields += '发票发动机号与发动机号<br>';
+      }
+      if (!this.form.invoiceProductionPlace || !this.form.vehicleProductArea || this.form.invoiceProductionPlace !== this.form.vehicleProductArea) {
+        differentFields += '发票产地号与产地';
+      }
+      return differentFields;
+    },
     // 提交操作
     handleSubmit () {
+      // 试乘试驾车校验
+      let vehicleTypeValidateFailed = false;
+      getStoreInventory({
+        vinLike: this.form.vin,
+        pageSize: 1
+      }).then(res => {
+        // console.log(JSON.stringify(res));
+        if (res.total > 0) {
+          vehicleTypeValidateFailed = res.records[0].reservationStatus === 10 && this.form.vehiclePurpose !== 30;
+        }
+      });
+      if (vehicleTypeValidateFailed) {
+        this.$confirm(
+          '该车辆为试驾车，车辆用途请选择试乘试驾车',
+          '试乘试驾车校验提醒',
+          {
+            confirmButtonText: '确定',
+            dangerouslyUseHTMLString: true,
+            showCancelButton: false,
+            type: 'warning'
+          }
+        );
+        return;
+      }
+      // 字段校验
+      const differentFields = this.compareAttachFields();
+      if (differentFields.length > 0) {
+        const differentPrefix = '以下字段不一致，请重新确认<br><br>';
+        this.$confirm(
+          differentPrefix + differentFields,
+          '附件识别字段校验提醒',
+          {
+            confirmButtonText: '确定',
+            dangerouslyUseHTMLString: true,
+            showCancelButton: false,
+            type: 'warning'
+          }
+        );
+        return;
+      }
       this.$confirm(`确定要提交【${this.form.specialReportCode || this.form.id}】吗？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -879,33 +999,21 @@ export default {
     },
 
     // 调整车辆属性操作
-    handleAdjustVehicleAttribute () {
-      this.$prompt('请输入新的车辆属性值', '调整车辆属性', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputValue: this.form.vehicleAttribute,
-        inputPattern: /^\d+$/,
-        inputErrorMessage: '请输入有效的数字',
-        inputPlaceholder: '请输入车辆属性值（如：1-家用 2-营运 4-B级车 10-J级车 20-J1级车 30-专车 60-报废灭失）'
-      }).then(({ value }) => {
-        adjustVehicleAttribute({
-          id: this.form.id,
-          vehicleAttribute: parseInt(value)
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '调整车辆属性成功!'
-          });
-          // 重新加载详情
-          this.$refs.containerRef.loadDetail();
-        }).catch(error => {
-          this.$message({
-            type: 'error',
-            message: error.message || '调整车辆属性失败!'
-          });
+    openAdjustVehicleAttribute () {
+      this.$refs.vehicleAttributeRef.show();
+    },
+    handleAdjustVehicleAttribute (auditForm) {
+      const vehicleAttribute = auditForm.vehicleAttribute;
+      adjustVehicleAttribute({
+        id: this.form.id,
+        vehicleAttribute: vehicleAttribute
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '调整车辆属性成功!'
         });
-      }).catch(() => {
-        // 用户取消操作
+        // 重新加载详情
+        this.$refs.containerRef.loadDetail();
       });
     },
 
@@ -939,11 +1047,108 @@ export default {
       this.form.idCardType = val ? selectedOption.vehicleProfileOwnerResp.idCardType : '';
       this.form.idCardNo = val ? selectedOption.vehicleProfileOwnerResp.idcardNo : '';
       this.form.address = val ? selectedOption.vehicleProfileOwnerResp.homeAddress : '';
-      this.form.salesDealerCode = val ? selectedOption.salesDealerCode : '';
-      this.form.saleDealerName = val ? selectedOption.saleDealerName : '';
-      this.form.deliveryDealerCode = val ? selectedOption.deliveryDealerCode : '';
-      this.form.deliveryDealerName = val ? selectedOption.deliveryDealerName : '';
-      this.form.exclusiveServiceStoreCode = val ? selectedOption.ownerCode : '';
+      this.form.salesDealerCode = val ? selectedOption.salesDealerCode : null;
+      this.form.saleDealerName = val ? selectedOption.saleDealerName : null;
+      this.form.deliveryDealerCode = val ? selectedOption.deliveryDealerCode : null;
+      this.form.deliveryDealerName = val ? selectedOption.deliveryDealerName : null;
+      this.form.exclusiveServiceStoreCode = val ? selectedOption.vehicleProfileServiceResp.serviceDealerCode : null;
+      this.form.exclusiveServiceStoreName = val ? selectedOption.vehicleProfileServiceResp.serviceDealerName : null;
+      this.saleDealerSearch(2);
+    },
+    saleDealerSearch  (type, query) {
+      this.saleDealerLoading = true;
+      const params = {
+        isSales: true,
+        keyword: type === 1 ? query : this.form.deliveryDealerCode,
+        pageSize: 100
+      };
+      listOrgStoreInfo(params).then(res => {
+        this.saleDealerList = type === 1 ? res.records : [...this.saleDealerList, ...res.records];
+        if (type === 2) {
+          this.handleStoreChange(res.records[0], true);
+        }
+      }).finally(() => {
+        this.saleDealerLoading = false;
+      });
+    },
+    deliveryDealerSearch (type, query) {
+      this.deliveryDealerLoading = true;
+      const params = {
+        pageSize: 100,
+        keyword: type === 1 ? query : this.form.deliveryDealerCode
+      };
+      listOrgStoreInfo(params).then(res => {
+        this.deliveryDealerList = type === 1 ? res.records : [...this.deliveryDealerList, ...res.records];
+      }).finally(() => {
+        this.deliveryDealerLoading = false;
+      });
+    },
+    exclusiveServiceStoreSearchSearch (type, query) {
+      this.exclusiveServiceStoreLoading = true;
+      const params = {
+        pageSize: 100,
+        keyword: type === 1 ? query : this.form.exclusiveServiceStoreCode
+      };
+      listOrgStoreInfo(params).then(res => {
+        this.exclusiveServiceStoreList = type === 1 ? res.records : [...this.exclusiveServiceStoreList, ...res.records];
+      }).finally(() => {
+        this.exclusiveServiceStoreLoading = false;
+      });
+    },
+    handleSaleDealerChange (val) {
+      const selectItem = this.saleDealerList.find(item => item.storeCode === val);
+      if (selectItem) {
+        this.handleStoreChange(selectItem, false);
+        this.form.salesDealerCode = selectItem.storeCode;
+        this.form.saleDealerName = selectItem.storeName;
+      } else {
+        this.form.salesDealerCode = '';
+        this.form.saleDealerName = '';
+      }
+    },
+    handleDeliveryDealerChange (val) {
+      const selectItem = this.deliveryDealerList.find(item => item.storeCode === val);
+      if (selectItem) {
+        this.form.deliveryDealerCode = selectItem.storeCode;
+        this.form.deliveryDealerName = selectItem.storeName;
+      } else {
+        this.form.deliveryDealerCode = '';
+        this.form.deliveryDealerName = '';
+      }
+    },
+    handleExclusiveServiceStoreChange (val) {
+      const selectItem = this.exclusiveServiceStoreList.find(item => item.storeCode === val);
+      if (selectItem) {
+        this.form.exclusiveServiceStoreId = selectItem.storeId;
+        this.form.exclusiveServiceStoreCode = selectItem.storeCode;
+        this.form.exclusiveServiceStoreName = selectItem.storeName;
+      } else {
+        this.form.exclusiveServiceStoreId = '';
+        this.form.exclusiveServiceStoreCode = '';
+        this.form.exclusiveServiceStoreName = '';
+      }
+    },
+    handleStoreChange (item, defaultLoad) {
+      // item 是不是交付是不是服务
+      // 交付
+      if (item.isSupportDeliver) {
+        this.form.deliveryDealerCode = item.storeCode;
+        this.form.deliveryDealerName = item.storeName;
+        this.deliveryDealerSearch(2);
+      }
+      // 服务
+      if (item.isSupportRescue) {
+        this.form.exclusiveServiceStoreId = item.storeId;
+        this.form.exclusiveServiceStoreCode = item.storeCode;
+        this.form.exclusiveServiceStoreName = item.storeName;
+        this.exclusiveServiceStoreSearchSearch(2);
+      }
+      if (defaultLoad && !item.isSupportDeliver) {
+        this.deliveryDealerSearch(2);
+      }
+      if (defaultLoad && !item.isSupportRescue) {
+        this.exclusiveServiceStoreSearchSearch(2);
+      }
     }
   }
 };
