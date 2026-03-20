@@ -1017,9 +1017,10 @@ export default {
       vinAllocateVehicleItem(params).then(() => {
         this.$message({
           type: 'success',
-          message: '批量设置急单成功'
+          message: '成功'
         });
         this.getData();
+        this.showvinAllocateVehicleDialog = false;
       });
     },
     handlebatchCancelAllocateSubmit () {

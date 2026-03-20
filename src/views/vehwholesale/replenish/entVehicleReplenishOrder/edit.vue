@@ -215,8 +215,8 @@
                 <el-form-item label="结算资金类型：" prop="settleFundTypeLabel">
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
-                <el-form-item label="金融机构：" prop="financialOrganizationId">
-                  {{ form.financialOrganizationId }}
+                <el-form-item label="金融机构：" prop="financialOrganizationName">
+                  {{ form.financialOrganizationName }}
                 </el-form-item>
                 <el-form-item label="是否赊销：" prop="creditSaleFlagLabel">
                   {{ form.creditSaleFlagLabel }}
