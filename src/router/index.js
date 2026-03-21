@@ -2518,15 +2518,6 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehretail/orderManager/vrRetailOrderBackRecord',
-      name: 'vrRetailOrderBackRecord',
-      component: () => import('@/views/vehretail/orderManager/vrRetailOrderBackRecord/index.vue'),
-
-      meta: {
-        name: '整车零售-订单管理-整车零售订单管理-回退记录',
-        keepAlive: true
-      }
-    }, {
       path: '/vehwholesale/wholesale/vehicleWholesaleOrderRecord',
       name: 'vehicleWholesaleOrderRecord',
       component: () => import('@/views/vehwholesale/wholesale/vehicleWholesaleOrderRecord/index.vue'),

@@ -181,7 +181,7 @@ export default {
             props: 'code',
             label: '金融订单号',
             visible: true,
-            width: 180,
+            width: 300,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -195,7 +195,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'mallOrderCode', label: '商城订单号', visible: true, width: 180 },
+          { props: 'mallOrderCode', label: '商城订单号', visible: true, width: 200 },
           { props: 'installmentOrderCode', label: '分期订单号', visible: true, width: 180 },
           { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 120 },
           { props: 'dealerHasCommissionLabel', label: '门店有无金融返佣', visible: true, width: 150 },
@@ -213,8 +213,8 @@ export default {
           { props: 'financeOrganizationName', label: '金融机构', visible: true, width: 150 },
           { props: 'discountScheme', label: '贴息方案', visible: true, width: 150 },
           { props: 'partnerName', label: '合作伙伴名称', visible: true, width: 150 },
-          { props: 'dealerName', label: '门店名称', visible: true, width: 150 },
-          { props: 'respManName', label: '负责人', visible: true, width: 120 },
+          { props: 'dealerName', label: '门店名称', visible: true, width: 240 },
+          { props: 'respManName', label: '负责人', visible: true, width: 280 },
           { props: 'invoiceAmount', label: '开票金额', visible: true, width: 120 },
           { props: 'terminalPrice', label: '终端售价', visible: true, width: 120 },
           { props: 'downPayment', label: '首付金额（元）', visible: true, width: 150 },

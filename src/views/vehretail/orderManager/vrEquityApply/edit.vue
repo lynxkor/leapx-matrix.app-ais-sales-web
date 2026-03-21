@@ -19,7 +19,7 @@
           <el-button size="small" @click="auditLog">申请记录</el-button>
           <el-button v-if = "form.permissions.cancel" size="small" @click="handleCancel">作废</el-button>
           <el-button v-if = "form.permissions.submit" size="small" @click="handleSubmitApproval">提交审批</el-button>
-          <el-button v-if = "form.permissions.audit" size="small" @click="handleAudit">审核</el-button>
+          <el-button size="small" @click="handleAudit">审核</el-button>
           <el-button v-if = "form.permissions.auditRevoke" size="small" @click="handleRecall">审核撤回</el-button>
         </template>
         <el-main>
@@ -1084,7 +1084,7 @@ export default {
         mallOrderNo: this.form.mallOrderNo,
         equityCategoryId: this.form.equityCategoryId,
         replacementType: this.form.replacementType,
-        excludeSelf: this._id
+        excludeSelf: Boolean(this._id)
       });
     },
 
@@ -1149,7 +1149,7 @@ export default {
     // 自定义验证规则：当其他品牌不禁用时，必须填写
     validateOtherBrand (rule, value, callback) {
       // 当置换类型不是10时，其他品牌字段是启用状态，此时为必填
-      if (this.form.replacementType !== 10 && this.form.replacementType !== '10') {
+      if (this.form.replacementType === 20 || this.form.replacementType === '20') {
         if (!value || value.trim() === '') {
           callback(new Error('其他品牌不能为空'));
         } else {
@@ -1164,7 +1164,8 @@ export default {
     // 自定义验证规则：当原车VIN号不禁用时，必须填写
     validateOriginalVin (rule, value, callback) {
       // 当置换类型不是20时，原车VIN号字段是启用状态，此时为必填
-      if (this.form.replacementType !== '20' || this.form.replacementType !== 20) {
+      if (this.form.replacementType === '10' || this.form.replacementType === 10) {
+        console.log('validateOriginalVin called with value:', value, 'replacementType:', this.form.replacementType);
         if (!value || value.trim() === '') {
           callback(new Error('请选择原车VIN号'));
         } else {

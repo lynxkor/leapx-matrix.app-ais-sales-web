@@ -184,12 +184,15 @@
       <LPVxeTable
         ref="tableRef"
         v-loading="loading"
+        is-checkbox
         is-page
         centralized
+        checkboxFixed
         :option-obj="optionObj"
         :get-config="getConfig"
         :save-or-update="saveOrUpdate"
         @paginationChange="paginationChange"
+        @handleSelect="handleSelectionChange"
       >
       </LPVxeTable>
     </div>
@@ -507,7 +510,7 @@ export default {
 
       queryOrderStatusBackRecord({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
-          this.optionObj.dataList = res.map(item => {
+          this.optionObj.dataList = res.records.map(item => {
             return {
               ...item,
               deleteLoading: false
@@ -530,6 +533,10 @@ export default {
     },
     saveOrUpdate (data) {
       return tableAddOrUpdate(data);
+    },
+    // 多选框选中数据
+    handleSelectionChange (selection) {
+      this.selectionList = selection;
     },
     paginationChange (type, num) {
       if (type === 'page') {

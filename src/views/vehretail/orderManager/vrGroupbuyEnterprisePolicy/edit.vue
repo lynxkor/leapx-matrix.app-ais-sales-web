@@ -50,6 +50,7 @@
                     placeholder="请输入优惠券名称"
                     v-model="form.couponName"
                     clearable
+                    maxlength="100"
                   />
                 </el-form-item>
                 <el-form-item label="优惠金额：" prop="discountAmount">
@@ -83,6 +84,7 @@
                     placeholder="请输入备注"
                     v-model="form.remark"
                     clearable
+                    maxlength="1000"
                   />
                 </el-form-item>
               </el-form>
@@ -230,31 +232,6 @@ export default {
       callback();
     };
 
-    // 验证优惠券长度
-    const validateCouponName = (rule, value, callback) => {
-      if (!value) {
-        callback(new Error('请输入优惠券'));
-        return;
-      }
-
-      if (value.length > 100) {
-        callback(new Error('优惠券名称最多可输入100字'));
-        return;
-      }
-
-      callback();
-    };
-
-    // 验证备注长度
-    const validateRemark = (rule, value, callback) => {
-      if (value && value.length > 1000) {
-        callback(new Error('备注最多可输入1000字'));
-        return;
-      }
-
-      callback();
-    };
-
     // 验证时间范围
     const validateTimeRange = (rule, value, callback) => {
       if (!value) {
@@ -286,7 +263,7 @@ export default {
           { required: true, message: '请选择车系', trigger: 'change' }
         ],
         couponName: [
-          { validator: validateCouponName, trigger: 'blur', required: true }
+          { required: true, message: '请输入优惠券名称', trigger: 'change' }
         ],
         discountAmount: [
           { validator: validateDiscountAmount, trigger: 'blur', required: true }
@@ -297,9 +274,6 @@ export default {
         validEndTime: [
           { validator: validateTimeRange, trigger: 'change', required: true }
         ],
-        remark: [
-          { validator: validateRemark, trigger: 'blur' }
-        ]
       }
     };
   },

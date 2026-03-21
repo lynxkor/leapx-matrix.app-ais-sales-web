@@ -109,7 +109,6 @@
             v-model="form.statusRollbackFlag"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -166,13 +165,16 @@
       <LPVxeTable
         ref="tableRef"
         v-loading="loading"
+        is-checkbox
         is-page
         centralized
+        checkboxFixed
         :option-obj="optionObj"
         :get-config="getConfig"
         @paginationChange="paginationChange"
         @listSelect="handleListSelect"
         @sortChange="handleSortChange"
+        @handleSelect="handleSelectionChange"
       />
     </div>
   </div>
@@ -203,7 +205,7 @@ const defaultForm = {
   newStatus: '',
   mallOrderCode: '',
   payDepositTime: '',
-  statusRollbackFlag: '',
+  statusRollbackFlag: '1',
   operationTime: '',
   wholesaleAllocationTime: '',
   wholesaleSettlementTime: ''
@@ -233,7 +235,7 @@ export default {
       loading: false,
       exportLoading: false,
       clickItemId: '',
-      yes_no_enum: YES_NO_ENUM,
+      selectionList: [],
       optionObj: {
         id: 'vrRetailOrderBackRecordTable',
         dataList: [],
@@ -242,7 +244,7 @@ export default {
           size: pageSize
         },
         dataProp: [
-          { props: 'retailOrderCode', label: '整车订单', visible: true, width: 200, fixed: 'left' },
+          { props: 'retailOrderCode', label: '整车订单号11', visible: true, width: 200, fixed: 'left' },
           { props: 'mallOrderCode', label: '商城订单号', visible: true, width: 200 },
           { props: 'saleDealerName', label: '订单销售门店', visible: true, width: 180 },
           { props: 'carOwnerName', label: '购车人姓名', visible: true, width: 150 },
@@ -296,6 +298,10 @@ export default {
     handleListSelect (row) {
       this.clickItemId = row.id;
     },
+    // 多选框选中数据
+    handleSelectionChange (selection) {
+      this.selectionList = selection;
+    },
     onSubmit () {
       this.optionObj.form.page = 1;
       this.getData();
@@ -309,9 +315,13 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       const reqParams = this.getFormData() || {};
+      if (this.selectionList.length > 0) {
+        const ids = this.selectionList.map(item => item.id) || [];
+        reqParams.ids = ids;
+      }
       exportTable({
         businessType: '整车零售-订单管理-整车零售订单管理-回退记录',
-        dataFetchPath: 'vehretail/web/orderManager/retailOrderInfo/backRecord/page',
+        dataFetchPath: 'vr/web/order/retailOrderInfo/backRecord/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -337,6 +347,7 @@ export default {
     },
     getData () {
       this.loading = true;
+      this.selectionList = [];
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
           this.optionObj.dataList = res.records.map(item => {

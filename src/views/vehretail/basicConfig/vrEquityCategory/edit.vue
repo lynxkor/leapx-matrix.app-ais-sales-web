@@ -28,6 +28,7 @@
                     placeholder="请输入"
                     v-model="form.equityCategoryName"
                     clearable
+                    maxlength="50"
                   />
                 </el-form-item>
                 <el-form-item label="申请条件：" prop="applicationConditions">
@@ -103,7 +104,7 @@ const defaultForm = {
   modifierName: '',
   updateTime: '',
   remark: '',
-  status: null,
+  status: 1,
   statusDesc: '',
   dataSource: null,
   code: '',
@@ -163,9 +164,6 @@ export default {
         applicationConditions: [
           { required: true, message: '请选择申请条件', trigger: 'change' }
         ],
-        status: [
-          { required: true, message: '请选择状态', trigger: 'change' }
-        ]
       }
     };
   },

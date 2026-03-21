@@ -198,12 +198,14 @@ export default {
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/vehicle/vehicleProfile/edit',
-                  query: {
-                    id: row.vinId
-                  }
-                });
+                if (row.vinId) {
+                  this.navigateToRoute({
+                    path: '/service/datacenter/vehicle/vehicleProfile/edit',
+                    query: {
+                      id: row.vinId
+                    }
+                  });
+                }
               },
               type: 'primary'
             }]
@@ -279,6 +281,10 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       const reqParams = this.getFormData() || {};
+      if (this.selectionList.length > 0) {
+        const ids = this.selectionList.map(item => item.id) || [];
+        reqParams.ids = ids;
+      }
       exportTable({
         businessType: '整车零售-订单管理-特殊车辆清单管理',
         dataFetchPath: 'vr/web/order/vrSpecialVehicle/page',
@@ -307,6 +313,7 @@ export default {
     },
     getData () {
       this.loading = true;
+      this.selectionList = [];
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
           this.optionObj.dataList = res.records.map(item => {
