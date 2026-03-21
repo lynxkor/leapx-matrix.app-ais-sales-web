@@ -52,7 +52,7 @@
                     disabled
                   />
                 </el-form-item>
-                 <el-form-item label="关联交易价格比例(%)：" prop="txnTaxPriceRate">
+                 <el-form-item label="关联交易价比例(%)：" prop="txnTaxPriceRate">
                   <el-input-number
                     v-model="form.txnTaxPriceRate"
                     placeholder="请输入"

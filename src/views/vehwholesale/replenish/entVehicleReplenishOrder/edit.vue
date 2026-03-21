@@ -117,6 +117,7 @@
                     :step="0.01"
                     :min="0"
                     :controls="false"
+                    disabled
                   />
                 </el-form-item>
                  <el-form-item label="结算资金类型：" prop="settleFundType">
@@ -126,7 +127,6 @@
                     placeholder="请选择"
                     clearable
                     filterable
-                    @change="iscreditSaleFlag"
                   />
                 </el-form-item>
                  <el-form-item label="金融机构：" prop="financialOrganizationId">
@@ -224,15 +224,15 @@
                   <el-form-item label="订单时间：" prop="orderTime">
                   {{ form.orderTime }}
                 </el-form-item>
-                  <el-form-item label="销售人员名称：" prop="saleUserName">
+                  <el-form-item label="销售人员：" prop="saleUserName">
                   {{ form.saleUserName }}
                 </el-form-item>
                  <el-form-item label="订单备注：" prop="remark">
                   {{ form.remark }}
                 </el-form-item>
-                 <!-- <el-form-item label="创建时间：" prop="createTime">
+                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
-                </el-form-item> -->
+                </el-form-item>
               </el-form>
             </div>
           </section>
@@ -250,7 +250,7 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="接车联系电话：" prop="pickupContactMobile">
+                <el-form-item label="接车人电话：" prop="pickupContactMobile">
                   <el-input
                     placeholder="请输入"
                     v-model="form.pickupContactMobile"
@@ -296,6 +296,7 @@
                     placeholder="请输入"
                     v-model="form.address"
                     clearable
+                    maxlength="300"
                   />
                 </el-form-item>
                 <el-form-item label="经度：" prop="longitude">
@@ -326,7 +327,7 @@
                 <el-form-item label="城市：" prop="cityName">
                   {{ form.cityName }}
                 </el-form-item>
-                <el-form-item label="区县名称：" prop="districtName">
+                <el-form-item label="区/县：" prop="districtName">
                   {{ form.districtName }}
                 </el-form-item>
                 <el-form-item label="交车地址：" prop="address">
@@ -613,12 +614,29 @@ export default {
     'form.address': {
       handler (newVal) {
         // 大客户且地址有值时，防抖调用地址解析
-        if (newVal && this.companyCustomerTypeName === '大客户') {
+        if (newVal) {
           this.handleParseAddress(newVal);
         }
       },
       deep: true
-    }
+    },
+    'form.settleFundType': {
+      handler (val) {
+        if (val === '2010') {
+          this.rules.financialOrganizationId = [
+            { required: true, message: '请输入金融机构', trigger: 'change' }
+          ];
+          this.form.creditSaleFlag = 0;
+        } else if (val === '1050') {
+          this.rules.financialOrganizationId = [];
+          this.form.creditSaleFlag = 1;
+        } else if (val === '1010') {
+          this.form.creditSaleFlag = 0;
+          this.rules.financialOrganizationId = [];
+        }
+      },
+      immediate: true
+    },
   },
   data () {
     const form = this.getDefautlForm();
@@ -675,6 +693,7 @@ export default {
         address: [
           { required: true, message: '请选择交车地址', trigger: 'change' }
         ],
+        financialOrganizationId: []
       }
     };
   },
@@ -837,18 +856,6 @@ export default {
       this.form.entCustomerCode = row.companyCode;
       this.companyCustomerTypeName = row.companyCustomerTypeName;
       this.getDealersForParentCompany(val);
-    },
-    iscreditSaleFlag (val) {
-      if (val === '2010') {
-        this.rules.fundFinancialOrganizationCode = [
-          { required: true, message: '请输入金融机构', trigger: 'change' }
-        ];
-        this.form.creditSaleFlag = 0;
-      } else if (val === '1050') {
-        this.form.creditSaleFlag = 1;
-      } else if (val === '1010') {
-        this.form.creditSaleFlag = 0;
-      }
     },
     async repairItemSearch (query) {
       return fundGetList({ organizationNameLike: query, status: 1 });
