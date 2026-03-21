@@ -59,14 +59,13 @@
             />
       </el-form-item>
        <el-form-item label="结算资金类型">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="vw_fundtype"
+        <fetch-select
+          :options="settleFundTypeOptions"
             v-model="form.settleFundTypes"
             placeholder="请选择"
             clearable
-            multiple
             filterable
+            multiple
           />
         </el-form-item>
          <el-form-item label="金融机构">
@@ -222,6 +221,7 @@ export default {
       orderCategoryOptions: [],
       orderategoryList: [],
       validatedOrderategoryList: [],
+      settleFundTypeOptions: [],
       saleCompanyOptions: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
@@ -263,7 +263,7 @@ export default {
           { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 200 },
           { props: 'orderTime', label: '订单时间', visible: true, width: 200 },
           { props: 'pickupContactName', label: '接车联系人', visible: true, width: 200 },
-          { props: 'pickupContactMobile', label: '接车联系电话', visible: true, width: 200 },
+          { props: 'pickupContactMobile', label: '接车人电话', visible: true, width: 200 },
           { props: 'provinceName', label: '省份', visible: true, width: 200 },
           { props: 'cityName', label: '城市', visible: true, width: 200 },
           { props: 'districtName', label: '区/县', visible: true, width: 200 },
@@ -283,6 +283,9 @@ export default {
             fixed: 'right',
             buttons: [{
               name: '编辑',
+              show: (row) => {
+                return row.auditStatus === 0 || row.auditStatus === 4;
+              },
               click: (rowIndex, row) => {
                 this.$router.push({
                   path: '/vehwholesale/replenish/entVehicleReplenishOrder/edit',
@@ -293,6 +296,27 @@ export default {
                 });
               },
               type: 'info'
+            }, {
+              name: '删除',
+              popconfirmTitle: '此操作将永久删除, 是否继续?',
+              show: (row) => {
+                return row.auditStatus === 0;
+              },
+              click: (rowIndex, row) => {
+                deleteItem([row.id]).then(() => {
+                  this.$message({
+                    type: 'success',
+                    message: '删除成功!'
+                  });
+                  this.getData();
+                }).catch(() => {
+                  this.$message({
+                    type: 'error',
+                    message: '删除失败!'
+                  });
+                });
+              },
+              type: 'danger'
             }]
           }
         ],
@@ -312,8 +336,21 @@ export default {
     this.getData();
     this.listNetworkParentCompany();
     this.getCompanyList();
+    this.fetchSettleFundTypeOptions();
   },
   methods: {
+    async fetchSettleFundTypeOptions () {
+      const response = await getEnum('vw_fundtype');
+      this.settleFundTypeOptions = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['1050', '1010', '2010'].includes(codeStr + '');
+      }).map(item => {
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
+    },
     getCompanyList (query) {
       return companyList({ companyNameLike: query, status: 1 });
     },
@@ -375,8 +412,9 @@ export default {
       });
     },
     onSubmit () {
-      console.log('onSubmit', this.form);
-      if (this.form.settleFundTypes.length > 0 && this.form.settleFundTypes.includes('2010') && this.form.fundFinancialOrganizationCodes.length === 0) {
+      const settleFundTypes = this.form.settleFundTypes || [];
+      const financialOrganizationIds = this.form.financialOrganizationIds || [];
+      if (settleFundTypes.length > 0 && settleFundTypes.includes('2010') && financialOrganizationIds.length === 0) {
         return this.$message({
           type: 'error',
           message: '结算资金类型选择【融资】，金融机构必填!'

@@ -30,6 +30,7 @@
                     :step="0.01"
                     :min="0"
                     :controls="false"
+                    disabled
                 />
         </el-form-item>
         <el-form-item label="企业客户补货订单：">
@@ -157,7 +158,6 @@ export default {
     },
     orderInfo (val) {
       if (val) {
-        console.log(val);
         this.materialsform.entReplenishOrderId = val.entReplenishOrderCode;
         if (val.orderCategory === 1 || val.orderCategory === 8) {
           this.isType = true;
@@ -165,6 +165,15 @@ export default {
           this.isType = false;
         }
       }
+    },
+    // 新增监听：当销售价格变化且订单分类为 21 时，同步标准价格
+    'materialsform.salesPrice': {
+      handler (newVal) {
+        if (this.orderInfo && this.orderInfo.orderCategory === 21) {
+          this.materialsform.standardPrice = newVal;
+        }
+      },
+      immediate: true // 初始化时也执行一次
     }
   },
   created () {
@@ -176,11 +185,10 @@ export default {
       return vehicleMaterials({ materialsCodeLike: params, status: 1 });
     },
     materialsSelect (val, row) {
+      console.log('row:', row, this.orderInfo.orderCategory);
       this.materialsform.materialsId = row.id;
-      if (this.orderInfo.orderCategory === 1 || this.orderInfo.status === 8) {
-        this.materialsform.standardPrice = this.orderInfo.price;
-      } else if (this.orderInfo.orderCategory === 21) {
-        this.materialsform.standardPrice = row.standardPrice;
+      if (this.orderInfo.orderCategory === 1 || this.orderInfo.orderCategory === 8) {
+        this.materialsform.standardPrice = row.price;
       }
     },
     handleClose () {

@@ -51,6 +51,14 @@
                     disabled
                   />
                 </el-form-item>
+                <el-form-item label="销售公司：" prop="saleCompanyName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.saleCompanyName"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
                 <el-form-item label="第七大区CBU订单：" prop="cbuOrderCode">
                   <el-input
                     placeholder="请输入"
@@ -154,7 +162,7 @@
                     disabled
                   />
                 </el-form-item>
-                 <el-form-item label="订单物料：" prop="materialsCode">
+                 <el-form-item label="下单物料：" prop="materialsCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.materialsCode"
@@ -162,7 +170,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="下单物料描述：" prop="orderMaterialsDesc">
+                <el-form-item label="物料描述：" prop="orderMaterialsDesc">
                   <el-input
                     placeholder="请输入"
                     v-model="form.orderMaterialsDesc"
@@ -197,7 +205,7 @@
                     disabled
                   />
                 </el-form-item>
-                 <el-form-item label="创建者名称：" prop="creatorName">
+                 <el-form-item label="创建人：" prop="creatorName">
                   <el-input
                     placeholder="请输入"
                     v-model="form.creatorName"
@@ -205,18 +213,18 @@
                     disabled
                   />
                 </el-form-item>
-                  <el-form-item label="销售市场：" prop="salesMarket">
+                  <el-form-item label="销售市场：" prop="salesMarketLabel">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.salesMarket"
+                    v-model="form.salesMarketLabel"
                     clearable
                     disabled
                   />
                 </el-form-item>
-                     <el-form-item label="验收方式：" prop="acceptanceMethod">
+                     <el-form-item label="验收方式：" prop="acceptanceMethodLabel">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.acceptanceMethod"
+                    v-model="form.acceptanceMethodLabel"
                     clearable
                     disabled
                   />
@@ -240,8 +248,11 @@
                  <el-form-item label="企业客户补货订单编号：" prop="entReplenishOrderCode">
                   {{ form.entReplenishOrderCode }}
                 </el-form-item>
-                 <el-form-item label="CBU订单号：" prop="cbuOrderCode">
+                 <el-form-item label="第七大区CBU订单号：" prop="cbuOrderCode">
                   {{ form.cbuOrderCode }}
+                </el-form-item>
+                 <el-form-item label="销售公司：" prop="saleCompanyName">
+                  {{ form.saleCompanyName }}
                 </el-form-item>
                  <el-form-item label="企业客户名称：" prop="entCustomerName">
                   {{ form.entCustomerName }}
@@ -276,10 +287,10 @@
                 <el-form-item label="急单备注：" prop="emergencyOrderRemark">
                   {{ form.emergencyOrderRemark }}
                 </el-form-item>
-                  <el-form-item label="订单物料：" prop="materialsCode">
+                  <el-form-item label="下单物料：" prop="materialsCode">
                   {{ form.materialsCode }}
                 </el-form-item>
-                <el-form-item label="下单物料描述：" prop="orderMaterialsDesc">
+                <el-form-item label="物料描述：" prop="orderMaterialsDesc">
                   {{ form.orderMaterialsDesc }}
                 </el-form-item>
                  <el-form-item label="订单取消时间：" prop="cancelTime">
@@ -291,11 +302,11 @@
                 <el-form-item label="订单取消备注：" prop="cancelRemark">
                   {{ form.cancelRemark }}
                 </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
+                <el-form-item label="创建者人：" prop="creatorName">
                   {{ form.creatorName }}
                 </el-form-item>
-                <el-form-item label="销售市场：" prop="salesMarket">
-                  {{ form.salesMarket }}
+                <el-form-item label="销售市场：" prop="salesMarketLabel">
+                  {{ form.salesMarketLabel }}
                 </el-form-item>
                 <el-form-item label="验收方式：" prop="acceptanceMethodLabel">
                   {{ form.acceptanceMethodLabel }}
@@ -400,9 +411,8 @@
                   />
                 </el-form-item>
                 <el-form-item label="结算资金类型：" prop="settleFundType">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="vw_fundtype"
+                   <fetch-select
+                   :options="settleFundTypeOptions"
                     v-model="form.settleFundType"
                     placeholder="请选择"
                     clearable
@@ -435,17 +445,14 @@
                     disabled
                   />
                 </el-form-item>
-                 <!-- <el-form-item label="结算状态：" prop="settleStatus">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="vw_ent_vehicle_order_settle_status"
-                    v-model="form.settleStatus"
-                    placeholder="请选择"
+                 <el-form-item label="结算状态：" prop="settleStatus">
+                 <el-input
+                    placeholder="请输入"
+                    v-model="form.settleStatusLabel"
                     clearable
-                    filterable
                     disabled
                   />
-                </el-form-item> -->
+                </el-form-item>
                   <el-form-item label="标准价格：" prop="standardPrice">
                   <el-input
                     placeholder="请输入"
@@ -549,7 +556,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="订单同步状态：" prop="orderSyncStatus">
+                <el-form-item label="同步状态：" prop="orderSyncStatus">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vw_ent_vehicle_order_sync_status"
@@ -706,7 +713,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="接车联系电话：" prop="pickupContactMobile">
+                <el-form-item label="接车人电话：" prop="pickupContactMobile">
                   <el-input
                     placeholder="请输入"
                     v-model="form.pickupContactMobile"
@@ -733,7 +740,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="区县名称：" prop="districtName">
+                <el-form-item label="区/县：" prop="districtName">
                   <el-input
                     placeholder="请输入"
                     v-model="form.districtName"
@@ -771,16 +778,16 @@
                 <el-form-item label="接车联系人：" prop="pickupContactName">
                   {{ form.pickupContactName }}
                 </el-form-item>
-                <el-form-item label="接车联系电话：" prop="pickupContactMobile">
+                <el-form-item label="接车人电话：" prop="pickupContactMobile">
                   {{ form.pickupContactMobile }}
                 </el-form-item>
-                <el-form-item label="省：" prop="provinceName">
+                <el-form-item label="省份：" prop="provinceName">
                   {{ form.provinceName }}
                 </el-form-item>
-                <el-form-item label="市：" prop="cityName">
+                <el-form-item label="城市：" prop="cityName">
                   {{ form.cityName }}
                 </el-form-item>
-                 <el-form-item label="区县名称：" prop="districtName">
+                 <el-form-item label="区/县：" prop="districtName">
                   {{ form.districtName }}
                 </el-form-item>
                   <el-form-item label="交车地址：" prop="address">
@@ -961,6 +968,7 @@ export default {
       showComponentTabelDialog: false,
       yes_no_enum: YES_NO_ENUM,
       orderCategoryOptions: [],
+      settleFundTypeOptions: [],
       accountData: [],
       form: { ...form },
       originalForm: { ...form },
@@ -975,8 +983,21 @@ export default {
     };
   },
   mounted () {
+    this.fetchSettleFundTypeOptions();
   },
   methods: {
+    async fetchSettleFundTypeOptions () {
+      const response = await getEnum('vw_fundtype');
+      this.settleFundTypeOptions = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['1050', '1010', '2010'].includes(codeStr + '');
+      }).map(item => {
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
+    },
     async fetchOrderCategoryOptions () {
       const response = await getEnum('vw_order_category');
       console.log('response:', response);

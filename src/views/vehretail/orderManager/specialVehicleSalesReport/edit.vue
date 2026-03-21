@@ -483,18 +483,27 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, submitReport, cancelReport, revokeReport, adjustVehicleAttribute } from '@/api/vehretail/orderManager/specialVehicleSalesReport/index';
+import {
+  getDetail,
+  addOrUpdate,
+  submitReport,
+  cancelReport,
+  revokeReport,
+  adjustVehicleAttribute,
+  effectiveVinValidate
+} from '@/api/vehretail/orderManager/specialVehicleSalesReport/index';
 import { getList as getStoreInventory } from '@/api/vehstock/store/storeInventoryLedger/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum, listOrgStoreInfo } from '@/api/common';
+import { getEnum, listOrgStoreInfo, getDealerDetailByCode } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import { getList as getVehicleProfileList } from '@/api/datacenter/vehicle/vehicleProfile/index.js';
 import VehicleAttributeDialog from '@/views/vehretail/orderManager/specialVehicleSalesReport/vehicleAttributeDialog';
+import {generateSoldPlateInfoByVin, getEffectiveByVin} from "@/api/vehretail/orderManager/soldPlateInfo";
 const defaultForm = {
   // 多选时字段有变化，自行修复
   id: null,
@@ -850,6 +859,22 @@ export default {
 
     // 添加上牌信息
     handleSoldPlateInfo () {
+      getEffectiveByVin(this.form.vin).then(res => {
+        if (res) {
+          this.$router.push({
+            path: '/vehretail/orderManager/soldPlateInfo/edit',
+            query: {
+              id: res.id
+            }
+          });
+        } else {
+          // 新增
+          generateSoldPlateInfoByVin(this.form.vin).then(res => {
+            this.$message.success('添加已售车辆上牌资料成功');
+            this.reloadDetail();
+          });
+        }
+      });
     },
     // 添加附件
     handleAttachment () {
@@ -1031,7 +1056,20 @@ export default {
       return await getVehicleProfileList(params);
     },
     vehicleProfileChange (val, selectedOption) {
-      this.refreshVehicleProfileInfo(val, selectedOption);
+      let clearForm = true;
+      if (val) {
+        // 校验是否已存在记录
+        effectiveVinValidate(val).then(res => {
+          clearForm = false;
+          this.refreshVehicleProfileInfo(val, selectedOption);
+        });
+      }
+      if (clearForm) {
+        // 清空表单
+        this.$refs.ruleForm.resetFields();
+        this.$refs.ruleForm1.resetFields();
+        this.$refs.ruleForm2.resetFields();
+      }
     },
     refreshVehicleProfileInfo (val, selectedOption) {
       this.form.modelId = val ? selectedOption.vehicleModelId : '';
@@ -1047,14 +1085,18 @@ export default {
       this.form.idCardType = val ? selectedOption.vehicleProfileOwnerResp.idCardType : '';
       this.form.idCardNo = val ? selectedOption.vehicleProfileOwnerResp.idcardNo : '';
       this.form.address = val ? selectedOption.vehicleProfileOwnerResp.homeAddress : '';
-      this.form.salesDealerCode = val ? selectedOption.salesDealerCode : null;
-      this.form.saleDealerName = val ? selectedOption.saleDealerName : null;
+      this.form.saleDealerCode = val ? selectedOption.salesDealerCode : null;
+      this.form.saleDealerName = val ? selectedOption.salesDealerName : null;
       this.form.deliveryDealerCode = val ? selectedOption.deliveryDealerCode : null;
       this.form.deliveryDealerName = val ? selectedOption.deliveryDealerName : null;
       this.form.exclusiveServiceStoreCode = val ? selectedOption.vehicleProfileServiceResp.serviceDealerCode : null;
       this.form.exclusiveServiceStoreName = val ? selectedOption.vehicleProfileServiceResp.serviceDealerName : null;
-      this.saleDealerSearch(2);
+      // 根据销售门店渲染专属服务、交付门店
+      if (this.form.saleDealerCode) {
+        this.saleDealerSearch(2);
+      }
     },
+    // 销售门店搜索并回显
     saleDealerSearch  (type, query) {
       this.saleDealerLoading = true;
       const params = {
@@ -1065,7 +1107,7 @@ export default {
       listOrgStoreInfo(params).then(res => {
         this.saleDealerList = type === 1 ? res.records : [...this.saleDealerList, ...res.records];
         if (type === 2) {
-          this.handleStoreChange(res.records[0], true);
+          this.handleSaleDealerStoreChange(res.records[0], true);
         }
       }).finally(() => {
         this.saleDealerLoading = false;
@@ -1098,9 +1140,9 @@ export default {
     handleSaleDealerChange (val) {
       const selectItem = this.saleDealerList.find(item => item.storeCode === val);
       if (selectItem) {
-        this.handleStoreChange(selectItem, false);
         this.form.salesDealerCode = selectItem.storeCode;
         this.form.saleDealerName = selectItem.storeName;
+        this.handleSaleDealerStoreChange(selectItem, false);
       } else {
         this.form.salesDealerCode = '';
         this.form.saleDealerName = '';
@@ -1128,27 +1170,23 @@ export default {
         this.form.exclusiveServiceStoreName = '';
       }
     },
-    handleStoreChange (item, defaultLoad) {
-      // item 是不是交付是不是服务
-      // 交付
-      if (item.isSupportDeliver) {
-        this.form.deliveryDealerCode = item.storeCode;
-        this.form.deliveryDealerName = item.storeName;
-        this.deliveryDealerSearch(2);
-      }
-      // 服务
-      if (item.isSupportRescue) {
-        this.form.exclusiveServiceStoreId = item.storeId;
-        this.form.exclusiveServiceStoreCode = item.storeCode;
-        this.form.exclusiveServiceStoreName = item.storeName;
-        this.exclusiveServiceStoreSearchSearch(2);
-      }
-      if (defaultLoad && !item.isSupportDeliver) {
-        this.deliveryDealerSearch(2);
-      }
-      if (defaultLoad && !item.isSupportRescue) {
-        this.exclusiveServiceStoreSearchSearch(2);
-      }
+    // 销售门店选择时，加载专属服务门店、交付门店
+    handleSaleDealerStoreChange (item, defaultLoad) {
+      getDealerDetailByCode(item.storeCode)
+        .then(res => {
+          if (res) {
+            if (res.exclusiveDeliveryStoreCode) {
+              this.form.deliveryDealerCode = res.exclusiveDeliveryStoreCode;
+              this.form.deliveryDealerName = res.exclusiveDeliveryStoreName;
+              this.deliveryDealerSearch(2);
+            }
+            if (res.exclusiveServiceStoreCode) {
+              this.form.exclusiveServiceStoreCode = res.exclusiveServiceStoreCode;
+              this.form.exclusiveServiceStoreName = res.exclusiveServiceStoreName;
+              this.exclusiveServiceStoreSearchSearch(2);
+            }
+          }
+        });
     }
   }
 };
