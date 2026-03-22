@@ -187,10 +187,9 @@ export default {
   },
   methods: {
     async getVehicleMaterialsList (params) {
-      return vehicleMaterials({ materialsCodeLike: params, status: 1 });
+      return vehicleMaterials({ materialsCodeLike: params, status: 1, pageSize: 20 });
     },
     materialsSelect (val, row) {
-      console.log('row:', row, this.orderInfo.orderCategory);
       this.materialsform.materialsId = row.id;
       if (this.orderInfo.orderCategory === 1 || this.orderInfo.orderCategory === 8) {
         this.materialsform.standardPrice = row.price;
@@ -235,7 +234,7 @@ export default {
     },
     handleSubmit () {
       this.$emit('addConfirm', this.materialsform);
-      this.dialogVisible = false;
+      this.handleCancel();
       // this.$refs.entOrderDetail.validate((valid) => {
       //   if (valid) {
       //     this.submitLoading = true;

@@ -323,6 +323,7 @@ export default {
           { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 200 },
           { props: 'rangePowerName', label: '选配动力', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
           { props: 'vehicleReturnFlagLabel', label: '退车标识', visible: true, width: 200 }
         ],
         total: 0

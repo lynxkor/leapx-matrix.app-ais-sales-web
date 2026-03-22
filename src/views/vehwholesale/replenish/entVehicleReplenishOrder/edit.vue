@@ -842,6 +842,8 @@ export default {
       this.form.saleDealerName = row.storeName;
       this.form.saleDealerCode = row.storeCode;
       this.form.address = row.storeBuildAddress;
+      this.form.pickupContactName = row.storeWarehouseResp.contacts;
+      this.form.pickupContactMobile = row.storeWarehouseResp.contactPhone;
     },
     getDealersForParentCompany (val) {
       listDealersForParentCompany({ companyCode: val }).then(res => {
