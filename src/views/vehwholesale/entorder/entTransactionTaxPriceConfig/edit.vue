@@ -40,6 +40,7 @@
                       :remote-method="getCompanyList"
                       value-key="id"
                       label-key="companyName"
+                      :disabled="isEditing"
                     />
                 </el-form-item>
                  <el-form-item label="订单分类：" prop="orderCategory">
@@ -94,7 +95,7 @@
                  <el-form-item label="订单分类：" prop="orderCategoryLabel">
                   {{ form.orderCategoryLabel }}
                 </el-form-item>
-                <el-form-item label="关联交易价格比例：" prop="txnTaxPriceRate">
+                <el-form-item label="关联交易价比例：" prop="txnTaxPriceRate">
                   {{ form.txnTaxPriceRate }}
                 </el-form-item>
                  <el-form-item label="生效时间：" prop="effectiveTime">
@@ -218,7 +219,7 @@ export default {
           { required: true, message: '请输入订单分类', trigger: 'change' }
         ],
         txnTaxPriceRate: [
-          { required: true, message: '请输入关联交易价格比', trigger: 'change' }
+          { required: true, message: '请输入关联交易价比', trigger: 'change' }
         ],
         effectiveTime: [
           { required: true, message: '请选择生效时间', trigger: 'change' }

@@ -109,7 +109,7 @@
                       @change="getOtherInfoBysaleCompany"
                     />
                 </el-form-item>
-                <el-form-item label="订单金额：" prop="totalAmount">
+                <el-form-item label="订单金额：">
                   <el-input-number
                     placeholder="请输入订单金额"
                     v-model="form.totalAmount"
@@ -150,6 +150,7 @@
                       placeholder="请选择"
                       clearable
                       filterable
+                      :disabled="isEditing"
                     />
                 </el-form-item>
                 <el-form-item label="订单时间：" prop="orderTime">
@@ -159,6 +160,7 @@
                       value-format="yyyy-MM-dd HH:mm:ss"
                       placeholder="选择日期时间"
                       clearable
+                      :disabled="isEditing"
                     />
                 </el-form-item>
                  <el-form-item label="销售人员：" prop="saleUserName">
@@ -280,7 +282,7 @@
                         @change="handleChangeDistrict"
                       />
                 </el-form-item>
-                <el-form-item label="区县编码：" prop="districtName">
+                <el-form-item label="区/县：" prop="districtName">
                    <fetch-select
                         filterable
                         clearable
@@ -497,7 +499,7 @@
     </template>
   </edit-page-layout>
   <Upload :visible="uploadDialogVisible" templateUrl="" uploadUrl="" @close="handleUploadDialogClose" />
-  <AddEntVehicleReplishOrderDetail  :visible.sync="showAddDetailDialog"
+  <AddEntVehicleReplishOrderDetail  :visible.sync="showAddDetailDialog" ref="addEntVehicleReplishOrderDialog"
       :order-ids="[_id]"
       :orderInfo="form"
       @addConfirm="addConfirm">
@@ -674,9 +676,6 @@ export default {
         ],
         creditSaleFlag: [
           { required: true, message: '请输入是否赊销', trigger: 'change' }
-        ],
-        totalAmount: [
-          { required: true, message: '请输入订单金额', trigger: 'change' }
         ],
         settleFundType: [
           { required: true, message: '请选择结算资金类型', trigger: 'change' }
@@ -895,11 +894,6 @@ export default {
           message: '添加成功!'
         });
         this.detailRequest();
-      }).catch(() => {
-        this.$message({
-          type: 'error',
-          message: '添加失败!'
-        });
       });
     },
     detailRequest () {
