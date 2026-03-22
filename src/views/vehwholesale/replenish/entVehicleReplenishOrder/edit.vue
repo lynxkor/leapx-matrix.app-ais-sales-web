@@ -199,8 +199,8 @@
                 <el-form-item label="验收方式：" prop="acceptanceMethodLabel">
                   {{ form.acceptanceMethodLabel }}
                 </el-form-item>
-                <el-form-item label="销售市场：" prop="salesMarket">
-                  {{ form.salesMarket }}
+                <el-form-item label="销售市场：" prop="salesMarketLabel">
+                  {{ form.salesMarketLabel }}
                 </el-form-item>
                 <el-form-item label="企业客户名称：" prop="entCustomerName">
                   {{ form.entCustomerName }}
@@ -831,7 +831,6 @@ export default {
       return networkParentCompanyItem({ parentCompanyName: query, pageNum: 1, pageSize: 20 });
     },
     getOtherInfoBysaleCompany (val, row) {
-      console.log(val, row);
       this.form.latitude = row.latitude;
       this.form.longitude = row.longitude;
       this.form.provinceCode = row.provinceCode;
@@ -900,6 +899,10 @@ export default {
       const id = this._id;
       if (id) {
         return getDetail(id).then(res => {
+          this.form = { ...this.form, ...res };
+          if (this.$refs.containerRef) {
+            this.$refs.containerRef.originalForm = { ...res };
+          }
           res.detailList = res.detailList.map(detail => ({
             ...detail,
             materialsDesc: detail.vehicleMaterials.materialsDesc || '',

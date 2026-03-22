@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" width="1200px" :visible.sync="dialogVisible">
+  <el-dialog :title="title" width="1200px" :visible.sync="dialogVisible"  :before-close="handleClose">
     <div class="page-common">
        <el-form
         ref="form"
@@ -197,7 +197,7 @@ export default {
       }
     },
     handleClose () {
-      this.materialsform = { ...defaultForm }; // 重置表单数据
+      this.handleCancel();
     },
     getFormData () {
       const data = { ...this.materialsform };
@@ -235,6 +235,7 @@ export default {
     },
     handleSubmit () {
       this.$emit('addConfirm', this.materialsform);
+      this.dialogVisible = false;
       // this.$refs.entOrderDetail.validate((valid) => {
       //   if (valid) {
       //     this.submitLoading = true;
