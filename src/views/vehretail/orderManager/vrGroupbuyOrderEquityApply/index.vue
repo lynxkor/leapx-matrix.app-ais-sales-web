@@ -251,9 +251,9 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                if (row.saleDealerCode) {
+                if (row.retailOrderId) {
                   this.navigateToRoute({
-                    path: '/partner/channelManagement/shopBasicsMessageDetails',
+                    path: '/vehretail/orderManager/retailOrderInfo/edit',
                     query: {
                       id: row.retailOrderId
                     }
@@ -285,6 +285,7 @@ export default {
             width: 150,
             buttons: [{
               name: '编辑',
+              show: (row) => row.permissions.edit,
               click: (rowIndex, row) => {
                 this.$router.push({
                   path: '/vehretail/orderManager/vrGroupbuyOrderEquityApply/edit',

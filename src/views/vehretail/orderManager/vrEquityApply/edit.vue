@@ -19,7 +19,7 @@
           <el-button size="small" @click="auditLog">申请记录</el-button>
           <el-button v-if = "form.permissions.cancel" size="small" @click="handleCancel">作废</el-button>
           <el-button v-if = "form.permissions.submit" size="small" @click="handleSubmitApproval">提交审批</el-button>
-          <el-button size="small" @click="handleAudit">审核</el-button>
+          <el-button v-if = "form.permissions.audit" size="small" @click="handleAudit">审核</el-button>
           <el-button v-if = "form.permissions.auditRevoke" size="small" @click="handleRecall">审核撤回</el-button>
         </template>
         <el-main>
