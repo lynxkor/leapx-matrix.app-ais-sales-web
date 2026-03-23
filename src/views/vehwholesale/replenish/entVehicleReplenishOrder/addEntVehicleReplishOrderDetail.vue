@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" width="1200px" :visible.sync="dialogVisible" :close-on-click-modal="false">
+  <el-dialog :title="title" width="1200px" :visible.sync="dialogVisible"  :before-close="handleClose">
     <div class="page-common">
        <el-form
         ref="form"
@@ -92,6 +92,10 @@ import { getEnum, vehicleMaterials } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  materialsCode: '',
+  standardPrice: '',
+  salesPrice: '',
+  materialsId: '',
 };
 export default {
   name: 'AddEntVehicleReplishOrderDetail',
@@ -136,8 +140,6 @@ export default {
           { required: true, message: '请输入数量', trigger: 'change' }
         ],
       },
-
-      tableData: [],
     };
   },
   computed: {
@@ -157,6 +159,7 @@ export default {
       }
     },
     orderInfo (val) {
+      console.log('orderInfo:', val);
       if (val) {
         this.materialsform.entReplenishOrderId = val.entReplenishOrderCode;
         if (val.orderCategory === 1 || val.orderCategory === 8) {
@@ -179,21 +182,21 @@ export default {
   created () {
     this.getEnum();
     this.getVehicleMaterialsList();
+    this.materialsform = { ...defaultForm };
+    console.log('orderInfo:', this.orderInfo);
   },
   methods: {
     async getVehicleMaterialsList (params) {
-      return vehicleMaterials({ materialsCodeLike: params, status: 1 });
+      return vehicleMaterials({ materialsCodeLike: params, status: 1, pageSize: 20 });
     },
     materialsSelect (val, row) {
-      console.log('row:', row, this.orderInfo.orderCategory);
       this.materialsform.materialsId = row.id;
       if (this.orderInfo.orderCategory === 1 || this.orderInfo.orderCategory === 8) {
         this.materialsform.standardPrice = row.price;
       }
     },
     handleClose () {
-      this.materialsform = { ...defaultForm }; // 重置表单数据
-      this.tableData = []; // 清空表格数据
+      this.handleCancel();
     },
     getFormData () {
       const data = { ...this.materialsform };
@@ -223,9 +226,15 @@ export default {
     },
     handleCancel () {
       this.dialogVisible = false;
+      this.materialsform.materialsCode = '';
+      this.materialsform.standardPrice = '';
+      this.materialsform.salesPrice = '';
+      this.materialsform.materialsId = '';
+      this.materialsform.qty = '';
     },
     handleSubmit () {
       this.$emit('addConfirm', this.materialsform);
+      this.handleCancel();
       // this.$refs.entOrderDetail.validate((valid) => {
       //   if (valid) {
       //     this.submitLoading = true;

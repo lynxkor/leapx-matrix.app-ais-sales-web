@@ -42,3 +42,10 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+/**
+ * pushFinCustomerPurchaseRecordToBank  客户采购记录同步到银行
+ */
+
+export function pushFinCustomerPurchaseRecordToBank (data) {
+  return api.jsonPost(prefix + 'pushFinCustomerPurchaseRecordToBank', data);
+}

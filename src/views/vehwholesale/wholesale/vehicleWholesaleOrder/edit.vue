@@ -426,10 +426,10 @@
                     <el-radio v-for="item in true_false_enum" :key="item.code" :label="item.code">{{ item.message }}</el-radio>
                   </el-radio-group>
                 </el-form-item>
-                 <el-form-item label="取消配车说明：" prop="cancelAllocateRemark">
+                 <el-form-item label="取消配车说明：" prop="cancelAllocateVehicleTypeLabel">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.cancelAllocateRemark"
+                    v-model="form.cancelAllocateVehicleTypeLabel"
                     clearable
                     maxlength="300"
                     disabled
@@ -551,8 +551,8 @@
                  <el-form-item label="合格证是否质押：" prop="certificatePledgedLabel">
                   {{ form.certificatePledgedLabel }}
                 </el-form-item>
-                <el-form-item label="取消配车说明：" prop="cancelAllocateRemark">
-                  {{ form.cancelAllocateRemark }}
+                <el-form-item label="取消配车说明：" prop="cancelAllocateVehicleTypeLabel">
+                  {{ form.cancelAllocateVehicleTypeLabel }}
                 </el-form-item>
                 <el-form-item label="取消结算时间：" prop="cancelSettleTime">
                   {{ form.cancelSettleTime }}

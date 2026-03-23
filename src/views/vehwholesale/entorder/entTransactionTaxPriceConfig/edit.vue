@@ -35,11 +35,13 @@
                       filterable
                       clearable
                       remote
-                      v-model="form.saleCompanyName"
+                      v-model="form.saleCompanyId"
                       :params="form.saleCompanyName"
                       :remote-method="getCompanyList"
                       value-key="id"
                       label-key="companyName"
+                      @change="getCompanyName"
+                      :disabled="isEditing"
                     />
                 </el-form-item>
                  <el-form-item label="订单分类：" prop="orderCategory">
@@ -94,7 +96,7 @@
                  <el-form-item label="订单分类：" prop="orderCategoryLabel">
                   {{ form.orderCategoryLabel }}
                 </el-form-item>
-                <el-form-item label="关联交易价格比例：" prop="txnTaxPriceRate">
+                <el-form-item label="关联交易价比例：" prop="txnTaxPriceRate">
                   {{ form.txnTaxPriceRate }}
                 </el-form-item>
                  <el-form-item label="生效时间：" prop="effectiveTime">
@@ -211,14 +213,14 @@ export default {
       emptyText: '若要启用此内容，请创建记录',
       tableData: [],
       rules: {
-        saleCompanyName: [
+        saleCompanyId: [
           { required: true, message: '请输入销售公司', trigger: 'change' }
         ],
         orderCategory: [
           { required: true, message: '请输入订单分类', trigger: 'change' }
         ],
         txnTaxPriceRate: [
-          { required: true, message: '请输入关联交易价格比', trigger: 'change' }
+          { required: true, message: '请输入关联交易价比', trigger: 'change' }
         ],
         effectiveTime: [
           { required: true, message: '请选择生效时间', trigger: 'change' }
@@ -254,6 +256,9 @@ export default {
       if (id) {
         return getDetail(id);
       }
+    },
+    getCompanyName (ind, val) {
+      this.form.saleCompanyName = val.companyName;
     },
     submitRequest () {
       if (this.form.effectiveTime && new Date(this.form.expireTime) < new Date(this.form.effectiveTime)) {

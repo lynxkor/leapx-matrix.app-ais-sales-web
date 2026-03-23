@@ -2796,6 +2796,95 @@ const routes = [
         name: '门店调拨入库详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehstock/store/vehiclePurposeChangeApply',
+      name: 'vehiclePurposeChangeApply',
+      component: () => import('@/views/vehstock/store/vehiclePurposeChangeApply/index.vue'),
+
+      meta: {
+        name: '车辆用途变更申请',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/store/vehiclepurposechangeapply/edit',
+      name: 'vehiclePurposeChangeApplyEdit',
+      component: () => import('@/views/vehstock/store/vehiclePurposeChangeApply/edit.vue'),
+
+      meta: {
+        name: '车辆用途变更申请详情',
+      }
+    }, {
+      path: '/vehwholesale/back/vehicleBackOrder',
+      name: 'vehicleBackOrder',
+      component: () => import('@/views/vehwholesale/back/vehicleBackOrder/index.vue'),
+
+      meta: {
+        name: '整车批售-批售管理-整车退车订单管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/back/vehiclebackorder/edit',
+      name: 'vehicleBackOrderEdit',
+      component: () => import('@/views/vehwholesale/back/vehicleBackOrder/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售管理-整车退车订单管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/back/vehicleBackOrderDetail',
+      name: 'vehicleBackOrderDetail',
+      component: () => import('@/views/vehwholesale/back/vehicleBackOrderDetail/index.vue'),
+
+      meta: {
+        name: '整车批售-批售管理-整车退车车辆明细管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/back/vehiclebackorderdetail/edit',
+      name: 'vehicleBackOrderDetailEdit',
+      component: () => import('@/views/vehwholesale/back/vehicleBackOrderDetail/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售管理-整车退车车辆明细管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/certificate/vehicleCertificateRedemption',
+      name: 'vehicleCertificateRedemption',
+      component: () => import('@/views/vehwholesale/certificate/vehicleCertificateRedemption/index.vue'),
+
+      meta: {
+        name: '新页面',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/certificate/vehiclecertificateredemption/edit',
+      name: 'vehicleCertificateRedemptionEdit',
+      component: () => import('@/views/vehwholesale/certificate/vehicleCertificateRedemption/edit.vue'),
+
+      meta: {
+        name: '新页面详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/wholesale/vehicleWholesalePaymentNotice',
+      name: 'vehicleWholesalePaymentNotice',
+      component: () => import('@/views/vehwholesale/wholesale/vehicleWholesalePaymentNotice/index.vue'),
+
+      meta: {
+        name: '整车批售-批售管理-批售请款通知管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/wholesale/vehiclewholesalepaymentnotice/edit',
+      name: 'vehicleWholesalePaymentNoticeEdit',
+      component: () => import('@/views/vehwholesale/wholesale/vehicleWholesalePaymentNotice/edit.vue'),
+
+      meta: {
+        name: '整车批售-批售管理-批售请款通知管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];

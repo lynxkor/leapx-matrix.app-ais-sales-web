@@ -164,7 +164,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="是否紧急订单：" prop="emergencyOrder">
+                <el-form-item label="是否急单：" prop="emergencyOrder">
                    <fetch-select
                       :request="fetchOptions"
                       enumCode="BooleanEnum"
@@ -307,7 +307,7 @@
                 <el-form-item label="开票日期：" prop="invoiceTime">
                   {{ form.invoiceTime }}
                 </el-form-item>
-                <el-form-item label="是否紧急订单：" prop="emergencyOrderLabel">
+                <el-form-item label="是否急单：" prop="emergencyOrderLabel">
                   {{ form.emergencyOrderLabel }}
                 </el-form-item>
                 <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
@@ -469,10 +469,10 @@
                     <el-radio v-for="item in true_false_enum" :key="item.code" :label="item.code">{{ item.message }}</el-radio>
                   </el-radio-group>
                 </el-form-item>
-                 <el-form-item label="取消配车说明：" prop="cancelAllocateRemark">
+                 <el-form-item label="取消配车说明：" prop="cancelAllocateVehicleTypeLabel">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.cancelAllocateRemark"
+                    v-model="form.cancelAllocateVehicleTypeLabel"
                     clearable
                     maxlength="300"
                     disabled
@@ -637,8 +637,8 @@
                  <el-form-item label="合格证是否质押：" prop="certificatePledgedLabel">
                   {{ form.certificatePledgedLabel }}
                 </el-form-item>
-                <el-form-item label="取消配车说明：" prop="cancelAllocateRemark">
-                  {{ form.cancelAllocateRemark }}
+                <el-form-item label="取消配车说明：" prop="cancelAllocateVehicleTypeLabel">
+                  {{ form.cancelAllocateVehicleTypeLabel }}
                 </el-form-item>
                 <el-form-item label="取消结算时间：" prop="cancelSettleTime">
                   {{ form.cancelSettleTime }}

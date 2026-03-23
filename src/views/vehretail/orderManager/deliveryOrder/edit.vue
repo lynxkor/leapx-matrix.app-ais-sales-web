@@ -50,6 +50,7 @@
                     clearable
                     remote
                     v-model="form.saleUserId"
+                    :params="form.saleUserName"
                     :remote-method="remoteMethods.saleUser"
                     value-key="userId"
                     label-key="username"
@@ -65,6 +66,7 @@
                     clearable
                     remote
                     v-model="form.deliveryUserId"
+                    :params="form.deliveryUserName"
                     :remote-method="remoteMethods.deliveryUser"
                     value-key="userId"
                     label-key="username"
@@ -77,6 +79,7 @@
                     clearable
                     remote
                     v-model="form.deliveryDerivativeUserId"
+                    :params="form.deliveryDerivativeUserName"
                     :remote-method="remoteMethods.deliveryDerive"
                     value-key="userId"
                     label-key="username"
@@ -89,6 +92,7 @@
                     clearable
                     remote
                     v-model="form.onSiteDeliveryUserId"
+                    :params="form.onSiteDeliveryUserName"
                     :remote-method="remoteMethods.deliveryUser"
                     value-key="userId"
                     label-key="username"
@@ -767,7 +771,13 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        return getDetail(id).then(res => {
+          res.saleUserId = res.saleUserId + '';
+          res.deliveryUserId = res.deliveryUserId + '';
+          res.deliveryDerivativeUserId = res.deliveryDerivativeUserId + '';
+          res.onSiteDeliveryUserId = res.onSiteDeliveryUserId + '';
+          return res;
+        });
       }
     },
     getDetail () {

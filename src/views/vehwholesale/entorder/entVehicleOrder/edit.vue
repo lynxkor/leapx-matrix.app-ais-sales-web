@@ -162,7 +162,7 @@
                     disabled
                   />
                 </el-form-item>
-                 <el-form-item label="下单物料：" prop="materialsCode">
+                 <el-form-item label="下单物料码：" prop="materialsCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.materialsCode"
@@ -287,7 +287,7 @@
                 <el-form-item label="急单备注：" prop="emergencyOrderRemark">
                   {{ form.emergencyOrderRemark }}
                 </el-form-item>
-                  <el-form-item label="下单物料：" prop="materialsCode">
+                  <el-form-item label="下单物料码：" prop="materialsCode">
                   {{ form.materialsCode }}
                 </el-form-item>
                 <el-form-item label="物料描述：" prop="orderMaterialsDesc">
@@ -299,10 +299,10 @@
                  <el-form-item label="订单取消原因：" prop="cancelRemark">
                   {{ form.cancelRemark }}
                 </el-form-item>
-                <el-form-item label="订单取消备注：" prop="cancelRemark">
+                <el-form-item label="订单备注：" prop="cancelRemark">
                   {{ form.cancelRemark }}
                 </el-form-item>
-                <el-form-item label="创建者人：" prop="creatorName">
+                <el-form-item label="创建人：" prop="creatorName">
                   {{ form.creatorName }}
                 </el-form-item>
                 <el-form-item label="销售市场：" prop="salesMarketLabel">

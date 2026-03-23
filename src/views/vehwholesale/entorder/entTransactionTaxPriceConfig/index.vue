@@ -102,6 +102,7 @@
       :visible="uploadDialogVisible"
       id='importentTransactionTaxPriceConfig'
       @close="handleUploadDialogClose"
+      @getData="getData"
     />
   </div>
 </template>
