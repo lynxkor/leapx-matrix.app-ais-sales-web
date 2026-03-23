@@ -22,25 +22,30 @@
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit"
                 v-show="isEditing || !_id">
                 <el-form-item label="整车调拨单号：" prop="transferNo">
-                  <el-input placeholder="请输入" v-model="form.transferNo" clearable />
+                  <el-input placeholder="请输入" v-model="form.transferNo" clearable disabled />
                 </el-form-item>
                 <el-form-item label="目标门店编码：" prop="targetDealerCode">
-                  <el-input placeholder="请输入" v-model="form.targetDealerCode" clearable />
-                </el-form-item>
-                <el-form-item label="目标门店仓库编码：" prop="targetDealerWarehouseCode">
-                  <el-input placeholder="请输入" v-model="form.targetDealerWarehouseCode" clearable />
+                  <fetch-select
+                    :remote-method="getDealerListByName"
+                    remote
+                    v-model="form.targetDealerCode"
+                    placeholder="请输入门店编码或名称"
+                    labelKey="storeName"
+                    valueKey="storeCode"
+                    subLabelKey="storeCode"
+                    clearable
+                    filterable
+                    @change="handleStoreChange"
+                  />
                 </el-form-item>
                 <el-form-item label="目标门店仓库名称：" prop="targetDealerWarehouseName">
-                  <el-input placeholder="请输入" v-model="form.targetDealerWarehouseName" clearable />
-                </el-form-item>
-                <el-form-item label="目标门店仓库地址：" prop="targetDealerWarehouseAddress">
-                  <el-input placeholder="请输入" v-model="form.targetDealerWarehouseAddress" clearable />
+                  <el-input placeholder="请输入" v-model="storeName" disabled clearable />
                 </el-form-item>
                 <el-form-item label="调拨原因：" prop="reason">
                   <el-input placeholder="请输入" v-model="form.reason" clearable />
                 </el-form-item>
-                <el-form-item label="备注：" prop="remark">
-                  <el-input placeholder="请输入" v-model="form.remark" clearable />
+                <el-form-item label="备注：" prop="remark" style="width: 100%;">
+                  <el-input placeholder="请输入" v-model="form.remark" clearable type="textarea" maxlength="500" show-word-limit/>
                 </el-form-item>
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
@@ -56,31 +61,43 @@
                 <el-form-item label="调拨原因：" prop="reason">
                   {{ form.reason }}
                 </el-form-item>
-                <el-form-item label="备注：" prop="remark">
+                <el-form-item label="备注：" prop="remark" style="width: 100%;">
                   {{ form.remark }}
                 </el-form-item>
               </el-form>
             </div>
           </section>
-          <section class="common-section" v-if="_id">
+          <section class="common-section">
             <div class="common-section-header">
-              <h2>子表标题</h2>
+              <h2>门店库存调拨明细</h2>
             </div>
             <div class="common-section-body">
               <div class="common-section-header">
                 <div class="ais-select-group">
                   <fetch-select style="width: 300px;" :remote-method="queryListData" remote placeholder="请选择" clearable
-                    value-key="id" label-key="name" @change="handleAddTableData" />
+                    value-key="id" label-key="materialsDesc" @change="handleAddTableData" />
                   <el-button type="primary" size="small">添加</el-button>
                 </div>
               </div>
               <div class="common-section-table">
-                <vxe-table ref="tableRef" stripe :data="tableData" show-overflow resizable border="inner" size="medium"
+                <vxe-table ref="tableRef" stripe :data="form.storeInventoryTransferDetailList" show-overflow resizable border="inner" size="medium"
                   min-height="0" max-height="400px">
-                  <vxe-column field="name" title="名称" min-width="30%" />
-                  <vxe-column field="age" title="年龄" min-width="30%" />
-                  <vxe-column field="email" title="邮箱" min-width="30%" />
-                  <vxe-column title="操作" width="100" v-if="canDelete">
+                  <vxe-column field="vin" title="VIN" min-width="9%" />
+                  <vxe-column field="transferPrice" title="调拨价格" min-width="9%">
+                    <template #default="{ row }">
+                      <el-input v-model="row.transferPrice" type="number" placeholder="请输入" clearable :disabled="!(isEditing || !_id)" />
+                    </template>
+                  </vxe-column>
+                  <vxe-column field="materialsCode" title="整车物料" min-width="9%" />
+                  <vxe-column field="materialsDesc" title="物料描述" min-width="9%" />
+                  <vxe-column field="drivingRangeName" title="选配续航" min-width="9%" />
+                  <vxe-column field="rangePowerName" title="选配动力" min-width="9%" />
+                  <vxe-column field="exteriorName" title="外饰" min-width="9%" />
+                  <vxe-column field="interiorName" title="内饰" min-width="9%" />
+                  <vxe-column field="modelName" title="车型" min-width="9%" />
+                  <vxe-column field="wheelHubName" title="选配轮毂" min-width="9%" />
+                  <vxe-column field="remark" title="备注" min-width="9%" />
+                  <vxe-column title="操作" width="100" fixed="right" v-if="isEditing || !_id">
                     <template #default="{ rowIndex }">
                       <el-popconfirm title="确定要删除吗？" @confirm="handleDeleteRow(rowIndex)">
                         <span slot="reference" type="text" size="small" class="btn-delete">删除</span>
@@ -107,14 +124,16 @@
 
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehstock/store/storeInventoryTransfer/index';
+import { getList } from '@/api/vehstock/store/storeInventoryLedger/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum } from '@/api/common';
+import { getEnum, listOrgWarehouseStoreInfo } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { listOrgStoreInfo } from '@/libs/api/common';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -152,7 +171,7 @@ const defaultForm = {
   inApproval: '',
   inRemark: '',
   reason: '',
-  storeInventoryTransferDetailList: '',
+  storeInventoryTransferDetailList: [],
 };
 
 export default {
@@ -200,6 +219,7 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
+      storeName: '', // 目标门店仓库名称
       emptyText: '若要启用此内容，请创建记录',
       tableData: [
         { id: 1, name: '张三', age: 25, email: 'zhangsan@example.com' },
@@ -240,6 +260,13 @@ export default {
       }
     },
     submitRequest () {
+      const invalidItems = this.form.storeInventoryTransferDetailList.filter(item => {
+        return !(item.vechicleStatus === 12 && item.lockStatus === 0 && item.reserved === 0);
+      });
+      if (invalidItems.length > 0) {
+        this.$message.warning('车辆不符合调拨条件，请检查车辆状态是否为：已入门店库，是否预留为：否，是否匹配订单为：否！');
+        return;
+      }
       return addOrUpdate({ ...this.form });
     },
     // 打开侧边栏
@@ -248,8 +275,8 @@ export default {
     },
     // 删除子表数据
     handleDeleteRow (index) {
-      const item = this.tableData[index];
-      this.tableData.splice(index, 1);
+      const item = this.form.storeInventoryTransferDetailList[index];
+      this.form.storeInventoryTransferDetailList.splice(index, 1);
       // 根据需求调用接口
       // deletePartVehModel([item.id]).then(res => {
       //   this.$message.success('删除成功');
@@ -260,13 +287,10 @@ export default {
     queryListData (queryString) {
       return new Promise(resolve => {
         // 根据需求调用接口
-        // sparePartList({ partCodeOrNameLike: queryString, status: 1, limitSize: 20 }).then(res => {
-        //   const list = res || [];
-        //   resolve(list);
-        // });
-        resolve([
-          { id: 1, name: 'test', age: 25, email: 'test@example.com' }
-        ]);
+        getList({ vin: queryString }).then(res => {
+          const list = res || [];
+          resolve(list);
+        });
       });
     },
     // 新增子表数据
@@ -282,16 +306,7 @@ export default {
         return;
       }
       // 根据需求调用接口
-      this.tableData.push(record);
-      // addPartItem({
-      //   maintenancePartId: this._id,
-      //   partsCode: record.partCode,
-      //   partsName: record.partName,
-      //   partsId: record.id,
-      // }).then(res => {
-      //   this.$message.success('添加成功');
-      //   this.detailRequest();
-      // });
+      this.form.storeInventoryTransferDetailList.push(record);
     },
     getDefautlForm () {
       // TIPS: 此处可添加表单默认值，如当前用户信息等
@@ -311,7 +326,29 @@ export default {
         return getEnum(code);
       }
       return [];
-    }
+    },
+    // 查询门店编码或名称
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ keyword: params });
+    },
+    // 门店编码或名称选择框回调
+    handleStoreChange (val, record) {
+      this.remoteMethod(val);
+    },
+    // 门店仓库编码或名称选择框回调
+    async remoteMethod (query) {
+      if (query === '') {
+        return;
+      }
+
+      const res = await listOrgWarehouseStoreInfo({
+        storeCode: this.form.targetDealerCode, // 门店编码
+      });
+      this.storeName = `${res.records[0].warehouseCode}-${res.records[0].warehouseName}` || '';
+      this.form.targetDealerWarehouseCode = res.records[0].warehouseCode || '';
+      this.form.targetDealerWarehouseName = res.records[0].warehouseName || '';
+      this.form.targetDealerWarehouseAddress = res.records[0].warehouseDetailAddress || '';
+    },
   }
 };
 </script>

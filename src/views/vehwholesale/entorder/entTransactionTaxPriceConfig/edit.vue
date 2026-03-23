@@ -35,11 +35,12 @@
                       filterable
                       clearable
                       remote
-                      v-model="form.saleCompanyName"
+                      v-model="form.saleCompanyId"
                       :params="form.saleCompanyName"
                       :remote-method="getCompanyList"
                       value-key="id"
                       label-key="companyName"
+                      @change="getCompanyName"
                       :disabled="isEditing"
                     />
                 </el-form-item>
@@ -212,7 +213,7 @@ export default {
       emptyText: '若要启用此内容，请创建记录',
       tableData: [],
       rules: {
-        saleCompanyName: [
+        saleCompanyId: [
           { required: true, message: '请输入销售公司', trigger: 'change' }
         ],
         orderCategory: [
@@ -255,6 +256,9 @@ export default {
       if (id) {
         return getDetail(id);
       }
+    },
+    getCompanyName (ind, val) {
+      this.form.saleCompanyName = val.companyName;
     },
     submitRequest () {
       if (this.form.effectiveTime && new Date(this.form.expireTime) < new Date(this.form.effectiveTime)) {

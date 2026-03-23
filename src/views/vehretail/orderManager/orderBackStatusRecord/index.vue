@@ -360,11 +360,11 @@ export default {
           { props: 'regionName', label: '大区', visible: true, width: 160 },
           { props: 'provinceName', label: '省份', visible: true, width: 160 },
           { props: 'cityName', label: '城市', visible: true, width: 160 },
-          { props: 'seriesName', label: '车系', visible: true, width: 120 }, // 没有
-          { props: 'modelName', label: '车型', visible: true, width: 160 }, // 没有
+          { props: 'seriesName', label: '车系', visible: true, width: 120 },
+          { props: 'modelName', label: '车型', visible: true, width: 160 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 300 },
           {
-            props: 'vin', // 没有
+            props: 'matchVin',
             label: '配车 VIN 号',
             visible: true,
             width: 180,
@@ -374,7 +374,7 @@ export default {
                   this.navigateToRoute({
                     path: '/service/datacenter/vehicle/vehicleProfile/edit',
                     query: {
-                      id: row.vinId
+                      vin: row.matchVin
                     }
                   });
                 }
@@ -383,19 +383,19 @@ export default {
             }]
           },
           { props: 'paymentTime', label: '缴定金时间', visible: true, width: 200 },
-          { props: '', label: '确认批售时间', visible: true, width: 200 },
+          { props: 'confirmTime', label: '确认批售时间', visible: true, width: 200 },
           { props: 'allocateTime', label: '批售配车时间', visible: true, width: 200 },
           { props: 'settleTime', label: '配售结算时间', visible: true, width: 200 },
-          { props: '', label: '发运时间', visible: true, width: 200 },
-          { props: '', label: '车辆到店时间', visible: true, width: 200 },
-          { props: '', label: '交车时间', visible: true, width: 200 },
+          { props: 'shippingTime', label: '发运时间', visible: true, width: 200 },
+          { props: 'arrivalTime', label: '车辆到店时间', visible: true, width: 200 },
+          { props: 'deliveryTime', label: '交车时间', visible: true, width: 200 },
           { props: 'statusRollbackFlagLabel', label: '是否回退记录', visible: true, width: 140 },
-          { props: 'orderStatusLabel', label: '整车订单状态', visible: true, width: 150 },
-          { props: '', label: '原始订单状态', visible: true, width: 150 },
+          { props: 'newOrderStatusLabel', label: '整车订单状态', visible: true, width: 150 },
+          { props: 'originalOrderStatusLabel', label: '原始订单状态', visible: true, width: 150 },
           { props: 'orderStatusLabel', label: '新订单状态', visible: true, width: 150 },
-          { props: '', label: '操作描述', visible: true, width: 300 },
-          { props: '', label: '操作时间', visible: true, width: 200 },
-          { props: '', label: '操作人', visible: true, width: 120, fixed: 'right' }
+          { props: 'operationDescription', label: '操作描述', visible: true, width: 300 },
+          { props: 'operationTime', label: '操作时间', visible: true, width: 200 },
+          { props: 'operator', label: '操作人', visible: true, width: 120, fixed: 'right' }
         ],
         total: 0
       }

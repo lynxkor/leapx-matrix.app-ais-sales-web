@@ -852,14 +852,14 @@ export default {
         applyStatus: [
           {
             required: false,
-            message: '请选择申请状态：0-草稿、1-已提交、2-已通过、3-驳回、4-已作废',
+            message: '请选择申请状态',
             trigger: 'change',
           },
         ],
         changeType: [
           {
             required: true,
-            message: '请选择变更类型：0-变更购车人、1-变更销售门店',
+            message: '请选择变更类型',
             trigger: 'change',
           },
         ],
@@ -894,7 +894,7 @@ export default {
         originalIdCardType: [
           {
             required: false,
-            message: '请选择原购车人证件类型：身份证-1, 护照-2, 驾驶证-3, 港澳来往内地通行证-4, 军官证-5, 组织机构代码-6, 统一社会信用代码-7, 台湾通行证-20',
+            message: '请选择原购车人证件类型',
             trigger: 'change',
           },
         ],
@@ -929,14 +929,14 @@ export default {
         deliveryStatus: [
           {
             required: true,
-            message: '请选择是否完成交车：0-否、1-是',
+            message: '请选择是否完成交车',
             trigger: 'change',
           },
         ],
         originalOrderStatus: [
           {
             required: true,
-            message: '请选择整车订单状态：3-订单确认;5-生产中;30-待门店向工厂付款;40-车辆发运准备中;6-车辆在途;7-等待交车;9-交车完成;10-退订中;15-退款中;99-作废',
+            message: '请选择整车订单状态',
             trigger: 'change',
           },
         ],
@@ -969,7 +969,7 @@ export default {
         newIdCardType: [
           {
             required: false,
-            message: '请选择变更后购车人证件类型 身份证-1, 护照-2, 驾驶证-3, 港澳来往内地通行证-4, 军官证-5, 组织机构代码-6, 统一社会信用代码-7, 台湾通行证-20',
+            message: '请选择变更后购车人证件类型',
             trigger: 'change',
           },
         ],
@@ -1046,7 +1046,7 @@ export default {
         dataSource: [
           {
             required: true,
-            message: '请输入数据来源，150-新销服; 10-老销服',
+            message: '请输入数据来源',
             trigger: 'change',
           },
         ],

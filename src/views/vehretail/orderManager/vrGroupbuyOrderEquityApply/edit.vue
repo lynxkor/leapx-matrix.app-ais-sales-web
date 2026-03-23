@@ -19,7 +19,7 @@
           <el-button v-if = "isShowAuditorBtn" size="small" @click="handleViewAuditUsers">查看审核人员</el-button>
           <el-button v-if = "form.permissions.cancel" size="small" @click="handleCancel">作废</el-button>
           <el-button v-if = "form.permissions.submit" size="small" @click="handleSubmitApproval">提交审批</el-button>
-          <el-button size="small" @click="handleAudit">审核</el-button>
+          <el-button v-if = "form.permissions.audit" size="small" @click="handleAudit">审核</el-button>
           <el-button v-if = "form.permissions.auditRevoke" size="small" @click="handleRecall">审核撤回</el-button>
         </template>
         <el-main>
@@ -250,10 +250,11 @@
               <el-form :inline="true" :model="form" :rules="rules" ref="companyForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="公司名称：" prop="companyName">
                   <fetch-select
-                    :request="getEnterpriseList"
+                    :remote-method="getEnterpriseList"
                     v-model="form.companyName"
                     placeholder="请选择公司"
                     clearable
+                    remote
                     filterable
                     value-key="companyName"
                     label-key="companyName"
@@ -268,6 +269,7 @@
                     :min="0"
                     :max="100000000000"
                     placeholder="请输入"
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="优惠券：" prop="couponName">
@@ -275,6 +277,7 @@
                     placeholder="请输入"
                     v-model="form.couponName"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
               </el-form>
@@ -368,13 +371,10 @@
                   />
                 </el-form-item>
                 <el-form-item label="订单来源：" prop="orderSource">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="vr_order_source"
+                  <el-input
+                    placeholder="请输入"
                     v-model="form.orderSource"
-                    placeholder="请选择"
                     clearable
-                    filterable
                     :disabled="true"
                   />
                 </el-form-item>
@@ -405,7 +405,7 @@
                 <el-form-item label="证件类型：" prop="idType">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="vr_id_type"
+                    enumCode="vehretail_id_card_type"
                     v-model="form.idType"
                     placeholder="请选择"
                     clearable
@@ -426,6 +426,7 @@
                     placeholder="请输入"
                     v-model="form.agentContact"
                     clearable
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="补贴后价格：" prop="discountedPrice">
@@ -447,6 +448,7 @@
                     :min="0"
                     :max="100000000000"
                     placeholder="请输入"
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="交车时间：" prop="deliveryTime">
@@ -456,6 +458,7 @@
                     placeholder="请选择"
                     format="yyyy-MM-dd HH:mm:ss"
                     value-format="yyyy-MM-dd HH:mm:ss"
+                    :disabled="true"
                   />
                 </el-form-item>
               </el-form>
@@ -479,7 +482,7 @@
                 <el-form-item label="销售门店：" prop="saleDealerCode">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.saleDealerCode"
+                    v-model="form.saleDealerName"
                     clearable
                     :disabled="true"
                   />
@@ -487,7 +490,7 @@
                 <el-form-item label="交付门店：" prop="deliveryDealerCode">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.deliveryDealerCode"
+                    v-model="form.deliveryDealerName"
                     clearable
                     :disabled="true"
                   />
@@ -512,7 +515,7 @@
                   {{ form.mallOrderCode }}
                 </el-form-item>
                 <el-form-item label="订单来源：">
-                  {{ form.orderSourceLabel || '-' }}
+                  {{ form.orderSource || '-' }}
                 </el-form-item>
                 <el-form-item label="用户ID：">
                   {{ form.userId }}
@@ -550,10 +553,10 @@
                   {{ form.allocationMaterialsCode }}
                 </el-form-item>
                 <el-form-item label="销售门店：">
-                  {{ form.saleDealerCode }}
+                  {{ form.saleDealerName }}
                 </el-form-item>
                 <el-form-item label="交付门店：">
-                  {{ form.deliveryDealerCode }}
+                  {{ form.deliveryDealerName }}
                 </el-form-item>
                 <el-form-item label="交车VIN码：">
                   {{ form.deliveryVin }}
@@ -629,8 +632,8 @@
                   min-height="0"
                   max-height="400px"
                 >
-                  <vxe-column field="operationStatus" title="操作状态" min-width="120" />
-                  <vxe-column field="operationDesc" title="操作描述" min-width="200" />
+                  <vxe-column field="operationStatusLabel" title="操作状态" min-width="120" />
+                  <vxe-column field="operationDescription" title="操作描述" min-width="200" />
                   <vxe-column field="operator" title="操作人" min-width="120" />
                   <vxe-column field="operationTime" title="操作时间" min-width="180" />
                   <template #empty>
@@ -691,7 +694,7 @@
 import { getDetail, addOrUpdate, submit, invalid, approve, selectedVehicleOrderValid, queryAuditor, queryStepInfo } from '@/api/vehretail/orderManager/vrGroupbuyOrderEquityApply/index';
 import { getList as getApprovalDetailList } from '@/api/vehretail/orderManager/vrGroupbuyOrderEquityApplyLog/index';
 import { getMatchingCompanyNamesBySeries as getEnterprisePolicyList } from '@/api/vehretail/orderManager/vrGroupbuyEnterprisePolicy/index';
-import { getList as getRetailOrderList } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getList as getRetailOrderList, getDetail as getRetailOrderDetail } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
@@ -750,6 +753,12 @@ const defaultForm = {
   submitTime: '',
   auditStatus: null,
   vehicleOrderNo: '',
+  seriesId: null,
+  regionCode: null,
+  modelId: null,
+  modelName: '',
+  seriesName: '',
+  materialsId: null,
   permissions: {},
 };
 
@@ -815,15 +824,18 @@ export default {
   },
   mounted () {
     if (this._id) {
-      this.getApprovalDetailList();
       this.getStepInfo(this._id);
+      this.getApprovalDetail(this._id);
     }
   },
   methods: {
-    detailRequest () {
+    async detailRequest () {
       const id = this._id;
       if (id) {
-        const detail = getDetail(id);
+        const detail = await getDetail(id);
+        this.fillOrderInfo(detail.retailOrderId);
+        this.getStepInfo(this._id);
+        this.getApprovalDetail(this._id);
         return detail;
       }
     },
@@ -873,7 +885,7 @@ export default {
         companyName: this.form.companyName,
         seriesId: this.form.seriesId,
       });
-      return result;
+      return result || [];
     },
 
     // 商城订单号下拉
@@ -896,7 +908,7 @@ export default {
         this.form.mallOrderCode = '';
         return;
       }
-      this.fillOrderInfo(record);
+      this.fillOrderInfo(record.id);
     },
 
     // 处理公司选择变化
@@ -943,8 +955,10 @@ export default {
       this.$refs.containerRef.loadDetail();
     },
     // 获取审批明细
-    async getApprovalDetailList () {
-      this.approvalDetailList = await getApprovalDetailList({ groupbuyOrderEquityApplyId: this._id }) || [];
+    getApprovalDetail (id) {
+      getApprovalDetailList({ groupbuyOrderEquityApplyId: id }).then(res => {
+        this.approvalDetailList = res.records || [];
+      });
     },
     // 获取流程步骤信息
     getStepInfo (id) {
@@ -960,31 +974,51 @@ export default {
       return [];
     },
     // 根据订单号填充订单信息
-    async fillOrderInfo (orderInfo) {
+    async fillOrderInfo (id) {
+      // 根据商城订单号获取订单详情
+      if (!id) {
+        return;
+      }
+      const orderInfo = await getRetailOrderDetail(
+        id,
+      );
       // 填充订单相关字段（公司信息除外）
-      this.$set(this.form, 'vehicleOrderNo', orderInfo?.vehicleOrderNo || '');
-      this.$set(this.form, 'orderMaterialsCode', orderInfo?.orderMaterialsCode || '');
-      this.$set(this.form, 'dealerName', orderInfo?.dealerName || '');
+      this.$set(this.form, 'ownerOrgId', orderInfo?.saleOrgId || '');
+      this.$set(this.form, 'vehicleOrderNo', orderInfo?.retailOrderCode || '');
+      this.$set(this.form, 'orderMaterialsCode', orderInfo?.materials?.materialsCode || '');
+      this.$set(this.form, 'dealerName', orderInfo?.saleDealerName || '');
+      this.$set(this.form, 'dealerCode', orderInfo?.saleDealerCode || '');
       this.$set(this.form, 'cooperationType', orderInfo?.cooperationType || '');
-      this.$set(this.form, 'modelName', orderInfo?.modelName || '');
-      this.$set(this.form, 'seriesName', orderInfo?.seriesName || '');
-      this.$set(this.form, 'buyerName', orderInfo?.buyerName || '');
-      this.$set(this.form, 'buyerPhone', orderInfo?.buyerPhone || '');
-      this.$set(this.form, 'userId', orderInfo?.userId || '');
+      this.$set(this.form, 'cooperationTypeLabel', orderInfo?.cooperationTypeLabel || '');
+      this.$set(this.form, 'regionCode', orderInfo?.regionCode || '');
+      this.$set(this.form, 'regionName', orderInfo?.regionName || '');
+      this.$set(this.form, 'modelId', orderInfo?.materials?.modelId || '');
+      this.$set(this.form, 'modelName', orderInfo?.materials?.modelName || '');
+      this.$set(this.form, 'seriesId', orderInfo?.materials?.seriesId || '');
+      this.$set(this.form, 'seriesName', orderInfo?.materials?.seriesName || '');
+      this.$set(this.form, 'buyerName', orderInfo?.carOwner?.carBuyerName || '');
+      this.$set(this.form, 'buyerPhone', orderInfo?.carOwner?.carBuyerPhone || '');
+      this.$set(this.form, 'userId', orderInfo?.orderUserId || '');
+      this.$set(this.form, 'materialsCode', orderInfo?.materials?.materialsCode || '');
+      this.$set(this.form, 'materialsId', orderInfo?.materials?.materialsId || '');
       this.$set(this.form, 'materialsDesc', orderInfo?.materialsDesc || '');
-      this.$set(this.form, 'vehicleOrderStatus', orderInfo?.vehicleOrderStatus || '');
-      this.$set(this.form, 'mallOrderTime', orderInfo?.mallOrderTime || '');
-      this.$set(this.form, 'orderSource', orderInfo?.orderSource);
-      this.$set(this.form, 'idType', orderInfo?.idType);
-      this.$set(this.form, 'idNumber', orderInfo?.idNumber);
-      this.$set(this.form, 'discountedPrice', orderInfo?.discountedPrice);
+      this.$set(this.form, 'vehicleOrderStatus', orderInfo?.orderStatus || '');
+      this.$set(this.form, 'vehicleOrderStatusLabel', orderInfo?.orderStatusLabel || '');
+      this.$set(this.form, 'orderSource', orderInfo?.orderSource || '');
+      this.$set(this.form, 'mallOrderTime', orderInfo?.orderTime || '');
+      this.$set(this.form, 'idType', orderInfo?.carOwner?.idCardType);
+      this.$set(this.form, 'idTypeLabel', orderInfo?.carOwner?.idCardTypeLabel);
+      this.$set(this.form, 'idNumber', orderInfo?.carOwner?.idCardNo);
+      this.$set(this.form, 'discountedPrice', orderInfo?.guidePrice);
       this.$set(this.form, 'depositAmount', orderInfo?.depositAmount);
       this.$set(this.form, 'deliveryTime', orderInfo?.deliveryTime);
-      this.$set(this.form, 'allocationMaterialsCode', orderInfo?.allocationMaterialsCode);
+      this.$set(this.form, 'allocationMaterialsCode', orderInfo?.allocationMaterialCode);
       this.$set(this.form, 'saleDealerCode', orderInfo?.saleDealerCode);
+      this.$set(this.form, 'saleDealerName', orderInfo?.saleDealerName);
       this.$set(this.form, 'deliveryDealerCode', orderInfo?.deliveryDealerCode);
+      this.$set(this.form, 'deliveryDealerName', orderInfo?.deliveryDealerName);
       this.$set(this.form, 'deliveryVin', orderInfo?.deliveryVin);
-      this.$set(this.form, 'agentContact', orderInfo?.agentContact);
+      this.$set(this.form, 'agentContact', orderInfo?.carOwner?.agentName);
     },
 
     // 根据公司信息填充公司字段
