@@ -164,7 +164,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="是否紧急订单：" prop="emergencyOrder">
+                <el-form-item label="是否急单：" prop="emergencyOrder">
                    <fetch-select
                       :request="fetchOptions"
                       enumCode="BooleanEnum"
@@ -307,7 +307,7 @@
                 <el-form-item label="开票日期：" prop="invoiceTime">
                   {{ form.invoiceTime }}
                 </el-form-item>
-                <el-form-item label="是否紧急订单：" prop="emergencyOrderLabel">
+                <el-form-item label="是否急单：" prop="emergencyOrderLabel">
                   {{ form.emergencyOrderLabel }}
                 </el-form-item>
                 <el-form-item label="设置急单时间：" prop="emergencyOrderTime">

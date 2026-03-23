@@ -63,13 +63,13 @@
             label-key="label"
           />
         </el-form-item>
-        <el-form-item label="原车基本车型">
+        <el-form-item label="基本车型">
           <fetch-select
             filterable
             clearable
             remote
             collapse-tags
-            v-model="form.originalModelId"
+            v-model="form.modelId"
             :remote-method="getVehicleModelList"
             value-key="id"
             label-key="label"

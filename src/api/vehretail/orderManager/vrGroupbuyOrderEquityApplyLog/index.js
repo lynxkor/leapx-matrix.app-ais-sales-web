@@ -1,6 +1,6 @@
 import api from '@/axios';
 
-const prefix = 'vr/web/order/vrGroupbuyOrderEquityApply/';
+const prefix = 'vr/web/order/vrGroupbuyOrderEquityAuditLog/';
 
 /**
  * 查询列表

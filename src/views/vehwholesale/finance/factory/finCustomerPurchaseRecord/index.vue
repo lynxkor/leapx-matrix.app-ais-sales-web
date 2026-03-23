@@ -142,7 +142,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehwholesale/finance/factory/finCustomerPurchaseRecord/index';
+import { getList, deleteItem, enableItem, pushFinCustomerPurchaseRecordToBank } from '@/api/vehwholesale/finance/factory/finCustomerPurchaseRecord/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -472,10 +472,45 @@ export default {
 
     // 批量同步
     handleBatchSync () {
-      // const ids = this.selectionList.map(item => item.id) || [];
-      const items = this.selectionList.map(item => item) || [];
-      const allowStatus = this.checkSync(items);
-      console.log(allowStatus);
+      if (this.selectionList.length === 0) {
+        this.$message({
+          type: 'warning',
+          message: '请先选择要同步的数据'
+        });
+        return;
+      }
+      // 校验选中数据：只有可用 (status=1) 且同步失败或未同步的数据才能同步
+      const invalidItems = this.selectionList.filter(item => {
+        console.log(item.status === 1, item.syncStatus === 10, item.syncStatus === 40, item.syncStatus);
+        const isAvailable = item.status === 1;
+        const isSyncFailedOrNotSynced = item.syncStatus === 10 || item.syncStatus === 40;
+        return !isAvailable || !isSyncFailedOrNotSynced;
+      });
+      if (invalidItems.length > 0) {
+        this.$message({
+          type: 'error',
+          message: '只有可用且同步失败的数据才能同步，请确认'
+        });
+        return;
+      }
+      // 二次确认弹框
+      this.$confirm('确定要对选中的数据执行批量同步操作吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const ids = this.selectionList.map(item => item.id) || [];
+        const params = {
+          idSet: ids,
+        };
+        pushFinCustomerPurchaseRecordToBank(params).then(() => {
+          this.$message({
+            type: 'success',
+            message: '同步成功'
+          });
+          this.getData(); // 同步成功后刷新列表
+        });
+      }).catch(() => {});
     },
     // 批量启用停用
     handleBatchEnable (status) {
