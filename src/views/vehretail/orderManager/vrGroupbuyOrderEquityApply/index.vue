@@ -227,7 +227,7 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                if (row.saleDealerCode) {
+                if (row.ownerOrgId) {
                   this.navigateToRoute({
                     path: '/vehretail/orderManager/retailOrderInfo/edit',
                     query: {
