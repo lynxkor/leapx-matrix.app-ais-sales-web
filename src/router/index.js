@@ -2796,6 +2796,24 @@ const routes = [
         name: '门店调拨入库详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehstock/store/vehiclePurposeChangeApply',
+      name: 'vehiclePurposeChangeApply',
+      component: () => import('@/views/vehstock/store/vehiclePurposeChangeApply/index.vue'),
+
+      meta: {
+        name: '车辆用途变更申请',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/store/vehiclepurposechangeapply/edit',
+      name: 'vehiclePurposeChangeApplyEdit',
+      component: () => import('@/views/vehstock/store/vehiclePurposeChangeApply/edit.vue'),
+
+      meta: {
+        name: '车辆用途变更申请详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
