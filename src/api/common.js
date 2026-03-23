@@ -89,7 +89,7 @@ export function getUserByNameOrNo (data) {
  * @param {*} data
  */
 export function listOrgStoreInfo (data) {
-  return api.jsonPost('/network/portal/store/page', data);
+  return api.jsonPost('/network/portal/store/pageWithAuth', data);
 }
 
 /**

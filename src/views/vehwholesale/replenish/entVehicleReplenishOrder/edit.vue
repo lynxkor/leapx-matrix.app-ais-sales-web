@@ -109,7 +109,7 @@
                       @change="getOtherInfoBysaleCompany"
                     />
                 </el-form-item>
-                <el-form-item label="订单金额：" prop="totalAmount">
+                <el-form-item label="订单金额：">
                   <el-input-number
                     placeholder="请输入订单金额"
                     v-model="form.totalAmount"
@@ -117,6 +117,7 @@
                     :step="0.01"
                     :min="0"
                     :controls="false"
+                    disabled
                   />
                 </el-form-item>
                  <el-form-item label="结算资金类型：" prop="settleFundType">
@@ -126,7 +127,6 @@
                     placeholder="请选择"
                     clearable
                     filterable
-                    @change="iscreditSaleFlag"
                   />
                 </el-form-item>
                  <el-form-item label="金融机构：" prop="financialOrganizationId">
@@ -150,6 +150,7 @@
                       placeholder="请选择"
                       clearable
                       filterable
+                      :disabled="isEditing"
                     />
                 </el-form-item>
                 <el-form-item label="订单时间：" prop="orderTime">
@@ -159,6 +160,7 @@
                       value-format="yyyy-MM-dd HH:mm:ss"
                       placeholder="选择日期时间"
                       clearable
+                      :disabled="isEditing"
                     />
                 </el-form-item>
                  <el-form-item label="销售人员：" prop="saleUserName">
@@ -197,8 +199,8 @@
                 <el-form-item label="验收方式：" prop="acceptanceMethodLabel">
                   {{ form.acceptanceMethodLabel }}
                 </el-form-item>
-                <el-form-item label="销售市场：" prop="salesMarket">
-                  {{ form.salesMarket }}
+                <el-form-item label="销售市场：" prop="salesMarketLabel">
+                  {{ form.salesMarketLabel }}
                 </el-form-item>
                 <el-form-item label="企业客户名称：" prop="entCustomerName">
                   {{ form.entCustomerName }}
@@ -224,15 +226,15 @@
                   <el-form-item label="订单时间：" prop="orderTime">
                   {{ form.orderTime }}
                 </el-form-item>
-                  <el-form-item label="销售人员名称：" prop="saleUserName">
+                  <el-form-item label="销售人员：" prop="saleUserName">
                   {{ form.saleUserName }}
                 </el-form-item>
                  <el-form-item label="订单备注：" prop="remark">
                   {{ form.remark }}
                 </el-form-item>
-                 <!-- <el-form-item label="创建时间：" prop="createTime">
+                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
-                </el-form-item> -->
+                </el-form-item>
               </el-form>
             </div>
           </section>
@@ -250,7 +252,7 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="接车联系电话：" prop="pickupContactMobile">
+                <el-form-item label="接车人电话：" prop="pickupContactMobile">
                   <el-input
                     placeholder="请输入"
                     v-model="form.pickupContactMobile"
@@ -280,7 +282,7 @@
                         @change="handleChangeDistrict"
                       />
                 </el-form-item>
-                <el-form-item label="区县编码：" prop="districtName">
+                <el-form-item label="区/县：" prop="districtName">
                    <fetch-select
                         filterable
                         clearable
@@ -296,6 +298,7 @@
                     placeholder="请输入"
                     v-model="form.address"
                     clearable
+                    maxlength="300"
                   />
                 </el-form-item>
                 <el-form-item label="经度：" prop="longitude">
@@ -326,7 +329,7 @@
                 <el-form-item label="城市：" prop="cityName">
                   {{ form.cityName }}
                 </el-form-item>
-                <el-form-item label="区县名称：" prop="districtName">
+                <el-form-item label="区/县：" prop="districtName">
                   {{ form.districtName }}
                 </el-form-item>
                 <el-form-item label="交车地址：" prop="address">
@@ -496,7 +499,7 @@
     </template>
   </edit-page-layout>
   <Upload :visible="uploadDialogVisible" templateUrl="" uploadUrl="" @close="handleUploadDialogClose" />
-  <AddEntVehicleReplishOrderDetail  :visible.sync="showAddDetailDialog"
+  <AddEntVehicleReplishOrderDetail  :visible.sync="showAddDetailDialog" ref="addEntVehicleReplishOrderDialog"
       :order-ids="[_id]"
       :orderInfo="form"
       @addConfirm="addConfirm">
@@ -613,12 +616,29 @@ export default {
     'form.address': {
       handler (newVal) {
         // 大客户且地址有值时，防抖调用地址解析
-        if (newVal && this.companyCustomerTypeName === '大客户') {
+        if (newVal) {
           this.handleParseAddress(newVal);
         }
       },
       deep: true
-    }
+    },
+    'form.settleFundType': {
+      handler (val) {
+        if (val === '2010') {
+          this.rules.financialOrganizationId = [
+            { required: true, message: '请输入金融机构', trigger: 'change' }
+          ];
+          this.form.creditSaleFlag = 0;
+        } else if (val === '1050') {
+          this.rules.financialOrganizationId = [];
+          this.form.creditSaleFlag = 1;
+        } else if (val === '1010') {
+          this.form.creditSaleFlag = 0;
+          this.rules.financialOrganizationId = [];
+        }
+      },
+      immediate: true
+    },
   },
   data () {
     const form = this.getDefautlForm();
@@ -657,9 +677,6 @@ export default {
         creditSaleFlag: [
           { required: true, message: '请输入是否赊销', trigger: 'change' }
         ],
-        totalAmount: [
-          { required: true, message: '请输入订单金额', trigger: 'change' }
-        ],
         settleFundType: [
           { required: true, message: '请选择结算资金类型', trigger: 'change' }
         ],
@@ -675,6 +692,7 @@ export default {
         address: [
           { required: true, message: '请选择交车地址', trigger: 'change' }
         ],
+        financialOrganizationId: []
       }
     };
   },
@@ -813,7 +831,6 @@ export default {
       return networkParentCompanyItem({ parentCompanyName: query, pageNum: 1, pageSize: 20 });
     },
     getOtherInfoBysaleCompany (val, row) {
-      console.log(val, row);
       this.form.latitude = row.latitude;
       this.form.longitude = row.longitude;
       this.form.provinceCode = row.provinceCode;
@@ -825,6 +842,8 @@ export default {
       this.form.saleDealerName = row.storeName;
       this.form.saleDealerCode = row.storeCode;
       this.form.address = row.storeBuildAddress;
+      this.form.pickupContactName = row.storeWarehouseResp.contacts;
+      this.form.pickupContactMobile = row.storeWarehouseResp.contactPhone;
     },
     getDealersForParentCompany (val) {
       listDealersForParentCompany({ companyCode: val }).then(res => {
@@ -837,18 +856,6 @@ export default {
       this.form.entCustomerCode = row.companyCode;
       this.companyCustomerTypeName = row.companyCustomerTypeName;
       this.getDealersForParentCompany(val);
-    },
-    iscreditSaleFlag (val) {
-      if (val === '2010') {
-        this.rules.fundFinancialOrganizationCode = [
-          { required: true, message: '请输入金融机构', trigger: 'change' }
-        ];
-        this.form.creditSaleFlag = 0;
-      } else if (val === '1050') {
-        this.form.creditSaleFlag = 1;
-      } else if (val === '1010') {
-        this.form.creditSaleFlag = 0;
-      }
     },
     async repairItemSearch (query) {
       return fundGetList({ organizationNameLike: query, status: 1 });
@@ -888,17 +895,16 @@ export default {
           message: '添加成功!'
         });
         this.detailRequest();
-      }).catch(() => {
-        this.$message({
-          type: 'error',
-          message: '添加失败!'
-        });
       });
     },
     detailRequest () {
       const id = this._id;
       if (id) {
         return getDetail(id).then(res => {
+          this.form = { ...this.form, ...res };
+          if (this.$refs.containerRef) {
+            this.$refs.containerRef.originalForm = { ...res };
+          }
           res.detailList = res.detailList.map(detail => ({
             ...detail,
             materialsDesc: detail.vehicleMaterials.materialsDesc || '',

@@ -16,25 +16,15 @@
           <span class="status primary"> {{ form.auditStatusLabel }}</span>
         </template>
         <template #extraButtons>
-          <el-button v-if = "form.permissions.cancel" size="small" @click="handleViewAuditUsers">查看审核人员</el-button>
+          <el-button v-if = "isShowAuditorBtn" size="small" @click="handleViewAuditUsers">查看审核人员</el-button>
           <el-button v-if = "form.permissions.cancel" size="small" @click="handleCancel">作废</el-button>
           <el-button v-if = "form.permissions.submit" size="small" @click="handleSubmitApproval">提交审批</el-button>
-          <el-button v-if = "form.permissions.audit" size="small" @click="handleAudit">审核</el-button>
+          <el-button size="small" @click="handleAudit">审核</el-button>
           <el-button v-if = "form.permissions.auditRevoke" size="small" @click="handleRecall">审核撤回</el-button>
         </template>
         <el-main>
           <!-- 审核步骤条 -->
-          <section class="common-section" v-if="_id">
-            <div class="common-section-body">
-              <div v-for="(step, index) in stepInfoList" :key="index" class="step-wrapper">
-                <div class="step-item" :class="getStepClassByStepInfo(step.status, step.isCome)">
-                  <div class="step-circle">{{ index + 1 }}</div>
-                  <div class="step-label">{{ step.name }}</div>
-                </div>
-                <div v-if="index < stepInfoList.length - 1" class="step-line" :class="getLineClassByStepInfo(step.status, step.isCome)"></div>
-              </div>
-            </div>
-          </section>
+          <NavTop :stepInfoList="stepInfoList"/>
 
           <!-- 基础信息 -->
           <section class="common-section">
@@ -652,6 +642,28 @@
           </section>
         </el-main>
         <auditDialog ref="auditInput" @audit="handleAuditSubmit" :auditTitle='getAuditTitle()'/>
+
+        <!-- 审核人员弹窗 -->
+        <el-dialog
+          title="审核人员"
+          :visible.sync="auditorDialogVisible"
+          width="60%"
+          min-height="70%"
+          :modal-append-to-body="false"
+          :before-close="handleAuditorDialogClose"
+          class="dialog-with-table"
+        >
+          <vxe-table
+            ref="auditorTableRef"
+            :data="auditorList"
+            height="400"
+            stripe
+            :resizable="true"
+          >
+            <vxe-column field="auditorName" title="用户名" min-width="150" align="center"></vxe-column>
+            <vxe-column field="auditorOrgName" title="业务部门" min-width="200" align="center"></vxe-column>
+          </vxe-table>
+        </el-dialog>
       </edit-base-container>
     </template>
     <template #right>
@@ -689,6 +701,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import auditDialog from '@/libs/components/auditDialog';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 import FetchSelect from '@/libs/components/FetchSelect';
+import NavTop from './components/NavTop';
 
 const defaultForm = {
   id: '',
@@ -754,7 +767,8 @@ export default {
     EditBaseContainer,
     auditDialog,
     AisAttachment,
-    FetchSelect
+    FetchSelect,
+    NavTop
   },
   computed: {
     _id () {
@@ -776,7 +790,9 @@ export default {
       originalForm: { ...form },
       approvalDetailList: [],
       stepInfoList: [],
+      isShowAuditorBtn: false,
       auditorList: [],
+      auditorDialogVisible: false, // 审核人员弹窗可见性
       rules: {
         companyName: [
           { required: true, message: '请选择公司名称', trigger: 'change' }
@@ -833,11 +849,21 @@ export default {
     },
     // 查看审核人员
     async handleViewAuditUsers () {
-      this.auditorList = await queryAuditor({
-        cooperationType: this.form.cooperationType,
-        auditStatus: null,
-        dealerCode: this.form.dealerCode
-      }) || [];
+      try {
+        this.auditorDialogVisible = true;
+        this.auditorList = await queryAuditor({
+          cooperationType: this.form.cooperationType,
+          auditStatus: this.form.auditStatus,
+          dealerCode: this.form.dealerCode
+        }) || [];
+      } catch (error) {
+        this.$message.error('获取审核人员失败：' + (error.message || '未知错误'));
+      }
+    },
+
+    // 审核人员弹窗相关方法
+    handleAuditorDialogClose () {
+      this.auditorDialogVisible = false;
     },
     // 公司下拉
     async getEnterpriseList () {
@@ -861,15 +887,20 @@ export default {
 
     // 处理商城订单号选择变化
     async handleMallOrderCodeChange (value, record) {
-      selectedVehicleOrderValid({
-        mallOrderCode: value,
-        excludeSelf: this._id
-      });
+      try {
+        await selectedVehicleOrderValid({
+          mallOrderCode: value,
+          excludeSelf: Boolean(this._id)
+        });
+      } catch (error) {
+        this.form.mallOrderCode = '';
+        return;
+      }
       this.fillOrderInfo(record);
     },
 
     // 处理公司选择变化
-    async handleCompanyChange (value, record) {
+    handleCompanyChange (value, record) {
       this.fillCompanyInfo(record);
     },
 
@@ -916,8 +947,11 @@ export default {
       this.approvalDetailList = await getApprovalDetailList({ groupbuyOrderEquityApplyId: this._id }) || [];
     },
     // 获取流程步骤信息
-    async getStepInfo (id) {
-      this.stepInfoList = await queryStepInfo(id);
+    getStepInfo (id) {
+      queryStepInfo(id).then(res => {
+        this.stepInfoList = res.stepInfoList || [];
+        this.isShowAuditorBtn = res.isShowAuditorBtn;
+      });
     },
     async fetchOptions (code) {
       if (code) {

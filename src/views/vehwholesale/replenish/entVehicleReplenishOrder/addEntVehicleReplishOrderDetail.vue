@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" width="1200px" :visible.sync="dialogVisible" :close-on-click-modal="false">
+  <el-dialog :title="title" width="1200px" :visible.sync="dialogVisible"  :before-close="handleClose">
     <div class="page-common">
        <el-form
         ref="form"
@@ -30,6 +30,7 @@
                     :step="0.01"
                     :min="0"
                     :controls="false"
+                    disabled
                 />
         </el-form-item>
         <el-form-item label="企业客户补货订单：">
@@ -91,6 +92,10 @@ import { getEnum, vehicleMaterials } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
+  materialsCode: '',
+  standardPrice: '',
+  salesPrice: '',
+  materialsId: '',
 };
 export default {
   name: 'AddEntVehicleReplishOrderDetail',
@@ -135,8 +140,6 @@ export default {
           { required: true, message: '请输入数量', trigger: 'change' }
         ],
       },
-
-      tableData: [],
     };
   },
   computed: {
@@ -156,8 +159,8 @@ export default {
       }
     },
     orderInfo (val) {
+      console.log('orderInfo:', val);
       if (val) {
-        console.log(val);
         this.materialsform.entReplenishOrderId = val.entReplenishOrderCode;
         if (val.orderCategory === 1 || val.orderCategory === 8) {
           this.isType = true;
@@ -165,27 +168,35 @@ export default {
           this.isType = false;
         }
       }
+    },
+    // 新增监听：当销售价格变化且订单分类为 21 时，同步标准价格
+    'materialsform.salesPrice': {
+      handler (newVal) {
+        if (this.orderInfo && this.orderInfo.orderCategory === 21) {
+          this.materialsform.standardPrice = newVal;
+        }
+      },
+      immediate: true // 初始化时也执行一次
     }
   },
   created () {
     this.getEnum();
     this.getVehicleMaterialsList();
+    this.materialsform = { ...defaultForm };
+    console.log('orderInfo:', this.orderInfo);
   },
   methods: {
     async getVehicleMaterialsList (params) {
-      return vehicleMaterials({ materialsCodeLike: params, status: 1 });
+      return vehicleMaterials({ materialsCodeLike: params, status: 1, pageSize: 20 });
     },
     materialsSelect (val, row) {
       this.materialsform.materialsId = row.id;
-      if (this.orderInfo.orderCategory === 1 || this.orderInfo.status === 8) {
-        this.materialsform.standardPrice = this.orderInfo.price;
-      } else if (this.orderInfo.orderCategory === 21) {
-        this.materialsform.standardPrice = row.standardPrice;
+      if (this.orderInfo.orderCategory === 1 || this.orderInfo.orderCategory === 8) {
+        this.materialsform.standardPrice = row.price;
       }
     },
     handleClose () {
-      this.materialsform = { ...defaultForm }; // 重置表单数据
-      this.tableData = []; // 清空表格数据
+      this.handleCancel();
     },
     getFormData () {
       const data = { ...this.materialsform };
@@ -215,9 +226,15 @@ export default {
     },
     handleCancel () {
       this.dialogVisible = false;
+      this.materialsform.materialsCode = '';
+      this.materialsform.standardPrice = '';
+      this.materialsform.salesPrice = '';
+      this.materialsform.materialsId = '';
+      this.materialsform.qty = '';
     },
     handleSubmit () {
       this.$emit('addConfirm', this.materialsform);
+      this.handleCancel();
       // this.$refs.entOrderDetail.validate((valid) => {
       //   if (valid) {
       //     this.submitLoading = true;

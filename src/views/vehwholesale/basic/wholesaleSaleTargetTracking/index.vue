@@ -96,9 +96,9 @@
           multiple
           remote
           collapseTags
-          v-model="form.dealerCodes"
+          v-model="form.dealerNames"
           :remote-method="getDealerListByName"
-          value-key="storeCode"
+          value-key="storeName"
           label-key="storeName"
           @change="handleChangeDealer"
         />
@@ -187,6 +187,7 @@ const defaultForm = {
   month: '',
   dealerParentOrgIds: [],
   dealerCodes: [],
+  dealerNames: [],
   regionId: '',
   provinceCode: '',
   cityCode: '',

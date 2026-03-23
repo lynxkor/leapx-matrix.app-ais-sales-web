@@ -37,11 +37,7 @@
           />
         </el-form-item>
         <el-form-item label="企业客户补货订单编号" v-show="this.visibleCount === 3 || show">
-          <el-input
-            placeholder="请输入"
-            v-model="form.entReplenishOrderCode"
-            clearable
-          />
+           <tag-input v-model="form.entReplenishOrderCodes" placeholder="请输入" />
         </el-form-item>
       <template v-if="show">
          <el-form-item label="订单分类">
@@ -56,13 +52,12 @@
         </el-form-item>
          <el-form-item label="结算资金类型">
           <fetch-select
-            :request="fetchOptions"
-            enumCode="vw_fundtype"
+          :options="settleFundTypeOptions"
             v-model="form.settleFundTypes"
             placeholder="请选择"
             clearable
-            multiple
             filterable
+            multiple
           />
         </el-form-item>
          <el-form-item label="金融机构">
@@ -92,15 +87,14 @@
           />
         </el-form-item>
          <el-form-item label="订单状态">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="vw_ent_vehicle_order_status"
-          v-model="form.statuses"
-          placeholder="请选择"
-          clearable
-          multiple
-          filterable
-        />
+          <fetch-select
+              :options="orderStatusOptions"
+              v-model="form.statuses"
+              placeholder="请选择订单状态"
+              clearable
+              multiple
+              filterable
+            />
       </el-form-item>
        <el-form-item label="验收方式">
         <fetch-select
@@ -143,6 +137,7 @@
       <el-button v-permission="moduleKey+'-setAutoAllocate'" size="small" :disabled="selectionList.length === 0" @click="handleBatchSetNotAutoAllocate">批量设置不自动配车</el-button>
       <el-button v-permission="moduleKey+'-setEmergencyOrder'" size="small" :disabled="selectionList.length === 0" @click="handleSetEmergencyOrder">设置急单</el-button>
       <el-button v-permission="moduleKey+'-setEmergencyOrder'" size="small" :disabled="selectionList.length === 0" @click="handleCancelEmergencyOrder">取消急单</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -204,6 +199,7 @@ import { networkParentCompanyItem } from '@/api/vehwholesale/replenish/entVehicl
 import { getList as companyList } from '@/api/vehwholesale/fund/fundSaleCompany/index';
 import BatchCancelInput from './BatchCancelInput.vue';
 import SetEmergencyOrderInput from './SetEmergencyOrderInput.vue';
+import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   status: '',
@@ -232,6 +228,7 @@ export default {
     EditPage,
     Upload,
     BatchCancelInput,
+    TagInput,
     SetEmergencyOrderInput
   },
   data () {
@@ -246,6 +243,8 @@ export default {
       selectionList: [],
       orderCategoryOptions: [],
       saleCompanyOptions: [],
+      settleFundTypeOptions: [],
+      orderStatusOptions: [],
       showBatchCancelDialog: false,
       showSetEmergencyOrderDialog: false,
       yes_no_enum: YES_NO_ENUM,
@@ -298,12 +297,12 @@ export default {
           { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 200 },
           { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 200 },
           { props: 'acceptanceMethodLabel', label: '验收方式', visible: true, width: 200 },
-          { props: 'salesMarket', label: '销售市场', visible: true, width: 200 },
+          { props: 'salesMarketLabel', label: '销售市场', visible: true, width: 200 },
           { props: 'vin', label: '配车VIN码', visible: true, width: 200 },
           { props: 'saleDealerName', label: '销售门店', visible: true, width: 200 },
-          { props: 'provinceName', label: '省', visible: true, width: 200 },
-          { props: 'cityName', label: '市', visible: true, width: 200 },
-          { props: 'districtName', label: '区县名称', visible: true, width: 200 },
+          { props: 'provinceName', label: '省份', visible: true, width: 200 },
+          { props: 'cityName', label: '城市', visible: true, width: 200 },
+          { props: 'districtName', label: '区/县', visible: true, width: 200 },
           { props: 'address', label: '交车地址', visible: true, width: 200 },
           { props: 'longitude', label: '经度', visible: true, width: 200 },
           { props: 'latitude', label: '维度', visible: true, width: 200 },
@@ -324,7 +323,8 @@ export default {
           { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 200 },
           { props: 'rangePowerName', label: '选配动力', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'erpSaleOrderCodeLabel', label: '退车标识', visible: true, width: 200 }
+          { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
+          { props: 'vehicleReturnFlagLabel', label: '退车标识', visible: true, width: 200 }
         ],
         total: 0
       },
@@ -341,8 +341,34 @@ export default {
     this.getData();
     this.fetchOrderCategoryOptions();
     this.getCompanyList();
+    this.fetchSettleFundTypeOptions();
+    this.fetchSOrderStatusOptions();
   },
   methods: {
+    async fetchSOrderStatusOptions () {
+      const response = await getEnum('vw_ent_vehicle_order_status');
+      this.orderStatusOptions = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['3', '50', '51', '9', '99'].includes(codeStr + '');
+      }).map(item => {
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
+    },
+    async fetchSettleFundTypeOptions () {
+      const response = await getEnum('vw_fundtype');
+      this.settleFundTypeOptions = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['1050', '1010', '2010'].includes(codeStr + '');
+      }).map(item => {
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
+    },
     emergencyApproval (data) {
       return setEmergencyOrder(data).then(() => {
         this.$message({
@@ -367,11 +393,6 @@ export default {
           message: '取消急单成功!'
         });
         this.getData();
-      }).catch(() => {
-        this.$message({
-          type: 'error',
-          message: '取消急单失败!'
-        });
       });
     },
     handleSetEmergencyOrder () {
@@ -467,11 +488,6 @@ export default {
             message: '取消配车成功!'
           });
           this.getData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '取消配车失败!'
-          });
         });
       }).catch(() => {});
     },
@@ -543,7 +559,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车销售-企业客户订单-企业客户整车订单管理.xlsx');
+            await downloadExcel(res.excelUrl, '企业客户整车订单管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

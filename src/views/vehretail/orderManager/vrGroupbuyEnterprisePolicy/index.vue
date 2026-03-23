@@ -166,7 +166,23 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'seriesName', label: '车系', visible: true, width: 120 },
+          {
+            props: 'seriesName',
+            label: '车系',
+            visible: true,
+            width: 150,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleSeries/detail',
+                  query: {
+                    id: row.seriesId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'couponName', label: '优惠券', visible: true, width: 150 },
           { props: 'discountAmount', label: '优惠金额', visible: true, width: 120 },
           { props: 'validStartTime', label: '有效开始时间', visible: true, width: 180 },
@@ -311,7 +327,7 @@ export default {
       return vehicleSeriesList({ seriesNameLike: params, status: 1 });
     },
     async queryCompanyList (params) {
-      const res = await getSelect({ companyName: params, limitSize: 10, isCooperation: 1 });
+      const res = await getSelect({ companyName: params, limitSize: 10 });
       return res || [];
     }
   }

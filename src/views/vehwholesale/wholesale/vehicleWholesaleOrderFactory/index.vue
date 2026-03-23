@@ -369,6 +369,7 @@
           <el-tab-pane label="待处理现车批售" name="3"></el-tab-pane>
           <el-tab-pane label="待结算批售单" name="4"></el-tab-pane>
           <el-tab-pane label="待配车批售单" name="5"></el-tab-pane>
+          <el-tab-pane label="未出库质量问题车" name="6"></el-tab-pane>
         </el-tabs>
       </div>
       <LPVxeTable

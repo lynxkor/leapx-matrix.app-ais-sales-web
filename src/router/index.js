@@ -2518,15 +2518,6 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehretail/orderManager/vrRetailOrderBackRecord',
-      name: 'vrRetailOrderBackRecord',
-      component: () => import('@/views/vehretail/orderManager/vrRetailOrderBackRecord/index.vue'),
-
-      meta: {
-        name: '整车零售-订单管理-整车零售订单管理-回退记录',
-        keepAlive: true
-      }
-    }, {
       path: '/vehwholesale/wholesale/vehicleWholesaleOrderRecord',
       name: 'vehicleWholesaleOrderRecord',
       component: () => import('@/views/vehwholesale/wholesale/vehicleWholesaleOrderRecord/index.vue'),
@@ -2803,6 +2794,24 @@ const routes = [
 
       meta: {
         name: '门店调拨入库详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/store/vehiclePurposeChangeApply',
+      name: 'vehiclePurposeChangeApply',
+      component: () => import('@/views/vehstock/store/vehiclePurposeChangeApply/index.vue'),
+
+      meta: {
+        name: '车辆用途变更申请',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/store/vehiclepurposechangeapply/edit',
+      name: 'vehiclePurposeChangeApplyEdit',
+      component: () => import('@/views/vehstock/store/vehiclePurposeChangeApply/edit.vue'),
+
+      meta: {
+        name: '车辆用途变更申请详情',
         noResourceUrl: 'true'
       }
     }]

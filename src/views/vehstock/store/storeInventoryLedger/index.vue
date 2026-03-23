@@ -75,7 +75,7 @@
             remote
             collapseTags
             v-model="form.deliveryDealerCode"
-            :remote-method="getDealerListByName"
+            :remote-method="getDealerListBy"
             value-key="storeCode"
             label-key="storeName"
           />
@@ -426,7 +426,11 @@ export default {
     },
     // 销售门店搜索
     async getDealerListByName (params) {
-      return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
+      return listOrgStoreInfo({ storeName: params, isSales: true });
+    },
+    // 交付门店搜索
+    async getDealerListBy (params) {
+      return listOrgStoreInfo({ storeName: params, isSupportDeliver: true });
     },
     handleListSelect (row) {
       this.clickItemId = row.id;

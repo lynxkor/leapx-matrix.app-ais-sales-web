@@ -141,7 +141,7 @@ export default {
             props: 'companyName',
             label: '公司名称',
             visible: true,
-            width: 200,
+            width: 240,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {

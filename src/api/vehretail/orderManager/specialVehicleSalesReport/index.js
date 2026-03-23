@@ -90,3 +90,11 @@ export function batchRevokeReports (data) {
 export function adjustVehicleAttribute (data) {
   return api.jsonPost(prefix + 'vehicleAttribute', data);
 }
+
+/**
+ * VIN校验
+ * @param {Object} data
+ */
+export function effectiveVinValidate (data) {
+  return api.get(prefix + `effectiveVinValidate?vin=${data}`);
+}

@@ -204,7 +204,7 @@
     </el-form>
     <div class="ais-actions">
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-if="canImport" size="small" @click="handleImport">导入发放结果</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
     </div>
@@ -329,7 +329,7 @@ export default {
           { props: 'submitTime', label: '提交时间', visible: true, width: 180 },
           { props: 'auditStatusLabel', label: '申请单状态', visible: true, width: 120 },
           { props: 'mallOrderNo', label: '商城订单号', visible: true, width: 200 },
-          { props: 'orderUserId', label: '下单人ID', visible: true, width: 150 },
+          { props: 'orderUserId', label: '下单人ID', visible: true, width: 240 },
           { props: 'depositTime', label: '缴定金时间', visible: true, width: 180 },
           { props: 'lockTime', label: '锁单时间', visible: true, width: 180 },
           { props: 'agentContact', label: '代办联系人', visible: true, width: 150 },
@@ -362,7 +362,7 @@ export default {
             props: 'saleDealerName',
             label: '销售门店',
             visible: true,
-            width: 150,
+            width: 280,
             buttons: [{
               click: (rowIndex, row) => {
                 if (row.saleDealerCode) {
@@ -395,7 +395,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 500 },
           { props: 'buyerName', label: '购车人姓名', visible: true, width: 120 },
           { props: 'buyerPhone', label: '购车人手机号', visible: true, width: 150 },
           {
@@ -409,7 +409,7 @@ export default {
                   this.navigateToRoute({
                     path: '/service/datacenter/vehicle/vehicleProfile/edit',
                     query: {
-                      vin: row.originalVin
+                      id: row.originalVinId
                     }
                   });
                 }

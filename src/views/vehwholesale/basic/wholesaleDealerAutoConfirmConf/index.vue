@@ -29,9 +29,9 @@
           multiple
           remote
           collapseTags
-          v-model="form.dealerCodes"
+          v-model="form.dealerNames"
           :remote-method="getDealerListByName"
-          value-key="storeCode"
+          value-key="storeName"
           label-key="storeName"
         />
       </el-form-item>
@@ -107,7 +107,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleDealerAutoConfirmConf/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfoWithAuth as listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -118,7 +118,8 @@ import commonMixins from '@/libs/mixins/commonMixins';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  dealerCodes: '',
+  dealerCodes: [],
+  dealerNames: [],
   openAutoConfirm: '',
   updateTime: '',
 };

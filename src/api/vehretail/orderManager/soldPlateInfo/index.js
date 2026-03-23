@@ -42,3 +42,27 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * VIN校验
+ * @param {Object} data
+ */
+export function effectiveVinValidate (data) {
+  return api.get(prefix + `effectiveVinValidate?vin=${data}`);
+}
+
+/**
+ * VIN查询已售上牌资料
+ * @param {Object} data
+ */
+export function getEffectiveByVin (data) {
+  return api.get(prefix + `getEffectiveByVin?vin=${data}`);
+}
+
+/**
+ * 根据VIN创建已售上牌资料
+ * @param {Object} data
+ */
+export function generateSoldPlateInfoByVin (data) {
+  return api.post(prefix + `generateSoldPlateInfoByVin?vin=${data}`);
+}

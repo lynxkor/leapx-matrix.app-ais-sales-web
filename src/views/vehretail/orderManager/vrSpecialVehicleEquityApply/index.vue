@@ -99,9 +99,7 @@
       />
     </el-form>
     <div class="ais-actions">
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canList" :disabled="selectionList.length <= 0" size="small" @click="batchOperation">批量操作</el-button>
     </div>
     <div class="ais-table-c">
       <LPVxeTable
@@ -204,12 +202,14 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.navigateToRoute({
-                  path: '/service/datacenter/vehicle/vehicleProfile/edit',
-                  query: {
-                    id: row.vinId
-                  }
-                });
+                if (row.vinId) {
+                  this.navigateToRoute({
+                    path: '/service/datacenter/vehicle/vehicleProfile/edit',
+                    query: {
+                      id: row.vinId
+                    }
+                  });
+                }
               },
               type: 'primary'
             }]
@@ -347,6 +347,10 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       const reqParams = this.getFormData() || {};
+      if (this.selectionList.length > 0) {
+        const ids = this.selectionList.map(item => item.id) || [];
+        reqParams.ids = ids;
+      }
       exportTable({
         businessType: '整车零售-订单管理-特殊车辆权益申请管理',
         dataFetchPath: 'vr/web/order/vrSpecialVehicleEquityApply/page',
@@ -375,6 +379,7 @@ export default {
     },
     getData () {
       this.loading = true;
+      this.selectionList = [];
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
           this.optionObj.dataList = res.records.map(item => {
@@ -456,27 +461,6 @@ export default {
         console.error('获取销售门店列表失败:', error);
         return [];
       }
-    },
-
-    // 批量操作
-    batchOperation () {
-      if (this.selectionList.length <= 0) {
-        this.$message.warning('请至少选择一项进行操作');
-        return;
-      }
-
-      const ids = this.selectionList.map(item => item.id);
-      this.$confirm(`确定要对选中的 ${this.selectionList.length} 项执行批量操作吗？`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        // 这里可以添加实际的批量操作逻辑
-        console.log('批量操作的ID:', ids);
-        this.$message.success('批量操作功能待实现');
-      }).catch(() => {
-        // 取消操作
-      });
     },
 
     async fetchOptions (code) {
