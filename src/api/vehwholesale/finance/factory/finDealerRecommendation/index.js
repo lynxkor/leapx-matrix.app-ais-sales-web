@@ -45,3 +45,9 @@ export function enableItem (data) {
 export function createFinCustomerPurchaseRecord (data) {
   return api.jsonPost(prefix + 'createFinCustomerPurchaseRecord', data);
 }
+/**
+ * 经销商推荐函
+ */
+export function pushfinDealerRecommendationToBank (data) {
+  return api.jsonPost(prefix + 'pushfinDealerRecommendationToBank', data);
+}

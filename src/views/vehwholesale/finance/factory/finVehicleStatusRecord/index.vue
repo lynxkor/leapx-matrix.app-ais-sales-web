@@ -334,7 +334,6 @@ export default {
         return;
       }
       // 校验选中数据：只有可用 (status=1) 且同步失败或未同步的数据才能同步
-      // 注意：syncStatus 的具体枚举值需根据实际业务确认，此处假设 0=未同步，2=同步失败
       const invalidItems = this.selectionList.filter(item => {
         console.log(item.status === 1, item.syncStatus === 10, item.syncStatus === 40, item.syncStatus);
         const isAvailable = item.status === 1;
