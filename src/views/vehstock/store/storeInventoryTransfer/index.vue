@@ -7,10 +7,22 @@
         <el-input placeholder="请输入" v-model="form.vin" clearable />
       </el-form-item>
       <el-form-item label="目标门店编码">
-        <el-input placeholder="请输入" v-model="form.targetDealerCode" clearable />
+        <fetch-select
+          :remote-method="getDealerListByName"
+          remote
+          v-model="form.targetDealerCodeList"
+          placeholder="请输入门店编码或名称"
+          labelKey="storeName"
+          valueKey="storeCode"
+          subLabelKey="storeCode"
+          clearable
+          multiple
+          collapseTags
+          filterable
+        />
       </el-form-item>
       <el-form-item label="单据状态">
-        <fetch-select :request="fetchOptions" enumCode="vehstock_transfer_audit_status" v-model="form.auditStatus"
+        <fetch-select :request="fetchOptions" enumCode="vehstock_transfer_audit_status" v-model="form.auditStatusList"
           placeholder="请选择" clearable multiple filterable />
       </el-form-item>
       <template v-if="show">
@@ -22,13 +34,13 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i
           class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <!-- <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete"
         :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
         :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)"
-        :disabled="selectionList.length === 0">批量停用</el-button>
+        :disabled="selectionList.length === 0">批量停用</el-button> -->
     </div>
     <div class="ais-table-c">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed centralized
@@ -47,8 +59,8 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehstock/store/storeInventoryTransfer/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getList, deleteItem, enableItem, storeSubmit, storeInvalid } from '@/api/vehstock/store/storeInventoryTransfer/index';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -145,6 +157,9 @@ export default {
             fixed: 'right',
             buttons: [{
               name: '编辑',
+              show: (row) => {
+                return row.auditStatus === 1 || row.auditStatus === 5;
+              },
               click: (rowIndex, row) => {
                 this.$router.push({
                   path: '/vehstock/store/storeInventoryTransfer/edit',
@@ -155,26 +170,84 @@ export default {
                 });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmConfirmButtonType: 'danger',
-              popconfirmConfirmButtonText: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
+            },
+            // {
+            //   name: '删除',
+            //   popconfirmConfirmButtonType: 'danger',
+            //   popconfirmConfirmButtonText: '删除',
+            //   popconfirmTitle: '此操作将永久删除, 是否继续?',
+            //   click: (rowIndex, row) => {
+            //     deleteItem([row.id]).then(() => {
+            //       this.$message({
+            //         type: 'success',
+            //         message: '删除成功!'
+            //       });
+            //       this.getData();
+            //     }).catch(() => {
+            //       this.$message({
+            //         type: 'error',
+            //         message: '删除失败!'
+            //       });
+            //     });
+            //   },
+            //   type: 'danger'
+            // },
+            {
+              name: '提交',
+              popconfirmTitle: '是否要提交?',
+              show: (row) => {
+                return row.auditStatus === 1 || row.auditStatus === 5;
+              },
               click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
+                storeSubmit(row.id).then(() => {
                   this.$message({
                     type: 'success',
-                    message: '删除成功!'
+                    message: '提交成功!'
                   });
                   this.getData();
                 }).catch(() => {
                   this.$message({
                     type: 'error',
-                    message: '删除失败!'
+                    message: '提交失败!'
                   });
                 });
               },
-              type: 'danger'
+              type: 'info'
+            }, {
+              name: '作废',
+              popconfirmTitle: '确定作废单据吗?',
+              show: (row) => {
+                return row.auditStatus === 1 || row.auditStatus === 5;
+              },
+              click: (rowIndex, row) => {
+                storeInvalid(row.id).then(() => {
+                  this.$message({
+                    type: 'success',
+                    message: '作废成功!'
+                  });
+                  this.getData();
+                }).catch(() => {
+                  this.$message({
+                    type: 'error',
+                    message: '作废失败!'
+                  });
+                });
+              },
+              type: 'info'
+            }, {
+              name: '调出审批',
+              show: (row) => {
+                return row.auditStatus === 2;
+              },
+              click: (rowIndex, row) => {},
+              type: 'info'
+            }, {
+              name: '调入审批',
+              show: (row) => {
+                return row.auditStatus === 2;
+              },
+              click: (rowIndex, row) => {},
+              type: 'info'
             }]
           }
         ],
@@ -327,6 +400,10 @@ export default {
       // 排序字段
       data.sortColumns = this.sortColumns;
       return data;
+    },
+    // 查询门店编码或名称
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params });
     },
     async fetchOptions (code) {
       if (code) {

@@ -56,7 +56,7 @@
               </el-form>
             </div>
           </section>
-          <section class="common-section" v-if="_id">
+          <section class="common-section">
             <div class="common-section-header">
               <h2>门店信息</h2>
             </div>
@@ -73,7 +73,7 @@
                     label-key="storeName"
                     @change="handleAddTableData"
                   />
-                  <el-button type="primary" size="small">添加</el-button>
+                  <el-button type="primary" size="small" @click="handleAddTable">批量添加门店</el-button>
                 </div>
               </div>
               <div class="common-section-table">
@@ -88,13 +88,13 @@
                   min-height="0"
                   max-height="400px"
                 >
-                  <vxe-column field="storeCode" title="门店编码" min-width="15%" />
-                  <vxe-column field="storeName" title="门店名称" min-width="15%" />
-                  <vxe-column field="region" title="区域" min-width="15%" />
+                  <vxe-column field="dealerCode" title="门店编码" min-width="15%" />
+                  <vxe-column field="dealerName" title="门店名称" min-width="15%" />
+                  <vxe-column field="regionName" title="区域" min-width="15%" />
                   <vxe-column field="provinceName" title="省" min-width="15%" />
                   <vxe-column field="cityName" title="市" min-width="15%" />
                   <vxe-column field="remark" title="备注" min-width="15%" />
-                  <vxe-column title="操作" width="100" v-if="isEditing || !_id">
+                  <vxe-column title="操作" width="100" fixed="right" v-if="isEditing || !_id">
                     <template #default="{ rowIndex }">
                       <el-popconfirm title="确认要删除行信息吗？" @confirm="handleDeleteRow(rowIndex)">
                         <span slot="reference" type="text" size="small" class="btn-delete">删除</span>
@@ -116,6 +116,13 @@
         <!-- 右侧栏组件，自行开发 -->
       </div>
     </template>
+    <!-- 网发门店批量 -->
+    <StoreInformationDialog
+      ref="storeInformationDialogRef"
+      :visible.sync="storeInformationDialogVisible"
+      @update:visible="val => storeInformationDialogVisible = val"
+      @submit="handleStoreInformationDialogSubmit"
+    />
   </edit-page-layout>
 </template>
 
@@ -130,12 +137,14 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import StoreInformationDialog from './StoreInformationDialog.vue';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
   groupNo: '',
   groupName: '',
   groupDesc: '',
+  storeInventoryTransferWhitelistDetailList: [],
 };
 
 export default {
@@ -151,7 +160,8 @@ export default {
   components: {
     EditPageLayout,
     EditBaseContainer,
-    FetchSelect
+    FetchSelect,
+    StoreInformationDialog
   },
   computed: {
     _id () {
@@ -236,7 +246,7 @@ export default {
     },
     // 新增子表数据
     handleAddTableData (val, record) {
-      console.log(val, record);
+      console.log(record);
       if (!record) {
         this.$message.warning('请先选择数据');
         return;
@@ -247,26 +257,16 @@ export default {
         this.$message.warning('请勿重复添加');
         return;
       }
-      // 根据需求调用接口
-      addOrUpdate({
-        whitelistId: this._id,
-        groupName: this.form.groupName,
-        groupDesc: this.form.groupDesc,
-        storeInventoryTransferWhitelistDetailList: [
-          {
-            dealerCode: record.storeCode,
-            dealerName: record.storeName,
-            regionCode: record.regionCode,
-            regionName: record.regionName,
-            provinceCode: record.provinceCode,
-            provinceName: record.provinceName,
-            cityCode: record.cityCode,
-            cityName: record.cityName,
-          }
-        ],
-      }).then(res => {
-        this.$message.success('添加成功');
-        this.$refs.containerRef.loadDetail();
+      this.form.storeInventoryTransferWhitelistDetailList.push({
+        dealerCode: record.storeCode,
+        dealerName: record.storeName,
+        regionCode: record.regionCode,
+        regionName: record.region,
+        provinceCode: record.provinceCode,
+        provinceName: record.provinceName,
+        cityCode: record.cityCode,
+        cityName: record.cityName,
+        remark: record.remark,
       });
     },
     getDefautlForm () {
@@ -287,6 +287,9 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    handleAddTable () {
+      this.storeInformationDialogVisible = true;
     }
   }
 };

@@ -42,3 +42,35 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 门店库存调拨调出审批
+ * @param {Object} data
+ */
+export function approveOut (data) {
+  return api.jsonPost(prefix + 'approveOut', data);
+}
+
+/**
+ * 门店库存调拨调入审批
+ * @param {Object} data
+ */
+export function approveIn (data) {
+  return api.jsonPost(prefix + 'approveIn', data);
+}
+
+/**
+ * 门店库存调拨提交
+ * @param {Object} data
+ */
+export function storeSubmit (data) {
+  return api.jsonPost(prefix + 'submit', data);
+}
+
+/**
+ * 门店库存调拨作废
+ * @param {Object} data
+ */
+export function storeInvalid (data) {
+  return api.jsonPost(prefix + 'invalid', data);
+}
