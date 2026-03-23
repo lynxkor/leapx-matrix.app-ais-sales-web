@@ -12,14 +12,6 @@
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
       >
-        <template #status>
-          <!-- 支持primary,warning,success,danger等状态 -->
-          <!-- <span class="status primary">状态</span> -->
-        </template>
-        <template #extraButtons>
-          <!-- <el-button size="small">按钮1</el-button>
-          <el-button size="small">按钮2</el-button> -->
-        </template>
         <el-main>
           <section class="common-section">
             <div class="common-section-header">
@@ -32,6 +24,7 @@
                   <el-input
                     placeholder="请输入"
                     v-model="form.groupNo"
+                    disabled
                     clearable
                   />
                 </el-form-item>
@@ -65,7 +58,7 @@
           </section>
           <section class="common-section" v-if="_id">
             <div class="common-section-header">
-              <h2>子表标题</h2>
+              <h2>门店信息</h2>
             </div>
             <div class="common-section-body">
               <div class="common-section-header">
@@ -76,8 +69,8 @@
                     remote
                     placeholder="请选择"
                     clearable
-                    value-key="id"
-                    label-key="name"
+                    value-key="storeCode"
+                    label-key="storeName"
                     @change="handleAddTableData"
                   />
                   <el-button type="primary" size="small">添加</el-button>
@@ -87,7 +80,7 @@
                 <vxe-table
                   ref="tableRef"
                   stripe
-                  :data="tableData"
+                  :data="form.storeInventoryTransferWhitelistDetailList"
                   show-overflow
                   resizable
                   border="inner"
@@ -95,12 +88,15 @@
                   min-height="0"
                   max-height="400px"
                 >
-                  <vxe-column field="name" title="名称" min-width="30%" />
-                  <vxe-column field="age" title="年龄" min-width="30%" />
-                  <vxe-column field="email" title="邮箱" min-width="30%" />
-                  <vxe-column title="操作" width="100" v-if="canDelete">
+                  <vxe-column field="storeCode" title="门店编码" min-width="15%" />
+                  <vxe-column field="storeName" title="门店名称" min-width="15%" />
+                  <vxe-column field="region" title="区域" min-width="15%" />
+                  <vxe-column field="provinceName" title="省" min-width="15%" />
+                  <vxe-column field="cityName" title="市" min-width="15%" />
+                  <vxe-column field="remark" title="备注" min-width="15%" />
+                  <vxe-column title="操作" width="100" v-if="isEditing || !_id">
                     <template #default="{ rowIndex }">
-                      <el-popconfirm title="确定要删除吗？" @confirm="handleDeleteRow(rowIndex)">
+                      <el-popconfirm title="确认要删除行信息吗？" @confirm="handleDeleteRow(rowIndex)">
                         <span slot="reference" type="text" size="small" class="btn-delete">删除</span>
                       </el-popconfirm>
                     </template>
@@ -129,6 +125,7 @@ import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
+import { listOrgStoreInfo } from '@/libs/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -172,7 +169,7 @@ export default {
         }
       },
       immediate: true
-    }
+    },
   },
   data () {
     const form = this.getDefautlForm();
@@ -196,10 +193,7 @@ export default {
           { required: false, message: '请输入群编号', trigger: 'change' }
         ],
         groupName: [
-          { required: true, message: '请输入群名称', trigger: 'change' }
-        ],
-        groupDesc: [
-          { required: true, message: '请输入群描述', trigger: 'change' }
+          { required: true, message: '请输入群名称', trigger: 'blur' }
         ],
       }
     };
@@ -222,8 +216,8 @@ export default {
     },
     // 删除子表数据
     handleDeleteRow (index) {
-      const item = this.tableData[index];
-      this.tableData.splice(index, 1);
+      const item = this.form.storeInventoryTransferWhitelistDetailList[index];
+      this.form.storeInventoryTransferWhitelistDetailList.splice(index, 1);
       // 根据需求调用接口
       // deletePartVehModel([item.id]).then(res => {
       //   this.$message.success('删除成功');
@@ -234,17 +228,15 @@ export default {
     queryListData (queryString) {
       return new Promise(resolve => {
         // 根据需求调用接口
-        // sparePartList({ partCodeOrNameLike: queryString, status: 1, limitSize: 20 }).then(res => {
-        //   const list = res || [];
-        //   resolve(list);
-        // });
-        resolve([
-          { id: 1, name: 'test', age: 25, email: 'test@example.com' }
-        ]);
+        listOrgStoreInfo({ keyword: queryString }).then(res => {
+          const list = res.records || [];
+          resolve(list);
+        });
       });
     },
     // 新增子表数据
     handleAddTableData (val, record) {
+      console.log(val, record);
       if (!record) {
         this.$message.warning('请先选择数据');
         return;
@@ -256,16 +248,26 @@ export default {
         return;
       }
       // 根据需求调用接口
-      this.tableData.push(record);
-      // addPartItem({
-      //   maintenancePartId: this._id,
-      //   partsCode: record.partCode,
-      //   partsName: record.partName,
-      //   partsId: record.id,
-      // }).then(res => {
-      //   this.$message.success('添加成功');
-      //   this.detailRequest();
-      // });
+      addOrUpdate({
+        whitelistId: this._id,
+        groupName: this.form.groupName,
+        groupDesc: this.form.groupDesc,
+        storeInventoryTransferWhitelistDetailList: [
+          {
+            dealerCode: record.storeCode,
+            dealerName: record.storeName,
+            regionCode: record.regionCode,
+            regionName: record.regionName,
+            provinceCode: record.provinceCode,
+            provinceName: record.provinceName,
+            cityCode: record.cityCode,
+            cityName: record.cityName,
+          }
+        ],
+      }).then(res => {
+        this.$message.success('添加成功');
+        this.$refs.containerRef.loadDetail();
+      });
     },
     getDefautlForm () {
       // TIPS: 此处可添加表单默认值，如当前用户信息等

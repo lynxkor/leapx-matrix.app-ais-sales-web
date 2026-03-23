@@ -10,12 +10,21 @@
         <el-input placeholder="请输入" v-model="form.groupName" clearable />
       </el-form-item>
       <el-form-item label="门店编码" v-show="this.visibleCount === 3 || show">
-        <el-input placeholder="请输入" v-model="form.dealerCode" clearable />
+        <fetch-select
+            :remote-method="getDealerListByName"
+            remote
+            v-model="form.dealerCodeList"
+            placeholder="请输入门店编码或名称"
+            labelKey="storeName"
+            valueKey="storeCode"
+            subLabelKey="storeCode"
+            clearable
+            multiple
+            collapseTags
+            filterable
+          />
       </el-form-item>
       <template v-if="show">
-        <el-form-item label="门店名称" v-show="this.visibleCount === 3 || show">
-          <el-input placeholder="请输入" v-model="form.dealerName" clearable />
-        </el-form-item>
         <el-form-item label="创建时间">
           <el-date-picker
             v-model="form.createTime"
@@ -34,13 +43,13 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i
           class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <!-- <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete"
         :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
         :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)"
-        :disabled="selectionList.length === 0">批量停用</el-button>
+        :disabled="selectionList.length === 0">批量停用</el-button> -->
     </div>
     <div class="ais-table-c">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed centralized
@@ -60,7 +69,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/basic/storeInventoryTransferWhitelist/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo } from '@/api/common';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -68,6 +77,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, getEndOfDayString, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import FetchSelect from '@/libs/components/FetchSelect';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -89,7 +99,8 @@ export default {
     PageSearchAction,
     LPVxeTable,
     EditPage,
-    Upload
+    Upload,
+    FetchSelect
   },
   data () {
     return {
@@ -159,26 +170,68 @@ export default {
               },
               type: 'info'
             }, {
-              name: '删除',
-              popconfirmConfirmButtonType: 'danger',
-              popconfirmConfirmButtonText: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
+              name: '启用',
+              show: (row) => {
+                return row.status === 0;
+              },
               click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
+                this.$prompt('确认启用说明？', '提示', {
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消',
+                  type: 'warning'
+                }).then(() => {
+                  enableItem({
+                    idSet: [row.id],
+                    status: 1
                   });
                   this.getData();
                 }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
                 });
               },
-              type: 'danger'
-            }]
+              type: 'info'
+            }, {
+              name: '停用',
+              show: (row) => {
+                return row.status === 1;
+              },
+              click: (rowIndex, row) => {
+                this.$prompt('确认停用说明？', '提示', {
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消',
+                  type: 'warning'
+                }).then(() => {
+                  enableItem({
+                    idSet: [row.id],
+                    status: 0
+                  });
+                  this.getData();
+                }).catch(() => {
+                });
+              },
+              type: 'info'
+            }
+            // {
+            //   name: '删除',
+            //   popconfirmConfirmButtonType: 'danger',
+            //   popconfirmConfirmButtonText: '删除',
+            //   popconfirmTitle: '此操作将永久删除, 是否继续?',
+            //   click: (rowIndex, row) => {
+            //     deleteItem([row.id]).then(() => {
+            //       this.$message({
+            //         type: 'success',
+            //         message: '删除成功!'
+            //       });
+            //       this.getData();
+            //     }).catch(() => {
+            //       this.$message({
+            //         type: 'error',
+            //         message: '删除失败!'
+            //       });
+            //     });
+            //   },
+            //   type: 'danger'
+            // }
+            ]
           }
         ],
         total: 0
@@ -330,6 +383,10 @@ export default {
       // 排序字段
       data.sortColumns = this.sortColumns;
       return data;
+    },
+    // 查询门店编码或名称
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params });
     },
     async fetchOptions (code) {
       if (code) {
