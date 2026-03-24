@@ -21,6 +21,7 @@
           <el-button v-permission="moduleKey+'-batchConfirm'" size="small" @click="handleCheckConfirm" >审核确认</el-button>
           <el-button v-permission="moduleKey+'-batchAllocateVehicle'"  size="small" @click="handleaAutoVehicleAllocation">自动配车</el-button>
           <el-button v-permission="moduleKey+'-vinAllocateVehicle'" size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
+          <el-button v-permission="moduleKey+'-batchSetAutoAllocate'" size="small" @click="handleCancelAllocateVehicle">取消配车</el-button>
           <!-- <el-button  size="small" type="primary" @click="handleDelete">删除</el-button> -->
           <el-button v-permission="moduleKey+'-batchSettleSubmit'" size="small" @click="handleBatchSettleSubmit">提交结算</el-button>
           <el-button v-permission="moduleKey+'-batchCancelSettle'" size="small" @click="handleBatchCancelSettle">取消结算</el-button>
@@ -909,11 +910,17 @@
         :columns="detailsColumns"
         :visible.sync="showComponentTabelDialog"
       />
+
+      <CancleBatchAllocateVehicleInput
+        :visible.sync="showCancleBatchAllocateVehicleDialog"
+        :cancel-ids="[_id]"
+        @cancleBatchAllocateVehicle="cancleBatchAllocateVehicle"
+      />
   </div>
 </template>
 
 <script>
-import { getDetail, addOrUpdate, batchConfirmItem, batchSetAutoAllocateItem, batchCancelItem, vinAllocateVehicleSubmitItem, batchSettleSubmitItem, batchCancelSettleItem, vinAllocateVehicleCheckItem, querySAPAccountBalance } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import { batchCancleAllocateVehicleItem, getDetail, addOrUpdate, batchConfirmItem, batchSetAutoAllocateItem, batchCancelItem, vinAllocateVehicleSubmitItem, batchSettleSubmitItem, batchCancelSettleItem, vinAllocateVehicleCheckItem, querySAPAccountBalance } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
@@ -928,6 +935,7 @@ import BatchCancelInput from './BatchCancelInput.vue';
 import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import BatchCancelSettleInput from './BatchCancelSettleInput.vue';
 import ComponentTable from './ComponentTable.vue';
+import CancleBatchAllocateVehicleInput from './CancleBatchAllocateVehicleInput.vue';
 const defaultForm = {
   // 多选时字段有变化，自行修复
   wholesaleOrderCode: '',
@@ -1061,7 +1069,8 @@ export default {
     ManualVehicle,
     BatchCancelInput,
     BatchCancelSettleInput,
-    ComponentTable
+    ComponentTable,
+    CancleBatchAllocateVehicleInput
   },
   computed: {
     _id () {
@@ -1092,6 +1101,7 @@ export default {
       showBatchCancelDialog: false,
       showBatchCancelSettleDialog: false,
       showComponentTabelDialog: false,
+      showCancleBatchAllocateVehicleDialog: false,
       yes_no_enum: YES_NO_ENUM,
       true_false_enum: TRUE_FALSE_ENUM,
       ALLOWED_STATUS: [0, 11],
@@ -1158,6 +1168,22 @@ export default {
     this.fetchOrderCategoryOptions();
   },
   methods: {
+    cancleBatchAllocateVehicle (data) {
+      const ids = [this._id];
+      return batchCancleAllocateVehicleItem({
+        idSet: ids,
+        cancelAllocateVehicleType: data.cancelAllocateVehicleType
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '提交成功'
+        });
+        this.getDetailData();
+      });
+    },
+    handleCancelAllocateVehicle () {
+      this.showCancleBatchAllocateVehicleDialog = true;
+    },
     async fetchOrderCategoryOptions () {
       const response = await getEnum('vw_order_category');
       this.orderCategoryOptions = response.filter(item => {
@@ -1203,7 +1229,7 @@ export default {
           type: 'success',
           message: '提交成功'
         });
-        this.getData();
+        this.getDetailData();
       });
     },
     handleBatchCancelSettle () {
@@ -1230,6 +1256,7 @@ export default {
     getDetailData () {
       if (this._id) {
         getDetail(this._id).then(res => {
+          console.log('getDetailData-----------', res);
           Object.assign(this.form, res);
           Object.assign(this.originalForm, res);
         }).catch(() => {});
@@ -1397,8 +1424,6 @@ export default {
             effectiveTime: account.creditSalesLimit?.effectiveTime || '',
             expireTime: account.creditSalesLimit?.expireTime || '',
             downPaymentRatio: account.creditSalesLimit?.downPaymentRatio || '',
-            availableBalance: account.creditSalesLimit?.availableBalance || '',
-            frozenBalance: account.creditSalesLimit?.frozenBalance || '',
             availableCreditAmount: account.creditSalesLimit?.availableCreditAmount || '',
           }));
           console.log(res);

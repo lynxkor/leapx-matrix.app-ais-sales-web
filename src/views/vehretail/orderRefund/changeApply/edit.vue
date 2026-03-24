@@ -1078,13 +1078,25 @@ export default {
         return getDetail(id);
       }
     },
-    submitRequest () {
+    async submitRequest () {
       // 变更信息不能全部为空
       if (!this.form.newBuyerName && !this.form.newBuyerPhone && !this.form.newIdCardType && !this.form.newIdCardNo && !this.form.newAgentName) {
         this.$message.error('变更信息不能全部为空');
         return;
       }
-      return addOrUpdate({ ...this.form });
+      if ((this.form.applyStatus === 1010 || this.form.applyStatus === 1040) && this._id) {
+        // 等待一下确保文件列表已更新
+        await this.$nextTick();
+        const attachmentList = this.$refs.attachment?.getFileList() || [];
+        if (!attachmentList || attachmentList.length === 0) {
+          this.$message.warning('请上传附件信息');
+          return Promise.reject(new Error('请上传附件信息'));
+        }
+      }
+      const res = await addOrUpdate({ ...this.form });
+      // 保存成功后退出编辑状态
+      this.isEditing = false;
+      return res;
     },
     // 打开侧边栏
     openPane () {
@@ -1181,6 +1193,7 @@ export default {
     async changeReasonSearch (val) {
       const params = {
         pageSize: 1000,
+        changeName: val,
         changeType: this.form.changeType
       };
       return await fetchReasonLabelList(params);

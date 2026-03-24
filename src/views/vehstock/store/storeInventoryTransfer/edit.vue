@@ -75,7 +75,7 @@
               <div class="common-section-header">
                 <div class="ais-select-group">
                   <fetch-select style="width: 300px;" :remote-method="queryListData" remote placeholder="请选择" clearable
-                    value-key="id" label-key="materialsDesc" @change="handleAddTableData" />
+                    value-key="id" label-key="vinDesc" :disabled="!(isEditing || !_id)" @change="handleAddTableData" />
                   <el-button type="primary" size="small">添加</el-button>
                 </div>
               </div>
@@ -260,13 +260,6 @@ export default {
       }
     },
     submitRequest () {
-      const invalidItems = this.form.storeInventoryTransferDetailList.filter(item => {
-        return !(item.vechicleStatus === 12 && item.lockStatus === 0 && item.reserved === 0);
-      });
-      if (invalidItems.length > 0) {
-        this.$message.warning('车辆不符合调拨条件，请检查车辆状态是否为：已入门店库，是否预留为：否，是否匹配订单为：否！');
-        return;
-      }
       return addOrUpdate({ ...this.form });
     },
     // 打开侧边栏
@@ -288,7 +281,10 @@ export default {
       return new Promise(resolve => {
         // 根据需求调用接口
         getList({ vin: queryString }).then(res => {
-          const list = res || [];
+          const list = res.records?.map(item => ({
+            ...item,
+            vinDesc: item.vin + '-' + item.materialsDesc,
+          })) || [];
           resolve(list);
         });
       });
@@ -299,8 +295,13 @@ export default {
         this.$message.warning('请先选择数据');
         return;
       }
+      // 检查车辆是否符合调拨条件
+      if (!(Number(record.vechicleStatus) === 12 && Number(record.lockStatus) === 0 && Number(record.reserved) === 0)) {
+        this.$message.warning('车辆不符合调拨条件，请检查车辆状态是否为：已入门店库，是否预留为：否，是否匹配订单为：否！');
+        return;
+      }
       // 检查是否已存在
-      const exists = this.tableData.some(item => item.id === record.id);
+      const exists = this.form.storeInventoryTransferDetailList.some(item => item.id === record.id);
       if (exists) {
         this.$message.warning('请勿重复添加');
         return;
@@ -312,7 +313,8 @@ export default {
       // TIPS: 此处可添加表单默认值，如当前用户信息等
       // const userInfo = this.$store.state.user.userInfo;
       return {
-        ...defaultForm
+        ...defaultForm,
+        storeInventoryTransferDetailList: []
         // ownerId: userInfo.userId,
         // ownerName: userInfo.userName,
       };

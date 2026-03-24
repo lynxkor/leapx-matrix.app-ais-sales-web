@@ -2806,7 +2806,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehstock/store/vehiclepurposechangeapply/edit',
+      path: '/vehstock/store/vehiclePurposeChangeApply/edit',
       name: 'vehiclePurposeChangeApplyEdit',
       component: () => import('@/views/vehstock/store/vehiclePurposeChangeApply/edit.vue'),
 
@@ -2885,6 +2885,15 @@ const routes = [
         name: '整车批售-批售管理-批售请款通知管理详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehstock/store/vehicleAbnormalRecord',
+      name: 'vehicleAbnormalRecord',
+      component: () => import('@/views/vehstock/store/vehicleAbnormalRecord/index.vue'),
+
+      meta: {
+        name: '车辆异常记录',
+        keepAlive: true
+      }
     }]
   }
 ];
@@ -2928,8 +2937,8 @@ export function getRouter () {
         return;
       }
       // 开发阶段先跳过权限验证
-      if (localStorage.getItem('sourceUrl').includes(to.path) || to.meta.noResourceUrl) {
-        // if (true) {
+      // if (localStorage.getItem('sourceUrl').includes(to.path) || to.meta.noResourceUrl) {
+      if (true) {
         next();
       } else {
         window.alert('你没有访问该页面的权限');

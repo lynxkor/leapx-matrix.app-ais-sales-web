@@ -149,12 +149,29 @@
       :before-close="handleLogDialogClose"
       class="dialog-with-table"
     >
-      <LPVxeTable
+      <vxe-table
         ref="logTableRef"
         v-loading="logLoading"
-        :option-obj="logOptionObj"
-        :get-config="getLogConfig"
-      />
+        :data="logOptionObj.dataList"
+        height="auto"
+        stripe
+        border
+      >
+        <vxe-column field="changeBeforeQty" title="变化前数量" width="200"></vxe-column>
+        <vxe-column field="changeAfterQty" title="变化后数量" width="200"></vxe-column>
+        <vxe-column field="changeQty" title="变化数量" width="200"></vxe-column>
+        <vxe-column field="changeTime" title="变化时间" width="200"></vxe-column>
+        <vxe-column field="logDataSourceLabel" title="数据来源" width="200"></vxe-column>
+        <vxe-column field="relatedFormCode" title="相关单号" width="200"></vxe-column>
+        <vxe-column field="changeDesc" title="调整说明" width="200"></vxe-column>
+        <vxe-column field="changeDescFileId" title="附件调整说明" width="200">
+          <template #default="{ row }">
+            <a v-if="row.changeDescFileId" :href="row.changeDescFileId" target="_blank" style="color: #409EFF; text-decoration: underline; cursor: pointer;">附件下载</a>
+          </template>
+        </vxe-column>
+        <vxe-column field="responsibleName" title="负责人" width="200"></vxe-column>
+        <vxe-column field="createTime" title="创建时间" width="200"></vxe-column>
+      </vxe-table>
     </el-dialog>
     <!-- TIPS: 填入项目id即可 -->
     <Upload
@@ -304,23 +321,6 @@ export default {
       logOptionObj: {
         id: 'dealerDemoVehicleQuotaRecordTable',
         dataList: [],
-        dataProp: [
-          {
-            props: 'changeBeforeQty',
-            label: '变化前数量',
-            visible: true,
-            width: 200,
-          },
-          { props: 'changeAfterQty', label: '变化后数量', visible: true, width: 200 },
-          { props: 'changeQty', label: '变化数量', visible: true, width: 200 },
-          { props: 'changeTime', label: '变化时间', visible: true, width: 200 },
-          { props: 'logDataSourceLabel', label: '数据来源', visible: true, width: 200 },
-          { props: 'relatedFormCode', label: '相关单号', visible: true, width: 200 },
-          { props: 'changeDesc', label: '调整说明', visible: true, width: 200 },
-          { props: 'changeDescFileId', label: '附件调整说明', visible: true, width: 200 },
-          { props: 'responsibleName', label: '负责人', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-        ],
         total: 0
       }
     };

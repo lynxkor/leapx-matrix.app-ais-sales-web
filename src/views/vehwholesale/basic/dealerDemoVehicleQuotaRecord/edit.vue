@@ -49,9 +49,9 @@
               </el-form-item>
               <el-form-item label="附件说明" prop="changeDescFileId">
                 <AisAttachment
-                  :businessId="_id"
-                  attachType="配额调整说明"
-                  configCode="dealer_demo_vehicle_quota_record"
+                  ref="attachment"
+                  :uploadConfig="{ maxNum: 1 }"
+                  :noEcho="false"
                 />
               </el-form-item>
             </el-form>
@@ -152,6 +152,18 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.submitLoading = true;
+          const files = this.$refs.attachment.getAttachment();
+          const fileData = files[0];
+          console.log('fileData', fileData);
+          const fileDto = (fileData) ? {
+            fileId: fileData.fileId,
+            fileName: fileData.fileName,
+            fileUrl: fileData.fileUrl,
+            fileSize: fileData.fileSize,
+            fileType: fileData.fileType,
+            attachType: '配额调整说明',
+            configCode: 'dealer_demo_vehicle_quota_record'
+          } : null;
           const submitForm = {
             changeAfterQty: this.form.changeAfterQty,
             changeDesc: this.form.changeDescs,
@@ -160,7 +172,8 @@ export default {
             relatedId: this._id,
             dealerCode: this.form.dealerCode,
             vehicleYearTypeId: this.form.vehicleYearTypeId,
-            vehicleModelLineId: this.form.vehicleModelLineId
+            vehicleModelLineId: this.form.vehicleModelLineId,
+            file: fileDto
           };
           updateTestDriveQuota(submitForm).then(res => {
             this.$message({

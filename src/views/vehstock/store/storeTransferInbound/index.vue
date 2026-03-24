@@ -6,8 +6,19 @@
       <el-form-item label="VIN">
         <el-input placeholder="请输入" v-model="form.vin" clearable />
       </el-form-item>
-      <el-form-item label="目标门店编码">
-        <el-input placeholder="请输入" v-model="form.targetDealerCode" clearable />
+      <el-form-item label="目标门店">
+        <fetch-select
+          :remote-method="queryListData"
+          v-model="form.targetDealerCodeList"
+          remote
+          collapse-tags
+          multiple
+          filterable
+          placeholder="请选择"
+          clearable
+          value-key="storeCode"
+          label-key="storeName"
+        />
       </el-form-item>
       <el-form-item label="单据状态" v-show="this.visibleCount === 3 || show">
         <fetch-select :request="fetchOptions" enumCode="vehstock_transfer_inbound_audit_status"
@@ -20,11 +31,11 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <!-- <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
-        :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)"
-        :disabled="selectionList.length === 0">批量停用</el-button>
+        :disabled="selectionList.length === 0">批量启用</el-button> -->
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchWarehousing(0)"
+        :disabled="selectionList.length === 0">入库</el-button>
     </div>
     <div class="ais-table-c">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed centralized
@@ -43,7 +54,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehstock/store/storeTransferInbound/index';
+import { getList, deleteItem, enableItem, inboundItem } from '@/api/vehstock/store/storeTransferInbound/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -53,6 +64,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import { listOrgStoreInfo } from '@/libs/api/common';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -142,7 +154,23 @@ export default {
             type: 'operate',
             visible: true,
             fixed: 'right',
-            buttons: []
+            buttons: [{
+              name: '入库',
+              show: (row) => {
+                return row.auditStatus === 1;
+              },
+              popconfirmTitle: '确认入库吗?',
+              click: (rowIndex, row) => {
+                inboundItem([row.id]).then(() => {
+                  this.$message({
+                    type: 'success',
+                    message: '入库成功!'
+                  });
+                  this.getData();
+                });
+              },
+              type: 'info'
+            }]
           }
         ],
         total: 0
@@ -333,6 +361,38 @@ export default {
         targetStatus: status,
         apiFunc: enableItem,
         refreshFunc: this.getData
+      });
+    },
+    // 查询目标门店
+    queryListData (queryString) {
+      return new Promise(resolve => {
+        // 根据需求调用接口
+        listOrgStoreInfo({ keyword: queryString }).then(res => {
+          const list = res.records || [];
+          resolve(list);
+        });
+      });
+    },
+    // 批量入库
+    handleBatchWarehousing () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      this.$confirm('确定要批量入库吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        inboundItem(ids).then(() => {
+          this.$message({
+            type: 'success',
+            message: '批量入库成功!'
+          });
+          this.getData();
+        }).catch(() => {
+          this.$message({
+            type: 'error',
+            message: '批量入库失败!'
+          });
+        });
       });
     }
   }

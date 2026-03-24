@@ -309,7 +309,7 @@ export default {
         pushfinDealerRecommendationToBank(params).then(() => {
           this.$message({
             type: 'success',
-            message: '同步成功'
+            message: '提交成功'
           });
           this.getData(); // 同步成功后刷新列表
         });

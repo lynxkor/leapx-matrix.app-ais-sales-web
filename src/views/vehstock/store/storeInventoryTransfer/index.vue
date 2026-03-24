@@ -52,6 +52,10 @@
     </div>
     <!-- TIPS: 填入项目id即可 -->
     <Upload :visible="uploadDialogVisible" :id="'1'" @close="handleUploadDialogClose" @getData="getData" />
+    <!-- 调拨审批弹窗 -->
+    <approval-dialog ref="approvalDialog" :visible.sync="approvalVisible" :data="approvalData" @update:visible="val => approvalVisible = val" />
+    <!-- 审核记录抽屉 -->
+    <review-drawer ref="reviewDrawer" :visible.sync="reviewDrawerVisible" :drawerData="reviewData" @update:visible="val => reviewDrawerVisible = val" />
   </div>
 </template>
 
@@ -69,6 +73,8 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import ApprovalDialog from './ApprovalDialog.vue';
+import ReviewDrawer from './ReviewDrawer.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -89,7 +95,9 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    ApprovalDialog,
+    ReviewDrawer
   },
   data () {
     return {
@@ -106,6 +114,10 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      approvalVisible: false, // 调拨审批弹窗
+      approvalData: {},
+      reviewDrawerVisible: false, // 审核记录抽屉
+      reviewData: {},
       clickItemId: '',
       optionObj: {
         id: 'storeInventoryTransferTable',
@@ -239,14 +251,24 @@ export default {
               show: (row) => {
                 return row.auditStatus === 2;
               },
-              click: (rowIndex, row) => {},
+              click: (rowIndex, row) => {
+                this.handleApproval(row, 'outApproval');
+              },
               type: 'info'
             }, {
               name: '调入审批',
               show: (row) => {
                 return row.auditStatus === 2;
               },
-              click: (rowIndex, row) => {},
+              click: (rowIndex, row) => {
+                this.handleApproval(row, 'inApproval');
+              },
+              type: 'info'
+            }, {
+              name: '审核记录',
+              click: (rowIndex, row) => {
+                this.handleReview(row);
+              },
               type: 'info'
             }]
           }
@@ -444,7 +466,20 @@ export default {
         apiFunc: enableItem,
         refreshFunc: this.getData
       });
-    }
+    },
+    // 调拨审批
+    handleApproval (row, type) {
+      this.approvalData = {
+        id: row.id,
+        type: type
+      };
+      this.approvalVisible = true;
+    },
+    // 审核记录
+    handleReview (row) {
+      this.reviewData = row;
+      this.reviewDrawerVisible = true;
+    },
   }
 };
 </script>
