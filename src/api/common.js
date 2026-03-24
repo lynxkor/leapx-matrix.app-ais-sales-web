@@ -351,3 +351,11 @@ export function getParentCompany (data) {
 export function searchEngineer (data) {
   return api.jsonPost('/vr/web/order/common/userList', data);
 }
+
+/**
+   * 审批记录分页查询
+   * @param {*} data
+   */
+export function approvalRecordPage (data) {
+  return api.jsonPost('/vehstock/web/basic/approvalRecord/page', data);
+}

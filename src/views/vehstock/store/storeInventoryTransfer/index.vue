@@ -53,8 +53,9 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload :visible="uploadDialogVisible" :id="'1'" @close="handleUploadDialogClose" @getData="getData" />
     <!-- 调拨审批弹窗 -->
-    <approval-dialog ref="approvalDialog" :visible.sync="approvalVisible" :data="approvalData" @update:visible="val => approvalVisible = val" @submit="getData" />
-
+    <approval-dialog ref="approvalDialog" :visible.sync="approvalVisible" :data="approvalData" @update:visible="val => approvalVisible = val" />
+    <!-- 审核记录抽屉 -->
+    <review-drawer ref="reviewDrawer" :visible.sync="reviewDrawerVisible" :drawerData="reviewData" @update:visible="val => reviewDrawerVisible = val" />
   </div>
 </template>
 
@@ -73,6 +74,7 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import ApprovalDialog from './ApprovalDialog.vue';
+import ReviewDrawer from './ReviewDrawer.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -94,7 +96,8 @@ export default {
     FetchSelect,
     EditPage,
     Upload,
-    ApprovalDialog
+    ApprovalDialog,
+    ReviewDrawer
   },
   data () {
     return {
@@ -113,6 +116,8 @@ export default {
       uploadDialogVisible: false,
       approvalVisible: false, // 调拨审批弹窗
       approvalData: {},
+      reviewDrawerVisible: false, // 审核记录抽屉
+      reviewData: {},
       clickItemId: '',
       optionObj: {
         id: 'storeInventoryTransferTable',
@@ -257,6 +262,12 @@ export default {
               },
               click: (rowIndex, row) => {
                 this.handleApproval(row, 'inApproval');
+              },
+              type: 'info'
+            }, {
+              name: '审核记录',
+              click: (rowIndex, row) => {
+                this.handleReview(row);
               },
               type: 'info'
             }]
@@ -463,7 +474,12 @@ export default {
         type: type
       };
       this.approvalVisible = true;
-    }
+    },
+    // 审核记录
+    handleReview (row) {
+      this.reviewData = row;
+      this.reviewDrawerVisible = true;
+    },
   }
 };
 </script>
