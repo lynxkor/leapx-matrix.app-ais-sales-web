@@ -3,11 +3,11 @@
     <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
       class="ais-search-form">
       <el-form-item label="门店编码">
-        <fetch-select :remote-method="getDealerListByName" remote v-model="form.dealerCodeList" placeholder="请输入门店编码或名称"
-          labelKey="storeName" valueKey="storeCode" subLabelKey="storeCode" clearable multiple collapseTags
+        <fetch-select :remote-method="getDealerListByName" remote v-model="form.storeName" placeholder="请输入门店编码或名称"
+          labelKey="storeName" valueKey="storeCode" subLabelKey="storeCode" clearable
           filterable />
       </el-form-item>
-      <page-search-action v-model="show" is-expandable :loading="loading" @submit="onSubmit"
+      <page-search-action v-model="show" :loading="loading" @submit="onSubmit"
         @reset="onReset" />
     </el-form>
     <!-- 数据表格 -->
@@ -16,16 +16,21 @@
         :checkbox-config="{ checkField: 'checked' }" @checkbox-change="handleSelectionChange"
         @checkbox-all="handleSelectionChange">
         <vxe-column type="checkbox" width="60" align="center" />
-        <vxe-column field="partCode" title="备件编码" />
-        <vxe-column field="partName" title="备件名称" />
-        <vxe-column field="unPurchaseReason" title="不可采购原因" />
+        <vxe-column field="storeCode" title="备件编码" min-width="15%" />
+        <vxe-column field="storeName" title="备件名称" min-width="15%" />
+        <vxe-column field="storeCode" title="门店编码" min-width="15%" />
+        <vxe-column field="storeName" title="门店名称" min-width="15%" />
+        <vxe-column field="region" title="区域" min-width="15%" />
+        <vxe-column field="provinceName" title="省" min-width="15%" />
+        <vxe-column field="cityName" title="市" min-width="15%" />
+        <vxe-column field="remark" title="备注" min-width="15%" />
       </vxe-table>
     </div>
 
     <!-- 底部按钮 -->
     <template v-slot:footer>
       <div class="dialog-footer">
-        <el-button size="small" :loading="exportLoading">导 出</el-button>
+        <!-- <el-button size="small" type="success" :loading="submitLoading" @click="submitRequest">确 定</el-button> -->
         <el-button size="small" @click="close">取 消</el-button>
       </div>
     </template>
@@ -33,8 +38,7 @@
 </template>
 
 <script>
-import { downloadExcel } from '@/libs/utils';
-import { exportTable, listOrgStoreInfo } from '@/api/common';
+import { listOrgStoreInfo } from '@/libs/api/common';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import FetchSelect from '@/libs/components/FetchSelect';
 
@@ -48,14 +52,6 @@ export default {
     visible: {
       type: Boolean,
       default: false
-    },
-    id: {
-      type: String,
-      default: ''
-    },
-    purchaseList: {
-      type: Array,
-      default: () => []
     }
   },
   data () {
@@ -63,7 +59,12 @@ export default {
       dialogVisible: this.visible,
       tableData: [],
       exportLoading: false,
-      form: {},
+      form: {
+        storeName: '',
+        page: 1,
+        pageSize: 20,
+        total: 0,
+      },
       show: false,
       loading: false,
       selectedRows: []
@@ -71,13 +72,11 @@ export default {
   },
   watch: {
     visible (val) {
-      this.dialogVisible = val;
-    },
-    purchaseList (val) {
       if (val) {
-        this.tableData = val;
+        this.dialogVisible = val;
+        this.getData();
       }
-    }
+    },
   },
   methods: {
     onSubmit () {
@@ -93,11 +92,16 @@ export default {
       this.selectedRows = records;
     },
     close () {
-      this.$emit('close');
+      this.$emit('update:visible', false);
     },
     // 查询门店编码或名称
     async getDealerListByName (params) {
-      return listOrgStoreInfo({ storeName: params });
+      return listOrgStoreInfo({ keyword: params });
+    },
+    async getData () {
+      const res = await listOrgStoreInfo(this.form);
+      this.tableData = res.records || [];
+      this.form.total = res.total || 0;
     },
   }
 };
