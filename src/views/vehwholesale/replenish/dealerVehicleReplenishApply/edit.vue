@@ -88,6 +88,7 @@
                     placeholder="请选择批售方式"
                     clearable
                     filterable
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="专项活动："
