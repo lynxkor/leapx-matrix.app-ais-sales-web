@@ -1110,7 +1110,7 @@ export default {
       }).then(() => {
         this.$message({
           type: 'success',
-          message: '取消结算成功'
+          message: '提交成功'
         });
         this.getData();
       });
@@ -1131,7 +1131,7 @@ export default {
         }).then(() => {
           this.$message({
             type: 'success',
-            message: '结算成功!'
+            message: '提交成功!'
           });
           this.getData();
         });
@@ -1200,7 +1200,7 @@ export default {
         }).then(() => {
           this.$message({
             type: 'success',
-            message: '确认成功!'
+            message: '提交成功!'
           });
           this.getDetailData();
         });
@@ -1221,7 +1221,7 @@ export default {
         }).then(() => {
           this.$message({
             type: 'success',
-            message: '配车成功!'
+            message: '提交成功!'
           });
           this.getDetailData();
         });
@@ -1240,7 +1240,7 @@ export default {
         vinAllocateVehicleSubmitItem(params).then(() => {
           this.$message({
             type: 'success',
-            message: '配车成功!'
+            message: '提交成功!'
           });
           this.getDetailData();
         });
@@ -1291,7 +1291,7 @@ export default {
       return batchCancelItem(data).then(() => {
         this.$message({
           type: 'success',
-          message: '整车批售订单作废成功'
+          message: '提交成功'
         });
         this.getDetailData();
       });

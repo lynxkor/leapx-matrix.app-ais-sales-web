@@ -42,3 +42,10 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+/**
+ * 同步 pushFinVehicleBindingMileageRecordToBank
+ */
+
+export function pushFinVehicleBindingMileageRecordToBank (data) {
+  return api.jsonPost(prefix + 'pushFinVehicleBindingMileageRecordToBank', data);
+}
