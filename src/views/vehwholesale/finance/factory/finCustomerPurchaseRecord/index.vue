@@ -44,7 +44,6 @@
           v-model="form.syncStatus"
           placeholder="请选择"
           clearable
-          multiple
           filterable
         />
     </el-form-item>
