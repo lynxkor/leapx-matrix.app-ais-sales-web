@@ -161,6 +161,7 @@ export default {
             fileUrl: fileData.fileUrl,
             fileSize: fileData.fileSize,
             fileType: fileData.fileType,
+            attachType: '配额调整说明',
             configCode: 'dealer_demo_vehicle_quota_record'
           } : null;
           const submitForm = {
