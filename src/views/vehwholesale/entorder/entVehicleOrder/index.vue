@@ -9,6 +9,9 @@
       label-width="150px"
       class="ais-search-form"
     >
+      <el-form-item label="企业客户整车订单">
+           <tag-input v-model="form.entOrderCodes" placeholder="请输入" />
+        </el-form-item>
      <el-form-item label="企业客户名称">
        <fetch-select
               :remote-method="listNetworkParentCompany"
@@ -23,7 +26,7 @@
               multiple
         />
       </el-form-item>
-      <el-form-item label="销售公司">
+      <el-form-item label="销售公司" v-show="this.visibleCount === 3 || show">
          <fetch-select
             filterable
             clearable
@@ -36,10 +39,10 @@
             label-key="companyName"
           />
         </el-form-item>
-        <el-form-item label="企业客户补货订单编号" v-show="this.visibleCount === 3 || show">
+      <template v-if="show">
+        <el-form-item label="企业客户补货订单编号" >
            <tag-input v-model="form.entReplenishOrderCodes" placeholder="请输入" />
         </el-form-item>
-      <template v-if="show">
          <el-form-item label="订单分类">
           <fetch-select
               :options="orderCategoryOptions"
