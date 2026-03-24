@@ -379,7 +379,7 @@
               <h2>订单信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail1">
+              <el-form :inline="true" class="form-detail">
                 <el-form-item label="整车订单状态：" prop="orderStatus">
                   {{ form.orderStatusLabel }}
                 </el-form-item>
@@ -509,7 +509,7 @@
               <h2>审批信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail2" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="申请人：" prop="creator">
                   {{ form.creatorName }}
                 </el-form-item>
@@ -920,7 +920,7 @@ export default {
       };
     },
     async changeCategorySearch (val) {
-      return await fetchCategoryList({ pageSize: 1000, selectorDisplay: 1 });
+      return await fetchCategoryList({ pageSize: 1000, selectorDisplay: 1, cateName: val });
     },
     changeCategoryChange (val, selectedOption) {
       this.form.cateCode = val ? selectedOption.cateCode : '';

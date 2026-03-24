@@ -489,6 +489,7 @@ export default {
     async changeReasonSearch (val) {
       const params = {
         pageSize: 1000,
+        changeName: val,
         changeType: this.form.changeType
       };
       return await fetchReasonLabelList(params);
