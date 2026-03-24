@@ -412,41 +412,26 @@
             </div>
             <div class="common-section-body">
               <div class="common-section-table">
-                <vxe-table
-                  ref="tableRef"
-                  stripe
+                 <div class="common-section-table">
+                <edit-table
+                  ref="editTable"
+                  :columns="columns"
                   :data="tableData"
-                  show-overflow
-                  resizable
-                  border="inner"
-                  size="medium"
-                  min-height="0"
-                  max-height="400px"
-                >
-                  <vxe-column field="qty" title="数量" />
-                  <vxe-column field="standardPrice" title="标准价格" />
-                  <vxe-column field="salesPrice" title="销售价格"  />
-                  <vxe-column field="relatedTxnExTaxPrice" title="关联交易不含税价" />
-                  <vxe-column field="materialsCode" title="整车物料编码" />
-                  <vxe-column field="materialsDesc" title="物料描述" />
-                  <vxe-column field="modelName" title="车型" />
-                  <vxe-column field="drivingRangeName" title="选配续航" />
-                  <vxe-column field="rangePowerName" title="选配动力" />
-                  <vxe-column field="exteriorName" title="外饰风格" />
-                  <vxe-column field="interiorName" title="内饰风格" />
-                  <vxe-column field="wheelHubName" title="选配轮毂" />
-                  <vxe-column field="batteryCellName" title="电池电芯" />
-                  <vxe-column field="yearTypeName" title="年款" />
-                  <vxe-column field="roofName" title="车顶风格" />
-                  <vxe-column field="optionPackageName" title="选装包" />
-                  <vxe-column title="操作" width="100" v-if="canDelete">
-                    <template #default="{ rowIndex }">
-                      <el-popconfirm title="确定要删除吗？" @confirm="handleDeleteRow(rowIndex)">
-                        <span slot="reference" type="text" size="small" class="btn-delete">删除</span>
-                      </el-popconfirm>
-                    </template>
-                  </vxe-column>
-                </vxe-table>
+                  :defaultNewRow="defaultNewRow"
+                  :show-toolbar="false"
+                  :show-pagination="true"
+                  :enable-single-row-save="true"
+                  :options="options"
+                  :current="pageNum"
+                  :pageSize="pageSize"
+                  :total="total"
+                  @save-row-edit="saveRowEdit"
+                  @remove-row="handleRemoveRow"
+                  @page-size-change="pageSizeChange"
+                  @current-page-change="currentPageChange"
+                  :auth="{delete: isEditing}"
+                />
+              </div>
               </div>
             </div>
           </section>
@@ -463,29 +448,6 @@
                   attachType="其他"
                   ref="attachment"
                 />
-                <!-- <vxe-table
-                  ref="tableRef"
-                  stripe
-                  :data="tableData"
-                  show-overflow
-                  resizable
-                  border="inner"
-                  size="medium"
-                  min-height="0"
-                  max-height="400px"
-                >
-                  <vxe-column field="name" title="附件名称" />
-                  <vxe-column field="age" title="附件大小" />
-                  <vxe-column field="email" title="附件后缀"  />
-                  <vxe-column field="email" title="上传时间" />
-                  <vxe-column title="操作" width="100" v-if="canDelete">
-                    <template #default="{ rowIndex }">
-                      <el-popconfirm title="确定要删除吗？" @confirm="handleDeleteRow(rowIndex)">
-                        <span slot="reference" type="text" size="small" class="btn-delete">删除</span>
-                      </el-popconfirm>
-                    </template>
-                  </vxe-column>
-                </vxe-table> -->
               </div>
             </div>
           </section>
@@ -514,7 +476,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, networkParentCompanyItem, listDealersForParentCompany, addOrUpdateDetail, batchCancel, batchSubmitAudit, batchAudit, deleteItem, getGeoLocationByFullAddress } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
+import { getDetail, addOrUpdate, networkParentCompanyItem, listDealersForParentCompany, addOrUpdateDetail, batchCancel, batchSubmitAudit, batchAudit, deleteItem, getGeoLocationByFullAddress, detailDelete } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -529,6 +491,7 @@ import auditDialog from '@/libs/components/auditDialog';
 import Upload from '@/libs/components/UploadDialog';
 import { getList as companyList } from '@/api/vehwholesale/fund/fundSaleCompany/index';
 import AisAttachment from '@/libs/components/AisAttachment';
+import EditTable from '@/libs/components/EditTable';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -594,7 +557,8 @@ export default {
     AddEntVehicleReplishOrderDetail,
     auditDialog,
     Upload,
-    AisAttachment
+    AisAttachment,
+    EditTable
   },
   computed: {
     _id () {
@@ -650,6 +614,9 @@ export default {
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
       moduleKey: 'AISVW-entVehicleReplenishOrder',
       loading: false,
+      pageNum: 1,
+      pageSize: 20,
+      total: 0,
       submitLoading: false,
       showAddDetailDialog: false,
       uploadDialogVisible: false,
@@ -657,6 +624,8 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       orderCategoryOptions: [],
       settleFundTypeOptions: [],
+      defaultNewRow: {
+      },
       districtOptions: [],
       cityOptions: [],
       saleCompanyOptions: [],
@@ -664,6 +633,90 @@ export default {
       originalForm: { ...form },
       emptyText: '若要启用此内容，请创建记录',
       tableData: [],
+      options: {
+      },
+      columns: [
+        {
+          field: 'qty',
+          title: '数量',
+          width: '120'
+        },
+        {
+          field: 'standardPrice',
+          title: '标准价格',
+          width: '200'
+        },
+        {
+          field: 'salesPrice',
+          title: '销售价格',
+          width: '100'
+        },
+        {
+          field: 'relatedTxnExTaxPrice',
+          title: '关联交易不含税价',
+          width: '100'
+        },
+        {
+          field: 'materialsCode',
+          title: '整车物料编码',
+          width: '120'
+        },
+        {
+          field: 'materialsDesc',
+          title: '物料描述',
+          width: '100'
+        },
+        {
+          field: 'modelName',
+          title: '车型',
+          width: '100'
+        },
+        {
+          field: 'drivingRangeName',
+          title: '选配续航',
+          width: '150'
+        },
+        {
+          field: 'rangePowerName',
+          title: '选配动力',
+          width: '300'
+        },
+        {
+          field: 'exteriorName',
+          title: '外饰风格',
+          width: '120',
+        },
+        {
+          field: 'interiorName',
+          title: '内饰风格',
+          width: '300'
+        },
+        {
+          field: 'wheelHubName',
+          title: '选配轮毂',
+          width: '120',
+        },
+        {
+          field: 'batteryCellName',
+          title: '电池电芯',
+          width: '300'
+        },
+        {
+          field: 'yearTypeName',
+          title: '年款',
+          width: '120',
+        },
+        {
+          field: 'roofName',
+          title: '车顶风格',
+          width: '300'
+        },
+        {
+          field: 'optionPackageName',
+          title: '选装包',
+          width: '120',
+        }
+      ],
       rules: {
         orderCategory: [
           { required: true, message: '请输入订单分类', trigger: 'change' }
@@ -703,6 +756,39 @@ export default {
     // this.getCompanyList();
   },
   methods: {
+    currentPageChange (pageNum) {
+      this.pageNum = pageNum;
+      this.detailRequest();
+    },
+    pageSizeChange (pageSize) {
+      this.pageSize = pageSize;
+      this.current = 1;
+      this.detailRequest();
+    },
+    handleRemoveRow (row, index, defer) {
+      if (!row.id) {
+        return;
+      }
+      detailDelete([row.id]).then((d) => {
+        defer.resolve();
+        this.$message.success('删除成功');
+        this.getDetailData();
+        this.detailRequest();
+      }).catch(() => {
+        defer.reject();
+      });
+    },
+    saveRowEdit (row, defer) {
+      addOrUpdateDetail(row).then(id => {
+        defer.resolve(id);
+        this.$message.success('更新成功');
+        this.getDetailData();
+        this.getList();
+        this.$emit('replace');
+      }).catch(e => {
+        defer.reject();
+      });
+    },
     // 地址解析
     handleParseAddress (val) {
       let params = {

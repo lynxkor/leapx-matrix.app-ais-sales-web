@@ -228,6 +228,20 @@ export default {
           { props: 'lastTradeTime', label: '最近交易时间', visible: true, width: 200 },
           { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          {
+            props: 'operate',
+            label: '操作',
+            type: 'operate',
+            visible: true,
+            fixed: 'right',
+            buttons: [{
+              name: '日志',
+              click: (rowIndex, row) => {
+                this.$auditLog.show({ id: row.id });
+              },
+              type: 'info'
+            }]
+          }
         ],
         total: 0
       }
