@@ -323,7 +323,7 @@
                     placeholder="请选择"
                     clearable
                     :request="fetchOptions"
-                    enumCode="vr_finance_plan_type"
+                    enumCode="vr_financial_scheme"
                     filterable
                   />
                 </el-form-item>
@@ -333,7 +333,7 @@
                     placeholder="请选择"
                     clearable
                     :request="fetchOptions"
-                    enumCode="vr_financial_scheme"
+                    enumCode="vr_financial_mortgage_progress"
                     filterable
                   />
                 </el-form-item>
