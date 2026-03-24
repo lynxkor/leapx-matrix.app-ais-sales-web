@@ -6,8 +6,19 @@
       <el-form-item label="VIN">
         <el-input placeholder="请输入" v-model="form.vin" clearable />
       </el-form-item>
-      <el-form-item label="目标门店编码">
-        <el-input placeholder="请输入" v-model="form.targetDealerCode" clearable />
+      <el-form-item label="目标门店">
+        <fetch-select
+          :remote-method="queryListData"
+          v-model="form.targetDealerCodeList"
+          remote
+          collapse-tags
+          multiple
+          filterable
+          placeholder="请选择"
+          clearable
+          value-key="storeCode"
+          label-key="storeName"
+        />
       </el-form-item>
       <el-form-item label="单据状态" v-show="this.visibleCount === 3 || show">
         <fetch-select :request="fetchOptions" enumCode="vehstock_transfer_inbound_audit_status"
@@ -53,6 +64,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import { listOrgStoreInfo } from '@/libs/api/common';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -349,6 +361,16 @@ export default {
         targetStatus: status,
         apiFunc: enableItem,
         refreshFunc: this.getData
+      });
+    },
+    // 查询目标门店
+    queryListData (queryString) {
+      return new Promise(resolve => {
+        // 根据需求调用接口
+        listOrgStoreInfo({ keyword: queryString }).then(res => {
+          const list = res.records || [];
+          resolve(list);
+        });
       });
     },
     // 批量入库
