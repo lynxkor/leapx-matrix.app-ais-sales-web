@@ -34,7 +34,7 @@ export const carOwnerDisplayFields = [
   { key: 'orderUserName', label: '下单人姓名' },
   { key: 'orderUserPhone', label: '下单人手机号' },
   { key: 'orderUserId', label: '下单人ID' },
-  { key: 'orderType', label: '订单类型' }
+  { key: 'orderTypeLabel', label: '订单类型' }
 ];
 
 // 资金信息字段配置
@@ -64,11 +64,11 @@ export const materialsDisplayFields = [
 
 // 锁/配车信息字段配置
 export const lockAllocationDisplayFields = [
-  { key: 'lockCarType', label: '锁车类型' },
-  { key: 'lockType', label: '锁车匹配类型' },
+  { key: 'lockCarTypeLabel', label: '锁车类型' },
+  { key: 'lockTypeLabel', label: '锁车匹配类型' },
   { key: 'lockStatusLabel', label: '是否锁单' },
   { key: 'lockTime', label: '锁单时间' },
-  { key: 'materialsCode', label: '订单物料码' },
+  { key: 'orderMaterialCode', label: '订单物料码' },
   { key: 'allocationMaterialCode', label: '配车物料编码' },
   { key: 'matchVin', label: '配车VIN码' },
   { key: 'deliveryVin', label: '交车VIN码' },
@@ -80,15 +80,15 @@ export const lockAllocationDisplayFields = [
 
 // 批售信息字段配置
 export const wholesaleDisplayFields = [
-  { key: 'wholesaleBindStatus', label: '是否绑定批售' },
+  { key: 'wholesaleBindStatusLabel', label: '是否绑定批售' },
   { key: 'lockWholesaleTime', label: '锁批售时间' },
   { key: 'confirmedCount', label: '批售确认次数' },
   { key: 'wholesaleOrderCode', label: '批售订单号' },
   { key: 'matchVin', label: '配车VIN码' },
-  { key: 'wholesaleOrderStatus', label: '批售订单状态' },
-  { key: 'wholesaleConfirmStatus', label: '批售确认状态' },
-  { key: 'wholesaleConfirmTime', label: '批售确认时间' },
-  { key: 'createdShippingPlan', label: '是否创建发运计划' }
+  { key: 'wholesaleOrderStatusLabel', label: '批售订单状态' },
+  { key: 'confirmStatusLabel', label: '批售确认状态' },
+  { key: 'confirmTime', label: '批售确认时间' },
+  { key: 'createdShippingPlanLabel', label: '是否创建发运计划' }
 ];
 
 // 订单取消信息字段配置
@@ -111,9 +111,9 @@ export const financeDisplayFields = [
 // 期限信息字段配置
 export const termDisplayFields = [
   { key: 'deliveryNoticeTime', label: '触发交付通知时间' },
-  { key: 'deliveryDelayFlag', label: '是否延期交付' },
-  { key: 'deliveryWithdrawFlag', label: '是否做过交车撤回' },
-  { key: 'statusRollbackFlag', label: '状态是否回退过' },
+  { key: 'deliveryDelayFlagLabel', label: '是否延期交付' },
+  { key: 'deliveryWithdrawFlagLabel', label: '是否做过交车撤回' },
+  { key: 'statusRollbackFlagLabel', label: '状态是否回退过' },
   { key: 'userPickupDeadline', label: '用户提车截止日' },
   { key: 'deliveryDelayDays', label: '交付延期天数' },
   { key: 'rightsEnjoyDate', label: '权益享受日期' }

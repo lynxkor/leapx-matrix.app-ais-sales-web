@@ -236,7 +236,6 @@
                       placeholder="请选择"
                       clearable
                       filterable
-                      disabled
                     />
                 </el-form-item>
                    <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
@@ -544,7 +543,6 @@
                     placeholder="请选择"
                     clearable
                     filterable
-                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="整车物流预留：" prop="logisticsReserveLabel">
@@ -1203,7 +1201,7 @@ export default {
       }).then(() => {
         this.$message({
           type: 'success',
-          message: '取消结算成功'
+          message: '提交成功'
         });
         this.getData();
       });
@@ -1223,7 +1221,7 @@ export default {
         }).then(() => {
           this.$message({
             type: 'success',
-            message: '结算成功!'
+            message: '提交成功!'
           });
           this.getDetailData();
         });
@@ -1292,7 +1290,7 @@ export default {
         }).then(() => {
           this.$message({
             type: 'success',
-            message: '确认成功!'
+            message: '提交成功!'
           });
           this.getDetailData();
         });
@@ -1313,7 +1311,7 @@ export default {
         }).then(() => {
           this.$message({
             type: 'success',
-            message: '配车成功!'
+            message: '提交成功!'
           });
           this.getDetailData();
         });
@@ -1332,7 +1330,7 @@ export default {
         vinAllocateVehicleSubmitItem(params).then(() => {
           this.$message({
             type: 'success',
-            message: '配车成功!'
+            message: '提交成功!'
           });
           this.getDetailData();
         });
@@ -1383,7 +1381,7 @@ export default {
       return batchCancelItem(data).then(() => {
         this.$message({
           type: 'success',
-          message: '整车批售订单作废成功'
+          message: '提交成功'
         });
         this.getDetailData();
       });
@@ -1397,8 +1395,13 @@ export default {
             ...account,
             creditAccountStatusLabel: account.creditSalesLimit?.creditAccountStatusLabel || '',
             effectiveTime: account.creditSalesLimit?.effectiveTime || '',
-            expireTime: account.creditSalesLimit?.expireTime || ''
+            expireTime: account.creditSalesLimit?.expireTime || '',
+            downPaymentRatio: account.creditSalesLimit?.downPaymentRatio || '',
+            availableBalance: account.creditSalesLimit?.availableBalance || '',
+            frozenBalance: account.creditSalesLimit?.frozenBalance || '',
+            availableCreditAmount: account.creditSalesLimit?.availableCreditAmount || '',
           }));
+          console.log(res);
           return res;
         }).catch(() => {});
       }

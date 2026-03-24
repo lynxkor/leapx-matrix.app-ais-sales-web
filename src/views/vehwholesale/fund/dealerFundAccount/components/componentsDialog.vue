@@ -272,6 +272,7 @@ export default {
         { field: 'dealerCompanyName', title: '母公司名称', width: '30%' },
         { field: 'fundTypeLabel', title: '资金类型', width: 120 },
         { field: 'entOrderQuota', title: '企业订单额度系数', width: 200 },
+        { props: 'allowEntOrderSettleLabel', title: '是否允许企业订单结算', width: 200 },
         { field: 'financialOrganizationName', title: '金融机构', width: 120 },
         { field: 'availableBalance', title: '可用余额', width: 200 },
         { field: 'rebateAvailableBalance', title: '返利账户可用余额', width: 200 },

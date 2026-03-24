@@ -11,6 +11,7 @@
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
         :showEditBtn="form.permission.edit"
+        :on-success="getDetailData"
       >
         <template #status>
           {{ form.replenishApplyCode }}

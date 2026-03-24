@@ -278,7 +278,7 @@
           <generic-detail-display
             id="car-owner" class="common-section"
             :title="'购车人信息'"
-            :formData="form.carOwner || {}"
+            :formData="{...form.carOwner, ...form}"
             :fields="carOwnerDisplayFields"
           />
           <generic-detail-display
@@ -333,7 +333,7 @@
                     placeholder="请选择"
                     clearable
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="vr_financial_scheme"
                     filterable
                   />
                 </el-form-item>
@@ -346,11 +346,21 @@
                 <el-form-item label="保险办理进度：">
                   <fetch-select
                     v-model="form.finance.insuranceProgress"
+                    placeholder="请选择"
+                    clearable
+                    :request="fetchOptions"
+                    enumCode="vr_insurance_progress"
+                    filterable
                   />
                 </el-form-item>
                 <el-form-item label="保险方案：">
                   <fetch-select
                     v-model="form.finance.insurancePlan"
+                    placeholder="请选择"
+                    clearable
+                    :request="fetchOptions"
+                    enumCode="vr_insurance_scheme"
+                    filterable
                   />
                 </el-form-item>
               </el-form>
