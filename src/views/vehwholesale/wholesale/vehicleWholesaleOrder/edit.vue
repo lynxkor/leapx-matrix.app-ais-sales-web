@@ -1305,7 +1305,9 @@ export default {
             ...account,
             creditAccountStatusLabel: account.creditSalesLimit?.creditAccountStatusLabel || '',
             effectiveTime: account.creditSalesLimit?.effectiveTime || '',
-            expireTime: account.creditSalesLimit?.expireTime || ''
+            expireTime: account.creditSalesLimit?.expireTime || '',
+            downPaymentRatio: account.creditSalesLimit?.downPaymentRatio || '',
+            availableCreditAmount: account.creditSalesLimit?.availableCreditAmount || '',
           }));
           return res;
         }).catch(() => {});
