@@ -103,24 +103,6 @@ export default {
           size: pageSize
         },
         dataProp: [
-          {
-            props: 'id',
-            label: '主键',
-            visible: false,
-            width: 200,
-            fixed: 'left',
-            buttons: [{
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehstock/store/vehicleAbnormalRecord/edit',
-                  query: {
-                    id: row.id
-                  }
-                });
-              },
-              type: 'primary'
-            }]
-          },
           { props: 'abnormalRecordNo', label: '异常记录单号', visible: true, width: 200 },
           { props: 'vin', label: 'VIN', visible: true, width: 200 },
           { props: 'electricity', label: '车辆电量(%)', visible: true, width: 200 },
