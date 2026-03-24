@@ -48,10 +48,16 @@
                   />
                 </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.modelName"
+                  <fetch-select
+                    filterable
                     clearable
+                    remote
+                    v-model="form.modelName"
+                    :remote-method="vehicleModelSearch"
+                    @change="vehicleModelChange"
+                    value-key="id"
+                    label-key="name"
+                    placeholder="请选择"
                   />
                 </el-form-item>
                 <el-form-item label="车辆属性：" prop="vehicleAttribute">
@@ -496,14 +502,14 @@ import { getList as getStoreInventory } from '@/api/vehstock/store/storeInventor
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum, listOrgStoreInfo, getDealerDetailByCode } from '@/api/common';
+import { getEnum, listOrgStoreInfo, getDealerDetailByCode, listVehicleModel } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import { getList as getVehicleProfileList } from '@/api/datacenter/vehicle/vehicleProfile/index.js';
 import VehicleAttributeDialog from '@/views/vehretail/orderManager/specialVehicleSalesReport/vehicleAttributeDialog';
-import {generateSoldPlateInfoByVin, getEffectiveByVin} from "@/api/vehretail/orderManager/soldPlateInfo";
+import { generateSoldPlateInfoByVin, getEffectiveByVin } from '@/api/vehretail/orderManager/soldPlateInfo';
 const defaultForm = {
   // 多选时字段有变化，自行修复
   id: null,
@@ -1048,6 +1054,17 @@ export default {
       }
       return [];
     },
+    async vehicleModelSearch (val) {
+      const params = {
+        modelNameLike: val,
+        pageSize: 100
+      };
+      return await listVehicleModel(params);
+    },
+    vehicleModelChange (val, selectedOption) {
+      this.form.modelId = val ? selectedOption.id : null;
+      this.form.modelName = val ? selectedOption.name : null;
+    },
     async vehicleProfileSearch (val) {
       const params = {
         searchVin: val,
@@ -1082,7 +1099,7 @@ export default {
       this.form.certificateNo = val ? selectedOption.certNumber : '';
       this.form.carBuyerName = val ? selectedOption.vehicleProfileOwnerResp.ownerName : '';
       this.form.carBuyerPhone = val ? selectedOption.vehicleProfileOwnerResp.mobilephone : '';
-      this.form.idCardType = val ? selectedOption.vehicleProfileOwnerResp.idCardType : '';
+      this.form.idCardType = val ? selectedOption.vehicleProfileOwnerResp.idcardType : '';
       this.form.idCardNo = val ? selectedOption.vehicleProfileOwnerResp.idcardNo : '';
       this.form.address = val ? selectedOption.vehicleProfileOwnerResp.homeAddress : '';
       this.form.saleDealerCode = val ? selectedOption.salesDealerCode : null;
@@ -1102,7 +1119,7 @@ export default {
       const params = {
         isSales: true,
         keyword: type === 1 ? query : this.form.deliveryDealerCode,
-        pageSize: 100
+        size: 100
       };
       listOrgStoreInfo(params).then(res => {
         this.saleDealerList = type === 1 ? res.records : [...this.saleDealerList, ...res.records];
@@ -1116,7 +1133,7 @@ export default {
     deliveryDealerSearch (type, query) {
       this.deliveryDealerLoading = true;
       const params = {
-        pageSize: 100,
+        size: 100,
         keyword: type === 1 ? query : this.form.deliveryDealerCode
       };
       listOrgStoreInfo(params).then(res => {
@@ -1128,7 +1145,7 @@ export default {
     exclusiveServiceStoreSearchSearch (type, query) {
       this.exclusiveServiceStoreLoading = true;
       const params = {
-        pageSize: 100,
+        size: 100,
         keyword: type === 1 ? query : this.form.exclusiveServiceStoreCode
       };
       listOrgStoreInfo(params).then(res => {

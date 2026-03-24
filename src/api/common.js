@@ -88,6 +88,14 @@ export function getUserByNameOrNo (data) {
  * 网发--门店模糊搜索
  * @param {*} data
  */
+export function listStoreInfo (data) {
+  return api.jsonPost('/network/portal/store/List', data);
+}
+
+/**
+ * 网发--门店模糊搜索
+ * @param {*} data
+ */
 export function listOrgStoreInfo (data) {
   return api.jsonPost('/network/portal/store/pageWithAuth', data);
 }
