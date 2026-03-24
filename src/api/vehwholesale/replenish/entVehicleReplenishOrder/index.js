@@ -105,3 +105,7 @@ const prefixDetail = 'vw/web/replenish/entVehicleReplenishOrderDetail/';
 export function addOrUpdateDetail (data) {
   return api.jsonPost(prefixDetail + 'addOrUpdate', data);
 }
+
+export function detailDelete (data) {
+  return api.jsonPost(prefixDetail + 'delete', data);
+}
