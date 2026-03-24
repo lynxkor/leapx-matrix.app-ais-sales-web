@@ -9,44 +9,32 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="创建时间">
-        <el-date-picker
-         :default-time="['00:00:00', '23:59:59']"
-          v-model="form.createTime"
-          type="daterange"
-          :picker-options="pickerOptions"
-          range-separator="至"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        />
-      </el-form-item>
-      <el-form-item label="推车订单状态">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.status"
-          placeholder="请选择"
-          clearable
-          multiple
-          filterable
-        />
-      </el-form-item>
-      <el-form-item label="经销商（母公司名称）"  v-show="this.visibleCount === 3 || show">
+    <el-form-item label="经销商"  >
         <el-input
           placeholder="请输入"
           v-model="form.dealerCompanyName"
           clearable
         />
       </el-form-item>
-      <template v-if="show">
-        <el-form-item label="企业客户名称">
+      <el-form-item label="单据类型">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="xxx"
+            v-model="form.orderType"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="企业客户名称" v-show="this.visibleCount === 3 || show">
           <el-input
             placeholder="请输入"
             v-model="form.entCustomerName"
             clearable
           />
         </el-form-item>
+      <template v-if="show">
         <el-form-item label="退车日期">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
@@ -59,7 +47,18 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item label="大区">
+         <el-form-item label="推车订单状态">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="xxx"
+          v-model="form.status"
+          placeholder="请选择"
+          clearable
+          multiple
+          filterable
+        />
+      </el-form-item>
+        <el-form-item label="所属大区">
           <el-input
             placeholder="请输入"
             v-model="form.regionName"
@@ -77,17 +76,18 @@
             filterable
           />
         </el-form-item>
-        <el-form-item label="单据类型">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.orderType"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
-          />
-        </el-form-item>
+          <el-form-item label="创建时间">
+        <el-date-picker
+         :default-time="['00:00:00', '23:59:59']"
+          v-model="form.createTime"
+          type="daterange"
+          :picker-options="pickerOptions"
+          range-separator="至"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        />
+      </el-form-item>
       </template>
       <page-search-action
         v-if="canList"
@@ -181,10 +181,10 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车批售-批售管理-整车退车订单管理',
+      pageTitle: '整车退车订单',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-vehicleBackOrder',
+      moduleKey: 'AISVW-vehicleBackOrder',
       form: {
         ...defaultForm
       },
@@ -204,8 +204,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'id',
-            label: '主键',
+            props: 'returnOrderCode',
+            label: '退车订单号',
             visible: false,
             width: 200,
             fixed: 'left',
@@ -221,20 +221,19 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'remark', label: '退车备注', visible: true, width: 200 },
-          { props: 'status', label: '推车订单状态', visible: true, width: 200 },
-          { props: 'returnOrderCode', label: '退车订单号', visible: true, width: 200 },
-          { props: 'dealerCompanyName', label: '经销商（母公司名称）', visible: true, width: 200 },
-          { props: 'entCustomerName', label: '企业客户名称', visible: true, width: 200 },
+          { props: 'statusLabel', label: '退车订单状态', visible: true, width: 200 },
           { props: 'returnTime', label: '退车日期', visible: true, width: 200 },
-          { props: 'regionName', label: '大区', visible: true, width: 200 },
-          { props: 'returnType', label: '退车类型', visible: true, width: 200 },
-          { props: 'orderType', label: '单据类型', visible: true, width: 200 },
+          { props: 'dealerCompanyName', label: '经销商', visible: true, width: 200 },
+          { props: 'regionName', label: '所属大区', visible: true, width: 200 },
+          { props: 'entCustomerName', label: '企业客户', visible: true, width: 200 },
+          { props: 'returnTypeLabel', label: '退车类型', visible: true, width: 200 },
+          { props: 'orderTypeLabel', label: '单据类型', visible: true, width: 200 },
+          { props: 'remark', label: '退车备注', visible: true, width: 200 },
           { props: 'auditorUserId', label: '审核人', visible: true, width: 200 },
           { props: 'auditTime', label: '审核时间', visible: true, width: 200 },
           { props: 'auditOpinion', label: '退车审核说明', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
@@ -334,14 +333,14 @@ export default {
       }
       exportTable({
         businessType: '整车批售-批售管理-整车退车订单管理',
-        dataFetchPath: 'vehwholesale/web/back/vehicleBackOrder/page',
+        dataFetchPath: 'VW/web/back/vehicleBackOrder/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车批售-批售管理-整车退车订单管理.xlsx');
+            await downloadExcel(res.excelUrl, '整车退车订单管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

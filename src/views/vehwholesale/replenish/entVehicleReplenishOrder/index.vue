@@ -73,7 +73,6 @@
             :remote-method="repairItemSearch"
             remote
             multiple
-            reserve-keyword
             labelKey="organizationName"
             valueKey="id"
             v-model="form.financialOrganizationIds"
@@ -275,6 +274,8 @@ export default {
           { props: 'auditTime', label: '审核时间', visible: true, width: 200 },
           { props: 'auditStatusLabel', label: '审核状态', visible: true, width: 200 },
           { props: 'auditOpinion', label: '审核意见', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',

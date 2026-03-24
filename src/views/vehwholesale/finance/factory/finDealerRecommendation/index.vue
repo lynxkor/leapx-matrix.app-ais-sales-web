@@ -254,6 +254,38 @@ export default {
             }, {
               name: '推送金融机构',
               click: (rowIndex, row) => {
+                // 1. 校验状态是否可用
+                if (row.status !== 1) {
+                  this.$message({
+                    type: 'error',
+                    message: '只有可用状态的数据才能推送，请确认'
+                  });
+                  return;
+                }
+                // 2. 校验同步状态（仅允许同步失败或未同步的数据）
+                if (row.syncStatus !== 10 && row.syncStatus !== 40) {
+                  this.$message({
+                    type: 'error',
+                    message: '只有同步失败或未同步的数据才能推送，请确认'
+                  });
+                  return;
+                }
+                // 3. 二次确认弹框
+                this.$confirm('确定要对该数据执行推送金融机构操作吗？', '提示', {
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消',
+                  type: 'error'
+                }).then(() => {
+                  pushfinDealerRecommendationToBank({
+                    idSet: [row.id],
+                  }).then(() => {
+                    this.$message({
+                      type: 'success',
+                      message: '提交成功'
+                    });
+                    this.getData(); // 推送成功后刷新列表
+                  });
+                }).catch(() => {});
               },
               type: 'info'
             }, {

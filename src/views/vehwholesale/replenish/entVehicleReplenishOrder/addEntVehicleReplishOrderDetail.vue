@@ -72,8 +72,7 @@
           <el-input-number
                   placeholder="请输入"
                   v-model="materialsform.qty"
-                   :precision="2"
-                    :step="0.01"
+                    :step="1"
                     :min="0"
                     :controls="false"
                 />

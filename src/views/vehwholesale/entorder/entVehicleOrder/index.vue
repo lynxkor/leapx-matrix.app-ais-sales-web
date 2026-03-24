@@ -376,7 +376,7 @@ export default {
       return setEmergencyOrder(data).then(() => {
         this.$message({
           type: 'success',
-          message: '批量设置急单成功'
+          message: '提交成功'
         });
         this.getData();
       });
@@ -393,7 +393,7 @@ export default {
       setEmergencyOrder(params).then(() => {
         this.$message({
           type: 'success',
-          message: '取消急单成功!'
+          message: '提交成功!'
         });
         this.getData();
       });
@@ -414,7 +414,7 @@ export default {
         }).then(() => {
           this.$message({
             type: 'success',
-            message: '确认成功!'
+            message: '提交成功!'
           });
           this.getData();
         });
@@ -433,7 +433,7 @@ export default {
         }).then(() => {
           this.$message({
             type: 'success',
-            message: '确认成功!'
+            message: '提交成功!'
           });
           this.getData();
         });
@@ -447,7 +447,7 @@ export default {
       return batchCancelOrders(data).then(() => {
         this.$message({
           type: 'success',
-          message: '批量作废成功'
+          message: '提交成功'
         });
         this.getData();
       });
@@ -457,7 +457,7 @@ export default {
       batchCancelSettleSubmit({
         idSet: ids,
       }).then(() => {
-        this.$message.success('批量取消结算成功');
+        this.$message.success('提交成功');
       });
     },
     handleBatchSettleSubmit () {
@@ -465,7 +465,7 @@ export default {
       batchSettleSubmit({
         idSet: ids,
       }).then(() => {
-        this.$message.success('批量结算成功');
+        this.$message.success('提交成功');
       });
     },
     handleBatchAllocateVehicle () {
@@ -473,7 +473,7 @@ export default {
       batchAllocateSubmit({
         idSet: ids,
       }).then(() => {
-        this.$message.success('批量配车成功');
+        this.$message.success('提交成功');
       });
     },
     handleBatchCancelAllocateVehicle () {
@@ -488,7 +488,7 @@ export default {
         }).then(() => {
           this.$message({
             type: 'success',
-            message: '取消配车成功!'
+            message: '提交成功!'
           });
           this.getData();
         });
