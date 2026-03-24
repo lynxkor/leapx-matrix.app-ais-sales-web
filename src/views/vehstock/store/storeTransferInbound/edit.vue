@@ -3,7 +3,7 @@
     <template #left>
       <!-- TIPS: 如果需要竖排，direction="vertical" -->
       <edit-base-container ref="containerRef" :id="_id" :title="title" :isEditing.sync="isEditing" :form.sync="form"
-        :originalForm.sync="originalForm" :submitRequest="submitRequest" :detailRequest="detailRequest">
+        :originalForm.sync="originalForm" :submitRequest="submitRequest" :detailRequest="detailRequest" :showEditBtn="false" >
         <template #status>
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
@@ -19,33 +19,12 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit"
+              <el-form :inline="true" :model="form" ref="ruleForm" label-width="150px" class="form-edit"
                 v-show="isEditing || !_id">
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  {{ form.creatorName }}
-                </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
-                  {{ form.createTime }}
-                </el-form-item>
-                <el-form-item label="修改者名称：" prop="modifierName">
-                  {{ form.modifierName }}
-                </el-form-item>
-                <el-form-item label="修改时间：" prop="updateTime">
-                  {{ form.updateTime }}
-                </el-form-item>
-                <el-form-item label="备注：" prop="remark">
-                  {{ form.remark }}
-                </el-form-item>
-                <el-form-item label="状态：" prop="status">
-                  {{ form.statusLabel }}
-                </el-form-item>
                 <el-form-item label="调拨入库单号：" prop="inboundNo">
                   {{ form.inboundNo }}
-                </el-form-item>
-                <el-form-item label="门店库存调拨主键ID：" prop="transferId">
-                  {{ form.transferId }}
                 </el-form-item>
                 <el-form-item label="整车调拨单号：" prop="transferNo">
                   {{ form.transferNo }}
@@ -53,8 +32,14 @@
                 <el-form-item label="VIN：" prop="vin">
                   {{ form.vin }}
                 </el-form-item>
-                <el-form-item label="源门店ID（组织ID）：" prop="sourceDealerOrgId">
-                  {{ form.sourceDealerOrgId }}
+                <el-form-item label="创建时间：" prop="createTime">
+                  {{ form.createTime }}
+                </el-form-item>
+                <el-form-item label="修改时间：" prop="updateTime">
+                  {{ form.updateTime }}
+                </el-form-item>
+                <el-form-item label="状态：" prop="status">
+                  {{ form.statusLabel }}
                 </el-form-item>
                 <el-form-item label="源门店编码：" prop="sourceDealerCode">
                   {{ form.sourceDealerCode }}
@@ -73,9 +58,6 @@
                 </el-form-item>
                 <el-form-item label="源门店仓库地址：" prop="sourceDealerWarehouseAddress">
                   {{ form.sourceDealerWarehouseAddress }}
-                </el-form-item>
-                <el-form-item label="目标门店ID（组织ID）：" prop="targetDealerOrgId">
-                  {{ form.targetDealerOrgId }}
                 </el-form-item>
                 <el-form-item label="目标门店编码：" prop="targetDealerCode">
                   {{ form.targetDealerCode }}
@@ -122,6 +104,9 @@
                 <el-form-item label="审批意见：" prop="auditRemark">
                   {{ form.auditRemark }}
                 </el-form-item>
+                <el-form-item label="备注：" prop="remark" style="width: 100%;">
+                  {{ form.remark }}
+                </el-form-item>
               </el-form>
             </div>
           </section>
@@ -138,7 +123,6 @@
 
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehstock/store/storeTransferInbound/index';
-import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
@@ -197,8 +181,7 @@ export default {
   mixins: [routeGuard, permissions, commonMixins],
   components: {
     EditPageLayout,
-    EditBaseContainer,
-    FetchSelect
+    EditBaseContainer
   },
   computed: {
     _id () {
@@ -235,110 +218,6 @@ export default {
         { id: 1, name: '张三', age: 25, email: 'zhangsan@example.com' },
         { id: 2, name: '李四', age: 30, email: 'lisi@example.com' }
       ],
-      rules: {
-        id: [
-          { required: true, message: '请输入主键', trigger: 'change' }
-        ],
-        creator: [
-          { required: true, message: '请输入创建者', trigger: 'change' }
-        ],
-        creatorName: [
-          { required: true, message: '请输入创建者名称', trigger: 'change' }
-        ],
-        createTime: [
-          { required: true, message: '请选择创建时间', trigger: 'change' }
-        ],
-        modifier: [
-          { required: true, message: '请输入修改者', trigger: 'change' }
-        ],
-        modifierName: [
-          { required: true, message: '请输入修改者名称', trigger: 'change' }
-        ],
-        updateTime: [
-          { required: true, message: '请选择修改时间', trigger: 'change' }
-        ],
-        remark: [
-          { required: true, message: '请输入备注', trigger: 'change' }
-        ],
-        status: [
-          { required: true, message: '请选择状态', trigger: 'change' }
-        ],
-        statusDesc: [
-          { required: true, message: '请选择状态变更描述', trigger: 'change' }
-        ],
-        inboundNo: [
-          { required: true, message: '请输入调拨入库单号', trigger: 'change' }
-        ],
-        transferId: [
-          { required: true, message: '请输入门店库存调拨主键ID', trigger: 'change' }
-        ],
-        transferNo: [
-          { required: true, message: '请输入整车调拨单号', trigger: 'change' }
-        ],
-        vin: [
-          { required: true, message: '请输入VIN', trigger: 'change' }
-        ],
-        sourceDealerOrgId: [
-          { required: true, message: '请输入源门店ID（组织ID），当数据权限归属到本组织以及本下级', trigger: 'change' }
-        ],
-        sourceDealerCode: [
-          { required: true, message: '请输入源门店编码', trigger: 'change' }
-        ],
-        sourceDealerName: [
-          { required: true, message: '请输入源门店名称', trigger: 'change' }
-        ],
-        sourceDealerAddress: [
-          { required: true, message: '请输入源门店地址', trigger: 'change' }
-        ],
-        sourceDealerWarehouseCode: [
-          { required: true, message: '请输入源门店仓库编码', trigger: 'change' }
-        ],
-        sourceDealerWarehouseName: [
-          { required: true, message: '请输入源门店仓库名称', trigger: 'change' }
-        ],
-        sourceDealerWarehouseAddress: [
-          { required: true, message: '请输入源门店仓库地址', trigger: 'change' }
-        ],
-        targetDealerOrgId: [
-          { required: true, message: '请输入目标门店ID（组织ID），当数据权限归属到本组织以及本下级', trigger: 'change' }
-        ],
-        targetDealerCode: [
-          { required: true, message: '请输入目标门店编码', trigger: 'change' }
-        ],
-        targetDealerName: [
-          { required: true, message: '请输入目标门店名称', trigger: 'change' }
-        ],
-        targetDealerAddress: [
-          { required: true, message: '请输入目标门店地址', trigger: 'change' }
-        ],
-        targetDealerWarehouseCode: [
-          { required: true, message: '请输入目标门店仓库编码', trigger: 'change' }
-        ],
-        targetDealerWarehouseName: [
-          { required: true, message: '请输入目标门店仓库名称', trigger: 'change' }
-        ],
-        targetDealerWarehouseAddress: [
-          { required: true, message: '请输入目标门店仓库地址', trigger: 'change' }
-        ],
-        moveoutTime: [
-          { required: true, message: '请选择移出时间', trigger: 'change' }
-        ],
-        moveinTime: [
-          { required: true, message: '请选择移入时间', trigger: 'change' }
-        ],
-        applyTime: [
-          { required: true, message: '请选择申请时间', trigger: 'change' }
-        ],
-        pdiNo: [
-          { required: true, message: '请输入PDI单号', trigger: 'change' }
-        ],
-        auditStatus: [
-          { required: true, message: '请选择单据状态 vehstock_transfer_inbound_audit_status：未入库&#x3D;1, 已入库&#x3D;2', trigger: 'change' }
-        ],
-        auditRemark: [
-          { required: true, message: '请输入审批意见', trigger: 'change' }
-        ],
-      }
     };
   },
   mounted () {
