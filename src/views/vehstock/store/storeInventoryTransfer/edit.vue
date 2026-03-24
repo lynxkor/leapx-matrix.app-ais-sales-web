@@ -99,7 +99,7 @@
                   <vxe-column field="remark" title="备注" min-width="9%" />
                   <vxe-column title="操作" width="100" fixed="right" v-if="isEditing || !_id">
                     <template #default="{ rowIndex }">
-                      <el-popconfirm title="确定要删除吗？" @confirm="handleDeleteRow(rowIndex)">
+                      <el-popconfirm title="确定要删除吗？" @confirm="handleDeleteRow(rowIndex)" confirm-button-text="删除" confirm-button-type="danger">
                         <span slot="reference" type="text" size="small" class="btn-delete">删除</span>
                       </el-popconfirm>
                     </template>
