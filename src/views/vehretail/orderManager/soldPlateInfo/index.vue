@@ -9,10 +9,10 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="审核状态 1010-草稿 1020-已提交 1030-已通过 1040-已驳回 1050-已作废">
+      <el-form-item label="审核状态">
         <fetch-select
           :request="fetchOptions"
-          enumCode="xxx"
+          enumCode="vehretail_order_change_apply_status"
           v-model="form.status"
           placeholder="请选择"
           clearable
@@ -34,11 +34,12 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+<!--      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>-->
+      <el-button size="small" @click="handleBatchSubmit">提交审核</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canDelete" size="small" @click="handleBatchDelete">删除</el-button>
+<!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>-->
+<!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>-->
     </div>
     <div
       class="ais-table-c"
@@ -130,9 +131,9 @@ export default {
         },
         dataProp: [
           {
-            props: 'id',
-            label: '主键',
-            visible: false,
+            props: 'soldPlateCode',
+            label: '已售上牌资料编号',
+            visible: true,
             width: 200,
             fixed: 'left',
             buttons: [{
@@ -147,49 +148,54 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'status', label: '审核状态 1010-草稿 1020-已提交 1030-已通过 1040-已驳回 1050-已作废', visible: true, width: 200 },
-          { props: 'soldPlateCode', label: '整车上牌记录编号', visible: true, width: 200 },
-          { props: 'deliveryOrderId', label: '交车单ID', visible: true, width: 200 },
-          { props: 'retailOrderId', label: '零售订单ID', visible: true, width: 200 },
-          { props: 'retailOrderCode', label: '零售订单号', visible: true, width: 200 },
-          { props: 'soldPlateSource', label: '已售上牌资料来源 report-特殊销售提报 delivery-交车单 plate-已售上牌新增', visible: true, width: 200 },
-          { props: 'vin', label: 'VIN码', visible: true, width: 200 },
-          { props: 'modelId', label: '车型ID', visible: true, width: 200 },
+          { props: 'statusLabel', label: '审核状态', visible: true, width: 200 },
+          { props: 'autoAuditStatusLabel', label: '是否自动审核', visible: true, width: 200 },
+          { props: 'auditTime', label: '审核时间', visible: true, width: 200 },
+          { props: 'vin', label: 'VIN', visible: true, width: 200 },
           { props: 'modelName', label: '车型名称', visible: true, width: 200 },
-          { props: 'saleOrgId', label: '门店id', visible: true, width: 200 },
-          { props: 'saleDealerCode', label: '门店编码', visible: true, width: 200 },
-          { props: 'saleDealerName', label: '门店名称', visible: true, width: 200 },
+          { props: 'carSalesVersionName', label: '公告车型', visible: true, width: 200 },
           { props: 'carBuyerName', label: '车主姓名', visible: true, width: 200 },
           { props: 'carBuyerPhone', label: '车主电话', visible: true, width: 200 },
-          { props: 'idCardType', label: '证件类型：身份证-1, 护照-2, 驾驶证-3, 港澳来往内地通行证-4, 军官证-5, 组织机构代码-6, 统一社会信用代码-7, 台湾通行证-20', visible: true, width: 200 },
+          { props: 'idCardType', label: '证件类型', visible: true, width: 200 },
           { props: 'idCardNo', label: '证件号码', visible: true, width: 200 },
-          { props: 'vehiclePurpose', label: '车辆用途 10-私家车 20-公户车 30-试乘试驾车 40-大客户用车 50-营运-预约出租客运 100-其他', visible: true, width: 200 },
-          { props: 'carSaleSversionId', label: '公告车型ID', visible: true, width: 200 },
-          { props: 'carSalesVersionName', label: '公告车型名称', visible: true, width: 200 },
-          { props: 'vehiclePlaceOrigin', label: '产地', visible: true, width: 200 },
-          { props: 'enginenNumber', label: '发动机号', visible: true, width: 200 },
-          { props: 'certificateNo', label: '合格证号', visible: true, width: 200 },
-          { props: 'invoiceRecordCode', label: '整车开票记录编号', visible: true, width: 200 },
-          { props: 'specialReportCode', label: '特殊车辆销售提报编号', visible: true, width: 200 },
-          { props: 'drivingLicenseVin', label: '行驶证VIN号', visible: true, width: 200 },
-          { props: 'drivingLicenseOwner', label: '行驶证所有人', visible: true, width: 200 },
+          { props: 'invoiceNo', label: '发票号码', visible: true, width: 200 },
+          { props: 'invoiceTime', label: '开票日期', visible: true, width: 200 },
+          { props: 'invoiceAmount', label: '发票金额', visible: true, width: 200 },
           { props: 'plateNo', label: '车牌号码', visible: true, width: 200 },
-          { props: 'plateDate', label: '上牌日期', visible: true, width: 200 },
-          { props: 'provinceCode', label: '上牌省份编码', visible: true, width: 200 },
-          { props: 'provinceName', label: '上牌省份', visible: true, width: 200 },
-          { props: 'cityCode', label: '上牌城市编码', visible: true, width: 200 },
-          { props: 'cityName', label: '上牌城市', visible: true, width: 200 },
-          { props: 'districtCode', label: '上牌区&#x2F;县编码', visible: true, width: 200 },
-          { props: 'districtName', label: '上牌区&#x2F;县', visible: true, width: 200 },
           { props: 'vehicleRegisterAddress', label: '车辆注册地址', visible: true, width: 200 },
+          { props: 'plateDate', label: '上牌日期', visible: true, width: 200 },
+          { props: 'provinceName', label: '上牌省份', visible: true, width: 200 },
+          { props: 'cityName', label: '上牌城市', visible: true, width: 200 },
+          { props: 'saleDealerName', label: '门店', visible: true, width: 200 },
           { props: 'drivingLicenseNumber', label: '行驶证编号', visible: true, width: 200 },
-          { props: 'drivingLicenseBrandModel', label: '行驶证品牌型号', visible: true, width: 200 },
-          { props: 'submitTime', label: '提交审核时间', visible: true, width: 200 },
-          { props: 'submitUser', label: '提交人', visible: true, width: 200 },
-          { props: 'auditUser', label: '审核人', visible: true, width: 200 },
-          { props: 'withdrawUser', label: '撤回人', visible: true, width: 200 },
+          { props: 'vehiclePurpose', label: '车辆用途', visible: true, width: 200 },
           { props: 'auditRemark', label: '审核意见', visible: true, width: 200 },
-          { props: 'autoAuditStatus', label: '是否自动审核 0-否 1-是（默认否）', visible: true, width: 200 },
+          { props: 'submitTime', label: '提交时间', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          // 以下字段不在指定列表中，设置为隐藏
+          { props: 'deliveryOrderId', label: '交车单ID', visible: false, width: 200 },
+          { props: 'retailOrderId', label: '零售订单ID', visible: false, width: 200 },
+          { props: 'retailOrderCode', label: '零售订单号', visible: false, width: 200 },
+          { props: 'soldPlateSource', label: '已售上牌资料来源', visible: false, width: 200 },
+          { props: 'modelId', label: '车型ID', visible: false, width: 200 },
+          { props: 'saleOrgId', label: '门店id', visible: false, width: 200 },
+          { props: 'saleDealerCode', label: '门店编码', visible: false, width: 200 },
+          { props: 'carSaleSversionId', label: '公告车型ID', visible: false, width: 200 },
+          { props: 'vehiclePlaceOrigin', label: '产地', visible: false, width: 200 },
+          { props: 'enginenNumber', label: '发动机号', visible: false, width: 200 },
+          { props: 'certificateNo', label: '合格证号', visible: false, width: 200 },
+          { props: 'invoiceRecordCode', label: '整车开票记录编号', visible: false, width: 200 },
+          { props: 'specialReportCode', label: '特殊车辆销售提报编号', visible: false, width: 200 },
+          { props: 'drivingLicenseVin', label: '行驶证VIN号', visible: false, width: 200 },
+          { props: 'drivingLicenseOwner', label: '行驶证所有人', visible: false, width: 200 },
+          { props: 'provinceCode', label: '上牌省份编码', visible: false, width: 200 },
+          { props: 'cityCode', label: '上牌城市编码', visible: false, width: 200 },
+          { props: 'districtCode', label: '上牌区/县编码', visible: false, width: 200 },
+          { props: 'districtName', label: '上牌区/县', visible: false, width: 200 },
+          { props: 'drivingLicenseBrandModel', label: '行驶证品牌型号', visible: false, width: 200 },
+          { props: 'submitUser', label: '提交人', visible: false, width: 200 },
+          { props: 'auditUser', label: '审核人', visible: false, width: 200 },
+          { props: 'withdrawUser', label: '撤回人', visible: false, width: 200 },
           {
             props: 'operate',
             label: '操作',
@@ -208,26 +214,20 @@ export default {
                 });
               },
               type: 'info'
-            }, {
-              name: '删除',
-              popconfirmConfirmButtonType: 'danger',
-              popconfirmConfirmButtonText: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
+            },
+            {
+              name: '审核',
               click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
+                this.$router.push({
+                  path: '/vehretail/orderManager/soldPlateInfo/edit',
+                  query: {
+                    id: row.id,
+                    isEditing: true,
+                    isAuditing: true
+                  }
                 });
               },
-              type: 'danger'
+              type: 'info'
             }]
           }
         ],
