@@ -71,9 +71,10 @@
                     clearable
                     value-key="storeCode"
                     label-key="storeName"
+                    :disabled="!(isEditing || !_id)"
                     @change="handleAddTableData"
                   />
-                  <el-button type="primary" size="small" @click="handleAddTable">批量添加门店</el-button>
+                  <el-button type="primary" size="small">添加</el-button>
                 </div>
               </div>
               <div class="common-section-table">
@@ -121,7 +122,7 @@
       ref="storeInformationDialogRef"
       :visible.sync="storeInformationDialogVisible"
       @update:visible="val => storeInformationDialogVisible = val"
-      @submit="handleStoreInformationDialogSubmit"
+      @submit="detailRequest"
     />
   </edit-page-layout>
 </template>
@@ -190,6 +191,7 @@ export default {
       moduleKey: 'AISMC-storeInventoryTransferWhitelist',
       loading: false,
       submitLoading: false,
+      storeInformationDialogVisible: false, // 门店信息弹窗
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
@@ -273,7 +275,8 @@ export default {
       // TIPS: 此处可添加表单默认值，如当前用户信息等
       // const userInfo = this.$store.state.user.userInfo;
       return {
-        ...defaultForm
+        ...defaultForm,
+        storeInventoryTransferWhitelistDetailList: []
         // ownerId: userInfo.userId,
         // ownerName: userInfo.userName,
       };
@@ -288,9 +291,6 @@ export default {
       }
       return [];
     },
-    handleAddTable () {
-      this.storeInformationDialogVisible = true;
-    }
   }
 };
 </script>

@@ -34,7 +34,7 @@ export const carOwnerDisplayFields = [
   { key: 'orderUserName', label: '下单人姓名' },
   { key: 'orderUserPhone', label: '下单人手机号' },
   { key: 'orderUserId', label: '下单人ID' },
-  { key: 'orderType', label: '订单类型' }
+  { key: 'orderTypeLabel', label: '订单类型' }
 ];
 
 // 资金信息字段配置
@@ -74,7 +74,7 @@ export const lockAllocationDisplayFields = [
   { key: 'deliveryVin', label: '交车VIN码' },
   { key: 'deliveryTime', label: '交车时间' },
   { key: 'orderSortTime', label: '订单排序时间' },
-  { key: 'appointmentChangeCount', label: '改配次数' },
+  { key: 'changeConfigCount', label: '改配次数' },
   { key: 'unlockCount', label: '解绑次数' }
 ];
 
@@ -86,8 +86,8 @@ export const wholesaleDisplayFields = [
   { key: 'wholesaleOrderCode', label: '批售订单号' },
   { key: 'matchVin', label: '配车VIN码' },
   { key: 'wholesaleOrderStatusLabel', label: '批售订单状态' },
-  { key: 'wholesaleConfirmStatusLabel', label: '批售确认状态' },
-  { key: 'wholesaleConfirmTime', label: '批售确认时间' },
+  { key: 'confirmStatusLabel', label: '批售确认状态' },
+  { key: 'confirmTime', label: '批售确认时间' },
   { key: 'createdShippingPlanLabel', label: '是否创建发运计划' }
 ];
 

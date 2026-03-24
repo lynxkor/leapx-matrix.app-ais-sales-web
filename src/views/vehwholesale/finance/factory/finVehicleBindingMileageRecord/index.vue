@@ -130,7 +130,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehwholesale/finance/factory/finVehicleBindingMileageRecord/index';
+import { getList, deleteItem, enableItem, pushFinVehicleBindingMileageRecordToBank } from '@/api/vehwholesale/finance/factory/finVehicleBindingMileageRecord/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -263,6 +263,46 @@ export default {
     this.getData();
   },
   methods: {
+    handleBatchSync () {
+      if (this.selectionList.length === 0) {
+        this.$message({
+          type: 'warning',
+          message: '请先选择要同步的数据'
+        });
+        return;
+      }
+      const invalidItems = this.selectionList.filter(item => {
+        console.log(item.status === 1, item.syncStatus === 10, item.syncStatus === 40, item.syncStatus);
+        const isAvailable = item.status === 1;
+        const isSyncFailedOrNotSynced = item.syncStatus === 10 || item.syncStatus === 40;
+        return !isAvailable || !isSyncFailedOrNotSynced;
+      });
+      if (invalidItems.length > 0) {
+        this.$message({
+          type: 'error',
+          message: '只有可用且同步失败的数据才能同步，请确认'
+        });
+        return;
+      }
+      // 二次确认弹框
+      this.$confirm('确定要对选中的数据执行批量同步操作吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const ids = this.selectionList.map(item => item.id) || [];
+        const params = {
+          idSet: ids,
+        };
+        pushFinVehicleBindingMileageRecordToBank(params).then(() => {
+          this.$message({
+            type: 'success',
+            message: '同步成功'
+          });
+          this.getData(); // 同步成功后刷新列表
+        });
+      }).catch(() => {});
+    },
     handleListSelect (row) {
       this.clickItemId = row.id;
     },

@@ -697,7 +697,7 @@ export default {
       }).then(() => {
         this.$message({
           type: 'success',
-          message: '价格刷新成功!'
+          message: '提交成功!'
         });
         this.getData();
       });
@@ -775,7 +775,7 @@ export default {
         }).then(() => {
           this.$message({
             type: 'success',
-            message: '确认成功!'
+            message: '提交成功!'
           });
           this.getData();
         });
@@ -820,7 +820,7 @@ export default {
         }).then(() => {
           this.$message({
             type: 'success',
-            message: '确认成功!'
+            message: '提交成功!'
           });
           this.getData();
         });
@@ -838,7 +838,7 @@ export default {
         }).then(() => {
           this.$message({
             type: 'success',
-            message: '结算成功!'
+            message: '提交成功!'
           });
           this.getData();
         });
@@ -905,7 +905,7 @@ export default {
       }).then(() => {
         this.$message({
           type: 'success',
-          message: '取消配车成功'
+          message: '提交成功'
         });
         this.getData();
       });
@@ -972,7 +972,7 @@ export default {
       setEmergencyOrderItem(params).then(() => {
         this.$message({
           type: 'success',
-          message: '取消急单成功!'
+          message: '提交成功!'
         });
         this.getData();
       });
@@ -981,7 +981,7 @@ export default {
       return setEmergencyOrderItem(data).then(() => {
         this.$message({
           type: 'success',
-          message: '设置急单成功'
+          message: '提交成功'
         });
         this.getData();
       });
@@ -994,7 +994,7 @@ export default {
       }).then(() => {
         this.$message({
           type: 'success',
-          message: '取消结算成功'
+          message: '提交成功'
         });
         this.getData();
       });
@@ -1003,7 +1003,7 @@ export default {
       return batchAllocateVehicleItem(data).then(() => {
         this.$message({
           type: 'success',
-          message: '配车成功'
+          message: '提交成功'
         });
         this.getData();
       });
@@ -1012,7 +1012,7 @@ export default {
       return batchCancelItem(data).then(() => {
         this.$message({
           type: 'success',
-          message: '作废成功'
+          message: '提交成功'
         });
         this.getData();
       });
@@ -1127,7 +1127,7 @@ export default {
           }).then(() => {
             this.$message({
               type: 'success',
-              message: '确认成功!'
+              message: '提交成功!'
             });
             this.getData();
           });
@@ -1358,7 +1358,7 @@ export default {
     },
     async getWholesaleEorderTyprList (query) {
       // 筛选过滤(保留 0 和 20)
-      return this.fetchOptions('vw_eorder_type').then(list => list.filter(item => item.code === '0' || item.code === '20' || item.code === '2' || item.code === '3'));
+      return this.fetchOptions('vw_eorder_type').then(list => list.filter(item => item.code === '0' || item.code === '20' || item.code === '2'));
     },
     async fetchOptions (code) {
       if (code) {
@@ -1383,11 +1383,6 @@ export default {
             message: '删除成功!'
           });
           this.getData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '删除失败!'
-          });
         });
       }).catch(() => {});
     },
