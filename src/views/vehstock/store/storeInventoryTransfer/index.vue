@@ -52,6 +52,9 @@
     </div>
     <!-- TIPS: 填入项目id即可 -->
     <Upload :visible="uploadDialogVisible" :id="'1'" @close="handleUploadDialogClose" @getData="getData" />
+    <!-- 调拨审批弹窗 -->
+    <approval-dialog ref="approvalDialog" :visible.sync="approvalVisible" :data="approvalData" @update:visible="val => approvalVisible = val" @submit="getData" />
+
   </div>
 </template>
 
@@ -69,6 +72,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import ApprovalDialog from './ApprovalDialog.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -89,7 +93,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    ApprovalDialog
   },
   data () {
     return {
@@ -106,6 +111,8 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      approvalVisible: false, // 调拨审批弹窗
+      approvalData: {},
       clickItemId: '',
       optionObj: {
         id: 'storeInventoryTransferTable',
@@ -239,14 +246,18 @@ export default {
               show: (row) => {
                 return row.auditStatus === 2;
               },
-              click: (rowIndex, row) => {},
+              click: (rowIndex, row) => {
+                this.handleApproval(row, 'outApproval');
+              },
               type: 'info'
             }, {
               name: '调入审批',
               show: (row) => {
                 return row.auditStatus === 2;
               },
-              click: (rowIndex, row) => {},
+              click: (rowIndex, row) => {
+                this.handleApproval(row, 'inApproval');
+              },
               type: 'info'
             }]
           }
@@ -444,6 +455,14 @@ export default {
         apiFunc: enableItem,
         refreshFunc: this.getData
       });
+    },
+    // 调拨审批
+    handleApproval (row, type) {
+      this.approvalData = {
+        id: row.id,
+        type: type
+      };
+      this.approvalVisible = true;
     }
   }
 };
