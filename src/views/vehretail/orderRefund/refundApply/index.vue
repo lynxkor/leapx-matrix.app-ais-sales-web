@@ -333,7 +333,8 @@ export default {
           column: (item.field || '').replace(/([A-Z])/g, '_$1')
             .toLowerCase()
             .replace(/^_/, '')
-            .replace('_label', ''),
+            .replace('_label', '')
+            .replace('apply_time', 'create_time'),
           sort: (item.order || '').toUpperCase()
         };
       });
@@ -506,7 +507,7 @@ export default {
       }
     },
     async changeCategorySearch (val) {
-      return await fetchCategoryList({ pageSize: 1000 });
+      return await fetchCategoryList({ pageSize: 1000, cateName: val });
     },
     async fetchOptions (code) {
       if (code) {
