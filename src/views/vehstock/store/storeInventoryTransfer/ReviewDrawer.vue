@@ -26,8 +26,8 @@
                   >
                     <div class="timeline-content">
                       <strong>{{ item.name }}</strong>
-                      <div class="timeline-content-title">{{item.creatorName}}{{ item.submitOn }}</div>
-                      <div class="timeline-content-title">{{ item.remark }}</div>
+                      <div class="timeline-content-title">{{item.creatorName}} {{ item.submitOn }}</div>
+                      <div class="timeline-content-title">备注：{{ item.remark }}</div>
                     </div>
                   </el-timeline-item>
                 </el-timeline>
@@ -79,7 +79,7 @@ export default {
     async getApprovalInfo () {
       this.loadingReview = true;
       const params = {
-        id: this.drawerData.id,
+        businessId: this.drawerData.id,
         pageNum: 1,
         pageSize: 50,
       };
@@ -126,6 +126,7 @@ export default {
   strong {
     display: block;
     margin-bottom: 4px;
+    color: #009100;
   }
   .timeline-content-title {
     font-size: 12px;
