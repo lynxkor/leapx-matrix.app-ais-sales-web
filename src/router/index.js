@@ -2806,7 +2806,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehstock/store/vehiclepurposechangeapply/edit',
+      path: '/vehstock/store/vehiclePurposeChangeApply/edit',
       name: 'vehiclePurposeChangeApplyEdit',
       component: () => import('@/views/vehstock/store/vehiclePurposeChangeApply/edit.vue'),
 
