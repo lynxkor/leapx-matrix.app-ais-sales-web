@@ -271,7 +271,7 @@ export default {
       pageTitle: '整车资金账户',
       pageType: 'edit',
       // TIPS: 权限前缀 AISVW，根据实际情况修改
-      moduleKey: 'AISVW-account',
+      moduleKey: 'AISVW-dealerFundAccount',
       loading: false,
       submitLoading: false,
       form: { ...defaultForm },
