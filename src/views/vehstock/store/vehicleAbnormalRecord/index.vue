@@ -75,7 +75,6 @@ export default {
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
-    EditPage,
     Upload
   },
   data () {
