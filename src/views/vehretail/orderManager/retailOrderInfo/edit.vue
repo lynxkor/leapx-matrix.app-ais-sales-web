@@ -575,11 +575,11 @@ export default {
       remoteMethods: {
         // 初始方法
         saleUser: async (query) => {
-          if (!query || query.length < 2) return [];
+          // if (!query || query.length < 2) return [];
           return await engineerList({ username: query, salesConfigKey: 'saleUser', orgCodeList: [this.form.saleDealerCode] });
         },
         deliveryUser: async (query) => {
-          if (!query || query.length < 2) return [];
+          // if (!query || query.length < 2) return [];
           return await engineerList({ username: query, salesConfigKey: 'deliveryUser', orgCodeList: [this.form.deliveryDealerCode] });
         },
       },
