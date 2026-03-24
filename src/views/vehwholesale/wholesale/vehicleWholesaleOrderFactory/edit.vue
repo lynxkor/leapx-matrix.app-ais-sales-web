@@ -1424,8 +1424,6 @@ export default {
             effectiveTime: account.creditSalesLimit?.effectiveTime || '',
             expireTime: account.creditSalesLimit?.expireTime || '',
             downPaymentRatio: account.creditSalesLimit?.downPaymentRatio || '',
-            availableBalance: account.creditSalesLimit?.availableBalance || '',
-            frozenBalance: account.creditSalesLimit?.frozenBalance || '',
             availableCreditAmount: account.creditSalesLimit?.availableCreditAmount || '',
           }));
           console.log(res);

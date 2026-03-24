@@ -42,3 +42,11 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 门店调拨入库单入库
+ * @param {Object} data
+ */
+export function inboundItem (data) {
+  return api.jsonPost(prefix + 'inbound', data);
+}

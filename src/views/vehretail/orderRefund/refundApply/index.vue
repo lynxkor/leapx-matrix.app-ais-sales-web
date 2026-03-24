@@ -242,7 +242,7 @@ export default {
           { props: 'refundStatusLabel', label: '申请状态', visible: true, width: 200, sortable: true },
           { props: 'buyerName', label: '购车人名称', visible: true, width: 200, sortable: true },
           { props: 'buyerPhone', label: '购车人手机', visible: true, width: 200, sortable: true },
-          { props: 'saleUserName', label: '订单销售顾问', visible: true, width: 200, sortable: true },
+          { props: 'saleUserName', label: '订单销售顾问', visible: true, width: 200, sortable: false },
           {
             props: 'applyTime',
             label: '申请时间',
@@ -253,16 +253,16 @@ export default {
           {
             props: 'creatorName',
             label: '申请人',
-            visible: true,
+            visible: false,
             width: 200
           },
           { props: 'submitTime', label: '提交时间', visible: true, width: 200, sortable: true },
-          { props: 'approveUser', label: '审核人', visible: true, width: 200, sortable: true },
-          { props: 'approveTime', label: '审核时间', visible: true, width: 200 },
+          { props: 'approveUser', label: '审核人', visible: true, width: 200, sortable: false },
+          { props: 'approveTime', label: '审核时间', visible: true, width: 200, sortable: true },
           { props: 'orderRefundTypeLabel', label: '退订方式', visible: true, width: 200 },
           { props: 'cateName', label: '退订原因分类', visible: true, width: 200, sortable: true },
           { props: 'refundReason', label: '退订原因说明', visible: true, width: 200 },
-          { props: 'saleDealerName', label: '销售门店', visible: true, width: 200 },
+          { props: 'saleDealerName', label: '销售门店', visible: true, width: 200, sortable: true },
           { props: 'provinceName', label: '省', visible: true, width: 200 },
           { props: 'cityName', label: '市', visible: true, width: 200 },
           { props: 'modelName', label: '基本车型', visible: true, width: 200, sortable: true },
@@ -280,7 +280,7 @@ export default {
           { props: 'orderSource', label: '订单来源', visible: true, width: 200 },
           { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 200 },
           { props: 'depositRefundTypeLabel', label: '定金退回方式', visible: true, width: 200 },
-          { props: 'paymentTime', label: '缴定金时间', visible: true, width: 200, sortable: true },
+          { props: 'paymentTime', label: '缴定金时间', visible: true, width: 200},
           { props: 'firstSubmitTime', label: '首次提交时间', visible: true, width: 200, sortable: true },
           { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
 
