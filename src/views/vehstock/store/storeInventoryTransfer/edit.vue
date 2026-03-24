@@ -75,7 +75,7 @@
               <div class="common-section-header">
                 <div class="ais-select-group">
                   <fetch-select style="width: 300px;" :remote-method="queryListData" remote placeholder="请选择" clearable
-                    value-key="id" label-key="materialsDesc" :disabled="!(isEditing || !_id)" @change="handleAddTableData" />
+                    value-key="id" label-key="vinDesc" :disabled="!(isEditing || !_id)" @change="handleAddTableData" />
                   <el-button type="primary" size="small">添加</el-button>
                 </div>
               </div>
@@ -281,7 +281,10 @@ export default {
       return new Promise(resolve => {
         // 根据需求调用接口
         getList({ vin: queryString }).then(res => {
-          const list = res || [];
+          const list = res.records?.map(item => ({
+            ...item,
+            vinDesc: item.vin + '-' + item.materialsDesc,
+          })) || [];
           resolve(list);
         });
       });
