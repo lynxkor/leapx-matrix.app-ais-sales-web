@@ -13,7 +13,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          <!-- 支持primary,warning,success,danger等状态 -->
+          <!-- 支持 primary,warning,success,danger 等状态 -->
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
@@ -22,7 +22,7 @@
           <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" @click="handleSetSpecialMark">设置特殊标识</el-button>
           <el-button size="small" v-if="form.orderStatus !== 9" @click="handleModifyConfiguration">修改配置</el-button>
           <el-button size="small" v-if="form.wholesaleBindStatus !== 1 && form.orderHandleType === 30 && form.unlockReasonCode === 'DJY003'" @click="handleManualVehicleAllocation">手工配车</el-button>
-          <el-button size="small" v-if="form.wholesaleBindStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
+          <el-button size="small" :loading="autoLockLoading" v-if="form.wholesaleBindStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
           <el-button size="small" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
           <el-button size="small"
                      @click="navigateToRoute({
@@ -45,8 +45,11 @@
           <el-button size="small" @click="handleQualityIssueUnbindApplication">质量问题解绑申请</el-button>
         </template>
         <!-- 固定悬浮导航栏 -->
-        <div class="fixed-nav">
-          <ul>
+        <div class="fixed-nav" :class="{ 'is-collapsed': isNavCollapsed }">
+          <div class="fixed-nav-toggle" @click="toggleNavCollapsed">
+            <i :class="isNavCollapsed ? 'el-icon-arrow-left' : 'el-icon-arrow-right'"></i>
+          </div>
+          <ul v-if="!isNavCollapsed">
             <li v-for="(navItem) in navItems" :key="navItem.id">
               <a
                 :href="navItem.href"
@@ -68,14 +71,14 @@
             :retailOrderCode="form.retailOrderCode"/>
           <NavTop
             id="app-order-status" class="common-section"
-            title="APP订单状态"
+            title="APP 订单状态"
             :current="form.leapAppOrderStatus"/>
           <section id="basic-info" class="common-section" v-if="isEditing || !_id">
             <div class="common-section-header">
               <h2>基础信息</h2>
             </div>
             <div class="common-section-body">
-              <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
+              <!-- TIPS: 自行调整 label-width="150px"，使得 label 不换行 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm1" label-width="180px" class="form-edit">
                 <el-form-item label="商城订单编号：" prop="mallOrderCode">
                   <el-input
@@ -234,7 +237,7 @@
                     clearable
                   />
                 </el-form-item> -->
-                <el-form-item label="交付周期上限(周)：" prop="deliveryCycleMaxWeek">
+                <el-form-item label="交付周期上限 (周)：" prop="deliveryCycleMaxWeek">
                   <el-input
                     placeholder="请输入"
                     v-model="form.deliveryCycleMaxWeek"
@@ -567,7 +570,8 @@ export default {
       loading: false,
       submitLoading: false,
       accountFlag: false,
-      printLoading: false, // 打印合同解除协议的loading状态
+      printLoading: false, // 打印合同解除协议的 loading 状态
+      autoLockLoading: false, // 自动锁车的 loading 状态
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
@@ -612,54 +616,54 @@ export default {
           // field: 'configChangeList',
           sectionId: 'modification-record',
           columns: this.convertToTableColumns(modificationRecordDisplayFields),
-          apiMethod: orderConfigChangeList // 后续引入API方法
+          apiMethod: orderConfigChangeList // 后续引入 API 方法
         },
         {
           title: '订单信息变更申请',
           // field: 'changeApplyList',
           sectionId: 'order-change-application',
           columns: this.convertToTableColumns(orderChangeApplicationDisplayFields),
-          apiMethod: orderChangeList // 后续引入API方法
+          apiMethod: orderChangeList // 后续引入 API 方法
         },
         {
           title: '锁车解绑申请记录',
           // field: 'unlockApplyList',
           sectionId: 'unlock-application-record',
           columns: this.convertToTableColumns(unlockApplicationRecordDisplayFields),
-          apiMethod: orderUnlockApplyList // 后续引入API方法
+          apiMethod: orderUnlockApplyList // 后续引入 API 方法
         },
         {
           title: '锁车记录',
           // field: 'lockRecordList',
           sectionId: 'lock-car-record',
           columns: this.convertToTableColumns(lockCarRecordDisplayFields),
-          apiMethod: orderLockRecordList // 后续引入API方法
+          apiMethod: orderLockRecordList // 后续引入 API 方法
         },
         {
           title: '订单透明化状态跟踪',
           field: 'statusTrackList',
           sectionId: 'order-transparency-tracking',
           columns: this.convertToTableColumns(orderTransparencyTrackingDisplayFields),
-          apiMethod: null // 后续引入API方法
+          apiMethod: null // 后续引入 API 方法
         },
         {
           title: '订单退订记录',
           // field: 'refundList',
           sectionId: 'order-cancellation-record',
           columns: this.convertToTableColumns(orderCancellationRecordDisplayFields),
-          apiMethod: refundApplyList // 后续引入API方法
+          apiMethod: refundApplyList // 后续引入 API 方法
         },
         {
           title: '订单收款记录',
           // field: 'payRecordList',
           sectionId: 'order-pay-record',
           columns: this.convertToTableColumns(orderPaymentRecordDisplayFields),
-          apiMethod: orderPayRecordList // 后续引入API方法
+          apiMethod: orderPayRecordList // 后续引入 API 方法
         }
       ],
       navItems: [
         { id: 'retail-order-status', title: '销服订单状态', href: '#retail-order-status' },
-        { id: 'app-order-status', title: 'APP订单状态', href: '#app-order-status' },
+        { id: 'app-order-status', title: 'APP 订单状态', href: '#app-order-status' },
         { id: 'basic-info', title: '基础信息', href: '#basic-info' },
         { id: 'car-owner', title: '购车人信息', href: '#car-owner' },
         { id: 'order-fund', title: '资金信息', href: '#order-fund' },
@@ -678,6 +682,7 @@ export default {
         { id: 'order-pay-record', title: '订单收款记录', href: '#order-pay-record' }
       ],
       activeSection: 'basic-info',
+      isNavCollapsed: false,
       specialRemarkDialog: {
         title: '设置特殊备注',
         show: false,
@@ -777,7 +782,7 @@ export default {
     },
     loginUserGet () {
       loginUserGet().then(res => {
-        // true 店端 false厂端
+        // true 店端 false 厂端
         this.accountFlag = res.accountFlag;
       }).catch(() => {});
     },
@@ -801,10 +806,13 @@ export default {
         productCode: this.form.materials.productCode,
         skuCode: this.form.materials.skuCode,
       };
+      this.autoLockLoading = true;
       autoLock(param).then(response => {
         this.$message.success('锁车成功');
         this.getDetailData();
-      }).catch(() => {});
+      }).catch(() => {}).finally(() => {
+        this.autoLockLoading = false;
+      });
     },
     // 查看购车协议
     handleViewPurchaseAgreement () {
@@ -865,7 +873,7 @@ export default {
         getDetail(this._id).then(response => {
           const processedData = response;
           processedData.finance = response.finance || { ...defaultForm.finance };
-          // 辅助函数：为数组中的每个对象添加saleDealerName字段
+          // 辅助函数：为数组中的每个对象添加 saleDealerName 字段
           const addSaleDealerName = (array) => {
             if (array && Array.isArray(array) && response.saleDealerName) {
               return array.map(item => ({
@@ -889,7 +897,7 @@ export default {
         return getDetail(id).then(response => {
           const processedData = response;
           processedData.finance = response.finance || { ...defaultForm.finance };
-          // 辅助函数：为数组中的每个对象添加saleDealerName字段
+          // 辅助函数：为数组中的每个对象添加 saleDealerName 字段
           const addSaleDealerName = (array) => {
             if (array && Array.isArray(array) && response.saleDealerName) {
               return array.map(item => ({
@@ -902,9 +910,7 @@ export default {
           };
           processedData.statusTrackList = addSaleDealerName(response.statusTrackList);
           processedData.lockRecordList = addSaleDealerName(response.lockRecordList);
-          // 先更新 form，让子组件有机会修改数据
-          Object.assign(this.form, processedData);
-          // 等待子组件渲染完成并处理完数据后，再更新 originalForm
+          // 先更新 form，让子组件渲染完成并处理完数据后，再更新 originalForm
           this.$nextTick(() => {
             setTimeout(() => {
               Object.assign(this.originalForm, this.form);
@@ -960,7 +966,7 @@ export default {
           // 计算目标元素相对于滚动容器的位置
           const containerRect = scrollContainer.getBoundingClientRect();
           const elementRect = element.getBoundingClientRect();
-          // 计算目标位置：让元素顶部距离容器顶部有一定偏移，避免内容消失在上方
+          // 计算目标位置：让元素顶部距离容器顶部有一定距离，避免内容消失在上方
           const scrollOffset = 20; // 额外的缓冲距离
           const targetScrollTop = scrollContainer.scrollTop + (elementRect.top - containerRect.top) - scrollOffset;
 
@@ -1045,6 +1051,10 @@ export default {
         navContainer.scrollTop += (linkRect.bottom - navRect.bottom);
       }
     },
+    // 切换导航栏收起/展开
+    toggleNavCollapsed () {
+      this.isNavCollapsed = !this.isNavCollapsed;
+    },
     // 审核日志
     // handleJumpAuditLog () {
     //   this.$auditLog.show({ id: 123 });
@@ -1072,14 +1082,51 @@ export default {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   border: 1px solid #ebeef5;
   backdrop-filter: blur(10px); /* 添加背景模糊效果 */
-  max-height: 60vh; /* 设置最大高度为视口的60% */
-  overflow-y: auto; /* 当内容超出时显示垂直滚动条 */
-}
-  /* 隐藏滚动条的样式 */
-  ::-webkit-scrollbar {
-    width: 0px;
-    background: transparent;
+  max-height: 60vh; /* 设置最大高度为视口的 60% */
+  overflow: hidden; /* 隐藏超出内容 */
+
+  &.is-collapsed {
+    padding: 10px 5px;
+    width: 30px;
+
+    .fixed-nav-toggle {
+      left: auto;
+      right: 0;
+      border-radius: 4px 0 0 4px;
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    }
   }
+}
+
+.fixed-nav-toggle {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 0 4px 4px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--leap-color-primary);
+  font-size: 14px;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+
+  &:hover {
+    background-color: var(--leap-color-primary);
+    color: #fff;
+  }
+}
+
+/* 隐藏滚动条的样式 */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
 
 .fixed-nav ul {
   list-style-type: none;

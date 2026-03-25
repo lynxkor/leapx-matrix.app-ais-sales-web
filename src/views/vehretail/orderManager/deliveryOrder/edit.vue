@@ -267,9 +267,9 @@
           <!-- 实名认证信息 -->
           <generic-detail-display title="实名认证信息" :form-data="form" :fields="realNameAuthFields" :label-width="labelWidth" section-key="realNameAuth" />
           <!-- 交车确认单 -->
-          <section class="common-section" v-show="isEditing || !_id">
+          <!-- <section class="common-section" v-show="isEditing || !_id">
             <div class="common-section-header" data-section="deliveryInfo">
-              <h2>交付信息</h2>
+              <h2>交车确认单</h2>
             </div>
             <div class="common-section-body">
               <el-form :inline="true" :model="form" :label-width="labelWidth" class="form-edit">
@@ -305,6 +305,22 @@
                     :disabled="true"
                   />
                 </el-form-item>
+                <el-form-item label="交车确认用户签名：">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.deliveryConfirmSignUrl"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="交车确认PDF：">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.deliveryConfirmPdfUrl"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
                 <el-form-item label="城市交付顺序：">
                   <el-input-number
                     placeholder="请输入"
@@ -317,7 +333,7 @@
                 </el-form-item>
               </el-form>
             </div>
-          </section>
+          </section> -->
           <!-- 交车确认单 -->
           <generic-detail-display title="交车确认单" :form-data="form" :fields="deliveryConfirmFields" :label-width="labelWidth" section-key="deliveryConfirm" />
           <!-- 收款记录&权益项抵扣记录 -->
@@ -693,6 +709,8 @@ export default {
         { key: 'signatureTime', label: '签署时间' },
         { key: 'buyerMobileRegisteredLabel', label: '购车人手机是否注册' },
         { key: 'deliveryConfirmStatusLabel', label: '交车确认单状态' },
+        { key: 'deliveryConfirmSignUrl', label: '交车确认用户签名' },
+        { key: 'deliveryConfirmPdfUrl', label: '交车确认PDF' },
         { key: 'cityDeliveryOrder', label: '城市交付顺序' }
       ],
       basicInfoFields: [
@@ -751,7 +769,7 @@ export default {
         }
       });
     });
-    this.loadCityDeliveryOrderMin();
+    // this.loadCityDeliveryOrderMin();
   },
   methods: {
     getPaymentRecordList,
