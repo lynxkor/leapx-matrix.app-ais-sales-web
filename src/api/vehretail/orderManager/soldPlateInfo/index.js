@@ -66,3 +66,45 @@ export function getEffectiveByVin (data) {
 export function generateSoldPlateInfoByVin (data) {
   return api.post(prefix + `generateSoldPlateInfoByVin?vin=${data}`);
 }
+
+/**
+ * 提交
+ * */
+export function submit (data) {
+  return api.jsonPost(prefix + 'submit', data);
+}
+
+/**
+ * 批量提交
+ * */
+export function submitBatch (data) {
+  return api.jsonPost(prefix + 'submitBatch', data);
+}
+
+/**
+ * 撤回
+ * */
+export function revocation (data) {
+  return api.jsonPost(prefix + 'revocation', data);
+}
+
+/**
+ * 批量撤回
+ * */
+export function revocationBatch (data) {
+  return api.jsonPost(prefix + 'revocationBatch', data);
+}
+
+/**
+ * 作废
+ * */
+export function cancel (data) {
+  return api.jsonPost(prefix + 'cancel', data);
+}
+
+/**
+ * 批量作废
+ * */
+export function cancelBatch (data) {
+  return api.jsonPost(prefix + 'cancelBatch', data);
+}

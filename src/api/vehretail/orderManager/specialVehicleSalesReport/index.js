@@ -98,3 +98,11 @@ export function adjustVehicleAttribute (data) {
 export function effectiveVinValidate (data) {
   return api.get(prefix + `effectiveVinValidate?vin=${data}`);
 }
+
+/**
+ * VIN查询
+ * @param {Object} data
+ */
+export function getEffectiveByVin (data) {
+  return api.get(prefix + `getEffectiveByVin?vin=${data}`);
+}

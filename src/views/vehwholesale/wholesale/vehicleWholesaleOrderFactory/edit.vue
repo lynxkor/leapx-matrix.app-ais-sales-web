@@ -478,10 +478,10 @@
                     disabled
                   />
                 </el-form-item>
-                  <el-form-item label="取消结算时间：" prop="firstCancelAllocateTime">
+                  <el-form-item label="取消结算时间：" prop="cancelSettleTime">
                   <el-date-picker
                     :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.firstCancelAllocateTime"
+                    v-model="form.cancelSettleTime"
                     :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"

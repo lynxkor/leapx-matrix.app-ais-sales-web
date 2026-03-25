@@ -248,8 +248,8 @@ export default {
     },
     // 删除子表数据
     handleDeleteRow (index) {
-      const item = this.tableData[index];
-      this.tableData.splice(index, 1);
+      const item = this.form.vinList[index];
+      this.form.vinList.splice(index, 1);
       // 根据需求调用接口
       // deletePartVehModel([item.id]).then(res => {
       //   this.$message.success('删除成功');
