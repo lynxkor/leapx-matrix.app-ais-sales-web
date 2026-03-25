@@ -774,15 +774,16 @@
             </div>
             <div class="common-section-body">
               <div class="common-section-table">
-                <edit-table
-                  ref="editTable"
-                  :columns="columns"
-                  :data="form.dealerFundAccounts"
-                  :defaultNewRow="defaultNewRow"
-                  :show-toolbar="false"
-                  :options="options"
-                  :auth="{edit: false, delete: false}"
-                />
+                <el-table :data="form.dealerFundAccounts" border style="width: 100%">
+                <el-table-column prop="fundTypeLabel" label="资金类型" />
+                <el-table-column prop="availableBalance" label="可用余额" />
+                <el-table-column prop="frozenBalance" label="冻结资金" />
+                <el-table-column prop="availableCreditAmount" label="剩余可用额度" />
+                <el-table-column prop="downPaymentRatio" label="首付款比例%" />
+                <el-table-column prop="creditAccountStatusLabel" label="赊销账户状态" />
+                <el-table-column prop="effectiveTime" label="额度生效日期" />
+                <el-table-column prop="expireTime" label="额度失效日期" />
+              </el-table>
               </div>
             </div>
           </section>
@@ -820,7 +821,6 @@
 <script>
 import { getDetail, addOrUpdate, batchConfirmItem, batchSetAutoAllocateItem, batchCancelItem, vinAllocateVehicleCheckItem, vinAllocateVehicleSubmitItem, batchSettleSubmitItem, batchCancelSettleItem, querySAPAccountBalance } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
@@ -961,7 +961,6 @@ export default {
   components: {
     EditPageLayout,
     EditBaseContainer,
-    EditTable,
     FetchSelect,
     ManualVehicle,
     BatchCancelInput,

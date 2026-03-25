@@ -66,6 +66,7 @@
                     clearable
                     filterable
                     @change="handleChangeOrderCategory"
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="交付门店：" prop="deliveryDealerCode">
