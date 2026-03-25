@@ -42,3 +42,43 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 车辆用途变更申请零售经理审
+ * @param {Object} data
+ */
+export function approveByRetailManager (data) {
+  return api.jsonPost(prefix + 'approveByRetailManager', data);
+}
+
+/**
+ * 车辆用途变更申请大区经理审
+ * @param {Object} data
+ */
+export function approveByAreaManager (data) {
+  return api.jsonPost(prefix + 'approveByAreaManager', data);
+}
+
+/**
+ * 车辆用途变更申请总部审批
+ * @param {Object} data
+ */
+export function approveByHeadquarters (data) {
+  return api.jsonPost(prefix + 'approveByHeadquarters', data);
+}
+
+/**
+ * 车辆用途变更申请提交
+ * @param {Object} data
+ */
+export function enableItemSubmit (data) {
+  return api.jsonPost(prefix + 'submit', data);
+}
+
+/**
+ * 车辆用途变更申请作废
+ * @param {Object} data
+ */
+export function enableItemCancel (data) {
+  return api.jsonPost(prefix + 'cancel', data);
+}
