@@ -130,10 +130,13 @@
                   />
                 </el-form-item>
                 <el-form-item label="产地：" prop="vehiclePlaceOrigin">
-                  <el-input
-                    placeholder="请输入"
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vehicle_place_origin"
                     v-model="form.vehiclePlaceOrigin"
+                    placeholder="请选择"
                     clearable
+                    filterable
                     disabled
                   />
                 </el-form-item>
@@ -184,180 +187,54 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="主键：" prop="id">
-                  {{ form.id }}
-                </el-form-item>
-                <el-form-item label="创建者：" prop="creator">
-                  {{ form.creator }}
-                </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  {{ form.creatorName }}
-                </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
-                  {{ form.createTime }}
-                </el-form-item>
-                <el-form-item label="修改者：" prop="modifier">
-                  {{ form.modifier }}
-                </el-form-item>
-                <el-form-item label="修改者名称：" prop="modifierName">
-                  {{ form.modifierName }}
-                </el-form-item>
-                <el-form-item label="修改时间：" prop="updateTime">
-                  {{ form.updateTime }}
-                </el-form-item>
-                <el-form-item label="备注：" prop="remark">
-                  {{ form.remark }}
-                </el-form-item>
-                <el-form-item label="审核状态 1010-草稿 1020-已提交 1030-已通过 1040-已驳回 1050-已作废：" prop="status">
-                  {{ form.status }}
-                </el-form-item>
-                <el-form-item label="状态变更描述：" prop="statusDesc">
-                  {{ form.statusDesc }}
-                </el-form-item>
-                <el-form-item label="整车上牌记录编号：" prop="soldPlateCode">
-                  {{ form.soldPlateCode }}
-                </el-form-item>
-                <el-form-item label="交车单ID：" prop="deliveryOrderId">
-                  {{ form.deliveryOrderId }}
-                </el-form-item>
-                <el-form-item label="零售订单ID：" prop="retailOrderId">
-                  {{ form.retailOrderId }}
-                </el-form-item>
-                <el-form-item label="零售订单号：" prop="retailOrderCode">
-                  {{ form.retailOrderCode }}
-                </el-form-item>
-                <el-form-item label="已售上牌资料来源 report-特殊销售提报 delivery-交车单 plate-已售上牌新增：" prop="soldPlateSource">
-                  {{ form.soldPlateSource }}
-                </el-form-item>
-                <el-form-item label="VIN码：" prop="vin">
+              <el-form :inline="true" class="form-detail" label-width="150px" v-show="!(isEditing || !_id)">
+                <el-form-item label="VIN码：">
                   {{ form.vin }}
                 </el-form-item>
-                <el-form-item label="车型ID：" prop="modelId">
-                  {{ form.modelId }}
-                </el-form-item>
-                <el-form-item label="车型名称：" prop="modelName">
+                <el-form-item label="车型名称：">
                   {{ form.modelName }}
                 </el-form-item>
-                <el-form-item label="门店id：" prop="saleOrgId">
-                  {{ form.saleOrgId }}
-                </el-form-item>
-                <el-form-item label="门店编码：" prop="saleDealerCode">
-                  {{ form.saleDealerCode }}
-                </el-form-item>
-                <el-form-item label="门店名称：" prop="saleDealerName">
+                <el-form-item label="门店：">
                   {{ form.saleDealerName }}
                 </el-form-item>
-                <el-form-item label="车主姓名：" prop="carBuyerName">
+                <el-form-item label="车主姓名：">
                   {{ form.carBuyerName }}
                 </el-form-item>
-                <el-form-item label="车主电话：" prop="carBuyerPhone">
+                <el-form-item label="车主电话：">
                   {{ form.carBuyerPhone }}
                 </el-form-item>
-                <el-form-item label="证件类型：" prop="idCardType">
-                  {{ form.idCardType }}
+                <el-form-item label="证件类型：">
+                  {{ form.idCardTypeName || form.idCardType }}
                 </el-form-item>
-                <el-form-item label="证件号码：" prop="idCardNo">
+                <el-form-item label="证件号码：">
                   {{ form.idCardNo }}
                 </el-form-item>
-                <el-form-item label="车辆用途 ：" prop="vehiclePurpose">
-                  {{ form.vehiclePurpose }}
+                <el-form-item label="车辆用途：">
+                  {{ form.vehiclePurposeName || form.vehiclePurpose }}
                 </el-form-item>
-                <el-form-item label="公告车型ID：" prop="carSaleSversionId">
-                  {{ form.carSaleSversionId }}
-                </el-form-item>
-                <el-form-item label="公告车型名称：" prop="carSalesVersionName">
+                <el-form-item label="公告车型：">
                   {{ form.carSalesVersionName }}
                 </el-form-item>
-                <el-form-item label="产地：" prop="vehiclePlaceOrigin">
-                  {{ form.vehiclePlaceOrigin }}
+                <el-form-item label="产地：">
+                  {{ form.vehiclePlaceOriginLabel }}
                 </el-form-item>
-                <el-form-item label="发动机号：" prop="enginenNumber">
+                <el-form-item label="发动机号：">
                   {{ form.enginenNumber }}
                 </el-form-item>
-                <el-form-item label="合格证号：" prop="certificateNo">
+                <el-form-item label="合格证号：">
                   {{ form.certificateNo }}
                 </el-form-item>
-                <el-form-item label="整车开票记录编号：" prop="invoiceRecordCode">
+                <el-form-item label="整车开票记录：">
                   {{ form.invoiceRecordCode }}
                 </el-form-item>
-                <el-form-item label="特殊车辆销售提报编号：" prop="specialReportCode">
+                <el-form-item label="特殊车辆销售提报：">
                   {{ form.specialReportCode }}
                 </el-form-item>
-                <el-form-item label="行驶证VIN号：" prop="drivingLicenseVin">
-                  {{ form.drivingLicenseVin }}
+                <el-form-item label="修改时间：">
+                  {{ form.updateTime }}
                 </el-form-item>
-                <el-form-item label="行驶证所有人：" prop="drivingLicenseOwner">
-                  {{ form.drivingLicenseOwner }}
-                </el-form-item>
-                <el-form-item label="车牌号码：" prop="plateNo">
-                  {{ form.plateNo }}
-                </el-form-item>
-                <el-form-item label="上牌日期：" prop="plateDate">
-                  {{ form.plateDate }}
-                </el-form-item>
-                <el-form-item label="上牌省份编码：" prop="provinceCode">
-                  {{ form.provinceCode }}
-                </el-form-item>
-                <el-form-item label="上牌省份：" prop="provinceName">
-                  {{ form.provinceName }}
-                </el-form-item>
-                <el-form-item label="上牌城市编码：" prop="cityCode">
-                  {{ form.cityCode }}
-                </el-form-item>
-                <el-form-item label="上牌城市：" prop="cityName">
-                  {{ form.cityName }}
-                </el-form-item>
-                <el-form-item label="上牌区&#x2F;县编码：" prop="districtCode">
-                  {{ form.districtCode }}
-                </el-form-item>
-                <el-form-item label="上牌区&#x2F;县：" prop="districtName">
-                  {{ form.districtName }}
-                </el-form-item>
-                <el-form-item label="车辆注册地址：" prop="vehicleRegisterAddress">
-                  {{ form.vehicleRegisterAddress }}
-                </el-form-item>
-                <el-form-item label="行驶证编号：" prop="drivingLicenseNumber">
-                  {{ form.drivingLicenseNumber }}
-                </el-form-item>
-                <el-form-item label="行驶证品牌型号：" prop="drivingLicenseBrandModel">
-                  {{ form.drivingLicenseBrandModel }}
-                </el-form-item>
-                <el-form-item label="提交审核时间：" prop="submitTime">
-                  {{ form.submitTime }}
-                </el-form-item>
-                <el-form-item label="提交人id：" prop="submitUserId">
-                  {{ form.submitUserId }}
-                </el-form-item>
-                <el-form-item label="提交人：" prop="submitUser">
-                  {{ form.submitUser }}
-                </el-form-item>
-                <el-form-item label="审核时间：" prop="auditTime">
-                  {{ form.auditTime }}
-                </el-form-item>
-                <el-form-item label="审核人id：" prop="auditUserId">
-                  {{ form.auditUserId }}
-                </el-form-item>
-                <el-form-item label="审核人：" prop="auditUser">
-                  {{ form.auditUser }}
-                </el-form-item>
-                <el-form-item label="撤回时间：" prop="withdrawTime">
-                  {{ form.withdrawTime }}
-                </el-form-item>
-                <el-form-item label="撤回人id：" prop="withdrawUserId">
-                  {{ form.withdrawUserId }}
-                </el-form-item>
-                <el-form-item label="撤回人：" prop="withdrawUser">
-                  {{ form.withdrawUser }}
-                </el-form-item>
-                <el-form-item label="审核意见：" prop="auditRemark">
-                  {{ form.auditRemark }}
-                </el-form-item>
-                <el-form-item label="是否自动审核：" prop="autoAuditStatus">
-                  {{ form.autoAuditStatus }}
-                </el-form-item>
-                <el-form-item label="数据来源，150-新销服; 10-老销服：" prop="dataSource">
-                  {{ form.dataSource }}
+                <el-form-item label="创建时间：">
+                  {{ form.createTime }}
                 </el-form-item>
               </el-form>
             </div>
@@ -368,6 +245,124 @@
             </div>
             <div class="common-section-body">
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm1" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+                <el-form-item label="发票VIN号：" prop="invoiceVin">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.invoiceVin"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="开票名称：" prop="invoiceName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.invoiceName"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="发票号码：" prop="invoiceNo">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.invoiceNo"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="开票日期：" prop="invoiceTime">
+                  <el-date-picker
+                    :default-time="['00:00:00', '23:59:59']"
+                    v-model="form.invoiceTime"
+                    :picker-options="pickerOptions"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                  />
+                </el-form-item>
+                <el-form-item label="开票金额：" prop="invoiceAmount">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.invoiceAmount"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="发票产地：" prop="invoiceVehiclePlaceOrigin">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.invoiceVehiclePlaceOrigin"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="发票厂牌型号：" prop="invoiceBrandModel">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.invoiceBrandModel"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="发票合格证号：" prop="invoiceCertificateNo">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.invoiceCertificateNo"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="发票发动机号：" prop="invoiceEngineNumber">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.invoiceEngineNumber"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="发票证件类型：" prop="ocrIdCardType">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vehretail_id_card_type"
+                    v-model="form.ocrIdCardType"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                  />
+                </el-form-item>
+                <el-form-item label="发票证件号码：" prop="ocrIdCardNo">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.ocrIdCardNo"
+                    clearable
+                  />
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true" class="form-detail" label-width="150px" v-show="!(isEditing || !_id)">
+                <el-form-item label="发票VIN号：">
+                  {{ form.invoiceVin }}
+                </el-form-item>
+                <el-form-item label="开票名称：">
+                  {{ form.invoiceName }}
+                </el-form-item>
+                <el-form-item label="发票号码：">
+                  {{ form.invoiceNo }}
+                </el-form-item>
+                <el-form-item label="开票日期：">
+                  {{ form.invoiceTime }}
+                </el-form-item>
+                <el-form-item label="开票金额：">
+                  {{ form.invoiceAmount }}
+                </el-form-item>
+                <el-form-item label="发票产地：">
+                  {{ form.invoiceVehiclePlaceOrigin }}
+                </el-form-item>
+                <el-form-item label="发票厂牌型号：">
+                  {{ form.invoiceBrandModel }}
+                </el-form-item>
+                <el-form-item label="发票合格证号：">
+                  {{ form.invoiceCertificateNo }}
+                </el-form-item>
+                <el-form-item label="发票发动机号：">
+                  {{ form.invoiceEngineNumber }}
+                </el-form-item>
+                <el-form-item label="发票证件类型：">
+                  {{ form.ocrIdCardTypeLabel }}
+                </el-form-item>
+                <el-form-item label="发票证件号码：">
+                  {{ form.ocrIdCardNo }}
+                </el-form-item>
               </el-form>
             </div>
           </section>
@@ -472,6 +467,38 @@
                   />
                 </el-form-item>
               </el-form>
+              <el-form :inline="true" class="form-detail" label-width="150px" v-show="!(isEditing || !_id)">
+                <el-form-item label="行驶证VIN号：">
+                  {{ form.drivingLicenseVin }}
+                </el-form-item>
+                <el-form-item label="行驶证所有人：">
+                  {{ form.drivingLicenseOwner }}
+                </el-form-item>
+                <el-form-item label="车牌号码：">
+                  {{ form.plateNo }}
+                </el-form-item>
+                <el-form-item label="上牌日期：">
+                  {{ form.plateDate }}
+                </el-form-item>
+                <el-form-item label="上牌省份：">
+                  {{ form.provinceName }}
+                </el-form-item>
+                <el-form-item label="上牌城市：">
+                  {{ form.cityName }}
+                </el-form-item>
+                <el-form-item label="上牌区/县：">
+                  {{ form.districtName }}
+                </el-form-item>
+                <el-form-item label="车辆注册地址：">
+                  {{ form.vehicleRegisterAddress }}
+                </el-form-item>
+                <el-form-item label="行驶证编号：">
+                  {{ form.drivingLicenseNumber }}
+                </el-form-item>
+                <el-form-item label="行驶证品牌型号：">
+                  {{ form.drivingLicenseBrandModel }}
+                </el-form-item>
+              </el-form>
             </div>
           </section>
           <section class="common-section">
@@ -567,6 +594,35 @@
                 />
               </el-form-item>
             </el-form>
+            <el-form :inline="true" class="form-detail" label-width="150px" v-show="!(isEditing || !_id)">
+              <el-form-item label="提交时间：">
+                {{ form.submitTime }}
+              </el-form-item>
+              <el-form-item label="提交人：">
+                {{ form.submitUser }}
+              </el-form-item>
+              <el-form-item label="审核时间：">
+                {{ form.auditTime }}
+              </el-form-item>
+              <el-form-item label="审核人：">
+                {{ form.auditUser }}
+              </el-form-item>
+              <el-form-item label="撤回时间：">
+                {{ form.withdrawTime }}
+              </el-form-item>
+              <el-form-item label="撤回人：">
+                {{ form.withdrawUser }}
+              </el-form-item>
+              <el-form-item label="审核意见：">
+                {{ form.auditRemark }}
+              </el-form-item>
+              <el-form-item label="审核状态：">
+                {{ form.auditStatusLabel }}
+              </el-form-item>
+              <el-form-item label="是否自动审核：">
+                {{ form.autoAuditStatusLabel}}
+              </el-form-item>
+            </el-form>
           </div>
         </section>
           <section class="common-section" v-if="_id">
@@ -591,6 +647,8 @@
 
 <script>
 import { getDetail, addOrUpdate, effectiveVinValidate } from '@/api/vehretail/orderManager/soldPlateInfo/index';
+import { getEffectiveByVin as getDeliveryInvoiceByVin } from '@/api/vehretail/orderManager/deliveryInvoice/index';
+import { getEffectiveByVin as getSpecialSalesReportByVin } from '@/api/vehretail/orderManager/specialVehicleSalesReport/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -649,6 +707,17 @@ const defaultForm = {
   vehicleRegisterAddress: '',
   drivingLicenseNumber: '',
   drivingLicenseBrandModel: '',
+  invoiceVin: '',
+  invoiceName: '',
+  invoiceNo: '',
+  invoiceTime: '',
+  invoiceAmount: '',
+  invoiceVehiclePlaceOrigin: '',
+  invoiceBrandModel: '',
+  invoiceCertificateNo: '',
+  invoiceEngineNumber: '',
+  ocrIdCardType: '',
+  ocrIdCardNo: '',
   submitTime: '',
   submitUserId: '',
   submitUser: '',
@@ -888,6 +957,39 @@ export default {
         dataSource: [
           { required: false, message: '请输入数据来源，150-新销服; 10-老销服', trigger: 'change' }
         ],
+        invoiceVin: [
+          { required: false, message: '请输入发票VIN号', trigger: 'change' }
+        ],
+        invoiceName: [
+          { required: false, message: '请输入开票名称', trigger: 'change' }
+        ],
+        invoiceNo: [
+          { required: false, message: '请输入发票号码', trigger: 'change' }
+        ],
+        invoiceTime: [
+          { required: false, message: '请选择开票日期', trigger: 'change' }
+        ],
+        invoiceAmount: [
+          { required: false, message: '请输入开票金额', trigger: 'change' }
+        ],
+        invoiceVehiclePlaceOrigin: [
+          { required: false, message: '请输入发票产地', trigger: 'change' }
+        ],
+        invoiceBrandModel: [
+          { required: false, message: '请输入发票厂牌型号', trigger: 'change' }
+        ],
+        invoiceCertificateNo: [
+          { required: false, message: '请输入发票合格证号', trigger: 'change' }
+        ],
+        invoiceEngineNumber: [
+          { required: false, message: '请输入发票发动机号', trigger: 'change' }
+        ],
+        ocrIdCardType: [
+          { required: false, message: '请选择发票证件类型', trigger: 'change' }
+        ],
+        ocrIdCardNo: [
+          { required: false, message: '请输入发票证件号码', trigger: 'change' }
+        ],
       }
     };
   },
@@ -987,13 +1089,16 @@ export default {
         effectiveVinValidate(val).then(res => {
           clearForm = false;
           this.refreshVehicleProfileInfo(val, selectedOption);
+          // 获取关联整车开票
+          // 获取关联特殊车辆提报
         });
       }
       if (clearForm) {
         // 清空表单
         this.$refs.ruleForm.resetFields();
-        // this.$refs.ruleForm1.resetFields();
-        // this.$refs.ruleForm2.resetFields();
+        this.$refs.ruleForm1.resetFields();
+        this.$refs.ruleForm2.resetFields();
+        this.$refs.ruleForm3.resetFields();
       }
     },
     refreshVehicleProfileInfo (val, selectedOption) {
