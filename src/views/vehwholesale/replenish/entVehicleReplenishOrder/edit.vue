@@ -275,14 +275,14 @@
                     <fetch-select
                         filterable
                         clearable
-                        v-model="form.cityCode"
+                        v-model="form.cityName"
                         :options="cityOptions"
                         value-key="code"
                         label-key="name"
                         @change="handleChangeDistrict"
                       />
                 </el-form-item>
-                <el-form-item label="区/县：" prop="districtName">
+                <el-form-item label="区/县：" prop="districtCode">
                    <fetch-select
                         filterable
                         clearable
@@ -924,8 +924,8 @@ export default {
       this.form.provinceCode = row.storeWarehouseResp.provinceCode;
       this.form.cityCode = row.storeWarehouseResp.cityCode;
       this.form.districtCode = row.storeWarehouseResp.countyCode;
-      this.form.saleDealerName = row.storeWarehouseResp.storeName;
-      this.form.saleDealerCode = row.storeWarehouseResp.storeCode;
+      this.form.saleDealerName = row.storeName;
+      this.form.saleDealerCode = row.storeCode;
       this.form.address = row.storeWarehouseResp.warehouseDetailAddress;
       this.form.pickupContactName = row.storeWarehouseResp.contacts;
       this.form.pickupContactMobile = row.storeWarehouseResp.contactPhone;

@@ -213,14 +213,12 @@
         </el-form-item>
           <el-form-item label="结算资金类型">
             <fetch-select
-              :request="fetchOptions"
-              enumCode="vw_fundtype"
-              v-model="form.settleFundTypes"
-              placeholder="请选择"
-              clearable
-              multiple
-              filterable
-            />
+                   :options="settleFundTypeOptions"
+                    v-model="form.settleFundTypes"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                  />
         </el-form-item>
             <el-form-item label="确认时间">
           <el-date-picker
@@ -506,6 +504,7 @@ export default {
       options: [],
       modelList: [],
       ALLOWED_STATUS: [0, 11],
+      settleFundTypeOptions: [],
       ALLOWED_CANCELALLOCATEVEHICLE_STATUS: [1, 5, 4],
       ALLOW_REFRESH: [0, 1, 4, 5, 11],
       SETTLED_SUCCESSFULLY_STATUS: [3],
@@ -622,8 +621,21 @@ export default {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
     this.getCity();
+    this.fetchSettleFundTypeOptions();
   },
   methods: {
+    async fetchSettleFundTypeOptions () {
+      const response = await getEnum('vw_fundtype');
+      this.settleFundTypeOptions = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['1050', '1010', '2010'].includes(codeStr + '');
+      }).map(item => {
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
+    },
     handleRefreshPriceCoefficient () {
       refreshPriceItem({}).then(() => {
         this.$message({
