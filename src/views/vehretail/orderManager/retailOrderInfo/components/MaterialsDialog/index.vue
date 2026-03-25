@@ -278,6 +278,7 @@ export default {
       try {
         const params = {
           ...this.searchForm,
+          deposit: this.row.depositAmount,
           pageNum: this.currentPage,
           pageSize: this.pageSize
         };
