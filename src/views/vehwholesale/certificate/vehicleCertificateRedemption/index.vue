@@ -206,10 +206,10 @@ export default {
   },
   data () {
     return {
-      pageTitle: '新页面',
+      pageTitle: '车辆合格证赎回',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-vehicleCertificateRedemption',
+      moduleKey: 'AISVW-vehicleCertificateRedemption',
       form: {
         ...defaultForm
       },
@@ -369,7 +369,7 @@ export default {
       }
       exportTable({
         businessType: '新页面',
-        dataFetchPath: 'vehwholesale/web/certificate/vehicleCertificateRedemption/page',
+        dataFetchPath: 'vw/web/certificate/vehicleCertificateRedemption/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

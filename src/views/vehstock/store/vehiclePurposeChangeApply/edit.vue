@@ -3,7 +3,7 @@
     <template #left>
       <!-- TIPS: 如果需要竖排，direction="vertical" -->
       <edit-base-container ref="containerRef" :id="_id" :title="title" :isEditing.sync="isEditing" :form.sync="form"
-        :originalForm.sync="originalForm" :submitRequest="submitRequest" :detailRequest="detailRequest">
+        :originalForm.sync="originalForm" :submitRequest="submitRequest" :detailRequest="detailRequest" :showEditBtn="false">
         <template #status>
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
@@ -22,10 +22,22 @@
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit"
                 v-show="isEditing || !_id">
                 <el-form-item label="申请单号：" prop="applyNo">
-                  <el-input placeholder="请输入" v-model="form.applyNo" clearable />
+                  <el-input placeholder="请输入" v-model="form.applyNo" clearable disabled />
                 </el-form-item>
                 <el-form-item label="申请门店编码：" prop="dealerCode">
-                  <el-input placeholder="请输入" v-model="form.dealerCode" clearable />
+                  <fetch-select
+                    :remote-method="getDealerDetailByCode"
+                    remote
+                    v-model="form.dealerCode"
+                    placeholder="请选择"
+                    labelKey="applyUserStoreName"
+                    valueKey="applyUserStoreCode"
+                    clearable
+                    filterable
+                  />
+                </el-form-item>
+                <el-form-item label="申请人：" prop="creatorName">
+                  <el-input placeholder="请输入" v-model="form.creatorName" clearable disabled />
                 </el-form-item>
                 <el-form-item label="用途变更类型：" prop="changeType">
                   <fetch-select :request="fetchOptions" enumCode="vehstock_change_type" v-model="form.changeType"
@@ -54,27 +66,38 @@
               </el-form>
             </div>
           </section>
-          <section class="common-section" v-if="_id">
+          <section class="common-section">
             <div class="common-section-header">
-              <h2>子表标题</h2>
+              <h2>门店库存调拨明细</h2>
             </div>
             <div class="common-section-body">
               <div class="common-section-header">
                 <div class="ais-select-group">
                   <fetch-select style="width: 300px;" :remote-method="queryListData" remote placeholder="请选择" clearable
-                    value-key="id" label-key="name" @change="handleAddTableData" />
+                    value-key="id" label-key="vinDesc" :disabled="!(isEditing || !_id)" @change="handleAddTableData" />
                   <el-button type="primary" size="small">添加</el-button>
                 </div>
               </div>
               <div class="common-section-table">
-                <vxe-table ref="tableRef" stripe :data="tableData" show-overflow resizable border="inner" size="medium"
+                <vxe-table ref="tableRef" stripe :data="form.vinList" show-overflow resizable border="inner" size="medium"
                   min-height="0" max-height="400px">
-                  <vxe-column field="name" title="名称" min-width="30%" />
-                  <vxe-column field="age" title="年龄" min-width="30%" />
-                  <vxe-column field="email" title="邮箱" min-width="30%" />
-                  <vxe-column title="操作" width="100" v-if="canDelete">
+                  <vxe-column field="vin" title="VIN" min-width="7%" />
+                  <vxe-column field="poentryOn" title="入库时间" min-width="7%" />
+                  <vxe-column field="reservedLabel" title="原是否预留" min-width="7%" />
+                  <vxe-column field="changedReservedLabel" title="变更后是否预留" min-width="140" />
+                  <vxe-column field="materialsCode" title="整车物料" min-width="7%" />
+                  <vxe-column field="materialsDesc" title="物料描述" min-width="7%" />
+                  <vxe-column field="drivingRangeName" title="选配续航" min-width="7%" />
+                  <vxe-column field="rangePowerName" title="选配动力" min-width="7%" />
+                  <vxe-column field="exteriorName" title="外饰" min-width="7%" />
+                  <vxe-column field="interiorName" title="内饰" min-width="7%" />
+                  <vxe-column field="modelName" title="车型" min-width="7%" />
+                  <vxe-column field="wheelHubName" title="选配轮毂" min-width="7%" />
+                  <vxe-column field="remark" title="备注" min-width="7%" />
+                  <vxe-column field="createTime" title="创建时间" min-width="7%" />
+                  <vxe-column title="操作" width="100" fixed="right" v-if="isEditing || !_id">
                     <template #default="{ rowIndex }">
-                      <el-popconfirm title="确定要删除吗？" @confirm="handleDeleteRow(rowIndex)">
+                      <el-popconfirm title="确定要删除吗？" @confirm="handleDeleteRow(rowIndex)" confirm-button-text="删除" confirm-button-type="danger">
                         <span slot="reference" type="text" size="small" class="btn-delete">删除</span>
                       </el-popconfirm>
                     </template>
@@ -99,6 +122,7 @@
 
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehstock/store/vehiclePurposeChangeApply/index';
+import { getList } from '@/api/vehstock/store/storeInventoryLedger/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -107,6 +131,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { getApplyUserStoreList, getLoginUser } from '@/libs/api/common';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -169,7 +194,7 @@ export default {
         }
       },
       immediate: true
-    }
+    },
   },
   data () {
     const form = this.getDefautlForm();
@@ -190,7 +215,7 @@ export default {
       ],
       rules: {
         applyNo: [
-          { required: true, message: '请输入申请单号', trigger: 'change' }
+          { required: false, message: '请输入申请单号', trigger: 'change' }
         ],
         dealerCode: [
           { required: true, message: '请输入申请门店编码', trigger: 'change' }
@@ -198,16 +223,13 @@ export default {
         applyUser: [
           { required: true, message: '请输入申请人', trigger: 'change' }
         ],
-        changeType: [
-          { required: true, message: '请选择用途变更类型', trigger: 'change' }
-        ],
-        applyDesc: [
-          { required: true, message: '请输入申请说明', trigger: 'change' }
-        ],
       }
     };
   },
   mounted () {
+    if (!this._id) {
+      this.getLoginUser();
+    }
   },
   methods: {
     detailRequest () {
@@ -217,7 +239,8 @@ export default {
       }
     },
     submitRequest () {
-      return addOrUpdate({ ...this.form });
+      const vinList = this.form.vinList.map(item => item.vin);
+      return addOrUpdate({ ...this.form, vinList });
     },
     // 打开侧边栏
     openPane () {
@@ -237,13 +260,13 @@ export default {
     queryListData (queryString) {
       return new Promise(resolve => {
         // 根据需求调用接口
-        // sparePartList({ partCodeOrNameLike: queryString, status: 1, limitSize: 20 }).then(res => {
-        //   const list = res || [];
-        //   resolve(list);
-        // });
-        resolve([
-          { id: 1, name: 'test', age: 25, email: 'test@example.com' }
-        ]);
+        getList({ vin: queryString }).then(res => {
+          const list = res.records?.map(item => ({
+            ...item,
+            vinDesc: item.vin + '-' + item.materialsDesc,
+          })) || [];
+          resolve(list);
+        });
       });
     },
     // 新增子表数据
@@ -252,29 +275,23 @@ export default {
         this.$message.warning('请先选择数据');
         return;
       }
+
       // 检查是否已存在
-      const exists = this.tableData.some(item => item.id === record.id);
+      const exists = this.form.vinList.some(item => item.id === record.id);
       if (exists) {
         this.$message.warning('请勿重复添加');
         return;
       }
       // 根据需求调用接口
-      this.tableData.push(record);
-      // addPartItem({
-      //   maintenancePartId: this._id,
-      //   partsCode: record.partCode,
-      //   partsName: record.partName,
-      //   partsId: record.id,
-      // }).then(res => {
-      //   this.$message.success('添加成功');
-      //   this.detailRequest();
-      // });
+      record.changedReservedLabel = this.form.changeType === '1' ? '是' : '否';
+      this.form.vinList.push(record);
     },
     getDefautlForm () {
       // TIPS: 此处可添加表单默认值，如当前用户信息等
       // const userInfo = this.$store.state.user.userInfo;
       return {
-        ...defaultForm
+        ...defaultForm,
+        vinList: [],
         // ownerId: userInfo.userId,
         // ownerName: userInfo.userName,
       };
@@ -288,7 +305,17 @@ export default {
         return getEnum(code);
       }
       return [];
-    }
+    },
+    // 查询申请人门店 get请求
+    async getDealerDetailByCode () {
+      const res = await getApplyUserStoreList();
+      return res || [];
+    },
+    async getLoginUser () {
+      const res = await getLoginUser();
+      this.form.creatorName = res?.username || '';
+      this.form.creator = res?.userId || '';
+    },
   }
 };
 </script>

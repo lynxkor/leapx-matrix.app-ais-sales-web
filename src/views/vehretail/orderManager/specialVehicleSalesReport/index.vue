@@ -48,7 +48,16 @@
       </el-form-item>
       <template v-if="show">
         <el-form-item label="车型名称">
-          <el-input v-model="form.modelName" placeholder="请输入车型名称" />
+          <fetch-select
+            filterable
+            clearable
+            remote
+            v-model="form.modelName"
+            :remote-method="vehicleModelSearch"
+            value-key="id"
+            label-key="name"
+            placeholder="请选择"
+          />
         </el-form-item>
         <el-form-item label="车辆属性">
           <fetch-select
@@ -140,7 +149,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, submitReport, cancelReport, revokeReport, adjustVehicleAttribute, batchCancelReports, batchRevokeReports } from '@/api/vehretail/orderManager/specialVehicleSalesReport/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo, listVehicleModel } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -673,12 +682,20 @@ export default {
         this.getData();
       });
     },
-    async saleDealerSearch () {
+    async saleDealerSearch (val) {
       const params = {
         isSales: true,
+        keyword: val,
         pageSize: 5000
       };
       return await listOrgStoreInfo(params);
+    },
+    async vehicleModelSearch (val) {
+      const params = {
+        modelNameLike: val,
+        pageSize: 100
+      };
+      return await listVehicleModel(params);
     }
   }
 };

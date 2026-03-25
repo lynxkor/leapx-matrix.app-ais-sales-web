@@ -10,7 +10,19 @@
         <el-input placeholder="请输入" v-model="form.applyNo" clearable />
       </el-form-item>
       <el-form-item label="申请门店编码" v-show="this.visibleCount === 3 || show">
-        <el-input placeholder="请输入" v-model="form.dealerCode" clearable />
+        <fetch-select
+          :remote-method="getDealerListByName"
+          remote
+          v-model="form.dealerCodeList"
+          placeholder="请输入门店编码或名称"
+          labelKey="storeName"
+          valueKey="storeCode"
+          subLabelKey="storeCode"
+          clearable
+          filterable
+          multiple
+          collapse-tags
+        />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="用途变更类型">
@@ -25,8 +37,19 @@
           <el-date-picker v-model="form.createTime" type="daterange" :picker-options="pickerOptions"
             value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期" end-placeholder="结束日期" />
         </el-form-item>
-        <el-form-item label="车型ID">
-          <el-input placeholder="请输入" v-model="form.modelId" clearable />
+        <el-form-item label="车型">
+          <fetch-select
+            v-model="form.modelIdList"
+            remote
+            placeholder="请输入"
+            labelKey="name"
+            valueKey="id"
+            clearable
+            filterable
+            multiple
+            collapse-tags
+            :remote-method="getModelListByName"
+          />
         </el-form-item>
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
@@ -36,13 +59,13 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i
           class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <!-- <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete"
         :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
         :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)"
-        :disabled="selectionList.length === 0">批量停用</el-button>
+        :disabled="selectionList.length === 0">批量停用</el-button> -->
     </div>
     <div class="ais-table-c">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed centralized
@@ -62,7 +85,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/store/vehiclePurposeChangeApply/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -71,6 +94,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, getEndOfDayString, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import { listOrgStoreInfo } from '@/libs/api/common';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -353,7 +377,15 @@ export default {
         apiFunc: enableItem,
         refreshFunc: this.getData
       });
-    }
+    },
+    // 查询门店编码或名称
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ keyword: params });
+    },
+    // 查询车型名称
+    async getModelListByName (params) {
+      return listVehicleModel({ modelNameLike: params });
+    },
   }
 };
 </script>

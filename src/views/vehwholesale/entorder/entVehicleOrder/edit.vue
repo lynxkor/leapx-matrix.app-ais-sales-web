@@ -567,10 +567,10 @@
                     disabled
                   />
                 </el-form-item>
-                 <el-form-item label="同步结果：" prop="needAsyncSap">
+                 <el-form-item label="是否需要同步SAP：" prop="needAsyncSap">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.needAsyncSap"
+                    v-model="form.needAsyncSapLabel"
                     clearable
                     disabled
                   />
@@ -683,8 +683,11 @@
                 <el-form-item label="同步状态：" prop="orderSyncStatusLabel">
                   {{ form.orderSyncStatusLabel }}
                 </el-form-item>
-                <el-form-item label="同步结果：" prop="needAsyncSap">
-                  {{ form.needAsyncSap }}
+                <el-form-item label="是否需要同步SAP：" prop="needAsyncSapLabel">
+                  {{ form.needAsyncSapLabel }}
+                </el-form-item>
+                <el-form-item label="同步信息：" prop="syncSapMsg">
+                  {{ form.syncSapMsg }}
                 </el-form-item>
                 <el-form-item label="退车标识：" prop="needAsyncSapLabel">
                   {{ form.needAsyncSapLabel }}
@@ -1037,7 +1040,7 @@ export default {
       vinAllocateVehicleItem(params).then(() => {
         this.$message({
           type: 'success',
-          message: '成功'
+          message: '提交成功'
         });
         this.getData();
         this.showvinAllocateVehicleDialog = false;
@@ -1055,7 +1058,7 @@ export default {
         }).then(() => {
           this.$message({
             type: 'success',
-            message: '取消配车成功!'
+            message: '提交成功!'
           });
           this.getData();
         });
@@ -1065,14 +1068,14 @@ export default {
       batchCancelSettleSubmit({
         idSet: [this._id],
       }).then(() => {
-        this.$message.success('取消结算成功');
+        this.$message.success('提交成功');
       });
     },
     handlebatchSettleSubmit () {
       batchSettleSubmit({
         idSet: [this._id],
       }).then(() => {
-        this.$message.success('结算成功');
+        this.$message.success('提交成功');
       });
     },
     handleCheckConfirm () {},

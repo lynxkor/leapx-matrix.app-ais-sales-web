@@ -8,6 +8,7 @@
         :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
+        :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
         :showEditBtn="form.applyStatus === 1010 || form.applyStatus === 1040"
@@ -1081,8 +1082,8 @@ export default {
     async submitRequest () {
       // 变更信息不能全部为空
       if (!this.form.newBuyerName && !this.form.newBuyerPhone && !this.form.newIdCardType && !this.form.newIdCardNo && !this.form.newAgentName) {
-        this.$message.error('变更信息不能全部为空');
-        return;
+        this.$message.warning('变更信息不能全部为空');
+        return Promise.reject(new Error('变更信息不能全部为空'));
       }
       if ((this.form.applyStatus === 1010 || this.form.applyStatus === 1040) && this._id) {
         // 等待一下确保文件列表已更新

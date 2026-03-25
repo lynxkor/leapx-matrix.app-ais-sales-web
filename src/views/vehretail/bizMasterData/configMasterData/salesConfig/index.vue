@@ -16,6 +16,12 @@
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="formData" :rules="rules" ref="ruleForm2" label-width="160px" class="form-edit">
                 <el-form-item label="销售顾问配置" prop="saleDeliveryUserConfigName">
+                  <el-tooltip
+                    :content="tooltipContentMap.saleUser.join(', ')"
+                    placement="top"
+                    effect="light"
+                    :disabled="!tooltipContentMap.saleUser || tooltipContentMap.saleUser.length === 0"
+                  >
                     <fetch-select
                       ref="saleUserSelect"
                       :remote-method="listConfig"
@@ -31,9 +37,16 @@
                       :disabled="!showEditBtn"
                       @change="(val, row) => handleChange(val, row, 'saleUser')"
                     />
+                  </el-tooltip>
                 </el-form-item>
                 <el-form-item label="交付顾问配置" prop="deliveryUserConfigName">
-                  <fetch-select
+                  <el-tooltip
+                    :content="tooltipContentMap.deliveryUser.join(', ')"
+                    placement="top"
+                    effect="light"
+                    :disabled="!tooltipContentMap.deliveryUser || tooltipContentMap.deliveryUser.length === 0"
+                  >
+                    <fetch-select
                       ref="deliveryUserSelect"
                       :remote-method="listConfig"
                       remote
@@ -48,9 +61,16 @@
                       :disabled="!showEditBtn"
                       @change="(val, row) => handleChange(val, row, 'deliveryUser')"
                     />
+                  </el-tooltip>
                 </el-form-item>
                 <el-form-item label="交付衍生工程师配置" prop="deliveryDeriveConfigName">
-                  <fetch-select
+                  <el-tooltip
+                    :content="tooltipContentMap.deliveryDerive.join(', ')"
+                    placement="top"
+                    effect="light"
+                    :disabled="!tooltipContentMap.deliveryDerive || tooltipContentMap.deliveryDerive.length === 0"
+                  >
+                    <fetch-select
                       ref="deliveryDeriveSelect"
                       :remote-method="listConfig"
                       remote
@@ -65,6 +85,7 @@
                       :disabled="!showEditBtn"
                       @change="(val, row) => handleChange(val, row, 'deliveryDerive')"
                     />
+                  </el-tooltip>
                 </el-form-item>
               </el-form>
             </div>
@@ -141,15 +162,12 @@
 <script>
 import { getRawList, addOrUpdate, getsalesConfig } from '@/api/vehretail/bizMasterData/configMasterData/salesConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-// import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
-// import AttachedFilesDialog from './attachedFilesDialog.vue';
-// Deleted: import commonMixins from '@/libs/mixins/commonMixins';
-// import { Divider } from '@leapmotor/element-ui';
+import { debounce } from '@/libs/utils/index';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -221,6 +239,12 @@ export default {
       originalConfigData: [], // 存储查询后原始数据的快照（用于取消时恢复和提交时比对）
       // 存储用户修改过的配置（key: salesConfigKey, value: saleConfigValue）
       modifiedConfigMap: {},
+      // 存储 tooltip 显示的内容（key: configKey, value: 选中的 name 数组）
+      tooltipContentMap: {
+        saleUser: [],
+        deliveryUser: [],
+        deliveryDerive: []
+      },
       rules: {
         saleDeliveryUserConfigName: [
           { required: true, message: '请选择销售顾问配置', trigger: 'change' }
@@ -264,13 +288,20 @@ export default {
       let roleData = [];
       if (Array.isArray(val)) {
         // 多选情况：val 是选中的 value 数组（所有选中项）
-        roleData = val.map(v => {
-          const option = Array.isArray(row) ? row.find(opt => opt.authorityCode === v) : null;
-          return {
-            roleName: option ? option.authorityName : '',
+        // row 也是数组，每个元素是选中的完整选项对象
+        if (Array.isArray(row) && row.length > 0) {
+          // row 已经是选中的完整选项，直接使用
+          roleData = row.map(opt => ({
+            roleName: opt.authorityName || '',
+            roleCode: opt.authorityCode || opt.value || ''
+          }));
+        } else {
+          // 如果 row 不是数组，只用 val 无法获取 roleName
+          roleData = val.map(v => ({
+            roleName: '',
             roleCode: v
-          };
-        });
+          }));
+        }
       } else if (val !== undefined && val !== null && val !== '') {
         // 单选情况（BooleanEnum 等）
         roleData = [{
@@ -280,7 +311,9 @@ export default {
       }
       // 更新 rawConfigData 中的 saleConfigValue
       configItem.saleConfigValue = JSON.stringify(roleData);
-      console.log('更新后的 saleConfigValue:', configItem.saleConfigValue);
+      // 更新 tooltip 显示的内容（数组格式）
+      this.tooltipContentMap[configKey] = roleData.map(r => r.roleName).filter(name => name);
+      console.log('更新后的 tooltipContent:', this.tooltipContentMap[configKey]);
     },
     getRawList () {
       getRawList().then(res => {
@@ -361,9 +394,9 @@ export default {
         });
       }).catch(() => {});
     },
-    async listConfig (query) {
+    listConfig: debounce(function (query) {
       return getsalesConfig({ authorityName: query, pageNum: 1, pageSize: 20 });
-    },
+    }, 300),
     // 初始化formData用于表单验证规则
     initFormData () {
       this.formData = {
@@ -374,6 +407,12 @@ export default {
         financeStatus: this.getConfigValue('finance'),
         phoneRegisterStatus: this.getConfigValue('phoneRegister'),
         deliveryAssignmentStatus: this.getConfigValue('deliveryAssignment')
+      };
+      // 初始化 tooltip 内容
+      this.tooltipContentMap = {
+        saleUser: this.getTooltipContent('saleUser'),
+        deliveryUser: this.getTooltipContent('deliveryUser'),
+        deliveryDerive: this.getTooltipContent('deliveryDerive')
       };
     },
     // 根据salesConfigKey获取对应的值用于表单绑定
@@ -391,6 +430,18 @@ export default {
       } catch (e) {
         console.error('Error parsing config value:', e);
         return '';
+      }
+    },
+    // 获取 tooltip 显示的内容（选中的 name 数组）
+    getTooltipContent (configKey) {
+      const item = this.rawConfigData.find(i => i.salesConfigKey === configKey);
+      if (!item || !item.saleConfigValue) return [];
+
+      try {
+        const configValue = JSON.parse(item.saleConfigValue);
+        return configValue.map(role => role.roleName).filter(name => name);
+      } catch (e) {
+        return [];
       }
     },
     // 封装表单校验为 Promise
@@ -415,14 +466,14 @@ export default {
         await addOrUpdate(this.rawConfigData);
         this.$message({
           type: 'success',
-          message: '成功!'
+          message: '提交成功!'
         });
         this.showEditBtn = !this.showEditBtn;
         this.getRawList();
       } catch (error) {
         this.$message({
           type: 'error',
-          message: '失败!'
+          message: '提交失败!'
         });
       }
     },

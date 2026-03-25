@@ -23,168 +23,54 @@
         <el-main>
           <section class="common-section">
             <div class="common-section-header">
-              <h2>基础信息</h2>
+              <h2>基本信息</h2>
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="主键：" prop="id">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.id"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="创建者：" prop="creator">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.creator"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.creatorName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.createTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  />
-                </el-form-item>
-                <el-form-item label="修改者：" prop="modifier">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.modifier"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="修改者名称：" prop="modifierName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.modifierName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="修改时间：" prop="updateTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.updateTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  />
-                </el-form-item>
-                <el-form-item label="备注：" prop="remark">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.remark"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="审核状态 1010-草稿 1020-已提交 1030-已通过 1040-已驳回 1050-已作废：" prop="status">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
-                    v-model="form.status"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                  />
-                </el-form-item>
-                <el-form-item label="状态变更描述：" prop="statusDesc">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
-                    v-model="form.statusDesc"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                  />
-                </el-form-item>
-                <el-form-item label="整车上牌记录编号：" prop="soldPlateCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.soldPlateCode"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="交车单ID：" prop="deliveryOrderId">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.deliveryOrderId"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="零售订单ID：" prop="retailOrderId">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.retailOrderId"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="零售订单号：" prop="retailOrderCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.retailOrderCode"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="已售上牌资料来源 report-特殊销售提报 delivery-交车单 plate-已售上牌新增：" prop="soldPlateSource">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.soldPlateSource"
-                    clearable
-                  />
-                </el-form-item>
                 <el-form-item label="VIN码：" prop="vin">
-                  <el-input
-                    placeholder="请输入"
+                  <fetch-select
+                    filterable
+                    clearable
+                    remote
                     v-model="form.vin"
-                    clearable
+                    :remote-method="vehicleProfileSearch"
+                    @change="vehicleProfileChange"
+                    value-key="vin"
+                    label-key="vin"
+                    placeholder="请选择"
+                    :disabled="form.id && form.id.length > 0"
                   />
                 </el-form-item>
-                <el-form-item label="车型ID：" prop="modelId">
-                  <el-input
-                    placeholder="请输入"
+                <el-form-item label="车型名称：" prop="modelId">
+                  <fetch-select
+                    filterable
+                    clearable
+                    remote
+                    reserve-keyword
                     v-model="form.modelId"
-                    clearable
+                    :remote-method="vehicleModelSearch"
+                    :params="form.modelName"
+                    @change="vehicleModelChange"
+                    value-key="id"
+                    label-key="name"
+                    placeholder="请选择"
+                    disabled
                   />
                 </el-form-item>
-                <el-form-item label="车型名称：" prop="modelName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.modelName"
+                <el-form-item label="门店：" prop="saleDealerCode">
+                  <fetch-select
+                    filterable
                     clearable
-                  />
-                </el-form-item>
-                <el-form-item label="门店id：" prop="saleOrgId">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.saleOrgId"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="门店编码：" prop="saleDealerCode">
-                  <el-input
-                    placeholder="请输入"
+                    remote
+                    reserve-keyword
                     v-model="form.saleDealerCode"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="门店名称：" prop="saleDealerName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.saleDealerName"
-                    clearable
+                    :remote-method="saleDealerSearch"
+                    :params="form.saleDealerName"
+                    @change="saleDealerChange"
+                    value-key="storeCode"
+                    label-key="storeName"
+                    placeholder="请选择"
                   />
                 </el-form-item>
                 <el-form-item label="车主姓名：" prop="carBuyerName">
@@ -201,10 +87,10 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="证件类型：身份证-1, 护照-2, 驾驶证-3, 港澳来往内地通行证-4, 军官证-5, 组织机构代码-6, 统一社会信用代码-7, 台湾通行证-20：" prop="idCardType">
+                <el-form-item label="证件类型：" prop="idCardType">
                   <fetch-select
                     :request="fetchOptions"
-                    enumCode="xxx"
+                    enumCode="vehretail_id_card_type"
                     v-model="form.idCardType"
                     placeholder="请选择"
                     clearable
@@ -218,25 +104,29 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="车辆用途 10-私家车 20-公户车 30-试乘试驾车 40-大客户用车 50-营运-预约出租客运 100-其他：" prop="vehiclePurpose">
-                  <el-input
-                    placeholder="请输入"
+                <el-form-item label="车辆用途：" prop="vehiclePurpose">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vehicle_purpose_type"
                     v-model="form.vehiclePurpose"
+                    placeholder="请选择车辆用途"
                     clearable
+                    filterable
                   />
                 </el-form-item>
-                <el-form-item label="公告车型ID：" prop="carSaleSversionId">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.carSaleSversionId"
+                <el-form-item label="公告车型：" prop="carSalesVersionId">
+                  <fetch-select
+                    filterable
                     clearable
-                  />
-                </el-form-item>
-                <el-form-item label="公告车型名称：" prop="carSalesVersionName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.carSalesVersionName"
-                    clearable
+                    remote
+                    reserve-keyword
+                    v-model="form.carSalesVersionId"
+                    :remote-method="vehicleSalesVersionSearch"
+                    :params="form.carSalesVersionName"
+                    @change="vehicleSalesVersionChange"
+                    value-key="id"
+                    label-key="name"
+                    placeholder="请选择"
                   />
                 </el-form-item>
                 <el-form-item label="产地：" prop="vehiclePlaceOrigin">
@@ -244,6 +134,7 @@
                     placeholder="请输入"
                     v-model="form.vehiclePlaceOrigin"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="发动机号：" prop="enginenNumber">
@@ -260,208 +151,36 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="整车开票记录编号：" prop="invoiceRecordCode">
+                <el-form-item label="整车开票记录：" prop="invoiceRecordCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.invoiceRecordCode"
                     clearable
+                    disabled
                   />
                 </el-form-item>
-                <el-form-item label="特殊车辆销售提报编号：" prop="specialReportCode">
+                <el-form-item label="特殊车辆销售提报：" prop="specialReportCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.specialReportCode"
                     clearable
+                    disabled
                   />
                 </el-form-item>
-                <el-form-item label="行驶证VIN号：" prop="drivingLicenseVin">
+                <el-form-item label="修改时间：" prop="updateTime">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.drivingLicenseVin"
+                    v-model="form.updateTime"
                     clearable
+                    disabled
                   />
                 </el-form-item>
-                <el-form-item label="行驶证所有人：" prop="drivingLicenseOwner">
+                <el-form-item label="创建时间：" prop="createTime">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.drivingLicenseOwner"
+                    v-model="form.createTime"
                     clearable
-                  />
-                </el-form-item>
-                <el-form-item label="车牌号码：" prop="plateNo">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.plateNo"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="上牌日期：" prop="plateDate">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.plateDate"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  />
-                </el-form-item>
-                <el-form-item label="上牌省份编码：" prop="provinceCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.provinceCode"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="上牌省份：" prop="provinceName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.provinceName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="上牌城市编码：" prop="cityCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.cityCode"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="上牌城市：" prop="cityName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.cityName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="上牌区&#x2F;县编码：" prop="districtCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.districtCode"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="上牌区&#x2F;县：" prop="districtName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.districtName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="车辆注册地址：" prop="vehicleRegisterAddress">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.vehicleRegisterAddress"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="行驶证编号：" prop="drivingLicenseNumber">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.drivingLicenseNumber"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="行驶证品牌型号：" prop="drivingLicenseBrandModel">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.drivingLicenseBrandModel"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="提交审核时间：" prop="submitTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.submitTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  />
-                </el-form-item>
-                <el-form-item label="提交人id：" prop="submitUserId">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.submitUserId"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="提交人：" prop="submitUser">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.submitUser"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="审核时间：" prop="auditTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.auditTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  />
-                </el-form-item>
-                <el-form-item label="审核人id：" prop="auditUserId">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.auditUserId"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="审核人：" prop="auditUser">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.auditUser"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="撤回时间：" prop="withdrawTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.withdrawTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  />
-                </el-form-item>
-                <el-form-item label="撤回人id：" prop="withdrawUserId">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.withdrawUserId"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="撤回人：" prop="withdrawUser">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.withdrawUser"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="审核意见：" prop="auditRemark">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.auditRemark"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="是否自动审核 0-否 1-是（默认否）：" prop="autoAuditStatus">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
-                    v-model="form.autoAuditStatus"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                  />
-                </el-form-item>
-                <el-form-item label="数据来源，150-新销服; 10-老销服：" prop="dataSource">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.dataSource"
-                    clearable
+                    disabled
                   />
                 </el-form-item>
               </el-form>
@@ -535,13 +254,13 @@
                 <el-form-item label="车主电话：" prop="carBuyerPhone">
                   {{ form.carBuyerPhone }}
                 </el-form-item>
-                <el-form-item label="证件类型：身份证-1, 护照-2, 驾驶证-3, 港澳来往内地通行证-4, 军官证-5, 组织机构代码-6, 统一社会信用代码-7, 台湾通行证-20：" prop="idCardType">
+                <el-form-item label="证件类型：" prop="idCardType">
                   {{ form.idCardType }}
                 </el-form-item>
                 <el-form-item label="证件号码：" prop="idCardNo">
                   {{ form.idCardNo }}
                 </el-form-item>
-                <el-form-item label="车辆用途 10-私家车 20-公户车 30-试乘试驾车 40-大客户用车 50-营运-预约出租客运 100-其他：" prop="vehiclePurpose">
+                <el-form-item label="车辆用途 ：" prop="vehiclePurpose">
                   {{ form.vehiclePurpose }}
                 </el-form-item>
                 <el-form-item label="公告车型ID：" prop="carSaleSversionId">
@@ -634,7 +353,7 @@
                 <el-form-item label="审核意见：" prop="auditRemark">
                   {{ form.auditRemark }}
                 </el-form-item>
-                <el-form-item label="是否自动审核 0-否 1-是（默认否）：" prop="autoAuditStatus">
+                <el-form-item label="是否自动审核：" prop="autoAuditStatus">
                   {{ form.autoAuditStatus }}
                 </el-form-item>
                 <el-form-item label="数据来源，150-新销服; 10-老销服：" prop="dataSource">
@@ -643,53 +362,220 @@
               </el-form>
             </div>
           </section>
-          <section class="common-section" v-if="_id">
+          <section class="common-section">
             <div class="common-section-header">
-              <h2>子表标题</h2>
+              <h2>发票信息</h2>
             </div>
             <div class="common-section-body">
-              <div class="common-section-header">
-                <div class="ais-select-group">
-                  <fetch-select
-                    style="width: 300px;"
-                    :remote-method="queryListData"
-                    remote
-                    placeholder="请选择"
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm1" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+              </el-form>
+            </div>
+          </section>
+          <section class="common-section">
+            <div class="common-section-header">
+              <h2>行驶证信息</h2>
+            </div>
+            <div class="common-section-body">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm2" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+                <el-form-item label="行驶证VIN号：" prop="drivingLicenseVin">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.drivingLicenseVin"
                     clearable
-                    value-key="id"
-                    label-key="name"
-                    @change="handleAddTableData"
                   />
-                  <el-button type="primary" size="small">添加</el-button>
-                </div>
-              </div>
-              <div class="common-section-table">
-                <vxe-table
-                  ref="tableRef"
-                  stripe
-                  :data="tableData"
-                  show-overflow
-                  resizable
-                  border="inner"
-                  size="medium"
-                  min-height="0"
-                  max-height="400px"
-                >
-                  <vxe-column field="name" title="名称" min-width="30%" />
-                  <vxe-column field="age" title="年龄" min-width="30%" />
-                  <vxe-column field="email" title="邮箱" min-width="30%" />
-                  <vxe-column title="操作" width="100" v-if="canDelete">
-                    <template #default="{ rowIndex }">
-                      <el-popconfirm title="确定要删除吗？" @confirm="handleDeleteRow(rowIndex)">
-                        <span slot="reference" type="text" size="small" class="btn-delete">删除</span>
-                      </el-popconfirm>
-                    </template>
-                  </vxe-column>
-                  <template #empty>
-                    <div class="m-vxe-table-empty-text">{{emptyText}}</div>
-                  </template>
-                </vxe-table>
-              </div>
+                </el-form-item>
+                <el-form-item label="行驶证所有人：" prop="drivingLicenseOwner">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.drivingLicenseOwner"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="车牌号码：" prop="plateNo">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.plateNo"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="上牌日期：" prop="plateDate">
+                  <el-date-picker
+                    :default-time="['00:00:00', '23:59:59']"
+                    v-model="form.plateDate"
+                    :picker-options="pickerOptions"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                  />
+                </el-form-item>
+                <el-form-item label="上牌省份：" prop="provinceCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.provinceCode"
+                    clearable
+                  />
+                </el-form-item>
+<!--                <el-form-item label="上牌省份：" prop="provinceName">-->
+<!--                  <el-input-->
+<!--                    placeholder="请输入"-->
+<!--                    v-model="form.provinceName"-->
+<!--                    clearable-->
+<!--                  />-->
+<!--                </el-form-item>-->
+                <el-form-item label="上牌城市：" prop="cityCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.cityCode"
+                    clearable
+                  />
+                </el-form-item>
+<!--                <el-form-item label="上牌城市：" prop="cityName">-->
+<!--                  <el-input-->
+<!--                    placeholder="请输入"-->
+<!--                    v-model="form.cityName"-->
+<!--                    clearable-->
+<!--                  />-->
+<!--                </el-form-item>-->
+                <el-form-item label="上牌区/县：" prop="districtCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.districtCode"
+                    clearable
+                  />
+                </el-form-item>
+<!--                <el-form-item label="上牌区/县：" prop="districtName">-->
+<!--                  <el-input-->
+<!--                    placeholder="请输入"-->
+<!--                    v-model="form.districtName"-->
+<!--                    clearable-->
+<!--                  />-->
+<!--                </el-form-item>-->
+                <el-form-item label="车辆注册地址：" prop="vehicleRegisterAddress">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.vehicleRegisterAddress"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="行驶证编号：" prop="drivingLicenseNumber">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.drivingLicenseNumber"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="行驶证品牌型号：" prop="drivingLicenseBrandModel">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.drivingLicenseBrandModel"
+                    clearable
+                  />
+                </el-form-item>
+              </el-form>
+            </div>
+          </section>
+          <section class="common-section">
+          <div class="common-section-header">
+            <h2>审核信息</h2>
+          </div>
+          <div class="common-section-body">
+            <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm3" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+              <el-form-item label="提交时间：" prop="submitTime">
+                <el-date-picker
+                  :default-time="['00:00:00', '23:59:59']"
+                  v-model="form.submitTime"
+                  :picker-options="pickerOptions"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  disabled
+                />
+              </el-form-item>
+              <el-form-item label="提交人：" prop="submitUser">
+                <el-input
+                  placeholder="请输入"
+                  v-model="form.submitUser"
+                  clearable
+                  disabled
+                />
+              </el-form-item>
+              <el-form-item label="审核时间：" prop="auditTime">
+                <el-date-picker
+                  :default-time="['00:00:00', '23:59:59']"
+                  v-model="form.auditTime"
+                  :picker-options="pickerOptions"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  disabled
+                />
+              </el-form-item>
+              <el-form-item label="审核人：" prop="auditUser">
+                <el-input
+                  placeholder="请输入"
+                  v-model="form.auditUser"
+                  clearable
+                  disabled
+                />
+              </el-form-item>
+              <el-form-item label="撤回时间：" prop="withdrawTime">
+                <el-date-picker
+                  :default-time="['00:00:00', '23:59:59']"
+                  v-model="form.withdrawTime"
+                  :picker-options="pickerOptions"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  disabled
+                />
+              </el-form-item>
+              <el-form-item label="撤回人：" prop="withdrawUser">
+                <el-input
+                  placeholder="请输入"
+                  v-model="form.withdrawUser"
+                  clearable
+                  disabled
+                />
+              </el-form-item>
+              <el-form-item label="审核意见：" prop="auditRemark">
+                <el-input
+                  placeholder="请输入"
+                  v-model="form.auditRemark"
+                  clearable
+                  disabled
+                />
+              </el-form-item>
+              <el-form-item label="审核状态：" prop="status">
+                <fetch-select
+                  :request="fetchOptions"
+                  enumCode="vehretail_order_change_apply_status"
+                  v-model="form.status"
+                  placeholder="请选择"
+                  clearable
+                  filterable
+                  disabled
+                />
+              </el-form-item>
+              <el-form-item label="是否自动审核：" prop="autoAuditStatus">
+                <fetch-select
+                  :request="fetchOptions"
+                  enumCode="BooleanEnum"
+                  v-model="form.autoAuditStatus"
+                  placeholder="请选择"
+                  clearable
+                  filterable
+                />
+              </el-form-item>
+            </el-form>
+          </div>
+        </section>
+          <section class="common-section" v-if="_id">
+            <div class="common-section-header">
+              <h2>附件材料(请上传发票、行驶证、有效身份证件并以中文命名)</h2>
+            </div>
+            <div class="common-section-body">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleFormAtt" label-width="180px" class="form-edit" v-show="isEditing || !_id">
+              </el-form>
             </div>
           </section>
         </el-main>
@@ -704,19 +590,20 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehretail/orderManager/soldPlateInfo/index';
+import { getDetail, addOrUpdate, effectiveVinValidate } from '@/api/vehretail/orderManager/soldPlateInfo/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum } from '@/api/common';
+import { getEnum, listStoreInfo, listVehicleModel, vehicleSalesVersionList } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { getList as getVehicleProfileList } from '@/api/datacenter/vehicle/vehicleProfile';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
-  id: '',
+  id: null,
   creator: '',
   creatorName: '',
   createTime: '',
@@ -724,7 +611,7 @@ const defaultForm = {
   modifierName: '',
   updateTime: '',
   remark: '',
-  status: '',
+  status: 1010,
   statusDesc: '',
   soldPlateCode: '',
   deliveryOrderId: '',
@@ -772,7 +659,7 @@ const defaultForm = {
   withdrawUserId: '',
   withdrawUser: '',
   auditRemark: '',
-  autoAuditStatus: '',
+  autoAuditStatus: 0,
   dataSource: '',
 };
 
@@ -828,64 +715,64 @@ export default {
       ],
       rules: {
         id: [
-          { required: true, message: '请输入主键', trigger: 'change' }
+          { required: false, message: '请输入主键', trigger: 'change' }
         ],
         creator: [
-          { required: true, message: '请输入创建者', trigger: 'change' }
+          { required: false, message: '请输入创建者', trigger: 'change' }
         ],
         creatorName: [
-          { required: true, message: '请输入创建者名称', trigger: 'change' }
+          { required: false, message: '请输入创建者名称', trigger: 'change' }
         ],
         createTime: [
-          { required: true, message: '请选择创建时间', trigger: 'change' }
+          { required: false, message: '请选择创建时间', trigger: 'change' }
         ],
         modifier: [
-          { required: true, message: '请输入修改者', trigger: 'change' }
+          { required: false, message: '请输入修改者', trigger: 'change' }
         ],
         modifierName: [
-          { required: true, message: '请输入修改者名称', trigger: 'change' }
+          { required: false, message: '请输入修改者名称', trigger: 'change' }
         ],
         updateTime: [
-          { required: true, message: '请选择修改时间', trigger: 'change' }
+          { required: false, message: '请选择修改时间', trigger: 'change' }
         ],
         remark: [
-          { required: true, message: '请输入备注', trigger: 'change' }
+          { required: false, message: '请输入备注', trigger: 'change' }
         ],
         status: [
-          { required: true, message: '请选择审核状态 1010-草稿 1020-已提交 1030-已通过 1040-已驳回 1050-已作废', trigger: 'change' }
+          { required: true, message: '请选择审核状态', trigger: 'change' }
         ],
         statusDesc: [
-          { required: true, message: '请选择状态变更描述', trigger: 'change' }
+          { required: false, message: '请选择状态变更描述', trigger: 'change' }
         ],
         soldPlateCode: [
-          { required: true, message: '请输入整车上牌记录编号', trigger: 'change' }
+          { required: false, message: '请输入整车上牌记录编号', trigger: 'change' }
         ],
         deliveryOrderId: [
-          { required: true, message: '请输入交车单ID', trigger: 'change' }
+          { required: false, message: '请输入交车单ID', trigger: 'change' }
         ],
         retailOrderId: [
-          { required: true, message: '请输入零售订单ID', trigger: 'change' }
+          { required: false, message: '请输入零售订单ID', trigger: 'change' }
         ],
         retailOrderCode: [
-          { required: true, message: '请输入零售订单号', trigger: 'change' }
+          { required: false, message: '请输入零售订单号', trigger: 'change' }
         ],
         soldPlateSource: [
-          { required: true, message: '请输入已售上牌资料来源 report-特殊销售提报 delivery-交车单 plate-已售上牌新增', trigger: 'change' }
+          { required: false, message: '请输入已售上牌资料来源 report-特殊销售提报 delivery-交车单 plate-已售上牌新增', trigger: 'change' }
         ],
         vin: [
           { required: true, message: '请输入VIN码', trigger: 'change' }
         ],
         modelId: [
-          { required: true, message: '请输入车型ID', trigger: 'change' }
+          { required: false, message: '请输入车型ID', trigger: 'change' }
         ],
         modelName: [
           { required: true, message: '请输入车型名称', trigger: 'change' }
         ],
         saleOrgId: [
-          { required: true, message: '请输入门店id', trigger: 'change' }
+          { required: false, message: '请输入门店id', trigger: 'change' }
         ],
         saleDealerCode: [
-          { required: true, message: '请输入门店编码', trigger: 'change' }
+          { required: false, message: '请输入门店编码', trigger: 'change' }
         ],
         saleDealerName: [
           { required: true, message: '请输入门店名称', trigger: 'change' }
@@ -897,109 +784,109 @@ export default {
           { required: true, message: '请输入车主电话', trigger: 'change' }
         ],
         idCardType: [
-          { required: true, message: '请选择证件类型：身份证-1, 护照-2, 驾驶证-3, 港澳来往内地通行证-4, 军官证-5, 组织机构代码-6, 统一社会信用代码-7, 台湾通行证-20', trigger: 'change' }
+          { required: true, message: '请选择证件类型', trigger: 'change' }
         ],
         idCardNo: [
           { required: true, message: '请输入证件号码', trigger: 'change' }
         ],
         vehiclePurpose: [
-          { required: true, message: '请输入车辆用途 10-私家车 20-公户车 30-试乘试驾车 40-大客户用车 50-营运-预约出租客运 100-其他', trigger: 'change' }
+          { required: true, message: '请输入车辆用途', trigger: 'change' }
         ],
         carSaleSversionId: [
-          { required: true, message: '请输入公告车型ID', trigger: 'change' }
+          { required: false, message: '请输入公告车型ID', trigger: 'change' }
         ],
         carSalesVersionName: [
-          { required: true, message: '请输入公告车型名称', trigger: 'change' }
+          { required: false, message: '请输入公告车型名称', trigger: 'change' }
         ],
         vehiclePlaceOrigin: [
           { required: true, message: '请输入产地', trigger: 'change' }
         ],
         enginenNumber: [
-          { required: true, message: '请输入发动机号', trigger: 'change' }
+          { required: false, message: '请输入发动机号', trigger: 'change' }
         ],
         certificateNo: [
-          { required: true, message: '请输入合格证号', trigger: 'change' }
+          { required: false, message: '请输入合格证号', trigger: 'change' }
         ],
         invoiceRecordCode: [
-          { required: true, message: '请输入整车开票记录编号', trigger: 'change' }
+          { required: false, message: '请输入整车开票记录编号', trigger: 'change' }
         ],
         specialReportCode: [
-          { required: true, message: '请输入特殊车辆销售提报编号', trigger: 'change' }
+          { required: false, message: '请输入特殊车辆销售提报编号', trigger: 'change' }
         ],
         drivingLicenseVin: [
-          { required: true, message: '请输入行驶证VIN号', trigger: 'change' }
+          { required: false, message: '请输入行驶证VIN号', trigger: 'change' }
         ],
         drivingLicenseOwner: [
-          { required: true, message: '请输入行驶证所有人', trigger: 'change' }
+          { required: false, message: '请输入行驶证所有人', trigger: 'change' }
         ],
         plateNo: [
-          { required: true, message: '请输入车牌号码', trigger: 'change' }
+          { required: false, message: '请输入车牌号码', trigger: 'change' }
         ],
         plateDate: [
-          { required: true, message: '请选择上牌日期', trigger: 'change' }
+          { required: false, message: '请选择上牌日期', trigger: 'change' }
         ],
         provinceCode: [
-          { required: true, message: '请输入上牌省份编码', trigger: 'change' }
+          { required: true, message: '请输入上牌省份', trigger: 'change' }
         ],
         provinceName: [
           { required: true, message: '请输入上牌省份', trigger: 'change' }
         ],
         cityCode: [
-          { required: true, message: '请输入上牌城市编码', trigger: 'change' }
+          { required: true, message: '请输入上牌城市', trigger: 'change' }
         ],
         cityName: [
           { required: true, message: '请输入上牌城市', trigger: 'change' }
         ],
         districtCode: [
-          { required: true, message: '请输入上牌区&#x2F;县编码', trigger: 'change' }
+          { required: true, message: '请输入上牌区/县', trigger: 'change' }
         ],
         districtName: [
-          { required: true, message: '请输入上牌区&#x2F;县', trigger: 'change' }
+          { required: true, message: '请输入上牌区/县', trigger: 'change' }
         ],
         vehicleRegisterAddress: [
-          { required: true, message: '请输入车辆注册地址', trigger: 'change' }
+          { required: false, message: '请输入车辆注册地址', trigger: 'change' }
         ],
         drivingLicenseNumber: [
-          { required: true, message: '请输入行驶证编号', trigger: 'change' }
+          { required: false, message: '请输入行驶证编号', trigger: 'change' }
         ],
         drivingLicenseBrandModel: [
-          { required: true, message: '请输入行驶证品牌型号', trigger: 'change' }
+          { required: false, message: '请输入行驶证品牌型号', trigger: 'change' }
         ],
         submitTime: [
-          { required: true, message: '请选择提交审核时间', trigger: 'change' }
+          { required: false, message: '请选择提交审核时间', trigger: 'change' }
         ],
         submitUserId: [
-          { required: true, message: '请输入提交人id', trigger: 'change' }
+          { required: false, message: '请输入提交人id', trigger: 'change' }
         ],
         submitUser: [
-          { required: true, message: '请输入提交人', trigger: 'change' }
+          { required: false, message: '请输入提交人', trigger: 'change' }
         ],
         auditTime: [
-          { required: true, message: '请选择审核时间', trigger: 'change' }
+          { required: false, message: '请选择审核时间', trigger: 'change' }
         ],
         auditUserId: [
-          { required: true, message: '请输入审核人id', trigger: 'change' }
+          { required: false, message: '请输入审核人id', trigger: 'change' }
         ],
         auditUser: [
-          { required: true, message: '请输入审核人', trigger: 'change' }
+          { required: false, message: '请输入审核人', trigger: 'change' }
         ],
         withdrawTime: [
-          { required: true, message: '请选择撤回时间', trigger: 'change' }
+          { required: false, message: '请选择撤回时间', trigger: 'change' }
         ],
         withdrawUserId: [
-          { required: true, message: '请输入撤回人id', trigger: 'change' }
+          { required: false, message: '请输入撤回人id', trigger: 'change' }
         ],
         withdrawUser: [
-          { required: true, message: '请输入撤回人', trigger: 'change' }
+          { required: false, message: '请输入撤回人', trigger: 'change' }
         ],
         auditRemark: [
-          { required: true, message: '请输入审核意见', trigger: 'change' }
+          { required: false, message: '请输入审核意见', trigger: 'change' }
         ],
         autoAuditStatus: [
-          { required: true, message: '请选择是否自动审核 0-否 1-是（默认否）', trigger: 'change' }
+          { required: false, message: '请选择是否自动审核', trigger: 'change' }
         ],
         dataSource: [
-          { required: true, message: '请输入数据来源，150-新销服; 10-老销服', trigger: 'change' }
+          { required: false, message: '请输入数据来源，150-新销服; 10-老销服', trigger: 'change' }
         ],
       }
     };
@@ -1085,6 +972,87 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    vehicleProfileSearch (val) {
+      const params = {
+        searchVin: val,
+        pageSize: 100
+      };
+      return getVehicleProfileList(params);
+    },
+    vehicleProfileChange (val, selectedOption) {
+      let clearForm = true;
+      if (val) {
+        // 校验是否已存在记录
+        effectiveVinValidate(val).then(res => {
+          clearForm = false;
+          this.refreshVehicleProfileInfo(val, selectedOption);
+        });
+      }
+      if (clearForm) {
+        // 清空表单
+        this.$refs.ruleForm.resetFields();
+        // this.$refs.ruleForm1.resetFields();
+        // this.$refs.ruleForm2.resetFields();
+      }
+    },
+    refreshVehicleProfileInfo (val, selectedOption) {
+      this.form.vin = val ? selectedOption.vin : '';
+      this.form.vehiclePlaceOrigin = val ? selectedOption.vehiclePlaceOrigin : '';
+      this.form.carBuyerName = val ? selectedOption.vehicleProfileOwnerResp.ownerName : '';
+      this.form.carBuyerPhone = val ? selectedOption.vehicleProfileOwnerResp.mobilephone : '';
+      this.form.idCardType = val ? selectedOption.vehicleProfileOwnerResp.idcardType : '';
+      this.form.idCardNo = val ? selectedOption.vehicleProfileOwnerResp.idcardNo : '';
+      this.form.vehiclePurpose = val ? selectedOption.usageType : '';
+      this.form.enginenNumber = val ? selectedOption.enginenNumber : '';
+      this.form.certificateNo = val ? selectedOption.certNumber : '';
+      this.form.carSaleSversionId = val ? selectedOption.carSaleSversionId : '';
+      this.form.carSalesVersionName = val ? selectedOption.carSalesVersionName : '';
+      if (selectedOption.salesDealerCode) {
+        this.form.saleDealerCode = val ? selectedOption.salesDealerCode : null;
+        this.form.saleDealerName = val ? selectedOption.salesDealerName : null;
+        this.saleDealerSearch(selectedOption.salesDealerName);
+      }
+      if (selectedOption.vehicleModelName) {
+        this.form.modelId = val ? selectedOption.vehicleModelId : '';
+        this.form.modelName = val ? selectedOption.vehicleModelName : '';
+        this.vehicleModelSearch(selectedOption.vehicleModelName);
+      }
+    },
+    vehicleModelSearch (val) {
+      const params = {
+        modelNameLike: val,
+        pageSize: 100
+      };
+      return listVehicleModel(params);
+    },
+    vehicleModelChange (val, selectedOption) {
+      this.form.modelId = val ? selectedOption.id : null;
+      this.form.modelName = val ? selectedOption.name : null;
+    },
+    // 公告车型
+    vehicleSalesVersionSearch (val) {
+      const params = {
+        registeredModelNameLike: val,
+        pageSize: 100
+      };
+      return vehicleSalesVersionList(params);
+    },
+    vehicleSalesVersionChange (val, selectedOption) {
+      this.form.carSalesVersionId = val ? selectedOption.id : null;
+      this.form.carSalesVersionName = val ? selectedOption.name : null;
+    },
+    saleDealerSearch (val) {
+      const params = {
+        keyword: val,
+        size: 100
+      };
+      return listStoreInfo(params);
+    },
+    saleDealerChange (val, selectedOption) {
+      // this.form.saleOrgId = val ? selectedOption.storeId : null;
+      this.form.saleDealerCode = val ? selectedOption.storeCode : null;
+      this.form.saleDealerName = val ? selectedOption.storeName : null;
     }
   }
 };

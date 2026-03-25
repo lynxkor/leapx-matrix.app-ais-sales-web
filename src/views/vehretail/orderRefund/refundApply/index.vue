@@ -280,7 +280,7 @@ export default {
           { props: 'orderSource', label: '订单来源', visible: true, width: 200 },
           { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 200 },
           { props: 'depositRefundTypeLabel', label: '定金退回方式', visible: true, width: 200 },
-          { props: 'paymentTime', label: '缴定金时间', visible: true, width: 200},
+          { props: 'paymentTime', label: '缴定金时间', visible: true, width: 200 },
           { props: 'firstSubmitTime', label: '首次提交时间', visible: true, width: 200, sortable: true },
           { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
 

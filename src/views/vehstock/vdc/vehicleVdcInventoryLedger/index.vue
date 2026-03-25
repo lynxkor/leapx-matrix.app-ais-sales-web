@@ -679,6 +679,14 @@ export default {
     // 点击tabs栏切换
     handleClick (item) {
       this.activeName = item.name;
+      this.onReset();
+      if (item.name === 'lowBattery') {
+        this.form.carAllocated = '';
+        this.form.logisticsReserved = '';
+      } else {
+        this.form.carAllocated = '0';
+        this.form.logisticsReserved = '0';
+      }
       this.refreshTableData();
     },
     // 批量编辑

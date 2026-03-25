@@ -471,6 +471,7 @@
       @audit="handleBatchAudit"
       :auditDataList="[_id]"
       :field="'code'"
+      :maxlength='150'
     />
   </div>
 </template>
@@ -781,7 +782,7 @@ export default {
     saveRowEdit (row, defer) {
       addOrUpdateDetail(row).then(id => {
         defer.resolve(id);
-        this.$message.success('更新成功');
+        this.$message.success('提交成功');
         this.getDetailData();
         this.getList();
         this.$emit('replace');
@@ -821,7 +822,7 @@ export default {
       return batchAudit(params).then(() => {
         this.$message({
           type: 'success',
-          message: '审核成功'
+          message: '提交成功'
         });
         this.detailRequest();
       });
@@ -858,7 +859,7 @@ export default {
       batchCancel({
         idSet: [this._id],
       }).then(() => {
-        this.$message.success('作废成功');
+        this.$message.success('提交成功');
         this.detailRequest();
       });
     },
@@ -978,7 +979,7 @@ export default {
       addOrUpdateDetail(data).then(() => {
         this.$message({
           type: 'success',
-          message: '添加成功!'
+          message: '提交成功!'
         });
         this.detailRequest();
       });
