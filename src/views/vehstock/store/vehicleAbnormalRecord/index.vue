@@ -4,26 +4,43 @@
     <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
       class="ais-search-form">
       <el-form-item label="VIN">
-        <el-input placeholder="请输入" v-model="form.vin" clearable />
+        <tag-input v-model="form.vinList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="车辆异常类型">
         <fetch-select :request="fetchOptions" enumCode="vehstock_fence_crossed_type" v-model="form.fenceCrossedType"
           placeholder="请选择" clearable filterable />
       </el-form-item>
       <el-form-item label="销售门店编码" v-show="this.visibleCount === 3 || show">
-        <el-input placeholder="请输入" v-model="form.saleDealerCode" clearable />
+        <fetch-select
+          filterable
+          clearable
+          remote
+          multiple
+          collapseTags
+          v-model="form.saleDealerCodeList"
+          :remote-method="getDealerListByName"
+          value-key="storeCode"
+          label-key="storeName"
+        />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="物料编码">
-          <el-input placeholder="请输入" v-model="form.materialsCode" clearable />
+          <tag-input v-model="form.materialsCodeList" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="物料描述">
-          <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
+          <tag-input v-model="form.materialsDescList" placeholder="请输入" />
         </el-form-item>
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
         @reset="onReset" />
     </el-form>
+    <div class="ais-active">
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="主页" name="homePage"></el-tab-pane>
+        <el-tab-pane label="电量不足" name="fenceCrossed"></el-tab-pane>
+        <el-tab-pane label="实车交付未出库" name="fenceNotCrossed"></el-tab-pane>
+      </el-tabs>
+    </div>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
@@ -46,7 +63,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/store/vehicleAbnormalRecord/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -54,14 +71,19 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   vin: '',
+  vinList: [],
+  materialsDescList: [],
   fenceCrossedType: '',
   saleDealerCode: '',
   materialsCode: '',
   materialsDesc: '',
+  materialsCodeList: [],
+  saleDealerCodeList: []
 };
 
 const pageSize = 20;
@@ -75,7 +97,8 @@ export default {
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
-    Upload
+    Upload,
+    TagInput
   },
   data () {
     return {
@@ -92,6 +115,7 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      activeName: 'homePage',
       clickItemId: '',
       optionObj: {
         id: 'vehicleAbnormalRecordTable',
@@ -182,6 +206,11 @@ export default {
       this.form = { ...defaultForm };
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
+      if (this.activeName === 'fenceCrossed') {
+        this.form.fenceCrossedType = '2';
+      } else if (this.activeName === 'fenceNotCrossed') {
+        this.form.fenceCrossedType = '1';
+      }
       this.getData();
     },
     exportExcel () {
@@ -265,6 +294,10 @@ export default {
     handleSelectionChange (selection) {
       this.selectionList = selection;
     },
+    // 销售门店搜索
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params, isSales: true });
+    },
     getFormData () {
       const data = { ...this.form };
 
@@ -280,6 +313,18 @@ export default {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
+      }
+      if (Array.isArray(this.form.vinList) && this.form.vinList.length <= 1) {
+        delete data.vinList;
+        data.vinLike = this.form.vinList[0] || '';
+      }
+      if (Array.isArray(this.form.materialsDescList) && this.form.materialsDescList.length <= 1) {
+        delete data.materialsDescList;
+        data.materialsDescLike = this.form.materialsDescList[0] || '';
+      }
+      if (Array.isArray(this.form.materialsCodeList) && this.form.materialsCodeList.length <= 1) {
+        delete data.materialsCodeList;
+        data.materialsCodeLike = this.form.materialsCodeList[0] || '';
       }
       // 排序字段
       data.sortColumns = this.sortColumns;
@@ -324,11 +369,43 @@ export default {
         apiFunc: enableItem,
         refreshFunc: this.getData
       });
-    }
+    },
+    // 点击tabs栏切换
+    handleClick (item) {
+      this.activeName = item.name;
+      if (item.name === 'homePage') {
+        this.onReset();
+      } else if (item.name === 'fenceCrossed') {
+        this.onReset();
+        this.form.fenceCrossedType = '2';
+      } else if (item.name === 'fenceNotCrossed') {
+        this.onReset();
+        this.form.fenceCrossedType = '1';
+      }
+    },
   }
 };
 </script>
 
 <style lang="scss" scoped>
 .m-vehicle-abnormal-record-list {}
+.ais-active {
+  margin-top: 20px;
+  // 修改 tabs 底部线条的样式
+  ::v-deep .el-tabs__nav-wrap::after {
+    height: 1px !important;
+    background-color: #E6E6E5 !important;
+  }
+  // 修改 tabs 默认字体样式
+  ::v-deep .el-tabs__item {
+    font-weight: normal !important; // 不加粗
+    color: #3B3E3B !important;     // 字体颜色
+  }
+
+  // 修改 tabs 激活状态下的字体样式（可选）
+  ::v-deep .el-tabs__item.is-active {
+    font-weight: normal !important; // 激活状态下也不加粗
+    color: #3B3E3B !important;     // 激活状态下的字体颜色
+  }
+}
 </style>
