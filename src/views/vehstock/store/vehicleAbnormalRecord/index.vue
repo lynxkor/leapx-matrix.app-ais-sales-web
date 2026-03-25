@@ -4,21 +4,31 @@
     <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
       class="ais-search-form">
       <el-form-item label="VIN">
-        <el-input placeholder="请输入" v-model="form.vin" clearable />
+        <tag-input v-model="form.vinList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="车辆异常类型">
         <fetch-select :request="fetchOptions" enumCode="vehstock_fence_crossed_type" v-model="form.fenceCrossedType"
           placeholder="请选择" clearable filterable />
       </el-form-item>
       <el-form-item label="销售门店编码" v-show="this.visibleCount === 3 || show">
-        <el-input placeholder="请输入" v-model="form.saleDealerCode" clearable />
+        <fetch-select
+          filterable
+          clearable
+          remote
+          multiple
+          collapseTags
+          v-model="form.saleDealerCodeList"
+          :remote-method="getDealerListByName"
+          value-key="storeCode"
+          label-key="storeName"
+        />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="物料编码">
-          <el-input placeholder="请输入" v-model="form.materialsCode" clearable />
+          <tag-input v-model="form.materialsCodeList" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="物料描述">
-          <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
+          <tag-input v-model="form.materialsDescList" placeholder="请输入" />
         </el-form-item>
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
@@ -53,7 +63,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/store/vehicleAbnormalRecord/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -61,14 +71,19 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   vin: '',
+  vinList: [],
+  materialsDescList: [],
   fenceCrossedType: '',
   saleDealerCode: '',
   materialsCode: '',
   materialsDesc: '',
+  materialsCodeList: [],
+  saleDealerCodeList: []
 };
 
 const pageSize = 20;
@@ -82,7 +97,8 @@ export default {
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
-    Upload
+    Upload,
+    TagInput
   },
   data () {
     return {
@@ -190,6 +206,11 @@ export default {
       this.form = { ...defaultForm };
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
+      if (this.activeName === 'fenceCrossed') {
+        this.form.fenceCrossedType = '2';
+      } else if (this.activeName === 'fenceNotCrossed') {
+        this.form.fenceCrossedType = '1';
+      }
       this.getData();
     },
     exportExcel () {
@@ -273,6 +294,10 @@ export default {
     handleSelectionChange (selection) {
       this.selectionList = selection;
     },
+    // 销售门店搜索
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params, isSales: true });
+    },
     getFormData () {
       const data = { ...this.form };
 
@@ -288,6 +313,18 @@ export default {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
+      }
+      if (Array.isArray(this.form.vinList) && this.form.vinList.length <= 1) {
+        delete data.vinList;
+        data.vinLike = this.form.vinList[0] || '';
+      }
+      if (Array.isArray(this.form.materialsDescList) && this.form.materialsDescList.length <= 1) {
+        delete data.materialsDescList;
+        data.materialsDescLike = this.form.materialsDescList[0] || '';
+      }
+      if (Array.isArray(this.form.materialsCodeList) && this.form.materialsCodeList.length <= 1) {
+        delete data.materialsCodeList;
+        data.materialsCodeLike = this.form.materialsCodeList[0] || '';
       }
       // 排序字段
       data.sortColumns = this.sortColumns;
@@ -339,11 +376,12 @@ export default {
       if (item.name === 'homePage') {
         this.onReset();
       } else if (item.name === 'fenceCrossed') {
+        this.onReset();
         this.form.fenceCrossedType = '2';
       } else if (item.name === 'fenceNotCrossed') {
+        this.onReset();
         this.form.fenceCrossedType = '1';
       }
-      this.getData();
     },
   }
 };
