@@ -162,15 +162,12 @@
 <script>
 import { getRawList, addOrUpdate, getsalesConfig } from '@/api/vehretail/bizMasterData/configMasterData/salesConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-// import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
-// import AttachedFilesDialog from './attachedFilesDialog.vue';
-// Deleted: import commonMixins from '@/libs/mixins/commonMixins';
-// import { Divider } from '@leapmotor/element-ui';
+import { debounce } from '@/libs/utils/index';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -397,9 +394,9 @@ export default {
         });
       }).catch(() => {});
     },
-    async listConfig (query) {
+    listConfig: debounce(function (query) {
       return getsalesConfig({ authorityName: query, pageNum: 1, pageSize: 20 });
-    },
+    }, 300),
     // 初始化formData用于表单验证规则
     initFormData () {
       this.formData = {
@@ -469,14 +466,14 @@ export default {
         await addOrUpdate(this.rawConfigData);
         this.$message({
           type: 'success',
-          message: '成功!'
+          message: '提交成功!'
         });
         this.showEditBtn = !this.showEditBtn;
         this.getRawList();
       } catch (error) {
         this.$message({
           type: 'error',
-          message: '失败!'
+          message: '提交失败!'
         });
       }
     },

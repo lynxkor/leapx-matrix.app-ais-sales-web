@@ -149,10 +149,10 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车批售-批售管理-批售请款通知管理',
+      pageTitle: '批售请款通知管理',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-vehicleWholesalePaymentNotice',
+      moduleKey: 'AISVW-vehicleWholesalePaymentNotice',
       form: {
         ...defaultForm
       },
@@ -297,14 +297,14 @@ export default {
       }
       exportTable({
         businessType: '整车批售-批售管理-批售请款通知管理',
-        dataFetchPath: 'vehwholesale/web/wholesale/vehicleWholesalePaymentNotice/page',
+        dataFetchPath: 'vw/web/wholesale/vehicleWholesalePaymentNotice/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车批售-批售管理-批售请款通知管理.xlsx');
+            await downloadExcel(res.excelUrl, '批售请款通知管理.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
