@@ -199,6 +199,16 @@ export default {
       loading: false,
       exportLoading: false,
       clickItemId: '',
+      // 提取公共配置
+      selectOptions: {
+        placeholder: '请选择',
+        labelKey: 'name',
+        valueKey: 'id',
+        clearable: true,
+        filterable: true,
+        remote: true,
+        reserveKeyword: true
+      },
       // 远程搜索方法
       remoteMethods: {
         // 初始方法
