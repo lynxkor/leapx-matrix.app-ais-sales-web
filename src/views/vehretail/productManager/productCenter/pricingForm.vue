@@ -134,8 +134,25 @@ export default {
       }
     },
     openForm () {
+      console.log('getSaleAttributeGroupList:');
       getSaleAttributeGroupList({ productId: this.$route.query.id }).then(res => {
-        this.options = res;
+        console.log('res:', res);
+        // 按 attributeName 分组，将相同属性名的数据合并到同一组
+        const groupedMap = new Map();
+        res.forEach(item => {
+          const key = item.attributeName;
+          if (!groupedMap.has(key)) {
+            groupedMap.set(key, {
+              attributeName: item.attributeName,
+              saleAttributeId: item.saleAttributeId,
+              attributeValues: []
+            });
+          }
+          // 合并 attributeValues
+          groupedMap.get(key).attributeValues.push(...item.attributeValues);
+        });
+        this.options = Array.from(groupedMap.values());
+        console.log('options:', this.options);
       }).catch(() => {
       });
     },
