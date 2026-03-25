@@ -24,6 +24,13 @@
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
         @reset="onReset" />
     </el-form>
+    <div class="ais-active">
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="主页" name="homePage"></el-tab-pane>
+        <el-tab-pane label="电量不足" name="fenceCrossed"></el-tab-pane>
+        <el-tab-pane label="实车交付未出库" name="fenceNotCrossed"></el-tab-pane>
+      </el-tabs>
+    </div>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
@@ -92,6 +99,7 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      activeName: 'homePage',
       clickItemId: '',
       optionObj: {
         id: 'vehicleAbnormalRecordTable',
@@ -324,11 +332,42 @@ export default {
         apiFunc: enableItem,
         refreshFunc: this.getData
       });
-    }
+    },
+    // 点击tabs栏切换
+    handleClick (item) {
+      this.activeName = item.name;
+      if (item.name === 'homePage') {
+        this.onReset();
+      } else if (item.name === 'fenceCrossed') {
+        this.form.fenceCrossedType = '2';
+      } else if (item.name === 'fenceNotCrossed') {
+        this.form.fenceCrossedType = '1';
+      }
+      this.getData();
+    },
   }
 };
 </script>
 
 <style lang="scss" scoped>
 .m-vehicle-abnormal-record-list {}
+.ais-active {
+  margin-top: 20px;
+  // 修改 tabs 底部线条的样式
+  ::v-deep .el-tabs__nav-wrap::after {
+    height: 1px !important;
+    background-color: #E6E6E5 !important;
+  }
+  // 修改 tabs 默认字体样式
+  ::v-deep .el-tabs__item {
+    font-weight: normal !important; // 不加粗
+    color: #3B3E3B !important;     // 字体颜色
+  }
+
+  // 修改 tabs 激活状态下的字体样式（可选）
+  ::v-deep .el-tabs__item.is-active {
+    font-weight: normal !important; // 激活状态下也不加粗
+    color: #3B3E3B !important;     // 激活状态下的字体颜色
+  }
+}
 </style>
