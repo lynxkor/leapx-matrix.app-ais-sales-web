@@ -2894,6 +2894,60 @@ const routes = [
         name: '车辆异常记录',
         keepAlive: true
       }
+    }, {
+      path: '/vehstock/store/storeSharedInventory',
+      name: 'storeSharedInventory',
+      component: () => import('@/views/vehstock/store/storeSharedInventory/index.vue'),
+
+      meta: {
+        name: '门店共享库存',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/store/storesharedinventory/edit',
+      name: 'storeSharedInventoryEdit',
+      component: () => import('@/views/vehstock/store/storeSharedInventory/edit.vue'),
+
+      meta: {
+        name: '门店共享库存详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/store/eopMaterialDemandTotal',
+      name: 'eopMaterialDemandTotal',
+      component: () => import('@/views/vehstock/store/eopMaterialDemandTotal/index.vue'),
+
+      meta: {
+        name: 'EOP物料需求总量',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/store/eopmaterialdemandtotal/edit',
+      name: 'eopMaterialDemandTotalEdit',
+      component: () => import('@/views/vehstock/store/eopMaterialDemandTotal/edit.vue'),
+
+      meta: {
+        name: 'EOP物料需求总量详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehstock/store/eopMaterialDemandTotalRecord',
+      name: 'eopMaterialDemandTotalRecord',
+      component: () => import('@/views/vehstock/store/eopMaterialDemandTotalRecord/index.vue'),
+
+      meta: {
+        name: 'EOP物料需求总量记录',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/store/eopmaterialdemandtotalrecord/edit',
+      name: 'eopMaterialDemandTotalRecordEdit',
+      component: () => import('@/views/vehstock/store/eopMaterialDemandTotalRecord/edit.vue'),
+
+      meta: {
+        name: 'EOP物料需求总量记录详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
