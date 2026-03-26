@@ -101,7 +101,7 @@
                    <fetch-select
                       :options="saleCompanyOptions"
                       v-model="form.saleDealerName"
-                      placeholder="销售门店："
+                      placeholder="请选择："
                       labelKey="storeName"
                       valueKey="storeId"
                       clearable
