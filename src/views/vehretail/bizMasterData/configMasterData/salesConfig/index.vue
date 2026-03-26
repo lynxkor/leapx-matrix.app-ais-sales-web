@@ -22,21 +22,23 @@
                     effect="light"
                     :disabled="!tooltipContentMap.saleUser || tooltipContentMap.saleUser.length === 0"
                   >
-                    <fetch-select
-                      ref="saleUserSelect"
-                      :remote-method="listConfig"
-                      remote
+                    <el-select
                       v-model="formData.saleDeliveryUserConfigName"
                       placeholder="请选择"
-                      labelKey="authorityName"
-                      valueKey="authorityCode"
                       clearable
-                      collapseTags
+                      collapse-tags
                       filterable
                       multiple
                       :disabled="!showEditBtn"
-                      @change="(val, row) => handleChange(val, row, 'saleUser')"
-                    />
+                      @change="(val) => handleChange(val, 'saleUser')"
+                    >
+                      <el-option
+                        v-for="item in authorityOptions"
+                        :key="item.authorityCode"
+                        :label="item.authorityName"
+                        :value="item.authorityCode"
+                      />
+                    </el-select>
                   </el-tooltip>
                 </el-form-item>
                 <el-form-item label="交付顾问配置" prop="deliveryUserConfigName">
@@ -46,21 +48,23 @@
                     effect="light"
                     :disabled="!tooltipContentMap.deliveryUser || tooltipContentMap.deliveryUser.length === 0"
                   >
-                    <fetch-select
-                      ref="deliveryUserSelect"
-                      :remote-method="listConfig"
-                      remote
+                    <el-select
                       v-model="formData.deliveryUserConfigName"
                       placeholder="请选择"
-                      labelKey="authorityName"
-                      valueKey="authorityCode"
                       clearable
-                      collapseTags
+                      collapse-tags
                       filterable
                       multiple
                       :disabled="!showEditBtn"
-                      @change="(val, row) => handleChange(val, row, 'deliveryUser')"
-                    />
+                      @change="(val) => handleChange(val, 'deliveryUser')"
+                    >
+                      <el-option
+                        v-for="item in authorityOptions"
+                        :key="item.authorityCode"
+                        :label="item.authorityName"
+                        :value="item.authorityCode"
+                      />
+                    </el-select>
                   </el-tooltip>
                 </el-form-item>
                 <el-form-item label="交付衍生工程师配置" prop="deliveryDeriveConfigName">
@@ -70,21 +74,23 @@
                     effect="light"
                     :disabled="!tooltipContentMap.deliveryDerive || tooltipContentMap.deliveryDerive.length === 0"
                   >
-                    <fetch-select
-                      ref="deliveryDeriveSelect"
-                      :remote-method="listConfig"
-                      remote
+                    <el-select
                       v-model="formData.deliveryDeriveConfigName"
                       placeholder="请选择"
-                      labelKey="authorityName"
-                      valueKey="authorityCode"
                       clearable
-                      collapseTags
+                      collapse-tags
                       filterable
                       multiple
                       :disabled="!showEditBtn"
-                      @change="(val, row) => handleChange(val, row, 'deliveryDerive')"
-                    />
+                      @change="(val) => handleChange(val, 'deliveryDerive')"
+                    >
+                      <el-option
+                        v-for="item in authorityOptions"
+                        :key="item.authorityCode"
+                        :label="item.authorityName"
+                        :value="item.authorityCode"
+                      />
+                    </el-select>
                   </el-tooltip>
                 </el-form-item>
               </el-form>
@@ -98,57 +104,74 @@
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="formData" :rules="rules" ref="ruleForm" label-width="160px" class="form-edit">
                 <el-form-item label="赊销车辆是否还款：" prop="creditStatus">
-                  <fetch-select
-                      :request="fetchOptions"
-                      enumCode="BooleanEnum"
-                      v-model="formData.creditStatus"
-                      placeholder="请选择"
-                      clearable
-                      filterable
-                      :disabled="!showEditBtn"
-                      @change="(val, row) => handleChange(val, row, 'credit')"
+                  <el-select
+                    v-model="formData.creditStatus"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                    :disabled="!showEditBtn"
+                    @change="(val) => handleChange(val, 'credit')"
+                  >
+                    <el-option
+                      v-for="item in yes_no_enum"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
                     />
+                  </el-select>
                 </el-form-item>
                 <el-form-item label="融资车辆是否还款：" prop="financeStatus">
-                  <fetch-select
-                      :request="fetchOptions"
-                      enumCode="BooleanEnum"
-                      v-model="formData.financeStatus"
-                      placeholder="请选择"
-                      clearable
-                      filterable
-                      :disabled="!showEditBtn"
-                      @change="(val, row) => handleChange(val, row, 'finance')"
+                  <el-select
+                    v-model="formData.financeStatus"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                    :disabled="!showEditBtn"
+                    @change="(val) => handleChange(val, 'finance')"
+                  >
+                    <el-option
+                      v-for="item in yes_no_enum"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
                     />
+                  </el-select>
                 </el-form-item>
                 <el-form-item label="手机号注册校验：" prop="phoneRegisterStatus">
-                 <fetch-select
-                      :request="fetchOptions"
-                      enumCode="BooleanEnum"
-                      v-model="formData.phoneRegisterStatus"
-                      placeholder="请选择"
-                      clearable
-                      filterable
-                      :disabled="!showEditBtn"
-                      @change="(val, row) => handleChange(val, row, 'phoneRegister')"
+                  <el-select
+                    v-model="formData.phoneRegisterStatus"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                    :disabled="!showEditBtn"
+                    @change="(val) => handleChange(val, 'phoneRegister')"
+                  >
+                    <el-option
+                      v-for="item in yes_no_enum"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
                     />
+                  </el-select>
                 </el-form-item>
-                  <el-form-item label="交车单分派通知：" prop="deliveryAssignmentStatus">
-                     <fetch-select
-                      ref="deliveryAssignmentSelect"
-                      :remote-method="listConfig"
-                      remote
-                      v-model="formData.deliveryAssignmentStatus"
-                      placeholder="请选择"
-                      labelKey="authorityName"
-                      valueKey="authorityCode"
-                      clearable
-                      collapseTags
-                      filterable
-                      :disabled="!showEditBtn"
-                      multiple
-                      @change="(val, row) => handleChange(val, row, 'deliveryAssignment')"
+                <el-form-item label="交车单分派通知：" prop="deliveryAssignmentStatus">
+                  <el-select
+                    v-model="formData.deliveryAssignmentStatus"
+                    placeholder="请选择"
+                    clearable
+                    collapse-tags
+                    filterable
+                    :disabled="!showEditBtn"
+                    multiple
+                    @change="(val) => handleChange(val, 'deliveryAssignment')"
+                  >
+                    <el-option
+                      v-for="item in authorityOptions"
+                      :key="item.authorityCode"
+                      :label="item.authorityName"
+                      :value="item.authorityCode"
                     />
+                  </el-select>
                 </el-form-item>
               </el-form>
             </div>
@@ -161,13 +184,10 @@
 
 <script>
 import { getRawList, addOrUpdate, getsalesConfig } from '@/api/vehretail/bizMasterData/configMasterData/salesConfig/index';
-import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
-import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
-import { debounce } from '@/libs/utils/index';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -201,8 +221,7 @@ export default {
   mixins: [routeGuard, permissions],
   components: {
     // AttachedFilesDialog,
-    EditPageLayout,
-    FetchSelect
+    EditPageLayout
   },
   computed: {
     _id () {
@@ -236,15 +255,15 @@ export default {
       },
       // 存储从getRawList获取的原始数据
       rawConfigData: [],
-      originalConfigData: [], // 存储查询后原始数据的快照（用于取消时恢复和提交时比对）
-      // 存储用户修改过的配置（key: salesConfigKey, value: saleConfigValue）
-      modifiedConfigMap: {},
+      originalConfigData: [],
       // 存储 tooltip 显示的内容（key: configKey, value: 选中的 name 数组）
       tooltipContentMap: {
         saleUser: [],
         deliveryUser: [],
         deliveryDerive: []
       },
+      // 存储全量权限数据（用于 el-select 选项）
+      authorityOptions: [],
       rules: {
         saleDeliveryUserConfigName: [
           { required: true, message: '请选择销售顾问配置', trigger: 'change' }
@@ -277,10 +296,7 @@ export default {
   },
   methods: {
     // 处理fetch-select的change事件
-    handleChange (val, row, configKey) {
-      console.log('handleChange - val:', val);
-      console.log('handleChange - row:', row);
-      console.log('handleChange - configKey:', configKey);
+    handleChange (val, configKey) {
       // 找到对应的配置项
       const configItem = this.rawConfigData.find(item => item.salesConfigKey === configKey);
       if (!configItem) return;
@@ -288,20 +304,14 @@ export default {
       let roleData = [];
       if (Array.isArray(val)) {
         // 多选情况：val 是选中的 value 数组（所有选中项）
-        // row 也是数组，每个元素是选中的完整选项对象
-        if (Array.isArray(row) && row.length > 0) {
-          // row 已经是选中的完整选项，直接使用
-          roleData = row.map(opt => ({
-            roleName: opt.authorityName || '',
-            roleCode: opt.authorityCode || opt.value || ''
-          }));
-        } else {
-          // 如果 row 不是数组，只用 val 无法获取 roleName
-          roleData = val.map(v => ({
-            roleName: '',
+        // 需要从 authorityOptions 中查找完整的选项对象
+        roleData = val.map(v => {
+          const option = this.authorityOptions.find(opt => opt.authorityCode === v);
+          return {
+            roleName: option ? option.authorityName : '',
             roleCode: v
-          }));
-        }
+          };
+        });
       } else if (val !== undefined && val !== null && val !== '') {
         // 单选情况（BooleanEnum 等）
         roleData = [{
@@ -313,11 +323,9 @@ export default {
       configItem.saleConfigValue = JSON.stringify(roleData);
       // 更新 tooltip 显示的内容（数组格式）
       this.tooltipContentMap[configKey] = roleData.map(r => r.roleName).filter(name => name);
-      console.log('更新后的 tooltipContent:', this.tooltipContentMap[configKey]);
     },
     getRawList () {
       getRawList().then(res => {
-        console.log('getRawList:', res);
         if (!res || res.length === 0) {
           this.rawConfigData = [
             {
@@ -377,26 +385,18 @@ export default {
         this.originalConfigData = JSON.parse(JSON.stringify(this.rawConfigData));
         // 初始化formData用于表单验证
         this.initFormData();
-        // 下一帧加载远程选项，用于回显已选择的数据
-        this.$nextTick(() => {
-          if (this.$refs.saleUserSelect) {
-            this.$refs.saleUserSelect.loadRemoteMethod();
-          }
-          if (this.$refs.deliveryUserSelect) {
-            this.$refs.deliveryUserSelect.loadRemoteMethod();
-          }
-          if (this.$refs.deliveryDeriveSelect) {
-            this.$refs.deliveryDeriveSelect.loadRemoteMethod();
-          }
-          if (this.$refs.deliveryAssignmentSelect) {
-            this.$refs.deliveryAssignmentSelect.loadRemoteMethod();
-          }
-        });
+        // 加载全量权限数据
+        this.loadAllAuthorityData();
       }).catch(() => {});
     },
-    listConfig: debounce(function (query) {
-      return getsalesConfig({ authorityName: query, pageNum: 1, pageSize: 20 });
-    }, 300),
+    // 加载全量权限数据
+    loadAllAuthorityData () {
+      getsalesConfig({ page: 1, size: 1000 }).then(res => {
+        this.authorityOptions = res.records || [];
+      }).catch(() => {
+        this.authorityOptions = [];
+      });
+    },
     // 初始化formData用于表单验证规则
     initFormData () {
       this.formData = {
@@ -495,21 +495,6 @@ export default {
       this.rawConfigData = JSON.parse(JSON.stringify(this.originalConfigData));
       // 重新初始化 formData
       this.initFormData();
-      // 重新加载远程选项，用于回显已选择的数据
-      this.$nextTick(() => {
-        if (this.$refs.saleUserSelect) {
-          this.$refs.saleUserSelect.loadRemoteMethod();
-        }
-        if (this.$refs.deliveryUserSelect) {
-          this.$refs.deliveryUserSelect.loadRemoteMethod();
-        }
-        if (this.$refs.deliveryDeriveSelect) {
-          this.$refs.deliveryDeriveSelect.loadRemoteMethod();
-        }
-        if (this.$refs.deliveryAssignmentSelect) {
-          this.$refs.deliveryAssignmentSelect.loadRemoteMethod();
-        }
-      });
       // 关闭编辑模式
       this.showEditBtn = !this.showEditBtn;
     },
@@ -543,17 +528,11 @@ export default {
         // ownerId: userInfo.userId,
         // ownerName: userInfo.userName,
       };
-    },
+    }
     // 审核日志
     // handleJumpAuditLog () {
     //   this.$auditLog.show({ id: 123 });
     // },
-    async fetchOptions (code) {
-      if (code) {
-        return getEnum(code);
-      }
-      return [];
-    }
   }
 };
 </script>
