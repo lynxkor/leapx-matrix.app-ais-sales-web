@@ -472,10 +472,6 @@ export default {
           });
           this.getData();
         }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '删除失败!'
-          });
         });
       }).catch(() => {});
     },
@@ -489,7 +485,7 @@ export default {
         return;
       }
       // 判断状态只能为1010
-      const errorStatusIds = this.selectionList.filter(item => item.status !== '1010')
+      const errorStatusIds = this.selectionList.filter(item => item.status !== 1010)
         .map(item => item.soldPlateCode);
       if (errorStatusIds && errorStatusIds.length > 0) {
         this.$message({
@@ -505,10 +501,6 @@ export default {
         });
         this.getData();
       }).catch(() => {
-        this.$message({
-          type: 'error',
-          message: '提交失败!'
-        });
       });
     },
     handleBatchRevocation () {
@@ -527,10 +519,6 @@ export default {
         });
         this.getData();
       }).catch(() => {
-        this.$message({
-          type: 'error',
-          message: '撤回失败!'
-        });
       });
     },
     handleBatchCancel () {
@@ -543,7 +531,7 @@ export default {
         return;
       }
       // 判断状态只能为1010
-      const errorStatusIds = this.selectionList.filter(item => item.status !== '1010')
+      const errorStatusIds = this.selectionList.filter(item => item.status !== 1010)
         .map(item => item.soldPlateCode);
       if (errorStatusIds && errorStatusIds.length > 0) {
         this.$message({
@@ -559,10 +547,6 @@ export default {
         });
         this.getData();
       }).catch(() => {
-        this.$message({
-          type: 'error',
-          message: '作废失败!'
-        });
       });
     },
     // 批量启用停用
