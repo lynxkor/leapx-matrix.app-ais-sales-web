@@ -35,7 +35,7 @@
           <el-input placeholder="请输入" v-model="form.optionPackageIds" clearable />
         </el-form-item>
       </template>
-      <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
+      <page-search-action v-model="show" is-expandable :loading="loading" @submit="onSubmit"
         @reset="onReset" />
     </el-form>
     <div class="ais-actions">
@@ -98,7 +98,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '新页面',
+      pageTitle: '整车库存存量统计',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISMC-vehicleVdcInventoryStatistics',
@@ -188,7 +188,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '新页面',
+        businessType: '整车库存存量统计',
         dataFetchPath: 'vehstock/web/store/vehicleVdcInventoryStatistics/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -196,7 +196,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '新页面.xlsx');
+            await downloadExcel(res.excelUrl, '整车库存存量统计.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

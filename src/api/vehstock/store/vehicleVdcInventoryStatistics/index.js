@@ -8,7 +8,7 @@ const prefix = 'vehstock/web/store/vehicleVdcInventoryStatistics/';
  * @param {Object} data
  */
 export function getList (data) {
-  return api.jsonPost(prefix + 'page', data);
+  return api.jsonPost(prefix + 'statistics', data);
 };
 
 /**
