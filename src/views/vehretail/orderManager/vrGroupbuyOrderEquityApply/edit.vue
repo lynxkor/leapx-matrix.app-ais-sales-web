@@ -839,7 +839,19 @@ export default {
         return detail;
       }
     },
-    submitRequest () {
+    async submitRequest () {
+      // 校验基础信息表单
+      const ruleFormValid = await this.$refs.ruleForm.validate().catch(() => false);
+      if (!ruleFormValid) {
+        throw new Error('基础信息表单校验失败');
+      }
+
+      // 校验公司信息表单
+      const companyFormValid = await this.$refs.companyForm.validate().catch(() => false);
+      if (!companyFormValid) {
+        throw new Error('公司信息表单校验失败');
+      }
+
       return addOrUpdate({ ...this.form });
     },
     openPane () {
