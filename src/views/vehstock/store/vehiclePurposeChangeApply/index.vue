@@ -4,7 +4,7 @@
     <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
       class="ais-search-form">
       <el-form-item label="VIN">
-        <el-input placeholder="请输入" v-model="form.vin" clearable />
+        <tag-input v-model="form.vinList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="申请单号">
         <el-input placeholder="请输入" v-model="form.applyNo" clearable />
@@ -77,6 +77,8 @@
     </div>
     <!-- TIPS: 填入项目id即可 -->
     <Upload :visible="uploadDialogVisible" :id="'1'" @close="handleUploadDialogClose" @getData="getData" />
+    <!-- 审批弹窗 -->
+    <ApprovalDialog ref="approvalDialog" :visible.sync="approvalDialogVisible" :approvalId="approvalId" :name="approvalName" @close="handleApprovalDialogClose" @submit="getData" />
   </div>
 </template>
 
@@ -84,7 +86,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehstock/store/vehiclePurposeChangeApply/index';
+import { getList, deleteItem, enableItem, enableItemSubmit, enableItemCancel } from '@/api/vehstock/store/vehiclePurposeChangeApply/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -95,6 +97,8 @@ import { handleBatchStatusChange, getEndOfDayString, downloadExcel } from '@/lib
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import { listOrgStoreInfo } from '@/libs/api/common';
+import TagInput from '@/libs/components/TagInput';
+import ApprovalDialog from './ApprovalDialog.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -102,6 +106,7 @@ const defaultForm = {
   dealerCode: '',
   applyStatusList: [],
   vin: '',
+  vinList: [],
   modelId: '',
   changeType: '',
 };
@@ -118,7 +123,9 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    TagInput,
+    ApprovalDialog
   },
   data () {
     return {
@@ -135,6 +142,9 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      approvalDialogVisible: false, // 审批弹窗
+      approvalName: '', // 弹窗标题
+      approvalId: '', // 审批id
       clickItemId: '',
       optionObj: {
         id: 'vehiclePurposeChangeApplyTable',
@@ -185,7 +195,82 @@ export default {
             type: 'operate',
             visible: true,
             fixed: 'right',
-            buttons: []
+            buttons: [{
+              name: '提交',
+              popconfirmTitle: '确认提交用途变更申请吗?',
+              show: (row) => {
+                return row.applyStatus === '1' || row.applyStatus === '6';
+              },
+              click: (rowIndex, row) => {
+                enableItemSubmit(row.id).then(res => {
+                  this.$message({
+                    message: '提交成功',
+                    type: 'success'
+                  });
+                  this.getData();
+                });
+              },
+              type: 'info'
+            }, {
+              name: '驳回',
+              popconfirmTitle: '确认驳回单据吗?',
+              show: (row) => {
+                return row.applyStatus === '2' || row.applyStatus === '3' || row.applyStatus === '4';
+              },
+              click: (rowIndex, row) => {
+                enableItemCancel(row.id).then(res => {
+                  this.$message({
+                    message: '驳回成功',
+                    type: 'success'
+                  });
+                  this.getData();
+                });
+              },
+              type: 'info'
+            }, {
+              name: '作废',
+              popconfirmTitle: '确认作废单据吗?',
+              show: (row) => {
+                return row.applyStatus === '1' || row.applyStatus === '6';
+              },
+              click: (rowIndex, row) => {
+                enableItemCancel(row.id).then(res => {
+                  this.$message({
+                    message: '作废成功',
+                    type: 'success'
+                  });
+                  this.getData();
+                });
+              },
+              type: 'info'
+            }, {
+              name: '零售经理审',
+              show: (row) => {
+                return row.applyStatus === '2';
+              },
+              click: (rowIndex, row) => {
+                this.handleApprove(row, 'retail');
+              },
+              type: 'info'
+            }, {
+              name: '大区总审',
+              show: (row) => {
+                return row.applyStatus === '3';
+              },
+              click: (rowIndex, row) => {
+                this.handleApprove(row, 'region');
+              },
+              type: 'info'
+            }, {
+              name: '总部审',
+              show: (row) => {
+                return row.applyStatus === '4';
+              },
+              click: (rowIndex, row) => {
+                this.handleApprove(row, 'headquarters');
+              },
+              type: 'info'
+            }]
           }
         ],
         total: 0
@@ -334,6 +419,10 @@ export default {
           data.createTimeEnd = getEndOfDayString(this.form.createTime[1]);
         }
       }
+      if (Array.isArray(this.form.vinList) && this.form.vinList.length <= 1) {
+        delete data.vinList;
+        data.vinLike = this.form.vinList[0] || '';
+      }
       // 排序字段
       data.sortColumns = this.sortColumns;
       return data;
@@ -386,6 +475,15 @@ export default {
     async getModelListByName (params) {
       return listVehicleModel({ modelNameLike: params });
     },
+    // 审批弹窗
+    handleApprove (row, type) {
+      this.approvalId = row.id;
+      this.approvalName = type;
+      this.approvalDialogVisible = true;
+    },
+    handleApprovalDialogClose () {
+      this.approvalDialogVisible = false;
+    }
   }
 };
 </script>

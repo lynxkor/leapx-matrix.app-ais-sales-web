@@ -36,6 +36,8 @@
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
 <!--      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>-->
       <el-button size="small" @click="handleBatchSubmit">提交审核</el-button>
+      <el-button size="small" @click="handleBatchRevocation">撤回</el-button>
+      <el-button size="small" @click="handleBatchCancel">取消</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete">删除</el-button>
 <!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>-->
@@ -76,7 +78,14 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehretail/orderManager/soldPlateInfo/index';
+import {
+  getList,
+  deleteItem,
+  enableItem,
+  submitBatch,
+  revocation,
+  revocationBatch, cancelBatch
+} from '@/api/vehretail/orderManager/soldPlateInfo/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -390,6 +399,13 @@ export default {
     // 批量删除
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
+      if (ids.length === 0) {
+        this.$message({
+          type: 'warning',
+          message: '请选择要删除的项'
+        });
+        return;
+      }
       const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
       this.$confirm(message, '', {
         confirmButtonText: '确定',
@@ -411,6 +427,72 @@ export default {
           });
         });
       }).catch(() => {});
+    },
+    handleBatchSubmit () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      if (ids.length === 0) {
+        this.$message({
+          type: 'warning',
+          message: '请选择要提交审核的项'
+        });
+        return;
+      }
+      submitBatch(ids).then(() => {
+        this.$message({
+          type: 'success',
+          message: '提交成功!'
+        });
+        this.getData();
+      }).catch(() => {
+        this.$message({
+          type: 'error',
+          message: '提交失败!'
+        });
+      });
+    },
+    handleBatchRevocation () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      if (ids.length === 0) {
+        this.$message({
+          type: 'warning',
+          message: '请选择要撤回的项'
+        });
+        return;
+      }
+      revocationBatch(ids).then(() => {
+        this.$message({
+          type: 'success',
+          message: '撤回操作成功!'
+        });
+        this.getData();
+      }).catch(() => {
+        this.$message({
+          type: 'error',
+          message: '撤回失败!'
+        });
+      });
+    },
+    handleBatchCancel () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      if (ids.length === 0) {
+        this.$message({
+          type: 'warning',
+          message: '请选择要作废的项'
+        });
+        return;
+      }
+      cancelBatch(ids).then(() => {
+        this.$message({
+          type: 'success',
+          message: '作废成功!'
+        });
+        this.getData();
+      }).catch(() => {
+        this.$message({
+          type: 'error',
+          message: '作废失败!'
+        });
+      });
     },
     // 批量启用停用
     handleBatchEnable (status) {

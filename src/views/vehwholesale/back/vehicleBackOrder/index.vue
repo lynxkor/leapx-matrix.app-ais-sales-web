@@ -421,6 +421,14 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
+      // 退车日期 returnTime
+      if (this.form.returnTime) {
+        delete data.returnTime;
+        if (this.form.returnTime.length > 1) {
+          data.returnTimeStart = this.form.returnTime[0];
+          data.returnTimeEnd = this.form.returnTime[1];
+        }
+      }
       // 排序字段
       data.sortColumns = this.sortColumns;
       return data;

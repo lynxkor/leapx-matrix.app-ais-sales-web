@@ -9,7 +9,54 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="创建时间">
+    <el-form-item label="VIN码">
+          <el-input
+            placeholder="请输入"
+            v-model="form.vin"
+            clearable
+          />
+        </el-form-item>
+         <el-form-item label="大区">
+          <el-input
+            placeholder="请输入"
+            v-model="form.regionName"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="销售门店名称"  v-show="this.visibleCount === 3 || show">
+        <el-input
+          placeholder="请输入"
+          v-model="form.saleDealerName"
+          clearable
+        />
+      </el-form-item>
+      <template v-if="show">
+        <el-form-item label="母公司名称">
+          <el-input
+            placeholder="请输入"
+            v-model="form.dealerCompanyName"
+            clearable
+          />
+        </el-form-item>
+         <el-form-item label="车辆处理状态">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="xxx"
+          v-model="form.status"
+          placeholder="请选择"
+          clearable
+          multiple
+          filterable
+        />
+      </el-form-item>
+        <el-form-item label="车系名称">
+          <el-input
+            placeholder="请输入"
+            v-model="form.modelName"
+            clearable
+          />
+        </el-form-item>
+         <el-form-item label="创建时间">
         <el-date-picker
          :default-time="['00:00:00', '23:59:59']"
           v-model="form.createTime"
@@ -21,53 +68,6 @@
           end-placeholder="结束日期"
         />
       </el-form-item>
-      <el-form-item label="车辆处理状态">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.status"
-          placeholder="请选择"
-          clearable
-          multiple
-          filterable
-        />
-      </el-form-item>
-      <el-form-item label="销售门店名称"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.saleDealerName"
-          clearable
-        />
-      </el-form-item>
-      <template v-if="show">
-        <el-form-item label="大区">
-          <el-input
-            placeholder="请输入"
-            v-model="form.regionName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="VIN码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.vin"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="母公司名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.dealerCompanyName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="车型名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.modelName"
-            clearable
-          />
-        </el-form-item>
       </template>
       <page-search-action
         v-if="canList"
@@ -183,8 +183,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'id',
-            label: '主键',
+            props: 'returnOrderDetailCode',
+            label: '退车明细单号',
             visible: false,
             width: 200,
             fixed: 'left',
@@ -200,25 +200,29 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'status', label: '车辆处理状态', visible: true, width: 200 },
-          { props: 'returnOrderDetailCode', label: '退车明细单号', visible: true, width: 200 },
           { props: 'returnOrderCode', label: '退车订单编号', visible: true, width: 200 },
-          { props: 'wholesaleOrderCode', label: '批售订单编号', visible: true, width: 200 },
+          { props: 'vin', label: 'VIN码', visible: true, width: 200 },
+          { props: 'status', label: '车辆处理状态Label', visible: true, width: 200 },
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
           { props: 'regionName', label: '大区', visible: true, width: 200 },
-          { props: 'vin', label: 'VIN码', visible: true, width: 200 },
-          { props: 'actualVehicleReturn', label: '是否实车返厂：1-是、0-否', visible: true, width: 200 },
-          { props: 'salesDeptReserve', label: '销售部预留：1-是、0-否', visible: true, width: 200 },
-          { props: 'vehicleLogisticsReserve', label: '整车物流预留：1-是、0-否', visible: true, width: 200 },
+          // { props: 'modelName1', label: '车系名称', visible: true, width: 200 },
+          { props: 'wholesaleOrderCode', label: '整车批售订单编号', visible: true, width: 200 },
+          { props: 'wholesaleOrderCode', label: '企业客户整车订单编号', visible: true, width: 200 },
+          { props: 'actualVehicleReturnLabel', label: '是否实车返厂', visible: true, width: 200 },
+          { props: 'salesDeptReserveLabel', label: '销售部预留', visible: true, width: 200 },
+          { props: 'vehicleLogisticsReserveLabel', label: '整车物流预留', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           { props: 'modelName', label: '车型名称', visible: true, width: 200 },
           { props: 'originalWholesalePrice', label: '原批售价格', visible: true, width: 200 },
           { props: 'originalRebateAmount', label: '原返利使用金额', visible: true, width: 200 },
           { props: 'originalInvoicePrice', label: '原开票价格', visible: true, width: 200 },
+          // { props: 'originalInvoicePrice', label: '退车开票价格', visible: true, width: 200 },
+          { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'storeOutboundConfirmer', label: '门店出库确认人', visible: true, width: 200 },
           { props: 'storeOutboundTime', label: '门店出库确认时间', visible: true, width: 200 },
+          // { props: 'storeOutboundTime', label: 'VDC入库确认人', visible: true, width: 200 },
+          // { props: 'storeOutboundTime', label: 'VDC入库确认时间', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',

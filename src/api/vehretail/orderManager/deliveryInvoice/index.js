@@ -50,3 +50,11 @@ export function enableItem (data) {
 export function confirmUpload (data) {
   return api.jsonPost(prefix + 'confirmUpload', data);
 }
+
+/**
+ * VIN查询
+ * @param {Object} data
+ */
+export function getEffectiveByVin (data) {
+  return api.get(prefix + `getEffectiveByVin?vin=${data}`);
+}

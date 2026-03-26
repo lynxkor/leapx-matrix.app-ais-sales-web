@@ -101,7 +101,7 @@
                    <fetch-select
                       :options="saleCompanyOptions"
                       v-model="form.saleDealerName"
-                      placeholder="销售公司"
+                      placeholder="销售门店："
                       labelKey="storeName"
                       valueKey="storeId"
                       clearable
@@ -264,7 +264,7 @@
                       filterable
                       clearable
                       remote
-                      v-model="form.provinceName"
+                      v-model="form.provinceCode"
                       :remote-method="getProvince"
                       value-key="code"
                       label-key="name"
@@ -282,7 +282,7 @@
                         @change="handleChangeDistrict"
                       />
                 </el-form-item>
-                <el-form-item label="区/县：" prop="districtName">
+                <el-form-item label="区/县：" prop="districtCode">
                    <fetch-select
                         filterable
                         clearable
@@ -918,17 +918,15 @@ export default {
       return networkParentCompanyItem({ parentCompanyName: query, pageNum: 1, pageSize: 20 });
     },
     getOtherInfoBysaleCompany (val, row) {
-      this.form.latitude = row.latitude;
-      this.form.longitude = row.longitude;
-      this.form.provinceCode = row.provinceCode;
-      this.form.provinceName = row.provinceName;
-      this.form.cityCode = row.cityCode;
-      this.form.cityName = row.cityName;
-      this.form.districtCode = row.districtCode;
-      this.form.districtName = row.districtName;
+      console.log(val, row);
+      this.form.latitude = row.storeWarehouseResp.warehouseAddressXy.split(',')[0];
+      this.form.longitude = row.storeWarehouseResp.warehouseAddressXy.split(',')[1];
+      this.form.provinceCode = row.storeWarehouseResp.provinceCode;
+      this.form.cityCode = row.storeWarehouseResp.cityCode;
+      this.form.districtCode = row.storeWarehouseResp.countyCode;
       this.form.saleDealerName = row.storeName;
       this.form.saleDealerCode = row.storeCode;
-      this.form.address = row.storeBuildAddress;
+      this.form.address = row.storeWarehouseResp.warehouseDetailAddress;
       this.form.pickupContactName = row.storeWarehouseResp.contacts;
       this.form.pickupContactMobile = row.storeWarehouseResp.contactPhone;
     },

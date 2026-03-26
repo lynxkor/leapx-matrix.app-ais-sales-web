@@ -103,6 +103,9 @@
                 <el-form-item label="同步结果：" prop="syncResult">
                   {{ form.syncResult }}
                 </el-form-item>
+                <el-form-item label="同步时间：" prop="syncTime">
+                  {{ form.syncTime }}
+                </el-form-item>
                 <el-form-item label="推送次数：" prop="syncCount">
                   {{ form.syncCount }}
                 </el-form-item>

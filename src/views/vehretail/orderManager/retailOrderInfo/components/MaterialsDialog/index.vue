@@ -255,7 +255,10 @@ export default {
     // 打开对话框
     show () {
       this.dialogVisible = true;
-      this.loadData();
+      console.log('MaterialsDialog show, this.row:', this.row, 'depositAmount:', this.row?.depositAmount);
+      this.$nextTick(() => {
+        this.loadData();
+      });
       // this.loadDropdownOptions();
     },
 
@@ -278,6 +281,7 @@ export default {
       try {
         const params = {
           ...this.searchForm,
+          deposit: this.row?.depositAmount || null,
           pageNum: this.currentPage,
           pageSize: this.pageSize
         };
