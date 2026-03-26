@@ -790,10 +790,10 @@ export default {
       const id = this._id;
       if (id) {
         return getDetail(id).then(res => {
-          res.saleUserId = res.saleUserId + '';
-          res.deliveryUserId = res.deliveryUserId + '';
-          res.deliveryDerivativeUserId = res.deliveryDerivativeUserId + '';
-          res.onSiteDeliveryUserId = res.onSiteDeliveryUserId + '';
+          res.saleUserId = res.saleUserId ? String(res.saleUserId) : '';
+          res.deliveryUserId = res.deliveryUserId ? String(res.deliveryUserId) : '';
+          res.deliveryDerivativeUserId = res.deliveryDerivativeUserId ? String(res.deliveryDerivativeUserId) : '';
+          res.onSiteDeliveryUserId = res.onSiteDeliveryUserId ? String(res.onSiteDeliveryUserId) : '';
           return res;
         });
       }
