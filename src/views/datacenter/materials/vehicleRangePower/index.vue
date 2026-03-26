@@ -21,56 +21,13 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="创建时间" v-show="this.visibleCount === 3 || show">
+      <!-- <el-form-item label="创建时间" v-show="this.visibleCount === 3 || show">
         <dateranges
           :v-model="createTime"
           :limtNum="3"
           ref="createTime"
           @changeNewTime="(value) => changeNewTime(value, 'createTime')"/>
-        <!-- <el-date-picker
-          v-model="form.createTime"
-          type="daterange"
-          :picker-options="pickerOptions"
-          range-separator="至"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        /> -->
-      </el-form-item>
-      <!-- <el-form-item label="备注（说明）"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.remark"
-          clearable
-        />
       </el-form-item> -->
-      <!-- <template v-if="show">
-        <el-form-item label="创建者名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.creatorName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="修改者名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.modifierName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="修改时间">
-          <el-date-picker
-            v-model="form.updateTime"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
-        </el-form-item>
-      </template> -->
       <page-search-action
         v-model="show"
         is-expandable
@@ -84,7 +41,7 @@
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <!-- <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button> -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
     </div>
@@ -126,7 +83,7 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
-import dateranges from '@/libs/components/dateranges';
+// import dateranges from '@/libs/components/dateranges';
 import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -148,7 +105,7 @@ export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
     TagInput,
-    dateranges,
+    // dateranges,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,

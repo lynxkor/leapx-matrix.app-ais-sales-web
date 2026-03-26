@@ -47,7 +47,9 @@
           <span class="info-label">调整前预约时间：</span>
           <span class="info-value">{{ appointmentForm.originalAppointmentTime }}</span>
         </div>
-        <!-- <div class="info-item">
+      </div>
+      <div class="info-section">
+        <div class="info-item">
           <span class="info-label">订单创建时间：</span>
           <span class="info-value">{{ createTime }}</span>
         </div>
@@ -64,7 +66,7 @@
           <span class="info-value" :class="{ 'is-overtime': isOvertime }">{{ timeDiffHours }} 小时</span>
           <el-tag v-if="isOvertime" type="danger" size="mini" style="margin-left: 8px;">已超时</el-tag>
           <el-tag v-else type="success" size="mini" style="margin-left: 8px;">未超时</el-tag>
-        </div> -->
+        </div>
       </div>
 
       <el-form

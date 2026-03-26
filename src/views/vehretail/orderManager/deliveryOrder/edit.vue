@@ -360,6 +360,7 @@
             </div>
             <div class="common-section-body">
               <AisAttachmentList
+                ref="attachmentList"
                 :businessId="form.deliveryInvoiceId"
                 :readonly="!isEditing"
               />
@@ -374,6 +375,7 @@
         :deliveryCityId="form.deliveryCityCode"
         :createTime="form.createTime"
         :orderId="_id"
+        :cityCode="form.deliveryCityCode"
         :orderCode="form.deliveryOrderCode"
         :originalAppointmentTime="form.appointmentTime"
         @refresh="getDetail"
@@ -801,6 +803,10 @@ export default {
     getDetail () {
       getDetail(this._id).then(res => {
         this.form = res;
+        // 刷新收款记录表格
+        this.$refs.paymentRecordTable?.refresh();
+        // 刷新附件列表
+        this.$refs.attachmentList?.refresh();
       }).catch(() => {});
     },
     // 允许提交的字段白名单 (与 API 字段名一致)
