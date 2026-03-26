@@ -2894,6 +2894,24 @@ const routes = [
         name: '车辆异常记录',
         keepAlive: true
       }
+    }, {
+      path: '/vehstock/store/storeSharedInventory',
+      name: 'storeSharedInventory',
+      component: () => import('@/views/vehstock/store/storeSharedInventory/index.vue'),
+
+      meta: {
+        name: '门店共享库存',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/store/storesharedinventory/edit',
+      name: 'storeSharedInventoryEdit',
+      component: () => import('@/views/vehstock/store/storeSharedInventory/edit.vue'),
+
+      meta: {
+        name: '门店共享库存详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
