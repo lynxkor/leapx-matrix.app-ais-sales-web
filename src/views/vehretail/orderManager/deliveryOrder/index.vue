@@ -15,7 +15,7 @@
       <el-form-item label="交车状态">
         <fetch-select
           :request="fetchOptions"
-          enumCode="vr_order_status_enum"
+          enumCode="vr_delivery_status"
           v-model="form.status"
           placeholder="请选择"
           clearable
