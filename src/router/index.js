@@ -2912,6 +2912,24 @@ const routes = [
         name: '门店共享库存详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehstock/store/eopMaterialDemandTotal',
+      name: 'eopMaterialDemandTotal',
+      component: () => import('@/views/vehstock/store/eopMaterialDemandTotal/index.vue'),
+
+      meta: {
+        name: 'EOP物料需求总量',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/store/eopmaterialdemandtotal/edit',
+      name: 'eopMaterialDemandTotalEdit',
+      component: () => import('@/views/vehstock/store/eopMaterialDemandTotal/edit.vue'),
+
+      meta: {
+        name: 'EOP物料需求总量详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
