@@ -938,6 +938,28 @@ export default {
       this.form.pickupContactName = warehouseResp.contacts || '';
       this.form.pickupContactMobile = warehouseResp.contactPhone || '';
       this.areaCode = [warehouseResp.provinceCode, warehouseResp.cityCode, warehouseResp.countyCode];
+      console.log(this.areaOptions);
+      const province = this.areaOptions.find(item => item.code === this.areaCode[0]);
+      if (province) {
+        this.form.provinceCode = province.code;
+        this.form.provinceName = province.name;
+
+        // 匹配城市
+        const cityList = province.child || [];
+        const city = cityList.find(item => item.code === this.areaCode[1]);
+        if (city) {
+          this.form.cityCode = city.code;
+          this.form.cityName = city.name;
+
+          // 匹配区县
+          const districtList = city.child || [];
+          const district = districtList.find(item => item.code === this.areaCode[2]);
+          if (district) {
+            this.form.districtCode = district.code;
+            this.form.districtName = district.name;
+          }
+        }
+      }
     },
     getDealersForParentCompany (val) {
       listDealersForParentCompany({ companyCode: val }).then(res => {
