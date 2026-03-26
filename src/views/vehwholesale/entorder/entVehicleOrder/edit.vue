@@ -1042,7 +1042,7 @@ export default {
           type: 'success',
           message: '提交成功'
         });
-        this.getData();
+        this.detailRequest();
         this.showvinAllocateVehicleDialog = false;
       });
     },
@@ -1060,22 +1060,30 @@ export default {
             type: 'success',
             message: '提交成功!'
           });
-          this.getData();
+          this.detailRequest();
         });
       }).catch(() => {});
     },
     handlebatchCancelSettleSubmit () {
-      batchCancelSettleSubmit({
-        idSet: [this._id],
+      this.$confirm('此操作将取消结算, 是否继续?', '', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        showClose: false
       }).then(() => {
-        this.$message.success('提交成功');
-      });
+        batchCancelSettleSubmit({
+          idSet: [this._id],
+        }).then(() => {
+          this.$message.success('提交成功');
+          this.detailRequest();
+        });
+      }).catch(() => {});
     },
     handlebatchSettleSubmit () {
       batchSettleSubmit({
         idSet: [this._id],
       }).then(() => {
         this.$message.success('提交成功');
+        this.detailRequest();
       });
     },
     handleCheckConfirm () {},

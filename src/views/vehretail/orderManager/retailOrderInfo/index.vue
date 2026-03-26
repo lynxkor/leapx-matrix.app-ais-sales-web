@@ -117,6 +117,7 @@
             :props="orgProps"
             :options="areaOptions"
             filterable
+            @change="handleChangeArea"
             clearable>
           </el-cascader>
         </el-form-item>
@@ -519,6 +520,9 @@ export default {
     this.loginUserGet();
   },
   methods: {
+    handleChangeArea (val) {
+      console.log('handleChangeArea', val);
+    },
     handleClick () {
       // 根据选中 tab 设置 orderStatusList
       if (this.activeTab === 'all') {

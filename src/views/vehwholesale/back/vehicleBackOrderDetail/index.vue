@@ -9,18 +9,19 @@
       label-width="150px"
       class="ais-search-form"
     >
-    <el-form-item label="VIN码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.vin"
-            clearable
-          />
+        <el-form-item label="VIN码">
+          <tag-input v-model="form.vins" placeholder="请输入" />
         </el-form-item>
          <el-form-item label="大区">
-          <el-input
-            placeholder="请输入"
-            v-model="form.regionName"
+          <fetch-select
+            filterable
             clearable
+            remote
+            v-model="form.regionCodes"
+            :remote-method="getRegionList"
+            multiple
+            value-key="orgCode"
+            label-key="orgName"
           />
         </el-form-item>
         <el-form-item label="销售门店名称"  v-show="this.visibleCount === 3 || show">
@@ -41,8 +42,8 @@
          <el-form-item label="车辆处理状态">
         <fetch-select
           :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.status"
+          enumCode="vw_vehicle_back_order_detail_status"
+          v-model="form.statuses"
           placeholder="请选择"
           clearable
           multiple
@@ -50,10 +51,18 @@
         />
       </el-form-item>
         <el-form-item label="车系名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.modelName"
+         <fetch-select
+            v-model="form.seriesIdList"
+            :remote-method="vehicleSeriesSearch"
+            placeholder="请选择"
+            labelKey="name"
+            valueKey="id"
             clearable
+            remote
+            reserve-keyword
+            multiple
+            collapseTags
+            filterable
           />
         </el-form-item>
          <el-form-item label="创建时间">
@@ -80,12 +89,8 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+
     </div>
     <div
       class="ais-table-c"
@@ -123,7 +128,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/back/vehicleBackOrderDetail/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getRigion, vehicleSeriesList } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -132,6 +137,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -156,7 +162,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    TagInput
   },
   data () {
     return {
@@ -202,12 +209,12 @@ export default {
           },
           { props: 'returnOrderCode', label: '退车订单编号', visible: true, width: 200 },
           { props: 'vin', label: 'VIN码', visible: true, width: 200 },
-          { props: 'status', label: '车辆处理状态Label', visible: true, width: 200 },
+          { props: 'statusLabel', label: '车辆处理状态', visible: true, width: 200 },
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
           { props: 'regionName', label: '大区', visible: true, width: 200 },
           // { props: 'modelName1', label: '车系名称', visible: true, width: 200 },
           { props: 'wholesaleOrderCode', label: '整车批售订单编号', visible: true, width: 200 },
-          { props: 'wholesaleOrderCode', label: '企业客户整车订单编号', visible: true, width: 200 },
+          { props: 'entCustomerCode', label: '企业客户整车订单编号', visible: true, width: 200 },
           { props: 'actualVehicleReturnLabel', label: '是否实车返厂', visible: true, width: 200 },
           { props: 'salesDeptReserveLabel', label: '销售部预留', visible: true, width: 200 },
           { props: 'vehicleLogisticsReserveLabel', label: '整车物流预留', visible: true, width: 200 },
@@ -216,12 +223,12 @@ export default {
           { props: 'originalWholesalePrice', label: '原批售价格', visible: true, width: 200 },
           { props: 'originalRebateAmount', label: '原返利使用金额', visible: true, width: 200 },
           { props: 'originalInvoicePrice', label: '原开票价格', visible: true, width: 200 },
-          // { props: 'originalInvoicePrice', label: '退车开票价格', visible: true, width: 200 },
+          { props: 'returnInvoiceAmount', label: '退车开票价格', visible: true, width: 200 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'storeOutboundConfirmer', label: '门店出库确认人', visible: true, width: 200 },
           { props: 'storeOutboundTime', label: '门店出库确认时间', visible: true, width: 200 },
-          // { props: 'storeOutboundTime', label: 'VDC入库确认人', visible: true, width: 200 },
-          // { props: 'storeOutboundTime', label: 'VDC入库确认时间', visible: true, width: 200 },
+          { props: 'vdcInboundConfirmer', label: 'VDC入库确认人', visible: true, width: 200 },
+          { props: 'vdcInboundTime', label: 'VDC入库确认时间', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',
@@ -279,6 +286,12 @@ export default {
     this.getData();
   },
   methods: {
+    vehicleSeriesSearch (query) {
+      return vehicleSeriesList({ seriesNameLike: query, size: 100 });
+    },
+    async getRegionList (params) {
+      return getRigion({ orgName: params });
+    },
     // 排序
     handleSortChange (value) {
       this.sortColumns = (value || []).map(item => {

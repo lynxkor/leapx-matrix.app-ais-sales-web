@@ -19,8 +19,8 @@
       <el-form-item label="单据类型">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.orderType"
+            enumCode="vw_vehicle_back_order_type"
+            v-model="form.orderTypes"
             placeholder="请选择"
             clearable
             multiple
@@ -28,11 +28,18 @@
           />
         </el-form-item>
         <el-form-item label="企业客户名称" v-show="this.visibleCount === 3 || show">
-          <el-input
-            placeholder="请输入"
-            v-model="form.entCustomerName"
-            clearable
-          />
+          <fetch-select
+              :remote-method="listNetworkParentCompany"
+              remote
+              v-model="form.entCustomerCodes"
+              placeholder="请选择"
+              labelKey="companyName"
+              valueKey="companyCode"
+              clearable
+              collapseTags
+              filterable
+              multiple
+        />
         </el-form-item>
       <template v-if="show">
         <el-form-item label="退车日期">
@@ -47,11 +54,11 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-         <el-form-item label="推车订单状态">
+         <el-form-item label="退车订单状态">
         <fetch-select
           :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.status"
+          enumCode="vw_vehicle_back_order_audit_status"
+          v-model="form.statuses"
           placeholder="请选择"
           clearable
           multiple
@@ -59,17 +66,22 @@
         />
       </el-form-item>
         <el-form-item label="所属大区">
-          <el-input
-            placeholder="请输入"
-            v-model="form.regionName"
+          <fetch-select
+            filterable
             clearable
+            remote
+            v-model="form.regionCodes"
+            :remote-method="getRegionList"
+            multiple
+            value-key="orgCode"
+            label-key="orgName"
           />
         </el-form-item>
         <el-form-item label="退车类型">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.returnType"
+            enumCode="vw_vehicle_back_type"
+            v-model="form.backTypes"
             placeholder="请选择"
             clearable
             multiple
@@ -101,11 +113,9 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="handleAudit">审核</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="handleCancel">作废</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -128,6 +138,12 @@
         <EditPage slot="centralizedViewSlot" :id="clickItemId"/>
       </LPVxeTable>
     </div>
+    <audit-dialog
+      ref="auditRef"
+      @audit="handleBatchAudit"
+      :auditDataList="[]"
+      :maxlength='150'
+    />
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
@@ -142,8 +158,8 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehwholesale/back/vehicleBackOrder/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getList, deleteItem, enableItem, audit, cancel } from '@/api/vehwholesale/back/vehicleBackOrder/index';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getRigion } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -152,6 +168,8 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import auditDialog from '@/libs/components/auditDialog';
+import { networkParentCompanyItem } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -177,7 +195,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    auditDialog
   },
   data () {
     return {
@@ -226,7 +245,7 @@ export default {
           { props: 'dealerCompanyName', label: '经销商', visible: true, width: 200 },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
           { props: 'entCustomerName', label: '企业客户', visible: true, width: 200 },
-          { props: 'returnTypeLabel', label: '退车类型', visible: true, width: 200 },
+          { props: 'backTypeLabel', label: '退车类型', visible: true, width: 200 },
           { props: 'orderTypeLabel', label: '单据类型', visible: true, width: 200 },
           { props: 'remark', label: '退车备注', visible: true, width: 200 },
           { props: 'auditorUserId', label: '审核人', visible: true, width: 200 },
@@ -290,6 +309,45 @@ export default {
     this.getData();
   },
   methods: {
+    async getRegionList (params) {
+      return getRigion({ orgName: params });
+    },
+    async listNetworkParentCompany (query) {
+      return networkParentCompanyItem({ parentCompanyName: query, pageNum: 1, pageSize: 20 });
+    },
+    handleBatchAudit (data) {
+      let params = {
+        idSet: this.selectionList.map(item => item.id) || [],
+        audit: data.result,
+        opinion: data.remark
+      };
+      return audit(params).then(() => {
+        this.$message({
+          type: 'success',
+          message: '批量审核提交成功'
+        });
+        this.getData();
+      });
+    },
+    handleAudit () {
+      this.$refs.auditRef.show();
+    },
+    handleCancel () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      this.$confirm('是否对选中数据进行作废?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        cancel({ idSet: ids }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '作废提交成功!'
+          });
+          this.getData();
+        });
+      }).catch(() => {});
+    },
     // 排序
     handleSortChange (value) {
       this.sortColumns = (value || []).map(item => {
