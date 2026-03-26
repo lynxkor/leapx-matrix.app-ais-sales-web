@@ -822,6 +822,7 @@ export default {
       });
     },
     handleCheckStatus () {
+      this.$refs.auditRef.auditForm.result = 1;
       this.$refs.auditRef.show();
     },
     handleCheckSubmit () {
