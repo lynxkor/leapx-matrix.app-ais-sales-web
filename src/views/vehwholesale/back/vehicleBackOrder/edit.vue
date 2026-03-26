@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        :title="title"
+        title="整车退车订单"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -13,12 +13,15 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          <!-- 支持primary,warning,success,danger等状态 -->
-          <!-- <span class="status primary">状态</span> -->
+         {{ form.returnOrderCode }}
         </template>
         <template #extraButtons>
-          <!-- <el-button size="small">按钮1</el-button>
-          <el-button size="small">按钮2</el-button> -->
+          <el-button  size="small"  @click="handelAdd">添加车辆</el-button>
+          <el-button  size="small"  @click="handelSubmit">提交</el-button>
+          <el-button  size="small"  @click="handleAudit">审核</el-button>
+          <el-button  size="small"  @click="handelCancel">作废</el-button>
+          <el-button  size="small"  @click="handleImport">导入车辆</el-button>
+          <el-button  size="small"  @click="handelDel">删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -28,61 +31,75 @@
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="主键：" prop="id">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.id"
+                 <el-form-item label="单据类型：" prop="orderType">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vw_vehicle_back_order_type"
+                    v-model="form.orderType"
+                    placeholder="请选择"
                     clearable
+                    filterable
                   />
-                </el-form-item>
-                <el-form-item label="创建者：" prop="creator">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.creator"
+                  </el-form-item>
+                   <el-form-item label="经销商：">
+                    <fetch-select
+                    filterable
                     clearable
+                    remote
+                    v-model="form.dealerCompanyName"
+                    :remote-method="getDealerListByName"
+                    value-key="storeCode"
+                    label-key="storeName"
+                    @change="getdealerCompanyCode"
                   />
                 </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.creatorName"
+                 <el-form-item label="企业客户名称：">
+                  <fetch-select
+                      :remote-method="listNetworkParentCompany"
+                      remote
+                      v-model="form.entCustomerName"
+                      placeholder="请选择"
+                      labelKey="companyName"
+                      valueKey="companyCode"
+                      clearable
+                      collapseTags
+                      filterable
+                      @change="getentCustomerName"
+                />
+
+                </el-form-item>
+                 <el-form-item label="大区：">
+                  <fetch-select
+                      filterable
+                      clearable
+                      remote
+                      v-model="form.regionCode"
+                      :remote-method="getRegionList"
+                      value-key="orgCode"
+                      label-key="orgName"
+                    />
+                </el-form-item>
+                <el-form-item label="退车类型：" prop="backType">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vw_vehicle_back_type"
+                    v-model="form.backType"
+                    placeholder="请选择"
                     clearable
+                    filterable
                   />
                 </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.createTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  />
-                </el-form-item>
-                <el-form-item label="修改者：" prop="modifier">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.modifier"
+                  <el-form-item label="退车订单状态：" prop="status">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vw_vehicle_back_order_audit_status"
+                    v-model="form.status"
+                    placeholder="请选择"
                     clearable
+                    filterable
                   />
                 </el-form-item>
-                <el-form-item label="修改者名称：" prop="modifierName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.modifierName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="修改时间：" prop="updateTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.updateTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  />
-                </el-form-item>
+
                 <el-form-item label="退车备注：" prop="remark">
                   <el-input
                     placeholder="请输入"
@@ -90,127 +107,14 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="推车订单状态：" prop="status">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
-                    v-model="form.status"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                  />
-                </el-form-item>
-                <el-form-item label="状态变更描述：" prop="statusDesc">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
-                    v-model="form.statusDesc"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                  />
-                </el-form-item>
-                <el-form-item label="数据来源，150:新销服; 老销服:10：" prop="dataSource">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.dataSource"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="退车订单号：" prop="returnOrderCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.returnOrderCode"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="经销商（母公司名称）：" prop="dealerCompanyName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.dealerCompanyName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.dealerCompanyCode"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="企业客户编码：" prop="entCustomerCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.entCustomerCode"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="企业客户名称：" prop="entCustomerName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.entCustomerName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="退车日期：" prop="returnTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.returnTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  />
-                </el-form-item>
-                <el-form-item label="大区ID：" prop="regionCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.regionCode"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="大区：" prop="regionName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.regionName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="退车类型：" prop="returnType">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
-                    v-model="form.returnType"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                  />
-                </el-form-item>
-                <el-form-item label="单据类型：" prop="orderType">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
-                    v-model="form.orderType"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                  />
-                </el-form-item>
-                <el-form-item label="审核人：" prop="auditorName">
+                <el-form-item label="审核人：">
                   <el-input
                     placeholder="请输入"
                     v-model="form.auditorName"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="审核人：" prop="auditorUserId">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.auditorUserId"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="审核时间：" prop="auditTime">
+                <el-form-item label="审核时间：">
                   <el-date-picker
                     :default-time="['00:00:00', '23:59:59']"
                     v-model="form.auditTime"
@@ -220,77 +124,48 @@
                     end-placeholder="结束日期"
                   />
                 </el-form-item>
-                <el-form-item label="退车审核说明：" prop="auditOpinion">
+                <el-form-item label="退车审核说明：">
                   <el-input
                     placeholder="请输入"
                     v-model="form.auditOpinion"
                     clearable
                   />
                 </el-form-item>
+                <el-form-item label="退车日期：">
+                  <el-date-picker
+                    :default-time="['00:00:00', '23:59:59']"
+                    v-model="form.returnTime"
+                    :picker-options="pickerOptions"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                  />
+                </el-form-item>
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="主键：" prop="id">
-                  {{ form.id }}
-                </el-form-item>
-                <el-form-item label="创建者：" prop="creator">
-                  {{ form.creator }}
-                </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  {{ form.creatorName }}
-                </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
-                  {{ form.createTime }}
-                </el-form-item>
-                <el-form-item label="修改者：" prop="modifier">
-                  {{ form.modifier }}
-                </el-form-item>
-                <el-form-item label="修改者名称：" prop="modifierName">
-                  {{ form.modifierName }}
-                </el-form-item>
-                <el-form-item label="修改时间：" prop="updateTime">
-                  {{ form.updateTime }}
-                </el-form-item>
-                <el-form-item label="退车备注：" prop="remark">
-                  {{ form.remark }}
-                </el-form-item>
-                <el-form-item label="推车订单状态：" prop="status">
-                  {{ form.status }}
-                </el-form-item>
-                <el-form-item label="状态变更描述：" prop="statusDesc">
-                  {{ form.statusDesc }}
-                </el-form-item>
-                <el-form-item label="数据来源，150:新销服; 老销服:10：" prop="dataSource">
-                  {{ form.dataSource }}
-                </el-form-item>
-                <el-form-item label="退车订单号：" prop="returnOrderCode">
+               <el-form-item label="退车订单号：" prop="returnOrderCode">
                   {{ form.returnOrderCode }}
                 </el-form-item>
-                <el-form-item label="经销商（母公司名称）：" prop="dealerCompanyName">
+                <el-form-item label="单据类型：" prop="orderTypeLabel">
+                  {{ form.orderTypeLabel }}
+                </el-form-item>
+                 <el-form-item label="经销商：" prop="dealerCompanyName">
                   {{ form.dealerCompanyName }}
                 </el-form-item>
-                <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  {{ form.dealerCompanyCode }}
-                </el-form-item>
-                <el-form-item label="企业客户编码：" prop="entCustomerCode">
-                  {{ form.entCustomerCode }}
-                </el-form-item>
-                <el-form-item label="企业客户名称：" prop="entCustomerName">
+                 <el-form-item label="企业客户名称：" prop="entCustomerName">
                   {{ form.entCustomerName }}
-                </el-form-item>
-                <el-form-item label="退车日期：" prop="returnTime">
-                  {{ form.returnTime }}
-                </el-form-item>
-                <el-form-item label="大区ID：" prop="regionCode">
-                  {{ form.regionCode }}
                 </el-form-item>
                 <el-form-item label="大区：" prop="regionName">
                   {{ form.regionName }}
                 </el-form-item>
-                <el-form-item label="退车类型：" prop="returnType">
-                  {{ form.returnType }}
+                   <el-form-item label="退车类型：" prop="backTypeLabel">
+                  {{ form.backType }}
                 </el-form-item>
-                <el-form-item label="单据类型：" prop="orderType">
-                  {{ form.orderType }}
+                  <el-form-item label="退车订单状态：" prop="statusLabel">
+                  {{ form.status }}
+                </el-form-item>
+                <el-form-item label="退车备注：" prop="remark">
+                  {{ form.remark }}
                 </el-form-item>
                 <el-form-item label="审核人：" prop="auditorName">
                   {{ form.auditorName }}
@@ -304,55 +179,36 @@
                 <el-form-item label="退车审核说明：" prop="auditOpinion">
                   {{ form.auditOpinion }}
                 </el-form-item>
+                <el-form-item label="退车日期：" prop="returnTime">
+                  {{ form.returnTime }}
+                </el-form-item>
               </el-form>
             </div>
           </section>
-          <section class="common-section" v-if="_id">
+          <section class="common-section">
             <div class="common-section-header">
-              <h2>子表标题</h2>
+              <h2>退车车辆明细</h2>
             </div>
-            <div class="common-section-body">
-              <div class="common-section-header">
-                <div class="ais-select-group">
-                  <fetch-select
-                    style="width: 300px;"
-                    :remote-method="queryListData"
-                    remote
-                    placeholder="请选择"
-                    clearable
-                    value-key="id"
-                    label-key="name"
-                    @change="handleAddTableData"
-                  />
-                  <el-button type="primary" size="small">添加</el-button>
-                </div>
-              </div>
+               <div class="common-section-body">
               <div class="common-section-table">
-                <vxe-table
-                  ref="tableRef"
-                  stripe
+                <edit-table
+                  ref="editTable"
+                  :columns="columns"
                   :data="tableData"
-                  show-overflow
-                  resizable
-                  border="inner"
-                  size="medium"
-                  min-height="0"
-                  max-height="400px"
-                >
-                  <vxe-column field="name" title="名称" min-width="30%" />
-                  <vxe-column field="age" title="年龄" min-width="30%" />
-                  <vxe-column field="email" title="邮箱" min-width="30%" />
-                  <vxe-column title="操作" width="100" v-if="canDelete">
-                    <template #default="{ rowIndex }">
-                      <el-popconfirm title="确定要删除吗？" @confirm="handleDeleteRow(rowIndex)">
-                        <span slot="reference" type="text" size="small" class="btn-delete">删除</span>
-                      </el-popconfirm>
-                    </template>
-                  </vxe-column>
-                  <template #empty>
-                    <div class="m-vxe-table-empty-text">{{emptyText}}</div>
-                  </template>
-                </vxe-table>
+                  :defaultNewRow="defaultNewRow"
+                  :show-toolbar="false"
+                  :show-pagination="true"
+                  :enable-single-row-save="true"
+                  :options="options"
+                  :current="pageNum"
+                  :pageSize="pageSize"
+                  :total="total"
+                  @save-row-edit="saveRowEdit"
+                  @remove-row="handleRemoveRow"
+                  @page-size-change="pageSizeChange"
+                  @current-page-change="currentPageChange"
+                  :auth="{edit: isEditing, delete: isEditing}"
+                />
               </div>
             </div>
           </section>
@@ -364,19 +220,40 @@
         <!-- 右侧栏组件，自行开发 -->
       </div>
     </template>
+    <Upload
+      :visible="uploadDialogVisible"
+      :id="'1'"
+      @close="handleUploadDialogClose"
+      @getData="detailRequest"
+    />
+    <audit-dialog
+      ref="auditRef"
+      @audit="handleBatchAudit"
+      :auditDataList="[]"
+      :maxlength='150'
+    />
+     <vinAllocateVehicle :visible.sync="showvinAllocateVehicleDialog" ref="vinAllocateVehicleDialog" :id="_id"
+      @confirm="vinConfirm"
+      >
+    </vinAllocateVehicle>
   </edit-page-layout>
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehwholesale/back/vehicleBackOrder/index';
+import { deleteItem, audit, cancel, getDetail, addOrUpdate } from '@/api/vehwholesale/back/vehicleBackOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum } from '@/api/common';
+import { getEnum, listOrgStoreInfo, getRigion } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import EditTable from '@/libs/components/EditTable';
+import { networkParentCompanyItem } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
+import Upload from '@/libs/components/UploadDialog';
+import auditDialog from '@/libs/components/auditDialog';
+import vinAllocateVehicle from './vinAllocateVehicle.vue';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -420,7 +297,11 @@ export default {
   components: {
     EditPageLayout,
     EditBaseContainer,
-    FetchSelect
+    FetchSelect,
+    EditTable,
+    Upload,
+    auditDialog,
+    vinAllocateVehicle
   },
   computed: {
     _id () {
@@ -448,97 +329,281 @@ export default {
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
       moduleKey: 'AISVW-vehicleBackOrder',
       loading: false,
+      uploadDialogVisible: false,
+      showvinAllocateVehicleDialog: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
       emptyText: '若要启用此内容，请创建记录',
       tableData: [
-        { id: 1, name: '张三', age: 25, email: 'zhangsan@example.com' },
-        { id: 2, name: '李四', age: 30, email: 'lisi@example.com' }
       ],
+      defaultNewRow: {
+        totalQuotaQty: '',
+      },
+      pageNum: 1,
+      pageSize: 20,
+      total: 0,
+      options: {
+        // 对应表格里选型枚举
+        // 如 type: [{label: 'xxx', value: 'xxx'}]
+      },
       rules: {
-        id: [
-          { required: true, message: '请输入主键', trigger: 'change' }
-        ],
-        creator: [
-          { required: true, message: '请输入创建者', trigger: 'change' }
-        ],
-        creatorName: [
-          { required: true, message: '请输入创建者名称', trigger: 'change' }
-        ],
-        createTime: [
-          { required: true, message: '请选择创建时间', trigger: 'change' }
-        ],
-        modifier: [
-          { required: true, message: '请输入修改者', trigger: 'change' }
-        ],
-        modifierName: [
-          { required: true, message: '请输入修改者名称', trigger: 'change' }
-        ],
-        updateTime: [
-          { required: true, message: '请选择修改时间', trigger: 'change' }
-        ],
-        remark: [
-          { required: true, message: '请输入退车备注', trigger: 'change' }
-        ],
-        status: [
-          { required: true, message: '请选择推车订单状态', trigger: 'change' }
-        ],
-        statusDesc: [
-          { required: true, message: '请选择状态变更描述', trigger: 'change' }
-        ],
-        dataSource: [
-          { required: true, message: '请输入数据来源，150:新销服; 老销服:10', trigger: 'change' }
-        ],
-        returnOrderCode: [
-          { required: true, message: '请输入退车订单号', trigger: 'change' }
-        ],
-        dealerCompanyName: [
-          { required: true, message: '请输入经销商（母公司名称）', trigger: 'change' }
-        ],
-        dealerCompanyCode: [
-          { required: true, message: '请输入母公司编码', trigger: 'change' }
-        ],
-        entCustomerCode: [
-          { required: true, message: '请输入企业客户编码', trigger: 'change' }
-        ],
         entCustomerName: [
           { required: true, message: '请输入企业客户名称', trigger: 'change' }
         ],
-        returnTime: [
-          { required: true, message: '请选择退车日期', trigger: 'change' }
+        status: [
+          { required: true, message: '请选择退车订单状态', trigger: 'change' }
         ],
-        regionCode: [
-          { required: true, message: '请输入大区ID', trigger: 'change' }
-        ],
-        regionName: [
-          { required: true, message: '请输入大区', trigger: 'change' }
-        ],
-        returnType: [
+        backType: [
           { required: true, message: '请选择退车类型', trigger: 'change' }
         ],
         orderType: [
           { required: true, message: '请选择单据类型', trigger: 'change' }
         ],
-        auditorName: [
-          { required: true, message: '请输入审核人', trigger: 'change' }
+        remark: [
+          { required: true, message: '请输入备注', trigger: 'change' }
         ],
-        auditorUserId: [
-          { required: true, message: '请输入审核人', trigger: 'change' }
-        ],
-        auditTime: [
-          { required: true, message: '请选择审核时间', trigger: 'change' }
-        ],
-        auditOpinion: [
-          { required: true, message: '请输入退车审核说明', trigger: 'change' }
-        ],
-      }
+      },
+      columns: [
+        {
+          field: 'backOrderDetailCode',
+          title: '退车明细单号',
+          width: '120'
+        },
+        {
+          field: 'backOrderCode',
+          title: '退车订单号',
+          width: '200'
+        },
+        {
+          field: 'vin',
+          title: 'VIN',
+          width: '100'
+        },
+        {
+          field: 'statusLabel',
+          title: '车辆处理状态',
+          width: '150'
+        },
+        {
+          field: 'saleDealerName',
+          title: '门店名称',
+          width: '120'
+        },
+        {
+          field: 'wholesaleOrderCode',
+          title: '整车批售订单号',
+          width: '200'
+        },
+        {
+          field: 'entOrderCode',
+          title: '企业客户整车订单号',
+          width: '200'
+        },
+        {
+          field: 'actualVehicleReturnLabel',
+          title: '是否实车返厂',
+          width: '150'
+        },
+        {
+          field: 'salesDeptReserveLabel',
+          title: '销售部预留',
+          width: '150'
+        },
+        {
+          field: 'vehicleLogisticsReserveLabel',
+          title: '整车物流预留',
+          width: '120'
+        },
+        {
+          field: 'originalWholesalePrice',
+          title: '原批售价格',
+          width: '120'
+        },
+        {
+          field: 'originalRebateAmount',
+          title: '原返利使用金额',
+          width: '200'
+        },
+        {
+          field: 'originalInvoicePrice',
+          title: '原开票价格',
+          width: '200'
+        },
+        {
+          field: 'returnPrice',
+          title: '退车价格',
+          width: '200'
+        },
+        {
+          field: 'returnInvoiceAmount',
+          title: '退车开票金额',
+          width: '200'
+        },
+        {
+          field: 'remark',
+          title: '备注说明',
+          width: '200'
+        },
+        {
+          field: 'storeOutboundConfirmer',
+          title: '门店出库确认人',
+          width: '200'
+        },
+        {
+          field: 'storeOutboundTime',
+          title: '门店出库确认时间',
+          width: '200'
+        },
+        {
+          field: 'vdcInboundConfirmer',
+          title: 'VDC入库确认人',
+          width: '200'
+        },
+        {
+          field: 'vdcInboundTime',
+          title: 'VDC入库确认时间',
+          width: '200'
+        },
+        {
+          field: 'createTime',
+          title: '创建时间',
+          width: '200'
+        },
+      ],
     };
   },
   mounted () {
   },
   methods: {
+    vinConfirm (data) {
+      // const params = {
+      //   entOrderId: this._id,
+      //   vin: data,
+      // };
+      // vinAllocateVehicleItem(params).then(() => {
+      //   this.$message({
+      //     type: 'success',
+      //     message: '提交成功'
+      //   });
+      //   this.detailRequest();
+      //   this.showvinAllocateVehicleDialog = false;
+      // });
+    },
+    handleUploadDialogClose () {
+      this.uploadDialogVisible = false;
+    },
+    handelAdd () {
+      // this.$refs.vinAllocateVehicleDialog.getData();
+      this.showvinAllocateVehicleDialog = true;
+    },
+    handelCancel () {
+      this.$confirm('确认是否对数据进行作废?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        cancel({
+          idSet: [this._id],
+        }).then(() => {
+          this.$message.success('提交成功');
+          this.detailRequest();
+        });
+      }).catch(() => {});
+    },
+    handelSubmit () {
+      deleteItem({
+        idSet: [this._id],
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '提交成功!'
+        });
+        this.detailRequest();
+      });
+    },
+    handleBatchAudit (data) {
+      let params = {
+        idSet: [this._id],
+        audit: data.result,
+        opinion: data.remark
+      };
+      return audit(params).then(() => {
+        this.$message({
+          type: 'success',
+          message: '审核提交成功'
+        });
+        this.detailRequest();
+      });
+    },
+    handleAudit () {
+      this.$refs.auditRef.show();
+    },
+    handelDel () {
+      const ids = this._id;
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
+      this.$confirm(message, '', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        dangerouslyUseHTMLString: true,
+        customClass: 'ais-leave-tips',
+        showClose: false
+      }).then(() => {
+        deleteItem(ids).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.getData();
+        });
+      }).catch(() => {});
+    },
+    handleImport () {
+      this.uploadDialogVisible = true;
+    },
+    async getRegionList (params) {
+      return getRigion({ orgName: params });
+    },
+    getdealerCompanyCode (val, row) {
+      this.form.dealerCompanyName = row.storeName;
+      this.form.dealerCompanyCode = row.storeCode;
+    },
+    async getDealerListByName (params) {
+      return await listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
+    },
+    getentCustomerName (val, row) {
+      this.form.entCustomerName = row.companyName;
+      this.form.entCustomerCode = row.companyCode;
+    },
+    async listNetworkParentCompany (query) {
+      return networkParentCompanyItem({ parentCompanyName: query, pageNum: 1, pageSize: 20 });
+    },
+    pageSizeChange (pageSize) {
+      this.pageSize = pageSize;
+      this.current = 1;
+      // this.getList();
+    },
+    currentPageChange (pageNum) {
+      this.pageNum = pageNum;
+      // this.getList();
+    },
+    handleRemoveRow (row, index, defer) {
+      // if (!row.id) {
+      //   return;
+      // }
+      // deleteItem([row.id]).then((d) => {
+      //   defer.resolve();
+      //   this.$message.success('删除成功');
+      //   this.getDetailData();
+      //   this.getList();
+      // }).catch(() => {
+      //   defer.reject();
+      // });
+    },
+    // 行保存
+    saveRowEdit (row, defer) {
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

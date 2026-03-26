@@ -259,39 +259,17 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="省份：" prop="provinceName">
-                   <fetch-select
-                      filterable
-                      clearable
-                      remote
-                      v-model="form.provinceCode"
-                      :remote-method="getProvince"
-                      value-key="code"
-                      label-key="name"
-                      @change="handleChangeProvince"
-                    />
-                </el-form-item>
-                <el-form-item label="城市：" prop="cityName">
-                    <fetch-select
-                        filterable
-                        clearable
-                        v-model="form.cityName"
-                        :options="cityOptions"
-                        value-key="code"
-                        label-key="name"
-                        @change="handleChangeDistrict"
-                      />
-                </el-form-item>
-                <el-form-item label="区/县：" prop="districtCode">
-                   <fetch-select
-                        filterable
-                        clearable
-                        v-model="form.districtName"
-                        :options="districtOptions"
-                        value-key="code"
-                        label-key="name"
-                        @change="getDistrictName"
-                      />
+
+                <el-form-item label="省市区">
+                  <el-cascader
+                    placeholder="请选择省市区"
+                    v-model="areaCode"
+                    :props="orgProps"
+                    :options="areaOptions"
+                    filterable
+                    @change="handleChangeArea"
+                    clearable>
+                  </el-cascader>
                 </el-form-item>
                 <el-form-item label="交车地址：" prop="address">
                   <el-input
@@ -623,6 +601,7 @@ export default {
       uploadDialogVisible: false,
       companyCustomerTypeName: '',
       yes_no_enum: YES_NO_ENUM,
+      areaCode: [],
       orderCategoryOptions: [],
       settleFundTypeOptions: [],
       defaultNewRow: {
@@ -632,6 +611,14 @@ export default {
       saleCompanyOptions: [],
       form: { ...form },
       originalForm: { ...form },
+      orgProps: {
+        checkStrictly: true,
+        emitPath: true,
+        label: 'name',
+        value: 'code',
+        children: 'child'
+      },
+      areaOptions: JSON.parse(localStorage.areaTree),
       emptyText: '若要启用此内容，请创建记录',
       tableData: [],
       options: {
@@ -757,6 +744,9 @@ export default {
     // this.getCompanyList();
   },
   methods: {
+    handleChangeArea (val, row) {
+      console.log('handleChangeArea', val, row);
+    },
     currentPageChange (pageNum) {
       this.pageNum = pageNum;
       this.detailRequest();
@@ -799,9 +789,13 @@ export default {
         address: val
       };
       return getGeoLocationByFullAddress(params).then((res) => {
-        console.log(res);
-        this.form.longitude = res.longitude;
-        this.form.latitude = res.latitude;
+        if (!res) {
+          console.warn('地址解析返回数据为空');
+          return;
+        }
+        // 安全赋值经纬度
+        this.form.longitude = res.longitude || '';
+        this.form.latitude = res.latitude || '';
       });
     },
     getCompanyList (query) {
@@ -856,12 +850,18 @@ export default {
     },
 
     handleCancel () {
-      batchCancel({
-        idSet: [this._id],
+      this.$confirm('确认是否对数据进行作废?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
-        this.$message.success('提交成功');
-        this.detailRequest();
-      });
+        batchCancel({
+          idSet: [this._id],
+        }).then(() => {
+          this.$message.success('提交成功');
+          this.detailRequest();
+        });
+      }).catch(() => {});
     },
 
     handleDelete () { // 删除
@@ -919,16 +919,25 @@ export default {
     },
     getOtherInfoBysaleCompany (val, row) {
       console.log(val, row);
-      this.form.latitude = row.storeWarehouseResp.warehouseAddressXy.split(',')[0];
-      this.form.longitude = row.storeWarehouseResp.warehouseAddressXy.split(',')[1];
-      this.form.provinceCode = row.storeWarehouseResp.provinceCode;
-      this.form.cityCode = row.storeWarehouseResp.cityCode;
-      this.form.districtCode = row.storeWarehouseResp.countyCode;
-      this.form.saleDealerName = row.storeName;
-      this.form.saleDealerCode = row.storeCode;
-      this.form.address = row.storeWarehouseResp.warehouseDetailAddress;
-      this.form.pickupContactName = row.storeWarehouseResp.contacts;
-      this.form.pickupContactMobile = row.storeWarehouseResp.contactPhone;
+      const warehouseResp = row.storeWarehouseResp;
+      const addressXy = warehouseResp.warehouseAddressXy || '';
+      const xyArray = addressXy.split(',');
+      // 安全赋值经纬度
+      this.form.latitude = xyArray[0] || '';
+      this.form.longitude = xyArray[1] || '';
+      // 安全赋值省市区代码
+      this.form.provinceCode = warehouseResp.provinceCode || '';
+      this.form.cityCode = warehouseResp.cityCode || '';
+      this.form.districtCode = warehouseResp.countyCode || '';
+      // 安全赋值门店信息
+      this.form.saleDealerName = row.storeName || '';
+      this.form.saleDealerCode = row.storeCode || '';
+      // 安全赋值地址信息
+      this.form.address = warehouseResp.warehouseDetailAddress || '';
+      // 安全赋值联系人信息
+      this.form.pickupContactName = warehouseResp.contacts || '';
+      this.form.pickupContactMobile = warehouseResp.contactPhone || '';
+      this.areaCode = [warehouseResp.provinceCode, warehouseResp.cityCode, warehouseResp.countyCode];
     },
     getDealersForParentCompany (val) {
       listDealersForParentCompany({ companyCode: val }).then(res => {
@@ -979,6 +988,7 @@ export default {
           type: 'success',
           message: '提交成功!'
         });
+        this.$refs.addEntVehicleReplishOrderDialog.handleCancel();
         this.detailRequest();
       });
     },

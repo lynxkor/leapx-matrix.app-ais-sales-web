@@ -42,3 +42,19 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 确认出库
+ * @param {Object} data
+ */
+export function confirmOutbound (data) {
+  return api.jsonPost(prefix + 'confirmOutbound', data);
+}
+
+/**
+ * 确认入库
+ * @param {Object} data
+ */
+export function confirmVdcInbound (data) {
+  return api.jsonPost(prefix + 'confirmVdcInbound', data);
+}
