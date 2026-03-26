@@ -101,7 +101,7 @@
                    <fetch-select
                       :options="saleCompanyOptions"
                       v-model="form.saleDealerName"
-                      placeholder="销售门店："
+                      placeholder="请选择"
                       labelKey="storeName"
                       valueKey="storeId"
                       clearable
@@ -745,7 +745,6 @@ export default {
   },
   methods: {
     handleChangeArea (val, row) {
-      console.log('handleChangeArea', val, row);
     },
     currentPageChange (pageNum) {
       this.pageNum = pageNum;
@@ -919,7 +918,6 @@ export default {
       return networkParentCompanyItem({ parentCompanyName: query, pageNum: 1, pageSize: 20 });
     },
     getOtherInfoBysaleCompany (val, row) {
-      console.log(val, row);
       const warehouseResp = row.storeWarehouseResp;
       const addressXy = warehouseResp.warehouseAddressXy || '';
       const xyArray = addressXy.split(',');
@@ -939,7 +937,6 @@ export default {
       this.form.pickupContactName = warehouseResp.contacts || '';
       this.form.pickupContactMobile = warehouseResp.contactPhone || '';
       this.areaCode = [warehouseResp.provinceCode, warehouseResp.cityCode, warehouseResp.countyCode];
-      console.log(this.areaOptions);
       const province = this.areaOptions.find(item => item.code === this.areaCode[0]);
       if (province) {
         this.form.provinceCode = province.code;
@@ -968,7 +965,6 @@ export default {
       });
     },
     handleChange (val, row) {
-      console.log(val, row);
       this.form.entCustomerName = row.companyName;
       this.form.entCustomerCode = row.companyCode;
       this.companyCustomerTypeName = row.companyCustomerTypeName;
@@ -1016,6 +1012,7 @@ export default {
       });
     },
     detailRequest () {
+      console.log('detailRequest.........................');
       const id = this._id;
       if (id) {
         return getDetail(id).then(res => {
@@ -1023,6 +1020,15 @@ export default {
           if (this.$refs.containerRef) {
             this.$refs.containerRef.originalForm = { ...res };
           }
+          // 设置 areaCode 并匹配省市区名称
+          if (res.provinceCode && res.cityCode) {
+            this.areaCode = [
+              res.provinceCode,
+              res.cityCode,
+              res.districtCode
+            ];
+          }
+          console.log('//////////////////////', this.areaCode);
           res.detailList = res.detailList.map(detail => ({
             ...detail,
             materialsDesc: detail.vehicleMaterials.materialsDesc || '',

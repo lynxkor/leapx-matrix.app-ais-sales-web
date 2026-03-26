@@ -64,35 +64,17 @@
                 <el-form-item label="变更类型：" prop="changeTypeLabel">
                   {{ form.changeTypeLabel }}
                 </el-form-item>
-                <el-form-item label="主键：" prop="id">
-                  {{ form.id }}
-                </el-form-item>
-                <el-form-item label="创建者：" prop="creator">
-                  {{ form.creator }}
-                </el-form-item>
                 <el-form-item label="创建者名称：" prop="creatorName">
                   {{ form.creatorName }}
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
                 </el-form-item>
-                <el-form-item label="修改者：" prop="modifier">
-                  {{ form.modifier }}
-                </el-form-item>
                 <el-form-item label="修改者名称：" prop="modifierName">
                   {{ form.modifierName }}
                 </el-form-item>
                 <el-form-item label="修改时间：" prop="updateTime">
                   {{ form.updateTime }}
-                </el-form-item>
-                <el-form-item label="备注：" prop="remark">
-                  {{ form.remark }}
-                </el-form-item>
-                <el-form-item label="状态：" prop="status">
-                  {{ form.status }}
-                </el-form-item>
-                <el-form-item label="状态变更描述：" prop="statusDesc">
-                  {{ form.statusDesc }}
                 </el-form-item>
               </el-form>
             </div>

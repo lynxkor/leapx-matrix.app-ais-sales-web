@@ -331,7 +331,7 @@ export default {
       }
       exportTable({
         businessType: '车辆用途变更申请',
-        dataFetchPath: 'vehstock/web/store/vehiclePurposeChangeApply/page',
+        dataFetchPath: 'vehstock/web/store/vehiclePurposeChangeApply/statistics',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
