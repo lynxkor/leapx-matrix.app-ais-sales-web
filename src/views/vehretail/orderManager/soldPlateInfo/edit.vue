@@ -281,12 +281,10 @@
                 </el-form-item>
                 <el-form-item label="开票日期：" prop="invoiceTime">
                   <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
                     v-model="form.invoiceTime"
+                    type="date"
                     :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
                   />
                 </el-form-item>
                 <el-form-item label="开票金额：" prop="invoiceAmount">
@@ -408,12 +406,10 @@
                 </el-form-item>
                 <el-form-item label="上牌日期：" prop="plateDate">
                   <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
                     v-model="form.plateDate"
+                    type="date"
                     :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
                   />
                 </el-form-item>
                 <el-form-item label="上牌省份：" prop="provinceCode">
@@ -736,7 +732,7 @@ const defaultForm = {
   invoiceVin: '',
   invoiceName: '',
   invoiceNo: '',
-  invoiceTime: '',
+  invoiceTime: null,
   invoiceAmount: '',
   invoiceVehiclePlaceOrigin: '',
   invoiceBrandModel: '',
@@ -791,6 +787,26 @@ export default {
         }
       },
       immediate: true
+    },
+    provinceCode: {
+      handler (val) {
+        if (val) {
+          this.$message.success(val);
+          this.handleProvinceChange(val);
+        }
+      },
+      immediate: false
+    },
+    cityCode: {
+      handler (val) {
+        this.handleCityChange(val);
+      },
+      immediate: false
+    },
+    districtCode: {
+      handler (val) {
+        this.handleDistrictChange(val);
+      }
     }
   },
   data () {
@@ -1201,13 +1217,10 @@ export default {
       this.form.districtCode = null;
       this.form.districtName = null;
       if (code) {
-        this.provinceSelector.find(item => {
-          if (item.code === code) {
-            this.form.provinceCode = item.code;
-            this.form.provinceName = item.name;
-            this.citySelector = item.child;
-          }
-        });
+        const city = this.provinceSelector.find(item => item.code === code);
+        this.form.provinceCode = city.code;
+        this.form.provinceName = city.name;
+        this.citySelector = city.child;
       }
     },
     handleCityChange (code) {
@@ -1216,25 +1229,19 @@ export default {
       this.form.districtCode = null;
       this.form.districtName = null;
       if (code) {
-        this.citySelector.find(item => {
-          if (item.code === code) {
-            this.form.cityCode = item.code;
-            this.form.cityName = item.name;
-            this.districtSelector = item.child;
-          }
-        });
+        const city = this.citySelector.find(item => item.code === code);
+        this.form.cityCode = city.code;
+        this.form.cityName = city.name;
+        this.districtSelector = city.child;
       }
     },
     handleDistrictChange (code) {
       this.form.districtCode = null;
       this.form.districtName = null;
       if (code) {
-        this.districtSelector.find(item => {
-          if (item.code === code) {
-            this.form.districtCode = item.code;
-            this.form.districtName = item.name;
-          }
-        });
+        const city = this.districtSelector.find(item => item.code === code);
+        this.form.districtCode = city.code;
+        this.form.districtName = city.name;
       }
     },
     openRevocationShow () {

@@ -109,6 +109,7 @@ export default {
       const params = {
         materialsCodeList: this.form.materialsCode ? [this.form.materialsCode] : [],
         pageNum: this.optionObj.form.page,
+        vehicleDeliveryStatus: 3,
         pageSize: this.optionObj.form.size
       };
       // 过滤空值
