@@ -2930,6 +2930,24 @@ const routes = [
         name: 'EOP物料需求总量详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehstock/store/eopMaterialDemandTotalRecord',
+      name: 'eopMaterialDemandTotalRecord',
+      component: () => import('@/views/vehstock/store/eopMaterialDemandTotalRecord/index.vue'),
+
+      meta: {
+        name: 'EOP物料需求总量记录',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehstock/store/eopmaterialdemandtotalrecord/edit',
+      name: 'eopMaterialDemandTotalRecordEdit',
+      component: () => import('@/views/vehstock/store/eopMaterialDemandTotalRecord/edit.vue'),
+
+      meta: {
+        name: 'EOP物料需求总量记录详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
