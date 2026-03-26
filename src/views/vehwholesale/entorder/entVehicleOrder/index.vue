@@ -9,7 +9,7 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="企业客户整车订单">
+      <el-form-item label="企业客户整车订单号">
            <tag-input v-model="form.entOrderCodes" placeholder="请输入" />
         </el-form-item>
      <el-form-item label="企业客户名称">
