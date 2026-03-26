@@ -9,41 +9,14 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="创建时间">
-        <el-date-picker
-         :default-time="['00:00:00', '23:59:59']"
-          v-model="form.createTime"
-          type="daterange"
-          :picker-options="pickerOptions"
-          range-separator="至"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        />
-      </el-form-item>
-      <el-form-item label="合格证赎回编号">
-        <el-input
-          placeholder="请输入"
-          v-model="form.redemptionCode"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item label="母公司名称"  v-show="this.visibleCount === 3 || show">
+     <el-form-item label="母公司名称"  >
         <el-input
           placeholder="请输入"
           v-model="form.dealerCompanyName"
           clearable
         />
       </el-form-item>
-      <template v-if="show">
-        <el-form-item label="销售��店名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.saleDealerName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="赊销结算状态">
+       <el-form-item label="赊销结算状态">
           <fetch-select
             :request="fetchOptions"
             enumCode="xxx"
@@ -52,6 +25,21 @@
             clearable
             multiple
             filterable
+          />
+        </el-form-item>
+          <el-form-item label="销售门店" v-show="this.visibleCount === 3 || show">
+          <el-input
+            placeholder="请输入"
+            v-model="form.saleDealerName"
+            clearable
+          />
+        </el-form-item>
+      <template v-if="show">
+       <el-form-item label="VIN码">
+          <el-input
+            placeholder="请输入"
+            v-model="form.vin"
+            clearable
           />
         </el-form-item>
         <el-form-item label="合格证状态">
@@ -63,27 +51,6 @@
             clearable
             multiple
             filterable
-          />
-        </el-form-item>
-        <el-form-item label="VIN码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.vin"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="车系ID">
-          <el-input
-            placeholder="请输入"
-            v-model="form.seriesId"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="车型ID">
-          <el-input
-            placeholder="请输入"
-            v-model="form.modelId"
-            clearable
           />
         </el-form-item>
         <el-form-item label="赊销日期">
@@ -98,6 +65,27 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
+        <el-form-item label="合格证赎回编号">
+        <el-input
+          placeholder="请输入"
+          v-model="form.redemptionCode"
+          clearable
+        />
+      </el-form-item>
+        <el-form-item label="车系ID">
+          <el-input
+            placeholder="请输入"
+            v-model="form.seriesId"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="车型ID">
+          <el-input
+            placeholder="请输入"
+            v-model="form.modelId"
+            clearable
+          />
+        </el-form-item>
         <el-form-item label="还款日期">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
@@ -110,6 +98,18 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
+         <el-form-item label="创建时间">
+        <el-date-picker
+         :default-time="['00:00:00', '23:59:59']"
+          v-model="form.createTime"
+          type="daterange"
+          :picker-options="pickerOptions"
+          range-separator="至"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        />
+      </el-form-item>
       </template>
       <page-search-action
         v-if="canList"
@@ -229,8 +229,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'id',
-            label: '主键',
+            props: 'redemptionCode',
+            label: '合格证赎回编号',
             visible: false,
             width: 200,
             fixed: 'left',
@@ -246,30 +246,29 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'redemptionCode', label: '合格证赎回编号', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
-          { props: 'saleDealerName', label: '销售��店名称', visible: true, width: 200 },
-          { props: 'creditSettleStatus', label: '赊销结算状态', visible: true, width: 200 },
-          { props: 'certificateStatus', label: '合格证状态', visible: true, width: 200 },
+          { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
+          { props: 'creditSettleStatusLabel', label: '赊销结算状态', visible: true, width: 200 },
+          { props: 'certificateStatusLabel', label: '合格证状态', visible: true, width: 200 },
           { props: 'vin', label: 'VIN码', visible: true, width: 200 },
           { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
           { props: 'modelName', label: '车型名称', visible: true, width: 200 },
-          { props: 'settleFundType', label: '资金结算类型', visible: true, width: 200 },
           { props: 'vehiclePrice', label: '车辆售价（零售价）', visible: true, width: 200 },
+          { props: 'settleFundTypeLabel', label: '资金结算类型', visible: true, width: 200 },
           { props: 'downPaymentRatio', label: '首付款比例', visible: true, width: 200 },
           { props: 'downPaymentAmount', label: '首付款金额', visible: true, width: 200 },
           { props: 'creditDebtAmount', label: '赊销欠款金额', visible: true, width: 200 },
           { props: 'creditTime', label: '赊销日期', visible: true, width: 200 },
           { props: 'repaymentTime', label: '还款日期', visible: true, width: 200 },
-          { props: 'creditDays', label: '赊销天数（还款时间-结算时间）', visible: true, width: 200 },
+          { props: 'creditDays', label: '赊销天数', visible: true, width: 200 },
           { props: 'wholesaleOrderCode', label: '整车批售订单号', visible: true, width: 200 },
           { props: 'entVehicleOrderCode', label: '企业客户整车订单号', visible: true, width: 200 },
           { props: 'receiverName', label: '收件人', visible: true, width: 200 },
           { props: 'receiverPhone', label: '收件人手机', visible: true, width: 200 },
           { props: 'receiverAddress', label: '收件地址', visible: true, width: 200 },
           { props: 'expressCode', label: '快递单号', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',

@@ -101,7 +101,7 @@
                    <fetch-select
                       :options="saleCompanyOptions"
                       v-model="form.saleDealerName"
-                      placeholder="销售公司"
+                      placeholder="销售门店："
                       labelKey="storeName"
                       valueKey="storeId"
                       clearable
@@ -286,7 +286,7 @@
                    <fetch-select
                         filterable
                         clearable
-                        v-model="form.districtCode"
+                        v-model="form.districtName"
                         :options="districtOptions"
                         value-key="code"
                         label-key="name"

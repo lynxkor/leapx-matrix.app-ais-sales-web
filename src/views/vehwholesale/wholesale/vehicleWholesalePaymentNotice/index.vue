@@ -9,7 +9,21 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="创建时间">
+    <el-form-item label="门店名称" >
+        <el-input
+          placeholder="请输入"
+          v-model="form.saleDealerName"
+          clearable
+        />
+      </el-form-item>
+       <el-form-item label="所属母公司名称">
+        <el-input
+          placeholder="请输入"
+          v-model="form.dealerCompanyName"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item label="创建时间"  v-show="this.visibleCount === 3 || show">
         <el-date-picker
          :default-time="['00:00:00', '23:59:59']"
           v-model="form.createTime"
@@ -21,33 +35,8 @@
           end-placeholder="结束日期"
         />
       </el-form-item>
-      <el-form-item label="所属母公司名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerCompanyName"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item label="门店名称"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.saleDealerName"
-          clearable
-        />
-      </el-form-item>
       <template v-if="show">
-        <el-form-item label="发布状态：0-草稿、1-已发布">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.publishStatus"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
-          />
-        </el-form-item>
-        <el-form-item label="发布时间">
+         <el-form-item label="发布时间">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.publishTime"
@@ -57,6 +46,17 @@
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
+          />
+        </el-form-item>
+        <el-form-item label="发布状态">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="xxx"
+            v-model="form.publishStatus"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
           />
         </el-form-item>
       </template>
@@ -172,8 +172,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'id',
-            label: '主键',
+            props: 'paymentNoticeCode',
+            label: '请款通知单号',
             visible: false,
             width: 200,
             fixed: 'left',
@@ -189,15 +189,14 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'paymentNoticeCode', label: '请款通知单号，PD开头+年月日+6位流水号', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '所属母公司名称', visible: true, width: 200 },
           { props: 'saleDealerName', label: '门店名称', visible: true, width: 200 },
-          { props: 'pendingSettleCount', label: '待结算数，默认值0，根据明细汇总', visible: true, width: 200 },
-          { props: 'totalWholesaleAmount', label: '批售总金额，根据明细批售价汇总', visible: true, width: 200 },
-          { props: 'publishStatus', label: '发布状态：0-草稿、1-已发布', visible: true, width: 200 },
+          { props: 'pendingSettleCount', label: '待结算数', visible: true, width: 200 },
+          { props: 'totalWholesaleAmount', label: '批售总金额', visible: true, width: 200 },
+          { props: 'publishStatusLabel', label: '发布状态', visible: true, width: 200 },
           { props: 'publishTime', label: '发布时间', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
