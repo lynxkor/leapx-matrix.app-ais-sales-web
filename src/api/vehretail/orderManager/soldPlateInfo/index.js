@@ -82,6 +82,13 @@ export function submitBatch (data) {
 }
 
 /**
+ * 审核
+ * */
+export function audit (data) {
+  return api.jsonPost(prefix + 'audit', data);
+}
+
+/**
  * 撤回
  * */
 export function revocation (data) {

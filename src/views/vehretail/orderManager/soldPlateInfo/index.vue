@@ -9,6 +9,9 @@
       label-width="150px"
       class="ais-search-form"
     >
+      <el-form-item label="VIN">
+        <tag-input v-model="form.vinList" placeholder="请输入VIN" clearable />
+      </el-form-item>
       <el-form-item label="审核状态">
         <fetch-select
           :request="fetchOptions"
@@ -16,11 +19,47 @@
           v-model="form.status"
           placeholder="请选择"
           clearable
-          multiple
+        />
+      </el-form-item>
+      <el-form-item label="是否自动审核">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="BooleanEnum"
+          v-model="form.autoAuditStatus"
+          placeholder="请选择"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item label="车型名称">
+        <fetch-select
           filterable
+          clearable
+          remote
+          reserve-keyword
+          v-model="form.modelId"
+          :remote-method="vehicleModelSearch"
+          :params="form.modelName"
+          value-key="id"
+          label-key="name"
+          placeholder="请选择"
         />
       </el-form-item>
       <template v-if="show">
+        <el-form-item label="车主信息">
+          <el-input v-model="form.searchContentPc" placeholder="请输入车主姓名/电话/证件号码" clearable />
+        </el-form-item>
+        <el-form-item label="创建时间">
+          <el-date-picker
+            v-model="form.createTimeRange"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            @change="handleCreateTimeChange"
+            clearable
+          />
+        </el-form-item>
       </template>
       <page-search-action
         v-if="canList"
@@ -36,10 +75,8 @@
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
 <!--      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>-->
       <el-button size="small" @click="handleBatchSubmit">提交审核</el-button>
-      <el-button size="small" @click="handleBatchRevocation">撤回</el-button>
-      <el-button size="small" @click="handleBatchCancel">取消</el-button>
+      <el-button size="small" @click="handleBatchCancel">作废</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete">删除</el-button>
 <!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>-->
 <!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>-->
     </div>
@@ -86,7 +123,7 @@ import {
   revocation,
   revocationBatch, cancelBatch
 } from '@/api/vehretail/orderManager/soldPlateInfo/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -95,10 +132,19 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
-  // TIPS:多选时字段名称会有变化，自行校对
+  vin: '',
   status: '',
+  autoAuditStatus: '',
+  modelName: '',
+  modelId: '',
+  carBuyerInfo: '',
+  createTimeRange: '',
+  createTimeStart: null,
+  createTimeEnd: null,
+  searchContentPc: ''
 };
 
 const pageSize = 20;
@@ -109,6 +155,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
@@ -211,33 +258,21 @@ export default {
             type: 'operate',
             visible: true,
             fixed: 'right',
-            buttons: [{
-              name: '编辑',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehretail/orderManager/soldPlateInfo/edit',
-                  query: {
-                    id: row.id,
-                    isEditing: true
-                  }
-                });
-              },
-              type: 'info'
-            },
-            {
-              name: '审核',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehretail/orderManager/soldPlateInfo/edit',
-                  query: {
-                    id: row.id,
-                    isEditing: true,
-                    isAuditing: true
-                  }
-                });
-              },
-              type: 'info'
-            }]
+            buttons: [
+              // {
+              //   name: '编辑',
+              //   click: (rowIndex, row) => {
+              //     this.$router.push({
+              //       path: '/vehretail/orderManager/soldPlateInfo/edit',
+              //       query: {
+              //         id: row.id,
+              //         isEditing: true
+              //       }
+              //     });
+              //   },
+              //   type: 'info'
+              // }
+            ]
           }
         ],
         total: 0
@@ -396,6 +431,22 @@ export default {
       }
       return [];
     },
+    vehicleModelSearch (val) {
+      const params = {
+        modelNameLike: val,
+        pageSize: 100
+      };
+      return listVehicleModel(params);
+    },
+    handleCreateTimeChange (createTimeRange) {
+      if (createTimeRange && createTimeRange.length > 1) {
+        this.form.createTimeStart = createTimeRange[0];
+        this.form.createTimeEnd = createTimeRange[1];
+      } else {
+        this.form.createTimeStart = null;
+        this.form.createTimeEnd = null;
+      }
+    },
     // 批量删除
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
@@ -434,6 +485,16 @@ export default {
         this.$message({
           type: 'warning',
           message: '请选择要提交审核的项'
+        });
+        return;
+      }
+      // 判断状态只能为1010
+      const errorStatusIds = this.selectionList.filter(item => item.status !== '1010')
+        .map(item => item.soldPlateCode);
+      if (errorStatusIds && errorStatusIds.length > 0) {
+        this.$message({
+          type: 'warning',
+          message: `单据状态不为草稿状态不允许操作：${errorStatusIds.join(',')}`
         });
         return;
       }
@@ -478,6 +539,16 @@ export default {
         this.$message({
           type: 'warning',
           message: '请选择要作废的项'
+        });
+        return;
+      }
+      // 判断状态只能为1010
+      const errorStatusIds = this.selectionList.filter(item => item.status !== '1010')
+        .map(item => item.soldPlateCode);
+      if (errorStatusIds && errorStatusIds.length > 0) {
+        this.$message({
+          type: 'warning',
+          message: `单据状态不为草稿状态不允许操作：${errorStatusIds.join(',')}`
         });
         return;
       }

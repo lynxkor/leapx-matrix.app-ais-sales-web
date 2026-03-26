@@ -606,19 +606,19 @@ export default {
       remoteMethods: {
         // 初始方法
         saleUser: async (query) => {
-          if (!query || query.length < 2) return [];
+          // if (!query || query.length < 2) return [];
           return await engineerList({ username: query, salesConfigKey: 'saleUser', orgCodeList: [this.form.saleDealerCode] });
         },
         deliveryUser: async (query) => {
-          if (!query || query.length < 2) return [];
+          // if (!query || query.length < 2) return [];
           return await engineerList({ username: query, salesConfigKey: 'deliveryUser', orgCodeList: [this.form.deliveryDealerCode] });
         },
         deliveryDerive: async (query) => {
-          if (!query || query.length < 2) return [];
+          // if (!query || query.length < 2) return [];
           return await engineerList({ username: query, salesConfigKey: 'deliveryDerive', orgCodeList: [this.form.deliveryDealerCode] });
         },
         listParentForOption: async (query) => {
-          if (!query || query.length < 2) return [];
+          // if (!query || query.length < 2) return [];
           return await engineerList({ username: query, salesConfigKey: 'deliveryDerive', orgCodeList: [this.form.deliveryDealerCode] });
         },
       },
@@ -790,10 +790,10 @@ export default {
       const id = this._id;
       if (id) {
         return getDetail(id).then(res => {
-          res.saleUserId = res.saleUserId + '';
-          res.deliveryUserId = res.deliveryUserId + '';
-          res.deliveryDerivativeUserId = res.deliveryDerivativeUserId + '';
-          res.onSiteDeliveryUserId = res.onSiteDeliveryUserId + '';
+          res.saleUserId = res.saleUserId ? String(res.saleUserId) : '';
+          res.deliveryUserId = res.deliveryUserId ? String(res.deliveryUserId) : '';
+          res.deliveryDerivativeUserId = res.deliveryDerivativeUserId ? String(res.deliveryDerivativeUserId) : '';
+          res.onSiteDeliveryUserId = res.onSiteDeliveryUserId ? String(res.onSiteDeliveryUserId) : '';
           return res;
         });
       }

@@ -469,9 +469,15 @@
             <div class="common-section-header">
               <h2>附件材料(证件和发票必填)</h2>
             </div>
-            <div class="common-section-body">
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm3" label-width="180px" class="form-edit" v-show="isEditing || !_id">
-              </el-form>
+
+            <div class="common-section-table">
+              <!--附件上传组件 -->
+              <AisAttachment
+                :businessId="_id"
+                :readonly="!isEditing"
+                configCode="mcs_specialcarsalesreport"
+                attachType="特殊车辆销售提报附件"
+              />
             </div>
           </section>
           <vehicle-attribute-dialog
@@ -510,6 +516,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import { getList as getVehicleProfileList } from '@/api/datacenter/vehicle/vehicleProfile/index.js';
 import VehicleAttributeDialog from '@/views/vehretail/orderManager/specialVehicleSalesReport/vehicleAttributeDialog';
 import { generateSoldPlateInfoByVin, getEffectiveByVin } from '@/api/vehretail/orderManager/soldPlateInfo';
+import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 const defaultForm = {
   // 多选时字段有变化，自行修复
   id: null,
@@ -576,6 +583,7 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
+    AisAttachment,
     EditPageLayout,
     EditBaseContainer,
     VehicleAttributeDialog,

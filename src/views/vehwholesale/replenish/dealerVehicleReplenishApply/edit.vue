@@ -98,7 +98,6 @@
                 >
                   <fetch-select
                     :remote-method="prodScheduleActivitySearch"
-                    :options="prodScheduleActivityOptions"
                     remote
                     reserve-keyword
                     labelKey="activityName"
@@ -461,7 +460,6 @@ export default {
       moduleKey: 'AISVW-dealerVehicleReplenishApply',
       orderCategoryOptions: [],
       settleFundTypeOptions: [],
-      prodScheduleActivityOptions: [],
       loading: false,
       submitLoading: false,
       form: { ...form },
@@ -661,7 +659,13 @@ export default {
         return Promise.reject(new Error('试驾车订单申请不能大于1'));
       }
 
-      return addOrUpdate(params);
+      return addOrUpdate(params).then(res => {
+        this.isEditing = false;
+        return res;
+      }).catch(error => {
+        this.$message.error('保存失败');
+        throw error;
+      });
     },
     openPane () {
       this.$refs.editLayout.openPane();
@@ -727,8 +731,6 @@ export default {
       this.form.prodScheduleActivityId = '';
       this.form.prodScheduleActivityName = '';
       try {
-        const result = await listWholesaleProdScheduleActivity({ status: 1, dealerCode: this.form.saleDealerCode });
-        this.prodScheduleActivityOptions = result.records || [];
         const dealerResponse = await getDealerDetailByCode(this.form.saleDealerCode);
         this.form.deliveryDealerCode = dealerResponse?.exclusiveDeliveryStoreCode || '';
         this.form.deliveryDealerName = dealerResponse?.exclusiveDeliveryStoreName || '';
@@ -776,9 +778,22 @@ export default {
         return [];
       }
       const searchQuery = typeof query === 'string' ? query : '';
-      const result = await listWholesaleProdScheduleActivity({ scheduleActivityIdLike: searchQuery, status: 1, dealerCode: this.form.saleDealerCode });
-      this.prodScheduleActivityOptions = result.records || [];
-      return result || [];
+      const result = await listWholesaleProdScheduleActivity({
+        activityNameLike: searchQuery,
+        status: 1,
+        dealerCode: this.form.saleDealerCode,
+        valid: 1
+      });
+
+      // 按 scheduleActivityId 去重
+      const uniqueMap = new Map();
+      (result.records || []).forEach(item => {
+        if (!uniqueMap.has(item.scheduleActivityId)) {
+          uniqueMap.set(item.scheduleActivityId, item);
+        }
+      });
+
+      return Array.from(uniqueMap.values());
     },
     handleAuditValidForDealer () {
       dealerAuditValid([this._id]).then(() => {

@@ -565,8 +565,9 @@ export default {
       });
     },
     async changeConfiguration (row) {
-      this.businessId = this._id;
+      this.businessId = this.row.id;
       this.row = row;
+      console.log('row.depositAmount:', row.depositAmount, 'this.row.depositAmount:', this.row.depositAmount);
       // 检查 accountFlag 和 changeConfigCount 的关系
       if (this.accountFlag && this.row.changeConfigCount >= 1) {
         this.$message.error('该订单修改配车次数已达上限');
