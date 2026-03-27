@@ -8,15 +8,26 @@
       </el-form-item>
       <el-form-item label="共享车辆状态">
         <fetch-select :request="fetchOptions" enumCode="vehstock_shared_vehicle_status"
-          v-model="form.sharedVehicleStatus" placeholder="请选择" clearable multiple filterable />
+          v-model="form.sharedVehicleStatusList" placeholder="请选择" clearable multiple filterable />
       </el-form-item>
       <el-form-item label="共享车辆类别" v-show="this.visibleCount === 3 || show">
         <fetch-select :request="fetchOptions" enumCode="vehstock_shared_vehicle_category"
-          v-model="form.sharedVehicleCategory" placeholder="请选择" clearable multiple filterable />
+          v-model="form.sharedVehicleCategoryList" placeholder="请选择" clearable multiple filterable />
       </el-form-item>
       <template v-if="show">
-        <el-form-item label="车型ID">
-          <el-input placeholder="请输入" v-model="form.modelId" clearable />
+        <el-form-item label="车型">
+          <fetch-select
+            v-model="form.modelIdList"
+            remote
+            placeholder="请输入"
+            labelKey="name"
+            valueKey="id"
+            clearable
+            filterable
+            multiple
+            collapse-tags
+            :remote-method="getModelListByName"
+          />
         </el-form-item>
         <el-form-item label="物料描述">
           <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
@@ -29,7 +40,7 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i
           class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <!-- <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button> -->
     </div>
     <div class="ais-table-c">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed centralized
@@ -48,8 +59,8 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehstock/store/storeSharedInventory/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getList, deleteItem, enableItem, publishItem, offShelfItem, invalidItem } from '@/api/vehstock/store/storeSharedInventory/index';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -58,6 +69,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import { getApplyUserStoreList, getLoginUser } from '@/libs/api/common';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -98,6 +110,7 @@ export default {
       exportLoading: false,
       uploadDialogVisible: false,
       clickItemId: '',
+      dealerList: [], // 门店列表
       optionObj: {
         id: 'storeSharedInventoryTable',
         dataList: [],
@@ -152,39 +165,71 @@ export default {
             type: 'operate',
             visible: true,
             fixed: 'right',
-            buttons: [{
-              name: '编辑',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehstock/store/storeSharedInventory/edit',
-                  query: {
-                    id: row.id,
-                    isEditing: true
-                  }
-                });
-              },
-              type: 'info'
-            }, {
-              name: '删除',
-              popconfirmConfirmButtonType: 'danger',
-              popconfirmConfirmButtonText: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
+            buttons: [
+              {
+                name: '发布',
+                show: (row) => {
+                  return this.dealerList.includes(Number(row.dealerCode)) && row.sharedVehicleStatus === 5;
+                },
+                popconfirmTitle: '是否确定发布?',
+                click: (rowIndex, row) => {
+                  publishItem([row.id]).then(() => {
+                    this.$message({
+                      type: 'success',
+                      message: '发布成功!'
+                    });
+                    this.getData();
+                  }).catch(() => {
+                    this.$message({
+                      type: 'error',
+                      message: '发布失败!'
+                    });
                   });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
+                },
+                type: 'info'
+              }, {
+                name: '作废',
+                show: (row) => {
+                  return this.dealerList.includes(Number(row.dealerCode)) && (row.sharedVehicleStatus === 5 || row.sharedVehicleStatus === 10);
+                },
+                popconfirmTitle: '是否确定作废?',
+                click: (rowIndex, row) => {
+                  invalidItem([row.id]).then(() => {
+                    this.$message({
+                      type: 'success',
+                      message: '作废成功!'
+                    });
+                    this.getData();
+                  }).catch(() => {
+                    this.$message({
+                      type: 'error',
+                      message: '作废失败!'
+                    });
                   });
-                });
-              },
-              type: 'danger'
-            }]
+                },
+                type: 'info'
+              }, {
+                name: '下架',
+                show: (row) => {
+                  return this.dealerList.includes(Number(row.dealerCode)) && row.sharedVehicleStatus === 10;
+                },
+                popconfirmTitle: '是否确定下架?',
+                click: (rowIndex, row) => {
+                  offShelfItem([row.id]).then(() => {
+                    this.$message({
+                      type: 'success',
+                      message: '下架成功!'
+                    });
+                    this.getData();
+                  }).catch(() => {
+                    this.$message({
+                      type: 'error',
+                      message: '下架失败!'
+                    });
+                  });
+                },
+                type: 'info'
+              }]
           }
         ],
         total: 0
@@ -199,7 +244,7 @@ export default {
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
-    this.getData();
+    this.getDealerDetailByCode();
   },
   methods: {
     // 排序
@@ -376,7 +421,17 @@ export default {
         apiFunc: enableItem,
         refreshFunc: this.getData
       });
-    }
+    },
+    // 查询车型名称
+    async getModelListByName (params) {
+      return listVehicleModel({ modelNameLike: params });
+    },
+    // 查询申请人门店 get请求
+    async getDealerDetailByCode () {
+      const res = await getApplyUserStoreList();
+      this.dealerList = (res || []).map(item => Number(item.applyUserStoreCode)); // 提取门店id
+      this.getData();
+    },
   }
 };
 </script>
