@@ -158,9 +158,7 @@ export default {
       }
     },
     orderInfo (val) {
-      console.log('orderInfo:', val);
       if (val) {
-        console.log('orderInfo:', val);
         this.materialsform.entReplenishOrderId = val.entReplenishOrderCode;
         if (val.orderCategory === 1 || val.orderCategory === 8) {
           this.isType = true;

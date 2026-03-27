@@ -294,6 +294,7 @@ export default {
           { props: 'pickupContactMobile', label: '接车联系电话', visible: true, width: 200 },
           { props: 'terminalStatusLabel', label: '终端状态', visible: true, width: 200 },
           { props: 'statusLabel', label: '订单状态', visible: true, width: 200 },
+          { props: 'emergencyOrderLabel', label: '是否急单', visible: true, width: 200 },
           { props: 'orderSyncStatusLabel', label: '订单同步状态', visible: true, width: 200 },
           { props: 'allocateStatusLabel', label: '配车状态', visible: true, width: 200 },
           { props: 'settleStatusLabel', label: '结算状态', visible: true, width: 200 },
@@ -390,13 +391,19 @@ export default {
         emergencyOrder: 0,
         ids: ids
       };
-      setEmergencyOrder(params).then(() => {
-        this.$message({
-          type: 'success',
-          message: '提交成功!'
+      this.$confirm('是否确定要批量取消急单？', '操作提醒', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        setEmergencyOrder(params).then(() => {
+          this.$message({
+            type: 'success',
+            message: '提交成功!'
+          });
+          this.getData();
         });
-        this.getData();
-      });
+      }).catch(() => {});
     },
     handleSetEmergencyOrder () {
       this.showSetEmergencyOrderDialog = true;
@@ -454,34 +461,55 @@ export default {
     },
     handleBatchCancelSettle () {
       const ids = this.selectionList.map(item => item.id) || [];
-      batchCancelSettleSubmit({
-        idSet: ids,
+      this.$confirm('此操作将批量取消结算, 是否继续?', '', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
-        this.$message.success('提交成功');
-      });
+        batchCancelSettleSubmit({
+          idSet: ids,
+        }).then(() => {
+          this.$message.success('提交成功');
+          this.getData();
+        });
+      }).catch(() => {});
     },
     handleBatchSettleSubmit () {
       const ids = this.selectionList.map(item => item.id) || [];
-      batchSettleSubmit({
-        idSet: ids,
+      this.$confirm('此操作将批量结算, 是否继续?', '', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
-        this.$message.success('提交成功');
-      });
+        batchSettleSubmit({
+          idSet: ids,
+        }).then(() => {
+          this.$message.success('提交成功');
+          this.getData();
+        });
+      }).catch(() => {});
     },
     handleBatchAllocateVehicle () {
       const ids = this.selectionList.map(item => item.id) || [];
-      batchAllocateSubmit({
-        idSet: ids,
+      this.$confirm('此操作将批量配车, 是否继续?', '', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
-        this.$message.success('提交成功');
-      });
+        batchAllocateSubmit({
+          idSet: ids,
+        }).then(() => {
+          this.$message.success('提交成功');
+          this.getData();
+        });
+      }).catch(() => {});
     },
     handleBatchCancelAllocateVehicle () {
       const ids = this.selectionList.map(item => item.id) || [];
       this.$confirm('此操作将批量取消配车, 是否继续?', '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        showClose: false
+        type: 'warning'
       }).then(() => {
         batchCancelAllocateSubmit({
           idSet: ids
@@ -680,7 +708,7 @@ export default {
         cancelButtonText: '取消',
         dangerouslyUseHTMLString: true,
         customClass: 'ais-leave-tips',
-        showClose: false
+        type: 'warning'
       }).then(() => {
         deleteItem(ids).then(() => {
           this.$message({

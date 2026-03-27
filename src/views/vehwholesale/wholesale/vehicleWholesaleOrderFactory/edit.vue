@@ -17,15 +17,14 @@
           {{ form.wholesaleOrderCode }}
         </template>
         <template #extraButtons >
-          <el-button v-permission="moduleKey+'-querySapAccount'" size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
-          <el-button v-permission="moduleKey+'-batchConfirm'" size="small" @click="handleCheckConfirm" >审核确认</el-button>
-          <el-button v-permission="moduleKey+'-batchAllocateVehicle'"  size="small" @click="handleaAutoVehicleAllocation">自动配车</el-button>
-          <el-button v-permission="moduleKey+'-vinAllocateVehicle'" size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
-          <el-button v-permission="moduleKey+'-batchSetAutoAllocate'" size="small" @click="handleCancelAllocateVehicle">取消配车</el-button>
-          <!-- <el-button  size="small" type="primary" @click="handleDelete">删除</el-button> -->
-          <el-button v-permission="moduleKey+'-batchSettleSubmit'" size="small" @click="handleBatchSettleSubmit">提交结算</el-button>
-          <el-button v-permission="moduleKey+'-batchCancelSettle'" size="small" @click="handleBatchCancelSettle">取消结算</el-button>
-          <el-button v-permission="moduleKey+'-batchCancel'" size="small" @click="handleCancel">作废</el-button>
+          <el-button  size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
+          <el-button  size="small" @click="handleCheckConfirm" >审核确认</el-button>
+          <el-button  :disabled="!form.buttonsControls.autoAllocateVehicle" size="small" @click="handleaAutoVehicleAllocation">自动配车</el-button>
+          <el-button  :disabled="!form.buttonsControls.confirmManualButton" size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
+          <el-button  :disabled="!form.buttonsControls.manualAllocateVehicle" size="small" @click="handleCancelAllocateVehicle">取消配车</el-button>
+          <el-button  :disabled="!form.buttonsControls.submitSettleButton" size="small" @click="handleBatchSettleSubmit">提交结算</el-button>
+          <el-button  :disabled="!form.buttonsControls.cancelSettle" size="small" @click="handleBatchCancelSettle">取消结算</el-button>
+          <el-button  :disabled="!form.buttonsControls.cancelButton" size="small" @click="handleCancel">作废</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -1255,7 +1254,6 @@ export default {
     getDetailData () {
       if (this._id) {
         getDetail(this._id).then(res => {
-          console.log('getDetailData-----------', res);
           Object.assign(this.form, res);
           Object.assign(this.originalForm, res);
         }).catch(() => {});

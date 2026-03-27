@@ -19,11 +19,11 @@
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button v-permission="moduleKey+'-querySapAccount'" size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
-          <el-button v-permission="moduleKey+'-vinAllocateVehicle'" size="small" @click="handlevinAllocateVehicle" >配车</el-button>
-          <el-button v-permission="moduleKey+'-batchCancelAllocateSubmit'" size="small" @click="handlebatchCancelAllocateSubmit" >取消配车</el-button>
-          <el-button v-permission="moduleKey+'-batchSettleSubmit'" size="small" @click="handlebatchSettleSubmit" >提交结算</el-button>
-          <el-button v-permission="moduleKey+'-batchCancelSettleSubmit'" size="small" @click="handlebatchCancelSettleSubmit" >取消结算</el-button>
+          <el-button  size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
+          <el-button  size="small" @click="handlevinAllocateVehicle" >配车</el-button>
+          <el-button  size="small" @click="handlebatchCancelAllocateSubmit" >取消配车</el-button>
+          <el-button  size="small" @click="handlebatchSettleSubmit" >提交结算</el-button>
+          <el-button  size="small" @click="handlebatchCancelSettleSubmit" >取消结算</el-button>
           <!-- <el-button size="small">按钮1</el-button>
           <el-button size="small">按钮2</el-button> -->
         </template>
@@ -141,6 +141,14 @@
                    <el-input
                     placeholder="请输入"
                     v-model="form.statusLabel"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="是否急单：" prop="emergencyOrderLabel">
+                   <el-input
+                    placeholder="请输入"
+                    v-model="form.emergencyOrderLabel"
                     clearable
                     disabled
                   />
@@ -280,6 +288,9 @@
                 </el-form-item>
                   <el-form-item label="订单状态：" prop="statusLabel">
                   {{ form.statusLabel }}
+                </el-form-item>
+                <el-form-item label="是否急单：" prop="emergencyOrderLabel">
+                  {{ form.emergencyOrderLabel }}
                 </el-form-item>
                 <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
                   {{ form.emergencyOrderTime }}

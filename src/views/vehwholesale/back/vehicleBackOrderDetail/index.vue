@@ -24,11 +24,16 @@
             label-key="orgName"
           />
         </el-form-item>
-        <el-form-item label="销售门店名称"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.saleDealerName"
+        <el-form-item label="门店名称"  v-show="this.visibleCount === 3 || show">
+          <fetch-select
+          filterable
           clearable
+          remote
+          collapseTags
+          v-model="form.saleDealerCode"
+          :remote-method="getDealerListByName"
+          value-key="storeCode"
+          label-key="storeName"
         />
       </el-form-item>
       <template v-if="show">
@@ -128,7 +133,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/back/vehicleBackOrderDetail/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getRigion, vehicleSeriesList } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getRigion, vehicleSeriesList, listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -286,6 +291,9 @@ export default {
     this.getData();
   },
   methods: {
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
+    },
     vehicleSeriesSearch (query) {
       return vehicleSeriesList({ seriesNameLike: query, size: 100 });
     },
