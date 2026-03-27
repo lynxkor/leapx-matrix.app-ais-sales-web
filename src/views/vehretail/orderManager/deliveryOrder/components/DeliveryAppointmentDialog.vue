@@ -284,9 +284,7 @@ export default {
   },
   methods: {
     findByCityCode () {
-      findByCityCode({
-        cityCode: this.cityCode
-      }).then((res) => {
+      findByCityCode(this.cityCode).then((res) => {
         this.deliveryAppointmentTimeout = res.timeLimitHour || 0;
       }).catch(() => {
         this.deliveryAppointmentTimeout = 0;
