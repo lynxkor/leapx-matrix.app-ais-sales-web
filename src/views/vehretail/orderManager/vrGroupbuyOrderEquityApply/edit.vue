@@ -872,14 +872,17 @@ export default {
       return '终审';
     },
     // 查看审核人员
-    async handleViewAuditUsers () {
+    handleViewAuditUsers () {
       try {
         this.auditorDialogVisible = true;
-        this.auditorList = await queryAuditor({
+        queryAuditor({
           cooperationType: this.form.cooperationType,
           auditStatus: this.form.auditStatus,
-          dealerCode: this.form.dealerCode
-        }) || [];
+          orgId: this.form.ownerOrgId,
+          orgCode: this.form.saleDealerCode
+        }).then(res => {
+          this.auditorList = res.auditorList || [];
+        });
       } catch (error) {
         this.$message.error('获取审核人员失败：' + (error.message || '未知错误'));
       }
