@@ -79,6 +79,8 @@
     <Upload :visible="uploadDialogVisible" :id="'1'" @close="handleUploadDialogClose" @getData="getData" />
     <!-- 审批弹窗 -->
     <ApprovalDialog ref="approvalDialog" :visible.sync="approvalDialogVisible" :approvalId="approvalId" :name="approvalName" @close="handleApprovalDialogClose" @submit="getData" />
+    <!-- 审核记录抽屉 -->
+    <review-drawer ref="reviewDrawer" :visible.sync="reviewDrawerVisible" :drawerData="reviewData" @update:visible="val => reviewDrawerVisible = val" />
   </div>
 </template>
 
@@ -99,6 +101,7 @@ import EditPage from './edit.vue';
 import { listOrgStoreInfo } from '@/libs/api/common';
 import TagInput from '@/libs/components/TagInput';
 import ApprovalDialog from './ApprovalDialog.vue';
+import ReviewDrawer from './ReviewDrawer.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -125,7 +128,8 @@ export default {
     EditPage,
     Upload,
     TagInput,
-    ApprovalDialog
+    ApprovalDialog,
+    ReviewDrawer
   },
   data () {
     return {
@@ -145,6 +149,8 @@ export default {
       approvalDialogVisible: false, // 审批弹窗
       approvalName: '', // 弹窗标题
       approvalId: '', // 审批id
+      reviewDrawerVisible: false, // 审核记录抽屉
+      reviewData: {}, // 审核记录数据
       clickItemId: '',
       optionObj: {
         id: 'vehiclePurposeChangeApplyTable',
@@ -268,6 +274,12 @@ export default {
               },
               click: (rowIndex, row) => {
                 this.handleApprove(row, 'headquarters');
+              },
+              type: 'info'
+            }, {
+              name: '审核记录',
+              click: (rowIndex, row) => {
+                this.handleReview(row);
               },
               type: 'info'
             }]
@@ -483,7 +495,12 @@ export default {
     },
     handleApprovalDialogClose () {
       this.approvalDialogVisible = false;
-    }
+    },
+    // 审核记录
+    handleReview (row) {
+      this.reviewData = row;
+      this.reviewDrawerVisible = true;
+    },
   }
 };
 </script>
