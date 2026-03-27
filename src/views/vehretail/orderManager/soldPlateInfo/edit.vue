@@ -11,6 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="form.status === 1010 || form.status === 1040"
       >
         <template #status>
           <!-- 支持primary,warning,success,danger等状态 -->
@@ -19,6 +20,18 @@
         <template #extraButtons>
           <!-- <el-button size="small">按钮1</el-button>
           <el-button size="small">按钮2</el-button> -->
+          <el-button
+            @click="openRevocationShow"
+            v-if="form.status === 1030 ||form.status === 1040"
+            size="small">
+            撤回
+          </el-button>
+          <el-button
+            @click="openAuditShow "
+            v-if="form.status === 1020"
+            size="small">
+            审核
+          </el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -268,12 +281,10 @@
                 </el-form-item>
                 <el-form-item label="开票日期：" prop="invoiceTime">
                   <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
                     v-model="form.invoiceTime"
+                    type="date"
                     :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
                   />
                 </el-form-item>
                 <el-form-item label="开票金额：" prop="invoiceAmount">
@@ -395,56 +406,48 @@
                 </el-form-item>
                 <el-form-item label="上牌日期：" prop="plateDate">
                   <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
                     v-model="form.plateDate"
+                    type="date"
                     :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
                   />
                 </el-form-item>
                 <el-form-item label="上牌省份：" prop="provinceCode">
-                  <el-input
-                    placeholder="请输入"
+                  <fetch-select
                     v-model="form.provinceCode"
+                    :options="provinceSelector"
+                    valueKey="code"
+                    labelKey="name"
+                    @change="handleProvinceChange"
+                    placeholder="请选择"
+                    filterable
                     clearable
                   />
                 </el-form-item>
-<!--                <el-form-item label="上牌省份：" prop="provinceName">-->
-<!--                  <el-input-->
-<!--                    placeholder="请输入"-->
-<!--                    v-model="form.provinceName"-->
-<!--                    clearable-->
-<!--                  />-->
-<!--                </el-form-item>-->
                 <el-form-item label="上牌城市：" prop="cityCode">
-                  <el-input
-                    placeholder="请输入"
+                  <fetch-select
                     v-model="form.cityCode"
+                    :options="citySelector"
+                    valueKey="code"
+                    labelKey="name"
+                    @change="handleCityChange"
+                    placeholder="请选择"
+                    filterable
                     clearable
                   />
                 </el-form-item>
-<!--                <el-form-item label="上牌城市：" prop="cityName">-->
-<!--                  <el-input-->
-<!--                    placeholder="请输入"-->
-<!--                    v-model="form.cityName"-->
-<!--                    clearable-->
-<!--                  />-->
-<!--                </el-form-item>-->
                 <el-form-item label="上牌区/县：" prop="districtCode">
-                  <el-input
-                    placeholder="请输入"
+                  <fetch-select
                     v-model="form.districtCode"
+                    :options="districtSelector"
+                    valueKey="code"
+                    labelKey="name"
+                    @change="handleDistrictChange"
+                    placeholder="请选择"
+                    filterable
                     clearable
                   />
                 </el-form-item>
-<!--                <el-form-item label="上牌区/县：" prop="districtName">-->
-<!--                  <el-input-->
-<!--                    placeholder="请输入"-->
-<!--                    v-model="form.districtName"-->
-<!--                    clearable-->
-<!--                  />-->
-<!--                </el-form-item>-->
                 <el-form-item label="车辆注册地址：" prop="vehicleRegisterAddress">
                   <el-input
                     placeholder="请输入"
@@ -617,7 +620,7 @@
                 {{ form.auditRemark }}
               </el-form-item>
               <el-form-item label="审核状态：">
-                {{ form.auditStatusLabel }}
+                {{ form.statusLabel }}
               </el-form-item>
               <el-form-item label="是否自动审核：">
                 {{ form.autoAuditStatusLabel}}
@@ -625,15 +628,25 @@
             </el-form>
           </div>
         </section>
-          <section class="common-section" v-if="_id">
+          <section class="common-section">
             <div class="common-section-header">
               <h2>附件材料(请上传发票、行驶证、有效身份证件并以中文命名)</h2>
             </div>
-            <div class="common-section-body">
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleFormAtt" label-width="180px" class="form-edit" v-show="isEditing || !_id">
-              </el-form>
+            <div class="common-section-table">
+              <!--附件上传组件 -->
+              <AisAttachment
+                :businessId="_id"
+                :readonly="!isEditing"
+                configCode="mcs_subsidies"
+                attachType="已售上牌车辆资料附件"
+              />
             </div>
           </section>
+          <audit-dialog
+            ref="auditRef"
+            :maxlength="100"
+            @audit="handleAudit"
+          />
         </el-main>
       </edit-base-container>
     </template>
@@ -646,7 +659,14 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, effectiveVinValidate } from '@/api/vehretail/orderManager/soldPlateInfo/index';
+import {
+  getDetail,
+  addOrUpdate,
+  effectiveVinValidate,
+  cancel,
+  audit,
+  revocation
+} from '@/api/vehretail/orderManager/soldPlateInfo/index';
 import { getEffectiveByVin as getDeliveryInvoiceByVin } from '@/api/vehretail/orderManager/deliveryInvoice/index';
 import { getEffectiveByVin as getSpecialSalesReportByVin } from '@/api/vehretail/orderManager/specialVehicleSalesReport/index';
 import FetchSelect from '@/libs/components/FetchSelect';
@@ -658,6 +678,8 @@ import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import { getList as getVehicleProfileList } from '@/api/datacenter/vehicle/vehicleProfile';
+import AisAttachment from '@/libs/components/AisAttachment/index.vue';
+import auditDialog from '@/libs/components/auditDialog/index.vue';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -710,7 +732,7 @@ const defaultForm = {
   invoiceVin: '',
   invoiceName: '',
   invoiceNo: '',
-  invoiceTime: '',
+  invoiceTime: null,
   invoiceAmount: '',
   invoiceVehiclePlaceOrigin: '',
   invoiceBrandModel: '',
@@ -743,9 +765,11 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
+    AisAttachment,
     EditPageLayout,
     EditBaseContainer,
-    FetchSelect
+    FetchSelect,
+    auditDialog
   },
   computed: {
     _id () {
@@ -763,11 +787,33 @@ export default {
         }
       },
       immediate: true
+    },
+    provinceCode: {
+      handler (val) {
+        if (val) {
+          this.$message.success(val);
+          this.handleProvinceChange(val);
+        }
+      },
+      immediate: false
+    },
+    cityCode: {
+      handler (val) {
+        this.handleCityChange(val);
+      },
+      immediate: false
+    },
+    districtCode: {
+      handler (val) {
+        this.handleDistrictChange(val);
+      }
     }
   },
   data () {
     const form = this.getDefautlForm();
+    const isAuditing = this.$route.query.isAuditing === 'true';
     return {
+      isAuditing,
       pageTitle: '已售上牌车辆资料管理',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
@@ -775,6 +821,9 @@ export default {
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
+      provinceSelector: JSON.parse(localStorage.areaTree),
+      citySelector: [],
+      districtSelector: [],
       form: { ...form },
       originalForm: { ...form },
       emptyText: '若要启用此内容，请创建记录',
@@ -996,6 +1045,7 @@ export default {
   mounted () {
   },
   methods: {
+    revocation,
     detailRequest () {
       const id = this._id;
       if (id) {
@@ -1158,6 +1208,73 @@ export default {
       // this.form.saleOrgId = val ? selectedOption.storeId : null;
       this.form.saleDealerCode = val ? selectedOption.storeCode : null;
       this.form.saleDealerName = val ? selectedOption.storeName : null;
+    },
+    handleProvinceChange (code) {
+      this.form.provinceCode = null;
+      this.form.provinceName = null;
+      this.form.cityCode = null;
+      this.form.cityName = null;
+      this.form.districtCode = null;
+      this.form.districtName = null;
+      if (code) {
+        const city = this.provinceSelector.find(item => item.code === code);
+        this.form.provinceCode = city.code;
+        this.form.provinceName = city.name;
+        this.citySelector = city.child;
+      }
+    },
+    handleCityChange (code) {
+      this.form.cityCode = null;
+      this.form.cityName = null;
+      this.form.districtCode = null;
+      this.form.districtName = null;
+      if (code) {
+        const city = this.citySelector.find(item => item.code === code);
+        this.form.cityCode = city.code;
+        this.form.cityName = city.name;
+        this.districtSelector = city.child;
+      }
+    },
+    handleDistrictChange (code) {
+      this.form.districtCode = null;
+      this.form.districtName = null;
+      if (code) {
+        const city = this.districtSelector.find(item => item.code === code);
+        this.form.districtCode = city.code;
+        this.form.districtName = city.name;
+      }
+    },
+    openRevocationShow () {
+      this.$confirm('确认是否对数据进行撤回?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 作废接口
+        revocation(this.form).then(() => {
+          this.reloadDetail();
+        });
+      }).catch(() => {});
+    },
+    openAuditShow () {
+      this.$refs.auditRef.show();
+    },
+    // 提交审批结果
+    handleAudit (auditForm) {
+      auditForm.id = this.form.id;
+      auditForm.auditResult = auditForm.result;
+      auditForm.auditRemark = auditForm.remark;
+      audit(auditForm).then(() => {
+        this.reloadDetail();
+      });
+    },
+    reloadDetail () {
+      this.$message.success('操作成功');
+      if (this.$refs.containerRef) {
+        this.$refs.containerRef.loadDetail();
+      }
+      // 或者关闭编辑状态
+      this.isEditing = false;
     }
   }
 };

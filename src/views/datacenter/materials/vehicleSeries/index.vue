@@ -10,18 +10,19 @@
       class="ais-search-form"
     >
       <el-form-item label="系列名称" prop="modelLineIds">
-        <tag-input v-model="form.seriesNameList" placeholder="请输入" />
-        <!-- <fetch-select remote
+        <!-- <tag-input v-model="form.seriesNameList" placeholder="请输入" /> -->
+        <fetch-select remote
         :params="form.modelLineName"
         :remote-method="getVehicleModelLineList"
-         v-model="form.modelLineIds" placeholder="请选择" value-key="id" label-key="name" multiple clearable collapseTags filterable/> -->
+         v-model="form.modelLineIds" placeholder="请选择" value-key="id" label-key="name" multiple clearable collapseTags filterable/>
         </el-form-item>
       <el-form-item label="车系名称">
-        <el-input
+        <tag-input v-model="form.seriesNameList" placeholder="请输入" />
+        <!-- <el-input
           placeholder="请输入"
           v-model="form.seriesNameLike"
           clearable
-        />
+        /> -->
       </el-form-item>
       <el-form-item label="状态" v-if="visibleCount === 3 || show">
         <fetch-select

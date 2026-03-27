@@ -9,6 +9,9 @@
       label-width="150px"
       class="ais-search-form"
     >
+       <el-form-item label="企业客户补货订单">
+           <tag-input v-model="form.entReplenishOrderCodes" placeholder="请输入" />
+        </el-form-item>
       <el-form-item label="企业客户名称">
         <fetch-select
               :remote-method="listNetworkParentCompany"
@@ -181,6 +184,8 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import { getList as companyList } from '@/api/vehwholesale/fund/fundSaleCompany/index';
+import TagInput from '@/libs/components/TagInput';
+
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   entCustomerName: '',
@@ -205,7 +210,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    TagInput
   },
   data () {
     return {

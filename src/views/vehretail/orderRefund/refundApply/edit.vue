@@ -222,11 +222,14 @@
                 </el-form-item>
 
                 <el-form-item label="数据来源：" prop="dataSource">
-                  <el-input
-                    placeholder="请输入"
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="dataSource"
                     v-model="form.dataSource"
+                    placeholder="请选择"
                     disabled
                     clearable
+                    filterable
                   />
                 </el-form-item>
                 <el-form-item label="退订附件上传要求：" prop="refundAttachRequired">
@@ -243,9 +246,6 @@
                 <el-form-item label="商城订单编号：" prop="mallOrderCode">
                   {{ form.mallOrderCode }}
                   <el-button size="small" type="primary" plain @click="openFinancialOrderShow">查询金融订单</el-button>
-                </el-form-item>
-                <el-form-item label="退订申请单号：" prop="refundCode">
-                  {{ form.refundCode }}
                 </el-form-item>
                 <el-form-item label="整车订单：" prop="retailOrderCode">
                   <el-button
@@ -363,7 +363,7 @@
             <div class="common-section-header">
               <h2>退订附件</h2>
             </div>
-            <div class="common-section-table" style="width: 100px;">
+            <div class="common-section-table">
               <!--附件上传组件 -->
               <AisAttachment
                 ref="attachment"
@@ -1029,6 +1029,11 @@ export default {
       }).catch(() => {});
     },
     openCommitShow () {
+      const attachmentList = this.$refs.attachment?.getFileList() || [];
+      if (!attachmentList || attachmentList.length === 0) {
+        this.$message.warning('请上传退订附件');
+        return;
+      }
       this.$confirm('确认是否对数据进行提交审批?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
