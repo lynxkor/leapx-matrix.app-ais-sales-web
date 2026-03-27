@@ -205,7 +205,7 @@ export default {
               name: '提交',
               popconfirmTitle: '确认提交用途变更申请吗?',
               show: (row) => {
-                return row.applyStatus === '1' || row.applyStatus === '6';
+                return row.applyStatus === 1 || row.applyStatus === 6;
               },
               click: (rowIndex, row) => {
                 enableItemSubmit(row.id).then(res => {
@@ -221,7 +221,7 @@ export default {
               name: '驳回',
               popconfirmTitle: '确认驳回单据吗?',
               show: (row) => {
-                return row.applyStatus === '2' || row.applyStatus === '3' || row.applyStatus === '4';
+                return row.applyStatus === 2 || row.applyStatus === 3 || row.applyStatus === 4;
               },
               click: (rowIndex, row) => {
                 enableItemCancel(row.id).then(res => {
@@ -237,7 +237,7 @@ export default {
               name: '作废',
               popconfirmTitle: '确认作废单据吗?',
               show: (row) => {
-                return row.applyStatus === '1' || row.applyStatus === '6';
+                return row.applyStatus === 1 || row.applyStatus === 6;
               },
               click: (rowIndex, row) => {
                 enableItemCancel(row.id).then(res => {
@@ -252,7 +252,7 @@ export default {
             }, {
               name: '零售经理审',
               show: (row) => {
-                return row.applyStatus === '2';
+                return row.applyStatus === 2;
               },
               click: (rowIndex, row) => {
                 this.handleApprove(row, 'retail');
@@ -261,7 +261,7 @@ export default {
             }, {
               name: '大区总审',
               show: (row) => {
-                return row.applyStatus === '3';
+                return row.applyStatus === 3;
               },
               click: (rowIndex, row) => {
                 this.handleApprove(row, 'region');
@@ -270,7 +270,7 @@ export default {
             }, {
               name: '总部审',
               show: (row) => {
-                return row.applyStatus === '4';
+                return row.applyStatus === 4;
               },
               click: (rowIndex, row) => {
                 this.handleApprove(row, 'headquarters');
