@@ -7,19 +7,9 @@
         <el-input placeholder="请输入" v-model="form.vin" clearable />
       </el-form-item>
       <el-form-item label="目标门店编码">
-        <fetch-select
-          :remote-method="getDealerListByName"
-          remote
-          v-model="form.targetDealerCodeList"
-          placeholder="请输入门店编码或名称"
-          labelKey="storeName"
-          valueKey="storeCode"
-          subLabelKey="storeCode"
-          clearable
-          multiple
-          collapseTags
-          filterable
-        />
+        <fetch-select :remote-method="getDealerListByName" remote v-model="form.targetDealerCodeList"
+          placeholder="请输入门店编码或名称" labelKey="storeName" valueKey="storeCode" subLabelKey="storeCode" clearable multiple
+          collapseTags filterable />
       </el-form-item>
       <el-form-item label="单据状态">
         <fetch-select :request="fetchOptions" enumCode="vehstock_transfer_audit_status" v-model="form.auditStatusList"
@@ -53,9 +43,11 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload :visible="uploadDialogVisible" :id="'1'" @close="handleUploadDialogClose" @getData="getData" />
     <!-- 调拨审批弹窗 -->
-    <approval-dialog ref="approvalDialog" :visible.sync="approvalVisible" :data="approvalData" @update:visible="val => approvalVisible = val" />
+    <approval-dialog ref="approvalDialog" :visible.sync="approvalVisible" :data="approvalData"
+      @update:visible="val => approvalVisible = val" />
     <!-- 审核记录抽屉 -->
-    <review-drawer ref="reviewDrawer" :visible.sync="reviewDrawerVisible" :drawerData="reviewData" @update:visible="val => reviewDrawerVisible = val" />
+    <review-drawer ref="reviewDrawer" :visible.sync="reviewDrawerVisible" :drawerData="reviewData"
+      @update:visible="val => reviewDrawerVisible = val" />
   </div>
 </template>
 
@@ -208,7 +200,7 @@ export default {
               name: '提交',
               popconfirmTitle: '是否要提交?',
               show: (row) => {
-                return row.auditStatus === 1 || row.auditStatus === 5;
+                return (row.auditStatus === 1 || row.auditStatus === 5) && this.permissions.has(`${this.moduleKey}-submit`);
               },
               click: (rowIndex, row) => {
                 storeSubmit(row.id).then(() => {
@@ -229,7 +221,7 @@ export default {
               name: '作废',
               popconfirmTitle: '确定作废单据吗?',
               show: (row) => {
-                return row.auditStatus === 1 || row.auditStatus === 5;
+                return (row.auditStatus === 1 || row.auditStatus === 5) && this.permissions.has(`${this.moduleKey}-invalid`);
               },
               click: (rowIndex, row) => {
                 storeInvalid(row.id).then(() => {
@@ -249,7 +241,7 @@ export default {
             }, {
               name: '调出审批',
               show: (row) => {
-                return row.auditStatus === 2;
+                return row.auditStatus === 2 && this.permissions.has(`${this.moduleKey}-approveOut`);
               },
               click: (rowIndex, row) => {
                 this.handleApproval(row, 'outApproval');
@@ -258,7 +250,7 @@ export default {
             }, {
               name: '调入审批',
               show: (row) => {
-                return row.auditStatus === 2;
+                return row.auditStatus === 2 && this.permissions.has(`${this.moduleKey}-approveIn`);
               },
               click: (rowIndex, row) => {
                 this.handleApproval(row, 'inApproval');
