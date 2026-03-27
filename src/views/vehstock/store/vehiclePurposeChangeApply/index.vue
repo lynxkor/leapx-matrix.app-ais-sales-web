@@ -10,19 +10,9 @@
         <el-input placeholder="请输入" v-model="form.applyNo" clearable />
       </el-form-item>
       <el-form-item label="申请门店编码" v-show="this.visibleCount === 3 || show">
-        <fetch-select
-          :remote-method="getDealerListByName"
-          remote
-          v-model="form.dealerCodeList"
-          placeholder="请输入门店编码或名称"
-          labelKey="storeName"
-          valueKey="storeCode"
-          subLabelKey="storeCode"
-          clearable
-          filterable
-          multiple
-          collapse-tags
-        />
+        <fetch-select :remote-method="getDealerListByName" remote v-model="form.dealerCodeList" placeholder="请输入门店编码或名称"
+          labelKey="storeName" valueKey="storeCode" subLabelKey="storeCode" clearable filterable multiple
+          collapse-tags />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="用途变更类型">
@@ -38,18 +28,8 @@
             value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期" end-placeholder="结束日期" />
         </el-form-item>
         <el-form-item label="车型">
-          <fetch-select
-            v-model="form.modelIdList"
-            remote
-            placeholder="请输入"
-            labelKey="name"
-            valueKey="id"
-            clearable
-            filterable
-            multiple
-            collapse-tags
-            :remote-method="getModelListByName"
-          />
+          <fetch-select v-model="form.modelIdList" remote placeholder="请输入" labelKey="name" valueKey="id" clearable
+            filterable multiple collapse-tags :remote-method="getModelListByName" />
         </el-form-item>
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
@@ -78,9 +58,11 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload :visible="uploadDialogVisible" :id="'1'" @close="handleUploadDialogClose" @getData="getData" />
     <!-- 审批弹窗 -->
-    <ApprovalDialog ref="approvalDialog" :visible.sync="approvalDialogVisible" :approvalId="approvalId" :name="approvalName" @close="handleApprovalDialogClose" @submit="getData" />
+    <ApprovalDialog ref="approvalDialog" :visible.sync="approvalDialogVisible" :approvalId="approvalId"
+      :name="approvalName" @close="handleApprovalDialogClose" @submit="getData" />
     <!-- 审核记录抽屉 -->
-    <review-drawer ref="reviewDrawer" :visible.sync="reviewDrawerVisible" :drawerData="reviewData" @update:visible="val => reviewDrawerVisible = val" />
+    <review-drawer ref="reviewDrawer" :visible.sync="reviewDrawerVisible" :drawerData="reviewData"
+      @update:visible="val => reviewDrawerVisible = val" />
   </div>
 </template>
 
@@ -205,7 +187,7 @@ export default {
               name: '提交',
               popconfirmTitle: '确认提交用途变更申请吗?',
               show: (row) => {
-                return row.applyStatus === 1 || row.applyStatus === 6;
+                return (row.applyStatus === 1 || row.applyStatus === 6) && this.permissions.has(`${this.moduleKey}-submit`);
               },
               click: (rowIndex, row) => {
                 enableItemSubmit(row.id).then(res => {
@@ -218,26 +200,10 @@ export default {
               },
               type: 'info'
             }, {
-              name: '驳回',
-              popconfirmTitle: '确认驳回单据吗?',
-              show: (row) => {
-                return row.applyStatus === 2 || row.applyStatus === 3 || row.applyStatus === 4;
-              },
-              click: (rowIndex, row) => {
-                enableItemCancel(row.id).then(res => {
-                  this.$message({
-                    message: '驳回成功',
-                    type: 'success'
-                  });
-                  this.getData();
-                });
-              },
-              type: 'info'
-            }, {
               name: '作废',
               popconfirmTitle: '确认作废单据吗?',
               show: (row) => {
-                return row.applyStatus === 1 || row.applyStatus === 6;
+                return (row.applyStatus === 1 || row.applyStatus === 6) && this.permissions.has(`${this.moduleKey}-cancel`);
               },
               click: (rowIndex, row) => {
                 enableItemCancel(row.id).then(res => {
@@ -252,7 +218,7 @@ export default {
             }, {
               name: '零售经理审',
               show: (row) => {
-                return row.applyStatus === 2;
+                return row.applyStatus === 2 && this.permissions.has(`${this.moduleKey}-approveByRetailManager`);
               },
               click: (rowIndex, row) => {
                 this.handleApprove(row, 'retail');
@@ -261,7 +227,7 @@ export default {
             }, {
               name: '大区总审',
               show: (row) => {
-                return row.applyStatus === 3;
+                return row.applyStatus === 3 && this.permissions.has(`${this.moduleKey}-approveByAreaManager`);
               },
               click: (rowIndex, row) => {
                 this.handleApprove(row, 'region');
@@ -270,7 +236,7 @@ export default {
             }, {
               name: '总部审',
               show: (row) => {
-                return row.applyStatus === 4;
+                return row.applyStatus === 4 && this.permissions.has(`${this.moduleKey}-approveByHeadquarters`);
               },
               click: (rowIndex, row) => {
                 this.handleApprove(row, 'headquarters');
