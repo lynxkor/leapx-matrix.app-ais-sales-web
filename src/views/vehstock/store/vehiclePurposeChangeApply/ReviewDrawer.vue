@@ -28,6 +28,7 @@
                       <strong>{{ item.name }}</strong>
                       <div class="timeline-content-title">{{item.creatorName}} {{ item.submitOn }}</div>
                       <div class="timeline-content-title">备注：{{ item.remark }}</div>
+                      <div class="timeline-content-file" v-if="item.file" @click="handleDownload(item)">附件</div>
                     </div>
                   </el-timeline-item>
                 </el-timeline>
@@ -91,6 +92,39 @@ export default {
       } finally {
         this.loadingReview = false;
       }
+    },
+    handleDownload (row) {
+      const fileUrl = row.file;
+      if (!fileUrl) {
+        this.$message.warning('文件地址不存在');
+        return;
+      }
+
+      // 支持的文件类型
+      const supportedExts = ['.xls', '.xlsx', '.doc', '.docx', '.jpeg', '.jpg', '.png', '.pdf'];
+      const ext = fileUrl.substring(fileUrl.lastIndexOf('.')).toLowerCase();
+      if (!supportedExts.includes(ext)) {
+        this.$message.warning('不支持的文件类型');
+        return;
+      }
+
+      // 拼接完整URL
+      const baseUrl = process.env.VUE_APP_FILE_SERVICE_URL || '';
+      const fullUrl = fileUrl.startsWith('http') ? fileUrl : baseUrl + fileUrl;
+
+      // 提取文件名
+      const fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1) || 'download' + ext;
+
+      // 创建下载链接
+      const link = document.createElement('a');
+      link.href = fullUrl;
+      link.download = fileName;
+      link.style.display = 'none';
+      link.rel = 'noopener noreferrer';
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
   }
 };
@@ -132,6 +166,12 @@ export default {
     font-size: 12px;
     color: #999;
     margin-bottom: 4px;
+  }
+  .timeline-content-file {
+    font-size: 12px;
+    color: #4444C0;
+    margin-bottom: 4px;
+    cursor: pointer;
   }
 }
 
