@@ -94,7 +94,7 @@ export const wholesaleDisplayFields = [
 // 订单取消信息字段配置
 export const refundDisplayFields = [
   { key: 'cancelReason', label: '订单取消原因' },
-  { key: 'cancelDescription', label: '订单取消说明' },
+  { key: 'cancelExplain', label: '订单取消说明' },
   { key: 'cancelTime', label: '订单取消时间' }
 ];
 
@@ -180,8 +180,8 @@ export const orderTransparencyTrackingDisplayFields = [
   { key: 'trackCode', label: '编号' },
   { key: 'saleDealerName', label: '门店' }, // 塞入销售门店数据
   { key: 'retailOrderCode', label: '整车订单' },
-  { key: 'oldOrderStatus', label: '原订单状态' },
-  { key: 'newOrderStatus', label: '新订单状态' },
+  { key: 'oldOrderStatusLabel', label: '原订单状态' },
+  { key: 'newOrderStatusLabel', label: '新订单状态' },
   { key: 'operateTime', label: '操作时间' },
   { key: 'operateDesc', label: '操作描述' }
 ];
@@ -191,7 +191,7 @@ export const orderCancellationRecordDisplayFields = [
   { key: 'refundCode', label: '退订申请单号' },
   { key: 'refundStatusLabel', label: '申请单状态' },
   { key: 'applyTime', label: '申请时间' },
-  { key: 'creator', label: '申请人' },
+  { key: 'creatorName', label: '申请人' },
   { key: 'orderRefundTypeLabel', label: '退订方式' },
   { key: 'subCateName', label: '退订原因分类' },
   { key: 'refundReason', label: '退订原因说明' }

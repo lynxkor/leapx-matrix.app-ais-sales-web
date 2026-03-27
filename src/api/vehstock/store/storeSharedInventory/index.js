@@ -42,3 +42,27 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 门店共享库存表发布
+ * @param {Object} data
+ */
+export function publishItem (data) {
+  return api.jsonPost(prefix + 'publish', data);
+}
+
+/**
+ * 门店共享库存表下架
+ * @param {Object} data
+ */
+export function offShelfItem (data) {
+  return api.jsonPost(prefix + 'offShelf', data);
+}
+
+/**
+ * 门店共享库存表作废
+ * @param {Object} data
+ */
+export function invalidItem (data) {
+  return api.jsonPost(prefix + 'invalid', data);
+}

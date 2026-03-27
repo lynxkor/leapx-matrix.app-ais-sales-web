@@ -23,7 +23,7 @@
           <el-button size="small" v-if="form.orderStatus !== 9" @click="handleModifyConfiguration">修改配置</el-button>
           <el-button size="small" v-if="form.wholesaleBindStatus !== 1 && form.orderHandleType === 30 && form.unlockReasonCode === 'DJY003'" @click="handleManualVehicleAllocation">手工配车</el-button>
           <el-button size="small" :loading="autoLockLoading" v-if="form.wholesaleBindStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
-          <el-button size="small" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
+          <el-button size="small" :loading="agreementLoading" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
           <el-button size="small"
                      @click="navigateToRoute({
                       path: '/sales/vehretail/orderRefund/refundApply/edit',
@@ -572,6 +572,7 @@ export default {
       accountFlag: false,
       printLoading: false, // 打印合同解除协议的 loading 状态
       autoLockLoading: false, // 自动锁车的 loading 状态
+      agreementLoading: false, // 查看购车协议的 loading 状态
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
@@ -813,11 +814,14 @@ export default {
     handleViewPurchaseAgreement () {
       // 2362166807179599872
       // this.form.mallOrderCode
+      this.agreementLoading = true;
       querySnapShot(this.form.mallOrderCode).then(response => {
         this.agreementDialogContent = response;
         this.$refs.PurchaseAgreementDialog.dialogVisible = true;
       }).catch(() => {
         this.$message.error('无购车权限');
+      }).finally(() => {
+        this.agreementLoading = false;
       });
     },
     // 订单退订
