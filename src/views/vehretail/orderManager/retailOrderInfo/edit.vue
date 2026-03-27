@@ -440,7 +440,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, autoLock, querySnapShot, getOrderUnlockConfig, setSpecialRemark, getUnbindContractUrl } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getDetail, addOrUpdate, autoLock, querySnapShot, setSpecialRemark, getUnbindContractUrl } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -767,12 +767,7 @@ export default {
     async  handleModifyConfiguration () {
       this.businessId = this._id;
       this.row = this.form;
-      const res = await getOrderUnlockConfig(this.row.retailOrderCode);
-      // 检查返回结果是否有效
-      if (!res || res.allowManualCarStatus !== 1) {
-        this.$message.error('未绑定批售订单状态为订单确认的订单才能修改配置');
-        return;
-      }
+      // const res = await getOrderUnlockConfig(this.row.retailOrderCode);
       // 检查 accountFlag 和 changeConfigCount 的关系
       if (this.accountFlag && this.row.changeConfigCount >= 1) {
         this.$message.error('该订单修改配车次数已达上限');
