@@ -157,7 +157,7 @@ export default {
             buttons: [{
               name: '入库',
               show: (row) => {
-                return row.auditStatus === 1;
+                return row.auditStatus === 1 && this.permissions.has(`${this.moduleKey}-inbound`);
               },
               popconfirmTitle: '确认入库吗?',
               click: (rowIndex, row) => {
