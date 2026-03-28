@@ -497,7 +497,7 @@ const defaultForm = {
   deliveryUserName: '',
   preSaleOrderLabel: '',
   blindOrderLabel: '',
-  remark: '',
+  orderRemark: '',
   specialRemark: '',
   contractTerminationFileUrl: '',
   deliveryCycleMaxWeek: '',
@@ -595,7 +595,7 @@ export default {
         deliveryUserName: [
           { required: true, message: '请输入订单交付顾问', trigger: 'change' }
         ],
-        remark: [
+        orderRemark: [
           { required: true, message: '请输入订单备注', trigger: 'change' }
         ],
         contractTerminationFileUrl: [
@@ -953,7 +953,7 @@ export default {
     // 判断字段是否可以编辑
     canEditField (field) {
       // 允许编辑的字段列表
-      const editableFields = ['saleUserName', 'deliveryUserName', 'remark', 'contractTerminationFileUrl'];
+      const editableFields = ['saleUserName', 'deliveryUserName', 'orderRemark', 'contractTerminationFileUrl'];
       return editableFields.includes(field);
     },
     // 滚动到指定区域

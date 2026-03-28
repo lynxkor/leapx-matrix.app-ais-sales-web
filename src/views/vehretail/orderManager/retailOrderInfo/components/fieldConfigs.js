@@ -15,7 +15,7 @@ export const retailOrderDisplayFields = [
   { key: 'deliveryUserName', label: '订单交付顾问' },
   { key: 'preSaleOrderLabel', label: '是否预售订单' },
   { key: 'blindOrderLabel', label: '是否盲订订单' },
-  { key: 'remark', label: '订单备注' },
+  { key: 'orderRemark', label: '订单备注' },
   { key: 'specialRemark', label: '特殊备注' },
   { key: 'contractTerminationFileUrl', label: '合同解除协议文件地址' },
   { key: 'deliveryCycleMaxWeek', label: '交付周期上限(周)' },
