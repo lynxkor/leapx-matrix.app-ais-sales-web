@@ -68,7 +68,7 @@
             clearable
           />
         </el-form-item>
-        <el-form-item label="交车单编号">
+        <el-form-item label="交车单">
           <el-input
             placeholder="请输入"
             v-model="form.deliveryOrderCode"
@@ -110,9 +110,9 @@
 <!--      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>-->
 <!--      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>-->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-<!--      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>-->
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button  size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+<!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>-->
+<!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>-->
     </div>
     <div
       class="ais-table-c"
@@ -429,6 +429,14 @@ export default {
     // 批量删除
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
+      const statusValidateErrIds = this.selectionList.filter(item => item.status !== 0).map(item => item.id);
+      if (statusValidateErrIds.length > 0) {
+        this.$message({
+          type: 'warning',
+          message: '请选择状态为[草稿]的项'
+        });
+        return;
+      }
       const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
       this.$confirm(message, '', {
         confirmButtonText: '确定',
