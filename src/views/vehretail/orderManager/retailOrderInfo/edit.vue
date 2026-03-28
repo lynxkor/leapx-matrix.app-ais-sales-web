@@ -217,7 +217,7 @@
                 <el-form-item label="订单备注：">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.remark"
+                    v-model="form.orderRemark"
                     clearable
                     :max-length="100"
                   />
