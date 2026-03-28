@@ -1051,7 +1051,7 @@ export default {
       this.$confirm('此操作将取消配车, 是否继续?', '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        showClose: false
+        type: 'warning'
       }).then(() => {
         batchCancelAllocateSubmit({
           idSet: ids
@@ -1068,7 +1068,7 @@ export default {
       this.$confirm('此操作将取消结算, 是否继续?', '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        showClose: false
+        type: 'warning'
       }).then(() => {
         batchCancelSettleSubmit({
           idSet: [this._id],
@@ -1082,7 +1082,7 @@ export default {
       this.$confirm('此操作提交结算, 是否继续?', '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        showClose: false
+        type: 'warning'
       }).then(() => {
         batchSettleSubmit({
           idSet: [this._id],

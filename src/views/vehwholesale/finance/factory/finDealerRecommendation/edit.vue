@@ -75,7 +75,7 @@
                 </el-form-item>
                  <el-form-item label="推荐日期：" prop="recDate">
                   <el-date-picker
-                     type="datetime"
+                     type="date"
                     v-model="form.recDate"
                     :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd"

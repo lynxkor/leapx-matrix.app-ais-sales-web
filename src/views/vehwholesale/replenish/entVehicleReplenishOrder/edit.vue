@@ -737,6 +737,28 @@ export default {
   },
   methods: {
     handleChangeArea (val, row) {
+      // 匹配查找对应的省市区名称和编号
+      const province = this.areaOptions.find(item => item.code === val[0]);
+      if (province) {
+        this.form.provinceCode = province.code;
+        this.form.provinceName = province.name;
+
+        // 匹配城市
+        const cityList = province.child || [];
+        const city = cityList.find(item => item.code === val[1]);
+        if (city) {
+          this.form.cityCode = city.code;
+          this.form.cityName = city.name;
+
+          // 匹配区县
+          const districtList = city.child || [];
+          const district = districtList.find(item => item.code === val[2]);
+          if (district) {
+            this.form.districtCode = district.code;
+            this.form.districtName = district.name;
+          }
+        }
+      }
     },
     currentPageChange (pageNum) {
       this.pageNum = pageNum;
@@ -1047,6 +1069,7 @@ export default {
         this.form.districtCode = '';
         this.form.districtName = '';
       }
+      console.log('submitRequest', this.form);
       return addOrUpdate({ ...this.form });
     },
     // 打开侧边栏
