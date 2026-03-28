@@ -11,6 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :dataTransform="dataTransform"
         :showEditBtn="form.status === 1010 || form.status === 1040"
       >
         <template #status>
@@ -79,7 +80,7 @@
                     reserve-keyword
                     v-model="form.saleDealerCode"
                     :remote-method="saleDealerSearch"
-                    :params="form.saleDealerName"
+                    :params="form.saleDealerCode"
                     @change="saleDealerChange"
                     value-key="storeCode"
                     label-key="storeName"
@@ -787,26 +788,6 @@ export default {
         }
       },
       immediate: true
-    },
-    provinceCode: {
-      handler (val) {
-        if (val) {
-          this.$message.success(val);
-          this.handleProvinceChange(val);
-        }
-      },
-      immediate: false
-    },
-    cityCode: {
-      handler (val) {
-        this.handleCityChange(val);
-      },
-      immediate: false
-    },
-    districtCode: {
-      handler (val) {
-        this.handleDistrictChange(val);
-      }
     }
   },
   data () {
@@ -1052,6 +1033,19 @@ export default {
         return getDetail(id);
       }
     },
+    dataTransform (res) {
+      // 根据 provinceCode 获取城市列表
+      if (res.provinceCode) {
+        const province = this.provinceSelector.find(item => item.code === res.provinceCode);
+        if (province && province.child) {
+          this.citySelector = province.child;
+        }
+        if (res.cityCode) {
+          this.districtSelector = this.citySelector.find(item => item.code === res.cityCode)?.child;
+        }
+      }
+      return res;
+    },
     submitRequest () {
       return addOrUpdate({ ...this.form });
     },
@@ -1166,7 +1160,7 @@ export default {
       if (selectedOption.salesDealerCode) {
         this.form.saleDealerCode = val ? selectedOption.salesDealerCode : null;
         this.form.saleDealerName = val ? selectedOption.salesDealerName : null;
-        this.saleDealerSearch(selectedOption.salesDealerName);
+        this.saleDealerSearch(selectedOption.salesDealerCode);
       }
       if (selectedOption.vehicleModelName) {
         this.form.modelId = val ? selectedOption.vehicleModelId : '';

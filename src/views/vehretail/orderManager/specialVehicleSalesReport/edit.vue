@@ -47,13 +47,15 @@
                     :disabled="form.id && form.id.length > 0"
                   />
                 </el-form-item>
-                <el-form-item label="车型名称：" prop="modelName">
+                <el-form-item label="车型名称：" prop="modelId">
                   <fetch-select
                     filterable
                     clearable
                     remote
-                    v-model="form.modelName"
+                    reserve-keyword
+                    v-model="form.modelId"
                     :remote-method="vehicleModelSearch"
+                    :params="form.modelId"
                     @change="vehicleModelChange"
                     value-key="id"
                     label-key="name"
@@ -359,63 +361,49 @@
             <div class="common-section-body">
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm2" label-width="180px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="销售门店：" prop="saleDealerCode">
-                  <el-select
+                  <fetch-select
                     filterable
                     clearable
                     remote
                     reserve-keyword
                     v-model="form.saleDealerCode"
-                    :loading="saleDealerLoading"
-                    :remote-method="(query) => { saleDealerSearch(1, query) }"
-                    placeholder="请选择"
+                    :remote-method="saleDealerSearch"
+                    :params="form.saleDealerCode"
                     @change="handleSaleDealerChange"
-                  >
-                    <el-option
-                      v-for="item of saleDealerList"
-                      :key="item.storeCode"
-                      :value="item.storeCode"
-                      :label="item.storeName"
-                    />
-                  </el-select>
+                    value-key="storeCode"
+                    label-key="storeName"
+                    placeholder="请选择"
+                  />
                 </el-form-item>
                 <el-form-item label="交付门店：" prop="deliveryDealerCode">
-                  <el-select
+                  <fetch-select
                     filterable
                     clearable
                     remote
                     reserve-keyword
                     v-model="form.deliveryDealerCode"
-                    :loading="deliveryDealerLoading"
-                    :remote-method="(query) => { deliveryDealerSearch(1, query) }"
-                    placeholder="请选择"
+                    :remote-method="deliveryDealerSearch"
+                    :params="form.deliveryDealerCode"
                     @change="handleDeliveryDealerChange"
-                  >
-                    <el-option
-                      v-for="item of deliveryDealerList"
-                      :key="item.storeCode"
-                      :value="item.storeCode"
-                      :label="item.storeName"
-                    />
-                  </el-select>
+                    value-key="storeCode"
+                    label-key="storeName"
+                    placeholder="请选择"
+                  />
                 </el-form-item>
                 <el-form-item label="专属服务门店：" prop="exclusiveServiceStoreCode">
-                  <el-select
+                  <fetch-select
                     filterable
                     clearable
                     remote
                     reserve-keyword
                     v-model="form.exclusiveServiceStoreCode"
-                    :loading="exclusiveServiceStoreLoading"
-                    :remote-method="(query) => { exclusiveServiceStoreSearchSearch(1, query) }"
+                    :remote-method="exclusiveServiceStoreSearch"
+                    :params="form.exclusiveServiceStoreName"
                     @change="handleExclusiveServiceStoreChange"
-                  >
-                    <el-option
-                      v-for="item of exclusiveServiceStoreList"
-                      :key="item.storeCode"
-                      :value="item.storeCode"
-                      :label="item.storeName"
-                    />
-                  </el-select>
+                    value-key="storeCode"
+                    label-key="storeName"
+                    placeholder="请选择"
+                  />
                 </el-form-item>
                 <el-form-item label="发票号码：" prop="invoiceNo">
                   <el-input
@@ -503,12 +491,12 @@ import {
   revokeReport,
   adjustVehicleAttribute,
   effectiveVinValidate
-} from '@/api/vehretail/orderManager/specialVehicleSalesReport/index';
+} from '@/api/vehretail/orderManager/specialVehicleSalesReport';
 import { getList as getStoreInventory } from '@/api/vehstock/store/storeInventoryLedger/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum, listOrgStoreInfo, getDealerDetailByCode, listVehicleModel } from '@/api/common';
+import { getEnum, listOrgStoreInfo, getDealerDetailByCode, listVehicleModel, listStoreInfo } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -782,16 +770,7 @@ export default {
         dataSource: [
           { required: false, message: '请输入数据来源，150-新销服; 10-老销服', trigger: 'change' }
         ],
-      },
-      // 交付门店
-      saleDealerLoading: false,
-      saleDealerList: [],
-      // 交付门店
-      deliveryDealerLoading: false,
-      deliveryDealerList: [],
-      // 交付门店
-      exclusiveServiceStoreLoading: false,
-      exclusiveServiceStoreList: []
+      }
     };
   },
   mounted () {
@@ -1097,6 +1076,7 @@ export default {
       }
     },
     refreshVehicleProfileInfo (val, selectedOption) {
+      this.form.vin = val;
       this.form.modelId = val ? selectedOption.vehicleModelId : '';
       this.form.modelName = val ? selectedOption.vehicleModelName : '';
       this.form.vehicleAttribute = val ? selectedOption.usageType : '';
@@ -1110,108 +1090,84 @@ export default {
       this.form.idCardType = val ? selectedOption.vehicleProfileOwnerResp.idcardType : '';
       this.form.idCardNo = val ? selectedOption.vehicleProfileOwnerResp.idcardNo : '';
       this.form.address = val ? selectedOption.vehicleProfileOwnerResp.homeAddress : '';
-      this.form.saleDealerCode = val ? selectedOption.salesDealerCode : null;
+      this.form.saleDealerCode = val ? selectedOption.salesDealerCode + '' : null;
       this.form.saleDealerName = val ? selectedOption.salesDealerName : null;
-      this.form.deliveryDealerCode = val ? selectedOption.deliveryDealerCode : null;
+      this.form.deliveryDealerCode = val ? selectedOption.deliveryDealerCode + '' : null;
       this.form.deliveryDealerName = val ? selectedOption.deliveryDealerName : null;
-      this.form.exclusiveServiceStoreCode = val ? selectedOption.vehicleProfileServiceResp.serviceDealerCode : null;
+      this.form.exclusiveServiceStoreCode = val ? selectedOption.vehicleProfileServiceResp.serviceDealerCode + '' : null;
       this.form.exclusiveServiceStoreName = val ? selectedOption.vehicleProfileServiceResp.serviceDealerName : null;
       // 根据销售门店渲染专属服务、交付门店
       if (this.form.saleDealerCode) {
-        this.saleDealerSearch(2);
+        this.saleDealerSearch(selectedOption.salesDealerCode);
       }
     },
     // 销售门店搜索并回显
-    saleDealerSearch  (type, query) {
-      this.saleDealerLoading = true;
+    saleDealerSearch  (val) {
       const params = {
         isSales: true,
-        keyword: type === 1 ? query : this.form.deliveryDealerCode,
+        keyword: val,
         size: 100
       };
-      listOrgStoreInfo(params).then(res => {
-        this.saleDealerList = type === 1 ? res.records : [...this.saleDealerList, ...res.records];
-        if (type === 2) {
-          this.handleSaleDealerStoreChange(res.records[0], true);
-        }
-      }).finally(() => {
-        this.saleDealerLoading = false;
-      });
+      return listOrgStoreInfo(params);
     },
-    deliveryDealerSearch (type, query) {
-      this.deliveryDealerLoading = true;
-      const params = {
-        size: 100,
-        keyword: type === 1 ? query : this.form.deliveryDealerCode
-      };
-      listOrgStoreInfo(params).then(res => {
-        this.deliveryDealerList = type === 1 ? res.records : [...this.deliveryDealerList, ...res.records];
-      }).finally(() => {
-        this.deliveryDealerLoading = false;
-      });
-    },
-    exclusiveServiceStoreSearchSearch (type, query) {
-      this.exclusiveServiceStoreLoading = true;
-      const params = {
-        size: 100,
-        keyword: type === 1 ? query : this.form.exclusiveServiceStoreCode
-      };
-      listOrgStoreInfo(params).then(res => {
-        this.exclusiveServiceStoreList = type === 1 ? res.records : [...this.exclusiveServiceStoreList, ...res.records];
-      }).finally(() => {
-        this.exclusiveServiceStoreLoading = false;
-      });
-    },
-    handleSaleDealerChange (val) {
-      const selectItem = this.saleDealerList.find(item => item.storeCode === val);
-      if (selectItem) {
-        this.form.salesDealerCode = selectItem.storeCode;
-        this.form.saleDealerName = selectItem.storeName;
-        this.handleSaleDealerStoreChange(selectItem, false);
-      } else {
-        this.form.salesDealerCode = '';
-        this.form.saleDealerName = '';
-      }
-    },
-    handleDeliveryDealerChange (val) {
-      const selectItem = this.deliveryDealerList.find(item => item.storeCode === val);
-      if (selectItem) {
-        this.form.deliveryDealerCode = selectItem.storeCode;
-        this.form.deliveryDealerName = selectItem.storeName;
-      } else {
-        this.form.deliveryDealerCode = '';
-        this.form.deliveryDealerName = '';
-      }
-    },
-    handleExclusiveServiceStoreChange (val) {
-      const selectItem = this.exclusiveServiceStoreList.find(item => item.storeCode === val);
-      if (selectItem) {
-        this.form.exclusiveServiceStoreId = selectItem.storeId;
-        this.form.exclusiveServiceStoreCode = selectItem.storeCode;
-        this.form.exclusiveServiceStoreName = selectItem.storeName;
-      } else {
-        this.form.exclusiveServiceStoreId = '';
-        this.form.exclusiveServiceStoreCode = '';
-        this.form.exclusiveServiceStoreName = '';
+    handleSaleDealerChange (val, selectedOption) {
+      this.form.salesDealerCode = '';
+      this.form.saleDealerName = '';
+      if (val) {
+        this.form.salesDealerCode = selectedOption.storeCode;
+        this.form.saleDealerName = selectedOption.storeName;
+        this.handleSaleDealerStoreChange(selectedOption, false);
       }
     },
     // 销售门店选择时，加载专属服务门店、交付门店
-    handleSaleDealerStoreChange (item, defaultLoad) {
-      getDealerDetailByCode(item.storeCode)
+    handleSaleDealerStoreChange (selectedOption, defaultLoad) {
+      getDealerDetailByCode(selectedOption.storeCode)
         .then(res => {
           if (res) {
             if (res.exclusiveDeliveryStoreCode) {
               this.form.deliveryDealerCode = res.exclusiveDeliveryStoreCode;
               this.form.deliveryDealerName = res.exclusiveDeliveryStoreName;
-              this.deliveryDealerSearch(2);
+              // this.deliveryDealerSearch(res.exclusiveDeliveryStoreCode);
             }
             if (res.exclusiveServiceStoreCode) {
               this.form.exclusiveServiceStoreCode = res.exclusiveServiceStoreCode;
               this.form.exclusiveServiceStoreName = res.exclusiveServiceStoreName;
-              this.exclusiveServiceStoreSearchSearch(2);
+              // this.exclusiveServiceStoreSearch(res.exclusiveServiceStoreCode);
             }
           }
         });
+    },
+    deliveryDealerSearch (val) {
+      const params = {
+        size: 100,
+        keyword: val
+      };
+      return listOrgStoreInfo(params);
+    },
+    handleDeliveryDealerChange (val, selectedOption) {
+      this.form.deliveryDealerCode = '';
+      this.form.deliveryDealerName = '';
+      if (val) {
+        this.form.deliveryDealerCode = selectedOption.storeCode;
+        this.form.deliveryDealerName = selectedOption.storeName;
+      }
+    },
+    exclusiveServiceStoreSearch (val) {
+      const params = {
+        keyword: val,
+        size: 100
+      };
+      return listStoreInfo(params);
+    },
+    handleExclusiveServiceStoreChange (val, selectedOption) {
+      this.form.exclusiveServiceStoreId = '';
+      this.form.exclusiveServiceStoreCode = '';
+      this.form.exclusiveServiceStoreName = '';
+      if (val) {
+        this.form.exclusiveServiceStoreId = selectedOption.storeId;
+        this.form.exclusiveServiceStoreCode = selectedOption.storeCode;
+        this.form.exclusiveServiceStoreName = selectedOption.storeName;
+      }
     }
   }
 };
