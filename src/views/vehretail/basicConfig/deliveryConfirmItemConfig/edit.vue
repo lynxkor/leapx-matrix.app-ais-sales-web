@@ -278,10 +278,10 @@ export default {
           { required: true, message: '请输入项目名称', trigger: 'change' }
         ],
         level: [
-          { required: true, message: '请输入层级 10-一级 20-二级 30-三级', trigger: 'change' }
+          { required: true, message: '请输入层级', trigger: 'change' }
         ],
         checkMethod: [
-          { required: true, message: '请输入检查方式 5-子项 10-只展示 15-门店勾选', trigger: 'change' }
+          { required: true, message: '请输入检查方式', trigger: 'change' }
         ],
         sameLevelSort: [
           { required: true, message: '请输入同级排序', trigger: 'change' }
@@ -299,7 +299,7 @@ export default {
           { required: true, message: '请选择失效日期', trigger: 'change' }
         ],
         status: [
-          { required: true, message: '请选择状态 1-启用 0-禁用', trigger: 'change' }
+          { required: true, message: '请选择状态', trigger: 'change' }
         ],
         modelId: [
           { required: true, message: '请输入车型ID', trigger: 'change' }
