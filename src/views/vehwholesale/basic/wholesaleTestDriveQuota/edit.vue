@@ -36,21 +36,19 @@
                   value-key="id"
                   label-key="name"
                   :disabled="!!_id"
-                  @change="(val, record) => {form.vehicleModelLine = record?.name || ''}"
+                  @change="handleVehicleModelLineChange"
                 />
               </el-form-item>
               <el-form-item label="车系" prop="seriesId">
                 <fetch-select
                   filterable
                   clearable
-                  remote
+                  :options="vehicleSeriesOptions"
                   v-model="form.seriesId"
-                  :params="form.seriesName"
-                  :remote-method="getVehicleSeriesList"
                   value-key="id"
                   label-key="name"
                   :disabled="!!_id"
-                  @change="(val, record) => {form.seriesName = record?.name || ''}"
+                  @change="(val, record) => {form.seriesName = record?.name || ''}" 
                 />
               </el-form-item>
               <el-form-item label="数量" prop="quantity">
@@ -190,6 +188,7 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       shopTypeList: [],
+      vehicleSeriesOptions: [],
       rules: {
         vehicleYearType: [
           { required: true, message: '请选择年款', trigger: 'change' }
@@ -361,6 +360,41 @@ export default {
       getBuildType().then(res => {
         this.shopTypeList = res;
       });
+    },
+    // 处理系列选择变化
+    async handleVehicleModelLineChange (val, record) {
+      // 更新系列名称
+      this.form.vehicleModelLine = record?.name || '';
+      this.form.seriesName = '';
+      this.form.seriesId = '';
+      this.vehicleSeriesOptions = [];
+
+      // 根据选择的系列获取对应的车系列表
+      try {
+        const response = await this.getVehicleSeriesListByModelLineId(val);
+        this.vehicleSeriesOptions = response || [];
+
+        // 保持原有的表单字段更新逻辑
+        if (record) {
+          this.form.vehicleModelLine = record.name;
+          this.form.vehicleModelLineId = record.id;
+        }
+      } catch (error) {
+        console.error('获取车系列表失败:', error);
+        this.vehicleSeriesOptions = [];
+      }
+    },
+    // 根据系列ID获取车系列表
+    async getVehicleSeriesListByModelLineId (modelLineId) {
+      if (!modelLineId) {
+        return [];
+      }
+      // 调用API获取特定系列下的车系列表
+      const response = await vehicleSeriesList({
+        modelLineId: modelLineId,
+        status: 1
+      });
+      return response.data || response || [];
     }
   }
 };

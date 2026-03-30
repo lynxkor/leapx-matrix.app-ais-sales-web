@@ -62,16 +62,15 @@
                   value-key="id"
                   label-key="name"
                   :disabled="!!_id"
-                  @change="(val, record) => {form.vehicleModelLine = record?.name || ''}"
+                  @change="handleVehicleModelLineChange"
                 />
               </el-form-item>
-              <el-form-item label="车系" prop="seriesName">
+              <el-form-item label="车系" prop="seriesId">
                 <fetch-select
                   filterable
                   clearable
-                  remote
-                  v-model="form.seriesName"
-                  :remote-method="getVehicleSeriesList"
+                  :options="vehicleSeriesOptions"
+                  v-model="form.seriesId"
                   value-key="id"
                   label-key="name"
                   :disabled="!!_id"
@@ -195,6 +194,7 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
+      vehicleSeriesOptions: [],
       rules: {
         dealerCode: [
           { required: true, message: '请输入门店编码', trigger: 'blur' }
@@ -363,6 +363,41 @@ export default {
     },
     async getVehicleYearTypeList (params) {
       return listVehicleYearType({ yearTypeNameLike: params, status: 1 });
+    },
+    // 处理系列选择变化
+    async handleVehicleModelLineChange (val, record) {
+      // 更新系列名称
+      this.form.vehicleModelLine = record?.name || '';
+      this.form.seriesName = '';
+      this.form.seriesId = '';
+      this.vehicleSeriesOptions = [];
+
+      // 根据选择的系列获取对应的车系列表
+      try {
+        const response = await this.getVehicleSeriesListByModelLineId(val);
+        this.vehicleSeriesOptions = response || [];
+
+        // 保持原有的表单字段更新逻辑
+        if (record) {
+          this.form.vehicleModelLine = record.name;
+          this.form.vehicleModelLineId = record.id;
+        }
+      } catch (error) {
+        console.error('获取车系列表失败:', error);
+        this.vehicleSeriesOptions = [];
+      }
+    },
+    // 根据系列ID获取车系列表
+    async getVehicleSeriesListByModelLineId (modelLineId) {
+      if (!modelLineId) {
+        return [];
+      }
+      // 调用API获取特定系列下的车系列表
+      const response = await vehicleSeriesList({
+        modelLineId: modelLineId,
+        status: 1
+      });
+      return response.data || response || [];
     }
   }
 };
