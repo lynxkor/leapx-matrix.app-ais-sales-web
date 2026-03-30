@@ -68,7 +68,7 @@ export const lockAllocationDisplayFields = [
   { key: 'lockTypeLabel', label: '锁车匹配类型' },
   { key: 'lockStatusLabel', label: '是否锁单' },
   { key: 'lockTime', label: '锁单时间' },
-  { key: 'orderMaterialCode', label: '订单物料码' },
+  { key: 'materialsCode', label: '订单物料码' },
   { key: 'allocationMaterialCode', label: '配车物料编码' },
   { key: 'matchVin', label: '配车VIN码' },
   { key: 'deliveryVin', label: '交车VIN码' },
