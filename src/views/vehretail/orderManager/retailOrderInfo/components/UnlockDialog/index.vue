@@ -109,6 +109,10 @@ export default {
     row: {
       type: Object,
       default: null
+    },
+    accountFlag: {
+      type: Boolean,
+      default: null
     }
   },
   components: {
@@ -186,6 +190,11 @@ export default {
     },
     // 显示物料选择对话框
     showMaterialsDialog () {
+      // 校验改配次数：如果 accountFlag 为 true 且改配次数>=1，则不允许更换配置
+      if (this.accountFlag && this.row.changeConfigCount >= 1) {
+        this.$message.error('该订单改配次数已达上限');
+        return;
+      }
       this.$refs.materialsDialog.show();
     },
     // 物料选择确认回调

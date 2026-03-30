@@ -233,6 +233,7 @@
       ref="unlockDialog"
       :businessId="businessId"
       :row="row"
+      :accountFlag="accountFlag"
       @refresh="getData"
     />
     <!-- 配置页 -->
