@@ -85,7 +85,7 @@
             v-model="appointmentForm.appointmentDate"
             type="date"
             placeholder="选择预约日期"
-            :picker-options="datePickerOptions"
+            :picker-options="datePickerOptionsWithCreateDate"
             value-format="yyyy-MM-dd"
             @change="handleDateChange"
             style="width: 220px;"
@@ -94,11 +94,12 @@
             v-model="appointmentForm.appointmentTime"
             placeholder="选择时间"
             clearable
+            :disabled-options="isTimeDisabled"
             style="width: 220px; margin-left: 12px;"
             @change="handleTimeChange"
           >
             <el-option
-              v-for="slot in timeSlots"
+              v-for="slot in filteredTimeSlots"
               :key="slot"
               :label="slot"
               :value="slot"
@@ -263,26 +264,80 @@ export default {
       timeDiffHours: null,
       // 是否超时
       isOvertime: false,
-      // 日期选择器配置
+      // 日期选择器配置（基础禁用：不能选择当前日期之前的日期）
       datePickerOptions: {
         disabledDate: (time) => {
-          // 不能选择当前日期之前的日期
           return time.getTime() < Date.now() - 8.64e7;
         }
       },
-      submitLoading: false
+      submitLoading: false,
+      // 订单创建时间的时分秒（用于同一天时禁用早于该时间的选项）
+      createTimeHourMinute: ''
     };
   },
   computed: {
     // 使用内部模式或外部传入的 mode
     currentMode () {
       return this.internalMode || this.mode;
+    },
+    // 订单创建日期（yyyy-MM-dd 格式）
+    createDateStr () {
+      if (!this.createTime) return '';
+      return this.createTime.includes(' ') ? this.createTime.split(' ')[0] : this.createTime;
+    },
+    // 订单创建时间的小时和分钟（HH:mm 格式）
+    createTimeHM () {
+      if (!this.createTime || !this.createTime.includes(' ')) return '';
+      const timePart = this.createTime.split(' ')[1];
+      return timePart.substring(0, 5); // 取 HH:mm
+    },
+    // 当前选择的日期是否等于订单创建日期
+    isSameAsCreateDate () {
+      return this.appointmentForm.appointmentDate === this.createDateStr;
+    },
+    // 过滤后的时间选项（禁用早于订单创建时间的时间）
+    filteredTimeSlots () {
+      if (!this.isSameAsCreateDate || !this.createTimeHM) {
+        return this.timeSlots;
+      }
+      // 过滤掉早于订单创建时间的时间选项
+      return this.timeSlots.filter(slot => slot >= this.createTimeHM);
+    },
+    // 日期选择器配置（额外禁用创建日期之前的日期）
+    datePickerOptionsWithCreateDate () {
+      const createDateTime = this.createDateStr ? new Date(this.createDateStr.replace(/-/g, '/')) : null;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      return {
+        disabledDate: (time) => {
+          const selectedDate = new Date(time.getTime());
+          selectedDate.setHours(0, 0, 0, 0);
+
+          // 不能选择今天之前的日期
+          if (selectedDate < today) {
+            return true;
+          }
+
+          // 如果有订单创建日期，且选择的日期在创建日期之前，则禁用
+          if (createDateTime && selectedDate < createDateTime) {
+            return true;
+          }
+
+          return false;
+        }
+      };
     }
   },
-  beforeDestroy () {
-    this.clearCountdown();
-  },
   methods: {
+    // 判断时间是否应该被禁用
+    isTimeDisabled (time) {
+      // 只有当选择的日期等于订单创建日期时，才禁用早于订单创建时间的时间
+      if (!this.isSameAsCreateDate || !this.createTimeHM) {
+        return false;
+      }
+      return time < this.createTimeHM;
+    },
     findByCityCode () {
       findByCityCode(this.cityCode).then((res) => {
         this.deliveryAppointmentTimeout = res.timeLimitHour || 0;
@@ -418,6 +473,13 @@ export default {
         // 加载该日期的排程数
         await this.loadScheduleCount();
         this.checkTimeout();
+
+        // 如果选择的日期等于订单创建日期，且当前已选时间早于订单创建时间，则清空时间选择
+        if (this.isSameAsCreateDate && this.appointmentForm.appointmentTime && this.createTimeHM) {
+          if (this.appointmentForm.appointmentTime < this.createTimeHM) {
+            this.appointmentForm.appointmentTime = '';
+          }
+        }
       } else {
         this.scheduleCount = 0;
       }
@@ -502,9 +564,13 @@ export default {
         const appointmentDateTimeStr = `${this.appointmentForm.appointmentDate} ${this.appointmentForm.appointmentTime}:00`;
         const appointmentDateTime = new Date(appointmentDateTimeStr.replace(/-/g, '/'));
 
-        // createTime 可能是 yyyy-MM-dd 或 yyyy-MM-dd HH:mm:ss 格式，统一处理为当天 00:00:00
-        const createTimeStr = this.createTime.includes(' ') ? this.createTime.split(' ')[0] : this.createTime;
-        const createTime = new Date(createTimeStr.replace(/-/g, '/') + ' 00:00:00');
+        // 解析订单创建时间：如果包含时分秒则使用完整时间，否则使用当天 00:00:00
+        let createTimeStr = this.createTime;
+        if (!this.createTime.includes(' ')) {
+          // 只有日期部分，补全为 00:00:00
+          createTimeStr = this.createTime + ' 00:00:00';
+        }
+        const createTime = new Date(createTimeStr.replace(/-/g, '/'));
 
         console.log('解析后的时间:', {
           appointmentDateTime: appointmentDateTime,

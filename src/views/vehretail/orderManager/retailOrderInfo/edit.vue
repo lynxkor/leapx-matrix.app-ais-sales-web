@@ -273,6 +273,7 @@
             </div>
           </section>
           <generic-detail-display
+            id="basic-info" class="common-section"
             :title="'基础信息'"
             :formData="form"
             :fields="displayFields"
@@ -684,6 +685,7 @@ export default {
       ],
       activeSection: 'basic-info',
       isNavCollapsed: false,
+      isManualScrolling: false, // 标记是否正在手动点击滚动
       specialRemarkDialog: {
         title: '设置特殊备注',
         show: false,
@@ -784,10 +786,10 @@ export default {
     },
     // 手工配车
     handleManualVehicleAllocation () {
-      this.$refs.vinDialog.show({
-        meterlsCode: this.form.materials.materialsCode,
-        saleDealerCode: this.form.saleDealerCode
-      });
+      this.$refs.vinDialog.show(
+        { meterlsCode: this.form.materials.materialsCode, saleDealerCode: this.form.saleDealerCode },
+        { retailOrderCode: this.form.retailOrderCode, retailOrderId: this._id }
+      );
     },
     // VIN 选择确认回调
     onVinSelected (vehicle) {
@@ -962,27 +964,44 @@ export default {
       if (element) {
         const scrollContainer = this.$refs.scrollContainer?.$el || this.$refs.scrollContainer;
         if (scrollContainer) {
-          // 计算目标元素相对于滚动容器的位置
+          // 设置手动滚动标志，防止 handleScroll 干扰
+          this.isManualScrolling = true;
+
+          // 使用更可靠的方式计算滚动位置
+          // 先获取目标元素相对于滚动容器的真实位置
           const containerRect = scrollContainer.getBoundingClientRect();
           const elementRect = element.getBoundingClientRect();
+          // 计算元素相对于滚动容器内部的偏移量
+          const relativeTop = element.offsetTop || (elementRect.top - containerRect.top + scrollContainer.scrollTop);
+
           // 计算目标位置：让元素顶部距离容器顶部有一定距离，避免内容消失在上方
-          const scrollOffset = 20; // 额外的缓冲距离
-          const targetScrollTop = scrollContainer.scrollTop + (elementRect.top - containerRect.top) - scrollOffset;
+          const scrollOffset = 80; // 额外的缓冲距离（考虑到固定导航栏的高度）
+          const targetScrollTop = relativeTop - scrollOffset;
+
+          console.log('[scrollToSection] sectionId:', sectionId, 'targetScrollTop:', targetScrollTop, 'element.offsetTop:', element.offsetTop);
 
           // 平滑滚动到目标位置
           scrollContainer.scrollTo({
             top: targetScrollTop,
             behavior: 'smooth'
           });
+
+          // 滚动结束后清除标志（500ms 后，与 smooth 滚动动画时间匹配）
+          setTimeout(() => {
+            this.isManualScrolling = false;
+          }, 500);
         }
+        // 立即更新激活状态
         this.activeSection = sectionId;
       }
     },
     // 监听滚动事件，更新激活的导航项
     handleScroll () {
+      // 如果正在手动点击滚动，不更新 activeSection，避免干扰
+      if (this.isManualScrolling) return;
+
       const sections = this.navItems.map(item => item.id);
       let currentSection = 'basic-info';
-      let currentIndex = 0;
       // 获取滚动容器的 scrollTop（el-main 容器）
       const scrollContainer = this.$refs.scrollContainer?.$el || this.$refs.scrollContainer;
       if (!scrollContainer) return;
@@ -993,10 +1012,10 @@ export default {
       const viewportTop = 0;
       // 可视区域的下边界
       const viewportBottom = containerRect.height;
-      // 中间点，用于判断哪个区域在视野中心
-      const viewportMiddle = viewportTop + (viewportBottom - viewportTop) / 3;
+      // 使用 1/4 处作为判断点，让判断更稳定
+      const viewportMiddle = viewportTop + (viewportBottom - viewportTop) / 4;
 
-      // 找到在可视区域内最靠近顶部的元素
+      // 找到在可视区域内最靠上的元素
       for (let i = 0; i < sections.length; i++) {
         const element = document.getElementById(sections[i]);
         if (element) {
@@ -1004,28 +1023,28 @@ export default {
           // 元素相对于滚动容器顶部的位置
           const elementTop = elementRect.top - containerRect.top + scrollTop;
           const elementBottom = elementRect.bottom - containerRect.top + scrollTop;
-          // const elementHeight = elementBottom - elementTop;
-          // 判断元素是否在可视区域内
-          const isInViewport = elementTop < scrollTop + viewportBottom && elementBottom > scrollTop + viewportTop;
+
+          // 判断元素是否在可视区域内（有更大的容差）
+          const isInViewport = elementTop < scrollTop + viewportBottom && elementBottom > scrollTop + viewportTop + 50;
 
           if (isInViewport) {
-            // 如果元素顶部在可视区域内或接近顶部，则选中它
+            // 如果元素顶部在可视区域内且接近顶部，则选中它
             if (elementTop <= scrollTop + viewportMiddle) {
               currentSection = sections[i];
-              currentIndex = i;
-            } else if (currentIndex === 0 || i === 0) {
-              // 如果还没有找到合适的区域，选择第一个在可视区域内的
-              currentSection = sections[i];
-              currentIndex = i;
             }
+            break; // 找到第一个符合条件的就退出，避免覆盖
           }
         }
       }
 
-      this.activeSection = currentSection;
+      // 只有当确实变化时才更新，避免频繁触发
+      if (this.activeSection !== currentSection) {
+        this.activeSection = currentSection;
+      }
 
       // 滚动 fixed-nav，让当前激活的导航项保持在可视区域内
       this.$nextTick(() => {
+        const currentIndex = this.navItems.findIndex(item => item.id === currentSection);
         this.scrollNavToActive(currentIndex);
       });
     },
@@ -1038,16 +1057,19 @@ export default {
       const activeLink = navLinks[currentIndex];
       if (!activeLink) return;
 
-      const navRect = navContainer.getBoundingClientRect();
-      const linkRect = activeLink.getBoundingClientRect();
+      // 使用 offsetTop 和 offsetHeight 来计算，更可靠
+      const linkTop = activeLink.offsetTop;
+      const linkHeight = activeLink.offsetHeight;
+      const navHeight = navContainer.clientHeight;
+      const navScrollTop = navContainer.scrollTop;
 
       // 如果激活项在可视区域上方，向上滚动
-      if (linkRect.top < navRect.top) {
-        navContainer.scrollTop -= (navRect.top - linkRect.top);
+      if (linkTop < navScrollTop) {
+        navContainer.scrollTop = linkTop;
       }
       // 如果激活项在可视区域下方，向下滚动
-      if (linkRect.bottom > navRect.bottom) {
-        navContainer.scrollTop += (linkRect.bottom - navRect.bottom);
+      if (linkTop + linkHeight > navScrollTop + navHeight) {
+        navContainer.scrollTop = linkTop + linkHeight - navHeight;
       }
     },
     // 切换导航栏收起/展开
@@ -1082,7 +1104,8 @@ export default {
   border: 1px solid #ebeef5;
   backdrop-filter: blur(10px); /* 添加背景模糊效果 */
   max-height: 60vh; /* 设置最大高度为视口的 60% */
-  overflow: hidden; /* 隐藏超出内容 */
+  overflow-y: auto; /* 修复：启用垂直滚动 */
+  overflow-x: hidden; /* 隐藏横向滚动 */
 
   &.is-collapsed {
     padding: 10px 5px;

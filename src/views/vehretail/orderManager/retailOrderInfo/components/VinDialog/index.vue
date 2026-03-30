@@ -102,6 +102,7 @@ export default {
       dialogVisible: false,
       searchForm: { ...defaultSearchForm },
       vinList: [],
+      data: [],
       total: 0,
       currentPage: 1,
       pageSize: 10,
@@ -122,9 +123,10 @@ export default {
   },
   methods: {
     // 打开对话框
-    show (params) {
+    show (params, data) {
       this.dialogVisible = true;
       this.searchForm = { ...params, ...this.searchForm };
+      this.data = data;
       this.loadData();
     },
 
@@ -213,10 +215,13 @@ export default {
 
     // 内部提交处理方法
     handleInternalSubmit () {
-      manualLock({
+      let params = {
         ...this.submitParams,
-        ...this.selectedRow
-      }).then(res => {
+        ...this.selectedRow,
+        retailOrderId: this.data.retailOrderId,
+        retailOrderCode: this.data.retailOrderCode,
+      };
+      manualLock(params).then(res => {
         this.$message.success('车辆选择成功');
         this.close();
       }).catch(() => {});

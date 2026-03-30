@@ -165,7 +165,7 @@ export default {
   },
   methods: {
     showVinDialog () {
-      this.$refs.vinDialog.show(this.vinForm);
+      this.$refs.vinDialog.show(this.vinForm, this.row);
     },
     handleUnlockReasonCodeChange (val, row) {
       this.form.unlockReason = row.unlockReason;
@@ -225,7 +225,8 @@ export default {
             orderHandleType: this.form.orderHandleType,
             bindVin: this.form.bindVin,
             remark: this.form.remark,
-            orderUnlockFileReqList: this.form.orderUnlockFileReqList
+            orderUnlockFileReqList: this.form.orderUnlockFileReqList,
+            changeProductSkuPriceId: this.form.changeProductSkuPriceId,
           };
           console.log('params:', params);
           perUnlock(params).then(res => {
