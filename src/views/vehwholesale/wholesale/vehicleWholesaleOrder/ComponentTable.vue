@@ -8,10 +8,9 @@
       <div class="common-section-body">
         <div class="common-section-table">
           <div class="component-table">
-            {{ tableDataExternal }}
             <vxe-table
               ref="table"
-              :data="tableDataExternal"
+              :data="tableData"
               stripe
               resizable
               border="inner"
@@ -27,12 +26,9 @@
                 :key="column.field || column.title"
                 :width="column.width"
                 :align="column.align || 'center'"
-                :field="column.field "
+                :field="column.field"
                 :title="column.title"
               >
-                <template v-slot:default="slotData">
-                  <slot :name="column.slots?.default" v-bind="slotData" />
-                </template>
               </vxe-column>
             </vxe-table>
 
