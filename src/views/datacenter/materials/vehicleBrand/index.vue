@@ -88,6 +88,7 @@ const defaultForm = {
   brandNameLike: '',
   brandNames: [],
   status: '',
+  statusIncludeList: ['1'],
 };
 
 const pageSize = 20;

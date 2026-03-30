@@ -92,6 +92,7 @@ const defaultForm = {
   interiorNameList: [],
   interiorName: '',
   interiorNameLike: '',
+  statusIncludeList: ['1'],
   status: '',
 };
 

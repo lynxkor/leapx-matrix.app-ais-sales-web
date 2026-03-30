@@ -90,6 +90,7 @@ import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   yearTypeNames: [],
+  statusIncludeList: ['1'],
   yearTypeName: '',
   yearTypeNameLike: '',
   status: '',

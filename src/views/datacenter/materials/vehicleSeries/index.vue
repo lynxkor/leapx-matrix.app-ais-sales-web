@@ -141,6 +141,7 @@ import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   seriesNameList: [],
+  statusIncludeList: ['1'],
   seriesNameLike: '',
   seriesName: '',
   modelLineName: '',

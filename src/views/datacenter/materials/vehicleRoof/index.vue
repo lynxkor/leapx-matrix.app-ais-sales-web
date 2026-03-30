@@ -92,6 +92,7 @@ const defaultForm = {
   roofNames: [],
   roofNameLike: '',
   roofName: '',
+  statusIncludeList: ['1'],
   status: '',
 };
 
