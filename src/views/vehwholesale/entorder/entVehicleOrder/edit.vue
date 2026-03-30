@@ -689,8 +689,8 @@
                 <el-form-item label="同步信息：" prop="syncSapMsg">
                   {{ form.syncSapMsg }}
                 </el-form-item>
-                <el-form-item label="退车标识：" prop="needAsyncSapLabel">
-                  {{ form.needAsyncSapLabel }}
+                <el-form-item label="退车标识：" prop="vehicleReturnFlagLabel">
+                  {{ form.vehicleReturnFlagLabel }}
                 </el-form-item>
                   <el-form-item label="特殊车提报：" prop="specialRemark">
                   {{ form.specialRemark }}
@@ -819,9 +819,8 @@
       @confirm="vinConfirm"
       >
     </vinAllocateVehicle>
-
      <component-table
-        :tableData="accountData"
+        :tableDataExternal="accountData"
         :columns="detailsColumns"
         :visible.sync="showComponentTabelDialog"
       />

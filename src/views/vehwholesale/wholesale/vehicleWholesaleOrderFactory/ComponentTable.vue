@@ -26,11 +26,9 @@
                 :key="column.field || column.title"
                 :width="column.width"
                 :align="column.align || 'center'"
-                v-bind="column"
+                :field="column.field"
+                :title="column.title"
               >
-                <template v-slot:default="slotData">
-                  <slot :name="column.slots?.default" v-bind="slotData" />
-                </template>
               </vxe-column>
             </vxe-table>
 

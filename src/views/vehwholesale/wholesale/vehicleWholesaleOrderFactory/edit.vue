@@ -906,7 +906,7 @@
       @confirmVin="confirmVin"
     />
     <component-table
-        :tableData="accountData"
+        :tableDataExternal="accountData"
         :columns="detailsColumns"
         :visible.sync="showComponentTabelDialog"
       />

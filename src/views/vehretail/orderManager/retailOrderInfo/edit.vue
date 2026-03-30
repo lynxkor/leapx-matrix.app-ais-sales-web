@@ -322,7 +322,7 @@
               <el-form :inline="true" :model="form" ref="ruleForm2" label-width="180px" class="form-edit">
                 <el-form-item label="金融方案：">
                   <fetch-select
-                    v-model="form.finance.financialPlan"
+                    v-model="form.finance.financialScheme"
                     placeholder="请选择"
                     clearable
                     :request="fetchOptions"
@@ -332,7 +332,7 @@
                 </el-form-item>
                 <el-form-item label="金融按揭进度：">
                   <fetch-select
-                    v-model="form.finance.mortgageProgress"
+                    v-model="form.finance.financialMortgageProgress"
                     placeholder="请选择"
                     clearable
                     :request="fetchOptions"
@@ -341,10 +341,10 @@
                   />
                 </el-form-item>
                 <el-form-item label="金融订单号：">
-                  <el-input v-model="form.finance.mortgageProgressDesc" placeholder="请输入" disabled />
+                  <el-input v-model="form.finance.code" placeholder="请输入" disabled />
                 </el-form-item>
                 <el-form-item label="金融订单状态：">
-                  <el-input v-model="form.finance.financialOrderStatusLabel" placeholder="请输入" disabled />
+                  <el-input v-model="form.finance.financialOrderStatus" placeholder="请输入" disabled />
                 </el-form-item>
                 <el-form-item label="保险办理进度：">
                   <fetch-select
@@ -358,7 +358,7 @@
                 </el-form-item>
                 <el-form-item label="保险方案：">
                   <fetch-select
-                    v-model="form.finance.insurancePlan"
+                    v-model="form.finance.insuranceScheme"
                     placeholder="请选择"
                     clearable
                     :request="fetchOptions"

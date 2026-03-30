@@ -100,12 +100,12 @@ export const refundDisplayFields = [
 
 // 附属信息字段配置
 export const financeDisplayFields = [
-  { key: 'financialPlan', label: '金融方案' },
-  { key: 'mortgageProgress', label: '金融按揭进度' },
-  { key: 'financialOrderCode', label: '金融订单号' },
+  { key: 'financialSchemeLabel', label: '金融方案' },
+  { key: 'financialMortgageProgressLabel', label: '金融按揭进度' },
+  { key: 'code', label: '金融订单号' },
   { key: 'financialOrderStatusLabel', label: '金融订单状态' },
-  { key: 'insuranceProgress', label: '保险办理进度' },
-  { key: 'insurancePlan', label: '保险方案' }
+  { key: 'insuranceProgressLabel', label: '保险办理进度' },
+  { key: 'insuranceSchemeLabel', label: '保险方案' }
 ];
 
 // 期限信息字段配置
