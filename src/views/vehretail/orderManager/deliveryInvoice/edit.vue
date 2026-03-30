@@ -877,7 +877,7 @@ export default {
       if (!this.form.idCardTypeLabel || !this.form.orderIdCardTypeLabel || this.form.idCardTypeLabel !== this.form.orderIdCardTypeLabel) {
         comparisonData.push({
           fieldName: '车主证件类型',
-          recognizedValue: this.form.idcardTypeLabel,
+          recognizedValue: this.form.vpIdCardTypeLabel,
           checkField: '证件类型',
           checkValue: this.form.orderIdCardTypeLabel,
         });
@@ -885,7 +885,7 @@ export default {
       if (!this.form.idCardNo || !this.form.orderIdCardNo || this.form.idCardNo !== this.form.orderIdCardNo) {
         comparisonData.push({
           fieldName: '车主证件号码',
-          recognizedValue: this.form.idcardNo,
+          recognizedValue: this.form.vpIdCardNo,
           checkField: '证件号码',
           checkValue: this.form.orderIdCardNo,
         });

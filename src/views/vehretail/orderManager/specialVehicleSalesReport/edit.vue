@@ -1053,6 +1053,7 @@ export default {
     async vehicleProfileSearch (val) {
       const params = {
         searchVin: val,
+        isSaleDateNull: true,
         pageSize: 100
       };
       return await getVehicleProfileList(params);
