@@ -810,7 +810,7 @@
       @confirmVin="confirmVin"
     />
     <component-table
-      :tableData="accountData"
+      :tableDataExternal="accountData"
       :columns="detailsColumns"
       :visible.sync="showComponentTabelDialog"
     />
@@ -1085,6 +1085,7 @@ export default {
       querySAPAccountBalance(params).then((res) => {
         console.log(res);
         this.accountData = res;
+        console.log(this.accountData);
         this.showComponentTabelDialog = true;
       });
     },

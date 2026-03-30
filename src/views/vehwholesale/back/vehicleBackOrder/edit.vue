@@ -108,6 +108,7 @@
                     placeholder="请输入"
                     v-model="form.remark"
                     clearable
+                    maxxlength="150"
                   />
                 </el-form-item>
                 <el-form-item label="审核人：">
@@ -132,6 +133,7 @@
                     placeholder="请输入"
                     v-model="form.auditOpinion"
                     clearable
+                    maxlength="50"
                   />
                 </el-form-item>
                 <el-form-item label="退车日期：">
@@ -165,7 +167,7 @@
                   {{ form.backType }}
                 </el-form-item>
                   <el-form-item label="退车订单状态：" prop="statusLabel">
-                  {{ form.status }}
+                  {{ form.statusLabel }}
                 </el-form-item>
                 <el-form-item label="退车备注：" prop="remark">
                   {{ form.remark }}
@@ -242,7 +244,7 @@
 </template>
 
 <script>
-import { deleteItem, audit, cancel, getDetail, addOrUpdate } from '@/api/vehwholesale/back/vehicleBackOrder/index';
+import { deleteItem, audit, cancel, getDetail, addOrUpdate, submitAudit } from '@/api/vehwholesale/back/vehicleBackOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -562,7 +564,7 @@ export default {
       this.uploadDialogVisible = false;
     },
     handelAdd () {
-      // this.$refs.vinAllocateVehicleDialog.getData();
+      this.$refs.vinAllocateVehicleDialog.getData();
       this.showvinAllocateVehicleDialog = true;
     },
     handelCancel () {
@@ -580,15 +582,18 @@ export default {
       }).catch(() => {});
     },
     handelSubmit () {
-      deleteItem({
-        idSet: [this._id],
+      this.$confirm('确认是否对数据进行提交?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '提交成功!'
+        submitAudit({
+          idSet: [this._id],
+        }).then(() => {
+          this.$message.success('提交成功');
+          this.detailRequest();
         });
-        this.detailRequest();
-      });
+      }).catch(() => {});
     },
     handleBatchAudit (data) {
       let params = {

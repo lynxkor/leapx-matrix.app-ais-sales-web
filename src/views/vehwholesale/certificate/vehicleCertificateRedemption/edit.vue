@@ -355,6 +355,7 @@
                     placeholder="请输入"
                     v-model="form.receiverName"
                     clearable
+                    maxlength="15"
                   />
                 </el-form-item>
                 <el-form-item label="收件人手机：" prop="receiverPhone">
@@ -369,6 +370,7 @@
                     placeholder="请输入"
                     v-model="form.receiverAddress"
                     clearable
+                    maxlength="300"
                   />
                 </el-form-item>
                 <el-form-item label="快递单号：" prop="expressCode">

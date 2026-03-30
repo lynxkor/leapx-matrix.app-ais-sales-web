@@ -39,11 +39,11 @@
             <vxe-column field="vin" title="VIN" align="center" width="150" />
             <vxe-column field="materialsCode" title="整车物料编码" align="center" width="120" />
             <vxe-column field="materialsDesc" title="物料描述" align="center"  width="150"/>
-            <vxe-column field="reservedLabel" title="销售预留" align="center" width="150" />
-            <vxe-column field="reservedTypeLabel" title="销售预留类型" align="center" width="150" />
-            <vxe-column field="logisticsReservedLabel" title="整车物流预留" align="center" width="150" />
-            <vxe-column field="vehicleDeliveryStatusLabel" title="车辆交付状态" align="center"  width="150"/>
-            <vxe-column field="inboundDateTime" title="VDC入库时间" align="center" width="150" />
+            <vxe-column field="reservedLabel" title="车型" align="center" width="150" />
+            <vxe-column field="reservedTypeLabel" title="整车批售订单号" align="center" width="150" />
+            <vxe-column field="logisticsReservedLabel" title="企业客户整车订单号" align="center" width="150" />
+            <vxe-column field="vehicleDeliveryStatusLabel" title="合格证状态" align="center"  width="150"/>
+            <vxe-column field="inboundDateTime" title="赊销结算状态" align="center" width="150" />
           </vxe-table>
           <el-pagination
             @size-change="handleSizeChange"
@@ -68,9 +68,8 @@
 
 <script>
 
-import { listCanSettleAccount } from '@/api/vehwholesale/fund/account/index';
-import { vinAllocateVehicleQueryInventory } from '@/api/vehwholesale/entorder/entVehicleOrder/index';
 import permissions from '@/libs/mixins/permissions';
+import { listVinForBackOrders } from '@/api/vehwholesale/back/vehicleBackOrderDetail/index';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
 };
@@ -158,11 +157,6 @@ export default {
     toggleShow () {
       this.show = !this.show;
     },
-    listCanSettleAccount () {
-      // 厂端不允许点开查询的 但是产品坚持要可以打开在最后一步骤提交校验
-      listCanSettleAccount({}).then(res => {
-      }).catch(err => { console.log(err); });
-    },
     handleClose () {
       this.form = { ...defaultForm }; // 重置表单数据
       this.tableData = []; // 清空表格数据
@@ -178,8 +172,8 @@ export default {
     async getData () {
       this.loading = true;
       try {
-        const res = await vinAllocateVehicleQueryInventory({
-          entOrderId: this.id,
+        const res = await listVinForBackOrders({
+          vehicleBackOrderId: this.id,
           vin: this.vinCode
         });
         // 设置表格数据
@@ -195,7 +189,6 @@ export default {
 
     async dialogshow () {
       await this.getData();
-      await this.listCanSettleAccount();
       this.dialogVisible = true;
     },
     confirm () {

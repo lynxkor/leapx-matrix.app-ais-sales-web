@@ -217,7 +217,7 @@
                 <el-form-item label="订单备注：">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.remark"
+                    v-model="form.orderRemark"
                     clearable
                     :max-length="100"
                   />
@@ -299,7 +299,7 @@
           <generic-detail-display
             id="lock-allocation" class="common-section"
             :title="'锁/配车信息'"
-            :formData="form"
+            :formData="{...form, ...form.materials}"
             :fields="lockAllocationDisplayFields"
           />
           <generic-detail-display
@@ -322,7 +322,7 @@
               <el-form :inline="true" :model="form" ref="ruleForm2" label-width="180px" class="form-edit">
                 <el-form-item label="金融方案：">
                   <fetch-select
-                    v-model="form.finance.financialPlan"
+                    v-model="form.finance.financialScheme"
                     placeholder="请选择"
                     clearable
                     :request="fetchOptions"
@@ -332,7 +332,7 @@
                 </el-form-item>
                 <el-form-item label="金融按揭进度：">
                   <fetch-select
-                    v-model="form.finance.mortgageProgress"
+                    v-model="form.finance.financialMortgageProgress"
                     placeholder="请选择"
                     clearable
                     :request="fetchOptions"
@@ -341,10 +341,10 @@
                   />
                 </el-form-item>
                 <el-form-item label="金融订单号：">
-                  <el-input v-model="form.finance.mortgageProgressDesc" placeholder="请输入" disabled />
+                  <el-input v-model="form.finance.code" placeholder="请输入" disabled />
                 </el-form-item>
                 <el-form-item label="金融订单状态：">
-                  <el-input v-model="form.finance.financialOrderStatusLabel" placeholder="请输入" disabled />
+                  <el-input v-model="form.finance.financialOrderStatus" placeholder="请输入" disabled />
                 </el-form-item>
                 <el-form-item label="保险办理进度：">
                   <fetch-select
@@ -358,7 +358,7 @@
                 </el-form-item>
                 <el-form-item label="保险方案：">
                   <fetch-select
-                    v-model="form.finance.insurancePlan"
+                    v-model="form.finance.insuranceScheme"
                     placeholder="请选择"
                     clearable
                     :request="fetchOptions"
@@ -497,7 +497,7 @@ const defaultForm = {
   deliveryUserName: '',
   preSaleOrderLabel: '',
   blindOrderLabel: '',
-  remark: '',
+  orderRemark: '',
   specialRemark: '',
   contractTerminationFileUrl: '',
   deliveryCycleMaxWeek: '',
@@ -595,7 +595,7 @@ export default {
         deliveryUserName: [
           { required: true, message: '请输入订单交付顾问', trigger: 'change' }
         ],
-        remark: [
+        orderRemark: [
           { required: true, message: '请输入订单备注', trigger: 'change' }
         ],
         contractTerminationFileUrl: [
@@ -953,7 +953,7 @@ export default {
     // 判断字段是否可以编辑
     canEditField (field) {
       // 允许编辑的字段列表
-      const editableFields = ['saleUserName', 'deliveryUserName', 'remark', 'contractTerminationFileUrl'];
+      const editableFields = ['saleUserName', 'deliveryUserName', 'orderRemark', 'contractTerminationFileUrl'];
       return editableFields.includes(field);
     },
     // 滚动到指定区域
