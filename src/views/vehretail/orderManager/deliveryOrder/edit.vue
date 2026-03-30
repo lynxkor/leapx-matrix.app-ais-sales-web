@@ -766,7 +766,6 @@ export default {
       ],
       // 预约记录
       deliveryAppointmentRecordColumns: [
-        { field: 'payCode', title: '收款编号', width: 180 },
         { field: 'appointmentOperationTime', title: '预约操作时间', width: 180 },
         { field: 'creatorName', title: '预约操作人', width: 180 },
         { field: 'appointmentTimeAfter', title: '预约时间', width: 180 },
