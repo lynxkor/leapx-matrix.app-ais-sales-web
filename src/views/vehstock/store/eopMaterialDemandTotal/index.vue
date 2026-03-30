@@ -149,7 +149,7 @@ export default {
           { props: 'plannedProductionQty', label: '计划排产数量', visible: true, width: 200 },
           { props: 'availableStockQty', label: '可用库存数量', visible: true, width: 200 },
           { props: 'unmatchedVehicleQty', label: '未配车数量', visible: true, width: 200 },
-          { props: 'status', label: '状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'seriesName', label: '车系', visible: true, width: 200 },
           { props: 'modelName', label: '车型', visible: true, width: 200 },
           { props: 'yearTypeName', label: '年款', visible: true, width: 200 },
