@@ -48,7 +48,7 @@
                   value-key="id"
                   label-key="name"
                   :disabled="!!_id"
-                  @change="(val, record) => {form.seriesName = record?.name || ''}" 
+                  @change="(val, record) => {form.seriesName = record?.name || ''}"
                 />
               </el-form-item>
               <el-form-item label="数量" prop="quantity">
