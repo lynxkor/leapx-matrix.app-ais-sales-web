@@ -117,6 +117,7 @@ const defaultForm = {
   materialsDesc: '',
   matchMaterialsCode: '',
   matchMaterialsDesc: '',
+  statusIncludeList: ['1'],
   status: '',
 };
 

@@ -49,3 +49,12 @@ export function enableItem (data) {
 export function pushFinCustomerPurchaseRecordToBank (data) {
   return api.jsonPost(prefix + 'pushFinCustomerPurchaseRecordToBank', data);
 }
+/**
+ *  生成采购记录
+ * @param {*} data
+ * @returns
+ */
+
+export function createFinCustomerPurchaseRecord (data) {
+  return api.jsonPost(prefix + 'createFinCustomerPurchaseRecord', data);
+}

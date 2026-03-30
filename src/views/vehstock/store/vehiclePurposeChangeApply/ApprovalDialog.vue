@@ -5,7 +5,7 @@
                 <el-radio v-model="form.auditStatus" :label="1">通过</el-radio>
                 <el-radio v-model="form.auditStatus" :label="2">驳回</el-radio>
             </el-form-item>
-            <el-form-item label="退回至：" v-if="name === 'headquarters'" prop="auditStatusBack">
+            <el-form-item label="退回至：" v-if="name === 'headquarters' && form.auditStatus === 2" prop="auditStatusBack">
                 <el-radio v-model="form.auditStatusBack" :label="1">提交人</el-radio>
                 <el-radio v-model="form.auditStatusBack" :label="2">零售经理审</el-radio>
                 <el-radio v-model="form.auditStatusBack" :label="3">大区审</el-radio>
@@ -97,6 +97,11 @@ export default {
     visible (val) {
       this.dialogVisible = val;
     },
+    'form.auditStatus' (val) {
+      if (val === 1) {
+        this.form.auditStatusBack = null;
+      }
+    },
     name (val) {
       if (val === 'retail') {
         this.titleName = '零售经理审批';
@@ -121,7 +126,7 @@ export default {
         this.$message.warning('请选择审批');
         return;
       }
-      if (this.name === 'headquarters') {
+      if (this.name === 'headquarters' && this.form.auditStatus === 2) {
         if (!this.form.auditStatusBack) {
           this.$message.warning('请选择退回至');
           return;

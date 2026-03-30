@@ -137,6 +137,7 @@ const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   modelLineName: '',
   modelLineNameList: [],
+  statusIncludeList: ['1'],
   modelLineNameLike: '',
   brandIdList: '',
   status: '',

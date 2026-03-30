@@ -991,7 +991,7 @@ export default {
         this.$message.warning('请先保存订单信息');
         return;
       }
-      this.$refs.verifyOrderRightsDialog.open();
+      this.$refs.verifyOrderRightsDialog.open(this.form.mallOrderCode);
     },
     // 核销撤回
     async handleVerifyWithdraw () {

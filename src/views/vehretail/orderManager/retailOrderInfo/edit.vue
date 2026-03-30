@@ -23,7 +23,7 @@
           <el-button size="small" v-if="form.orderStatus !== 9" @click="handleModifyConfiguration">修改配置</el-button>
           <el-button size="small" v-if="form.wholesaleBindStatus !== 1 && form.orderHandleType === 30 && form.unlockReasonCode === 'DJY003'" @click="handleManualVehicleAllocation">手工配车</el-button>
           <el-button size="small" :loading="autoLockLoading" v-if="form.wholesaleBindStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
-          <el-button size="small" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
+          <el-button size="small" :loading="agreementLoading" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
           <el-button size="small"
                      @click="navigateToRoute({
                       path: '/sales/vehretail/orderRefund/refundApply/edit',
@@ -217,7 +217,7 @@
                 <el-form-item label="订单备注：">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.remark"
+                    v-model="form.orderRemark"
                     clearable
                     :max-length="100"
                   />
@@ -299,7 +299,7 @@
           <generic-detail-display
             id="lock-allocation" class="common-section"
             :title="'锁/配车信息'"
-            :formData="form"
+            :formData="{...form, ...form.materials}"
             :fields="lockAllocationDisplayFields"
           />
           <generic-detail-display
@@ -322,7 +322,7 @@
               <el-form :inline="true" :model="form" ref="ruleForm2" label-width="180px" class="form-edit">
                 <el-form-item label="金融方案：">
                   <fetch-select
-                    v-model="form.finance.financialPlan"
+                    v-model="form.finance.financialScheme"
                     placeholder="请选择"
                     clearable
                     :request="fetchOptions"
@@ -332,7 +332,7 @@
                 </el-form-item>
                 <el-form-item label="金融按揭进度：">
                   <fetch-select
-                    v-model="form.finance.mortgageProgress"
+                    v-model="form.finance.financialMortgageProgress"
                     placeholder="请选择"
                     clearable
                     :request="fetchOptions"
@@ -341,10 +341,10 @@
                   />
                 </el-form-item>
                 <el-form-item label="金融订单号：">
-                  <el-input v-model="form.finance.mortgageProgressDesc" placeholder="请输入" disabled />
+                  <el-input v-model="form.finance.code" placeholder="请输入" disabled />
                 </el-form-item>
                 <el-form-item label="金融订单状态：">
-                  <el-input v-model="form.finance.financialOrderStatusLabel" placeholder="请输入" disabled />
+                  <el-input v-model="form.finance.financialOrderStatus" placeholder="请输入" disabled />
                 </el-form-item>
                 <el-form-item label="保险办理进度：">
                   <fetch-select
@@ -358,7 +358,7 @@
                 </el-form-item>
                 <el-form-item label="保险方案：">
                   <fetch-select
-                    v-model="form.finance.insurancePlan"
+                    v-model="form.finance.insuranceScheme"
                     placeholder="请选择"
                     clearable
                     :request="fetchOptions"
@@ -440,7 +440,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, autoLock, querySnapShot, getOrderUnlockConfig, setSpecialRemark, getUnbindContractUrl } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getDetail, addOrUpdate, autoLock, querySnapShot, setSpecialRemark, getUnbindContractUrl } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -497,7 +497,7 @@ const defaultForm = {
   deliveryUserName: '',
   preSaleOrderLabel: '',
   blindOrderLabel: '',
-  remark: '',
+  orderRemark: '',
   specialRemark: '',
   contractTerminationFileUrl: '',
   deliveryCycleMaxWeek: '',
@@ -572,6 +572,7 @@ export default {
       accountFlag: false,
       printLoading: false, // 打印合同解除协议的 loading 状态
       autoLockLoading: false, // 自动锁车的 loading 状态
+      agreementLoading: false, // 查看购车协议的 loading 状态
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
@@ -594,7 +595,7 @@ export default {
         deliveryUserName: [
           { required: true, message: '请输入订单交付顾问', trigger: 'change' }
         ],
-        remark: [
+        orderRemark: [
           { required: true, message: '请输入订单备注', trigger: 'change' }
         ],
         contractTerminationFileUrl: [
@@ -767,12 +768,7 @@ export default {
     async  handleModifyConfiguration () {
       this.businessId = this._id;
       this.row = this.form;
-      const res = await getOrderUnlockConfig(this.row.retailOrderCode);
-      // 检查返回结果是否有效
-      if (!res || res.allowManualCarStatus !== 1) {
-        this.$message.error('未绑定批售订单状态为订单确认的订单才能修改配置');
-        return;
-      }
+      // const res = await getOrderUnlockConfig(this.row.retailOrderCode);
       // 检查 accountFlag 和 changeConfigCount 的关系
       if (this.accountFlag && this.row.changeConfigCount >= 1) {
         this.$message.error('该订单修改配车次数已达上限');
@@ -818,11 +814,14 @@ export default {
     handleViewPurchaseAgreement () {
       // 2362166807179599872
       // this.form.mallOrderCode
+      this.agreementLoading = true;
       querySnapShot(this.form.mallOrderCode).then(response => {
         this.agreementDialogContent = response;
         this.$refs.PurchaseAgreementDialog.dialogVisible = true;
       }).catch(() => {
         this.$message.error('无购车权限');
+      }).finally(() => {
+        this.agreementLoading = false;
       });
     },
     // 订单退订
@@ -954,7 +953,7 @@ export default {
     // 判断字段是否可以编辑
     canEditField (field) {
       // 允许编辑的字段列表
-      const editableFields = ['saleUserName', 'deliveryUserName', 'remark', 'contractTerminationFileUrl'];
+      const editableFields = ['saleUserName', 'deliveryUserName', 'orderRemark', 'contractTerminationFileUrl'];
       return editableFields.includes(field);
     },
     // 滚动到指定区域

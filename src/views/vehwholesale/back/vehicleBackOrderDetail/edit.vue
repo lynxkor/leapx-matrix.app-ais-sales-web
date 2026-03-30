@@ -20,7 +20,7 @@
         <template #extraButtons>
           <el-button  size="small"  @click="handelConfirmOutbound">确认出库</el-button>
           <el-button  size="small"  @click="handelConfirmVdcInbound">确认入库</el-button>
-          <!-- <el-button  size="small"  @click="handleAudit">删除</el-button> -->
+          <el-button  size="small"  @click="handleDel">删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -323,7 +323,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, confirmVdcInbound, confirmOutbound } from '@/api/vehwholesale/back/vehicleBackOrderDetail/index';
+import { getDetail, addOrUpdate, confirmVdcInbound, confirmOutbound, deleteItem } from '@/api/vehwholesale/back/vehicleBackOrderDetail/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -433,6 +433,30 @@ export default {
   mounted () {
   },
   methods: {
+    handleDel () {
+      const ids = [this._id];
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
+      this.$confirm(message, '', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        dangerouslyUseHTMLString: true,
+        customClass: 'ais-leave-tips',
+        showClose: false
+      }).then(() => {
+        deleteItem(ids).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.getData();
+        }).catch(() => {
+          this.$message({
+            type: 'error',
+            message: '删除失败!'
+          });
+        });
+      }).catch(() => {});
+    },
     handelConfirmOutbound () {
       this.$confirm('确认是否出库?', '提示', {
         confirmButtonText: '确定',

@@ -100,7 +100,11 @@ export default {
       },
       total: 0,
       columns: [
-        { field: 'rebateBillDetailCode', title: '整车返利核算单明细编号', width: 240 },
+        {
+          field: 'rebateBillDetailCode',
+          title: '整车返利核算单明细编号',
+          width: 240,
+        },
         { field: 'vin', title: 'VIN号', width: 120 },
         { field: 'bizOrderNo', title: '业务单据号', width: 160 },
         { field: 'rebateAmount', title: '核销金额', width: 200 },
@@ -118,7 +122,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车返利核算单明细', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车返利核算单', '详情']);
     this.getData();
   },
   methods: {

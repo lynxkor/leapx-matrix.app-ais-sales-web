@@ -183,7 +183,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-import { createFinCustomerPurchaseRecord } from '@/api/vehwholesale/finance/factory/finDealerRecommendation/index';
+import { createFinCustomerPurchaseRecord } from '@/api/vehwholesale/finance/factory/finCustomerPurchaseRecord/index';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {

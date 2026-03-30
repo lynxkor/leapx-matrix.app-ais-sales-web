@@ -2812,6 +2812,7 @@ const routes = [
 
       meta: {
         name: '车辆用途变更申请详情',
+        noResourceUrl: 'true'
       }
     }, {
       path: '/vehwholesale/back/vehicleBackOrder',

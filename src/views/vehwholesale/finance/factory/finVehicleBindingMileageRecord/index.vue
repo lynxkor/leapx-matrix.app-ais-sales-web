@@ -272,7 +272,6 @@ export default {
         return;
       }
       const invalidItems = this.selectionList.filter(item => {
-        console.log(item.status === 1, item.syncStatus === 10, item.syncStatus === 40, item.syncStatus);
         const isAvailable = item.status === 1;
         const isSyncFailedOrNotSynced = item.syncStatus === 10 || item.syncStatus === 40;
         return !isAvailable || !isSyncFailedOrNotSynced;

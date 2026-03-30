@@ -57,6 +57,7 @@
                     clearable
                     filterable
                     remote
+                    reserve-keyword
                     labelKey="itemName"
                     valueKey="id"
                   />
@@ -65,31 +66,26 @@
                   <fetch-select
                     :remote-method="remoteMethods.model"
                     v-model="form.modelId"
+                    :params="form.modelName"
                     v-bind="selectOptions"
                     @change="modelListChange"
                   />
                 </el-form-item>
                 <el-form-item label="年款名称：" prop="yearTypeId">
                   <fetch-select
-                    :options="yearModelList"
+                    :remote-method="remoteMethods.yearType"
                     v-model="form.yearTypeId"
-                    placeholder="请选择"
-                    labelKey="label"
-                    valueKey="value"
-                    clearable
-                    filterable
+                    :params="form.yearTypeName"
+                    v-bind="selectOptions"
                     @change="getYearName"
                   />
                 </el-form-item>
                 <el-form-item label="选装包名称：" prop="optionPackageId">
                   <fetch-select
                     v-model="form.optionPackageId"
-                    clearable
-                    filterable
-                    remote
-                    label-key="name"
-                    value-key="id"
+                    v-bind="selectOptions"
                     :remote-method="remoteMethods.optional"
+                    :params="form.optionPackageName"
                     @change="getOptionalName"
                   />
                 </el-form-item>
@@ -282,10 +278,10 @@ export default {
           { required: true, message: '请输入项目名称', trigger: 'change' }
         ],
         level: [
-          { required: true, message: '请输入层级 10-一级 20-二级 30-三级', trigger: 'change' }
+          { required: true, message: '请输入层级', trigger: 'change' }
         ],
         checkMethod: [
-          { required: true, message: '请输入检查方式 5-子项 10-只展示 15-门店勾选', trigger: 'change' }
+          { required: true, message: '请输入检查方式', trigger: 'change' }
         ],
         sameLevelSort: [
           { required: true, message: '请输入同级排序', trigger: 'change' }
@@ -303,7 +299,7 @@ export default {
           { required: true, message: '请选择失效日期', trigger: 'change' }
         ],
         status: [
-          { required: true, message: '请选择状态 1-启用 0-禁用', trigger: 'change' }
+          { required: true, message: '请选择状态', trigger: 'change' }
         ],
         modelId: [
           { required: true, message: '请输入车型ID', trigger: 'change' }
@@ -326,7 +322,7 @@ export default {
       remoteMethods: {
         // 初始方法
         model: async (query) => {
-          return await listVehicleModel({ modelNameLike: query });
+          return await listVehicleModel({ modelNameLike: query, status: 1 });
         },
         yearType: async (query) => {
           return await listVehicleYearType({ yearTypeNameLike: query, modelId: this.form.modelId });
@@ -352,7 +348,7 @@ export default {
       this.form.optionPackageName = obj.name;
     },
     getYearName (val, obj) {
-      this.form.yearTypeName = obj.label;
+      this.form.yearTypeName = obj.name;
     },
     modelListChange (val, obj) {
       this.form.modelName = obj.name;

@@ -10,11 +10,15 @@
       class="ais-search-form"
     >
     <el-form-item label="经销商"  >
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerCompanyName"
-          clearable
-        />
+       <fetch-select
+                    filterable
+                    clearable
+                    remote
+                    v-model="form.dealerCompanyNames"
+                    :remote-method="getDealerListByName"
+                    value-key="storeCode"
+                    label-key="storeName"
+                  />
       </el-form-item>
       <el-form-item label="单据类型">
           <fetch-select
@@ -159,7 +163,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, audit, cancel } from '@/api/vehwholesale/back/vehicleBackOrder/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getRigion } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getRigion, listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -248,7 +252,7 @@ export default {
           { props: 'backTypeLabel', label: '退车类型', visible: true, width: 200 },
           { props: 'orderTypeLabel', label: '单据类型', visible: true, width: 200 },
           { props: 'remark', label: '退车备注', visible: true, width: 200 },
-          { props: 'auditorUserId', label: '审核人', visible: true, width: 200 },
+          { props: 'auditorUserName', label: '审核人', visible: true, width: 200 },
           { props: 'auditTime', label: '审核时间', visible: true, width: 200 },
           { props: 'auditOpinion', label: '退车审核说明', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 200 },
@@ -309,6 +313,9 @@ export default {
     this.getData();
   },
   methods: {
+    async getDealerListByName (params) {
+      return await listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
+    },
     async getRegionList (params) {
       return getRigion({ orgName: params });
     },

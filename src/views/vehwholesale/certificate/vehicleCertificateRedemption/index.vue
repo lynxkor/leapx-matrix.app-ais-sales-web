@@ -10,16 +10,21 @@
       class="ais-search-form"
     >
      <el-form-item label="母公司名称"  >
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerCompanyName"
-          clearable
-        />
+      <fetch-select
+                  filterable
+                  clearable
+                  remote
+                  v-model="form.dealerCompanyNames"
+                  :remote-method="getDealerParentOrgList"
+                  value-key="companyCode"
+                  label-key="companyName"
+                  multiple
+                />
       </el-form-item>
        <el-form-item label="赊销结算状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
+            enumCode="vw_credit_status"
             v-model="form.creditSettleStatus"
             placeholder="请选择"
             clearable
@@ -28,11 +33,17 @@
           />
         </el-form-item>
           <el-form-item label="销售门店" v-show="this.visibleCount === 3 || show">
-          <el-input
-            placeholder="请输入"
-            v-model="form.saleDealerName"
-            clearable
-          />
+            <fetch-select
+              filterable
+              clearable
+              remote
+              collapseTags
+              v-model="form.saleDealerCodes"
+              :remote-method="getDealerListByName"
+              value-key="storeCode"
+              label-key="storeName"
+              multiple
+            />
         </el-form-item>
       <template v-if="show">
        <el-form-item label="VIN码">
@@ -45,8 +56,8 @@
         <el-form-item label="合格证状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.certificateStatus"
+            enumCode="vw_certificate_redemption_status"
+            v-model="form.certificateStatuses"
             placeholder="请选择"
             clearable
             multiple
@@ -123,11 +134,8 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">签收合格证</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -165,7 +173,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/certificate/vehicleCertificateRedemption/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany, listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -325,6 +333,12 @@ export default {
     this.getData();
   },
   methods: {
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
+    },
+    async getDealerParentOrgList (params) {
+      return getParentCompany({ parentCompanyName: params });
+    },
     // 排序
     handleSortChange (value) {
       this.sortColumns = (value || []).map(item => {
@@ -454,6 +468,23 @@ export default {
         if (this.form.createTime.length > 1) {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
+        }
+      }
+
+      // 赊销日期
+      if (this.form.creditTime) {
+        delete data.creditTime;
+        if (this.form.creditTime.length > 1) {
+          data.creditTimeStart = this.form.creditTime[0];
+          data.creditTimeEnd = this.form.creditTime[1];
+        }
+      }
+      // 还款日期
+      if (this.form.repaymentTime) {
+        delete data.repaymentTime;
+        if (this.form.repaymentTime.length > 1) {
+          data.repaymentTimeStart = this.form.repaymentTime[0];
+          data.repaymentTimeEnd = this.form.repaymentTime[1];
         }
       }
       // 排序字段

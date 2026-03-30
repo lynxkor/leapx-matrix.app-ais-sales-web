@@ -25,7 +25,7 @@
       <el-input v-model="form.reasonExplain" disabled class="unification-input" />
     </el-form-item>
     <el-form-item label="更换后配置：" prop="materialsCode" v-if="shouldShowMaterialField">
-      <el-input v-model="form.materialsCode" class="unification-input" readonly />
+      <el-input v-model="form.materialsCode" disabled class="unification-input" readonly />
       <el-button size="small" type="primary" @click="showMaterialsDialog()">选择配置</el-button>
     </el-form-item>
     <el-form-item label="处理方式：" prop="orderHandleType" v-if="shouldShowHandleTypeField">
@@ -65,6 +65,7 @@
     <MaterialsDialog
       ref="materialsDialog"
       @confirm="onMaterialsSelected"
+      :row="row"
       :use-external-confirm="true"
     />
     <!-- VIN 选择对话框 -->
@@ -169,6 +170,13 @@ export default {
     handleUnlockReasonCodeChange (val, row) {
       this.form.unlockReason = row.unlockReason;
       this.form.reasonExplain = row.reasonExplain;
+      // 切换申请原因时，清空其他可能变化的字段
+      this.form.materialsCode = '';
+      this.form.materialsDesc = '';
+      this.form.orderHandleType = null;
+      this.form.bindVin = '';
+      this.form.remark = '';
+      this.form.orderUnlockFileReqList = [];
     },
     getList (params) {
       getList({ ...params, pageNum: 1 }).then(res => {
@@ -182,8 +190,9 @@ export default {
     },
     // 物料选择确认回调
     onMaterialsSelected (material) {
-      this.form.materialsCode = material.materialsCode;
       this.form.materialsDesc = material.materialsDesc;
+      this.form.materialsCode = material.materialsCode;
+      this.form.changeProductSkuPriceId = material.id;
     },
     // VIN 选择确认回调
     onVinSelected (vehicle) {

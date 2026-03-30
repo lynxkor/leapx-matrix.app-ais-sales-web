@@ -15,7 +15,7 @@ export const retailOrderDisplayFields = [
   { key: 'deliveryUserName', label: '订单交付顾问' },
   { key: 'preSaleOrderLabel', label: '是否预售订单' },
   { key: 'blindOrderLabel', label: '是否盲订订单' },
-  { key: 'remark', label: '订单备注' },
+  { key: 'orderRemark', label: '订单备注' },
   { key: 'specialRemark', label: '特殊备注' },
   { key: 'contractTerminationFileUrl', label: '合同解除协议文件地址' },
   { key: 'deliveryCycleMaxWeek', label: '交付周期上限(周)' },
@@ -68,7 +68,7 @@ export const lockAllocationDisplayFields = [
   { key: 'lockTypeLabel', label: '锁车匹配类型' },
   { key: 'lockStatusLabel', label: '是否锁单' },
   { key: 'lockTime', label: '锁单时间' },
-  { key: 'orderMaterialCode', label: '订单物料码' },
+  { key: 'materialsCode', label: '订单物料码' },
   { key: 'allocationMaterialCode', label: '配车物料编码' },
   { key: 'matchVin', label: '配车VIN码' },
   { key: 'deliveryVin', label: '交车VIN码' },
@@ -94,18 +94,18 @@ export const wholesaleDisplayFields = [
 // 订单取消信息字段配置
 export const refundDisplayFields = [
   { key: 'cancelReason', label: '订单取消原因' },
-  { key: 'cancelDescription', label: '订单取消说明' },
+  { key: 'cancelExplain', label: '订单取消说明' },
   { key: 'cancelTime', label: '订单取消时间' }
 ];
 
 // 附属信息字段配置
 export const financeDisplayFields = [
-  { key: 'financialPlan', label: '金融方案' },
-  { key: 'mortgageProgress', label: '金融按揭进度' },
-  { key: 'financialOrderCode', label: '金融订单号' },
+  { key: 'financialSchemeLabel', label: '金融方案' },
+  { key: 'financialMortgageProgressLabel', label: '金融按揭进度' },
+  { key: 'code', label: '金融订单号' },
   { key: 'financialOrderStatusLabel', label: '金融订单状态' },
-  { key: 'insuranceProgress', label: '保险办理进度' },
-  { key: 'insurancePlan', label: '保险方案' }
+  { key: 'insuranceProgressLabel', label: '保险办理进度' },
+  { key: 'insuranceSchemeLabel', label: '保险方案' }
 ];
 
 // 期限信息字段配置
@@ -180,8 +180,8 @@ export const orderTransparencyTrackingDisplayFields = [
   { key: 'trackCode', label: '编号' },
   { key: 'saleDealerName', label: '门店' }, // 塞入销售门店数据
   { key: 'retailOrderCode', label: '整车订单' },
-  { key: 'oldOrderStatus', label: '原订单状态' },
-  { key: 'newOrderStatus', label: '新订单状态' },
+  { key: 'oldOrderStatusLabel', label: '原订单状态' },
+  { key: 'newOrderStatusLabel', label: '新订单状态' },
   { key: 'operateTime', label: '操作时间' },
   { key: 'operateDesc', label: '操作描述' }
 ];
@@ -191,7 +191,7 @@ export const orderCancellationRecordDisplayFields = [
   { key: 'refundCode', label: '退订申请单号' },
   { key: 'refundStatusLabel', label: '申请单状态' },
   { key: 'applyTime', label: '申请时间' },
-  { key: 'creator', label: '申请人' },
+  { key: 'creatorName', label: '申请人' },
   { key: 'orderRefundTypeLabel', label: '退订方式' },
   { key: 'subCateName', label: '退订原因分类' },
   { key: 'refundReason', label: '退订原因说明' }

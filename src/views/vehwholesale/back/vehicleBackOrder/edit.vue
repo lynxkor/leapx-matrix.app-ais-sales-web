@@ -39,6 +39,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    @change="handleOrderTypeChange"
                   />
                   </el-form-item>
                    <el-form-item label="经销商：">
@@ -51,6 +52,7 @@
                     value-key="storeCode"
                     label-key="storeName"
                     @change="getdealerCompanyCode"
+                    :disabled="form.orderType === '20'"
                   />
                 </el-form-item>
                  <el-form-item label="企业客户名称：">
@@ -65,6 +67,7 @@
                       collapseTags
                       filterable
                       @change="getentCustomerName"
+                      :disabled="form.orderType === '10'"
                 />
 
                 </el-form-item>
@@ -105,6 +108,7 @@
                     placeholder="请输入"
                     v-model="form.remark"
                     clearable
+                    maxxlength="150"
                   />
                 </el-form-item>
                 <el-form-item label="审核人：">
@@ -129,6 +133,7 @@
                     placeholder="请输入"
                     v-model="form.auditOpinion"
                     clearable
+                    maxlength="50"
                   />
                 </el-form-item>
                 <el-form-item label="退车日期：">
@@ -162,7 +167,7 @@
                   {{ form.backType }}
                 </el-form-item>
                   <el-form-item label="退车订单状态：" prop="statusLabel">
-                  {{ form.status }}
+                  {{ form.statusLabel }}
                 </el-form-item>
                 <el-form-item label="退车备注：" prop="remark">
                   {{ form.remark }}
@@ -185,7 +190,7 @@
               </el-form>
             </div>
           </section>
-          <section class="common-section">
+          <section class="common-section" v-if="_id">
             <div class="common-section-header">
               <h2>退车车辆明细</h2>
             </div>
@@ -194,7 +199,7 @@
                 <edit-table
                   ref="editTable"
                   :columns="columns"
-                  :data="tableData"
+                  :data="vehicleBackOrderDetailRespList"
                   :defaultNewRow="defaultNewRow"
                   :show-toolbar="false"
                   :show-pagination="true"
@@ -229,7 +234,6 @@
     <audit-dialog
       ref="auditRef"
       @audit="handleBatchAudit"
-      :auditDataList="[]"
       :maxlength='150'
     />
      <vinAllocateVehicle :visible.sync="showvinAllocateVehicleDialog" ref="vinAllocateVehicleDialog" :id="_id"
@@ -240,7 +244,7 @@
 </template>
 
 <script>
-import { deleteItem, audit, cancel, getDetail, addOrUpdate } from '@/api/vehwholesale/back/vehicleBackOrder/index';
+import { deleteItem, audit, cancel, getDetail, addOrUpdate, submitAudit } from '@/api/vehwholesale/back/vehicleBackOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -254,7 +258,7 @@ import { networkParentCompanyItem } from '@/api/vehwholesale/replenish/entVehicl
 import Upload from '@/libs/components/UploadDialog';
 import auditDialog from '@/libs/components/auditDialog';
 import vinAllocateVehicle from './vinAllocateVehicle.vue';
-
+import { addOrUpdate as detailAddOrUpdate, deleteItem as detailDeleteItem } from '@/api/vehwholesale/back/vehicleBackOrderDetail/index';
 const defaultForm = {
   // 多选时字段有变化，自行修复
   id: '',
@@ -319,6 +323,23 @@ export default {
         }
       },
       immediate: true
+    },
+    'form.orderType': {
+      handler (val) {
+        // 根据单据类型动态设置必填项
+        if (val === '10') {
+          this.$set(this.rules, 'dealerCompanyName', [
+            { required: true, message: '请选择经销商', trigger: 'change' }
+          ]);
+          this.$delete(this.rules, 'entCustomerName');
+        } else if (val === '20') {
+          this.$set(this.rules, 'entCustomerName', [
+            { required: true, message: '请输入企业客户名称', trigger: 'change' }
+          ]);
+          this.$delete(this.rules, 'dealerCompanyName');
+        }
+      },
+      immediate: true
     }
   },
   data () {
@@ -341,6 +362,10 @@ export default {
       defaultNewRow: {
         totalQuotaQty: '',
       },
+      vehicleBackOrderDetailRespList: [{
+        backOrderDetailCode: 20,
+        returnPrice: 20,
+      }],
       pageNum: 1,
       pageSize: 20,
       total: 0,
@@ -349,20 +374,20 @@ export default {
         // 如 type: [{label: 'xxx', value: 'xxx'}]
       },
       rules: {
+        orderType: [
+          { required: true, message: '请选择单据类型', trigger: 'change' }
+        ],
         entCustomerName: [
           { required: true, message: '请输入企业客户名称', trigger: 'change' }
-        ],
-        status: [
-          { required: true, message: '请选择退车订单状态', trigger: 'change' }
         ],
         backType: [
           { required: true, message: '请选择退车类型', trigger: 'change' }
         ],
-        orderType: [
-          { required: true, message: '请选择单据类型', trigger: 'change' }
-        ],
         remark: [
-          { required: true, message: '请输入备注', trigger: 'change' }
+          { required: true, message: '请输入退车备注', trigger: 'change' }
+        ],
+        status: [
+          { required: true, message: '请选择退车订单状态', trigger: 'change' }
         ],
       },
       columns: [
@@ -409,12 +434,32 @@ export default {
         {
           field: 'salesDeptReserveLabel',
           title: '销售部预留',
-          width: '150'
+          width: '150',
+          editable: true,
+          editRender: {
+            name: 'fetch-select',
+            props: {
+              enumCode: 'BooleanEnum',
+              placeholder: '请选择',
+              clearable: true,
+              filterable: true
+            }
+          },
         },
         {
           field: 'vehicleLogisticsReserveLabel',
           title: '整车物流预留',
-          width: '120'
+          width: '120',
+          editable: true,
+          editRender: {
+            name: 'fetch-select',
+            props: {
+              enumCode: 'BooleanEnum',
+              placeholder: '请选择',
+              clearable: true,
+              filterable: true
+            }
+          },
         },
         {
           field: 'originalWholesalePrice',
@@ -434,7 +479,14 @@ export default {
         {
           field: 'returnPrice',
           title: '退车价格',
-          width: '200'
+          width: '200',
+          editable: true,
+          editRender: {
+            name: 'ElInput',
+            props: {
+              type: 'number'
+            }
+          },
         },
         {
           field: 'returnInvoiceAmount',
@@ -444,7 +496,14 @@ export default {
         {
           field: 'remark',
           title: '备注说明',
-          width: '200'
+          width: '200',
+          editable: true,
+          editRender: {
+            name: 'ElInput',
+            props: {
+              type: 'Sring'
+            }
+          },
         },
         {
           field: 'storeOutboundConfirmer',
@@ -477,6 +536,16 @@ export default {
   mounted () {
   },
   methods: {
+    handleOrderTypeChange (val) {
+      if (val === '10') {
+        this.form.entCustomerName = '';
+        this.form.entCustomerCode = '';
+      } else if (val === '20') {
+        // 企业客户整车订单：清空经销商
+        this.form.dealerCompanyName = '';
+        this.form.dealerCompanyCode = '';
+      }
+    },
     vinConfirm (data) {
       // const params = {
       //   entOrderId: this._id,
@@ -495,7 +564,7 @@ export default {
       this.uploadDialogVisible = false;
     },
     handelAdd () {
-      // this.$refs.vinAllocateVehicleDialog.getData();
+      this.$refs.vinAllocateVehicleDialog.getData();
       this.showvinAllocateVehicleDialog = true;
     },
     handelCancel () {
@@ -513,15 +582,18 @@ export default {
       }).catch(() => {});
     },
     handelSubmit () {
-      deleteItem({
-        idSet: [this._id],
+      this.$confirm('确认是否对数据进行提交?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '提交成功!'
+        submitAudit({
+          idSet: [this._id],
+        }).then(() => {
+          this.$message.success('提交成功');
+          this.detailRequest();
         });
-        this.detailRequest();
-      });
+      }).catch(() => {});
     },
     handleBatchAudit (data) {
       let params = {
@@ -589,20 +661,28 @@ export default {
       // this.getList();
     },
     handleRemoveRow (row, index, defer) {
-      // if (!row.id) {
-      //   return;
-      // }
-      // deleteItem([row.id]).then((d) => {
-      //   defer.resolve();
-      //   this.$message.success('删除成功');
-      //   this.getDetailData();
-      //   this.getList();
-      // }).catch(() => {
-      //   defer.reject();
-      // });
+      if (!row.id) {
+        return;
+      }
+      detailDeleteItem([row.id]).then((d) => {
+        defer.resolve();
+        this.$message.success('删除成功');
+        this.getDetailData();
+      }).catch(() => {
+        defer.reject();
+      });
     },
     // 行保存
     saveRowEdit (row, defer) {
+      console.log('row:', row);
+      // return;
+      detailAddOrUpdate(row).then(id => {
+        defer.resolve(id);
+        this.$message.success('更新成功');
+        this.getDetailData();
+      }).catch(e => {
+        defer.reject();
+      });
     },
     detailRequest () {
       const id = this._id;

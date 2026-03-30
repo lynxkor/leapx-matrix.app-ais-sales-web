@@ -201,7 +201,8 @@ const defaultForm = {
   allowCustomerSales: '',
   allowWholesaleConfirm: '',
   allowConfigurationModify: '',
-  discontinueStatus: ''
+  discontinueStatus: '',
+  statusIncludeList: ['1']
 };
 
 const pageSize = 20;
@@ -275,7 +276,7 @@ export default {
           { props: 'allowWholesaleConfirmLabel', label: '是否允许批售确认', visible: true, width: 200 },
           // { props: 'allowTestDriveVehicleWholesaleLabel', label: '是否允许试驾车批售', visible: true, width: 200 },
           { props: 'allowConfigurationModifyLabel', label: '是否允许改配', visible: true, width: 200 },
-          { props: 'allowTestDriveVehicleWholesaleLabel', label: '是否允许采购试驾车', visible: true, width: 200 },
+          { props: 'allowTestDriveVehicleWholesaleLabel', label: '是否允许试驾车批售', visible: true, width: 200 },
           { props: 'allowCustomerSalesLabel', label: '是否允许企业客户销售	', visible: true, width: 200 },
           { props: 'yearTypeName', label: '车型年款', visible: true, width: 200 },
           { props: 'modelLineName', label: '系列名称', visible: true, width: 200 },
