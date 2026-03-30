@@ -274,7 +274,7 @@ export default {
                 this.$confirm('确定要对该数据执行推送金融机构操作吗？', '提示', {
                   confirmButtonText: '确定',
                   cancelButtonText: '取消',
-                  type: 'error'
+                  type: 'warning'
                 }).then(() => {
                   pushfinDealerRecommendationToBank({
                     idSet: [row.id],

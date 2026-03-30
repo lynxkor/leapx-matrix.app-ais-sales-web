@@ -445,7 +445,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
-                    :disabled="form.settleFundType !== 2010"
+                    :disabled="form.settleFundType !== '2010' && form.settleFundType !== 2010"
                   />
                 </el-form-item>
                  <el-form-item label="合格证是否质押：" prop="certificatePledged">
