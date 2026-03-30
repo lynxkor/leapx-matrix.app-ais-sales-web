@@ -23,14 +23,14 @@
             @click="openDialogShow"
             v-if="form.status === 0"
             size="small">
-            交车完成
+            确认上传
           </el-button>
           <!-- v-if="form.status === 0" -->
-          <el-button
-            @click="openUploadShow1"
-            size="small">
-            上传附件
-          </el-button>
+<!--          <el-button-->
+<!--            @click="openUploadShow1"-->
+<!--            size="small">-->
+<!--            上传附件-->
+<!--          </el-button>-->
           <el-button
             @click="openDeleteShow"
             v-if="form.status === 0"
@@ -134,6 +134,13 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                  />
+                </el-form-item>
+                <el-form-item label="车主证件号码：" prop="orderIdCardNo">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.orderIdCardNo"
+                    clearable
                   />
                 </el-form-item>
                 <el-form-item label="开票金额：" prop="deliveryOrderInvoiceAmount">
@@ -279,7 +286,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="代办人联系人：" prop="agentName">
+                <el-form-item label="代办联系人：" prop="agentName">
                   <el-input
                     placeholder="请输入"
                     v-model="form.agentName"
@@ -287,10 +294,10 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="整车指导价：" prop="guidePrice">
+                <el-form-item label="补贴后价格：" prop="priceAfterSubsidy">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.guidePrice"
+                    v-model="form.priceAfterSubsidy"
                     clearable
                     disabled
                   />
@@ -303,7 +310,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="订单物料编码：" prop="materialsCode">
+                <el-form-item label="订单物料码：" prop="materialsCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.materialsCode"
@@ -311,7 +318,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="配车物料编码：" prop="allocationMaterialCode">
+                <el-form-item label="配车物料码：" prop="allocationMaterialCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.allocationMaterialCode"
@@ -426,20 +433,20 @@
               </el-form>
             </div>
           </section>
-          <section class="common-section">
-            <div class="common-section-header">
-              <h2>附件清单</h2>
-            </div>
-            <div class="common-section-table">
-              <!--附件上传组件 -->
-              <AisAttachment
-                :businessId="_id"
-                :readonly="!isEditing"
-                configCode="mcs_vehnetwork"
-                attachType="整车开票附件"
-              />
-            </div>
-          </section>
+<!--          <section class="common-section">-->
+<!--            <div class="common-section-header">-->
+<!--              <h2>附件清单</h2>-->
+<!--            </div>-->
+<!--            <div class="common-section-table">-->
+<!--              &lt;!&ndash;附件上传组件 &ndash;&gt;-->
+<!--              <AisAttachment-->
+<!--                :businessId="_id"-->
+<!--                :readonly="!isEditing"-->
+<!--                configCode="mcs_vehnetwork"-->
+<!--                attachType="整车开票附件"-->
+<!--              />-->
+<!--            </div>-->
+<!--          </section>-->
         </el-main>
         <!-- 比对确认弹框 -->
         <el-dialog
@@ -636,7 +643,7 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
-    AisAttachment,
+    // AisAttachment,
     EditPageLayout,
     EditBaseContainer,
     FetchSelect,
@@ -777,7 +784,7 @@ export default {
           { required: false, message: '请选择证件类型标签', trigger: 'change' }
         ],
         agentName: [
-          { required: false, message: '请输入代办人姓名', trigger: 'change' }
+          { required: false, message: '请输入代办姓名', trigger: 'change' }
         ],
         agentPhone: [
           { required: false, message: '请输入代办人电话', trigger: 'change' }
@@ -821,12 +828,21 @@ export default {
       }
     },
     openDialogShow () {
-      // 比对数据
-      const comparisonData = this.doComparisonData();
-      if (comparisonData.length > 0) {
-        this.comparisonData = comparisonData;
-        this.dialogVisible = true;
-      }
+      // 确认时间
+      const warnMsg = '系统中的开票日期' + this.form.invoiceTime + '，请确认是否正确；若正确，请点击继续交车；若不正确，请点击取消并修改。';
+      this.$confirm(warnMsg, '操作提醒', {
+        confirmButtonText: '继续交车',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 比对数据
+        const comparisonData = this.doComparisonData();
+        if (comparisonData.length > 0) {
+          this.comparisonData = comparisonData;
+          this.dialogVisible = true;
+        }
+      }).catch(() => {
+      });
     },
     doComparisonData () {
       const comparisonData = [];
@@ -849,23 +865,6 @@ export default {
           isHighlighted: true
         });
       }
-      if (!this.form.idCardNo || !this.form.orderIdCardNo || this.form.idCardNo !== this.form.orderIdCardNo) {
-        comparisonData.push({
-          fieldName: '车主证件号码',
-          recognizedValue: this.form.idCardNo,
-          checkField: '证件号码',
-          checkValue: this.form.orderIdCardNo,
-        });
-      }
-      if (!this.form.invoiceAmount || !this.form.deliveryOrderInvoiceAmount || this.form.invoiceAmount !== this.form.deliveryOrderInvoiceAmount) {
-        comparisonData.push({
-          fieldName: '发票金额',
-          recognizedValue: this.form.price,
-          checkField: '开票金额',
-          checkValue: this.form.deliveryOrderInvoiceAmount,
-          isHighlighted: true
-        });
-      }
       if (!this.form.carBuyerName || !this.form.orderCarBuyerName || this.form.carBuyerName !== this.form.orderCarBuyerName) {
         comparisonData.push({
           fieldName: '证件识别的客户姓名',
@@ -873,6 +872,22 @@ export default {
           checkField: '购车人姓名',
           checkValue: this.form.orderCarBuyerName,
           isHighlighted: true
+        });
+      }
+      if (!this.form.idCardTypeLabel || !this.form.orderIdCardTypeLabel || this.form.idCardTypeLabel !== this.form.orderIdCardTypeLabel) {
+        comparisonData.push({
+          fieldName: '车主证件类型',
+          recognizedValue: this.form.idcardTypeLabel,
+          checkField: '证件类型',
+          checkValue: this.form.orderIdCardTypeLabel,
+        });
+      }
+      if (!this.form.idCardNo || !this.form.orderIdCardNo || this.form.idCardNo !== this.form.orderIdCardNo) {
+        comparisonData.push({
+          fieldName: '车主证件号码',
+          recognizedValue: this.form.idcardNo,
+          checkField: '证件号码',
+          checkValue: this.form.orderIdCardNo,
         });
       }
       if (!this.form.idCardNo || !this.form.orderIdCardNo || this.form.idCardNo !== this.form.orderIdCardNo) {
@@ -884,12 +899,13 @@ export default {
           isHighlighted: true
         });
       }
-      if (!this.form.idCardTypeLabel || !this.form.orderIdCardTypeLabel || this.form.idCardTypeLabel !== this.form.orderIdCardTypeLabel) {
+      if (!this.form.invoiceAmount || !this.form.deliveryOrderInvoiceAmount || this.form.invoiceAmount !== this.form.deliveryOrderInvoiceAmount) {
         comparisonData.push({
-          fieldName: '车主证件类型',
-          recognizedValue: this.form.idCardTypeLabel,
-          checkField: '证件类型',
-          checkValue: this.form.orderIdCardTypeLabel,
+          fieldName: '发票金额',
+          recognizedValue: this.form.price,
+          checkField: '开票金额',
+          checkValue: this.form.deliveryOrderInvoiceAmount,
+          isHighlighted: true
         });
       }
       return comparisonData;

@@ -92,12 +92,14 @@
                   />
                 </el-form-item>
                 <el-form-item label="车辆属性：" prop="vehicleAttribute">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.vehicleAttribute"
-                    clearable
-                    disabled
-                  />
+                   <fetch-select
+                        :request="fetchOptions"
+                        enumCode="vw_vehicle_attribute"
+                        v-model="form.vehicleAttribute"
+                        placeholder="请选择"
+                        clearable
+                        filterable
+                      />
                 </el-form-item>
                 <el-form-item label="税务发票号：" prop="taxInvoiceCode">
                   <el-input
@@ -145,13 +147,15 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="是否急单：" prop="emergencyOrderLabel">
-                   <el-input
-                    placeholder="请输入"
-                    v-model="form.emergencyOrderLabel"
-                    clearable
-                    disabled
-                  />
+                <el-form-item label="是否急单：" prop="emergencyOrder">
+                   <fetch-select
+                      :request="fetchOptions"
+                      enumCode="BooleanEnum"
+                      v-model="form.emergencyOrder"
+                      placeholder="请选择"
+                      clearable
+                      filterable
+                    />
                 </el-form-item>
                  <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
                   <el-date-picker
@@ -167,7 +171,7 @@
                     placeholder="请输入"
                     v-model="form.emergencyOrderRemark"
                     clearable
-                    disabled
+                    maxlength="150"
                   />
                 </el-form-item>
                  <el-form-item label="下单物料码：" prop="materialsCode">
@@ -434,7 +438,6 @@
                   <fetch-select
                     :remote-method="repairItemSearch"
                     remote
-                    multiple
                     reserve-keyword
                     labelKey="organizationName"
                     valueKey="id"
@@ -442,7 +445,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
-                    :disabled="form.settleFundType !== '2010'"
+                    :disabled="form.settleFundType !== 2010"
                   />
                 </el-form-item>
                  <el-form-item label="合格证是否质押：" prop="certificatePledged">
