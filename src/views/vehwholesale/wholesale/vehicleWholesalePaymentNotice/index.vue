@@ -10,18 +10,29 @@
       class="ais-search-form"
     >
     <el-form-item label="门店名称" >
-        <el-input
-          placeholder="请输入"
-          v-model="form.saleDealerName"
-          clearable
-        />
+       <fetch-select
+              filterable
+              clearable
+              remote
+              collapseTags
+              v-model="form.saleDealerCodes"
+              :remote-method="getDealerListByName"
+              value-key="storeCode"
+              label-key="storeName"
+              multiple
+            />
       </el-form-item>
        <el-form-item label="所属母公司名称">
-        <el-input
-          placeholder="请输入"
-          v-model="form.dealerCompanyName"
-          clearable
-        />
+        <fetch-select
+                  filterable
+                  clearable
+                  remote
+                  v-model="form.dealerCompanyNames"
+                  :remote-method="getDealerParentOrgList"
+                  value-key="companyCode"
+                  label-key="companyName"
+                  multiple
+                />
       </el-form-item>
       <el-form-item label="创建时间"  v-show="this.visibleCount === 3 || show">
         <el-date-picker
@@ -110,7 +121,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/wholesale/vehicleWholesalePaymentNotice/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -249,6 +260,12 @@ export default {
     this.getData();
   },
   methods: {
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
+    },
+    async getDealerParentOrgList (params) {
+      return getParentCompany({ parentCompanyName: params });
+    },
     // 排序
     handleSortChange (value) {
       this.sortColumns = (value || []).map(item => {
@@ -378,6 +395,15 @@ export default {
         if (this.form.createTime.length > 1) {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
+        }
+      }
+
+      // 发布时间
+      if (this.form.publishTime) {
+        delete data.publishTime;
+        if (this.form.publishTime.length > 1) {
+          data.publishTimeStart = this.form.publishTime[0];
+          data.publishTimeEnd = this.form.publishTime[1];
         }
       }
       // 排序字段
