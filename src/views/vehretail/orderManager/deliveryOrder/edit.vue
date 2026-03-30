@@ -353,10 +353,17 @@
               >删除</el-button>
             </template>
           </component-table>
+          <component-table
+            ref="deliveryAppointmentRecordTable"
+            :table-config="{ title: '预约记录' }"
+            :columns="deliveryAppointmentRecordColumns"
+            section-key="deliveryAppointmentRecordRecords"
+            :tableDataExternal="form.appointmentRecordList"
+          />
           <!-- 预约记录 -->
           <section class="common-section" section-key="appointmentRecords">
             <div class="common-section-header" data-section="orderBelonging">
-              <h2>预约记录</h2>
+              <h2>附件清单</h2>
             </div>
             <div class="common-section-body">
               <AisAttachmentList
@@ -756,6 +763,16 @@ export default {
         { field: 'remark', title: '备注', width: 200 },
         { field: 'createTime', title: '创建时间', width: 180 },
         { field: 'operation', title: '操作', width: 80, fixed: 'right', slots: { default: 'operation_default' } }
+      ],
+      // 预约记录
+      deliveryAppointmentRecordColumns: [
+        { field: 'payCode', title: '收款编号', width: 180 },
+        { field: 'appointmentOperationTime', title: '预约操作时间', width: 180 },
+        { field: 'creatorName', title: '预约操作人', width: 180 },
+        { field: 'appointmentTimeAfter', title: '预约时间', width: 180 },
+        { field: 'appointmentTimeoutReason', title: '超时原因', width: 180 },
+        { field: 'changeTimeReason', title: '更改时间原因', width: 180 },
+        { field: 'appointmentRemark', title: '预约备注' }
       ]
     };
   },
