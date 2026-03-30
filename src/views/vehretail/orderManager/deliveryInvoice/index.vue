@@ -10,9 +10,9 @@
       class="ais-search-form"
     >
       <el-form-item label="VIN码">
-        <el-input
+        <tag-input
           placeholder="请输入"
-          v-model="form.vin"
+          v-model="form.vinList"
           clearable
         />
       </el-form-item>
@@ -69,16 +69,16 @@
           />
         </el-form-item>
         <el-form-item label="交车单">
-          <el-input
+          <tag-input
             placeholder="请输入"
-            v-model="form.deliveryOrderCode"
+            v-model="form.deliveryOrderCodeList"
             clearable
           />
         </el-form-item>
         <el-form-item label="整车订单">
-          <el-input
+          <tag-input
             placeholder="请输入"
-            v-model="form.retailOrderCode"
+            v-model="form.retailOrderCodeList"
             clearable
           />
         </el-form-item>
@@ -159,6 +159,7 @@ import permissions from '@/libs/mixins/permissions';
 import { downloadExcel, handleBatchStatusChange } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import TagInput from '@/libs/components/TagInput/index.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -177,6 +178,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
