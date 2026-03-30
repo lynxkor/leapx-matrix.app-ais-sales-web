@@ -46,7 +46,7 @@
                     :controls="false"
                 />
         </el-form-item>
-        <el-form-item label="关联交易不含税价：">
+        <!-- <el-form-item label="关联交易不含税价：">
             <el-input-number
                   placeholder="请输入"
                   v-model="materialsform.relatedTxnExTaxPrice"
@@ -67,7 +67,7 @@
                     :controls="false"
                     disabled
                 />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="数量：">
           <el-input-number
                   placeholder="请输入"

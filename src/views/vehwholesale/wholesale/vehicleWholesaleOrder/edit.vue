@@ -19,7 +19,7 @@
         <template #extraButtons >
           <el-button  size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
           <el-button  size="small" @click="handleCheckConfirm" >审核确认</el-button>
-          <el-button  :disabled="!form.buttonControl.autoAllocateVehicle" size="small" @click="handleaAutoVehicleAllocation">自动配车</el-button>
+          <el-button  :disabled="!form.buttonControl.autoAllocateVehicle" size="small" @click="handleaAutoVehicleAllocation">自动配车 {{ form.buttonControl.autoAllocateVehicle }}</el-button>
           <el-button  :disabled="!form.buttonControl.confirmManualButton" size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
           <el-button  :disabled="!form.buttonControl.submitSettleButton" size="small" @click="handleBatchSettleSubmit">提交结算</el-button>
           <el-button  :disabled="!form.buttonControl.cancelSettle" size="small" @click="handleBatchCancelSettle">取消结算</el-button>
@@ -810,7 +810,7 @@
       @confirmVin="confirmVin"
     />
     <component-table
-      :tableData="accountData"
+      :tableDataExternal="accountData"
       :columns="detailsColumns"
       :visible.sync="showComponentTabelDialog"
     />
@@ -1085,6 +1085,7 @@ export default {
       querySAPAccountBalance(params).then((res) => {
         console.log(res);
         this.accountData = res;
+        console.log(this.accountData);
         this.showComponentTabelDialog = true;
       });
     },
