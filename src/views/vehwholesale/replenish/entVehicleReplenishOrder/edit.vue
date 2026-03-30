@@ -873,7 +873,7 @@ export default {
           idSet: [this._id],
         }).then(() => {
           this.$message.success('提交成功');
-          this.detailRequest();
+          this.$refs.containerRef.loadDetail();
         });
       }).catch(() => {});
     },

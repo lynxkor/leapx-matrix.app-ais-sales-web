@@ -1041,7 +1041,7 @@ export default {
           type: 'success',
           message: '提交成功'
         });
-        this.detailRequest();
+        this.$refs.containerRef.loadDetail();
         this.showvinAllocateVehicleDialog = false;
       });
     },
@@ -1059,7 +1059,7 @@ export default {
             type: 'success',
             message: '提交成功!'
           });
-          this.detailRequest();
+          this.$refs.containerRef.loadDetail();
         });
       }).catch(() => {});
     },
@@ -1073,7 +1073,7 @@ export default {
           idSet: [this._id],
         }).then(() => {
           this.$message.success('提交成功');
-          this.detailRequest();
+          this.$refs.containerRef.loadDetail();
         });
       }).catch(() => {});
     },
@@ -1087,7 +1087,7 @@ export default {
           idSet: [this._id],
         }).then(() => {
           this.$message.success('提交成功');
-          this.detailRequest();
+          this.$refs.containerRef.loadDetail();
         });
       }).catch(() => {});
     },
