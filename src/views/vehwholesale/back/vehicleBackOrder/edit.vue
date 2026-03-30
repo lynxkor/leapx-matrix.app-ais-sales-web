@@ -108,6 +108,7 @@
                     placeholder="请输入"
                     v-model="form.remark"
                     clearable
+                    maxxlength="150"
                   />
                 </el-form-item>
                 <el-form-item label="审核人：">
@@ -165,7 +166,7 @@
                   {{ form.backType }}
                 </el-form-item>
                   <el-form-item label="退车订单状态：" prop="statusLabel">
-                  {{ form.status }}
+                  {{ form.statusLabel }}
                 </el-form-item>
                 <el-form-item label="退车备注：" prop="remark">
                   {{ form.remark }}
@@ -562,7 +563,7 @@ export default {
       this.uploadDialogVisible = false;
     },
     handelAdd () {
-      // this.$refs.vinAllocateVehicleDialog.getData();
+      this.$refs.vinAllocateVehicleDialog.getData();
       this.showvinAllocateVehicleDialog = true;
     },
     handelCancel () {

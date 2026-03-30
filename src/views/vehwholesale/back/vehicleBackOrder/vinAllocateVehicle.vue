@@ -39,11 +39,11 @@
             <vxe-column field="vin" title="VIN" align="center" width="150" />
             <vxe-column field="materialsCode" title="整车物料编码" align="center" width="120" />
             <vxe-column field="materialsDesc" title="物料描述" align="center"  width="150"/>
-            <vxe-column field="reservedLabel" title="销售预留" align="center" width="150" />
-            <vxe-column field="reservedTypeLabel" title="销售预留类型" align="center" width="150" />
-            <vxe-column field="logisticsReservedLabel" title="整车物流预留" align="center" width="150" />
-            <vxe-column field="vehicleDeliveryStatusLabel" title="车辆交付状态" align="center"  width="150"/>
-            <vxe-column field="inboundDateTime" title="VDC入库时间" align="center" width="150" />
+            <vxe-column field="reservedLabel" title="车型" align="center" width="150" />
+            <vxe-column field="reservedTypeLabel" title="整车批售订单号" align="center" width="150" />
+            <vxe-column field="logisticsReservedLabel" title="企业客户整车订单号" align="center" width="150" />
+            <vxe-column field="vehicleDeliveryStatusLabel" title="合格证状态" align="center"  width="150"/>
+            <vxe-column field="inboundDateTime" title="赊销结算状态" align="center" width="150" />
           </vxe-table>
           <el-pagination
             @size-change="handleSizeChange"

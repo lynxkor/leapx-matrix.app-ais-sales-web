@@ -5,14 +5,16 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        :title="title"
+        title="批售请款通知"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="false"
       >
         <template #status>
+          {{ form.paymentNoticeCode }}
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
         </template>
@@ -28,138 +30,31 @@
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="主键：" prop="id">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.id"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="创建者：" prop="creator">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.creator"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.creatorName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.createTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  />
-                </el-form-item>
-                <el-form-item label="修改者：" prop="modifier">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.modifier"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="修改者名称：" prop="modifierName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.modifierName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="修改时间：" prop="updateTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.updateTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  />
-                </el-form-item>
-                <el-form-item label="备注：" prop="remark">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.remark"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="订单状态：" prop="status">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
-                    v-model="form.status"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                  />
-                </el-form-item>
-                <el-form-item label="状态变更描述：" prop="statusDesc">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
-                    v-model="form.statusDesc"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                  />
-                </el-form-item>
-                <el-form-item label="请款通知单号，PD开头+年月日+6位流水号：" prop="paymentNoticeCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.paymentNoticeCode"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.dealerCompanyCode"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="所属母公司名称：" prop="dealerCompanyName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.dealerCompanyName"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="销售门店编码：" prop="saleDealerCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.saleDealerCode"
-                    clearable
-                  />
-                </el-form-item>
                 <el-form-item label="门店名称：" prop="saleDealerName">
                   <el-input
                     placeholder="请输入"
                     v-model="form.saleDealerName"
                     clearable
+                    disabled
                   />
                 </el-form-item>
-                <el-form-item label="待结算数，默认值0，根据明细汇总：" prop="pendingSettleCount">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.pendingSettleCount"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="批售总金额，根据明细批售价汇总：" prop="totalWholesaleAmount">
+                 <el-form-item label="批售总金额：" prop="totalWholesaleAmount">
                   <el-input
                     placeholder="请输入"
                     v-model="form.totalWholesaleAmount"
                     clearable
+                    disabled
                   />
                 </el-form-item>
-                <el-form-item label="发布状态：0-草稿、1-已发布：" prop="publishStatus">
+                 <el-form-item label="待结算数：" prop="pendingSettleCount">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.pendingSettleCount"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="发布状态：" prop="publishStatus">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="xxx"
@@ -167,6 +62,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="发布时间：" prop="publishTime">
@@ -177,100 +73,34 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
-                  />
-                </el-form-item>
-                <el-form-item label="数据来源，150:新销服; 老销服:10：" prop="dataSource">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.dataSource"
-                    clearable
+                    disabled
                   />
                 </el-form-item>
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="主键：" prop="id">
-                  {{ form.id }}
-                </el-form-item>
-                <el-form-item label="创建者：" prop="creator">
-                  {{ form.creator }}
-                </el-form-item>
-                <el-form-item label="创建者名称：" prop="creatorName">
-                  {{ form.creatorName }}
-                </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
-                  {{ form.createTime }}
-                </el-form-item>
-                <el-form-item label="修改者：" prop="modifier">
-                  {{ form.modifier }}
-                </el-form-item>
-                <el-form-item label="修改者名称：" prop="modifierName">
-                  {{ form.modifierName }}
-                </el-form-item>
-                <el-form-item label="修改时间：" prop="updateTime">
-                  {{ form.updateTime }}
-                </el-form-item>
-                <el-form-item label="备注：" prop="remark">
-                  {{ form.remark }}
-                </el-form-item>
-                <el-form-item label="订单状态：" prop="status">
-                  {{ form.status }}
-                </el-form-item>
-                <el-form-item label="状态变更描述：" prop="statusDesc">
-                  {{ form.statusDesc }}
-                </el-form-item>
-                <el-form-item label="请款通知单号，PD开头+年月日+6位流水号：" prop="paymentNoticeCode">
-                  {{ form.paymentNoticeCode }}
-                </el-form-item>
-                <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  {{ form.dealerCompanyCode }}
-                </el-form-item>
-                <el-form-item label="所属母公司名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
-                </el-form-item>
-                <el-form-item label="销售门店编码：" prop="saleDealerCode">
-                  {{ form.saleDealerCode }}
-                </el-form-item>
                 <el-form-item label="门店名称：" prop="saleDealerName">
                   {{ form.saleDealerName }}
                 </el-form-item>
-                <el-form-item label="待结算数，默认值0，根据明细汇总：" prop="pendingSettleCount">
-                  {{ form.pendingSettleCount }}
-                </el-form-item>
-                <el-form-item label="批售总金额，根据明细批售价汇总：" prop="totalWholesaleAmount">
+                <el-form-item label="批售总金额：" prop="totalWholesaleAmount">
                   {{ form.totalWholesaleAmount }}
                 </el-form-item>
-                <el-form-item label="发布状态：0-草稿、1-已发布：" prop="publishStatus">
-                  {{ form.publishStatus }}
+                <el-form-item label="待结算数：" prop="pendingSettleCount">
+                  {{ form.pendingSettleCount }}
+                </el-form-item>
+                <el-form-item label="发布状态：" prop="publishStatusLabel">
+                  {{ form.publishStatusLabel }}
                 </el-form-item>
                 <el-form-item label="发布时间：" prop="publishTime">
                   {{ form.publishTime }}
-                </el-form-item>
-                <el-form-item label="数据来源，150:新销服; 老销服:10：" prop="dataSource">
-                  {{ form.dataSource }}
                 </el-form-item>
               </el-form>
             </div>
           </section>
           <section class="common-section" v-if="_id">
             <div class="common-section-header">
-              <h2>子表标题</h2>
+              <h2>批售请款通知明细</h2>
             </div>
             <div class="common-section-body">
-              <div class="common-section-header">
-                <div class="ais-select-group">
-                  <fetch-select
-                    style="width: 300px;"
-                    :remote-method="queryListData"
-                    remote
-                    placeholder="请选择"
-                    clearable
-                    value-key="id"
-                    label-key="name"
-                    @change="handleAddTableData"
-                  />
-                  <el-button type="primary" size="small">添加</el-button>
-                </div>
-              </div>
               <div class="common-section-table">
                 <vxe-table
                   ref="tableRef"
@@ -283,19 +113,16 @@
                   min-height="0"
                   max-height="400px"
                 >
-                  <vxe-column field="name" title="名称" min-width="30%" />
-                  <vxe-column field="age" title="年龄" min-width="30%" />
-                  <vxe-column field="email" title="邮箱" min-width="30%" />
-                  <vxe-column title="操作" width="100" v-if="canDelete">
-                    <template #default="{ rowIndex }">
-                      <el-popconfirm title="确定要删除吗？" @confirm="handleDeleteRow(rowIndex)">
-                        <span slot="reference" type="text" size="small" class="btn-delete">删除</span>
-                      </el-popconfirm>
-                    </template>
-                  </vxe-column>
-                  <template #empty>
-                    <div class="m-vxe-table-empty-text">{{emptyText}}</div>
-                  </template>
+                  <vxe-column field="paymentDetailCode" title="请款明细单号" />
+                  <vxe-column field="paymentNoticeCode" title="请款通知单" />
+                  <vxe-column field="materialsCode" title="物料编码" />
+                  <vxe-column field="orderCategoryLabel" title="订单分类" />
+                  <vxe-column field="entCustomerName" title="企业客户" />
+                  <vxe-column field="entVehicleOrderCode" title="企业客户订单号" />
+                  <vxe-column field="wholesaleOrderCode" title="批售订单号" />
+                  <vxe-column field="wholesalePrice" title="批售价格"/>
+                  <vxe-column field="orderTime" title="订单日期" />
+                  <vxe-column field="createTime" title="创建时间" />
                 </vxe-table>
               </div>
             </div>
