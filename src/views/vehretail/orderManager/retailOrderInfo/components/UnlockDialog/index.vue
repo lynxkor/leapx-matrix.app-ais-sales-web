@@ -182,8 +182,9 @@ export default {
     },
     // 物料选择确认回调
     onMaterialsSelected (material) {
-      this.form.materialsCode = material.materialsCode;
       this.form.materialsDesc = material.materialsDesc;
+      this.form.materialsCode = material.materialsCode;
+      this.form.changeProductSkuPriceId = material.id;
     },
     // VIN 选择确认回调
     onVinSelected (vehicle) {
