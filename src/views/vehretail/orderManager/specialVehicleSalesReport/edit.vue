@@ -414,12 +414,10 @@
                 </el-form-item>
                 <el-form-item label="开票日期：" prop="invoiceDate">
                   <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.invoiceDate"
+                    type="date"
                     :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
+                    v-model="form.invoiceDate"
                   />
                 </el-form-item>
                 <el-form-item label="发票金额：" prop="invoiceAmount">
