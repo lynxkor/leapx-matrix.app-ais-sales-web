@@ -581,7 +581,7 @@ export default {
       const res = await getOrderUnlockConfig(this.row.retailOrderCode);
       // 检查返回结果是否有效
       if (!res || res.allowUnlockStatus !== 1) {
-        this.$message.error('该门店没有消配配车权限');
+        this.$message.error('该门店暂无该车型取消锁车权限');
         return;
       }
       // 检查 accountFlag 和 unlockCount 的关系
