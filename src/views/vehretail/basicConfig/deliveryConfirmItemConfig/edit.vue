@@ -57,6 +57,7 @@
                     clearable
                     filterable
                     remote
+                    reserve-keyword
                     labelKey="itemName"
                     valueKey="id"
                   />
@@ -65,31 +66,26 @@
                   <fetch-select
                     :remote-method="remoteMethods.model"
                     v-model="form.modelId"
+                    :params="form.modelName"
                     v-bind="selectOptions"
                     @change="modelListChange"
                   />
                 </el-form-item>
                 <el-form-item label="年款名称：" prop="yearTypeId">
                   <fetch-select
-                    :options="yearModelList"
+                    :remote-method="remoteMethods.yearType"
                     v-model="form.yearTypeId"
-                    placeholder="请选择"
-                    labelKey="label"
-                    valueKey="value"
-                    clearable
-                    filterable
+                    :params="form.yearTypeName"
+                    v-bind="selectOptions"
                     @change="getYearName"
                   />
                 </el-form-item>
                 <el-form-item label="选装包名称：" prop="optionPackageId">
                   <fetch-select
                     v-model="form.optionPackageId"
-                    clearable
-                    filterable
-                    remote
-                    label-key="name"
-                    value-key="id"
+                    v-bind="selectOptions"
                     :remote-method="remoteMethods.optional"
+                    :params="form.optionPackageName"
                     @change="getOptionalName"
                   />
                 </el-form-item>
@@ -326,7 +322,7 @@ export default {
       remoteMethods: {
         // 初始方法
         model: async (query) => {
-          return await listVehicleModel({ modelNameLike: query });
+          return await listVehicleModel({ modelNameLike: query, status: 1 });
         },
         yearType: async (query) => {
           return await listVehicleYearType({ yearTypeNameLike: query, modelId: this.form.modelId });
@@ -352,7 +348,7 @@ export default {
       this.form.optionPackageName = obj.name;
     },
     getYearName (val, obj) {
-      this.form.yearTypeName = obj.label;
+      this.form.yearTypeName = obj.name;
     },
     modelListChange (val, obj) {
       this.form.modelName = obj.name;
