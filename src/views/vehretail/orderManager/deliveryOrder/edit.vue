@@ -737,7 +737,7 @@ export default {
         { key: 'appointmentChangeCount', label: '预约变更次数' },
         { key: 'appointmentOperationTime', label: '预约操作时间' },
         { key: 'appointmentRemark', label: '预约备注' },
-        { key: 'appointmentTimeoutReasonLabel', label: '预约超时原因' }
+        { key: 'appointmentTimeoutReason', label: '预约超时原因' }
       ],
       // 预约记录列配置
       appointmentRecordColumns: [
