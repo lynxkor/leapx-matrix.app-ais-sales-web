@@ -116,7 +116,9 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="退款银行：" prop="refundBank"
+                <el-form-item
+                  v-show="form.depositRefundType === '30'"
+                  label="退款银行：" prop="refundBank"
                               :rules="form.depositRefundType === '30' ? rules.refundBank: []">
                   <el-input
                     placeholder="请输入"
@@ -125,7 +127,9 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="银行开户名：" prop="refundBankUser"
+                <el-form-item
+                  v-show="form.depositRefundType === '30'"
+                  label="银行开户名：" prop="refundBankUser"
                               :rules="form.depositRefundType === '30' ? rules.refundBankUser: []">
                   <el-input
                     placeholder="请输入"
@@ -135,6 +139,7 @@
                   />
                 </el-form-item>
                 <el-form-item
+                  v-show="form.depositRefundType === '30'"
                   label="退款银行账号："
                               prop="refundBankAccount"
                               :rules="form.depositRefundType === '30' ? rules.refundBankAccount: []">
@@ -925,7 +930,7 @@ export default {
     changeCategoryChange (val, selectedOption) {
       this.form.cateCode = val ? selectedOption.cateCode : '';
       this.form.cateName = val ? selectedOption.cateName : '';
-      this.form.depositRefundType = val ? selectedOption.refundTypeDefault : null;
+      this.form.depositRefundType = val ? selectedOption.refundTypeDefault + '' : null;
       this.form.refundAttachRequired = val ? selectedOption.refundAttachRequired : null;
       this.form.refundTypeSelect = val ? selectedOption.refundTypeSelect : null;
     },
