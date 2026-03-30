@@ -299,7 +299,7 @@
           <generic-detail-display
             id="lock-allocation" class="common-section"
             :title="'锁/配车信息'"
-            :formData="form"
+            :formData="{...form, ...form.materials}"
             :fields="lockAllocationDisplayFields"
           />
           <generic-detail-display
