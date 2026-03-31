@@ -465,7 +465,7 @@ export default {
           { props: 'interiorName', label: '内饰名称', visible: true, width: 140 },
           { props: 'wheelHubName', label: '轮毂名称', visible: true, width: 140 },
           { props: 'optionPackageName', label: '选装包名称', visible: true, width: 300 },
-          { props: 'lockCarTypeLabel', label: '锁车匹配类型', visible: true, width: 180 },
+          { props: 'lockTypeLabel', label: '锁车匹配类型', visible: true, width: 180 },
           { props: 'retailOrderCode', label: '订单编码', visible: true, width: 200 },
           { props: 'outTradeNo', label: '外部订单号', visible: true, width: 200 },
           { props: 'orderTime', label: '商城下单时间', visible: true, width: 200 },
