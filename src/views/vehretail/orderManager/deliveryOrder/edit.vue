@@ -453,7 +453,7 @@ import {
   viewDeliveryConfirm, // 交车确认单查看
   deliveryConfirmResign, // 交车确认单重签
   deliveryConfirmPush, // 交车确认单推送
-  cancelWriteOff, // 核销撤回
+  revertCancelOrderRights, // 核销撤回
   deliveryConfirm, // 交车确认单生成
   checkCarBuyerPhoneRegistered, // 校验购车人手机号是否注册零跑APP
 } from '@/api/vehretail/orderManager/deliveryOrder/index';
@@ -1012,7 +1012,7 @@ export default {
     // 核销撤回
     async handleVerifyWithdraw () {
       await this.withLoading('verifyWithdraw', async () => {
-        await cancelWriteOff({
+        await revertCancelOrderRights({
           deliveryOrderId: this.form.deliveryOrderId,
           retailOrderId: this.form.retailOrderId,
         });
