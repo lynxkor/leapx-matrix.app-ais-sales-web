@@ -2,15 +2,16 @@
   <el-dialog :title="title" width="1200px" :visible.sync="dialogVisible"  :before-close="handleClose">
     <div class="page-common">
        <el-form
-        ref="form"
+        ref="materialsForm"
         :model="materialsform"
         label-width="150px"
         :inline="true"
         size="small"
         label-position="right"
         class="ais-search-form"
+        :rules="rules"
       >
-        <el-form-item label="整车物料编码：" :rules="rules" ref="materialsCode">
+        <el-form-item label="整车物料编码："  prop="materialsCode">
           <fetch-select
             filterable
             clearable
@@ -36,7 +37,7 @@
         <el-form-item label="企业客户补货订单：">
           <el-input v-model="materialsform.entReplenishOrderId" clearable placeholder="请输入" disabled/>
         </el-form-item>
-         <el-form-item label="销售价格：">
+         <el-form-item label="销售价格：" prop="salesPrice">
             <el-input-number
                   placeholder="请输入"
                   v-model="materialsform.salesPrice"
@@ -68,7 +69,7 @@
                     disabled
                 />
         </el-form-item> -->
-        <el-form-item label="数量：">
+        <el-form-item label="数量：" prop="qty">
           <el-input-number
                   placeholder="请输入"
                   v-model="materialsform.qty"
@@ -112,6 +113,15 @@ export default {
     FetchSelect,
   },
   data () {
+    const validateGreaterThanZero = (rule, value, callback) => {
+      if (value === '' || value === null || value === undefined) {
+        callback(new Error('请输入有效值'));
+      } else if (Number(value) < 0) {
+        callback(new Error('值必须大于 0'));
+      } else {
+        callback();
+      }
+    };
     return {
       title: '企业客户补货订单明细',
       moduleKey: 'AISVW-entVehicleReplenishOrder',
@@ -133,10 +143,12 @@ export default {
           { required: true, message: '请输入企业客户补货定单', trigger: 'change' }
         ],
         salesPrice: [
-          { required: true, message: '请输入销售价格', trigger: 'change' }
+          { required: true, message: '请输入销售价格', trigger: 'change' },
+          { validator: validateGreaterThanZero, trigger: 'blur' }
         ],
         qty: [
-          { required: true, message: '请输入数量', trigger: 'change' }
+          { required: true, message: '请输入数量', trigger: 'change' },
+          { validator: validateGreaterThanZero, trigger: 'blur' }
         ],
       },
     };
@@ -231,12 +243,11 @@ export default {
       this.materialsform.qty = '';
     },
     handleSubmit () {
-      this.$emit('addConfirm', this.materialsform);
-      // this.$refs.entOrderDetail.validate((valid) => {
-      //   if (valid) {
-      //     this.submitLoading = true;
-      //   }
-      // });
+      this.$refs.materialsForm.validate((valid) => {
+        if (valid) {
+          this.$emit('addConfirm', this.materialsform);
+        }
+      });
     },
   }
 };
