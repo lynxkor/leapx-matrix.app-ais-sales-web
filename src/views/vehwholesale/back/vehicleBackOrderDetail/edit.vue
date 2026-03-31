@@ -94,10 +94,10 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="车系名称：" prop="modelName">
+                <el-form-item label="车系名称：" prop="seriesId">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.modelName"
+                    v-model="form.seriesId"
                     clearable
                     disabled
                   />
@@ -260,8 +260,8 @@
                 <el-form-item label="批售订单编号：" prop="wholesaleOrderCode">
                   {{ form.wholesaleOrderCode }}
                 </el-form-item>
-                <el-form-item label="车系名称：" prop="modelName">
-                  {{ form.modelName }}
+                <el-form-item label="车系名称：" prop="seriesName">
+                  {{ form.seriesName }}
                 </el-form-item>
                 <el-form-item label="企业客户整车订单号：" prop="entOrderCode">
                   {{ form.entOrderCode }}

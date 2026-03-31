@@ -432,6 +432,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    @change="clearCache"
                   />
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationId">
@@ -445,7 +446,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
-                    :disabled="form.settleFundType !== 2010"
+                    :disabled="form.settleFundType !== '2010' && form.settleFundType !== 2010"
                   />
                 </el-form-item>
                  <el-form-item label="合格证是否质押：" prop="certificatePledged">
@@ -991,6 +992,11 @@ export default {
     this.fetchSettleFundTypeOptions();
   },
   methods: {
+    clearCache (val, row) {
+      if (val === 1010 || val === 1050 || val === '1010' || val === '1050') {
+        this.form.financialOrganizationId = '';
+      }
+    },
     async fetchSettleFundTypeOptions () {
       const response = await getEnum('vw_fundtype');
       this.settleFundTypeOptions = response.filter(item => {
