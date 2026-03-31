@@ -99,6 +99,17 @@
               filterable
             />
       </el-form-item>
+      <el-form-item label="结算状态">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="vw_ent_vehicle_order_settle_status"
+          v-model="form.settleStatuses"
+          placeholder="请选择"
+          clearable
+          filterable
+          multiple
+        />
+      </el-form-item>
        <el-form-item label="验收方式">
         <fetch-select
           :request="fetchOptions"

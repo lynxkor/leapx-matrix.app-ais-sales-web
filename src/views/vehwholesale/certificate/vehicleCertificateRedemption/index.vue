@@ -239,7 +239,7 @@ export default {
           {
             props: 'redemptionCode',
             label: '合格证赎回编号',
-            visible: false,
+            visible: true,
             width: 200,
             fixed: 'left',
             buttons: [{

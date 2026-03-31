@@ -370,6 +370,7 @@ export default {
       pageSize: 20,
       total: 0,
       options: {
+        BooleanEnum: []
         // 对应表格里选型枚举
         // 如 type: [{label: 'xxx', value: 'xxx'}]
       },
@@ -534,8 +535,16 @@ export default {
     };
   },
   mounted () {
+    this.fetchBooleanEnum();
   },
   methods: {
+    async fetchBooleanEnum () {
+      const response = await getEnum('BooleanEnum');
+      this.options.BooleanEnum = response.map(item => ({
+        label: item.message,
+        value: item.code
+      }));
+    },
     handleOrderTypeChange (val) {
       if (val === '10') {
         this.form.entCustomerName = '';
@@ -674,9 +683,11 @@ export default {
     },
     // 行保存
     saveRowEdit (row, defer) {
-      console.log('row:', row);
-      // return;
-      detailAddOrUpdate(row).then(id => {
+      const params = {
+        vehicleBackOrderId: this._id,
+        items: [row]
+      };
+      detailAddOrUpdate(params).then(id => {
         defer.resolve(id);
         this.$message.success('更新成功');
         this.getDetailData();

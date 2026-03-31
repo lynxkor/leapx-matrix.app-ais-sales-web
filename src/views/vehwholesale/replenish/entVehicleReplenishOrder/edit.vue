@@ -120,6 +120,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    @change="clearCache"
                   />
                 </el-form-item>
                  <el-form-item label="金融机构：" prop="financialOrganizationId">
@@ -133,7 +134,7 @@
                       placeholder="请选择"
                       clearable
                       filterable
-                      :disabled="form.settleFundType != 2010"
+                      :disabled="form.settleFundType != 2010 && form.settleFundType != '2010'"
                     />
                 </el-form-item>
                 <el-form-item label="是否赊销：" prop="creditSaleFlag">
@@ -736,6 +737,11 @@ export default {
     // this.getCompanyList();
   },
   methods: {
+    clearCache (val, row) {
+      if (val === 1010 || val === 1050 || val === '1010' || val === '1050') {
+        this.form.financialOrganizationId = '';
+      }
+    },
     handleChangeArea (val, row) {
       // 匹配查找对应的省市区名称和编号
       const province = this.areaOptions.find(item => item.code === val[0]);
