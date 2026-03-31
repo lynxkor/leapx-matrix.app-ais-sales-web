@@ -353,10 +353,17 @@
               >删除</el-button>
             </template>
           </component-table>
+          <component-table
+            ref="deliveryAppointmentRecordTable"
+            :table-config="{ title: '预约记录' }"
+            :columns="deliveryAppointmentRecordColumns"
+            section-key="deliveryAppointmentRecordRecords"
+            :tableDataExternal="form.appointmentRecordList"
+          />
           <!-- 预约记录 -->
           <section class="common-section" section-key="appointmentRecords">
             <div class="common-section-header" data-section="orderBelonging">
-              <h2>预约记录</h2>
+              <h2>附件清单</h2>
             </div>
             <div class="common-section-body">
               <AisAttachmentList
@@ -446,7 +453,7 @@ import {
   viewDeliveryConfirm, // 交车确认单查看
   deliveryConfirmResign, // 交车确认单重签
   deliveryConfirmPush, // 交车确认单推送
-  cancelWriteOff, // 核销撤回
+  revertCancelOrderRights, // 核销撤回
   deliveryConfirm, // 交车确认单生成
   checkCarBuyerPhoneRegistered, // 校验购车人手机号是否注册零跑APP
 } from '@/api/vehretail/orderManager/deliveryOrder/index';
@@ -730,7 +737,7 @@ export default {
         { key: 'appointmentChangeCount', label: '预约变更次数' },
         { key: 'appointmentOperationTime', label: '预约操作时间' },
         { key: 'appointmentRemark', label: '预约备注' },
-        { key: 'appointmentTimeoutReasonLabel', label: '预约超时原因' }
+        { key: 'appointmentTimeoutReason', label: '预约超时原因' }
       ],
       // 预约记录列配置
       appointmentRecordColumns: [
@@ -756,6 +763,15 @@ export default {
         { field: 'remark', title: '备注', width: 200 },
         { field: 'createTime', title: '创建时间', width: 180 },
         { field: 'operation', title: '操作', width: 80, fixed: 'right', slots: { default: 'operation_default' } }
+      ],
+      // 预约记录
+      deliveryAppointmentRecordColumns: [
+        { field: 'appointmentOperationTime', title: '预约操作时间', width: 180 },
+        { field: 'creatorName', title: '预约操作人', width: 180 },
+        { field: 'appointmentTimeAfter', title: '预约时间', width: 180 },
+        { field: 'appointmentTimeoutReason', title: '超时原因', width: 180 },
+        { field: 'changeTimeReason', title: '更改时间原因', width: 180 },
+        { field: 'appointmentRemark', title: '预约备注' }
       ]
     };
   },
@@ -991,12 +1007,12 @@ export default {
         this.$message.warning('请先保存订单信息');
         return;
       }
-      this.$refs.verifyOrderRightsDialog.open();
+      this.$refs.verifyOrderRightsDialog.open(this.form.mallOrderCode);
     },
     // 核销撤回
     async handleVerifyWithdraw () {
       await this.withLoading('verifyWithdraw', async () => {
-        await cancelWriteOff({
+        await revertCancelOrderRights({
           deliveryOrderId: this.form.deliveryOrderId,
           retailOrderId: this.form.retailOrderId,
         });

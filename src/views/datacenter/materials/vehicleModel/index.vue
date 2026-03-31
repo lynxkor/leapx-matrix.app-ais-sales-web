@@ -153,6 +153,7 @@ const defaultForm = {
   modelNameLike: '',
   modelNameList: [],
   modelLineIdList: [],
+  statusIncludeList: ['1'],
   seriesIdList: [],
   idSet: [],
   modelName: '',

@@ -15,7 +15,7 @@ export const retailOrderDisplayFields = [
   { key: 'deliveryUserName', label: '订单交付顾问' },
   { key: 'preSaleOrderLabel', label: '是否预售订单' },
   { key: 'blindOrderLabel', label: '是否盲订订单' },
-  { key: 'remark', label: '订单备注' },
+  { key: 'orderRemark', label: '订单备注' },
   { key: 'specialRemark', label: '特殊备注' },
   { key: 'contractTerminationFileUrl', label: '合同解除协议文件地址' },
   { key: 'deliveryCycleMaxWeek', label: '交付周期上限(周)' },
@@ -68,7 +68,7 @@ export const lockAllocationDisplayFields = [
   { key: 'lockTypeLabel', label: '锁车匹配类型' },
   { key: 'lockStatusLabel', label: '是否锁单' },
   { key: 'lockTime', label: '锁单时间' },
-  { key: 'orderMaterialCode', label: '订单物料码' },
+  { key: 'materialsCode', label: '订单物料码' },
   { key: 'allocationMaterialCode', label: '配车物料编码' },
   { key: 'matchVin', label: '配车VIN码' },
   { key: 'deliveryVin', label: '交车VIN码' },
@@ -100,12 +100,12 @@ export const refundDisplayFields = [
 
 // 附属信息字段配置
 export const financeDisplayFields = [
-  { key: 'financialPlan', label: '金融方案' },
-  { key: 'mortgageProgress', label: '金融按揭进度' },
-  { key: 'financialOrderCode', label: '金融订单号' },
+  { key: 'financialSchemeLabel', label: '金融方案' },
+  { key: 'financialMortgageProgressLabel', label: '金融按揭进度' },
+  { key: 'code', label: '金融订单号' },
   { key: 'financialOrderStatusLabel', label: '金融订单状态' },
-  { key: 'insuranceProgress', label: '保险办理进度' },
-  { key: 'insurancePlan', label: '保险方案' }
+  { key: 'insuranceProgressLabel', label: '保险办理进度' },
+  { key: 'insuranceSchemeLabel', label: '保险方案' }
 ];
 
 // 期限信息字段配置

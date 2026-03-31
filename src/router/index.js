@@ -2958,6 +2958,38 @@ const routes = [
         name: '整车库存存量统计',
         keepAlive: true
       }
+    }, {
+      path: '/vehwholesale/fund/fundAccountMonthBalance',
+      name: 'FundAccountMonthBalance',
+      component: () => import('@/views/vehwholesale/fund/fundAccountMonthBalance/index.vue'),
+      meta: {
+        name: '整车批售-整车资金-资金账户月度余额管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/fund/fundAccountMonthBalance/edit',
+      name: 'FundAccountMonthBalanceEdit',
+      component: () => import('@/views/vehwholesale/fund/fundAccountMonthBalance/edit.vue'),
+      meta: {
+        name: '整车批售-整车资金-资金账户月度余额管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehwholesale/fund/fundVehwhite',
+      name: 'FundVehwhite',
+      component: () => import('@/views/vehwholesale/fund/fundVehwhite/index.vue'),
+      meta: {
+        name: '整车批售-整车资金-车辆白名单管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehwholesale/fund/fundVehwhite/edit',
+      name: 'FundVehwhiteEdit',
+      component: () => import('@/views/vehwholesale/fund/fundVehwhite/edit.vue'),
+      meta: {
+        name: '整车批售-整车资金-车辆白名单管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
@@ -3002,7 +3034,7 @@ export function getRouter () {
       }
       // 开发阶段先跳过权限验证
       if (localStorage.getItem('sourceUrl').includes(to.path) || to.meta.noResourceUrl) {
-//      if (true) {
+      //      if (true) {
         next();
       } else {
         window.alert('你没有访问该页面的权限');

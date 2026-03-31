@@ -274,7 +274,7 @@ export default {
                 this.$confirm('确定要对该数据执行推送金融机构操作吗？', '提示', {
                   confirmButtonText: '确定',
                   cancelButtonText: '取消',
-                  type: 'error'
+                  type: 'warning'
                 }).then(() => {
                   pushfinDealerRecommendationToBank({
                     idSet: [row.id],
@@ -316,7 +316,6 @@ export default {
         return;
       }
       const invalidItems = this.selectionList.filter(item => {
-        console.log(item.status === 1, item.syncStatus === 10, item.syncStatus === 40, item.syncStatus);
         const isAvailable = item.status === 1;
         const isSyncFailedOrNotSynced = item.syncStatus === 10 || item.syncStatus === 40;
         return !isAvailable || !isSyncFailedOrNotSynced;

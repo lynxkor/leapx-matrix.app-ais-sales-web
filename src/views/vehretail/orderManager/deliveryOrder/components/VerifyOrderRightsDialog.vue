@@ -31,7 +31,11 @@
               <span>{{ {'1': '待生效', '2': '可使用', '3': '已锁定', '4': '已使用', '5': '已失效', '6': '已回收'}[row.rightsStatus] || row.rightsStatus }}</span>
             </template>
           </vxe-column>
-          <vxe-column field="rightsDesc" title="权益说明" min-width="200" />
+          <vxe-column field="rightsDesc" title="权益说明" min-width="200">
+            <template v-slot="{ row }">
+              <span v-html="row.rightsDesc" />
+            </template>
+          </vxe-column>
           <!-- <vxe-column field="applicableVehicle" title="适用车型" min-width="150" /> -->
         </vxe-table>
       </div>
@@ -131,6 +135,8 @@ export default {
       loading: false,
       submitLoading: false,
       tableData: [],
+      // 内部缓存 shopCode，用于接收 open 方法传入的参数
+      cachedShopCode: '',
       resultData: {
         consumeSuccessCount: 0,
         lockErrCount: 0,
@@ -145,7 +151,14 @@ export default {
   computed: {},
   methods: {
     // 打开对话框
-    open () {
+    open (shopCode) {
+      // 优先使用传入的 shopCode，否则使用 prop
+      this.cachedShopCode = shopCode || this.shopCode;
+      // 检查 shopCode 是否存在
+      if (!this.cachedShopCode) {
+        this.$message.warning('订单数据加载中，请稍后再试');
+        return;
+      }
       this.visible = true;
       this.loadRightsList();
     },
@@ -163,10 +176,10 @@ export default {
     async loadRightsList () {
       this.loading = true;
       try {
-        // 模拟接口调用
+        // 使用 cachedShopCode
         const response = await openGrantQuery({
           userId: this.orderUserId,
-          shopCode: this.shopCode,
+          shopCode: this.cachedShopCode,
         });
         console.log('loadRightsList', response);
         this.tableData = response;

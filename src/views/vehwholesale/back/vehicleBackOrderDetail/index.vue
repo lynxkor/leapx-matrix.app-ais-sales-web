@@ -24,20 +24,32 @@
             label-key="orgName"
           />
         </el-form-item>
-        <el-form-item label="销售门店名称"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.saleDealerName"
+        <el-form-item label="门店名称"  v-show="this.visibleCount === 3 || show">
+          <fetch-select
+          filterable
           clearable
+          remote
+          collapseTags
+          v-model="form.saleDealerCodes"
+          :remote-method="getDealerListByName"
+          value-key="storeCode"
+          label-key="storeName"
+          multiple
         />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="母公司名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.dealerCompanyName"
-            clearable
-          />
+          <fetch-select
+                  :remote-method="getParentCompany"
+                  remote
+                  v-model="form.dealerCompanyName"
+                  placeholder="请选择"
+                  labelKey="companyName"
+                  valueKey="companyName"
+                  clearable
+                  filterable
+                  multiple
+                  />
         </el-form-item>
          <el-form-item label="车辆处理状态">
         <fetch-select
@@ -52,7 +64,7 @@
       </el-form-item>
         <el-form-item label="车系名称">
          <fetch-select
-            v-model="form.seriesIdList"
+            v-model="form.seriesIds"
             :remote-method="vehicleSeriesSearch"
             placeholder="请选择"
             labelKey="name"
@@ -128,7 +140,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/back/vehicleBackOrderDetail/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getRigion, vehicleSeriesList } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getRigion, vehicleSeriesList, listOrgStoreInfo, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -212,7 +224,7 @@ export default {
           { props: 'statusLabel', label: '车辆处理状态', visible: true, width: 200 },
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
           { props: 'regionName', label: '大区', visible: true, width: 200 },
-          // { props: 'modelName1', label: '车系名称', visible: true, width: 200 },
+          { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
           { props: 'wholesaleOrderCode', label: '整车批售订单编号', visible: true, width: 200 },
           { props: 'entCustomerCode', label: '企业客户整车订单编号', visible: true, width: 200 },
           { props: 'actualVehicleReturnLabel', label: '是否实车返厂', visible: true, width: 200 },
@@ -238,6 +250,9 @@ export default {
             fixed: 'right',
             buttons: [{
               name: '编辑',
+              // show: (row) => {
+              //   return row.auditStatus === 0 || row.auditStatus === 2;
+              // },
               click: (rowIndex, row) => {
                 this.$router.push({
                   path: '/vehwholesale/back/vehicleBackOrderDetail/edit',
@@ -253,6 +268,9 @@ export default {
               popconfirmConfirmButtonType: 'danger',
               popconfirmConfirmButtonText: '删除',
               popconfirmTitle: '此操作将永久删除, 是否继续?',
+              // show: (row) => {
+              //   return row.auditStatus === 0 || row.auditStatus === 2;
+              // },
               click: (rowIndex, row) => {
                 deleteItem([row.id]).then(() => {
                   this.$message({
@@ -286,6 +304,19 @@ export default {
     this.getData();
   },
   methods: {
+    async getParentCompany (query) {
+      try {
+        const res = await getParentCompany({ parentCompanyName: query });
+        console.log(res);
+        this.parentCompanyNames = res;
+        return res;
+      } catch (error) {
+        console.error('Error fetching series list:', error);
+      }
+    },
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
+    },
     vehicleSeriesSearch (query) {
       return vehicleSeriesList({ seriesNameLike: query, size: 100 });
     },

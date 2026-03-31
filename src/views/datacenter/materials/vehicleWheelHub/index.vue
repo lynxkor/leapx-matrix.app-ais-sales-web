@@ -90,6 +90,7 @@ const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   wheelHubName: '',
   wheelHubNameList: [],
+  statusIncludeList: ['1'],
   wheelHubNameLike: '',
   status: '',
 };

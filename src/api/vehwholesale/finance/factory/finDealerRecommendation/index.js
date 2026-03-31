@@ -42,9 +42,7 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
-export function createFinCustomerPurchaseRecord (data) {
-  return api.jsonPost(prefix + 'createFinCustomerPurchaseRecord', data);
-}
+
 /**
  * 经销商推荐函
  */

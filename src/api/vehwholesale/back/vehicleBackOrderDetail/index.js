@@ -58,3 +58,11 @@ export function confirmOutbound (data) {
 export function confirmVdcInbound (data) {
   return api.jsonPost(prefix + 'confirmVdcInbound', data);
 }
+
+/**
+ * 查询车辆列表
+ * @param {Object} data
+ */
+export function listVinForBackOrders (data) {
+  return api.jsonPost(prefix + 'listVinForBackOrders', data);
+}

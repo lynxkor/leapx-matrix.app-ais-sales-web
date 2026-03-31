@@ -19,11 +19,11 @@
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button v-permission="moduleKey+'-querySapAccount'" size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
-          <el-button v-permission="moduleKey+'-vinAllocateVehicle'" size="small" @click="handlevinAllocateVehicle" >配车</el-button>
-          <el-button v-permission="moduleKey+'-batchCancelAllocateSubmit'" size="small" @click="handlebatchCancelAllocateSubmit" >取消配车</el-button>
-          <el-button v-permission="moduleKey+'-batchSettleSubmit'" size="small" @click="handlebatchSettleSubmit" >提交结算</el-button>
-          <el-button v-permission="moduleKey+'-batchCancelSettleSubmit'" size="small" @click="handlebatchCancelSettleSubmit" >取消结算</el-button>
+          <el-button  size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
+          <el-button  size="small" @click="handlevinAllocateVehicle" >配车</el-button>
+          <el-button  size="small" @click="handlebatchCancelAllocateSubmit" >取消配车</el-button>
+          <el-button  size="small" @click="handlebatchSettleSubmit" >提交结算</el-button>
+          <el-button  size="small" @click="handlebatchCancelSettleSubmit" >取消结算</el-button>
           <!-- <el-button size="small">按钮1</el-button>
           <el-button size="small">按钮2</el-button> -->
         </template>
@@ -92,12 +92,14 @@
                   />
                 </el-form-item>
                 <el-form-item label="车辆属性：" prop="vehicleAttribute">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.vehicleAttribute"
-                    clearable
-                    disabled
-                  />
+                   <fetch-select
+                        :request="fetchOptions"
+                        enumCode="vw_vehicle_attribute"
+                        v-model="form.vehicleAttribute"
+                        placeholder="请选择"
+                        clearable
+                        filterable
+                      />
                 </el-form-item>
                 <el-form-item label="税务发票号：" prop="taxInvoiceCode">
                   <el-input
@@ -145,6 +147,16 @@
                     disabled
                   />
                 </el-form-item>
+                <el-form-item label="是否急单：" prop="emergencyOrder">
+                   <fetch-select
+                      :request="fetchOptions"
+                      enumCode="BooleanEnum"
+                      v-model="form.emergencyOrder"
+                      placeholder="请选择"
+                      clearable
+                      filterable
+                    />
+                </el-form-item>
                  <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
                   <el-date-picker
                     type="datetime"
@@ -159,7 +171,7 @@
                     placeholder="请输入"
                     v-model="form.emergencyOrderRemark"
                     clearable
-                    disabled
+                    maxlength="150"
                   />
                 </el-form-item>
                  <el-form-item label="下单物料码：" prop="materialsCode">
@@ -280,6 +292,9 @@
                 </el-form-item>
                   <el-form-item label="订单状态：" prop="statusLabel">
                   {{ form.statusLabel }}
+                </el-form-item>
+                <el-form-item label="是否急单：" prop="emergencyOrderLabel">
+                  {{ form.emergencyOrderLabel }}
                 </el-form-item>
                 <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
                   {{ form.emergencyOrderTime }}
@@ -417,13 +432,13 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    @change="clearCache"
                   />
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationId">
                   <fetch-select
                     :remote-method="repairItemSearch"
                     remote
-                    multiple
                     reserve-keyword
                     labelKey="organizationName"
                     valueKey="id"
@@ -431,7 +446,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
-                    :disabled="form.settleFundType !== '2010'"
+                    :disabled="form.settleFundType !== '2010' && form.settleFundType !== 2010"
                   />
                 </el-form-item>
                  <el-form-item label="合格证是否质押：" prop="certificatePledged">
@@ -678,8 +693,8 @@
                 <el-form-item label="同步信息：" prop="syncSapMsg">
                   {{ form.syncSapMsg }}
                 </el-form-item>
-                <el-form-item label="退车标识：" prop="needAsyncSapLabel">
-                  {{ form.needAsyncSapLabel }}
+                <el-form-item label="退车标识：" prop="vehicleReturnFlagLabel">
+                  {{ form.vehicleReturnFlagLabel }}
                 </el-form-item>
                   <el-form-item label="特殊车提报：" prop="specialRemark">
                   {{ form.specialRemark }}
@@ -808,9 +823,8 @@
       @confirm="vinConfirm"
       >
     </vinAllocateVehicle>
-
      <component-table
-        :tableData="accountData"
+        :tableDataExternal="accountData"
         :columns="detailsColumns"
         :visible.sync="showComponentTabelDialog"
       />
@@ -978,6 +992,11 @@ export default {
     this.fetchSettleFundTypeOptions();
   },
   methods: {
+    clearCache (val, row) {
+      if (val === 1010 || val === 1050 || val === '1010' || val === '1050') {
+        this.form.financialOrganizationId = '';
+      }
+    },
     async fetchSettleFundTypeOptions () {
       const response = await getEnum('vw_fundtype');
       this.settleFundTypeOptions = response.filter(item => {
@@ -1031,7 +1050,7 @@ export default {
           type: 'success',
           message: '提交成功'
         });
-        this.detailRequest();
+        this.$refs.containerRef.loadDetail();
         this.showvinAllocateVehicleDialog = false;
       });
     },
@@ -1040,7 +1059,7 @@ export default {
       this.$confirm('此操作将取消配车, 是否继续?', '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        showClose: false
+        type: 'warning'
       }).then(() => {
         batchCancelAllocateSubmit({
           idSet: ids
@@ -1049,7 +1068,7 @@ export default {
             type: 'success',
             message: '提交成功!'
           });
-          this.detailRequest();
+          this.$refs.containerRef.loadDetail();
         });
       }).catch(() => {});
     },
@@ -1057,13 +1076,13 @@ export default {
       this.$confirm('此操作将取消结算, 是否继续?', '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        showClose: false
+        type: 'warning'
       }).then(() => {
         batchCancelSettleSubmit({
           idSet: [this._id],
         }).then(() => {
           this.$message.success('提交成功');
-          this.detailRequest();
+          this.$refs.containerRef.loadDetail();
         });
       }).catch(() => {});
     },
@@ -1071,13 +1090,13 @@ export default {
       this.$confirm('此操作提交结算, 是否继续?', '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        showClose: false
+        type: 'warning'
       }).then(() => {
         batchSettleSubmit({
           idSet: [this._id],
         }).then(() => {
           this.$message.success('提交成功');
-          this.detailRequest();
+          this.$refs.containerRef.loadDetail();
         });
       }).catch(() => {});
     },

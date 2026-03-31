@@ -73,13 +73,12 @@
       </el-form-item>
         <el-form-item label="融资数据来源">
           <fetch-select
-           :request="fetchOptions"
-            enumCode="vw_financing_data_source"
+            :options="financingDataSourceOptions"
             v-model="form.financingDataSources"
             placeholder="请选择"
             clearable
-            multiple
             filterable
+            multiple
           />
         </el-form-item>
       <el-form-item label="状态">
@@ -480,7 +479,6 @@ export default {
       }
       // 校验选中数据：只有可用 (status=1) 且同步失败或未同步的数据才能同步
       const invalidItems = this.selectionList.filter(item => {
-        console.log(item.status === 1, item.syncStatus === 10, item.syncStatus === 40, item.syncStatus);
         const isAvailable = item.status === 1;
         const isSyncFailedOrNotSynced = item.syncStatus === 10 || item.syncStatus === 40;
         return !isAvailable || !isSyncFailedOrNotSynced;

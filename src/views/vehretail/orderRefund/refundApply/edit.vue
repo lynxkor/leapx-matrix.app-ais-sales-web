@@ -499,7 +499,7 @@
                   {{ form.optionPackageName }}
                 </el-form-item>
                 <el-form-item label="特殊备注：" prop="remark">
-                  {{ form.remark }}
+                  {{ form.specialRemark }}
                 </el-form-item>
               </el-form>
             </div>

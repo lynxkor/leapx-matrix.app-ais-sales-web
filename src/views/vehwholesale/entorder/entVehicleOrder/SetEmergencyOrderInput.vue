@@ -5,7 +5,8 @@
         v-model="emergencyOrderRemark"
         type="textarea"
         :rows="3"
-        placeholder="输入内容"
+        placeholder="输入内容,长度不超过150个字符"
+        maxlength="150"
       />
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel()">取消</el-button>

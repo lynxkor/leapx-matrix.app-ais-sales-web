@@ -25,7 +25,7 @@
       <el-input v-model="form.reasonExplain" disabled class="unification-input" />
     </el-form-item>
     <el-form-item label="更换后配置：" prop="materialsCode" v-if="shouldShowMaterialField">
-      <el-input v-model="form.materialsCode" class="unification-input" readonly />
+      <el-input v-model="form.materialsCode" disabled class="unification-input" readonly />
       <el-button size="small" type="primary" @click="showMaterialsDialog()">选择配置</el-button>
     </el-form-item>
     <el-form-item label="处理方式：" prop="orderHandleType" v-if="shouldShowHandleTypeField">
@@ -65,6 +65,7 @@
     <MaterialsDialog
       ref="materialsDialog"
       @confirm="onMaterialsSelected"
+      :row="row"
       :use-external-confirm="true"
     />
     <!-- VIN 选择对话框 -->
@@ -107,6 +108,10 @@ export default {
     },
     row: {
       type: Object,
+      default: null
+    },
+    accountFlag: {
+      type: Boolean,
       default: null
     }
   },
@@ -164,11 +169,18 @@ export default {
   },
   methods: {
     showVinDialog () {
-      this.$refs.vinDialog.show(this.vinForm);
+      this.$refs.vinDialog.show(this.vinForm, this.row);
     },
     handleUnlockReasonCodeChange (val, row) {
       this.form.unlockReason = row.unlockReason;
       this.form.reasonExplain = row.reasonExplain;
+      // 切换申请原因时，清空其他可能变化的字段
+      this.form.materialsCode = '';
+      this.form.materialsDesc = '';
+      this.form.orderHandleType = null;
+      this.form.bindVin = '';
+      this.form.remark = '';
+      this.form.orderUnlockFileReqList = [];
     },
     getList (params) {
       getList({ ...params, pageNum: 1 }).then(res => {
@@ -178,12 +190,18 @@ export default {
     },
     // 显示物料选择对话框
     showMaterialsDialog () {
+      // 校验改配次数：如果 accountFlag 为 true 且改配次数>=1，则不允许更换配置
+      if (this.accountFlag && this.row.changeConfigCount >= 1) {
+        this.$message.error('该订单改配次数已达上限');
+        return;
+      }
       this.$refs.materialsDialog.show();
     },
     // 物料选择确认回调
     onMaterialsSelected (material) {
-      this.form.materialsCode = material.materialsCode;
       this.form.materialsDesc = material.materialsDesc;
+      this.form.materialsCode = material.materialsCode;
+      this.form.changeProductSkuPriceId = material.id;
     },
     // VIN 选择确认回调
     onVinSelected (vehicle) {
@@ -216,7 +234,8 @@ export default {
             orderHandleType: this.form.orderHandleType,
             bindVin: this.form.bindVin,
             remark: this.form.remark,
-            orderUnlockFileReqList: this.form.orderUnlockFileReqList
+            orderUnlockFileReqList: this.form.orderUnlockFileReqList,
+            changeProductSkuPriceId: this.form.changeProductSkuPriceId,
           };
           console.log('params:', params);
           perUnlock(params).then(res => {

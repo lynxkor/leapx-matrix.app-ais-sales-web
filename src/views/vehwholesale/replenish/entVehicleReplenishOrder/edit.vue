@@ -20,18 +20,11 @@
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button  :type="form.submitAuditButton ? 'primary' : ''" size="small" @click="handleAddDetail" >添加补货明细</el-button>
-          <el-button  :type="form.submitAuditButton ? 'primary' : ''" @click="handleCheckSubmit" >提交审批</el-button>
-          <el-button  :type="form.auditButton ? 'primary' : ''" @click="handleCheckStatus" >审核</el-button>
-          <el-button  :type="form.cancelButton ? 'primary' : ''" size="small" @click="handleCancel" >作废</el-button>
+          <el-button  :disabled="!form.buttonsControls.editButton" size="small" @click="handleAddDetail" >添加补货明细</el-button>
+          <el-button  :disabled="!form.buttonsControls.submitAuditButton" @click="handleCheckSubmit" >提交审批</el-button>
+          <el-button  :disabled="!form.buttonsControls.auditButton"  size="small" @click="handleCheckStatus" >审核</el-button>
+          <el-button  :disabled="!form.buttonsControls.cancelButton"  size="small" @click="handleCancel" >作废</el-button>
           <el-button  v-if="form.auditStatus === 0" size="small" :type="form.deleteButton ? 'primary' : ''" @click="handleDelete" >删除</el-button>
-
-          <!-- <el-button v-permission="moduleKey+'-addDetail'"  :type="form.submitAuditButton ? 'primary' : ''" size="small" @click="handleAddDetail" >添加补货明细</el-button>
-          <el-button v-permission="moduleKey+'-batchSubmitAudit'" :type="form.submitAuditButton ? 'primary' : ''" @click="handleCheckSubmit" >提交审批</el-button>
-          <el-button v-permission="moduleKey+'-batchAudit'" :type="form.auditButton ? 'primary' : ''" @click="handleCheckStatus" >审核</el-button>
-          <el-button v-permission="moduleKey+'-batchCancel'" :type="form.cancelButton ? 'primary' : ''" size="small" @click="handleCancel" >作废</el-button>
-          <el-button  v-if="canDelete" size="small" :type="form.deleteButton ? 'primary' : ''" @click="handleDelete" >删除</el-button>
-           -->
         </template>
         <el-main>
           <section class="common-section">
@@ -127,6 +120,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    @change="clearCache"
                   />
                 </el-form-item>
                  <el-form-item label="金融机构：" prop="financialOrganizationId">
@@ -140,6 +134,7 @@
                       placeholder="请选择"
                       clearable
                       filterable
+                      :disabled="form.settleFundType != 2010 && form.settleFundType != '2010'"
                     />
                 </el-form-item>
                 <el-form-item label="是否赊销：" prop="creditSaleFlag">
@@ -447,8 +442,6 @@
     <audit-dialog
       ref="auditRef"
       @audit="handleBatchAudit"
-      :auditDataList="[_id]"
-      :field="'code'"
       :maxlength='150'
     />
   </div>
@@ -744,7 +737,34 @@ export default {
     // this.getCompanyList();
   },
   methods: {
+    clearCache (val, row) {
+      if (val === 1010 || val === 1050 || val === '1010' || val === '1050') {
+        this.form.financialOrganizationId = '';
+      }
+    },
     handleChangeArea (val, row) {
+      // 匹配查找对应的省市区名称和编号
+      const province = this.areaOptions.find(item => item.code === val[0]);
+      if (province) {
+        this.form.provinceCode = province.code;
+        this.form.provinceName = province.name;
+
+        // 匹配城市
+        const cityList = province.child || [];
+        const city = cityList.find(item => item.code === val[1]);
+        if (city) {
+          this.form.cityCode = city.code;
+          this.form.cityName = city.name;
+
+          // 匹配区县
+          const districtList = city.child || [];
+          const district = districtList.find(item => item.code === val[2]);
+          if (district) {
+            this.form.districtCode = district.code;
+            this.form.districtName = district.name;
+          }
+        }
+      }
     },
     currentPageChange (pageNum) {
       this.pageNum = pageNum;
@@ -859,7 +879,7 @@ export default {
           idSet: [this._id],
         }).then(() => {
           this.$message.success('提交成功');
-          this.detailRequest();
+          this.$refs.containerRef.loadDetail();
         });
       }).catch(() => {});
     },
@@ -1012,7 +1032,6 @@ export default {
       });
     },
     detailRequest () {
-      console.log('detailRequest.........................');
       const id = this._id;
       if (id) {
         return getDetail(id).then(res => {
@@ -1028,7 +1047,6 @@ export default {
               res.districtCode
             ];
           }
-          console.log('//////////////////////', this.areaCode);
           res.detailList = res.detailList.map(detail => ({
             ...detail,
             materialsDesc: detail.vehicleMaterials.materialsDesc || '',
@@ -1049,6 +1067,15 @@ export default {
       }
     },
     submitRequest () {
+      if (!this.areaCode || this.areaCode.length === 0) {
+        this.form.provinceCode = '';
+        this.form.provinceName = '';
+        this.form.cityCode = '';
+        this.form.cityName = '';
+        this.form.districtCode = '';
+        this.form.districtName = '';
+      }
+      console.log('submitRequest', this.form);
       return addOrUpdate({ ...this.form });
     },
     // 打开侧边栏

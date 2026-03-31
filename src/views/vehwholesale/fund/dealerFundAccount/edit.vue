@@ -169,23 +169,14 @@
               </el-form>
             </div>
           </section>
-          <section class="common-section">
-            <div class="common-section-header">
-              <h2>账户流水</h2>
-            </div>
-            <div class="common-section-body">
-              <edit-table
-                ref="editTable"
-                :columns="columns"
-                :data="tableData"
-                :show-toolbar="false"
-                :show-pagination="true"
-                :total="total"
-                @current-page-change="pageChange"
-                @page-size-change="sizeChange"
-              />
-            </div>
-          </section>
+          <component-table
+            ref="componentTableRef"
+            :api-method="getListApi"
+            :columns="columns"
+            :extra-params="tableExtraParams"
+            :table-config="{ title: '账户流水' }"
+            section-key="accountTransLog"
+          />
         </el-main>
       </edit-base-container>
     </template>
@@ -204,13 +195,12 @@ import { YES_NO_ENUM_MAP } from '@/libs/constants';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import routeGuard from '@/libs/mixins/routeGuard';
-import EditTable from '@/libs/components/EditTable';
+import ComponentTable from './components/ComponentTable.vue';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum } from '@/api/common';
 
-const pageSize = 10;
 const defaultForm = {
   fundAccountCode: '',
   dealerCompanyName: '',
@@ -243,7 +233,7 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
-    EditTable,
+    ComponentTable,
     EditPageLayout,
     EditBaseContainer,
     FetchSelect
@@ -279,11 +269,11 @@ export default {
       latestTransLog: {},
       yes_no_enum_map: YES_NO_ENUM_MAP,
       columns: [
-        { field: 'transLogCode', title: '流水编号', width: 240 },
+        { field: 'transLogCode', title: '流水编号', width: 240, clickable: true },
         { field: 'transactionTypeLabel', title: '交易类型', width: 120 },
         { field: 'transactionAmount', title: '交易金额', width: 160 },
         { field: 'transactionTime', title: '过账时间', width: 200 },
-        { field: 'transactionTime', title: '入账凭证时间', width: 200 },
+        { field: 'transactionReceiptCode', title: '入账凭证号', width: 200 },
         { field: 'lineNo', title: '行项目号', width: 200 },
         { field: 'remark', title: '备注', width: 260 },
         { field: 'vin', title: 'VIN码', width: 200 },
@@ -293,14 +283,9 @@ export default {
         { field: 'dealerName', title: '门店', width: 200 },
         { field: 'createTime', title: '创建时间', width: 200 },
       ],
-      optionObj: {
-        form: {
-          page: 1,
-          size: pageSize
-        }
+      tableExtraParams: {
+        fundAccountId: ''
       },
-      total: 0,
-      tableData: [],
       rules: {
         allowUseRebate: [
           { required: true, message: '请选择是否允许使用返利', trigger: 'change' }
@@ -328,7 +313,13 @@ export default {
       if (id) {
         return getDetail(id).then(res => {
           this.latestTransLog = res.latestTransLog ?? {};
-          this.getList();
+          // 更新表格的 extraParams，触发组件重新加载
+          this.tableExtraParams.fundAccountId = id;
+          this.$nextTick(() => {
+            if (this.$refs.componentTableRef) {
+              this.$refs.componentTableRef.refresh();
+            }
+          });
           return res;
         });
       }
@@ -340,22 +331,9 @@ export default {
     openPane () {
       this.$refs.editLayout.openPane();
     },
-    pageChange (page) {
-      this.optionObj.form.page = page;
-      this.getList();
-    },
-    sizeChange (size) {
-      this.optionObj.form.size = size;
-      this.getList();
-    },
-    getList () {
-      getList({ fundAccountId: this._id, pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
-        .then(res => {
-          this.tableData = res.records;
-          this.total = res.total;
-        }).catch(() => {
-          this.tableData = [];
-        });
+    // 获取流水列表 API
+    getListApi (params) {
+      return getList({ ...params, fundAccountId: this._id });
     },
     async fetchOptions (code) {
       if (code) {
