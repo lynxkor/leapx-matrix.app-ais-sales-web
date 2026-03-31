@@ -787,7 +787,7 @@ export default {
     // 手工配车
     handleManualVehicleAllocation () {
       this.$refs.vinDialog.show(
-        { meterlsCode: this.form.materials.materialsCode, saleDealerCode: this.form.saleDealerCode },
+        { materialsCode: this.form.materials.materialsCode, saleDealerCode: this.form.saleDealerCode },
         { retailOrderCode: this.form.retailOrderCode, retailOrderId: this._id }
       );
     },
