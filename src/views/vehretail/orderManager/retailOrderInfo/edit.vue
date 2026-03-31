@@ -19,30 +19,20 @@
         <template #extraButtons>
           <!-- <el-button size="small" type="primary" @click="handleEquityInquiry">权益查询</el-button> -->
           <el-button size="small" :loading="printLoading" @click="handlePrintContractTermination">打印合同解除协议</el-button>
-          <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" @click="handleSetSpecialMark">设置特殊标识</el-button>
-          <el-button size="small" v-if="form.orderStatus !== 9" @click="handleModifyConfiguration">修改配置</el-button>
-          <el-button size="small" v-if="form.wholesaleBindStatus !== 1 && form.orderHandleType === 30 && form.unlockReasonCode === 'DJY003'" @click="handleManualVehicleAllocation">手工配车</el-button>
+          <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" :loading="setSpecialMarkLoading" @click="handleSetSpecialMark">设置特殊标识</el-button>
+          <el-button size="small" :loading="modifyConfigLoading" v-if="form.orderStatus !== 9" @click="handleModifyConfiguration">修改配置</el-button>
+          <el-button size="small" :loading="manualVehicleLoading" v-if="form.wholesaleBindStatus !== 1 && form.orderHandleType === 30 && form.unlockReasonCode === 'DJY003'" @click="handleManualVehicleAllocation">手工配车</el-button>
           <el-button size="small" :loading="autoLockLoading" v-if="form.wholesaleBindStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
           <el-button size="small" :loading="agreementLoading" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
-          <el-button size="small"
-                     @click="navigateToRoute({
-                      path: '/sales/vehretail/orderRefund/refundApply/edit',
-                      query: {
-                        mallOrderCode: form.mallOrderCode,
-                      },
-                    }, true)">
+          <el-button size="small" :loading="orderRefundLoading"
+                     @click="handleOrderRefund">
             订单退订
           </el-button>
-          <el-button size="small"
-                     @click="navigateToRoute({
-                      path: '/sales/vehretail/orderRefund/changeApply/edit',
-                      query: {
-                        mallOrderCode: form.mallOrderCode,
-                      },
-                    }, true)">
+          <el-button size="small" :loading="changeApplyLoading"
+                     @click="handleCarOwnerChangeApplication">
             购车人变更申请
           </el-button>
-          <el-button size="small" @click="handleQualityIssueUnbindApplication">质量问题解绑申请</el-button>
+          <el-button size="small" :loading="qualityIssueLoading" @click="handleQualityIssueUnbindApplication">质量问题解绑申请</el-button>
         </template>
         <!-- 固定悬浮导航栏 -->
         <div class="fixed-nav" :class="{ 'is-collapsed': isNavCollapsed }">
@@ -574,6 +564,12 @@ export default {
       printLoading: false, // 打印合同解除协议的 loading 状态
       autoLockLoading: false, // 自动锁车的 loading 状态
       agreementLoading: false, // 查看购车协议的 loading 状态
+      setSpecialMarkLoading: false, // 设置特殊标识的 loading 状态
+      modifyConfigLoading: false, // 修改配置的 loading 状态
+      manualVehicleLoading: false, // 手工配车的 loading 状态
+      orderRefundLoading: false, // 订单退订的 loading 状态
+      changeApplyLoading: false, // 购车人变更申请的 loading 状态
+      qualityIssueLoading: false, // 质量问题解绑申请的 loading 状态
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
@@ -747,8 +743,10 @@ export default {
     },
     // 设置特殊标识
     handleSetSpecialMark () {
+      this.setSpecialMarkLoading = true;
       this.specialRemarkDialog.form.specialRemark = '';
       this.specialRemarkDialog.show = true;
+      this.setSpecialMarkLoading = false;
     },
     submitSetSpecialRemark () {
       this.$refs.specialRemarkFormRef.validate(valid => {
@@ -768,15 +766,18 @@ export default {
     },
     // 修改配置
     async  handleModifyConfiguration () {
+      this.modifyConfigLoading = true;
       this.businessId = this._id;
       this.row = this.form;
       // const res = await getOrderUnlockConfig(this.row.retailOrderCode);
       // 检查 accountFlag 和 changeConfigCount 的关系
       if (this.accountFlag && this.row.changeConfigCount >= 1) {
         this.$message.error('该订单修改配车次数已达上限');
+        this.modifyConfigLoading = false;
         return;
       }
       this.$refs.materialsDialog.show();
+      this.modifyConfigLoading = false;
     },
     loginUserGet () {
       loginUserGet().then(res => {
@@ -786,10 +787,12 @@ export default {
     },
     // 手工配车
     handleManualVehicleAllocation () {
+      this.manualVehicleLoading = true;
       this.$refs.vinDialog.show(
         { materialsCode: this.form.materials.materialsCode, saleDealerCode: this.form.saleDealerCode },
         { retailOrderCode: this.form.retailOrderCode, retailOrderId: this._id }
       );
+      this.manualVehicleLoading = false;
     },
     // VIN 选择确认回调
     onVinSelected (vehicle) {
@@ -827,23 +830,30 @@ export default {
       });
     },
     // 订单退订
-    handleOrderUnsubscribe () {
-      // 实现订单退订逻辑
+    handleOrderRefund () {
+      this.orderRefundLoading = true;
       this.navigateToRoute({
-        path: '/vehretail/orderManager/retailOrderInfo',
+        path: '/sales/vehretail/orderRefund/refundApply/edit',
         query: {
-          retailOrderCode: this.form.retailOrderCode,
+          mallOrderCode: this.form.mallOrderCode,
         },
-      });
+      }, true);
+      this.orderRefundLoading = false;
     },
     // 购车人变更申请
     handleCarOwnerChangeApplication () {
-      // this.$router.push({
-      //   path: '/vehwholesale/basic/wholesaleProdScheduleActivity'
-      // });
+      this.changeApplyLoading = true;
+      this.navigateToRoute({
+        path: '/sales/vehretail/orderRefund/changeApply/edit',
+        query: {
+          mallOrderCode: this.form.mallOrderCode,
+        },
+      }, true);
+      this.changeApplyLoading = false;
     },
     // 质量问题解绑申请
     handleQualityIssueUnbindApplication () {
+      this.qualityIssueLoading = true;
       // 实现质量问题解绑申请逻辑
       const id = this._id;
       const saleMode = this.form.saleMode;
@@ -860,6 +870,7 @@ export default {
       } else {
         this.$message.error('该订单不是批售单或订单状态不是车辆在途或等待交车，不能进行质量问题解绑申请');
       }
+      this.qualityIssueLoading = false;
     },
     // 将显示字段配置转换为表格列配置
     convertToTableColumns (displayFields) {

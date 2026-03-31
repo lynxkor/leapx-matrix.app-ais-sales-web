@@ -34,7 +34,7 @@
         <el-option label="系统自动匹配批售单" :value="30" />
       </el-select>
     </el-form-item>
-    <el-form-item label="需绑定VIN号：" prop="bindVin" v-if="shouldShowVinField">
+    <el-form-item label="需绑定VIN号：" prop="bindVin" v-if="shouldShowVinField" :rules=" form.orderHandleType === 20 ? [{ required: true, message: '手动选择现车时，VIN必填', trigger: 'blur' }] : []">
       <el-input v-model="form.bindVin" disabled class="unification-input" readonly />
       <el-button size="small" type="primary" :disabled="form.orderHandleType !== 20" @click="showVinDialog()">选择车辆</el-button>
     </el-form-item>
