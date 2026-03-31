@@ -121,7 +121,7 @@ export const termDisplayFields = [
 
 // 整车订单改配信息字段配置————暂时没有
 export const modificationRecordDisplayFields = [
-  { key: 'operationTime', label: '操作时间' },
+  { key: 'createTime', label: '操作时间' },
   { key: 'operateUserName', label: '操作人' },
   { key: 'paymentTime', label: '缴定金时间' },
   { key: 'materialsDescBefore', label: '修改前物料描述' },
