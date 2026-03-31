@@ -136,7 +136,7 @@ export function addPayRecord (data) {
  * @param {Object} data
  */
 export function cancelWriteOff (data) {
-  return api.jsonPost(prefix + 'cancelWriteOff', data);
+  return api.jsonPost(prefix + 'revertCancelOrderRights', data);
 }
 
 /**
