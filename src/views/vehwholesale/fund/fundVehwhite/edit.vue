@@ -62,7 +62,7 @@
                 </el-form-item>
               </el-form>
 
-              <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="单据类型：" prop="documentType">
                   <fetch-select
                     :request="fetchOptions"
@@ -71,20 +71,35 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    @change="handleDocumentTypeChange"
                   />
                 </el-form-item>
                 <el-form-item label="整车批售订单：" prop="wholesaleOrderCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.wholesaleOrderCode"
+                  <fetch-select
+                    filterable
                     clearable
+                    collapseTags
+                    v-model="form.wholesaleOrderCode"
+                    placeholder="请选择整车批售订单"
+                    :remote-method="getWholesaleOrderList"
+                    remote
+                    label-key="wholesaleOrderCode"
+                    value-key="wholesaleOrderCode"
+                    :disabled="!isWholesaleOrderEditable"
                   />
                 </el-form-item>
                 <el-form-item label="企业客户整车订单：" prop="enterpriseOrderCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.enterpriseOrderCode"
+                  <fetch-select
+                    filterable
                     clearable
+                    collapseTags
+                    v-model="form.enterpriseOrderCode"
+                    placeholder="请选择企业客户整车订单"
+                    :remote-method="getEnterpriseOrderList"
+                    remote
+                    label-key="enterpriseOrderCode"
+                    value-key="enterpriseOrderCode"
+                    :disabled="!isEnterpriseOrderEditable"
                   />
                 </el-form-item>
                 <el-form-item label="VIN号：" prop="vin">
@@ -92,6 +107,7 @@
                     placeholder="请输入"
                     v-model="form.vin"
                     clearable
+                    :disabled='true'
                   />
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="parentCompanyName">
@@ -99,13 +115,15 @@
                     placeholder="请输入"
                     v-model="form.parentCompanyName"
                     clearable
+                    :disabled='true'
                   />
                 </el-form-item>
-                <el-form-item label="门店：" prop="dealerName">
+                <el-form-item label="销售门店：" prop="dealerName">
                   <el-input
                     placeholder="请输入"
                     v-model="form.dealerName"
                     clearable
+                    :disabled='true'
                   />
                 </el-form-item>
                 <el-form-item label="企业客户：" prop="enterpriseCustomerName">
@@ -113,6 +131,7 @@
                     placeholder="请输入"
                     v-model="form.enterpriseCustomerName"
                     clearable
+                    :disabled='true'
                   />
                 </el-form-item>
                 <el-form-item label="是否B端白名单：" prop="isBWhitelist">
@@ -135,23 +154,6 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.createTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                  />
-                </el-form-item>
-                <el-form-item label="编号：" prop="code">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.code"
-                    clearable
-                  />
-                </el-form-item>
               </el-form>
             </div>
           </section>
@@ -168,11 +170,12 @@
 
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehwholesale/fund/fundVehwhite/index';
+import { getList as getWholesaleOrderList } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import { getList as getEnterpriseOrderList } from '@/api/vehwholesale/entorder/entVehicleOrder/index';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum } from '@/api/common';
-import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
@@ -187,9 +190,9 @@ const defaultForm = {
   parentCompanyName: '',
   dealerName: '',
   enterpriseCustomerName: '',
-  isBWhitelist: '',
+  isBWhitelist: '1',
   isBWhitelistLabel: '',
-  isCWhitelist: '',
+  isCWhitelist: '0',
   isCWhitelistLabel: '',
   createTime: '',
   code: '',
@@ -224,6 +227,12 @@ export default {
     },
     title () {
       return '编号：' + (this.form.code || '');
+    },
+    isWholesaleOrderEditable () {
+      return this.form.documentType === '1' || this.form.documentType === 1;
+    },
+    isEnterpriseOrderEditable () {
+      return this.form.documentType === '2' || this.form.documentType === 2;
     }
   },
   watch: {
@@ -245,7 +254,6 @@ export default {
       moduleKey: 'AISVW-fundVehwhite',
       loading: false,
       submitLoading: false,
-      yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
       rules: {
@@ -259,28 +267,22 @@ export default {
           { required: true, message: '请输入企业客户整车订单', trigger: 'blur' }
         ],
         vin: [
-          { required: true, message: '请输入VIN号', trigger: 'blur' }
+          { required: false, message: '请输入VIN号', trigger: 'blur' }
         ],
         parentCompanyName: [
-          { required: true, message: '请输入母公司名称', trigger: 'blur' }
+          { required: false, message: '请输入母公司名称', trigger: 'blur' }
         ],
         dealerName: [
-          { required: true, message: '请输入门店', trigger: 'blur' }
+          { required: false, message: '请输入门店', trigger: 'blur' }
         ],
         enterpriseCustomerName: [
-          { required: true, message: '请输入企业客户', trigger: 'blur' }
+          { required: false, message: '请输入企业客户', trigger: 'blur' }
         ],
         isBWhitelist: [
           { required: true, message: '请选择是否B端白名单', trigger: 'change' }
         ],
         isCWhitelist: [
           { required: true, message: '请选择是否C端白名单', trigger: 'change' }
-        ],
-        createTime: [
-          { required: true, message: '请选择创建时间', trigger: 'change' }
-        ],
-        code: [
-          { required: true, message: '请输入编号', trigger: 'blur' }
         ]
       }
     };
@@ -291,11 +293,28 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        return getDetail(id).then(res => {
+          // 加载详情后触发文档类型变化处理
+          if (res && res.documentType) {
+            this.handleDocumentTypeChange(res.documentType);
+          }
+          return res;
+        });
       }
     },
     submitRequest () {
       return addOrUpdate({ ...this.form });
+    },
+    handleDocumentTypeChange (value) {
+      // 根据单据类型清空对应的订单字段
+      if (value === '2' || value === 2) {
+        // 如果不是整车批售订单类型，则清空整车批售订单字段
+        this.form.wholesaleOrderCode = '';
+      }
+      if (value === '1' || value === 1) {
+        // 如果不是企业客户整车订单类型，则清空企业客户整车订单字段
+        this.form.enterpriseOrderCode = '';
+      }
     },
     // 打开侧边栏
     openPane () {
@@ -334,6 +353,47 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    async getWholesaleOrderList (query) {
+      // 获取整车批售订单列表，带模糊搜索
+      const params = {
+        wholesaleOrderCodeLike: query,
+        pageNum: 1,
+        pageSize: 20,
+        status: 3
+      };
+      try {
+        const response = await getWholesaleOrderList(params);
+        // 将数据格式转换为下拉选项所需格式
+        return Array.isArray(response.records) ? response.records.map(item => ({
+          ...item,
+          wholesaleOrderCode: item.wholesaleOrderCode
+        })) : [];
+      } catch (error) {
+        console.error('获取整车批售订单列表失败:', error);
+        return [];
+      }
+    },
+    async getEnterpriseOrderList (query) {
+      // 获取企业客户整车订单列表，带模糊搜索
+      const params = {
+        entOrderCodeLike: query,
+        pageNum: 1,
+        pageSize: 20,
+        statuses: [9, 51],
+        orderSyncStatus: 1
+      };
+      try {
+        const response = await getEnterpriseOrderList(params);
+        // 将数据格式转换为下拉选项所需格式
+        return Array.isArray(response.records) ? response.records.map(item => ({
+          ...item,
+          enterpriseOrderCode: item.entOrderCode
+        })) : [];
+      } catch (error) {
+        console.error('获取企业客户整车订单列表失败:', error);
+        return [];
+      }
     }
   }
 };
