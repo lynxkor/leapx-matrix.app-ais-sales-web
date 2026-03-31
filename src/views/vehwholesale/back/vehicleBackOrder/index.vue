@@ -281,7 +281,9 @@ export default {
               popconfirmConfirmButtonText: '删除',
               popconfirmTitle: '此操作将永久删除, 是否继续?',
               click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
+                deleteItem(
+                  { idSet: [row.id] }
+                ).then(() => {
                   this.$message({
                     type: 'success',
                     message: '删除成功!'

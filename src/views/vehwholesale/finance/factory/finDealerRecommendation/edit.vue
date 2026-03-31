@@ -16,7 +16,7 @@
           <span >{{form.code}}</span>
         </template>
         <template #extraButtons>
-          <el-button size="small">推送金融机构</el-button>
+          <el-button size="small" @click="handleBatchSync">推送金融机构</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -207,7 +207,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehwholesale/finance/factory/finDealerRecommendation/index';
+import { getDetail, addOrUpdate, pushfinDealerRecommendationToBank } from '@/api/vehwholesale/finance/factory/finDealerRecommendation/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 // import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
@@ -330,6 +330,32 @@ export default {
   mounted () {
   },
   methods: {
+    handleBatchSync () {
+      if (this.form.syncStatus !== 40) {
+        this.$message({
+          type: 'error',
+          message: '只有可用且同步失败的数据才能同步，请确认'
+        });
+        return;
+      }
+      // 二次确认弹框
+      this.$confirm('确定要对选中的数据执行同步操作吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const params = {
+          idSet: [this._id],
+        };
+        pushfinDealerRecommendationToBank(params).then(() => {
+          this.$message({
+            type: 'success',
+            message: '提交成功'
+          });
+          this.$refs.containerRef.loadDetail();
+        });
+      }).catch(() => {});
+    },
     getfundFinancialOrganizationName (fundFinancialOrganizationName, obj) {
       this.form.recFinancialOrganizationName = obj.organizationName;
       this.form.recFinancialOrganizationId = obj.id;

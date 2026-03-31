@@ -185,7 +185,7 @@ export default {
   },
   methods: {
     async getVehicleMaterialsList (params) {
-      return vehicleMaterials({ materialsCodeLike: params, status: 1, pageSize: 20, certificatePledged: 1 });
+      return vehicleMaterials({ materialsCodeLike: params, status: 1, pageSize: 20 });
     },
     materialsSelect (val, row) {
       this.materialsform.materialsId = row.id;

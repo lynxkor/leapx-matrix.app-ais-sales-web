@@ -39,6 +39,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    :disabled="isEditing"
                     @change="handleOrderTypeChange"
                   />
                   </el-form-item>
@@ -52,7 +53,7 @@
                     value-key="storeCode"
                     label-key="storeName"
                     @change="getdealerCompanyCode"
-                    :disabled="form.orderType === '20'"
+                    :disabled="form.orderType === '20' || isEditing"
                   />
                 </el-form-item>
                  <el-form-item label="企业客户名称：">
@@ -67,7 +68,7 @@
                       collapseTags
                       filterable
                       @change="getentCustomerName"
-                      :disabled="form.orderType === '10'"
+                      :disabled="form.orderType === '10' || isEditing"
                 />
 
                 </el-form-item>
@@ -80,6 +81,7 @@
                       :remote-method="getRegionList"
                       value-key="orgCode"
                       label-key="orgName"
+                      :disabled="isEditing"
                     />
                 </el-form-item>
                 <el-form-item label="退车类型：" prop="backType">
@@ -100,15 +102,16 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    :disabled="isEditing"
                   />
                 </el-form-item>
 
-                <el-form-item label="退车备注：" prop="remark">
+                <el-form-item label="退车备注：">
                   <el-input
                     placeholder="请输入"
                     v-model="form.remark"
                     clearable
-                    maxxlength="150"
+                    maxlength="150"
                   />
                 </el-form-item>
                 <el-form-item label="审核人：">
@@ -116,6 +119,7 @@
                     placeholder="请输入"
                     v-model="form.auditorName"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="审核时间：">
@@ -126,6 +130,7 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="退车审核说明：">
@@ -133,17 +138,19 @@
                     placeholder="请输入"
                     v-model="form.auditOpinion"
                     clearable
-                    maxlength="50"
+                    maxlength="150"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="退车日期：">
                   <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.returnTime"
+                    v-model="form.backTime"
                     :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
+                    type="date"
+                    value-format="yyyy-MM-dd"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                    disabled
                   />
                 </el-form-item>
               </el-form>
@@ -184,8 +191,8 @@
                 <el-form-item label="退车审核说明：" prop="auditOpinion">
                   {{ form.auditOpinion }}
                 </el-form-item>
-                <el-form-item label="退车日期：" prop="returnTime">
-                  {{ form.returnTime }}
+                <el-form-item label="退车日期：" prop="backTime">
+                  {{ form.backTime }}
                 </el-form-item>
               </el-form>
             </div>
@@ -383,9 +390,6 @@ export default {
         ],
         backType: [
           { required: true, message: '请选择退车类型', trigger: 'change' }
-        ],
-        remark: [
-          { required: true, message: '请输入退车备注', trigger: 'change' }
         ],
         status: [
           { required: true, message: '请选择退车订单状态', trigger: 'change' }

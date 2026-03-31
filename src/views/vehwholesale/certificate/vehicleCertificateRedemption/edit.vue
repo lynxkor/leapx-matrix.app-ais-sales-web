@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="车辆合格证赎回"
+        title="车辆合格证赎回："
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -16,10 +16,10 @@
           <span>{{ form.redemptionCode }}</span>
         </template>
         <template #extraButtons>
-          <el-button size="small">提交赎回</el-button>
-          <el-button size="small">重新提交赎回</el-button>
-          <el-button size="small">签收合格证</el-button>
-          <el-button size="small">删除</el-button>
+          <el-button size="small" @click="handleSubmit">提交赎回</el-button>
+          <el-button size="small" @click="handleSubmitAgain">重新提交赎回</el-button>
+          <el-button size="small" @click="handleSign">签收合格证</el-button>
+          <el-button size="small" @click="handleDel">删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -30,38 +30,63 @@
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="整车批售订单号：" prop="wholesaleOrderCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.wholesaleOrderCode"
-                    clearable
-                  />
+                  <fetch-select
+                    :remote-method="getwholesaleOrderCodeList"
+                      remote
+                      v-model="form.wholesaleOrderCode"
+                      placeholder="请选择"
+                      labelKey="name"
+                      valueKey="id"
+                      clearable
+                      filterable
+                      :options="wholesaleOrderCodeList"
+                     />
                 </el-form-item>
                  <el-form-item label="企业客户整车订单：" prop="entVehicleOrderCode">
-                  <el-input
-                    placeholder="请输入"
+                  <fetch-select
+                    :remote-method="getentVehicleOrderCodeList"
+                    remote
                     v-model="form.entVehicleOrderCode"
+                    placeholder="请选择"
+                    labelKey="name"
+                    valueKey="id"
                     clearable
-                  />
+                    filterable
+                    :options="entVehicleOrderCodeList"
+                     />
                 </el-form-item>
                  <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.dealerCompanyName"
-                    clearable
-                  />
+                   <fetch-select
+                      filterable
+                      clearable
+                      remote
+                      v-model="form.dealerCompanyName"
+                      :params="form.dealerParentOrgName"
+                      :remote-method="getDealerParentOrgList"
+                      value-key="companyCode"
+                      label-key="companyName"
+                      @change="(val, record) => {form.dealerParentOrgName = record?.companyName || ''}"
+                    />
                 </el-form-item>
                   <el-form-item label="销售门店名称：" prop="saleDealerName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.saleDealerName"
-                    clearable
-                  />
+                    <fetch-select
+                        filterable
+                        clearable
+                        remote
+                        collapseTags
+                        v-model="form.saleDealerName"
+                        :remote-method="getDealerListByName"
+                        value-key="storeCode"
+                        label-key="storeName"
+                      />
+
                 </el-form-item>
                     <el-form-item label="VIN码：" prop="vin">
                   <el-input
                     placeholder="请输入"
                     v-model="form.vin"
                     clearable
+                    :disabled="isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="整车物料：" prop="vin">
@@ -69,6 +94,7 @@
                     placeholder="请输入"
                     v-model="form.vin"
                     clearable
+                    :disabled="isEditing"
                   />
                 </el-form-item>
                  <el-form-item label="车系名称：" prop="seriesName">
@@ -76,6 +102,7 @@
                     placeholder="请输入"
                     v-model="form.seriesName"
                     clearable
+                    :disabled="isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
@@ -83,6 +110,7 @@
                     placeholder="请输入"
                     v-model="form.modelName"
                     clearable
+                    :disabled="isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
@@ -93,6 +121,7 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                    :disabled="isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="修改时间：" prop="updateTime">
@@ -103,6 +132,7 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                    :disabled="isEditing"
                   />
                 </el-form-item>
               </el-form>
@@ -148,7 +178,7 @@
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                <el-form-item label="合格证状态：" prop="certificateStatus">
-                  <fetch-select
+                 <fetch-select
                     :request="fetchOptions"
                     enumCode="vw_certificate_redemption_status"
                     v-model="form.certificateStatus"
@@ -158,23 +188,21 @@
                   />
                 </el-form-item>
                 <el-form-item label="赊销结算状态：" prop="creditSettleStatus">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="vw_credit_status"
-                    v-model="form.creditSettleStatus"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                  />
+                   <fetch-select
+                      :request="fetchOptions"
+                      enumCode="vw_credit_status"
+                      v-model="form.creditSettleStatus"
+                      placeholder="请选择"
+                      clearable
+                      filterable
+                    />
                 </el-form-item>
-                <el-form-item label="合同SAP状态" prop="creditSettleStatus">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
-                    v-model="form.creditSettleStatus"
-                    placeholder="请选择"
+                <el-form-item label="订单状态" prop="status">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.statusLabel"
                     clearable
-                    filterable
+                    :disabled="isEditing"
                   />
                 </el-form-item>
               </el-form>
@@ -185,8 +213,8 @@
                 <el-form-item label="赊销结算状态：" prop="creditSettleStatusLabel">
                   {{ form.creditSettleStatusLabel }}
                 </el-form-item>
-                <el-form-item label="合同SAP状态：" prop="certificateStatus">
-                  {{ form.certificateStatus }}
+                <el-form-item label="订单状态：" prop="statusLabel">
+                  {{ form.statusLabel }}
                 </el-form-item>
               </el-form>
             </div>
@@ -199,13 +227,11 @@
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                  <el-form-item label="资金结算类型：" prop="settleFundType">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
-                    v-model="form.settleFundType"
-                    placeholder="请选择"
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.settleFundTypeLabel"
                     clearable
-                    filterable
+                    :disabled="isEditing"
                   />
                 </el-form-item>
 
@@ -214,6 +240,7 @@
                     placeholder="请输入"
                     v-model="form.vehiclePrice"
                     clearable
+                     :disabled="isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="销售价（批售价）：" prop="salePrice">
@@ -221,6 +248,7 @@
                     placeholder="请输入"
                     v-model="form.salePrice"
                     clearable
+                     :disabled="isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="首付款比例：" prop="downPaymentRatio">
@@ -228,6 +256,7 @@
                     placeholder="请输入"
                     v-model="form.downPaymentRatio"
                     clearable
+                     :disabled="isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="首付款金额：" prop="downPaymentAmount">
@@ -235,6 +264,7 @@
                     placeholder="请输入"
                     v-model="form.downPaymentAmount"
                     clearable
+                     :disabled="isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="赊销欠款金额：" prop="creditDebtAmount">
@@ -242,6 +272,7 @@
                     placeholder="请输入"
                     v-model="form.creditDebtAmount"
                     clearable
+                     :disabled="isEditing"
                   />
                 </el-form-item>
                  <el-form-item label="赊销日期：" prop="creditTime">
@@ -252,6 +283,7 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                     :disabled="isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="还款日期：" prop="repaymentTime">
@@ -262,6 +294,7 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                     :disabled="isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="赊销天数：" prop="creditDays">
@@ -269,6 +302,7 @@
                     placeholder="请输入"
                     v-model="form.creditDays"
                     clearable
+                     :disabled="isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="赊销费用：" prop="creditFee">
@@ -276,6 +310,7 @@
                     placeholder="请输入"
                     v-model="form.creditFee"
                     clearable
+                     :disabled="isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="超期赊销费用：" prop="overdueCreditFee">
@@ -283,6 +318,7 @@
                     placeholder="请输入"
                     v-model="form.overdueCreditFee"
                     clearable
+                    :disabled="isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="违约金：" prop="penaltyAmount">
@@ -290,6 +326,7 @@
                     placeholder="请输入"
                     v-model="form.penaltyAmount"
                     clearable
+                    :disabled="isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="凭证编号：" prop="voucherCode">
@@ -297,6 +334,7 @@
                     placeholder="请输入"
                     v-model="form.voucherCode"
                     clearable
+                    :disabled="isEditing"
                   />
                 </el-form-item>
               </el-form>
@@ -365,6 +403,17 @@
                     clearable
                   />
                 </el-form-item>
+                 <el-form-item label="省市区">
+                  <el-cascader
+                    placeholder="请选择省市区"
+                    v-model="areaCode"
+                    :props="orgProps"
+                    :options="areaOptions"
+                    filterable
+                    @change="handleChangeArea"
+                    clearable>
+                  </el-cascader>
+                </el-form-item>
                 <el-form-item label="收件地址：" prop="receiverAddress">
                   <el-input
                     placeholder="请输入"
@@ -378,6 +427,7 @@
                     placeholder="请输入"
                     v-model="form.expressCode"
                     clearable
+                    :disabled="isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="快递照片链接地址：" prop="expressPhotoUrl">
@@ -385,6 +435,7 @@
                     placeholder="请输入"
                     v-model="form.expressPhotoUrl"
                     clearable
+                    :disabled="isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="合格证照片链接地址：" prop="certificatePhotoUrl">
@@ -392,6 +443,7 @@
                     placeholder="请输入"
                     v-model="form.certificatePhotoUrl"
                     clearable
+                    :disabled="isEditing"
                   />
                 </el-form-item>
               </el-form>
@@ -401,6 +453,15 @@
                 </el-form-item>
                 <el-form-item label="收件人手机：" prop="receiverPhone">
                   {{ form.receiverPhone }}
+                </el-form-item>
+                 <el-form-item label="省份：" prop="receiverProvinceName">
+                  {{ form.receiverProvinceName }}
+                </el-form-item>
+                <el-form-item label="城市：" prop="receiverCityName">
+                  {{ form.receiverCityName }}
+                </el-form-item>
+                 <el-form-item label="区/县：" prop="receiverDistrictName">
+                  {{ form.receiverDistrictName }}
                 </el-form-item>
                 <el-form-item label="收件地址：" prop="receiverAddress">
                   {{ form.receiverAddress }}
@@ -429,11 +490,11 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehwholesale/certificate/vehicleCertificateRedemption/index';
+import { getDetail, addOrUpdate, deleteItem, submit, listWholesaleOrEntOrder } from '@/api/vehwholesale/certificate/vehicleCertificateRedemption/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum } from '@/api/common';
+import { getEnum, getParentCompany, listOrgStoreInfo } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -524,7 +585,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '新页面',
+      pageTitle: '车辆合格证赎回',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
       moduleKey: 'AISVW-vehicleCertificateRedemption',
@@ -534,124 +595,34 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       emptyText: '若要启用此内容，请创建记录',
+      wholesaleOrderCodeList: [],
+      entVehicleOrderCodeList: [],
+      areaCode: [],
+      orgProps: {
+        checkStrictly: true,
+        emitPath: true,
+        label: 'name',
+        value: 'code',
+        children: 'child'
+      },
+      areaOptions: JSON.parse(localStorage.areaTree),
       tableData: [
-        { id: 1, name: '张三', age: 25, email: 'zhangsan@example.com' },
-        { id: 2, name: '李四', age: 30, email: 'lisi@example.com' }
       ],
       rules: {
-        id: [
-          { required: true, message: '请输入主键', trigger: 'change' }
-        ],
-        creator: [
-          { required: true, message: '请输入创建者', trigger: 'change' }
-        ],
-        creatorName: [
-          { required: true, message: '请输入创建者名称', trigger: 'change' }
-        ],
-        createTime: [
-          { required: true, message: '请选择创建时间', trigger: 'change' }
-        ],
-        modifier: [
-          { required: true, message: '请输入修改者', trigger: 'change' }
-        ],
-        modifierName: [
-          { required: true, message: '请输入修改者名称', trigger: 'change' }
-        ],
-        updateTime: [
-          { required: true, message: '请选择修改时间', trigger: 'change' }
-        ],
-        remark: [
-          { required: true, message: '请输入备注', trigger: 'change' }
-        ],
-        status: [
-          { required: true, message: '请选择订单状态', trigger: 'change' }
-        ],
-        statusDesc: [
-          { required: true, message: '请选择状态变更描述', trigger: 'change' }
-        ],
-        redemptionCode: [
-          { required: true, message: '请输入合格证赎回编号', trigger: 'change' }
-        ],
-        dealerCompanyCode: [
-          { required: true, message: '请输入母公司编码', trigger: 'change' }
-        ],
-        dealerCompanyName: [
-          { required: true, message: '请输入母公司名称', trigger: 'change' }
-        ],
-        saleDealerCode: [
-          { required: true, message: '请输入销售门店编码', trigger: 'change' }
-        ],
-        saleDealerName: [
-          { required: true, message: '请输入销售��店名称', trigger: 'change' }
+        certificateStatus: [
+          { required: true, message: '请选择合格证状态', trigger: ['change', 'blur'] }
         ],
         creditSettleStatus: [
-          { required: true, message: '请选择赊销结算状态', trigger: 'change' }
-        ],
-        certificateStatus: [
-          { required: true, message: '请选择合格证状态', trigger: 'change' }
-        ],
-        vin: [
-          { required: true, message: '请输入VIN码', trigger: 'change' }
-        ],
-        seriesId: [
-          { required: true, message: '请输入车系ID', trigger: 'change' }
-        ],
-        seriesName: [
-          { required: true, message: '请输入车系名称', trigger: 'change' }
-        ],
-        modelId: [
-          { required: true, message: '请输入车型ID', trigger: 'change' }
-        ],
-        modelName: [
-          { required: true, message: '请输入车型名称', trigger: 'change' }
+          { required: true, message: '请选择赊销结算状态', trigger: ['change', 'blur'] }
         ],
         settleFundType: [
-          { required: true, message: '请选择资金结算类型', trigger: 'change' }
+          { required: true, message: '请选择资金结算类型', trigger: ['change', 'blur'] }
         ],
         vehiclePrice: [
           { required: true, message: '请输入车辆售价（零售价）', trigger: 'change' }
         ],
         salePrice: [
           { required: true, message: '请输入销售价（批售价）', trigger: 'change' }
-        ],
-        downPaymentRatio: [
-          { required: true, message: '请输入首付款比例', trigger: 'change' }
-        ],
-        downPaymentAmount: [
-          { required: true, message: '请输入首付款金额', trigger: 'change' }
-        ],
-        creditDebtAmount: [
-          { required: true, message: '请输入赊销欠款金额', trigger: 'change' }
-        ],
-        settleSuccessTime: [
-          { required: true, message: '请选择结算成功时间', trigger: 'change' }
-        ],
-        creditTime: [
-          { required: true, message: '请选择赊销日期', trigger: 'change' }
-        ],
-        repaymentTime: [
-          { required: true, message: '请选择还款日期', trigger: 'change' }
-        ],
-        creditDays: [
-          { required: true, message: '请输入赊销天数（还款时间-结算时间）', trigger: 'change' }
-        ],
-        creditFee: [
-          { required: true, message: '请输入赊销费用（90天赊销天费用）', trigger: 'change' }
-        ],
-        overdueCreditFee: [
-          { required: true, message: '请输入超期赊销费用（超期天数*6%&#x2F;365*赊销欠款）', trigger: 'change' }
-        ],
-        penaltyAmount: [
-          { required: true, message: '请输入违约金（超期天数*万分之五*赊销欠款）', trigger: 'change' }
-        ],
-        voucherCode: [
-          { required: true, message: '请输入凭证编号（SAP退车返款接口凭证号）', trigger: 'change' }
-        ],
-        wholesaleOrderCode: [
-          { required: true, message: '请输入整车批售订单号', trigger: 'change' }
-        ],
-        entVehicleOrderCode: [
-          { required: true, message: '请输入企业客户整车订单号', trigger: 'change' }
         ],
         receiverName: [
           { required: true, message: '请输入收件人', trigger: 'change' }
@@ -662,28 +633,116 @@ export default {
         receiverAddress: [
           { required: true, message: '请输入收件地址', trigger: 'change' }
         ],
-        expressCode: [
-          { required: true, message: '请输入快递单号', trigger: 'change' }
-        ],
-        expressPhotoUrl: [
-          { required: true, message: '请输入快递照片链接地址', trigger: 'change' }
-        ],
-        certificatePhotoUrl: [
-          { required: true, message: '请输入合格证照片链接地址', trigger: 'change' }
-        ],
-        dataSource: [
-          { required: true, message: '请输入数据来源，150:新销服; 老销服:10', trigger: 'change' }
-        ],
       }
     };
   },
   mounted () {
   },
   methods: {
+    async getDealerListByName (params) {
+      return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
+    },
+    async getDealerParentOrgList (params) {
+      return getParentCompany({ parentCompanyName: params });
+    },
+    async getwholesaleOrderCodeList (query) {
+      try {
+        const res = await listWholesaleOrEntOrder({ query: query, orderType: 10 });
+        this.wholesaleOrderCodeList = res.wholesaleOrderRespList;
+        return res;
+      } catch (error) {
+        console.error('Error fetching :', error);
+      }
+    },
+
+    async getentVehicleOrderCodeList (query) {
+      try {
+        const res = await listWholesaleOrEntOrder({ query: query, orderType: 20 });
+        this.entVehicleOrderCodeList = res.entVehicleOrderRespList;
+        return res;
+      } catch (error) {
+        console.error('Error fetching :', error);
+      }
+    },
+    handleChangeArea (val, row) {
+      // 匹配查找对应的省市区名称和编号
+      const province = this.areaOptions.find(item => item.code === val[0]);
+      if (province) {
+        this.form.receiverProvinceCode = province.code;
+        this.form.receiverProvinceName = province.name;
+
+        // 匹配城市
+        const cityList = province.child || [];
+        const city = cityList.find(item => item.code === val[1]);
+        if (city) {
+          this.form.receiverCityCode = city.code;
+          this.form.receiverCityName = city.name;
+
+          // 匹配区县
+          const districtList = city.child || [];
+          const district = districtList.find(item => item.code === val[2]);
+          if (district) {
+            this.form.receiverDistrictCode = district.code;
+            this.form.receiverDistrictName = district.name;
+          }
+        }
+      }
+    },
+    handleSubmit () {
+      this.$confirm('确认提交赎回?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        submit({
+          idSet: [this._id],
+        }).then(() => {
+          this.$message.success('提交成功');
+          this.detailRequest();
+        });
+      }).catch(() => {});
+    },
+    handleSubmitAgain () {
+      this.$confirm('确认重新提交赎回?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        submit({
+          idSet: [this._id],
+        }).then(() => {
+          this.$message.success('提交成功');
+          this.detailRequest();
+        });
+      }).catch(() => {});
+    },
+    handleSign () {},
+    handleDel () {
+      const ids = [this._id];
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
+      this.$confirm(message, '', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        dangerouslyUseHTMLString: true,
+        customClass: 'ais-leave-tips',
+        showClose: false
+      }).then(() => {
+        deleteItem(ids).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        });
+      }).catch(() => {});
+    },
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        return getDetail(id).then(res => {
+          this.areaCode = [res.receiverProvinceCode, res.receiverCityCode, res.receiverDistrictCode];
+          console.log('接口返回的原始数据:', this.orgProps);
+          return res;
+        });
       }
     },
     submitRequest () {
