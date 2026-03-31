@@ -22,6 +22,12 @@
           <!-- <el-button size="small">按钮1</el-button>
           <el-button size="small">按钮2</el-button> -->
           <el-button
+            @click="handleSubmit"
+            v-if="form.status === 1010"
+            size="small">
+            提交审核
+          </el-button>
+          <el-button
             @click="openRevocationShow"
             v-if="form.status === 1030 ||form.status === 1040"
             size="small">
@@ -666,7 +672,7 @@ import {
   effectiveVinValidate,
   cancel,
   audit,
-  revocation
+  revocation, submit
 } from '@/api/vehretail/orderManager/soldPlateInfo/index';
 import { getEffectiveByVin as getDeliveryInvoiceByVin } from '@/api/vehretail/orderManager/deliveryInvoice/index';
 import { getEffectiveByVin as getSpecialSalesReportByVin } from '@/api/vehretail/orderManager/specialVehicleSalesReport/index';
@@ -1237,6 +1243,11 @@ export default {
         this.form.districtCode = city.code;
         this.form.districtName = city.name;
       }
+    },
+    handleSubmit () {
+      submit(this.form).then(() => {
+        this.reloadDetail();
+      });
     },
     openRevocationShow () {
       this.$confirm('确认是否对数据进行撤回?', '提示', {
