@@ -15,7 +15,6 @@
         </template>
         <template #extraButtons>
           <el-button v-if="form.auditStatus === 0 || form.auditStatus === 2" size="small" type="primary" @click="handleSubmit">提交</el-button>
-          <el-button v-if="form.auditStatus === 0 || form.auditStatus === 2" size="small" @click="handleSubmit(form.id, form.configCode)"><i class="iconfont icon-lxppc-edit"></i>提交</el-button>
           <el-button v-if="form.auditStatus === 1" size="small" @click="handleReview"><i class="iconfont icon-lxppc-edit"></i>复核</el-button>
         </template>
         <el-main>
@@ -185,6 +184,9 @@
             </div>
             <div class="common-section-body">
               <el-form :inline="true" class="form-detail" label-width="150px">
+                <el-form-item label="复核状态：" prop="auditStatusLabel">
+                  {{ form.auditStatusLabel }}
+                </el-form-item>
                 <el-form-item label="复核人：" prop="reviewName">
                   {{ form.reviewName }}
                 </el-form-item>
