@@ -9,18 +9,34 @@
       label-width="120px"
       class="ais-search-form"
     >
-      <el-form-item label="业务标识编号">
-        <tag-input
-          placeholder="请输入"
-          v-model="form.bizNoList"
-          clearable
+      <el-form-item label="业务系统">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="event_source_sys_enum"
+          v-model="form.systemPrefix"
+          @change="systemPrefixChange"
+          placeholder="请选择"
+          filterable
         />
       </el-form-item>
       <el-form-item label="事件类型">
-        <el-input
-          placeholder="请输入"
+        <fetch-select
+          :options="eventTypeOptions"
           v-model="form.type"
+          value-key="code"
+          label-key="name"
+          placeholder="请选择"
+        />
+      </el-form-item>
+      <el-form-item label="目标平台">
+        <fetch-select
+          v-model="form.target"
+          :options="thirdTargetPlatformOptions"
+          value-key="code"
+          label-key="name"
+          placeholder="请选择"
           clearable
+          filterable
         />
       </el-form-item>
       <el-form-item label="执行状态">
@@ -33,18 +49,18 @@
           filterable
         />
       </el-form-item>
-      <el-form-item label="目标平台">
-        <el-input
-          placeholder="请输入"
-          v-model="form.target"
-          clearable
-        />
-      </el-form-item>
       <template v-if="show">
         <el-form-item label="事件场景">
           <el-input
             placeholder="请输入"
             v-model="form.scene"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="业务标识编号">
+          <tag-input
+            placeholder="请输入"
+            v-model="form.bizNoList"
             clearable
           />
         </el-form-item>
@@ -120,7 +136,7 @@ import {
   deleteItem,
   enableItem,
   manualExecute,
-  manualExecuteAsync, manualCancel
+  manualExecuteAsync, manualCancel, findEventTypeList, findThirdTargetPlatformList
 } from '@/api/vehretail/event/eventNotifyTask';
 import { getTableConfig, tableAddOrUpdate, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
@@ -136,6 +152,7 @@ const defaultForm = {
   scene: '',
   type: null,
   executeResult: null,
+  systemPrefix: 'vr',
   target: '',
   status: null,
   relatedNo: '',
@@ -168,6 +185,8 @@ export default {
         ...defaultForm
       },
       selectionList: [],
+      eventTypeOptions: [],
+      thirdTargetPlatformOptions: [],
       show: false,
       loading: false,
       clickItemId: '',
@@ -223,6 +242,8 @@ export default {
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
+    this.findEventTypeOptions();
+    this.findThirdTargetPlatformOptions();
     this.getData();
   },
   methods: {
@@ -246,8 +267,7 @@ export default {
     getData () {
       this.loading = true;
       this.selectionList = [];
-
-      getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
+      getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size }, this.form.systemPrefix)
         .then(res => {
           this.optionObj.dataList = res.records.map(item => {
             return {
@@ -323,6 +343,27 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    systemPrefixChange (val) {
+      this.form.systemPrefix = val;
+      this.eventTypeOptions = [];
+      this.thirdTargetPlatformOptions = [];
+      this.findEventTypeOptions();
+      this.findThirdTargetPlatformOptions();
+    },
+    findEventTypeOptions () {
+      findEventTypeList(this.form.systemPrefix).then(res => {
+        this.$nextTick(() => {
+          this.eventTypeOptions = res || [];
+        });
+      });
+    },
+    findThirdTargetPlatformOptions () {
+      findThirdTargetPlatformList(this.form.systemPrefix).then(res => {
+        this.$nextTick(() => {
+          this.thirdTargetPlatformOptions = res || [];
+        });
+      });
     },
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
