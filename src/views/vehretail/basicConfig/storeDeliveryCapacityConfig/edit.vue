@@ -44,6 +44,7 @@
                 </el-form-item>
                 <el-form-item label="交付工程师：" prop="deliveryUserId">
                   <fetch-select
+                    ref="deliveryUserSelectRef"
                     remote
                     filterable
                     clearable
@@ -252,7 +253,14 @@ export default {
     querySearchAsync (queryString) {
       return searchEngineer({ orgCodeList: [this.form.deliveryDealerCode], username: queryString, salesConfigKey: 'deliveryUser' });
     },
-    handleDeclearChange (val, record) { if (record) { this.form.deliveryDealerName = record.storeName; } },
+    handleDeclearChange (val, record) {
+      if (record) {
+        this.form.deliveryDealerName = record.storeName;
+        this.form.deliveryUserId = '';
+        this.form.deliveryUserName = '';
+        this.$refs.deliveryUserSelectRef.loadRemoteMethod();
+      }
+    },
     handleUserChange (val, record) { if (record) { this.form.deliveryUserName = record.username; } }
   }
 };
