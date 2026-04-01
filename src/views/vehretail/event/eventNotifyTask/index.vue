@@ -209,7 +209,8 @@ export default {
                 this.$router.push({
                   path: '/vehretail/event/eventNotifyTask/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    systemPrefix: this.form.systemPrefix
                   }
                 });
               },
@@ -405,7 +406,7 @@ export default {
         return;
       }
       const ids = this.selectionList.map(item => item.id);
-      manualExecute({ idList: ids }).then(res => {
+      manualExecute({ idList: ids }, this.form.systemPrefix).then(res => {
         this.$message.success('操作成功');
         this.getData();
       });
@@ -418,7 +419,7 @@ export default {
         return;
       }
       const ids = this.selectionList.map(item => item.id);
-      manualExecuteAsync({ idList: ids }).then(res => {
+      manualExecuteAsync({ idList: ids }, this.form.systemPrefix).then(res => {
         this.$message.success('操作成功');
         this.getData();
       });
@@ -431,7 +432,7 @@ export default {
         return;
       }
       const ids = this.selectionList.map(item => item.id);
-      manualCancel({ idList: ids }).then(res => {
+      manualCancel({ idList: ids }, this.form.systemPrefix).then(res => {
         this.$message.success('取消成功');
         this.getData();
       });
