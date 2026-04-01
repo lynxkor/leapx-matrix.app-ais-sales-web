@@ -21,12 +21,12 @@
         <template #extraButtons>
           <!-- <el-button size="small">按钮1</el-button>
           <el-button size="small">按钮2</el-button> -->
-          <el-button
-            v-if="form.status === 1010"
-            @click="openUploadShow"
-            size="small">
-            上传附件
-          </el-button>
+<!--          <el-button-->
+<!--            v-if="form.status === 1010"-->
+<!--            @click="openUploadShow"-->
+<!--            size="small">-->
+<!--            上传附件-->
+<!--          </el-button>-->
           <el-button
             @click="handleSubmit"
             v-if="form.status === 1010"
@@ -645,14 +645,16 @@
           <div class="common-section-header">
             <h2>附件材料(请上传发票、行驶证、有效身份证件并以中文命名)</h2>
           </div>
+          <div class="common-section-body">
+            <!-- 上传附件弹框 (通过 ref 调用组件内部方法打开) -->
+            <simple-dialog :_id="_id" :readonly="!(form.status === 1010 || form.status === 1040)" :attachType="'mcs_subsidies'" ref="uploadDialogRef"/>
+          </div>
         </section>
-          <!-- 上传附件弹框 (通过 ref 调用组件内部方法打开) -->
-          <simple-dialog ref="uploadDialogRef" @confirm="handleUploadConfirm" :id="_id"></simple-dialog>
-          <audit-dialog
-            ref="auditRef"
-            :maxlength="100"
-            @audit="handleAudit"
-          />
+        <audit-dialog
+          ref="auditRef"
+          :maxlength="100"
+          @audit="handleAudit"
+        />
         </el-main>
       </edit-base-container>
     </template>
