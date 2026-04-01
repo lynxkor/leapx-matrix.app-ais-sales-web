@@ -790,7 +790,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '整车零售-订单管理-团购订单权益申请管理',
+      pageTitle: '团购订单权益申请',
       pageType: 'edit',
       moduleKey: 'AISVR-vrGroupbuyOrderEquityApply',
       loading: false,
@@ -893,11 +893,11 @@ export default {
       this.auditorDialogVisible = false;
     },
     // 公司下拉
-    async getEnterpriseList () {
+    async getEnterpriseList (value) {
       const result = await getEnterprisePolicyList({
         pageNum: 1,
         pageSize: 20,
-        companyName: this.form.companyName,
+        companyName: value,
         seriesId: this.form.seriesId,
       });
       return result || [];

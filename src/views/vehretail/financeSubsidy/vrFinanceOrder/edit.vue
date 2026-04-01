@@ -300,7 +300,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '整车零售-金融补贴-金融订单管理',
+      pageTitle: '金融订单',
       pageType: 'edit',
       moduleKey: 'AISVR-vrFinanceOrder',
       form: { ...form },
