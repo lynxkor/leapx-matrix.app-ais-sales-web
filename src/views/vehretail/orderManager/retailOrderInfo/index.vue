@@ -197,7 +197,7 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-       <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length !== 1" @click="handleUnlock">取消锁车</el-button>
+       <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length !== 1 || (selectionList.length > 0 && selectionList[0].lockStatus === 0)" @click="handleUnlock">取消锁车</el-button>
        <el-button v-permission="moduleKey+'-changeSaleDealer'" size="small" @click="handleChangeDealer('sales')" :disabled="selectionList.length === 0">更换销售门店</el-button>
        <el-button v-permission="moduleKey+'-changeDeliveryDealer'" size="small" @click="handleChangeDealer('support')" :disabled="selectionList.length === 0">更换交付门店</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
@@ -233,6 +233,7 @@
       ref="unlockDialog"
       :businessId="businessId"
       :row="row"
+      :accountFlag="accountFlag"
       @refresh="getData"
     />
     <!-- 配置页 -->
@@ -464,7 +465,7 @@ export default {
           { props: 'interiorName', label: '内饰名称', visible: true, width: 140 },
           { props: 'wheelHubName', label: '轮毂名称', visible: true, width: 140 },
           { props: 'optionPackageName', label: '选装包名称', visible: true, width: 300 },
-          { props: 'lockCarTypeLabel', label: '锁车匹配类型', visible: true, width: 180 },
+          { props: 'lockTypeLabel', label: '锁车匹配类型', visible: true, width: 180 },
           { props: 'retailOrderCode', label: '订单编码', visible: true, width: 200 },
           { props: 'outTradeNo', label: '外部订单号', visible: true, width: 200 },
           { props: 'orderTime', label: '商城下单时间', visible: true, width: 200 },

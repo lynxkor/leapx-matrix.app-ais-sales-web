@@ -50,3 +50,10 @@ export function enableItem (data) {
 export function setSwitchItem (data) {
   return api.jsonPost(prefix + 'setSwitch', data);
 }
+/**
+ * 获取定时任务开关
+ * @param {Object} data
+ */
+export function getSwitchItem (data) {
+  return api.jsonPost(prefix + 'getSwitch', data);
+}

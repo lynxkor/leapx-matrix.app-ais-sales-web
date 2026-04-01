@@ -44,6 +44,7 @@
                 </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
                   <fetch-select
+                    ref="modelSelectRef"
                     :remote-method="remoteMethods.model"
                     v-model="form.modelId"
                     :params="form.modelName"
@@ -58,6 +59,7 @@
                 </el-form-item>
                 <el-form-item label="年款名称：" prop="yearTypeName">
                   <fetch-select
+                    ref="yearTypeSelectRef"
                     :remote-method="remoteMethods.yearType"
                     v-model="form.yearTypeId"
                     :params="form.yearTypeName"
@@ -322,6 +324,7 @@ export default {
       this.form.modelName = obj.name;
       this.form.yearTypeId = '';
       this.form.yearTypeName = '';
+      this.$refs.yearTypeSelectRef.loadRemoteMethod();
     },
     seriesListChange (val, obj) {
       this.form.seriesName = obj.name;
@@ -329,6 +332,7 @@ export default {
       this.form.modelName = '';
       this.form.yearTypeId = '';
       this.form.yearTypeName = '';
+      this.$refs.modelSelectRef.loadRemoteMethod();
     },
     detailRequest () {
       const id = this._id;

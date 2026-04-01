@@ -44,7 +44,7 @@
             filterable
           />
         </el-form-item>
-        <el-form-item label="车型名称">
+        <el-form-item label="车型">
           <fetch-select
             :remote-method="remoteMethods.model"
             v-model="form.modelId"
@@ -52,27 +52,13 @@
             @change="modelListChange"
           />
         </el-form-item>
-        <el-form-item label="年款名称">
+        <el-form-item label="年款">
           <fetch-select
-            :options="yearModelList"
+            ref="yearTypeSelectRef"
             v-model="form.yearTypeId"
-            placeholder="请选择"
-            labelKey="label"
-            valueKey="value"
-            clearable
-            filterable
-            @change="yearModelChange"
-          />
-        </el-form-item>
-        <el-form-item label="年款名称">
-          <fetch-select
-            :options="yearModelList"
-            v-model="form.yearTypeId"
-            placeholder="请选择"
-            labelKey="label"
-            valueKey="value"
-            clearable
-            filterable
+            :remote-method="remoteMethods.yearType"
+            :params="form.yearTypeName"
+            v-bind="selectOptions"
             @change="yearModelChange"
           />
         </el-form-item>
@@ -296,7 +282,6 @@ export default {
           return await listVehicleYearType({ yearTypeNameLike: query, modelId: this.form.modelId });
         },
       },
-      yearModelList: [],
     };
   },
   created () {
@@ -316,17 +301,7 @@ export default {
     modelListChange (val, obj) {
       this.form.yearTypeId = '';
       this.yearModelList = [];
-      this.listVehicleYearType(val);
-    },
-    async listVehicleYearType (val) {
-      const res = await vehicleModelYearTypeRelationDistinctYeayType({ modelId: val, limitSize: 50 });
-      this.yearModelList = res.map(item => {
-        return {
-          ...item,
-          label: item.yearTypeName,
-          value: item.yearTypeId
-        };
-      });
+      this.$refs.yearTypeSelectRef.loadRemoteMethod();
     },
     // 排序
     handleSortChange (value) {

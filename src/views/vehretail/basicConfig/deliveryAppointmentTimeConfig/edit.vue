@@ -55,6 +55,9 @@
                     v-model="form.timeLimitHour"
                     type="number"
                     clearable
+                    min="1"
+                    step="1"
+                    @input="handleTimeLimitHourChange"
                   />
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
@@ -191,7 +194,7 @@ export default {
           { required: true, message: '请选择时效（小时）', trigger: 'change' }
         ],
         status: [
-          { required: true, message: '请选择状态 1-启用 0-禁用', trigger: 'change' }
+          { required: true, message: '请选择状态', trigger: 'change' }
         ],
       }
     };
@@ -199,6 +202,12 @@ export default {
   mounted () {
   },
   methods: {
+    handleTimeLimitHourChange (val) {
+      // 去掉小数部分，处理null和undefined情况
+      if (val !== null && val !== undefined) {
+        this.form.timeLimitHour = Math.floor(Number(val));
+      }
+    },
     handleCityChange (val, obj) {
       this.form.cityName = obj.areaName;
     },

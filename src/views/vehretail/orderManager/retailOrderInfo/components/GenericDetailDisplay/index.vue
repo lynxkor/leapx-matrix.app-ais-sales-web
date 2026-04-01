@@ -1,6 +1,6 @@
 <!-- 新建文件: src/components/GenericDetailDisplay.vue -->
 <template>
-  <section class="common-section">
+  <section :id="id" class="common-section">
     <div class="common-section-header" :data-section="sectionKey">
       <h2>{{ title }}</h2>
     </div>
@@ -23,6 +23,10 @@
 export default {
   name: 'GenericDetailDisplay',
   props: {
+    id: {
+      type: String,
+      default: ''
+    },
     title: {
       type: String,
       required: true,

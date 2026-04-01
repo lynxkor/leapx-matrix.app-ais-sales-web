@@ -219,32 +219,8 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       emptyText: '若要启用此内容，请创建记录',
-      tableData: [
-        { id: 1, name: '张三', age: 25, email: 'zhangsan@example.com' },
-        { id: 2, name: '李四', age: 30, email: 'lisi@example.com' }
-      ],
+      tableData: [],
       rules: {
-        id: [
-          { required: true, message: '请输入主键', trigger: 'change' }
-        ],
-        creator: [
-          { required: true, message: '请输入创建者', trigger: 'change' }
-        ],
-        creatorName: [
-          { required: true, message: '请输入创建者名称', trigger: 'change' }
-        ],
-        createTime: [
-          { required: true, message: '请选择创建时间', trigger: 'change' }
-        ],
-        modifier: [
-          { required: true, message: '请输入修改者', trigger: 'change' }
-        ],
-        modifierName: [
-          { required: true, message: '请输入修改者名称', trigger: 'change' }
-        ],
-        updateTime: [
-          { required: true, message: '请选择修改时间', trigger: 'change' }
-        ],
         remark: [
           { required: true, message: '请输入备注', trigger: 'change' }
         ],
@@ -280,9 +256,6 @@ export default {
         ],
         publishTime: [
           { required: true, message: '请选择发布时间', trigger: 'change' }
-        ],
-        dataSource: [
-          { required: true, message: '请输入数据来源，150:新销服; 老销服:10', trigger: 'change' }
         ],
       }
     };

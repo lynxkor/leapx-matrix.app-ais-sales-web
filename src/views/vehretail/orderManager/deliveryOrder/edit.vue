@@ -453,7 +453,7 @@ import {
   viewDeliveryConfirm, // 交车确认单查看
   deliveryConfirmResign, // 交车确认单重签
   deliveryConfirmPush, // 交车确认单推送
-  cancelWriteOff, // 核销撤回
+  revertCancelOrderRights, // 核销撤回
   deliveryConfirm, // 交车确认单生成
   checkCarBuyerPhoneRegistered, // 校验购车人手机号是否注册零跑APP
 } from '@/api/vehretail/orderManager/deliveryOrder/index';
@@ -695,7 +695,7 @@ export default {
         { key: 'orderStatusLabel', label: '整车订单状态' },
         { key: 'orderTime', label: '商城下单时间' },
         { key: 'mallOrderCode', label: '商城订单编号' },
-        { key: 'orderSourceLabel', label: '订单来源' },
+        { key: 'orderSource', label: '订单来源' },
         { key: 'orderUserId', label: '用户 ID' },
         { key: 'carBuyerName', label: '购车人姓名' },
         { key: 'carBuyerPhone', label: '购车人手机' },
@@ -1012,7 +1012,7 @@ export default {
     // 核销撤回
     async handleVerifyWithdraw () {
       await this.withLoading('verifyWithdraw', async () => {
-        await cancelWriteOff({
+        await revertCancelOrderRights({
           deliveryOrderId: this.form.deliveryOrderId,
           retailOrderId: this.form.retailOrderId,
         });

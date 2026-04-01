@@ -120,6 +120,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    @change="clearCache"
                   />
                 </el-form-item>
                  <el-form-item label="金融机构：" prop="financialOrganizationId">
@@ -133,7 +134,7 @@
                       placeholder="请选择"
                       clearable
                       filterable
-                      :disabled="form.settleFundType != 2010"
+                      :disabled="form.settleFundType != 2010 && form.settleFundType != '2010'"
                     />
                 </el-form-item>
                 <el-form-item label="是否赊销：" prop="creditSaleFlag">
@@ -401,7 +402,7 @@
                   @remove-row="handleRemoveRow"
                   @page-size-change="pageSizeChange"
                   @current-page-change="currentPageChange"
-                  :auth="{delete: isEditing}"
+                  :auth="{edit: isEditing, delete: isEditing}"
                 />
               </div>
               </div>
@@ -619,7 +620,17 @@ export default {
         {
           field: 'qty',
           title: '数量',
-          width: '120'
+          width: '120',
+          editable: true,
+          editRender: {
+            name: 'ElInput',
+            props: {
+              type: 'number'
+            }
+          },
+          rules: [
+            { required: true, message: '额度数量不能为空', trigger: 'blur' }
+          ]
         },
         {
           field: 'standardPrice',
@@ -736,6 +747,11 @@ export default {
     // this.getCompanyList();
   },
   methods: {
+    clearCache (val, row) {
+      if (val === 1010 || val === 1050 || val === '1010' || val === '1050') {
+        this.form.financialOrganizationId = '';
+      }
+    },
     handleChangeArea (val, row) {
       // 匹配查找对应的省市区名称和编号
       const province = this.areaOptions.find(item => item.code === val[0]);
@@ -786,8 +802,7 @@ export default {
       addOrUpdateDetail(row).then(id => {
         defer.resolve(id);
         this.$message.success('提交成功');
-        this.getDetailData();
-        this.getList();
+        this.$refs.containerRef.loadDetail();
         this.$emit('replace');
       }).catch(e => {
         defer.reject();
@@ -982,6 +997,13 @@ export default {
       this.form.entCustomerName = row.companyName;
       this.form.entCustomerCode = row.companyCode;
       this.companyCustomerTypeName = row.companyCustomerTypeName;
+      this.form.saleDealerName = '';
+      this.form.pickupContactName = '';
+      this.form.pickupContactMobile = '';
+      this.areaCode = [];
+      this.form.address = '';
+      this.form.latitude = '';
+      this.form.longitude = '';
       this.getDealersForParentCompany(val);
     },
     async repairItemSearch (query) {

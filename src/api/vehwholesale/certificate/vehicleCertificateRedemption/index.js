@@ -42,3 +42,25 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 赎回
+ * @param {Object} data
+ */
+export function submit (data) {
+  return api.jsonPost(prefix + 'submit', data);
+}
+/**
+ * 查询批售订单、企业客户订单
+ * @param {Object} data
+ */
+export function listWholesaleOrEntOrder (data) {
+  return api.jsonPost(prefix + 'listWholesaleOrEntOrder', data);
+}
+/**
+ * 查询收货人地址
+ * @param {Object} data
+ */
+export function getLatestReceiverAddress (data) {
+  return api.jsonPost(prefix + 'getLatestReceiverAddress', data);
+}

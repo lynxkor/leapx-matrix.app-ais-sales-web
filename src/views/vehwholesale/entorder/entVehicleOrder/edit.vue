@@ -385,6 +385,17 @@
                     disabled
                   />
                 </el-form-item>
+                <el-form-item label="首次结算失败时间：" prop="firstSettleFailedTime">
+                  <el-date-picker
+                    :default-time="['00:00:00', '23:59:59']"
+                    v-model="form.firstSettleFailedTime"
+                    :picker-options="pickerOptions"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    disabled
+                  />
+                </el-form-item>
                  <el-form-item label="出库时间：" prop="outboundTime">
                   <el-date-picker
                     :default-time="['00:00:00', '23:59:59']"
@@ -432,6 +443,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    @change="clearCache"
                   />
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationId">
@@ -628,6 +640,9 @@
                 </el-form-item>
                 <el-form-item label="结算时间：" prop="settleTime">
                   {{ form.settleTime }}
+                </el-form-item>
+                <el-form-item label="首次结算失败时间：" prop="firstSettleFailedTime">
+                  {{ form.firstSettleFailedTime }}
                 </el-form-item>
                  <el-form-item label="出库时间：" prop="outboundTime">
                   {{ form.outboundTime }}
@@ -991,6 +1006,11 @@ export default {
     this.fetchSettleFundTypeOptions();
   },
   methods: {
+    clearCache (val, row) {
+      if (val === 1010 || val === 1050 || val === '1010' || val === '1050') {
+        this.form.financialOrganizationId = '';
+      }
+    },
     async fetchSettleFundTypeOptions () {
       const response = await getEnum('vw_fundtype');
       this.settleFundTypeOptions = response.filter(item => {

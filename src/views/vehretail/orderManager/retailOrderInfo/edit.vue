@@ -19,30 +19,20 @@
         <template #extraButtons>
           <!-- <el-button size="small" type="primary" @click="handleEquityInquiry">权益查询</el-button> -->
           <el-button size="small" :loading="printLoading" @click="handlePrintContractTermination">打印合同解除协议</el-button>
-          <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" @click="handleSetSpecialMark">设置特殊标识</el-button>
-          <el-button size="small" v-if="form.orderStatus !== 9" @click="handleModifyConfiguration">修改配置</el-button>
-          <el-button size="small" v-if="form.wholesaleBindStatus !== 1 && form.orderHandleType === 30 && form.unlockReasonCode === 'DJY003'" @click="handleManualVehicleAllocation">手工配车</el-button>
+          <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" :loading="setSpecialMarkLoading" @click="handleSetSpecialMark">设置特殊标识</el-button>
+          <el-button size="small" :loading="modifyConfigLoading" v-if="form.orderStatus !== 9" @click="handleModifyConfiguration">修改配置</el-button>
+          <el-button size="small" :loading="manualVehicleLoading" v-if="form.wholesaleBindStatus !== 1 && form.orderHandleType === 30 && form.unlockReasonCode === 'DJY003'" @click="handleManualVehicleAllocation">手工配车</el-button>
           <el-button size="small" :loading="autoLockLoading" v-if="form.wholesaleBindStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
           <el-button size="small" :loading="agreementLoading" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
-          <el-button size="small"
-                     @click="navigateToRoute({
-                      path: '/sales/vehretail/orderRefund/refundApply/edit',
-                      query: {
-                        mallOrderCode: form.mallOrderCode,
-                      },
-                    }, true)">
+          <el-button size="small" :loading="orderRefundLoading"
+                     @click="handleOrderRefund">
             订单退订
           </el-button>
-          <el-button size="small"
-                     @click="navigateToRoute({
-                      path: '/sales/vehretail/orderRefund/changeApply/edit',
-                      query: {
-                        mallOrderCode: form.mallOrderCode,
-                      },
-                    }, true)">
+          <el-button size="small" :loading="changeApplyLoading"
+                     @click="handleCarOwnerChangeApplication">
             购车人变更申请
           </el-button>
-          <el-button size="small" @click="handleQualityIssueUnbindApplication">质量问题解绑申请</el-button>
+          <el-button size="small" :loading="qualityIssueLoading" @click="handleQualityIssueUnbindApplication">质量问题解绑申请</el-button>
         </template>
         <!-- 固定悬浮导航栏 -->
         <div class="fixed-nav" :class="{ 'is-collapsed': isNavCollapsed }">
@@ -273,6 +263,7 @@
             </div>
           </section>
           <generic-detail-display
+            id="basic-info" class="common-section"
             :title="'基础信息'"
             :formData="form"
             :fields="displayFields"
@@ -573,6 +564,12 @@ export default {
       printLoading: false, // 打印合同解除协议的 loading 状态
       autoLockLoading: false, // 自动锁车的 loading 状态
       agreementLoading: false, // 查看购车协议的 loading 状态
+      setSpecialMarkLoading: false, // 设置特殊标识的 loading 状态
+      modifyConfigLoading: false, // 修改配置的 loading 状态
+      manualVehicleLoading: false, // 手工配车的 loading 状态
+      orderRefundLoading: false, // 订单退订的 loading 状态
+      changeApplyLoading: false, // 购车人变更申请的 loading 状态
+      qualityIssueLoading: false, // 质量问题解绑申请的 loading 状态
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
@@ -684,6 +681,7 @@ export default {
       ],
       activeSection: 'basic-info',
       isNavCollapsed: false,
+      isManualScrolling: false, // 标记是否正在手动点击滚动
       specialRemarkDialog: {
         title: '设置特殊备注',
         show: false,
@@ -745,8 +743,10 @@ export default {
     },
     // 设置特殊标识
     handleSetSpecialMark () {
+      this.setSpecialMarkLoading = true;
       this.specialRemarkDialog.form.specialRemark = '';
       this.specialRemarkDialog.show = true;
+      this.setSpecialMarkLoading = false;
     },
     submitSetSpecialRemark () {
       this.$refs.specialRemarkFormRef.validate(valid => {
@@ -766,15 +766,18 @@ export default {
     },
     // 修改配置
     async  handleModifyConfiguration () {
+      this.modifyConfigLoading = true;
       this.businessId = this._id;
       this.row = this.form;
       // const res = await getOrderUnlockConfig(this.row.retailOrderCode);
       // 检查 accountFlag 和 changeConfigCount 的关系
       if (this.accountFlag && this.row.changeConfigCount >= 1) {
         this.$message.error('该订单修改配车次数已达上限');
+        this.modifyConfigLoading = false;
         return;
       }
       this.$refs.materialsDialog.show();
+      this.modifyConfigLoading = false;
     },
     loginUserGet () {
       loginUserGet().then(res => {
@@ -784,10 +787,12 @@ export default {
     },
     // 手工配车
     handleManualVehicleAllocation () {
-      this.$refs.vinDialog.show({
-        meterlsCode: this.form.materials.materialsCode,
-        saleDealerCode: this.form.saleDealerCode
-      });
+      this.manualVehicleLoading = true;
+      this.$refs.vinDialog.show(
+        { materialsCode: this.form.materials.materialsCode, saleDealerCode: this.form.saleDealerCode },
+        { retailOrderCode: this.form.retailOrderCode, retailOrderId: this._id }
+      );
+      this.manualVehicleLoading = false;
     },
     // VIN 选择确认回调
     onVinSelected (vehicle) {
@@ -825,23 +830,30 @@ export default {
       });
     },
     // 订单退订
-    handleOrderUnsubscribe () {
-      // 实现订单退订逻辑
+    handleOrderRefund () {
+      this.orderRefundLoading = true;
       this.navigateToRoute({
-        path: '/vehretail/orderManager/retailOrderInfo',
+        path: '/sales/vehretail/orderRefund/refundApply/edit',
         query: {
-          retailOrderCode: this.form.retailOrderCode,
+          mallOrderCode: this.form.mallOrderCode,
         },
-      });
+      }, true);
+      this.orderRefundLoading = false;
     },
     // 购车人变更申请
     handleCarOwnerChangeApplication () {
-      // this.$router.push({
-      //   path: '/vehwholesale/basic/wholesaleProdScheduleActivity'
-      // });
+      this.changeApplyLoading = true;
+      this.navigateToRoute({
+        path: '/sales/vehretail/orderRefund/changeApply/edit',
+        query: {
+          mallOrderCode: this.form.mallOrderCode,
+        },
+      }, true);
+      this.changeApplyLoading = false;
     },
     // 质量问题解绑申请
     handleQualityIssueUnbindApplication () {
+      this.qualityIssueLoading = true;
       // 实现质量问题解绑申请逻辑
       const id = this._id;
       const saleMode = this.form.saleMode;
@@ -858,6 +870,7 @@ export default {
       } else {
         this.$message.error('该订单不是批售单或订单状态不是车辆在途或等待交车，不能进行质量问题解绑申请');
       }
+      this.qualityIssueLoading = false;
     },
     // 将显示字段配置转换为表格列配置
     convertToTableColumns (displayFields) {
@@ -962,27 +975,44 @@ export default {
       if (element) {
         const scrollContainer = this.$refs.scrollContainer?.$el || this.$refs.scrollContainer;
         if (scrollContainer) {
-          // 计算目标元素相对于滚动容器的位置
+          // 设置手动滚动标志，防止 handleScroll 干扰
+          this.isManualScrolling = true;
+
+          // 使用更可靠的方式计算滚动位置
+          // 先获取目标元素相对于滚动容器的真实位置
           const containerRect = scrollContainer.getBoundingClientRect();
           const elementRect = element.getBoundingClientRect();
+          // 计算元素相对于滚动容器内部的偏移量
+          const relativeTop = element.offsetTop || (elementRect.top - containerRect.top + scrollContainer.scrollTop);
+
           // 计算目标位置：让元素顶部距离容器顶部有一定距离，避免内容消失在上方
-          const scrollOffset = 20; // 额外的缓冲距离
-          const targetScrollTop = scrollContainer.scrollTop + (elementRect.top - containerRect.top) - scrollOffset;
+          const scrollOffset = 80; // 额外的缓冲距离（考虑到固定导航栏的高度）
+          const targetScrollTop = relativeTop - scrollOffset;
+
+          console.log('[scrollToSection] sectionId:', sectionId, 'targetScrollTop:', targetScrollTop, 'element.offsetTop:', element.offsetTop);
 
           // 平滑滚动到目标位置
           scrollContainer.scrollTo({
             top: targetScrollTop,
             behavior: 'smooth'
           });
+
+          // 滚动结束后清除标志（500ms 后，与 smooth 滚动动画时间匹配）
+          setTimeout(() => {
+            this.isManualScrolling = false;
+          }, 500);
         }
+        // 立即更新激活状态
         this.activeSection = sectionId;
       }
     },
     // 监听滚动事件，更新激活的导航项
     handleScroll () {
+      // 如果正在手动点击滚动，不更新 activeSection，避免干扰
+      if (this.isManualScrolling) return;
+
       const sections = this.navItems.map(item => item.id);
       let currentSection = 'basic-info';
-      let currentIndex = 0;
       // 获取滚动容器的 scrollTop（el-main 容器）
       const scrollContainer = this.$refs.scrollContainer?.$el || this.$refs.scrollContainer;
       if (!scrollContainer) return;
@@ -993,10 +1023,10 @@ export default {
       const viewportTop = 0;
       // 可视区域的下边界
       const viewportBottom = containerRect.height;
-      // 中间点，用于判断哪个区域在视野中心
-      const viewportMiddle = viewportTop + (viewportBottom - viewportTop) / 3;
+      // 使用 1/4 处作为判断点，让判断更稳定
+      const viewportMiddle = viewportTop + (viewportBottom - viewportTop) / 4;
 
-      // 找到在可视区域内最靠近顶部的元素
+      // 找到在可视区域内最靠上的元素
       for (let i = 0; i < sections.length; i++) {
         const element = document.getElementById(sections[i]);
         if (element) {
@@ -1004,28 +1034,28 @@ export default {
           // 元素相对于滚动容器顶部的位置
           const elementTop = elementRect.top - containerRect.top + scrollTop;
           const elementBottom = elementRect.bottom - containerRect.top + scrollTop;
-          // const elementHeight = elementBottom - elementTop;
-          // 判断元素是否在可视区域内
-          const isInViewport = elementTop < scrollTop + viewportBottom && elementBottom > scrollTop + viewportTop;
+
+          // 判断元素是否在可视区域内（有更大的容差）
+          const isInViewport = elementTop < scrollTop + viewportBottom && elementBottom > scrollTop + viewportTop + 50;
 
           if (isInViewport) {
-            // 如果元素顶部在可视区域内或接近顶部，则选中它
+            // 如果元素顶部在可视区域内且接近顶部，则选中它
             if (elementTop <= scrollTop + viewportMiddle) {
               currentSection = sections[i];
-              currentIndex = i;
-            } else if (currentIndex === 0 || i === 0) {
-              // 如果还没有找到合适的区域，选择第一个在可视区域内的
-              currentSection = sections[i];
-              currentIndex = i;
             }
+            break; // 找到第一个符合条件的就退出，避免覆盖
           }
         }
       }
 
-      this.activeSection = currentSection;
+      // 只有当确实变化时才更新，避免频繁触发
+      if (this.activeSection !== currentSection) {
+        this.activeSection = currentSection;
+      }
 
       // 滚动 fixed-nav，让当前激活的导航项保持在可视区域内
       this.$nextTick(() => {
+        const currentIndex = this.navItems.findIndex(item => item.id === currentSection);
         this.scrollNavToActive(currentIndex);
       });
     },
@@ -1038,16 +1068,19 @@ export default {
       const activeLink = navLinks[currentIndex];
       if (!activeLink) return;
 
-      const navRect = navContainer.getBoundingClientRect();
-      const linkRect = activeLink.getBoundingClientRect();
+      // 使用 offsetTop 和 offsetHeight 来计算，更可靠
+      const linkTop = activeLink.offsetTop;
+      const linkHeight = activeLink.offsetHeight;
+      const navHeight = navContainer.clientHeight;
+      const navScrollTop = navContainer.scrollTop;
 
       // 如果激活项在可视区域上方，向上滚动
-      if (linkRect.top < navRect.top) {
-        navContainer.scrollTop -= (navRect.top - linkRect.top);
+      if (linkTop < navScrollTop) {
+        navContainer.scrollTop = linkTop;
       }
       // 如果激活项在可视区域下方，向下滚动
-      if (linkRect.bottom > navRect.bottom) {
-        navContainer.scrollTop += (linkRect.bottom - navRect.bottom);
+      if (linkTop + linkHeight > navScrollTop + navHeight) {
+        navContainer.scrollTop = linkTop + linkHeight - navHeight;
       }
     },
     // 切换导航栏收起/展开
@@ -1082,7 +1115,8 @@ export default {
   border: 1px solid #ebeef5;
   backdrop-filter: blur(10px); /* 添加背景模糊效果 */
   max-height: 60vh; /* 设置最大高度为视口的 60% */
-  overflow: hidden; /* 隐藏超出内容 */
+  overflow-y: auto; /* 修复：启用垂直滚动 */
+  overflow-x: hidden; /* 隐藏横向滚动 */
 
   &.is-collapsed {
     padding: 10px 5px;

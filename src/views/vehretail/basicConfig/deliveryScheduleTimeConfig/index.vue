@@ -252,7 +252,7 @@ export default {
       }
       exportTable({
         businessType: '交付排程时间段配置管理',
-        dataFetchPath: 'vehretail/web/basicConfig/deliveryScheduleTimeConfig/page',
+        dataFetchPath: 'vr/web/basicConfig/deliveryScheduleTimeConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

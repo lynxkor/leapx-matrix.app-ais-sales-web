@@ -21,6 +21,18 @@
         <template #extraButtons>
           <!-- <el-button size="small">按钮1</el-button>
           <el-button size="small">按钮2</el-button> -->
+<!--          <el-button-->
+<!--            v-if="form.status === 1010"-->
+<!--            @click="openUploadShow"-->
+<!--            size="small">-->
+<!--            上传附件-->
+<!--          </el-button>-->
+          <el-button
+            @click="handleSubmit"
+            v-if="form.status === 1010"
+            size="small">
+            提交审核
+          </el-button>
           <el-button
             @click="openRevocationShow"
             v-if="form.status === 1030 ||form.status === 1040"
@@ -629,25 +641,20 @@
             </el-form>
           </div>
         </section>
-          <section class="common-section">
-            <div class="common-section-header">
-              <h2>附件材料(请上传发票、行驶证、有效身份证件并以中文命名)</h2>
-            </div>
-            <div class="common-section-table">
-              <!--附件上传组件 -->
-              <AisAttachment
-                :businessId="_id"
-                :readonly="!isEditing"
-                configCode="mcs_subsidies"
-                attachType="已售上牌车辆资料附件"
-              />
-            </div>
-          </section>
-          <audit-dialog
-            ref="auditRef"
-            :maxlength="100"
-            @audit="handleAudit"
-          />
+        <section class="common-section">
+          <div class="common-section-header">
+            <h2>附件材料(请上传发票、行驶证、有效身份证件并以中文命名)</h2>
+          </div>
+          <div class="common-section-body">
+            <!-- 上传附件弹框 (通过 ref 调用组件内部方法打开) -->
+            <simple-dialog :_id="_id" :readonly="!(form.status === 1010 || form.status === 1040)" :attachType="'mcs_subsidies'" ref="uploadDialogRef"/>
+          </div>
+        </section>
+        <audit-dialog
+          ref="auditRef"
+          :maxlength="100"
+          @audit="handleAudit"
+        />
         </el-main>
       </edit-base-container>
     </template>
@@ -666,7 +673,7 @@ import {
   effectiveVinValidate,
   cancel,
   audit,
-  revocation
+  revocation, submit
 } from '@/api/vehretail/orderManager/soldPlateInfo/index';
 import { getEffectiveByVin as getDeliveryInvoiceByVin } from '@/api/vehretail/orderManager/deliveryInvoice/index';
 import { getEffectiveByVin as getSpecialSalesReportByVin } from '@/api/vehretail/orderManager/specialVehicleSalesReport/index';
@@ -681,6 +688,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import { getList as getVehicleProfileList } from '@/api/datacenter/vehicle/vehicleProfile';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 import auditDialog from '@/libs/components/auditDialog/index.vue';
+import SimpleDialog from './SimpleDialog.vue';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -766,7 +774,7 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
-    AisAttachment,
+    SimpleDialog,
     EditPageLayout,
     EditBaseContainer,
     FetchSelect,
@@ -1237,6 +1245,22 @@ export default {
         this.form.districtCode = city.code;
         this.form.districtName = city.name;
       }
+    },
+    openUploadShow () {
+      // 通过 ref 调用组件内部方法打开弹框
+      this.$refs.uploadDialogRef.open({
+        title: '附件管理',
+      });
+    },
+    handleUploadConfirm () {
+      // 点击保存按钮的回调
+      this.$message.success('保存成功');
+      this.$refs.uploadDialogRef.close();
+    },
+    handleSubmit () {
+      submit(this.form).then(() => {
+        this.reloadDetail();
+      });
     },
     openRevocationShow () {
       this.$confirm('确认是否对数据进行撤回?', '提示', {

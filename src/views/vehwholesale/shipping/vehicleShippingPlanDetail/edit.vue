@@ -812,12 +812,14 @@ export default {
             optionPackageName: res.vehicleMaterials?.optionPackageName || '',
             modelName: res.vehicleMaterials?.modelName || '',
             materialsDesc: res.vehicleMaterials?.materialsDesc || '',
+            // 金融机构
             organizationName: res.financialOrganization?.organizationName || '',
-            inboundDateTime: res.vehicleVdcInventoryResp?.inboundDateTime || '',
-            vehicleDeliveryStatusLabel: res.vehicleVdcInventoryResp?.vehicleDeliveryStatusLabel || '',
-            vdcInventoryStatusLabel: res.vehicleVdcInventoryResp?.vdcInventoryStatusLabel || '',
+            inboundDateTime: res.vehicleVdcInventory?.inboundDateTime || '',
+            vehicleDeliveryStatusLabel: res.vehicleVdcInventory?.vehicleDeliveryStatusLabel || '',
+            vdcInventoryStatusLabel: res.vehicleVdcInventory?.vdcInventoryStatusLabel || '',
+            outboundDateTime: res.vehicleVdcInventory?.outboundDateTime || '',
+            // wms
             reservoirLocationCode: res.wmsInventory?.reservoirLocationCode || '',
-            outboundDateTime: res.vehicleVdcInventoryResp?.outboundDateTime || '',
             warehouseName: res.vehicleWarehouse?.warehouseName || '',
             warehouseCode: res.vehicleWarehouse?.warehouseCode || '',
             factoryNames: res.vehicleWarehouse?.factoryNames || '',

@@ -445,10 +445,12 @@ export default {
     onReset () {
       if (this.activeName === 'homePage') {
         this.form = { ...defaultForm };
+        this.form.lowBatteryCar = 0;
         this.optionObj.form.page = 1;
         this.optionObj.form.pageSize = pageSize;
       } else if (this.activeName === 'lowBattery') {
         this.form = { ...defaultForm };
+        this.form.lowBatteryCar = 1;
         this.optionDdl.form.page = 1;
         this.optionDdl.form.pageSize = pageSize;
       }
@@ -679,7 +681,6 @@ export default {
     // 点击tabs栏切换
     handleClick (item) {
       this.activeName = item.name;
-      this.onReset();
       if (item.name === 'lowBattery') {
         this.form.carAllocated = '';
         this.form.logisticsReserved = '';
@@ -687,7 +688,7 @@ export default {
         this.form.carAllocated = '0';
         this.form.logisticsReserved = '0';
       }
-      this.refreshTableData();
+      this.onReset();
     },
     // 批量编辑
     handleEdit () {
