@@ -197,7 +197,7 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-       <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length !== 1" @click="handleUnlock">取消锁车</el-button>
+       <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length !== 1 || (selectionList.length > 0 && selectionList[0].lockStatus === 0)" @click="handleUnlock">取消锁车</el-button>
        <el-button v-permission="moduleKey+'-changeSaleDealer'" size="small" @click="handleChangeDealer('sales')" :disabled="selectionList.length === 0">更换销售门店</el-button>
        <el-button v-permission="moduleKey+'-changeDeliveryDealer'" size="small" @click="handleChangeDealer('support')" :disabled="selectionList.length === 0">更换交付门店</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
