@@ -775,7 +775,6 @@ export default {
   mixins: [routeGuard, permissions, commonMixins],
   components: {
     SimpleDialog,
-    AisAttachment,
     EditPageLayout,
     EditBaseContainer,
     FetchSelect,
