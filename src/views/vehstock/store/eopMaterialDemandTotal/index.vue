@@ -4,13 +4,21 @@
     <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
       class="ais-search-form">
       <el-form-item label="物料编码">
-        <el-input placeholder="请输入" v-model="form.materialsCode" clearable />
+        <tag-input v-model="form.materialsCodeList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="物料描述">
         <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
       </el-form-item>
       <el-form-item label="入库统计开始日期" v-show="this.visibleCount === 3 || show">
-        <el-input placeholder="请输入" v-model="form.stockStatStartDate" clearable />
+        <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.stockStatStartDate"
+            type="daterange"
+            :picker-options="pickerOptions"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="创建时间">
@@ -22,14 +30,26 @@
           <fetch-select :request="fetchOptions" enumCode="StatusEnum" v-model="form.status" placeholder="请选择" clearable
             multiple filterable />
         </el-form-item>
-        <el-form-item label="车系ID">
-          <el-input placeholder="请输入" v-model="form.seriesId" clearable />
+        <el-form-item label="车系">
+          <fetch-select
+            v-model="form.seriesIdList"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.series"
+          />
         </el-form-item>
-        <el-form-item label="车型ID">
-          <el-input placeholder="请输入" v-model="form.modelId" clearable />
+        <el-form-item label="车型">
+          <fetch-select
+            v-model="form.modelIdList"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.model"
+          />
         </el-form-item>
-        <el-form-item label="年款ID">
-          <el-input placeholder="请输入" v-model="form.yearTypeId" clearable />
+        <el-form-item label="年款">
+          <fetch-select
+            v-model="form.yearTypeIdList"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.yearType"
+          />
         </el-form-item>
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
@@ -38,7 +58,7 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <!-- <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button> -->
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
         :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)"
@@ -62,7 +82,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/store/eopMaterialDemandTotal/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleModel, listVehicleYearType } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -71,6 +91,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -81,6 +102,9 @@ const defaultForm = {
   stockStatStartDate: '',
   seriesId: '',
   modelId: '',
+  seriesIdList: [],
+  modelIdList: [],
+  yearTypeIdList: [],
   yearTypeId: '',
 };
 
@@ -96,7 +120,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    TagInput
   },
   data () {
     return {
@@ -128,17 +153,17 @@ export default {
             visible: true,
             width: 200,
             fixed: 'left',
-            buttons: [{
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehstock/store/eopMaterialDemandTotal/edit',
-                  query: {
-                    id: row.id
-                  }
-                });
-              },
-              type: 'primary'
-            }]
+            // buttons: [{
+            //   click: (rowIndex, row) => {
+            //     this.$router.push({
+            //       path: '/vehstock/store/eopMaterialDemandTotal/edit',
+            //       query: {
+            //         id: row.id
+            //       }
+            //     });
+            //   },
+            //   type: 'primary'
+            // }]
           },
           { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
@@ -174,14 +199,66 @@ export default {
         // column: 'create_time',
         // sort: 'DESC'
         // }
-      ]
+      ],
+      // 提取公共配置
+      selectOptions: {
+        placeholder: '请选择',
+        labelKey: 'name',
+        valueKey: 'id',
+        clearable: true,
+        multiple: true,
+        collapseTags: true,
+        filterable: true,
+        remote: true,
+        reserveKeyword: true
+      },
+      // 远程搜索方法
+      remoteMethods: {
+        series: async (query) => {
+          return await vehicleSeriesList({ seriesNameLike: query });
+        },
+        // model: async (query) => {
+        //   return await listVehicleModel({ modelNameLike: query });
+        // },
+        // 初始方法
+        model: async (query) => {
+          return await this.searchModel(query);
+        },
+        yearType: async (query) => {
+          return await listVehicleYearType({ yearTypeNameLike: query });
+        },
+      }
     };
+  },
+  watch: {
+    'form.seriesIdList': {
+      handler (newVal) {
+        // 车系变化时清空车型选择
+        this.form.modelIdList = [];
+        this.searchModel();
+      },
+      immediate: true
+    },
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
   },
   methods: {
+    // 车型支持车系 ID 和 车型输入 方法
+    async searchModel (query) {
+      const params = {};
+
+      if (query) {
+        params.modelNameLike = query;
+      }
+
+      if (this.form.seriesIdList?.length) {
+        params.seriesIds = this.form.seriesIdList;
+      }
+
+      return await listVehicleModel(params);
+    },
     // 排序
     handleSortChange (value) {
       this.sortColumns = (value || []).map(item => {
@@ -306,12 +383,25 @@ export default {
         }
       });
 
+      if (this.form.stockStatStartDate) {
+        delete data.stockStatStartDate;
+        if (this.form.stockStatStartDate.length > 1) {
+          data.stockStatStartDateStart = this.form.stockStatStartDate[0];
+          data.stockStatStartDateEnd = this.form.stockStatStartDate[1];
+        }
+      }
+
       if (this.form.createTime) {
         delete data.createTime;
         if (this.form.createTime.length > 1) {
           data.createTimeStart = this.form.createTime[0];
           data.createTimeEnd = this.form.createTime[1];
         }
+      }
+
+      if (Array.isArray(this.form.materialsCodeList) && this.form.materialsCodeList.length <= 1) {
+        delete data.materialsCodeList;
+        data.materialsCodeLike = this.form.materialsCodeList[0] || '';
       }
       // 排序字段
       data.sortColumns = this.sortColumns;
