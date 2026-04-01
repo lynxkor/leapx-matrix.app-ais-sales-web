@@ -80,7 +80,7 @@
               <fetch-select
                 :request="fetchOptions"
                 enumCode="BooleanEnum"
-                v-model="form.allowUseRebate"
+                v-model="form.allowEntOrderSettle"
                 placeholder="请选择"
                 clearable
                 filterable

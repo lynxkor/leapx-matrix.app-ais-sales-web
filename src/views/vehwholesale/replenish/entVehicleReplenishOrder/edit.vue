@@ -988,6 +988,13 @@ export default {
       this.form.entCustomerName = row.companyName;
       this.form.entCustomerCode = row.companyCode;
       this.companyCustomerTypeName = row.companyCustomerTypeName;
+      this.form.saleDealerName = '';
+      this.form.pickupContactName = '';
+      this.form.pickupContactMobile = '';
+      this.areaCode = [];
+      this.form.address = '';
+      this.form.latitude = '';
+      this.form.longitude = '';
       this.getDealersForParentCompany(val);
     },
     async repairItemSearch (query) {

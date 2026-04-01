@@ -70,7 +70,7 @@
                     type="datetime"
                     v-model="form.effectiveTime"
                      value-format="yyyy-MM-dd HH:mm:ss"
-                    placeholder="请选择额度生效日期"
+                    placeholder="请选择生效日期"
                   />
                 </el-form-item>
                 <el-form-item label="失效时间：" prop="expireTime">
@@ -78,7 +78,7 @@
                     type="datetime"
                     v-model="form.expireTime"
                      value-format="yyyy-MM-dd HH:mm:ss"
-                    placeholder="请选择额度失效时间"
+                    placeholder="请选择失效时间"
                   />
                 </el-form-item>
                   <!-- <el-form-item label="关联交易编号：" prop="code">

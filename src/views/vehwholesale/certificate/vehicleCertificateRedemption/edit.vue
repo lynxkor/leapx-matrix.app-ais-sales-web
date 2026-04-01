@@ -197,7 +197,7 @@
                       filterable
                     />
                 </el-form-item>
-                <el-form-item label="订单状态" prop="status">
+                <el-form-item label="合同SAP状态：" prop="status">
                   <el-input
                     placeholder="请输入"
                     v-model="form.statusLabel"
@@ -213,7 +213,7 @@
                 <el-form-item label="赊销结算状态：" prop="creditSettleStatusLabel">
                   {{ form.creditSettleStatusLabel }}
                 </el-form-item>
-                <el-form-item label="订单状态：" prop="statusLabel">
+                <el-form-item label="合同SAP状态：" prop="statusLabel">
                   {{ form.statusLabel }}
                 </el-form-item>
               </el-form>
