@@ -260,7 +260,7 @@ export default {
                 this.navigateToRoute({
                   path: '/partner/channelManagement/shopBasicsMessageDetails',
                   query: {
-                    id: row.ownerOrgId
+                    id: row.saleDealerId
                   }
                 });
               },
