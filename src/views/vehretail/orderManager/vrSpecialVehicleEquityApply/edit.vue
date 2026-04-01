@@ -274,7 +274,7 @@ export default {
   data () {
     const form = this.getDefaultForm();
     return {
-      pageTitle: '整车零售-订单管理-特殊车辆权益申请管理',
+      pageTitle: '特殊车辆权益申请',
       pageType: 'edit',
       moduleKey: 'AISVR-vrSpecialVehicleEquityApply',
       loading: false,

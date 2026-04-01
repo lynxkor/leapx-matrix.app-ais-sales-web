@@ -8,14 +8,6 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <page-search-action
-        v-if="canList"
-        v-model="show"
-        is-expandable
-        :loading="loading"
-        @submit="onSubmit"
-        @reset="onReset"
-      />
     </el-form>
     <div class="ais-actions">
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
@@ -56,7 +48,6 @@
 <script>
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
-import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/basicConfig/vrEquityCategory/index';
 import { getTableConfig, tableAddOrUpdate, exportTable } from '@/api/common';
 import Upload from '@/libs/components/UploadDialog';
@@ -77,14 +68,13 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
-    PageSearchAction,
     LPVxeTable,
     EditPage,
     Upload
   },
   data () {
     return {
-      pageTitle: '整车零售-基础设置-权益大类管理',
+      pageTitle: '权益大类',
       pageType: 'list',
       moduleKey: 'AISVR-vrEquityCategory',
       form: {
@@ -183,7 +173,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '整车零售-基础设置-权益大类管理',
+        businessType: '权益大类',
         dataFetchPath: 'vehretail/web/basicConfig/vrEquityCategory/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -191,7 +181,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车零售-基础设置-权益大类管理.xlsx');
+            await downloadExcel(res.excelUrl, '权益大类.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

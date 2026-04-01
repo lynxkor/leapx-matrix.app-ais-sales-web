@@ -12,13 +12,6 @@
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
       >
-        <template #status>
-          <span>{{ form.code }}</span>
-        </template>
-        <template #extraButtons>
-          <el-button size="small">按钮1</el-button>
-          <el-button size="small">按钮2</el-button>
-        </template>
         <el-main>
           <section class="common-section">
             <div class="common-section-header">
@@ -72,34 +65,35 @@
                     clearable
                     filterable
                     @change="handleDocumentTypeChange"
+                    :disabled = '_id'
                   />
                 </el-form-item>
                 <el-form-item label="整车批售订单：" prop="wholesaleOrderCode">
                   <fetch-select
                     filterable
                     clearable
-                    collapseTags
                     v-model="form.wholesaleOrderCode"
                     placeholder="请选择整车批售订单"
                     :remote-method="getWholesaleOrderList"
                     remote
                     label-key="wholesaleOrderCode"
                     value-key="wholesaleOrderCode"
-                    :disabled="!isWholesaleOrderEditable"
+                    :disabled="!isWholesaleOrderEditable || _id"
+                    @change="handleWholesaleOrderChange"
                   />
                 </el-form-item>
                 <el-form-item label="企业客户整车订单：" prop="enterpriseOrderCode">
                   <fetch-select
                     filterable
                     clearable
-                    collapseTags
                     v-model="form.enterpriseOrderCode"
                     placeholder="请选择企业客户整车订单"
                     :remote-method="getEnterpriseOrderList"
                     remote
                     label-key="enterpriseOrderCode"
                     value-key="enterpriseOrderCode"
-                    :disabled="!isEnterpriseOrderEditable"
+                    :disabled="!isEnterpriseOrderEditable || _id"
+                    @change="handleEnterpriseOrderChange"
                   />
                 </el-form-item>
                 <el-form-item label="VIN号：" prop="vin">
@@ -170,8 +164,8 @@
 
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehwholesale/fund/fundVehwhite/index';
-import { getList as getWholesaleOrderList } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
-import { getList as getEnterpriseOrderList } from '@/api/vehwholesale/entorder/entVehicleOrder/index';
+import { getList as getWholesaleOrderList, getDetail as getWholesaleOrderDetail } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import { getList as getEnterpriseOrderList, getDetail as getEnterpriseOrderDetail } from '@/api/vehwholesale/entorder/entVehicleOrder/index';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import FetchSelect from '@/libs/components/FetchSelect';
@@ -226,7 +220,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '编号：' + (this.form.code || '');
+      return '车辆白名单：' + (this.form.code || '');
     },
     isWholesaleOrderEditable () {
       return this.form.documentType === '1' || this.form.documentType === 1;
@@ -261,10 +255,46 @@ export default {
           { required: true, message: '请选择单据类型', trigger: 'change' }
         ],
         wholesaleOrderCode: [
-          { required: true, message: '请输入整车批售订单', trigger: 'blur' }
+          {
+            required: true,
+            message: '请输入整车批售订单',
+            trigger: 'blur',
+            validator: (rule, value, callback) => {
+              // 根据单据类型决定是否必填
+              if (this.form.documentType === '1' || this.form.documentType === 1) {
+                // 如果单据类型是整车批售订单，则必须填写整车批售订单
+                if (!value) {
+                  callback(new Error('请输入整车批售订单'));
+                } else {
+                  callback();
+                }
+              } else {
+                // 否则不需要必填
+                callback();
+              }
+            }
+          }
         ],
         enterpriseOrderCode: [
-          { required: true, message: '请输入企业客户整车订单', trigger: 'blur' }
+          {
+            required: true,
+            message: '请输入企业客户整车订单',
+            trigger: 'blur',
+            validator: (rule, value, callback) => {
+              // 根据单据类型决定是否必填
+              if (this.form.documentType === '2' || this.form.documentType === 2) {
+                // 如果单据类型是企业客户整车订单，则必须填写企业客户整车订单
+                if (!value) {
+                  callback(new Error('请输入企业客户整车订单'));
+                } else {
+                  callback();
+                }
+              } else {
+                // 否则不需要必填
+                callback();
+              }
+            }
+          }
         ],
         vin: [
           { required: false, message: '请输入VIN号', trigger: 'blur' }
@@ -306,14 +336,61 @@ export default {
       return addOrUpdate({ ...this.form });
     },
     handleDocumentTypeChange (value) {
-      // 根据单据类型清空对应的订单字段
-      if (value === '2' || value === 2) {
-        // 如果不是整车批售订单类型，则清空整车批售订单字段
+      // 根据单据类型清空对应的订单字段和相关信息
+      if (value !== '1' && value !== 1) {
+        // 如果不是整车批售订单类型，则清空整车批售订单字段和相关信息
         this.form.wholesaleOrderCode = '';
+        this.form.parentCompanyName = '';
+        this.form.dealerName = '';
       }
-      if (value === '1' || value === 1) {
-        // 如果不是企业客户整车订单类型，则清空企业客户整车订单字段
+      if (value !== '2' && value !== 2) {
+        // 如果不是企业客户整车订单类型，则清空企业客户整车订单字段和相关信息
         this.form.enterpriseOrderCode = '';
+        this.form.enterpriseCustomerName = '';
+      }
+
+      // 清空VIN信息
+      this.form.vin = '';
+    },
+    // 监听整车批售订单选择变化
+    async handleWholesaleOrderChange (selectedValue, response) {
+      if (!selectedValue) {
+        // 如果清空选择，清空相关信息
+        this.form.parentCompanyName = '';
+        this.form.parentCompanyCode = '';
+        this.form.dealerName = '';
+        this.form.dealerCode = '';
+        this.form.vin = '';
+        return;
+      }
+
+      if (response) {
+        // 带出母公司名称和销售门店信息
+        this.form.wholesaleOrderId = response.id || '';
+        this.form.parentCompanyName = response.dealerCompanyName || '';
+        this.form.parentCompanyCode = response.dealerCompanyCode || '';
+        this.form.dealerName = response.saleDealerName || '';
+        this.form.dealerCode = response.saleDealerCode || '';
+        this.form.vin = response.vin;
+      }
+    },
+    // 监听企业客户整车订单选择变化
+    async handleEnterpriseOrderChange (selectedValue, response) {
+      if (!selectedValue) {
+        // 如果清空选择，清空相关信息
+        this.form.enterpriseCustomerName = '';
+        this.form.enterpriseCustomerId = '';
+        this.form.vin = '';
+        return;
+      }
+
+      // 根据选择的订单获取详细信息
+      if (response) {
+        // 带出企业客户信息
+        this.form.enterpriseOrderId = response.id || '';
+        this.form.enterpriseCustomerId = response.entCustomerCode || '';
+        this.form.enterpriseCustomerName = response.entCustomerName || '';
+        this.form.vin = response.vin;
       }
     },
     // 打开侧边栏

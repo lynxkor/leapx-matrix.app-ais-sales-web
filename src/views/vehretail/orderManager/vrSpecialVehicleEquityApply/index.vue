@@ -158,7 +158,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车零售-订单管理-特殊车辆权益申请管理',
+      pageTitle: '特殊车辆权益申请',
       pageType: 'list',
       moduleKey: 'AISVR-vrSpecialVehicleEquityApply',
       form: {
@@ -352,7 +352,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '整车零售-订单管理-特殊车辆权益申请管理',
+        businessType: '特殊车辆权益申请',
         dataFetchPath: 'vr/web/order/vrSpecialVehicleEquityApply/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -360,7 +360,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车零售-订单管理-特殊车辆权益申请管理.xlsx');
+            await downloadExcel(res.excelUrl, '特殊车辆权益申请.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

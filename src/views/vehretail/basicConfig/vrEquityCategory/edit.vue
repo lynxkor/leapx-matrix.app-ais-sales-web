@@ -148,7 +148,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '整车零售-基础设置-权益大类管理',
+      pageTitle: '权益大类',
       pageType: 'edit',
       moduleKey: 'AISVR-vrEquityCategory',
       loading: false,

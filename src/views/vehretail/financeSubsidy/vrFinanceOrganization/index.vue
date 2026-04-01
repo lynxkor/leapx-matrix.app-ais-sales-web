@@ -75,7 +75,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车零售-金融补贴-金融机构管理',
+      pageTitle: '金融机构',
       pageType: 'list',
       moduleKey: 'AISVR-vrFinanceOrganization',
       form: {
@@ -156,7 +156,7 @@ export default {
       this.exportLoading = true;
       const reqParams = this.getFormData() || {};
       exportTable({
-        businessType: '整车零售-金融补贴-金融机构管理',
+        businessType: '金融机构',
         dataFetchPath: 'vr/web/financeSubsidy/vrFinanceOrganization/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -164,7 +164,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车零售-金融补贴-金融机构管理.xlsx');
+            await downloadExcel(res.excelUrl, '金融机构.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

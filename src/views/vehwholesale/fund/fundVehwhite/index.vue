@@ -10,14 +10,14 @@
       class="ais-search-form"
     >
       <el-form-item label="VIN号">
-        <tag-input v-model="form.vin" placeholder="请输入" />
+        <tag-input v-model="form.vinList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="整车批售订单">
-        <tag-input v-model="form.wholesaleOrderCode" placeholder="请输入" />
+        <tag-input v-model="form.wholesaleOrderCodeList" placeholder="请输入" />
       </el-form-item>
       <template v-if="show">
       <el-form-item label="企业客户整车订单">
-        <tag-input v-model="form.enterpriseOrderCode" placeholder="请输入" />
+        <tag-input v-model="form.enterpriseOrderCodeList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="是否B端白名单">
         <fetch-select
@@ -118,6 +118,9 @@ const defaultForm = {
   vin: '',
   wholesaleOrderCode: '',
   enterpriseOrderCode: '',
+  wholesaleOrderCodeList: [],
+  enterpriseOrderCodeList: [],
+  vinList: [],
   isBWhitelist: '',
   isCWhitelist: '',
   createTime: ''
@@ -357,6 +360,35 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
+
+      // 处理多选字段：如果有多个值则使用数组，如果只有一个值则转换为单个字段
+      if (this.form.wholesaleOrderCodeList && this.form.wholesaleOrderCodeList.length > 0) {
+        if (this.form.wholesaleOrderCodeList.length === 1) {
+          delete data.wholesaleOrderCodeList;
+          data.wholesaleOrderCode = this.form.wholesaleOrderCodeList[0];
+        } else {
+          data.wholesaleOrderCodeList = this.form.wholesaleOrderCodeList;
+        }
+      }
+
+      if (this.form.enterpriseOrderCodeList && this.form.enterpriseOrderCodeList.length > 0) {
+        if (this.form.enterpriseOrderCodeList.length === 1) {
+          delete data.enterpriseOrderCodeList;
+          data.enterpriseOrderCode = this.form.enterpriseOrderCodeList[0];
+        } else {
+          data.enterpriseOrderCodeList = this.form.enterpriseOrderCodeList;
+        }
+      }
+
+      if (this.form.vinList && this.form.vinList.length > 0) {
+        if (this.form.vinList.length === 1) {
+          delete data.vinList;
+          data.vin = this.form.vinList[0];
+        } else {
+          data.vinList = this.form.vinList;
+        }
+      }
+
       // 排序字段
       data.sortColumns = this.sortColumns;
       return data;

@@ -830,7 +830,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '整车零售-订单管理-订单权益申请管理',
+      pageTitle: '订单权益申请',
       pageType: 'edit',
       moduleKey: 'AISVR-vrEquityApply',
       loading: false,

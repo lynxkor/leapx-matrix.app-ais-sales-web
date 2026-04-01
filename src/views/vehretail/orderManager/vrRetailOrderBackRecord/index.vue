@@ -225,7 +225,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车零售-订单管理-整车零售订单管理-回退记录',
+      pageTitle: '整车零售订单-回退记录',
       pageType: 'list',
       moduleKey: 'AISVR-vrRetailOrderBackRecord',
       form: {
@@ -320,7 +320,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '整车零售-订单管理-整车零售订单管理-回退记录',
+        businessType: '整车零售订单-回退记录',
         dataFetchPath: 'vr/web/order/retailOrderInfo/backRecord/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
