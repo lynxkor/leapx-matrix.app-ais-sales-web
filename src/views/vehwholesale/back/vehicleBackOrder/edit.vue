@@ -442,12 +442,13 @@ export default {
           width: '150',
           editable: true,
           editRender: {
-            name: 'fetch-select',
+            name: 'FetchSelect',
             props: {
               enumCode: 'BooleanEnum',
               placeholder: '请选择',
               clearable: true,
-              filterable: true
+              filterable: true,
+              request: this.fetchOptions
             }
           },
         },
