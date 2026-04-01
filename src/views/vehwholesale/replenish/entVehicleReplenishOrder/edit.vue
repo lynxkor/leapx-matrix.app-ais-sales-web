@@ -402,7 +402,7 @@
                   @remove-row="handleRemoveRow"
                   @page-size-change="pageSizeChange"
                   @current-page-change="currentPageChange"
-                  :auth="{delete: isEditing}"
+                  :auth="{edit: isEditing, delete: isEditing}"
                 />
               </div>
               </div>
@@ -620,7 +620,17 @@ export default {
         {
           field: 'qty',
           title: '数量',
-          width: '120'
+          width: '120',
+          editable: true,
+          editRender: {
+            name: 'ElInput',
+            props: {
+              type: 'number'
+            }
+          },
+          rules: [
+            { required: true, message: '额度数量不能为空', trigger: 'blur' }
+          ]
         },
         {
           field: 'standardPrice',
@@ -792,8 +802,7 @@ export default {
       addOrUpdateDetail(row).then(id => {
         defer.resolve(id);
         this.$message.success('提交成功');
-        this.getDetailData();
-        this.getList();
+        this.$refs.containerRef.loadDetail();
         this.$emit('replace');
       }).catch(e => {
         defer.reject();

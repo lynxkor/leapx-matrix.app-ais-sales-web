@@ -207,7 +207,7 @@
 
     <SwitchFlag
       :visible.sync="showSwitchFlageDialog"
-      :cancel-ids="selectionList.map(item => item.id)"
+      :status="switchFlagStatus"
       @confirmSwitchFlag="timeSwitchFlag"
     />
   </div>
@@ -217,7 +217,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, addOrUpdateItem, setSwitchItem } from '@/api/vehwholesale/shipping/vehicleShippingPlanDetail/index';
+import { getList, deleteItem, enableItem, addOrUpdateItem, setSwitchItem, getSwitchItem } from '@/api/vehwholesale/shipping/vehicleShippingPlanDetail/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, getRigion, listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -286,6 +286,7 @@ export default {
       exportLoading: false,
       uploadDialogVisible: false,
       showSwitchFlageDialog: false,
+      switchFlagStatus: false,
       clickItemId: '',
       optionObj: {
         id: 'vehicleShippingPlanDetailTable',
@@ -427,7 +428,11 @@ export default {
       });
     },
     handleSwitch () {
-      this.showSwitchFlageDialog = true;
+      getSwitchItem().then((res) => {
+        console.log('timeSwitchFlag', res);
+        this.showSwitchFlageDialog = true;
+        this.switchFlagStatus = res === '1';
+      });
     },
     timeSwitchFlag (data) {
       setSwitchItem({

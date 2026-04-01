@@ -2,7 +2,7 @@
   <div>
     <el-dialog title="设置定时任务开关" :visible.sync="dialogVisible" width="400px" :close-on-click-modal="false">
       <el-switch
-          v-model="status"
+          :v-model="status"
           active-color="#13ce66"
           inactive-text="任务状态"
           inactive-color="#cccccc">
@@ -22,14 +22,13 @@ export default {
       type: Boolean,
       default: false
     },
-    cancelIds: {
-      type: Array,
-      default: () => []
-    }
+    status: {
+      type: Boolean,
+      default: false
+    },
   },
   data () {
     return {
-      status: false
     };
   },
   computed: {
@@ -43,11 +42,6 @@ export default {
     }
   },
   watch: {
-    visible (newVal) {
-      if (newVal) {
-        this.status = false;
-      }
-    }
   },
   methods: {
     confirm () {

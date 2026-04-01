@@ -12,10 +12,11 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          {{ form.configCode }}
         </template>
         <template #extraButtons>
-          <el-button v-show="auditSub" size="small" type="primary" @click="handleSubmit">提交</el-button>
+          <el-button v-if="form.auditStatus === 0 || form.auditStatus === 2" size="small" type="primary" @click="handleSubmit">提交</el-button>
+          <el-button v-if="form.auditStatus === 0 || form.auditStatus === 2" size="small" @click="handleSubmit(form.id, form.configCode)"><i class="iconfont icon-lxppc-edit"></i>提交</el-button>
+          <el-button v-if="form.auditStatus === 1" size="small" @click="handleReview"><i class="iconfont icon-lxppc-edit"></i>复核</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -204,11 +205,15 @@
         <!-- 右侧栏组件，自行开发 -->
       </div>
     </template>
+    <audit-dialog
+      ref="auditDialogRef"
+      @audit="handleAudit"
+    />
   </edit-page-layout>
 </template>
 
 <script>
-import { getDetail, addOrUpdate, submitItem, gdclItem } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesConfig/index';
+import { getDetail, addOrUpdate, submitItem, gdclItem, reviewItem } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -217,6 +222,7 @@ import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import moment from 'moment';
+import auditDialog from '@/libs/components/auditDialog';
 
 const defaultForm = {
   configCode: '',
@@ -258,7 +264,8 @@ export default {
   components: {
     EditPageLayout,
     EditBaseContainer,
-    FetchSelect
+    FetchSelect,
+    auditDialog
   },
   computed: {
     _id () {
@@ -331,6 +338,20 @@ export default {
   mounted () {
   },
   methods: {
+    handleAudit (data) {
+      console.log('handleAudit', data);
+      const params = {
+        ids: [this._id],
+        reviewOpinion: data.remark,
+        passOrReject: data.result
+      };
+      reviewItem(params).then(() => {
+        this.$refs.containerRef.loadDetail();
+      }).catch(() => {});
+    },
+    handleReview () {
+      this.$refs.auditDialogRef.show();
+    },
     dataTransform (data) {
       // 处理接口返回的数据，确保格式与 defaultForm 一致
       // 避免 el-input-number 等组件导致的数据格式变化
