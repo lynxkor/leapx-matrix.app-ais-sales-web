@@ -1661,6 +1661,24 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
+      path: '/vehretail/event/eventNotifyTask',
+      name: 'eventNotifyTask',
+      component: () => import('@/views/vehretail/event/eventNotifyTask/index.vue'),
+
+      meta: {
+        name: '事件通知任务',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/event/eventNotifyTask/edit',
+      name: 'eventNotifyTaskEdit',
+      component: () => import('@/views/vehretail/event/eventNotifyTask/edit.vue'),
+
+      meta: {
+        name: '事件通知任务详情',
+        noResourceUrl: 'true'
+      }
+    }, {
       path: '/vehwholesale/finance/bank/finBankCreditRecord',
       name: 'bank',
       component: () => import('@/views/vehwholesale/finance/bank/finBankCreditRecord/index.vue'),
@@ -2988,6 +3006,24 @@ const routes = [
       component: () => import('@/views/vehwholesale/fund/fundVehwhite/edit.vue'),
       meta: {
         name: '整车批售-整车资金-车辆白名单管理详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/event/eventNotifyTask',
+      name: 'eventNotifyTask',
+      component: () => import('@/views/vehretail/event/eventNotifyTask/index.vue'),
+
+      meta: {
+        name: '退订原因分类',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/event/eventNotifyTask/edit',
+      name: 'eventNotifyTaskyEdit',
+      component: () => import('@/views/vehretail/event/eventNotifyTask/edit.vue'),
+
+      meta: {
+        name: '退订原因分类详情',
         noResourceUrl: 'true'
       }
     }]

@@ -208,7 +208,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '整车零售-金融补贴-金融产品管理',
+      pageTitle: '金融产品',
       pageType: 'edit',
       moduleKey: 'AISVR-vrFinanceProduct',
       form: { ...form },

@@ -112,7 +112,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车零售-金融补贴-金融方案',
+      pageTitle: '金融方案',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-vrFinancePlan',
@@ -217,7 +217,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '整车零售-金融补贴-金融方案-适用金融产品管理',
+        businessType: '金融方案',
         dataFetchPath: 'vehretail/web/financeSubsidy/vrFinancePlan/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -225,7 +225,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车零售-金融补贴-金融方案-适用金融产品管理.xlsx');
+            await downloadExcel(res.excelUrl, '金融方案.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

@@ -402,7 +402,7 @@
                   @remove-row="handleRemoveRow"
                   @page-size-change="pageSizeChange"
                   @current-page-change="currentPageChange"
-                  :auth="{delete: isEditing}"
+                  :auth="{edit: isEditing, delete: isEditing}"
                 />
               </div>
               </div>
@@ -620,82 +620,78 @@ export default {
         {
           field: 'qty',
           title: '数量',
-          width: '120'
+          editable: true,
+          editRender: {
+            name: 'ElInput',
+            props: {
+              type: 'number'
+            }
+          },
+          rules: [
+            { required: true, message: '额度数量不能为空', trigger: 'blur' }
+          ]
         },
         {
           field: 'standardPrice',
           title: '标准价格',
-          width: '200'
         },
         {
           field: 'salesPrice',
           title: '销售价格',
-          width: '100'
         },
         {
           field: 'relatedTxnExTaxPrice',
           title: '关联交易不含税价',
-          width: '100'
+          width: '150',
         },
         {
           field: 'materialsCode',
           title: '整车物料编码',
-          width: '120'
+          width: '150',
         },
         {
           field: 'materialsDesc',
           title: '物料描述',
-          width: '100'
         },
         {
           field: 'modelName',
           title: '车型',
-          width: '100'
         },
         {
           field: 'drivingRangeName',
           title: '选配续航',
-          width: '150'
         },
         {
           field: 'rangePowerName',
           title: '选配动力',
-          width: '300'
         },
         {
           field: 'exteriorName',
           title: '外饰风格',
-          width: '120',
         },
         {
           field: 'interiorName',
           title: '内饰风格',
-          width: '300'
         },
         {
           field: 'wheelHubName',
           title: '选配轮毂',
-          width: '120',
         },
         {
           field: 'batteryCellName',
           title: '电池电芯',
-          width: '300'
         },
         {
           field: 'yearTypeName',
           title: '年款',
-          width: '120',
         },
         {
           field: 'roofName',
           title: '车顶风格',
-          width: '300'
         },
         {
           field: 'optionPackageName',
           title: '选装包',
-          width: '120',
         }
       ],
       rules: {
@@ -792,8 +788,7 @@ export default {
       addOrUpdateDetail(row).then(id => {
         defer.resolve(id);
         this.$message.success('提交成功');
-        this.getDetailData();
-        this.getList();
+        this.$refs.containerRef.loadDetail();
         this.$emit('replace');
       }).catch(e => {
         defer.reject();
@@ -938,7 +933,13 @@ export default {
       return networkParentCompanyItem({ parentCompanyName: query, pageNum: 1, pageSize: 20 });
     },
     getOtherInfoBysaleCompany (val, row) {
+      // 安全赋值门店信息
+      this.form.saleDealerName = row.storeName || '';
+      this.form.saleDealerCode = row.storeCode || '';
       const warehouseResp = row.storeWarehouseResp;
+      if (!warehouseResp) {
+        return;
+      }
       const addressXy = warehouseResp.warehouseAddressXy || '';
       const xyArray = addressXy.split(',');
       // 安全赋值经纬度
@@ -948,9 +949,6 @@ export default {
       this.form.provinceCode = warehouseResp.provinceCode || '';
       this.form.cityCode = warehouseResp.cityCode || '';
       this.form.districtCode = warehouseResp.countyCode || '';
-      // 安全赋值门店信息
-      this.form.saleDealerName = row.storeName || '';
-      this.form.saleDealerCode = row.storeCode || '';
       // 安全赋值地址信息
       this.form.address = warehouseResp.warehouseDetailAddress || '';
       // 安全赋值联系人信息

@@ -12,6 +12,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="form.status === 3 || form.status === 50"
       >
         <template #status>
           <span>{{ form.entOrderCode }}</span>
@@ -385,6 +386,17 @@
                     disabled
                   />
                 </el-form-item>
+                <el-form-item label="首次结算失败时间：" prop="firstSettleFailedTime">
+                  <el-date-picker
+                    :default-time="['00:00:00', '23:59:59']"
+                    v-model="form.firstSettleFailedTime"
+                    :picker-options="pickerOptions"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    disabled
+                  />
+                </el-form-item>
                  <el-form-item label="出库时间：" prop="outboundTime">
                   <el-date-picker
                     :default-time="['00:00:00', '23:59:59']"
@@ -629,6 +641,9 @@
                 </el-form-item>
                 <el-form-item label="结算时间：" prop="settleTime">
                   {{ form.settleTime }}
+                </el-form-item>
+                <el-form-item label="首次结算失败时间：" prop="firstSettleFailedTime">
+                  {{ form.firstSettleFailedTime }}
                 </el-form-item>
                  <el-form-item label="出库时间：" prop="outboundTime">
                   {{ form.outboundTime }}

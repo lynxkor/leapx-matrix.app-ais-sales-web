@@ -20,11 +20,10 @@
           filterable
           clearable
           remote
-          collapse-tags
-          v-model="form.orderMaterialsCode"
+          v-model="form.materialsCode"
           :remote-method="getMaterialsCodeList"
-          value-key="value"
-          label-key="label"
+          value-key="materialsCode"
+          label-key="materialsCode"
         />
       </el-form-item>
       <el-form-item label="车型">
@@ -32,7 +31,6 @@
           filterable
           clearable
           remote
-          collapse-tags
           v-model="form.modelId"
           :remote-method="getVehicleModelList"
           value-key="id"
@@ -44,7 +42,6 @@
           filterable
           clearable
           remote
-          collapse-tags
           v-model="form.seriesId"
           :remote-method="getVehicleSeriesList"
           value-key="id"
@@ -67,22 +64,20 @@
         <el-form-item label="申请单状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="groupbuy_audit_status"
+            enumCode="vr_order_benefit_apply_status"
             v-model="form.auditStatus"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
         <el-form-item label="合作类型">
           <fetch-select
             :request="fetchOptions"
-            enumCode="cooperation_type"
+            enumCode="vr_cooperation_type"
             v-model="form.cooperationType"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
         </el-form-item>
@@ -157,7 +152,7 @@ import EditPage from './edit.vue';
 
 const defaultForm = {
   mallOrderCode: '',
-  orderMaterialsCode: '',
+  materialsCode: '',
   modelId: '',
   seriesId: '',
   dealerCode: '',
@@ -183,7 +178,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车零售-订单管理-团购订单权益申请管理',
+      pageTitle: '团购订单权益申请',
       pageType: 'list',
       moduleKey: 'AISVR-vrGroupbuyOrderEquityApply',
       form: {
@@ -227,11 +222,11 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                if (row.ownerOrgId) {
+                if (row.saleDealerCode) {
                   this.navigateToRoute({
-                    path: '/vehretail/orderManager/retailOrderInfo/edit',
+                    path: '/partner/channelManagement/shopBasicsMessageDetails',
                     query: {
-                      id: row.ownerOrgId
+                      id: row.saleDealerId
                     }
                   });
                 }
@@ -263,14 +258,14 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'materialsCode', label: '订单物料码', visible: true, width: 200 },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
+          { props: 'materialsCode', label: '订单物料码', visible: true, width: 260 },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 500 },
           { props: 'buyerName', label: '购车人姓名', visible: true, width: 120 },
           { props: 'buyerPhone', label: '购车人手机号', visible: true, width: 150 },
-          { props: 'userId', label: '下单人ID', visible: true, width: 150 },
-          { props: 'companyName', label: '公司名称', visible: true, width: 150 },
-          { props: 'modelName', label: '车型', visible: true, width: 120 },
-          { props: 'seriesName', label: '车系', visible: true, width: 120 },
+          { props: 'userId', label: '下单人ID', visible: true, width: 200 },
+          { props: 'companyName', label: '公司名称', visible: true, width: 300 },
+          { props: 'modelName', label: '车型', visible: true, width: 240 },
+          { props: 'seriesName', label: '车系', visible: true, width: 240 },
           { props: 'couponName', label: '优惠券', visible: true, width: 120 },
           { props: 'discountAmount', label: '优惠金额', visible: true, width: 120 },
           { props: 'submitTime', label: '提交日期', visible: true, width: 180 },
@@ -349,7 +344,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '整车零售-订单管理-团购订单权益申请管理',
+        businessType: '团购订单权益申请',
         dataFetchPath: 'vr/web/order/vrGroupbuyOrderEquityApply/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -357,7 +352,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车零售-订单管理-团购订单权益申请管理.xlsx');
+            await downloadExcel(res.excelUrl, '团购订单权益申请.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
@@ -419,17 +414,6 @@ export default {
         }
       });
 
-      // 将新的字段名映射回后端期望的字段名
-      if (data.modelId) {
-        data.modelName = data.modelId; // 后端可能仍需要原始字段名
-      }
-      if (data.seriesId) {
-        data.seriesName = data.seriesId;
-      }
-      if (data.dealerCode) {
-        data.dealerName = data.dealerCode;
-      }
-
       data.sortColumns = this.sortColumns;
       return data;
     },
@@ -450,7 +434,7 @@ export default {
           modelNameLike: query,
           pageSize: 20
         });
-        return res.records.map(item => {
+        return res.map(item => {
           return {
             ...item,
             label: item.name,
@@ -470,7 +454,7 @@ export default {
           seriesNameLike: query,
           pageSize: 20
         });
-        return res.records.map(item => {
+        return res.map(item => {
           return {
             ...item,
             label: item.name,
@@ -510,7 +494,7 @@ export default {
           materialsCodeLike: query,
           pageSize: 20
         });
-        return res.records.map(item => {
+        return res.map(item => {
           return {
             ...item,
             label: item.materialsCode,

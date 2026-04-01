@@ -387,7 +387,10 @@ export default {
       }
     },
     repairItemSearch (query) {
-      return getList({ nammaterialsCodeLikeeLike: query, size: 20, status: 1 });
+      if (!query || query.length < 2) {
+        return [];
+      }
+      return getList({ materialsCodeLike: query, pageSize: 20, status: 1 });
     },
     calculatePriceAfterSubsidy () {
       const { priceBeforeSubsidy, subsidyAmount } = this.form;

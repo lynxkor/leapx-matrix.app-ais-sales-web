@@ -37,28 +37,60 @@
                 <fetch-select :options="yearTypeList" v-model="form.yearTypeId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
               </el-form-item>
               <el-form-item label="外观：" prop="exteriorId">
-                <fetch-select :options="exteriorList" v-model="form.exteriorId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
+                <fetch-select
+                  v-model="form.exteriorId"
+                  v-bind="selectOptions"
+                  :remote-method="remoteMethods.exterior"
+                />
               </el-form-item>
               <el-form-item label="内饰：" prop="interiorId">
-                <fetch-select :options="interiorList" v-model="form.interiorId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
+                <fetch-select
+                  v-model="form.interiorId"
+                  v-bind="selectOptions"
+                  :remote-method="remoteMethods.interior"
+                />
               </el-form-item>
-              <el-form-item label="车顶：" >
-                <fetch-select :options="roofList" v-model="form.roofId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
+              <el-form-item label="车顶：" prop="roofId">
+                <fetch-select
+                  v-model="form.roofId"
+                  v-bind="selectOptions"
+                  :remote-method="remoteMethods.roof"
+                />
               </el-form-item>
               <el-form-item label="轮毂：" prop="wheelHubId">
-                <fetch-select :options="wheelHubList" v-model="form.wheelHubId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
+                <fetch-select
+                  v-model="form.wheelHubId"
+                  v-bind="selectOptions"
+                  :remote-method="remoteMethods.wheel"
+                />
               </el-form-item>
               <el-form-item label="续航里程：" prop="drivingRangeId">
-                <fetch-select :options="drivingRangeList" v-model="form.drivingRangeId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
+                <fetch-select
+                  v-model="form.drivingRangeId"
+                  v-bind="selectOptions"
+                  :remote-method="remoteMethods.drivingRange"
+                />
               </el-form-item>
               <el-form-item label="选配动力：" prop="rangePowerId">
-                <fetch-select :options="rangePowerList" v-model="form.rangePowerId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
+                <fetch-select
+                  v-model="form.rangePowerId"
+                  v-bind="selectOptions"
+                  :remote-method="remoteMethods.rangePower"
+                />
               </el-form-item>
-              <el-form-item label="选装包：" >
-                <fetch-select :options="optionPackageList" v-model="form.optionPackageId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
+              <el-form-item label="选装包：" prop="optionPackageId">
+                <fetch-select
+                  v-model="form.optionPackageId"
+                  v-bind="selectOptions"
+                  :remote-method="remoteMethods.optional"
+                />
               </el-form-item>
               <el-form-item label="电池电芯：" prop="batteryCellId" v-permission="moduleKey+'-checkBatteryCell'">
-                <fetch-select :options="batteryCellList" v-model="form.batteryCellId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
+                <fetch-select
+                  v-model="form.batteryCellId"
+                  v-bind="selectOptions"
+                  :remote-method="remoteMethods.battery"
+                />
               </el-form-item>
               <el-form-item label="状态：" prop="status">
                 <fetch-select :request="fetchOptions" enumCode="StatusEnum" v-model="form.status" placeholder="请选择" clearable disabled/>
@@ -121,7 +153,6 @@
 import { getDetail, addOrUpdate } from '@/api/datacenter/materials/vehicleMaterials/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum, vehicleSeriesList, vehicleModelList, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleRoof, vehicleDrivingRange, vehicleRangePower, vehicleModelYearTypeRelation } from '@/api/common';
-// import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
@@ -220,6 +251,43 @@ export default {
       ],
       form: { ...defaultForm },
       originalForm: { ...defaultForm },
+      // 远程搜索配置（外观、内饰、车顶、轮毂、续航里程、选配动力、选装包、电池电芯）
+      selectOptions: {
+        placeholder: '请选择',
+        labelKey: 'name',
+        valueKey: 'id',
+        clearable: true,
+        filterable: true,
+        remote: true,
+        reserveKeyword: true
+      },
+      // 远程搜索方法
+      remoteMethods: {
+        exterior: async (query) => {
+          return await vehicleExterior({ exteriorNameLike: query });
+        },
+        interior: async (query) => {
+          return await vehicleInterior({ interiorNameLike: query });
+        },
+        roof: async (query) => {
+          return await vehicleRoof({ roofNameLike: query });
+        },
+        wheel: async (query) => {
+          return await vehicleWheelHub({ wheelHubNameLike: query });
+        },
+        drivingRange: async (query) => {
+          return await vehicleDrivingRange({ drivingRangeNameLike: query });
+        },
+        rangePower: async (query) => {
+          return await vehicleRangePower({ rangePowerNameLike: query });
+        },
+        optional: async (query) => {
+          return await vehicleOptionPackage({ optionPackageNameLike: query });
+        },
+        battery: async (query) => {
+          return await vehicleBatteryCell({ batteryCellNameLike: query });
+        }
+      },
       rules: {
         price: [
           { required: true, message: '请输入整车价格', trigger: 'blur' }
@@ -315,7 +383,7 @@ export default {
           }
         }]
       },
-      // seriesList: [],
+      seriesList: [],
       modelList: [],
       yearTypeList: [],
       yearModelList: [],
@@ -336,6 +404,22 @@ export default {
   },
   methods: {
     repairItemSearch (query) { return vehicleSeriesList({ seriesNameLike: query, status: 1 }); },
+    async initVehicleData () {
+      const apiConfigs = [
+        { api: vehicleExterior, params: { size: 1000 }, target: 'exteriorList' },
+        { api: vehicleInterior, params: { size: 1000 }, target: 'interiorList' },
+        { api: vehicleWheelHub, params: { size: 1000 }, target: 'wheelHubList' },
+        { api: vehicleOptionPackage, params: { size: 1000 }, target: 'optionPackageList' },
+        { api: vehicleBatteryCell, params: { size: 1000 }, target: 'batteryCellList' },
+        { api: vehicleRoof, params: { size: 1000 }, target: 'roofList' },
+        { api: vehicleDrivingRange, params: { size: 1000 }, target: 'drivingRangeList' },
+        { api: vehicleRangePower, params: { size: 1000 }, target: 'rangePowerList' }
+      ];
+      // 并发调用所有接口
+      await Promise.all(apiConfigs.map(config =>
+        fetchAndFormatData(this, config.api, config.params, config.target)
+      ));
+    },
     async fetchDiscontinueStatusOptions () {
       try {
         const enumData = this.$store.getters['enum/getEnum']('dc_discontinue_statusEnum');
@@ -363,23 +447,6 @@ export default {
       } catch (error) {
         this.$message.error('加载停产状态选项失败，请稍后重试！');
       }
-    },
-    async initVehicleData () {
-      const apiConfigs = [
-        // { api: vehicleSeriesList, params: { size: 1000 }, target: 'seriesList' },
-        { api: vehicleExterior, params: { size: 1000 }, target: 'exteriorList' },
-        { api: vehicleInterior, params: { size: 1000 }, target: 'interiorList' },
-        { api: vehicleWheelHub, params: { size: 1000 }, target: 'wheelHubList' },
-        { api: vehicleOptionPackage, params: { size: 1000 }, target: 'optionPackageList' },
-        { api: vehicleBatteryCell, params: { size: 1000 }, target: 'batteryCellList' },
-        { api: vehicleRoof, params: { size: 1000 }, target: 'roofList' },
-        { api: vehicleDrivingRange, params: { size: 1000 }, target: 'drivingRangeList' },
-        { api: vehicleRangePower, params: { size: 1000 }, target: 'rangePowerList' }
-      ];
-      // 并发调用所有接口
-      await Promise.all(apiConfigs.map(config =>
-        fetchAndFormatData(this, config.api, config.params, config.target)
-      ));
     },
     handleBack () {
       // this.$router.back();
@@ -453,7 +520,7 @@ export default {
 
     seriesListChange (val) {
       if (val.length) {
-        fetchAndFormatData(this, vehicleModelList, { seriesIdList: [val], size: 1000 }, 'modelList');
+        fetchAndFormatData(this, vehicleModelList, { seriesIdList: [val], pageSize: 1000 }, 'modelList');
         this.form.modelId = [];
         this.yearModelList = [];
         this.form.yearTypeId = [];
@@ -466,7 +533,7 @@ export default {
     },
 
     async modelListChange (val) {
-      const res = await vehicleModelYearTypeRelation({ modelIdList: [val], size: 1000 });
+      const res = await vehicleModelYearTypeRelation({ modelIdList: [val], pageSize: 1000 });
       this.yearTypeList = res.map(item => {
         return {
           ...item,
