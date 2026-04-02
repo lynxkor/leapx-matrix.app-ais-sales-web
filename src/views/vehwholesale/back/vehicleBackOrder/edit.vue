@@ -11,6 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="form.status === 10 || form.status === 20"
       >
         <template #status>
          {{ form.backOrderCode }}
@@ -21,7 +22,7 @@
           <el-button  size="small"  @click="handleAudit">审核</el-button>
           <el-button  size="small"  @click="handelCancel">作废</el-button>
           <el-button  size="small"  @click="handleImport">导入车辆</el-button>
-          <el-button  size="small"  @click="handelDel">删除</el-button>
+          <el-button  size="small" v-if ="form.status === 10 || form.status === 20" @click="handelDel">删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
