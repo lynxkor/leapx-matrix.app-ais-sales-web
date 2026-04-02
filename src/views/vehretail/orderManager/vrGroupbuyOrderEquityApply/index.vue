@@ -222,7 +222,7 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                if (row.saleDealerCode) {
+                if (row.dealerId) {
                   this.navigateToRoute({
                     path: '/partner/channelManagement/shopBasicsMessageDetails',
                     query: {
