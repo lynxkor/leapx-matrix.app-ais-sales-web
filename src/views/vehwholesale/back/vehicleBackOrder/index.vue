@@ -227,9 +227,9 @@ export default {
         },
         dataProp: [
           {
-            props: 'returnOrderCode',
+            props: 'backOrderCode',
             label: '退车订单号',
-            visible: false,
+            visible: true,
             width: 200,
             fixed: 'left',
             buttons: [{
@@ -245,7 +245,7 @@ export default {
             }]
           },
           { props: 'statusLabel', label: '退车订单状态', visible: true, width: 200 },
-          { props: 'returnTime', label: '退车日期', visible: true, width: 200 },
+          { props: 'backTime', label: '退车日期', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '经销商', visible: true, width: 200 },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
           { props: 'entCustomerName', label: '企业客户', visible: true, width: 200 },

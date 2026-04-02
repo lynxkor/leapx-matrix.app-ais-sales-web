@@ -6,7 +6,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="企业客户补货订单"
+        title="企业客户补货订单："
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -15,7 +15,7 @@
         :showEditBtn="form.auditStatus === 0 || form.orderCategory === 4"
       >
         <template #status>
-          {{ form.replenishApplyCode }}
+          {{ form.entReplenishOrderCode }}
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
         </template>
@@ -392,7 +392,7 @@
                   :data="tableData"
                   :defaultNewRow="defaultNewRow"
                   :show-toolbar="false"
-                  :show-pagination="true"
+                  :show-pagination="false"
                   :enable-single-row-save="true"
                   :options="options"
                   :current="pageNum"
@@ -621,6 +621,7 @@ export default {
           field: 'qty',
           title: '数量',
           editable: true,
+          width: '80',
           editRender: {
             name: 'ElInput',
             props: {
@@ -634,10 +635,12 @@ export default {
         {
           field: 'standardPrice',
           title: '标准价格',
+          width: '100',
         },
         {
           field: 'salesPrice',
           title: '销售价格',
+          width: '150',
         },
         {
           field: 'relatedTxnExTaxPrice',
@@ -652,46 +655,57 @@ export default {
         {
           field: 'materialsDesc',
           title: '物料描述',
+          width: '100',
         },
         {
           field: 'modelName',
           title: '车型',
+          width: '100',
         },
         {
           field: 'drivingRangeName',
           title: '选配续航',
+          width: '100',
         },
         {
           field: 'rangePowerName',
           title: '选配动力',
+          width: '100',
         },
         {
           field: 'exteriorName',
           title: '外饰风格',
+          width: '100',
         },
         {
           field: 'interiorName',
           title: '内饰风格',
+          width: '100',
         },
         {
           field: 'wheelHubName',
           title: '选配轮毂',
+          width: '100',
         },
         {
           field: 'batteryCellName',
           title: '电池电芯',
+          width: '100',
         },
         {
           field: 'yearTypeName',
           title: '年款',
+          width: '100',
         },
         {
           field: 'roofName',
           title: '车顶风格',
+          width: '100',
         },
         {
           field: 'optionPackageName',
           title: '选装包',
+          width: '80',
         }
       ],
       rules: {

@@ -202,9 +202,9 @@ export default {
         },
         dataProp: [
           {
-            props: 'returnOrderDetailCode',
+            props: 'backOrderDetailCode',
             label: '退车明细单号',
-            visible: false,
+            visible: true,
             width: 200,
             fixed: 'left',
             buttons: [{
@@ -219,7 +219,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'returnOrderCode', label: '退车订单编号', visible: true, width: 200 },
+          { props: 'backOrderCode', label: '退车订单编号', visible: true, width: 200 },
           { props: 'vin', label: 'VIN码', visible: true, width: 200 },
           { props: 'statusLabel', label: '车辆处理状态', visible: true, width: 200 },
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
