@@ -163,13 +163,13 @@ export default {
           size: pageSize
         },
         dataProp: [
-          { props: 'modelName', label: '车型', visible: true, width: 200 },
+          { props: 'modelName', label: '车型', visible: true, width: 160 },
           { props: 'warehouseName', label: '整车仓库', visible: true, width: 200 },
-          { props: 'inventoryResourceLabel', label: '库存资源', visible: true, width: 200 },
-          { props: 'productionInProgressResourceLabel', label: '生产中资源', visible: true, width: 200 },
-          { props: 'productionScheduledResourceLabel', label: '排产资源', visible: true, width: 200 },
+          { props: 'inventoryResourceLabel', label: '库存资源', visible: true, width: 140 },
+          { props: 'productionInProgressResourceLabel', label: '生产中资源', visible: true, width: 140 },
+          { props: 'productionScheduledResourceLabel', label: '排产资源', visible: true, width: 120 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
-          { props: 'optionPackageName', label: '选配包', visible: true, width: 200 },
+          { props: 'optionPackageName', label: '选配包', visible: true, width: 100 },
           {
             props: 'operate',
             label: '操作',
