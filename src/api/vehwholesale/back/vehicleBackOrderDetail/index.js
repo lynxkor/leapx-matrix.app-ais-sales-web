@@ -66,3 +66,10 @@ export function confirmVdcInbound (data) {
 export function listVinForBackOrders (data) {
   return api.jsonPost(prefix + 'listVinForBackOrders', data);
 }
+/**
+ * edit
+ */
+
+export function edit (data) {
+  return api.jsonPost(prefix + 'edit', data);
+}

@@ -323,7 +323,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, confirmVdcInbound, confirmOutbound, deleteItem } from '@/api/vehwholesale/back/vehicleBackOrderDetail/index';
+import { getDetail, addOrUpdate, confirmVdcInbound, confirmOutbound, deleteItem, edit } from '@/api/vehwholesale/back/vehicleBackOrderDetail/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -451,11 +451,6 @@ export default {
             message: '删除成功!'
           });
           this.getData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '删除失败!'
-          });
         });
       }).catch(() => {});
     },
@@ -469,7 +464,7 @@ export default {
           idSet: [this._id],
         }).then(() => {
           this.$message.success('提交成功');
-          this.detailRequest();
+          this.$refs.containerRef.loadDetail();
         });
       }).catch(() => {});
     },
@@ -483,7 +478,7 @@ export default {
           idSet: [this._id],
         }).then(() => {
           this.$message.success('提交成功');
-          this.detailRequest();
+          this.$refs.containerRef.loadDetail();
         });
       }).catch(() => {});
     },
@@ -494,7 +489,7 @@ export default {
       }
     },
     submitRequest () {
-      return addOrUpdate({ ...this.form });
+      return edit({ ...this.form });
     },
     // 打开侧边栏
     openPane () {

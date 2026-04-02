@@ -144,12 +144,12 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'groupName', label: '群名称', visible: true, width: 200 },
+          { props: 'groupName', label: '群名称', visible: true, width: 160 },
           { props: 'groupDesc', label: '群描述', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 78 },
+          { props: 'creatorName', label: '创建者名称', visible: true, width: 160 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
+          { props: 'modifierName', label: '修改者名称', visible: true, width: 160 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
             props: 'operate',
