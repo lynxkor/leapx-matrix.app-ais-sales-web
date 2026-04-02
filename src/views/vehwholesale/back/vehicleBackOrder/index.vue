@@ -11,14 +11,15 @@
     >
     <el-form-item label="经销商"  >
        <fetch-select
-                    filterable
-                    clearable
-                    remote
-                    v-model="form.dealerCompanyNames"
-                    :remote-method="getDealerListByName"
-                    value-key="storeCode"
-                    label-key="storeName"
-                  />
+          filterable
+          clearable
+          remote
+            v-model="form.dealerCompanyNames"
+            :remote-method="listNetworkParentCompany"
+            labelKey="companyName"
+            valueKey="companyCode"
+            multiple
+        />
       </el-form-item>
       <el-form-item label="单据类型">
           <fetch-select
@@ -49,7 +50,7 @@
         <el-form-item label="退车日期">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
-            v-model="form.returnTime"
+            v-model="form.backTime"
             type="daterange"
             :picker-options="pickerOptions"
             range-separator="至"
@@ -116,7 +117,21 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
+        <el-dropdown trigger="click" style="margin: 0 10px;" @command="handleAdd">
+        <el-button size="small" type="primary" @click="showDropdown">
+          {{ dropdownLoading ? '加载中...' : '整车退车订单' }}
+          <i class="iconfont icon-lxppc-down" />
+        </el-button>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item
+            v-for="(item, index) in validatedOrderategoryList"
+            :key="index"
+            :command="item.code">
+            {{ item.message }}
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="handleAudit">审核</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="handleCancel">作废</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
@@ -212,11 +227,13 @@ export default {
         ...defaultForm
       },
       selectionList: [],
+      validatedOrderategoryList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      dropdownLoading: false,
       clickItemId: '',
       optionObj: {
         id: 'vehicleBackOrderTable',
@@ -313,8 +330,33 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
+    this.fetchOrderCategoryOptions();
   },
   methods: {
+    async fetchOrderCategoryOptions () {
+      const response = await getEnum('vw_vehicle_back_order_type');
+      this.orderCategoryOptions = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['10', '20'].includes(codeStr + '');
+      }).map(item => {
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
+    },
+    async showDropdown () {
+      this.dropdownLoading = true;
+      try {
+        // 又不要校验了
+        // await createRequestValid();
+        this.dropdownLoading = false;
+        this.validatedOrderategoryList = [...this.orderCategoryOptions];
+      } catch (error) {
+        this.dropdownLoading = false;
+        this.validatedOrderategoryList = [];
+      }
+    },
     async getDealerListByName (params) {
       return await listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
     },
@@ -340,6 +382,7 @@ export default {
     },
     handleAudit () {
       this.$refs.auditRef.show();
+      this.$refs.auditRef.auditForm.result = 1;
     },
     handleCancel () {
       const ids = this.selectionList.map(item => item.id) || [];
@@ -376,9 +419,12 @@ export default {
     handleUploadDialogClose () {
       this.uploadDialogVisible = false;
     },
-    handleAdd () {
+    handleAdd (code) {
       this.$router.push({
-        path: '/vehwholesale/back/vehicleBackOrder/edit'
+        path: '/vehwholesale/back/vehicleBackOrder/edit',
+        query: {
+          orderCategory: code
+        }
       });
     },
     onSubmit () {
@@ -488,12 +534,12 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
-      // 退车日期 returnTime
-      if (this.form.returnTime) {
-        delete data.returnTime;
-        if (this.form.returnTime.length > 1) {
-          data.returnTimeStart = this.form.returnTime[0];
-          data.returnTimeEnd = this.form.returnTime[1];
+      // 退车日期 backTime
+      if (this.form.backTime) {
+        delete data.backTime;
+        if (this.form.backTime.length > 1) {
+          data.backTimeStart = this.form.backTime[0];
+          data.backTimeEnd = this.form.backTime[1];
         }
       }
       // 排序字段

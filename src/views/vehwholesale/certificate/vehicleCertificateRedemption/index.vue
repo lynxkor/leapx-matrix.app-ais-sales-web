@@ -25,7 +25,7 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_credit_status"
-            v-model="form.creditSettleStatus"
+            v-model="form.creditSettleStatuses"
             placeholder="请选择"
             clearable
             multiple
@@ -47,11 +47,7 @@
         </el-form-item>
       <template v-if="show">
        <el-form-item label="VIN码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.vin"
-            clearable
-          />
+         <tag-input v-model="form.vins" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="合格证状态">
           <fetch-select
@@ -77,24 +73,32 @@
           />
         </el-form-item>
         <el-form-item label="合格证赎回编号">
-        <el-input
-          placeholder="请输入"
-          v-model="form.redemptionCode"
-          clearable
-        />
+          <tag-input v-model="form.redemptionCodes" placeholder="请输入" />
       </el-form-item>
-        <el-form-item label="车系ID">
-          <el-input
-            placeholder="请输入"
-            v-model="form.seriesId"
+        <el-form-item label="车系">
+            <fetch-select
+            filterable
             clearable
+            remote
+            collapseTags
+            v-model="form.seriesIds"
+            :remote-method="getVehicleSeriesList"
+            value-key="id"
+            label-key="label"
+            multiple
           />
         </el-form-item>
-        <el-form-item label="车型ID">
-          <el-input
-            placeholder="请输入"
-            v-model="form.modelId"
+        <el-form-item label="车型">
+          <fetch-select
+            filterable
             clearable
+            remote
+            collapseTags
+            v-model="form.modelIds"
+            :remote-method="getVehicleModelList"
+            value-key="id"
+            label-key="label"
+            multiple
           />
         </el-form-item>
         <el-form-item label="还款日期">
@@ -187,7 +191,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchconfirmSign } from '@/api/vehwholesale/certificate/vehicleCertificateRedemption/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany, listOrgStoreInfo } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany, listOrgStoreInfo, vehicleSeriesList, vehicleModelList } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -196,6 +200,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -224,7 +229,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    TagInput
   },
   data () {
     return {
@@ -317,7 +323,10 @@ export default {
               popconfirmConfirmButtonText: '删除',
               popconfirmTitle: '此操作将永久删除, 是否继续?',
               click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
+                deleteItem({
+                  idSet: [row.id]
+                }
+                ).then(() => {
                   this.$message({
                     type: 'success',
                     message: '删除成功!'
@@ -348,8 +357,51 @@ export default {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
     this.fetchOrderCategoryOptions();
+    this.getVehicleSeriesList();
+    this.getVehicleModelList();
   },
   methods: {
+    // 获取车辆系列列表
+    async getVehicleSeriesList (query = '') {
+      try {
+        const res = await vehicleSeriesList({
+          seriesNameLike: query,
+          limitSize: 1000
+        });
+        this.seriesList = res.map(item => {
+          return {
+            ...item,
+            label: item.name,
+            value: item.name // 使用name作为value，因为v-model绑定的是name字段
+          };
+        });
+        return this.seriesList;
+      } catch (error) {
+        console.error('获取车辆系列列表失败:', error);
+        return [];
+      }
+    },
+
+    // 获取车型列表
+    async getVehicleModelList (query = '') {
+      try {
+        const res = await vehicleModelList({
+          modelNameLike: query,
+          limitSize: 1000
+        });
+        this.modelList = res.map(item => {
+          return {
+            ...item,
+            label: item.name,
+            value: item.name // 使用name作为value，因为v-model绑定的是name字段
+          };
+        });
+        return this.modelList;
+      } catch (error) {
+        console.error('获取车型列表失败:', error);
+        return [];
+      }
+    },
     async fetchOrderCategoryOptions () {
       const response = await getEnum('vw_vehicle_back_order_type');
       this.orderCategoryOptions = response.filter(item => {

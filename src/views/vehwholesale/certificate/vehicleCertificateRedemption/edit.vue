@@ -630,7 +630,8 @@ export default {
           { required: true, message: '请输入收件人', trigger: 'change' }
         ],
         receiverPhone: [
-          { required: true, message: '请输入收件人手机', trigger: 'change' }
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的11位手机号', trigger: 'blur' }
         ],
         receiverAddress: [
           { required: true, message: '请输入收件地址', trigger: 'change' }
@@ -656,25 +657,23 @@ export default {
       this.form.settleFundTypeLabel = row.settleFundTypeLabel;
       this.form.vehiclePrice = row.retailPrice;
       this.form.salePrice = row.wholesalePrice;
-      // 整车批售订单：来源【整车批售订单】的【结算成功时间】企业客户订单：来源【企业客户整车订单】的【结算成功时间
+      // 整车批售订单：来源【整车批售订单】的【结算成功时间】企业客户订单：来源【企业客户整车订单】的【结算成功时间 ?? 结算时间
       this.form.creditTime = row.settleTime;
-      console.log('this.orderCategory', this.form.orderCategory === '10');
       if (this.form.orderCategory === '10') {
         this.form.downPaymentRatio = row.downPaymentRatio;
         this.form.downPaymentAmount = row.downPaymentAmount;
         // 金额
-        // this.form.creditDebtAmount = row
-      } else {
+        this.form.creditDebtAmount = row.creditDebtAmount;
+      } else if (this.form.orderCategory === '20') {
         this.form.downPaymentRatio = 0;
         this.form.downPaymentAmount = 0;
+        this.form.creditDebtAmount = row.salesPrice;
       }
-      this.form.creditDebtAmount = row.creditDebtAmount;
 
       getLatestReceiverAddress({
         orderType: this.form.orderCategory,
         query: val
       }).then((res) => {
-        console.log('getLatestReceiverAddress', res);
         this.form.receiverName = res.receiverName;
         this.form.receiverPhone = res.receiverPhone;
         this.form.receiverProvinceCode = res.receiverProvinceCode;
@@ -775,7 +774,9 @@ export default {
         customClass: 'ais-leave-tips',
         showClose: false
       }).then(() => {
-        deleteItem(ids).then(() => {
+        deleteItem({
+          idSet: ids
+        }).then(() => {
           this.$message({
             type: 'success',
             message: '删除成功!'
