@@ -4,35 +4,75 @@
     <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
       class="ais-search-form">
       <el-form-item label="物料描述">
-        <el-input placeholder="请输入" v-model="form.materialsDescList" clearable />
+        <tag-input v-model="form.materialsDescList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="物料编码">
         <el-input placeholder="请输入" v-model="form.materialsCodeList" clearable />
       </el-form-item>
       <el-form-item label="车系" v-show="this.visibleCount === 3 || show">
-        <el-input placeholder="请输入" v-model="form.seriesIdList" clearable />
+        <fetch-select
+            v-model="form.seriesIds"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.series"
+          />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="车型">
-          <el-input placeholder="请输入" v-model="form.modelIds" clearable />
+          <fetch-select
+            v-model="form.modelIds"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.model"
+          />
         </el-form-item>
         <el-form-item label="年款">
-          <el-input placeholder="请输入" v-model="form.yearTypeIds" clearable />
+          <fetch-select
+            v-model="form.yearTypeIds"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.yearType"
+          />
         </el-form-item>
-        <el-form-item label="外饰">
-          <el-input placeholder="请输入" v-model="form.exteriorIds" clearable />
+        <el-form-item label="外观">
+          <fetch-select
+            v-model="form.exteriorIds"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.exterior"
+          />
         </el-form-item>
         <el-form-item label="内饰">
-          <el-input placeholder="请输入" v-model="form.interiorIds" clearable />
+          <fetch-select
+            v-model="form.interiorIds"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.interior"
+          />
         </el-form-item>
         <el-form-item label="选配轮毂">
-          <el-input placeholder="请输入" v-model="form.wheelHubIds" clearable />
-        </el-form-item>
-        <el-form-item label="仓库">
-          <el-input placeholder="请输入" v-model="form.warehouseCodeList" clearable />
+          <fetch-select
+            v-model="form.wheelHubIds"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.wheel"
+          />
         </el-form-item>
         <el-form-item label="选装包">
-          <el-input placeholder="请输入" v-model="form.optionPackageIds" clearable />
+          <fetch-select
+            v-model="form.optionPackageIds"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.optional"
+          />
+        </el-form-item>
+        <el-form-item label="仓库">
+          <fetch-select
+            v-model="form.warehouseCodeSet"
+            filterable
+            clearable
+            remote
+            multiple
+            reserve-keyword
+            :options="warehouseOptions"
+            placeholder="请选择"
+            :remote-method="serchWarehouse"
+            value-key="value"
+            label-key="label"
+          />
         </el-form-item>
       </template>
       <page-search-action v-model="show" is-expandable :loading="loading" @submit="onSubmit"
@@ -60,7 +100,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/store/vehicleVdcInventoryStatistics/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, pageWithPermission, vehicleSeriesList, listVehicleYearType, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -68,6 +108,7 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -79,8 +120,8 @@ const defaultForm = {
   exteriorIds: [],
   interiorIds: [],
   wheelHubIds: [],
-  warehouseCodeList: [],
   optionPackageIds: [],
+  warehouseCodeSet: []
 };
 
 const pageSize = 20;
@@ -94,7 +135,8 @@ export default {
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
-    Upload
+    Upload,
+    TagInput
   },
   data () {
     return {
@@ -111,6 +153,7 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      warehouseOptions: [], // 整车仓库
       clickItemId: '',
       optionObj: {
         id: 'vehicleVdcInventoryStatisticsTable',
@@ -143,14 +186,79 @@ export default {
         // column: 'create_time',
         // sort: 'DESC'
         // }
-      ]
+      ],
+      // 提取公共配置
+      selectOptions: {
+        placeholder: '请选择',
+        labelKey: 'name',
+        valueKey: 'id',
+        clearable: true,
+        multiple: true,
+        collapseTags: true,
+        filterable: true,
+        remote: true,
+        reserveKeyword: true
+      },
+      // 远程搜索方法
+      remoteMethods: {
+        series: async (query) => {
+          return await vehicleSeriesList({ seriesNameLike: query });
+        },
+        // model: async (query) => {
+        //   return await listVehicleModel({ modelNameLike: query });
+        // },
+        // 初始方法
+        model: async (query) => {
+          return await this.searchModel(query);
+        },
+        yearType: async (query) => {
+          return await listVehicleYearType({ yearTypeNameLike: query });
+        },
+        exterior: async (query) => {
+          return await vehicleExterior({ exteriorNameLike: query });
+        },
+        interior: async (query) => {
+          return await vehicleInterior({ interiorNameLike: query });
+        },
+        wheel: async (query) => {
+          return await vehicleWheelHub({ wheelHubNameLike: query });
+        },
+        optional: async (query) => {
+          return await vehicleOptionPackage({ optionPackageNameLike: query });
+        }
+      }
     };
+  },
+  watch: {
+    'form.seriesIdList': {
+      handler (newVal) {
+        // 车系变化时清空车型选择
+        this.form.modelIdList = [];
+        this.searchModel();
+      },
+      deep: true,
+      immediate: true
+    },
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
   },
   methods: {
+    // 车型支持车系 ID 和 车型输入 方法
+    async searchModel (query) {
+      const params = {};
+
+      if (query) {
+        params.modelNameLike = query;
+      }
+
+      if (this.form.seriesIdList?.length) {
+        params.seriesIds = this.form.seriesIdList;
+      }
+
+      return await listVehicleModel(params);
+    },
     // 排序
     handleSortChange (value) {
       this.sortColumns = (value || []).map(item => {
@@ -265,7 +373,7 @@ export default {
       const data = { ...this.form };
 
       Object.keys(this.form).forEach(key => {
-        if (data[key] === '' || data[key] === null) {
+        if (data[key] === '' || data[key] === null || data[key] === undefined || data[key].length === 0) {
           delete data[key];
         }
       });
@@ -286,6 +394,21 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    // 搜索仓库
+    async serchWarehouse (query) {
+      const res = await pageWithPermission({ warehouseName: query, page: 1, size: 100, status: 0, warehouseType: 20 });
+      this.warehouseOptions = res?.records?.map(item => {
+        return {
+          label: item.warehouseName,
+          value: item.warehouseCode,
+        };
+      });
+      // 在数组最前面新增 "厂端VDC" 选项
+      this.warehouseOptions.unshift({
+        label: '厂端VDC',
+        value: 'VDC'
+      });
     },
     // 批量删除
     handleBatchDelete () {
