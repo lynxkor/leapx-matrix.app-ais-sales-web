@@ -30,18 +30,18 @@
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                 <el-form-item label="退车明细单号：" prop="returnOrderDetailCode">
+                 <el-form-item label="退车明细单号：" prop="backOrderDetailCode">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.returnOrderDetailCode"
+                    v-model="form.backOrderDetailCode"
                     clearable
                     disabled
                   />
                 </el-form-item>
-                 <el-form-item label="退车订单编号：" prop="returnOrderCode">
+                 <el-form-item label="退车订单编号：" prop="backOrderCode">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.returnOrderCode"
+                    v-model="form.backOrderCode"
                     clearable
                     disabled
                   />
@@ -206,7 +206,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="销售部预留：：" prop="salesDeptReserve">
+                <el-form-item label="销售部预留：" prop="salesDeptReserve">
                  <fetch-select
                     :request="fetchOptions"
                     enum-code="BooleanEnum"
@@ -216,7 +216,7 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="整车物流预留：：" prop="vehicleLogisticsReserve">
+                <el-form-item label="整车物流预留：" prop="vehicleLogisticsReserve">
                   <fetch-select
                     :request="fetchOptions"
                     enum-code="BooleanEnum"
@@ -236,11 +236,11 @@
                 </el-form-item>
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="退车明细单号：" prop="returnOrderDetailCode">
-                  {{ form.returnOrderDetailCode }}
+                <el-form-item label="退车明细单号：" prop="backOrderDetailCode">
+                  {{ form.backOrderDetailCode }}
                 </el-form-item>
-                <el-form-item label="退车订单编号：" prop="returnOrderCode">
-                  {{ form.returnOrderCode }}
+                <el-form-item label="退车订单编号：" prop="backOrderCode">
+                  {{ form.backOrderCode }}
                 </el-form-item>
                 <el-form-item label="VIN码：" prop="vin">
                   {{ form.vin }}
@@ -284,7 +284,7 @@
                 <el-form-item label="退车返利金额：" prop="returnRebateAmount">
                   {{ form.returnRebateAmount }}
                 </el-form-item>
-                <el-form-item label="车型" prop="modelName">
+                <el-form-item label="车型:" prop="modelName">
                   {{ form.modelName }}
                 </el-form-item>
                 <el-form-item label="门店出库确认人：" prop="storeOutboundConfirmer">
@@ -299,10 +299,10 @@
                 <el-form-item label="VDC 入库确认时间：" prop="vdcInboundTime">
                   {{ form.vdcInboundTime }}
                 </el-form-item>
-                <el-form-item label="销售部预留：：" prop="salesDeptReserveLabel">
+                <el-form-item label="销售部预留：" prop="salesDeptReserveLabel">
                   {{ form.salesDeptReserveLabel }}
                 </el-form-item>
-                <el-form-item label="整车物流预留：：" prop="vehicleLogisticsReserveLabel">
+                <el-form-item label="整车物流预留：" prop="vehicleLogisticsReserveLabel">
                   {{ form.vehicleLogisticsReserveLabel }}
                 </el-form-item>
                 <el-form-item label="备注：" prop="remark">

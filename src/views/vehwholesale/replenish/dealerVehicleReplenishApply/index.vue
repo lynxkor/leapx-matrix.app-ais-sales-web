@@ -14,6 +14,7 @@
           placeholder="请输入"
           v-model="form.replenishApplyCodeLike"
           clearable
+          @blur="handleReplenishCodeBlur"
         />
       </el-form-item>
       <el-form-item label="销售门店">
@@ -640,6 +641,11 @@ export default {
         };
       });
     },
+    handleReplenishCodeBlur () {
+      if (this.form.replenishApplyCodeLike) {
+        this.form.replenishApplyCodeLike = this.form.replenishApplyCodeLike.replace(/\s/g, '');
+      }
+    }
   }
 };
 </script>
