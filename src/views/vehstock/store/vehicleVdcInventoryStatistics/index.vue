@@ -4,10 +4,10 @@
     <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
       class="ais-search-form">
       <el-form-item label="物料描述">
-        <tag-input v-model="form.materialsDescList" placeholder="请输入" />
+        <tag-input v-model="form.materialsDescSet" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="物料编码">
-        <el-input placeholder="请输入" v-model="form.materialsCodeList" clearable />
+        <tag-input v-model="form.materialsCodeSet" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="车系" v-show="this.visibleCount === 3 || show">
         <fetch-select
@@ -83,7 +83,7 @@
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div class="ais-table-c">
-      <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed centralized
+      <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox checkboxFixed centralized
         :option-obj="optionObj" :get-config="getConfig" :save-or-update="saveOrUpdate"
         @paginationChange="paginationChange" @handleSelect="handleSelectionChange" @listSelect="handleListSelect"
         @sortChange="handleSortChange">
@@ -327,8 +327,7 @@ export default {
 
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
-          console.log(res);
-          this.optionObj.dataList = res.records.map(item => {
+          this.optionObj.dataList = res.map(item => {
             return {
               ...item,
               deleteLoading: false
@@ -377,7 +376,14 @@ export default {
           delete data[key];
         }
       });
-
+      if (Array.isArray(this.form.materialsDescSet) && this.form.materialsDescSet.length <= 1) {
+        delete data.materialsDescSet;
+        data.materialsDescLike = this.form.materialsDescSet[0] || '';
+      }
+      if (Array.isArray(this.form.materialsCodeSet) && this.form.materialsCodeSet.length <= 1) {
+        delete data.materialsCodeSet;
+        data.materialsCodeLike = this.form.materialsCodeSet[0] || '';
+      }
       if (this.form.createTime) {
         delete data.createTime;
         if (this.form.createTime.length > 1) {
