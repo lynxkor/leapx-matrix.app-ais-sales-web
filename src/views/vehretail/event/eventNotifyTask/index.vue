@@ -270,6 +270,7 @@ export default {
     getData () {
       this.loading = true;
       this.selectionList = [];
+      this.optionObj.dataList = [];
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size }, this.form.systemPrefix)
         .then(res => {
           this.optionObj.dataList = res.records.map(item => {
@@ -353,6 +354,7 @@ export default {
       this.thirdTargetPlatformOptions = [];
       this.findEventTypeOptions();
       this.findThirdTargetPlatformOptions();
+      this.getData();
     },
     findEventTypeOptions () {
       findEventTypeList(this.form.systemPrefix).then(res => {
