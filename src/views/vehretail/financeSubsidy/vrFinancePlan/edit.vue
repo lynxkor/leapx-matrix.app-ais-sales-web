@@ -344,18 +344,18 @@ export default {
     // 跳转到车型详情
     goToVehicleDetail (vehicleId) {
       // 实现跳转到车型详情页面的逻辑
-      this.$router.push({
+      this.navigateToRoute({
         path: '/datacenter/materials/vehicleModel/detail',
         query: { id: vehicleId }
-      });
+      }, true);
     },
     // 跳转到金融产品详情
     goToProductDetail (productId) {
       // 实现跳转到金融产品详情页面的逻辑
-      this.$router.push({
+      this.navigateToRoute({
         path: '/vehretail/financeSubsidy/vrFinanceProduct/edit',
         query: { id: productId }
-      });
+      }, true);
     },
     getDefautlForm () {
       // TIPS: 此处可添加表单默认值，如当前用户信息等

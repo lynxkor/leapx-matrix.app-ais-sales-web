@@ -228,7 +228,7 @@ export default {
                     query: {
                       id: row.dealerId
                     }
-                  });
+                  }, true);
                 }
               },
               type: 'primary'
@@ -252,7 +252,7 @@ export default {
                     query: {
                       id: row.retailOrderId
                     }
-                  });
+                  }, true);
                 }
               },
               type: 'primary'

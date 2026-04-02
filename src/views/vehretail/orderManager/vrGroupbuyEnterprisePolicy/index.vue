@@ -173,12 +173,12 @@ export default {
             width: 150,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
+                this.navigateToRoute({
                   path: '/datacenter/materials/vehicleSeries/detail',
                   query: {
                     id: row.seriesId
                   }
-                });
+                }, true);
               },
               type: 'primary'
             }]

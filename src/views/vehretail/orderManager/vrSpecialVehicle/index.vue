@@ -204,7 +204,7 @@ export default {
                     query: {
                       id: row.vinId
                     }
-                  });
+                  }, true);
                 }
               },
               type: 'primary'
@@ -219,12 +219,12 @@ export default {
             width: 150,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
+                this.navigateToRoute({
                   path: '/datacenter/materials/vehicleModel/detail',
                   query: {
                     id: row.modelId
                   }
-                });
+                }, true);
               },
               type: 'primary'
             }]
