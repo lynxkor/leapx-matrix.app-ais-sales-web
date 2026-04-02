@@ -42,3 +42,11 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 启用停用
+ * @param {Object} data
+ */
+export function batchPost (data) {
+  return api.jsonPost(prefix + 'post', data);
+}

@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="整车退车订单"
+        title="整车退车订单:"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -13,7 +13,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-         {{ form.returnOrderCode }}
+         {{ form.backOrderCode }}
         </template>
         <template #extraButtons>
           <el-button  size="small"  @click="handelAdd">添加车辆</el-button>
@@ -206,7 +206,7 @@
                 <edit-table
                   ref="editTable"
                   :columns="columns"
-                  :data="vehicleBackOrderDetailRespList"
+                  :data="form.details"
                   :defaultNewRow="defaultNewRow"
                   :show-toolbar="false"
                   :show-pagination="true"
@@ -234,7 +234,8 @@
     </template>
     <Upload
       :visible="uploadDialogVisible"
-      :id="'1'"
+      id='import'
+      :businessParams="_id"
       @close="handleUploadDialogClose"
       @getData="detailRequest"
     />
@@ -369,10 +370,6 @@ export default {
       defaultNewRow: {
         totalQuotaQty: '',
       },
-      vehicleBackOrderDetailRespList: [{
-        backOrderDetailCode: 20,
-        returnPrice: 20,
-      }],
       pageNum: 1,
       pageSize: 20,
       total: 0,
