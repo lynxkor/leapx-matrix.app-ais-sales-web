@@ -188,7 +188,7 @@ export default {
         });
       }
     },
-    submitForm (formName, rest = false) {
+    submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.submitLoading = true;
@@ -197,11 +197,15 @@ export default {
               message: '保存成功',
               type: 'success'
             });
-            const id = this.$route.query.id;
-            if (rest || !id) {
-              this.resetForm(formName);
+            if (res) {
+              // 有返回值（新增成功返回 id），带着 id 跳回详情
+              this.$router.push({
+                path: '/vehwholesale/basic/wholesaleTargetDefaultQuota/detail',
+                query: { id: res }
+              });
             } else {
-              this.getDetailData();
+              // 没有返回值（编辑成功），跳回列表页
+              this.$router.back();
             }
           }).finally(() => {
             this.submitLoading = false;
