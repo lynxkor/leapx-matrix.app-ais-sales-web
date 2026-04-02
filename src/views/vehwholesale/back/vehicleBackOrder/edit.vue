@@ -17,7 +17,7 @@
          {{ form.backOrderCode }}
         </template>
         <template #extraButtons>
-          <el-button    :disabled="!form.buttonControl.addVehicleButton" size="small"  @click="handelAdd">添加车辆</el-button>
+          <el-button   :disabled="!form.buttonControl.addVehicleButton" size="small"  @click="handelAdd">添加车辆</el-button>
           <el-button   :disabled="!form.buttonControl.submitButton" size="small"  @click="handelSubmit">提交</el-button>
           <el-button   :disabled="!form.buttonControl.auditButton" size="small"  @click="handleAudit">审核</el-button>
           <el-button   :disabled="!form.buttonControl.canceledButton" size="small"  @click="handelCancel">作废</el-button>
@@ -154,8 +154,8 @@
                 </el-form-item>
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-               <el-form-item label="退车订单号：" prop="returnOrderCode">
-                  {{ form.returnOrderCode }}
+               <el-form-item label="退车订单号：" prop="backOrderCode">
+                  {{ form.backOrderCode }}
                 </el-form-item>
                 <el-form-item label="单据类型：" prop="orderTypeLabel">
                   {{ form.orderTypeLabel }}
