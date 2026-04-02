@@ -28,7 +28,7 @@
           placeholder="请选择"
         />
       </el-form-item>
-      <el-form-item label="目标平台">
+      <el-form-item label="系统平台">
         <fetch-select
           v-model="form.target"
           :options="thirdTargetPlatformOptions"
@@ -71,7 +71,7 @@
             clearable
           />
         </el-form-item>
-        <el-form-item label="事件发生时间">
+        <el-form-item label="创建时间">
           <el-date-picker
             v-model="form.eventAtRange"
             type="daterange"
@@ -202,7 +202,7 @@ export default {
             props: 'eventNotifyId',
             label: '事件任务ID',
             visible: true,
-            width: 100,
+            width: 200,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -220,14 +220,16 @@ export default {
           { props: 'bizNo', label: '业务标识编号', visible: true, width: 150 },
           { props: 'relatedNo', label: '业务关联单据', visible: true, width: 200 },
           { props: 'executeResultLabel', label: '执行状态', visible: true, width: 100 },
-          { props: 'type', label: '事件类型', visible: true, width: 150 },
+          { props: 'type', label: '事件类型', visible: true, width: 200 },
           { props: 'scene', label: '事件场景描述', visible: true, width: 200 },
           { props: 'eventAt', label: '事件发生时间', visible: true, width: 180 },
-          { props: 'target', label: '目标平台', visible: true, width: 150 },
+          { props: 'target', label: '系统平台编码', visible: true, width: 150 },
+          { props: 'targetDesc', label: '系统平台', visible: true, width: 150 },
           { props: 'failedCount', label: '失败次数', visible: true, width: 100 },
-          { props: 'dataIsolationIndex', label: '数据隔离索引', visible: false, width: 150 },
           { props: 'createTime', label: '创建时间', visible: true, width: 180 },
           { props: 'updateTime', label: '更新时间', visible: false, width: 180 },
+          { props: 'failedReason', label: '失败原因', visible: true, width: 300 },
+          { props: 'dataIsolationIndex', label: '数据隔离索引', visible: false, width: 150 },
           { props: 'remark', label: '备注', visible: false, width: 200 },
           {
             props: 'operate',
