@@ -399,7 +399,7 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        return getDetail(id, this.$route.query.systemPrefix);
       }
     },
     submitRequest () {

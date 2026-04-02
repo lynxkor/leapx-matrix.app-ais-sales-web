@@ -12,6 +12,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="form.status === 3 || form.status === 50"
       >
         <template #status>
           <span>{{ form.entOrderCode }}</span>

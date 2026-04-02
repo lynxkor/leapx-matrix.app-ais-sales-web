@@ -105,7 +105,7 @@
                 <vxe-table
                   ref="tableRef"
                   stripe
-                  :data="tableData"
+                  :data="form.details"
                   show-overflow
                   resizable
                   border="inner"
