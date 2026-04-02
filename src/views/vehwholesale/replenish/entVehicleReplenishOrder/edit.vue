@@ -145,7 +145,7 @@
                       placeholder="请选择"
                       clearable
                       filterable
-                      :disabled="isEditing"
+                      disabled
                     />
                 </el-form-item>
                 <el-form-item label="订单时间：" prop="orderTime">
