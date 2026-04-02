@@ -142,6 +142,27 @@
                 </el-form-item>
               </el-form>
             </div>
+            <!-- 附件材料 -->
+            <section class="common-section" v-if="_id">
+              <div class="common-section-header">
+                <h2>附件材料</h2>
+              </div>
+              <div class="common-section-body">
+                <div class="attachment-grid">
+                  <AisAttachment
+                    v-for="(item, index) in attachmentList" :key="index"
+                    :businessId="_id"
+                    :ref="'attachment' + index"
+                    :configCode="item.configCode"
+                    :attachType="item.attachType"
+                    :title="item.label"
+                    :uploadConfig="item.uploadConfig"
+                    type="card"
+                    :readonly="true"
+                  />
+                </div>
+              </div>
+            </section>
           </section>
         </el-main>
       </edit-base-container>
@@ -193,6 +214,7 @@ import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 
 const defaultForm = {
   id: '',
@@ -251,7 +273,8 @@ export default {
   mixins: [routeGuard, permissions, commonMixins],
   components: {
     EditPageLayout,
-    EditBaseContainer
+    EditBaseContainer,
+    AisAttachment
   },
   computed: {
     _id () {
@@ -282,6 +305,9 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       isEditing: false,
+      attachmentList: [
+        { label: '附件资料', required: false, configCode: 'mcs_licensedvehiclessale', attachType: '附件资料' }
+      ]
     };
   },
   methods: {

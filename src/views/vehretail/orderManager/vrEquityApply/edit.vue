@@ -175,8 +175,8 @@
             <div class="common-section-body">
               <AisAttachment
                 :businessId="_id"
-                attachType="订单权益申请附件"
-                configCode="vr_equity_apply"
+                attachType="附件"
+                configCode="mcs_equityapply"
                 :readonly="!(isEditing || !_id)"
               />
             </div>

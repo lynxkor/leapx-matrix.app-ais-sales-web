@@ -301,15 +301,21 @@
               <h2>附件材料</h2>
             </div>
             <div class="common-section-body">
-              <AisAttachment
-                :businessId="_id"
-                attachType="团购订单权益申请附件"
-                configCode="vr_groupbuy_order_equity_apply"
-                :readonly="!(isEditing || !_id)"
-              />
+              <div class="attachment-grid">
+                <AisAttachment
+                  v-for="(item, index) in attachmentList" :key="index"
+                  :businessId="_id"
+                  :ref="'attachment' + index"
+                  :configCode="item.configCode"
+                  :attachType="item.attachType"
+                  :title="item.label"
+                  :uploadConfig="item.uploadConfig"
+                  type="card"
+                  :readonly="!(isEditing || !_id)"
+                />
+            </div>
             </div>
           </section>
-
           <!-- 整车物料 -->
           <section class="common-section">
             <div class="common-section-header">
@@ -809,7 +815,16 @@ export default {
         mallOrderCode: [
           { required: true, message: '请选择商城订单号', trigger: 'change' }
         ]
-      }
+      },
+      attachmentList: [
+        { label: '近6个月内社保或公积金或纳税证明', required: true, configCode: 'vr_groupbuy_order_equity_apply', attachType: '社保证明' },
+        { label: '工作证或工作证明（需加盖公章）', required: true, configCode: 'vr_groupbuy_order_equity_apply', attachType: '工作证明' },
+        { label: '购车人在所属单位门口处与公司门头合影照片', required: false, configCode: 'vr_groupbuy_order_equity_apply', attachType: '工作照' },
+        { label: '户口本（户主页）', required: true, configCode: 'vr_groupbuy_order_equity_apply', attachType: '直系亲属证明（户主页）' },
+        { label: '户口本（本人页）', required: false, configCode: 'vr_groupbuy_order_equity_apply', attachType: '直系亲属证明（本人页）' },
+        { label: '派出所出具的直系亲属证明材料', required: false, configCode: 'vr_groupbuy_order_equity_apply', attachType: '直系亲属证明' },
+        { label: '结婚证', required: false, configCode: 'vr_groupbuy_order_equity_apply', attachType: '结婚证' }
+      ]
     };
   },
   watch: {

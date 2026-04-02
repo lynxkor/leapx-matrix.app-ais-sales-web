@@ -443,7 +443,9 @@ export default {
         customClass: 'ais-leave-tips',
         showClose: false
       }).then(() => {
-        deleteItem(ids).then(() => {
+        deleteItem({
+          idSet: ids
+        }).then(() => {
           this.$message({
             type: 'success',
             message: '删除成功!'

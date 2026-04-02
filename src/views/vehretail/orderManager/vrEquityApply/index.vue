@@ -340,12 +340,12 @@ export default {
             width: 150,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
+                this.navigateToRoute({
                   path: '/vehretail/basicConfig/vrEquityCategory/edit',
                   query: {
                     id: row.equityCategoryId
                   }
-                });
+                }, true);
               },
               type: 'primary'
             }]
@@ -371,7 +371,7 @@ export default {
                     query: {
                       id: row.saleDealerId
                     }
-                  });
+                  }, true);
                 }
               },
               type: 'primary'
@@ -385,12 +385,12 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
+                this.navigateToRoute({
                   path: '/datacenter/materials/vehicleMaterials/detail',
                   query: {
                     id: row.materialsId
                   }
-                });
+                }, true);
               },
               type: 'primary'
             }]
@@ -411,7 +411,7 @@ export default {
                     query: {
                       id: row.originalVinId
                     }
-                  });
+                  }, true);
                 }
               },
               type: 'primary'
