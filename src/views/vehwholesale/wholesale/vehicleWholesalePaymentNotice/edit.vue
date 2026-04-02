@@ -115,6 +115,7 @@
                 >
                   <vxe-column field="paymentDetailCode" title="请款明细单号" />
                   <vxe-column field="paymentNoticeCode" title="请款通知单" />
+                  <vxe-column field="saleDealerName" title="门店名称" />
                   <vxe-column field="materialsCode" title="物料编码" />
                   <vxe-column field="orderCategoryLabel" title="订单分类" />
                   <vxe-column field="entCustomerName" title="企业客户" />

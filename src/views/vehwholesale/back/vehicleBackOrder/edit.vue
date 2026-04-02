@@ -39,8 +39,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
-                    :disabled="isEditing"
-                    @change="handleOrderTypeChange"
+                    disabled
                   />
                   </el-form-item>
                    <el-form-item label="经销商：">
@@ -49,11 +48,11 @@
                     clearable
                     remote
                     v-model="form.dealerCompanyName"
-                    :remote-method="getDealerListByName"
-                    value-key="storeCode"
-                    label-key="storeName"
+                    :remote-method="listNetworkParentCompany"
+                     labelKey="companyName"
+                      valueKey="companyCode"
                     @change="getdealerCompanyCode"
-                    :disabled="form.orderType === '20' || isEditing"
+                    :disabled="form.orderCategory === '20' || isEditing"
                   />
                 </el-form-item>
                  <el-form-item label="企业客户名称：">
@@ -65,10 +64,9 @@
                       labelKey="companyName"
                       valueKey="companyCode"
                       clearable
-                      collapseTags
                       filterable
                       @change="getentCustomerName"
-                      :disabled="form.orderType === '10' || isEditing"
+                      :disabled="form.orderCategory === '10' || isEditing"
                 />
 
                 </el-form-item>
@@ -102,7 +100,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
-                    :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
 
@@ -138,7 +136,7 @@
                     placeholder="请输入"
                     v-model="form.auditOpinion"
                     clearable
-                    maxlength="150"
+                    maxlength="50"
                     disabled
                   />
                 </el-form-item>
@@ -171,7 +169,7 @@
                   {{ form.regionName }}
                 </el-form-item>
                    <el-form-item label="退车类型：" prop="backTypeLabel">
-                  {{ form.backType }}
+                  {{ form.backTypeLabel }}
                 </el-form-item>
                   <el-form-item label="退车订单状态：" prop="statusLabel">
                   {{ form.statusLabel }}
@@ -277,7 +275,7 @@ const defaultForm = {
   modifierName: '',
   updateTime: '',
   remark: '',
-  status: '',
+  status: '10',
   statusDesc: '',
   dataSource: '',
   returnOrderCode: '',
@@ -352,6 +350,9 @@ export default {
   },
   data () {
     const form = this.getDefautlForm();
+    const routeOrderCategory = this.$route.query.orderCategory ? (this.$route.query.orderCategory) : '';
+    form.orderCategory = routeOrderCategory;
+    form.orderType = routeOrderCategory;
     return {
       pageTitle: '整车退车订单管理',
       pageType: 'edit',
@@ -559,18 +560,18 @@ export default {
       }
     },
     vinConfirm (data) {
-      // const params = {
-      //   entOrderId: this._id,
-      //   vin: data,
-      // };
-      // vinAllocateVehicleItem(params).then(() => {
-      //   this.$message({
-      //     type: 'success',
-      //     message: '提交成功'
-      //   });
-      //   this.detailRequest();
-      //   this.showvinAllocateVehicleDialog = false;
-      // });
+      const params = {
+        vehicleBackOrderId: this._id,
+        items: data,
+      };
+      detailAddOrUpdate(params).then(() => {
+        this.$message({
+          type: 'success',
+          message: '提交成功'
+        });
+        this.detailRequest();
+        this.showvinAllocateVehicleDialog = false;
+      });
     },
     handleUploadDialogClose () {
       this.uploadDialogVisible = false;
@@ -623,6 +624,7 @@ export default {
     },
     handleAudit () {
       this.$refs.auditRef.show();
+      this.$refs.auditRef.auditForm.result = 1;
     },
     handelDel () {
       const ids = this._id;
@@ -634,7 +636,9 @@ export default {
         customClass: 'ais-leave-tips',
         showClose: false
       }).then(() => {
-        deleteItem(ids).then(() => {
+        deleteItem(
+          { idSet: [ids] }
+        ).then(() => {
           this.$message({
             type: 'success',
             message: '删除成功!'
@@ -676,7 +680,9 @@ export default {
       if (!row.id) {
         return;
       }
-      detailDeleteItem([row.id]).then((d) => {
+      detailDeleteItem({
+        idSet: [row.id]
+      }).then((d) => {
         defer.resolve();
         this.$message.success('删除成功');
         this.getDetailData();

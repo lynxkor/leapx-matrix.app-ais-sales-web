@@ -39,11 +39,11 @@
             <vxe-column field="vin" title="VIN" align="center" width="150" />
             <vxe-column field="materialsCode" title="整车物料编码" align="center" width="120" />
             <vxe-column field="materialsDesc" title="物料描述" align="center"  width="150"/>
-            <vxe-column field="reservedLabel" title="车型" align="center" width="150" />
-            <vxe-column field="reservedTypeLabel" title="整车批售订单号" align="center" width="150" />
-            <vxe-column field="logisticsReservedLabel" title="企业客户整车订单号" align="center" width="150" />
-            <vxe-column field="vehicleDeliveryStatusLabel" title="合格证状态" align="center"  width="150"/>
-            <vxe-column field="inboundDateTime" title="赊销结算状态" align="center" width="150" />
+            <vxe-column field="modelName" title="车型" align="center" width="150" />
+            <vxe-column field="wholesaleOrderCode" title="整车批售订单号" align="center" width="150" />
+            <vxe-column field="entOrderCode" title="企业客户整车订单号" align="center" width="150" />
+            <vxe-column field="certificateStatusLabel" title="合格证状态" align="center"  width="150"/>
+            <vxe-column field="creditSettlementStatusLabel" title="赊销结算状态" align="center" width="150" />
           </vxe-table>
           <el-pagination
             @size-change="handleSizeChange"
@@ -201,12 +201,8 @@ export default {
       this.handleClose();
     },
     handleSubmit () {
-      if (this.selectedRows.length !== 1) {
-        this.$message.error('请选择一条数据！');
-        return;
-      }
       this.dialogVisible = false;
-      this.$emit('confirm', this.selectedRows[0].vin);
+      this.$emit('confirm', this.selectedRows);
     },
   }
 };

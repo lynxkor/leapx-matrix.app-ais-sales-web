@@ -42,7 +42,7 @@
           <fetch-select
                   :remote-method="getParentCompany"
                   remote
-                  v-model="form.dealerCompanyName"
+                  v-model="form.dealerCompanyNames"
                   placeholder="请选择"
                   labelKey="companyName"
                   valueKey="companyName"
@@ -272,7 +272,9 @@ export default {
               //   return row.auditStatus === 0 || row.auditStatus === 2;
               // },
               click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
+                deleteItem(
+                  { idSet: [row.id] }
+                ).then(() => {
                   this.$message({
                     type: 'success',
                     message: '删除成功!'
