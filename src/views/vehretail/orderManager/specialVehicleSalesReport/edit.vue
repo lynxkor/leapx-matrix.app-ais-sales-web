@@ -415,9 +415,9 @@
                 <el-form-item label="开票日期：" prop="invoiceDate">
                   <el-date-picker
                     type="date"
-                    :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd HH:mm:ss"
                     v-model="form.invoiceDate"
+                    placeholder="请选日期"
                   />
                 </el-form-item>
                 <el-form-item label="发票金额：" prop="invoiceAmount">

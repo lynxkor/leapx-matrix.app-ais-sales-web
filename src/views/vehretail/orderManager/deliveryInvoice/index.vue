@@ -19,7 +19,7 @@
       <el-form-item label="整车开票状态">
         <fetch-select
           :request="fetchOptions"
-          enumCode="xxx"
+          enumCode="vr_delivery_invoice_status"
           v-model="form.status"
           placeholder="请选择"
           clearable
@@ -30,35 +30,36 @@
       <el-form-item label="车辆属性">
         <fetch-select
           :request="fetchOptions"
-          enumCode="xxx"
+          enumCode="vehicle_attribute_type"
           v-model="form.vehicleAttribute"
           placeholder="请选择"
           clearable
-          multiple
           filterable
         />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="销售门店">
           <fetch-select
-            :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.saleDealerCode"
-            placeholder="请选择"
-            clearable
-            multiple
             filterable
+            clearable
+            remote
+            v-model="form.saleDealerCode"
+            :remote-method="saleDealerSearch"
+            value-key="storeCode"
+            label-key="storeName"
+            placeholder="请选择"
           />
         </el-form-item>
         <el-form-item label="交付门店">
           <fetch-select
-            :request="fetchOptions"
-            enumCode="xxx"
-            v-model="form.deliveryDealerCode"
-            placeholder="请选择"
-            clearable
-            multiple
             filterable
+            clearable
+            remote
+            v-model="form.deliveryDealerCode"
+            :remote-method="saleDealerSearch"
+            value-key="storeCode"
+            label-key="storeName"
+            placeholder="请选择"
           />
         </el-form-item>
         <el-form-item label="车主信息">
@@ -150,7 +151,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { deleteItem, enableItem, getList } from '@/api/vehretail/orderManager/deliveryInvoice/index';
-import { exportTable, getEnum, getTableConfig, tableAddOrUpdate } from '@/api/common';
+import {exportTable, getEnum, getTableConfig, listOrgStoreInfo, tableAddOrUpdate} from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -330,7 +331,7 @@ export default {
       }
       exportTable({
         businessType: '整车开票记录',
-        dataFetchPath: 'vehretail/web/orderManager/deliveryInvoice/page',
+        dataFetchPath: '/vr/web/delivery/deliveryInvoice/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -427,6 +428,13 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    async saleDealerSearch (val) {
+      const params = {
+        keyword: val,
+        pageSize: 5000
+      };
+      return await listOrgStoreInfo(params);
     },
     // 批量删除
     handleBatchDelete () {
