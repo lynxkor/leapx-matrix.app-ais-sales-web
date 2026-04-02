@@ -11,7 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-         :showEditBtn="form.certificateStatus === 10 && form.certificateStatus === 10"
+        :showEditBtn="form.certificateStatus === 10 && form.certificateStatus === 10"
       >
         <template #status>
           <span>{{ form.redemptionCode }}</span>
@@ -775,7 +775,7 @@ export default {
           idSet: ids,
         }).then(() => {
           this.$message.success('提交成功');
-          this.getData();
+          this.$refs.containerRef.loadDetail();
         });
       }).catch(() => {});
     },

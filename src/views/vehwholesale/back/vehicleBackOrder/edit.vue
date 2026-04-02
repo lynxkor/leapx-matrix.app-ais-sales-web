@@ -51,7 +51,7 @@
                     v-model="form.dealerCompanyName"
                     :remote-method="listNetworkParentCompany"
                      labelKey="companyName"
-                      valueKey="companyCode"
+                    valueKey="companyCode"
                     @change="getdealerCompanyCode"
                     :disabled="form.orderCategory === '20' || isEditing"
                   />
@@ -570,7 +570,7 @@ export default {
           type: 'success',
           message: '提交成功'
         });
-        this.detailRequest();
+        this.$refs.containerRef.loadDetail();
         this.showvinAllocateVehicleDialog = false;
       });
     },
@@ -591,7 +591,7 @@ export default {
           idSet: [this._id],
         }).then(() => {
           this.$message.success('提交成功');
-          this.detailRequest();
+          this.$refs.containerRef.loadDetail();
         });
       }).catch(() => {});
     },
@@ -605,7 +605,7 @@ export default {
           idSet: [this._id],
         }).then(() => {
           this.$message.success('提交成功');
-          this.detailRequest();
+          this.$refs.containerRef.loadDetail();
         });
       }).catch(() => {});
     },
@@ -620,7 +620,7 @@ export default {
           type: 'success',
           message: '审核提交成功'
         });
-        this.detailRequest();
+        this.$refs.containerRef.loadDetail();
       });
     },
     handleAudit () {
@@ -655,8 +655,9 @@ export default {
       return getRigion({ orgName: params });
     },
     getdealerCompanyCode (val, row) {
-      this.form.dealerCompanyName = row.storeName;
-      this.form.dealerCompanyCode = row.storeCode;
+      console.log('getdealerCompanyCode', val, row);
+      this.form.dealerCompanyName = row.companyName;
+      this.form.dealerCompanyCode = row.companyCode;
     },
     async getDealerListByName (params) {
       return await listOrgStoreInfo({ storeName: params, isWholesaleSale: true });

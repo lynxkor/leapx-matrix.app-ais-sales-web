@@ -14,7 +14,7 @@
           filterable
           clearable
           remote
-            v-model="form.dealerCompanyNames"
+            v-model="form.dealerCompanyCodes"
             :remote-method="listNetworkParentCompany"
             labelKey="companyName"
             valueKey="companyCode"
