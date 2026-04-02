@@ -133,8 +133,22 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">签收合格证</el-button>
+        <el-dropdown trigger="click" style="margin: 0 10px;" @command="handleAdd">
+        <el-button size="small" type="primary" @click="showDropdown">
+          {{ dropdownLoading ? '加载中...' : '车辆合格证赎回' }}
+          <i class="iconfont icon-lxppc-down" />
+        </el-button>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item
+            v-for="(item, index) in validatedOrderategoryList"
+            :key="index"
+            :command="item.code">
+            {{ item.message }}
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+      <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
+      <el-button v-if="canDelete" size="small" @click="handleconfirmSign" :disabled="selectionList.length === 0">签收合格证</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
@@ -172,7 +186,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehwholesale/certificate/vehicleCertificateRedemption/index';
+import { getList, deleteItem, enableItem, batchconfirmSign } from '@/api/vehwholesale/certificate/vehicleCertificateRedemption/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany, listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -227,6 +241,8 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      dropdownLoading: false,
+      validatedOrderategoryList: [],
       clickItemId: '',
       optionObj: {
         id: 'vehicleCertificateRedemptionTable',
@@ -331,8 +347,33 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
+    this.fetchOrderCategoryOptions();
   },
   methods: {
+    async fetchOrderCategoryOptions () {
+      const response = await getEnum('vw_vehicle_back_order_type');
+      this.orderCategoryOptions = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['10', '20'].includes(codeStr + '');
+      }).map(item => {
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
+    },
+    async showDropdown () {
+      this.dropdownLoading = true;
+      try {
+        // 又不要校验了
+        // await createRequestValid();
+        this.dropdownLoading = false;
+        this.validatedOrderategoryList = [...this.orderCategoryOptions];
+      } catch (error) {
+        this.dropdownLoading = false;
+        this.validatedOrderategoryList = [];
+      }
+    },
     async getDealerListByName (params) {
       return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
     },
@@ -358,9 +399,12 @@ export default {
     handleUploadDialogClose () {
       this.uploadDialogVisible = false;
     },
-    handleAdd () {
+    handleAdd (code) {
       this.$router.push({
-        path: '/vehwholesale/certificate/vehicleCertificateRedemption/edit'
+        path: '/vehwholesale/certificate/vehicleCertificateRedemption/edit',
+        query: {
+          orderCategory: code
+        }
       });
     },
     onSubmit () {
@@ -496,6 +540,21 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    handleconfirmSign () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      this.$confirm('此操作将批量签收合格证, 是否继续?', '', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        batchconfirmSign({
+          idSet: ids,
+        }).then(() => {
+          this.$message.success('提交成功');
+          this.getData();
+        });
+      }).catch(() => {});
     },
     // 批量删除
     handleBatchDelete () {

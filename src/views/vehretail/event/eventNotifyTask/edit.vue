@@ -206,20 +206,17 @@
                 <el-form-item label="数据隔离索引：" prop="dataIsolationIndex">
                   {{ form.dataIsolationIndex }}
                 </el-form-item>
-                <el-form-item label="目标平台：" prop="target">
+                <el-form-item label="系统平台编码：" prop="target">
                   {{ form.target }}
+                </el-form-item>
+                <el-form-item label="系统平台：" prop="targetDesc">
+                  {{ form.targetDesc }}
                 </el-form-item>
                 <el-form-item label="执行结果：" prop="executeResultLabel">
                   {{ form.executeResultLabel }}
                 </el-form-item>
                 <el-form-item label="失败次数：" prop="failedCount">
                   {{ form.failedCount }}
-                </el-form-item>
-                <el-form-item label="失败原因：" prop="failedReason">
-                  {{ form.failedReason }}
-                </el-form-item>
-                <el-form-item label="事件数据快照：" prop="dataParam">
-                  {{ form.dataParam }}
                 </el-form-item>
                 <el-form-item label="拓展字段1：" prop="extend1">
                   {{ form.extend1 }}
@@ -229,6 +226,9 @@
                 </el-form-item>
                 <el-form-item label="数据参数快照：" prop="dataParam">
                   {{ form.dataParam }}
+                </el-form-item>
+                <el-form-item label="失败原因：" prop="failedReason">
+                  {{ form.failedReason }}
                 </el-form-item>
                 <el-form-item label="备注：" prop="remark">
                   {{ form.remark }}
@@ -399,7 +399,7 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        return getDetail(id, this.$route.query.systemPrefix);
       }
     },
     submitRequest () {

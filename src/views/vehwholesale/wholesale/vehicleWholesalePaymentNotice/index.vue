@@ -82,7 +82,7 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete">发布</el-button>
+      <el-button v-if="canDelete" size="small" @click="handleBatchPost">发布</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
@@ -120,7 +120,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehwholesale/wholesale/vehicleWholesalePaymentNotice/index';
+import { getList, deleteItem, enableItem, batchPost } from '@/api/vehwholesale/wholesale/vehicleWholesalePaymentNotice/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -415,6 +415,22 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    // 发布
+    handleBatchPost () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      this.$confirm('此操作将批量发布, 是否继续?', '', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        batchPost({
+          idSet: ids,
+        }).then(() => {
+          this.$message.success('提交成功');
+          this.getData();
+        });
+      }).catch(() => {});
     },
     // 批量删除
     handleBatchDelete () {

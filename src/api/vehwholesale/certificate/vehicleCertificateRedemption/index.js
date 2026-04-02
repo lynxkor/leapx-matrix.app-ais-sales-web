@@ -64,3 +64,11 @@ export function listWholesaleOrEntOrder (data) {
 export function getLatestReceiverAddress (data) {
   return api.jsonPost(prefix + 'getLatestReceiverAddress', data);
 }
+
+/**
+ * 签收合格证
+ * @param {Object} data
+ */
+export function batchconfirmSign (data) {
+  return api.jsonPost(prefix + 'confirmSign', data);
+}

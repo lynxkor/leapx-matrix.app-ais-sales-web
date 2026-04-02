@@ -9,18 +9,34 @@
       label-width="120px"
       class="ais-search-form"
     >
-      <el-form-item label="业务标识编号">
-        <tag-input
-          placeholder="请输入"
-          v-model="form.bizNoList"
-          clearable
+      <el-form-item label="业务系统">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="event_source_sys_enum"
+          v-model="form.systemPrefix"
+          @change="systemPrefixChange"
+          placeholder="请选择"
+          filterable
         />
       </el-form-item>
       <el-form-item label="事件类型">
-        <el-input
-          placeholder="请输入"
+        <fetch-select
+          :options="eventTypeOptions"
           v-model="form.type"
+          value-key="code"
+          label-key="name"
+          placeholder="请选择"
+        />
+      </el-form-item>
+      <el-form-item label="系统平台">
+        <fetch-select
+          v-model="form.target"
+          :options="thirdTargetPlatformOptions"
+          value-key="code"
+          label-key="name"
+          placeholder="请选择"
           clearable
+          filterable
         />
       </el-form-item>
       <el-form-item label="执行状态">
@@ -33,18 +49,18 @@
           filterable
         />
       </el-form-item>
-      <el-form-item label="目标平台">
-        <el-input
-          placeholder="请输入"
-          v-model="form.target"
-          clearable
-        />
-      </el-form-item>
       <template v-if="show">
         <el-form-item label="事件场景">
           <el-input
             placeholder="请输入"
             v-model="form.scene"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="业务标识编号">
+          <tag-input
+            placeholder="请输入"
+            v-model="form.bizNoList"
             clearable
           />
         </el-form-item>
@@ -55,7 +71,7 @@
             clearable
           />
         </el-form-item>
-        <el-form-item label="事件发生时间">
+        <el-form-item label="创建时间">
           <el-date-picker
             v-model="form.eventAtRange"
             type="daterange"
@@ -120,7 +136,7 @@ import {
   deleteItem,
   enableItem,
   manualExecute,
-  manualExecuteAsync, manualCancel
+  manualExecuteAsync, manualCancel, findEventTypeList, findThirdTargetPlatformList
 } from '@/api/vehretail/event/eventNotifyTask';
 import { getTableConfig, tableAddOrUpdate, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
@@ -136,6 +152,7 @@ const defaultForm = {
   scene: '',
   type: null,
   executeResult: null,
+  systemPrefix: 'vr',
   target: '',
   status: null,
   relatedNo: '',
@@ -168,6 +185,8 @@ export default {
         ...defaultForm
       },
       selectionList: [],
+      eventTypeOptions: [],
+      thirdTargetPlatformOptions: [],
       show: false,
       loading: false,
       clickItemId: '',
@@ -183,14 +202,15 @@ export default {
             props: 'eventNotifyId',
             label: '事件任务ID',
             visible: true,
-            width: 100,
+            width: 200,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
                   path: '/vehretail/event/eventNotifyTask/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    systemPrefix: this.form.systemPrefix
                   }
                 });
               },
@@ -200,14 +220,16 @@ export default {
           { props: 'bizNo', label: '业务标识编号', visible: true, width: 150 },
           { props: 'relatedNo', label: '业务关联单据', visible: true, width: 200 },
           { props: 'executeResultLabel', label: '执行状态', visible: true, width: 100 },
-          { props: 'type', label: '事件类型', visible: true, width: 150 },
+          { props: 'type', label: '事件类型', visible: true, width: 200 },
           { props: 'scene', label: '事件场景描述', visible: true, width: 200 },
           { props: 'eventAt', label: '事件发生时间', visible: true, width: 180 },
-          { props: 'target', label: '目标平台', visible: true, width: 150 },
+          { props: 'target', label: '系统平台编码', visible: true, width: 150 },
+          { props: 'targetDesc', label: '系统平台', visible: true, width: 150 },
           { props: 'failedCount', label: '失败次数', visible: true, width: 100 },
-          { props: 'dataIsolationIndex', label: '数据隔离索引', visible: false, width: 150 },
           { props: 'createTime', label: '创建时间', visible: true, width: 180 },
           { props: 'updateTime', label: '更新时间', visible: false, width: 180 },
+          { props: 'failedReason', label: '失败原因', visible: true, width: 300 },
+          { props: 'dataIsolationIndex', label: '数据隔离索引', visible: false, width: 150 },
           { props: 'remark', label: '备注', visible: false, width: 200 },
           {
             props: 'operate',
@@ -223,6 +245,8 @@ export default {
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
+    this.findEventTypeOptions();
+    this.findThirdTargetPlatformOptions();
     this.getData();
   },
   methods: {
@@ -246,8 +270,7 @@ export default {
     getData () {
       this.loading = true;
       this.selectionList = [];
-
-      getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
+      getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size }, this.form.systemPrefix)
         .then(res => {
           this.optionObj.dataList = res.records.map(item => {
             return {
@@ -324,6 +347,27 @@ export default {
       }
       return [];
     },
+    systemPrefixChange (val) {
+      this.form.systemPrefix = val;
+      this.eventTypeOptions = [];
+      this.thirdTargetPlatformOptions = [];
+      this.findEventTypeOptions();
+      this.findThirdTargetPlatformOptions();
+    },
+    findEventTypeOptions () {
+      findEventTypeList(this.form.systemPrefix).then(res => {
+        this.$nextTick(() => {
+          this.eventTypeOptions = res || [];
+        });
+      });
+    },
+    findThirdTargetPlatformOptions () {
+      findThirdTargetPlatformList(this.form.systemPrefix).then(res => {
+        this.$nextTick(() => {
+          this.thirdTargetPlatformOptions = res || [];
+        });
+      });
+    },
     handleBatchDelete () {
       const ids = this.selectionList.map(item => item.id) || [];
       const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
@@ -364,7 +408,7 @@ export default {
         return;
       }
       const ids = this.selectionList.map(item => item.id);
-      manualExecute({ idList: ids }).then(res => {
+      manualExecute({ idList: ids }, this.form.systemPrefix).then(res => {
         this.$message.success('操作成功');
         this.getData();
       });
@@ -377,7 +421,7 @@ export default {
         return;
       }
       const ids = this.selectionList.map(item => item.id);
-      manualExecuteAsync({ idList: ids }).then(res => {
+      manualExecuteAsync({ idList: ids }, this.form.systemPrefix).then(res => {
         this.$message.success('操作成功');
         this.getData();
       });
@@ -390,7 +434,7 @@ export default {
         return;
       }
       const ids = this.selectionList.map(item => item.id);
-      manualCancel({ idList: ids }).then(res => {
+      manualCancel({ idList: ids }, this.form.systemPrefix).then(res => {
         this.$message.success('取消成功');
         this.getData();
       });

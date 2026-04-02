@@ -31,14 +31,15 @@
                   @change="seriesListChange" />
               </el-form-item>
               <el-form-item label="车型：" prop="modelId">
-                <fetch-select :options="modelList" v-model="form.modelId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable @change="modelListChange" />
+                <fetch-select :options="modelList" :params="form.modelName" v-model="form.modelId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable @change="modelListChange" />
               </el-form-item>
               <el-form-item label="年款：" prop="yearTypeId">
-                <fetch-select :options="yearTypeList" v-model="form.yearTypeId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
+                <fetch-select :options="yearTypeList" :params="form.yearTypeName" v-model="form.yearTypeId" placeholder="请选择" labelKey="label" valueKey="value" clearable filterable/>
               </el-form-item>
               <el-form-item label="外观：" prop="exteriorId">
                 <fetch-select
                   v-model="form.exteriorId"
+                  :params="form.exteriorName"
                   v-bind="selectOptions"
                   :remote-method="remoteMethods.exterior"
                 />
@@ -46,6 +47,7 @@
               <el-form-item label="内饰：" prop="interiorId">
                 <fetch-select
                   v-model="form.interiorId"
+                  :params="form.interiorName"
                   v-bind="selectOptions"
                   :remote-method="remoteMethods.interior"
                 />
@@ -53,6 +55,7 @@
               <el-form-item label="车顶：" prop="roofId">
                 <fetch-select
                   v-model="form.roofId"
+                  :params="form.roofName"
                   v-bind="selectOptions"
                   :remote-method="remoteMethods.roof"
                 />
@@ -60,6 +63,7 @@
               <el-form-item label="轮毂：" prop="wheelHubId">
                 <fetch-select
                   v-model="form.wheelHubId"
+                  :params="form.wheelHubName"
                   v-bind="selectOptions"
                   :remote-method="remoteMethods.wheel"
                 />
@@ -67,6 +71,7 @@
               <el-form-item label="续航里程：" prop="drivingRangeId">
                 <fetch-select
                   v-model="form.drivingRangeId"
+                  :params="form.drivingRangeName"
                   v-bind="selectOptions"
                   :remote-method="remoteMethods.drivingRange"
                 />
@@ -74,6 +79,7 @@
               <el-form-item label="选配动力：" prop="rangePowerId">
                 <fetch-select
                   v-model="form.rangePowerId"
+                  :params="form.rangePowerName"
                   v-bind="selectOptions"
                   :remote-method="remoteMethods.rangePower"
                 />
@@ -88,6 +94,7 @@
               <el-form-item label="电池电芯：" prop="batteryCellId" v-permission="moduleKey+'-checkBatteryCell'">
                 <fetch-select
                   v-model="form.batteryCellId"
+                  :params="form.batteryCellName"
                   v-bind="selectOptions"
                   :remote-method="remoteMethods.battery"
                 />

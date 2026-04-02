@@ -35,24 +35,27 @@
                       remote
                       v-model="form.wholesaleOrderCode"
                       placeholder="请选择"
-                      labelKey="name"
-                      valueKey="id"
+                      labelKey="wholesaleOrderCode"
+                      valueKey="wholesaleOrderCode"
                       clearable
                       filterable
                       :options="wholesaleOrderCodeList"
+                      @change="otherwholesaleOrderInfo"
+                      :disabled="form.orderCategory !== '10'"
                      />
                 </el-form-item>
                  <el-form-item label="企业客户整车订单：" prop="entVehicleOrderCode">
                   <fetch-select
                     :remote-method="getentVehicleOrderCodeList"
                     remote
-                    v-model="form.entVehicleOrderCode"
+                    v-model="form.entOrderCode"
                     placeholder="请选择"
-                    labelKey="name"
-                    valueKey="id"
+                    labelKey="entOrderCode"
+                    valueKey="entOrderCode"
                     clearable
                     filterable
                     :options="entVehicleOrderCodeList"
+                    :disabled="form.orderCategory !== '20'"
                      />
                 </el-form-item>
                  <el-form-item label="母公司名称：" prop="dealerCompanyName">
@@ -65,7 +68,7 @@
                       :remote-method="getDealerParentOrgList"
                       value-key="companyCode"
                       label-key="companyName"
-                      @change="(val, record) => {form.dealerParentOrgName = record?.companyName || ''}"
+                      disabled
                     />
                 </el-form-item>
                   <el-form-item label="销售门店名称：" prop="saleDealerName">
@@ -78,6 +81,7 @@
                         :remote-method="getDealerListByName"
                         value-key="storeCode"
                         label-key="storeName"
+                        disabled
                       />
 
                 </el-form-item>
@@ -86,7 +90,7 @@
                     placeholder="请输入"
                     v-model="form.vin"
                     clearable
-                    :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="整车物料：" prop="vin">
@@ -94,7 +98,7 @@
                     placeholder="请输入"
                     v-model="form.vin"
                     clearable
-                    :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
                  <el-form-item label="车系名称：" prop="seriesName">
@@ -102,7 +106,7 @@
                     placeholder="请输入"
                     v-model="form.seriesName"
                     clearable
-                    :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
@@ -110,29 +114,7 @@
                     placeholder="请输入"
                     v-model="form.modelName"
                     clearable
-                    :disabled="isEditing"
-                  />
-                </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.createTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    :disabled="isEditing"
-                  />
-                </el-form-item>
-                <el-form-item label="修改时间：" prop="updateTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.updateTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
               </el-form>
@@ -185,6 +167,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="赊销结算状态：" prop="creditSettleStatus">
@@ -195,14 +178,15 @@
                       placeholder="请选择"
                       clearable
                       filterable
+                      disabled
                     />
                 </el-form-item>
-                <el-form-item label="合同SAP状态：" prop="status">
+                <el-form-item label="合同SAP状态：" prop="syncSapMsg">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.statusLabel"
+                    v-model="form.syncSapMsg"
                     clearable
-                    :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
               </el-form>
@@ -213,8 +197,8 @@
                 <el-form-item label="赊销结算状态：" prop="creditSettleStatusLabel">
                   {{ form.creditSettleStatusLabel }}
                 </el-form-item>
-                <el-form-item label="合同SAP状态：" prop="statusLabel">
-                  {{ form.statusLabel }}
+                <el-form-item label="合同SAP状态：" prop="syncSapMsg">
+                  {{ form.syncSapMsg }}
                 </el-form-item>
               </el-form>
             </div>
@@ -226,12 +210,12 @@
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                 <el-form-item label="资金结算类型：" prop="settleFundType">
+                 <el-form-item label="资金结算类型：" prop="settleFundTypeLabel">
                   <el-input
                     placeholder="请输入"
                     v-model="form.settleFundTypeLabel"
                     clearable
-                    :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
 
@@ -240,7 +224,7 @@
                     placeholder="请输入"
                     v-model="form.vehiclePrice"
                     clearable
-                     :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="销售价（批售价）：" prop="salePrice">
@@ -248,7 +232,7 @@
                     placeholder="请输入"
                     v-model="form.salePrice"
                     clearable
-                     :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="首付款比例：" prop="downPaymentRatio">
@@ -256,7 +240,7 @@
                     placeholder="请输入"
                     v-model="form.downPaymentRatio"
                     clearable
-                     :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="首付款金额：" prop="downPaymentAmount">
@@ -264,7 +248,7 @@
                     placeholder="请输入"
                     v-model="form.downPaymentAmount"
                     clearable
-                     :disabled="isEditing"
+                     disabled
                   />
                 </el-form-item>
                 <el-form-item label="赊销欠款金额：" prop="creditDebtAmount">
@@ -272,7 +256,7 @@
                     placeholder="请输入"
                     v-model="form.creditDebtAmount"
                     clearable
-                     :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
                  <el-form-item label="赊销日期：" prop="creditTime">
@@ -283,7 +267,7 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
-                     :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="还款日期：" prop="repaymentTime">
@@ -294,7 +278,7 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
-                     :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="赊销天数：" prop="creditDays">
@@ -302,7 +286,7 @@
                     placeholder="请输入"
                     v-model="form.creditDays"
                     clearable
-                     :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="赊销费用：" prop="creditFee">
@@ -310,7 +294,7 @@
                     placeholder="请输入"
                     v-model="form.creditFee"
                     clearable
-                     :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="超期赊销费用：" prop="overdueCreditFee">
@@ -318,7 +302,7 @@
                     placeholder="请输入"
                     v-model="form.overdueCreditFee"
                     clearable
-                    :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="违约金：" prop="penaltyAmount">
@@ -326,7 +310,7 @@
                     placeholder="请输入"
                     v-model="form.penaltyAmount"
                     clearable
-                    :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="凭证编号：" prop="voucherCode">
@@ -334,13 +318,13 @@
                     placeholder="请输入"
                     v-model="form.voucherCode"
                     clearable
-                    :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="资金结算类型：" prop="settleFundType">
-                  {{ form.settleFundType }}
+                <el-form-item label="资金结算类型：" prop="settleFundTypeLabel">
+                  {{ form.settleFundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="车辆售价（零售价）：" prop="vehiclePrice">
                   {{ form.vehiclePrice }}
@@ -490,7 +474,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, deleteItem, submit, listWholesaleOrEntOrder } from '@/api/vehwholesale/certificate/vehicleCertificateRedemption/index';
+import { getDetail, addOrUpdate, deleteItem, submit, listWholesaleOrEntOrder, getLatestReceiverAddress } from '@/api/vehwholesale/certificate/vehicleCertificateRedemption/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -517,8 +501,8 @@ const defaultForm = {
   dealerCompanyName: '',
   saleDealerCode: '',
   saleDealerName: '',
-  creditSettleStatus: '',
-  certificateStatus: '',
+  creditSettleStatus: '10',
+  certificateStatus: '10',
   vin: '',
   seriesId: '',
   seriesName: '',
@@ -580,10 +564,31 @@ export default {
         }
       },
       immediate: true
-    }
+    },
+    'form.orderCategory': {
+      handler (val) {
+        console.log('orderCategory', val);
+        // 整车批售 10   20
+        if (val === '12') {
+          this.rules.financialOrganizationId = [
+            { required: true, message: '请输入金融机构', trigger: 'change' }
+          ];
+          this.form.creditSaleFlag = 0;
+        } else if (val === '1050') {
+          this.rules.financialOrganizationId = [];
+          this.form.creditSaleFlag = 1;
+        } else if (val === '1010') {
+          this.form.creditSaleFlag = 0;
+          this.rules.financialOrganizationId = [];
+        }
+      },
+      immediate: true
+    },
   },
   data () {
     const form = this.getDefautlForm();
+    const routeOrderCategory = this.$route.query.orderCategory ? (this.$route.query.orderCategory) : '';
+    form.orderCategory = routeOrderCategory;
     return {
       pageTitle: '车辆合格证赎回',
       pageType: 'edit',
@@ -615,9 +620,6 @@ export default {
         creditSettleStatus: [
           { required: true, message: '请选择赊销结算状态', trigger: ['change', 'blur'] }
         ],
-        settleFundType: [
-          { required: true, message: '请选择资金结算类型', trigger: ['change', 'blur'] }
-        ],
         vehiclePrice: [
           { required: true, message: '请输入车辆售价（零售价）', trigger: 'change' }
         ],
@@ -639,6 +641,52 @@ export default {
   mounted () {
   },
   methods: {
+    otherwholesaleOrderInfo (val, row) {
+      console.log('otherwholesaleOrderInfo', val, row);
+      this.form.dealerCompanyName = row.dealerCompanyName;
+      this.form.dealerCompanyCode = row.dealerCompanyCode;
+      this.form.saleDealerCode = row.dealerCode;
+      this.form.saleDealerName = row.dealerName;
+      this.form.vin = row.vin;
+      this.form.materialsCode = row.materialsCode;
+      this.form.modelId = row.modelId;
+      this.form.modelName = row.modelName;
+      this.form.seriesId = row.seriesId;
+      this.form.seriesName = row.seriesName;
+      this.form.settleFundTypeLabel = row.settleFundTypeLabel;
+      this.form.vehiclePrice = row.retailPrice;
+      this.form.salePrice = row.wholesalePrice;
+      // 整车批售订单：来源【整车批售订单】的【结算成功时间】企业客户订单：来源【企业客户整车订单】的【结算成功时间
+      this.form.creditTime = row.settleTime;
+      console.log('this.orderCategory', this.form.orderCategory === '10');
+      if (this.form.orderCategory === '10') {
+        this.form.downPaymentRatio = row.downPaymentRatio;
+        this.form.downPaymentAmount = row.downPaymentAmount;
+        // 金额
+        // this.form.creditDebtAmount = row
+      } else {
+        this.form.downPaymentRatio = 0;
+        this.form.downPaymentAmount = 0;
+      }
+      this.form.creditDebtAmount = row.creditDebtAmount;
+
+      getLatestReceiverAddress({
+        orderType: this.form.orderCategory,
+        query: val
+      }).then((res) => {
+        console.log('getLatestReceiverAddress', res);
+        this.form.receiverName = res.receiverName;
+        this.form.receiverPhone = res.receiverPhone;
+        this.form.receiverProvinceCode = res.receiverProvinceCode;
+        this.form.receiverProvinceName = res.receiverProvinceName;
+        this.form.receiverCityCode = res.receiverCityCode;
+        this.form.receiverCityName = res.receiverCityName;
+        this.form.receiverDistrictCode = res.receiverDistrictCode;
+        this.form.receiverDistrictName = res.receiverCityName;
+        this.form.receiverAddress = res.receiverAddress;
+        this.areaCode = [res.receiverProvinceCode, res.receiverCityCode, res.receiverDistrictCode];
+      });
+    },
     async getDealerListByName (params) {
       return listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
     },
@@ -698,7 +746,7 @@ export default {
           idSet: [this._id],
         }).then(() => {
           this.$message.success('提交成功');
-          this.detailRequest();
+          this.$refs.containerRef.loadDetail();
         });
       }).catch(() => {});
     },
@@ -712,7 +760,7 @@ export default {
           idSet: [this._id],
         }).then(() => {
           this.$message.success('提交成功');
-          this.detailRequest();
+          this.$refs.containerRef.loadDetail();
         });
       }).catch(() => {});
     },
