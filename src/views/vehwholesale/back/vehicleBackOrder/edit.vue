@@ -17,12 +17,12 @@
          {{ form.backOrderCode }}
         </template>
         <template #extraButtons>
-          <el-button  size="small"  @click="handelAdd">添加车辆</el-button>
-          <el-button  size="small"  @click="handelSubmit">提交</el-button>
-          <el-button  size="small"  @click="handleAudit">审核</el-button>
-          <el-button  size="small"  @click="handelCancel">作废</el-button>
-          <el-button  size="small"  @click="handleImport">导入车辆</el-button>
-          <el-button  size="small" v-if ="form.status === 10 || form.status === 20" @click="handelDel">删除</el-button>
+          <el-button    :disabled="!form.buttonControl.addVehicleButton" size="small"  @click="handelAdd">添加车辆</el-button>
+          <el-button   :disabled="!form.buttonControl.submitButton" size="small"  @click="handelSubmit">提交</el-button>
+          <el-button   :disabled="!form.buttonControl.auditButton" size="small"  @click="handleAudit">审核</el-button>
+          <el-button   :disabled="!form.buttonControl.canceledButton" size="small"  @click="handelCancel">作废</el-button>
+          <el-button   :disabled="!form.buttonControl.importVehicleButton" size="small"  @click="handleImport">导入车辆</el-button>
+          <el-button   :disabled="!form.buttonControl.deleteButton" size="small"  @click="handelDel">删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -223,6 +223,22 @@
               </div>
             </div>
           </section>
+          <section class="common-section" v-if="_id">
+            <div class="common-section-header">
+              <h2>附件上传信息</h2>
+            </div>
+            <div class="common-section-body">
+              <div class="common-section-table">
+                <!-- 附件上传组件 -->
+                <AisAttachment
+                  :businessId="_id"
+                  configCode="vehicle_back_order"
+                  attachType="其他"
+                  ref="attachment"
+                />
+              </div>
+            </div>
+          </section>
         </el-main>
       </edit-base-container>
     </template>
@@ -266,6 +282,7 @@ import Upload from '@/libs/components/UploadDialog';
 import auditDialog from '@/libs/components/auditDialog';
 import vinAllocateVehicle from './vinAllocateVehicle.vue';
 import { addOrUpdate as detailAddOrUpdate, deleteItem as detailDeleteItem } from '@/api/vehwholesale/back/vehicleBackOrderDetail/index';
+import AisAttachment from '@/libs/components/AisAttachment';
 const defaultForm = {
   // 多选时字段有变化，自行修复
   id: '',
@@ -312,7 +329,8 @@ export default {
     EditTable,
     Upload,
     auditDialog,
-    vinAllocateVehicle
+    vinAllocateVehicle,
+    AisAttachment
   },
   computed: {
     _id () {
@@ -364,6 +382,7 @@ export default {
       showvinAllocateVehicleDialog: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
+      fileData: [], // 附件数据
       form: { ...form },
       originalForm: { ...form },
       emptyText: '若要启用此内容，请创建记录',
@@ -596,6 +615,12 @@ export default {
       }).catch(() => {});
     },
     handelSubmit () {
+      const allFiles = this.$refs.attachment.getFileList();
+      console.log('总附件数:', allFiles.length);
+      if (allFiles.length === 0) {
+        this.$message.warning('必须有附件才能操作提交!');
+        return;
+      }
       this.$confirm('确认是否对数据进行提交?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

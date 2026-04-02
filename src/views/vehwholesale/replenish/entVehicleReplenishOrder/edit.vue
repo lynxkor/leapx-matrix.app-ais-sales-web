@@ -488,7 +488,7 @@ const defaultForm = {
   totalAmount: '',
   settleFundType: '1010',
   financialOrganizationId: '',
-  orderTime: '',
+  orderTime: new Date(),
   saleDealerCode: '',
   saleDealerName: '',
   saleUserName: '',
