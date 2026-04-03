@@ -47,7 +47,7 @@
                     :controls="false"
                 />
         </el-form-item>
-        <!-- <el-form-item label="关联交易不含税价：">
+        <el-form-item label="关联交易不含税价：">
             <el-input-number
                   placeholder="请输入"
                   v-model="materialsform.relatedTxnExTaxPrice"
@@ -68,7 +68,7 @@
                     :controls="false"
                     disabled
                 />
-        </el-form-item> -->
+        </el-form-item>
         <el-form-item label="数量：" prop="qty">
           <el-input-number
                   placeholder="请输入"
@@ -90,6 +90,8 @@
 <script>
 import { getEnum, vehicleMaterials } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
+import { getList as taxGetList } from '@/api/vehwholesale/entorder/entTransactionTaxPriceConfig/index';
+
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   materialsCode: '',
@@ -97,6 +99,8 @@ const defaultForm = {
   salesPrice: '',
   materialsId: '',
   qty: 1,
+  relatedTxnExTaxPrice: '',
+  relatedTxnPriceRate: '',
 };
 export default {
   name: 'AddEntVehicleReplishOrderDetail',
@@ -189,8 +193,11 @@ export default {
     // 新增监听：当销售价格变化且订单分类为 21 时，同步标准价格
     'materialsform.salesPrice': {
       handler (newVal) {
+        console.log(newVal, this.orderInfo.orderCategory === 21);
         if (this.orderInfo && this.orderInfo.orderCategory === 21) {
+          console.log('同步标准价格');
           this.materialsform.standardPrice = newVal;
+          this.getTaxPrice();
         }
       },
       immediate: true // 初始化时也执行一次
@@ -200,11 +207,22 @@ export default {
     this.getEnum();
     this.getVehicleMaterialsList();
     this.materialsform = { ...defaultForm };
-    console.log('orderInfo:', this.orderInfo);
   },
   methods: {
+    getTaxPrice () {
+      taxGetList(
+        { saleCompanyId: this.orderInfo.saleCompanyId }
+      ).then((d) => {
+        this.materialsform.relatedTxnPriceRate = d.records[0].txnTaxPriceRate;
+        if (this.materialsform.salesPrice && this.materialsform.relatedTxnPriceRate) {
+          console.log('计算税率');
+          this.materialsform.relatedTxnExTaxPrice = (this.materialsform.salesPrice * (1 - this.materialsform.relatedTxnPriceRate / 100) / (1.13)).toFixed(2);
+        }
+      }).catch(() => {
+      });
+    },
     async getVehicleMaterialsList (params) {
-      return vehicleMaterials({ materialsCodeLike: params, status: 1, pageSize: 20 });
+      return vehicleMaterials({ materialsCodeLike: params, status: 1, pageSize: 20, allowCustomerSales: false });
     },
     materialsSelect (val, row) {
       this.materialsform.materialsId = row.id;

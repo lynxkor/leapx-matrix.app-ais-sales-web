@@ -105,7 +105,7 @@
                   />
                 </el-form-item>
 
-                <el-form-item label="退车备注：">
+                <el-form-item label="退车备注：" prop="remark">
                   <el-input
                     placeholder="请输入"
                     v-model="form.remark"
@@ -411,6 +411,9 @@ export default {
         ],
         status: [
           { required: true, message: '请选择退车订单状态', trigger: 'change' }
+        ],
+        remark: [
+          { required: true, message: '请输入备注', trigger: 'change' }
         ],
       },
       columns: [
@@ -746,7 +749,6 @@ export default {
     },
     // 删除子表数据
     handleDeleteRow (index) {
-      const item = this.tableData[index];
       this.tableData.splice(index, 1);
       // 根据需求调用接口
       // deletePartVehModel([item.id]).then(res => {

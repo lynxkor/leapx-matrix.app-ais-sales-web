@@ -175,10 +175,10 @@
                     maxlength="150"
                   />
                 </el-form-item>
-                 <el-form-item label="下单物料码：" prop="materialsCode">
+                 <el-form-item label="下单物料码：" prop="orderMaterialsCode">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.materialsCode"
+                    v-model="form.orderMaterialsCode"
                     clearable
                     disabled
                   />
@@ -302,8 +302,8 @@
                 <el-form-item label="急单备注：" prop="emergencyOrderRemark">
                   {{ form.emergencyOrderRemark }}
                 </el-form-item>
-                  <el-form-item label="下单物料码：" prop="materialsCode">
-                  {{ form.materialsCode }}
+                  <el-form-item label="下单物料码：" prop="orderMaterialsCode">
+                  {{ form.orderMaterialsCode }}
                 </el-form-item>
                 <el-form-item label="物料描述：" prop="orderMaterialsDesc">
                   {{ form.orderMaterialsDesc }}
