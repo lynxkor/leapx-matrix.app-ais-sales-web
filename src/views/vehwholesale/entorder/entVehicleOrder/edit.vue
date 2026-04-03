@@ -202,20 +202,19 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="订单取消原因：" prop="orderMaterialsDesc">
+                <el-form-item label="订单取消原因：" prop="cancelRemark">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.orderMaterialsDesc"
+                    v-model="form.cancelRemark"
                     clearable
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="订单备注：" prop="orderMaterialsDesc">
+                <el-form-item label="订单备注：" prop="remark">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.orderMaterialsDesc"
+                    v-model="form.remark"
                     clearable
-                    disabled
                   />
                 </el-form-item>
                  <el-form-item label="创建人：" prop="creatorName">
@@ -315,8 +314,8 @@
                  <el-form-item label="订单取消原因：" prop="cancelRemark">
                   {{ form.cancelRemark }}
                 </el-form-item>
-                <el-form-item label="订单备注：" prop="cancelRemark">
-                  {{ form.cancelRemark }}
+                <el-form-item label="订单备注：" prop="remark">
+                  {{ form.remark }}
                 </el-form-item>
                 <el-form-item label="创建人：" prop="creatorName">
                   {{ form.creatorName }}
