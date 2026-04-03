@@ -38,7 +38,7 @@
           reserve-keyword
           v-model="form.modelId"
           :remote-method="vehicleModelSearch"
-          :params="form.modelName"
+          :params="form.modelId"
           value-key="id"
           label-key="name"
           placeholder="请选择"
@@ -333,7 +333,7 @@ export default {
       }
       exportTable({
         businessType: '已售上牌车辆资料管理',
-        dataFetchPath: 'vehretail/web/orderManager/soldPlateInfo/page',
+        dataFetchPath: '/vr/web/delivery/soldPlateInfo/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
