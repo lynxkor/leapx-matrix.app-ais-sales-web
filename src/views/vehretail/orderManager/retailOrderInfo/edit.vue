@@ -21,7 +21,7 @@
           <el-button size="small" :loading="printLoading" @click="handlePrintContractTermination">打印合同解除协议</el-button>
           <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" :loading="setSpecialMarkLoading" @click="handleSetSpecialMark">设置特殊标识</el-button>
           <el-button size="small" :loading="modifyConfigLoading" v-if="form.orderStatus !== 9" @click="handleModifyConfiguration">修改配置</el-button>
-          <el-button size="small" :loading="manualVehicleLoading" v-if="form.wholesaleBindStatus !== 1 && form.orderHandleType === 30 && form.unlockReasonCode === 'DJY003'" @click="handleManualVehicleAllocation">手工配车</el-button>
+          <el-button size="small" :loading="manualVehicleLoading" v-if="form.wholesaleBindStatus !== 1" @click="handleManualVehicleAllocation">手工配车</el-button>
           <el-button size="small" :loading="autoLockLoading" v-if="form.wholesaleBindStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
           <el-button size="small" :loading="agreementLoading" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
           <el-button size="small" :loading="orderRefundLoading"
