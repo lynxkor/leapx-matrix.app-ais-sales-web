@@ -149,7 +149,7 @@
               </div>
               <div class="common-section-body">
                 <div class="attachment-grid">
-                  <AisAttachment
+                  <AisAttachmentList
                     v-for="(item, index) in attachmentList" :key="index"
                     :businessId="_id"
                     :ref="'attachment' + index"
@@ -214,7 +214,7 @@ import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-import AisAttachment from '@/libs/components/AisAttachment/index.vue';
+import AisAttachmentList from '@/libs/components/AisAttachmentList/index.vue';
 
 const defaultForm = {
   id: '',
@@ -274,7 +274,7 @@ export default {
   components: {
     EditPageLayout,
     EditBaseContainer,
-    AisAttachment
+    AisAttachmentList
   },
   computed: {
     _id () {

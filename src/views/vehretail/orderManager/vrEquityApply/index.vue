@@ -341,7 +341,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.navigateToRoute({
-                  path: '/vehretail/basicConfig/vrEquityCategory/edit',
+                  path: '/sales/vehretail/basicConfig/vrEquityCategory/edit',
                   query: {
                     id: row.equityCategoryId
                   }
@@ -386,7 +386,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.navigateToRoute({
-                  path: '/datacenter/materials/vehicleMaterials/detail',
+                  path: '/service/datacenter/materials/vehicleMaterials/detail',
                   query: {
                     id: row.materialsId
                   }
