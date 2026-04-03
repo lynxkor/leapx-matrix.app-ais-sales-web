@@ -98,7 +98,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/vdc/vehicleVdcInventoryLedger/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleSalesVersionList, pageWithPermission } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleSalesVersionList, page } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -669,7 +669,7 @@ export default {
     },
     // 搜索仓库
     async serchWarehouse (query) {
-      const res = await pageWithPermission({ warehouseName: query, page: 1, size: 20 });
+      const res = await page({ warehouseName: query, page: 1, size: 20 });
       return res?.records?.map(item => {
         return {
           ...item,
