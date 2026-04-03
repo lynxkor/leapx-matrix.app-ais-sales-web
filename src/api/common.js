@@ -296,8 +296,8 @@ export function vehicleMaterials (data) {
  * 仓库名称查询
  * @param {*} data
  */
-export function pageWithPermission (data) {
-  return api.jsonPost('/zcwms/base/headquartersWarehouse/pageWithPermission', data);
+export function page (data) {
+  return api.jsonPost('/zcwms/base/headquartersWarehouse/page', data);
 }
 
 /**

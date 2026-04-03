@@ -101,7 +101,7 @@
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehstock/basic/warehouseVehicleRelation/index';
 import FetchSelect from '@/libs/components/FetchSelect';
-import { getEnum, pageWithPermission, getProvinceTree } from '@/api/common';
+import { getEnum, page, getProvinceTree } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -299,7 +299,7 @@ export default {
     },
     // 搜索仓库
     async serchWarehouse (query) {
-      const res = await pageWithPermission({ warehouseName: query, page: 1, size: 100 });
+      const res = await page({ warehouseName: query, page: 1, size: 100 });
       this.warehouseOptions = res?.records?.map(item => {
         return {
           ...item,

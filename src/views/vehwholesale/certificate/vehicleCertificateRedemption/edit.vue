@@ -11,6 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="form.certificateStatus === 10 && form.certificateStatus === 10"
       >
         <template #status>
           <span>{{ form.redemptionCode }}</span>
@@ -18,8 +19,8 @@
         <template #extraButtons>
           <el-button size="small" @click="handleSubmit">提交赎回</el-button>
           <el-button size="small" @click="handleSubmitAgain">重新提交赎回</el-button>
-          <el-button size="small" @click="handleSign">签收合格证</el-button>
-          <el-button size="small" @click="handleDel">删除</el-button>
+          <el-button size="small" @click="handleconfirmSign">签收合格证</el-button>
+          <el-button size="small" v-if = "form.certificateStatus === 10 && form.certificateStatus === 10" @click="handleDel">删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -474,7 +475,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, deleteItem, submit, listWholesaleOrEntOrder, getLatestReceiverAddress } from '@/api/vehwholesale/certificate/vehicleCertificateRedemption/index';
+import { getDetail, addOrUpdate, deleteItem, submit, listWholesaleOrEntOrder, getLatestReceiverAddress, batchconfirmSign } from '@/api/vehwholesale/certificate/vehicleCertificateRedemption/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -763,7 +764,21 @@ export default {
         });
       }).catch(() => {});
     },
-    handleSign () {},
+    handleconfirmSign () {
+      const ids = [this._id];
+      this.$confirm('此操作将批量签收合格证, 是否继续?', '', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        batchconfirmSign({
+          idSet: ids,
+        }).then(() => {
+          this.$message.success('提交成功');
+          this.$refs.containerRef.loadDetail();
+        });
+      }).catch(() => {});
+    },
     handleDel () {
       const ids = [this._id];
       const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';

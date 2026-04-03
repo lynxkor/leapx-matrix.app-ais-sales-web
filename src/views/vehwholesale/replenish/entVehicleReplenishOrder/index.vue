@@ -39,7 +39,18 @@
             label-key="companyName"
           />
         </el-form-item>
-           <el-form-item label="审核状态" v-show="this.visibleCount === 3 || show">
+         <el-form-item label="结算资金类型" v-show="this.visibleCount === 3 || show">
+        <fetch-select
+          :options="settleFundTypeOptions"
+            v-model="form.settleFundTypes"
+            placeholder="请选择"
+            clearable
+            filterable
+            multiple
+          />
+        </el-form-item>
+      <template v-if="show">
+        <el-form-item label="审核状态" >
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_ent_vehicle_replenish_order_audit_status"
@@ -50,7 +61,6 @@
             filterable
           />
         </el-form-item>
-      <template v-if="show">
          <el-form-item label="订单分类">
            <fetch-select
               :options="orderCategoryOptions"
@@ -61,16 +71,6 @@
               filterable
             />
       </el-form-item>
-       <el-form-item label="结算资金类型">
-        <fetch-select
-          :options="settleFundTypeOptions"
-            v-model="form.settleFundTypes"
-            placeholder="请选择"
-            clearable
-            filterable
-            multiple
-          />
-        </el-form-item>
          <el-form-item label="金融机构">
            <fetch-select
             :remote-method="repairItemSearch"
@@ -434,6 +434,7 @@ export default {
       this.form = { ...defaultForm };
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
+      this.form.settleFundTypes = [];
       this.getData();
     },
     exportExcel () {
@@ -519,9 +520,10 @@ export default {
     },
     getFormData () {
       const data = { ...this.form };
+      console.log('getFormData', data);
 
       Object.keys(this.form).forEach(key => {
-        if (data[key] === '' || data[key] === null) {
+        if (data[key] === '' || data[key] === null || data[key] === undefined || data[key].length === 0) {
           delete data[key];
         }
       });

@@ -96,6 +96,7 @@ const defaultForm = {
   standardPrice: '',
   salesPrice: '',
   materialsId: '',
+  qty: 1,
 };
 export default {
   name: 'AddEntVehicleReplishOrderDetail',
@@ -167,6 +168,12 @@ export default {
     visible (newVal) {
       if (newVal) {
         this.vin = '';
+        this.$nextTick(() => {
+          if (this.$refs.materialsForm) {
+            this.$refs.materialsForm.clearValidate();
+          }
+          this.materialsform = { ...defaultForm };
+        });
       }
     },
     orderInfo (val) {

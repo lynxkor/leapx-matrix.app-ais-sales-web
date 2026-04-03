@@ -254,7 +254,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, getOrderUnlockConfig, batchReplaceStore, getDetailDecryptField } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getList, getOrderUnlockConfig, batchReplaceStore, getDetailDecryptField, getSysConfigParamValue } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import {
   getTableConfig,
   tableAddOrUpdate,
@@ -569,8 +569,13 @@ export default {
       this.businessId = this.row.id;
       this.row = row;
       console.log('row.depositAmount:', row.depositAmount, 'this.row.depositAmount:', this.row.depositAmount);
-      // 检查 accountFlag 和 changeConfigCount 的关系
-      if (this.accountFlag && this.row.changeConfigCount >= 1) {
+      // 门店端校验
+      const res1 = await getSysConfigParamValue({ paramCode: 'veretailChangeConfigCount' });
+      console.log('res1:', res1);
+      console.log('this.accountFlag:', this.accountFlag);
+      const veretailChangeConfigCount = res1?.paramValue !== null && res1?.paramValue !== undefined ? Number(res1.paramValue) : 1;
+      // 检查返回结果是否有效
+      if (this.accountFlag && this.row.changeConfigCount >= veretailChangeConfigCount) {
         this.$message.error('该订单修改配车次数已达上限');
         return;
       }
@@ -580,13 +585,20 @@ export default {
       this.businessId = this.selectionList[0]?.id;
       this.row = this.selectionList[0];
       const res = await getOrderUnlockConfig(this.row.retailOrderCode);
+      console.log('res.allowUnlockStatus,非1代表门店没权限:', res.allowUnlockStatus);
       // 检查返回结果是否有效
       if (!res || res.allowUnlockStatus !== 1) {
         this.$message.error('该门店暂无该车型取消锁车权限');
         return;
       }
+      const res1 = await getSysConfigParamValue({ paramCode: 'veretailUnlockConfigCount' });
+      console.log('res1:', res1);
+      console.log('this.accountFlag， false是厂端不校验:', this.accountFlag);
+      console.log('this.row.unlockCount:', this.row.unlockCount);
+      // return;
       // 检查 accountFlag 和 unlockCount 的关系
-      if (this.accountFlag && this.row.unlockCount >= 1) {
+      const unlockConfigCount = res1?.paramValue !== null && res1?.paramValue !== undefined ? Number(res1.paramValue) : 1;
+      if (this.accountFlag && this.row.unlockCount >= unlockConfigCount) {
         this.$message.error('该订单取消配车次数已达上限');
         return;
       }

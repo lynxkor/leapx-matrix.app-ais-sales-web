@@ -52,7 +52,7 @@
             filterable
             clearable
             remote
-            v-model="form.modelName"
+            v-model="form.modelId"
             :remote-method="vehicleModelSearch"
             value-key="id"
             label-key="name"
@@ -367,7 +367,7 @@ export default {
       }
       exportTable({
         businessType: '特殊车辆销售提报管理',
-        dataFetchPath: 'vehretail/web/orderManager/specialVehicleSalesReport/page',
+        dataFetchPath: '/vr/web/delivery/specialVehicleSalesReport/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

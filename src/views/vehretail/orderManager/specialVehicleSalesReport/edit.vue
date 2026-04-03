@@ -368,7 +368,7 @@
                     reserve-keyword
                     v-model="form.saleDealerCode"
                     :remote-method="saleDealerSearch"
-                    :params="form.saleDealerCode"
+                    :params="form.saleDealerName"
                     @change="handleSaleDealerChange"
                     value-key="storeCode"
                     label-key="storeName"
@@ -383,7 +383,7 @@
                     reserve-keyword
                     v-model="form.deliveryDealerCode"
                     :remote-method="deliveryDealerSearch"
-                    :params="form.deliveryDealerCode"
+                    :params="form.deliveryDealerName"
                     @change="handleDeliveryDealerChange"
                     value-key="storeCode"
                     label-key="storeName"
@@ -415,9 +415,9 @@
                 <el-form-item label="开票日期：" prop="invoiceDate">
                   <el-date-picker
                     type="date"
-                    :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd HH:mm:ss"
                     v-model="form.invoiceDate"
+                    placeholder="请选日期"
                   />
                 </el-form-item>
                 <el-form-item label="发票金额：" prop="invoiceAmount">
@@ -455,15 +455,9 @@
             <div class="common-section-header">
               <h2>附件材料(证件和发票必填)</h2>
             </div>
-
-            <div class="common-section-table">
-              <!--附件上传组件 -->
-              <AisAttachment
-                :businessId="_id"
-                :readonly="!isEditing"
-                configCode="mcs_specialcarsalesreport"
-                attachType="特殊车辆销售提报附件"
-              />
+            <div class="common-section-body">
+              <!-- 上传附件弹框 (通过 ref 调用组件内部方法打开) -->
+              <simple-dialog :_id="_id" :readonly="!uploadOperate && !isEditing" :attachType="'mcs_specialcarsalesreport'" ref="uploadDialogRef"/>
             </div>
           </section>
           <vehicle-attribute-dialog
@@ -503,6 +497,7 @@ import { getList as getVehicleProfileList } from '@/api/datacenter/vehicle/vehic
 import VehicleAttributeDialog from '@/views/vehretail/orderManager/specialVehicleSalesReport/vehicleAttributeDialog';
 import { generateSoldPlateInfoByVin, getEffectiveByVin } from '@/api/vehretail/orderManager/soldPlateInfo';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
+import SimpleDialog from './SimpleDialog.vue';
 const defaultForm = {
   // 多选时字段有变化，自行修复
   id: null,
@@ -569,6 +564,7 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
+    SimpleDialog,
     AisAttachment,
     EditPageLayout,
     EditBaseContainer,
@@ -602,6 +598,7 @@ export default {
       moduleKey: 'AISVRFDI-specialVehicleSalesReport',
       loading: false,
       submitLoading: false,
+      uploadOperate: false,
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
@@ -869,6 +866,7 @@ export default {
     },
     // 添加附件
     handleAttachment () {
+      this.uploadOperate = true;
     },
     compareAttachFields () {
       let differentFields = '';
@@ -1059,42 +1057,41 @@ export default {
       return await getVehicleProfileList(params);
     },
     vehicleProfileChange (val, selectedOption) {
-      let clearForm = true;
+      this.clearForm();
       if (val) {
         // 校验是否已存在记录
         effectiveVinValidate(val).then(res => {
-          clearForm = false;
           this.refreshVehicleProfileInfo(val, selectedOption);
         });
       }
-      if (clearForm) {
-        // 清空表单
-        this.$refs.ruleForm.resetFields();
-        this.$refs.ruleForm1.resetFields();
-        this.$refs.ruleForm2.resetFields();
-      }
+    },
+    clearForm () {
+      // 清空表单
+      this.$refs.ruleForm.resetFields();
+      this.$refs.ruleForm1.resetFields();
+      this.$refs.ruleForm2.resetFields();
     },
     refreshVehicleProfileInfo (val, selectedOption) {
       this.form.vin = val;
-      this.form.modelId = val ? selectedOption.vehicleModelId : '';
-      this.form.modelName = val ? selectedOption.vehicleModelName : '';
-      this.form.vehicleAttribute = val ? selectedOption.usageType : '';
-      this.form.vehicleSalesVersionId = val ? selectedOption.carSaleSversionId : '';
-      this.form.vehicleSalesVersionName = val ? selectedOption.carSalesVersionName : '';
-      this.form.vehicleProductArea = val ? selectedOption.vehiclePlaceOrigin : '';
-      this.form.enginenNumber = val ? selectedOption.enginenNumber : '';
-      this.form.certificateNo = val ? selectedOption.certNumber : '';
-      this.form.carBuyerName = val ? selectedOption.vehicleProfileOwnerResp.ownerName : '';
-      this.form.carBuyerPhone = val ? selectedOption.vehicleProfileOwnerResp.mobilephone : '';
-      this.form.idCardType = val ? selectedOption.vehicleProfileOwnerResp.idcardType : '';
-      this.form.idCardNo = val ? selectedOption.vehicleProfileOwnerResp.idcardNo : '';
-      this.form.address = val ? selectedOption.vehicleProfileOwnerResp.homeAddress : '';
-      this.form.saleDealerCode = val ? selectedOption.salesDealerCode + '' : null;
-      this.form.saleDealerName = val ? selectedOption.salesDealerName : null;
-      this.form.deliveryDealerCode = val ? selectedOption.deliveryDealerCode + '' : null;
-      this.form.deliveryDealerName = val ? selectedOption.deliveryDealerName : null;
-      this.form.exclusiveServiceStoreCode = val ? selectedOption.vehicleProfileServiceResp.serviceDealerCode + '' : null;
-      this.form.exclusiveServiceStoreName = val ? selectedOption.vehicleProfileServiceResp.serviceDealerName : null;
+      this.form.modelId = selectedOption.vehicleModelId;
+      this.form.modelName = selectedOption.vehicleModelName;
+      this.form.vehicleAttribute = selectedOption.usageType;
+      this.form.vehicleSalesVersionId = selectedOption.carSaleSversionId;
+      this.form.vehicleSalesVersionName = selectedOption.carSalesVersionName;
+      this.form.vehicleProductArea = selectedOption.vehiclePlaceOrigin;
+      this.form.enginenNumber = selectedOption.enginenNumber;
+      this.form.certificateNo = selectedOption.certNumber;
+      this.form.carBuyerName = selectedOption.vehicleProfileOwnerResp.ownerName;
+      this.form.carBuyerPhone = selectedOption.vehicleProfileOwnerResp.mobilephone;
+      this.form.idCardType = selectedOption.vehicleProfileOwnerResp.idcardType;
+      this.form.idCardNo = selectedOption.vehicleProfileOwnerResp.idcardNo;
+      this.form.address = selectedOption.vehicleProfileOwnerResp.homeAddress;
+      this.form.saleDealerCode = selectedOption.salesDealerCode + '';
+      this.form.saleDealerName = selectedOption.salesDealerName;
+      this.form.deliveryDealerCode = selectedOption.deliveryDealerCode + '';
+      this.form.deliveryDealerName = selectedOption.deliveryDealerName;
+      this.form.exclusiveServiceStoreCode = selectedOption.vehicleProfileServiceResp.serviceDealerCode + '';
+      this.form.exclusiveServiceStoreName = selectedOption.vehicleProfileServiceResp.serviceDealerName;
       // 根据销售门店渲染专属服务、交付门店
       if (this.form.saleDealerCode) {
         this.saleDealerSearch(selectedOption.salesDealerCode);

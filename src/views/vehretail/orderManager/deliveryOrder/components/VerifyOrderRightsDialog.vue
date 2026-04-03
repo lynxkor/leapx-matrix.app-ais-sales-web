@@ -16,7 +16,7 @@
           :checkbox-config="{ checkField: 'checked', checkMethod: ({ row }) => row.status !== 2 }"
         >
           <vxe-column type="checkbox" width="60" fixed="left" />
-          <vxe-column field="rightsGrantCode" title="权益 ID" width="200" />
+          <vxe-column field="useId" title="权益 ID" width="200" />
           <vxe-column field="rightsName" title="权益名称" width="150" />
           <vxe-column field="cardType" title="卡券类型" width="120">
             <template v-slot="{ row }">

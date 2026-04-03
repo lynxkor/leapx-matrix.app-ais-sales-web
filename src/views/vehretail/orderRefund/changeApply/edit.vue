@@ -222,14 +222,14 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="订单销售门店编码：" prop="saleDealerCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.saleDealerCode"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
+<!--                <el-form-item label="订单销售门店编码：" prop="saleDealerCode">-->
+<!--                  <el-input-->
+<!--                    placeholder="请输入"-->
+<!--                    v-model="form.saleDealerCode"-->
+<!--                    clearable-->
+<!--                    disabled-->
+<!--                  />-->
+<!--                </el-form-item>-->
                 <el-form-item label="订单销售门店名称：" prop="saleDealerName">
                   <el-input
                     placeholder="请输入"
@@ -265,14 +265,14 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="原销售门店编码：" prop="originalSaleDealerCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.originalSaleDealerCode"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
+<!--                <el-form-item label="原销售门店编码：" prop="originalSaleDealerCode">-->
+<!--                  <el-input-->
+<!--                    placeholder="请输入"-->
+<!--                    v-model="form.originalSaleDealerCode"-->
+<!--                    clearable-->
+<!--                    disabled-->
+<!--                  />-->
+<!--                </el-form-item>-->
                 <el-form-item label="原销售门店名称：" prop="originalSaleDealerName">
                   <el-input
                     placeholder="请输入"
@@ -318,9 +318,9 @@
                 <el-form-item label="原订单物料码：" prop="originalMaterialsCode">
                   {{ form.originalMaterialsCode }}
                 </el-form-item>
-                <el-form-item label="订单销售门店编码：" prop="saleDealerCode">
-                  {{ form.saleDealerCode }}
-                </el-form-item>
+<!--                <el-form-item label="订单销售门店编码：" prop="saleDealerCode">-->
+<!--                  {{ form.saleDealerCode }}-->
+<!--                </el-form-item>-->
                 <el-form-item label="订单销售门店名称：" prop="saleDealerName">
                   <el-button
                     class="link"
@@ -341,9 +341,9 @@
                 <el-form-item label="交车时间：" prop="deliveryTime">
                   {{ form.deliveryTime }}
                 </el-form-item>
-                <el-form-item label="车型ID：" prop="modelId">
-                  {{ form.modelId }}
-                </el-form-item>
+<!--                <el-form-item label="车型ID：" prop="modelId">-->
+<!--                  {{ form.modelId }}-->
+<!--                </el-form-item>-->
                 <el-form-item label="基本车型：" prop="modelName">
                   {{ form.modelName }}
                 </el-form-item>
@@ -845,7 +845,7 @@ export default {
         ],
         modelName: [
           {
-            required: false,
+            required: true,
             message: '请输入基本车型',
             trigger: 'change',
           },
@@ -880,7 +880,7 @@ export default {
         ],
         originalBuyerName: [
           {
-            required: true,
+            required: false,
             message: '请输入原购车人名称',
             trigger: 'change',
           },
@@ -908,7 +908,7 @@ export default {
         ],
         originalAgentName: [
           {
-            required: true,
+            required: false,
             message: '请输入原代办人',
             trigger: 'change',
           },
@@ -922,7 +922,7 @@ export default {
         ],
         originalSaleDealerName: [
           {
-            required: false,
+            required: true,
             message: '请输入原销售门店名称',
             trigger: 'change',
           },
@@ -1082,8 +1082,8 @@ export default {
     async submitRequest () {
       // 变更信息不能全部为空
       if (!this.form.newBuyerName && !this.form.newBuyerPhone && !this.form.newIdCardType && !this.form.newIdCardNo && !this.form.newAgentName) {
-        this.$message.warning('变更信息不能全部为空');
-        return Promise.reject(new Error('变更信息不能全部为空'));
+        this.$message.warning('请填写变更项');
+        return Promise.reject(new Error('请填写变更项'));
       }
       if ((this.form.applyStatus === 1010 || this.form.applyStatus === 1040) && this._id) {
         // 等待一下确保文件列表已更新

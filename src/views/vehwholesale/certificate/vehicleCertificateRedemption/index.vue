@@ -14,7 +14,7 @@
                   filterable
                   clearable
                   remote
-                  v-model="form.dealerCompanyNames"
+                  v-model="form.dealerCompanyCodes"
                   :remote-method="getDealerParentOrgList"
                   value-key="companyCode"
                   label-key="companyName"
@@ -307,6 +307,9 @@ export default {
             fixed: 'right',
             buttons: [{
               name: '编辑',
+              show: (row) => {
+                return row.certificateStatus === 10 && row.certificateStatus === 10;
+              },
               click: (rowIndex, row) => {
                 this.$router.push({
                   path: '/vehwholesale/certificate/vehicleCertificateRedemption/edit',
@@ -319,6 +322,9 @@ export default {
               type: 'info'
             }, {
               name: '删除',
+              show: (row) => {
+                return row.certificateStatus === 10 && row.certificateStatus === 10;
+              },
               popconfirmConfirmButtonType: 'danger',
               popconfirmConfirmButtonText: '删除',
               popconfirmTitle: '此操作将永久删除, 是否继续?',

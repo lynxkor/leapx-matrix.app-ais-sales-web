@@ -79,7 +79,7 @@
                     type="date"
                     v-model="form.effectiveStartTime"
                     value-format="yyyy-MM-dd"
-                    placeholder="请选择有效开始日期"
+                    placeholder="请选日期"
                   />
                 </el-form-item>
                 <el-form-item label="有效截止日期：" prop="effectiveEndTime">
@@ -87,7 +87,7 @@
                     type="date"
                     v-model="form.effectiveEndTime"
                     value-format="yyyy-MM-dd"
-                    placeholder="请选择有效截止日期"
+                    placeholder="请选日期"
                   />
                 </el-form-item>
                 <el-form-item label="备注：" prop="remark">

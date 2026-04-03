@@ -145,7 +145,7 @@
                       placeholder="请选择"
                       clearable
                       filterable
-                      :disabled="isEditing"
+                      disabled
                     />
                 </el-form-item>
                 <el-form-item label="订单时间：" prop="orderTime">
@@ -488,7 +488,7 @@ const defaultForm = {
   totalAmount: '',
   settleFundType: '1010',
   financialOrganizationId: '',
-  orderTime: '',
+  orderTime: new Date(),
   saleDealerCode: '',
   saleDealerName: '',
   saleUserName: '',
@@ -627,10 +627,7 @@ export default {
             props: {
               type: 'number'
             }
-          },
-          rules: [
-            { required: true, message: '额度数量不能为空', trigger: 'blur' }
-          ]
+          }
         },
         {
           field: 'standardPrice',
@@ -640,7 +637,14 @@ export default {
         {
           field: 'salesPrice',
           title: '销售价格',
+          editable: true,
           width: '150',
+          editRender: {
+            name: 'ElInput',
+            props: {
+              type: 'number'
+            }
+          }
         },
         {
           field: 'relatedTxnExTaxPrice',
@@ -747,6 +751,17 @@ export default {
     // this.getCompanyList();
   },
   methods: {
+    formatDateTime (date) {
+      if (!date) return '';
+      const d = new Date(date);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const hours = String(d.getHours()).padStart(2, '0');
+      const minutes = String(d.getMinutes()).padStart(2, '0');
+      const seconds = String(d.getSeconds()).padStart(2, '0');
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    },
     clearCache (val, row) {
       if (val === 1010 || val === 1050 || val === '1010' || val === '1050') {
         this.form.financialOrganizationId = '';
@@ -1152,7 +1167,8 @@ export default {
       // TIPS: 此处可添加表单默认值，如当前用户信息等
       // const userInfo = this.$store.state.user.userInfo;
       return {
-        ...defaultForm
+        ...defaultForm,
+        orderTime: this.formatDateTime(new Date())
         // ownerId: userInfo.userId,
         // ownerName: userInfo.userName,
       };

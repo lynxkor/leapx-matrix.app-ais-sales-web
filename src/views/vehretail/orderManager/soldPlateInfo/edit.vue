@@ -1135,44 +1135,42 @@ export default {
       return getVehicleProfileList(params);
     },
     vehicleProfileChange (val, selectedOption) {
-      let clearForm = true;
+      this.clearForm();
       if (val) {
         // 校验是否已存在记录
         effectiveVinValidate(val).then(res => {
-          clearForm = false;
           this.refreshVehicleProfileInfo(val, selectedOption);
           // 获取关联整车开票
           // 获取关联特殊车辆提报
         });
       }
-      if (clearForm) {
-        // 清空表单
-        this.$refs.ruleForm.resetFields();
-        this.$refs.ruleForm1.resetFields();
-        this.$refs.ruleForm2.resetFields();
-        this.$refs.ruleForm3.resetFields();
-      }
+    },
+    clearForm () {
+      this.$refs.ruleForm.resetFields();
+      this.$refs.ruleForm1.resetFields();
+      this.$refs.ruleForm2.resetFields();
+      this.$refs.ruleForm3.resetFields();
     },
     refreshVehicleProfileInfo (val, selectedOption) {
-      this.form.vin = val ? selectedOption.vin : '';
-      this.form.vehiclePlaceOrigin = val ? selectedOption.vehiclePlaceOrigin : '';
-      this.form.carBuyerName = val ? selectedOption.vehicleProfileOwnerResp.ownerName : '';
-      this.form.carBuyerPhone = val ? selectedOption.vehicleProfileOwnerResp.mobilephone : '';
-      this.form.idCardType = val ? selectedOption.vehicleProfileOwnerResp.idcardType : '';
-      this.form.idCardNo = val ? selectedOption.vehicleProfileOwnerResp.idcardNo : '';
-      this.form.vehiclePurpose = val ? selectedOption.usageType : '';
-      this.form.enginenNumber = val ? selectedOption.enginenNumber : '';
-      this.form.certificateNo = val ? selectedOption.certNumber : '';
-      this.form.carSaleSversionId = val ? selectedOption.carSaleSversionId : '';
-      this.form.carSalesVersionName = val ? selectedOption.carSalesVersionName : '';
+      this.form.vin = val;
+      this.form.vehiclePlaceOrigin = selectedOption.vehiclePlaceOrigin;
+      this.form.carBuyerName = selectedOption.vehicleProfileOwnerResp.ownerName;
+      this.form.carBuyerPhone = selectedOption.vehicleProfileOwnerResp.mobilephone;
+      this.form.idCardType = selectedOption.vehicleProfileOwnerResp.idcardType;
+      this.form.idCardNo = selectedOption.vehicleProfileOwnerResp.idcardNo;
+      this.form.vehiclePurpose = selectedOption.usageType;
+      this.form.enginenNumber = selectedOption.enginenNumber;
+      this.form.certificateNo = selectedOption.certNumber;
+      this.form.carSaleSversionId = selectedOption.carSaleSversionId;
+      this.form.carSalesVersionName = selectedOption.carSalesVersionName;
       if (selectedOption.salesDealerCode) {
-        this.form.saleDealerCode = val ? selectedOption.salesDealerCode : null;
-        this.form.saleDealerName = val ? selectedOption.salesDealerName : null;
+        this.form.saleDealerCode = selectedOption.salesDealerCode;
+        this.form.saleDealerName = selectedOption.salesDealerName;
         this.saleDealerSearch(selectedOption.salesDealerCode);
       }
       if (selectedOption.vehicleModelName) {
-        this.form.modelId = val ? selectedOption.vehicleModelId : '';
-        this.form.modelName = val ? selectedOption.vehicleModelName : '';
+        this.form.modelId = selectedOption.vehicleModelId;
+        this.form.modelName = selectedOption.vehicleModelName;
         this.vehicleModelSearch(selectedOption.vehicleModelName);
       }
     },
