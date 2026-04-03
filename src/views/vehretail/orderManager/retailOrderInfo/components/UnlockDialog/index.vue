@@ -79,7 +79,7 @@
 
 <script>
 
-import { perUnlock } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { perUnlock, getSysConfigParamValue } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import { getList } from '@/api/vehretail/basicConfig/retailOrderUnlockReasonConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import MaterialsDialog from '../MaterialsDialog'; // 引入物料选择对话框
@@ -189,9 +189,11 @@ export default {
       });
     },
     // 显示物料选择对话框
-    showMaterialsDialog () {
+    async showMaterialsDialog () {
       // 校验改配次数：如果 accountFlag 为 true 且改配次数>=1，则不允许更换配置
-      if (this.accountFlag && this.row.changeConfigCount >= 1) {
+      const res1 = await getSysConfigParamValue({ paramCode: 'veretailChangeConfigCount' });
+      const veretailChangeConfigCount = res1?.paramValue !== null && res1?.paramValue !== undefined ? Number(res1.paramValue) : 1;
+      if (this.accountFlag && this.row.changeConfigCount >= veretailChangeConfigCount) {
         this.$message.error('该订单改配次数已达上限');
         return;
       }
