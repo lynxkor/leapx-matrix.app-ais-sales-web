@@ -39,7 +39,7 @@
                     placeholder="请输入"
                     v-model="form.code"
                     clearable
-                    :disabled="_id"
+                    :disabled="!!_id"
                   />
                 </el-form-item>
                 <el-form-item label="数据来源：" prop="dataSource">

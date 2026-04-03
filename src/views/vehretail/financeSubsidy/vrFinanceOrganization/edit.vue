@@ -41,7 +41,7 @@
                     v-model="form.code"
                     clearable
                     maxlength="50"
-                    :disabled="_id"
+                    :disabled="!!_id"
                   />
                 </el-form-item>
                 <el-form-item label="数据来源：" prop="dataSource">

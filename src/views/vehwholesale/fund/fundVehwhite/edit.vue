@@ -65,7 +65,7 @@
                     clearable
                     filterable
                     @change="handleDocumentTypeChange"
-                    :disabled="_id"
+                    :disabled="!!_id"
                   />
                 </el-form-item>
                 <el-form-item label="整车批售订单：" prop="wholesaleOrderCode">
@@ -78,7 +78,7 @@
                     remote
                     label-key="wholesaleOrderCode"
                     value-key="wholesaleOrderCode"
-                    :disabled="!isWholesaleOrderEditable || _id"
+                    :disabled="!isWholesaleOrderEditable || !!_id"
                     @change="handleWholesaleOrderChange"
                   />
                 </el-form-item>
@@ -92,7 +92,7 @@
                     remote
                     label-key="enterpriseOrderCode"
                     value-key="enterpriseOrderCode"
-                    :disabled="!isEnterpriseOrderEditable || _id"
+                    :disabled="!isEnterpriseOrderEditable || !!_id"
                     @change="handleEnterpriseOrderChange"
                   />
                 </el-form-item>
@@ -164,8 +164,8 @@
 
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehwholesale/fund/fundVehwhite/index';
-import { getList as getWholesaleOrderList, getDetail as getWholesaleOrderDetail } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
-import { getList as getEnterpriseOrderList, getDetail as getEnterpriseOrderDetail } from '@/api/vehwholesale/entorder/entVehicleOrder/index';
+import { getList as getWholesaleOrderList } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import { getList as getEnterpriseOrderList } from '@/api/vehwholesale/entorder/entVehicleOrder/index';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import FetchSelect from '@/libs/components/FetchSelect';

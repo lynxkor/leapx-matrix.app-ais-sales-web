@@ -32,7 +32,7 @@
                     v-model="form.companyCode"
                     clearable
                     maxlength="50"
-                    :disabled="_id"
+                    :disabled="!!_id"
                   />
                 </el-form-item>
                 <el-form-item label="是否合作：" prop="isCooperation">
