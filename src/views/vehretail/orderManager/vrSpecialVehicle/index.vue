@@ -200,7 +200,7 @@ export default {
               click: (rowIndex, row) => {
                 if (row.vinId) {
                   this.navigateToRoute({
-                    path: '/service/datacenter/vehicle/vehicleProfile/edit',
+                    path: '/sales/datacenter/vehicle/vehicleProfile/edit',
                     query: {
                       id: row.vinId
                     }
@@ -220,7 +220,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.navigateToRoute({
-                  path: '/datacenter/materials/vehicleModel/detail',
+                  path: '/sales/datacenter/materials/vehicleModel/detail',
                   query: {
                     id: row.modelId
                   }

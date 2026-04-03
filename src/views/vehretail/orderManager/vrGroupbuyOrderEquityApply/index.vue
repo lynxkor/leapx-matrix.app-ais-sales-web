@@ -248,7 +248,7 @@ export default {
               click: (rowIndex, row) => {
                 if (row.retailOrderId) {
                   this.navigateToRoute({
-                    path: '/vehretail/orderManager/retailOrderInfo/edit',
+                    path: '/sales/vehretail/orderManager/retailOrderInfo/edit',
                     query: {
                       id: row.retailOrderId
                     }
