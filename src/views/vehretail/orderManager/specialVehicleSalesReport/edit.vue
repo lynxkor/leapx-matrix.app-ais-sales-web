@@ -645,10 +645,10 @@ export default {
           { required: true, message: '请输入VIN码', trigger: 'change' }
         ],
         modelId: [
-          { required: false, message: '请输入车型ID', trigger: 'change' }
+          { required: true, message: '请输入车型', trigger: 'change' }
         ],
         modelName: [
-          { required: true, message: '请输入车型名称', trigger: 'change' }
+          { required: false, message: '请输入车型名称', trigger: 'change' }
         ],
         vehicleAttribute: [
           { required: true, message: '请输入车辆属性', trigger: 'change' }
@@ -727,16 +727,16 @@ export default {
           { required: false, message: '请输入销售门店ID', trigger: 'change' }
         ],
         saleDealerCode: [
-          { required: true, message: '请输入销售门店编码', trigger: 'change' }
+          { required: true, message: '请输入销售门店', trigger: 'change' }
         ],
         saleDealerName: [
           { required: false, message: '请输入销售门店', trigger: 'change' }
         ],
         deliveryOrgId: [
-          { required: false, message: '请输入交付门店ID', trigger: 'change' }
+          { required: false, message: '请输入交付门店', trigger: 'change' }
         ],
         deliveryDealerCode: [
-          { required: true, message: '请输入交付门店编码', trigger: 'change' }
+          { required: true, message: '请输入交付门店', trigger: 'change' }
         ],
         deliveryDealerName: [
           { required: false, message: '请输入交付门店', trigger: 'change' }
@@ -745,10 +745,10 @@ export default {
           { required: false, message: '请输入专属服务门店ID', trigger: 'change' }
         ],
         exclusiveServiceStoreCode: [
-          { required: false, message: '请输入专属服务门店编码', trigger: 'change' }
+          { required: true, message: '请输入专属服务门店', trigger: 'change' }
         ],
         exclusiveServiceStoreName: [
-          { required: true, message: '请输入专属服务门店', trigger: 'change' }
+          { required: false, message: '请输入专属服务门店', trigger: 'change' }
         ],
         invoiceNo: [
           { required: false, message: '请输入发票号码', trigger: 'change' }
@@ -1057,6 +1057,7 @@ export default {
       return await getVehicleProfileList(params);
     },
     vehicleProfileChange (val, selectedOption) {
+      // console.log(JSON.stringify(selectedOption));
       this.clearForm();
       if (val) {
         // 校验是否已存在记录
@@ -1090,12 +1091,12 @@ export default {
       this.form.saleDealerName = selectedOption.salesDealerName;
       this.form.deliveryDealerCode = selectedOption.deliveryDealerCode + '';
       this.form.deliveryDealerName = selectedOption.deliveryDealerName;
-      this.form.exclusiveServiceStoreCode = selectedOption.vehicleProfileServiceResp.serviceDealerCode + '';
-      this.form.exclusiveServiceStoreName = selectedOption.vehicleProfileServiceResp.serviceDealerName;
+      this.form.exclusiveServiceStoreCode = selectedOption.vehicleProfileServiceResp.serviceDealerCode ? selectedOption.vehicleProfileServiceResp.serviceDealerCode + '' : '';
+      this.form.exclusiveServiceStoreName = selectedOption.vehicleProfileServiceResp.serviceDealerName ? selectedOption.vehicleProfileServiceResp.serviceDealerName : '';
       // 根据销售门店渲染专属服务、交付门店
-      if (this.form.saleDealerCode) {
-        this.saleDealerSearch(selectedOption.salesDealerCode);
-      }
+      // if (this.form.saleDealerCode) {
+      //   this.saleDealerSearch(selectedOption.salesDealerCode);
+      // }
     },
     // 销售门店搜索并回显
     saleDealerSearch  (val) {
@@ -1153,7 +1154,7 @@ export default {
         keyword: val,
         size: 100
       };
-      return listStoreInfo(params);
+      return listOrgStoreInfo(params);
     },
     handleExclusiveServiceStoreChange (val, selectedOption) {
       this.form.exclusiveServiceStoreId = '';
