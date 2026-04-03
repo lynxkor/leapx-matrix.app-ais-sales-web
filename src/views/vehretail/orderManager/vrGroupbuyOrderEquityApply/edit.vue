@@ -302,7 +302,7 @@
             </div>
             <div class="common-section-body">
               <div class="attachment-grid">
-                <AisAttachmentList
+                <AisAttachment
                   v-for="(item, index) in attachmentList" :key="index"
                   :businessId="_id"
                   :ref="'attachment' + index"
@@ -311,7 +311,6 @@
                   :title="item.label"
                   :uploadConfig="item.uploadConfig"
                   type="card"
-                  :readonly="!(isEditing || !_id)"
                 />
             </div>
             </div>
@@ -708,7 +707,7 @@ import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import auditDialog from '@/libs/components/auditDialog';
-import AisAttachmentList from '@/libs/components/AisAttachmentList/index.vue';
+import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 import FetchSelect from '@/libs/components/FetchSelect';
 import NavTop from './components/NavTop';
 
@@ -781,7 +780,7 @@ export default {
     EditPageLayout,
     EditBaseContainer,
     auditDialog,
-    AisAttachmentList,
+    AisAttachment,
     FetchSelect,
     NavTop
   },
