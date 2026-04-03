@@ -311,6 +311,7 @@
                   :title="item.label"
                   :uploadConfig="item.uploadConfig"
                   type="card"
+                  :readonly="!(isEditing || !_id)"
                 />
             </div>
             </div>

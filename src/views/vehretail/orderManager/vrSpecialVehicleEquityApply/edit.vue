@@ -158,6 +158,7 @@
                     :title="item.label"
                     :uploadConfig="item.uploadConfig"
                     type="card"
+                    :readonly="true"
                   />
                 </div>
               </div>
