@@ -65,7 +65,7 @@
                     clearable
                     filterable
                     @change="handleDocumentTypeChange"
-                    :disabled = '_id'
+                    :disabled="_id"
                   />
                 </el-form-item>
                 <el-form-item label="整车批售订单：" prop="wholesaleOrderCode">
