@@ -16,10 +16,9 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="vr_delivery_status"
-          v-model="form.statusList"
+          v-model="form.status"
           placeholder="请选择"
           clearable
-          multiple
           filterable
         />
       </el-form-item>
@@ -157,7 +156,7 @@ import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   deliveryOrderCode: '',
-  statusList: [],
+  status: '',
   vinList: [],
   vehicleModelName: '',
   deliveryAdvisorName: '',
