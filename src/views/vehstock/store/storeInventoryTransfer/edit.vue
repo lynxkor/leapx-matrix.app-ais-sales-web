@@ -24,11 +24,11 @@
                 <el-form-item label="整车调拨单号：" prop="transferNo">
                   <el-input placeholder="请输入" v-model="form.transferNo" clearable disabled />
                 </el-form-item>
-                <el-form-item label="目标门店编码：" prop="targetDealerCode">
+                <el-form-item label="目标门店名称：" prop="targetDealerName">
                   <fetch-select
                     :remote-method="getDealerListByName"
                     remote
-                    v-model="form.targetDealerCode"
+                    v-model="form.targetDealerName"
                     placeholder="请输入门店编码或名称"
                     labelKey="storeName"
                     valueKey="storeCode"
@@ -39,7 +39,7 @@
                   />
                 </el-form-item>
                 <el-form-item label="目标门店仓库名称：" prop="targetDealerWarehouseName">
-                  <el-input placeholder="请输入" v-model="storeName" disabled clearable />
+                  <el-input placeholder="请输入" v-model="form.targetDealerWarehouseName" disabled clearable />
                 </el-form-item>
                 <el-form-item label="调拨原因：" prop="reason">
                   <el-input placeholder="请输入" v-model="form.reason" clearable />
@@ -335,6 +335,8 @@ export default {
     },
     // 门店编码或名称选择框回调
     handleStoreChange (val, record) {
+      this.form.targetDealerCode = val;
+      this.form.targetDealerName = record.storeName || '';
       this.remoteMethod(val);
     },
     // 门店仓库编码或名称选择框回调

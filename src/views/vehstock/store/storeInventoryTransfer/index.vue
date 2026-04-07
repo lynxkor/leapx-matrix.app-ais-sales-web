@@ -44,7 +44,7 @@
     <Upload :visible="uploadDialogVisible" :id="'1'" @close="handleUploadDialogClose" @getData="getData" />
     <!-- 调拨审批弹窗 -->
     <approval-dialog ref="approvalDialog" :visible.sync="approvalVisible" :data="approvalData"
-      @update:visible="val => approvalVisible = val" />
+      @update:visible="val => approvalVisible = val" @submit="getData" />
     <!-- 审核记录抽屉 -->
     <review-drawer ref="reviewDrawer" :visible.sync="reviewDrawerVisible" :drawerData="reviewData"
       @update:visible="val => reviewDrawerVisible = val" />
@@ -56,7 +56,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, storeSubmit, storeInvalid } from '@/api/vehstock/store/storeInventoryTransfer/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -67,6 +67,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import ApprovalDialog from './ApprovalDialog.vue';
 import ReviewDrawer from './ReviewDrawer.vue';
+import { listOrgStoreInfo } from '@/libs/api/common';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -241,7 +242,7 @@ export default {
             }, {
               name: '调出审批',
               show: (row) => {
-                return row.auditStatus === 2 && this.permissions.has(`${this.moduleKey}-approveOut`);
+                return row.auditStatus === 2 && row.outApproval !== 1 && this.permissions.has(`${this.moduleKey}-approveOut`);
               },
               click: (rowIndex, row) => {
                 this.handleApproval(row, 'outApproval');
@@ -250,7 +251,7 @@ export default {
             }, {
               name: '调入审批',
               show: (row) => {
-                return row.auditStatus === 2 && this.permissions.has(`${this.moduleKey}-approveIn`);
+                return row.auditStatus === 2 && row.inApproval !== 1 && this.permissions.has(`${this.moduleKey}-approveIn`);
               },
               click: (rowIndex, row) => {
                 this.handleApproval(row, 'inApproval');
@@ -417,7 +418,7 @@ export default {
     },
     // 查询门店编码或名称
     async getDealerListByName (params) {
-      return listOrgStoreInfo({ storeName: params });
+      return listOrgStoreInfo({ keyword: params });
     },
     async fetchOptions (code) {
       if (code) {

@@ -69,7 +69,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/basic/storeInventoryTransferWhitelist/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -78,6 +78,7 @@ import { handleBatchStatusChange, getEndOfDayString, downloadExcel } from '@/lib
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import FetchSelect from '@/libs/components/FetchSelect';
+import { listOrgStoreInfo } from '@/libs/api/common';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -386,7 +387,7 @@ export default {
     },
     // 查询门店编码或名称
     async getDealerListByName (params) {
-      return listOrgStoreInfo({ storeName: params });
+      return listOrgStoreInfo({ keyword: params });
     },
     async fetchOptions (code) {
       if (code) {
