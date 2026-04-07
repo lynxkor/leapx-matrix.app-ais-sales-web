@@ -1016,21 +1016,32 @@ export default {
         this.form.financialOrganizationId = '';
       }
     },
-    getFundAccount (val, row) {
-      // this.form.settleFundType = '';
-      // this.form.settleFundTypeLabel = '';
+    getFundAccount () {
+      this.settleFundTypeOptions = [];
+      if (!this.form.entCustomerName || !this.form.saleCompanyName) {
+        return;
+      }
       const params = {
         dealerCompanyNames: [this.form.entCustomerName],
         allowEntOrderSettle: '1',
         saleCompanyNames: [this.form.saleCompanyName]
       };
       accountList(params).then((res) => {
-        this.settleFundTypeOptions = res.records.map(item => {
-          return {
-            code: item.fundType,
-            message: item.fundTypeLabel
-          };
-        });
+        if (res && res.records) {
+          // 【新增】使用 Map 进行去重，key 为 fundType
+          const uniqueMap = new Map();
+          res.records.forEach(item => {
+            // 只有当 Map 中不存在该 fundType 时才添加，确保保留第一条记录
+            if (!uniqueMap.has(item.fundType)) {
+              uniqueMap.set(item.fundType, {
+                code: item.fundType,
+                message: item.fundTypeLabel
+              });
+            }
+          });
+          // 将 Map 的值转换为数组并赋值
+          this.settleFundTypeOptions = Array.from(uniqueMap.values());
+        }
       }).catch(() => {
       });
     },
