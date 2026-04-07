@@ -4,7 +4,7 @@
     <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
       class="ais-search-form">
       <el-form-item label="VIN">
-        <el-input placeholder="请输入" v-model="form.vin" clearable />
+        <tag-input v-model="form.vinList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="共享车辆状态">
         <fetch-select :request="fetchOptions" enumCode="vehstock_shared_vehicle_status"
@@ -70,10 +70,11 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import { getApplyUserStoreList, getLoginUser } from '@/libs/api/common';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  vin: '',
+  vinList: [],
   sharedVehicleStatus: '',
   sharedVehicleCategory: '',
   modelId: '',
@@ -92,7 +93,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    TagInput
   },
   data () {
     return {
@@ -370,6 +372,11 @@ export default {
           delete data[key];
         }
       });
+
+      if (Array.isArray(this.form.vinList) && this.form.vinList.length <= 1) {
+        delete data.vinList;
+        data.vinLike = this.form.vinList[0] || '';
+      }
 
       if (this.form.createTime) {
         delete data.createTime;

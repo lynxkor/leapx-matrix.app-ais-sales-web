@@ -4,7 +4,7 @@
     <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
       class="ais-search-form">
       <el-form-item label="VIN">
-        <el-input placeholder="请输入" v-model="form.vin" clearable />
+        <tag-input v-model="form.vinList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="目标门店编码">
         <fetch-select :remote-method="getDealerListByName" remote v-model="form.targetDealerCodeList"
@@ -68,10 +68,11 @@ import EditPage from './edit.vue';
 import ApprovalDialog from './ApprovalDialog.vue';
 import ReviewDrawer from './ReviewDrawer.vue';
 import { listOrgStoreInfo } from '@/libs/api/common';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  vin: '',
+  vinList: [],
   targetDealerCode: '',
   auditStatus: '',
 };
@@ -90,11 +91,12 @@ export default {
     EditPage,
     Upload,
     ApprovalDialog,
-    ReviewDrawer
+    ReviewDrawer,
+    TagInput
   },
   data () {
     return {
-      pageTitle: '门店库存调拨管理',
+      pageTitle: '门店库存调拨',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISMC-storeInventoryTransfer',
@@ -404,7 +406,10 @@ export default {
           delete data[key];
         }
       });
-
+      if (Array.isArray(this.form.vinList) && this.form.vinList.length <= 1) {
+        delete data.vinList;
+        data.vinLike = this.form.vinList[0] || '';
+      }
       if (this.form.createTime) {
         delete data.createTime;
         if (this.form.createTime.length > 1) {
