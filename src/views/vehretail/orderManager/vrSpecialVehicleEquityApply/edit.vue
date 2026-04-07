@@ -148,19 +148,11 @@
                 <h2>附件材料</h2>
               </div>
               <div class="common-section-body">
-                <div class="attachment-grid">
-                  <AisAttachment
-                    v-for="(item, index) in attachmentList" :key="index"
-                    :businessId="_id"
-                    :ref="'attachment' + index"
-                    :configCode="item.configCode"
-                    :attachType="item.attachType"
-                    :title="item.label"
-                    :uploadConfig="item.uploadConfig"
-                    type="card"
-                    :readonly="true"
-                  />
-                </div>
+                <AisAttachment
+                  :businessId="_id"
+                  configCode="mcs_licensedvehiclessale"
+                  :readonly="true"
+                />
               </div>
             </section>
           </section>
@@ -305,9 +297,6 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       isEditing: false,
-      attachmentList: [
-        { label: '附件资料', required: false, configCode: 'mcs_licensedvehiclessale', attachType: '附件资料' }
-      ]
     };
   },
   methods: {
