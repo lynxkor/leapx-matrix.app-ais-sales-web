@@ -1056,11 +1056,9 @@ export default {
           code: String(item.code)
         };
       });
-      console.log(this.settleFundTypeOptions);
     },
     async fetchOrderCategoryOptions () {
       const response = await getEnum('vw_order_category');
-      console.log('response:', response);
       // 过滤出 code 为 0、2、20 的数据，且确保 code 是字符串类型
       // 0 商品车订单
       // 2 试驾车订单
@@ -1084,7 +1082,6 @@ export default {
         id: this._id,
       };
       querySAPAccountBalance(params).then((res) => {
-        console.log(res);
         this.accountData = res;
         this.showComponentTabelDialog = true;
       });
