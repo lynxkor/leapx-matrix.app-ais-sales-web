@@ -94,7 +94,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '门店库存调拨管理',
+      pageTitle: '门店库存调拨',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISMC-storeInventoryTransfer',
