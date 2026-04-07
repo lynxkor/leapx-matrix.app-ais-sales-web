@@ -39,7 +39,18 @@
                   />
                 </el-form-item>
                 <el-form-item label="目标门店仓库名称：" prop="targetDealerWarehouseName">
-                  <el-input placeholder="请输入" v-model="form.targetDealerWarehouseName" disabled clearable />
+                  <fetch-select
+                    :remote-method="remoteMethodWarehouse"
+                    remote
+                    v-model="form.targetDealerWarehouseName"
+                    placeholder="请输入门店仓库编码或名称"
+                    labelKey="storeName"
+                    valueKey="storeCode"
+                    subLabelKey="label"
+                    clearable
+                    filterable
+                    @change="handleWarehouseChange"
+                  />
                 </el-form-item>
                 <el-form-item label="调拨原因：" prop="reason">
                   <el-input placeholder="请输入" v-model="form.reason" clearable />
@@ -229,14 +240,11 @@ export default {
         id: [
           { required: true, message: '请输入主键', trigger: 'change' }
         ],
-        targetDealerCode: [
+        targetDealerName: [
           { required: true, message: '请输入目标门店编码', trigger: 'change' }
         ],
-        targetDealerWarehouseCode: [
-          { required: true, message: '请输入目标门店仓库编码', trigger: 'change' }
-        ],
         targetDealerWarehouseName: [
-          { required: true, message: '请输入目标门店仓库名称', trigger: 'change' }
+          { required: true, message: '请输入目标门店仓库编码或名称', trigger: 'change' }
         ],
         targetDealerWarehouseAddress: [
           { required: true, message: '请输入目标门店仓库地址', trigger: 'change' }
@@ -340,11 +348,7 @@ export default {
       this.remoteMethod(val);
     },
     // 门店仓库编码或名称选择框回调
-    async remoteMethod (query) {
-      if (query === '') {
-        return;
-      }
-
+    async remoteMethod () {
       const res = await listOrgWarehouseStoreInfo({
         storeCode: this.form.targetDealerCode, // 门店编码
       });
@@ -352,6 +356,22 @@ export default {
       this.form.targetDealerWarehouseCode = res.records[0].warehouseCode || '';
       this.form.targetDealerWarehouseName = res.records[0].warehouseName || '';
       this.form.targetDealerWarehouseAddress = res.records[0].warehouseDetailAddress || '';
+    },
+    // 门店仓库编码或名称选择框回调
+    async remoteMethodWarehouse (query) {
+      const res = await listOrgWarehouseStoreInfo({
+        keyword: query, // 门店编码
+      });
+      return res.records.map(item => ({
+        ...item,
+        label: `${item.warehouseCode}-${item.warehouseName}`,
+      }));
+    },
+    // 门店仓库编码或名称选择框回调
+    handleWarehouseChange (val, record) {
+      this.form.targetDealerWarehouseCode = val;
+      this.form.targetDealerWarehouseName = record.warehouseName || '';
+      this.form.targetDealerWarehouseAddress = record.warehouseDetailAddress || '';
     },
   }
 };
