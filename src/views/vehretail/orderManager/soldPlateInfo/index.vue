@@ -50,8 +50,9 @@
         </el-form-item>
         <el-form-item label="创建时间">
           <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
             v-model="form.createTimeRange"
-            type="datetimerange"
+            type="daterange"
             range-separator="至"
             start-placeholder="开始时间"
             end-placeholder="结束时间"
