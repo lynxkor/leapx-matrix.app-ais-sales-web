@@ -33,7 +33,7 @@
             </vxe-table>
 
             <!-- 分页组件 -->
-            <div v-if="showPagination" :style="{ textAlign: paginationAlign }">
+            <!-- <div v-if="showPagination" :style="{ textAlign: paginationAlign }">
               <el-pagination
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
@@ -43,7 +43,7 @@
                 :layout="paginationLayout"
                 :total="total"
               />
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
