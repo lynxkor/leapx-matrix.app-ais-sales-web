@@ -34,7 +34,7 @@
                     >
                       <el-option
                         v-for="item in authorityOptions"
-                        :key="item.authorityCode"
+                        :key="item.authorityId"
                         :label="item.authorityName"
                         :value="item.authorityCode"
                       />
@@ -60,7 +60,7 @@
                     >
                       <el-option
                         v-for="item in authorityOptions"
-                        :key="item.authorityCode"
+                        :key="item.authorityId"
                         :label="item.authorityName"
                         :value="item.authorityCode"
                       />
@@ -86,7 +86,7 @@
                     >
                       <el-option
                         v-for="item in authorityOptions"
-                        :key="item.authorityCode"
+                        :key="item.authorityId"
                         :label="item.authorityName"
                         :value="item.authorityCode"
                       />
@@ -114,9 +114,9 @@
                   >
                     <el-option
                       v-for="item in yes_no_enum"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                      :key="item.code"
+                      :label="item.message"
+                      :value="item.code"
                     />
                   </el-select>
                 </el-form-item>
@@ -131,9 +131,9 @@
                   >
                     <el-option
                       v-for="item in yes_no_enum"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                      :key="item.code"
+                      :label="item.message"
+                      :value="item.code"
                     />
                   </el-select>
                 </el-form-item>
@@ -148,9 +148,9 @@
                   >
                     <el-option
                       v-for="item in yes_no_enum"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                      :key="item.code"
+                      :label="item.message"
+                      :value="item.code"
                     />
                   </el-select>
                 </el-form-item>
@@ -167,7 +167,7 @@
                   >
                     <el-option
                       v-for="item in authorityOptions"
-                      :key="item.authorityCode"
+                      :key="item.authorityId"
                       :label="item.authorityName"
                       :value="item.authorityCode"
                     />
@@ -288,6 +288,9 @@ export default {
         ],
       }
     };
+  },
+  created () {
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
   },
   mounted () {
     this.getRawList();
