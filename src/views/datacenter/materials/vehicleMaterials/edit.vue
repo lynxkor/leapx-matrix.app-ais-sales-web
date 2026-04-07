@@ -52,7 +52,7 @@
                   :remote-method="remoteMethods.interior"
                 />
               </el-form-item>
-              <el-form-item label="车顶：" prop="roofId">
+              <el-form-item label="车顶：">
                 <fetch-select
                   v-model="form.roofId"
                   :params="form.roofName"
@@ -84,7 +84,7 @@
                   :remote-method="remoteMethods.rangePower"
                 />
               </el-form-item>
-              <el-form-item label="选装包：" prop="optionPackageId">
+              <el-form-item label="选装包：">
                 <fetch-select
                   v-model="form.optionPackageId"
                   v-bind="selectOptions"
