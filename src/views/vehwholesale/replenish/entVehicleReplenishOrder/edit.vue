@@ -768,7 +768,6 @@ export default {
         saleCompanyNames: [row.companyName]
       };
       accountList(params).then((res) => {
-        console.log('accountList', res);
         this.settleFundTypeOptions = res.records.map(item => {
           return {
             code: item.fundType,
