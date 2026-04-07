@@ -323,7 +323,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, confirmVdcInbound, confirmOutbound, deleteItem, edit } from '@/api/vehwholesale/back/vehicleBackOrderDetail/index';
+import { getDetail, confirmVdcInbound, confirmOutbound, deleteItem, edit } from '@/api/vehwholesale/back/vehicleBackOrderDetail/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -497,7 +497,6 @@ export default {
     },
     // 删除子表数据
     handleDeleteRow (index) {
-      const item = this.tableData[index];
       this.tableData.splice(index, 1);
       // 根据需求调用接口
       // deletePartVehModel([item.id]).then(res => {

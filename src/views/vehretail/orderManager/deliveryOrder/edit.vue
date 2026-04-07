@@ -23,7 +23,7 @@
           <el-button v-if="form.status === 4" v-permission="moduleKey+'-cancelOrderRights'" size="small" @click="handleVerifyOrderRights">核销订单权益</el-button>
           <el-button v-if="form.status === 4 && form.payRightsList && form.payRightsList.some(item => item.paymentType === 1060 || item.paymentType === '1060')" v-permission="moduleKey+'-revertCancelOrderRights'" size="small" :loading="buttonLoading['verifyWithdraw']" @click="handleVerifyWithdraw">核销撤回</el-button>
           <el-button v-if="form.status === 4" v-permission="moduleKey+'-addPaymentRecord'" size="small" @click="handleAddPaymentRecord">添加收款记录</el-button>
-          <el-button v-if="form.status === 4" v-permission="moduleKey+'-confirmPayment'" size="small" @click="handleConfirmPayment">确认收款</el-button>
+          <el-button v-if="form.status === 4" v-permission="moduleKey+'-confirmPayment'" size="small" :loading="buttonLoading['confirmPayment']" @click="handleConfirmPayment">确认收款</el-button>
           <el-button v-if="form.status === 4 && form.deliveryConfirmPdfUrl" v-permission="moduleKey+'-deliveryConfirmPush'" size="small" :loading="buttonLoading['repushConfirmOrder']" @click="handleRepushConfirmOrder">交车确认单补推</el-button>
           <el-button v-if="form.status !== 7 && form.status !== 99 && form.deliveryConfirmStatus === 15" v-permission="moduleKey+'-deliveryConfirmResign'" size="small" @click="handleReSignConfirmOrder">交车确认单重签</el-button>
           <el-button v-if="form.deliveryConfirmStatus === 15" v-permission="moduleKey+'-viewDeliveryConfirm'" size="small" @click="handleViewConfirmOrder">查看交车确认单</el-button>
@@ -1054,7 +1054,7 @@ export default {
           // 3. 校验是否存在未核销权益
           const unverifiedRightsParams = {
             userId: this.form.orderUserId,
-            shopCode: this.form.shopCode
+            shopCode: this.form.mallOrderCode
           };
           const unverifiedRightsResult = await openGrantQuery(unverifiedRightsParams);
           let hasUnverifiedRights = false;
@@ -1094,14 +1094,14 @@ export default {
     // 执行确认收款接口调用
     async submitConfirmPayment () {
       try {
-        await confirmPayment({ id: this._id });
+        await confirmPayment({ deliveryOrderId: this._id, retailOrderId: this.form.retailOrderId });
         this.$message.success('确认收款成功');
         this.getDetail();
         // 重置跳过校验标志
         this.currentConfirmPaymentData.skipValidation = false;
       } catch (error) {
         console.error('确认收款失败:', error);
-        this.$message.error('确认收款失败');
+        // this.$message.error('确认收款失败');
       }
     },
     // 交车确认单补推

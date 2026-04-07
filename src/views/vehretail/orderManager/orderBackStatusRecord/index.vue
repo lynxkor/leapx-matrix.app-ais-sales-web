@@ -349,7 +349,7 @@ export default {
                     query: {
                       id: row.ownerOrgId
                     }
-                  });
+                  }, true);
                 }
               },
               type: 'primary'
@@ -372,11 +372,11 @@ export default {
               click: (rowIndex, row) => {
                 if (row.originalVin) {
                   this.navigateToRoute({
-                    path: '/service/datacenter/vehicle/vehicleProfile/edit',
+                    path: '/sales/datacenter/vehicle/vehicleProfile/edit',
                     query: {
                       vin: row.matchVin
                     }
-                  });
+                  },true);
                 }
               },
               type: 'primary'

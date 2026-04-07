@@ -102,7 +102,7 @@
                     type="date"
                     v-model="form.endTime"
                     value-format="yyyy-MM-dd"
-                    placeholder="请选择截止日期："
+                    placeholder="请选日期"
                   />
                 </el-form-item>
                  <el-form-item label="备注（说明）：">

@@ -100,7 +100,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/store/vehicleVdcInventoryStatistics/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, pageWithPermission, vehicleSeriesList, listVehicleYearType, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, page, vehicleSeriesList, listVehicleYearType, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -403,7 +403,7 @@ export default {
     },
     // 搜索仓库
     async serchWarehouse (query) {
-      const res = await pageWithPermission({ warehouseName: query, page: 1, size: 100, status: 0, warehouseType: 20 });
+      const res = await page({ warehouseName: query, page: 1, size: 100, status: 0, warehouseType: 20 });
       this.warehouseOptions = res?.records?.map(item => {
         return {
           label: item.warehouseName,

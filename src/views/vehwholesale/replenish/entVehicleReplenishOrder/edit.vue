@@ -24,7 +24,7 @@
           <el-button  :disabled="!form.buttonsControls.submitAuditButton" @click="handleCheckSubmit" >提交审批</el-button>
           <el-button  :disabled="!form.buttonsControls.auditButton"  size="small" @click="handleCheckStatus" >审核</el-button>
           <el-button  :disabled="!form.buttonsControls.cancelButton"  size="small" @click="handleCancel" >作废</el-button>
-          <el-button  v-if="form.auditStatus === 0" size="small" :type="form.deleteButton ? 'primary' : ''" @click="handleDelete" >删除</el-button>
+          <el-button  :disabled="!form.buttonsControls.deleteButton" size="small"  @click="handleDelete" >删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -88,6 +88,7 @@
                       :remote-method="getCompanyList"
                       value-key="id"
                       label-key="companyName"
+                      @change="getFundAccount"
                     />
                 </el-form-item>
                  <el-form-item label="销售门店：" prop="saleDealerName">
@@ -116,7 +117,7 @@
                  <el-form-item label="结算资金类型：" prop="settleFundType">
                   <fetch-select
                    :options="settleFundTypeOptions"
-                    v-model="form.settleFundType"
+                    v-model="form.settleFundTypeLabel"
                     placeholder="请选择"
                     clearable
                     filterable
@@ -402,6 +403,7 @@
                   @remove-row="handleRemoveRow"
                   @page-size-change="pageSizeChange"
                   @current-page-change="currentPageChange"
+                  @value-change = "cellChange"
                   :auth="{edit: isEditing, delete: isEditing}"
                 />
               </div>
@@ -464,6 +466,7 @@ import Upload from '@/libs/components/UploadDialog';
 import { getList as companyList } from '@/api/vehwholesale/fund/fundSaleCompany/index';
 import AisAttachment from '@/libs/components/AisAttachment';
 import EditTable from '@/libs/components/EditTable';
+import { getList as accountList } from '@/api/vehwholesale/fund/account/index';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -486,9 +489,9 @@ const defaultForm = {
   salesMarket: '',
   creditSaleFlag: 0,
   totalAmount: '',
-  settleFundType: '1010',
+  settleFundType: '',
   financialOrganizationId: '',
-  orderTime: '',
+  orderTime: new Date(),
   saleDealerCode: '',
   saleDealerName: '',
   saleUserName: '',
@@ -627,10 +630,7 @@ export default {
             props: {
               type: 'number'
             }
-          },
-          rules: [
-            { required: true, message: '额度数量不能为空', trigger: 'blur' }
-          ]
+          }
         },
         {
           field: 'standardPrice',
@@ -640,7 +640,18 @@ export default {
         {
           field: 'salesPrice',
           title: '销售价格',
+          editable: true,
           width: '150',
+          editRender: {
+            name: 'ElInput',
+            props: {
+              type: 'number'
+            }
+          },
+          cellEditChange: ({ row }) => {
+            // 销售价格修改后，自动赋值给标准价格
+            row.standardPrice = row.salesPrice;
+          }
         },
         {
           field: 'relatedTxnExTaxPrice',
@@ -742,12 +753,47 @@ export default {
   },
   mounted () {
     this.fetchOrderCategoryOptions();
-    this.fetchSettleFundTypeOptions();
+    // this.fetchSettleFundTypeOptions();
     this.listNetworkParentCompany();
-    // this.getCompanyList();
+    this.getCompanyList();
+    this.getFundAccount();
   },
   methods: {
+    getFundAccount (val, row) {
+      const params = {
+        dealerCompanyNames: [row.companyName],
+        allowEntOrderSettle: '1'
+      };
+      accountList(params).then((res) => {
+        console.log('accountList', res);
+        this.settleFundTypeOptions = res.records.map(item => {
+          return {
+            code: item.fundType,
+            message: item.fundTypeLabel
+          };
+        });
+      }).catch(() => {
+      });
+    },
+    cellChange (val, row) {
+      if (this.form.orderCategory === 21) {
+        val.row.standardPrice = val.value;
+      }
+    },
+    formatDateTime (date) {
+      if (!date) return '';
+      const d = new Date(date);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const hours = String(d.getHours()).padStart(2, '0');
+      const minutes = String(d.getMinutes()).padStart(2, '0');
+      const seconds = String(d.getSeconds()).padStart(2, '0');
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    },
     clearCache (val, row) {
+      this.form.settleFundType = row.code;
+      this.form.settleFundTypeLabel = row.message;
       if (val === 1010 || val === 1050 || val === '1010' || val === '1050') {
         this.form.financialOrganizationId = '';
       }
@@ -792,8 +838,6 @@ export default {
       detailDelete([row.id]).then((d) => {
         defer.resolve();
         this.$message.success('删除成功');
-        this.getDetailData();
-        this.detailRequest();
       }).catch(() => {
         defer.reject();
       });
@@ -1023,6 +1067,7 @@ export default {
           code: String(item.code)
         };
       });
+      console.log(this.settleFundTypeOptions);
     },
     async fetchOrderCategoryOptions () {
       const response = await getEnum('vw_eordertype');
@@ -1152,7 +1197,8 @@ export default {
       // TIPS: 此处可添加表单默认值，如当前用户信息等
       // const userInfo = this.$store.state.user.userInfo;
       return {
-        ...defaultForm
+        ...defaultForm,
+        orderTime: this.formatDateTime(new Date())
         // ownerId: userInfo.userId,
         // ownerName: userInfo.userName,
       };

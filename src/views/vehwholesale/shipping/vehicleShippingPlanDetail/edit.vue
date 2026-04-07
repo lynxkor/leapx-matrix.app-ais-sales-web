@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        :title="title"
+        title="发运计划明细:"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -14,6 +14,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
+          {{ form.shippingPlanDetailCode }}
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
         </template>
@@ -159,7 +160,7 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="交付门店xx：" prop="vehicleWarehouseName">
+                <el-form-item label="交付门店：" prop="vehicleWarehouseName">
                   <el-input
                     placeholder="请输入"
                     v-model="form.vehicleWarehouseName"
@@ -285,8 +286,8 @@
                 <el-form-item label="是否需要同步WMS：" prop="needSyncWms">
                   {{ form.needSyncWmsLabel }}
                 </el-form-item>
-                <el-form-item label="企业客户订单号：" prop="wholesaleOrderCode">
-                  {{ form.wholesaleOrderCode }}
+                <el-form-item label="企业客户订单号：" prop="entVehicleOrderCode">
+                  {{ form.entVehicleOrderCode }}
                 </el-form-item>
                 <el-form-item label="承运记录编码：" prop="carrierRecordCode">
                   {{ form.carrierRecordCode }}
@@ -829,6 +830,7 @@ export default {
             province: res.vehicleWarehouse?.province || '',
             city: res.vehicleWarehouse?.city || '',
             country: res.vehicleWarehouse?.country || '',
+            entOrderCode: res.entVehicleOrder ? res.entVehicleOrder.entOrderCode : '',
           };
         });
       }

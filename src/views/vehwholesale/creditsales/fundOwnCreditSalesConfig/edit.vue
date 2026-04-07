@@ -83,7 +83,7 @@
                     type="date"
                     v-model="form.effectiveTime"
                     value-format="yyyy-MM-dd"
-                    placeholder="请选择额度生效日期"
+                    placeholder="请选日期"
                   />
                 </el-form-item>
                 <el-form-item label="额度失效日期：" prop="expireTime">
@@ -91,7 +91,7 @@
                     type="date"
                     v-model="form.expireTime"
                     value-format="yyyy-MM-dd"
-                    placeholder="请选择额度失效日期"
+                    placeholder="请选日期"
                   />
                 </el-form-item>
                 <el-form-item label="配置人：" prop="configUserName">

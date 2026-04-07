@@ -46,7 +46,7 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="配车VIN码：" prop="matchVin">
                   <el-input
                     placeholder="请输入"
@@ -71,6 +71,14 @@
                     disabled
                   />
                 </el-form-item>
+                <el-form-item label="整车订单：" prop="retailOrderCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.retailOrderCode"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
                 <el-form-item label="交车单：" prop="deliveryOrderCode">
                   <el-input
                     placeholder="请输入"
@@ -87,13 +95,36 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="创建时间：" prop="status">
+                <el-form-item label="创建时间：" prop="createTime">
                   <el-input
                     placeholder="请输入"
                     v-model="form.createTime"
                     clearable
                     disabled
                   />
+                </el-form-item>
+              </el-form>
+              <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+                <el-form-item label="配车VIN码：">
+                  {{ form.matchVin }}
+                </el-form-item>
+                <el-form-item label="销售门店：">
+                  {{ form.saleDealerName }}
+                </el-form-item>
+                <el-form-item label="交付门店：">
+                  {{ form.deliveryDealerName }}
+                </el-form-item>
+                <el-form-item label="整车订单：">
+                  {{ form.retailOrderCode }}
+                </el-form-item>
+                <el-form-item label="交车单：">
+                  {{ form.deliveryOrderCode }}
+                </el-form-item>
+                <el-form-item label="整车开票状态：">
+                  {{ form.statusLabel }}
+                </el-form-item>
+                <el-form-item label="创建时间：">
+                  {{ form.createTime }}
                 </el-form-item>
               </el-form>
             </div>
@@ -104,7 +135,7 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm1" label-width="150px" class="form-edit">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm1" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="发票代码：" prop="invoiceCode">
                   <el-input
                     placeholder="请输入"
@@ -128,12 +159,9 @@
                 </el-form-item>
                 <el-form-item label="开票时间：" prop="invoiceTime">
                   <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
+                    type="date"
                     v-model="form.invoiceTime"
-                    :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
                   />
                 </el-form-item>
                 <el-form-item label="车主证件号码：" prop="orderIdCardNo">
@@ -199,6 +227,44 @@
                   />
                 </el-form-item>
               </el-form>
+              <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+                <el-form-item label="发票代码：">
+                  {{ form.invoiceCode }}
+                </el-form-item>
+                <el-form-item label="发票号码：">
+                  {{ form.invoiceNo }}
+                </el-form-item>
+                <el-form-item label="开票名称：">
+                  {{ form.invoiceName }}
+                </el-form-item>
+                <el-form-item label="开票时间：">
+                  {{ form.invoiceTime }}
+                </el-form-item>
+                <el-form-item label="车主证件号码：">
+                  {{ form.orderIdCardNo }}
+                </el-form-item>
+                <el-form-item label="开票金额：">
+                  {{ form.deliveryOrderInvoiceAmount }}
+                </el-form-item>
+                <el-form-item label="发票金额：">
+                  {{ form.invoiceAmount }}
+                </el-form-item>
+                <el-form-item label="发票VIN码：">
+                  {{ form.vin }}
+                </el-form-item>
+                <el-form-item label="发票合格证号：">
+                  {{ form.certificateNo }}
+                </el-form-item>
+                <el-form-item label="发票发动机号：">
+                  {{ form.engineNumber }}
+                </el-form-item>
+                <el-form-item label="发票厂牌型号：">
+                  {{ form.brandModel }}
+                </el-form-item>
+                <el-form-item label="产地：">
+                  {{ form.vehiclePlaceOrigin }}
+                </el-form-item>
+              </el-form>
             </div>
           </section>
           <section class="common-section">
@@ -207,7 +273,7 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm2" label-width="150px" class="form-edit">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm2" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="整车订单状态：" prop="orderStatus">
                   <el-input
                     placeholder="请输入"
@@ -362,6 +428,62 @@
                   />
                 </el-form-item>
               </el-form>
+              <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+                <el-form-item label="整车订单状态：">
+                  {{ form.orderStatusLabel }}
+                </el-form-item>
+                <el-form-item label="商城下单时间：">
+                  {{ form.orderTime }}
+                </el-form-item>
+                <el-form-item label="商城订单号：">
+                  {{ form.mallOrderCode }}
+                </el-form-item>
+                <el-form-item label="订单来源：">
+                  {{ form.orderSource }}
+                </el-form-item>
+                <el-form-item label="用户ID：">
+                  {{ form.orderUserId }}
+                </el-form-item>
+                <el-form-item label="购车人姓名：">
+                  {{ form.orderCarBuyerName }}
+                </el-form-item>
+                <el-form-item label="购车人手机号：">
+                  {{ form.orderCarBuyerPhone }}
+                </el-form-item>
+                <el-form-item label="证件类型：">
+                  {{ form.orderIdCardTypeLabel }}
+                </el-form-item>
+                <el-form-item label="证件号码：">
+                  {{ form.orderIdCardNo }}
+                </el-form-item>
+                <el-form-item label="代办联系人：">
+                  {{ form.agentName }}
+                </el-form-item>
+                <el-form-item label="补贴后价格：">
+                  {{ form.priceAfterSubsidy }}
+                </el-form-item>
+                <el-form-item label="定金金额：">
+                  {{ form.depositAmount }}
+                </el-form-item>
+                <el-form-item label="订单物料码：">
+                  {{ form.materialsCode }}
+                </el-form-item>
+                <el-form-item label="配车物料码：">
+                  {{ form.allocationMaterialCode }}
+                </el-form-item>
+                <el-form-item label="销售门店：">
+                  {{ form.saleDealerName }}
+                </el-form-item>
+                <el-form-item label="交付门店：">
+                  {{ form.deliveryDealerName }}
+                </el-form-item>
+                <el-form-item label="交车VIN码：">
+                  {{ form.deliveryVin }}
+                </el-form-item>
+                <el-form-item label="交车时间：">
+                  {{ form.deliveryTime }}
+                </el-form-item>
+              </el-form>
             </div>
           </section>
           <section class="common-section">
@@ -370,7 +492,7 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm1" label-width="150px" class="form-edit">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm1" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="交车时间：" prop="deliveryTime">
                   <el-input
                     placeholder="请输入"
@@ -389,7 +511,7 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="车主证件类型：" prop="idCardType">
+                <el-form-item label="车主证件类型：" prop="orderIdCardType">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vehretail_id_card_type"
@@ -407,6 +529,20 @@
                   />
                 </el-form-item>
               </el-form>
+              <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+                <el-form-item label="交车时间：">
+                  {{ form.deliveryTime }}
+                </el-form-item>
+                <el-form-item label="车辆属性：">
+                  {{ form.vehicleAttributeLabel }}
+                </el-form-item>
+                <el-form-item label="车主证件类型：">
+                  {{ form.idCardTypeLabel }}
+                </el-form-item>
+                <el-form-item label="备注：">
+                  {{ form.remark }}
+                </el-form-item>
+              </el-form>
             </div>
           </section>
           <section class="common-section">
@@ -415,7 +551,7 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm3" label-width="180px" class="form-edit">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm3" label-width="180px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="证件识别的客户姓名：" prop="carBuyerName">
                   <el-input
                     placeholder="请输入"
@@ -429,6 +565,14 @@
                     v-model="form.idCardNo"
                     clearable
                   />
+                </el-form-item>
+              </el-form>
+              <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+                <el-form-item label="证件识别的客户姓名：">
+                  {{ form.carBuyerName }}
+                </el-form-item>
+                <el-form-item label="证件识别的证件号码：">
+                  {{ form.idCardNo }}
                 </el-form-item>
               </el-form>
             </div>
@@ -579,7 +723,7 @@ const defaultForm = {
   modifierName: '',
   updateTime: '',
   remark: '',
-  status: '',
+  status: 1010,
   statusDesc: '',
   deliveryInvoiceCode: '',
   deliveryOrderId: '',
@@ -688,10 +832,7 @@ export default {
       ],
       rules: {
         status: [
-          { required: false, message: '请选择整车开票状态', trigger: 'change' }
-        ],
-        statusDesc: [
-          { required: false, message: '请选择状态变更描述', trigger: 'change' }
+          { required: true, message: '请选择整车开票状态', trigger: 'change' }
         ],
         deliveryInvoiceCode: [
           { required: false, message: '请输入开票记录编码', trigger: 'change' }
@@ -700,7 +841,7 @@ export default {
           { required: false, message: '请输入交车单ID', trigger: 'change' }
         ],
         deliveryOrderCode: [
-          { required: false, message: '请输入交车单编号', trigger: 'change' }
+          { required: true, message: '请输入交车单', trigger: 'change' }
         ],
         retailOrderId: [
           { required: false, message: '请输入零售订单ID', trigger: 'change' }
@@ -765,6 +906,9 @@ export default {
         orderStatus: [
           { required: true, message: '请选择零售订单状态', trigger: 'change' }
         ],
+        depositAmount: [
+          { required: true, message: '请输入定金金额', trigger: 'change' }
+        ],
         orderSource: [
           { required: true, message: '请输入订单来源', trigger: 'change' }
         ],
@@ -782,6 +926,9 @@ export default {
         ],
         idCardType: [
           { required: false, message: '请选择证件类型标签', trigger: 'change' }
+        ],
+        orderIdCardType: [
+          { required: true, message: '请选择车主证件类型', trigger: 'change' }
         ],
         agentName: [
           { required: false, message: '请输入代办姓名', trigger: 'change' }

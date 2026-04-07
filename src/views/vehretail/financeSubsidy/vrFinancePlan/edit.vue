@@ -39,7 +39,7 @@
                     placeholder="请输入"
                     v-model="form.code"
                     clearable
-                    :disabled="_id"
+                    :disabled="!!_id"
                   />
                 </el-form-item>
                 <el-form-item label="数据来源：" prop="dataSource">
@@ -345,7 +345,7 @@ export default {
     goToVehicleDetail (vehicleId) {
       // 实现跳转到车型详情页面的逻辑
       this.navigateToRoute({
-        path: '/datacenter/materials/vehicleModel/detail',
+        path: '/sales/datacenter/materials/vehicleModel/detail',
         query: { id: vehicleId }
       }, true);
     },
@@ -353,7 +353,7 @@ export default {
     goToProductDetail (productId) {
       // 实现跳转到金融产品详情页面的逻辑
       this.navigateToRoute({
-        path: '/vehretail/financeSubsidy/vrFinanceProduct/edit',
+        path: '/sales/vehretail/financeSubsidy/vrFinanceProduct/edit',
         query: { id: productId }
       }, true);
     },

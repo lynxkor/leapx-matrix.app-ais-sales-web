@@ -171,3 +171,11 @@ export function getDetailDecryptField (id, field) {
 export function queryOrderStatusBackRecord (data) {
   return api.jsonPost(prefix + 'queryOrderStatusBackRecord', data);
 }
+
+/**
+ * 获取系统参数值 veretailUnlockConfigCount:取消锁车次数,veretailChangeConfigCount:修改配置次数
+ * @param {Object} data
+ */
+export function getSysConfigParamValue (data) {
+  return api.jsonPost('vr/web/order/common/getSysConfigParamValue', data);
+}
