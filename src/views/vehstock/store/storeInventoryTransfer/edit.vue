@@ -24,11 +24,11 @@
                 <el-form-item label="整车调拨单号：" prop="transferNo">
                   <el-input placeholder="请输入" v-model="form.transferNo" clearable disabled />
                 </el-form-item>
-                <el-form-item label="目标门店名称：" prop="targetDealerName">
+                <el-form-item label="目标门店名称：" prop="targetDealerCode">
                   <fetch-select
                     :remote-method="getDealerListByName"
                     remote
-                    v-model="form.targetDealerName"
+                    v-model="form.targetDealerCode"
                     placeholder="请输入门店编码或名称"
                     labelKey="storeName"
                     valueKey="storeCode"
@@ -38,14 +38,14 @@
                     @change="handleStoreChange"
                   />
                 </el-form-item>
-                <el-form-item label="目标门店仓库名称：" prop="targetDealerWarehouseName">
+                <el-form-item label="目标门店仓库名称：" prop="targetDealerWarehouseCode">
                   <fetch-select
-                    :remote-method="remoteMethodWarehouse"
+                    :options="warehouseOptions"
                     remote
-                    v-model="form.targetDealerWarehouseName"
+                    v-model="form.targetDealerWarehouseCode"
                     placeholder="请输入门店仓库编码或名称"
-                    labelKey="storeName"
-                    valueKey="storeCode"
+                    labelKey="warehouseName"
+                    valueKey="warehouseCode"
                     subLabelKey="label"
                     clearable
                     filterable
@@ -216,6 +216,15 @@ export default {
         }
       },
       immediate: true
+    },
+    'form.targetDealerCode': {
+      handler (newVal) {
+        if (newVal && this.isEditing) {
+          // 仅在编辑模式且有值时拉取仓库列表，以确保回显时能从列表中匹配到名称
+          this.fetchWarehouseOptions(newVal, false); // 第二个参数设为 false，防止自动重置
+        }
+      },
+      immediate: true
     }
   },
   data () {
@@ -232,6 +241,7 @@ export default {
       originalForm: { ...form },
       storeName: '', // 目标门店仓库名称
       emptyText: '若要启用此内容，请创建记录',
+      warehouseOptions: [], // 门店仓库编码或名称选项
       tableData: [
         { id: 1, name: '张三', age: 25, email: 'zhangsan@example.com' },
         { id: 2, name: '李四', age: 30, email: 'lisi@example.com' }
@@ -343,31 +353,40 @@ export default {
     },
     // 门店编码或名称选择框回调
     handleStoreChange (val, record) {
-      this.form.targetDealerCode = val;
-      this.form.targetDealerName = record.storeName || '';
-      this.remoteMethod(val);
+      if (val) {
+        this.form.targetDealerCode = val;
+        this.form.targetDealerName = record.storeName || '';
+        this.fetchWarehouseOptions(val);
+      } else {
+        // 清空处理
+        this.form.targetDealerCode = '';
+        this.form.targetDealerName = '';
+        this.form.targetDealerWarehouseCode = '';
+        this.form.targetDealerWarehouseName = '';
+        this.form.targetDealerWarehouseAddress = '';
+        this.warehouseOptions = [];
+      }
     },
-    // 门店仓库编码或名称选择框回调
-    async remoteMethod () {
+    // 门店仓库编码或名称选择框回调（联动查询）
+    async fetchWarehouseOptions (storeCode, autoSelectFirst = true) {
       const res = await listOrgWarehouseStoreInfo({
-        storeCode: this.form.targetDealerCode, // 门店编码
+        storeCode: storeCode, // 门店编码
       });
-      this.storeName = `${res.records[0].warehouseCode}-${res.records[0].warehouseName}` || '';
-      this.form.targetDealerWarehouseCode = res.records[0].warehouseCode || '';
-      this.form.targetDealerWarehouseName = res.records[0].warehouseName || '';
-      this.form.targetDealerWarehouseAddress = res.records[0].warehouseDetailAddress || '';
-    },
-    // 门店仓库编码或名称选择框回调
-    async remoteMethodWarehouse (query) {
-      const res = await listOrgWarehouseStoreInfo({
-        keyword: query, // 门店编码
-      });
-      return res.records.map(item => ({
+      const records = res.records || [];
+      this.warehouseOptions = records.map(item => ({
         ...item,
         label: `${item.warehouseCode}-${item.warehouseName}`,
       }));
+
+      // 默认选中第一个（仅在手动切换门店时触发，回显时不触发）
+      if (autoSelectFirst && records.length > 0) {
+        const first = records[0];
+        this.form.targetDealerWarehouseCode = first.warehouseCode || '';
+        this.form.targetDealerWarehouseName = first.warehouseName || '';
+        this.form.targetDealerWarehouseAddress = first.warehouseDetailAddress || '';
+      }
     },
-    // 门店仓库编码或名称选择框回调
+    // 门店仓库选择时触发的事件
     handleWarehouseChange (val, record) {
       this.form.targetDealerWarehouseCode = val;
       this.form.targetDealerWarehouseName = record.warehouseName || '';
