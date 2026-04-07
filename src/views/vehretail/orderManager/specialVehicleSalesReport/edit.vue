@@ -873,7 +873,7 @@ export default {
       if (!this.form.ocrCarBuyerName || !this.form.carBuyerName || this.form.ocrCarBuyerName !== this.form.carBuyerName) {
         differentFields += '证件识别的客户姓名与车主姓名<br>';
       }
-      if (!this.form.ocrCarBuyerIdCardNo || !this.form.carBuyerIdCardNo || this.form.ocrCarBuyerIdCardNo !== this.form.carBuyerIdCardNo) {
+      if (!this.form.ocrIdCardNo || !this.form.idCardNo || this.form.ocrIdCardNo !== this.form.idCardNo) {
         differentFields += '证件识别的证件号码与车主证件号码<br>';
       }
       if (!this.form.invoiceCertificateNo || !this.form.certificateNo || this.form.invoiceCertificateNo !== this.form.certificateNo) {
