@@ -163,6 +163,7 @@ export default {
       this.vinCode = '';
     },
     onSubmit () {
+      this.optionObj.form.page = 1;
       this.getData();
     },
     onReset () {
