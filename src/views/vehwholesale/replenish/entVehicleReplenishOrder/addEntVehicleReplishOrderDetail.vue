@@ -35,7 +35,7 @@
                 />
         </el-form-item>
         <el-form-item label="企业客户补货订单：">
-          <el-input v-model="materialsform.entReplenishOrderId" clearable placeholder="请输入" disabled/>
+          <el-input v-model="materialsform.entReplenishOrderId" placeholder="请输入" disabled/>
         </el-form-item>
          <el-form-item label="销售价格：" prop="salesPrice">
             <el-input-number
@@ -171,31 +171,28 @@ export default {
   watch: {
     visible (newVal) {
       if (newVal) {
-        this.vin = '';
         this.$nextTick(() => {
           if (this.$refs.materialsForm) {
             this.$refs.materialsForm.clearValidate();
           }
+          // 先重置表单
           this.materialsform = { ...defaultForm };
+          // 重置后立即根据当前的 orderInfo 赋值，防止竞态条件
+          if (this.orderInfo) {
+            this.materialsform.entReplenishOrderId = this.orderInfo.entReplenishOrderCode;
+            if (this.orderInfo.orderCategory === 1 || this.orderInfo.orderCategory === 8) {
+              this.isType = true;
+            } else if (this.orderInfo.orderCategory === 21) {
+              this.isType = false;
+            }
+          }
         });
-      }
-    },
-    orderInfo (val) {
-      if (val) {
-        this.materialsform.entReplenishOrderId = val.entReplenishOrderCode;
-        if (val.orderCategory === 1 || val.orderCategory === 8) {
-          this.isType = true;
-        } else if (this.orderInfo.orderCategory === 21) {
-          this.isType = false;
-        }
       }
     },
     // 新增监听：当销售价格变化且订单分类为 21 时，同步标准价格
     'materialsform.salesPrice': {
       handler (newVal) {
-        console.log(newVal, this.orderInfo.orderCategory === 21);
         if (this.orderInfo && this.orderInfo.orderCategory === 21) {
-          console.log('同步标准价格');
           this.materialsform.standardPrice = newVal;
           this.getTaxPrice();
         }
