@@ -10,6 +10,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="form.status !== 7 && form.status !== 99"
       >
         <template #status>
           <!-- 支持 primary,warning,success,danger 等状态 -->
