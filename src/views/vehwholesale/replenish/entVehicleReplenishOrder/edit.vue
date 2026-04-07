@@ -256,7 +256,7 @@
                   />
                 </el-form-item>
 
-                <el-form-item label="省市区">
+                <el-form-item label="省市区：">
                   <el-cascader
                     placeholder="请选择省市区"
                     v-model="areaCode"
@@ -756,13 +756,16 @@ export default {
     // this.fetchSettleFundTypeOptions();
     this.listNetworkParentCompany();
     this.getCompanyList();
-    this.getFundAccount();
+    // this.getFundAccount();
   },
   methods: {
     getFundAccount (val, row) {
+      this.form.settleFundType = '';
+      this.form.settleFundTypeLabel = '';
       const params = {
-        dealerCompanyNames: [row.companyName],
-        allowEntOrderSettle: '1'
+        dealerCompanyNames: [this.form.entCustomerName],
+        allowEntOrderSettle: '1',
+        saleCompanyNames: [row.companyName]
       };
       accountList(params).then((res) => {
         console.log('accountList', res);

@@ -364,7 +364,7 @@ export default {
       const response = await getEnum('vw_ent_vehicle_order_status');
       this.orderStatusOptions = response.filter(item => {
         const codeStr = String(item.code);
-        return ['3', '50', '51', '9', '99'].includes(codeStr + '');
+        return ['3', '7', '9', '50', '51', '99'].includes(codeStr + '');
       }).map(item => {
         return {
           ...item,

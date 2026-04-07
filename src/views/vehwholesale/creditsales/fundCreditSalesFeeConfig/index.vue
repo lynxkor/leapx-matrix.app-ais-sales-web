@@ -58,13 +58,18 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-      <template v-if="show">
-        <el-form-item label="首付款比例">
-          <el-input
-            placeholder="请输入"
-            v-model="form.downPaymentRatio"
-            clearable
-          />
+      <template v-if="show" >
+        <el-form-item label="首付款比例" >
+          <el-input-number
+                    v-model="form.downPaymentRatio"
+                    placeholder="请输入"
+                    :precision="2"
+                    :step="0.01"
+                    :min="0"
+                    :max="100"
+                     style="width:100%;"
+                    :controls="false"
+                  />
         </el-form-item>
 
         <!-- <el-form-item label="使用天数下限">
@@ -75,11 +80,16 @@
           />
         </el-form-item> -->
         <el-form-item label="使用天数上限">
-          <el-input
-            placeholder="请输入"
-            v-model="form.maxUsageDays"
-            clearable
-          />
+           <el-input-number
+                    v-model="form.maxUsageDays"
+                    placeholder="请输入"
+                    :precision="0"
+                    :step="1"
+                    :min="0"
+                    :max="999999"
+                     style="width:100%;"
+                    :controls="false"
+                  />
         </el-form-item>
         <el-form-item label="是否使用返利">
           <!-- <el-input
