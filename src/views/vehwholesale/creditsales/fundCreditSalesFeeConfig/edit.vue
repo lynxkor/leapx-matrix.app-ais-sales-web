@@ -4,7 +4,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        :title="title"
+        title="赊销资费设置:"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -273,13 +273,33 @@ export default {
     // 自定义校验规则
     const validateDateRange = (rule, value, callback) => {
       if (!value) {
-        callback(new Error('请选择有效结束日期'));
+        callback(new Error('请选择额度失效日期'));
         return;
       }
-      if (this.form.effectiveStartTime && new Date(value) <= new Date(this.form.effectiveStartTime)) {
-        callback(new Error('有效结束日期必须大于有效开始日期'));
+
+      // 获取当前日期的零点时间，用于比较日期部分
+      const now = new Date();
+      const currentDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      // 获取失效日期的零点时间
+      const expireDay = new Date(value);
+      expireDay.setHours(0, 0, 0, 0);
+
+      // 1. 验证失效日期必须大于当前日期
+      if (expireDay <= currentDay) {
+        callback(new Error('失效日期必须大于当前日期'));
         return;
       }
+
+      // 2. 验证失效日期必须大于生效日期
+      if (this.form.effectiveTime) {
+        const effectiveDay = new Date(this.form.effectiveTime);
+        effectiveDay.setHours(0, 0, 0, 0);
+        if (expireDay <= effectiveDay) {
+          callback(new Error('失效日期必须大于生效日期'));
+          return;
+        }
+      }
+
       callback();
     };
 

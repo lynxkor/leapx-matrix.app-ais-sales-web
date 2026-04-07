@@ -565,7 +565,7 @@ export default {
   mixins: [routeGuard, permissions, commonMixins],
   components: {
     SimpleDialog,
-    AisAttachment,
+    // AisAttachment,
     EditPageLayout,
     EditBaseContainer,
     VehicleAttributeDialog,

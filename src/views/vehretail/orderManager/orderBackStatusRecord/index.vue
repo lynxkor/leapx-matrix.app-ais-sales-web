@@ -376,7 +376,7 @@ export default {
                     query: {
                       vin: row.matchVin
                     }
-                  },true);
+                  }, true);
                 }
               },
               type: 'primary'

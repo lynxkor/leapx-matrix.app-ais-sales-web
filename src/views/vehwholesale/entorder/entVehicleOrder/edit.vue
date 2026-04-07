@@ -6,7 +6,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="企业客户整车订单"
+        title="企业客户整车订单:"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"

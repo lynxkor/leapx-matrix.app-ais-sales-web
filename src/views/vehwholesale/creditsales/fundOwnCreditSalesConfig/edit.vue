@@ -274,7 +274,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '配置编号：' + this.form.configCode;
+      return '自有资金赊销配置：' + this.form.configCode;
     }
   },
   watch: {
@@ -296,10 +296,30 @@ export default {
         callback(new Error('请选择额度失效日期'));
         return;
       }
-      if (this.form.effectiveTime && new Date(value) <= new Date(this.form.effectiveTime)) {
-        callback(new Error('失效日期必须大于生效日期'));
+
+      // 获取当前日期的零点时间，用于比较日期部分
+      const now = new Date();
+      const currentDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      // 获取失效日期的零点时间
+      const expireDay = new Date(value);
+      expireDay.setHours(0, 0, 0, 0);
+
+      // 1. 验证失效日期必须大于当前日期
+      if (expireDay <= currentDay) {
+        callback(new Error('失效日期必须大于当前日期'));
         return;
       }
+
+      // 2. 验证失效日期必须大于生效日期
+      if (this.form.effectiveTime) {
+        const effectiveDay = new Date(this.form.effectiveTime);
+        effectiveDay.setHours(0, 0, 0, 0);
+        if (expireDay <= effectiveDay) {
+          callback(new Error('失效日期必须大于生效日期'));
+          return;
+        }
+      }
+
       callback();
     };
 

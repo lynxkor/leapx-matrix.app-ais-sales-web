@@ -10,6 +10,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="false"
       >
         <template #status>
           <!-- 支持primary,warning,success,danger等状态 -->
@@ -142,7 +143,6 @@
                   {{ latestTransLog.transactionTypeLabel }}
                 </el-form-item>
                 <el-form-item label="最近交易描述：" prop="lastTradeRemark">
-                  {{ latestTransLog.remark }}>
                   {{ latestTransLog.remark }}
                 </el-form-item>
               </el-form>
