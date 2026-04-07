@@ -449,7 +449,7 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="上牌区/县：" prop="districtCode">
+                <!-- <el-form-item label="上牌区/县：" prop="districtCode">
                   <fetch-select
                     v-model="form.districtCode"
                     :options="districtSelector"
@@ -460,7 +460,7 @@
                     filterable
                     clearable
                   />
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="车辆注册地址：" prop="vehicleRegisterAddress">
                   <el-input
                     placeholder="请输入"
@@ -502,9 +502,9 @@
                 <el-form-item label="上牌城市：">
                   {{ form.cityName }}
                 </el-form-item>
-                <el-form-item label="上牌区/县：">
+                <!-- <el-form-item label="上牌区/县：">
                   {{ form.districtName }}
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="车辆注册地址：">
                   {{ form.vehicleRegisterAddress }}
                 </el-form-item>
