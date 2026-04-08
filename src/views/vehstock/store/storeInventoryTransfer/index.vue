@@ -94,6 +94,18 @@ export default {
     ReviewDrawer,
     TagInput
   },
+  computed: {
+    userInfo () {
+      try {
+        return JSON.parse(localStorage.getItem('userInfo') || '{}');
+      } catch (e) {
+        return {};
+      }
+    },
+    orgCodeList () {
+      return (this.userInfo.orgPostUserList || []).map(item => item.orgCode);
+    }
+  },
   data () {
     return {
       pageTitle: '门店库存调拨',
@@ -244,7 +256,7 @@ export default {
             }, {
               name: '调出审批',
               show: (row) => {
-                return row.auditStatus === 2 && row.outApproval !== 1 && this.permissions.has(`${this.moduleKey}-approveOut`);
+                return row.auditStatus === 2 && row.outApproval !== 1 && (this.permissions.has(`${this.moduleKey}-approveOut`) || this.orgCodeList.includes(row.sourceDealerCode));
               },
               click: (rowIndex, row) => {
                 this.handleApproval(row, 'outApproval');
@@ -253,7 +265,7 @@ export default {
             }, {
               name: '调入审批',
               show: (row) => {
-                return row.auditStatus === 2 && row.inApproval !== 1 && this.permissions.has(`${this.moduleKey}-approveIn`);
+                return row.auditStatus === 2 && row.inApproval !== 1 && (this.permissions.has(`${this.moduleKey}-approveIn`) || this.orgCodeList.includes(row.targetDealerCode));
               },
               click: (rowIndex, row) => {
                 this.handleApproval(row, 'inApproval');
