@@ -181,9 +181,6 @@
                 <el-form-item label="审核人：" prop="auditorName">
                   {{ form.auditorName }}
                 </el-form-item>
-                <el-form-item label="审核人：" prop="auditorUserId">
-                  {{ form.auditorUserId }}
-                </el-form-item>
                 <el-form-item label="审核时间：" prop="auditTime">
                   {{ form.auditTime }}
                 </el-form-item>
@@ -202,24 +199,105 @@
             </div>
                <div class="common-section-body">
               <div class="common-section-table">
-                <edit-table
-                  ref="editTable"
-                  :columns="columns"
+                <vxe-table
+                  ref="workTable"
                   :data="form.details"
-                  :defaultNewRow="defaultNewRow"
-                  :show-toolbar="false"
-                  :show-pagination="true"
-                  :enable-single-row-save="true"
-                  :options="options"
-                  :current="pageNum"
-                  :pageSize="pageSize"
-                  :total="total"
-                  @save-row-edit="saveRowEdit"
-                  @remove-row="handleRemoveRow"
-                  @page-size-change="pageSizeChange"
-                  @current-page-change="currentPageChange"
-                  :auth="{edit: isEditing, delete: isEditing}"
-                />
+                  stripe
+                  show-overflow
+                  resizable
+                  border="inner"
+                >
+                  <!-- 业务列 -->
+                  <vxe-column field="backOrderDetailCode" title="退车明细单号" width="180" />
+                  <vxe-column field="backOrderCode" title="退车订单号" width="200" />
+                  <vxe-column field="vin" title="VIN" width="100" />
+                  <vxe-column field="statusLabel" title="车辆处理状态" width="150" />
+                  <vxe-column field="saleDealerName" title="门店名称" width="120" />
+                  <vxe-column field="wholesaleOrderCode" title="整车批售订单号" width="200" />
+                  <vxe-column field="entOrderCode" title="企业客户整车订单号" width="200" />
+                  <vxe-column field="actualVehicleReturnLabel" title="是否实车返厂" width="150" />
+                  <!-- 可编辑列：销售部预留 -->
+                  <vxe-column title="销售部预留" width="180">
+                    <template #default="{ row }">
+                      <fetch-select
+                        v-if="isEditing"
+                        :request="fetchOptions"
+                        enumCode="BooleanEnum"
+                        v-model="row.salesDeptReserve"
+                        placeholder="请选择"
+                        clearable
+                        filterable
+                      />
+                      <span v-else>{{ row.salesDeptReserveLabel }}</span>
+                    </template>
+                  </vxe-column>
+                   <vxe-column title="整车物流预留" width="180">
+                    <template #default="{ row }">
+                      <fetch-select
+                            :request="fetchOptions"
+                            v-if="isEditing"
+                            enumCode="BooleanEnum"
+                            v-model="row.vehicleLogisticsReserve"
+                            placeholder="请选择"
+                            clearable
+                            filterable
+                          />
+                          <span v-else>{{ row.vehicleLogisticsReserveLabel }}</span>
+                    </template>
+                  </vxe-column>
+                  <vxe-column field="originalWholesalePrice" title="原批售价格" width="120" />
+                  <vxe-column field="originalRebateAmount" title="原返利使用金额" width="200" />
+                  <vxe-column field="originalInvoicePrice" title="原开票价格" width="200" />
+                  <vxe-column field="returnPrice" title="退车价格" width="200" />
+                  <vxe-column field="returnInvoiceAmount" title="退车开票金额" width="200" />
+                  <!-- 可编辑列：备注 -->
+                  <vxe-column field="remark" title="备注说明" width="200">
+                    <template #default="{ row }">
+                      <el-input
+                        v-if="isEditing"
+                        v-model="row.remark"
+                        placeholder="请输入"
+                        clearable
+                        type="text"
+                      />
+                      <span v-else>{{ row.remark || '-' }}</span>
+                    </template>
+                  </vxe-column>
+                  <vxe-column field="storeOutboundConfirmer" title="门店出库确认人" width="200" />
+                  <vxe-column field="storeOutboundTime" title="门店出库确认时间" width="200" />
+                  <vxe-column field="vdcInboundConfirmer" title="VDC入库确认人" width="200" />
+                  <vxe-column field="vdcInboundTime" title="VDC入库确认时间" width="200" />
+                  <vxe-column field="createTime" title="创建时间" width="200" />
+                   <!-- 新增：操作列 -->
+                   <vxe-column
+                    v-if="isEditing"
+                    title="操作"
+                    width="150"
+                    fixed="right"
+                    align="center"
+                  >
+                    <template #default="{ row }">
+                      <div>
+                        <el-button
+                          type="text"
+                          size="small"
+                          @click="handleSaveRow(row)"
+                          style="color: #409EFF;"
+                        >
+                          保存
+                        </el-button>
+                        <el-button
+                          type="text"
+                          size="small"
+                          @click="handleDeleteRowData(row)"
+                          style="color: #F56C6C;"
+                        >
+                          删除
+                        </el-button>
+                      </div>
+                    </template>
+                  </vxe-column>
+                </vxe-table>
               </div>
             </div>
           </section>
@@ -326,7 +404,6 @@ export default {
     EditPageLayout,
     EditBaseContainer,
     FetchSelect,
-    EditTable,
     Upload,
     auditDialog,
     vinAllocateVehicle,
@@ -462,32 +539,11 @@ export default {
           title: '销售部预留',
           width: '150',
           editable: true,
-          editRender: {
-            name: 'FetchSelect',
-            props: {
-              enumCode: 'BooleanEnum',
-              placeholder: '请选择',
-              clearable: true,
-              filterable: true,
-              request: this.fetchOptions
-            }
-          },
         },
         {
           field: 'vehicleLogisticsReserveLabel',
           title: '整车物流预留',
           width: '120',
-          editable: true,
-          editRender: {
-            name: 'FetchSelect',
-            props: {
-              enumCode: 'BooleanEnum',
-              placeholder: '请选择',
-              clearable: true,
-              filterable: true,
-              request: this.fetchOptions
-            }
-          },
         },
         {
           field: 'originalWholesalePrice',
@@ -507,14 +563,7 @@ export default {
         {
           field: 'returnPrice',
           title: '退车价格',
-          width: '200',
-          editable: true,
-          editRender: {
-            name: 'ElInput',
-            props: {
-              type: 'number'
-            }
-          },
+          width: '200'
         },
         {
           field: 'returnInvoiceAmount',
@@ -565,6 +614,47 @@ export default {
     this.fetchBooleanEnum();
   },
   methods: {
+    handleSaveRow (row) {
+      const params = {
+        vehicleBackOrderId: this._id,
+        items: [row]
+      };
+      detailAddOrUpdate(params).then(() => {
+        this.$message.success('保存成功');
+        // 刷新详情以获取最新数据
+        this.$refs.containerRef.loadDetail();
+      }).catch(() => {
+        this.$message.error('保存失败');
+      });
+    },
+
+    // 删除单行数据
+    handleDeleteRowData (row) {
+      console.log('handleDeleteRow', row);
+      // 如果是新增未保存的行（没有ID），直接从数组移除
+      if (!row.id) {
+        const index = this.form.details.indexOf(row);
+        if (index > -1) {
+          this.form.details.splice(index, 1);
+        }
+        return;
+      }
+      this.$confirm('确认删除该条明细吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        detailDeleteItem({
+          idSet: [row.id]
+        }).then(() => {
+          this.$message.success('删除成功');
+          // 刷新详情以获取最新数据
+          this.$refs.containerRef.loadDetail();
+        }).catch(() => {
+          this.$message.error('删除失败');
+        });
+      }).catch(() => {});
+    },
     async fetchBooleanEnum () {
       const response = await getEnum('BooleanEnum');
       this.options.BooleanEnum = response.map(item => ({

@@ -228,7 +228,21 @@ export default {
           { props: 'totalQuotaQty', label: '额度数量', visible: true, width: 200 },
           { props: 'usedQuotaQty', label: '已提报数量', visible: true, width: 200 },
           { props: 'remainQuotaQty', label: '剩余可用', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 }
+          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          {
+            props: 'operate',
+            label: '操作',
+            type: 'operate',
+            visible: true,
+            fixed: 'right',
+            buttons: [{
+              name: '日志',
+              click: (rowIndex, row) => {
+                this.$auditLog.show({ id: row.id });
+              },
+              type: 'info'
+            }]
+          }
         ],
         total: 0
       }

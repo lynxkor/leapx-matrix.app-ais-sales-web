@@ -132,9 +132,9 @@
         </el-dropdown-menu>
       </el-dropdown>
       <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="handleAudit">审核</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="handleCancel">作废</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <el-button v-if="canExport"  size="small" @click="handleAudit">审核</el-button>
+      <el-button v-if="canExport"  size="small" @click="handleCancel">作废</el-button>
+      <el-button v-if="canExport"  size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
       class="ais-table-c"

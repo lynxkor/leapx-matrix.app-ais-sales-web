@@ -28,7 +28,14 @@
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                  <el-form-item label="账户编号：" prop="fundAccountCode">
-                  {{ form.fundAccountCode }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/vehwholesale/fund/dealerFundAccount/edit',
+                      query: {
+                        id: form.fundAccountId,
+                      },
+                    })"
+                   type="text">{{form.fundAccountCode}}</el-button>
                 </el-form-item>
                  <el-form-item label="母公司名称：" prop="dealerCompanyName">
                   {{ form.dealerCompanyName }}
@@ -61,7 +68,14 @@
                   {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="批售订单：" prop="wholesaleOrderCode">
-                  {{ form.wholesaleOrderCode }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
+                      query: {
+                        id: form.wholesaleOrderId,
+                      },
+                    })"
+                   type="text">{{form.wholesaleOrderCode}}</el-button>
                 </el-form-item>
                 <el-form-item label="交车单：" prop="deliveryOrderCode">
                   {{ form.deliveryOrderCode }}

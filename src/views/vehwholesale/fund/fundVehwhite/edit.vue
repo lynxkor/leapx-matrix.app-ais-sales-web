@@ -24,10 +24,24 @@
                   {{ form.documentTypeLabel }}
                 </el-form-item>
                 <el-form-item label="整车批售订单：" prop="wholesaleOrderCode">
-                  {{ form.wholesaleOrderCode }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
+                      query: {
+                        id: form.wholesaleOrderId,
+                      },
+                    })"
+                   type="text">{{form.wholesaleOrderCode}}</el-button>
                 </el-form-item>
                 <el-form-item label="企业客户整车订单：" prop="enterpriseOrderCode">
-                  {{ form.enterpriseOrderCode }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/vehwholesale/entorder/entVehicleOrder/edit',
+                      query: {
+                        id: form.enterpriseOrderId,
+                      },
+                    })"
+                   type="text">{{form.enterpriseOrderCode}}</el-button>
                 </el-form-item>
                 <el-form-item label="VIN号：" prop="vin">
                   {{ form.vin }}
@@ -36,7 +50,14 @@
                   {{ form.parentCompanyName }}
                 </el-form-item>
                 <el-form-item label="门店：" prop="dealerName">
-                  {{ form.dealerName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/partner/channelManagement/shopDetail',
+                      query: {
+                        dealerCode: form.dealerCode,
+                      },
+                    })"
+                   type="text">{{form.dealerName}}</el-button>
                 </el-form-item>
                 <el-form-item label="企业客户：" prop="enterpriseCustomerName">
                   {{ form.enterpriseCustomerName }}
