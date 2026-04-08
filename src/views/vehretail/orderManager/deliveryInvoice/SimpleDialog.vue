@@ -48,7 +48,7 @@ export default {
       title: '',
       // 附件列表配置
       attachmentList: [
-        { label: '车主身份证', required: true, configCode: 'mcs_vehnetwork', attachType: '车主身份证' },
+        { label: '车主身份证件', required: true, configCode: 'mcs_vehnetwork', attachType: '车主身份证件' },
         { label: '车辆销售发票', required: true, configCode: 'mcs_vehnetwork', attachType: '车辆销售发票' },
         { label: '车辆合格证', required: true, configCode: 'mcs_vehnetwork', attachType: '车辆合格证' },
         { label: '尾款支付凭证', required: true, configCode: 'mcs_vehnetwork', attachType: '尾款支付凭证' },
