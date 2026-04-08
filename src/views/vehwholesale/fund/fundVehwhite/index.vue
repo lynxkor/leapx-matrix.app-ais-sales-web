@@ -183,12 +183,60 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerName', label: '门店', visible: true, width: 300 },
+          {
+            props: 'dealerName',
+            label: '门店',
+            visible: true,
+            width: 300,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/partner/channelManagement/shopDetail',
+                  query: {
+                    dealerCode: row.dealerCode,
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'parentCompanyName', label: '母公司名称', visible: true, width: 300 },
           { props: 'enterpriseCustomerName', label: '企业客户', visible: true, width: 200 },
           { props: 'vin', label: 'VIN号', visible: true, width: 200 },
-          { props: 'wholesaleOrderCode', label: '整车批售订单', visible: true, width: 200 },
-          { props: 'enterpriseOrderCode', label: '企业客户整车订单', visible: true, width: 200 },
+          {
+            props: 'wholesaleOrderCode',
+            label: '整车批售订单',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
+                  query: {
+                    id: row.wholesaleOrderId,
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'enterpriseOrderCode',
+            label: '企业客户整车订单',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehwholesale/entorder/entVehicleOrder/edit',
+                  query: {
+                    id: row.enterpriseOrderId,
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'isBWhitelistLabel', label: '是否B端白名单', visible: true, width: 200 },
           { props: 'isCWhitelistLabel', label: '是否C端白名单', visible: true, width: 200 },
           { props: 'documentTypeLabel', label: '单据类型', visible: true, width: 200 },

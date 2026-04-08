@@ -172,9 +172,9 @@
                 <el-form-item label="配置状态：" prop="auditStatusLabel">
                   {{ form.auditStatusLabel }}
                 </el-form-item>
-                <el-form-item label="配置编号：" prop="configCode">
+                <!-- <el-form-item label="配置编号：" prop="configCode">
                   {{ form.configCode }}
-                </el-form-item>
+                </el-form-item> -->
               </el-form>
             </div>
           </section>

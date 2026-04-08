@@ -69,7 +69,7 @@
                 <el-form-item label="目标门店仓库名称：" prop="targetDealerWarehouseName">
                   {{ form.targetDealerWarehouseName }}
                 </el-form-item>
-                <el-form-item label="调拨原因：" prop="reason">
+                <el-form-item label="调拨原因：" prop="reason" style="width: 100%;">
                   {{ form.reason }}
                 </el-form-item>
                 <el-form-item label="备注：" prop="remark" style="width: 100%;">

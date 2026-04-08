@@ -779,7 +779,6 @@ export default {
       if (!this.form.entCustomerName || !this.form.saleCompanyName) {
         return;
       }
-
       const params = {
         dealerCompanyNames: [this.form.entCustomerName],
         allowEntOrderSettle: '1',
@@ -798,7 +797,6 @@ export default {
               });
             }
           });
-
           // 将 Map 的值转换为数组并赋值
           this.settleFundTypeOptions = Array.from(uniqueMap.values());
         }
