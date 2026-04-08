@@ -260,19 +260,20 @@ export default {
             visible: true,
             fixed: 'right',
             buttons: [
-              // {
-              //   name: '编辑',
-              //   click: (rowIndex, row) => {
-              //     this.$router.push({
-              //       path: '/vehretail/orderManager/soldPlateInfo/edit',
-              //       query: {
-              //         id: row.id,
-              //         isEditing: true
-              //       }
-              //     });
-              //   },
-              //   type: 'info'
-              // }
+              {
+                name: '编辑',
+                click: (rowIndex, row) => {
+                  this.$router.push({
+                    path: '/vehretail/orderManager/soldPlateInfo/edit',
+                    query: {
+                      id: row.id,
+                      isEditing: true
+                    }
+                  });
+                },
+                type: 'info',
+                show: (row) => row.status === 1010 || row.status === 1040
+              }
             ]
           }
         ],

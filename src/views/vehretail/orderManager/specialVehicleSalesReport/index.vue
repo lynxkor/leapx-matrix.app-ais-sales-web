@@ -302,7 +302,7 @@ export default {
                   }
                 },
                 type: 'info',
-                visible: (row) => {
+                show: (row) => {
                   return row.status === '0' || row.status === 0;
                 }
               }

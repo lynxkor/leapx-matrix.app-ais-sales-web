@@ -11,6 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="form.status === 0"
       >
         <template #status>
           <!-- 支持primary,warning,success,danger等状态 -->

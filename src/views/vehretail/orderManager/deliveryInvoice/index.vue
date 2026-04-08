@@ -111,7 +111,7 @@
 <!--      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>-->
 <!--      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>-->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button  size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <el-button size="small" @click="handleBatchCancel" :disabled="selectionList.length === 0">批量作废</el-button>
 <!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>-->
 <!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>-->
     </div>
@@ -150,7 +150,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { deleteItem, enableItem, getList } from '@/api/vehretail/orderManager/deliveryInvoice/index';
+import { batchCancel, enableItem, getList } from '@/api/vehretail/orderManager/deliveryInvoice/index';
 import {exportTable, getEnum, getTableConfig, listOrgStoreInfo, tableAddOrUpdate} from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -269,7 +269,8 @@ export default {
                   }
                 });
               },
-              type: 'info'
+              type: 'info',
+              show: (row) => row.status === 0
             }]
           }
         ],
@@ -436,8 +437,8 @@ export default {
       };
       return await listOrgStoreInfo(params);
     },
-    // 批量删除
-    handleBatchDelete () {
+    // 批量作废
+    handleBatchCancel () {
       const ids = this.selectionList.map(item => item.id) || [];
       const statusValidateErrIds = this.selectionList.filter(item => item.status !== 0).map(item => item.id);
       if (statusValidateErrIds.length > 0) {
@@ -447,7 +448,7 @@ export default {
         });
         return;
       }
-      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将作废所选开票记录, 是否继续</div>';
       this.$confirm(message, '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -455,17 +456,12 @@ export default {
         customClass: 'ais-leave-tips',
         showClose: false
       }).then(() => {
-        deleteItem(ids).then(() => {
+        batchCancel(ids).then(() => {
           this.$message({
             type: 'success',
-            message: '删除成功!'
+            message: '作废成功!'
           });
           this.getData();
-        }).catch(() => {
-          this.$message({
-            type: 'error',
-            message: '删除失败!'
-          });
         });
       }).catch(() => {});
     },
