@@ -177,7 +177,7 @@ export default {
             buttons: [{
               name: '编辑',
               show: (row) => {
-                return row.auditStatus === 1 || row.auditStatus === 5;
+                return (row.auditStatus === 1 || row.auditStatus === 5) && this.orgCodeList.includes(row.sourceDealerCode);
               },
               click: (rowIndex, row) => {
                 this.$router.push({
@@ -215,7 +215,7 @@ export default {
               name: '提交',
               popconfirmTitle: '是否要提交?',
               show: (row) => {
-                return (row.auditStatus === 1 || row.auditStatus === 5) && this.permissions.has(`${this.moduleKey}-submit`);
+                return (row.auditStatus === 1 || row.auditStatus === 5) && (this.permissions.has(`${this.moduleKey}-submit`) || this.orgCodeList.includes(row.sourceDealerCode));
               },
               click: (rowIndex, row) => {
                 storeSubmit(row.id).then(() => {
@@ -236,7 +236,7 @@ export default {
               name: '作废',
               popconfirmTitle: '确定作废单据吗?',
               show: (row) => {
-                return (row.auditStatus === 1 || row.auditStatus === 5) && this.permissions.has(`${this.moduleKey}-invalid`);
+                return (row.auditStatus === 1 || row.auditStatus === 5) && (this.permissions.has(`${this.moduleKey}-invalid`) || this.orgCodeList.includes(row.sourceDealerCode));
               },
               click: (rowIndex, row) => {
                 storeInvalid(row.id).then(() => {
