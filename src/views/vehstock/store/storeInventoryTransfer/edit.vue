@@ -250,11 +250,11 @@ export default {
         id: [
           { required: true, message: '请输入主键', trigger: 'change' }
         ],
-        targetDealerName: [
-          { required: true, message: '请输入目标门店编码', trigger: 'change' }
+        targetDealerCode: [
+          { required: true, message: '请选择目标门店', trigger: 'change' }
         ],
-        targetDealerWarehouseName: [
-          { required: true, message: '请输入目标门店仓库编码或名称', trigger: 'change' }
+        targetDealerWarehouseCode: [
+          { required: true, message: '请选择目标门店仓库', trigger: 'change' }
         ],
         targetDealerWarehouseAddress: [
           { required: true, message: '请输入目标门店仓库地址', trigger: 'change' }
