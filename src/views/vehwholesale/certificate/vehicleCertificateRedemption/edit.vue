@@ -388,7 +388,7 @@
                     clearable
                   />
                 </el-form-item>
-                 <el-form-item label="省市区">
+                 <el-form-item label="省市区：">
                   <el-cascader
                     placeholder="请选择省市区"
                     v-model="areaCode"
@@ -669,6 +669,8 @@ export default {
         this.form.downPaymentAmount = 0;
         this.form.creditDebtAmount = row.salesPrice;
       }
+      this.areaCode = [row.provinceCode, row.cityCode, row.districtCode];
+      console.log('row', [row.provinceCode, row.cityCode, row.districtCode]);
 
       getLatestReceiverAddress({
         orderType: this.form.orderCategory,
@@ -683,7 +685,7 @@ export default {
         this.form.receiverDistrictCode = res.receiverDistrictCode;
         this.form.receiverDistrictName = res.receiverCityName;
         this.form.receiverAddress = res.receiverAddress;
-        this.areaCode = [res.receiverProvinceCode, res.receiverCityCode, res.receiverDistrictCode];
+        console.log('res', this.areaCode);
       });
     },
     async getDealerListByName (params) {
