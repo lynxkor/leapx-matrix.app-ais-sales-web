@@ -608,10 +608,22 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    @change="clearCache"
                   />
                 </el-form-item>
                    <el-form-item label="金融机构名称：" prop="financialOrganizationId">
                     <fetch-select
+                   :options="financialOrganizationList"
+                    v-model="form.financialOrganizationId"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                    labelKey="name"
+                    valueKey="id"
+                    @change="getNewfinancialOrganization"
+                    :disabled="form.settleFundType !== '2010'"
+                  />
+                    <!-- <fetch-select
                     :remote-method="repairItemSearch"
                     remote
                     reserve-keyword
@@ -623,7 +635,7 @@
                     filterable
                     @change="getNewfinancialOrganization"
                     :disabled="form.settleFundType !== '2010'"
-                  />
+                  /> -->
                 </el-form-item>
                 <el-form-item label="零售价：" prop="retailPrice">
                   <el-input
@@ -788,7 +800,17 @@
             <div class="common-section-body">
               <div class="common-section-table">
                 <el-table :data="form.dealerFundAccounts" border style="width: 100%">
-                <el-table-column prop="fundTypeLabel" label="资金类型" />
+                <el-table-column label="资金类型" width="180">
+                    <template slot-scope="scope">
+                      <span>
+                        {{ scope.row.fundTypeLabel }}
+                        <!-- 判断条件：fundType 为 1050 (赊销) 时拼接金融机构名称 -->
+                        <span v-if="scope.row.fundType === '2010' || scope.row.fundType === 2010">
+                          - {{ scope.row.financialOrganizationName || '' }}
+                        </span>
+                      </span>
+                    </template>
+                  </el-table-column>
                 <el-table-column prop="availableBalance" label="可用余额" />
                 <el-table-column prop="frozenBalance" label="冻结资金" />
                 <el-table-column prop="availableCreditAmount" label="剩余可用额度" />
@@ -1014,6 +1036,7 @@ export default {
       ALLOWED_STATUS: [0, 11],
       settleFundTypeOptions: [],
       orderCategoryOptions: [],
+      financialOrganizationList: [],
       accountData: [],
       detailsColumns: [
         { field: 'dealerCompanyName', title: '销售公司' },
@@ -1313,18 +1336,40 @@ export default {
       const id = this._id;
       if (id) {
         return getDetail(id).then((res) => {
-          // Map the nested properties to the top level for easier access in the table
-          res.dealerFundAccounts = res.dealerFundAccounts.map(account => ({
-            ...account,
-            creditAccountStatusLabel: account.creditSalesLimit?.creditAccountStatusLabel || '',
-            effectiveTime: account.creditSalesLimit?.effectiveTime || '',
-            expireTime: account.creditSalesLimit?.expireTime || '',
-            downPaymentRatio: account.creditSalesLimit?.downPaymentRatio || '',
-            availableCreditAmount: account.creditSalesLimit?.availableCreditAmount || '',
-          }));
+          // 1. 初始化或清空列表，防止重复添加
+          this.financialOrganizationList = [];
+          // 2. 处理 dealerFundAccounts
+          if (res.dealerFundAccounts && Array.isArray(res.dealerFundAccounts)) {
+            res.dealerFundAccounts = res.dealerFundAccounts.map(account => {
+              if ((account.fundType === '2010' || account.fundType === 2010) && account.financialOrganizationId && account.financialOrganizationName) {
+                // 检查是否已存在，避免重复
+                const exists = this.financialOrganizationList.some(item => item.id === account.financialOrganizationId);
+                if (!exists) {
+                  this.financialOrganizationList.push({
+                    id: account.financialOrganizationId,
+                    name: account.financialOrganizationName
+                  });
+                }
+              }
+              // 原有的映射逻辑
+              return {
+                ...account,
+                creditAccountStatusLabel: account.creditSalesLimit?.creditAccountStatusLabel || '',
+                effectiveTime: account.creditSalesLimit?.effectiveTime || '',
+                expireTime: account.creditSalesLimit?.expireTime || '',
+                downPaymentRatio: account.creditSalesLimit?.downPaymentRatio || '',
+                availableCreditAmount: account.creditSalesLimit?.availableCreditAmount || '',
+              };
+            });
+          }
+          console.log('Processed financialOrganizationList:', this.financialOrganizationList);
           return res;
         }).catch(() => {});
       }
+    },
+    clearCache () {
+      this.form.financialOrganizationId = '';
+      this.form.financialOrganizationName = '';
     },
     getNewfinancialOrganization (val, row) {
       this.form.financialOrganizationId = row.id;

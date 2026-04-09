@@ -97,9 +97,9 @@
                     @change="reservedChange"
                   />
                 </el-form-item>
-                <el-form-item label="销售预留类型：" prop="reservedType">
+                <el-form-item label="销售预留类型：" prop="reservedTypeLabel">
                   <el-select
-                    v-model="form.reservedType"
+                    v-model="form.reservedTypeLabel"
                     placeholder="请选择"
                     :disabled="!form.reserved && isBatchEdit"
                   >
