@@ -27,12 +27,6 @@
             确认上传
           </el-button>
           <el-button
-           v-if="form.status === 0"
-            @click="openUploadShow"
-            size="small">
-            上传附件
-          </el-button>
-          <el-button
             @click="openDeleteShow"
             v-if="form.status === 0"
             v-permission="moduleKey + '-delete'"
@@ -591,6 +585,7 @@
                   :attachType="item.attachType"
                   :title="item.label"
                   :uploadConfig="item.uploadConfig"
+                  :readonly="form.status === 99 || !isEditing"
                   type="card"
                   @before-upload-click="handleBeforeUploadClick(index, $event)"
                 />
@@ -805,7 +800,6 @@ export default {
       moduleKey: 'AISVRFDI-deliveryInvoice',
       loading: false,
       submitLoading: false,
-      attachmentReadOnly: true,
       // 附件列表配置
       attachmentList: [
         { label: '车主身份证件', required: true, configCode: 'mcs_vehnetwork', attachType: '车主身份证件' },
@@ -1060,18 +1054,6 @@ export default {
         });
       }
       return comparisonData;
-    },
-    openUploadShow () {
-      // 判断配置
-      checkUpload(this.form.id).then(res => {
-        this.attachmentReadOnly = false;
-      }).catch(() => {
-        this.attachmentReadOnly = true;
-      });
-      // 通过 ref 调用组件内部方法打开弹框
-      // this.$refs.uploadDialogRef.open({
-      //   title: '附件管理',
-      // });
     },
     handleUploadConfirm () {
       // 点击保存按钮的回调
