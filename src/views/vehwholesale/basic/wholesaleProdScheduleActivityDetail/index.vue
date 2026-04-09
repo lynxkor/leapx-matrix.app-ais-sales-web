@@ -210,8 +210,40 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'activityName', label: '活动名称', visible: true, width: 200 },
-          { props: 'modelLineName', label: '车型', visible: true, width: 200 },
+          {
+            props: 'activityName',
+            label: '活动名称',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehwholesale/basic/wholesaleProdScheduleActivity/edit',
+                  query: {
+                    id: row.scheduleActivityId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'modelLineName',
+            label: '车型',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleModelLine/detail',
+                  query: {
+                    id: row.modelLineId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'deliveryWayLabel', label: '指定发运方式', visible: true, width: 200 },
           { props: 'allowLockRetailLabel', label: '是否锁零售单', visible: true, width: 200 },
           { props: 'startTime', label: '开始日期', visible: true, width: 200 },

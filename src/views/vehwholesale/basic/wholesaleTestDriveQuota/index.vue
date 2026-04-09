@@ -228,9 +228,57 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'vehicleYearType', label: '年款', visible: true, width: 200 },
-          { props: 'vehicleModelLine', label: '系列', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系', visible: true, width: 200 },
+          {
+            props: 'vehicleYearType',
+            label: '年款',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleYearType/detail',
+                  query: {
+                    id: row.vehicleYearTypeId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'vehicleModelLine',
+            label: '系列',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleModelLine/detail',
+                  query: {
+                    id: row.vehicleModelLineId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'seriesName',
+            label: '车系',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleSeries/detail',
+                  query: {
+                    id: row.seriesId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'quantity', label: '数量', visible: true, width: 200 },
           { props: 'mcDealerTypeLabel', label: '建店类型', visible: true, width: 200 },
           { props: 'cityName', label: '城市', visible: true, width: 200 },

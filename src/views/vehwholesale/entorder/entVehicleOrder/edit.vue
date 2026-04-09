@@ -1013,9 +1013,8 @@ export default {
     clearCache (val, row) {
       this.form.settleFundType = row.code;
       this.form.settleFundTypeLabel = row.message;
-      if (val === 1010 || val === 1050 || val === '1010' || val === '1050') {
-        this.form.financialOrganizationId = '';
-      }
+      this.form.financialOrganizationId = '';
+      this.form.financialOrganizationName = '';
     },
     getFundAccount () {
       this.settleFundTypeOptions = [];

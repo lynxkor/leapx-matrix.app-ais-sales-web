@@ -57,7 +57,14 @@
               {{ info.cityName  }}
             </el-form-item>
             <el-form-item label="车系：" prop="seriesName">
-              {{ info.seriesName  }}
+              <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleSeries/detail',
+                      query: {
+                        id: info.seriesId,
+                      },
+                    })"
+                   type="text">{{info.seriesName}}</el-button>
             </el-form-item>
             <el-form-item label="新增缴定订单数：" prop="newOrderQty">
               {{ info.newOrderQty  }}
