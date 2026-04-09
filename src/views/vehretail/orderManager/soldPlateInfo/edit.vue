@@ -1211,6 +1211,7 @@ export default {
       this.form.saleDealerName = val ? selectedOption.storeName : null;
     },
     handleProvinceChange (code) {
+      console.log(JSON.parse(localStorage.areaTree));
       this.form.provinceCode = null;
       this.form.provinceName = null;
       this.form.cityCode = null;
@@ -1218,10 +1219,11 @@ export default {
       this.form.districtCode = null;
       this.form.districtName = null;
       if (code) {
-        const city = this.provinceSelector.find(item => item.code === code);
-        this.form.provinceCode = city.code;
-        this.form.provinceName = city.name;
-        this.citySelector = city.child;
+        const province = this.provinceSelector.find(item => item.code === code);
+        this.form.provinceCode = province.code;
+        this.form.provinceName = province.name;
+        this.form.provinceAbbr = province.abbr;
+        this.citySelector = province.child;
       }
     },
     handleCityChange (code) {
@@ -1240,9 +1242,9 @@ export default {
       this.form.districtCode = null;
       this.form.districtName = null;
       if (code) {
-        const city = this.districtSelector.find(item => item.code === code);
-        this.form.districtCode = city.code;
-        this.form.districtName = city.name;
+        const district = this.districtSelector.find(item => item.code === code);
+        this.form.districtCode = district.code;
+        this.form.districtName = district.name;
       }
     },
     openUploadShow () {
