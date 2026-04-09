@@ -823,9 +823,14 @@ export default {
     clearCache (val, row) {
       this.form.settleFundType = row.code;
       this.form.settleFundTypeLabel = row.message;
-      if (val === 1010 || val === 1050 || val === '1010' || val === '1050') {
-        this.form.financialOrganizationId = '';
+      this.form.financialOrganizationId = '';
+      this.form.financialOrganizationName = '';
+      if (val === 1050) {
+        this.form.creditSaleFlag = 1;
+      } else {
+        this.form.creditSaleFlag = 0;
       }
+      console.log('clearCache', val, row);
     },
     handleChangeArea (val, row) {
       // 匹配查找对应的省市区名称和编号
