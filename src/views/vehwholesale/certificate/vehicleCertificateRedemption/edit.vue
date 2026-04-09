@@ -49,13 +49,14 @@
                   <fetch-select
                     :remote-method="getentVehicleOrderCodeList"
                     remote
-                    v-model="form.entOrderCode"
+                    v-model="form.entVehicleOrderCode"
                     placeholder="请选择"
                     labelKey="entOrderCode"
                     valueKey="entOrderCode"
                     clearable
                     filterable
                     :options="entVehicleOrderCodeList"
+                    @change="otherentOrderCode"
                     :disabled="form.orderCategory !== '20'"
                      />
                 </el-form-item>
@@ -643,6 +644,44 @@ export default {
   mounted () {
   },
   methods: {
+    otherentOrderCode (val, row) {
+      this.form.dealerCompanyName = row.dealerCompanyName;
+      this.form.dealerCompanyCode = row.dealerCompanyCode;
+      this.form.saleDealerCode = row.saleDealerCode;
+      this.form.saleDealerName = row.saleDealerName;
+      this.form.vin = row.vin;
+      this.form.materialsCode = row.materialsCode;
+      this.form.modelId = row.modelId;
+      this.form.modelName = row.modelName;
+      this.form.seriesId = row.seriesId;
+      this.form.seriesName = row.seriesName;
+      this.form.settleFundTypeLabel = row.settleFundTypeLabel;
+      this.form.vehiclePrice = row.salesPrice;
+      this.form.salePrice = row.salesPrice;
+      this.form.creditDebtAmount = row.creditSalesAmount;
+
+      // 整车批售订单：来源【整车批售订单】的【结算成功时间】企业客户订单：来源【企业客户整车订单】的【结算成功时间 ?? 结算时间
+      this.form.creditTime = row.settleTime;
+      this.form.downPaymentRatio = 0;
+      this.form.downPaymentAmount = 0;
+      this.areaCode = [row.provinceCode, row.cityCode, row.districtCode];
+
+      getLatestReceiverAddress({
+        orderType: this.form.orderCategory,
+        query: val
+      }).then((res) => {
+        this.form.receiverName = res.receiverName;
+        this.form.receiverPhone = res.receiverPhone;
+        this.form.receiverProvinceCode = res.receiverProvinceCode;
+        this.form.receiverProvinceName = res.receiverProvinceName;
+        this.form.receiverCityCode = res.receiverCityCode;
+        this.form.receiverCityName = res.receiverCityName;
+        this.form.receiverDistrictCode = res.receiverDistrictCode;
+        this.form.receiverDistrictName = res.receiverCityName;
+        this.form.receiverAddress = res.receiverAddress;
+        console.log('res', this.areaCode);
+      });
+    },
     otherwholesaleOrderInfo (val, row) {
       this.form.dealerCompanyName = row.dealerCompanyName;
       this.form.dealerCompanyCode = row.dealerCompanyCode;
@@ -657,21 +696,13 @@ export default {
       this.form.settleFundTypeLabel = row.settleFundTypeLabel;
       this.form.vehiclePrice = row.retailPrice;
       this.form.salePrice = row.wholesalePrice;
+      this.form.creditDebtAmount = row.creditSalesAmount;
       // 整车批售订单：来源【整车批售订单】的【结算成功时间】企业客户订单：来源【企业客户整车订单】的【结算成功时间 ?? 结算时间
       this.form.creditTime = row.settleTime;
-      if (this.form.orderCategory === '10') {
-        this.form.downPaymentRatio = row.downPaymentRatio;
-        this.form.downPaymentAmount = row.downPaymentAmount;
-        // 金额
-        this.form.creditDebtAmount = row.creditDebtAmount;
-      } else if (this.form.orderCategory === '20') {
-        this.form.downPaymentRatio = 0;
-        this.form.downPaymentAmount = 0;
-        this.form.creditDebtAmount = row.salesPrice;
-      }
+      this.form.downPaymentRatio = row.downPaymentRatio;
+      this.form.downPaymentAmount = row.downPaymentAmount;
+      // 金额
       this.areaCode = [row.provinceCode, row.cityCode, row.districtCode];
-      console.log('row', [row.provinceCode, row.cityCode, row.districtCode]);
-
       getLatestReceiverAddress({
         orderType: this.form.orderCategory,
         query: val
@@ -811,6 +842,7 @@ export default {
       }
     },
     submitRequest () {
+      console.log('submitRequest', this.form);
       return addOrUpdate({ ...this.form });
     },
     // 打开侧边栏
