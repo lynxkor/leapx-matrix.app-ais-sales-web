@@ -58,3 +58,19 @@ export function confirmUpload (data) {
 export function getEffectiveByVin (data) {
   return api.get(prefix + `getEffectiveByVin?vin=${data}`);
 }
+
+/**
+ * 批量作废
+ * @param {Array<Number>} data
+ */
+export function batchCancel (data) {
+  return api.jsonPost(prefix + 'batchCancel', data);
+}
+
+/**
+ * 附件上传校验
+ * @param {Object} data
+ */
+export function checkUpload (data) {
+  return api.jsonPost(prefix + 'checkUpload', data);
+}

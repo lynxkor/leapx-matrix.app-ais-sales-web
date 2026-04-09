@@ -483,7 +483,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '新页面',
+        businessType: '车辆合格证赎回',
         dataFetchPath: 'vw/web/certificate/vehicleCertificateRedemption/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -491,7 +491,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '新页面.xlsx');
+            await downloadExcel(res.excelUrl, '车辆合格证赎回.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

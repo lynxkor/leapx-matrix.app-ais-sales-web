@@ -47,7 +47,7 @@
         clearable
         class="unification-input" />
     </el-form-item>
-    <el-form-item label="附件上传：">
+    <el-form-item label="附件上传：" v-if="form.unlockReasonCode === 'DJY004'">
       <AisAttachment
         :businessId="businessId"
         ref="attachment"

@@ -4,7 +4,7 @@
     <el-form :inline="true" :model="form" size="small" label-position="right" label-width="150px"
       class="ais-search-form">
       <el-form-item label="VIN">
-        <el-input placeholder="请输入" v-model="form.vin" clearable />
+        <tag-input v-model="form.vinList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="目标门店编码">
         <fetch-select :remote-method="getDealerListByName" remote v-model="form.targetDealerCodeList"
@@ -68,10 +68,12 @@ import EditPage from './edit.vue';
 import ApprovalDialog from './ApprovalDialog.vue';
 import ReviewDrawer from './ReviewDrawer.vue';
 import { listOrgStoreInfo } from '@/libs/api/common';
+import TagInput from '@/libs/components/TagInput';
+import axios from 'axios';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  vin: '',
+  vinList: [],
   targetDealerCode: '',
   auditStatus: '',
 };
@@ -90,11 +92,27 @@ export default {
     EditPage,
     Upload,
     ApprovalDialog,
-    ReviewDrawer
+    ReviewDrawer,
+    TagInput
+  },
+  computed: {
+    userInfo () {
+      try {
+        return JSON.parse(localStorage.getItem('userInfo') || '{}');
+      } catch (e) {
+        return {};
+      }
+    },
+    directOrgCodes () {
+      return (this.userInfo.orgPostUserList || []).map(item => item.orgCode);
+    },
+    allOrgCodes () {
+      return [...new Set([...this.directOrgCodes, ...this.descendantOrgCodes])];
+    }
   },
   data () {
     return {
-      pageTitle: '门店库存调拨管理',
+      pageTitle: '门店库存调拨',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISMC-storeInventoryTransfer',
@@ -111,6 +129,7 @@ export default {
       approvalData: {},
       reviewDrawerVisible: false, // 审核记录抽屉
       reviewData: {},
+      descendantOrgCodes: [], // 子级组织编码
       clickItemId: '',
       optionObj: {
         id: 'storeInventoryTransferTable',
@@ -163,7 +182,7 @@ export default {
             buttons: [{
               name: '编辑',
               show: (row) => {
-                return row.auditStatus === 1 || row.auditStatus === 5;
+                return (row.auditStatus === 1 || row.auditStatus === 5) && this.permissions.has(`${this.moduleKey}-update`) && this.directOrgCodes.includes(row.sourceDealerCode);
               },
               click: (rowIndex, row) => {
                 this.$router.push({
@@ -176,32 +195,11 @@ export default {
               },
               type: 'info'
             },
-            // {
-            //   name: '删除',
-            //   popconfirmConfirmButtonType: 'danger',
-            //   popconfirmConfirmButtonText: '删除',
-            //   popconfirmTitle: '此操作将永久删除, 是否继续?',
-            //   click: (rowIndex, row) => {
-            //     deleteItem([row.id]).then(() => {
-            //       this.$message({
-            //         type: 'success',
-            //         message: '删除成功!'
-            //       });
-            //       this.getData();
-            //     }).catch(() => {
-            //       this.$message({
-            //         type: 'error',
-            //         message: '删除失败!'
-            //       });
-            //     });
-            //   },
-            //   type: 'danger'
-            // },
             {
               name: '提交',
               popconfirmTitle: '是否要提交?',
               show: (row) => {
-                return (row.auditStatus === 1 || row.auditStatus === 5) && this.permissions.has(`${this.moduleKey}-submit`);
+                return (row.auditStatus === 1 || row.auditStatus === 5) && this.permissions.has(`${this.moduleKey}-submit`) && this.directOrgCodes.includes(row.sourceDealerCode);
               },
               click: (rowIndex, row) => {
                 storeSubmit(row.id).then(() => {
@@ -222,7 +220,7 @@ export default {
               name: '作废',
               popconfirmTitle: '确定作废单据吗?',
               show: (row) => {
-                return (row.auditStatus === 1 || row.auditStatus === 5) && this.permissions.has(`${this.moduleKey}-invalid`);
+                return (row.auditStatus === 1 || row.auditStatus === 5) && this.permissions.has(`${this.moduleKey}-invalid`) && this.directOrgCodes.includes(row.sourceDealerCode);
               },
               click: (rowIndex, row) => {
                 storeInvalid(row.id).then(() => {
@@ -242,7 +240,7 @@ export default {
             }, {
               name: '调出审批',
               show: (row) => {
-                return row.auditStatus === 2 && row.outApproval !== 1 && this.permissions.has(`${this.moduleKey}-approveOut`);
+                return row.auditStatus === 2 && row.outApproval !== 1 && this.permissions.has(`${this.moduleKey}-approveOut`) && this.allOrgCodes.includes(row.sourceDealerCode);
               },
               click: (rowIndex, row) => {
                 this.handleApproval(row, 'outApproval');
@@ -251,7 +249,7 @@ export default {
             }, {
               name: '调入审批',
               show: (row) => {
-                return row.auditStatus === 2 && row.inApproval !== 1 && this.permissions.has(`${this.moduleKey}-approveIn`);
+                return row.auditStatus === 2 && row.inApproval !== 1 && this.permissions.has(`${this.moduleKey}-approveIn`) && this.allOrgCodes.includes(row.targetDealerCode);
               },
               click: (rowIndex, row) => {
                 this.handleApproval(row, 'inApproval');
@@ -279,6 +277,7 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
+    this.fetchDescendantOrgCodes();
   },
   methods: {
     // 排序
@@ -404,7 +403,10 @@ export default {
           delete data[key];
         }
       });
-
+      if (Array.isArray(this.form.vinList) && this.form.vinList.length <= 1) {
+        delete data.vinList;
+        data.vinLike = this.form.vinList[0] || '';
+      }
       if (this.form.createTime) {
         delete data.createTime;
         if (this.form.createTime.length > 1) {
@@ -473,6 +475,39 @@ export default {
       this.reviewData = row;
       this.reviewDrawerVisible = true;
     },
+    // 获取子级组织编码
+    async fetchDescendantOrgCodes () {
+      const orgPostUserList = this.userInfo.orgPostUserList || [];
+      const orgIds = orgPostUserList.map(item => item.orgId).filter(Boolean);
+      if (orgIds.length === 0) return;
+
+      const instance = axios.create(); // 创建新实例以避开全局拦截器
+      const token = this.$store.state.user.token;
+      const headers = token ? {
+        Authorization: 'Bearer ' + token,
+        'X-CROSS-NODE-ID': localStorage.getItem('token'),
+        Accepte: 'application/vnd.leapx.v2+json'
+      } : {};
+
+      try {
+        const results = await Promise.all(orgIds.map(orgId =>
+          instance.get(`${process.env.VUE_APP_WORK_ORDER_URL}/accountService/orgInfo/findDescendant`, {
+            params: { orgId },
+            headers
+          })
+        ));
+
+        const allCodes = results.reduce((acc, res) => {
+          const data = res.data;
+          const list = Array.isArray(data) ? data : (data?.data || data?.records || data?.result || data?.rows || []);
+          return [...acc, ...list.map(item => item.orgCode)];
+        }, []);
+
+        this.descendantOrgCodes = [...new Set(allCodes)];
+      } catch (e) {
+        console.error('fetchDescendantOrgCodes error:', e);
+      }
+    }
   }
 };
 </script>

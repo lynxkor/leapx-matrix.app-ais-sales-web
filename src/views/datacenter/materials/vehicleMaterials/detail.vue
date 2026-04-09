@@ -34,7 +34,7 @@
             <el-form-item label="内饰：" prop="interiorName">
               {{ info.interiorName  }}
             </el-form-item>
-            <el-form-item label="车顶：" prop="roofName">
+            <el-form-item label="车顶：">
               {{ info.roofName  }}
             </el-form-item>
             <el-form-item label="轮毂：" prop="wheelHubName">
@@ -46,7 +46,7 @@
             <el-form-item label="选配动力：" prop="rangePowerName">
               {{ info.rangePowerName  }}
             </el-form-item>
-            <el-form-item label="选装包：" prop="optionPackageName">
+            <el-form-item label="选装包：">
               {{ info.optionPackageName  }}
             </el-form-item>
             <el-form-item label="电池电芯：" prop="batteryCellName" v-permission="moduleKey+'-checkBatteryCell'">

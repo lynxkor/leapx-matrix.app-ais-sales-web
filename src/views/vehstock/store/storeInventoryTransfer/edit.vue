@@ -24,11 +24,11 @@
                 <el-form-item label="整车调拨单号：" prop="transferNo">
                   <el-input placeholder="请输入" v-model="form.transferNo" clearable disabled />
                 </el-form-item>
-                <el-form-item label="目标门店名称：" prop="targetDealerName">
+                <el-form-item label="目标门店名称：" prop="targetDealerCode">
                   <fetch-select
                     :remote-method="getDealerListByName"
                     remote
-                    v-model="form.targetDealerName"
+                    v-model="form.targetDealerCode"
                     placeholder="请输入门店编码或名称"
                     labelKey="storeName"
                     valueKey="storeCode"
@@ -38,8 +38,19 @@
                     @change="handleStoreChange"
                   />
                 </el-form-item>
-                <el-form-item label="目标门店仓库名称：" prop="targetDealerWarehouseName">
-                  <el-input placeholder="请输入" v-model="form.targetDealerWarehouseName" disabled clearable />
+                <el-form-item label="目标门店仓库名称：" prop="targetDealerWarehouseCode">
+                  <fetch-select
+                    :options="warehouseOptions"
+                    remote
+                    v-model="form.targetDealerWarehouseCode"
+                    placeholder="请输入门店仓库编码或名称"
+                    labelKey="warehouseName"
+                    valueKey="warehouseCode"
+                    subLabelKey="label"
+                    clearable
+                    filterable
+                    @change="handleWarehouseChange"
+                  />
                 </el-form-item>
                 <el-form-item label="调拨原因：" prop="reason">
                   <el-input placeholder="请输入" v-model="form.reason" clearable />
@@ -58,7 +69,7 @@
                 <el-form-item label="目标门店仓库名称：" prop="targetDealerWarehouseName">
                   {{ form.targetDealerWarehouseName }}
                 </el-form-item>
-                <el-form-item label="调拨原因：" prop="reason">
+                <el-form-item label="调拨原因：" prop="reason" style="width: 100%;">
                   {{ form.reason }}
                 </el-form-item>
                 <el-form-item label="备注：" prop="remark" style="width: 100%;">
@@ -205,12 +216,21 @@ export default {
         }
       },
       immediate: true
+    },
+    'form.targetDealerCode': {
+      handler (newVal) {
+        if (newVal && this.isEditing) {
+          // 仅在编辑模式且有值时拉取仓库列表，以确保回显时能从列表中匹配到名称
+          this.fetchWarehouseOptions(newVal, false); // 第二个参数设为 false，防止自动重置
+        }
+      },
+      immediate: true
     }
   },
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '门店库存调拨管理',
+      pageTitle: '门店库存调拨',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
       moduleKey: 'AISMC-storeInventoryTransfer',
@@ -221,6 +241,7 @@ export default {
       originalForm: { ...form },
       storeName: '', // 目标门店仓库名称
       emptyText: '若要启用此内容，请创建记录',
+      warehouseOptions: [], // 门店仓库编码或名称选项
       tableData: [
         { id: 1, name: '张三', age: 25, email: 'zhangsan@example.com' },
         { id: 2, name: '李四', age: 30, email: 'lisi@example.com' }
@@ -230,13 +251,10 @@ export default {
           { required: true, message: '请输入主键', trigger: 'change' }
         ],
         targetDealerCode: [
-          { required: true, message: '请输入目标门店编码', trigger: 'change' }
+          { required: true, message: '请选择目标门店', trigger: 'change' }
         ],
         targetDealerWarehouseCode: [
-          { required: true, message: '请输入目标门店仓库编码', trigger: 'change' }
-        ],
-        targetDealerWarehouseName: [
-          { required: true, message: '请输入目标门店仓库名称', trigger: 'change' }
+          { required: true, message: '请选择目标门店仓库', trigger: 'change' }
         ],
         targetDealerWarehouseAddress: [
           { required: true, message: '请输入目标门店仓库地址', trigger: 'change' }
@@ -335,23 +353,44 @@ export default {
     },
     // 门店编码或名称选择框回调
     handleStoreChange (val, record) {
-      this.form.targetDealerCode = val;
-      this.form.targetDealerName = record.storeName || '';
-      this.remoteMethod(val);
-    },
-    // 门店仓库编码或名称选择框回调
-    async remoteMethod (query) {
-      if (query === '') {
-        return;
+      if (val) {
+        this.form.targetDealerCode = val;
+        this.form.targetDealerName = record.storeName || '';
+        this.fetchWarehouseOptions(val);
+      } else {
+        // 清空处理
+        this.form.targetDealerCode = '';
+        this.form.targetDealerName = '';
+        this.form.targetDealerWarehouseCode = '';
+        this.form.targetDealerWarehouseName = '';
+        this.form.targetDealerWarehouseAddress = '';
+        this.warehouseOptions = [];
       }
-
+    },
+    // 门店仓库编码或名称选择框回调（联动查询）
+    async fetchWarehouseOptions (storeCode, autoSelectFirst = true) {
       const res = await listOrgWarehouseStoreInfo({
-        storeCode: this.form.targetDealerCode, // 门店编码
+        storeCode: storeCode, // 门店编码
       });
-      this.storeName = `${res.records[0].warehouseCode}-${res.records[0].warehouseName}` || '';
-      this.form.targetDealerWarehouseCode = res.records[0].warehouseCode || '';
-      this.form.targetDealerWarehouseName = res.records[0].warehouseName || '';
-      this.form.targetDealerWarehouseAddress = res.records[0].warehouseDetailAddress || '';
+      const records = res.records || [];
+      this.warehouseOptions = records.map(item => ({
+        ...item,
+        label: `${item.warehouseCode}-${item.warehouseName}`,
+      }));
+
+      // 默认选中第一个（仅在手动切换门店时触发，回显时不触发）
+      if (autoSelectFirst && records.length > 0) {
+        const first = records[0];
+        this.form.targetDealerWarehouseCode = first.warehouseCode || '';
+        this.form.targetDealerWarehouseName = first.warehouseName || '';
+        this.form.targetDealerWarehouseAddress = first.warehouseDetailAddress || '';
+      }
+    },
+    // 门店仓库选择时触发的事件
+    handleWarehouseChange (val, record) {
+      this.form.targetDealerWarehouseCode = val;
+      this.form.targetDealerWarehouseName = record.warehouseName || '';
+      this.form.targetDealerWarehouseAddress = record.warehouseDetailAddress || '';
     },
   }
 };

@@ -1130,6 +1130,7 @@ export default {
     vehicleProfileSearch (val) {
       const params = {
         searchVin: val,
+        isSaleDateNull: false,
         pageSize: 100
       };
       return getVehicleProfileList(params);

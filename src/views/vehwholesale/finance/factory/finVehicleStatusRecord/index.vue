@@ -285,7 +285,23 @@ export default {
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           { props: 'dealerCode', label: '经销商编码', visible: true, width: 200 },
-          { props: 'dealerName', label: '经销商名称', visible: true, width: 200 },
+          {
+            props: 'dealerName',
+            label: '经销商名称',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/partner/channelManagement/shopDetail',
+                  query: {
+                    dealerCode: row.dealerCode
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'unifiedSocialCreditCode', label: '统一社会信用代码', visible: true, width: 200 },
           { props: 'fundFinancialOrganizationName', label: '融资金融机构', visible: true, width: 200 },
           { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },

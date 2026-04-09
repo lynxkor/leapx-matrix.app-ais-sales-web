@@ -63,7 +63,7 @@
     <template v-slot:footer>
       <div class="dialog-footer">
         <el-button size="small" @click="close">取 消</el-button>
-        <el-button size="small" type="primary" :disabled="!selectedRow" @click="confirmSelection">确 定</el-button>
+        <el-button size="small" type="primary" :disabled="!selectedRow" :loading="confirmLoading" @click="confirmSelection">确 定</el-button>
       </div>
     </template>
   </el-dialog>
@@ -107,6 +107,7 @@ export default {
       currentPage: 1,
       pageSize: 10,
       selectedRow: null,
+      confirmLoading: false,
       // 提取公共配置
       selectOptions: {
         placeholder: '请选择',
@@ -209,6 +210,7 @@ export default {
         this.$emit('confirm', this.selectedRow);
         this.close();
       } else {
+        this.confirmLoading = true;
         this.handleInternalSubmit();
       }
     },
@@ -224,7 +226,9 @@ export default {
       manualLock(params).then(res => {
         this.$message.success('车辆选择成功');
         this.close();
-      }).catch(() => {});
+      }).catch(() => {}).finally(() => {
+        this.confirmLoading = false;
+      });
     }
   }
 };

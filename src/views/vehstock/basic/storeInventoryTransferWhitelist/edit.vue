@@ -248,13 +248,16 @@ export default {
     },
     // 新增子表数据
     handleAddTableData (val, record) {
-      console.log(record);
       if (!record) {
         this.$message.warning('请先选择数据');
         return;
       }
-      // 检查是否已存在
-      const exists = this.tableData.some(item => item.id === record.id);
+      // 容错处理：确保列表存在
+      if (!this.form.storeInventoryTransferWhitelistDetailList) {
+        this.$set(this.form, 'storeInventoryTransferWhitelistDetailList', []);
+      }
+      // 检查是否已存在相同门店的记录
+      const exists = this.form.storeInventoryTransferWhitelistDetailList.some(item => item.dealerCode === record.storeCode);
       if (exists) {
         this.$message.warning('请勿重复添加');
         return;

@@ -119,11 +119,13 @@ export default {
     };
   },
   computed: {
-    // 计算属性：优先使用外部传入的数据，否则使用内部数据
+    // 计算属性：外部传入数据时返回分页后的内部数据，否则使用内部数据
     tableData () {
-      return this.tableDataExternal !== null && this.tableDataExternal !== undefined
-        ? this.tableDataExternal
-        : this.internalTableData;
+      // 外部传入数据时，internalTableData 已经是分页后的数据
+      if (this.tableDataExternal !== null && this.tableDataExternal !== undefined) {
+        return this.internalTableData;
+      }
+      return this.internalTableData;
     }
   },
   watch: {
@@ -154,21 +156,24 @@ export default {
         if (newVal !== null && newVal !== undefined) {
           // 当外部传入新数据时，更新内部数据
           this.internalTableData = newVal;
+          // 外部传入全量数据时，total 直接用数据长度
+          this.total = newVal.length;
         }
       },
       // 移除 deep: true，避免数组内对象属性变化时触发 watch
       // 外部传入新数组引用时仍会触发更新
       immediate: true
-    }
+    },
   },
   created () {
-    // 如果有外部数据则使用外部数据，否则加载内部数据
+    // 如果有外部数据则使用外部数据进行前端分页，否则加载内部数据
     if (this.tableDataExternal === null || this.tableDataExternal === undefined) {
       if (this.apiMethod) {
         this.loadData();
       }
     } else {
-      this.internalTableData = this.tableDataExternal;
+      // 外部传入全量数据时，前端分页处理
+      this.loadData();
     }
   },
   mounted () {
@@ -178,10 +183,19 @@ export default {
   methods: {
     // 加载数据
     async loadData () {
-      // 如果没有API方法或者已有外部数据，则不执行加载
-      if (!this.apiMethod || (this.tableDataExternal !== null && this.tableDataExternal !== undefined)) {
+      // 外部传入数据时，前端分页处理
+      if (this.tableDataExternal !== null && this.tableDataExternal !== undefined) {
+        const start = (this.currentPage - 1) * this.pageSize;
+        const end = start + this.pageSize;
+        this.internalTableData = this.tableDataExternal.slice(start, end);
         return;
       }
+
+      // 如果没有API方法，则不执行加载
+      if (!this.apiMethod) {
+        return;
+      }
+
       this.loading = true;
       try {
         const params = {
@@ -221,8 +235,12 @@ export default {
     // 处理每页数量变化
     handleSizeChange (val) {
       this.pageSize = val;
+      this.currentPage = 1; // 重置到第一页
       // 只有当没有外部传入数据时才重新加载
       if (this.tableDataExternal === null || this.tableDataExternal === undefined) {
+        this.loadData();
+      } else {
+        // 外部传入全量数据，前端分页处理
         this.loadData();
       }
     },
@@ -231,6 +249,9 @@ export default {
       this.currentPage = val;
       // 只有当没有外部传入数据时才重新加载
       if (this.tableDataExternal === null || this.tableDataExternal === undefined) {
+        this.loadData();
+      } else {
+        // 外部传入全量数据，前端分页处理
         this.loadData();
       }
     },

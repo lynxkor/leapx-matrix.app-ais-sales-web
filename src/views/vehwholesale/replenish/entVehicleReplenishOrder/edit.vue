@@ -83,12 +83,12 @@
                       filterable
                       clearable
                       remote
-                      v-model="form.saleCompanyId"
+                      v-model="form.saleCompanyName"
                       :params="form.saleCompanyName"
                       :remote-method="getCompanyList"
-                      value-key="id"
+                      value-key="companyName"
                       label-key="companyName"
-                      @change="getFundAccount"
+                      @change="getFundAccountBysaleCompany"
                     />
                 </el-form-item>
                  <el-form-item label="销售门店：" prop="saleDealerName">
@@ -135,7 +135,7 @@
                       placeholder="请选择"
                       clearable
                       filterable
-                      :disabled="form.settleFundType != 2010 && form.settleFundType != '2010'"
+                      :disabled="form.settleFundType !== 2010 && form.settleFundType !== '2010'"
                     />
                 </el-form-item>
                 <el-form-item label="是否赊销：" prop="creditSaleFlag">
@@ -578,6 +578,17 @@ export default {
       },
       immediate: true
     },
+    isEditing: {
+      handler (newVal, oldVal) {
+        // console.log('编辑状态变更:', oldVal, '->', newVal, this.defaultNewRow);
+        // if (newVal) {
+        //   this.defaultNewRow = { value: 1 };
+        // } else {
+        //   this.defaultNewRow = {};
+        // }
+      },
+      immediate: false // 通常不需要立即执行，因为初始化时 isEditing 可能尚未稳定
+    },
   },
   data () {
     const form = this.getDefautlForm();
@@ -600,8 +611,7 @@ export default {
       areaCode: [],
       orderCategoryOptions: [],
       settleFundTypeOptions: [],
-      defaultNewRow: {
-      },
+      defaultNewRow: { },
       districtOptions: [],
       cityOptions: [],
       saleCompanyOptions: [],
@@ -753,28 +763,43 @@ export default {
   },
   mounted () {
     this.fetchOrderCategoryOptions();
-    // this.fetchSettleFundTypeOptions();
     this.listNetworkParentCompany();
     this.getCompanyList();
-    // this.getFundAccount();
   },
   methods: {
-    getFundAccount (val, row) {
+    getFundAccountBysaleCompany (val, row) {
+      this.form.saleCompanyId = row.id;
+      this.settleFundTypeOptions = [];
+      this.getFundAccount();
+    },
+    getFundAccount () {
       this.form.settleFundType = '';
       this.form.settleFundTypeLabel = '';
+      this.settleFundTypeOptions = [];
+      if (!this.form.entCustomerName || !this.form.saleCompanyName) {
+        return;
+      }
       const params = {
         dealerCompanyNames: [this.form.entCustomerName],
         allowEntOrderSettle: '1',
-        saleCompanyNames: [row.companyName]
+        saleCompanyNames: [this.form.saleCompanyName]
       };
       accountList(params).then((res) => {
-        console.log('accountList', res);
-        this.settleFundTypeOptions = res.records.map(item => {
-          return {
-            code: item.fundType,
-            message: item.fundTypeLabel
-          };
-        });
+        if (res && res.records) {
+          // 【新增】使用 Map 进行去重，key 为 fundType
+          const uniqueMap = new Map();
+          res.records.forEach(item => {
+            // 只有当 Map 中不存在该 fundType 时才添加，确保保留第一条记录
+            if (!uniqueMap.has(item.fundType)) {
+              uniqueMap.set(item.fundType, {
+                code: item.fundType,
+                message: item.fundTypeLabel
+              });
+            }
+          });
+          // 将 Map 的值转换为数组并赋值
+          this.settleFundTypeOptions = Array.from(uniqueMap.values());
+        }
       }).catch(() => {
       });
     },
@@ -1055,22 +1080,11 @@ export default {
       this.form.latitude = '';
       this.form.longitude = '';
       this.getDealersForParentCompany(val);
+      this.settleFundTypeOptions = [];
+      this.getFundAccount();
     },
     async repairItemSearch (query) {
       return fundGetList({ organizationNameLike: query, status: 1 });
-    },
-    async fetchSettleFundTypeOptions () {
-      const response = await getEnum('vw_fundtype');
-      this.settleFundTypeOptions = response.filter(item => {
-        const codeStr = String(item.code);
-        return ['1050', '1010', '2010'].includes(codeStr + '');
-      }).map(item => {
-        return {
-          ...item,
-          code: String(item.code)
-        };
-      });
-      console.log(this.settleFundTypeOptions);
     },
     async fetchOrderCategoryOptions () {
       const response = await getEnum('vw_eordertype');
@@ -1103,9 +1117,7 @@ export default {
       if (id) {
         return getDetail(id).then(res => {
           this.form = { ...this.form, ...res };
-          if (this.$refs.containerRef) {
-            this.$refs.containerRef.originalForm = { ...res };
-          }
+          this.getFundAccount();
           // 设置 areaCode 并匹配省市区名称
           if (res.provinceCode && res.cityCode) {
             this.areaCode = [

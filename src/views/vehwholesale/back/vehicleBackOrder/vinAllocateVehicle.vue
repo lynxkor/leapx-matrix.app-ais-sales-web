@@ -170,6 +170,7 @@ export default {
       this.getData();
     },
     async getData () {
+      console.log('vinCode:', this.vinCode);
       this.loading = true;
       try {
         const res = await listVinForBackOrders({

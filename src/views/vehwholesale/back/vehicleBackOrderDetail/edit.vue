@@ -427,6 +427,15 @@ export default {
       tableData: [
       ],
       rules: {
+        actualVehicleReturn: [
+          { required: true, message: '请选择是否实车返厂', trigger: 'blur' }
+        ],
+        salesDeptReserve: [
+          { required: true, message: '请选择销售部预留', trigger: 'blur' }
+        ],
+        vehicleLogisticsReserve: [
+          { required: true, message: '请选择整车物流预留', trigger: 'blur' }
+        ],
       }
     };
   },

@@ -218,7 +218,23 @@ export default {
           },
           // { pops: 'rebateBillDetailCode', label: '返利核算单明细编号', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260 },
-          { props: 'dealerName', label: '门店名称', visible: true, width: 240 },
+          {
+            props: 'dealerName',
+            label: '门店名称',
+            visible: true,
+            width: 240,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.navigateToRoute({
+                  path: '/partner/channelManagement/shopDetail',
+                  query: {
+                    dealerCode: row.dealerCode,
+                  },
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'rebateTypeLabel', label: '返利类型', visible: true, width: 120 },
           { props: 'periodLabel', label: '周期', visible: true, width: 100 },
           { props: 'year', label: '年度', visible: true, width: 100 },

@@ -436,13 +436,15 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="结算资金类型：" prop="settleFundType">
+                <el-form-item label="结算资金类型：" prop="settleFundTypeLabel">
                    <fetch-select
                    :options="settleFundTypeOptions"
-                    v-model="form.settleFundType"
+                    v-model="form.settleFundTypeLabel"
                     placeholder="请选择"
                     clearable
                     filterable
+                    labelKey="message"
+                    valueKey="message"
                     @change="clearCache"
                   />
                 </el-form-item>
@@ -858,6 +860,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import vinAllocateVehicle from './vinAllocateVehicle.vue';
 import ComponentTable from './ComponentTable.vue';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
+import { getList as accountList } from '@/api/vehwholesale/fund/account/index';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -1003,13 +1006,44 @@ export default {
     };
   },
   mounted () {
-    this.fetchSettleFundTypeOptions();
+    // this.fetchSettleFundTypeOptions();
   },
   methods: {
     clearCache (val, row) {
+      this.form.settleFundType = row.code;
+      this.form.settleFundTypeLabel = row.message;
       if (val === 1010 || val === 1050 || val === '1010' || val === '1050') {
         this.form.financialOrganizationId = '';
       }
+    },
+    getFundAccount () {
+      this.settleFundTypeOptions = [];
+      if (!this.form.entCustomerName || !this.form.saleCompanyName) {
+        return;
+      }
+      const params = {
+        dealerCompanyNames: [this.form.entCustomerName],
+        allowEntOrderSettle: '1',
+        saleCompanyNames: [this.form.saleCompanyName]
+      };
+      accountList(params).then((res) => {
+        if (res && res.records) {
+          // 【新增】使用 Map 进行去重，key 为 fundType
+          const uniqueMap = new Map();
+          res.records.forEach(item => {
+            // 只有当 Map 中不存在该 fundType 时才添加，确保保留第一条记录
+            if (!uniqueMap.has(item.fundType)) {
+              uniqueMap.set(item.fundType, {
+                code: item.fundType,
+                message: item.fundTypeLabel
+              });
+            }
+          });
+          // 将 Map 的值转换为数组并赋值
+          this.settleFundTypeOptions = Array.from(uniqueMap.values());
+        }
+      }).catch(() => {
+      });
     },
     async fetchSettleFundTypeOptions () {
       const response = await getEnum('vw_fundtype');
@@ -1025,7 +1059,6 @@ export default {
     },
     async fetchOrderCategoryOptions () {
       const response = await getEnum('vw_order_category');
-      console.log('response:', response);
       // 过滤出 code 为 0、2、20 的数据，且确保 code 是字符串类型
       // 0 商品车订单
       // 2 试驾车订单
@@ -1049,7 +1082,6 @@ export default {
         id: this._id,
       };
       querySAPAccountBalance(params).then((res) => {
-        console.log(res);
         this.accountData = res;
         this.showComponentTabelDialog = true;
       });
@@ -1122,7 +1154,19 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        return getDetail(id).then(res => {
+          // 1. 更新表单数据
+          this.form = { ...this.form, ...res };
+          // 2. 如果有原始表单引用，也同步更新
+          // if (this.$refs.containerRef) {
+          //   this.$refs.containerRef.originalForm = { ...res };
+          // }
+
+          // 3. 【新增】数据加载完成后，再执行获取资金账户逻辑
+          this.getFundAccount();
+
+          return res;
+        });
       }
     },
     submitRequest () {

@@ -20,7 +20,14 @@
               {{ info.dealerCompanyName  }}
             </el-form-item>
              <el-form-item label="门店名称：" prop="dealerName">
-              {{ info.dealerName  }}
+              <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/partner/channelManagement/shopDetail',
+                      query: {
+                        dealerCode: info.dealerCode,
+                      },
+                    })"
+                   type="text">{{info.dealerName}}</el-button>
             </el-form-item>
             <el-form-item label="创建时间：" prop="createTime">
               {{ info.createTime  }}
@@ -54,7 +61,35 @@
           <h2>整车返利核算单明细</h2>
         </div>
         <div class="common-section-body">
-          <edit-table
+          <vxe-table
+                      ref="editTableRight"
+                      :data="tableData"
+                      stripe
+                      show-overflow
+                      resizable
+                      border="inner"
+                      size="medium"
+                  >
+                      <vxe-column field="rebateBillDetailCode" title="整车返利核算单明细编号">
+                        <template v-slot="{ row }">
+                          <el-link type="success" target="_blank" :href="`/sales/vehwholesale/rebate/fundVehicleRebateBillDetail/detail?id=${row.id}`">{{ row.rebateBillDetailCode }}</el-link>
+                        </template>
+                      </vxe-column>
+                      <vxe-column field="vin" title="VIN号" />
+                      <vxe-column field="bizOrderNo" title="业务单据号" />
+                      <vxe-column field="rebateAmount" title="核销金额" />
+                      <vxe-column field="modelName" title="基本车型" />
+                      <vxe-column field="seriesName" title="车系" />
+                      <vxe-column field="remark" title="备注" />
+                      <vxe-column field="billStatusLabel" title="单据状态" />
+                      <vxe-column field="budgetItemName" title="预算科目" />
+                      <vxe-column field="feeSupportTypeName" title="费用支持类型">
+                      </vxe-column>
+                      <vxe-column field="reviewTime" title="复审时间" />
+                      <vxe-column field="createTime" title="创建时间" />
+                  </vxe-table>
+
+          <!-- <edit-table
             ref="editTable"
             :columns="columns"
             :data="tableData"
@@ -63,7 +98,7 @@
             :total="total"
             @current-page-change="pageChange"
             @page-size-change="sizeChange"
-          />
+          /> -->
         </div>
       </section>
     </template>
@@ -75,14 +110,12 @@ import { getDetail } from '@/api/vehwholesale/rebate/fundVehicleRebateBill/index
 import { YES_NO_ENUM_MAP } from '@/libs/constants';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-import EditTable from '@/libs/components/EditTable';
 import { getList } from '@/api/vehwholesale/rebate/fundVehicleRebateBillDetail/index';
 const pageSize = 10;
 export default {
   name: 'fundVehicleRebateBillDetail',
   mixins: [permissions, commonMixins],
   components: {
-    EditTable
   },
   data () {
     return {
