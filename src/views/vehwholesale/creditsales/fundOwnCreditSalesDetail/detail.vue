@@ -3,7 +3,7 @@
     <el-skeleton v-if="loading" :rows="6" animated />
     <template v-else>
       <section class="common-title">
-        <h2>自有资金赊销明细</h2>
+        <h2>自有资金赊销明细: {{ info.creditSalesDetailCode }}</h2>
         <!-- <el-button v-if="canAddOrUpdate" size="small" @click="handleEdit"><i class="iconfont icon-lxppc-edit"></i>编辑</el-button> -->
       </section>
       <section class="common-section">
@@ -21,11 +21,24 @@
               {{ info.dealerCompanyName  }}
             </el-form-item>
             <el-form-item label="资金账户编号：" prop="fundAccountCode">
-              <!-- 整车资金账户的编号 -->
-              {{ info.fundAccountCode  }}
+               <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/vehwholesale/fund/dealerFundAccount/edit',
+                      query: {
+                        id: info.fundAccountId,
+                      },
+                    })"
+                   type="text">{{info.fundAccountCode}}</el-button>
             </el-form-item>
             <el-form-item label="赊销额度编号：" prop="creditSalesLimitCode">
-              {{ info.creditSalesLimitCode  }}
+              <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/vehwholesale/creditsales/fundOwnCreditSalesLimit/detail',
+                      query: {
+                        id: info.ownCreditSalesLimitId,
+                      },
+                    })"
+                   type="text">{{info.creditSalesLimitCode}}</el-button>
             </el-form-item>
             <el-form-item label="创建时间：" prop="createTime">
               {{ info.createTime  }}
@@ -40,10 +53,24 @@
               {{ info.vin  }}
             </el-form-item>
             <el-form-item label="整车批售订单：" prop="wholesaleOrderCode">
-              {{ info.wholesaleOrderCode  }}
+              <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
+                      query: {
+                        id: info.wholesaleOrderId,
+                      },
+                    })"
+                   type="text">{{info.wholesaleOrderCode}}</el-button>
             </el-form-item>
             <el-form-item label="企业客户整车订单：" prop="entVehorderCode">
-              {{ info.entVehorderCode  }}
+              <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/vehwholesale/entorder/entVehicleOrder/edit',
+                      query: {
+                        id: info.entVehorderId,
+                      },
+                    })"
+                   type="text">{{info.entVehorderCode}}</el-button>
             </el-form-item>
           </el-form>
         </div>

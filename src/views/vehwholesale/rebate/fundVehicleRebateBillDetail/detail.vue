@@ -20,10 +20,24 @@
               {{ info.dealerCompanyName  }}
             </el-form-item>
             <el-form-item label="门店名称：" prop="dealerName">
-              {{ info.dealerName  }}
+              <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/partner/channelManagement/shopDetail',
+                      query: {
+                        dealerCode: info.dealerCode,
+                      },
+                    })"
+                   type="text">{{info.dealerName}}</el-button>
             </el-form-item>
             <el-form-item label="返利核算单编号: " prop="rebateBillCode">
-              {{ info.rebateBillCode  }}
+              <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/vehwholesale/rebate/fundVehicleRebateBill/detail',
+                      query: {
+                        id: info.rebateBillId,
+                      },
+                    })"
+                   type="text">{{info.rebateBillCode}}</el-button>
             </el-form-item>
             <el-form-item label="单据状态：" prop="billStatus">
               {{ info.billStatusLabel  }}

@@ -94,10 +94,10 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="整车物料：" prop="vin">
+                <el-form-item label="整车物料：" prop="materialsCode">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.vin"
+                    v-model="form.materialsCode"
                     clearable
                     disabled
                   />
@@ -135,8 +135,8 @@
                 <el-form-item label="VIN码：" prop="vin">
                   {{ form.vin }}
                 </el-form-item>
-                    <el-form-item label="整车物料：" prop="vin">
-                  {{ form.vin }}
+                    <el-form-item label="整车物料：" prop="materialsCode">
+                  {{ form.materialsCode }}
                 </el-form-item>
                     <el-form-item label="车系名称：" prop="seriesName">
                   {{ form.seriesName }}
@@ -388,7 +388,7 @@
                     clearable
                   />
                 </el-form-item>
-                 <el-form-item label="省市区">
+                 <el-form-item label="省市区：">
                   <el-cascader
                     placeholder="请选择省市区"
                     v-model="areaCode"
@@ -644,11 +644,10 @@ export default {
   },
   methods: {
     otherwholesaleOrderInfo (val, row) {
-      console.log('otherwholesaleOrderInfo', val, row);
       this.form.dealerCompanyName = row.dealerCompanyName;
       this.form.dealerCompanyCode = row.dealerCompanyCode;
-      this.form.saleDealerCode = row.dealerCode;
-      this.form.saleDealerName = row.dealerName;
+      this.form.saleDealerCode = row.saleDealerCode;
+      this.form.saleDealerName = row.saleDealerName;
       this.form.vin = row.vin;
       this.form.materialsCode = row.materialsCode;
       this.form.modelId = row.modelId;
@@ -670,6 +669,8 @@ export default {
         this.form.downPaymentAmount = 0;
         this.form.creditDebtAmount = row.salesPrice;
       }
+      this.areaCode = [row.provinceCode, row.cityCode, row.districtCode];
+      console.log('row', [row.provinceCode, row.cityCode, row.districtCode]);
 
       getLatestReceiverAddress({
         orderType: this.form.orderCategory,
@@ -684,7 +685,7 @@ export default {
         this.form.receiverDistrictCode = res.receiverDistrictCode;
         this.form.receiverDistrictName = res.receiverCityName;
         this.form.receiverAddress = res.receiverAddress;
-        this.areaCode = [res.receiverProvinceCode, res.receiverCityCode, res.receiverDistrictCode];
+        console.log('res', this.areaCode);
       });
     },
     async getDealerListByName (params) {
@@ -693,21 +694,21 @@ export default {
     async getDealerParentOrgList (params) {
       return getParentCompany({ parentCompanyName: params });
     },
-    async getwholesaleOrderCodeList (query) {
+    getwholesaleOrderCodeList (query) {
       try {
-        const res = await listWholesaleOrEntOrder({ query: query, orderType: 10 });
-        this.wholesaleOrderCodeList = res.wholesaleOrderRespList;
-        return res;
+        listWholesaleOrEntOrder({ query: query, orderType: 10, pageSize: 20 }).then(res => {
+          this.wholesaleOrderCodeList = res.wholesaleOrderRespList;
+        });
       } catch (error) {
         console.error('Error fetching :', error);
       }
     },
 
-    async getentVehicleOrderCodeList (query) {
+    getentVehicleOrderCodeList (query) {
       try {
-        const res = await listWholesaleOrEntOrder({ query: query, orderType: 20 });
-        this.entVehicleOrderCodeList = res.entVehicleOrderRespList;
-        return res;
+        listWholesaleOrEntOrder({ query: query, orderType: 20, pageSize: 20 }).then(res => {
+          this.entVehicleOrderCodeList = res.entVehicleOrderRespList;
+        });
       } catch (error) {
         console.error('Error fetching :', error);
       }

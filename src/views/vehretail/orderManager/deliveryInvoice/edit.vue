@@ -26,12 +26,12 @@
             size="small">
             确认上传
           </el-button>
-          <!-- v-if="form.status === 0" -->
-<!--          <el-button-->
-<!--            @click="openUploadShow1"-->
-<!--            size="small">-->
-<!--            上传附件-->
-<!--          </el-button>-->
+          <el-button
+           v-if="form.status === 0"
+            @click="openUploadShow"
+            size="small">
+            上传附件
+          </el-button>
           <el-button
             @click="openDeleteShow"
             v-if="form.status === 0"
@@ -578,20 +578,15 @@
               </el-form>
             </div>
           </section>
-<!--          <section class="common-section">-->
-<!--            <div class="common-section-header">-->
-<!--              <h2>附件清单</h2>-->
-<!--            </div>-->
-<!--            <div class="common-section-table">-->
-<!--              &lt;!&ndash;附件上传组件 &ndash;&gt;-->
-<!--              <AisAttachment-->
-<!--                :businessId="_id"-->
-<!--                :readonly="!isEditing"-->
-<!--                configCode="mcs_vehnetwork"-->
-<!--                attachType="整车开票附件"-->
-<!--              />-->
-<!--            </div>-->
-<!--          </section>-->
+          <section class="common-section">
+            <div class="common-section-header">
+              <h2>附件清单</h2>
+            </div>
+            <div class="common-section-body">
+              <!-- 上传附件弹框 (通过 ref 调用组件内部方法打开) -->
+              <simple-dialog1 :_id="_id" :readonly="attachmentReadOnly && !(form.status === 1010 || form.status === 1040)" :attachType="'mcs_subsidies'" ref="uploadDialogRef"/>
+            </div>
+          </section>
         </el-main>
         <!-- 比对确认弹框 -->
         <el-dialog
@@ -652,36 +647,7 @@
               </span>
                 </template>
               </el-table-column>
-
-              <!-- 比对结果列 -->
-<!--              <el-table-column-->
-<!--                label="比对结果"-->
-<!--                width="120"-->
-<!--                align="center"-->
-<!--              >-->
-<!--                <template slot-scope="scope">-->
-<!--                  <el-tag-->
-<!--                    :type="scope.row.recognizedValue === scope.row.checkValue ? 'success' : 'danger'"-->
-<!--                    size="small"-->
-<!--                    effect="light"-->
-<!--                  >-->
-<!--                    {{ scope.row.recognizedValue === scope.row.checkValue ? '一致' : '不一致' }}-->
-<!--                  </el-tag>-->
-<!--                </template>-->
-<!--              </el-table-column>-->
             </el-table>
-
-            <!-- 差异项统计 -->
-<!--            <div class="diff-summary mt-20" v-if="diffCount > 0">-->
-<!--              <el-card shadow="hover" :body-style="{ padding: '12px 20px' }">-->
-<!--                <div class="summary-content">-->
-<!--                  <el-icon class="el-icon-warning-outline warning-icon"></el-icon>-->
-<!--                  <span class="summary-text">共发现 <strong>{{ diffCount }}</strong> 处不一致信息，请仔细核对</span>-->
-<!--                </div>-->
-<!--              </el-card>-->
-<!--            </div>-->
-
-            <!-- 备注说明 -->
           </div>
 
           <!-- 弹框底部按钮 -->
@@ -691,7 +657,7 @@
       </span>
         </el-dialog>
         <!-- 上传附件弹框 (通过 ref 调用组件内部方法打开) -->
-        <simple-dialog ref="uploadDialogRef" @confirm="handleUploadConfirm" :id="_id"></simple-dialog>
+<!--        <simple-dialog ref="uploadDialogRef" @confirm="handleUploadConfirm" :id="_id"></simple-dialog>-->
       </edit-base-container>
     </template>
     <template #right>
@@ -703,16 +669,24 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, deleteItem, confirmUpload } from '@/api/vehretail/orderManager/deliveryInvoice/index';
+import {
+  getDetail,
+  addOrUpdate,
+  deleteItem,
+  confirmUpload,
+  checkUpload
+} from '@/api/vehretail/orderManager/deliveryInvoice/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import SimpleDialog from './SimpleDialog.vue';
+import SimpleDialog1 from './SimpleDialog1.vue';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 
 const defaultForm = {
@@ -792,7 +766,8 @@ export default {
     EditPageLayout,
     EditBaseContainer,
     FetchSelect,
-    SimpleDialog
+    SimpleDialog,
+    SimpleDialog1
   },
   computed: {
     _id () {
@@ -823,6 +798,7 @@ export default {
       moduleKey: 'AISVRFDI-deliveryInvoice',
       loading: false,
       submitLoading: false,
+      attachmentReadOnly: true,
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
@@ -1058,11 +1034,17 @@ export default {
       }
       return comparisonData;
     },
-    openUploadShow1 () {
-      // 通过 ref 调用组件内部方法打开弹框
-      this.$refs.uploadDialogRef.open({
-        title: '附件管理',
+    openUploadShow () {
+      // 判断配置
+      checkUpload(this.form.id).then(res => {
+        this.attachmentReadOnly = false;
+      }).catch(() => {
+        this.attachmentReadOnly = true;
       });
+      // 通过 ref 调用组件内部方法打开弹框
+      // this.$refs.uploadDialogRef.open({
+      //   title: '附件管理',
+      // });
     },
     handleUploadConfirm () {
       // 点击保存按钮的回调

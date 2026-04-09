@@ -163,7 +163,6 @@ export default {
       this.vinCode = '';
     },
     onSubmit () {
-      this.optionObj.form.page = 1;
       this.getData();
     },
     onReset () {
@@ -171,6 +170,7 @@ export default {
       this.getData();
     },
     async getData () {
+      console.log('vinCode:', this.vinCode);
       this.loading = true;
       try {
         const res = await listVinForBackOrders({
