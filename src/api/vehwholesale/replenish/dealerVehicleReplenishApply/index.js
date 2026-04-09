@@ -52,14 +52,6 @@ export function listIdNames (data) {
 }
 
 /**
- *  创建排产申请校验
- * @param {Object} data
- */
-export function createRequestValid (data) {
-  return api.jsonPost(prefix + 'createRequestValid', data);
-}
-
-/**
  *  厂端现车批售-弹框 弹框查询
  * @param {Object} data
  */

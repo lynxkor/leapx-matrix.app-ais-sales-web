@@ -66,3 +66,11 @@ export function getEffectiveByVin (data) {
 export function batchCancel (data) {
   return api.jsonPost(prefix + 'batchCancel', data);
 }
+
+/**
+ * 附件上传校验
+ * @param {Object} data
+ */
+export function checkUpload (data) {
+  return api.jsonPost(prefix + 'checkUpload', data);
+}
