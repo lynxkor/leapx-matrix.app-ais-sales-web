@@ -21,7 +21,7 @@ export default {
   data () {
     return {
       pageTitle: '销服-业务主数据-配置主数据-销售参数配置',
-      moduleKey: 'AISMC-salesParameterConfig',
+      moduleKey: 'AISVS-salesParameterConfig',
       status: true,
       detailData: {}
     };

@@ -523,7 +523,7 @@ export default {
       pageType: 'edit',
       title: '门店库存台账' + form.vin,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-storeInventoryLedger',
+      moduleKey: 'AISVS-storeInventoryLedger',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,

@@ -202,7 +202,7 @@ export default {
       pageTitle: '车辆用途变更申请',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
-      moduleKey: 'AISMC-vehiclePurposeChangeApply',
+      moduleKey: 'AISVS-vehiclePurposeChangeApply',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
