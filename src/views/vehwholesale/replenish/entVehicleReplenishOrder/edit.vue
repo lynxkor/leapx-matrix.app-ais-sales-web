@@ -779,18 +779,19 @@ export default {
       if (!this.form.entCustomerName || !this.form.saleCompanyName) {
         return;
       }
+      console.log('getFundAccount', this.form);
       const params = {
-        dealerCompanyNames: [this.form.entCustomerName],
+        dealerCompanyCodes: [this.form.entCustomerCode],
         allowEntOrderSettle: '1',
-        saleCompanyNames: [this.form.saleCompanyName]
+        saleCompanyIds: [this.form.saleCompanyId]
       };
       accountList(params).then((res) => {
         if (res && res.records) {
           // 【新增】使用 Map 进行去重，key 为 fundType
           const uniqueMap = new Map();
           res.records.forEach(item => {
-            // 只有当 Map 中不存在该 fundType 时才添加，确保保留第一条记录
-            if (!uniqueMap.has(item.fundType)) {
+            // 只有当 Map 中不存在该 fundType 时才添加，确保保留第一条记录, 排除返利
+            if (!uniqueMap.has(item.fundType) && item.fundType !== 1020) {
               uniqueMap.set(item.fundType, {
                 code: item.fundType,
                 message: item.fundTypeLabel
@@ -822,9 +823,14 @@ export default {
     clearCache (val, row) {
       this.form.settleFundType = row.code;
       this.form.settleFundTypeLabel = row.message;
-      if (val === 1010 || val === 1050 || val === '1010' || val === '1050') {
-        this.form.financialOrganizationId = '';
+      this.form.financialOrganizationId = '';
+      this.form.financialOrganizationName = '';
+      if (val === 1050) {
+        this.form.creditSaleFlag = 1;
+      } else {
+        this.form.creditSaleFlag = 0;
       }
+      console.log('clearCache', val, row);
     },
     handleChangeArea (val, row) {
       // 匹配查找对应的省市区名称和编号

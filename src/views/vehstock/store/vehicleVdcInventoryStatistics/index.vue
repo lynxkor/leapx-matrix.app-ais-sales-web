@@ -143,7 +143,7 @@ export default {
       pageTitle: '整车库存存量统计',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-vehicleVdcInventoryStatistics',
+      moduleKey: 'AISVS-vehicleVdcInventoryStatistics',
       form: {
         ...defaultForm
       },

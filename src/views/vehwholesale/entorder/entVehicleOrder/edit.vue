@@ -165,6 +165,7 @@
                     :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd HH:mm:ss"
                     placeholder="选择日期时间"
+                    :disabled="form.emergencyOrder !== '1' && form.emergencyOrder !== 1"
                   />
                 </el-form-item>
                   <el-form-item label="急单备注：" prop="emergencyOrderRemark">
@@ -976,7 +977,7 @@ export default {
         }
       },
       immediate: true
-    }
+    },
   },
   data () {
     const form = this.getDefautlForm();
@@ -1012,9 +1013,8 @@ export default {
     clearCache (val, row) {
       this.form.settleFundType = row.code;
       this.form.settleFundTypeLabel = row.message;
-      if (val === 1010 || val === 1050 || val === '1010' || val === '1050') {
-        this.form.financialOrganizationId = '';
-      }
+      this.form.financialOrganizationId = '';
+      this.form.financialOrganizationName = '';
     },
     getFundAccount () {
       this.settleFundTypeOptions = [];
