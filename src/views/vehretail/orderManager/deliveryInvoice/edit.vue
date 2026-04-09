@@ -583,8 +583,17 @@
               <h2>附件清单</h2>
             </div>
             <div class="common-section-body">
-              <!-- 上传附件弹框 (通过 ref 调用组件内部方法打开) -->
-              <simple-dialog1 :_id="_id" :readonly="attachmentReadOnly && !(form.status === 1010 || form.status === 1040)" :attachType="'mcs_subsidies'" ref="uploadDialogRef"/>
+                <AisAttachment
+                  v-for="(item, index) in attachmentList" :key="index"
+                  :businessId="_id"
+                  :ref="'attachment' + index"
+                  :configCode="item.configCode"
+                  :attachType="item.attachType"
+                  :title="item.label"
+                  :uploadConfig="item.uploadConfig"
+                  type="card"
+                  @before-upload-click="handleBeforeUploadClick(index, $event)"
+                />
             </div>
           </section>
         </el-main>
@@ -679,15 +688,14 @@ import {
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import SimpleDialog from './SimpleDialog.vue';
-import SimpleDialog1 from './SimpleDialog1.vue';
+import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 
-import AisAttachment from '@/libs/components/AisAttachment/index.vue';
+// import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -762,12 +770,11 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
-    // AisAttachment,
+    AisAttachment,
     EditPageLayout,
     EditBaseContainer,
     FetchSelect,
-    SimpleDialog,
-    SimpleDialog1
+    // SimpleDialog,
   },
   computed: {
     _id () {
@@ -799,7 +806,19 @@ export default {
       loading: false,
       submitLoading: false,
       attachmentReadOnly: true,
+      // 附件列表配置
+      attachmentList: [
+        { label: '车主身份证件', required: true, configCode: 'mcs_vehnetwork', attachType: '车主身份证件' },
+        { label: '车辆销售发票', required: true, configCode: 'mcs_vehnetwork', attachType: '车辆销售发票' },
+        { label: '车辆合格证', required: true, configCode: 'mcs_vehnetwork', attachType: '车辆合格证' },
+        { label: '尾款支付凭证', required: true, configCode: 'mcs_vehnetwork', attachType: '尾款支付凭证' },
+        { label: '销售合同', required: true, configCode: 'mcs_vehnetwork', attachType: '销售合同' },
+        { label: '交车仪式照片', required: false, configCode: 'mcs_vehnetwork', attachType: '交车仪式照片' },
+        { label: '贷款证明', required: false, configCode: 'mcs_vehnetwork', attachType: '贷款证明' },
+        { label: '交车确认书', required: false, configCode: 'mcs_vehnetwork', attachType: '交车确认书' }
+      ],
       yes_no_enum: YES_NO_ENUM,
+      uploadCheckPassed: false, // 上传校验是否通过
       form: { ...form },
       originalForm: { ...form },
       emptyText: '若要启用此内容，请创建记录',
@@ -940,6 +959,14 @@ export default {
   mounted () {
   },
   methods: {
+    // 附件上传前判断
+    handleBeforeUploadClick (index, { allow, openFileDialog: _openFileDialog }) {
+      checkUpload(this.form.id).then(res => {
+        allow(true);
+      }).catch(() => {
+        allow(false); // 直接阻止上传
+      });
+    },
     handleConfirmUpload () {
       if (this.doComparisonData().length > 0) {
         this.$message.warning('识别信息与校验信息不一致,请重新确认！');
@@ -1049,7 +1076,6 @@ export default {
     handleUploadConfirm () {
       // 点击保存按钮的回调
       this.$message.success('保存成功');
-      this.$refs.uploadDialogRef.close();
     },
     handleUploadDialogClose () {
       // 弹框关闭后的回调
