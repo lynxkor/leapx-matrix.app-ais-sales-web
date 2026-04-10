@@ -24,7 +24,7 @@
                 <el-form-item label="申请单号：" prop="applyNo">
                   <el-input placeholder="请输入" v-model="form.applyNo" clearable disabled />
                 </el-form-item>
-                <el-form-item label="申请门店编码：" prop="dealerCode">
+                <el-form-item label="申请门店：" prop="dealerCode">
                   <fetch-select
                     :remote-method="getDealerDetailByCode"
                     remote
