@@ -20,16 +20,44 @@
               {{ info.dealerCode  }}
             </el-form-item>
             <el-form-item label="门店名称：" prop="dealerName">
-              {{ info.dealerName  }}
+              <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/partner/channelManagement/shopDetail',
+                      query: {
+                        dealerCode: info.dealerCode,
+                      },
+                    })"
+                   type="text">{{info.dealerName}}</el-button>
             </el-form-item>
             <el-form-item label="年款：" prop="vehicleYearType">
-              {{ info.vehicleYearType  }}
+              <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleYearType/detail',
+                      query: {
+                        id: info.vehicleYearTypeId,
+                      },
+                    })"
+                   type="text">{{info.vehicleYearType}}</el-button>
             </el-form-item>
             <el-form-item label="系列：" prop="vehicleModelLine">
-              {{ info.vehicleModelLine  }}
+              <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleModelLine/detail',
+                      query: {
+                        id: info.vehicleModelLineId,
+                      },
+                    })"
+                   type="text">{{info.vehicleModelLine}}</el-button>
             </el-form-item>
             <el-form-item label="车系：" prop="seriesName">
-              {{ info.seriesName  }}
+              <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleSeries/detail',
+                      query: {
+                        id: info.seriesId,
+                      },
+                    })"
+                   type="text">{{info.seriesName}}</el-button>
             </el-form-item>
             <el-form-item label="累计已申请数：" prop="requestQty">
               {{ info.requestQty  }}

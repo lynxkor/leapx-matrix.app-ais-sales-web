@@ -100,7 +100,7 @@ export default {
       pageTitle: '门店库存入库明细',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-storeInventoryInboundDetails',
+      moduleKey: 'AISVS-storeInventoryInboundDetails',
       form: {
         ...defaultForm
       },

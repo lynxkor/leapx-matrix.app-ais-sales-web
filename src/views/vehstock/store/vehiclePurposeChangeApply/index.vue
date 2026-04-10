@@ -118,7 +118,7 @@ export default {
       pageTitle: '车辆用途变更申请',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-vehiclePurposeChangeApply',
+      moduleKey: 'AISVS-vehiclePurposeChangeApply',
       form: {
         ...defaultForm
       },

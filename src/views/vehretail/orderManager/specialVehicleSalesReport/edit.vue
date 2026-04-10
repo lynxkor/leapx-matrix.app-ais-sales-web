@@ -20,7 +20,7 @@
         <template #extraButtons>
           <el-button v-if="form.status === 1" size="small" @click="handleSoldPlateInfo">添加上牌信息</el-button>
           <el-button v-if="form.status === 1" size="small" @click="openAdjustVehicleAttribute">调整车辆属性</el-button>
-          <el-button v-if="form.status === 0" size="small" @click="handleAttachment">添加附件</el-button>
+<!--          <el-button v-if="form.status === 0" size="small" @click="handleAttachment">添加附件</el-button>-->
           <el-button v-if="form.status === 0" size="small" @click="handleSubmit">提交</el-button>
 <!--          <el-button v-if="form.status === 0" size="small" @click="handleCancel">作废</el-button>-->
 <!--          <el-button v-if="form.status === 1" size="small" @click="handleRevoke">撤回</el-button>-->
@@ -457,7 +457,7 @@
             </div>
             <div class="common-section-body">
               <!-- 上传附件弹框 (通过 ref 调用组件内部方法打开) -->
-              <simple-dialog :_id="_id" :readonly="!uploadOperate && !isEditing" :attachType="'mcs_specialcarsalesreport'" ref="uploadDialogRef"/>
+              <simple-dialog :_id="_id" :readonly="!(form.status === 0 && isEditing)" :attachType="'mcs_specialcarsalesreport'" ref="uploadDialogRef"/>
             </div>
           </section>
           <vehicle-attribute-dialog

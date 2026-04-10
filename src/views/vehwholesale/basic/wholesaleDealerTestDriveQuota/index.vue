@@ -268,10 +268,74 @@ export default {
             }]
           },
           { props: 'dealerCode', label: '门店编码', visible: true, width: 200 },
-          { props: 'dealerName', label: '门店名称', visible: true, width: 200 },
-          { props: 'vehicleYearType', label: '年款', visible: true, width: 200 },
-          { props: 'vehicleModelLine', label: '系列', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系', visible: true, width: 200 },
+          {
+            props: 'dealerName',
+            label: '门店名称',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.navigateToRoute({
+                  path: '/partner/channelManagement/shopDetail',
+                  query: {
+                    dealerCode: row.dealerCode
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'vehicleYearType',
+            label: '年款',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleYearType/detail',
+                  query: {
+                    id: row.vehicleYearTypeId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'vehicleModelLine',
+            label: '系列',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleModelLine/detail',
+                  query: {
+                    id: row.vehicleModelLineId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'seriesName',
+            label: '车系',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleSeries/detail',
+                  query: {
+                    id: row.seriesId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'requestQty', label: '累计已申请数', visible: true, width: 200 },
           { props: 'changeDesc', label: '调整说明', visible: true, width: 200 },
           { props: 'quotaQty', label: '配额数量', visible: true, width: 200 },

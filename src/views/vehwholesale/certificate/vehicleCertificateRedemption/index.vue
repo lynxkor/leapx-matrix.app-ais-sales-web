@@ -308,7 +308,7 @@ export default {
             buttons: [{
               name: '编辑',
               show: (row) => {
-                return row.certificateStatus === 10 && row.certificateStatus === 10;
+                return row.certificateStatus === 10 && row.creditSettleStatus === 10;
               },
               click: (rowIndex, row) => {
                 this.$router.push({
@@ -323,7 +323,7 @@ export default {
             }, {
               name: '删除',
               show: (row) => {
-                return row.certificateStatus === 10 && row.certificateStatus === 10;
+                return row.certificateStatus === 10 && row.creditSettleStatus === 10;
               },
               popconfirmConfirmButtonType: 'danger',
               popconfirmConfirmButtonText: '删除',
