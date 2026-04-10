@@ -11,7 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.certificateStatus === 10 && form.certificateStatus === 10"
+        :showEditBtn="form.certificateStatus === 10 && form.creditSettleStatus === 10"
       >
         <template #status>
           <span>{{ form.redemptionCode }}</span>
@@ -20,7 +20,7 @@
           <el-button size="small" @click="handleSubmit">提交赎回</el-button>
           <el-button size="small" @click="handleSubmitAgain">重新提交赎回</el-button>
           <el-button size="small" @click="handleconfirmSign">签收合格证</el-button>
-          <el-button size="small" v-if = "form.certificateStatus === 10 && form.certificateStatus === 10" @click="handleDel">删除</el-button>
+          <el-button size="small" v-if = "form.certificateStatus === 10 && form.creditSettleStatus === 10" @click="handleDel">删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
