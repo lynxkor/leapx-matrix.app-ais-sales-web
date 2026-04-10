@@ -572,7 +572,7 @@
               </el-form>
             </div>
           </section>
-          <section class="common-section">
+          <section class="common-section" v-if="_id">
             <div class="common-section-header">
               <h2>附件清单</h2>
             </div>

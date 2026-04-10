@@ -642,12 +642,12 @@
           </div>
         </section>
         <section class="common-section">
-          <div class="common-section-header">
+          <div class="common-section-header" v-if="_id">
             <h2>附件材料(请上传发票、行驶证、有效身份证件并以中文命名)</h2>
           </div>
           <div class="common-section-body">
             <!-- 上传附件弹框 (通过 ref 调用组件内部方法打开) -->
-            <simple-dialog :_id="_id" :readonly="!(form.status === 1010 || form.status === 1040)" :attachType="'mcs_subsidies'" ref="uploadDialogRef"/>
+            <simple-dialog :_id="_id" :readonly="!((form.status === 1010 || form.status === 1040) && isEditing)" :attachType="'mcs_subsidies'" ref="uploadDialogRef"/>
           </div>
         </section>
         <audit-dialog
