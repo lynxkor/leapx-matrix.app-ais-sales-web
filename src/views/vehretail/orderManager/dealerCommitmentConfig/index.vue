@@ -9,10 +9,17 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="状态：1-启用，0-禁用">
+      <el-form-item label="承诺类型">
+        <el-input
+          placeholder="请输入"
+          v-model="form.commitmentType"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item label="状态：">
         <fetch-select
           :request="fetchOptions"
-          enumCode="xxx"
+          enumCode="StatusEnum"
           v-model="form.status"
           placeholder="请选择"
           clearable
@@ -20,39 +27,20 @@
           filterable
         />
       </el-form-item>
-      <el-form-item label="承诺编号">
-        <el-input
-          placeholder="请输入"
-          v-model="form.configCode"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item label="承诺类型"  v-show="this.visibleCount === 3 || show">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.commitmentType"
-          placeholder="请选择"
-          clearable
-          multiple
-          filterable
+      <el-form-item label="创建时间">
+        <el-date-picker
+          :default-time="['00:00:00', '23:59:59']"
+          v-model="form.createTimeRange"
+          type="daterange"
+          :picker-options="pickerOptions"
+          range-separator="至"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          @change="handleCreateTimeChange"
         />
       </el-form-item>
       <template v-if="show">
-        <el-form-item label="承诺内容">
-          <el-input
-            placeholder="请输入"
-            v-model="form.commitmentContent"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="含原厂配置：1-是，0-否">
-          <el-input
-            placeholder="请输入"
-            v-model="form.hasOriginal"
-            clearable
-          />
-        </el-form-item>
       </template>
       <page-search-action
         v-if="canList"
@@ -66,11 +54,11 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+<!--      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>-->
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">启用</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">停用</el-button>
+      <!--      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>-->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -169,7 +157,13 @@ export default {
             props: 'id',
             label: '主键',
             visible: false,
-            width: 200,
+            width: 200
+          },
+          {
+            props: 'configCode',
+            label: '承诺编号',
+            visible: true,
+            width: 180,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -183,11 +177,11 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'status', label: '状态：1-启用，0-禁用', visible: true, width: 200 },
-          { props: 'configCode', label: '承诺编号', visible: true, width: 200 },
-          { props: 'commitmentType', label: '承诺类型', visible: true, width: 200 },
+          { props: 'commitmentType', label: '承诺类型', visible: true, width: 180 },
           { props: 'commitmentContent', label: '承诺内容', visible: true, width: 200 },
-          { props: 'hasOriginal', label: '含原厂配置：1-是，0-否', visible: true, width: 200 },
+          { props: 'hasOriginalLabel', label: '含原厂配置', visible: true, width: 120, type: 'select', options: YES_NO_ENUM },
+          { props: 'statusLabel', label: '状态', visible: true, width: 100, type: 'select', options: [{ label: '启用', value: 1 }, { label: '禁用', value: 0 }] },
+          { props: 'createTime', label: '创建时间', visible: true, width: 160 },
           {
             props: 'operate',
             label: '操作',
@@ -412,12 +406,29 @@ export default {
     },
     // 批量启用停用
     handleBatchEnable (status) {
-      handleBatchStatusChange.call(this, {
-        selectionList: this.selectionList,
-        targetStatus: status,
-        apiFunc: enableItem,
-        refreshFunc: this.getData
+      const ids = this.selectionList.map(item => item.id) || [];
+      enableItem({ ids: ids, statsu: status }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '操作成功!'
+        });
+        this.getData();
       });
+      // handleBatchStatusChange.call(this, {
+      //   selectionList: this.selectionList,
+      //   targetStatus: status,
+      //   apiFunc: enableItem,
+      //   refreshFunc: this.getData
+      // });
+    },
+    handleCreateTimeChange (createTime) {
+      if (createTime && createTime.length > 1) {
+        this.form.createTimeStart = createTime[0];
+        this.form.createTimeEnd = createTime[1];
+      } else {
+        this.form.createTimeStart = null;
+        this.form.createTimeEnd = null;
+      }
     }
   }
 };

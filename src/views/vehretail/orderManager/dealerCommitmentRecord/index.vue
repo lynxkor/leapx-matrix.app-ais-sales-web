@@ -6,73 +6,69 @@
       :model="form"
       size="small"
       label-position="right"
-      label-width="150px"
+      label-width="100px"
       class="ais-search-form"
     >
+      <el-form-item label="商城订单号">
+        <tag-input
+          placeholder="请输入"
+          v-model="form.mallOrderCodeList"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item label="VIN">
+        <tag-input v-model="form.vinList" placeholder="请输入VIN" clearable />
+      </el-form-item>
+      <el-form-item label="车型名称">
+        <fetch-select
+          filterable
+          clearable
+          remote
+          reserve-keyword
+          v-model="form.modelId"
+          :remote-method="vehicleModelSearch"
+          :params="form.modelId"
+          value-key="id"
+          label-key="name"
+          placeholder="请选择"
+        />
+      </el-form-item>
+      <el-form-item label="销售门店">
+        <fetch-select
+          filterable
+          clearable
+          remote
+          v-model="form.saleDealerCode"
+          :remote-method="saleDealerSearch"
+          value-key="storeCode"
+          label-key="storeName"
+          placeholder="请选择"
+        />
+      </el-form-item>
+      <el-form-item label="兑现状态">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="dealer_commitment_fulfill_status"
+          v-model="form.fulfillStatus"
+          placeholder="请选择"
+          clearable
+        />
+      </el-form-item>
       <el-form-item label="创建时间">
         <el-date-picker
-         :default-time="['00:00:00', '23:59:59']"
-          v-model="form.createTime"
+          :default-time="['00:00:00', '23:59:59']"
+          v-model="form.createTimeRange"
           type="daterange"
           :picker-options="pickerOptions"
           range-separator="至"
           value-format="yyyy-MM-dd HH:mm:ss"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
+          @change="handleCreateTimeChange"
         />
       </el-form-item>
-      <el-form-item label="兑现状态：0-待兑现，1-已兑现">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="xxx"
-          v-model="form.fulfillStatus"
-          placeholder="请选择"
-          clearable
-          multiple
-          filterable
-        />
-      </el-form-item>
-      <el-form-item label="零售订单号"  v-show="this.visibleCount === 3 || show">
-        <el-input
-          placeholder="请输入"
-          v-model="form.retailOrderCode"
-          clearable
-        />
-      </el-form-item>
-      <template v-if="show">
-        <el-form-item label="商城订单编号">
-          <el-input
-            placeholder="请输入"
-            v-model="form.mallOrderCode"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="销售门店">
-          <el-input
-            placeholder="请输入"
-            v-model="form.saleDealerName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="VIN码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.vin"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="车型名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.modelName"
-            clearable
-          />
-        </el-form-item>
-      </template>
       <page-search-action
         v-if="canList"
-        v-model="show"
-        is-expandable
         :loading="loading"
         @submit="onSubmit"
         @reset="onReset"
@@ -80,12 +76,12 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+<!--      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>-->
+<!--      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>-->
+<!--      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>-->
+<!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>-->
+<!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>-->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -123,7 +119,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/orderManager/dealerCommitmentRecord/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -132,16 +128,17 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
-  // TIPS:多选时字段名称会有变化，自行校对
-  createTime: '',
-  fulfillStatus: '',
-  retailOrderCode: '',
   mallOrderCode: '',
-  saleDealerName: '',
-  vin: '',
-  modelName: '',
+  vinList: [],
+  modelId: '',
+  saleDealerCode: '',
+  fulfillStatus: '',
+  createTimeRange: '',
+  createTimeStart: null,
+  createTimeEnd: null,
 };
 
 const pageSize = 20;
@@ -152,6 +149,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    TagInput,
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
@@ -186,7 +184,13 @@ export default {
             props: 'id',
             label: '主键',
             visible: false,
-            width: 200,
+            width: 200
+          },
+          {
+            props: 'recordCode',
+            label: '承诺结果编号',
+            visible: true,
+            width: 180,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -200,60 +204,41 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'recordCode', label: '承诺结果编号', visible: true, width: 200 },
-          { props: 'commitmentType', label: '承诺类型', visible: true, width: 200 },
+          { props: 'mallOrderCode', label: '商城订单号', visible: true, width: 180 },
+          { props: 'vin', label: 'VIN', visible: true, width: 160 },
+          { props: 'modelName', label: '车型名称', visible: true, width: 160 },
+          { props: 'saleDealerName', label: '销售门店', visible: true, width: 160 },
+          { props: 'saleUserName', label: '销售顾问', visible: true, width: 120 },
+          { props: 'deliveryUserName', label: '交付顾问', visible: true, width: 120 },
+          { props: 'deliveryTime', label: '交车时间', visible: true, width: 160 },
+          { props: 'commitmentType', label: '承诺类型', visible: true, width: 160 },
           { props: 'commitmentContent', label: '承诺内容', visible: true, width: 200 },
-          { props: 'commitmentDetailDesc', label: '详细承诺说明', visible: true, width: 200 },
-          { props: 'isOriginal', label: '是否原厂：1-是，0-否', visible: true, width: 200 },
-          { props: 'fulfillStatus', label: '兑现状态：0-待兑现，1-已兑现', visible: true, width: 200 },
-          { props: 'retailOrderCode', label: '零售订单号', visible: true, width: 200 },
-          { props: 'mallOrderCode', label: '商城订单编号', visible: true, width: 200 },
-          { props: 'saleDealerName', label: '销售门店', visible: true, width: 200 },
-          { props: 'vin', label: 'VIN码', visible: true, width: 200 },
-          { props: 'modelName', label: '车型名称', visible: true, width: 200 },
-          { props: 'deliveryTime', label: '交车时间', visible: true, width: 200 },
-          { props: 'saleUserName', label: '销售顾问名称', visible: true, width: 200 },
-          { props: 'deliveryUserName', label: '交付顾问名称', visible: true, width: 200 },
+          { props: 'commitmentDetailDesc', label: '承诺详细说明', visible: true, width: 200 },
+          { props: 'isOriginalLabel', label: '是否原厂', visible: true, width: 120 },
+          { props: 'fulfillStatusLabel', label: '兑现状态', visible: true, width: 120 },
+          { props: 'fulfillDesc', label: '待兑现说明', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 160 },
           {
             props: 'operate',
             label: '操作',
             type: 'operate',
             visible: true,
             fixed: 'right',
-            buttons: [{
-              name: '编辑',
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehretail/orderManager/dealerCommitmentRecord/edit',
-                  query: {
-                    id: row.id,
-                    isEditing: true
-                  }
-                });
-              },
-              type: 'info'
-            }, {
-              name: '删除',
-              popconfirmConfirmButtonType: 'danger',
-              popconfirmConfirmButtonText: '删除',
-              popconfirmTitle: '此操作将永久删除, 是否继续?',
-              click: (rowIndex, row) => {
-                deleteItem([row.id]).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                  this.getData();
-                }).catch(() => {
-                  this.$message({
-                    type: 'error',
-                    message: '删除失败!'
-                  });
-                });
-              },
-              type: 'danger'
-            }]
+            buttons: [
+              // {
+              //   name: '编辑',
+              //   click: (rowIndex, row) => {
+              //     this.$router.push({
+              //       path: '/vehretail/orderManager/dealerCommitmentRecord/edit',
+              //       query: {
+              //         id: row.id,
+              //         isEditing: true
+              //       }
+              //     });
+              //   },
+              //   type: 'info'
+              // }
+            ]
           }
         ],
         total: 0
@@ -395,13 +380,22 @@ export default {
         }
       });
 
-      if (this.form.createTime) {
-        delete data.createTime;
-        if (this.form.createTime.length > 1) {
-          data.createTimeStart = this.form.createTime[0];
-          data.createTimeEnd = this.form.createTime[1];
+      if (this.form.createTimeRange) {
+        delete data.createTimeRange;
+        if (this.form.createTimeRange.length > 1) {
+          data.createTimeStart = this.form.createTimeRange[0];
+          data.createTimeEnd = this.form.createTimeRange[1];
         }
       }
+      // VIN列表处理
+      if (this.form.vinList && this.form.vinList.length > 0) {
+        data.vinList = this.form.vinList;
+      } else {
+        delete data.vinList;
+      }
+      // 删除废弃字段
+      delete data.vin;
+      delete data.modelCode;
       // 排序字段
       data.sortColumns = this.sortColumns;
       return data;
@@ -411,6 +405,23 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    vehicleModelSearch (val) {
+      const params = {
+        modelNameLike: val,
+        pageSize: 100
+      };
+      return listVehicleModel(params);
+    },
+    async saleDealerSearch (val) {
+      // 查询有销售能力的门店，根据实际需求调用接口
+      const params = {
+        keyword: val,
+        isSales: true,
+        pageSize: 1000
+      };
+      // 返回一个 Promise，实际项目中替换为真实接口
+      return await listOrgStoreInfo(params);
     },
     // 批量删除
     handleBatchDelete () {
@@ -445,6 +456,15 @@ export default {
         apiFunc: enableItem,
         refreshFunc: this.getData
       });
+    },
+    handleCreateTimeChange (createTime) {
+      if (createTime && createTime.length > 1) {
+        this.form.createTimeStart = createTime[0];
+        this.form.createTimeEnd = createTime[1];
+      } else {
+        this.form.createTimeStart = null;
+        this.form.createTimeEnd = null;
+      }
     }
   }
 };
