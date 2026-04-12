@@ -80,6 +80,7 @@
                       :remote-method="getRegionList"
                       value-key="orgCode"
                       label-key="orgName"
+                      @change="getRegionrName"
                       :disabled="isEditing"
                     />
                 </el-form-item>
@@ -614,6 +615,9 @@ export default {
     this.fetchBooleanEnum();
   },
   methods: {
+    getRegionrName (val, row) {
+      this.form.regionName = row.orgName;
+    },
     handleSaveRow (row) {
       const params = {
         vehicleBackOrderId: this._id,
