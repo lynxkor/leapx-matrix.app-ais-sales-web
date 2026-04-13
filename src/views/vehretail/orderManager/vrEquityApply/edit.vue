@@ -69,7 +69,7 @@
                     value-key="vin"
                     label-key="vin"
                     placeholder="请选择原车VIN号"
-                    :disabled="form.replacementType == 20"
+                    :disabled="form.replacementType == 20 || form.equityCategoryName === '跨月权益'"
                     @change="handleOriginalVinChange"
                   />
                 </el-form-item>
@@ -107,6 +107,7 @@
                     :min="0"
                     :max="100000000000"
                     placeholder="请输入"
+                    :disabled="form.equityCategoryName === '跨月权益'"
                   />
                 </el-form-item>
                 <el-form-item label="其他品牌：" prop="otherBrand">
@@ -114,7 +115,7 @@
                     placeholder="请输入"
                     v-model="form.otherBrand"
                     clearable
-                    :disabled="form.replacementType == 10"
+                    :disabled="form.replacementType == 10 || form.equityCategoryName === '跨月权益'"
                     maxlength="50"
                   />
                 </el-form-item>
@@ -1004,6 +1005,11 @@ export default {
     async handleEquityCategoryChange (categoryId, record) {
       await this.validateSelectedVehicleOrder();
       this.form.equityCategoryName = record?.name || '';
+      if (this.form.equityCategoryName === '跨月权益') {
+        this.form.originalVin = '';
+        this.form.otherBrand = '';
+        this.form.discountAmount = '';
+      }
     },
 
     // 置换类型变化时的处理
@@ -1076,7 +1082,9 @@ export default {
     // 校验选中的整车订单是否有效
     async validateSelectedVehicleOrder () {
       // 检查三个关键字段是否都有值
-      if (!this.form.mallOrderNo || !this.form.equityCategoryId || !this.form.replacementType) {
+      // 注意：权益大类为跨月权益时，置换类型可能为空，所以排除这种情况
+      if (!this.form.mallOrderNo || !this.form.equityCategoryId ||
+          (!this.form.replacementType && this.form.equityCategoryName !== '跨月权益')) {
         return;
       }
       // 调用校验接口
