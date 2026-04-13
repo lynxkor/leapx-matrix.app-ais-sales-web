@@ -400,7 +400,7 @@ export default {
         cancel({ idSet: ids }).then(() => {
           this.$message({
             type: 'success',
-            message: '作废提交成功!'
+            message: '作废成功!'
           });
           this.getData();
         });

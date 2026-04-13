@@ -221,7 +221,7 @@
                   />
                 </el-form-item>
 
-                 <el-form-item label="车辆售价（零售价）：" prop="vehiclePrice">
+                 <el-form-item label="车辆零售价：" prop="vehiclePrice">
                   <el-input
                     placeholder="请输入"
                     v-model="form.vehiclePrice"
@@ -229,7 +229,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="销售价（批售价）：" prop="salePrice">
+                <el-form-item label="批售价：" prop="salePrice">
                   <el-input
                     placeholder="请输入"
                     v-model="form.salePrice"
@@ -328,10 +328,10 @@
                 <el-form-item label="资金结算类型：" prop="settleFundTypeLabel">
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
-                <el-form-item label="车辆售价（零售价）：" prop="vehiclePrice">
+                <el-form-item label="车辆零售价：" prop="vehiclePrice">
                   {{ form.vehiclePrice }}
                 </el-form-item>
-                <el-form-item label="销售价（批售价）：" prop="salePrice">
+                <el-form-item label="批售价：" prop="salePrice">
                   {{ form.salePrice }}
                 </el-form-item>
                 <el-form-item label="首付款比例：" prop="downPaymentRatio">
@@ -389,7 +389,7 @@
                     clearable
                   />
                 </el-form-item>
-                 <el-form-item label="省市区：">
+                 <el-form-item label="省市区：" prop="areaCode">
                   <el-cascader
                     placeholder="请选择省市区"
                     v-model="areaCode"
@@ -638,6 +638,9 @@ export default {
         receiverAddress: [
           { required: true, message: '请输入收件地址', trigger: 'change' }
         ],
+        areaCode: [
+          { required: true, message: '请选择省市区', trigger: 'change' }
+        ],
       }
     };
   },
@@ -798,7 +801,7 @@ export default {
     },
     handleconfirmSign () {
       const ids = [this._id];
-      this.$confirm('此操作将批量签收合格证, 是否继续?', '', {
+      this.$confirm('此操作将签收合格证, 是否继续?', '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
