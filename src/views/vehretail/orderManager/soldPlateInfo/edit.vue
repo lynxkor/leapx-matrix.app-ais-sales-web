@@ -29,9 +29,15 @@
 <!--          </el-button>-->
           <el-button
             @click="handleSubmit"
-            v-if="form.status === 1010"
+            v-if="form.status === 1010 || form.status === 1040"
             size="small">
             提交审核
+          </el-button>
+          <el-button
+            @click="openRevocationSubmitShow"
+            v-if="form.status === 1020"
+            size="small">
+            撤回提交
           </el-button>
           <el-button
             @click="openRevocationShow"
@@ -673,7 +679,7 @@ import {
   effectiveVinValidate,
   cancel,
   audit,
-  revocation, submit
+  revocation, submit, revocationSubmit
 } from '@/api/vehretail/orderManager/soldPlateInfo/index';
 import { getEffectiveByVin as getDeliveryInvoiceByVin } from '@/api/vehretail/orderManager/deliveryInvoice/index';
 import { getEffectiveByVin as getSpecialSalesReportByVin } from '@/api/vehretail/orderManager/specialVehicleSalesReport/index';
@@ -1263,13 +1269,23 @@ export default {
         this.reloadDetail();
       });
     },
+    openRevocationSubmitShow () {
+      this.$confirm('确认是否对数据进行撤回提交?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        revocationSubmit(this.form).then(() => {
+          this.reloadDetail();
+        });
+      }).catch(() => {});
+    },
     openRevocationShow () {
       this.$confirm('确认是否对数据进行撤回?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        // 作废接口
         revocation(this.form).then(() => {
           this.reloadDetail();
         });
