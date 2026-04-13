@@ -7,7 +7,7 @@
         <tag-input v-model="form.materialsCodeList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="物料描述">
-        <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
+        <el-input placeholder="请输入" v-model="form.materialsDescLike" clearable />
       </el-form-item>
       <el-form-item label="入库统计开始日期" v-show="this.visibleCount === 3 || show">
         <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.stockStatStartDate" type="daterange"
@@ -81,7 +81,7 @@ import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   materialsCode: '',
-  materialsDesc: '',
+  materialsDescLike: '',
   stockStatStartDate: '',
   seriesId: '',
   modelId: '',

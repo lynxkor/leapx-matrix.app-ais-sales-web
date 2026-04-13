@@ -43,6 +43,9 @@
         <el-form-item label="企业客户补货订单编号" >
            <tag-input v-model="form.entReplenishOrderCodes" placeholder="请输入" />
         </el-form-item>
+        <el-form-item label="配车VIN" >
+           <tag-input v-model="form.vins" placeholder="请输入" />
+        </el-form-item>
          <el-form-item label="订单分类">
           <fetch-select
               :options="orderCategoryOptions"

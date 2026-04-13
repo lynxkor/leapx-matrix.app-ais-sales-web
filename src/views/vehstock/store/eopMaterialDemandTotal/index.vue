@@ -7,7 +7,7 @@
         <tag-input v-model="form.materialsCodeList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="物料描述">
-        <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
+        <el-input placeholder="请输入" v-model="form.materialsDescLike" clearable />
       </el-form-item>
       <el-form-item label="入库统计开始日期" v-show="this.visibleCount === 3 || show">
         <el-date-picker
@@ -98,7 +98,7 @@ const defaultForm = {
   createTime: '',
   status: '',
   materialsCode: '',
-  materialsDesc: '',
+  materialsDescLike: '',
   stockStatStartDate: '',
   seriesId: '',
   modelId: '',

@@ -221,7 +221,7 @@
                   />
                 </el-form-item>
 
-                 <el-form-item label="车辆售价（零售价）：" prop="vehiclePrice">
+                 <el-form-item label="车辆零售价：" prop="vehiclePrice">
                   <el-input
                     placeholder="请输入"
                     v-model="form.vehiclePrice"
@@ -229,7 +229,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="销售价（批售价）：" prop="salePrice">
+                <el-form-item label="批售价：" prop="salePrice">
                   <el-input
                     placeholder="请输入"
                     v-model="form.salePrice"
@@ -328,10 +328,10 @@
                 <el-form-item label="资金结算类型：" prop="settleFundTypeLabel">
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
-                <el-form-item label="车辆售价（零售价）：" prop="vehiclePrice">
+                <el-form-item label="车辆零售价：" prop="vehiclePrice">
                   {{ form.vehiclePrice }}
                 </el-form-item>
-                <el-form-item label="销售价（批售价）：" prop="salePrice">
+                <el-form-item label="批售价：" prop="salePrice">
                   {{ form.salePrice }}
                 </el-form-item>
                 <el-form-item label="首付款比例：" prop="downPaymentRatio">
@@ -389,7 +389,7 @@
                     clearable
                   />
                 </el-form-item>
-                 <el-form-item label="省市区：">
+                 <el-form-item label="省市区：" prop="areaCode">
                   <el-cascader
                     placeholder="请选择省市区"
                     v-model="areaCode"
@@ -600,11 +600,11 @@ export default {
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
+      areaCode: [],
       originalForm: { ...form },
       emptyText: '若要启用此内容，请创建记录',
       wholesaleOrderCodeList: [],
       entVehicleOrderCodeList: [],
-      areaCode: [],
       orgProps: {
         checkStrictly: true,
         emitPath: true,
@@ -679,7 +679,6 @@ export default {
         this.form.receiverDistrictCode = res.receiverDistrictCode;
         this.form.receiverDistrictName = res.receiverCityName;
         this.form.receiverAddress = res.receiverAddress;
-        console.log('res', this.areaCode);
       });
     },
     otherwholesaleOrderInfo (val, row) {
@@ -716,7 +715,6 @@ export default {
         this.form.receiverDistrictCode = res.receiverDistrictCode;
         this.form.receiverDistrictName = res.receiverCityName;
         this.form.receiverAddress = res.receiverAddress;
-        console.log('res', this.areaCode);
       });
     },
     async getDealerListByName (params) {
@@ -798,7 +796,7 @@ export default {
     },
     handleconfirmSign () {
       const ids = [this._id];
-      this.$confirm('此操作将批量签收合格证, 是否继续?', '', {
+      this.$confirm('此操作将签收合格证, 是否继续?', '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -836,14 +834,26 @@ export default {
       if (id) {
         return getDetail(id).then(res => {
           this.areaCode = [res.receiverProvinceCode, res.receiverCityCode, res.receiverDistrictCode];
-          console.log('接口返回的原始数据:', this.orgProps);
+          console.log('res', this.areaCode);
           return res;
         });
       }
     },
     submitRequest () {
-      console.log('submitRequest', this.form);
-      return addOrUpdate({ ...this.form });
+      return this.$refs.ruleForm.validate().then(() => {
+        if (!this.areaCode || this.areaCode.length === 0) {
+          this.form.receiverProvinceCode = '';
+          this.form.receiverProvinceName = '';
+          this.form.receiverCityCode = '';
+          this.form.receiverCityName = '';
+          this.form.receiverDistrictCode = '';
+          this.form.receiverDistrictName = '';
+        }
+        return addOrUpdate({ ...this.form });
+      }).catch(err => {
+        console.error('校验失败', err);
+        return Promise.reject(err);
+      });
     },
     // 打开侧边栏
     openPane () {
@@ -851,7 +861,7 @@ export default {
     },
     // 删除子表数据
     handleDeleteRow (index) {
-      const item = this.tableData[index];
+      // const item = this.tableData[index];
       this.tableData.splice(index, 1);
       // 根据需求调用接口
       // deletePartVehModel([item.id]).then(res => {

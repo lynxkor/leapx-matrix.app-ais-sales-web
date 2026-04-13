@@ -11,6 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="form.status === 10 || form.status === 20"
       >
         <template #status>
           {{ form.returnOrderCode }}
