@@ -262,7 +262,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
+                this.navigateToRoute({
                   path: '/partner/channelManagement/shopDetail',
                   query: {
                     dealerCode: row.dealerCode
@@ -275,7 +275,23 @@ export default {
           { props: 'regionName', label: '大区', visible: true, width: 200 },
           { props: 'provinceName', label: '省份', visible: true, width: 200 },
           { props: 'cityName', label: '城市', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系', visible: true, width: 200 },
+          {
+            props: 'seriesName',
+            label: '车系',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleSeries/detail',
+                  query: {
+                    id: row.seriesId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'newOrderQty', label: '新增缴定订单数', visible: true, width: 200 },
           { props: 'newLockTargetQty', label: '新增锁单目标数', visible: true, width: 200 },
           { props: 'netLockTargetQty', label: '净增锁单目标数', visible: true, width: 200 },

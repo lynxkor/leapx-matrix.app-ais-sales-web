@@ -282,6 +282,7 @@ export default {
         const params = {
           ...this.searchForm,
           deposit: this.row?.depositAmount || null,
+          paymentTime: this.row?.paymentTime || null,
           pageNum: this.currentPage,
           pageSize: this.pageSize
         };

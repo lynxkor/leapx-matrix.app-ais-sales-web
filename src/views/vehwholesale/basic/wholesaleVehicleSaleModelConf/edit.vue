@@ -80,6 +80,9 @@
                   placeholder="请输入"
                   v-model="form.invoiceCoefficient"
                   clearable
+                  style="width: 100%;"
+                   :min="0"
+                  :max="100"
                   :precision="4"
                 />
               </el-form-item>
@@ -93,12 +96,15 @@
                   filterable
                 />
               </el-form-item>
-              <el-form-item label="返利使用系数" prop="rebateCoefficient">
+              <el-form-item label="返利使用系数" prop="rebateCoefficient" >
                 <el-input-number
                   :controls="false"
+                  style="width: 100%;"
                   placeholder="请输入"
                   v-model="form.rebateCoefficient"
                   clearable
+                   :min="0"
+                  :max="100"
                   :precision="4"
                 />
               </el-form-item>

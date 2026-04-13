@@ -188,8 +188,40 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'modelName', label: '车型', visible: true, width: 200 },
-          { props: 'vehicleYearType', label: '年款', visible: true, width: 100 },
+          {
+            props: 'modelName',
+            label: '车型',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleModel/detail',
+                  query: {
+                    id: row.modelId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'vehicleYearType',
+            label: '年款',
+            visible: true,
+            width: 100,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleYearType/detail',
+                  query: {
+                    id: row.vehicleYearTypeId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'noJoinAutoConfirmLabel', label: '不参与自动批售确认', visible: true, width: 160 },
           { props: 'statusLabel', label: '状态', visible: true, width: 100 },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },

@@ -37,7 +37,7 @@ export default {
       attachmentList: [
         { label: '车辆销售发票', required: true, configCode: 'mcs_specialcarsalesreport', attachType: '车辆销售发票' },
         { label: '车辆合格证', required: true, configCode: 'mcs_specialcarsalesreport', attachType: '车辆合格证' },
-        { label: '车主身份证', required: true, configCode: 'mcs_specialcarsalesreport', attachType: '车主身份证' },
+        { label: '车主身份证件', required: true, configCode: 'mcs_specialcarsalesreport', attachType: '车主身份证件' },
         { label: '附件资料', required: true, configCode: 'mcs_specialcarsalesreport', attachType: '附件资料' }
       ]
     };

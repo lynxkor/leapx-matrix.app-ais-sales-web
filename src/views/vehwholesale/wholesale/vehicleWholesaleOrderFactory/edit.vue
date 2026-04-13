@@ -144,14 +144,14 @@
                     clearable
                     disabled
                   />
-                </el-form-item>
+                <!-- </el-form-item>
                      <el-form-item label="ERP发票号：" prop="erpInvoiceCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.erpInvoiceCode"
                     clearable
                     disabled
-                  />
+                  /> -->
                 </el-form-item>
                    <el-form-item label="开票时间：" prop="invoiceTime">
                   <el-date-picker
@@ -301,9 +301,9 @@
                     <el-form-item label="专项活动：" prop="prodScheduleActivityName">
                   {{ form.prodScheduleActivityName }}
                 </el-form-item>
-                  <el-form-item label="ERP发票号：" prop="erpInvoiceCode">
+                <!-- <el-form-item label="ERP发票号：" prop="erpInvoiceCode">
                   {{ form.erpInvoiceCode }}
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="开票日期：" prop="invoiceTime">
                   {{ form.invoiceTime }}
                 </el-form-item>

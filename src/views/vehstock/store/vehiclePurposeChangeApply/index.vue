@@ -9,7 +9,7 @@
       <el-form-item label="申请单号">
         <el-input placeholder="请输入" v-model="form.applyNo" clearable />
       </el-form-item>
-      <el-form-item label="申请门店编码" v-show="this.visibleCount === 3 || show">
+      <el-form-item label="申请门店" v-show="this.visibleCount === 3 || show">
         <fetch-select :remote-method="getDealerListByName" remote v-model="form.dealerCodeList" placeholder="请输入门店编码或名称"
           labelKey="storeName" valueKey="storeCode" subLabelKey="storeCode" clearable filterable multiple
           collapse-tags />

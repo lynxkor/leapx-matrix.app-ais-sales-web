@@ -1013,8 +1013,14 @@ export default {
     clearCache (val, row) {
       this.form.settleFundType = row.code;
       this.form.settleFundTypeLabel = row.message;
-      if (val === 1010 || val === 1050 || val === '1010' || val === '1050') {
-        this.form.financialOrganizationId = '';
+      this.form.financialOrganizationId = '';
+      this.form.financialOrganizationName = '';
+      if (row.code === 1050) {
+        this.form.certificatePledged = 1;
+        this.form.creditSaleFlag = 1;
+      } else {
+        this.form.certificatePledged = 0;
+        this.form.creditSaleFlag = 0;
       }
     },
     getFundAccount () {

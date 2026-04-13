@@ -400,7 +400,7 @@ export default {
         cancel({ idSet: ids }).then(() => {
           this.$message({
             type: 'success',
-            message: '作废提交成功!'
+            message: '作废成功!'
           });
           this.getData();
         });
@@ -452,7 +452,7 @@ export default {
       }
       exportTable({
         businessType: '整车批售-批售管理-整车退车订单管理',
-        dataFetchPath: 'VW/web/back/vehicleBackOrder/page',
+        dataFetchPath: 'vw/web/back/vehicleBackOrder/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
