@@ -941,11 +941,6 @@ export default {
           });
           // 重新加载详情
           this.$refs.containerRef.loadDetail();
-        }).catch(error => {
-          this.$message({
-            type: 'error',
-            message: error.message || '提交失败!'
-          });
         });
       }).catch(() => {
         // 用户取消操作
