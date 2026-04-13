@@ -101,6 +101,7 @@
                   <el-select
                     v-model="form.reservedTypeLabel"
                     placeholder="请选择"
+                    @change="changereservedType"
                     :disabled="!form.reserved && isBatchEdit"
                   >
                     <el-option
@@ -488,6 +489,9 @@ export default {
   mounted () {
   },
   methods: {
+    changereservedType (val, row) {
+      this.form.reservedType = val;
+    },
     detailRequest () {
       const id = this._id;
       if (id) {
@@ -514,10 +518,6 @@ export default {
           type: 'warning'
         });
         const result = await batchEdit({ ...this.form });
-        this.$message({
-          message: '保存成功',
-          type: 'success'
-        });
         return result;
       } catch (error) {
         if (error !== 'cancel') {

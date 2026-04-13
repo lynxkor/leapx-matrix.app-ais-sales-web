@@ -389,7 +389,7 @@
                     clearable
                   />
                 </el-form-item>
-                 <el-form-item label="省市区：" prop="areaCode">
+                 <el-form-item label="省市区：" prop="areaCode" required>
                   <el-cascader
                     placeholder="请选择省市区"
                     v-model="areaCode"
@@ -638,9 +638,6 @@ export default {
         receiverAddress: [
           { required: true, message: '请输入收件地址', trigger: 'change' }
         ],
-        areaCode: [
-          { required: true, message: '请选择省市区', trigger: 'change' }
-        ],
       }
     };
   },
@@ -845,7 +842,6 @@ export default {
       }
     },
     submitRequest () {
-      console.log('submitRequest', this.form);
       return addOrUpdate({ ...this.form });
     },
     // 打开侧边栏
