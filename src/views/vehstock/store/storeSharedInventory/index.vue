@@ -30,7 +30,7 @@
           />
         </el-form-item>
         <el-form-item label="物料描述">
-          <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
+          <el-input placeholder="请输入" v-model="form.materialsDescLike" clearable />
         </el-form-item>
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
@@ -78,7 +78,7 @@ const defaultForm = {
   sharedVehicleStatus: '',
   sharedVehicleCategory: '',
   modelId: '',
-  materialsDesc: '',
+  materialsDescLike: '',
 };
 
 const pageSize = 20;
