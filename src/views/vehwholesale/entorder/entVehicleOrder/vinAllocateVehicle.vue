@@ -32,10 +32,8 @@
             width="1000px"
             min-height="300px"
             max-height="400px"
-            @checkbox-change="handleCheckboxChange"
-            @checkbox-all="handleCheckboxAll"
           >
-            <vxe-column type="checkbox" width="50" fixed="left" />
+            <vxe-column type="radio" width="50" fixed="left" />
             <vxe-column field="vin" title="VIN" align="center" width="150" />
             <vxe-column field="materialsCode" title="整车物料编码" align="center" width="120" />
             <vxe-column field="materialsDesc" title="物料描述" align="center"  width="150"/>
