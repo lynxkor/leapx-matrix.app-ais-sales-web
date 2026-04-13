@@ -22,7 +22,7 @@
           label-key="companyName"
         />
       </el-form-item>
-      <el-form-item label="年度">
+      <el-form-item label="年份">
         <el-input
           placeholder="请输入"
           v-model="form.year"
@@ -30,7 +30,7 @@
         />
       </el-form-item>
       <template v-if="show">
-        <el-form-item label="月度">
+        <el-form-item label="月份">
           <el-date-picker
             v-model="form.month"
             type="month"
@@ -186,7 +186,7 @@ export default {
         dataProp: [
           {
             props: 'code',
-            label: '记录编号',
+            label: '编号',
             visible: true,
             width: 200,
             fixed: 'left',
