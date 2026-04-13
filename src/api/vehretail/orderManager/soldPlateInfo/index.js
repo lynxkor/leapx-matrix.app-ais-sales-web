@@ -75,6 +75,13 @@ export function submit (data) {
 }
 
 /**
+ * 撤回提交
+ * */
+export function revocationSubmit (data) {
+  return api.jsonPost(prefix + 'revocationSubmit', data);
+}
+
+/**
  * 批量提交
  * */
 export function submitBatch (data) {
