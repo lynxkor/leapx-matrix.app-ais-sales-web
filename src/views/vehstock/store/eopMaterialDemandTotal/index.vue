@@ -7,7 +7,7 @@
         <tag-input v-model="form.materialsCodeList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="物料描述">
-        <el-input placeholder="请输入" v-model="form.materialsDesc" clearable />
+        <el-input placeholder="请输入" v-model="form.materialsDescLike" clearable />
       </el-form-item>
       <el-form-item label="入库统计开始日期" v-show="this.visibleCount === 3 || show">
         <el-date-picker
@@ -27,7 +27,7 @@
             start-placeholder="开始日期" end-placeholder="结束日期" />
         </el-form-item>
         <el-form-item label="状态">
-          <fetch-select :request="fetchOptions" enumCode="StatusEnum" v-model="form.status" placeholder="请选择" clearable
+          <fetch-select :request="fetchOptions" enumCode="StatusEnum" v-model="form.statusIncludeList" placeholder="请选择" clearable
             multiple filterable />
         </el-form-item>
         <el-form-item label="车系">
@@ -96,9 +96,9 @@ import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   createTime: '',
-  status: '',
+  statusIncludeList: [],
   materialsCode: '',
-  materialsDesc: '',
+  materialsDescLike: '',
   stockStatStartDate: '',
   seriesId: '',
   modelId: '',

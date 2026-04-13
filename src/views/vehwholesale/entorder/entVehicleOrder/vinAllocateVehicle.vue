@@ -32,10 +32,9 @@
             width="1000px"
             min-height="300px"
             max-height="400px"
-            @checkbox-change="handleCheckboxChange"
-            @checkbox-all="handleCheckboxAll"
+            @radio-change="handleRadioChange"
           >
-            <vxe-column type="checkbox" width="50" fixed="left" />
+            <vxe-column type="radio" width="50" fixed="left" />
             <vxe-column field="vin" title="VIN" align="center" width="150" />
             <vxe-column field="materialsCode" title="整车物料编码" align="center" width="120" />
             <vxe-column field="materialsDesc" title="物料描述" align="center"  width="150"/>
@@ -99,6 +98,7 @@ export default {
       moduleKey: 'AISVW-entVehicleOrder',
       loading: false,
       submitLoading: false,
+      selectedRow: null, // 修改点 2: 新增变量存储选中行
       show: false,
       form: {
         ...defaultForm
@@ -138,16 +138,12 @@ export default {
     this.vinCode = '';
   },
   methods: {
-    // 单选框变化
-    handleCheckboxChange ({ records }) {
-      this.selectedRows = records;
-      console.log('选中的行:', this.selectedRows);
+    // 修改点 3: 新增单选变化处理方法
+    handleRadioChange ({ row }) {
+      this.selectedRow = row;
+      console.log('当前选中行:', this.selectedRow);
     },
     // 全选框变化
-    handleCheckboxAll ({ records }) {
-      this.selectedRows = records;
-      console.log('全选的行:', this.selectedRows);
-    },
     handleSizeChange (val) {
       this.pagination.pageSize = val;
       this.pagination.currentPage = 1; // 切换每页显示数量时回到第一页
@@ -208,12 +204,9 @@ export default {
       this.handleClose();
     },
     handleSubmit () {
-      if (this.selectedRows.length !== 1) {
-        this.$message.error('请选择一条数据！');
-        return;
-      }
+      console.log('提交数据:', this.selectedRow);
       this.dialogVisible = false;
-      this.$emit('confirm', this.selectedRows[0].vin);
+      this.$emit('confirm', this.selectedRow.vin);
     },
   }
 };
