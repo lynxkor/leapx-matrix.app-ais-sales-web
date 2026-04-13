@@ -250,9 +250,9 @@ export default {
             fixed: 'right',
             buttons: [{
               name: '编辑',
-              // show: (row) => {
-              //   return row.auditStatus === 0 || row.auditStatus === 2;
-              // },
+              show: (row) => {
+                return row.status === 10 || row.status === 20;
+              },
               click: (rowIndex, row) => {
                 this.$router.push({
                   path: '/vehwholesale/back/vehicleBackOrderDetail/edit',
@@ -268,9 +268,9 @@ export default {
               popconfirmConfirmButtonType: 'danger',
               popconfirmConfirmButtonText: '删除',
               popconfirmTitle: '此操作将永久删除, 是否继续?',
-              // show: (row) => {
-              //   return row.auditStatus === 0 || row.auditStatus === 2;
-              // },
+              show: (row) => {
+                return row.status === 10 || row.status === 20;
+              },
               click: (rowIndex, row) => {
                 deleteItem(
                   { idSet: [row.id] }

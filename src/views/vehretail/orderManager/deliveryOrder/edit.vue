@@ -1153,8 +1153,12 @@ export default {
     // 查看交车确认单
     handleViewConfirmOrder () {
       viewDeliveryConfirm({ deliveryOrderId: this.form.deliveryOrderId, retailOrderId: this.form.retailOrderId }).then(res => {
-        console.log('handleViewConfirmOrder,res', res);
-        window.open(res, '_blank');
+        if (res) {
+          console.log('handleViewConfirmOrder,res', res);
+          window.open(res, '_blank');
+        } else {
+          this.$message.error('暂无生成交车确认单');
+        }
       }).catch(() => {});
     },
     // 上传发票

@@ -156,7 +156,7 @@
                       value-format="yyyy-MM-dd HH:mm:ss"
                       placeholder="选择日期时间"
                       clearable
-                      :disabled="isEditing"
+                      disabled
                     />
                 </el-form-item>
                  <el-form-item label="销售人员：" prop="saleUserName">
@@ -256,7 +256,7 @@
                   />
                 </el-form-item>
 
-                <el-form-item label="省市区：">
+                <el-form-item label="省市区：" required>
                   <el-cascader
                     placeholder="请选择省市区"
                     v-model="areaCode"
@@ -743,7 +743,7 @@ export default {
           { required: true, message: '请输入是否赊销', trigger: 'change' }
         ],
         settleFundType: [
-          { required: true, message: '请选择结算资金类型', trigger: 'change' }
+          { required: true, message: '请选择结算资金类型', trigger: 'blur' }
         ],
         orderTime: [
           { required: true, message: '请选择订单时间', trigger: 'change' }
