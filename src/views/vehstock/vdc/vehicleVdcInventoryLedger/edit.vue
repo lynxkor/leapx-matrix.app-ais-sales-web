@@ -97,9 +97,9 @@
                     @change="reservedChange"
                   />
                 </el-form-item>
-                <el-form-item label="销售预留类型：" prop="reservedType">
+                <el-form-item label="销售预留类型：" prop="reservedTypeLabel">
                   <el-select
-                    v-model="form.reservedType"
+                    v-model="form.reservedTypeLabel"
                     placeholder="请选择"
                     :disabled="!form.reserved && isBatchEdit"
                   >
@@ -464,7 +464,7 @@ export default {
       pageTitle: 'VDC库存台账',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-vehicleVdcInventoryLedger',
+      moduleKey: 'AISVS-vehicleVdcInventoryLedger',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,

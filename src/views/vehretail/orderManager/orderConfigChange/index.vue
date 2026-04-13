@@ -244,7 +244,26 @@ export default {
           { props: 'modelNameAfter', label: '修改后车型名称', visible: true, width: 200 },
           { props: 'yearTypeNameAfter', label: '修改后年款名称', visible: true, width: 200 },
           { props: 'materialsDescAfter', label: '修改后物料描述', visible: true, width: 200 },
-          { props: 'remark', label: '备注', visible: true, width: 200 }
+          { props: 'remark', label: '备注', visible: true, width: 200 },
+          {
+            props: 'operate',
+            label: '操作',
+            type: 'operate',
+            visible: true,
+            fixed: 'right',
+            buttons: [{
+              name: '详情',
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehretail/orderManager/orderConfigChange/edit',
+                  query: {
+                    id: row.id
+                  }
+                });
+              },
+              type: 'info'
+            }]
+          }
         ],
         total: 0
       },

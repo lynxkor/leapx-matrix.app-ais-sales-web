@@ -204,9 +204,58 @@ export default {
           },
           { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系', visible: true, width: 200 },
-          { props: 'modelName', label: '车型', visible: true, width: 200 },
-          { props: 'vehicleYearType', label: '年款', visible: true, width: 200 },
+          {
+            props: 'seriesName',
+            label: '车系',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleSeries/detail',
+                  query: {
+                    id: row.seriesId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'modelName',
+            label: '车型',
+            visible: true,
+            width: 200,
+            // 新增 buttons 配置
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleModel/detail',
+                  query: {
+                    id: row.modelId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'vehicleYearType',
+            label: '年款',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleYearType/detail',
+                  query: {
+                    id: row.vehicleYearTypeId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'optionPackageName', label: '选装包', visible: true, width: 200 },
           { props: 'allowTestDriveWholesaleLabel', label: '允许试驾车批售', visible: true, width: 200 },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },

@@ -224,10 +224,24 @@
                   {{ form.activityCode }}
                 </el-form-item>
                 <el-form-item label="活动名称：" prop="activityName">
-                  {{ form.activityName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/vehwholesale/basic/wholesaleProdScheduleActivity/edit',
+                      query: {
+                        id: form.scheduleActivityId,
+                      },
+                    })"
+                   type="text">{{ form.activityName }}</el-button>
                 </el-form-item>
                  <el-form-item label="车系名称：" prop="seriesName">
-                  {{ form.seriesName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                       path: '/datacenter/materials/vehicleSeries/detail',
+                      query: {
+                        id: form.seriesId,
+                      },
+                    })"
+                   type="text">{{ form.seriesName }}</el-button>
                 </el-form-item>
                   <el-form-item label="是否锁零售单：" prop="allowLockRetailLabel">
                   {{ form.allowLockRetailLabel }}
@@ -254,10 +268,24 @@
                   {{ form.applyOrderCategoryLabel }}
                 </el-form-item>
                 <el-form-item label="系列名称：" prop="modelLineName">
-                  {{ form.modelLineName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                        path: '/datacenter/materials/vehicleModelLine/detail',
+                      query: {
+                        id: form.modelLineId,
+                      },
+                    })"
+                   type="text">{{ form.modelLineName }}</el-button>
                 </el-form-item>
                   <el-form-item label="年款名称：" prop="yearTypeName">
-                  {{ form.yearTypeName }}
+                     <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleYearType/detail',
+                      query: {
+                        id: form.yearTypeId,
+                      },
+                    })"
+                   type="text">{{ form.yearTypeName }}</el-button>
                 </el-form-item>
                   <el-form-item label="物料编码：" prop="materialsCode">
                   {{ form.materialsCode }}

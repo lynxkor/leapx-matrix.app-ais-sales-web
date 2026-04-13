@@ -188,7 +188,7 @@ export default {
       pageTitle: '门店库存调拨白名单',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
-      moduleKey: 'AISMC-storeInventoryTransferWhitelist',
+      moduleKey: 'AISVS-storeInventoryTransferWhitelist',
       loading: false,
       submitLoading: false,
       storeInformationDialogVisible: false, // 门店信息弹窗

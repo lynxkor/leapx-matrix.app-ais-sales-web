@@ -11,6 +11,7 @@
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
         :showEditBtn="form.status !== 7 && form.status !== 99"
+        :key="reloadKey"
       >
         <template #status>
           <!-- 支持 primary,warning,success,danger 等状态 -->
@@ -602,6 +603,8 @@ export default {
       moduleKey: 'AISVR-deliveryOrder',
       loading: false,
       submitLoading: false,
+      // 用于强制重新渲染按钮组的 key
+      reloadKey: 0,
       // 按钮 loading 状态集合
       buttonLoading: {},
       yes_no_enum: YES_NO_ENUM,
@@ -824,6 +827,8 @@ export default {
         this.$refs.paymentRecordTable?.refresh();
         // 刷新附件列表
         this.$refs.attachmentList?.refresh();
+        // 强制重新访问按钮组，解决 v-if 导致按钮增删后布局计算错误的问题
+        this.reloadKey++;
       }).catch(() => {});
     },
     // 允许提交的字段白名单 (与 API 字段名一致)

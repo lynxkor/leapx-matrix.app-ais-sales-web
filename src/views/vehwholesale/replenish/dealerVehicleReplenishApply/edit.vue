@@ -141,24 +141,6 @@
                     :disabled="true"
                   />
                 </el-form-item>
-                <el-form-item
-                  label="金融机构："
-                  prop="financialOrganizationId"
-                  :rules="form.settleFundType + '' === '2010' ? rules.financialOrganizationId: []"
-                  v-show="form.settleFundType + '' === '2010'"
-                >
-                  <fetch-select
-                    :remote-method="repairItemSearch"
-                    remote
-                    reserve-keyword
-                    labelKey="name"
-                    valueKey="id"
-                    v-model="form.financialOrganizationId"
-                    placeholder="请选择金融机构"
-                    clearable
-                    filterable
-                  />
-                </el-form-item>
                 <el-form-item label="是否赊销：" prop="isCreditSale">
                   <fetch-select
                     :request="fetchOptions"
@@ -178,6 +160,22 @@
                     clearable
                     filterable
                     @change="handleChangeFundType"
+                  />
+                </el-form-item>
+                <el-form-item
+                  label="金融机构："
+                  prop="financialOrganizationId"
+                  :rules="form.settleFundType + '' === '2010' ? rules.financialOrganizationId: []"
+                  v-show="form.settleFundType + '' === '2010'"
+                >
+                  <fetch-select
+                    :options="financialOrganizationList"
+                    v-model="form.financialOrganizationId"
+                    clearable
+                    filterable
+                    labelKey="name"
+                    valueKey="id"
+                    placeholder="请选择金融机构"
                   />
                 </el-form-item>
                 <el-form-item label="申请原因：" prop="applyReason">
@@ -253,14 +251,14 @@
                 <el-form-item label="审核状态：" prop="auditStatusLabel">
                   {{ form.auditStatusLabel }}
                 </el-form-item>
-                <el-form-item label="金融机构：" prop="financialOrganizationName" v-show="form.settleFundType==2010">
-                  {{ form.financialOrganizationName }}
-                </el-form-item>
                 <el-form-item label="是否赊销：" prop="isCreditSale">
                   {{ form.settleFundType === '1050' ? '是' : '否' }}
                 </el-form-item>
                 <el-form-item label="结算资金类型：" prop="settleFundTypeLabel">
                   {{ form.settleFundTypeLabel }}
+                </el-form-item>
+                <el-form-item label="金融机构：" prop="financialOrganizationName" v-show="form.settleFundType==2010">
+                  {{ form.financialOrganizationName }}
                 </el-form-item>
                 <el-form-item label="申请原因：" prop="applyReason">
                   {{ form.applyReason }}
@@ -356,6 +354,7 @@ import ComponentTable from './ComponentTable.vue';
 import AddCommercialVehicle from './AddCommercialVehicle.vue';
 import auditDialog from '@/libs/components/auditDialog';
 import moment from 'moment';
+import { getList as listFundAccount } from '@/api/vehwholesale/fund/account/index';
 
 const defaultForm = {
   replenishApplyCode: '',
@@ -460,6 +459,8 @@ export default {
       moduleKey: 'AISVW-dealerVehicleReplenishApply',
       orderCategoryOptions: [],
       settleFundTypeOptions: [],
+      financialOrganizationList: [],
+      dealerCompanyCodes: '', // 门店母公司
       loading: false,
       submitLoading: false,
       form: { ...form },
@@ -724,6 +725,8 @@ export default {
       });
     },
     async handleChangeDealer (val, record) {
+      console.log('handleChangeDealer', val, record);
+      this.dealerCompanyCodes = record?.parentCompanyCode || '';
       this.form.saleDealerName = record?.storeName || '';
       this.form.saleDealerCode = record?.storeCode || '';
       this.form.regionCode = record?.regionCode || '';
@@ -753,6 +756,7 @@ export default {
       }
     },
     handleChangeFundType (val) {
+      console.log('订单类型改变:', val);
       if (val + '' !== '2010') {
         this.form.financialOrganizationId = '';
       }
@@ -761,6 +765,19 @@ export default {
       } else {
         this.form.isCreditSale = 0;
       }
+      listFundAccount({
+        dealerCompanyCodes: [this.dealerCompanyCodes],
+        fundTypes: ['2010']
+      }).then((res) => {
+        console.log('获取账户列表:', res.records);
+        res.records.map(account => {
+          // 检查是否已存在，避免重复
+          this.financialOrganizationList.push({
+            id: account.financialOrganizationId,
+            name: account.financialOrganizationName
+          });
+        });
+      }).catch(() => {});
       console.log('结算资金类型改变:', val);
     },
     async getDealerListByName (params) {

@@ -386,7 +386,7 @@ export default {
       pageType: 'edit',
       title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-storeVehiclePdi',
+      moduleKey: 'AISVS-storeVehiclePdi',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,

@@ -6,7 +6,7 @@
       <el-form-item label="VIN">
         <tag-input v-model="form.vinList" placeholder="请输入" />
       </el-form-item>
-      <el-form-item label="目标门店编码">
+      <el-form-item label="目标门店">
         <fetch-select :remote-method="getDealerListByName" remote v-model="form.targetDealerCodeList"
           placeholder="请输入门店编码或名称" labelKey="storeName" valueKey="storeCode" subLabelKey="storeCode" clearable multiple
           collapseTags filterable />
@@ -115,7 +115,7 @@ export default {
       pageTitle: '门店库存调拨',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISMC-storeInventoryTransfer',
+      moduleKey: 'AISVS-storeInventoryTransfer',
       form: {
         ...defaultForm
       },

@@ -3026,6 +3026,42 @@ const routes = [
         name: '退订原因分类详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/vehretail/orderManager/dealerCommitmentConfig',
+      name: 'dealerCommitmentConfig',
+      component: () => import('@/views/vehretail/orderManager/dealerCommitmentConfig/index.vue'),
+
+      meta: {
+        name: '承诺配置',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/ordermanager/dealercommitmentconfig/edit',
+      name: 'dealerCommitmentConfigEdit',
+      component: () => import('@/views/vehretail/orderManager/dealerCommitmentConfig/edit.vue'),
+
+      meta: {
+        name: '承诺配置详情',
+        noResourceUrl: 'true'
+      }
+    }, {
+      path: '/vehretail/orderManager/dealerCommitmentRecord',
+      name: 'dealerCommitmentRecord',
+      component: () => import('@/views/vehretail/orderManager/dealerCommitmentRecord/index.vue'),
+
+      meta: {
+        name: '承诺结果',
+        keepAlive: true
+      }
+    }, {
+      path: '/vehretail/ordermanager/dealercommitmentrecord/edit',
+      name: 'dealerCommitmentRecordEdit',
+      component: () => import('@/views/vehretail/orderManager/dealerCommitmentRecord/edit.vue'),
+
+      meta: {
+        name: '承诺结果详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
