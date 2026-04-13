@@ -27,7 +27,7 @@
             start-placeholder="开始日期" end-placeholder="结束日期" />
         </el-form-item>
         <el-form-item label="状态">
-          <fetch-select :request="fetchOptions" enumCode="StatusEnum" v-model="form.status" placeholder="请选择" clearable
+          <fetch-select :request="fetchOptions" enumCode="StatusEnum" v-model="form.statusIncludeList" placeholder="请选择" clearable
             multiple filterable />
         </el-form-item>
         <el-form-item label="车系">
@@ -96,7 +96,7 @@ import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   createTime: '',
-  status: '',
+  statusIncludeList: [],
   materialsCode: '',
   materialsDescLike: '',
   stockStatStartDate: '',
