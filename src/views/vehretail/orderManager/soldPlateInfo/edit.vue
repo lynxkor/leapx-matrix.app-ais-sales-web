@@ -41,7 +41,7 @@
           </el-button>
           <el-button
             @click="openRevocationShow"
-            v-if="form.status === 1030 ||form.status === 1040"
+            v-if="form.status === 1030"
             size="small">
             撤回
           </el-button>
