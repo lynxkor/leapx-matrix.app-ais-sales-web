@@ -268,7 +268,10 @@ export default {
           { props: 'seriesName', label: '车系', visible: true, width: 240 },
           { props: 'couponName', label: '优惠券', visible: true, width: 120 },
           { props: 'discountAmount', label: '优惠金额', visible: true, width: 120 },
-          { props: 'submitTime', label: '提交日期', visible: true, width: 180 },
+          { props: 'submitTime', label: '提交时间', visible: true, width: 180 },
+          { props: 'firstAuditTime', label: '初审时间', visible: true, width: 180 },
+          { props: 'reviewAuditTime', label: '复审时间', visible: true, width: 180 },
+          { props: 'finalAuditTime', label: '终审时间', visible: true, width: 180 },
           { props: 'remark', label: '备注', visible: true, width: 150 },
           { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true },
           {

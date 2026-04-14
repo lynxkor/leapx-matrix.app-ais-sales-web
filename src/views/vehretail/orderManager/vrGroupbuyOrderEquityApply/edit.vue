@@ -867,6 +867,10 @@ export default {
         throw new Error('公司信息表单校验失败');
       }
 
+      if (this.isEditing) {
+        this.handleConfirm();
+      }
+
       return addOrUpdate({ ...this.form });
     },
     openPane () {
@@ -960,6 +964,7 @@ export default {
     },
     // 提交审批
     async handleSubmitApproval () {
+      this.handleConfirm();
       this.$confirm('确认要提交审批吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -969,6 +974,26 @@ export default {
         this.$message.success('提交成功');
         this.$refs.containerRef.loadDetail();
       });
+    },
+    handleConfirm () {
+      // 校验必填项
+      const missingRequired = [];
+      this.attachmentList.forEach((item, index) => {
+        if (item.required) {
+          const refName = 'attachment' + index;
+          const fileLength = this.$refs[refName]?.[0]?.getFileList?.()?.length || 0;
+          if (fileLength === 0) {
+            missingRequired.push(item.label);
+          }
+        }
+      });
+
+      if (missingRequired.length > 0) {
+        this.$message.error(`以下必填项未上传：${missingRequired.join('、')}`);
+        throw new Error(`以下必填项未上传：${missingRequired.join('、')}`);
+      }
+
+      this.$emit('confirm');
     },
     // 审批
     async handleAudit () {
