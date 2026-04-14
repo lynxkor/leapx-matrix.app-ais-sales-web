@@ -532,7 +532,7 @@
                   {{ form.vehicleAttributeLabel }}
                 </el-form-item>
                 <el-form-item label="车主证件类型：">
-                  {{ form.idCardTypeLabel }}
+                  {{ form.orderIdCardTypeLabel }}
                 </el-form-item>
                 <el-form-item label="备注：">
                   {{ form.remark }}
