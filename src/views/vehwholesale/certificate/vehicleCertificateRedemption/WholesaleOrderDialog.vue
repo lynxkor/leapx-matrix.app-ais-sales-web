@@ -18,7 +18,10 @@
         >
           <i slot="prefix" class="el-input__icon el-icon-search"></i>
         </el-input>
-        <el-button type="primary" @click="handleSearch">搜索</el-button>
+        <el-button
+          size="small"
+          type="primary" @click="handleSearch"
+          style="margin-bottom: 10px;">搜索</el-button>
       </div>
       <vxe-table
         ref="tableRef"

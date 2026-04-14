@@ -31,25 +31,29 @@
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" :rules="wholesaleRules" ref="wholesaleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="整车批售订单号：" prop="wholesaleOrderCode">
-                   <el-input
-                    style="width: 70%;"
-                    placeholder="请选择"
-                    v-model="form.wholesaleOrderCode"
-                    clearable
-                    readonly
-                    :disabled="orderCategory !== '10'"
-                  />
+                  <el-tooltip :disabled="!form.wholesaleOrderCode" :content="form.wholesaleOrderCode" placement="top">
+                    <el-input
+                      style="width: 70%;"
+                      placeholder="请选择"
+                      v-model="form.wholesaleOrderCode"
+                      clearable
+                      readonly
+                      disabled
+                    />
+                  </el-tooltip>
                    <el-button size="small" @click="openWholesaleDialog" :disabled="orderCategory !== '10'">选择</el-button>
                 </el-form-item>
                 <el-form-item label="企业客户整车订单：" prop="entVehicleOrderCode">
-                  <el-input
-                    style="width: 70%;"
-                    placeholder="请选择"
-                    v-model="form.entVehicleOrderCode"
-                    clearable
-                    readonly
-                    :disabled="orderCategory !== '20'"
-                  />
+                  <el-tooltip :disabled="!form.entVehicleOrderCode" :content="form.entVehicleOrderCode" placement="top">
+                    <el-input
+                      style="width: 70%;"
+                      placeholder="请选择"
+                      v-model="form.entVehicleOrderCode"
+                      clearable
+                      readonly
+                      disabled
+                    />
+                  </el-tooltip>
                   <el-button size="small" @click="openEntDialog" :disabled="orderCategory !== '20'">选择</el-button>
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
@@ -114,10 +118,14 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="整车批售订单号：" prop="wholesaleOrderCode">
-                  {{ form.wholesaleOrderCode }}
+                  <el-tooltip :disabled="!form.wholesaleOrderCode" :content="form.wholesaleOrderCode" placement="top">
+                    <span>{{ form.wholesaleOrderCode }}</span>
+                  </el-tooltip>
                 </el-form-item>
                 <el-form-item label="企业客户整车订单号：" prop="entVehicleOrderCode">
-                  {{ form.entVehicleOrderCode }}
+                  <el-tooltip :disabled="!form.entVehicleOrderCode" :content="form.entVehicleOrderCode" placement="top">
+                    <span>{{ form.entVehicleOrderCode }}</span>
+                  </el-tooltip>
                 </el-form-item>
                   <el-form-item label="母公司名称：" prop="dealerCompanyName">
                   {{ form.dealerCompanyName }}
