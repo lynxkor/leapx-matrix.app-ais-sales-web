@@ -6,9 +6,6 @@
       <el-form-item label="物料描述">
         <tag-input v-model="form.materialsDescSet" placeholder="请输入" />
       </el-form-item>
-      <el-form-item label="物料编码">
-        <tag-input v-model="form.materialsCodeSet" placeholder="请输入" />
-      </el-form-item>
       <el-form-item label="车系" v-show="this.visibleCount === 3 || show">
         <fetch-select
             v-model="form.seriesIds"
@@ -379,10 +376,6 @@ export default {
       if (Array.isArray(this.form.materialsDescSet) && this.form.materialsDescSet.length <= 1) {
         delete data.materialsDescSet;
         data.materialsDescLike = this.form.materialsDescSet[0] || '';
-      }
-      if (Array.isArray(this.form.materialsCodeSet) && this.form.materialsCodeSet.length <= 1) {
-        delete data.materialsCodeSet;
-        data.materialsCodeLike = this.form.materialsCodeSet[0] || '';
       }
       if (this.form.createTime) {
         delete data.createTime;
