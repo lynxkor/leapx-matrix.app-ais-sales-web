@@ -563,7 +563,7 @@ export default {
           { props: 'usedRebateAmount', label: '使用返利金额', visible: true, width: 200 },
           { props: 'erpSaleOrderCode', label: 'ERP销售订单号', visible: true, width: 200 },
           { props: 'erpDeliverOrder', label: 'ERP交货单', visible: true, width: 200 },
-          { props: 'erpInvoiceCode', label: 'ERP发票号', visible: true, width: 200 },
+          { props: 'erpInvoiceCode', label: '税务发票号', visible: true, width: 200 },
           { props: 'syncSapMsg', label: '同步SAP状态', visible: true, width: 200 },
           { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
