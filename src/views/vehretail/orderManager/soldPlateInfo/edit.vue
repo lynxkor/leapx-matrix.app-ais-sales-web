@@ -236,13 +236,13 @@
                   {{ form.carBuyerPhone }}
                 </el-form-item>
                 <el-form-item label="证件类型：">
-                  {{ form.idCardTypeName || form.idCardType }}
+                  {{ form.idCardTypeLabel}}
                 </el-form-item>
                 <el-form-item label="证件号码：">
                   {{ form.idCardNo }}
                 </el-form-item>
                 <el-form-item label="车辆用途：">
-                  {{ form.vehiclePurposeName || form.vehiclePurpose }}
+                  {{ form.vehiclePurposeLabel }}
                 </el-form-item>
                 <el-form-item label="公告车型：">
                   {{ form.carSalesVersionName }}
