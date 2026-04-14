@@ -859,9 +859,8 @@ export default {
         deleteItem({
           idSet: ids
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
+          this.$router.push({
+            path: '/vehwholesale/certificate/vehicleCertificateRedemption',
           });
         });
       }).catch(() => {});

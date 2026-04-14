@@ -12,7 +12,7 @@
         <el-form-item label="VIN码">
           <tag-input v-model="form.vins" placeholder="请输入" />
         </el-form-item>
-         <el-form-item label="大区">
+         <el-form-item label="所属大区">
           <fetch-select
             filterable
             clearable
@@ -223,7 +223,7 @@ export default {
           { props: 'vin', label: 'VIN码', visible: true, width: 200 },
           { props: 'statusLabel', label: '车辆处理状态', visible: true, width: 200 },
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
-          { props: 'regionName', label: '大区', visible: true, width: 200 },
+          { props: 'regionName', label: '所属大区', visible: true, width: 200 },
           { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
           { props: 'wholesaleOrderCode', label: '整车批售订单编号', visible: true, width: 200 },
           { props: 'entOrderCode', label: '企业客户整车订单编号', visible: true, width: 200 },

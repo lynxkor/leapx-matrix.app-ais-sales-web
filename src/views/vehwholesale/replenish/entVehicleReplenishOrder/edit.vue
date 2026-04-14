@@ -542,6 +542,111 @@ export default {
     },
     title () {
       return '主键：' + this.form.id;
+    },
+    columns () {
+      const isEdit = this.isEditing;
+      return [
+        {
+          field: 'qty',
+          title: '数量',
+          editable: isEdit, // 动态绑定编辑状态
+          width: '80',
+          editRender: {
+            name: 'ElInput',
+            props: {
+              type: 'number'
+            }
+          }
+        },
+        {
+          field: 'standardPrice',
+          title: '标准价格',
+          width: '100',
+        },
+        {
+          field: 'salesPrice',
+          title: '销售价格',
+          editable: isEdit, // 动态绑定编辑状态
+          width: '150',
+          editRender: {
+            name: 'ElInput',
+            props: {
+              type: 'number'
+            }
+          },
+          cellEditChange: ({ row }) => {
+            // 销售价格修改后，自动赋值给标准价格
+            if (this.orderCategory === 21 || this.orderCategory === '21') {
+              row.standardPrice = row.salesPrice;
+            }
+          }
+        },
+        {
+          field: 'relatedTxnExTaxPrice',
+          title: '关联交易不含税价',
+          width: '150',
+        },
+        {
+          field: 'materialsCode',
+          title: '整车物料编码',
+          width: '150',
+        },
+        {
+          field: 'materialsDesc',
+          title: '物料描述',
+          width: '100',
+        },
+        {
+          field: 'modelName',
+          title: '车型',
+          width: '100',
+        },
+        {
+          field: 'drivingRangeName',
+          title: '选配续航',
+          width: '100',
+        },
+        {
+          field: 'rangePowerName',
+          title: '选配动力',
+          width: '100',
+        },
+        {
+          field: 'exteriorName',
+          title: '外饰风格',
+          width: '100',
+        },
+        {
+          field: 'interiorName',
+          title: '内饰风格',
+          width: '100',
+        },
+        {
+          field: 'wheelHubName',
+          title: '选配轮毂',
+          width: '100',
+        },
+        {
+          field: 'batteryCellName',
+          title: '电池电芯',
+          width: '100',
+        },
+        {
+          field: 'yearTypeName',
+          title: '年款',
+          width: '100',
+        },
+        {
+          field: 'roofName',
+          title: '车顶风格',
+          width: '100',
+        },
+        {
+          field: 'optionPackageName',
+          title: '选装包',
+          width: '80',
+        }
+      ];
     }
   },
   watch: {
@@ -630,106 +735,6 @@ export default {
       tableData: [],
       options: {
       },
-      columns: [
-        {
-          field: 'qty',
-          title: '数量',
-          editable: true,
-          width: '80',
-          editRender: {
-            name: 'ElInput',
-            props: {
-              type: 'number'
-            }
-          }
-        },
-        {
-          field: 'standardPrice',
-          title: '标准价格',
-          width: '100',
-        },
-        {
-          field: 'salesPrice',
-          title: '销售价格',
-          editable: true,
-          width: '150',
-          editRender: {
-            name: 'ElInput',
-            props: {
-              type: 'number'
-            }
-          },
-          cellEditChange: ({ row }) => {
-            // 销售价格修改后，自动赋值给标准价格
-            row.standardPrice = row.salesPrice;
-          }
-        },
-        {
-          field: 'relatedTxnExTaxPrice',
-          title: '关联交易不含税价',
-          width: '150',
-        },
-        {
-          field: 'materialsCode',
-          title: '整车物料编码',
-          width: '150',
-        },
-        {
-          field: 'materialsDesc',
-          title: '物料描述',
-          width: '100',
-        },
-        {
-          field: 'modelName',
-          title: '车型',
-          width: '100',
-        },
-        {
-          field: 'drivingRangeName',
-          title: '选配续航',
-          width: '100',
-        },
-        {
-          field: 'rangePowerName',
-          title: '选配动力',
-          width: '100',
-        },
-        {
-          field: 'exteriorName',
-          title: '外饰风格',
-          width: '100',
-        },
-        {
-          field: 'interiorName',
-          title: '内饰风格',
-          width: '100',
-        },
-        {
-          field: 'wheelHubName',
-          title: '选配轮毂',
-          width: '100',
-        },
-        {
-          field: 'batteryCellName',
-          title: '电池电芯',
-          width: '100',
-        },
-        {
-          field: 'yearTypeName',
-          title: '年款',
-          width: '100',
-        },
-        {
-          field: 'roofName',
-          title: '车顶风格',
-          width: '100',
-        },
-        {
-          field: 'optionPackageName',
-          title: '选装包',
-          width: '80',
-        }
-      ],
       rules: {
         orderCategory: [
           { required: true, message: '请输入订单分类', trigger: 'change' }
