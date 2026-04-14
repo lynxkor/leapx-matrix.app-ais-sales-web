@@ -62,7 +62,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
-                    :disabled="form.orderCategory === 1 || form.orderCategory === 8"
+                    :disabled="form.orderCategory === '1' || form.orderCategory === '8' || form.orderCategory === 1 || form.orderCategory === 8"
                   />
                 </el-form-item>
                  <el-form-item label="企业客户名称：" prop="entCustomerName">
