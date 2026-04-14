@@ -308,7 +308,7 @@ export default {
           { props: 'pickupContactMobile', label: '接车联系电话', visible: true, width: 200 },
           { props: 'terminalStatusLabel', label: '终端状态', visible: true, width: 200 },
           { props: 'statusLabel', label: '订单状态', visible: true, width: 200 },
-          { props: 'emergencyOrderLabel', label: '是否急单', visible: true, width: 200 },
+          { props: 'emergencyOrderLabel', label: '是否紧急订单', visible: true, width: 200 },
           { props: 'orderSyncStatusLabel', label: '订单同步状态', visible: true, width: 200 },
           { props: 'allocateStatusLabel', label: '配车状态', visible: true, width: 200 },
           { props: 'settleStatusLabel', label: '结算状态', visible: true, width: 200 },

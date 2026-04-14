@@ -12,7 +12,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.auditStatus === 0 || form.orderCategory === 4"
+        :showEditBtn="form.auditStatus === 0 || form.auditStatus === 4"
       >
         <template #status>
           {{ form.entReplenishOrderCode }}
@@ -920,10 +920,17 @@ export default {
         auditOpinion: data.remark
       };
       return batchAudit(params).then(() => {
-        this.$message({
-          type: 'success',
-          message: '提交成功'
-        });
+        if (params.audit === 1) {
+          this.$message({
+            type: 'success',
+            message: '审批成功'
+          });
+        } else if (params.audit === 0) {
+          this.$message({
+            type: 'success',
+            message: '驳回成功'
+          });
+        }
         this.detailRequest();
       });
     },
@@ -982,9 +989,8 @@ export default {
         showClose: false
       }).then(() => {
         deleteItem(ids).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
+          this.$router.push({
+            path: '/vehwholesale/replenish/entVehicleReplenishOrder',
           });
         });
       }).catch(() => {});

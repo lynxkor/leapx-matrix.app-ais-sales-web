@@ -31,14 +31,14 @@
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="整车批售订单号：" prop="wholesaleOrderCode">
-                   <!-- <el-input
+                   <el-input
                     placeholder="请输入"
                     v-model="form.wholesaleOrderCode"
                     clearable
                     @click="otherwholesaleOrderInfo"
                     :disabled="form.orderCategory !== '10'"
-                  /> -->
-                  <fetch-select
+                  />
+                  <!-- <fetch-select
                     :remote-method="getwholesaleOrderCodeList"
                       remote
                       v-model="form.wholesaleOrderCode"
@@ -50,7 +50,7 @@
                       :options="wholesaleOrderCodeList"
                       @change="otherwholesaleOrderInfo"
                       :disabled="form.orderCategory !== '10'"
-                     />
+                     /> -->
                 </el-form-item>
                  <el-form-item label="企业客户整车订单：" prop="entVehicleOrderCode">
                   <fetch-select

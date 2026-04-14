@@ -907,7 +907,13 @@ export default {
         return detail;
       }
     },
-    submitRequest () {
+    async submitRequest () {
+      // 对于跨月权益，需要校验OA流程编号不能为空
+      if (this.form.equityCategoryName === '跨月权益' && !this.form.oaProcessNo) {
+        this.$message.error('跨月权益类型的申请必须填写OA流程编号');
+        throw new Error('请填写OA流程编号');
+      }
+
       return addOrUpdate({ ...this.form });
     },
     openPane () {

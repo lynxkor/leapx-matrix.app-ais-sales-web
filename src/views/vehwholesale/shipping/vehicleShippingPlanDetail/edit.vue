@@ -125,7 +125,7 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="指定发运方式,来源WMS接口【车辆出库状态同步】的发运方式：" prop="actualDeliveryWay">
+                <el-form-item label="指定发运方式：" prop="actualDeliveryWay">
                   <el-input
                     placeholder="请输入"
                     v-model="form.actualDeliveryWay"
@@ -263,7 +263,7 @@
                   {{ form.deliveryWayLabel }}
                 </el-form-item>
                 <el-form-item label="发运方式：" prop="actualDeliveryWay">
-                  {{ form.actualDeliveryWayLabel }}
+                  {{ form.actualDeliveryWay }}
                 </el-form-item>
                 <el-form-item label="批售订单号：" prop="wholesaleOrderCode">
                   {{ form.wholesaleOrderCode }}
