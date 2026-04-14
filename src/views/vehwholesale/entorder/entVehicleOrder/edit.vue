@@ -148,7 +148,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="是否急单：" prop="emergencyOrder">
+                <el-form-item label="是否紧急订单：" prop="emergencyOrder">
                    <fetch-select
                       :request="fetchOptions"
                       enumCode="BooleanEnum"
@@ -294,7 +294,7 @@
                   <el-form-item label="订单状态：" prop="statusLabel">
                   {{ form.statusLabel }}
                 </el-form-item>
-                <el-form-item label="是否急单：" prop="emergencyOrderLabel">
+                <el-form-item label="是否紧急订单：" prop="emergencyOrderLabel">
                   {{ form.emergencyOrderLabel }}
                 </el-form-item>
                 <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
@@ -370,7 +370,7 @@
                 <el-form-item label="整车仓库：" prop="warehouseName">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.warehouseName"
+                    v-model="warehouseName"
                     clearable
                     disabled
                   />
@@ -639,7 +639,7 @@
                   {{ form.allocateTime }}
                 </el-form-item>
                 <el-form-item label="整车仓库：" prop="warehouseName">
-                  {{ form.warehouseName }}
+                  {{ warehouseName }}
                 </el-form-item>
                 <el-form-item label="结算时间：" prop="settleTime">
                   {{ form.settleTime }}
@@ -993,6 +993,7 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       orderCategoryOptions: [],
       settleFundTypeOptions: [],
+      warehouseName: '',
       accountData: [],
       form: { ...form },
       originalForm: { ...form },
@@ -1168,6 +1169,11 @@ export default {
           // if (this.$refs.containerRef) {
           //   this.$refs.containerRef.originalForm = { ...res };
           // }
+          if (res.vehicleVdcInventory) {
+            console.log('原始表单数据:111111', res.vehicleVdcInventory.warehouseName);
+            this.warehouseName = res.vehicleVdcInventory.warehouseName;
+          }
+          console.log('原始表单数据:222222', this.form);
 
           // 3. 【新增】数据加载完成后，再执行获取资金账户逻辑
           this.getFundAccount();

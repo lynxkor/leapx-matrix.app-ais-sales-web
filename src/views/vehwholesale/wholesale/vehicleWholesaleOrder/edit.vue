@@ -374,6 +374,22 @@
                     disabled
                   />
                 </el-form-item>
+                <el-form-item label="ERP交货单：" prop="erpDeliverOrder">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.erpDeliverOrder"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="税务发票号：" prop="erpInvoiceCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.erpInvoiceCode"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
                  <el-form-item label="结算时间：" prop="settleTime">
                   <el-date-picker
                     :default-time="['00:00:00', '23:59:59']"
@@ -541,6 +557,12 @@
                 </el-form-item>
                  <el-form-item label="ERP销售订单号：" prop="erpSaleOrderCode">
                   {{ form.erpSaleOrderCode }}
+                </el-form-item>
+                 <el-form-item label="ERP交货单：" prop="erpDeliverOrder">
+                  {{ form.erpDeliverOrder }}
+                </el-form-item>
+                <el-form-item label="税务发票号：" prop="erpInvoiceCode">
+                  {{ form.erpInvoiceCode }}
                 </el-form-item>
                 <el-form-item label="结算时间：" prop="settleTime">
                   {{ form.settleTime }}

@@ -144,14 +144,6 @@
                     clearable
                     disabled
                   />
-                <!-- </el-form-item>
-                     <el-form-item label="ERP发票号：" prop="erpInvoiceCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.erpInvoiceCode"
-                    clearable
-                    disabled
-                  /> -->
                 </el-form-item>
                    <el-form-item label="开票时间：" prop="invoiceTime">
                   <el-date-picker
@@ -164,7 +156,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="是否急单：" prop="emergencyOrder">
+                <el-form-item label="是否紧急订单：" prop="emergencyOrder">
                    <fetch-select
                       :request="fetchOptions"
                       enumCode="BooleanEnum"
@@ -298,16 +290,13 @@
                  <el-form-item label="物料描述：" prop="materialsDesc">
                   {{ form.materialsDesc }}
                 </el-form-item>
-                    <el-form-item label="专项活动：" prop="prodScheduleActivityName">
+                <el-form-item label="专项活动：" prop="prodScheduleActivityName">
                   {{ form.prodScheduleActivityName }}
                 </el-form-item>
-                <!-- <el-form-item label="ERP发票号：" prop="erpInvoiceCode">
-                  {{ form.erpInvoiceCode }}
-                </el-form-item> -->
                 <el-form-item label="开票日期：" prop="invoiceTime">
                   {{ form.invoiceTime }}
                 </el-form-item>
-                <el-form-item label="是否急单：" prop="emergencyOrderLabel">
+                <el-form-item label="是否紧急订单：" prop="emergencyOrderLabel">
                   {{ form.emergencyOrderLabel }}
                 </el-form-item>
                 <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
@@ -414,6 +403,22 @@
                   <el-input
                     placeholder="请输入"
                     v-model="form.erpSaleOrderCode"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                 <el-form-item label="ERP交货单：" prop="erpDeliverOrder">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.erpDeliverOrder"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="：" prop="erpInvoiceCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.erpInvoiceCode"
                     clearable
                     disabled
                   />
@@ -627,6 +632,12 @@
                 </el-form-item>
                  <el-form-item label="ERP销售订单号：" prop="erpSaleOrderCode">
                   {{ form.erpSaleOrderCode }}
+                </el-form-item>
+                 <el-form-item label="ERP交货单：" prop="erpDeliverOrder">
+                  {{ form.erpDeliverOrder }}
+                </el-form-item>
+                <el-form-item label="税务发票号：" prop="erpInvoiceCode">
+                  {{ form.erpInvoiceCode }}
                 </el-form-item>
                 <el-form-item label="结算时间：" prop="settleTime">
                   {{ form.settleTime }}

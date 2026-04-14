@@ -23,7 +23,6 @@
           v-model="form.status"
           placeholder="请选择"
           clearable
-          multiple
           filterable
         />
       </el-form-item>
@@ -407,7 +406,7 @@ export default {
     // 批量启用停用
     handleBatchEnable (status) {
       const ids = this.selectionList.map(item => item.id) || [];
-      enableItem({ ids: ids, statsu: status }).then(() => {
+      enableItem({ idSet: ids, status: status }).then(() => {
         this.$message({
           type: 'success',
           message: '操作成功!'
