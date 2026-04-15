@@ -280,7 +280,7 @@ export default {
       }
       exportTable({
         businessType: '承诺配置管理',
-        dataFetchPath: 'vehretail/web/orderManager/dealerCommitmentConfig/page',
+        dataFetchPath: '/vr/web/order/dealerCommitmentConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
