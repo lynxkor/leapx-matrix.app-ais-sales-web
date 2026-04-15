@@ -163,7 +163,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车批售-整车资金-资金账户月度余额管理',
+      pageTitle: '整车批售-整车资金-资金账户月度余额',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-fundAccountMonthBalance',
@@ -312,7 +312,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '整车批售-整车资金-资金账户月度余额管理',
+        businessType: '整车批售-整车资金-资金账户月度余额',
         dataFetchPath: 'vw/web/fund/fundAccountMonthBalance/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -320,7 +320,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '整车批售-整车资金-资金账户月度余额管理.xlsx');
+            await downloadExcel(res.excelUrl, '整车批售-整车资金-资金账户月度余额.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

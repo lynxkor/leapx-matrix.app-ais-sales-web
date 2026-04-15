@@ -2981,7 +2981,7 @@ const routes = [
       name: 'FundAccountMonthBalance',
       component: () => import('@/views/vehwholesale/fund/fundAccountMonthBalance/index.vue'),
       meta: {
-        name: '整车批售-整车资金-资金账户月度余额管理',
+        name: '整车批售-整车资金-资金账户月度余额',
         keepAlive: true
       }
     }, {
@@ -2989,7 +2989,7 @@ const routes = [
       name: 'FundAccountMonthBalanceEdit',
       component: () => import('@/views/vehwholesale/fund/fundAccountMonthBalance/edit.vue'),
       meta: {
-        name: '整车批售-整车资金-资金账户月度余额管理详情',
+        name: '整车批售-整车资金-资金账户月度余额详情',
         noResourceUrl: 'true'
       }
     }, {
