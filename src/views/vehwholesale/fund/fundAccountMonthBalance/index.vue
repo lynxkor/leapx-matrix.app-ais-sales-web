@@ -401,10 +401,6 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
-      if (this.form.parentCompanyNames.length === 1) {
-        delete data.parentCompanyNames;
-        data.parentCompanyName = this.form.parentCompanyNames[0];
-      }
       // 排序字段
       data.sortColumns = this.sortColumns;
       return data;
