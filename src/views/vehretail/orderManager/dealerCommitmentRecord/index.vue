@@ -299,7 +299,7 @@ export default {
       }
       exportTable({
         businessType: '承诺结果',
-        dataFetchPath: 'vehretail/web/orderManager/dealerCommitmentRecord/page',
+        dataFetchPath: '/vr/web/order/dealerCommitmentRecord/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

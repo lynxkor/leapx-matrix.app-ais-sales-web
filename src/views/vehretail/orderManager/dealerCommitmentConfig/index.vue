@@ -280,7 +280,7 @@ export default {
       }
       exportTable({
         businessType: '承诺配置管理',
-        dataFetchPath: 'vehretail/web/orderManager/dealerCommitmentConfig/page',
+        dataFetchPath: '/vr/web/order/dealerCommitmentConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -406,6 +406,15 @@ export default {
     // 批量启用停用
     handleBatchEnable (status) {
       const ids = this.selectionList.map(item => item.id) || [];
+      const validateStatusIds = this.selectionList.filter(item => item.status === status).map(item => item.id);
+      if (validateStatusIds.length > 0) {
+        const msg = '已' + (status === 1 ? '启用' : '停用') + '不可重复操作';
+        this.$message({
+          type: 'warning',
+          message: msg
+        });
+        return;
+      }
       enableItem({ idSet: ids, status: status }).then(() => {
         this.$message({
           type: 'success',
