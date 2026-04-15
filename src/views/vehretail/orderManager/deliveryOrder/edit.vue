@@ -201,6 +201,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    @change="onFinancialSchemeChange"
                   />
                 </el-form-item>
                 <el-form-item label="金融按揭进度：" prop="financialMortgageProgress">
@@ -212,6 +213,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    :disabled="form.financialScheme === '1010'"
                   />
                 </el-form-item>
                 <el-form-item label="交车时里程：" prop="deliveryMileage">
@@ -797,6 +799,11 @@ export default {
     getPaymentRecordList,
     handleSaleUserChange (val, row, name) {
       this.form[name + 'Name'] = row.username;
+    },
+    onFinancialSchemeChange (val) {
+      if (val === '1010') {
+        this.form.financialMortgageProgress = '';
+      }
     },
     // 统一按钮 loading 管理工具方法
     // 用法：await this.withLoading('btnName', async () => { await api.xxx() })
