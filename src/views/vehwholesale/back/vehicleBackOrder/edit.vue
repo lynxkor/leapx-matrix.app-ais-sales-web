@@ -72,7 +72,14 @@
 
                 </el-form-item>
                  <el-form-item label="大区：">
-                  <fetch-select
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.regionName"
+                    clearable
+                    maxlength="150"
+                    disabled
+                  />
+                  <!-- <fetch-select
                       filterable
                       clearable
                       remote
@@ -81,8 +88,8 @@
                       value-key="orgCode"
                       label-key="orgName"
                       @change="getRegionrName"
-                      :disabled="isEditing"
-                    />
+                      disabled
+                    /> -->
                 </el-form-item>
                 <el-form-item label="退车类型：" prop="backType">
                   <fetch-select
@@ -738,10 +745,17 @@ export default {
         opinion: data.remark
       };
       return audit(params).then(() => {
-        this.$message({
-          type: 'success',
-          message: '审核提交成功'
-        });
+        if (params.audit === 1) {
+          this.$message({
+            type: 'success',
+            message: '审批成功'
+          });
+        } else if (params.audit === 0) {
+          this.$message({
+            type: 'success',
+            message: '驳回成功'
+          });
+        }
         this.$refs.containerRef.loadDetail();
       });
     },
@@ -762,9 +776,8 @@ export default {
         deleteItem(
           { idSet: [ids] }
         ).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
+          this.$router.push({
+            path: '/vehwholesale/back/vehicleBackOrder',
           });
           this.getData();
         });
@@ -777,16 +790,21 @@ export default {
       return getRigion({ orgName: params });
     },
     getdealerCompanyCode (val, row) {
-      console.log('getdealerCompanyCode', val, row);
+      console.log('getdealerCompanyCode', row.regionCode, row.regionName);
       this.form.dealerCompanyName = row.companyName;
       this.form.dealerCompanyCode = row.companyCode;
+      this.form.regionCode = row.regionCode;
+      this.form.regionName = row.regionName;
     },
     async getDealerListByName (params) {
       return await listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
     },
     getentCustomerName (val, row) {
+      console.log('getentCustomerName', row.regionCode, row.regionName);
       this.form.entCustomerName = row.companyName;
       this.form.entCustomerCode = row.companyCode;
+      this.form.regionCode = row.regionCode;
+      this.form.regionName = row.regionName;
     },
     async listNetworkParentCompany (query) {
       return networkParentCompanyItem({ parentCompanyName: query, pageNum: 1, pageSize: 20 });

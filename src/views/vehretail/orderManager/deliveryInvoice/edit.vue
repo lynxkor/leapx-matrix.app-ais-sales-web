@@ -4,6 +4,8 @@
       <!-- TIPS: 如果需要竖排，direction="vertical" -->
       <edit-base-container
         ref="containerRef"
+        v-loading="uploadLoading"
+        element-loading-text="附件上传中，请稍候..."
         :id="_id"
         :title="title"
         :isEditing.sync="isEditing"
@@ -588,6 +590,7 @@
                   :readonly="form.status === 99 || !isEditing"
                   type="card"
                   @before-upload-click="handleBeforeUploadClick(index, $event)"
+                  @upload-loading-change="handleUploadLoadingChange($event)"
                 />
             </div>
           </section>
@@ -800,6 +803,8 @@ export default {
       moduleKey: 'AISVRFDI-deliveryInvoice',
       loading: false,
       submitLoading: false,
+      uploadLoading: false,
+      uploadLoadingCounter: 0,
       // 附件列表配置
       attachmentList: [
         { label: '车主身份证件', required: true, configCode: 'mcs_vehnetwork', attachType: '车主身份证件' },
@@ -953,6 +958,23 @@ export default {
   mounted () {
   },
   methods: {
+    // 附件上传loading变化
+    handleUploadLoadingChange (loading) {
+      if (loading) {
+        this.uploadLoadingCounter++;
+        this.uploadLoading = true;
+      } else {
+        this.uploadLoadingCounter--;
+        if (this.uploadLoadingCounter <= 0) {
+          this.uploadLoadingCounter = 0;
+          this.uploadLoading = false;
+          // 上传全部完成后刷新详情数据
+          setTimeout(() => {
+            this.$refs.containerRef?.loadDetail();
+          }, 300);
+        }
+      }
+    },
     // 附件上传前判断
     handleBeforeUploadClick (index, { allow, openFileDialog: _openFileDialog }) {
       checkUpload(this.form.id).then(res => {

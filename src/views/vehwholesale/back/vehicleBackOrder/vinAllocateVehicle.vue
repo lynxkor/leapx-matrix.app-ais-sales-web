@@ -60,8 +60,8 @@
       </section>
     </div>
     <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="handleSubmit" :loading="submitLoading">保存</el-button>
       <el-button @click="handleCancel">取消</el-button>
-      <el-button type="primary" @click="handleSubmit" :loading="submitLoading">提交</el-button>
     </div>
   </el-dialog>
 </template>
