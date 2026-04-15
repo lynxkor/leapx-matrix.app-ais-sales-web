@@ -885,7 +885,7 @@ export default {
     saveRowEdit (row, defer) {
       addOrUpdateDetail(row).then(id => {
         defer.resolve(id);
-        this.$message.success('提交成功');
+        this.$message.success('添加成功');
         this.$refs.containerRef.loadDetail();
         this.$emit('replace');
       }).catch(e => {
@@ -978,7 +978,7 @@ export default {
         batchCancel({
           idSet: [this._id],
         }).then(() => {
-          this.$message.success('提交成功');
+          this.$message.success('作废成功');
           this.$refs.containerRef.loadDetail();
         });
       }).catch(() => {});
@@ -1124,7 +1124,7 @@ export default {
       addOrUpdateDetail(data).then(() => {
         this.$message({
           type: 'success',
-          message: '提交成功!'
+          message: '添加成功!'
         });
         this.$refs.addEntVehicleReplishOrderDialog.handleCancel();
         this.detailRequest();
@@ -1134,8 +1134,9 @@ export default {
       const id = this._id;
       if (id) {
         return getDetail(id).then(res => {
-          this.form = { ...this.form, ...res };
           this.getFundAccount();
+          this.form = { ...this.form, ...res };
+          console.log(this.form);
           // 设置 areaCode 并匹配省市区名称
           if (res.provinceCode && res.cityCode) {
             this.areaCode = [
