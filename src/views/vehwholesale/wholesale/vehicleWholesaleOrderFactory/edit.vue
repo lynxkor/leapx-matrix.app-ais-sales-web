@@ -164,7 +164,7 @@
                       placeholder="请选择"
                       clearable
                       filterable
-                      disabled
+                      :disabled = 'form.status === 99 || form.status === "99"'
                     />
                 </el-form-item>
                 <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
@@ -174,7 +174,7 @@
                     :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd HH:mm:ss"
                     placeholder="选择日期时间"
-                    :disabled="form.emergencyOrder === 0"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="急单备注：" prop="emergencyOrderRemark">
@@ -183,6 +183,7 @@
                     v-model="form.emergencyOrderRemark"
                     clearable
                     maxlength="300"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="确认说明：" prop="confirmRemark">
@@ -229,6 +230,7 @@
                       placeholder="请选择"
                       clearable
                       filterable
+                      :disabled = 'form.status === 99 || form.status === "99"'
                     />
                 </el-form-item>
                    <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
@@ -415,7 +417,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="：" prop="erpInvoiceCode">
+                <el-form-item label="税务发票号：" prop="erpInvoiceCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.erpInvoiceCode"
@@ -560,6 +562,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    :disabled="needAutoAllocateCarStatus.includes(form.status)"
                   />
                 </el-form-item>
                 <el-form-item label="整车物流预留：" prop="logisticsReserveLabel">
@@ -720,6 +723,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    :disabled="needAutoAllocateCarStatus.includes(form.settleFundType)"
                     @change="clearCache"
                   />
                 </el-form-item>
@@ -1147,6 +1151,7 @@ export default {
       showBatchCancelSettleDialog: false,
       showComponentTabelDialog: false,
       showCancleBatchAllocateVehicleDialog: false,
+      needAutoAllocateCarStatus: [1, 2, 10, 21, 99, 3],
       yes_no_enum: YES_NO_ENUM,
       true_false_enum: TRUE_FALSE_ENUM,
       ALLOWED_STATUS: [0, 11],

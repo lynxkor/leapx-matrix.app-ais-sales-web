@@ -155,23 +155,6 @@
                     disabled
                   />
                 </el-form-item>
-                   <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
-                  <el-date-picker
-                    type="datetime"
-                    v-model="form.emergencyOrderTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    placeholder="选择日期时间"
-                  />
-                </el-form-item>
-                  <el-form-item label="急单备注：" prop="emergencyOrderRemark">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.emergencyOrderRemark"
-                    clearable
-                    maxlength="300"
-                  />
-                </el-form-item>
                 <el-form-item label="确认说明：" prop="confirmRemark">
                   <el-input
                     placeholder="请输入"
