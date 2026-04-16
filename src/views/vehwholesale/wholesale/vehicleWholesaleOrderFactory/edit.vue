@@ -145,6 +145,14 @@
                     disabled
                   />
                 </el-form-item>
+                 <el-form-item label="税务发票号：" prop="taxInvoiceCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.taxInvoiceCode"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
                    <el-form-item label="开票时间：" prop="invoiceTime">
                   <el-date-picker
                     :default-time="['00:00:00', '23:59:59']"
@@ -295,7 +303,10 @@
                 <el-form-item label="专项活动：" prop="prodScheduleActivityName">
                   {{ form.prodScheduleActivityName }}
                 </el-form-item>
-                <el-form-item label="开票日期：" prop="invoiceTime">
+                <el-form-item label="税务发票号：" prop="taxInvoiceCode">
+                  {{ form.taxInvoiceCode }}
+                </el-form-item>
+                <el-form-item label="开票时间：" prop="invoiceTime">
                   {{ form.invoiceTime }}
                 </el-form-item>
                 <el-form-item label="是否紧急订单：" prop="emergencyOrderLabel">
@@ -417,14 +428,14 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="税务发票号：" prop="erpInvoiceCode">
+                <el-form-item label="ERP发票号：" prop="erpInvoiceCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.erpInvoiceCode"
                     clearable
                     disabled
                   />
-                </el-form-item>
+               </el-form-item>
                  <el-form-item label="结算时间：" prop="settleTime">
                   <el-date-picker
                     :default-time="['00:00:00', '23:59:59']"
@@ -639,7 +650,7 @@
                  <el-form-item label="ERP交货单：" prop="erpDeliverOrder">
                   {{ form.erpDeliverOrder }}
                 </el-form-item>
-                <el-form-item label="税务发票号：" prop="erpInvoiceCode">
+                <el-form-item label="ERP发票号：" prop="erpInvoiceCode">
                   {{ form.erpInvoiceCode }}
                 </el-form-item>
                 <el-form-item label="结算时间：" prop="settleTime">
@@ -1409,7 +1420,7 @@ export default {
         vinAllocateVehicleSubmitItem(params).then(() => {
           this.$message({
             type: 'success',
-            message: '提交成功!'
+            message: '配车成功!'
           });
           this.getDetailData();
         });

@@ -173,7 +173,7 @@
                     v-model="form.financialOrganizationId"
                     clearable
                     filterable
-                    labelKey="name"
+                    labelKey="organizationName"
                     valueKey="id"
                     placeholder="请选择金融机构"
                   />
@@ -765,18 +765,20 @@ export default {
       } else {
         this.form.isCreditSale = 0;
       }
+      // 清空金融机构列表
+      this.financialOrganizationList = [];
       listFundAccount({
         dealerCompanyCodes: [this.dealerCompanyCodes],
         fundTypes: ['2010']
       }).then((res) => {
         console.log('获取账户列表:', res.records);
-        res.records.map(account => {
-          // 检查是否已存在，避免重复
-          this.financialOrganizationList.push({
-            id: account.financialOrganizationId,
-            name: account.financialOrganizationName
-          });
-        });
+        // 筛选 validIfCreditSaleAccount === true 的记录
+        this.financialOrganizationList = res.records
+          .filter(account => account.validIfCreditSaleAccount === true)
+          .map(account => ({
+            id: account.id,
+            organizationName: account.financialOrganizationName
+          }));
       }).catch(() => {});
       console.log('结算资金类型改变:', val);
     },

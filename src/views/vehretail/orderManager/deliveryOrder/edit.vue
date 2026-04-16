@@ -28,7 +28,7 @@
           <el-button v-if="form.status === 4" v-permission="moduleKey+'-confirmPayment'" size="small" :loading="buttonLoading['confirmPayment']" @click="handleConfirmPayment">确认收款</el-button>
           <el-button v-if="form.status === 4 && form.deliveryConfirmPdfUrl" v-permission="moduleKey+'-deliveryConfirmPush'" size="small" :loading="buttonLoading['repushConfirmOrder']" @click="handleRepushConfirmOrder">交车确认单补推</el-button>
           <el-button v-if="form.status !== 7 && form.status !== 99 && form.deliveryConfirmStatus === 15" v-permission="moduleKey+'-deliveryConfirmResign'" size="small" @click="handleReSignConfirmOrder">交车确认单重签</el-button>
-          <el-button v-if="form.deliveryConfirmStatus === 15" v-permission="moduleKey+'-viewDeliveryConfirm'" size="small" @click="handleViewConfirmOrder">查看交车确认单</el-button>
+          <el-button v-if="form.deliveryConfirmStatus === 15 && form.status !== 99" v-permission="moduleKey+'-viewDeliveryConfirm'" size="small" @click="handleViewConfirmOrder">查看交车确认单</el-button>
           <el-button v-if="form.status === 5" v-permission="moduleKey+'-uploadInvoice'" size="small" @click="handleUploadInvoice">上传发票</el-button>
           <el-button v-if="form.status === 5" v-permission="moduleKey+'-cancelPayment'" size="small" @click="handlePaymentWithdraw">收款撤回</el-button>
           <el-button v-if="form.status === 7" v-permission="moduleKey+'-cancelDelivery'" size="small" @click="handleDeliveryWithdraw">交车撤回</el-button>
@@ -201,6 +201,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    @change="onFinancialSchemeChange"
                   />
                 </el-form-item>
                 <el-form-item label="金融按揭进度：" prop="financialMortgageProgress">
@@ -212,6 +213,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    :disabled="form.financialScheme === '1010'"
                   />
                 </el-form-item>
                 <el-form-item label="交车时里程：" prop="deliveryMileage">
@@ -797,6 +799,11 @@ export default {
     getPaymentRecordList,
     handleSaleUserChange (val, row, name) {
       this.form[name + 'Name'] = row.username;
+    },
+    onFinancialSchemeChange (val) {
+      if (val === '1010') {
+        this.form.financialMortgageProgress = '';
+      }
     },
     // 统一按钮 loading 管理工具方法
     // 用法：await this.withLoading('btnName', async () => { await api.xxx() })

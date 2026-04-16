@@ -609,7 +609,7 @@ export default {
         batchconfirmSign({
           idSet: ids,
         }).then(() => {
-          this.$message.success('提交成功');
+          this.$message.success('签收合格证成功');
           this.getData();
         });
       }).catch(() => {});

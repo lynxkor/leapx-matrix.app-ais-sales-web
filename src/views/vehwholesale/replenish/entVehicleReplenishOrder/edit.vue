@@ -127,9 +127,7 @@
                 </el-form-item>
                  <el-form-item label="金融机构：" prop="financialOrganizationId">
                   <fetch-select
-                      :remote-method="repairItemSearch"
-                      remote
-                      reserve-keyword
+                      :options="financialOrganizationOptions"
                       labelKey="organizationName"
                       valueKey="id"
                       v-model="form.financialOrganizationId"
@@ -257,7 +255,7 @@
                   />
                 </el-form-item>
 
-                <el-form-item label="省市区：" required>
+                <el-form-item label="省市区：">
                   <el-cascader
                     placeholder="请选择省市区"
                     v-model="areaCode"
@@ -492,6 +490,7 @@ const defaultForm = {
   totalAmount: '',
   settleFundType: '',
   financialOrganizationId: '',
+  financialOrganizationName: '',
   orderTime: new Date(),
   saleDealerCode: '',
   saleDealerName: '',
@@ -721,6 +720,7 @@ export default {
       districtOptions: [],
       cityOptions: [],
       saleCompanyOptions: [],
+      financialOrganizationOptions: [],
       form: { ...form },
       originalForm: { ...form },
       orgProps: {
@@ -782,6 +782,7 @@ export default {
       this.form.settleFundType = '';
       this.form.settleFundTypeLabel = '';
       this.settleFundTypeOptions = [];
+      this.financialOrganizationOptions = [];
       if (!this.form.entCustomerName || !this.form.saleCompanyName) {
         return;
       }
@@ -806,6 +807,14 @@ export default {
           });
           // 将 Map 的值转换为数组并赋值
           this.settleFundTypeOptions = Array.from(uniqueMap.values());
+
+          // 筛选金融机构选项：fundType === 2010 且 validIfCreditSaleAccount === true
+          this.financialOrganizationOptions = res.records
+            .filter(item => item.fundType === 2010 && item.validIfCreditSaleAccount === true)
+            .map(item => ({
+              id: item.financialOrganizationId,
+              organizationName: item.financialOrganizationName
+            }));
         }
       }).catch(() => {
       });
@@ -1134,8 +1143,8 @@ export default {
       const id = this._id;
       if (id) {
         return getDetail(id).then(res => {
-          this.getFundAccount();
           this.form = { ...this.form, ...res };
+          this.getFundAccount();
           console.log(this.form);
           // 设置 areaCode 并匹配省市区名称
           if (res.provinceCode && res.cityCode) {
