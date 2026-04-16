@@ -367,7 +367,7 @@ import { networkParentCompanyItem } from '@/api/vehwholesale/replenish/entVehicl
 import Upload from '@/libs/components/UploadDialog';
 import auditDialog from '@/libs/components/auditDialog';
 import vinAllocateVehicle from './vinAllocateVehicle.vue';
-import { addOrUpdate as detailAddOrUpdate, deleteItem as detailDeleteItem } from '@/api/vehwholesale/back/vehicleBackOrderDetail/index';
+import { addOrUpdate as detailAddOrUpdate, deleteItem as detailDeleteItem, edit } from '@/api/vehwholesale/back/vehicleBackOrderDetail/index';
 import AisAttachment from '@/libs/components/AisAttachment';
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -626,11 +626,15 @@ export default {
       this.form.regionName = row.orgName;
     },
     handleSaveRow (row) {
+      console.log('handleSaveRow', row);
       const params = {
-        vehicleBackOrderId: this._id,
-        items: [row]
+        id: row.id,
+        actualVehicleReturn: row.actualVehicleReturn,
+        salesDeptReserve: row.salesDeptReserve,
+        vehicleLogisticsReserve: row.vehicleLogisticsReserve,
+        remark: row.remark,
       };
-      detailAddOrUpdate(params).then(() => {
+      edit(params).then(() => {
         this.$message.success('保存成功');
         // 刷新详情以获取最新数据
         this.$refs.containerRef.loadDetail();

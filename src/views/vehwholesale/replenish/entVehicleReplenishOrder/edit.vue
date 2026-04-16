@@ -668,12 +668,12 @@ export default {
     },
     'form.settleFundType': {
       handler (val) {
-        if (val === '2010') {
-          this.rules.financialOrganizationId = [
-            { required: true, message: '请输入金融机构', trigger: 'change' }
-          ];
+        if (val === '2010'  || val === 2010) {
+          this.$set(this.rules, 'financialOrganizationId', [
+            { required: true, message: '请选择金融机构', trigger: 'change' }
+          ]);
           this.form.creditSaleFlag = 0;
-        } else if (val === '1050') {
+        } else if (val === '1050' || val === 1050) {
           this.rules.financialOrganizationId = [];
           this.form.creditSaleFlag = 1;
         } else if (val === '1010') {
@@ -1091,6 +1091,7 @@ export default {
       }
     },
     getDealersForParentCompany (val) {
+      console.log('getDealersForParentCompany1111111');
       listDealersForParentCompany({ companyCode: val }).then(res => {
         this.saleCompanyOptions = res;
       });
@@ -1144,6 +1145,7 @@ export default {
       if (id) {
         return getDetail(id).then(res => {
           this.form = { ...this.form, ...res };
+          this.getDealersForParentCompany(res.entCustomerCode);
           this.getFundAccount();
           console.log(this.form);
           // 设置 areaCode 并匹配省市区名称
@@ -1182,7 +1184,6 @@ export default {
         this.form.districtCode = '';
         this.form.districtName = '';
       }
-      console.log('submitRequest', this.form);
       return addOrUpdate({ ...this.form });
     },
     // 打开侧边栏
