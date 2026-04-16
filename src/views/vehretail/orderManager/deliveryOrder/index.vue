@@ -297,6 +297,9 @@ export default {
             fixed: 'right',
             buttons: [{
               name: '编辑',
+              show: (row) => {
+                return row.status !== 99;
+              },
               click: (rowIndex, row) => {
                 this.$router.push({
                   path: '/vehretail/orderManager/deliveryOrder/edit',
