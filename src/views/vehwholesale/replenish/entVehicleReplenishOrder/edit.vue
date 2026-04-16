@@ -1143,8 +1143,8 @@ export default {
       const id = this._id;
       if (id) {
         return getDetail(id).then(res => {
-          this.getFundAccount();
           this.form = { ...this.form, ...res };
+          this.getFundAccount();
           console.log(this.form);
           // 设置 areaCode 并匹配省市区名称
           if (res.provinceCode && res.cityCode) {
