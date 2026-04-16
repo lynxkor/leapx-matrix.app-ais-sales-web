@@ -145,6 +145,14 @@
                     disabled
                   />
                 </el-form-item>
+                 <el-form-item label="税务发票号：" prop="taxInvoiceCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.taxInvoiceCode"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
                    <el-form-item label="开票时间：" prop="invoiceTime">
                   <el-date-picker
                     :default-time="['00:00:00', '23:59:59']"
@@ -164,7 +172,7 @@
                       placeholder="请选择"
                       clearable
                       filterable
-                      disabled
+                      :disabled = 'form.status === 99 || form.status === "99"'
                     />
                 </el-form-item>
                 <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
@@ -174,7 +182,7 @@
                     :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd HH:mm:ss"
                     placeholder="选择日期时间"
-                    :disabled="form.emergencyOrder === 0"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="急单备注：" prop="emergencyOrderRemark">
@@ -183,6 +191,7 @@
                     v-model="form.emergencyOrderRemark"
                     clearable
                     maxlength="300"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="确认说明：" prop="confirmRemark">
@@ -229,6 +238,7 @@
                       placeholder="请选择"
                       clearable
                       filterable
+                      :disabled = 'form.status === 99 || form.status === "99"'
                     />
                 </el-form-item>
                    <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
@@ -293,7 +303,10 @@
                 <el-form-item label="专项活动：" prop="prodScheduleActivityName">
                   {{ form.prodScheduleActivityName }}
                 </el-form-item>
-                <el-form-item label="开票日期：" prop="invoiceTime">
+                <el-form-item label="税务发票号：" prop="taxInvoiceCode">
+                  {{ form.taxInvoiceCode }}
+                </el-form-item>
+                <el-form-item label="开票时间：" prop="invoiceTime">
                   {{ form.invoiceTime }}
                 </el-form-item>
                 <el-form-item label="是否紧急订单：" prop="emergencyOrderLabel">
@@ -415,14 +428,14 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="：" prop="erpInvoiceCode">
+                <el-form-item label="ERP发票号：" prop="erpInvoiceCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.erpInvoiceCode"
                     clearable
                     disabled
                   />
-                </el-form-item>
+               </el-form-item>
                  <el-form-item label="结算时间：" prop="settleTime">
                   <el-date-picker
                     :default-time="['00:00:00', '23:59:59']"
@@ -560,6 +573,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    :disabled="needAutoAllocateCarStatus.includes(form.status)"
                   />
                 </el-form-item>
                 <el-form-item label="整车物流预留：" prop="logisticsReserveLabel">
@@ -636,7 +650,7 @@
                  <el-form-item label="ERP交货单：" prop="erpDeliverOrder">
                   {{ form.erpDeliverOrder }}
                 </el-form-item>
-                <el-form-item label="税务发票号：" prop="erpInvoiceCode">
+                <el-form-item label="ERP发票号：" prop="erpInvoiceCode">
                   {{ form.erpInvoiceCode }}
                 </el-form-item>
                 <el-form-item label="结算时间：" prop="settleTime">
@@ -720,6 +734,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    :disabled="needAutoAllocateCarStatus.includes(form.status)"
                     @change="clearCache"
                   />
                 </el-form-item>
@@ -1147,6 +1162,7 @@ export default {
       showBatchCancelSettleDialog: false,
       showComponentTabelDialog: false,
       showCancleBatchAllocateVehicleDialog: false,
+      needAutoAllocateCarStatus: [1, 2, 10, 21, 99, 3],
       yes_no_enum: YES_NO_ENUM,
       true_false_enum: TRUE_FALSE_ENUM,
       ALLOWED_STATUS: [0, 11],
@@ -1404,7 +1420,7 @@ export default {
         vinAllocateVehicleSubmitItem(params).then(() => {
           this.$message({
             type: 'success',
-            message: '提交成功!'
+            message: '配车成功!'
           });
           this.getDetailData();
         });

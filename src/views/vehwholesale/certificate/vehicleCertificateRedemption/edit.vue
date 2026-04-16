@@ -30,7 +30,7 @@
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" :rules="wholesaleRules" ref="wholesaleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="整车批售订单号：" prop="wholesaleOrderCode">
+                <el-form-item label="整车批售订单号：" prop="wholesaleOrderCode" :rules="orderCategory == '10' ? wholesaleRules.wholesaleOrderCode : []">
                   <el-tooltip :disabled="!form.wholesaleOrderCode" :content="form.wholesaleOrderCode" placement="top">
                     <el-input
                       style="width: 70%;"
@@ -43,7 +43,7 @@
                   </el-tooltip>
                    <el-button size="small" @click="openWholesaleDialog" :disabled="orderCategory !== '10'">选择</el-button>
                 </el-form-item>
-                <el-form-item label="企业客户整车订单：" prop="entVehicleOrderCode">
+                <el-form-item label="企业客户整车订单：" prop="entVehicleOrderCode" :rules="orderCategory == '20' ? wholesaleRules.entVehicleOrderCode : []">
                   <el-tooltip :disabled="!form.entVehicleOrderCode" :content="form.entVehicleOrderCode" placement="top">
                     <el-input
                       style="width: 70%;"
@@ -57,7 +57,13 @@
                   <el-button size="small" @click="openEntDialog" :disabled="orderCategory !== '20'">选择</el-button>
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                   <fetch-select
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.dealerCompanyName"
+                    clearable
+                    disabled
+                  />
+                   <!-- <fetch-select
                       filterable
                       clearable
                       remote
@@ -67,10 +73,16 @@
                       value-key="companyCode"
                       label-key="companyName"
                       disabled
-                    />
+                    /> -->
                 </el-form-item>
                   <el-form-item label="销售门店名称：" prop="saleDealerName">
-                    <fetch-select
+                    <el-input
+                    placeholder="请输入"
+                    v-model="form.saleDealerName"
+                    clearable
+                    disabled
+                  />
+                    <!-- <fetch-select
                         filterable
                         clearable
                         remote
@@ -80,7 +92,7 @@
                         value-key="storeCode"
                         label-key="storeName"
                         disabled
-                      />
+                      /> -->
 
                 </el-form-item>
                     <el-form-item label="VIN码：" prop="vin">
@@ -221,7 +233,7 @@
                   />
                 </el-form-item>
 
-                 <el-form-item label="车辆零售价：" prop="vehiclePrice">
+                 <el-form-item label="车辆售价：" prop="vehiclePrice">
                   <el-input
                     placeholder="请输入"
                     v-model="form.vehiclePrice"
@@ -229,7 +241,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="批售价：" prop="salePrice">
+                <el-form-item label="销售价：" prop="salePrice">
                   <el-input
                     placeholder="请输入"
                     v-model="form.salePrice"
@@ -328,10 +340,10 @@
                 <el-form-item label="资金结算类型：" prop="settleFundTypeLabel">
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
-                <el-form-item label="车辆零售价：" prop="vehiclePrice">
+                <el-form-item label="车辆售价：" prop="vehiclePrice">
                   {{ form.vehiclePrice }}
                 </el-form-item>
-                <el-form-item label="批售价：" prop="salePrice">
+                <el-form-item label="销售价：" prop="salePrice">
                   {{ form.salePrice }}
                 </el-form-item>
                 <el-form-item label="首付款比例：" prop="downPaymentRatio">
@@ -380,6 +392,7 @@
                     v-model="form.receiverName"
                     clearable
                     maxlength="15"
+                    :disabled="!isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="收件人手机：" prop="receiverPhone">
@@ -387,6 +400,7 @@
                     placeholder="请输入"
                     v-model="form.receiverPhone"
                     clearable
+                    :disabled="!isEditing"
                   />
                 </el-form-item>
                  <el-form-item label="省市区：" prop="areaCode">
@@ -397,6 +411,7 @@
                     :options="areaOptions"
                     filterable
                     @change="handleChangeArea"
+                    :disabled="!isEditing"
                     clearable>
                   </el-cascader>
                 </el-form-item>
@@ -406,6 +421,7 @@
                     v-model="form.receiverAddress"
                     clearable
                     maxlength="300"
+                    :disabled="!isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="快递单号：" prop="expressCode">
@@ -413,7 +429,7 @@
                     placeholder="请输入"
                     v-model="form.expressCode"
                     clearable
-                    :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="快递照片链接地址：" prop="expressPhotoUrl">
@@ -421,7 +437,7 @@
                     placeholder="请输入"
                     v-model="form.expressPhotoUrl"
                     clearable
-                    :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="合格证照片链接地址：" prop="certificatePhotoUrl">
@@ -429,7 +445,7 @@
                     placeholder="请输入"
                     v-model="form.certificatePhotoUrl"
                     clearable
-                    :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
               </el-form>
@@ -628,9 +644,7 @@ export default {
       wholesaleRules: {
         wholesaleOrderCode: [
           { required: true, message: '请选择整车批售订单号', trigger: 'change' }
-        ]
-      },
-      entRules: {
+        ],
         entVehicleOrderCode: [
           { required: true, message: '请选择企业客户整车订单', trigger: 'change' }
         ]
@@ -643,10 +657,10 @@ export default {
           { required: true, message: '请选择赊销结算状态', trigger: ['change', 'blur'] }
         ],
         vehiclePrice: [
-          { required: true, message: '请输入车辆售价（零售价）', trigger: 'change' }
+          { required: true, message: '请输入车辆售价', trigger: 'change' }
         ],
         salePrice: [
-          { required: true, message: '请输入销售价（批售价）', trigger: 'change' }
+          { required: true, message: '请输入销售价', trigger: 'change' }
         ],
         receiverName: [
           { required: true, message: '请输入收件人', trigger: 'change' }
@@ -665,8 +679,8 @@ export default {
   },
   methods: {
     otherentOrderCode (val, row) {
-      this.form.dealerCompanyName = row.dealerCompanyName || '';
-      this.form.dealerCompanyCode = row.dealerCompanyCode || '';
+      this.form.dealerCompanyName = row.entCustomerName || '';
+      this.form.dealerCompanyCode = row.entCustomerCode || '';
       this.form.saleDealerCode = row.saleDealerCode || '';
       this.form.saleDealerName = row.saleDealerName || '';
       this.form.vin = row.vin || '';
@@ -684,8 +698,6 @@ export default {
       this.form.creditTime = row.settleTime || '';
       this.form.downPaymentRatio = row.downPaymentRatio || 0;
       this.form.downPaymentAmount = row.downPaymentAmount || 0;
-      this.areaCode = [row.provinceCode, row.cityCode, row.districtCode].filter(Boolean);
-
       getLatestReceiverAddress({
         orderType: this.form.orderCategory,
         query: val
@@ -699,6 +711,8 @@ export default {
         this.form.receiverDistrictCode = res.receiverDistrictCode;
         this.form.receiverDistrictName = res.receiverCityName;
         this.form.receiverAddress = res.receiverAddress;
+        this.areaCode = [res.receiverProvinceCode, res.receiverCityCode, res.receiverDistrictCode].filter(Boolean);
+        console.log('this.areaCode', this.areaCode);
       });
     },
     otherwholesaleOrderInfo (val, row) {
@@ -720,8 +734,6 @@ export default {
       this.form.creditTime = row.settleTime || '';
       this.form.downPaymentRatio = row.downPaymentRatio || 0;
       this.form.downPaymentAmount = row.downPaymentAmount || 0;
-      // 金额
-      this.areaCode = [row.provinceCode, row.cityCode, row.districtCode].filter(Boolean);
       getLatestReceiverAddress({
         orderType: this.form.orderCategory,
         query: val
@@ -735,6 +747,8 @@ export default {
         this.form.receiverDistrictCode = res.receiverDistrictCode;
         this.form.receiverDistrictName = res.receiverCityName;
         this.form.receiverAddress = res.receiverAddress;
+        this.areaCode = [res.receiverProvinceCode, res.receiverCityCode, res.receiverDistrictCode].filter(Boolean);
+        console.log('this.areaCode', this.areaCode);
       });
     },
     async getDealerListByName (params) {
@@ -841,7 +855,7 @@ export default {
         batchconfirmSign({
           idSet: ids,
         }).then(() => {
-          this.$message.success('提交成功');
+          this.$message.success('签收合格证成功');
           this.$refs.containerRef.loadDetail();
         });
       }).catch(() => {});

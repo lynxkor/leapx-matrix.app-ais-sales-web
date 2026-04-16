@@ -219,7 +219,7 @@
                   <vxe-column field="backOrderDetailCode" title="退车明细单号" width="180" />
                   <vxe-column field="backOrderCode" title="退车订单号" width="200" />
                   <vxe-column field="vin" title="VIN" width="100" />
-                  <vxe-column field="statusLabel" title="车辆处理状态" width="150" />
+                  <vxe-column field="processStatusLabel" title="车辆处理状态" width="150" />
                   <vxe-column field="saleDealerName" title="门店名称" width="120" />
                   <vxe-column field="wholesaleOrderCode" title="整车批售订单号" width="200" />
                   <vxe-column field="entOrderCode" title="企业客户整车订单号" width="200" />
@@ -362,7 +362,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-import EditTable from '@/libs/components/EditTable';
+// import EditTable from '@/libs/components/EditTable';
 import { networkParentCompanyItem } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
 import Upload from '@/libs/components/UploadDialog';
 import auditDialog from '@/libs/components/auditDialog';
@@ -518,7 +518,7 @@ export default {
           width: '100'
         },
         {
-          field: 'statusLabel',
+          field: 'processStatusLabel',
           title: '车辆处理状态',
           width: '150'
         },

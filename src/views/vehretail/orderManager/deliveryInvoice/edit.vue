@@ -677,11 +677,11 @@
 
 <script>
 import {
-  getDetail,
   addOrUpdate,
-  deleteItem,
+  checkUpload,
   confirmUpload,
-  checkUpload
+  deleteItem,
+  getDetail
 } from '@/api/vehretail/orderManager/deliveryInvoice/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';

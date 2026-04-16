@@ -379,10 +379,17 @@ export default {
         opinion: data.remark
       };
       return audit(params).then(() => {
-        this.$message({
-          type: 'success',
-          message: '批量审核提交成功'
-        });
+        if (params.audit === 1) {
+          this.$message({
+            type: 'success',
+            message: '审批成功'
+          });
+        } else if (params.audit === 0) {
+          this.$message({
+            type: 'success',
+            message: '驳回成功'
+          });
+        }
         this.getData();
       });
     },

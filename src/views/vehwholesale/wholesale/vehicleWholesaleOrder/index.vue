@@ -310,11 +310,11 @@
     >
       <div>
         <el-tabs v-model="tabName" @tab-click="handleClickTab">
-          <el-tab-pane label="全量" name="1"></el-tab-pane>
           <el-tab-pane label="未完成批售订单" name="2"></el-tab-pane>
           <el-tab-pane label="待处理现车批售" name="3"></el-tab-pane>
           <el-tab-pane label="待结算批售单" name="4"></el-tab-pane>
           <el-tab-pane label="待配车批售单" name="5"></el-tab-pane>
+          <el-tab-pane label="全量" name="1"></el-tab-pane>
         </el-tabs>
       </div>
       <LPVxeTable
@@ -490,7 +490,7 @@ export default {
       form: {
         ...defaultForm
       },
-      tabName: '1',
+      tabName: '2',
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
@@ -563,7 +563,7 @@ export default {
           { props: 'usedRebateAmount', label: '使用返利金额', visible: true, width: 200 },
           { props: 'erpSaleOrderCode', label: 'ERP销售订单号', visible: true, width: 200 },
           { props: 'erpDeliverOrder', label: 'ERP交货单', visible: true, width: 200 },
-          { props: 'erpInvoiceCode', label: '税务发票号', visible: true, width: 200 },
+          { props: 'erpInvoiceCode', label: 'ERP发票号', visible: true, width: 200 },
           { props: 'syncSapMsg', label: '同步SAP状态', visible: true, width: 200 },
           { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
@@ -1206,7 +1206,7 @@ export default {
       this.loading = true;
       this.selectionList = [];
 
-      getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
+      getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size, queryTab: this.tabName })
         .then(res => {
           this.optionObj.dataList = res.records.map(item => {
             return {

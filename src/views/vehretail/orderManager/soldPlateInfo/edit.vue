@@ -4,6 +4,8 @@
       <!-- TIPS: 如果需要竖排，direction="vertical" -->
       <edit-base-container
         ref="containerRef"
+        v-loading="uploadLoading"
+        element-loading-text="附件上传中，请稍候..."
         :id="_id"
         :title="title"
         :isEditing.sync="isEditing"
@@ -652,8 +654,20 @@
             <h2>附件材料(请上传发票、行驶证、有效身份证件并以中文命名)</h2>
           </div>
           <div class="common-section-body">
+            <AisAttachment
+              v-for="(item, index) in attachmentList" :key="index"
+              :businessId="_id"
+              :ref="'attachment' + index"
+              :configCode="item.configCode"
+              :attachType="item.attachType"
+              :title="item.label"
+              :uploadConfig="item.uploadConfig"
+              :readonly="form.status === 1050 || !isEditing"
+              type="card"
+              @upload-loading-change="handleUploadLoadingChange($event)"
+            />
             <!-- 上传附件弹框 (通过 ref 调用组件内部方法打开) -->
-            <simple-dialog :_id="_id" :readonly="!((form.status === 1010 || form.status === 1040) && isEditing)" :attachType="'mcs_subsidies'" ref="uploadDialogRef"/>
+<!--            <simple-dialog :_id="_id" :readonly="!((form.status === 1010 || form.status === 1040) && isEditing)" :attachType="'mcs_subsidies'" ref="uploadDialogRef"/>-->
           </div>
         </section>
         <audit-dialog
@@ -674,15 +688,14 @@
 
 <script>
 import {
-  getDetail,
   addOrUpdate,
-  effectiveVinValidate,
-  cancel,
   audit,
-  revocation, submit, revocationSubmit
+  effectiveVinValidate,
+  getDetail,
+  revocation,
+  revocationSubmit,
+  submit
 } from '@/api/vehretail/orderManager/soldPlateInfo/index';
-import { getEffectiveByVin as getDeliveryInvoiceByVin } from '@/api/vehretail/orderManager/deliveryInvoice/index';
-import { getEffectiveByVin as getSpecialSalesReportByVin } from '@/api/vehretail/orderManager/specialVehicleSalesReport/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -694,7 +707,6 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import { getList as getVehicleProfileList } from '@/api/datacenter/vehicle/vehicleProfile';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 import auditDialog from '@/libs/components/auditDialog/index.vue';
-import SimpleDialog from './SimpleDialog.vue';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -780,7 +792,7 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
-    SimpleDialog,
+    AisAttachment,
     EditPageLayout,
     EditBaseContainer,
     FetchSelect,
@@ -815,6 +827,16 @@ export default {
       moduleKey: 'AISVRFDI-soldPlateInfo',
       loading: false,
       submitLoading: false,
+      uploadLoading: false,
+      uploadLoadingCounter: 0,
+      // 附件列表配置
+      attachmentList: [
+        { label: '车辆销售发票', required: true, configCode: 'mcs_subsidies', attachType: '车辆销售发票' },
+        { label: '车辆行驶证', required: false, configCode: 'mcs_subsidies', attachType: '车辆行驶证' },
+        { label: '车辆合格证', required: true, configCode: 'mcs_subsidies', attachType: '车辆合格证' },
+        { label: '车主身份证件', required: true, configCode: 'mcs_subsidies', attachType: '车主身份证件' },
+        { label: '附件资料', required: true, configCode: 'mcs_subsidies', attachType: '附件资料' }
+      ],
       yes_no_enum: YES_NO_ENUM,
       provinceSelector: JSON.parse(localStorage.areaTree),
       citySelector: [],
@@ -1040,7 +1062,23 @@ export default {
   mounted () {
   },
   methods: {
-    revocation,
+    // 附件上传loading变化
+    handleUploadLoadingChange (loading) {
+      if (loading) {
+        this.uploadLoadingCounter++;
+        this.uploadLoading = true;
+      } else {
+        this.uploadLoadingCounter--;
+        if (this.uploadLoadingCounter <= 0) {
+          this.uploadLoadingCounter = 0;
+          this.uploadLoading = false;
+          // 上传全部完成后刷新详情数据
+          setTimeout(() => {
+            this.$refs.containerRef?.loadDetail();
+          }, 300);
+        }
+      }
+    },
     detailRequest () {
       const id = this._id;
       if (id) {
@@ -1069,7 +1107,7 @@ export default {
     },
     // 删除子表数据
     handleDeleteRow (index) {
-      const item = this.tableData[index];
+      // const item = this.tableData[index];
       this.tableData.splice(index, 1);
       // 根据需求调用接口
       // deletePartVehModel([item.id]).then(res => {

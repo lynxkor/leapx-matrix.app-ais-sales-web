@@ -98,8 +98,6 @@
     <div class="ais-actions">
 <!--      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>-->
 <!--      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>-->
-<!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>-->
-<!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>-->
             <el-button v-if="canDelete" size="small" @click="handleBatchExecute" :disabled="selectionList.length === 0">同步重试</el-button>
             <el-button v-if="canDelete" size="small" @click="handleBatchExecuteAsync" :disabled="selectionList.length === 0">异步重试</el-button>
             <el-button v-if="canDelete" size="small" @click="handleBatchCancel" :disabled="selectionList.length === 0">取消任务</el-button>
@@ -129,20 +127,21 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import {LPVxeTable} from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import {
-  getList,
   deleteItem,
-  enableItem,
+  findEventTypeList,
+  findThirdTargetPlatformList,
+  getList,
+  manualCancel,
   manualExecute,
-  manualExecuteAsync, manualCancel, findEventTypeList, findThirdTargetPlatformList
+  manualExecuteAsync
 } from '@/api/vehretail/event/eventNotifyTask';
-import { getTableConfig, tableAddOrUpdate, getEnum } from '@/api/common';
+import {getEnum, getTableConfig, tableAddOrUpdate} from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import { handleBatchStatusChange } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput/index.vue';
@@ -394,14 +393,6 @@ export default {
           });
         });
       }).catch(() => {});
-    },
-    handleBatchEnable (status) {
-      handleBatchStatusChange.call(this, {
-        selectionList: this.selectionList,
-        targetStatus: status,
-        apiFunc: enableItem,
-        refreshFunc: this.getData
-      });
     },
     handleBatchExecute () {
       // 检查所选记录
