@@ -127,19 +127,21 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import {LPVxeTable} from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import {
-  getList,
   deleteItem,
+  findEventTypeList,
+  findThirdTargetPlatformList,
+  getList,
+  manualCancel,
   manualExecute,
-  manualExecuteAsync, manualCancel, findEventTypeList, findThirdTargetPlatformList
+  manualExecuteAsync
 } from '@/api/vehretail/event/eventNotifyTask';
-import { getTableConfig, tableAddOrUpdate, getEnum } from '@/api/common';
+import {getEnum, getTableConfig, tableAddOrUpdate} from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import { handleBatchStatusChange } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput/index.vue';
