@@ -127,7 +127,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import {LPVxeTable} from '@leapmotor/design';
+import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import {
   deleteItem,
@@ -138,7 +138,7 @@ import {
   manualExecute,
   manualExecuteAsync
 } from '@/api/vehretail/event/eventNotifyTask';
-import {getEnum, getTableConfig, tableAddOrUpdate} from '@/api/common';
+import { getEnum, getTableConfig, tableAddOrUpdate } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
