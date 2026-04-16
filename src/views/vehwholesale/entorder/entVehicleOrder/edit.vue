@@ -370,7 +370,7 @@
                 <el-form-item label="整车仓库：" prop="warehouseName">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.warehouseName"
+                    v-model="warehouseName"
                     clearable
                     disabled
                   />
@@ -451,12 +451,10 @@
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationId">
                   <fetch-select
-                    :remote-method="repairItemSearch"
-                    remote
-                    reserve-keyword
-                    labelKey="organizationName"
+                    :options="financialOrganizationList"
+                    labelKey="name"
                     valueKey="id"
-                    v-model="form.financialOrganizationId"
+                    v-model="form.financialOrganizationName"
                     placeholder="请选择"
                     clearable
                     filterable
@@ -639,7 +637,7 @@
                   {{ form.allocateTime }}
                 </el-form-item>
                 <el-form-item label="整车仓库：" prop="warehouseName">
-                  {{ form.warehouseName }}
+                  {{ warehouseName }}
                 </el-form-item>
                 <el-form-item label="结算时间：" prop="settleTime">
                   {{ form.settleTime }}
@@ -907,6 +905,7 @@ const defaultForm = {
   settleStatus: '',
   settleFundType: '',
   financialOrganizationId: '',
+  financialOrganizationName: '',
   acceptanceMethod: '',
   salesMarket: '',
   creditSaleFlag: '',
@@ -993,6 +992,8 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       orderCategoryOptions: [],
       settleFundTypeOptions: [],
+      financialOrganizationList: [],
+      warehouseName: '',
       accountData: [],
       form: { ...form },
       originalForm: { ...form },
@@ -1025,6 +1026,7 @@ export default {
     },
     getFundAccount () {
       this.settleFundTypeOptions = [];
+      this.financialOrganizationList = [];
       if (!this.form.entCustomerName || !this.form.saleCompanyName) {
         return;
       }
@@ -1044,10 +1046,25 @@ export default {
                 code: item.fundType,
                 message: item.fundTypeLabel
               });
+              console.log(item);
+              if ((item.fundType === '2010' || item.fundType === 2010) && item.validIfCreditSaleAccount) {
+                this.financialOrganizationList.push({
+                  id: item.financialOrganizationId,
+                  name: item.financialOrganizationName
+                });
+              }
             }
           });
           // 将 Map 的值转换为数组并赋值
           this.settleFundTypeOptions = Array.from(uniqueMap.values());
+
+          // 筛选金融机构选项：fundType === 2010 且 validIfCreditSaleAccount === true
+          this.financialOrganizationOptions = res.records
+            .filter(item => item.fundType === 2010 && item.validIfCreditSaleAccount === true)
+            .map(item => ({
+              id: item.id,
+              organizationName: item.financialOrganizationName
+            }));
         }
       }).catch(() => {
       });
@@ -1168,6 +1185,11 @@ export default {
           // if (this.$refs.containerRef) {
           //   this.$refs.containerRef.originalForm = { ...res };
           // }
+          if (res.vehicleVdcInventory) {
+            console.log('原始表单数据:111111', res.vehicleVdcInventory.warehouseName);
+            this.warehouseName = res.vehicleVdcInventory.warehouseName;
+          }
+          console.log('原始表单数据:222222', this.form);
 
           // 3. 【新增】数据加载完成后，再执行获取资金账户逻辑
           this.getFundAccount();

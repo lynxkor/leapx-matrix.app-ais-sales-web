@@ -136,14 +136,14 @@
                     disabled
                   />
                 </el-form-item>
-                <!-- <el-form-item label="ERP发票号：" prop="erpInvoiceCode">
+               <el-form-item label="税务发票号：" prop="taxInvoiceCode">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.erpInvoiceCode"
+                    v-model="form.taxInvoiceCode"
                     clearable
                     disabled
                   />
-                </el-form-item> -->
+                </el-form-item>
                    <el-form-item label="开票时间：" prop="invoiceTime">
                   <el-date-picker
                     :default-time="['00:00:00', '23:59:59']"
@@ -153,23 +153,6 @@
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
                     disabled
-                  />
-                </el-form-item>
-                   <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
-                  <el-date-picker
-                    type="datetime"
-                    v-model="form.emergencyOrderTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    placeholder="选择日期时间"
-                  />
-                </el-form-item>
-                  <el-form-item label="急单备注：" prop="emergencyOrderRemark">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.emergencyOrderRemark"
-                    clearable
-                    maxlength="300"
                   />
                 </el-form-item>
                 <el-form-item label="确认说明：" prop="confirmRemark">
@@ -268,7 +251,10 @@
                   <!-- <el-form-item label="ERP发票号：" prop="erpInvoiceCode">
                   {{ form.erpInvoiceCode }}
                 </el-form-item> -->
-                <el-form-item label="开票日期：" prop="invoiceTime">
+                <el-form-item label="税务发票号：" prop="taxInvoiceCode">
+                  {{ form.taxInvoiceCode }}
+                </el-form-item>
+                <el-form-item label="开票时间：" prop="invoiceTime">
                   {{ form.invoiceTime }}
                 </el-form-item>
 
@@ -382,7 +368,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="ERP发票号：" prop="erpInvoiceCode">
+                 <el-form-item label="ERP发票号：" prop="erpInvoiceCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.erpInvoiceCode"
@@ -1298,7 +1284,7 @@ export default {
         vinAllocateVehicleSubmitItem(params).then(() => {
           this.$message({
             type: 'success',
-            message: '提交成功!'
+            message: '配车成功!'
           });
           this.getDetailData();
         });

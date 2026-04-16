@@ -819,8 +819,8 @@ export default {
       attachmentList: [
         { label: '近6个月内社保或公积金或纳税证明', required: true, configCode: 'default', attachType: '默认' },
         { label: '工作证或工作证明（需加盖公章）', required: true, configCode: 'vr_groupbuy_order_equity_apply', attachType: '工作证明' },
-        { label: '购车人在所属单位门口处与公司门头合影照片', required: false, configCode: 'vr_groupbuy_order_equity_apply', attachType: '工作照' },
-        { label: '户口本（户主页）', required: true, configCode: 'vr_groupbuy_order_equity_apply', attachType: '直系亲属证明（户主页）' },
+        { label: '购车人在所属单位门口处与公司门头合影照片', required: true, configCode: 'vr_groupbuy_order_equity_apply', attachType: '工作照' },
+        { label: '户口本（户主页）', required: false, configCode: 'vr_groupbuy_order_equity_apply', attachType: '直系亲属证明（户主页）' },
         { label: '户口本（本人页）', required: false, configCode: 'vr_groupbuy_order_equity_apply', attachType: '直系亲属证明（本人页）' },
         { label: '派出所出具的直系亲属证明材料', required: false, configCode: 'vr_groupbuy_order_equity_apply', attachType: '直系亲属证明' },
         { label: '结婚证', required: false, configCode: 'vr_groupbuy_order_equity_apply', attachType: '结婚证' }
@@ -865,6 +865,10 @@ export default {
       const companyFormValid = await this.$refs.companyForm.validate().catch(() => false);
       if (!companyFormValid) {
         throw new Error('公司信息表单校验失败');
+      }
+
+      if (this.isEditing) {
+        this.handleConfirm();
       }
 
       return addOrUpdate({ ...this.form });
@@ -960,6 +964,7 @@ export default {
     },
     // 提交审批
     async handleSubmitApproval () {
+      this.handleConfirm();
       this.$confirm('确认要提交审批吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -969,6 +974,26 @@ export default {
         this.$message.success('提交成功');
         this.$refs.containerRef.loadDetail();
       });
+    },
+    handleConfirm () {
+      // 校验必填项
+      const missingRequired = [];
+      this.attachmentList.forEach((item, index) => {
+        if (item.required) {
+          const refName = 'attachment' + index;
+          const fileLength = this.$refs[refName]?.[0]?.getFileList?.()?.length || 0;
+          if (fileLength === 0) {
+            missingRequired.push(item.label);
+          }
+        }
+      });
+
+      if (missingRequired.length > 0) {
+        this.$message.error(`以下必填项未上传：${missingRequired.join('、')}`);
+        throw new Error(`以下必填项未上传：${missingRequired.join('、')}`);
+      }
+
+      this.$emit('confirm');
     },
     // 审批
     async handleAudit () {

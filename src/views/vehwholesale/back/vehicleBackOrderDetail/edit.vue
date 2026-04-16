@@ -11,7 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.status === 10 || form.status === 20"
+        :showEditBtn="form.processStatus === 10 || form.processStatus === 20"
       >
         <template #status>
           {{ form.returnOrderCode }}
@@ -63,15 +63,15 @@
                     disabled
                   />
                 </el-form-item>
-                 <el-form-item label="车辆处理状态：" prop="status">
+                 <el-form-item label="车辆处理状态：" prop="processStatus">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.statusLabel"
+                    v-model="form.processStatusLabel"
                     clearable
                     disabled
                   />
                 </el-form-item>
-                 <el-form-item label="大区：" prop="regionName">
+                 <el-form-item label="所属大区：" prop="regionName">
                   <el-input
                     placeholder="请输入"
                     v-model="form.regionName"
@@ -249,10 +249,10 @@
                 <el-form-item label="销售门店名称：" prop="saleDealerName">
                   {{ form.saleDealerName }}
                 </el-form-item>
-                <el-form-item label="车辆处理状态：" prop="statusLabel">
-                  {{ form.statusLabel }}
+                <el-form-item label="车辆处理状态：" prop="processStatusLabel">
+                  {{ form.processStatusLabel }}
                 </el-form-item>
-                <el-form-item label="大区：" prop="regionName">
+                <el-form-item label="所属大区：" prop="regionName">
                   {{ form.regionName }}
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
@@ -456,9 +456,8 @@ export default {
         deleteItem({
           idSet: ids
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
+          this.$router.push({
+            path: '/vehwholesale/back/vehicleBackOrderDetail',
           });
           this.getData();
         });

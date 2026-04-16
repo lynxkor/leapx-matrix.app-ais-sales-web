@@ -29,46 +29,41 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="整车批售订单号：" prop="wholesaleOrderCode">
-                   <el-input
-                    placeholder="请输入"
-                    v-model="form.wholesaleOrderCode"
-                    clearable
-                    @click="otherwholesaleOrderInfo"
-                    :disabled="form.orderCategory !== '10'"
-                  />
-                  <!-- <fetch-select
-                    :remote-method="getwholesaleOrderCodeList"
-                      remote
-                      v-model="form.wholesaleOrderCode"
+              <el-form :inline="true" :model="form" :rules="wholesaleRules" ref="wholesaleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+                <el-form-item label="整车批售订单号：" prop="wholesaleOrderCode" :rules="orderCategory == '10' ? wholesaleRules.wholesaleOrderCode : []">
+                  <el-tooltip :disabled="!form.wholesaleOrderCode" :content="form.wholesaleOrderCode" placement="top">
+                    <el-input
+                      style="width: 70%;"
                       placeholder="请选择"
-                      labelKey="wholesaleOrderCode"
-                      valueKey="wholesaleOrderCode"
+                      v-model="form.wholesaleOrderCode"
                       clearable
-                      filterable
-                      :options="wholesaleOrderCodeList"
-                      @change="otherwholesaleOrderInfo"
-                      :disabled="form.orderCategory !== '10'"
-                     /> -->
+                      readonly
+                      disabled
+                    />
+                  </el-tooltip>
+                   <el-button size="small" @click="openWholesaleDialog" :disabled="orderCategory !== '10'">选择</el-button>
                 </el-form-item>
-                 <el-form-item label="企业客户整车订单：" prop="entVehicleOrderCode">
-                  <fetch-select
-                    :remote-method="getentVehicleOrderCodeList"
-                    remote
-                    v-model="form.entVehicleOrderCode"
-                    placeholder="请选择"
-                    labelKey="entOrderCode"
-                    valueKey="entOrderCode"
+                <el-form-item label="企业客户整车订单：" prop="entVehicleOrderCode" :rules="orderCategory == '20' ? wholesaleRules.entVehicleOrderCode : []">
+                  <el-tooltip :disabled="!form.entVehicleOrderCode" :content="form.entVehicleOrderCode" placement="top">
+                    <el-input
+                      style="width: 70%;"
+                      placeholder="请选择"
+                      v-model="form.entVehicleOrderCode"
+                      clearable
+                      readonly
+                      disabled
+                    />
+                  </el-tooltip>
+                  <el-button size="small" @click="openEntDialog" :disabled="orderCategory !== '20'">选择</el-button>
+                </el-form-item>
+                <el-form-item label="母公司名称：" prop="dealerCompanyName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.dealerCompanyName"
                     clearable
-                    filterable
-                    :options="entVehicleOrderCodeList"
-                    @change="otherentOrderCode"
-                    :disabled="form.orderCategory !== '20'"
-                     />
-                </el-form-item>
-                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                   <fetch-select
+                    disabled
+                  />
+                   <!-- <fetch-select
                       filterable
                       clearable
                       remote
@@ -78,10 +73,16 @@
                       value-key="companyCode"
                       label-key="companyName"
                       disabled
-                    />
+                    /> -->
                 </el-form-item>
                   <el-form-item label="销售门店名称：" prop="saleDealerName">
-                    <fetch-select
+                    <el-input
+                    placeholder="请输入"
+                    v-model="form.saleDealerName"
+                    clearable
+                    disabled
+                  />
+                    <!-- <fetch-select
                         filterable
                         clearable
                         remote
@@ -91,7 +92,7 @@
                         value-key="storeCode"
                         label-key="storeName"
                         disabled
-                      />
+                      /> -->
 
                 </el-form-item>
                     <el-form-item label="VIN码：" prop="vin">
@@ -129,10 +130,14 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="整车批售订单号：" prop="wholesaleOrderCode">
-                  {{ form.wholesaleOrderCode }}
+                  <el-tooltip :disabled="!form.wholesaleOrderCode" :content="form.wholesaleOrderCode" placement="top">
+                    <span>{{ form.wholesaleOrderCode }}</span>
+                  </el-tooltip>
                 </el-form-item>
                 <el-form-item label="企业客户整车订单号：" prop="entVehicleOrderCode">
-                  {{ form.entVehicleOrderCode }}
+                  <el-tooltip :disabled="!form.entVehicleOrderCode" :content="form.entVehicleOrderCode" placement="top">
+                    <span>{{ form.entVehicleOrderCode }}</span>
+                  </el-tooltip>
                 </el-form-item>
                   <el-form-item label="母公司名称：" prop="dealerCompanyName">
                   {{ form.dealerCompanyName }}
@@ -228,7 +233,7 @@
                   />
                 </el-form-item>
 
-                 <el-form-item label="车辆零售价：" prop="vehiclePrice">
+                 <el-form-item label="车辆售价：" prop="vehiclePrice">
                   <el-input
                     placeholder="请输入"
                     v-model="form.vehiclePrice"
@@ -236,7 +241,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="批售价：" prop="salePrice">
+                <el-form-item label="销售价：" prop="salePrice">
                   <el-input
                     placeholder="请输入"
                     v-model="form.salePrice"
@@ -335,10 +340,10 @@
                 <el-form-item label="资金结算类型：" prop="settleFundTypeLabel">
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
-                <el-form-item label="车辆零售价：" prop="vehiclePrice">
+                <el-form-item label="车辆售价：" prop="vehiclePrice">
                   {{ form.vehiclePrice }}
                 </el-form-item>
-                <el-form-item label="批售价：" prop="salePrice">
+                <el-form-item label="销售价：" prop="salePrice">
                   {{ form.salePrice }}
                 </el-form-item>
                 <el-form-item label="首付款比例：" prop="downPaymentRatio">
@@ -387,6 +392,7 @@
                     v-model="form.receiverName"
                     clearable
                     maxlength="15"
+                    :disabled="!isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="收件人手机：" prop="receiverPhone">
@@ -394,6 +400,7 @@
                     placeholder="请输入"
                     v-model="form.receiverPhone"
                     clearable
+                    :disabled="!isEditing"
                   />
                 </el-form-item>
                  <el-form-item label="省市区：" prop="areaCode">
@@ -404,6 +411,7 @@
                     :options="areaOptions"
                     filterable
                     @change="handleChangeArea"
+                    :disabled="!isEditing"
                     clearable>
                   </el-cascader>
                 </el-form-item>
@@ -413,6 +421,7 @@
                     v-model="form.receiverAddress"
                     clearable
                     maxlength="300"
+                    :disabled="!isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="快递单号：" prop="expressCode">
@@ -420,7 +429,7 @@
                     placeholder="请输入"
                     v-model="form.expressCode"
                     clearable
-                    :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="快递照片链接地址：" prop="expressPhotoUrl">
@@ -428,7 +437,7 @@
                     placeholder="请输入"
                     v-model="form.expressPhotoUrl"
                     clearable
-                    :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="合格证照片链接地址：" prop="certificatePhotoUrl">
@@ -436,7 +445,7 @@
                     placeholder="请输入"
                     v-model="form.certificatePhotoUrl"
                     clearable
-                    :disabled="isEditing"
+                    disabled
                   />
                 </el-form-item>
               </el-form>
@@ -473,6 +482,11 @@
           </section>
         </el-main>
       </edit-base-container>
+  <WholesaleOrderDialog
+    :visible.sync="orderDialogVisible"
+    :orderType="orderDialogType"
+    @confirm="handleOrderSelect"
+  />
     </template>
     <template #right>
       <div class="page-common-edit">
@@ -487,6 +501,7 @@ import { getDetail, addOrUpdate, deleteItem, submit, listWholesaleOrEntOrder, ge
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
+import WholesaleOrderDialog from './WholesaleOrderDialog.vue';
 import { getEnum, getParentCompany, listOrgStoreInfo } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
@@ -555,7 +570,8 @@ export default {
   components: {
     EditPageLayout,
     EditBaseContainer,
-    FetchSelect
+    FetchSelect,
+    WholesaleOrderDialog
   },
   computed: {
     _id () {
@@ -577,7 +593,7 @@ export default {
     'form.orderCategory': {
       handler (val) {
         console.log('orderCategory', val);
-        // 整车批售 10   20
+        // 整车批售 12  1050  1010
         if (val === '12') {
           this.rules.financialOrganizationId = [
             { required: true, message: '请输入金融机构', trigger: 'change' }
@@ -607,6 +623,7 @@ export default {
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
+      orderCategory: routeOrderCategory,
       areaCode: [],
       originalForm: { ...form },
       emptyText: '若要启用此内容，请创建记录',
@@ -622,6 +639,16 @@ export default {
       areaOptions: JSON.parse(localStorage.areaTree),
       tableData: [
       ],
+      orderDialogVisible: false,
+      orderDialogType: '10',
+      wholesaleRules: {
+        wholesaleOrderCode: [
+          { required: true, message: '请选择整车批售订单号', trigger: 'change' }
+        ],
+        entVehicleOrderCode: [
+          { required: true, message: '请选择企业客户整车订单', trigger: 'change' }
+        ]
+      },
       rules: {
         certificateStatus: [
           { required: true, message: '请选择合格证状态', trigger: ['change', 'blur'] }
@@ -630,10 +657,10 @@ export default {
           { required: true, message: '请选择赊销结算状态', trigger: ['change', 'blur'] }
         ],
         vehiclePrice: [
-          { required: true, message: '请输入车辆售价（零售价）', trigger: 'change' }
+          { required: true, message: '请输入车辆售价', trigger: 'change' }
         ],
         salePrice: [
-          { required: true, message: '请输入销售价（批售价）', trigger: 'change' }
+          { required: true, message: '请输入销售价', trigger: 'change' }
         ],
         receiverName: [
           { required: true, message: '请输入收件人', trigger: 'change' }
@@ -652,27 +679,25 @@ export default {
   },
   methods: {
     otherentOrderCode (val, row) {
-      this.form.dealerCompanyName = row.dealerCompanyName;
-      this.form.dealerCompanyCode = row.dealerCompanyCode;
-      this.form.saleDealerCode = row.saleDealerCode;
-      this.form.saleDealerName = row.saleDealerName;
-      this.form.vin = row.vin;
-      this.form.materialsCode = row.materialsCode;
-      this.form.modelId = row.modelId;
-      this.form.modelName = row.modelName;
-      this.form.seriesId = row.seriesId;
-      this.form.seriesName = row.seriesName;
-      this.form.settleFundTypeLabel = row.settleFundTypeLabel;
-      this.form.vehiclePrice = row.salesPrice;
-      this.form.salePrice = row.salesPrice;
-      this.form.creditDebtAmount = row.creditSalesAmount;
+      this.form.dealerCompanyName = row.entCustomerName || '';
+      this.form.dealerCompanyCode = row.entCustomerCode || '';
+      this.form.saleDealerCode = row.saleDealerCode || '';
+      this.form.saleDealerName = row.saleDealerName || '';
+      this.form.vin = row.vin || '';
+      this.form.materialsCode = row.orderMaterialsCode || '';
+      this.form.modelId = row.modelId || '';
+      this.form.modelName = row.modelName || '';
+      this.form.seriesId = row.seriesId || '';
+      this.form.seriesName = row.seriesName || '';
+      this.form.settleFundTypeLabel = row.settleFundTypeLabel || '';
+      this.form.vehiclePrice = row.salesPrice || '';
+      this.form.salePrice = row.salesPrice || '';
+      this.form.creditDebtAmount = row.creditSalesAmount || '';
 
       // 整车批售订单：来源【整车批售订单】的【结算成功时间】企业客户订单：来源【企业客户整车订单】的【结算成功时间 ?? 结算时间
-      this.form.creditTime = row.settleTime;
-      this.form.downPaymentRatio = 0;
-      this.form.downPaymentAmount = 0;
-      this.areaCode = [row.provinceCode, row.cityCode, row.districtCode];
-
+      this.form.creditTime = row.settleTime || '';
+      this.form.downPaymentRatio = row.downPaymentRatio || 0;
+      this.form.downPaymentAmount = row.downPaymentAmount || 0;
       getLatestReceiverAddress({
         orderType: this.form.orderCategory,
         query: val
@@ -686,29 +711,29 @@ export default {
         this.form.receiverDistrictCode = res.receiverDistrictCode;
         this.form.receiverDistrictName = res.receiverCityName;
         this.form.receiverAddress = res.receiverAddress;
+        this.areaCode = [res.receiverProvinceCode, res.receiverCityCode, res.receiverDistrictCode].filter(Boolean);
+        console.log('this.areaCode', this.areaCode);
       });
     },
     otherwholesaleOrderInfo (val, row) {
-      this.form.dealerCompanyName = row.dealerCompanyName;
-      this.form.dealerCompanyCode = row.dealerCompanyCode;
-      this.form.saleDealerCode = row.saleDealerCode;
-      this.form.saleDealerName = row.saleDealerName;
-      this.form.vin = row.vin;
-      this.form.materialsCode = row.materialsCode;
-      this.form.modelId = row.modelId;
-      this.form.modelName = row.modelName;
-      this.form.seriesId = row.seriesId;
-      this.form.seriesName = row.seriesName;
-      this.form.settleFundTypeLabel = row.settleFundTypeLabel;
-      this.form.vehiclePrice = row.retailPrice;
-      this.form.salePrice = row.wholesalePrice;
-      this.form.creditDebtAmount = row.creditSalesAmount;
+      this.form.dealerCompanyName = row.dealerCompanyName || '';
+      this.form.dealerCompanyCode = row.dealerCompanyCode || '';
+      this.form.saleDealerCode = row.saleDealerCode || '';
+      this.form.saleDealerName = row.saleDealerName || '';
+      this.form.vin = row.vin || '';
+      this.form.materialsCode = row.orderMaterialsCode || '';
+      this.form.modelId = row.modelId || '';
+      this.form.modelName = row.modelName || '';
+      this.form.seriesId = row.seriesId || '';
+      this.form.seriesName = row.seriesName || '';
+      this.form.settleFundTypeLabel = row.settleFundTypeLabel || '';
+      this.form.vehiclePrice = row.retailPrice || row.salesPrice || '';
+      this.form.salePrice = row.wholesalePrice || '';
+      this.form.creditDebtAmount = row.creditSalesAmount || '';
       // 整车批售订单：来源【整车批售订单】的【结算成功时间】企业客户订单：来源【企业客户整车订单】的【结算成功时间 ?? 结算时间
-      this.form.creditTime = row.settleTime;
-      this.form.downPaymentRatio = row.downPaymentRatio;
-      this.form.downPaymentAmount = row.downPaymentAmount;
-      // 金额
-      this.areaCode = [row.provinceCode, row.cityCode, row.districtCode];
+      this.form.creditTime = row.settleTime || '';
+      this.form.downPaymentRatio = row.downPaymentRatio || 0;
+      this.form.downPaymentAmount = row.downPaymentAmount || 0;
       getLatestReceiverAddress({
         orderType: this.form.orderCategory,
         query: val
@@ -722,6 +747,8 @@ export default {
         this.form.receiverDistrictCode = res.receiverDistrictCode;
         this.form.receiverDistrictName = res.receiverCityName;
         this.form.receiverAddress = res.receiverAddress;
+        this.areaCode = [res.receiverProvinceCode, res.receiverCityCode, res.receiverDistrictCode].filter(Boolean);
+        console.log('this.areaCode', this.areaCode);
       });
     },
     async getDealerListByName (params) {
@@ -729,6 +756,23 @@ export default {
     },
     async getDealerParentOrgList (params) {
       return getParentCompany({ parentCompanyName: params });
+    },
+    openWholesaleDialog () {
+      this.orderDialogType = '10';
+      this.orderDialogVisible = true;
+    },
+    openEntDialog () {
+      this.orderDialogType = '20';
+      this.orderDialogVisible = true;
+    },
+    handleOrderSelect (row) {
+      if (this.orderDialogType === '10') {
+        this.form.wholesaleOrderCode = row.wholesaleOrderCode;
+        this.otherwholesaleOrderInfo(row.wholesaleOrderCode, row);
+      } else {
+        this.form.entVehicleOrderCode = row.entOrderCode;
+        this.otherentOrderCode(row.entOrderCode, row);
+      }
     },
     getwholesaleOrderCodeList (query) {
       try {
@@ -811,7 +855,7 @@ export default {
         batchconfirmSign({
           idSet: ids,
         }).then(() => {
-          this.$message.success('提交成功');
+          this.$message.success('签收合格证成功');
           this.$refs.containerRef.loadDetail();
         });
       }).catch(() => {});
@@ -829,9 +873,8 @@ export default {
         deleteItem({
           idSet: ids
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
+          this.$router.push({
+            path: '/vehwholesale/certificate/vehicleCertificateRedemption',
           });
         });
       }).catch(() => {});
@@ -846,21 +889,27 @@ export default {
         });
       }
     },
-    submitRequest () {
-      return this.$refs.ruleForm.validate().then(() => {
-        if (!this.areaCode || this.areaCode.length === 0) {
-          this.form.receiverProvinceCode = '';
-          this.form.receiverProvinceName = '';
-          this.form.receiverCityCode = '';
-          this.form.receiverCityName = '';
-          this.form.receiverDistrictCode = '';
-          this.form.receiverDistrictName = '';
-        }
-        return addOrUpdate({ ...this.form });
-      }).catch(err => {
-        console.error('校验失败', err);
-        return Promise.reject(err);
-      });
+    async submitRequest () {
+      const orderCategory = this.orderCategory || this.form.orderCategory;
+      // 校验基础信息表单
+      const ruleFormValid = await this.$refs.ruleForm.validate().catch(() => false);
+      if (!ruleFormValid) {
+        throw new Error('基础信息表单校验失败');
+      }
+      const wholesaleFormValid = await this.$refs.wholesaleForm.validate().catch(() => false);
+      if (!wholesaleFormValid) {
+        const message = orderCategory === '10' ? '整车批售订单号' : '企业客户订单号';
+        throw new Error(message + '校验失败');
+      }
+      if (!this.areaCode || this.areaCode.length === 0) {
+        this.form.receiverProvinceCode = '';
+        this.form.receiverProvinceName = '';
+        this.form.receiverCityCode = '';
+        this.form.receiverCityName = '';
+        this.form.receiverDistrictCode = '';
+        this.form.receiverDistrictName = '';
+      }
+      return addOrUpdate({ ...this.form });
     },
     // 打开侧边栏
     openPane () {

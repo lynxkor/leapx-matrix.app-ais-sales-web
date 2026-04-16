@@ -49,6 +49,7 @@
                     label-key="mallOrderCode"
                     placeholder="请选择商城订单号"
                     @change="handleMallOrderNoChange"
+                    :disabled="!form.permissions.draft && isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="整车订单编号：" prop="vehicleOrderNo">
@@ -69,7 +70,7 @@
                     value-key="vin"
                     label-key="vin"
                     placeholder="请选择原车VIN号"
-                    :disabled="form.replacementType == 20 || form.equityCategoryName === '跨月权益'"
+                    :disabled="form.replacementType == 20 || form.equityCategoryName === '跨月权益' || !form.permissions.draft  && isEditing"
                     @change="handleOriginalVinChange"
                   />
                 </el-form-item>
@@ -86,9 +87,10 @@
                     label-key="name"
                     placeholder="请选择权益大类"
                     @change="handleEquityCategoryChange"
+                    :disabled="!form.permissions.draft && isEditing"
                   />
                 </el-form-item>
-                <el-form-item label="置换类型：" prop="replacementType" v-show="form.equityCategoryName === '增换购券' || form.equityCategoryName === '新标专项'">
+                <el-form-item label="置换类型：" prop="replacementType" v-if="form.equityCategoryName === '增换购券' || form.equityCategoryName === '新标专项'">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vr_order_benefit_replacement_type"
@@ -97,6 +99,7 @@
                     clearable
                     filterable
                     @change="handleReplacementTypeChange"
+                    :disabled="!form.permissions.draft && isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="优惠金额：" prop="discountAmount">
@@ -107,7 +110,7 @@
                     :min="0"
                     :max="100000000000"
                     placeholder="请输入"
-                    :disabled="form.equityCategoryName === '跨月权益'"
+                    :disabled="form.equityCategoryName === '跨月权益' || !form.permissions.draft && isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="其他品牌：" prop="otherBrand">
@@ -115,7 +118,7 @@
                     placeholder="请输入"
                     v-model="form.otherBrand"
                     clearable
-                    :disabled="form.replacementType == 10 || form.equityCategoryName === '跨月权益'"
+                    :disabled="form.replacementType == 10 || form.equityCategoryName === '跨月权益' || !form.permissions.draft && isEditing"
                     maxlength="50"
                   />
                 </el-form-item>
@@ -127,6 +130,7 @@
                     v-model="form.remark"
                     clearable
                     maxlength="1000"
+                    :disabled="!form.permissions.draft && isEditing"
                   />
                 </el-form-item>
               </el-form>
@@ -175,10 +179,12 @@
             </div>
             <div class="common-section-body">
               <AisAttachment
+                :ref="'attachment'"
                 :businessId="_id"
                 attachType="附件"
                 configCode="mcs_equityapply"
-                :readonly="!(isEditing || !_id)"
+                :readonly="!(isEditing || !_id) || !form.permissions.draft"
+                :uploadConfig = {required:true}
               />
             </div>
           </section>
@@ -520,6 +526,7 @@
                     v-model="form.oaProcessNo"
                     clearable
                     maxlength="50"
+                    :disabled="!form.permissions.draft  && isEditing"
                   />
                 </el-form-item>
               </el-form>
@@ -860,16 +867,16 @@ export default {
           { message: '请输入整车订单编号', trigger: 'change' }
         ],
         originalVin: [
-          { required: true, validator: this.validateOriginalVin, trigger: 'change' }
+          { required: false, validator: this.validateOriginalVin, trigger: 'change' }
         ],
         equityCategoryId: [
           { required: true, message: '请选择权益大类', trigger: 'change' }
         ],
         replacementType: [
-          { required: false, message: '请选择置换类型', trigger: 'change' }
+          { required: true, message: '请选择置换类型', trigger: 'change' }
         ],
         discountAmount: [
-          { required: true, message: '请输入优惠金额', trigger: 'change' },
+          { required: false, validator: this.validateDiscountAmount, trigger: 'change' },
           { type: 'number', min: 0, max: 100000000000, message: '输入一个介于 0.00 到 100,000,000,000.00 之间的值', trigger: 'blur' }
         ],
         buyerName: [
@@ -885,14 +892,14 @@ export default {
           { message: '请输入订单物料码', trigger: 'change' }
         ],
         otherBrand: [
-          { required: true, validator: this.validateOtherBrand, trigger: 'blur' },
+          { required: false, validator: this.validateOtherBrand, trigger: 'blur' },
           { max: 50, message: '其他品牌不能超过50个字符', trigger: 'blur' }
         ],
         remark: [
           { max: 1000, message: '备注不能超过1000个字符', trigger: 'blur' }
         ],
         oaProcessNo: [
-          { required: true, message: '请输入OA流程编号', trigger: 'blur' },
+          { required: false, validator: this.validateOaProcessNo, trigger: 'blur' },
         ]
       }
     };
@@ -914,6 +921,14 @@ export default {
         throw new Error('请填写OA流程编号');
       }
 
+      if (this.isEditing) {
+        const allFiles = this.$refs.attachment.getFileList();
+        console.log('总附件数:', allFiles.length);
+        if (allFiles.length === 0) {
+          this.$message.error('附件不能为空！');
+          throw new Error('附件不能为空！');
+        }
+      }
       return addOrUpdate({ ...this.form });
     },
     openPane () {
@@ -936,6 +951,12 @@ export default {
       });
     },
     async handleSubmitApproval () {
+      const allFiles = this.$refs.attachment.getFileList();
+      console.log('总附件数:', allFiles.length);
+      if (allFiles.length === 0) {
+        this.$message.error('附件不能为空！');
+        throw new Error('附件不能为空！');
+      }
       this.$confirm('确认要提交审批吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -1175,6 +1196,33 @@ export default {
       }
     },
 
+    // 自定义验证规则：当优惠金额不禁用时，必须填写
+    validateDiscountAmount (rule, value, callback) {
+      // 当权益类别为'跨月权益'或没有draft权限时，字段被禁用，不需要验证
+      if (this.form.equityCategoryName === '跨月权益' || !this.form.permissions.draft) {
+        callback(); // 不进行验证
+      } else {
+        // 字段处于启用状态，需要验证是否为空
+        if (!value && value !== 0) {
+          callback(new Error('请输入优惠金额'));
+        } else {
+          // 验证数字格式，参考已有的验证规则
+          if (typeof value === 'number' && value >= 0 && value <= 100000000000) {
+            callback();
+          } else if (typeof value === 'string' && !isNaN(Number(value))) {
+            const numValue = Number(value);
+            if (numValue >= 0 && numValue <= 100000000000) {
+              callback();
+            } else {
+              callback(new Error(rule.message || '输入一个介于 0.00 到 100,000,000,000.00 之间的值'));
+            }
+          } else {
+            callback(new Error(rule.message || '输入一个介于 0.00 到 100,000,000,000.00 之间的值'));
+          }
+        }
+      }
+    },
+
     // 自定义验证规则：当原车VIN号不禁用时，必须填写
     validateOriginalVin (rule, value, callback) {
       // 当置换类型不是20时，原车VIN号字段是启用状态，此时为必填
@@ -1187,6 +1235,21 @@ export default {
         }
       } else {
         // 当置换类型是20时，字段被禁用，不需要验证
+        callback();
+      }
+    },
+
+    // 自定义验证规则：当权益类别为跨月权益时，OA流程编号为必填
+    validateOaProcessNo (rule, value, callback) {
+      // 当权益类别为跨月权益且字段处于可编辑状态时，OA流程编号为必填
+      if (this.form.equityCategoryName === '跨月权益' && this.form.permissions.draft) {
+        if (!value || value.trim() === '') {
+          callback(new Error(rule.message || '请输入OA流程编号'));
+        } else {
+          callback();
+        }
+      } else {
+        // 其他情况下不需要验证
         callback();
       }
     }

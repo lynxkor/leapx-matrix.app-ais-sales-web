@@ -12,7 +12,7 @@
         <el-form-item label="VIN码">
           <tag-input v-model="form.vins" placeholder="请输入" />
         </el-form-item>
-         <el-form-item label="大区">
+         <el-form-item label="所属大区">
           <fetch-select
             filterable
             clearable
@@ -55,7 +55,7 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_vehicle_back_order_detail_status"
-          v-model="form.statuses"
+          v-model="form.processStatus"
           placeholder="请选择"
           clearable
           multiple
@@ -221,9 +221,9 @@ export default {
           },
           { props: 'backOrderCode', label: '退车订单编号', visible: true, width: 200 },
           { props: 'vin', label: 'VIN码', visible: true, width: 200 },
-          { props: 'statusLabel', label: '车辆处理状态', visible: true, width: 200 },
+          { props: 'processStatusLabel', label: '车辆处理状态', visible: true, width: 200 },
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
-          { props: 'regionName', label: '大区', visible: true, width: 200 },
+          { props: 'regionName', label: '所属大区', visible: true, width: 200 },
           { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
           { props: 'wholesaleOrderCode', label: '整车批售订单编号', visible: true, width: 200 },
           { props: 'entOrderCode', label: '企业客户整车订单编号', visible: true, width: 200 },
@@ -251,7 +251,7 @@ export default {
             buttons: [{
               name: '编辑',
               show: (row) => {
-                return row.status === 10 || row.status === 20;
+                return row.processStatus === 10 || row.processStatus === 20;
               },
               click: (rowIndex, row) => {
                 this.$router.push({
@@ -269,7 +269,7 @@ export default {
               popconfirmConfirmButtonText: '删除',
               popconfirmTitle: '此操作将永久删除, 是否继续?',
               show: (row) => {
-                return row.status === 10 || row.status === 20;
+                return row.processStatus === 10 || row.processStatus === 20;
               },
               click: (rowIndex, row) => {
                 deleteItem(

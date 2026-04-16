@@ -45,7 +45,7 @@
             <vxe-column field="certificateStatusLabel" title="合格证状态" align="center"  width="150"/>
             <vxe-column field="creditSettlementStatusLabel" title="赊销结算状态" align="center" width="150" />
           </vxe-table>
-          <el-pagination
+          <!-- <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="pagination.currentPage"
@@ -54,14 +54,14 @@
             layout="total, sizes, prev, pager, next, jumper"
             :total="pagination.total"
             style="margin-top: 20px;">
-          </el-pagination>
+          </el-pagination> -->
           </div>
         </div>
       </section>
     </div>
     <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="handleSubmit" :loading="submitLoading">保存</el-button>
       <el-button @click="handleCancel">取消</el-button>
-      <el-button type="primary" @click="handleSubmit" :loading="submitLoading">提交</el-button>
     </div>
   </el-dialog>
 </template>

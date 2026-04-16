@@ -62,6 +62,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    :disabled="form.orderCategory === '1' || form.orderCategory === '8' || form.orderCategory === 1 || form.orderCategory === 8"
                   />
                 </el-form-item>
                  <el-form-item label="企业客户名称：" prop="entCustomerName">
@@ -126,9 +127,7 @@
                 </el-form-item>
                  <el-form-item label="金融机构：" prop="financialOrganizationId">
                   <fetch-select
-                      :remote-method="repairItemSearch"
-                      remote
-                      reserve-keyword
+                      :options="financialOrganizationOptions"
                       labelKey="organizationName"
                       valueKey="id"
                       v-model="form.financialOrganizationId"
@@ -256,7 +255,7 @@
                   />
                 </el-form-item>
 
-                <el-form-item label="省市区：" required>
+                <el-form-item label="省市区：">
                   <el-cascader
                     placeholder="请选择省市区"
                     v-model="areaCode"
@@ -491,6 +490,7 @@ const defaultForm = {
   totalAmount: '',
   settleFundType: '',
   financialOrganizationId: '',
+  financialOrganizationName: '',
   orderTime: new Date(),
   saleDealerCode: '',
   saleDealerName: '',
@@ -541,6 +541,111 @@ export default {
     },
     title () {
       return '主键：' + this.form.id;
+    },
+    columns () {
+      const isEdit = this.isEditing;
+      return [
+        {
+          field: 'qty',
+          title: '数量',
+          editable: isEdit, // 动态绑定编辑状态
+          width: '80',
+          editRender: {
+            name: 'ElInput',
+            props: {
+              type: 'number'
+            }
+          }
+        },
+        {
+          field: 'standardPrice',
+          title: '标准价格',
+          width: '100',
+        },
+        {
+          field: 'salesPrice',
+          title: '销售价格',
+          editable: isEdit, // 动态绑定编辑状态
+          width: '150',
+          editRender: {
+            name: 'ElInput',
+            props: {
+              type: 'number'
+            }
+          },
+          cellEditChange: ({ row }) => {
+            // 销售价格修改后，自动赋值给标准价格
+            if (this.orderCategory === 21 || this.orderCategory === '21') {
+              row.standardPrice = row.salesPrice;
+            }
+          }
+        },
+        {
+          field: 'relatedTxnExTaxPrice',
+          title: '关联交易不含税价',
+          width: '150',
+        },
+        {
+          field: 'materialsCode',
+          title: '整车物料编码',
+          width: '150',
+        },
+        {
+          field: 'materialsDesc',
+          title: '物料描述',
+          width: '100',
+        },
+        {
+          field: 'modelName',
+          title: '车型',
+          width: '100',
+        },
+        {
+          field: 'drivingRangeName',
+          title: '选配续航',
+          width: '100',
+        },
+        {
+          field: 'rangePowerName',
+          title: '选配动力',
+          width: '100',
+        },
+        {
+          field: 'exteriorName',
+          title: '外饰风格',
+          width: '100',
+        },
+        {
+          field: 'interiorName',
+          title: '内饰风格',
+          width: '100',
+        },
+        {
+          field: 'wheelHubName',
+          title: '选配轮毂',
+          width: '100',
+        },
+        {
+          field: 'batteryCellName',
+          title: '电池电芯',
+          width: '100',
+        },
+        {
+          field: 'yearTypeName',
+          title: '年款',
+          width: '100',
+        },
+        {
+          field: 'roofName',
+          title: '车顶风格',
+          width: '100',
+        },
+        {
+          field: 'optionPackageName',
+          title: '选装包',
+          width: '80',
+        }
+      ];
     }
   },
   watch: {
@@ -615,6 +720,7 @@ export default {
       districtOptions: [],
       cityOptions: [],
       saleCompanyOptions: [],
+      financialOrganizationOptions: [],
       form: { ...form },
       originalForm: { ...form },
       orgProps: {
@@ -629,106 +735,6 @@ export default {
       tableData: [],
       options: {
       },
-      columns: [
-        {
-          field: 'qty',
-          title: '数量',
-          editable: true,
-          width: '80',
-          editRender: {
-            name: 'ElInput',
-            props: {
-              type: 'number'
-            }
-          }
-        },
-        {
-          field: 'standardPrice',
-          title: '标准价格',
-          width: '100',
-        },
-        {
-          field: 'salesPrice',
-          title: '销售价格',
-          editable: true,
-          width: '150',
-          editRender: {
-            name: 'ElInput',
-            props: {
-              type: 'number'
-            }
-          },
-          cellEditChange: ({ row }) => {
-            // 销售价格修改后，自动赋值给标准价格
-            row.standardPrice = row.salesPrice;
-          }
-        },
-        {
-          field: 'relatedTxnExTaxPrice',
-          title: '关联交易不含税价',
-          width: '150',
-        },
-        {
-          field: 'materialsCode',
-          title: '整车物料编码',
-          width: '150',
-        },
-        {
-          field: 'materialsDesc',
-          title: '物料描述',
-          width: '100',
-        },
-        {
-          field: 'modelName',
-          title: '车型',
-          width: '100',
-        },
-        {
-          field: 'drivingRangeName',
-          title: '选配续航',
-          width: '100',
-        },
-        {
-          field: 'rangePowerName',
-          title: '选配动力',
-          width: '100',
-        },
-        {
-          field: 'exteriorName',
-          title: '外饰风格',
-          width: '100',
-        },
-        {
-          field: 'interiorName',
-          title: '内饰风格',
-          width: '100',
-        },
-        {
-          field: 'wheelHubName',
-          title: '选配轮毂',
-          width: '100',
-        },
-        {
-          field: 'batteryCellName',
-          title: '电池电芯',
-          width: '100',
-        },
-        {
-          field: 'yearTypeName',
-          title: '年款',
-          width: '100',
-        },
-        {
-          field: 'roofName',
-          title: '车顶风格',
-          width: '100',
-        },
-        {
-          field: 'optionPackageName',
-          title: '选装包',
-          width: '80',
-        }
-      ],
       rules: {
         orderCategory: [
           { required: true, message: '请输入订单分类', trigger: 'change' }
@@ -776,6 +782,7 @@ export default {
       this.form.settleFundType = '';
       this.form.settleFundTypeLabel = '';
       this.settleFundTypeOptions = [];
+      this.financialOrganizationOptions = [];
       if (!this.form.entCustomerName || !this.form.saleCompanyName) {
         return;
       }
@@ -800,6 +807,14 @@ export default {
           });
           // 将 Map 的值转换为数组并赋值
           this.settleFundTypeOptions = Array.from(uniqueMap.values());
+
+          // 筛选金融机构选项：fundType === 2010 且 validIfCreditSaleAccount === true
+          this.financialOrganizationOptions = res.records
+            .filter(item => item.fundType === 2010 && item.validIfCreditSaleAccount === true)
+            .map(item => ({
+              id: item.financialOrganizationId,
+              organizationName: item.financialOrganizationName
+            }));
         }
       }).catch(() => {
       });
@@ -879,7 +894,7 @@ export default {
     saveRowEdit (row, defer) {
       addOrUpdateDetail(row).then(id => {
         defer.resolve(id);
-        this.$message.success('提交成功');
+        this.$message.success('添加成功');
         this.$refs.containerRef.loadDetail();
         this.$emit('replace');
       }).catch(e => {
@@ -972,7 +987,7 @@ export default {
         batchCancel({
           idSet: [this._id],
         }).then(() => {
-          this.$message.success('提交成功');
+          this.$message.success('作废成功');
           this.$refs.containerRef.loadDetail();
         });
       }).catch(() => {});
@@ -1118,7 +1133,7 @@ export default {
       addOrUpdateDetail(data).then(() => {
         this.$message({
           type: 'success',
-          message: '提交成功!'
+          message: '添加成功!'
         });
         this.$refs.addEntVehicleReplishOrderDialog.handleCancel();
         this.detailRequest();
@@ -1128,8 +1143,9 @@ export default {
       const id = this._id;
       if (id) {
         return getDetail(id).then(res => {
-          this.form = { ...this.form, ...res };
           this.getFundAccount();
+          this.form = { ...this.form, ...res };
+          console.log(this.form);
           // 设置 areaCode 并匹配省市区名称
           if (res.provinceCode && res.cityCode) {
             this.areaCode = [
