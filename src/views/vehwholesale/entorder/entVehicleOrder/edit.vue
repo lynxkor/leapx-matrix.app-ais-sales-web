@@ -451,10 +451,10 @@
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationId">
                   <fetch-select
-                    :options="financialOrganizationOptions"
-                    labelKey="organizationName"
+                    :options="financialOrganizationList"
+                    labelKey="name"
                     valueKey="id"
-                    v-model="form.financialOrganizationId"
+                    v-model="form.financialOrganizationName"
                     placeholder="请选择"
                     clearable
                     filterable
@@ -992,7 +992,7 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       orderCategoryOptions: [],
       settleFundTypeOptions: [],
-      financialOrganizationOptions: [],
+      financialOrganizationList: [],
       warehouseName: '',
       accountData: [],
       form: { ...form },
@@ -1026,7 +1026,7 @@ export default {
     },
     getFundAccount () {
       this.settleFundTypeOptions = [];
-      this.financialOrganizationOptions = [];
+      this.financialOrganizationList = [];
       if (!this.form.entCustomerName || !this.form.saleCompanyName) {
         return;
       }
@@ -1046,6 +1046,13 @@ export default {
                 code: item.fundType,
                 message: item.fundTypeLabel
               });
+              console.log(item);
+              if ((item.fundType === '2010' || item.fundType === 2010) && item.validIfCreditSaleAccount) {
+                this.financialOrganizationList.push({
+                  id: item.financialOrganizationId,
+                  name: item.financialOrganizationName
+                });
+              }
             }
           });
           // 将 Map 的值转换为数组并赋值

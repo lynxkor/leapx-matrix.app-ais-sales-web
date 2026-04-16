@@ -255,7 +255,7 @@
                   />
                 </el-form-item>
 
-                <el-form-item label="省市区：" required>
+                <el-form-item label="省市区：">
                   <el-cascader
                     placeholder="请选择省市区"
                     v-model="areaCode"
