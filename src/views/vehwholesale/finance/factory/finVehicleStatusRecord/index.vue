@@ -202,7 +202,7 @@ const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   financingDataSource: '',
   orderCodes: [],
-  vehicleStatus: '1',
+  vehicleStatus: '',
   vins: [],
   mainDealerCompanyCodes: [],
   mainDealerCompanyNames: [],

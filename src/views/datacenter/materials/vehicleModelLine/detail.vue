@@ -17,7 +17,7 @@
               {{ info.modelLineName  }}
             </el-form-item>
             <el-form-item label="品牌名称：" prop="brandName">
-              {{ info.brandName  }}
+              <el-button type="text" style="padding:0" @click="handleGoToBrand">{{ info.brandName }}</el-button>
             </el-form-item>
             <el-form-item label="状态：" prop="status">
               {{ info.statusLabel  }}
@@ -62,8 +62,10 @@
 <script>
 import { getDetail } from '@/api/datacenter/materials/vehicleModelLine/index';
 import { YES_NO_ENUM_MAP } from '@/libs/constants';
+import commonMixins from '@/libs/mixins/commonMixins';
 export default {
   name: 'vehicleModelLineDetail',
+  mixins: [commonMixins],
   components: {
   },
   data () {
@@ -93,6 +95,14 @@ export default {
       }).catch(() => {
         this.loading = false;
       });
+    },
+    handleGoToBrand () {
+      if (this.info.brandId) {
+        this.navigateToRoute({
+          path: '/datacenter/materials/vehicleBrand/detail',
+          query: { id: this.info.brandId }
+        });
+      }
     }
   }
 };

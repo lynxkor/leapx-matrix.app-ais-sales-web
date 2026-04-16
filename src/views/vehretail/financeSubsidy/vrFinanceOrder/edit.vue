@@ -52,7 +52,7 @@
                   {{ form.discountScheme }}
                 </el-form-item>
                 <el-form-item label="门店有无金融返佣：">
-                  {{ form.dealerHasCommission ? '有' : '无' }}
+                  {{ form.dealerHasCommissionLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：">
                   {{ form.financeOrganizationName }}

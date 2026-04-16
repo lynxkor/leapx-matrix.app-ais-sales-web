@@ -734,7 +734,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
-                    :disabled="needAutoAllocateCarStatus.includes(form.settleFundType)"
+                    :disabled="needAutoAllocateCarStatus.includes(form.status)"
                     @change="clearCache"
                   />
                 </el-form-item>
