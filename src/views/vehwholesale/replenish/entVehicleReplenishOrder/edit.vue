@@ -1,5 +1,4 @@
 <template>
-  <div>
   <edit-page-layout ref="editLayout" title="侧边栏标题" showPaneFooter>
     <template #left>
       <!-- TIPS: 如果需要竖排，direction="vertical" -->
@@ -20,11 +19,11 @@
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button  :disabled="!form.buttonsControls.editButton" size="small" @click="handleAddDetail" >添加补货明细</el-button>
-          <el-button  :disabled="!form.buttonsControls.submitAuditButton" @click="handleCheckSubmit" >提交审批</el-button>
-          <el-button  :disabled="!form.buttonsControls.auditButton"  size="small" @click="handleCheckStatus" >审核</el-button>
-          <el-button  :disabled="!form.buttonsControls.cancelButton"  size="small" @click="handleCancel" >作废</el-button>
-          <el-button  :disabled="!form.buttonsControls.deleteButton" size="small"  @click="handleDelete" >删除</el-button>
+          <el-button :disabled="!form.buttonsControls.editButton" size="small" @click="handleAddDetail" >添加补货明细</el-button>
+          <el-button :disabled="!form.buttonsControls.submitAuditButton" @click="handleCheckSubmit" >提交审批</el-button>
+          <el-button :disabled="!form.buttonsControls.auditButton"  size="small" @click="handleCheckStatus" >审核</el-button>
+          <el-button :disabled="!form.buttonsControls.cancelButton"  size="small" @click="handleCancel" >作废</el-button>
+          <el-button :disabled="!form.buttonsControls.deleteButton" size="small"  @click="handleDelete" >删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -33,7 +32,7 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" :rules="rules" ref="basicFormRef" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="订单分类：" prop="orderCategory">
                   <fetch-select
                     :options="orderCategoryOptions"
@@ -239,7 +238,7 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" :rules="rules" ref="addressFormRef" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                <el-form-item label="接车联系人：" prop="pickupContactName">
                   <el-input
                     placeholder="请输入"
@@ -427,6 +426,17 @@
           </section>
         </el-main>
       </edit-base-container>
+      <Upload :visible="uploadDialogVisible" templateUrl="" uploadUrl="" @close="handleUploadDialogClose" />
+      <AddEntVehicleReplishOrderDetail  :visible.sync="showAddDetailDialog" ref="addEntVehicleReplishOrderDialog"
+          :order-ids="[_id]"
+          :orderInfo="form"
+          @addConfirm="addConfirm">
+      </AddEntVehicleReplishOrderDetail>
+        <audit-dialog
+          ref="auditRef"
+          @audit="handleBatchAudit"
+          :maxlength='150'
+        />
     </template>
     <template #right>
       <div class="page-common-edit">
@@ -434,18 +444,6 @@
       </div>
     </template>
   </edit-page-layout>
-  <Upload :visible="uploadDialogVisible" templateUrl="" uploadUrl="" @close="handleUploadDialogClose" />
-  <AddEntVehicleReplishOrderDetail  :visible.sync="showAddDetailDialog" ref="addEntVehicleReplishOrderDialog"
-      :order-ids="[_id]"
-      :orderInfo="form"
-      @addConfirm="addConfirm">
-  </AddEntVehicleReplishOrderDetail>
-    <audit-dialog
-      ref="auditRef"
-      @audit="handleBatchAudit"
-      :maxlength='150'
-    />
-  </div>
 </template>
 
 <script>
@@ -668,7 +666,7 @@ export default {
     },
     'form.settleFundType': {
       handler (val) {
-        if (val === '2010'  || val === 2010) {
+        if (val === '2010' || val === 2010) {
           this.$set(this.rules, 'financialOrganizationId', [
             { required: true, message: '请选择金融机构', trigger: 'change' }
           ]);
@@ -1176,15 +1174,22 @@ export default {
       }
     },
     submitRequest () {
-      if (!this.areaCode || this.areaCode.length === 0) {
-        this.form.provinceCode = '';
-        this.form.provinceName = '';
-        this.form.cityCode = '';
-        this.form.cityName = '';
-        this.form.districtCode = '';
-        this.form.districtName = '';
-      }
-      return addOrUpdate({ ...this.form });
+      // 校验两个 form
+      const basicValidate = this.$refs.basicFormRef.validate();
+      const addressValidate = this.$refs.addressFormRef.validate();
+      return Promise.all([basicValidate, addressValidate]).then(() => {
+        if (!this.areaCode || this.areaCode.length === 0) {
+          this.form.provinceCode = '';
+          this.form.provinceName = '';
+          this.form.cityCode = '';
+          this.form.cityName = '';
+          this.form.districtCode = '';
+          this.form.districtName = '';
+        }
+        return addOrUpdate({ ...this.form });
+      }).catch(() => {
+        return Promise.reject(new Error('表单校验失败'));
+      });
     },
     // 打开侧边栏
     openPane () {
