@@ -26,6 +26,9 @@
         <tag-input v-model="form.deliveryOrderCodeList" clearable placeholder="请输入" />
       </el-form-item>
       <template v-if="show">
+        <el-form-item label="商城订单编号">
+          <tag-input v-model="form.mallOrderCodeList" clearable placeholder="请输入" />
+        </el-form-item>
         <el-form-item label="车型名称">
           <fetch-select
             :remote-method="remoteMethods.model"
@@ -165,7 +168,8 @@ const defaultForm = {
   buyerName: '',
   appointmentTime: '',
   createTime: '',
-  deliveryOrderCodeList: []
+  deliveryOrderCodeList: [],
+  mallOrderCodeList: []
 };
 
 const pageSize = 20;
@@ -241,6 +245,24 @@ export default {
                   path: '/vehretail/orderManager/deliveryOrder/edit',
                   query: {
                     id: row.id
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'mallOrderCode',
+            label: '商城订单编号',
+            visible: true,
+            width: 200,
+            fixed: 'left',
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehretail/orderManager/retailOrderInfo/edit',
+                  query: {
+                    id: row.retailOrderId
                   }
                 });
               },
@@ -424,6 +446,12 @@ export default {
         }
       });
 
+      // 交车状态 1-待预约 2-待检测 3-已检测 4-已预约 5-已收尾款 6-车联网已开通 7-交车完成 99-作废
+      // 如果未选择交车状态，默认按照 1,2,3,4,5,6,7 顺序查询
+      if (!data.status) {
+        data.statusList = [1, 2, 3, 4, 5, 6, 7];
+      }
+
       if (this.form.createTime) {
         delete data.createTime;
         if (this.form.createTime.length > 1) {
@@ -445,6 +473,10 @@ export default {
       if (Array.isArray(this.form.deliveryOrderCodeList) && this.form.deliveryOrderCodeList.length <= 1) {
         delete data.deliveryOrderCodeList;
         data.deliveryOrderCodeLike = this.form.deliveryOrderCodeList[0] || '';
+      }
+      if (Array.isArray(this.form.mallOrderCodeList) && this.form.mallOrderCodeList.length <= 1) {
+        delete data.mallOrderCodeList;
+        data.mallOrderCodeLike = this.form.mallOrderCodeList[0] || '';
       }
       // 排序字段
       data.sortColumns = this.sortColumns;
