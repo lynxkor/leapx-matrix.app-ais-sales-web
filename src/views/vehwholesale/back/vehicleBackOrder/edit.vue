@@ -223,7 +223,22 @@
                   <vxe-column field="saleDealerName" title="门店名称" width="120" />
                   <vxe-column field="wholesaleOrderCode" title="整车批售订单号" width="200" />
                   <vxe-column field="entOrderCode" title="企业客户整车订单号" width="200" />
-                  <vxe-column field="actualVehicleReturnLabel" title="是否实车返厂" width="150" />
+                  <!-- <vxe-column field="actualVehicleReturnLabel" title="是否实车返厂" width="150" /> -->
+                   <vxe-column title="是否实车返厂" width="180">
+                    <template #default="{ row }">
+                      <fetch-select
+                        v-if="isEditing"
+                        :request="fetchOptions"
+                        enumCode="BooleanEnum"
+                        v-model="row.actualVehicleReturn"
+                        placeholder="请选择"
+                        clearable
+                        filterable
+                      />
+                      <span v-else>{{ row.actualVehicleReturnLabel }}</span>
+                    </template>
+                  </vxe-column>
+
                   <!-- 可编辑列：销售部预留 -->
                   <vxe-column title="销售部预留" width="180">
                     <template #default="{ row }">
@@ -626,7 +641,18 @@ export default {
       this.form.regionName = row.orgName;
     },
     handleSaveRow (row) {
-      console.log('handleSaveRow', row);
+      if (row.actualVehicleReturn === null || row.actualVehicleReturn === undefined || row.actualVehicleReturn === '') {
+        this.$message.error('是否实车返厂不能为空');
+        return;
+      }
+      if (row.salesDeptReserve === null || row.salesDeptReserve === undefined || row.salesDeptReserve === '') {
+        this.$message.error('销售部预留不能为空');
+        return;
+      }
+      if (row.vehicleLogisticsReserve === null || row.vehicleLogisticsReserve === undefined || row.vehicleLogisticsReserve === '') {
+        this.$message.error('整车物流预留”不能为空');
+        return;
+      }
       const params = {
         id: row.id,
         actualVehicleReturn: row.actualVehicleReturn,
@@ -695,7 +721,7 @@ export default {
       detailAddOrUpdate(params).then(() => {
         this.$message({
           type: 'success',
-          message: '提交成功'
+          message: '保存成功'
         });
         this.$refs.containerRef.loadDetail();
         this.showvinAllocateVehicleDialog = false;
@@ -794,7 +820,6 @@ export default {
       return getRigion({ orgName: params });
     },
     getdealerCompanyCode (val, row) {
-      console.log('getdealerCompanyCode', row.regionCode, row.regionName);
       this.form.dealerCompanyName = row.companyName;
       this.form.dealerCompanyCode = row.companyCode;
       this.form.regionCode = row.regionCode;
@@ -857,6 +882,26 @@ export default {
       }
     },
     submitRequest () {
+      // 遍历明细，检查必填字段
+      for (let i = 0; i < this.form.details.length; i++) {
+        const row = this.form.details[i];
+        // 检查是否实车返厂
+        if (row.actualVehicleReturn === null || row.actualVehicleReturn === undefined || row.actualVehicleReturn === '') {
+          this.$message.error(`第 ${i + 1} 条明细的“是否实车返厂”不能为空`);
+          return;
+        }
+        // 检查销售部预留
+        if (row.salesDeptReserve === null || row.salesDeptReserve === undefined || row.salesDeptReserve === '') {
+          this.$message.error(`第 ${i + 1} 条明细的“销售部预留”不能为空`);
+          return;
+        }
+        // 检查整车物流预留
+        if (row.vehicleLogisticsReserve === null || row.vehicleLogisticsReserve === undefined || row.vehicleLogisticsReserve === '') {
+          this.$message.error(`第 ${i + 1} 条明细的“整车物流预留”不能为空`);
+          return;
+        }
+      }
+
       return addOrUpdate({ ...this.form });
     },
     // 打开侧边栏

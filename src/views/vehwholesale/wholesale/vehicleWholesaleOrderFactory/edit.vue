@@ -173,6 +173,7 @@
                       clearable
                       filterable
                       :disabled = 'form.status === 99 || form.status === "99"'
+                      @change="changeStatus"
                     />
                 </el-form-item>
                 <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
@@ -1230,6 +1231,24 @@ export default {
     this.fetchOrderCategoryOptions();
   },
   methods: {
+    formatDateTime (date) {
+      if (!date) return '';
+      const d = new Date(date);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const hours = String(d.getHours()).padStart(2, '0');
+      const minutes = String(d.getMinutes()).padStart(2, '0');
+      const seconds = String(d.getSeconds()).padStart(2, '0');
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    },
+    changeStatus () {
+      if (this.form.emergencyOrder === '1' || this.form.emergencyOrder === 1) {
+        this.form.emergencyOrderTime = this.formatDateTime(new Date());
+      } else {
+        this.form.emergencyOrderTime = '';
+      }
+    },
     cancleBatchAllocateVehicle (data) {
       const ids = [this._id];
       return batchCancleAllocateVehicleItem({

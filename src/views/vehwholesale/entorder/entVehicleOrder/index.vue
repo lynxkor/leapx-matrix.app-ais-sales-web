@@ -40,7 +40,7 @@
           />
         </el-form-item>
       <template v-if="show">
-        <el-form-item label="企业客户补货订单编号" >
+        <el-form-item label="企业客户补货订单号" >
            <tag-input v-model="form.entReplenishOrderCodes" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="配车VIN" >
@@ -302,7 +302,7 @@ export default {
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'needAutoAllocateCarLabel', label: '是否需要自动配车', visible: true, width: 200 },
           { props: 'needAsyncSapLabel', label: '是否需要同步SAP', visible: true, width: 200 },
-          { props: 'entReplenishOrderCode', label: '企业客户补货订单编号', visible: true, width: 200 },
+          { props: 'entReplenishOrderCode', label: '企业客户补货订单号', visible: true, width: 200 },
           { props: 'taxInvoiceCode', label: '税务发票号', visible: true, width: 200 },
           { props: 'pickupContactName', label: '接车联系人', visible: true, width: 200 },
           { props: 'pickupContactMobile', label: '接车联系电话', visible: true, width: 200 },
