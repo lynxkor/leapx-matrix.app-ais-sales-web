@@ -19,9 +19,9 @@
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button  size="small"  @click="handelConfirmOutbound">确认出库</el-button>
-          <el-button  size="small"  @click="handelConfirmVdcInbound">确认入库</el-button>
-          <el-button  size="small"  @click="handleDel">删除</el-button>
+          <el-button :disabled="!form.buttonControl.confirmOutbound" size="small"  @click="handelConfirmOutbound">确认出库</el-button>
+          <el-button :disabled="!form.buttonControl.confirmInbound" size="small"  @click="handelConfirmVdcInbound">确认入库</el-button>
+          <el-button :disabled="!form.buttonControl.delete" size="small"  @click="handleDel">删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
