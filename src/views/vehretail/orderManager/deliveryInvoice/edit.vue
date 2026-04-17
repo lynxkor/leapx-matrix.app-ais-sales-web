@@ -508,11 +508,11 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="车主证件类型：" prop="orderIdCardType">
+                <el-form-item label="车主证件类型：" prop="idCardType">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vehretail_id_card_type"
-                    v-model="form.orderIdCardType"
+                    v-model="form.idCardType"
                     placeholder="请选择"
                     clearable
                     filterable
@@ -534,7 +534,7 @@
                   {{ form.vehicleAttributeLabel }}
                 </el-form-item>
                 <el-form-item label="车主证件类型：">
-                  {{ form.orderIdCardTypeLabel }}
+                  {{ form.idCardTypeLabel }}
                 </el-form-item>
                 <el-form-item label="备注：">
                   {{ form.remark }}
@@ -920,10 +920,10 @@ export default {
           { required: true, message: '请输入购车人手机号', trigger: 'change' }
         ],
         idCardType: [
-          { required: false, message: '请选择证件类型标签', trigger: 'change' }
+          { required: true, message: '请选择车主证件类型', trigger: 'change' }
         ],
         orderIdCardType: [
-          { required: true, message: '请选择车主证件类型', trigger: 'change' }
+          { required: false, message: '请选择证件类型标签', trigger: 'change' }
         ],
         agentName: [
           { required: false, message: '请输入代办姓名', trigger: 'change' }
@@ -1041,15 +1041,15 @@ export default {
           isHighlighted: true
         });
       }
-      if (!this.form.idCardTypeLabel || !this.form.orderIdCardTypeLabel || this.form.idCardTypeLabel !== this.form.orderIdCardTypeLabel) {
+      if (!this.form.idCardType || !this.form.orderIdCardType || this.form.idCardType !== this.form.orderIdCardType) {
         comparisonData.push({
           fieldName: '车主证件类型',
-          recognizedValue: this.form.vpIdCardTypeLabel,
+          recognizedValue: this.form.idCardTypeLabel,
           checkField: '证件类型',
           checkValue: this.form.orderIdCardTypeLabel,
         });
       }
-      if (!this.form.idCardNo || !this.form.orderIdCardNo || this.form.idCardNo !== this.form.orderIdCardNo) {
+      if (!this.form.idCardNo || !this.form.vpIdCardNo || this.form.idCardNo !== this.form.vpIdCardNo) {
         comparisonData.push({
           fieldName: '车主证件号码',
           recognizedValue: this.form.vpIdCardNo,
@@ -1069,7 +1069,7 @@ export default {
       if (!this.form.invoiceAmount || !this.form.deliveryOrderInvoiceAmount || this.form.invoiceAmount !== this.form.deliveryOrderInvoiceAmount) {
         comparisonData.push({
           fieldName: '发票金额',
-          recognizedValue: this.form.price,
+          recognizedValue: this.form.invoiceAmount,
           checkField: '开票金额',
           checkValue: this.form.deliveryOrderInvoiceAmount,
           isHighlighted: true
