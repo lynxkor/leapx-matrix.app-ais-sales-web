@@ -666,17 +666,18 @@ export default {
     },
     'form.settleFundType': {
       handler (val) {
+        console.log('settleFundType:', val);
         if (val === '2010' || val === 2010) {
           this.$set(this.rules, 'financialOrganizationId', [
             { required: true, message: '请选择金融机构', trigger: 'change' }
           ]);
           this.form.creditSaleFlag = 0;
         } else if (val === '1050' || val === 1050) {
-          this.rules.financialOrganizationId = [];
+          this.$set(this.rules, 'financialOrganizationId', []);
           this.form.creditSaleFlag = 1;
-        } else if (val === '1010') {
+        } else if (val === '1010' || val === 1010) {
           this.form.creditSaleFlag = 0;
-          this.rules.financialOrganizationId = [];
+          this.$set(this.rules, 'financialOrganizationId', []);
         }
       },
       immediate: true

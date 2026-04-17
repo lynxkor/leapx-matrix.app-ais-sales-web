@@ -1170,7 +1170,7 @@ export default {
     },
     // 上传发票
     handleUploadInvoice () {
-      if (this.form.deliveryConfirmStatus !== 10 && this.form.deliveryConfirmStatus !== 15) {
+      if (this.form.deliveryConfirmStatus === 5) {
         this.$confirm('未生成交车确认单，是否生成交车确认单进行签署', '交车确认单生成提醒', {
           distinguishCancelAndClose: true,
           cancelButtonText: '取消',
@@ -1208,14 +1208,25 @@ export default {
       }
     },
     doUploadInvoice (onlyGenerateInvoice) {
-      uploadInvoice({
-        deliveryOrderId: this.form.deliveryOrderId,
-        retailOrderId: this.form.retailOrderId,
-        onlyGenerateInvoice: onlyGenerateInvoice,
-      }).then(res => {
-        this.$message.success('上传发票成功');
-        // 重新加载详情数据
-        this.getDetail();
+      getInvoiceList({ page: 1, size: 1, deliveryOrderId: this.form.deliveryOrderId }).then(res => {
+        if (res.records && res.records.length > 0) {
+          this.$router.push({
+            path: '/vehretail/orderManager/deliveryInvoice/edit',
+            query: {
+              id: res.records[0].id
+            }
+          });
+        } else {
+          uploadInvoice({
+            deliveryOrderId: this.form.deliveryOrderId,
+            retailOrderId: this.form.retailOrderId,
+            onlyGenerateInvoice: onlyGenerateInvoice,
+          }).then(res => {
+            this.$message.success('上传发票成功');
+            // 重新加载详情数据
+            this.getDetail();
+          });
+        }
       });
     },
     // 收款撤回

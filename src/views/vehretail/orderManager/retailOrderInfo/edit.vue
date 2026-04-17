@@ -24,8 +24,11 @@
           <el-button size="small" :loading="manualVehicleLoading" v-if="form.wholesaleBindStatus !== 1" @click="handleManualVehicleAllocation">手工配车</el-button>
           <el-button size="small" :loading="autoLockLoading" v-if="form.wholesaleBindStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
           <el-button size="small" :loading="agreementLoading" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
-          <el-button size="small" :loading="orderRefundLoading"
-                     @click="handleOrderRefund">
+          <el-button
+            v-if="!(form.orderStatus === 10 || (form.orderStatus === 7 && form.deliveryOrder && form.deliveryOrder.status === 5))"
+            size="small"
+            :loading="orderRefundLoading"
+            @click="handleOrderRefund">
             订单退订
           </el-button>
           <el-button size="small" :loading="changeApplyLoading"
