@@ -101,6 +101,7 @@ export default {
     return {
       dialogVisible: false,
       searchForm: { ...defaultSearchForm },
+      externalParams: {}, // 保存外部传入的固定参数
       vinList: [],
       data: [],
       total: 0,
@@ -126,7 +127,9 @@ export default {
     // 打开对话框
     show (params, data) {
       this.dialogVisible = true;
-      this.searchForm = { ...params, ...this.searchForm };
+      // 保存外部传入的固定参数，重置时需要保留
+      this.externalParams = { ...params };
+      this.searchForm = { ...defaultSearchForm, ...params };
       this.data = data;
       this.loadData();
     },
@@ -139,6 +142,7 @@ export default {
     // 对话框关闭后的回调
     closed () {
       this.searchForm = { ...defaultSearchForm };
+      this.externalParams = {};
       this.vinList = [];
       this.selectedRow = null;
       this.currentPage = 1;
@@ -178,7 +182,7 @@ export default {
 
     // 重置
     handleReset () {
-      this.searchForm = { ...defaultSearchForm };
+      this.searchForm = { ...defaultSearchForm, ...this.externalParams };
       this.currentPage = 1;
       this.loadData();
     },
