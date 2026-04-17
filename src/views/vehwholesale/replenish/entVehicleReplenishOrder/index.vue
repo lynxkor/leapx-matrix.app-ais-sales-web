@@ -9,7 +9,7 @@
       label-width="150px"
       class="ais-search-form"
     >
-       <el-form-item label="企业客户补货订单">
+       <el-form-item label="企业客户补货订单号">
            <tag-input v-model="form.entReplenishOrderCodes" placeholder="请输入" />
         </el-form-item>
       <el-form-item label="企业客户名称">
@@ -26,7 +26,31 @@
               multiple
         />
       </el-form-item>
-      <el-form-item label="销售公司">
+         <el-form-item label="结算资金类型" v-show="this.visibleCount === 3 || show">
+        <fetch-select
+          :options="settleFundTypeOptions"
+            v-model="form.settleFundTypes"
+            placeholder="请选择"
+            clearable
+            filterable
+            multiple
+          />
+        </el-form-item>
+      <template v-if="show">
+         <el-form-item label="金融机构" >
+           <fetch-select
+            :remote-method="repairItemSearch"
+            remote
+            multiple
+            labelKey="organizationName"
+            valueKey="id"
+            v-model="form.financialOrganizationIds"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
+         <el-form-item label="销售公司">
         <fetch-select
             filterable
             clearable
@@ -39,17 +63,6 @@
             label-key="companyName"
           />
         </el-form-item>
-         <el-form-item label="结算资金类型" v-show="this.visibleCount === 3 || show">
-        <fetch-select
-          :options="settleFundTypeOptions"
-            v-model="form.settleFundTypes"
-            placeholder="请选择"
-            clearable
-            filterable
-            multiple
-          />
-        </el-form-item>
-      <template v-if="show">
         <el-form-item label="审核状态" >
           <fetch-select
             :request="fetchOptions"
@@ -71,19 +84,6 @@
               filterable
             />
       </el-form-item>
-         <el-form-item label="金融机构">
-           <fetch-select
-            :remote-method="repairItemSearch"
-            remote
-            multiple
-            labelKey="organizationName"
-            valueKey="id"
-            v-model="form.financialOrganizationIds"
-            placeholder="请选择"
-            clearable
-            filterable
-          />
-        </el-form-item>
         <el-form-item label="订单时间">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
@@ -191,7 +191,7 @@ const defaultForm = {
   entCustomerName: '',
   orderCategory: '',
   acceptanceMethod: '',
-  settleFundTypes: ['1010'],
+  settleFundTypes: '',
   financialOrganizationId: '',
   orderTime: '',
   auditStatus: '',
@@ -245,7 +245,7 @@ export default {
         dataProp: [
           {
             props: 'entReplenishOrderCode',
-            label: '企业客户补货订单编号',
+            label: '企业客户补货订单号',
             visible: true,
             width: 200,
             fixed: 'left',

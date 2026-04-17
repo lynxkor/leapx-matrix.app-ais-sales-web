@@ -217,7 +217,7 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="整车物流预留：" prop="vehicleLogisticsReserve">
+                <el-form-item label="物流部预留：" prop="vehicleLogisticsReserve">
                   <fetch-select
                     :request="fetchOptions"
                     enum-code="BooleanEnum"
@@ -225,6 +225,27 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                  />
+                </el-form-item>
+                <el-form-item label="订单接口同步结果：" prop="syncSapMsg">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.syncSapMsg"
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="SAP 退货单号：" prop="erpBackOrder">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.erpBackOrder"
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="返款凭证：" prop="sapRefundVoucher">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.sapRefundVoucher"
+                    disabled
                   />
                 </el-form-item>
                  <el-form-item label="备注：" prop="remark">
@@ -303,8 +324,17 @@
                 <el-form-item label="销售部预留：" prop="salesDeptReserveLabel">
                   {{ form.salesDeptReserveLabel }}
                 </el-form-item>
-                <el-form-item label="整车物流预留：" prop="vehicleLogisticsReserveLabel">
+                <el-form-item label="物流部预留：" prop="vehicleLogisticsReserveLabel">
                   {{ form.vehicleLogisticsReserveLabel }}
+                </el-form-item>
+                 <el-form-item label="订单接口同步结果：" prop="syncSapMsg">
+                  {{ form.syncSapMsg }}
+                </el-form-item>
+                 <el-form-item label="SAP 退货单号：" prop="erpBackOrder">
+                  {{ form.erpBackOrder }}
+                </el-form-item>
+                 <el-form-item label="返款凭证：" prop="sapRefundVoucher">
+                  {{ form.sapRefundVoucher }}
                 </el-form-item>
                 <el-form-item label="备注：" prop="remark">
                   {{ form.remark }}
