@@ -60,6 +60,14 @@ export function getEffectiveByVin (data) {
 }
 
 /**
+ * 交车单ID查询
+ * @param {Object} data
+ */
+export function getEffectiveByDeliveryOrderId (data) {
+  return api.get(prefix + `getEffectiveByDeliveryOrderId?deliveryOrderId=${data}`);
+}
+
+/**
  * 批量作废
  * @param {Array<Number>} data
  */
