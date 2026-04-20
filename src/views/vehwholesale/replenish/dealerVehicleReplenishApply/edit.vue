@@ -756,7 +756,6 @@ export default {
       }
     },
     handleChangeFundType (val) {
-      console.log('订单类型改变:', val);
       if (val + '' !== '2010') {
         this.form.financialOrganizationId = '';
       }
@@ -769,7 +768,7 @@ export default {
       this.financialOrganizationList = [];
       listFundAccount({
         dealerCompanyCodes: [this.dealerCompanyCodes],
-        fundTypes: ['2010']
+        fundTypes: [val]
       }).then((res) => {
         console.log('获取账户列表:', res.records);
         // 筛选 validIfCreditSaleAccount === true 的记录

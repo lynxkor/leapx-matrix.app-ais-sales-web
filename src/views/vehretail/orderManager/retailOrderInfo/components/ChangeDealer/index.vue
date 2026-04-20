@@ -7,21 +7,6 @@
     @close="close"
   >
     <el-form ref="dialogForm" :model="dialogForm" :rules="type === 'sales' ? rules : {}" label-position="left">
-      <el-row>
-        <el-form-item
-          v-if="dataList && dataList.length > 0"
-          :label="dialogTitle"
-          prop="title"
-        >
-          <el-tooltip
-            :display="dataList && dataList.length > 0"
-            :content="tooltipContent"
-            placement="top"
-          >
-            <span>{{ displayDialogData }}</span>
-          </el-tooltip>
-        </el-form-item>
-      </el-row>
       <el-row v-show="type === 'sales'">
         <el-form-item
           label="变更原因"

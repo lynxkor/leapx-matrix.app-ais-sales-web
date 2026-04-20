@@ -666,7 +666,6 @@ export default {
     },
     'form.settleFundType': {
       handler (val) {
-        console.log('settleFundType:', val);
         if (val === '2010' || val === 2010) {
           this.$set(this.rules, 'financialOrganizationId', [
             { required: true, message: '请选择金融机构', trigger: 'change' }
