@@ -490,12 +490,18 @@ export default {
             fixed: 'right',
             buttons: [{
               name: '修改配置',
+              show: (row) => {
+                return row.orderStatus !== 9 && row.orderStatus !== 99 && row.orderStatus === 3 && row.wholesaleBindStatus === 1;
+              },
               click: (rowIndex, row) => {
                 this.changeConfiguration(row);
               },
               type: 'info'
             }, {
               name: '编辑',
+              show: (row) => {
+                return row.orderStatus !== 9 && row.orderStatus !== 99;
+              },
               click: (rowIndex, row) => {
                 this.$router.push({
                   path: '/vehretail/orderManager/retailOrderInfo/edit',
@@ -572,6 +578,7 @@ export default {
       // 门店端校验
       const res1 = await getSysConfigParamValue({ paramCode: 'veretailChangeConfigCount' });
       console.log('res1:', res1);
+      console.log('row.changeConfigCount:', row.changeConfigCount);
       console.log('this.accountFlag:', this.accountFlag);
       const veretailChangeConfigCount = res1?.paramValue !== null && res1?.paramValue !== undefined ? Number(res1.paramValue) : 1;
       // 检查返回结果是否有效
@@ -606,7 +613,7 @@ export default {
         [this.accountFlag ? 'storeUnlockStatus' : 'factoryUnlockStatus']: '1'
       };
       this.$refs.unlockDialog.show({
-        meterlsCode: this.row.materialsCode,
+        materialsCode: this.row.materialsCode,
         saleDealerCode: this.row.saleDealerCode
       }, param);
     },

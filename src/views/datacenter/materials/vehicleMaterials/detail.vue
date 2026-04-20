@@ -20,37 +20,37 @@
               {{ info.materialsDesc  }}
             </el-form-item>
             <el-form-item label="车系：" prop="modelName">
-              {{ info.seriesName  }}
+              <el-link type="primary" :href="`/datacenter/materials/vehicleSeries/detail?id=${info.seriesId}`" target="_blank">{{ info.seriesName }}</el-link>
             </el-form-item>
             <el-form-item label="车型：" prop="modelName">
-              {{ info.modelName  }}
+              <el-link type="primary" :href="`/datacenter/materials/vehicleModel/detail?id=${info.modelId}`" target="_blank">{{ info.modelName }}</el-link>
             </el-form-item>
             <el-form-item label="年款：" prop="modelName">
-              {{ info.yearTypeName  }}
+              <el-link type="primary" :href="`/datacenter/materials/vehicleYearType/detail?id=${info.yearTypeId}`" target="_blank">{{ info.yearTypeName }}</el-link>
             </el-form-item>
             <el-form-item label="外观：" prop="exteriorName">
-              {{ info.exteriorName  }}
+              <el-link type="primary" :href="`/datacenter/materials/vehicleExterior/detail?id=${info.exteriorId}`" target="_blank">{{ info.exteriorName }}</el-link>
             </el-form-item>
             <el-form-item label="内饰：" prop="interiorName">
-              {{ info.interiorName  }}
+              <el-link type="primary" :href="`/datacenter/materials/vehicleInterior/detail?id=${info.interiorId}`" target="_blank">{{ info.interiorName }}</el-link>
             </el-form-item>
             <el-form-item label="车顶：">
-              {{ info.roofName  }}
+              <el-link type="primary" :href="`/datacenter/materials/vehicleRoof/detail?id=${info.roofId}`" target="_blank">{{ info.roofName }}</el-link>
             </el-form-item>
             <el-form-item label="轮毂：" prop="wheelHubName">
-              {{ info.wheelHubName  }}
+              <el-link type="primary" :href="`/datacenter/materials/vehicleWheelHub/detail?id=${info.wheelHubId}`" target="_blank">{{ info.wheelHubName }}</el-link>
             </el-form-item>
             <el-form-item label="续航里程：" prop="drivingRangeName">
-              {{ info.drivingRangeName  }}
+              <el-link type="primary" :href="`/datacenter/materials/vehicleDrivingRange/detail?id=${info.drivingRangeId}`" target="_blank">{{ info.drivingRangeName }}</el-link>
             </el-form-item>
             <el-form-item label="选配动力：" prop="rangePowerName">
-              {{ info.rangePowerName  }}
+              <el-link type="primary" :href="`/datacenter/materials/vehicleRangePower/detail?id=${info.rangePowerId}`" target="_blank">{{ info.rangePowerName }}</el-link>
             </el-form-item>
             <el-form-item label="选装包：">
-              {{ info.optionPackageName  }}
+              <el-link type="primary" :href="`/datacenter/materials/vehicleOptionPackage/detail?id=${info.optionPackageId}`" target="_blank">{{ info.optionPackageName }}</el-link>
             </el-form-item>
             <el-form-item label="电池电芯：" prop="batteryCellName" v-permission="moduleKey+'-checkBatteryCell'">
-              {{ info.batteryCellName  }}
+              <el-link type="primary" :href="`/datacenter/materials/vehicleBatteryCell/detail?id=${info.batteryCellId}`" target="_blank">{{ info.batteryCellName }}</el-link>
             </el-form-item>
             <el-form-item label="状态：" prop="status">
               {{ info.status === 1 ? '启用' : '停用'  }}

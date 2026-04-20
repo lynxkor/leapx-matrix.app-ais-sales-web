@@ -17,7 +17,7 @@
               {{ info.modelLineName  }}
             </el-form-item>
             <el-form-item label="品牌名称：" prop="brandName">
-              <el-button type="text" style="padding:0" @click="handleGoToBrand">{{ info.brandName }}</el-button>
+              <el-link type="primary" :href="`/datacenter/materials/vehicleBrand/detail?id=${info.brandId}`" target="_blank">{{ info.brandName }}</el-link>
             </el-form-item>
             <el-form-item label="状态：" prop="status">
               {{ info.statusLabel  }}
@@ -95,14 +95,6 @@ export default {
       }).catch(() => {
         this.loading = false;
       });
-    },
-    handleGoToBrand () {
-      if (this.info.brandId) {
-        this.navigateToRoute({
-          path: '/datacenter/materials/vehicleBrand/detail',
-          query: { id: this.info.brandId }
-        });
-      }
     }
   }
 };
