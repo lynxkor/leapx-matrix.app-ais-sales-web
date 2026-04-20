@@ -1050,9 +1050,9 @@ export default {
         return;
       }
       const params = {
-        dealerCompanyNames: [this.form.entCustomerName],
+        dealerCompanyCodes: [this.form.entCustomerCode],
         allowEntOrderSettle: '1',
-        saleCompanyNames: [this.form.saleCompanyName]
+        saleCompanyIds: [this.form.saleCompanyId]
       };
       accountList(params).then((res) => {
         if (res && res.records) {
