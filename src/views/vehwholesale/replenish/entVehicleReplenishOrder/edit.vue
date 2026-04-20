@@ -78,7 +78,7 @@
                       @change="(val, row) => handleChange(val, row)"
                 />
                 </el-form-item>
-                 <el-form-item label="销售公司：" prop="saleCompanyId">
+                 <el-form-item label="销售公司：" prop="saleCompanyName">
                     <fetch-select
                       filterable
                       clearable
@@ -114,7 +114,7 @@
                     disabled
                   />
                 </el-form-item>
-                 <el-form-item label="结算资金类型：" prop="settleFundType">
+                 <el-form-item label="结算资金类型：" prop="settleFundTypeLabel">
                   <fetch-select
                    :options="settleFundTypeOptions"
                     v-model="form.settleFundTypeLabel"
@@ -740,13 +740,13 @@ export default {
         entCustomerName: [
           { required: true, message: '请输入企业客户名称', trigger: 'change' }
         ],
-        saleCompanyId: [
+        saleCompanyName: [
           { required: true, message: '请输入销售公司', trigger: 'change' }
         ],
         creditSaleFlag: [
           { required: true, message: '请输入是否赊销', trigger: 'change' }
         ],
-        settleFundType: [
+        settleFundTypeLabel: [
           { required: true, message: '请选择结算资金类型', trigger: 'blur' }
         ],
         orderTime: [
