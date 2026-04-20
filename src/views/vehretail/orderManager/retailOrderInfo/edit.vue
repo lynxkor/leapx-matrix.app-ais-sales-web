@@ -21,7 +21,7 @@
           <!-- <el-button size="small" type="primary" @click="handleEquityInquiry">权益查询</el-button> -->
           <el-button size="small" :loading="printLoading" v-if="canOperateOrder" @click="handlePrintContractTermination">打印合同解除协议</el-button>
           <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" :loading="setSpecialMarkLoading" @click="handleSetSpecialMark">设置特殊标识</el-button>
-          <el-button size="small" :loading="modifyConfigLoading" v-if="canOperateOrder && form.orderStatus === 3 && form.wholesaleBindStatus === 1" @click="handleModifyConfiguration">修改配置</el-button>
+          <el-button size="small" :loading="modifyConfigLoading" v-if="canOperateOrder && form.orderStatus === 3 && form.wholesaleBindStatus !== 1" @click="handleModifyConfiguration">修改配置</el-button>
           <el-button size="small" :loading="manualVehicleLoading" v-if="canOperateOrder && form.wholesaleBindStatus !== 1" @click="handleManualVehicleAllocation">手工配车</el-button>
           <el-button size="small" :loading="autoLockLoading" v-if="canOperateOrder && form.wholesaleBindStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
           <el-button size="small" :loading="agreementLoading" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
