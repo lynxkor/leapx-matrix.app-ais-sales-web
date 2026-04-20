@@ -899,9 +899,7 @@ export default {
         this.auditorDialogVisible = true;
         queryAuditor({
           cooperationType: this.form.cooperationType,
-          auditStatus: this.form.auditStatus,
-          orgId: this.form.ownerOrgId,
-          orgCode: this.form.saleDealerCode
+          auditStatus: this.form.auditStatus
         }).then(res => {
           this.auditorList = res.auditorList || [];
         });
