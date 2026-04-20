@@ -351,6 +351,7 @@
           >
             <template v-slot:operation_default="{ row }">
               <el-button
+                v-if="form.status !== 7 && form.status !== 99"
                 type="text"
                 style="color: #67c23a;"
                 @click="handleDeletePaymentRecord(row)"
@@ -461,7 +462,10 @@ import {
   deliveryConfirm, // 交车确认单生成
   checkCarBuyerPhoneRegistered, // 校验购车人手机号是否注册零跑APP
 } from '@/api/vehretail/orderManager/deliveryOrder/index';
-import { getList as getInvoiceList } from '@/api/vehretail/orderManager/deliveryInvoice/index';
+import {
+  getEffectiveByDeliveryOrderId,
+  getList as getInvoiceList
+} from '@/api/vehretail/orderManager/deliveryInvoice/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -1186,12 +1190,12 @@ export default {
         });
       } else {
         // 查询是否已存在开票记录
-        getInvoiceList({ page: 1, size: 1, deliveryOrderId: this.form.deliveryOrderId }).then(res => {
-          if (res.records && res.records.length > 0) {
+        getEffectiveByDeliveryOrderId(this.form.deliveryOrderId).then(res => {
+          if (res) {
             this.$router.push({
               path: '/vehretail/orderManager/deliveryInvoice/edit',
               query: {
-                id: res.records[0].id
+                id: res.id
               }
             });
           } else {
@@ -1208,12 +1212,12 @@ export default {
       }
     },
     doUploadInvoice (onlyGenerateInvoice) {
-      getInvoiceList({ page: 1, size: 1, deliveryOrderId: this.form.deliveryOrderId }).then(res => {
-        if (res.records && res.records.length > 0) {
+      getEffectiveByDeliveryOrderId(this.form.deliveryOrderId).then(res => {
+        if (res) {
           this.$router.push({
             path: '/vehretail/orderManager/deliveryInvoice/edit',
             query: {
-              id: res.records[0].id
+              id: res.id
             }
           });
         } else {

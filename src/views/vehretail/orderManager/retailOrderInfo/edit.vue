@@ -873,7 +873,7 @@ export default {
           }
         });
       } else {
-        this.$message.error('该订单不是批售单或订单状态不是车辆在途或等待交车，不能进行质量问题解绑申请');
+        this.$message.error('该订单未绑定批售且订单状态不是车辆在途/等待交车，不能进行质量问题解绑申请');
       }
       this.qualityIssueLoading = false;
     },
