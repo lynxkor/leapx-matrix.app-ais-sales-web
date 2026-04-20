@@ -19,9 +19,9 @@
           <el-button v-if = "isShowAuditorBtn" size="small" @click="handleViewAuditUsers">查看审核人员</el-button>
           <el-button v-if = "form.permissions.cancel" size="small" @click="handleCancel">作废</el-button>
           <el-button v-if = "form.permissions.submit" size="small" @click="handleSubmitApproval">提交审批</el-button>
-          <el-button v-if = "form.permissions.firstAudit" size="small" @click="handleAudit(1)">初审</el-button>
-          <el-button v-if = "form.permissions.secondAudit" size="small" @click="handleAudit(2)">复审</el-button>
-          <el-button v-if = "form.permissions.finalAudit" size="small" @click="handleAudit(3)">终审</el-button>
+          <el-button v-if = "form.permissions.firstApprove" size="small" @click="handleAudit(1)">初审</el-button>
+          <el-button v-if = "form.permissions.secondApprove" size="small" @click="handleAudit(2)">复审</el-button>
+          <el-button v-if = "form.permissions.finalApprove" size="small" @click="handleAudit(3)">终审</el-button>
           <el-button v-if = "form.permissions.auditRevoke" size="small" @click="handleRecall">审核撤回</el-button>
         </template>
         <el-main>
@@ -899,9 +899,7 @@ export default {
         this.auditorDialogVisible = true;
         queryAuditor({
           cooperationType: this.form.cooperationType,
-          auditStatus: this.form.auditStatus,
-          orgId: this.form.ownerOrgId,
-          orgCode: this.form.saleDealerCode
+          auditStatus: this.form.auditStatus
         }).then(res => {
           this.auditorList = res.auditorList || [];
         });
