@@ -18,7 +18,7 @@
         </template>
         <template #extraButtons >
           <el-button  size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
-          <el-button  size="small" @click="handleCheckConfirm" >审核确认</el-button>
+          <el-button  :disabled="!form.buttonControl.confirmManualButton" size="small" @click="handleCheckConfirm" >审核确认</el-button>
           <el-button  :disabled="!form.buttonControl.autoAllocateVehicle" size="small" @click="handleaAutoVehicleAllocation">自动配车</el-button>
           <el-button  :disabled="!form.buttonControl.manualAllocateVehicle" size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
           <el-button  :disabled="!form.buttonControl.cancelAllocateVehicle" size="small" @click="handleCancelAllocateVehicle">取消配车</el-button>
