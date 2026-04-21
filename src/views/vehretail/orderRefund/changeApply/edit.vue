@@ -1186,7 +1186,7 @@ export default {
       this.form.originalAgentName = val ? selectedOption.carOwner.agentName : '';
       this.form.originalSaleDealerCode = val ? selectedOption.saleDealerCode : '';
       this.form.originalSaleDealerName = val ? selectedOption.saleDealerName : '';
-      this.form.originalMaterialsCode = val ? selectedOption.materialsCode : '';
+      this.form.originalMaterialsCode = val ? selectedOption.materials.materialsCode : '';
       this.form.paymentTime = val ? selectedOption.paymentTime : '';
       this.form.deliveryTime = val ? selectedOption.deliveryTime : '';
       this.form.deliveryStatus = val && selectedOption.deliveryTime ? 1 : 0;
