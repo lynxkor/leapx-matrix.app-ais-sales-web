@@ -303,7 +303,23 @@ export default {
             }]
           },
           { props: 'unifiedSocialCreditCode', label: '统一社会信用代码', visible: true, width: 200 },
-          { props: 'fundFinancialOrganizationName', label: '融资金融机构', visible: true, width: 200 },
+          {
+            props: 'fundFinancialOrganizationName',
+            label: '融资金融机构',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
+                  query: {
+                    id: row.fundFinancialOrganizationId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           { props: 'shipmentDate', label: '发车日期', visible: true, width: 200 },

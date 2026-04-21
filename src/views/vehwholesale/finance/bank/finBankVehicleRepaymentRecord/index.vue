@@ -222,7 +222,7 @@ export default {
           {
             props: 'code',
             label: '编码',
-            visible: false,
+            visible: true,
             width: 200,
             fixed: 'left',
             buttons: [{
@@ -239,7 +239,23 @@ export default {
           },
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
-          { props: 'fundFinancialOrganizationName', label: '融资金融机构', visible: true, width: 200 },
+          {
+            props: 'fundFinancialOrganizationName',
+            label: '融资金融机构',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
+                  query: {
+                    id: row.fundFinancialOrganizationId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'vin', label: 'VIN号', visible: true, width: 200 },
           { props: 'repaymentDate', label: '还款日期', visible: true, width: 200 },
           { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
@@ -248,7 +264,23 @@ export default {
           { props: 'customerOrderCode', label: '企业客户整车订单', visible: true, width: 200 },
           { props: 'vehicleStatusLabel', label: '车辆状态', visible: true, width: 200 },
           { props: 'vehicleRepaymentRecordCode', label: '还款车辆记录编号', visible: true, width: 200 },
-          { props: 'dealerName', label: '经销商名称', visible: true, width: 200 },
+          {
+            props: 'dealerName',
+            label: '经销商名称',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/partner/channelManagement/shopDetail',
+                  query: {
+                    dealerCode: row.dealerCode
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },

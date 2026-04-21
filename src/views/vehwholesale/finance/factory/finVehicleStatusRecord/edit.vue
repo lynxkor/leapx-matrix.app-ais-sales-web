@@ -31,7 +31,14 @@
                   {{ form.code }}
                 </el-form-item>
                 <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationName">
-                  {{ form.fundFinancialOrganizationName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/vehwholesale/fund/fundFinancialOrganization/detail',
+                      query: {
+                        id: form.fundFinancialOrganizationId,
+                      },
+                    })"
+                   type="text">{{ form.fundFinancialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
@@ -43,10 +50,24 @@
                   {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="经销商编码：" prop="dealerCode">
-                  {{ form.dealerCode }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/partner/channelManagement/shopDetail',
+                      query: {
+                        dealerCode: form.dealerCode,
+                      },
+                    })"
+                   type="text">{{form.dealerName}}</el-button>
                 </el-form-item>
                 <el-form-item label="经销商名称：" prop="dealerName">
-                  {{ form.dealerName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/partner/channelManagement/shopDetail',
+                      query: {
+                        dealerCode: form.dealerCode,
+                      },
+                    })"
+                   type="text">{{form.dealerName}}</el-button>
                 </el-form-item>
                 <el-form-item label="统一社会信用代码：" prop="unifiedSocialCreditCode">
                   {{ form.unifiedSocialCreditCode }}

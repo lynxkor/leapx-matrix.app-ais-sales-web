@@ -224,14 +224,46 @@ export default {
           { props: 'processStatusLabel', label: '车辆处理状态', visible: true, width: 200 },
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
+          {
+            props: 'seriesName',
+            label: '车系名称',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleSeries/detail',
+                  query: {
+                    id: row.seriesId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'wholesaleOrderCode', label: '整车批售订单编号', visible: true, width: 200 },
           { props: 'entOrderCode', label: '企业客户整车订单编号', visible: true, width: 200 },
           { props: 'actualVehicleReturnLabel', label: '是否实车返厂', visible: true, width: 200 },
           { props: 'salesDeptReserveLabel', label: '销售部预留', visible: true, width: 200 },
           { props: 'vehicleLogisticsReserveLabel', label: '整车物流预留', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
-          { props: 'modelName', label: '车型名称', visible: true, width: 200 },
+          {
+            props: 'modelName',
+            label: '车型名称',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleModel/detail',
+                  query: {
+                    id: row.modelId,
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'originalWholesalePrice', label: '原批售价格', visible: true, width: 200 },
           { props: 'originalRebateAmount', label: '原返利使用金额', visible: true, width: 200 },
           { props: 'originalInvoicePrice', label: '原开票价格', visible: true, width: 200 },

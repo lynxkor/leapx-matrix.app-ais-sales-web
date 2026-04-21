@@ -243,7 +243,23 @@ export default {
             }]
           },
           { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 100 },
-          { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 100 },
+          {
+            props: 'financialOrganizationName',
+            label: '金融机构',
+            visible: true,
+            width: 100,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
+                  query: {
+                    id: row.financialOrganizationId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'transactionTypeLabel', label: '交易类型', visible: true, width: 100 },
           { props: 'transactionAmount', label: '交易金额', visible: true, width: 100 },
           { props: 'transactionTime', label: '过账时间', visible: true, width: 200 },

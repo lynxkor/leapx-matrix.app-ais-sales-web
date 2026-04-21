@@ -283,7 +283,14 @@
                   {{ form.wholesaleOrderCode }}
                 </el-form-item>
                 <el-form-item label="车系名称：" prop="seriesName">
-                  {{ form.seriesName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleSeries/detail',
+                      query: {
+                        id: form.seriesId,
+                      },
+                    })"
+                   type="text">{{ form.seriesName }}</el-button>
                 </el-form-item>
                 <el-form-item label="企业客户整车订单号：" prop="entOrderCode">
                   {{ form.entOrderCode }}
@@ -306,8 +313,15 @@
                 <el-form-item label="退车返利金额：" prop="returnRebateAmount">
                   {{ form.returnRebateAmount }}
                 </el-form-item>
-                <el-form-item label="车型:" prop="modelName">
-                  {{ form.modelName }}
+                <el-form-item label="车型：" prop="modelName">
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleModel/detail',
+                      query: {
+                        id: form.modelId,
+                      },
+                    })"
+                   type="text">{{ form.modelName }}</el-button>
                 </el-form-item>
                 <el-form-item label="门店出库确认人：" prop="storeOutboundConfirmer">
                   {{ form.storeOutboundConfirmer }}

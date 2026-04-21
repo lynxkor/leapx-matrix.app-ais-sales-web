@@ -199,8 +199,40 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'modelName', label: '车型', visible: true, width: 200 },
-          { props: 'vehicleYearType', label: '年款', visible: true, width: 200 },
+          {
+            props: 'modelName',
+            label: '车型',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleModel/detail',
+                  query: {
+                    id: row.modelId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'vehicleYearType',
+            label: '年款',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleYearType/detail',
+                  query: {
+                    id: row.vehicleYearTypeId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'cooperationModeLabel', label: '合作模式', visible: true, width: 200 },
           { props: 'invoiceDiscountTypeLabel', label: '开票优惠类型', visible: true, width: 200 },

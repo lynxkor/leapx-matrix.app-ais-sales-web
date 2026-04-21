@@ -227,10 +227,42 @@ export default {
           },
           { props: 'dataMonth', label: '数据月份', visible: true, width: 200 },
           { props: 'totalAmount', label: '金额合计', visible: true, width: 200 },
-          { props: 'fundFinancialOrganizationName', label: '融资金融机构', visible: true, width: 200 },
+          {
+            props: 'fundFinancialOrganizationName',
+            label: '融资金融机构',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
+                  query: {
+                    id: row.fundFinancialOrganizationId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
-          { props: 'dealerCode', label: '经销商编码', visible: true, width: 200 },
+          {
+            props: 'dealerCode',
+            label: '经销商编码',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/partner/channelManagement/shopDetail',
+                  query: {
+                    dealerCode: row.dealerCode
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           {
             props: 'dealerName',
             label: '经销商名称',
