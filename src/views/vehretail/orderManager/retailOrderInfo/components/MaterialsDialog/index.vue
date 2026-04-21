@@ -108,9 +108,8 @@
           <vxe-column field="wheelHubName" title="轮毂" width="120"></vxe-column>
           <vxe-column field="optionPackageName" title="选装包" width="120"></vxe-column>
           <vxe-column field="roofName" title="车顶" width="120"></vxe-column>
-          <vxe-column field="batteryCellName" title="电池电芯" width="120"></vxe-column>
+          <!-- <vxe-column field="batteryCellName" title="电池电芯" width="120"></vxe-column> -->
         </vxe-table>
-
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
