@@ -491,7 +491,7 @@ export default {
 
       try {
         const results = await Promise.all(orgIds.map(orgId =>
-          instance.get(`${process.env.VUE_APP_WORK_ORDER_URL}/accountService/orgInfo/findDescendant`, {
+          instance.get(`${window.APP_AIS_WEB_CONFIG.VUE_APP_WORK_ORDER_URL}/accountService/orgInfo/findDescendant`, {
             params: { orgId },
             headers
           })
