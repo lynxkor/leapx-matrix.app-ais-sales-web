@@ -567,7 +567,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-import { getList as retailOrderPage } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getList as retailOrderPage, getDetail as retailOrderInfo } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import { fetchReasonLabelList } from '@/api/vehretail/orderRefund/changeReason';
 
 const defaultForm = {
@@ -1155,7 +1155,9 @@ export default {
       if (val) {
         legalVerification(selectedOption.retailOrderCode)
           .then(res => {
-            this.refreshOrderInfo(val, selectedOption);
+            retailOrderInfo(selectedOption.id).then(res => {
+              this.refreshOrderInfo(val, res);
+            });
           })
           .catch(() => {
             this.$refs.ruleForm.resetFields();
@@ -1177,14 +1179,14 @@ export default {
       this.form.saleDealerName = val ? selectedOption.saleDealerName : '';
       this.form.modelId = val ? selectedOption.modelId : '';
       this.form.modelName = val ? selectedOption.modelName : '';
-      this.form.originalBuyerName = val ? selectedOption.orderUserName : '';
-      this.form.originalBuyerPhone = val ? selectedOption.orderUserPhone : '';
-      this.form.originalIdCardType = val ? selectedOption.idCardType : 1;
-      this.form.originalIdCardNo = val ? selectedOption.idCardNo : '';
-      this.form.originalAgentName = val ? selectedOption.agentName : '';
+      this.form.originalBuyerName = val ? selectedOption.carBuyerName : '';
+      this.form.originalBuyerPhone = val ? selectedOption.carBuyerPhone : '';
+      this.form.originalIdCardType = val ? selectedOption.carOwner.idCardType : 1;
+      this.form.originalIdCardNo = val ? selectedOption.carOwner.idCardNo : '';
+      this.form.originalAgentName = val ? selectedOption.carOwner.agentName : '';
       this.form.originalSaleDealerCode = val ? selectedOption.saleDealerCode : '';
       this.form.originalSaleDealerName = val ? selectedOption.saleDealerName : '';
-      this.form.originalMaterialsCode = val ? selectedOption.materialsCode : '';
+      this.form.originalMaterialsCode = val ? selectedOption.materials.materialsCode : '';
       this.form.paymentTime = val ? selectedOption.paymentTime : '';
       this.form.deliveryTime = val ? selectedOption.deliveryTime : '';
       this.form.deliveryStatus = val && selectedOption.deliveryTime ? 1 : 0;

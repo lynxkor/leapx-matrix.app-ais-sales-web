@@ -17,7 +17,7 @@
               {{ info.seriesName  }}
             </el-form-item>
             <el-form-item label="系列名称：" prop="modelLineName">
-              {{ info.modelLineName  }}
+              <el-link type="primary" :href="`/datacenter/materials/vehicleModelLine/detail?id=${info.modelLineId}`" target="_blank">{{ info.modelLineName }}</el-link>
             </el-form-item>
             <el-form-item label="状态：" prop="status">
               {{ info.statusLabel  }}

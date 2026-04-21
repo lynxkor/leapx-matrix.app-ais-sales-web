@@ -351,6 +351,7 @@
           >
             <template v-slot:operation_default="{ row }">
               <el-button
+                v-if="form.status !== 7 && form.status !== 99"
                 type="text"
                 style="color: #67c23a;"
                 @click="handleDeletePaymentRecord(row)"
@@ -461,7 +462,10 @@ import {
   deliveryConfirm, // 交车确认单生成
   checkCarBuyerPhoneRegistered, // 校验购车人手机号是否注册零跑APP
 } from '@/api/vehretail/orderManager/deliveryOrder/index';
-import { getList as getInvoiceList } from '@/api/vehretail/orderManager/deliveryInvoice/index';
+import {
+  getEffectiveByDeliveryOrderId,
+  getList as getInvoiceList
+} from '@/api/vehretail/orderManager/deliveryInvoice/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -1170,7 +1174,7 @@ export default {
     },
     // 上传发票
     handleUploadInvoice () {
-      if (this.form.deliveryConfirmStatus !== 10 && this.form.deliveryConfirmStatus !== 15) {
+      if (this.form.deliveryConfirmStatus === 5) {
         this.$confirm('未生成交车确认单，是否生成交车确认单进行签署', '交车确认单生成提醒', {
           distinguishCancelAndClose: true,
           cancelButtonText: '取消',
@@ -1186,12 +1190,12 @@ export default {
         });
       } else {
         // 查询是否已存在开票记录
-        getInvoiceList({ page: 1, size: 1, deliveryOrderId: this.form.deliveryOrderId }).then(res => {
-          if (res.records && res.records.length > 0) {
+        getEffectiveByDeliveryOrderId(this.form.deliveryOrderId).then(res => {
+          if (res) {
             this.$router.push({
               path: '/vehretail/orderManager/deliveryInvoice/edit',
               query: {
-                id: res.records[0].id
+                id: res.id
               }
             });
           } else {
@@ -1208,14 +1212,25 @@ export default {
       }
     },
     doUploadInvoice (onlyGenerateInvoice) {
-      uploadInvoice({
-        deliveryOrderId: this.form.deliveryOrderId,
-        retailOrderId: this.form.retailOrderId,
-        onlyGenerateInvoice: onlyGenerateInvoice,
-      }).then(res => {
-        this.$message.success('上传发票成功');
-        // 重新加载详情数据
-        this.getDetail();
+      getEffectiveByDeliveryOrderId(this.form.deliveryOrderId).then(res => {
+        if (res) {
+          this.$router.push({
+            path: '/vehretail/orderManager/deliveryInvoice/edit',
+            query: {
+              id: res.id
+            }
+          });
+        } else {
+          uploadInvoice({
+            deliveryOrderId: this.form.deliveryOrderId,
+            retailOrderId: this.form.retailOrderId,
+            onlyGenerateInvoice: onlyGenerateInvoice,
+          }).then(res => {
+            this.$message.success('上传发票成功');
+            // 重新加载详情数据
+            this.getDetail();
+          });
+        }
       });
     },
     // 收款撤回

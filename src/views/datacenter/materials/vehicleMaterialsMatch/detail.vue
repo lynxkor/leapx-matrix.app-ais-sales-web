@@ -13,7 +13,10 @@
         <div class="common-section-body">
           <el-form :inline="true" ref="ruleForm" label-width="120px">
             <!-- TIPS: 根据实际情况调整展示字段 -->
-            <el-form-item v-for="(item, index) in materialsLabel" :key="index" :label="item.label" :class="item.class">{{ info.materials[item.prop] || '' }}</el-form-item>
+            <el-form-item v-for="(item, index) in materialsLabel" :key="index" :label="item.label" :class="item.class">
+              <el-link v-if="getMatchHref(item)" type="primary" :href="getMatchHref(item)" target="_blank">{{ info.materials[item.prop.replace('Id', 'Name')] || '' }}</el-link>
+              <span v-else>{{ info.materials[item.prop] || '' }}</span>
+            </el-form-item>
           </el-form>
         </div>
       </section>
@@ -22,7 +25,10 @@
           <h2>可配物料信息</h2>
         </div>
         <el-form label-width="120px" inline>
-          <el-form-item v-for="(item, index) in materialsLabel" :key="index" :label="item.label" :class="item.class">{{ info.matchMaterials[item.prop] || '' }}</el-form-item>
+          <el-form-item v-for="(item, index) in materialsLabel" :key="index" :label="item.label" :class="item.class">
+              <el-link v-if="getMatchMaterialsHref(item)" type="primary" :href="getMatchMaterialsHref(item)" target="_blank">{{ info.matchMaterials[item.prop.replace('Id', 'Name')] || '' }}</el-link>
+              <span v-else>{{ info.matchMaterials[item.prop] || '' }}</span>
+            </el-form-item>
         </el-form>
       </section>
       <section class="common-section">
@@ -53,15 +59,15 @@ export default {
       materialsLabel: [
         { label: '物料编码：', prop: 'materialsCode', class: '' },
         { label: '物料描述：', prop: 'materialsDesc', class: '' },
-        { label: '车系：', prop: 'modelName', class: '' },
-        { label: '车型：', prop: 'modelName', class: '' },
-        { label: '年款：', prop: 'modelName', class: '' },
-        { label: '外观：', prop: 'exteriorName', class: '' },
-        { label: '内饰：', prop: 'interiorName', class: '' },
-        { label: '车顶：', prop: 'roofName', class: '' },
-        { label: '轮毂：', prop: 'wheelHubName', class: '' },
-        { label: '选装包：', prop: 'optionPackageName', class: '' },
-        { label: '电池电芯：', prop: 'batteryCellName', class: '' }
+        { label: '车系：', prop: 'seriesId', class: '' },
+        { label: '车型：', prop: 'modelId', class: '' },
+        { label: '年款：', prop: 'yearTypeId', class: '' },
+        { label: '外观：', prop: 'exteriorId', class: '' },
+        { label: '内饰：', prop: 'interiorId', class: '' },
+        { label: '车顶：', prop: 'roofId', class: '' },
+        { label: '轮毂：', prop: 'wheelHubId', class: '' },
+        { label: '选装包：', prop: 'optionPackageId', class: '' },
+        { label: '电池电芯：', prop: 'batteryCellId', class: '' }
       ],
       yes_no_enum_map: YES_NO_ENUM_MAP
     };
@@ -86,6 +92,42 @@ export default {
       }).catch(() => {
         this.loading = false;
       });
+    },
+    getMatchMaterialsHref (item) {
+      const prop = item.prop;
+      if (!prop.endsWith('Id')) return null;
+      const id = this.info.matchMaterials[prop];
+      if (!id) return null;
+      const routeMap = {
+        seriesId: '/datacenter/materials/vehicleSeries/detail',
+        modelId: '/datacenter/materials/vehicleModel/detail',
+        yearTypeId: '/datacenter/materials/vehicleYearType/detail',
+        exteriorId: '/datacenter/materials/vehicleExterior/detail',
+        interiorId: '/datacenter/materials/vehicleInterior/detail',
+        roofId: '/datacenter/materials/vehicleRoof/detail',
+        wheelHubId: '/datacenter/materials/vehicleWheelHub/detail',
+        optionPackageId: '/datacenter/materials/vehicleOptionPackage/detail',
+        batteryCellId: '/datacenter/materials/vehicleBatteryCell/detail'
+      };
+      return routeMap[prop] ? `${routeMap[prop]}?id=${id}` : null;
+    },
+    getMatchHref (item) {
+      const prop = item.prop;
+      if (!prop.endsWith('Id')) return null;
+      const id = this.info.materials[prop];
+      if (!id) return null;
+      const routeMap = {
+        seriesId: '/datacenter/materials/vehicleSeries/detail',
+        modelId: '/datacenter/materials/vehicleModel/detail',
+        yearTypeId: '/datacenter/materials/vehicleYearType/detail',
+        exteriorId: '/datacenter/materials/vehicleExterior/detail',
+        interiorId: '/datacenter/materials/vehicleInterior/detail',
+        roofId: '/datacenter/materials/vehicleRoof/detail',
+        wheelHubId: '/datacenter/materials/vehicleWheelHub/detail',
+        optionPackageId: '/datacenter/materials/vehicleOptionPackage/detail',
+        batteryCellId: '/datacenter/materials/vehicleBatteryCell/detail'
+      };
+      return routeMap[prop] ? `${routeMap[prop]}?id=${id}` : null;
     }
   }
 };

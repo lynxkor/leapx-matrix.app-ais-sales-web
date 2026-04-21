@@ -56,8 +56,8 @@
             remote
             reserve-keyword
             labelKey="organizationName"
-            valueKey="organizationCode"
-            v-model="form.financeOrganizationCode"
+            valueKey="id"
+            v-model="form.financeOrganizationId"
             placeholder="请选择"
             clearable
             filterable
@@ -389,7 +389,7 @@ export default {
       const data = { ...this.form };
 
       Object.keys(this.form).forEach(key => {
-        if (data[key] === '' || data[key] === null) {
+        if (data[key] === '' || data[key] === null || data[key] === undefined || data[key].length === 0) {
           delete data[key];
         }
       });

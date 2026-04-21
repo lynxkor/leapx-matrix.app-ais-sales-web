@@ -699,12 +699,12 @@ import {
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import {getEnum, listStoreInfo, listVehicleModel, vehicleSalesVersionList} from '@/api/common';
-import {YES_NO_ENUM} from '@/libs/constants';
+import { getEnum, listStoreInfo, listVehicleModel, vehicleSalesVersionList } from '@/api/common';
+import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-import {getList as getVehicleProfileList} from '@/api/datacenter/vehicle/vehicleProfile';
+import { getList as getVehicleProfileList } from '@/api/datacenter/vehicle/vehicleProfile';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 import auditDialog from '@/libs/components/auditDialog/index.vue';
 
@@ -1107,7 +1107,7 @@ export default {
     },
     // 删除子表数据
     handleDeleteRow (index) {
-      const item = this.tableData[index];
+      // const item = this.tableData[index];
       this.tableData.splice(index, 1);
       // 根据需求调用接口
       // deletePartVehModel([item.id]).then(res => {

@@ -498,18 +498,18 @@ import {
   revokeReport,
   submitReport
 } from '@/api/vehretail/orderManager/specialVehicleSalesReport';
-import {getList as getStoreInventory} from '@/api/vehstock/store/storeInventoryLedger/index';
+import { getList as getStoreInventory } from '@/api/vehstock/store/storeInventoryLedger/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import {getDealerDetailByCode, getEnum, listOrgStoreInfo, listVehicleModel} from '@/api/common';
-import {YES_NO_ENUM} from '@/libs/constants';
+import { getDealerDetailByCode, getEnum, listOrgStoreInfo, listVehicleModel } from '@/api/common';
+import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-import {getList as getVehicleProfileList} from '@/api/datacenter/vehicle/vehicleProfile/index.js';
+import { getList as getVehicleProfileList } from '@/api/datacenter/vehicle/vehicleProfile/index.js';
 import VehicleAttributeDialog from '@/views/vehretail/orderManager/specialVehicleSalesReport/vehicleAttributeDialog';
-import {generateSoldPlateInfoByVin, getEffectiveByVin} from '@/api/vehretail/orderManager/soldPlateInfo';
+import { generateSoldPlateInfoByVin, getEffectiveByVin } from '@/api/vehretail/orderManager/soldPlateInfo';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 
 const defaultForm = {

@@ -1,17 +1,17 @@
 <template>
-  <el-dialog :title="title" width="1200px" :visible.sync="dialogVisible"  :before-close="handleClose">
+  <el-dialog :title="title" width="1000px" :visible.sync="dialogVisible" :before-close="handleClose">
     <div class="page-common">
-       <el-form
+      <el-form
         ref="materialsForm"
         :model="materialsform"
         label-width="150px"
         :inline="true"
         size="small"
         label-position="right"
-        class="ais-search-form"
+        class="ais-search-form three-col-form"
         :rules="rules"
       >
-        <el-form-item label="整车物料编码："  prop="materialsCode">
+        <el-form-item label="整车物料编码：" prop="materialsCode">
           <fetch-select
             filterable
             clearable
@@ -21,62 +21,73 @@
             value-key="id"
             label-key="materialsCode"
             @change="materialsSelect"
+            style="width: 100%;"
           />
         </el-form-item>
         <el-form-item label="标准价格：">
           <el-input-number
-                  placeholder="请输入"
-                  v-model="materialsform.standardPrice"
-                   :precision="2"
-                    :step="0.01"
-                    :min="0"
-                    :controls="false"
-                    disabled
-                />
+            placeholder="请输入"
+            v-model="materialsform.standardPrice"
+            :precision="2"
+            :step="0.01"
+            :min="0"
+            :controls="false"
+            disabled
+            style="width: 100%;"
+          />
         </el-form-item>
         <el-form-item label="企业客户补货订单：">
-          <el-input v-model="materialsform.entReplenishOrderId" placeholder="请输入" disabled/>
+          <el-input
+            v-model="materialsform.entReplenishOrderId"
+            placeholder="请输入"
+            disabled
+            style="width: 100%;"
+          />
         </el-form-item>
-         <el-form-item label="销售价格：" prop="salesPrice">
-            <el-input-number
-                  placeholder="请输入"
-                  v-model="materialsform.salesPrice"
-                  :precision="2"
-                    :step="0.01"
-                    :min="0"
-                    :controls="false"
-                />
+        <el-form-item label="销售价格：" prop="salesPrice">
+          <el-input-number
+            placeholder="请输入"
+            v-model="materialsform.salesPrice"
+            :precision="2"
+            :step="0.01"
+            :min="0"
+            :controls="false"
+            style="width: 100%;"
+          />
         </el-form-item>
         <el-form-item label="关联交易不含税价：">
-            <el-input-number
-                  placeholder="请输入"
-                  v-model="materialsform.relatedTxnExTaxPrice"
-                   :precision="2"
-                    :step="0.01"
-                    :min="0"
-                    :controls="false"
-                    disabled
-                />
+          <el-input-number
+            placeholder="请输入"
+            v-model="materialsform.relatedTxnExTaxPrice"
+            :precision="2"
+            :step="0.01"
+            :min="0"
+            :controls="false"
+            disabled
+            style="width: 100%;"
+          />
         </el-form-item>
         <el-form-item label="关联交易价格比例：">
-            <el-input-number
-                  placeholder="请输入"
-                  v-model="materialsform.relatedTxnPriceRate"
-                   :precision="2"
-                    :step="0.01"
-                    :min="0"
-                    :controls="false"
-                    disabled
-                />
+          <el-input-number
+            placeholder="请输入"
+            v-model="materialsform.relatedTxnPriceRate"
+            :precision="2"
+            :step="0.01"
+            :min="0"
+            :controls="false"
+            disabled
+            style="width: 100%;"
+          />
         </el-form-item>
         <el-form-item label="数量：" prop="qty">
           <el-input-number
-                  placeholder="请输入"
-                  v-model="materialsform.qty"
-                    :step="1"
-                    :min="0"
-                    :controls="false"
-                />
+            placeholder="请输入"
+            v-model="materialsform.qty"
+            :step="1"
+            :min="0"
+            :controls="false"
+            style="width: 100%;"
+          />
         </el-form-item>
       </el-form>
     </div>
@@ -274,9 +285,21 @@ export default {
   }
 };
 </script>
-
 <style lang="scss" scoped>
-::v-deep .el-input-number {
-  width: 100%;
+// 强制 el-form-item 宽度，实现一行三个
+.three-col-form {
+  ::v-deep .el-form-item {
+    width: 48%;
+    margin-right: 2%; // 可选：调整间距
+  }
+
+  ::v-deep .el-input,
+  ::v-deep .el-input-number,
+  ::v-deep .el-select {
+    width: 100%;
+  }
+  ::v-deep .fetch-select {
+    width: 100%;
+  }
 }
 </style>

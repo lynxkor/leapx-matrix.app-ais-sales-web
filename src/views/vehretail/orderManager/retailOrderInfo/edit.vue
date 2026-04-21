@@ -11,6 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="form.orderStatus !== 9 && form.orderStatus !== 99"
       >
         <template #status>
           <!-- 支持 primary,warning,success,danger 等状态 -->
@@ -18,38 +19,40 @@
         </template>
         <template #extraButtons>
           <!-- <el-button size="small" type="primary" @click="handleEquityInquiry">权益查询</el-button> -->
-          <el-button size="small" :loading="printLoading" @click="handlePrintContractTermination">打印合同解除协议</el-button>
+          <el-button size="small" :loading="printLoading" v-if="canOperateOrder" @click="handlePrintContractTermination">打印合同解除协议</el-button>
           <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" :loading="setSpecialMarkLoading" @click="handleSetSpecialMark">设置特殊标识</el-button>
-          <el-button size="small" :loading="modifyConfigLoading" v-if="form.orderStatus === 3 && form.wholesaleBindStatus === 1" @click="handleModifyConfiguration">修改配置</el-button>
-          <el-button size="small" :loading="manualVehicleLoading" v-if="form.wholesaleBindStatus !== 1" @click="handleManualVehicleAllocation">手工配车</el-button>
-          <el-button size="small" :loading="autoLockLoading" v-if="form.wholesaleBindStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
+          <el-button size="small" :loading="modifyConfigLoading" v-if="canOperateOrder && form.orderStatus === 3 && form.wholesaleBindStatus !== 1" @click="handleModifyConfiguration">修改配置</el-button>
+          <el-button size="small" :loading="manualVehicleLoading" v-if="canOperateOrder && form.wholesaleBindStatus !== 1" @click="handleManualVehicleAllocation">手工配车</el-button>
+          <el-button size="small" :loading="autoLockLoading" v-if="canOperateOrder && form.wholesaleBindStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
           <el-button size="small" :loading="agreementLoading" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
-          <el-button size="small" :loading="orderRefundLoading"
-                     @click="handleOrderRefund">
+          <el-button
+            v-if="canOperateOrder && !(form.orderStatus === 10 || (form.orderStatus === 7 && form.deliveryOrder && form.deliveryOrder.status === 5))"
+            size="small"
+            :loading="orderRefundLoading"
+            @click="handleOrderRefund">
             订单退订
           </el-button>
-          <el-button size="small" :loading="changeApplyLoading"
-                     @click="handleCarOwnerChangeApplication">
-            购车人变更申请
-          </el-button>
-          <el-button size="small" :loading="qualityIssueLoading" @click="handleQualityIssueUnbindApplication">质量问题解绑申请</el-button>
+          <el-button size="small" :loading="changeApplyLoading" v-if="canOperateOrder" @click="handleCarOwnerChangeApplication">购车人变更申请</el-button>
+          <el-button size="small" :loading="qualityIssueLoading" v-if="canOperateOrder && form.wholesaleBindStatus === 1 && (form.orderStatus === 6 || form.orderStatus === 7)" @click="handleQualityIssueUnbindApplication">质量问题解绑申请</el-button>
         </template>
         <!-- 固定悬浮导航栏 -->
         <div class="fixed-nav" :class="{ 'is-collapsed': isNavCollapsed }">
           <div class="fixed-nav-toggle" @click="toggleNavCollapsed">
             <i :class="isNavCollapsed ? 'el-icon-arrow-left' : 'el-icon-arrow-right'"></i>
           </div>
-          <ul v-if="!isNavCollapsed">
-            <li v-for="(navItem) in navItems" :key="navItem.id">
-              <a
-                :href="navItem.href"
-                :class="{ active: activeSection === navItem.id }"
-                @click.prevent="scrollToSection(navItem.id)"
-              >
-                {{ navItem.title }}
-              </a>
-            </li>
-          </ul>
+          <div class="fixed-nav-content" v-if="!isNavCollapsed">
+            <ul>
+              <li v-for="(navItem) in navItems" :key="navItem.id">
+                <a
+                  :href="navItem.href"
+                  :class="{ active: activeSection === navItem.id }"
+                  @click.prevent="scrollToSection(navItem.id)"
+                >
+                  {{ navItem.title }}
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
 
         <el-main ref="scrollContainer">
@@ -538,6 +541,10 @@ export default {
     },
     title () {
       return '商城订单编号：' + this.form.mallOrderCode;
+    },
+    // 订单状态为9或99时不可操作
+    canOperateOrder () {
+      return this.form.orderStatus !== 9 && this.form.orderStatus !== 99;
     }
   },
   watch: {
@@ -868,7 +875,7 @@ export default {
           }
         });
       } else {
-        this.$message.error('该订单不是批售单或订单状态不是车辆在途或等待交车，不能进行质量问题解绑申请');
+        this.$message.error('该订单未绑定批售且订单状态不是车辆在途/等待交车，不能进行质量问题解绑申请');
       }
       this.qualityIssueLoading = false;
     },
@@ -1111,47 +1118,15 @@ export default {
   background-color: rgba(255, 255, 255, 0.95);
   border-radius: 8px;
   padding: 15px 10px;
+  padding-right: 30px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   border: 1px solid #ebeef5;
-  backdrop-filter: blur(10px); /* 添加背景模糊效果 */
-  max-height: 60vh; /* 设置最大高度为视口的 60% */
-  overflow-y: auto; /* 修复：启用垂直滚动 */
-  overflow-x: hidden; /* 隐藏横向滚动 */
+  backdrop-filter: blur(10px);
+  max-height: 40vh;
 
   &.is-collapsed {
     padding: 10px 5px;
-    width: 30px;
-
-    .fixed-nav-toggle {
-      left: auto;
-      right: 0;
-      border-radius: 4px 0 0 4px;
-      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
-    }
-  }
-}
-
-.fixed-nav-toggle {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 40px;
-  background-color: rgba(255, 255, 255, 0.95);
-  border-radius: 0 4px 4px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--leap-color-primary);
-  font-size: 14px;
-  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
-  z-index: 1001;
-
-  &:hover {
-    background-color: var(--leap-color-primary);
-    color: #fff;
+    padding-right: 10px;
   }
 }
 
@@ -1161,21 +1136,50 @@ export default {
   background: transparent;
 }
 
-.fixed-nav ul {
+.fixed-nav-toggle {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 4px 0 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--leap-color-primary);
+  font-size: 14px;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+
+  &:hover {
+    background-color: var(--leap-color-primary);
+    color: #fff;
+  }
+}
+
+.fixed-nav-content {
+  max-height: 30vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.fixed-nav-content ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  min-height: 40px; /* 确保即使没有内容也有一定高度 */
-  max-height: 300px;
+  min-height: 40px;
 }
 
-.fixed-nav li {
+.fixed-nav-content li {
   margin: 5px 0;
 }
 
-.fixed-nav a {
+.fixed-nav-content a {
   display: block;
   padding: 8px 12px;
   text-decoration: none;
@@ -1187,12 +1191,12 @@ export default {
   cursor: pointer;
 }
 
-.fixed-nav a:hover {
+.fixed-nav-content a:hover {
   background-color: var(--leap-color-default-light-5);
   color: var(--leap-color-primary);
 }
 
-.fixed-nav a.active {
+.fixed-nav-content a.active {
   background-color: var(--leap-color-primary-light-6);
   color: #fff;
 }

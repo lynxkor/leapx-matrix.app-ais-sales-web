@@ -22,31 +22,36 @@
       <el-form-item label="事件类型">
         <fetch-select
           :options="eventTypeOptions"
-          v-model="form.type"
+          v-model="form.typeList"
           value-key="code"
           label-key="name"
+          clearable
+          filterable
+          multiple
           placeholder="请选择"
         />
       </el-form-item>
       <el-form-item label="系统平台">
         <fetch-select
-          v-model="form.target"
+          v-model="form.targetList"
           :options="thirdTargetPlatformOptions"
           value-key="code"
           label-key="name"
           placeholder="请选择"
           clearable
           filterable
+          multiple
         />
       </el-form-item>
       <el-form-item label="执行状态">
         <fetch-select
           :request="fetchOptions"
           enumCode="event_execute_result_enum"
-          v-model="form.executeResult"
+          v-model="form.executeResultList"
           placeholder="请选择"
           clearable
           filterable
+          multiple
         />
       </el-form-item>
       <template v-if="show">
@@ -55,6 +60,7 @@
             placeholder="请输入"
             v-model="form.scene"
             clearable
+            filterable
           />
         </el-form-item>
         <el-form-item label="业务标识编号">
@@ -65,9 +71,16 @@
           />
         </el-form-item>
         <el-form-item label="业务关联单据">
-          <el-input
+          <tag-input
             placeholder="请输入"
-            v-model="form.relatedNo"
+            v-model="form.relatedNoList"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="事件任务ID">
+          <tag-input
+            placeholder="请输入"
+            v-model="form.eventNotifyIdList"
             clearable
           />
         </el-form-item>
@@ -98,8 +111,6 @@
     <div class="ais-actions">
 <!--      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>-->
 <!--      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>-->
-<!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>-->
-<!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>-->
             <el-button v-if="canDelete" size="small" @click="handleBatchExecute" :disabled="selectionList.length === 0">同步重试</el-button>
             <el-button v-if="canDelete" size="small" @click="handleBatchExecuteAsync" :disabled="selectionList.length === 0">异步重试</el-button>
             <el-button v-if="canDelete" size="small" @click="handleBatchCancel" :disabled="selectionList.length === 0">取消任务</el-button>
@@ -132,17 +143,18 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import {
-  getList,
   deleteItem,
-  enableItem,
+  findEventTypeList,
+  findThirdTargetPlatformList,
+  getList,
+  manualCancel,
   manualExecute,
-  manualExecuteAsync, manualCancel, findEventTypeList, findThirdTargetPlatformList
+  manualExecuteAsync
 } from '@/api/vehretail/event/eventNotifyTask';
-import { getTableConfig, tableAddOrUpdate, getEnum } from '@/api/common';
+import { getEnum, getTableConfig, tableAddOrUpdate } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import { handleBatchStatusChange } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput/index.vue';
@@ -394,14 +406,6 @@ export default {
           });
         });
       }).catch(() => {});
-    },
-    handleBatchEnable (status) {
-      handleBatchStatusChange.call(this, {
-        selectionList: this.selectionList,
-        targetStatus: status,
-        apiFunc: enableItem,
-        refreshFunc: this.getData
-      });
     },
     handleBatchExecute () {
       // 检查所选记录

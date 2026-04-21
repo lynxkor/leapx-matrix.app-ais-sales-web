@@ -17,7 +17,7 @@
               {{ info.modelLineName  }}
             </el-form-item>
             <el-form-item label="品牌名称：" prop="brandName">
-              {{ info.brandName  }}
+              <el-link type="primary" :href="`/datacenter/materials/vehicleBrand/detail?id=${info.brandId}`" target="_blank">{{ info.brandName }}</el-link>
             </el-form-item>
             <el-form-item label="状态：" prop="status">
               {{ info.statusLabel  }}
@@ -62,8 +62,10 @@
 <script>
 import { getDetail } from '@/api/datacenter/materials/vehicleModelLine/index';
 import { YES_NO_ENUM_MAP } from '@/libs/constants';
+import commonMixins from '@/libs/mixins/commonMixins';
 export default {
   name: 'vehicleModelLineDetail',
+  mixins: [commonMixins],
   components: {
   },
   data () {

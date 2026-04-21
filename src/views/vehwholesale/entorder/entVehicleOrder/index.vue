@@ -40,7 +40,7 @@
           />
         </el-form-item>
       <template v-if="show">
-        <el-form-item label="企业客户补货订单编号" >
+        <el-form-item label="企业客户补货订单号" >
            <tag-input v-model="form.entReplenishOrderCodes" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="配车VIN" >
@@ -103,15 +103,15 @@
             />
       </el-form-item>
       <el-form-item label="结算状态">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="vw_ent_vehicle_order_settle_status"
-          v-model="form.settleStatuses"
-          placeholder="请选择"
-          clearable
-          filterable
-          multiple
-        />
+
+            <fetch-select
+              :options="settleStatusOptions"
+              v-model="form.settleStatuses"
+              placeholder="请选择订单状态"
+              clearable
+              multiple
+              filterable
+            />
       </el-form-item>
        <el-form-item label="验收方式">
         <fetch-select
@@ -262,6 +262,7 @@ export default {
       saleCompanyOptions: [],
       settleFundTypeOptions: [],
       orderStatusOptions: [],
+      settleStatusOptions: [],
       showBatchCancelDialog: false,
       showSetEmergencyOrderDialog: false,
       yes_no_enum: YES_NO_ENUM,
@@ -302,7 +303,7 @@ export default {
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'needAutoAllocateCarLabel', label: '是否需要自动配车', visible: true, width: 200 },
           { props: 'needAsyncSapLabel', label: '是否需要同步SAP', visible: true, width: 200 },
-          { props: 'entReplenishOrderCode', label: '企业客户补货订单编号', visible: true, width: 200 },
+          { props: 'entReplenishOrderCode', label: '企业客户补货订单号', visible: true, width: 200 },
           { props: 'taxInvoiceCode', label: '税务发票号', visible: true, width: 200 },
           { props: 'pickupContactName', label: '接车联系人', visible: true, width: 200 },
           { props: 'pickupContactMobile', label: '接车联系电话', visible: true, width: 200 },
@@ -361,8 +362,22 @@ export default {
     this.getCompanyList();
     this.fetchSettleFundTypeOptions();
     this.fetchSOrderStatusOptions();
+    this.fetchsettleStatusOptions();
   },
   methods: {
+    async fetchsettleStatusOptions () {
+      const response = await getEnum('vw_ent_vehicle_order_settle_status');
+      this.settleStatusOptions = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['2', '3', '4', '5', '21', '30'].includes(codeStr + '');
+      }).map(item => {
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
+      console.log(this.settleStatusOptions);
+    },
     async fetchSOrderStatusOptions () {
       const response = await getEnum('vw_ent_vehicle_order_status');
       this.orderStatusOptions = response.filter(item => {

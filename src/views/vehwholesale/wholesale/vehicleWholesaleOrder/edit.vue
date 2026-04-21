@@ -18,7 +18,7 @@
         </template>
         <template #extraButtons >
           <el-button  size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
-          <el-button  size="small" @click="handleCheckConfirm" >审核确认</el-button>
+          <el-button  :disabled="!form.buttonControl.confirmManualButton" size="small" @click="handleCheckConfirm" >审核确认</el-button>
           <el-button  :disabled="!form.buttonControl.autoAllocateVehicle" size="small" @click="handleaAutoVehicleAllocation">自动配车</el-button>
           <el-button  :disabled="!form.buttonControl.manualAllocateVehicle" size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
           <el-button  :disabled="!form.buttonControl.submitSettleButton" size="small" @click="handleBatchSettleSubmit">提交结算</el-button>
@@ -199,7 +199,7 @@
                       placeholder="请选择"
                       clearable
                       filterable
-                      disabled
+                      :disabled = 'form.status === 99 || form.status === "99"'
                     />
                 </el-form-item>
                 <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
@@ -616,6 +616,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    :disabled="needAutoAllocateCarStatus.includes(form.status)"
                     @change="clearCache"
                   />
                 </el-form-item>
@@ -1045,6 +1046,7 @@ export default {
       settleFundTypeOptions: [],
       orderCategoryOptions: [],
       financialOrganizationList: [],
+      needAutoAllocateCarStatus: [1, 2, 10, 21, 99, 3],
       accountData: [],
       detailsColumns: [
         { field: 'dealerCompanyName', title: '销售公司' },
