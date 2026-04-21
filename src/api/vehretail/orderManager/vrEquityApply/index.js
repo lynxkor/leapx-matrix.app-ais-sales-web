@@ -51,6 +51,14 @@ export function submit (data) {
 }
 
 /**
+ * 初审
+ * @param {Object} data
+ */
+export function firstApprove (data) {
+  return api.jsonPost(prefix + 'firstApprove', data);
+}
+
+/**
  * 审核
  * @param {Object} data
  */

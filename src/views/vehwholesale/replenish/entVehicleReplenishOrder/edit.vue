@@ -1,5 +1,4 @@
 <template>
-  <div>
   <edit-page-layout ref="editLayout" title="侧边栏标题" showPaneFooter>
     <template #left>
       <!-- TIPS: 如果需要竖排，direction="vertical" -->
@@ -20,11 +19,11 @@
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button  :disabled="!form.buttonsControls.editButton" size="small" @click="handleAddDetail" >添加补货明细</el-button>
-          <el-button  :disabled="!form.buttonsControls.submitAuditButton" @click="handleCheckSubmit" >提交审批</el-button>
-          <el-button  :disabled="!form.buttonsControls.auditButton"  size="small" @click="handleCheckStatus" >审核</el-button>
-          <el-button  :disabled="!form.buttonsControls.cancelButton"  size="small" @click="handleCancel" >作废</el-button>
-          <el-button  :disabled="!form.buttonsControls.deleteButton" size="small"  @click="handleDelete" >删除</el-button>
+          <el-button :disabled="!form.buttonsControls.editButton" size="small" @click="handleAddDetail" >添加补货明细</el-button>
+          <el-button :disabled="!form.buttonsControls.submitAuditButton" @click="handleCheckSubmit" >提交审批</el-button>
+          <el-button :disabled="!form.buttonsControls.auditButton"  size="small" @click="handleCheckStatus" >审核</el-button>
+          <el-button :disabled="!form.buttonsControls.cancelButton"  size="small" @click="handleCancel" >作废</el-button>
+          <el-button :disabled="!form.buttonsControls.deleteButton" size="small"  @click="handleDelete" >删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -33,7 +32,7 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" :rules="rules" ref="basicFormRef" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="订单分类：" prop="orderCategory">
                   <fetch-select
                     :options="orderCategoryOptions"
@@ -79,7 +78,7 @@
                       @change="(val, row) => handleChange(val, row)"
                 />
                 </el-form-item>
-                 <el-form-item label="销售公司：" prop="saleCompanyId">
+                 <el-form-item label="销售公司：" prop="saleCompanyName">
                     <fetch-select
                       filterable
                       clearable
@@ -115,7 +114,7 @@
                     disabled
                   />
                 </el-form-item>
-                 <el-form-item label="结算资金类型：" prop="settleFundType">
+                 <el-form-item label="结算资金类型：" prop="settleFundTypeLabel">
                   <fetch-select
                    :options="settleFundTypeOptions"
                     v-model="form.settleFundTypeLabel"
@@ -239,7 +238,7 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" :rules="rules" ref="addressFormRef" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                <el-form-item label="接车联系人：" prop="pickupContactName">
                   <el-input
                     placeholder="请输入"
@@ -427,6 +426,17 @@
           </section>
         </el-main>
       </edit-base-container>
+      <Upload :visible="uploadDialogVisible" templateUrl="" uploadUrl="" @close="handleUploadDialogClose" />
+      <AddEntVehicleReplishOrderDetail  :visible.sync="showAddDetailDialog" ref="addEntVehicleReplishOrderDialog"
+          :order-ids="[_id]"
+          :orderInfo="form"
+          @addConfirm="addConfirm">
+      </AddEntVehicleReplishOrderDetail>
+        <audit-dialog
+          ref="auditRef"
+          @audit="handleBatchAudit"
+          :maxlength='150'
+        />
     </template>
     <template #right>
       <div class="page-common-edit">
@@ -434,18 +444,6 @@
       </div>
     </template>
   </edit-page-layout>
-  <Upload :visible="uploadDialogVisible" templateUrl="" uploadUrl="" @close="handleUploadDialogClose" />
-  <AddEntVehicleReplishOrderDetail  :visible.sync="showAddDetailDialog" ref="addEntVehicleReplishOrderDialog"
-      :order-ids="[_id]"
-      :orderInfo="form"
-      @addConfirm="addConfirm">
-  </AddEntVehicleReplishOrderDetail>
-    <audit-dialog
-      ref="auditRef"
-      @audit="handleBatchAudit"
-      :maxlength='150'
-    />
-  </div>
 </template>
 
 <script>
@@ -668,17 +666,17 @@ export default {
     },
     'form.settleFundType': {
       handler (val) {
-        if (val === '2010') {
-          this.rules.financialOrganizationId = [
-            { required: true, message: '请输入金融机构', trigger: 'change' }
-          ];
+        if (val === '2010' || val === 2010) {
+          this.$set(this.rules, 'financialOrganizationId', [
+            { required: true, message: '请选择金融机构', trigger: 'change' }
+          ]);
           this.form.creditSaleFlag = 0;
-        } else if (val === '1050') {
-          this.rules.financialOrganizationId = [];
+        } else if (val === '1050' || val === 1050) {
+          this.$set(this.rules, 'financialOrganizationId', []);
           this.form.creditSaleFlag = 1;
-        } else if (val === '1010') {
+        } else if (val === '1010' || val === 1010) {
           this.form.creditSaleFlag = 0;
-          this.rules.financialOrganizationId = [];
+          this.$set(this.rules, 'financialOrganizationId', []);
         }
       },
       immediate: true
@@ -742,13 +740,13 @@ export default {
         entCustomerName: [
           { required: true, message: '请输入企业客户名称', trigger: 'change' }
         ],
-        saleCompanyId: [
+        saleCompanyName: [
           { required: true, message: '请输入销售公司', trigger: 'change' }
         ],
         creditSaleFlag: [
           { required: true, message: '请输入是否赊销', trigger: 'change' }
         ],
-        settleFundType: [
+        settleFundTypeLabel: [
           { required: true, message: '请选择结算资金类型', trigger: 'blur' }
         ],
         orderTime: [
@@ -1091,6 +1089,7 @@ export default {
       }
     },
     getDealersForParentCompany (val) {
+      console.log('getDealersForParentCompany1111111');
       listDealersForParentCompany({ companyCode: val }).then(res => {
         this.saleCompanyOptions = res;
       });
@@ -1143,8 +1142,9 @@ export default {
       const id = this._id;
       if (id) {
         return getDetail(id).then(res => {
-          this.getFundAccount();
           this.form = { ...this.form, ...res };
+          this.getDealersForParentCompany(res.entCustomerCode);
+          this.getFundAccount();
           console.log(this.form);
           // 设置 areaCode 并匹配省市区名称
           if (res.provinceCode && res.cityCode) {
@@ -1174,16 +1174,22 @@ export default {
       }
     },
     submitRequest () {
-      if (!this.areaCode || this.areaCode.length === 0) {
-        this.form.provinceCode = '';
-        this.form.provinceName = '';
-        this.form.cityCode = '';
-        this.form.cityName = '';
-        this.form.districtCode = '';
-        this.form.districtName = '';
-      }
-      console.log('submitRequest', this.form);
-      return addOrUpdate({ ...this.form });
+      // 校验两个 form
+      const basicValidate = this.$refs.basicFormRef.validate();
+      const addressValidate = this.$refs.addressFormRef.validate();
+      return Promise.all([basicValidate, addressValidate]).then(() => {
+        if (!this.areaCode || this.areaCode.length === 0) {
+          this.form.provinceCode = '';
+          this.form.provinceName = '';
+          this.form.cityCode = '';
+          this.form.cityName = '';
+          this.form.districtCode = '';
+          this.form.districtName = '';
+        }
+        return addOrUpdate({ ...this.form });
+      }).catch(() => {
+        return Promise.reject(new Error('表单校验失败'));
+      });
     },
     // 打开侧边栏
     openPane () {

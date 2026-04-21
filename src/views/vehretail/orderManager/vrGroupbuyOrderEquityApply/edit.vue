@@ -19,7 +19,9 @@
           <el-button v-if = "isShowAuditorBtn" size="small" @click="handleViewAuditUsers">查看审核人员</el-button>
           <el-button v-if = "form.permissions.cancel" size="small" @click="handleCancel">作废</el-button>
           <el-button v-if = "form.permissions.submit" size="small" @click="handleSubmitApproval">提交审批</el-button>
-          <el-button v-if = "form.permissions.audit" size="small" @click="handleAudit">审核</el-button>
+          <el-button v-if = "form.permissions.firstApprove" size="small" @click="handleAudit(1)">初审</el-button>
+          <el-button v-if = "form.permissions.secondApprove" size="small" @click="handleAudit(2)">复审</el-button>
+          <el-button v-if = "form.permissions.finalApprove" size="small" @click="handleAudit(3)">终审</el-button>
           <el-button v-if = "form.permissions.auditRevoke" size="small" @click="handleRecall">审核撤回</el-button>
         </template>
         <el-main>
@@ -697,7 +699,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, submit, invalid, approve, selectedVehicleOrderValid, queryAuditor, queryStepInfo } from '@/api/vehretail/orderManager/vrGroupbuyOrderEquityApply/index';
+import { getDetail, addOrUpdate, submit, invalid, firstApprove, secondApprove, finalApprove, selectedVehicleOrderValid, queryAuditor, queryStepInfo } from '@/api/vehretail/orderManager/vrGroupbuyOrderEquityApply/index';
 import { getList as getApprovalDetailList } from '@/api/vehretail/orderManager/vrGroupbuyOrderEquityApplyLog/index';
 import { getMatchingCompanyNamesBySeries as getEnterprisePolicyList } from '@/api/vehretail/orderManager/vrGroupbuyEnterprisePolicy/index';
 import { getList as getRetailOrderList, getDetail as getRetailOrderDetail } from '@/api/vehretail/orderManager/retailOrderInfo/index';
@@ -808,6 +810,7 @@ export default {
       isShowAuditorBtn: false,
       auditorList: [],
       auditorDialogVisible: false, // 审核人员弹窗可见性
+      buttonType: 1,
       rules: {
         companyName: [
           { required: true, message: '请选择公司名称', trigger: 'change' }
@@ -896,9 +899,7 @@ export default {
         this.auditorDialogVisible = true;
         queryAuditor({
           cooperationType: this.form.cooperationType,
-          auditStatus: this.form.auditStatus,
-          orgId: this.form.ownerOrgId,
-          orgCode: this.form.saleDealerCode
+          auditStatus: this.form.auditStatus
         }).then(res => {
           this.auditorList = res.auditorList || [];
         });
@@ -996,16 +997,23 @@ export default {
       this.$emit('confirm');
     },
     // 审批
-    async handleAudit () {
+    async handleAudit (value) {
+      this.buttonType = value;
       this.$refs.auditInput.show();
     },
     async handleAuditSubmit (data) {
-      await approve({
+      const req = {
         id: this._id,
         isAudit: data.result,
-        auditStatus: this.form.auditStatus,
         auditOpinion: data.content || data.remark
-      });
+      };
+      if (this.buttonType === 1) {
+        await firstApprove(req);
+      } else if (this.buttonType === 2) {
+        await secondApprove(req);
+      } else {
+        await finalApprove(req);
+      }
       this.$message.success('审核成功');
       this.$refs.containerRef.loadDetail();
     },

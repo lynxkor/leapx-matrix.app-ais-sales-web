@@ -55,7 +55,7 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_vehicle_back_order_detail_status"
-          v-model="form.processStatus"
+          v-model="form.processStatuses"
           placeholder="请选择"
           clearable
           multiple

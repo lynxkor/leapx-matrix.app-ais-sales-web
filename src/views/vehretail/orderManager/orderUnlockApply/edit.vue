@@ -383,8 +383,10 @@
               <div class="common-section-table">
                 <!--附件上传组件 -->
                 <AisAttachment
-                  :businessId="form.retailOrderId"
+                  :businessId="_id"
                   ref="attachment"
+                  configCode="mcs_unstockvin"
+                  attachType="附件资料"
                 />
               </div>
             </div>

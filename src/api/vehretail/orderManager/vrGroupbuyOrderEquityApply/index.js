@@ -62,8 +62,24 @@ export function submit (data) {
  * 审批
  * @param {Object} data
  */
-export function approve (data) {
-  return api.jsonPost(prefix + 'approve', data);
+export function firstApprove (data) {
+  return api.jsonPost(prefix + 'firstApprove', data);
+}
+
+/**
+ * 审批
+ * @param {Object} data
+ */
+export function secondApprove (data) {
+  return api.jsonPost(prefix + 'secondApprove', data);
+}
+
+/**
+ * 审批
+ * @param {Object} data
+ */
+export function finalApprove (data) {
+  return api.jsonPost(prefix + 'finalApprove', data);
 }
 
 /*

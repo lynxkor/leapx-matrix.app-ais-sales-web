@@ -16,17 +16,13 @@
       >
         <template #status>
           <span>{{ form.entOrderCode }}</span>
-          <!-- 支持primary,warning,success,danger等状态 -->
-          <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
           <el-button  size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
-          <el-button  size="small" @click="handlevinAllocateVehicle" >配车</el-button>
-          <el-button  size="small" @click="handlebatchCancelAllocateSubmit" >取消配车</el-button>
-          <el-button  size="small" @click="handlebatchSettleSubmit" >提交结算</el-button>
-          <el-button  size="small" @click="handlebatchCancelSettleSubmit" >取消结算</el-button>
-          <!-- <el-button size="small">按钮1</el-button>
-          <el-button size="small">按钮2</el-button> -->
+          <el-button  :disabled="!form.buttonControls.batchAllocateSubmitButton" size="small" @click="handlevinAllocateVehicle" >配车</el-button>
+          <el-button  :disabled="!form.buttonControls.cancelAllocateButton" size="small" @click="handlebatchCancelAllocateSubmit" >取消配车</el-button>
+          <el-button  :disabled="!form.buttonControls.submitSettleButton" size="small" @click="handlebatchSettleSubmit" >提交结算</el-button>
+          <el-button  :disabled="!form.buttonControls.cancelSettleButton" size="small" @click="handlebatchCancelSettleSubmit" >取消结算</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -44,7 +40,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="企业客户补货订单编号：" prop="entReplenishOrderCode">
+                <el-form-item label="企业客户补货订单号：" prop="entReplenishOrderCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.entReplenishOrderCode"
@@ -156,6 +152,7 @@
                       placeholder="请选择"
                       clearable
                       filterable
+                      @change="changeStatus"
                     />
                 </el-form-item>
                  <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
@@ -165,7 +162,7 @@
                     :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd HH:mm:ss"
                     placeholder="选择日期时间"
-                    :disabled="form.emergencyOrder !== '1' && form.emergencyOrder !== 1"
+                    disabled
                   />
                 </el-form-item>
                   <el-form-item label="急单备注：" prop="emergencyOrderRemark">
@@ -258,7 +255,7 @@
                  <el-form-item label="企业客户整车订单号：" prop="entOrderCode">
                   {{ form.entOrderCode }}
                 </el-form-item>
-                 <el-form-item label="企业客户补货订单编号：" prop="entReplenishOrderCode">
+                 <el-form-item label="企业客户补货订单号：" prop="entReplenishOrderCode">
                   {{ form.entReplenishOrderCode }}
                 </el-form-item>
                  <el-form-item label="第七大区CBU订单号：" prop="cbuOrderCode">
@@ -561,7 +558,7 @@
                     disabled
                   />
                 </el-form-item>
-                 <el-form-item label="是否存在结算失败记录：" prop="hasSettleFailed">
+                 <el-form-item label="是否存在结算失败：" prop="hasSettleFailed">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="BooleanEnum"
@@ -696,7 +693,7 @@
                  <el-form-item label="是否创建发运计划：" prop="createdShippingPlanLabel">
                   {{ form.createdShippingPlanLabel }}
                 </el-form-item>
-                 <el-form-item label="是否存在结算失败记录：" prop="hasSettleFailedLabel">
+                 <el-form-item label="是否存在结算失败：" prop="hasSettleFailedLabel">
                   {{ form.hasSettleFailedLabel }}
                 </el-form-item>
                  <el-form-item label="是否需要同步SAP：" prop="needAsyncSapLabel">
@@ -925,7 +922,7 @@ const defaultForm = {
   relatedTxnExTaxPrice: '',
   relatedTxnPriceRate: '',
   cbuOrderCode: '',
-  emergencyOrderTime: '',
+  emergencyOrderTime: new Date(),
   emergencyOrderRemark: '',
   specialRemark: '',
   creditSalesAmount: '',
@@ -1011,6 +1008,24 @@ export default {
     // this.fetchSettleFundTypeOptions();
   },
   methods: {
+    formatDateTime (date) {
+      if (!date) return '';
+      const d = new Date(date);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const hours = String(d.getHours()).padStart(2, '0');
+      const minutes = String(d.getMinutes()).padStart(2, '0');
+      const seconds = String(d.getSeconds()).padStart(2, '0');
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    },
+    changeStatus () {
+      if (this.form.emergencyOrder === '1' || this.form.emergencyOrder === 1) {
+        this.form.emergencyOrderTime = this.formatDateTime(new Date());
+      } else {
+        this.form.emergencyOrderTime = '';
+      }
+    },
     clearCache (val, row) {
       this.form.settleFundType = row.code;
       this.form.settleFundTypeLabel = row.message;
@@ -1031,9 +1046,9 @@ export default {
         return;
       }
       const params = {
-        dealerCompanyNames: [this.form.entCustomerName],
+        dealerCompanyCodes: [this.form.entCustomerCode],
         allowEntOrderSettle: '1',
-        saleCompanyNames: [this.form.saleCompanyName]
+        saleCompanyIds: [this.form.saleCompanyId]
       };
       accountList(params).then((res) => {
         if (res && res.records) {

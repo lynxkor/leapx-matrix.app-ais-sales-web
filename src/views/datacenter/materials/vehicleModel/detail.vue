@@ -20,10 +20,10 @@
               {{ info.yearTypeName  }}
             </el-form-item> -->
             <el-form-item label="车系名称：" prop="seriesName">
-              {{ info.seriesName  }}
+              <el-link type="primary" :href="`/datacenter/materials/vehicleSeries/detail?id=${info.seriesId}`" target="_blank">{{ info.seriesName }}</el-link>
             </el-form-item>
             <el-form-item label="系列名称：" prop="modelLineName">
-              {{ info.modelLineName  }}
+              <el-link type="primary" :href="`/datacenter/materials/vehicleModelLine/detail?id=${info.modelLineId}`" target="_blank">{{ info.modelLineName }}</el-link>
             </el-form-item>
             <el-form-item label="备注：" prop="remark">
               {{ info.remark  }}

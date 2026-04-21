@@ -293,7 +293,7 @@ export default {
     },
     // 删除子表数据
     handleDeleteRow (index) {
-      const item = this.form.storeInventoryTransferDetailList[index];
+      // const item = this.form.storeInventoryTransferDetailList[index];
       this.form.storeInventoryTransferDetailList.splice(index, 1);
       // 根据需求调用接口
       // deletePartVehModel([item.id]).then(res => {

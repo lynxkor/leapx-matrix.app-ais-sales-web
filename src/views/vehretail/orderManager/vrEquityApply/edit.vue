@@ -19,7 +19,8 @@
           <el-button size="small" @click="auditLog">申请记录</el-button>
           <el-button v-if = "form.permissions.cancel" size="small" @click="handleCancel">作废</el-button>
           <el-button v-if = "form.permissions.submit" size="small" @click="handleSubmitApproval">提交审批</el-button>
-          <el-button v-if = "form.permissions.audit" size="small" @click="handleAudit">审核</el-button>
+          <el-button v-if = "form.permissions.firstAudit" size="small" @click="handleAudit(1)">初审</el-button>
+          <el-button v-if = "form.permissions.audit" size="small" @click="handleAudit(2)">审核</el-button>
           <el-button v-if = "form.permissions.auditRevoke" size="small" @click="handleRecall">审核撤回</el-button>
         </template>
         <el-main>
@@ -709,7 +710,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, selectedVehicleOrderValid, submit, approve, invalid, cancelApprove, cancelApproveValid, approveRecord } from '@/api/vehretail/orderManager/vrEquityApply/index';
+import { getDetail, addOrUpdate, selectedVehicleOrderValid, submit, approve, firstApprove, invalid, cancelApprove, cancelApproveValid, approveRecord } from '@/api/vehretail/orderManager/vrEquityApply/index';
 import { getList as getRetailOrderList, getDetail as getRetailOrderDetail } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import { listByAuth as getEquityCategoryListApi } from '@/api/vehretail/basicConfig/vrEquityCategory/index';
 import EditPageLayout from '@/libs/components/EditPageLayout';
@@ -851,6 +852,7 @@ export default {
       equityCategoryOptions: [], // 权益类别选项列表
       logDialogVisible: false,
       logLoading: false,
+      buttonType: 1,
       logOptionObj: {
         id: 'vrEquityApplyRecordTable',
         dataList: [],
@@ -967,17 +969,25 @@ export default {
         this.$refs.containerRef.loadDetail();
       });
     },
-    async handleAudit () {
+    async handleAudit (value) {
+      this.buttonType = value;
       this.$refs.auditInput.show();
     },
 
     async handleAuditSubmit (data) {
-      await approve({
-        id: this._id,
-        isAudit: data.result,
-        auditStatus: this.form.auditStatus,
-        auditOpinion: data.content || data.remark
-      });
+      if (this.buttonType === 1) {
+        await firstApprove({
+          id: this._id,
+          isAudit: data.result,
+          auditOpinion: data.content || data.remark
+        });
+      } else {
+        await approve({
+          id: this._id,
+          isAudit: data.result,
+          auditOpinion: data.content || data.remark
+        });
+      }
       this.$message.success('审核成功');
       this.$refs.containerRef.loadDetail();
     },

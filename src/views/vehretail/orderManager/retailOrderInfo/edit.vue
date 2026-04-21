@@ -11,6 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="form.orderStatus !== 9 && form.orderStatus !== 99"
       >
         <template #status>
           <!-- 支持 primary,warning,success,danger 等状态 -->
@@ -18,21 +19,21 @@
         </template>
         <template #extraButtons>
           <!-- <el-button size="small" type="primary" @click="handleEquityInquiry">权益查询</el-button> -->
-          <el-button size="small" :loading="printLoading" @click="handlePrintContractTermination">打印合同解除协议</el-button>
+          <el-button size="small" :loading="printLoading" v-if="canOperateOrder" @click="handlePrintContractTermination">打印合同解除协议</el-button>
           <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" :loading="setSpecialMarkLoading" @click="handleSetSpecialMark">设置特殊标识</el-button>
-          <el-button size="small" :loading="modifyConfigLoading" v-if="form.orderStatus === 3 && form.wholesaleBindStatus === 1" @click="handleModifyConfiguration">修改配置</el-button>
-          <el-button size="small" :loading="manualVehicleLoading" v-if="form.wholesaleBindStatus !== 1" @click="handleManualVehicleAllocation">手工配车</el-button>
-          <el-button size="small" :loading="autoLockLoading" v-if="form.wholesaleBindStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
+          <el-button size="small" :loading="modifyConfigLoading" v-if="canOperateOrder && form.orderStatus === 3 && form.wholesaleBindStatus !== 1" @click="handleModifyConfiguration">修改配置</el-button>
+          <el-button size="small" :loading="manualVehicleLoading" v-if="canOperateOrder && form.wholesaleBindStatus !== 1" @click="handleManualVehicleAllocation">手工配车</el-button>
+          <el-button size="small" :loading="autoLockLoading" v-if="canOperateOrder && form.wholesaleBindStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
           <el-button size="small" :loading="agreementLoading" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
-          <el-button size="small" :loading="orderRefundLoading"
-                     @click="handleOrderRefund">
+          <el-button
+            v-if="canOperateOrder && !(form.orderStatus === 10 || (form.orderStatus === 7 && form.deliveryOrder && form.deliveryOrder.status === 5))"
+            size="small"
+            :loading="orderRefundLoading"
+            @click="handleOrderRefund">
             订单退订
           </el-button>
-          <el-button size="small" :loading="changeApplyLoading"
-                     @click="handleCarOwnerChangeApplication">
-            购车人变更申请
-          </el-button>
-          <el-button size="small" :loading="qualityIssueLoading" @click="handleQualityIssueUnbindApplication">质量问题解绑申请</el-button>
+          <el-button size="small" :loading="changeApplyLoading" v-if="canOperateOrder" @click="handleCarOwnerChangeApplication">购车人变更申请</el-button>
+          <el-button size="small" :loading="qualityIssueLoading" v-if="canOperateOrder && form.wholesaleBindStatus === 1 && (form.orderStatus === 6 || form.orderStatus === 7)" @click="handleQualityIssueUnbindApplication">质量问题解绑申请</el-button>
         </template>
         <!-- 固定悬浮导航栏 -->
         <div class="fixed-nav" :class="{ 'is-collapsed': isNavCollapsed }">
@@ -538,6 +539,10 @@ export default {
     },
     title () {
       return '商城订单编号：' + this.form.mallOrderCode;
+    },
+    // 订单状态为9或99时不可操作
+    canOperateOrder () {
+      return this.form.orderStatus !== 9 && this.form.orderStatus !== 99;
     }
   },
   watch: {
@@ -868,7 +873,7 @@ export default {
           }
         });
       } else {
-        this.$message.error('该订单不是批售单或订单状态不是车辆在途或等待交车，不能进行质量问题解绑申请');
+        this.$message.error('该订单未绑定批售且订单状态不是车辆在途/等待交车，不能进行质量问题解绑申请');
       }
       this.qualityIssueLoading = false;
     },

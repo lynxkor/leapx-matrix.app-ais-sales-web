@@ -294,7 +294,7 @@ export default {
       }
       exportTable({
         businessType: '整车库存存量统计',
-        dataFetchPath: 'vehstock/web/store/vehicleVdcInventoryStatistics/statistics',
+        dataFetchPath: 'vehstock/web/store/vehicleVdcInventoryStatistics/export',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'

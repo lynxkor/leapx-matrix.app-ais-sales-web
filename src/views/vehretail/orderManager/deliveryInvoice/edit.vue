@@ -161,10 +161,10 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                   />
                 </el-form-item>
-                <el-form-item label="车主证件号码：" prop="orderIdCardNo">
+                <el-form-item label="车主证件号码：" prop="carIdCardNo">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.orderIdCardNo"
+                    v-model="form.carIdCardNo"
                     clearable
                   />
                 </el-form-item>
@@ -238,7 +238,7 @@
                   {{ form.invoiceTime }}
                 </el-form-item>
                 <el-form-item label="车主证件号码：">
-                  {{ form.orderIdCardNo }}
+                  {{ form.carIdCardNo }}
                 </el-form-item>
                 <el-form-item label="开票金额：">
                   {{ form.deliveryOrderInvoiceAmount }}
@@ -508,11 +508,11 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="车主证件类型：" prop="orderIdCardType">
+                <el-form-item label="车主证件类型：" prop="carIdCardType">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vehretail_id_card_type"
-                    v-model="form.orderIdCardType"
+                    v-model="form.carIdCardType"
                     placeholder="请选择"
                     clearable
                     filterable
@@ -534,7 +534,7 @@
                   {{ form.vehicleAttributeLabel }}
                 </el-form-item>
                 <el-form-item label="车主证件类型：">
-                  {{ form.orderIdCardTypeLabel }}
+                  {{ form.carIdCardTypeLabel }}
                 </el-form-item>
                 <el-form-item label="备注：">
                   {{ form.remark }}
@@ -687,8 +687,8 @@ import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
-import {getEnum} from '@/api/common';
-import {YES_NO_ENUM} from '@/libs/constants';
+import { getEnum } from '@/api/common';
+import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
@@ -734,7 +734,7 @@ const defaultForm = {
   orderTime: '',
   orderUserId: '',
   orderUserName: '',
-  idCardType: '',
+  carIdCardType: '',
   agentName: '',
   agentPhone: '',
   depositAmount: '',
@@ -919,11 +919,11 @@ export default {
         orderCarBuyerPhone: [
           { required: true, message: '请输入购车人手机号', trigger: 'change' }
         ],
-        idCardType: [
-          { required: false, message: '请选择证件类型标签', trigger: 'change' }
+        carIdCardType: [
+          { required: true, message: '请选择车主证件类型', trigger: 'change' }
         ],
         orderIdCardType: [
-          { required: true, message: '请选择车主证件类型', trigger: 'change' }
+          { required: false, message: '请选择证件类型标签', trigger: 'change' }
         ],
         agentName: [
           { required: false, message: '请输入代办姓名', trigger: 'change' }
@@ -988,7 +988,7 @@ export default {
         this.$message.warning('识别信息与校验信息不一致,请重新确认！');
       } else {
         confirmUpload(this.form.id).then(res => {
-          this.$message.success('交车完成成功');
+          this.dialogVisible = false;
           // 重新加载详情数据
           this.reloadDetail();
         });
@@ -1004,10 +1004,8 @@ export default {
       }).then(() => {
         // 比对数据
         const comparisonData = this.doComparisonData();
-        if (comparisonData.length > 0) {
-          this.comparisonData = comparisonData;
-          this.dialogVisible = true;
-        }
+        this.comparisonData = comparisonData;
+        this.dialogVisible = true;
       }).catch(() => {
       });
     },
@@ -1041,18 +1039,18 @@ export default {
           isHighlighted: true
         });
       }
-      if (!this.form.idCardTypeLabel || !this.form.orderIdCardTypeLabel || this.form.idCardTypeLabel !== this.form.orderIdCardTypeLabel) {
+      if (!this.form.carIdCardType || !this.form.orderIdCardType || this.form.carIdCardType !== this.form.orderIdCardType) {
         comparisonData.push({
           fieldName: '车主证件类型',
-          recognizedValue: this.form.vpIdCardTypeLabel,
+          recognizedValue: this.form.carIdCardTypeLabel,
           checkField: '证件类型',
           checkValue: this.form.orderIdCardTypeLabel,
         });
       }
-      if (!this.form.idCardNo || !this.form.orderIdCardNo || this.form.idCardNo !== this.form.orderIdCardNo) {
+      if (!this.form.carIdCardNo || !this.form.orderIdCardNo || this.form.carIdCardNo !== this.form.orderIdCardNo) {
         comparisonData.push({
           fieldName: '车主证件号码',
-          recognizedValue: this.form.vpIdCardNo,
+          recognizedValue: this.form.carIdCardNo,
           checkField: '证件号码',
           checkValue: this.form.orderIdCardNo,
         });
@@ -1069,7 +1067,7 @@ export default {
       if (!this.form.invoiceAmount || !this.form.deliveryOrderInvoiceAmount || this.form.invoiceAmount !== this.form.deliveryOrderInvoiceAmount) {
         comparisonData.push({
           fieldName: '发票金额',
-          recognizedValue: this.form.price,
+          recognizedValue: this.form.invoiceAmount,
           checkField: '开票金额',
           checkValue: this.form.deliveryOrderInvoiceAmount,
           isHighlighted: true
@@ -1179,6 +1177,14 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    reloadDetail () {
+      this.$message.success('操作成功');
+      if (this.$refs.containerRef) {
+        this.$refs.containerRef.loadDetail();
+      }
+      // 或者关闭编辑状态
+      this.isEditing = false;
     }
   }
 };
