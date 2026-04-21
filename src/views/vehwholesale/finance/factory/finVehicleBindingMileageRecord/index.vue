@@ -225,7 +225,23 @@ export default {
           { props: 'vehicleNetworkMileage', label: '车联网里程（公里）', visible: true, width: 200 },
           { props: 'isVehicleBoundLabel', label: '是否人车绑定', visible: true, width: 200 },
           { props: 'bindingDate', label: '绑车日期', visible: true, width: 200 },
-          { props: 'fundFinancialOrganizationName', label: '融资金融机构', visible: true, width: 200 },
+          {
+            props: 'fundFinancialOrganizationName',
+            label: '融资金融机构',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
+                  query: {
+                    id: row.fundFinancialOrganizationId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'deliveryDate', label: '交车日期', visible: true, width: 200 },
           { props: 'actualLongitude', label: '实车位置经度', visible: true, width: 200 },
           { props: 'actualLatitude', label: '实车位置纬度', visible: true, width: 200 },

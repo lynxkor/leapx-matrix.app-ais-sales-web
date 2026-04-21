@@ -152,10 +152,24 @@
                   {{ form.materialsCode }}
                 </el-form-item>
                     <el-form-item label="车系名称：" prop="seriesName">
-                  {{ form.seriesName }}
+                      <el-button class="link" style="padding: 0;"
+                        @click="navigateToRoute({
+                            path: '/datacenter/materials/vehicleSeries/detail',
+                            query: {
+                              id: form.seriesId,
+                            },
+                          })"
+                        type="text">{{ form.seriesName }}</el-button>
                 </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
-                  {{ form.modelName }}
+                  <el-button class="link" style="padding: 0;"
+                        @click="navigateToRoute({
+                            path: '/datacenter/materials/vehicleModel/detail',
+                            query: {
+                              id: form.modelId,
+                            },
+                          })"
+                        type="text">{{ form.modelName }}</el-button>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}

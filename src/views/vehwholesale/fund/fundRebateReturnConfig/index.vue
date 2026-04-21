@@ -200,7 +200,23 @@ export default {
             }]
           },
           { props: 'rebateTypeLabel', label: '返利类型', visible: true, width: 200 },
-          { props: 'vehicleSeriesName', label: '车系名称', visible: true, width: 150 },
+          {
+            props: 'vehicleSeriesName',
+            label: '车系名称',
+            visible: true,
+            width: 150,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleSeries/detail',
+                  query: {
+                    id: row.vehicleSeriesId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'budgetItemName', label: '预算科目', visible: true, width: 220 },
           { props: 'feeSupportTypeName', label: '费用支持类型', visible: true, width: 150 },
           { props: 'effectiveStartTime', label: '有效开始日期', visible: true, width: 150 },
