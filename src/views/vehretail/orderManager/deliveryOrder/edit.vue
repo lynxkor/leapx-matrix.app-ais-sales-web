@@ -351,6 +351,7 @@
           >
             <template v-slot:operation_default="{ row }">
               <el-button
+                v-if="form.status !== 7 && form.status !== 99"
                 type="text"
                 style="color: #67c23a;"
                 @click="handleDeletePaymentRecord(row)"

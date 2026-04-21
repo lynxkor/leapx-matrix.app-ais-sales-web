@@ -16,17 +16,13 @@
       >
         <template #status>
           <span>{{ form.entOrderCode }}</span>
-          <!-- 支持primary,warning,success,danger等状态 -->
-          <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
           <el-button  size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
-          <el-button  size="small" @click="handlevinAllocateVehicle" >配车</el-button>
-          <el-button  size="small" @click="handlebatchCancelAllocateSubmit" >取消配车</el-button>
-          <el-button  size="small" @click="handlebatchSettleSubmit" >提交结算</el-button>
-          <el-button  size="small" @click="handlebatchCancelSettleSubmit" >取消结算</el-button>
-          <!-- <el-button size="small">按钮1</el-button>
-          <el-button size="small">按钮2</el-button> -->
+          <el-button  :disabled="!form.buttonControls.batchAllocateSubmitButton" size="small" @click="handlevinAllocateVehicle" >配车</el-button>
+          <el-button  :disabled="!form.buttonControls.cancelAllocateButton" size="small" @click="handlebatchCancelAllocateSubmit" >取消配车</el-button>
+          <el-button  :disabled="!form.buttonControls.submitSettleButton" size="small" @click="handlebatchSettleSubmit" >提交结算</el-button>
+          <el-button  :disabled="!form.buttonControls.cancelSettleButton" size="small" @click="handlebatchCancelSettleSubmit" >取消结算</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -1050,9 +1046,9 @@ export default {
         return;
       }
       const params = {
-        dealerCompanyNames: [this.form.entCustomerName],
+        dealerCompanyCodes: [this.form.entCustomerCode],
         allowEntOrderSettle: '1',
-        saleCompanyNames: [this.form.saleCompanyName]
+        saleCompanyIds: [this.form.saleCompanyId]
       };
       accountList(params).then((res) => {
         if (res && res.records) {
