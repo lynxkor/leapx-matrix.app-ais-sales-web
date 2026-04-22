@@ -50,7 +50,14 @@
                    type="text">{{info.vehicleYearType}}</el-button>
             </el-form-item>
             <el-form-item label="选装包：" prop="optionPackageName">
-              {{ info.optionPackageName  }}
+              <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleOptionPackage/detail',
+                      query: {
+                        id: info.optionPackageId,
+                      },
+                    })"
+                   type="text">{{ info.optionPackageName  }}</el-button>
             </el-form-item>
             <el-form-item label="允许试驾车批售：" prop="allowTestDriveWholesaleLabel">
               {{ info.allowTestDriveWholesaleLabel  }}

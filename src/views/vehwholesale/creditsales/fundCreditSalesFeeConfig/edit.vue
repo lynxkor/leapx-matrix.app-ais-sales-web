@@ -145,10 +145,24 @@
                   {{ form.creditSalesFeeConfigCode }}
                 </el-form-item>
                 <el-form-item label="车系：" prop="seriesName">
-                  {{ form.seriesName }}
+                    <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleSeries/detail',
+                      query: {
+                        id: form.seriesId,
+                      },
+                    })"
+                   type="text">{{form.seriesName}}</el-button>
                 </el-form-item>
                 <el-form-item label="年款：" prop="yearTypeName">
-                  {{ form.yearTypeName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleYearType/detail',
+                      query: {
+                        id: form.yearTypeId,
+                      },
+                    })"
+                   type="text">{{form.yearTypeName}}</el-button>
                 </el-form-item>
                 <el-form-item label="首付款比例%：" prop="downPaymentRatio">
                   {{ form.downPaymentRatio }}

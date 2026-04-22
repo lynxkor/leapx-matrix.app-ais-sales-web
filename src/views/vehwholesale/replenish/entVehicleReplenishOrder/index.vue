@@ -265,7 +265,23 @@ export default {
           { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200 },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 200 },
-          { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 200 },
+          {
+            props: 'financialOrganizationName',
+            label: '金融机构',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
+                  query: {
+                    id: row.financialOrganizationId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'orderTime', label: '订单时间', visible: true, width: 200 },
           { props: 'pickupContactName', label: '接车联系人', visible: true, width: 200 },
           { props: 'pickupContactMobile', label: '接车人电话', visible: true, width: 200 },

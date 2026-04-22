@@ -17,10 +17,24 @@
               {{ info.code  }}
             </el-form-item>
             <el-form-item label="车型：" prop="modelName">
-              {{ info.modelName  }}
+               <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleModel/detail',
+                      query: {
+                        id: info.modelId,
+                      },
+                    })"
+                   type="text">{{info.modelName}}</el-button>
             </el-form-item>
             <el-form-item label="年款：" prop="vehicleYearType">
-              {{ info.vehicleYearType  }}
+              <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleYearType/detail',
+                      query: {
+                        id: info.vehicleYearTypeId,
+                      },
+                    })"
+                   type="text">{{info.vehicleYearType}}</el-button>
             </el-form-item>
             <el-form-item label="订单分类：" prop="orderCategory">
               {{ info.orderCategoryLabel  }}

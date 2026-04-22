@@ -281,8 +281,40 @@ export default {
           { props: 'creditSettleStatusLabel', label: '赊销结算状态', visible: true, width: 200 },
           { props: 'certificateStatusLabel', label: '合格证状态', visible: true, width: 200 },
           { props: 'vin', label: 'VIN码', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
-          { props: 'modelName', label: '车型名称', visible: true, width: 200 },
+          {
+            props: 'seriesName',
+            label: '车系名称',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleSeries/detail',
+                  query: {
+                    id: row.seriesId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'modelName',
+            label: '车型名称',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleModel/detail',
+                  query: {
+                    id: row.modelId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'vehiclePrice', label: '车辆售价（零售价）', visible: true, width: 200 },
           { props: 'settleFundTypeLabel', label: '资金结算类型', visible: true, width: 200 },
           { props: 'downPaymentRatio', label: '首付款比例', visible: true, width: 200 },

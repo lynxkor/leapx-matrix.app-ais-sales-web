@@ -125,7 +125,14 @@
                   {{ form.rebateTypeLabel }}
                 </el-form-item>
                 <el-form-item label="车系名称：" prop="vehicleSeriesName">
-                  {{ form.vehicleSeriesName }}
+                   <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                    path: '/datacenter/materials/vehicleSeries/detail',
+                      query: {
+                        id: form.vehicleSeriesId,
+                      },
+                    })"
+                   type="text">{{ form.vehicleSeriesName }}</el-button>
                 </el-form-item>
                 <el-form-item label="预算科目：" prop="budgetItemName">
                   {{ form.budgetItemName }}
