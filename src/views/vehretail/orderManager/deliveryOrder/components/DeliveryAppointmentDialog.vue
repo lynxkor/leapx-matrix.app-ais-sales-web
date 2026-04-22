@@ -117,7 +117,6 @@
             v-model="appointmentForm.changeReason"
             placeholder="请选择"
             clearable
-            :disabled="!isChangeReasonRequired"
             style="width: 220px;"
           >
             <el-option

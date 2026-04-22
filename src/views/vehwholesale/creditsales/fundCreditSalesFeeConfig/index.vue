@@ -253,8 +253,40 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'seriesName', label: '车系', visible: true, width: 100 },
-          { props: 'yearTypeName', label: '年款', visible: true, width: 100 },
+          {
+            props: 'seriesName',
+            label: '车系',
+            visible: true,
+            width: 100,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.navigateToRoute({
+                  path: '/datacenter/materials/vehicleSeries/detail',
+                  query: {
+                    id: row.seriesId,
+                  },
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'yearTypeName',
+            label: '年款',
+            visible: true,
+            width: 100,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.navigateToRoute({
+                  path: '/datacenter/materials/vehicleYearType/detail',
+                  query: {
+                    id: row.yearTypeId,
+                  },
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 150 },
           { props: 'useRebateLabel', label: '是否使用返利', visible: true, width: 120 },
           { props: 'minUsageDays', label: '使用天数下限', visible: true, width: 120 },

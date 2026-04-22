@@ -139,7 +139,14 @@
                   {{ form.dealerCompanyCode }}
                 </el-form-item>
                   <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationName">
-                  {{ form.fundFinancialOrganizationName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/vehwholesale/fund/fundFinancialOrganization/detail',
+                      query: {
+                        id: form.fundFinancialOrganizationId,
+                      },
+                    })"
+                   type="text">{{ form.fundFinancialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="是否合作：" prop="isCooperation">
                   {{ form.isCooperationLabel }}

@@ -246,7 +246,23 @@ export default {
           },
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
-          { props: 'fundFinancialOrganizationName', label: '融资金融机构', visible: true, width: 200 },
+          {
+            props: 'fundFinancialOrganizationName',
+            label: '融资金融机构',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
+                  query: {
+                    id: row.fundFinancialOrganizationId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'creditLimit', label: '授信额度', visible: true, width: 200 },
           { props: 'usedLimit', label: '已用额度', visible: true, width: 200 },
           { props: 'availableLimit', label: '剩余可用额度', visible: true, width: 200 },

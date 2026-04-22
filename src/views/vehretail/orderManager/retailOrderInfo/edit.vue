@@ -384,6 +384,7 @@
             :tableDataExternal="form[tableConfig.field]"
             :extraParams="{ retailOrderCode: form.retailOrderCode }"
             :columns="tableConfig.columns"
+            :lazy="true"
             :apiMethod="tableConfig.apiMethod"
           />
           <!-- 组件位置不要放在右侧栏组件 -->

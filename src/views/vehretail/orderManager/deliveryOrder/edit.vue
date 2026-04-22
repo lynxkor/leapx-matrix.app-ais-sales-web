@@ -271,74 +271,6 @@
           <!-- 实名认证信息 -->
           <generic-detail-display title="实名认证信息" :form-data="form" :fields="realNameAuthFields" :label-width="labelWidth" section-key="realNameAuth" />
           <!-- 交车确认单 -->
-          <!-- <section class="common-section" v-show="isEditing || !_id">
-            <div class="common-section-header" data-section="deliveryInfo">
-              <h2>交车确认单</h2>
-            </div>
-            <div class="common-section-body">
-              <el-form :inline="true" :model="form" :label-width="labelWidth" class="form-edit">
-                <el-form-item label="签署数据来源：">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.signatureDataSourceDesc"
-                    clearable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="签署时间：">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.signatureTime"
-                    clearable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="购车人手机是否注册：">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.buyerMobileRegisteredLabel"
-                    clearable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="交车确认单状态：">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.deliveryConfirmStatusDesc"
-                    clearable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="交车确认用户签名：">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.deliveryConfirmSignUrl"
-                    clearable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="交车确认PDF：">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.deliveryConfirmPdfUrl"
-                    clearable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="城市交付顺序：">
-                  <el-input-number
-                    placeholder="请输入"
-                    v-model="form.cityDeliveryOrder"
-                    clearable
-                    :controls="false"
-                    :min="cityDeliveryOrderMin"
-                    :step="1"
-                  />
-                </el-form-item>
-              </el-form>
-            </div>
-          </section> -->
-          <!-- 交车确认单 -->
           <generic-detail-display title="交车确认单" :form-data="form" :fields="deliveryConfirmFields" :label-width="labelWidth" section-key="deliveryConfirm" />
           <!-- 收款记录&权益项抵扣记录 -->
           <component-table
@@ -346,6 +278,7 @@
             :table-config="{ title: '收款记录&权益项抵扣记录' }"
             :columns="paymentRecordColumns"
             :api-method="getPaymentRecordList"
+            :lazy="true"
             :extra-params="{ retailOrderCode: form.retailOrderCode }"
             section-key="paymentRecords"
           >
@@ -358,6 +291,7 @@
               >删除</el-button>
             </template>
           </component-table>
+          <!-- 预约记录 -->
           <component-table
             ref="deliveryAppointmentRecordTable"
             :table-config="{ title: '预约记录' }"
@@ -365,7 +299,7 @@
             section-key="deliveryAppointmentRecordRecords"
             :tableDataExternal="form.appointmentRecordList"
           />
-          <!-- 预约记录 -->
+          <!-- 附件清单 -->
           <section class="common-section" section-key="appointmentRecords">
             <div class="common-section-header" data-section="orderBelonging">
               <h2>附件清单</h2>
@@ -598,6 +532,14 @@ export default {
         }
       },
       immediate: true
+    },
+    'form.retailOrderCode': {
+      handler (val) {
+        console.log('[edit.vue] retailOrderCode changed to:', val);
+        if (val && this.$refs.paymentRecordTable) {
+          this.$refs.paymentRecordTable.refresh();
+        }
+      }
     }
   },
   data () {
@@ -1267,8 +1209,7 @@ export default {
         this.$message.success('删除成功');
         // 刷新表格数据
         this.$refs.paymentRecordTable?.refresh();
-        // 触发自定义事件，通知父组件（如果需要）
-        this.$emit('deleted', row);
+        this.getDetail();
       } catch (error) {
         console.error('Delete failed:', error);
       }

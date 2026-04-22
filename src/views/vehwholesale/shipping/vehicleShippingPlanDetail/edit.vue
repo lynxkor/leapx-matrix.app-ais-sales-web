@@ -629,10 +629,24 @@
                 v-show="!(isEditing || !_id)"
               >
                 <el-form-item label="车系：" prop="seriesName">
-                  {{ form.seriesName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleSeries/detail',
+                      query: {
+                        id: form.seriesId,
+                      },
+                    })"
+                   type="text"> {{ form.seriesName }}</el-button>
                 </el-form-item>
                 <el-form-item label="车型：" prop="modelName">
-                  {{ form.modelName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleModel/detail',
+                      query: {
+                        id: form.modelId,
+                      },
+                    })"
+                   type="text"> {{ form.modelName }}</el-button>
                 </el-form-item>
                 <el-form-item label="物料描述：" prop="materialsDesc">
                   {{ form.materialsDesc }}
@@ -653,7 +667,14 @@
                   {{ form.wheelHubName }}
                 </el-form-item>
                 <el-form-item label="选装包：" prop="optionPackageName">
-                  {{ form.optionPackageName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleOptionPackage/detail',
+                      query: {
+                        id: form.optionPackageId,
+                      },
+                    })"
+                   type="text"> {{ form.optionPackageName }}</el-button>
                 </el-form-item>
               </el-form>
             </div>
@@ -811,7 +832,9 @@ export default {
             interiorName: res.vehicleMaterials?.interiorName || '',
             wheelHubName: res.vehicleMaterials?.wheelHubName || '',
             optionPackageName: res.vehicleMaterials?.optionPackageName || '',
+            optionPackageId: res.vehicleMaterials?.optionPackageId || '',
             modelName: res.vehicleMaterials?.modelName || '',
+            modelId: res.vehicleMaterials?.modelId || '',
             materialsDesc: res.vehicleMaterials?.materialsDesc || '',
             // 金融机构
             organizationName: res.financialOrganization?.organizationName || '',

@@ -353,7 +353,7 @@
       id='import'
       :businessParams="_id"
       @close="handleUploadDialogClose"
-      @getData="detailRequest"
+      @getData="loadDetail"
     />
     <audit-dialog
       ref="auditRef"
@@ -874,6 +874,9 @@ export default {
       }).catch(e => {
         defer.reject();
       });
+    },
+    loadDetail () {
+      this.$refs.containerRef.loadDetail();
     },
     detailRequest () {
       const id = this._id;

@@ -34,7 +34,14 @@
                   {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationName">
-                  {{ form.fundFinancialOrganizationName }}
+                   <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/vehwholesale/fund/fundFinancialOrganization/detail',
+                      query: {
+                        id: form.fundFinancialOrganizationId,
+                      },
+                    })"
+                   type="text">{{ form.fundFinancialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
                   {{ form.statusLabel }}
@@ -42,8 +49,8 @@
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
                 </el-form-item>
-                  <el-form-item label="编号：" prop="id">
-                    {{ form.id }}
+                  <el-form-item label="编号：" prop="code">
+                    {{ form.code }}
                 </el-form-item>
                 <el-form-item label="说明：" prop="statusDesc">
                   {{ form.statusDesc }}
