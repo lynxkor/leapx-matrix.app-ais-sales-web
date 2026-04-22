@@ -307,7 +307,7 @@
                       path: '/datacenter/materials/vehicleModel/detail',
                       query: {
                         id: form.modelId,
-                      },
+                      }
                     })"
                     type="text">{{form.modelName}}</el-button>
                 </el-form-item>
@@ -468,7 +468,7 @@
                     @click="navigateToRoute({
                       path: '/datacenter/materials/vehicleModel/detail',
                       query: {
-                        modelId: form.modelId,
+                        id: form.modelId
                       },
                     })"
                     type="text">{{form.modelName}}</el-button>
@@ -640,7 +640,7 @@ import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
-import {getDealerDetailByCode, getEnum, listOrgWarehouseStoreInfo, listStoreInfo} from '@/api/common';
+import { getDealerDetailByCode, getEnum, listOrgWarehouseStoreInfo, listStoreInfo } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -651,6 +651,7 @@ import RefundApplyAuditDialog from '@/views/vehretail/orderRefund/refundApply/au
 import { getList as getMaterialInfoList } from '@/api/datacenter/materials/vehicleMaterials/index';
 import FinancialOrderDialog from './components/FinancialOrderDialog.vue';
 import VehicleStockDialog from './components/VehicleStockDialog.vue';
+import navigate from '@/libs/utils/navigate';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -1096,12 +1097,16 @@ export default {
     handleRouteToStoreDetail (storeCode) {
       listStoreInfo({ keyword: storeCode }).then(res => {
         if (res && res.length > 0) {
-          this.$router.push({
-            path: '/partner/channelManagement/shopBasicsMessageDetails',
-            query: {
-              id: res[0].storeId
+          navigate(
+            {
+              path: '/partner/channelManagement/shopBasicsMessageDetails',
+              query: {
+                id: res[0].storeId
+              },
             },
-          });
+            false,
+            this.$router
+          );
         }
       });
     }
