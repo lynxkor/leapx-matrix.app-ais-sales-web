@@ -333,6 +333,7 @@
         :orderUserId="form.orderUserId"
         :deliveryOrderId="form.deliveryOrderId"
         :shopCode="form.mallOrderCode"
+        :retailOrderId="form.retailOrderId"
         @refresh="getDetail"
       />
       <!-- 收款记录对话框组件 -->
@@ -392,7 +393,6 @@ import {
   viewDeliveryConfirm, // 交车确认单查看
   deliveryConfirmResign, // 交车确认单重签
   deliveryConfirmPush, // 交车确认单推送
-  revertCancelOrderRights, // 核销撤回
   deliveryConfirm, // 交车确认单生成
   checkCarBuyerPhoneRegistered, // 校验购车人手机号是否注册零跑APP
 } from '@/api/vehretail/orderManager/deliveryOrder/index';
@@ -965,18 +965,15 @@ export default {
         this.$message.warning('请先保存订单信息');
         return;
       }
-      this.$refs.verifyOrderRightsDialog.open(this.form.mallOrderCode);
+      this.$refs.verifyOrderRightsDialog.open(this.form.mallOrderCode, 2);
     },
     // 核销撤回
-    async handleVerifyWithdraw () {
-      await this.withLoading('verifyWithdraw', async () => {
-        await revertCancelOrderRights({
-          deliveryOrderId: this.form.deliveryOrderId,
-          retailOrderId: this.form.retailOrderId,
-        });
-        this.$message.success('订单权益核销撤回成功');
-        this.getDetail();
-      });
+    handleVerifyWithdraw () {
+      if (!this._id) {
+        this.$message.warning('请先保存订单信息');
+        return;
+      }
+      this.$refs.verifyOrderRightsDialog.open(this.form.mallOrderCode, 4);
     },
     // 添加收款记录
     handleAddPaymentRecord () {

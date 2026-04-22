@@ -136,7 +136,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/datacenter/materials/vehicleBrand/detail',
+                  path: '/datacenter/materials/vehicleBrand/edit',
                   query: {
                     id: row.id
                   }
@@ -163,7 +163,8 @@ export default {
                 this.$router.push({
                   path: '/datacenter/materials/vehicleBrand/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },

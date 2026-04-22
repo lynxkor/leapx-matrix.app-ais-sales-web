@@ -3,7 +3,7 @@
     <!-- 核销权益弹框 -->
     <el-dialog
       :visible.sync="visible"
-      title="核销权益"
+      :title="dialogTitle"
       width="1200px"
       :close-on-click-modal="false"
       class="verify-order-rights-dialog"
@@ -43,7 +43,8 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="handleCancel">取消</el-button>
-        <el-button type="primary" @click="handleSubmit" :loading="submitLoading">核销选中权益</el-button>
+        <el-button v-if="rightsStatus === 2" type="primary" @click="handleSubmit" :loading="submitLoading">核销选中权益</el-button>
+        <el-button v-if="rightsStatus === 4" type="primary" @click="handleCancelSubmit" :loading="submitLoading">取消核销选中权益</el-button>
       </div>
     </el-dialog>
 
@@ -105,6 +106,7 @@
 <script>import {
   openGrantQuery, // 核销订单权益列表
   cancelOrderRights, // 核销订单权益
+  revertCancelOrderRights, // 取消核销权益
 } from '@/api/vehretail/orderManager/deliveryOrder/index';
 export default {
   name: 'VerifyOrderRightsDialog',
@@ -128,6 +130,11 @@ export default {
     shopCode: {
       type: [String, Number],
       default: ''
+    },
+    // 零售订单 ID
+    retailOrderId: {
+      type: [String, Number],
+      default: ''
     }
   },
   data () {
@@ -139,6 +146,8 @@ export default {
       tableData: [],
       // 内部缓存 shopCode，用于接收 open 方法传入的参数
       cachedShopCode: '',
+      // 缓存 rightsStatus：2-核销，4-取消核销
+      rightsStatus: 2,
       resultData: {
         consumeSuccessCount: 0,
         lockErrCount: 0,
@@ -150,12 +159,17 @@ export default {
       }
     };
   },
-  computed: {},
+  computed: {
+    dialogTitle () {
+      return this.rightsStatus === 2 ? '核销权益' : '取消核销权益';
+    }
+  },
   methods: {
     // 打开对话框
-    open (shopCode) {
+    open (shopCode, rightsStatus = 2) {
       // 优先使用传入的 shopCode，否则使用 prop
       this.cachedShopCode = shopCode || this.shopCode;
+      this.rightsStatus = rightsStatus;
       // 检查 shopCode 是否存在
       if (!this.cachedShopCode) {
         this.$message.warning('订单数据加载中，请稍后再试');
@@ -182,6 +196,7 @@ export default {
         const response = await openGrantQuery({
           userId: this.orderUserId,
           shopCode: this.cachedShopCode,
+          rightsStatus: this.rightsStatus,
         });
         console.log('loadRightsList', response);
         this.tableData = response;
@@ -261,6 +276,7 @@ export default {
         this.submitLoading = true;
         const params = {
           deliveryOrderId: this.orderId,
+          retailOrderId: this.retailOrderId,
           openWriteOffRights: checkedRows
         };
         const response = await cancelOrderRights(params);
@@ -274,6 +290,40 @@ export default {
       } catch (error) {
         console.error('核销权益失败:', error);
         this.$message.error('核销权益失败');
+      } finally {
+        this.submitLoading = false;
+      }
+    },
+    // 提交取消核销
+    async handleCancelSubmit () {
+      const checkedRows = this.$refs.rightsTable.getCheckboxRecords();
+      if (checkedRows.length === 0) {
+        this.$message.warning('请至少选择一项权益');
+        return;
+      }
+      try {
+        this.submitLoading = true;
+        const params = {
+          deliveryOrderId: this.orderId,
+          retailOrderId: this.retailOrderId,
+          openWriteOffRights: checkedRows
+        };
+        const response = await revertCancelOrderRights(params);
+        // const data = response.data || response;
+
+        // 关闭当前弹框
+        this.close();
+        // 打开结果弹框
+        if (response) {
+          this.$message.success('取消核销成功');
+        } else {
+          this.$message.error('核销失败');
+        }
+        // this.showResult(data);
+        this.$emit('refresh');
+      } catch (error) {
+        console.error('取消核销权益失败:', error);
+        this.$message.error('取消核销权益失败');
       } finally {
         this.submitLoading = false;
       }

@@ -302,15 +302,11 @@
                   {{ form.originalSaleDealerCode }}
                 </el-form-item>
                 <el-form-item label="原销售门店名称：" prop="originalSaleDealerName">
-                  <el-button
-                    class="link"
-                    @click="navigateToRoute({
-                      path: '/partner/channelManagement/shopBasicsMessage',
-                      query: {
-                        dealerCode: form.originalSaleDealerCode,
-                      },
-                    })"
-                    type="text">{{form.originalSaleDealerName}}</el-button>
+                  <el-link
+                    type="primary"
+                    :href="`/partner/channelManagement/shopDetail?num=2&dealerCode=${form.originalSaleDealerCode}`"
+                    target="_blank"
+                  >{{ form.originalSaleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="整车订单状态：" prop="originalOrderStatus">
                   {{ form.originalOrderStatusLabel }}
@@ -322,15 +318,11 @@
 <!--                  {{ form.saleDealerCode }}-->
 <!--                </el-form-item>-->
                 <el-form-item label="订单销售门店名称：" prop="saleDealerName">
-                  <el-button
-                    class="link"
-                    @click="navigateToRoute({
-                      path: '/partner/channelManagement/shopBasicsMessage',
-                      query: {
-                        dealerCode: form.saleDealerCode,
-                      },
-                    })"
-                    type="text">{{form.saleDealerName}}</el-button>
+                  <el-link
+                    type="primary"
+                    :href="`/partner/channelManagement/shopDetail?num=2&dealerCode=${form.saleDealerCode}`"
+                    target="_blank"
+                  >{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="缴定金时间：" prop="paymentTime">
                   {{ form.paymentTime }}

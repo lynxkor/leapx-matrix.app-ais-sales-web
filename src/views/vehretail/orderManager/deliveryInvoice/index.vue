@@ -151,7 +151,7 @@ import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { batchCancel, enableItem, getList } from '@/api/vehretail/orderManager/deliveryInvoice/index';
-import {exportTable, getEnum, getTableConfig, listOrgStoreInfo, tableAddOrUpdate} from '@/api/common';
+import { exportTable, getEnum, getTableConfig, listOrgStoreInfo, tableAddOrUpdate } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
