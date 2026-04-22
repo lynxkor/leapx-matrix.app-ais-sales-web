@@ -584,6 +584,9 @@ export default {
         },
       },
       rules: {
+        insuranceScheme: [
+          { required: true, message: '请选择保险方案', trigger: 'change' }
+        ],
         saleUserId: [
           { required: true, message: '请选择订单交付顾问', trigger: 'change' }
         ],
@@ -774,15 +777,9 @@ export default {
       }
     },
     getDetail () {
-      getDetail(this._id).then(res => {
-        this.form = res;
-        // 刷新收款记录表格
-        this.$refs.paymentRecordTable?.refresh();
-        // 刷新附件列表
-        this.$refs.attachmentList?.refresh();
-        // 强制重新访问按钮组，解决 v-if 导致按钮增删后布局计算错误的问题
-        this.reloadKey++;
-      }).catch(() => {});
+      this.$refs.containerRef?.loadDetail();
+      // 刷新附件列表
+      this.$refs.attachmentList?.refresh();
     },
     // 允许提交的字段白名单 (与 API 字段名一致)
     getSubmitFields () {
