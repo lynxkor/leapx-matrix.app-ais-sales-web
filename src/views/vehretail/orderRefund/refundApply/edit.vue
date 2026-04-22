@@ -1095,20 +1095,16 @@ export default {
       this.isEditing = false;
     },
     handleRouteToStoreDetail (storeCode) {
-      listStoreInfo({ keyword: storeCode }).then(res => {
-        if (res && res.length > 0) {
-          navigate(
-            {
-              path: '/partner/channelManagement/shopBasicsMessageDetails',
-              query: {
-                id: res[0].storeId
-              },
-            },
-            false,
-            this.$router
-          );
-        }
-      });
+      navigate(
+        {
+          path: '/partner/channelManagement/shopDetail',
+          query: {
+            dealerCode: storeCode
+          },
+        },
+        true,
+        this.$router
+      );
     }
   }
 };
