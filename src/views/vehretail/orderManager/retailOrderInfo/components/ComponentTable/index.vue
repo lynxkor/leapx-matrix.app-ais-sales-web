@@ -13,8 +13,6 @@
             resizable
             border="inner"
             size="medium"
-            height="auto"
-            min-height="200px"
             max-height="300px"
             width="1000px"
             :checkbox-config="{ checkField: 'checked' }"
@@ -107,6 +105,11 @@ export default {
     sectionKey: {
       type: String,
       default: ''
+    },
+    // 是否延迟加载，设置为 true 时初始化不查询，只有 extraParams 变化或手动调用 refresh() 时才查询
+    lazy: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -168,7 +171,7 @@ export default {
   created () {
     // 如果有外部数据则使用外部数据进行前端分页，否则加载内部数据
     if (this.tableDataExternal === null || this.tableDataExternal === undefined) {
-      if (this.apiMethod) {
+      if (this.apiMethod && !this.lazy) {
         this.loadData();
       }
     } else {
@@ -176,10 +179,7 @@ export default {
       this.loadData();
     }
   },
-  mounted () {
-    console.log('ComponentTable mounted - columns:', this.columns);
-    console.log('ComponentTable mounted - tableData:', this.tableData);
-  },
+  // mounted () {},
   methods: {
     // 加载数据
     async loadData () {
@@ -196,6 +196,14 @@ export default {
         return;
       }
 
+      // lazy 模式下，检查 extraParams 中的 retailOrderCode 是否有有效值
+      if (this.lazy) {
+        const retailOrderCode = this.extraParams?.retailOrderCode;
+        if (!retailOrderCode) {
+          return;
+        }
+      }
+
       this.loading = true;
       try {
         const params = {
@@ -205,9 +213,7 @@ export default {
         };
 
         const response = await this.apiMethod(params);
-        console.log('ComponentTable Response:', response);
         const dataList = response.data || response.records || response || [];
-        console.log('ComponentTable tableData:', dataList);
         if (dataList.length > 0) {
           console.log('ComponentTable first row data:', dataList[0]);
         }
