@@ -47,7 +47,14 @@
                   {{ form.accountTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financeOrganizationName">
-                  {{ form.financeOrganizationName }}
+                   <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/vehwholesale/fund/fundFinancialOrganization/detail',
+                      query: {
+                        id: form.financeOrganizationId,
+                      },
+                    })"
+                   type="text">{{ form.financeOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
