@@ -256,9 +256,9 @@
                   <el-button
                     class="link"
                     @click="navigateToRoute({
-                      path: '/vehretail/orderManager/retailOrderInfo',
+                      path: '/vehretail/orderManager/retailOrderInfo/edit',
                       query: {
-                        retailOrderCode: form.retailOrderCode,
+                        id: form.retailOrderId,
                       },
                     })"
                     type="text">{{form.retailOrderCode}}</el-button>
@@ -300,33 +300,27 @@
                 <el-form-item label="是否停产：" prop="discontinueStatusLabel">
                   {{ form.discontinueStatusLabel}}
                 </el-form-item>
-                <el-form-item label="车型ID：" prop="modelId">
-                  {{ form.modelId }}
-                </el-form-item>
                 <el-form-item label="基本车型：" prop="modelName">
                   <el-button
                     class="link"
                     @click="navigateToRoute({
-                      path: '/partner/businessData/carType',
+                      path: '/datacenter/materials/vehicleModel/detail',
                       query: {
-                        modelName: form.modelName,
-                      },
+                        id: form.modelId,
+                      }
                     })"
                     type="text">{{form.modelName}}</el-button>
                 </el-form-item>
 <!--                <el-form-item label="销售门店编码：" prop="originalSaleDealerCode">-->
 <!--                  {{ form.saleDealerCode }}-->
 <!--                </el-form-item>-->
-                <el-form-item label="销售门店：" prop="originalSaleDealerName">
+                <el-form-item label="销售门店：" prop="saleDealerName">
                   <el-button
                     class="link"
-                    @click="navigateToRoute({
-                      path: '/partner/channelManagement/shopBasicsMessage',
-                      query: {
-                        saleDealerName: form.saleDealerName,
-                      },
-                    })"
+                    v-if="form.saleDealerName"
+                    @click="handleRouteToStoreDetail(form.saleDealerCode)"
                     type="text">{{form.saleDealerName}}</el-button>
+                  <span v-else>{{ form.saleDealerName }}</span>
                 </el-form-item>
 <!--                <el-form-item label="省编码：" prop="provinceCode">-->
 <!--                  {{ form.provinceCode }}-->
@@ -436,12 +430,7 @@
                 <el-form-item label="销售门店：" prop="saleDealerName">
                   <el-button
                     class="link"
-                    @click="navigateToRoute({
-                      path: '/partner/channelManagement/shopBasicsMessage',
-                      query: {
-                        saleDealerName: form.saleDealerName,
-                      },
-                    })"
+                    @click="handleRouteToStoreDetail(form.saleDealerCode)"
                     type="text">{{form.saleDealerName}}</el-button>
                 </el-form-item>
                 <el-form-item label="交付门店名称：" prop="deliveryDealerName">
@@ -463,15 +452,23 @@
                   {{ form.orderCancelDescp }}
                 </el-form-item>
                 <el-form-item label="基本车系：" prop="seriesName">
-                  {{ form.seriesName }}
+                  <el-button
+                    class="link"
+                    @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleSeries/detail',
+                      query: {
+                        id: form.seriesId,
+                      },
+                    })"
+                    type="text">{{form.seriesName}}</el-button>
                 </el-form-item>
                 <el-form-item label="基本车型：" prop="modelName">
                   <el-button
                     class="link"
                     @click="navigateToRoute({
-                      path: '/partner/businessData/carType',
+                      path: '/datacenter/materials/vehicleModel/detail',
                       query: {
-                        modelName: form.modelName,
+                        id: form.modelId
                       },
                     })"
                     type="text">{{form.modelName}}</el-button>
@@ -643,7 +640,7 @@ import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
-import { getEnum } from '@/api/common';
+import { getDealerDetailByCode, getEnum, listOrgWarehouseStoreInfo, listStoreInfo } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -654,6 +651,7 @@ import RefundApplyAuditDialog from '@/views/vehretail/orderRefund/refundApply/au
 import { getList as getMaterialInfoList } from '@/api/datacenter/materials/vehicleMaterials/index';
 import FinancialOrderDialog from './components/FinancialOrderDialog.vue';
 import VehicleStockDialog from './components/VehicleStockDialog.vue';
+import navigate from '@/libs/utils/navigate';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -1095,6 +1093,18 @@ export default {
       }
       // 或者关闭编辑状态
       this.isEditing = false;
+    },
+    handleRouteToStoreDetail (storeCode) {
+      navigate(
+        {
+          path: '/partner/channelManagement/shopDetail',
+          query: {
+            dealerCode: storeCode
+          },
+        },
+        true,
+        this.$router
+      );
     }
   }
 };
