@@ -20,7 +20,7 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="vr_delivery_invoice_status"
-          v-model="form.statusList"
+          v-model="form.statusIncludeList"
           placeholder="请选择"
           clearable
           multiple
