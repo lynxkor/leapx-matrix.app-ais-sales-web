@@ -778,6 +778,8 @@ export default {
     },
     getDetail () {
       this.$refs.containerRef?.loadDetail();
+      // 刷新收款记录表格
+      this.$refs.paymentRecordTable?.refresh();
       // 刷新附件列表
       this.$refs.attachmentList?.refresh();
     },
