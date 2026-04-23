@@ -81,7 +81,8 @@ export default {
       this.$router.push({
         path: '/datacenter/materials/vehicleMaterialsMatch/edit',
         query: {
-          id: this.$route.query.id
+          id: this.$route.query.id,
+          isEditing: true
         }
       });
     },

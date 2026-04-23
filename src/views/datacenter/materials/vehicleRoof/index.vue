@@ -140,9 +140,10 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/datacenter/materials/vehicleRoof/detail',
+                  path: '/datacenter/materials/vehicleRoof/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },
@@ -165,7 +166,8 @@ export default {
                 this.$router.push({
                   path: '/datacenter/materials/vehicleRoof/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },
