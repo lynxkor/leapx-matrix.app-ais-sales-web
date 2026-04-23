@@ -397,8 +397,7 @@ import {
   checkCarBuyerPhoneRegistered, // 校验购车人手机号是否注册零跑APP
 } from '@/api/vehretail/orderManager/deliveryOrder/index';
 import {
-  getEffectiveByDeliveryOrderId,
-  getList as getInvoiceList
+  getEffectiveByDeliveryOrderId
 } from '@/api/vehretail/orderManager/deliveryInvoice/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';

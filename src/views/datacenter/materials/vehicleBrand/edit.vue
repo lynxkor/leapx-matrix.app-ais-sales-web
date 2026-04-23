@@ -32,7 +32,7 @@
                     maxlength="30"
                   />
                 </el-form-item>
-                <el-form-item label="状态：" prop="status">
+                <el-form-item label="状态：">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="StatusEnum"
