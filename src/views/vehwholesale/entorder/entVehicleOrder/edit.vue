@@ -610,14 +610,11 @@
                     disabled
                   />
                 </el-form-item>
-                 <el-form-item label="终端状态：" prop="terminalStatus">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="vr_special_vehicle_benefit_status"
-                    v-model="form.terminalStatus"
-                    placeholder="请选择"
+                 <el-form-item label="终端状态：" prop="terminalStatusLabel">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.terminalStatusLabel"
                     clearable
-                    filterable
                     disabled
                   />
                 </el-form-item>
