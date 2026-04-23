@@ -57,7 +57,7 @@
                         dealerCode: form.dealerCode,
                       },
                     })"
-                   type="text">{{form.dealerName}}</el-button>
+                   type="text">{{form.dealerCode}}</el-button>
                 </el-form-item>
                 <el-form-item label="经销商名称：" prop="dealerName">
                   <el-button class="link" style="padding: 0;"
