@@ -59,6 +59,7 @@
                     remote
                     reserve-keyword
                     labelKey="itemName"
+                    subLabelKey="modelName"
                     valueKey="id"
                   />
                 </el-form-item>
