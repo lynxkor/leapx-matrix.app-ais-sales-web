@@ -973,6 +973,7 @@ export default {
           idSet: [this._id],
         }).then(res => {
           // 重新加载详情数据
+          this.$message.success('提交成功');
           if (this.$refs.containerRef) {
             this.$refs.containerRef.loadDetail();
           }

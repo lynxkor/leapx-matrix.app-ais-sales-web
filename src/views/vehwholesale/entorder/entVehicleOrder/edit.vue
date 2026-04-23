@@ -602,10 +602,10 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="特殊车提报：" prop="specialRemark">
+                <el-form-item label="特殊车提报：" prop="specialReportCode">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.specialRemark"
+                    v-model="form.specialReportCode"
                     clearable
                     disabled
                   />
@@ -715,8 +715,8 @@
                 <el-form-item label="退车标识：" prop="vehicleReturnFlagLabel">
                   {{ form.vehicleReturnFlagLabel }}
                 </el-form-item>
-                  <el-form-item label="特殊车提报：" prop="specialRemark">
-                  {{ form.specialRemark }}
+                  <el-form-item label="特殊车提报：" prop="specialReportCode">
+                  {{ form.specialReportCode }}
                 </el-form-item>
                  <el-form-item label="终端状态：" prop="terminalStatusLabel">
                   {{ form.terminalStatusLabel }}
