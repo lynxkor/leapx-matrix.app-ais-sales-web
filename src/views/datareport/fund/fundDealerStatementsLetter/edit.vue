@@ -530,12 +530,6 @@ export default {
         this.spareCashPage.total = 0;
       });
     },
-    // 整车返利对账流水 - 分页改变
-    handleVehicleRebatePageChange ({ currentPage, pageSize }) {
-      this.vehicleRebatePage.currentPage = currentPage;
-      this.vehicleRebatePage.pageSize = pageSize;
-      this.loadVehicleRebateData();
-    },
     // 整车返利对账流水 - 每页数量改变
     handleVehicleRebateSizeChange (pageSize) {
       this.vehicleRebatePage.pageSize = pageSize;
@@ -547,10 +541,15 @@ export default {
       this.vehicleRebatePage.currentPage = currentPage;
       this.loadVehicleRebateData();
     },
-    // 备件返利对账流水 - 分页改变
-    handleSpareRebatePageChange ({ currentPage, pageSize }) {
-      this.spareRebatePage.currentPage = currentPage;
+    // 备件返利对账流水 - 每页数量改变
+    handleSpareRebateSizeChange (pageSize) {
       this.spareRebatePage.pageSize = pageSize;
+      this.spareRebatePage.currentPage = 1; // 重置到第一页
+      this.loadSpareRebateData();
+    },
+    // 备件返利对账流水 - 当前页改变
+    handleSpareRebateCurrentChange (currentPage) {
+      this.spareRebatePage.currentPage = currentPage;
       this.loadSpareRebateData();
     },
     // 整车现金对账流水 - 每页数量改变
@@ -563,12 +562,6 @@ export default {
     handleVehicleCashCurrentChange (currentPage) {
       this.vehicleCashPage.currentPage = currentPage;
       this.loadVehicleCashData();
-    },
-    // 备件现金对账流水 - 分页改变
-    handleSpareCashPageChange ({ currentPage, pageSize }) {
-      this.spareCashPage.currentPage = currentPage;
-      this.spareCashPage.pageSize = pageSize;
-      this.loadSpareCashData();
     },
     // 备件现金对账流水 - 每页数量改变
     handleSpareCashSizeChange (pageSize) {
