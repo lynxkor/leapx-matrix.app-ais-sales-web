@@ -134,9 +134,10 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/datacenter/materials/vehicleDrivingRange/detail',
+                  path: '/datacenter/materials/vehicleDrivingRange/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },
@@ -161,7 +162,8 @@ export default {
                 this.$router.push({
                   path: '/datacenter/materials/vehicleDrivingRange/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },

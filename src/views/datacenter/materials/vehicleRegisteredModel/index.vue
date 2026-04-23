@@ -147,9 +147,10 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/datacenter/materials/vehicleRegisteredModel/detail',
+                  path: '/datacenter/materials/vehicleRegisteredModel/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },
@@ -174,7 +175,8 @@ export default {
                 this.$router.push({
                   path: '/datacenter/materials/vehicleRegisteredModel/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },

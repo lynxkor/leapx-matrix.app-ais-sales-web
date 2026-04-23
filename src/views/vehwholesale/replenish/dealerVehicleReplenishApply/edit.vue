@@ -151,12 +151,13 @@
                     :disabled="true"
                   />
                 </el-form-item>
-                <el-form-item label="结算资金类型：" prop="settleFundType">
+                <el-form-item label="结算资金类型：" prop="settleFundTypeLabel">
                   <fetch-select
-                    :options="settleFundTypeOptions"
-                    enumCode="vw_fundtype"
-                    v-model="form.settleFundType"
+                    :options="fundTypeList"
+                    v-model="form.settleFundTypeLabel"
                     placeholder="请选择结算资金类型"
+                    labelKey="fundTypeLabel"
+                    valueKey="fundTypeLabel"
                     clearable
                     filterable
                     @change="handleChangeFundType"
@@ -166,10 +167,10 @@
                   label="金融机构："
                   prop="financialOrganizationId"
                   :rules="form.settleFundType + '' === '2010' ? rules.financialOrganizationId: []"
-                  v-show="form.settleFundType + '' === '2010'"
+                  v-show="form.settleFundType === '2010' || form.settleFundType === 2010"
                 >
                   <fetch-select
-                    :options="financialOrganizationList"
+                    :options="financingOrgIdList"
                     v-model="form.financialOrganizationId"
                     clearable
                     filterable
@@ -460,6 +461,8 @@ export default {
       orderCategoryOptions: [],
       settleFundTypeOptions: [],
       financialOrganizationList: [],
+      financingOrgIdList: [],
+      fundTypeList: [],
       dealerCompanyCodes: '', // 门店母公司
       loading: false,
       submitLoading: false,
@@ -467,7 +470,7 @@ export default {
       originalForm: { ...form },
       tableData: [],
       columns: [
-        { field: 'fundTypeLabel', title: '资金类型', width: '12%' },
+        { field: 'fundTypeDisplay', title: '资金类型', width: '12%' },
         { field: 'availableBalance', title: '可用余额', width: '12%' },
         { field: 'frozenBalance', title: '冻结资金', width: '12%' },
         { field: 'availableCreditAmount', title: '剩余可用额度', width: '12%' },
@@ -603,23 +606,43 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id).then(res => {
+        return getDetail(id).then(async res => {
           const data = res;
+          if (data.saleDealerCode) {
+            try {
+              const list = await this.getDealerListByName(data.saleDealerName);
+              const dealerItem = list.records.find(item => item.storeCode === data.saleDealerCode);
+              if (dealerItem) {
+                const parentCompanyCode = dealerItem.parentCompanyCode;
+                data.dealerCompanyCodes = parentCompanyCode;
+                this.processFundAccountData(parentCompanyCode);
+              }
+            } catch (error) {
+              console.error('获取经销商列表失败:', error);
+            }
+          }
+
           if (data && data.orderCategory !== undefined && data.orderCategory !== null) {
             data.orderCategory = String(data.orderCategory);
           }
           if (data && data.dealerFundAccounts) {
             data.dealerFundAccounts = data.dealerFundAccounts.map(account => {
+              // 处理原有的信用额度逻辑
               if (account.creditSalesLimit) {
-                return {
-                  ...account,
-                  availableCreditAmount: account.creditSalesLimit.availableCreditAmount,
-                  downPaymentRatio: account.creditSalesLimit.downPaymentRatio,
-                  creditAccountStatusLabel: account.creditSalesLimit.creditAccountStatusLabel,
-                  effectiveTime: account.creditSalesLimit.effectiveTime,
-                  expireTime: account.creditSalesLimit.expireTime,
-                };
+                account.availableCreditAmount = account.creditSalesLimit.availableCreditAmount;
+                account.downPaymentRatio = account.creditSalesLimit.downPaymentRatio;
+                account.creditAccountStatusLabel = account.creditSalesLimit.creditAccountStatusLabel;
+                account.effectiveTime = account.creditSalesLimit.effectiveTime;
+                account.expireTime = account.creditSalesLimit.expireTime;
               }
+              const isFinancing = account.fundType === '2010' || account.fundType === 2010;
+              if (isFinancing && account.financialOrganizationName) {
+                // 若是融资，拼接银行名称
+                account.fundTypeDisplay = `${account.fundTypeLabel}-${account.financialOrganizationName}`;
+              } else {
+                account.fundTypeDisplay = account.fundTypeLabel;
+              }
+
               return account;
             });
           }
@@ -724,8 +747,48 @@ export default {
         };
       });
     },
+    async processFundAccountData (dealerCompanyCodes) {
+      if (!dealerCompanyCodes) {
+        return;
+      }
+      try {
+        const res = await listFundAccount({
+          dealerCompanyCodes: [dealerCompanyCodes],
+        });
+
+        if (res.records && Array.isArray(res.records)) {
+          const fundTypeMap = new Map();
+          const financingOrgMap = new Map();
+
+          res.records.forEach(account => {
+            if (account.fundType && account.validIfCreditSaleAccount) {
+              if (!fundTypeMap.has(account.fundType) && account.fundTypeLabel !== '返利') {
+                fundTypeMap.set(account.fundType, account.fundTypeLabel);
+              }
+            }
+
+            if (account.fundType === '2010' || account.fundType === 2010) {
+              if (account.financialOrganizationId && account.validIfCreditSaleAccount) {
+                if (!financingOrgMap.has(account.financialOrganizationId)) {
+                  financingOrgMap.set(account.financialOrganizationId, account.financialOrganizationName);
+                }
+              }
+            }
+          });
+          this.fundTypeList = Array.from(fundTypeMap.entries()).map(([type, label]) => ({
+            fundType: type,
+            fundTypeLabel: label
+          }));
+          this.financingOrgIdList = Array.from(financingOrgMap.entries()).map(([id, name]) => ({
+            id: id,
+            organizationName: name
+          }));
+        }
+      } catch (error) {
+        console.error('获取资金账户失败:', error);
+      }
+    },
     async handleChangeDealer (val, record) {
-      console.log('handleChangeDealer', val, record);
       this.dealerCompanyCodes = record?.parentCompanyCode || '';
       this.form.saleDealerName = record?.storeName || '';
       this.form.saleDealerCode = record?.storeCode || '';
@@ -733,6 +796,7 @@ export default {
       this.form.regionName = record?.region || '';
       this.form.prodScheduleActivityId = '';
       this.form.prodScheduleActivityName = '';
+      this.processFundAccountData(this.dealerCompanyCodes);
       try {
         const dealerResponse = await getDealerDetailByCode(this.form.saleDealerCode);
         this.form.deliveryDealerCode = dealerResponse?.exclusiveDeliveryStoreCode || '';
@@ -755,31 +819,16 @@ export default {
         this.form.applyCategory = '';
       }
     },
-    handleChangeFundType (val) {
-      if (val + '' !== '2010') {
-        this.form.financialOrganizationId = '';
-      }
+    handleChangeFundType (val, row) {
+      this.form.financialOrganizationId = '';
+      this.form.financialOrganizationName = '';
+      this.form.settleFundType = row.fundType;
+      this.form.settleFundTypeLabel = row.fundTypeLabel;
       if (val + '' === '1050') {
         this.form.isCreditSale = 1;
       } else {
         this.form.isCreditSale = 0;
       }
-      // 清空金融机构列表
-      this.financialOrganizationList = [];
-      listFundAccount({
-        dealerCompanyCodes: [this.dealerCompanyCodes],
-        fundTypes: [val]
-      }).then((res) => {
-        console.log('获取账户列表:', res.records);
-        // 筛选 validIfCreditSaleAccount === true 的记录
-        this.financialOrganizationList = res.records
-          .filter(account => account.validIfCreditSaleAccount === true)
-          .map(account => ({
-            id: account.id,
-            organizationName: account.financialOrganizationName
-          }));
-      }).catch(() => {});
-      console.log('结算资金类型改变:', val);
     },
     async getDealerListByName (params) {
       return await listOrgStoreInfo({ storeName: params, isWholesaleSale: true });

@@ -348,8 +348,40 @@ export default {
           { props: 'rangePowerName', label: '选配动力', visible: true, width: 200 },
           { props: 'exteriorName', label: '外饰风格', visible: true, width: 200 },
           { props: 'interiorName', label: '内饰风格', visible: true, width: 200 },
-          { props: 'modelName', label: '车型名称', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
+          {
+            props: 'modelName',
+            label: '车型名称',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleModel/detail',
+                  query: {
+                    id: row.modelId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'seriesName',
+            label: '车系名称',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleSeries/detail',
+                  query: {
+                    id: row.seriesId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
@@ -532,6 +564,7 @@ export default {
               interiorName: item.vehicleMaterials?.interiorName || '',
               wheelHubName: item.vehicleMaterials?.wheelHubName || '',
               modelName: item.vehicleMaterials?.modelName || '',
+              modelId: item.vehicleMaterials?.modelId || '',
               materialsDesc: item.vehicleMaterials?.materialsDesc || '',
               organizationName: item.financialOrganization?.organizationName || '',
               deleteLoading: false

@@ -56,8 +56,8 @@
             remote
             reserve-keyword
             labelKey="organizationName"
-            valueKey="organizationCode"
-            v-model="form.financeOrganizationCode"
+            valueKey="id"
+            v-model="form.financeOrganizationId"
             placeholder="请选择"
             clearable
             filterable
@@ -210,7 +210,23 @@ export default {
           { props: 'periodUseAmount', label: '本期使用金额', visible: true, width: 200 },
           { props: 'periodEntryAmount', label: '本期入账金额', visible: true, width: 200 },
           { props: 'accountTypeLabel', label: '账户类型', visible: true, width: 200 },
-          { props: 'financeOrganizationName', label: '金融机构', visible: true, width: 200 },
+          {
+            props: 'financeOrganizationName',
+            label: '金融机构',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
+                  query: {
+                    id: row.financeOrganizationId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',
@@ -389,7 +405,7 @@ export default {
       const data = { ...this.form };
 
       Object.keys(this.form).forEach(key => {
-        if (data[key] === '' || data[key] === null) {
+        if (data[key] === '' || data[key] === null || data[key] === undefined || data[key].length === 0) {
           delete data[key];
         }
       });

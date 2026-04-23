@@ -17,10 +17,10 @@
           <span>{{ form.redemptionCode }}</span>
         </template>
         <template #extraButtons>
-          <el-button size="small" @click="handleSubmit">提交赎回</el-button>
-          <el-button size="small" @click="handleSubmitAgain">重新提交赎回</el-button>
-          <el-button size="small" @click="handleconfirmSign">签收合格证</el-button>
-          <el-button size="small" v-if = "form.certificateStatus === 10 && form.creditSettleStatus === 10" @click="handleDel">删除</el-button>
+          <el-button :disabled="!form.buttonControl.submitRedeem"  size="small" @click="handleSubmit">提交赎回</el-button>
+          <el-button :disabled="!form.buttonControl.submitRedeemAgain" size="small" @click="handleSubmitAgain">重新提交赎回</el-button>
+          <el-button :disabled="!form.buttonControl.confirmReceive" size="small" @click="handleconfirmSign">签收合格证</el-button>
+          <el-button :disabled="!form.buttonControl.delete" size="small" @click="handleDel">删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -152,10 +152,24 @@
                   {{ form.materialsCode }}
                 </el-form-item>
                     <el-form-item label="车系名称：" prop="seriesName">
-                  {{ form.seriesName }}
+                      <el-button class="link" style="padding: 0;"
+                        @click="navigateToRoute({
+                            path: '/datacenter/materials/vehicleSeries/detail',
+                            query: {
+                              id: form.seriesId,
+                            },
+                          })"
+                        type="text">{{ form.seriesName }}</el-button>
                 </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
-                  {{ form.modelName }}
+                  <el-button class="link" style="padding: 0;"
+                        @click="navigateToRoute({
+                            path: '/datacenter/materials/vehicleModel/detail',
+                            query: {
+                              id: form.modelId,
+                            },
+                          })"
+                        type="text">{{ form.modelName }}</el-button>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}

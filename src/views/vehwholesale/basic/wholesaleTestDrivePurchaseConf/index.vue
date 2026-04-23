@@ -256,7 +256,23 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'optionPackageName', label: '选装包', visible: true, width: 200 },
+          {
+            props: 'optionPackageName',
+            label: '选装包',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleOptionPackage/detail',
+                  query: {
+                    id: row.optionPackageId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'allowTestDriveWholesaleLabel', label: '允许试驾车批售', visible: true, width: 200 },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },

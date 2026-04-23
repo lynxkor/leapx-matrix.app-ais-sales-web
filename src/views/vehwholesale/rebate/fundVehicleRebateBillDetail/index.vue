@@ -311,8 +311,40 @@ export default {
           { props: 'bizOrderNo', label: '业务单据号', visible: true, width: 200 },
           { props: 'rebateAmount', label: '核销金额', visible: true, width: 100 },
           { props: 'accruedAmount', label: '预提金额', visible: true, width: 100 },
-          { props: 'modelName', label: '基本车型', visible: true, width: 120 },
-          { props: 'seriesName', label: '车系', visible: true, width: 100 },
+          {
+            props: 'modelName',
+            label: '基本车型',
+            visible: true,
+            width: 120,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.navigateToRoute({
+                  path: '/datacenter/materials/vehicleModel/detail',
+                  query: {
+                    id: row.modelId,
+                  },
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'seriesName',
+            label: '车系',
+            visible: true,
+            width: 100,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.navigateToRoute({
+                  path: '/datacenter/materials/vehicleSeries/detail',
+                  query: {
+                    id: row.seriesId,
+                  },
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'billStatusLabel', label: '单据状态', visible: true, width: 100 },
           { props: 'budgetItemName', label: '预算科目', visible: true, width: 100 },

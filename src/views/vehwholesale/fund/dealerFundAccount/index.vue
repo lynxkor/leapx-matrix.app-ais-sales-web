@@ -216,7 +216,23 @@ export default {
           },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 100 },
           { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 100 },
-          { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 120 },
+          {
+            props: 'financialOrganizationName',
+            label: '金融机构',
+            visible: true,
+            width: 120,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
+                  query: {
+                    id: row.financialOrganizationId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'settleSort', label: '结算顺序', visible: true, width: 120 },
           { props: 'allowUseRebateLabel', label: '是否允许使用返利', visible: true, width: 200 },
           { props: 'allowEntOrderSettleLabel', label: '是否允许企业订单结算', visible: true, width: 200 },

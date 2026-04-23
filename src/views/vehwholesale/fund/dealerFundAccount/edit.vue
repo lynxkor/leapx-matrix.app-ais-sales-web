@@ -38,7 +38,14 @@
                   {{ form.fundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationName">
-                  {{ form.financialOrganizationName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/vehwholesale/fund/fundFinancialOrganization/detail',
+                      query: {
+                        id: form.financialOrganizationId,
+                      },
+                    })"
+                   type="text">{{ form.financialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
                   {{ form.dealerCompanyCode }}
@@ -95,7 +102,14 @@
                   {{ form.fundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationName">
-                  {{ form.financialOrganizationName }}
+                   <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/vehwholesale/fund/fundFinancialOrganization/detail',
+                      query: {
+                        id: form.financialOrganizationId,
+                      },
+                    })"
+                   type="text">{{ form.financialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
                   {{ form.dealerCompanyCode }}

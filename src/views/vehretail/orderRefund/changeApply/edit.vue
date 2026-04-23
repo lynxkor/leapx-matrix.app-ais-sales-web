@@ -116,7 +116,15 @@
                   {{ form.mallOrderCode }}
                 </el-form-item>
                 <el-form-item label="门店整车订单：" prop="retailOrderCode">
-                  {{ form.retailOrderCode }}
+                  <el-button
+                    class="link"
+                    @click="navigateToRoute({
+                      path: '/vehretail/orderManager/retailOrderInfo/edit',
+                      query: {
+                        id: form.retailOrderId,
+                      },
+                    })"
+                    type="text">{{form.retailOrderCode}}</el-button>
                 </el-form-item>
                 <el-form-item label="变更类型：" prop="changeType">
                   {{ form.changeTypeLabel }}
@@ -222,15 +230,7 @@
                     disabled
                   />
                 </el-form-item>
-<!--                <el-form-item label="订单销售门店编码：" prop="saleDealerCode">-->
-<!--                  <el-input-->
-<!--                    placeholder="请输入"-->
-<!--                    v-model="form.saleDealerCode"-->
-<!--                    clearable-->
-<!--                    disabled-->
-<!--                  />-->
-<!--                </el-form-item>-->
-                <el-form-item label="订单销售门店名称：" prop="saleDealerName">
+                <el-form-item label="订单销售门店：" prop="saleDealerName">
                   <el-input
                     placeholder="请输入"
                     v-model="form.saleDealerName"
@@ -265,15 +265,7 @@
                     disabled
                   />
                 </el-form-item>
-<!--                <el-form-item label="原销售门店编码：" prop="originalSaleDealerCode">-->
-<!--                  <el-input-->
-<!--                    placeholder="请输入"-->
-<!--                    v-model="form.originalSaleDealerCode"-->
-<!--                    clearable-->
-<!--                    disabled-->
-<!--                  />-->
-<!--                </el-form-item>-->
-                <el-form-item label="原销售门店名称：" prop="originalSaleDealerName">
+                <el-form-item label="原销售门店：" prop="originalSaleDealerName">
                   <el-input
                     placeholder="请输入"
                     v-model="form.originalSaleDealerName"
@@ -298,39 +290,33 @@
                 <el-form-item label="原代办人：" prop="originalAgentName">
                   {{ form.originalAgentName }}
                 </el-form-item>
-                <el-form-item label="原销售门店编码：" prop="originalSaleDealerCode">
-                  {{ form.originalSaleDealerCode }}
-                </el-form-item>
-                <el-form-item label="原销售门店名称：" prop="originalSaleDealerName">
-                  <el-button
-                    class="link"
-                    @click="navigateToRoute({
-                      path: '/partner/channelManagement/shopBasicsMessage',
-                      query: {
-                        dealerCode: form.originalSaleDealerCode,
-                      },
-                    })"
-                    type="text">{{form.originalSaleDealerName}}</el-button>
+                <el-form-item label="原销售门店：" prop="originalSaleDealerName">
+                  <el-link
+                    type="primary"
+                    :href="`/partner/channelManagement/shopDetail?num=2&dealerCode=${form.originalSaleDealerCode}`"
+                    target="_blank"
+                  >{{ form.originalSaleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="整车订单状态：" prop="originalOrderStatus">
                   {{ form.originalOrderStatusLabel }}
                 </el-form-item>
                 <el-form-item label="原订单物料码：" prop="originalMaterialsCode">
-                  {{ form.originalMaterialsCode }}
-                </el-form-item>
-<!--                <el-form-item label="订单销售门店编码：" prop="saleDealerCode">-->
-<!--                  {{ form.saleDealerCode }}-->
-<!--                </el-form-item>-->
-                <el-form-item label="订单销售门店名称：" prop="saleDealerName">
                   <el-button
                     class="link"
+                    v-if="form.originalMaterialsCode"
                     @click="navigateToRoute({
-                      path: '/partner/channelManagement/shopBasicsMessage',
-                      query: {
-                        dealerCode: form.saleDealerCode,
-                      },
+                        path: '/datacenter/materials/vehicleMaterials/detail',
+                        query: { id: form.originalMaterialsId }
                     })"
-                    type="text">{{form.saleDealerName}}</el-button>
+                    type="text">{{ form.originalMaterialsCode }}</el-button>
+                  <span v-else>{{ form.originalMaterialsCode }}</span>
+                </el-form-item>
+                <el-form-item label="订单销售门店：" prop="saleDealerName">
+                  <el-link
+                    type="primary"
+                    :href="`/partner/channelManagement/shopDetail?num=2&dealerCode=${form.saleDealerCode}`"
+                    target="_blank"
+                  >{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="缴定金时间：" prop="paymentTime">
                   {{ form.paymentTime }}
@@ -345,7 +331,15 @@
 <!--                  {{ form.modelId }}-->
 <!--                </el-form-item>-->
                 <el-form-item label="基本车型：" prop="modelName">
-                  {{ form.modelName }}
+                  <el-button
+                    class="link"
+                    @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleModel/detail',
+                      query: {
+                        id: form.modelId,
+                      }
+                    })"
+                    type="text">{{form.modelName}}</el-button>
                 </el-form-item>
               </el-form>
             </div>
@@ -438,9 +432,6 @@
                 </el-form-item>
                 <el-form-item label="变更后代办人：" prop="newAgentName">
                   {{ form.newAgentName }}
-                </el-form-item>
-                <el-form-item label="变更后销售门店编码：" prop="newSaleDealerCode">
-                  {{ form.newSaleDealerCode }}
                 </el-form-item>
                 <el-form-item label="变更后销售门店名称：" prop="newSaleDealerName">
                   {{ form.newSaleDealerName }}
@@ -556,7 +547,7 @@ import {
   getDetail,
   legalVerification,
   submit
-} from '@/api/vehretail/orderRefund/orderChange/index';
+} from '@/api/vehretail/orderRefund/orderChange';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -818,7 +809,7 @@ export default {
         saleDealerName: [
           {
             required: false,
-            message: '请输入订单销售门店名称',
+            message: '请输入订单销售门店',
             trigger: 'change',
           },
         ],
@@ -923,7 +914,7 @@ export default {
         originalSaleDealerName: [
           {
             required: true,
-            message: '请输入原销售门店名称',
+            message: '请输入原销售门店',
             trigger: 'change',
           },
         ],
@@ -1186,7 +1177,7 @@ export default {
       this.form.originalAgentName = val ? selectedOption.carOwner.agentName : '';
       this.form.originalSaleDealerCode = val ? selectedOption.saleDealerCode : '';
       this.form.originalSaleDealerName = val ? selectedOption.saleDealerName : '';
-      this.form.originalMaterialsCode = val ? selectedOption.materialsCode : '';
+      this.form.originalMaterialsCode = val ? selectedOption.materials.materialsCode : '';
       this.form.paymentTime = val ? selectedOption.paymentTime : '';
       this.form.deliveryTime = val ? selectedOption.deliveryTime : '';
       this.form.deliveryStatus = val && selectedOption.deliveryTime ? 1 : 0;

@@ -103,15 +103,15 @@
             />
       </el-form-item>
       <el-form-item label="结算状态">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="vw_ent_vehicle_order_settle_status"
-          v-model="form.settleStatuses"
-          placeholder="请选择"
-          clearable
-          filterable
-          multiple
-        />
+
+            <fetch-select
+              :options="settleStatusOptions"
+              v-model="form.settleStatuses"
+              placeholder="请选择订单状态"
+              clearable
+              multiple
+              filterable
+            />
       </el-form-item>
        <el-form-item label="验收方式">
         <fetch-select
@@ -262,6 +262,7 @@ export default {
       saleCompanyOptions: [],
       settleFundTypeOptions: [],
       orderStatusOptions: [],
+      settleStatusOptions: [],
       showBatchCancelDialog: false,
       showSetEmergencyOrderDialog: false,
       yes_no_enum: YES_NO_ENUM,
@@ -313,7 +314,23 @@ export default {
           { props: 'allocateStatusLabel', label: '配车状态', visible: true, width: 200 },
           { props: 'settleStatusLabel', label: '结算状态', visible: true, width: 200 },
           { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 200 },
-          { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 200 },
+          {
+            props: 'financialOrganizationName',
+            label: '金融机构',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
+                  query: {
+                    id: row.financialOrganizationId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'acceptanceMethodLabel', label: '验收方式', visible: true, width: 200 },
           { props: 'salesMarketLabel', label: '销售市场', visible: true, width: 200 },
           { props: 'vin', label: '配车VIN码', visible: true, width: 200 },
@@ -361,8 +378,22 @@ export default {
     this.getCompanyList();
     this.fetchSettleFundTypeOptions();
     this.fetchSOrderStatusOptions();
+    this.fetchsettleStatusOptions();
   },
   methods: {
+    async fetchsettleStatusOptions () {
+      const response = await getEnum('vw_ent_vehicle_order_settle_status');
+      this.settleStatusOptions = response.filter(item => {
+        const codeStr = String(item.code);
+        return ['2', '3', '4', '5', '21', '30'].includes(codeStr + '');
+      }).map(item => {
+        return {
+          ...item,
+          code: String(item.code)
+        };
+      });
+      console.log(this.settleStatusOptions);
+    },
     async fetchSOrderStatusOptions () {
       const response = await getEnum('vw_ent_vehicle_order_status');
       this.orderStatusOptions = response.filter(item => {

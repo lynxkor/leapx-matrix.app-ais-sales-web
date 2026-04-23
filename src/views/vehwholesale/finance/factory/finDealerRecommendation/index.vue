@@ -223,7 +223,23 @@ export default {
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           { props: 'recAmount', label: '推荐额度(万元)', visible: true, width: 200 },
-          { props: 'recFinancialOrganizationName', label: '推荐金融机构', visible: true, width: 200 },
+          {
+            props: 'recFinancialOrganizationName',
+            label: '推荐金融机构',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
+                  query: {
+                    id: row.recFinancialOrganizationId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'recDate', label: '推荐日期', visible: true, width: 200 },
           { props: 'depositRatio', label: '保证金比例%', visible: true, width: 200 },
           { props: 'syncStatusLabel', label: '同步状态', visible: true, width: 200 },

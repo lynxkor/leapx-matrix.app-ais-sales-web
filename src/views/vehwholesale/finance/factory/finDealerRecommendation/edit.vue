@@ -157,7 +157,14 @@
                   {{ form.dealerCompanyCode }}
                 </el-form-item>
                 <el-form-item label="推荐金融机构：" prop="recFinancialOrganizationName">
-                  {{ form.recFinancialOrganizationName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/vehwholesale/fund/fundFinancialOrganization/detail',
+                      query: {
+                        id: form.recFinancialOrganizationId,
+                      },
+                    })"
+                   type="text">{{ form.recFinancialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="推荐额度(万元)：" prop="recAmount">
                   {{ form.recAmount }}

@@ -78,7 +78,7 @@
                       @change="(val, row) => handleChange(val, row)"
                 />
                 </el-form-item>
-                 <el-form-item label="销售公司：" prop="saleCompanyId">
+                 <el-form-item label="销售公司：" prop="saleCompanyName">
                     <fetch-select
                       filterable
                       clearable
@@ -114,7 +114,7 @@
                     disabled
                   />
                 </el-form-item>
-                 <el-form-item label="结算资金类型：" prop="settleFundType">
+                 <el-form-item label="结算资金类型：" prop="settleFundTypeLabel">
                   <fetch-select
                    :options="settleFundTypeOptions"
                     v-model="form.settleFundTypeLabel"
@@ -212,7 +212,14 @@
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationName">
-                  {{ form.financialOrganizationName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/vehwholesale/fund/fundFinancialOrganization/detail',
+                      query: {
+                        id: form.financialOrganizationId,
+                      },
+                    })"
+                   type="text">{{ form.financialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="是否赊销：" prop="creditSaleFlagLabel">
                   {{ form.creditSaleFlagLabel }}
@@ -740,13 +747,13 @@ export default {
         entCustomerName: [
           { required: true, message: '请输入企业客户名称', trigger: 'change' }
         ],
-        saleCompanyId: [
+        saleCompanyName: [
           { required: true, message: '请输入销售公司', trigger: 'change' }
         ],
         creditSaleFlag: [
           { required: true, message: '请输入是否赊销', trigger: 'change' }
         ],
-        settleFundType: [
+        settleFundTypeLabel: [
           { required: true, message: '请选择结算资金类型', trigger: 'blur' }
         ],
         orderTime: [

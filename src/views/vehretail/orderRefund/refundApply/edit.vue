@@ -256,9 +256,9 @@
                   <el-button
                     class="link"
                     @click="navigateToRoute({
-                      path: '/vehretail/orderManager/retailOrderInfo',
+                      path: '/vehretail/orderManager/retailOrderInfo/edit',
                       query: {
-                        retailOrderCode: form.retailOrderCode,
+                        id: form.retailOrderId,
                       },
                     })"
                     type="text">{{form.retailOrderCode}}</el-button>
@@ -294,39 +294,41 @@
                   {{ form.refundReason }}
                 </el-form-item>
                 <el-form-item label="订单物料码：" prop="materialsCode">
-                  {{ form.materialsCode }}
+                  <el-button
+                    class="link"
+                    @click="navigateToRoute({
+                        path: '/datacenter/materials/vehicleMaterials/detail',
+                        query: { id: form.materialsId }
+                    })"
+                    v-if="form.materialsCode"
+                    type="text">{{ form.materialsCode }}</el-button>
+                  <span v-else>{{ form.materialsCode }}</span>
                   <el-button size="small" type="primary" plain @click="openVehicleStockShow">查询库存车</el-button>
                 </el-form-item>
                 <el-form-item label="是否停产：" prop="discontinueStatusLabel">
                   {{ form.discontinueStatusLabel}}
                 </el-form-item>
-                <el-form-item label="车型ID：" prop="modelId">
-                  {{ form.modelId }}
-                </el-form-item>
                 <el-form-item label="基本车型：" prop="modelName">
                   <el-button
                     class="link"
                     @click="navigateToRoute({
-                      path: '/partner/businessData/carType',
+                      path: '/datacenter/materials/vehicleModel/detail',
                       query: {
-                        modelName: form.modelName,
-                      },
+                        id: form.modelId,
+                      }
                     })"
                     type="text">{{form.modelName}}</el-button>
                 </el-form-item>
 <!--                <el-form-item label="销售门店编码：" prop="originalSaleDealerCode">-->
 <!--                  {{ form.saleDealerCode }}-->
 <!--                </el-form-item>-->
-                <el-form-item label="销售门店：" prop="originalSaleDealerName">
+                <el-form-item label="销售门店：" prop="saleDealerName">
                   <el-button
                     class="link"
-                    @click="navigateToRoute({
-                      path: '/partner/channelManagement/shopBasicsMessage',
-                      query: {
-                        saleDealerName: form.saleDealerName,
-                      },
-                    })"
+                    v-if="form.saleDealerName"
+                    @click="handleRouteToStoreDetail(form.saleDealerCode)"
                     type="text">{{form.saleDealerName}}</el-button>
+                  <span v-else>{{ form.saleDealerName }}</span>
                 </el-form-item>
 <!--                <el-form-item label="省编码：" prop="provinceCode">-->
 <!--                  {{ form.provinceCode }}-->
@@ -428,27 +430,48 @@
                   {{ form.priceAfterSubsidy }}
                 </el-form-item>
                 <el-form-item label="订单物料码：" prop="materialsCode">
-                  {{ form.materialsCode }}
+                  <el-button
+                    class="link"
+                    v-if="form.materialsCode"
+                    @click="navigateToRoute({
+                        path: '/datacenter/materials/vehicleMaterials/detail',
+                        query: { id: form.materialsId }
+                    })"
+                    type="text">{{ form.materialsCode }}</el-button>
+                  <span v-else>{{ form.materialsCode }}</span>
                 </el-form-item>
                 <el-form-item label="配车物料编码：" prop="allocationMaterialCode">
-                  {{ form.allocationMaterialCode }}
+                  <el-button
+                    class="link"
+                    v-if="form.allocationMaterialCode"
+                    @click="handleRouteToVehicleMaterials(form.allocationMaterialCode)"
+                    type="text">{{ form.allocationMaterialCode }}</el-button>
+                  <span v-else>{{ form.allocationMaterialCode }}</span>
                 </el-form-item>
                 <el-form-item label="销售门店：" prop="saleDealerName">
                   <el-button
                     class="link"
-                    @click="navigateToRoute({
-                      path: '/partner/channelManagement/shopBasicsMessage',
-                      query: {
-                        saleDealerName: form.saleDealerName,
-                      },
-                    })"
+                    @click="handleRouteToStoreDetail(form.saleDealerCode)"
                     type="text">{{form.saleDealerName}}</el-button>
                 </el-form-item>
-                <el-form-item label="交付门店名称：" prop="deliveryDealerName">
-                  {{ form.deliveryDealerName }}
+                <el-form-item label="交付门店：" prop="deliveryDealerName">
+                  <el-button
+                    class="link"
+                    @click="handleRouteToStoreDetail(form.deliveryDealerCode)"
+                    type="text">{{form.deliveryDealerName}}</el-button>
                 </el-form-item>
                 <el-form-item label="交车VIN码：" prop="deliveryVin">
-                  {{ form.deliveryVin }}
+                  <el-button
+                    class="link"
+                    v-if="form.deliveryVin"
+                    @click="navigateToRoute({
+                      path: '/datacenter/vehicle/vehicleProfile/edit',
+                      query: {
+                        vin: form.deliveryVin,
+                      },
+                    })"
+                    type="text">{{ form.deliveryVin }}</el-button>
+                  <span v-else>{{ form.deliveryVin }}</span>
                 </el-form-item>
                 <el-form-item label="交车时间：" prop="deliveryTime">
                   {{ form.deliveryTime }}
@@ -463,45 +486,137 @@
                   {{ form.orderCancelDescp }}
                 </el-form-item>
                 <el-form-item label="基本车系：" prop="seriesName">
-                  {{ form.seriesName }}
+                  <el-button
+                    class="link"
+                    @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleSeries/detail',
+                      query: {
+                        id: form.seriesId,
+                      },
+                    })"
+                    type="text">{{form.seriesName}}</el-button>
                 </el-form-item>
                 <el-form-item label="基本车型：" prop="modelName">
                   <el-button
                     class="link"
                     @click="navigateToRoute({
-                      path: '/partner/businessData/carType',
+                      path: '/datacenter/materials/vehicleModel/detail',
                       query: {
-                        modelName: form.modelName,
+                        id: form.modelId
                       },
                     })"
                     type="text">{{form.modelName}}</el-button>
                 </el-form-item>
                 <el-form-item label="物料编码：" prop="materialsCode">
-                  {{ form.materialsCode }}
+                  <el-button
+                    class="link"
+                    v-if="form.materialsCode"
+                    @click="navigateToRoute({
+                        path: '/datacenter/materials/vehicleMaterials/detail',
+                        query: { id: form.materialsId }
+                    })"
+                    type="text">{{ form.materialsCode }}</el-button>
+                  <span v-else>{{ form.materialsCode }}</span>
                 </el-form-item>
                 <el-form-item label="物料描述：" prop="materialsDesc">
                   {{ form.materialsDesc }}
                 </el-form-item>
                 <el-form-item label="选配动力：" prop="rangePowerName">
-                  {{ form.rangePowerName }}
+                  <el-button
+                    class="link"
+                    v-if="form.rangePowerName"
+                    @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleRangePower/detail',
+                      query: {
+                        id: form.rangePowerId,
+                      },
+                    })"
+                    type="text">{{ form.rangePowerName }}</el-button>
+                  <span v-else>{{ form.rangePowerName }}</span>
                 </el-form-item>
-                <el-form-item label="续航里程：" prop="drivingRangeName">
-                  {{ form.drivingRangeName }}
+                <el-form-item label="选配续航：" prop="drivingRangeName">
+                  <el-button
+                    class="link"
+                    v-if="form.drivingRangeName"
+                    @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleDrivingRange/detail',
+                      query: {
+                        id: form.drivingRangeId,
+                      },
+                    })"
+                    type="text"
+                  >{{ form.drivingRangeName }}</el-button>
+                  <span v-else>{{ form.drivingRangeName }}</span>
                 </el-form-item>
-                <el-form-item label="外观名称：" prop="exteriorName">
-                  {{ form.exteriorName }}
+                <el-form-item label="外饰风格：" prop="exteriorName">
+                  <el-button
+                    class="link"
+                    v-if="form.exteriorName"
+                    @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleExterior/detail',
+                      query: {
+                        id: form.exteriorId,
+                      },
+                    })"
+                    type="text"
+                  >{{ form.exteriorName }}</el-button>
+                  <span v-else>{{ form.exteriorName }}</span>
                 </el-form-item>
-                <el-form-item label="内饰名称：" prop="interiorName">
-                  {{ form.interiorName }}
+                <el-form-item label="内饰风格：" prop="interiorName">
+                  <el-button
+                    class="link"
+                    v-if="form.interiorName"
+                    @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleInterior/detail',
+                      query: {
+                        id: form.interiorId,
+                      },
+                    })"
+                    type="text"
+                  >{{ form.interiorName }}</el-button>
+                  <span v-else>{{ form.interiorName }}</span>
                 </el-form-item>
-                <el-form-item label="轮毂名称：" prop="wheelHubName">
-                  {{ form.wheelHubName }}
+                <el-form-item label="选配轮毂：" prop="wheelHubName">
+                  <el-button
+                    class="link"
+                    v-if="form.wheelHubName"
+                    @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleWheelHub/detail',
+                      query: {
+                        id: form.wheelHubId,
+                      },
+                    })"
+                    type="text"
+                  >{{ form.wheelHubName }}</el-button>
+                  <span v-else>{{ form.wheelHubName }}</span>
                 </el-form-item>
-                <el-form-item label="年款名称：" prop="yearTypeName">
-                  {{ form.yearTypeName }}
+                <el-form-item label="车辆年型（L）：" prop="yearTypeName">
+                  <el-button
+                    class="link"
+                    v-if="form.yearTypeName"
+                    @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleYearType/detail',
+                      query: {
+                        id: form.yearTypeId,
+                      },
+                    })"
+                    type="text"
+                  >{{ form.yearTypeName }}</el-button>
+                  <span v-else>{{ form.yearTypeName }}</span>
                 </el-form-item>
-                <el-form-item label="选装包名称：" prop="optionPackageName">
-                  {{ form.optionPackageName }}
+                <el-form-item label="选装包：" prop="optionPackageName">
+                  <el-button
+                    class="link"
+                    v-if="form.optionPackageName"
+                    @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleOptionPackage/detail',
+                      query: {
+                        id: form.optionPackageId,
+                      },
+                    })"
+                    type="text"
+                  >{{ form.optionPackageName }}</el-button>
+                  <span v-else>{{ form.optionPackageName }}</span>
                 </el-form-item>
                 <el-form-item label="特殊备注：" prop="remark">
                   {{ form.specialRemark }}
@@ -654,6 +769,7 @@ import RefundApplyAuditDialog from '@/views/vehretail/orderRefund/refundApply/au
 import { getList as getMaterialInfoList } from '@/api/datacenter/materials/vehicleMaterials/index';
 import FinancialOrderDialog from './components/FinancialOrderDialog.vue';
 import VehicleStockDialog from './components/VehicleStockDialog.vue';
+import navigate from '@/libs/utils/navigate';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -991,6 +1107,20 @@ export default {
       this.form.cityCode = val ? selectedOption.cityCode : '';
       this.form.cityName = val ? selectedOption.cityName : '';
       this.form.depositAmount = val ? selectedOption.depositAmount : '';
+      this.form.rangePowerId = val ? selectedOption.rangePowerId : '';
+      this.form.rangePowerName = val ? selectedOption.rangePowerName : '';
+      this.form.drivingRangeId = val ? selectedOption.drivingRangeId : '';
+      this.form.drivingRangeName = val ? selectedOption.drivingRangeName : '';
+      this.form.exteriorId = val ? selectedOption.exteriorId : '';
+      this.form.exteriorName = val ? selectedOption.exteriorName : '';
+      this.form.interiorId = val ? selectedOption.interiorId : '';
+      this.form.interiorName = val ? selectedOption.interiorName : '';
+      this.form.wheelHubId = val ? selectedOption.wheelHubId : '';
+      this.form.wheelHubName = val ? selectedOption.wheelHubName : '';
+      this.form.yearTypeId = val ? selectedOption.yearTypeId : '';
+      this.form.yearTypeName = val ? selectedOption.yearTypeName : '';
+      this.form.optionPackageId = val ? selectedOption.optionPackageId : '';
+      this.form.optionPackageName = val ? selectedOption.optionPackageName : '';
       // 查询物料是否停产
       if (this.form.materialsCode) {
         getMaterialInfoList({ materialsCodeLike: this.form.materialsCode, pageSize: 1 })
@@ -1095,6 +1225,42 @@ export default {
       }
       // 或者关闭编辑状态
       this.isEditing = false;
+    },
+    handleRouteToStoreDetail (storeCode) {
+      navigate(
+        {
+          path: '/partner/channelManagement/shopDetail',
+          query: {
+            dealerCode: storeCode
+          },
+        },
+        true,
+        this.$router
+      );
+    },
+    handleRouteToVehicleMaterials (materialsCode) {
+      if (!materialsCode) {
+        return;
+      }
+      // 通过物料码查询物料列表获取ID
+      getMaterialInfoList({ materialsCodeLike: materialsCode, pageSize: 1 })
+        .then(res => {
+          if (res.records && res.records.length > 0) {
+            const material = res.records[0];
+            navigate(
+              {
+                path: '/sales/datacenter/materials/vehicleMaterials/detail',
+                query: {
+                  id: material.id,
+                },
+              },
+              true,
+              this.$router
+            );
+          } else {
+            this.$message.warning('未找到物料信息');
+          }
+        });
     }
   }
 };

@@ -491,7 +491,7 @@ export default {
             buttons: [{
               name: '修改配置',
               show: (row) => {
-                return row.orderStatus !== 9 && row.orderStatus !== 99 && row.orderStatus === 3 && row.wholesaleBindStatus === 1;
+                return row.orderStatus !== 9 && row.orderStatus !== 99 && row.orderStatus === 3 && row.wholesaleBindStatus !== 1;
               },
               click: (rowIndex, row) => {
                 this.changeConfiguration(row);

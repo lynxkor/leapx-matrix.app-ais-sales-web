@@ -94,9 +94,9 @@
                 <vxe-table ref="tableRef" stripe :data="form.storeInventoryTransferDetailList" show-overflow resizable border="inner" size="medium"
                   min-height="0" max-height="400px">
                   <vxe-column field="vin" title="VIN" min-width="9%" />
-                  <vxe-column field="wholesalePrice" title="调拨价格" min-width="9%">
+                  <vxe-column field="transferPrice" title="调拨价格" min-width="9%">
                     <template #default="{ row }">
-                      <el-input v-model="row.wholesalePrice" type="number" placeholder="请输入" clearable :disabled="!(isEditing || !_id)" />
+                      <el-input v-model="row.transferPrice" type="number" placeholder="请输入" clearable :disabled="!(isEditing || !_id)" />
                     </template>
                   </vxe-column>
                   <vxe-column field="materialsCode" title="整车物料" min-width="9%" />
@@ -278,10 +278,13 @@ export default {
       }
     },
     submitRequest () {
-      this.form.storeInventoryTransferDetailList = this.form.storeInventoryTransferDetailList.map(item => ({
-        ...item,
-        transferPrice: item.wholesalePrice,
-      }));
+      const hasValidData = this.form.storeInventoryTransferDetailList.some(item => item.transferPrice);
+
+      if (!hasValidData) {
+        // 如果全为 0 或空，进入这里
+        this.$message.warning('调拨价格不能为空');
+        return; // 阻止下一步
+      }
       return addOrUpdate({ ...this.form });
     },
     // 打开侧边栏
@@ -302,7 +305,7 @@ export default {
     queryListData (queryString) {
       return new Promise(resolve => {
         // 根据需求调用接口
-        getList({ vin: queryString }).then(res => {
+        getList({ vinLike: queryString }).then(res => {
           const list = res.records?.map(item => ({
             ...item,
             vinDesc: item.vin + '-' + item.materialsDesc,

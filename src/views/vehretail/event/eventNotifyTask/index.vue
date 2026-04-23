@@ -22,31 +22,36 @@
       <el-form-item label="事件类型">
         <fetch-select
           :options="eventTypeOptions"
-          v-model="form.type"
+          v-model="form.typeList"
           value-key="code"
           label-key="name"
+          clearable
+          filterable
+          multiple
           placeholder="请选择"
         />
       </el-form-item>
       <el-form-item label="系统平台">
         <fetch-select
-          v-model="form.target"
+          v-model="form.targetList"
           :options="thirdTargetPlatformOptions"
           value-key="code"
           label-key="name"
           placeholder="请选择"
           clearable
           filterable
+          multiple
         />
       </el-form-item>
       <el-form-item label="执行状态">
         <fetch-select
           :request="fetchOptions"
           enumCode="event_execute_result_enum"
-          v-model="form.executeResult"
+          v-model="form.executeResultList"
           placeholder="请选择"
           clearable
           filterable
+          multiple
         />
       </el-form-item>
       <template v-if="show">
@@ -55,6 +60,7 @@
             placeholder="请输入"
             v-model="form.scene"
             clearable
+            filterable
           />
         </el-form-item>
         <el-form-item label="业务标识编号">
@@ -65,9 +71,16 @@
           />
         </el-form-item>
         <el-form-item label="业务关联单据">
-          <el-input
+          <tag-input
             placeholder="请输入"
-            v-model="form.relatedNo"
+            v-model="form.relatedNoList"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="事件任务ID">
+          <tag-input
+            placeholder="请输入"
+            v-model="form.eventNotifyIdList"
             clearable
           />
         </el-form-item>
