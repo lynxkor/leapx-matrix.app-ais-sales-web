@@ -433,8 +433,11 @@
                     @click="handleRouteToStoreDetail(form.saleDealerCode)"
                     type="text">{{form.saleDealerName}}</el-button>
                 </el-form-item>
-                <el-form-item label="交付门店名称：" prop="deliveryDealerName">
-                  {{ form.deliveryDealerName }}
+                <el-form-item label="交付门店：" prop="deliveryDealerName">
+                  <el-button
+                    class="link"
+                    @click="handleRouteToStoreDetail(form.deliveryDealerCode)"
+                    type="text">{{form.deliveryDealerName}}</el-button>
                 </el-form-item>
                 <el-form-item label="交车VIN码：" prop="deliveryVin">
                   {{ form.deliveryVin }}
