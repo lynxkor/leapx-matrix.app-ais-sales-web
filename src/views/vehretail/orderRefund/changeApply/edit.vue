@@ -301,7 +301,15 @@
                   {{ form.originalOrderStatusLabel }}
                 </el-form-item>
                 <el-form-item label="原订单物料码：" prop="originalMaterialsCode">
-                  {{ form.originalMaterialsCode }}
+                  <el-button
+                    class="link"
+                    v-if="form.originalMaterialsCode"
+                    @click="navigateToRoute({
+                        path: '/datacenter/materials/vehicleMaterials/detail',
+                        query: { id: form.originalMaterialsId }
+                    })"
+                    type="text">{{ form.originalMaterialsCode }}</el-button>
+                  <span v-else>{{ form.originalMaterialsCode }}</span>
                 </el-form-item>
                 <el-form-item label="订单销售门店：" prop="saleDealerName">
                   <el-link

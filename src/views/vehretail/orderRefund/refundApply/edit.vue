@@ -296,8 +296,11 @@
                 <el-form-item label="订单物料码：" prop="materialsCode">
                   <el-button
                     class="link"
+                    @click="navigateToRoute({
+                        path: '/datacenter/materials/vehicleMaterials/detail',
+                        query: { id: form.materialsId }
+                    })"
                     v-if="form.materialsCode"
-                    @click="handleRouteToVehicleMaterials(form.materialsCode)"
                     type="text">{{ form.materialsCode }}</el-button>
                   <span v-else>{{ form.materialsCode }}</span>
                   <el-button size="small" type="primary" plain @click="openVehicleStockShow">查询库存车</el-button>
@@ -430,7 +433,10 @@
                   <el-button
                     class="link"
                     v-if="form.materialsCode"
-                    @click="handleRouteToVehicleMaterials(form.materialsCode)"
+                    @click="navigateToRoute({
+                        path: '/datacenter/materials/vehicleMaterials/detail',
+                        query: { id: form.materialsId }
+                    })"
                     type="text">{{ form.materialsCode }}</el-button>
                   <span v-else>{{ form.materialsCode }}</span>
                 </el-form-item>
@@ -505,7 +511,10 @@
                   <el-button
                     class="link"
                     v-if="form.materialsCode"
-                    @click="handleRouteToVehicleMaterials(form.materialsCode)"
+                    @click="navigateToRoute({
+                        path: '/datacenter/materials/vehicleMaterials/detail',
+                        query: { id: form.materialsId }
+                    })"
                     type="text">{{ form.materialsCode }}</el-button>
                   <span v-else>{{ form.materialsCode }}</span>
                 </el-form-item>
@@ -1240,7 +1249,7 @@ export default {
             const material = res.records[0];
             navigate(
               {
-                path: '/datacenter/materials/vehicleMaterials/detail',
+                path: '/sales/datacenter/materials/vehicleMaterials/detail',
                 query: {
                   id: material.id,
                 },
