@@ -611,11 +611,13 @@
                <el-form :inline="true" :model="form" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="结算资金类型：" prop="settleFundType">
                   <fetch-select
-                   :options="settleFundTypeOptions"
-                    v-model="form.settleFundType"
+                   :options="fundTypeList"
+                    v-model="form.settleFundTypeLabel"
                     placeholder="请选择"
                     clearable
                     filterable
+                     labelKey="fundTypeLabel"
+                    valueKey="fundType"
                     :disabled="needAutoAllocateCarStatus.includes(form.status)"
                     @change="clearCache"
                   />
@@ -630,7 +632,7 @@
                     labelKey="name"
                     valueKey="id"
                     @change="getNewfinancialOrganization"
-                    :disabled="form.settleFundType !== '2010'"
+                    :disabled="form.settleFundType !== 2010"
                   />
                     <!-- <fetch-select
                     :remote-method="repairItemSearch"
@@ -1046,6 +1048,7 @@ export default {
       settleFundTypeOptions: [],
       orderCategoryOptions: [],
       financialOrganizationList: [],
+      fundTypeList: [],
       needAutoAllocateCarStatus: [1, 2, 10, 21, 99, 3],
       accountData: [],
       detailsColumns: [
@@ -1348,9 +1351,18 @@ export default {
         return getDetail(id).then((res) => {
           // 1. 初始化或清空列表，防止重复添加
           this.financialOrganizationList = [];
+          const uniqueLabels = new Set();
           // 2. 处理 dealerFundAccounts
           if (res.dealerFundAccounts && Array.isArray(res.dealerFundAccounts)) {
             res.dealerFundAccounts = res.dealerFundAccounts.map(account => {
+              if (account.fundTypeLabel !== '返利') {
+                uniqueLabels.add(
+                  {
+                    fundType: account.fundType,
+                    fundTypeLabel: account.fundTypeLabel,
+                  }
+                );
+              }
               if ((account.fundType === '2010' || account.fundType === 2010) && account.financialOrganizationId && account.financialOrganizationName) {
                 // 检查是否已存在，避免重复
                 const exists = this.financialOrganizationList.some(item => item.id === account.financialOrganizationId);
@@ -1361,6 +1373,7 @@ export default {
                   });
                 }
               }
+              this.fundTypeList = Array.from(uniqueLabels);
               // 原有的映射逻辑
               return {
                 ...account,
@@ -1377,7 +1390,9 @@ export default {
         }).catch(() => {});
       }
     },
-    clearCache () {
+    clearCache (val, row) {
+      this.form.settleFundType = row.fundType;
+      this.form.settleFundTypeLabel = row.fundTypeLabel;
       this.form.financialOrganizationId = '';
       this.form.financialOrganizationName = '';
     },
