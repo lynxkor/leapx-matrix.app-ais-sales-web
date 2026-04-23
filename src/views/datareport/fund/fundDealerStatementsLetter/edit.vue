@@ -13,7 +13,7 @@
         :detailRequest="detailRequest"
       >
         <template #extraButtons>
-          <el-button size="small" @click="handleDownload">下载</el-button>
+          <el-button size="small" :loading="downloadLoading" @click="handleDownload">下载</el-button>
           <el-button
             v-if="form.reconStatusLabel === '待门店对账确认'"
             size="small"
@@ -394,6 +394,7 @@ export default {
       moduleKey: 'AISDR-fundDealerStatementsLetter',
       loading: false,
       submitLoading: false,
+      downloadLoading: false,
       form: { ...form },
       originalForm: { ...form },
       // 整车返利对账流水数据
@@ -595,13 +596,32 @@ export default {
       }
       return [];
     },
-    // 下载对账单
     handleDownload () {
-      downloadStatement(this._id).then(res => {
-        this.$message({
-          type: 'success',
-          message: '下载成功!'
-        });
+      this.downloadLoading = true;
+      downloadStatement(this._id).then(blob => {
+        // blob 本身就是文件数据，不是 res.data
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+
+        // 获取当前时间并格式化
+        const now = new Date();
+        const timestamp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}_${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}${String(now.getSeconds()).padStart(2, '0')}`;
+
+        link.download = `经销商对账函_${timestamp}.xlsx`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+
+        // 显示下载成功提示
+        this.$message.success('下载成功！');
+      }).catch(error => {
+        console.error('下载失败:', error);
+        this.$message.error('下载失败，请重试！');
+      }).finally(() => {
+        // 确保无论成功或失败都关闭loading状态
+        this.downloadLoading = false;
       });
     },
     // 确认对账单

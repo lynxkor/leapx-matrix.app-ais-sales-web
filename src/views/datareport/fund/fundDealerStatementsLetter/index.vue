@@ -473,11 +473,27 @@ export default {
     },
     // 下载对账单
     handleDownload (row) {
-      downloadStatement(row.id).then(res => {
-        this.$message({
-          type: 'success',
-          message: '下载成功!'
-        });
+      downloadStatement(row.id).then(blob => {
+        // blob 本身就是文件数据，不是 res.data
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+
+        // 获取当前时间并格式化
+        const now = new Date();
+        const timestamp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}_${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}${String(now.getSeconds()).padStart(2, '0')}`;
+
+        link.download = `经销商对账函_${timestamp}.xlsx`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+
+        // 显示下载成功提示
+        this.$message.success('下载成功！');
+      }).catch(error => {
+        console.error('下载失败:', error);
+        this.$message.error('下载失败，请重试！');
       });
     },
     // 确认对账单

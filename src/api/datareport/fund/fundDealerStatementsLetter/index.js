@@ -6,7 +6,9 @@ export function addOrUpdate (data) { return api.jsonPost(prefix + 'addOrUpdate',
 export function deleteItem (data) { return api.jsonPost(prefix + 'delete', data); }
 export function getDetail (data) { return api.jsonPost(prefix + 'get', data); }
 export function enableItem (data) { return api.jsonPost(prefix + 'enableOrDisable', data); }
-export function downloadStatement (data) { return api.jsonPost(prefix + 'export', data); }
+export function downloadStatement (data) {
+  return api.postExport(prefix + 'export', data, { responseType: 'blob' });
+}
 export function confirmStatement (data) { return api.jsonPost(prefix + 'confirm', data); }
 export function cancelStatement (data) { return api.jsonPost(prefix + 'cancel', data); }
 export function regenerateStatement (data) { return api.jsonPost(prefix + 'rebuild', data); }
