@@ -347,8 +347,40 @@ export default {
           },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'billStatusLabel', label: '单据状态', visible: true, width: 100 },
-          { props: 'budgetItemName', label: '预算科目', visible: true, width: 100 },
-          { props: 'feeSupportTypeName', label: '费用支持类型', visible: true, width: 150 },
+          {
+            props: 'budgetItemName',
+            label: '预算科目',
+            visible: true,
+            width: 100,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.navigateToRoute({
+                  path: '/vehwholesale/fund/fundBudgetItem/edit',
+                  query: {
+                    id: row.budgetItemId,
+                  },
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'feeSupportTypeName',
+            label: '费用支持类型',
+            visible: true,
+            width: 150,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.navigateToRoute({
+                  path: '/vehwholesale/fund/fundFeeSupportType/edit',
+                  query: {
+                    id: row.feeSupportTypeId,
+                  },
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'auditorName', label: '初审人', visible: true, width: 100 },
           { props: 'auditTime', label: '初审时间', visible: true, width: 200 },
           { props: 'auditOpinion', label: '初审意见', visible: true, width: 200 },

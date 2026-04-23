@@ -1149,10 +1149,9 @@ export default {
       const id = this._id;
       if (id) {
         return getDetail(id).then(res => {
-          this.form = { ...this.form, ...res };
           this.getDealersForParentCompany(res.entCustomerCode);
           this.getFundAccount();
-          console.log(this.form);
+          this.form = { ...this.form, ...res };
           // 设置 areaCode 并匹配省市区名称
           if (res.provinceCode && res.cityCode) {
             this.areaCode = [
