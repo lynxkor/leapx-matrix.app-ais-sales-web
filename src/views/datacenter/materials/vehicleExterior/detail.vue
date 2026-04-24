@@ -76,7 +76,8 @@ export default {
       this.$router.push({
         path: '/datacenter/materials/vehicleExterior/edit',
         query: {
-          id: this.$route.query.id
+          id: this.$route.query.id,
+          isEditing: true
         }
       });
     },

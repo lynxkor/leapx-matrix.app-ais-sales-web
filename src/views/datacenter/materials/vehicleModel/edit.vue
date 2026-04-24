@@ -1,189 +1,198 @@
 <template>
-  <!-- TIPS: 如果填写项小于15项，使用类名page-common-add替换page-common-edit -->
-  <div class="page-common-add">
-    <el-container>
-      <el-main>
-        <section class="common-section">
-          <div class="common-section-header">
-            <h2>基础信息</h2>
-          </div>
-          <div class="common-section-body">
-            <!-- TIPS: 如果填写项小于15项，去掉 :inline="true" -->
-            <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-            <el-form  :model="form" :rules="rules" ref="ruleForm" label-width="80px">
-              <el-form-item label="车型名称" prop="modelName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modelName"
-                  clearable
-                  maxlength="30"
-                />
-              </el-form-item>
-              <!-- <el-form-item label="年型名称" prop="yearTypeName">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.yearTypeName"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                />
-              </el-form-item> -->
-              <el-form-item label="车系名称" prop="seriesId">
-                <fetch-select
-                  filterable
-                  clearable
-                  remote
-                  v-model="form.seriesId"
-                  :params="form.seriesName"
-                  :remote-method="modelSearch"
-                  @change="handleModelChange"
-                  value-key="id"
-                  label-key="seriesName"
-                />
-              </el-form-item>
-              <el-form-item label="系列名称" prop="modelLineName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.modelLineName"
-                  clearable
-                  disabled
-                />
-              </el-form-item>
-              <el-form-item label="备注" prop="remark">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.remark"
-                  clearable
-                  maxlength="500"
-                />
-              </el-form-item>
-              <el-form-item label="状态" prop="status">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="StatusEnum"
-                  v-model="form.status"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                  disabled
-                />
-              </el-form-item>
-              <!-- <el-form-item label="状态变更描述" prop="statusDesc">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="xxx"
-                  v-model="form.statusDesc"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                />
-              </el-form-item> -->
-              <el-form-item label="创建人" prop="creatorName">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.creatorName"
-                  clearable
-                  disabled
-                />
-              </el-form-item>
-              <el-form-item label="创建时间" prop="createTime">
-                <el-date-picker
-                  v-model="form.createTime"
-                  :picker-options="pickerOptions"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  disabled
-                />
-              </el-form-item>
-            </el-form>
-          </div>
-        </section>
-        <section class="common-section">
-          <div class="common-section-header">
-            <h2>年款信息</h2>
-            <el-button v-if="canAddOrUpdate" size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-          </div>
-          <div class="common-section-body">
-            <div class="common-section-table">
-              <edit-table
-                ref="editTable"
-                :columns="columns"
-                :data="tableData"
-                :defaultNewRow="defaultNewRow"
-                :show-toolbar="false"
-                :options="options"
-                :auth="{edit: canAddOrUpdate, delete: canDelete}"
-              />
+  <edit-page-layout ref="editLayout" :title="title" showPaneFooter>
+    <template #left>
+      <edit-base-container
+        ref="containerRef"
+        :id="_id"
+        :title="title"
+        :isEditing.sync="isEditing"
+        :form.sync="form"
+        :originalForm.sync="originalForm"
+        :submitRequest="submitRequest"
+        :detailRequest="detailRequest"
+        :showEditBtn="true"
+      >
+        <template #status>
+          <span class="status primary">{{ form.statusLabel }}</span>
+        </template>
+        <el-main>
+          <!-- 基础信息 -->
+          <section class="common-section">
+            <div class="common-section-header">
+              <h2>基础信息</h2>
             </div>
-          </div>
-        </section>
-      </el-main>
-      <el-footer height="60px">
-        <el-button size="small" @click="handleBack">取消</el-button>
-        <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
-        <!-- <el-button size="small" type="primary" @click="submitForm('ruleForm', true)">保存并下一个</el-button> -->
-        <!-- <el-button size="small" @click="resetForm('ruleForm')">重置</el-button>
-        <el-button size="small" @click="handleJumpAuditLog">审核日志</el-button> -->
-      </el-footer>
-    </el-container>
-  </div>
+            <div class="common-section-body">
+              <!-- 编辑模式 -->
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="100px" class="form-edit" v-show="isEditing || !_id">
+                <el-form-item label="车型名称：" prop="modelName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.modelName"
+                    clearable
+                    maxlength="30"
+                  />
+                </el-form-item>
+                <el-form-item label="车系名称：" prop="seriesId">
+                  <fetch-select
+                    filterable
+                    clearable
+                    remote
+                    v-model="form.seriesId"
+                    :params="form.seriesName"
+                    :remote-method="modelSearch"
+                    @change="handleModelChange"
+                    value-key="id"
+                    label-key="seriesName"
+                    placeholder="请选择"
+                  />
+                </el-form-item>
+                <el-form-item label="系列名称：" prop="modelLineName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.modelLineName"
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="备注：" prop="remark">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.remark"
+                    clearable
+                    maxlength="500"
+                  />
+                </el-form-item>
+                <el-form-item label="状态：" prop="status">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.statusLabel"
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="创建人：" prop="creatorName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.creatorName"
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="创建时间：" prop="createTime">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.createTime"
+                    disabled
+                  />
+                </el-form-item>
+              </el-form>
+
+              <!-- 详情模式 -->
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+                <el-form-item label="车型名称：">
+                  {{ form.modelName }}
+                </el-form-item>
+                <el-form-item label="车系名称：">
+                  <el-link type="primary" :href="`/datacenter/materials/vehicleSeries/detail?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
+                </el-form-item>
+                <el-form-item label="系列名称：">
+                  <el-link type="primary" :href="`/datacenter/materials/vehicleModelLine/detail?id=${form.modelLineId}`" target="_blank">{{ form.modelLineName }}</el-link>
+                </el-form-item>
+                <el-form-item label="备注：">
+                  {{ form.remark }}
+                </el-form-item>
+                <el-form-item label="状态：">
+                  {{ form.statusLabel }}
+                </el-form-item>
+                <el-form-item label="创建人：">
+                  {{ form.creatorName }}
+                </el-form-item>
+                <el-form-item label="创建时间：">
+                  {{ form.createTime }}
+                </el-form-item>
+              </el-form>
+            </div>
+          </section>
+
+          <!-- 年款信息（保持原状） -->
+          <section class="common-section">
+            <div class="common-section-header">
+              <h2>年款信息</h2>
+              <el-button v-if="canAddOrUpdate" size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
+            </div>
+            <div class="common-section-body">
+              <div class="common-section-table">
+                <edit-table
+                  ref="editTable"
+                  :columns="columns"
+                  :data="tableData"
+                  :defaultNewRow="defaultNewRow"
+                  :show-toolbar="false"
+                  :options="options"
+                  :auth="{edit: canAddOrUpdate, delete: canDelete}"
+                />
+              </div>
+            </div>
+          </section>
+        </el-main>
+      </edit-base-container>
+    </template>
+  </edit-page-layout>
 </template>
 
 <script>
 import { getDetail, addOrUpdate } from '@/api/datacenter/materials/vehicleModel/index';
+import EditPageLayout from '@/libs/components/EditPageLayout';
+import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
 import { getEnum, listVehicleYearType, vehicleSeriesListFull } from '@/api/common';
-import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
+import commonMixins from '@/libs/mixins/commonMixins';
 
 const defaultForm = {
-  // 多选时字段有变化，自行修复
+  id: null,
   modelName: '',
-  yearTypeName: '',
   seriesName: '',
-  modelLineName: '',
-  remark: '',
-  status: '1',
-  statusDesc: '',
-  creatorName: '',
-  createTime: '',
-  modifierName: '',
-  updateTime: '',
-  id: '',
-  creator: '',
-  modifier: '',
   seriesId: '',
+  modelLineName: '',
   modelLineId: '',
-  yearTypeId: '',
-  modelYearTypeRelations: '',
+  remark: '',
+  status: null,
+  statusLabel: '',
+  creatorName: '',
+  createTime: ''
 };
 
 export default {
   name: 'vehicleModelEdit',
-  // 集中视图预留
   props: {
     id: {
       type: [String, Number],
       default: null
     }
   },
-  mixins: [routeGuard, permissions],
+  mixins: [routeGuard, permissions, commonMixins],
   components: {
+    EditPageLayout,
+    EditBaseContainer,
     FetchSelect,
     EditTable
+  },
+  computed: {
+    _id () {
+      return this.id || this.$route.query.id || this.form.id;
+    },
+    title () {
+      return '车型名称：' + (this.form.modelName || '');
+    }
   },
   data () {
     const form = this.getDefautlForm();
     return {
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
+      pageTitle: '销服-业务主数据-配置主数据-车型',
+      pageType: 'edit',
       moduleKey: 'AISDC-vehicleModel',
       loading: false,
       submitLoading: false,
-      yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
       defaultNewRow: {
@@ -191,12 +200,8 @@ export default {
       },
       tableData: [],
       options: {
-        yearTypeName: [
-        ]
-        // 对应表格里选型枚举
-        // 如 type: [{label: 'xxx', value: 'xxx'}]
+        yearTypeName: []
       },
-      // TIPS: 复杂的表格输入项，参考 /dealerTeam/edit.vue
       columns: [
         {
           field: 'yearTypeName',
@@ -232,63 +237,46 @@ export default {
         {
           field: 'createTime',
           title: '创建时间',
-          // width: '33%',
           editRender: { name: 'ElInput' }
-        },
+        }
       ],
       rules: {
         modelName: [
           { required: true, message: '请输入车型名称，不可重复', trigger: 'blur' }
         ],
         seriesId: [
-          { required: true, message: '请输入车系名称', trigger: 'change' }
-        ],
-        yearTypeName: [
-          { required: true, message: '请选择年型名称', trigger: 'change' }
-        ],
-        seriesName: [
-          { required: true, message: '请输入车系名称', trigger: 'blur' }
-        ],
-        modelLineName: [
-          { required: true, message: '请输入系列名称', trigger: 'blur' }
-        ],
-        remark: [
-          { required: false, message: '请输入备注', trigger: 'blur' }
+          { required: true, message: '请选择车系名称', trigger: 'change' }
         ]
-      },
-      pickerOptions: {
-        shortcuts: [{
-          text: '最近一周',
-          onClick (picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-            picker.$emit('pick', [start, end]);
-          }
-        }, {
-          text: '最近一个月',
-          onClick (picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-            picker.$emit('pick', [start, end]);
-          }
-        }, {
-          text: '最近三个月',
-          onClick (picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-            picker.$emit('pick', [start, end]);
-          }
-        }]
       }
     };
   },
   mounted () {
-    this.getDetailData();
+    // 初始化数据由 edit-base-container 的 loadDetail 处理
   },
   methods: {
+    async detailRequest () {
+      const id = this._id;
+      if (id) {
+        this.listVehicleYearType();
+        const detail = await getDetail(id);
+        this.tableData = detail.modelYearTypeRelations || [];
+        return detail;
+      }
+      return {};
+    },
+    async submitRequest () {
+      const tableData = await this.handleSaveTable();
+      if (!tableData || (Array.isArray(tableData) && tableData.length === 0)) {
+        this.$message.error('请至少添加一条年款信息');
+        return Promise.reject(new Error('请至少添加一条年款信息'));
+      }
+      const isDuplicate = this.checkDuplicateYearTypeId(tableData);
+      if (isDuplicate) {
+        this.$message.error('该年款信息已存在，请确认');
+        return Promise.reject(new Error('该年款信息已存在，请确认'));
+      }
+      return addOrUpdate({ ...this.form, yearTypeIds: tableData });
+    },
     handleModelChange (val, record) {
       if (record) {
         this.form.modelLineName = record.modelLineName;
@@ -299,7 +287,7 @@ export default {
       return vehicleSeriesListFull({ seriesNameLike: query, status: 1 });
     },
     querySearchYear (name) {
-      listVehicleYearType({ modelIdList: this.$route.query.id ? [this.$route.query.id] : [], yearTypeNameLike: name, status: 1 }).then(res => {
+      listVehicleYearType({ modelIdList: this._id ? [this._id] : [], yearTypeNameLike: name, status: 1 }).then(res => {
         const list = res?.map(item => {
           return {
             ...item,
@@ -313,8 +301,7 @@ export default {
       });
     },
     listVehicleYearType () {
-      listVehicleYearType({ modelIdList: this.$route.query.id ? [this.$route.query.id] : [], status: 1 }).then(res => {
-        console.log('listVehicleYearType:', res);
+      listVehicleYearType({ modelIdList: this._id ? [this._id] : [], status: 1 }).then(res => {
         this.options.yearTypeName = res.map(item => {
           return {
             ...item,
@@ -326,115 +313,33 @@ export default {
         });
       });
     },
-    handleBack () {
-      // this.$router.back();
-      let newPath = this.$route.path.replace(/\/edit$/, '');
-      this.$router.push(newPath);
-    },
-    getDetailData () {
-      const id = this.id || this.$route.query.id;
-      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-车型', `${id ? '编辑' : '新建'}`]);
-      this.listVehicleYearType();
-      if (id) {
-        getDetail(id).then(res => {
-          this.loading = false;
-          Object.assign(this.form, res);
-          Object.assign(this.originalForm, res);
-          this.tableData = res.modelYearTypeRelations;
-        }).catch(() => {});
-      }
-    },
     checkDuplicateYearTypeId (tableData) {
       const yearTypeIdSet = new Set();
       for (const row of tableData) {
         if (row.yearTypeId) {
           if (yearTypeIdSet.has(row.yearTypeId)) {
-            return true; // 发现重复值
+            return true;
           }
-          yearTypeIdSet.add(row.yearTypeId); // 添加到集合中
+          yearTypeIdSet.add(row.yearTypeId);
         }
       }
-      return false; // 没有重复值
+      return false;
     },
-    async submitForm (formName, rest = false) {
-      try {
-        const tableData = await this.handleSaveTable();
-        console.log('tableData:', tableData);// 校验 tableData 中的 yearTypeId 是否有重复
-        // 增加空值判断：如果 tableData 为空或空数组，禁止提交
-        if (!tableData || (Array.isArray(tableData) && tableData.length === 0)) {
-          this.$message({
-            message: '请至少添加一条年款信息',
-            type: 'error'
-          });
-          return;
-        }
-        const isDuplicate = this.checkDuplicateYearTypeId(tableData);
-        if (isDuplicate) {
-          this.$message({
-            message: '该年款信息已存在，请确认',
-            type: 'error'
-          });
-          return;
-        };
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            this.submitLoading = true;
-            // TIPS: customKey 根据接口格式修改
-            addOrUpdate({ ...this.form, yearTypeIds: tableData }).then(res => {
-              this.$message({
-                message: '保存成功',
-                type: 'success'
-              });
-              const id = this.$route.query.id;
-              if (rest || !id) {
-                this.resetForm(formName);
-                const currentPath = this.$route.path;
-                this.$router.push({
-                  path: currentPath,
-                  query: { id: res }
-                });
-              } else {
-                this.getDetailData();
-              }
-            }).finally(() => {
-              this.submitLoading = false;
-            });
-          }
-        });
-      } catch (error) {
-        console.log(error);
+    async fetchOptions (code) {
+      if (code) {
+        return getEnum(code);
       }
-    },
-    resetForm (formName) {
-      this.$refs[formName].resetFields();
-      this.tableData = [];
-      this.form = this.getDefautlForm();
+      return [];
     },
     getDefautlForm () {
-      // TIPS: 此处可添加表单默认值，如当前用户信息等
-      const userInfo = this.$store.state.user.userInfo;
       return {
-        ...defaultForm,
-        ownerId: userInfo.userId,
-        creatorName: userInfo.userName,
+        ...defaultForm
       };
     },
-    // handleJumpAuditLog () {
-    //   this.$router.push({
-    //     path: '/xxx/auditLog',
-    //     query: {
-    //       tableCode: '',
-    //       tableId: ''
-    //     }
-    //   });
-    // },
-    // 详情表格相关数据
     handleAddRow () {
-      // 通过引用直接调用子组件方法
       this.$refs.editTable.addRow();
     },
     handleSaveTable (data) {
-      // 调用保存方法并处理结果
       return new Promise((resolve, reject) => {
         this.$refs.editTable.saveAll().then(data => {
           resolve(data);
@@ -442,13 +347,10 @@ export default {
           reject(error);
         });
       });
-    },
-    async fetchOptions (code) {
-      if (code) {
-        return getEnum(code);
-      }
-      return [];
     }
   }
 };
 </script>
+
+<style lang="scss" scoped>
+</style>

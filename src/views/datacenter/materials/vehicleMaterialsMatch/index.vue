@@ -166,9 +166,10 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/datacenter/materials/vehicleMaterialsMatch/detail',
+                  path: '/datacenter/materials/vehicleMaterialsMatch/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },
@@ -202,7 +203,8 @@ export default {
                 this.$router.push({
                   path: '/datacenter/materials/vehicleMaterialsMatch/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },

@@ -3062,6 +3062,22 @@ const routes = [
         name: '承诺结果详情',
         noResourceUrl: 'true'
       }
+    }, {
+      path: '/datareport/fund/fundDealerStatementsLetter',
+      name: 'fundDealerStatementsLetter',
+      component: () => import('@/views/datareport/fund/fundDealerStatementsLetter/index.vue'),
+      meta: {
+        name: '对账函管理-经销商对账函管理',
+        keepAlive: true
+      }
+    }, {
+      path: '/datareport/fund/fundDealerStatementsLetter/edit',
+      name: 'fundDealerStatementsLetterEdit',
+      component: () => import('@/views/datareport/fund/fundDealerStatementsLetter/edit.vue'),
+      meta: {
+        name: '对账函管理-经销商对账函管理详情',
+        noResourceUrl: 'true'
+      }
     }]
   }
 ];
