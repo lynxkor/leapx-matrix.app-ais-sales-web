@@ -91,10 +91,24 @@
               {{ info.deliveryOrderCode  }}
             </el-form-item>
              <el-form-item label="预算科目：" prop="budgetItemName">
-              {{ info.budgetItemName  }}
+              <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/vehwholesale/fund/fundBudgetItem/edit',
+                      query: {
+                        id: info.budgetItemId,
+                      },
+                    })"
+                   type="text">{{info.budgetItemName}}</el-button>
             </el-form-item>
             <el-form-item label="费用支持类型：" prop="feeSupportTypeName">
-              {{ info.feeSupportTypeName  }}
+              <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/vehwholesale/fund/fundFeeSupportType/edit',
+                      query: {
+                        id: info.feeSupportTypeId,
+                      },
+                    })"
+                   type="text">{{info.feeSupportTypeName}}</el-button>
             </el-form-item>
              <el-form-item label="周期：" prop="periodLabel">
               {{ info.periodLabel  }}
