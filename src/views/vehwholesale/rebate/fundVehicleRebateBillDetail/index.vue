@@ -275,9 +275,10 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/rebate/fundVehicleRebateBillDetail/detail',
+                  path: '/vehwholesale/rebate/fundVehicleRebateBillDetail/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },

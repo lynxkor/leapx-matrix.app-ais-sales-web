@@ -206,10 +206,10 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/rebate/fundVehicleRebateBill/detail',
+                  path: '/vehwholesale/rebate/fundVehicleRebateBill/edit',
                   query: {
                     id: row.id,
-                    isEditing: true
+                    isEditing: false
                   }
                 });
               },

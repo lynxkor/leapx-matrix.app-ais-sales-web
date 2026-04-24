@@ -200,16 +200,10 @@ export default {
         };
 
         const response = await this.apiMethod(params);
-        console.log('ComponentTable Response:', response);
         const dataList = response.data || response.records || response || [];
-        console.log('ComponentTable tableData:', dataList);
-        if (dataList.length > 0) {
-          console.log('ComponentTable first row data:', dataList[0]);
-        }
         this.internalTableData = dataList;
         this.total = response.total || response.totals || response.count || 0;
       } catch (error) {
-        console.error('Failed to load data:', error);
         this.internalTableData = [];
         this.total = 0;
       } finally {
