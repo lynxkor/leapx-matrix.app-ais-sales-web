@@ -40,9 +40,12 @@
                  <el-form-item label="母公司名称：" prop="dealerCompanyName">
                   {{ form.dealerCompanyName }}
                 </el-form-item>
-                <el-form-item label="销售公司：" prop="saleCompanyName">
-              {{ form.saleCompanyName  }}
-            </el-form-item>
+                <el-form-item label="母公司编码：" prop="dealerComapnyCode">
+                  {{ form.dealerComapnyCode }}
+                </el-form-item>
+                <el-form-item label="销售公司名称：" prop="saleCompanyName">
+                   {{ form.saleCompanyName  }}
+                </el-form-item>
                 <el-form-item label="资金类型：" prop="fundTypeLabel">
                   {{ form.fundTypeLabel }}
                 </el-form-item>
@@ -71,10 +74,13 @@
                  <el-form-item label="过账时间：" prop="transactionTime">
                   {{ form.transactionTime }}
                 </el-form-item>
-                <el-form-item label="VIN编码：" prop="vin">
+                <el-form-item label="交易类型：" prop="transactionTypeLabel">
+                  {{ form.transactionTypeLabel }}
+                </el-form-item>
+                <el-form-item label="VIN号：" prop="vin">
                   {{ form.vin }}
                 </el-form-item>
-                <el-form-item label="批售订单：" prop="wholesaleOrderCode">
+                <el-form-item label="整车批售订单：" prop="wholesaleOrderCode">
                   <el-button class="link" style="padding: 0;"
                    @click="navigateToRoute({
                       path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
@@ -84,7 +90,17 @@
                     })"
                    type="text">{{form.wholesaleOrderCode}}</el-button>
                 </el-form-item>
-                <el-form-item label="交车单：" prop="deliveryOrderCode">
+                <el-form-item label="企业客户整车订单：" prop="entVehorderCode">
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
+                      query: {
+                        id: form.wholesaleOrderId,
+                      },
+                    })"
+                   type="text">{{form.entVehorderCode}}</el-button>
+                </el-form-item>
+                <el-form-item label="交车单号：" prop="deliveryOrderCode">
                   {{ form.deliveryOrderCode }}
                 </el-form-item>
                 <el-form-item label="门店名称：" prop="dealerName">
@@ -97,7 +113,10 @@
                     })"
                    type="text">{{form.dealerName}}</el-button>
                 </el-form-item>
-                <el-form-item label="行号：" prop="lineNo">
+                 <el-form-item label="入账凭证号：" prop="transactionReceiptCode">
+                  {{ form.transactionReceiptCode }}
+                </el-form-item>
+                <el-form-item label="行项目号：" prop="lineNo">
                   {{ form.lineNo }}
                 </el-form-item>
                 <el-form-item label="年度：" prop="yearNo">
