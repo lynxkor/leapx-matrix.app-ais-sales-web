@@ -284,7 +284,7 @@
           >
             <template v-slot:operation_default="{ row }">
               <el-button
-                v-if="form.status !== 7 && form.status !== 99"
+                v-if="form.status === 4 && canDeletePaymentRecord(row) && isEditing"
                 type="text"
                 style="color: #67c23a;"
                 @click="handleDeletePaymentRecord(row)"
@@ -1208,6 +1208,11 @@ export default {
       } catch (error) {
         console.error('Delete failed:', error);
       }
+    },
+    // 判断收款记录是否可以删除：已预约状态且收款类型为门店优惠/贷款/尾款/贷款首付款/机动车发票其他费用
+    canDeletePaymentRecord (row) {
+      const deletableTypes = [0, 2, 4, 6, 7]; // 贷款, 尾款, 贷款首付款, 门店优惠, 机动车发票其他费用
+      return deletableTypes.includes(row.payCategory);
     }
   }
 };
