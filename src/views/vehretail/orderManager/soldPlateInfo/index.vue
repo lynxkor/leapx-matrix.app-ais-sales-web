@@ -121,7 +121,7 @@ import {
   deleteItem,
   enableItem,
   submitBatch,
-  revocation,
+  // revocation,
   revocationBatch, cancelBatch
 } from '@/api/vehretail/orderManager/soldPlateInfo/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel } from '@/api/common';
