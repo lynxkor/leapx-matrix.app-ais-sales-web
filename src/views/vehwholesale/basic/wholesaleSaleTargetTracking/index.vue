@@ -243,7 +243,8 @@ export default {
                 this.$router.push({
                   path: '/vehwholesale/basic/wholesaleSaleTargetTracking/detail',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },

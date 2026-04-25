@@ -212,9 +212,10 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/basic/wholesaleDealerWholesaleConf/detail',
+                  path: '/vehwholesale/basic/wholesaleDealerWholesaleConf/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },

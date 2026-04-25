@@ -169,9 +169,10 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/basic/wholesaleDealerAutoConfirmConf/detail',
+                  path: '/vehwholesale/basic/wholesaleDealerAutoConfirmConf/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },

@@ -190,9 +190,10 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/basic/wholesaleVehicleSaleModelConf/detail',
+                  path: '/vehwholesale/basic/wholesaleVehicleSaleModelConf/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },

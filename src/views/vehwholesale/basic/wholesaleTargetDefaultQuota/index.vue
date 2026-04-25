@@ -142,9 +142,10 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/basic/wholesaleTargetDefaultQuota/detail',
+                  path: '/vehwholesale/basic/wholesaleTargetDefaultQuota/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },

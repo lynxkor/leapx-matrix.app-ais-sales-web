@@ -179,7 +179,8 @@ export default {
       this.$router.push({
         path: '/vehwholesale/basic/wholesalesaletargettracking/wholesaleEdit',
         query: {
-          id: this.$route.query.id
+          id: this.$route.query.id,
+          isEditing: true
         }
       });
     },
@@ -187,7 +188,8 @@ export default {
       this.$router.push({
         path: '/vehwholesale/basic/wholesalesaletargettracking/retailEdit',
         query: {
-          id: this.$route.query.id
+          id: this.$route.query.id,
+          isEditing: true
         }
       });
     },

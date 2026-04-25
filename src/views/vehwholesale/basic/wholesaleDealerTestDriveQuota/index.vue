@@ -258,9 +258,10 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/basic/wholesaleDealerTestDriveQuota/detail',
+                  path: '/vehwholesale/basic/wholesaleDealerTestDriveQuota/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },

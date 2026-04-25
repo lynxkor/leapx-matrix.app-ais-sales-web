@@ -277,8 +277,7 @@ export default {
                 this.$router.push({
                   path: '/vehwholesale/rebate/fundVehicleRebateBillDetail/edit',
                   query: {
-                    id: row.id,
-                    isEditing: false
+                    id: row.id
                   }
                 });
               },
@@ -320,7 +319,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.navigateToRoute({
-                  path: '/datacenter/materials/vehicleModel/detail',
+                  path: '/datacenter/materials/vehicleModel/edit',
                   query: {
                     id: row.modelId,
                   },
@@ -337,7 +336,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.navigateToRoute({
-                  path: '/datacenter/materials/vehicleSeries/detail',
+                  path: '/datacenter/materials/vehicleSeries/edit',
                   query: {
                     id: row.seriesId,
                   },

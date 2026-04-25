@@ -179,9 +179,10 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/basic/wholesaleNoAutoCarModelConf/detail',
+                  path: '/vehwholesale/basic/wholesaleNoAutoCarModelConf/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },
