@@ -791,7 +791,6 @@ export default {
       if (!this.form.entCustomerName || !this.form.saleCompanyName) {
         return;
       }
-      console.log('getFundAccount', this.form);
       const params = {
         dealerCompanyCodes: [this.form.entCustomerCode],
         allowEntOrderSettle: '1',
@@ -823,11 +822,6 @@ export default {
         }
       }).catch(() => {
       });
-    },
-    cellChange (val, row) {
-      if (this.form.orderCategory === 21) {
-        val.row.standardPrice = val.value;
-      }
     },
     formatDateTime (date) {
       if (!date) return '';
