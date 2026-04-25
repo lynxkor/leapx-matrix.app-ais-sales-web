@@ -152,9 +152,10 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehstock/basic/vehicleReservationConfig/detail',
+                  path: '/vehstock/basic/vehicleReservationConfig/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },
@@ -187,7 +188,8 @@ export default {
                 this.$router.push({
                   path: '/vehstock/basic/vehicleReservationConfig/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },

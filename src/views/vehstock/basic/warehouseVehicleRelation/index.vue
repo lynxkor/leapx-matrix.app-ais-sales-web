@@ -153,9 +153,10 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehstock/basic/warehouseVehicleRelation/detail',
+                  path: '/vehstock/basic/warehouseVehicleRelation/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },
@@ -184,7 +185,8 @@ export default {
                 this.$router.push({
                   path: '/vehstock/basic/warehouseVehicleRelation/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },

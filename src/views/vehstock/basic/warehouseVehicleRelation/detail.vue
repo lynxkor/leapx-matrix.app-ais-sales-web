@@ -95,7 +95,8 @@ export default {
       this.$router.push({
         path: '/vehstock/basic/warehouseVehicleRelation/edit',
         query: {
-          id: this.$route.query.id
+          id: this.$route.query.id,
+          isEditing: true
         }
       });
     },

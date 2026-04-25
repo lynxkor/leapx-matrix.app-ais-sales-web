@@ -1,104 +1,122 @@
 <template>
-  <div class="page-common-add">
-    <el-container>
-      <el-main>
-        <section class="common-section">
-          <div class="common-section-header">
-            <h2>基础信息</h2>
-          </div>
-          <div class="common-section-body">
-            <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
-              <el-form-item label="地区公告编号：" prop="code">
-                <el-input
-                  placeholder="请输入"
-                  v-model="form.code"
-                  clearable
-                  disabled
-                />
-              </el-form-item>
-              <!-- <el-form-item label="城市名称：" prop="cityCode">
-                <el-select
-                  v-model="form.cityCode"
-                  filterable
-                  placeholder="请选择"
-                  @change="handleChangeCity"
-                  >
-                  <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-              </el-form-item> -->
-              <el-form-item label="城市名称：" prop="cityCode">
-                <fetch-select
-                  v-model="form.cityCode"
-                  placeholder="请选择"
-                  :request="getCity"
-                  value-key="areaCode"
-                  label-key="areaName"
-                  filterable
-                  @change="handleChangeCity"
-                />
-              </el-form-item>
-              <el-form-item label="销售公告车型名称：" prop="registeredModelName">
-                <fetch-select
-                  v-model="form.registeredModelName"
-                  filterable
-                  clearable
-                  remote
-                  reserve-keyword
-                  :options="modelOptions"
-                  placeholder="请选择"
-                  :remote-method="serchModel"
-                  @change="handleChangeModel"
-                  value-key="id"
-                  label-key="name"
-                />
-              </el-form-item>
-              <!-- <el-form-item label="销售公告车型名称：" prop="vehicleSalesVersionName">
-                <fetch-select
-                  v-model="form.vehicleSalesVersionName"
-                  filterable
-                  clearable
-                  remote
-                  reserve-keyword
-                  placeholder="请选择"
-                  :remote-method="serchModel"
-                  @change="handleChangeModel"
-                />
-              </el-form-item> -->
-              <el-form-item label="状态：" prop="status">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="StatusEnum"
-                  v-model="form.status"
-                  placeholder="请选择"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="备注：" prop="remark">
-                <el-input
-                  type="textarea"
-                  placeholder="请输入"
-                  v-model="form.remark"
-                  clearable
-                  maxLength="500"
-                  show-word-limit
-                />
-              </el-form-item>
-            </el-form>
-          </div>
-        </section>
-      </el-main>
-      <el-footer height="60px">
-        <el-button size="small" @click="handleBack">取消</el-button>
-        <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
-        <!-- <el-button size="small" @click="handleJumpAuditLog">审核日志</el-button> -->
-      </el-footer>
-    </el-container>
-  </div>
+  <edit-page-layout ref="editLayout" title="侧边栏标题" showPaneFooter>
+    <template #left>
+      <edit-base-container
+        ref="containerRef"
+        :id="_id"
+        title="地区对应公告目录："
+        :isEditing.sync="isEditing"
+        :form.sync="form"
+        :originalForm.sync="originalForm"
+        :submitRequest="submitRequest"
+        :detailRequest="detailRequest"
+      >
+        <template #status>
+          <span class="status primary">{{ form.statusLabel }}</span>
+        </template>
+        <el-main>
+          <section class="common-section">
+            <div class="common-section-header">
+              <h2>基础信息</h2>
+            </div>
+            <div class="common-section-body">
+              <!-- 编辑模式 -->
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+                <el-form-item label="地区公告编号：" prop="code">
+                  <el-input
+                    placeholder="系统自动创建"
+                    v-model="form.code"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="城市名称：" prop="cityCode">
+                  <fetch-select
+                    v-model="form.cityCode"
+                    placeholder="请选择"
+                    :request="getCity"
+                    value-key="areaCode"
+                    label-key="areaName"
+                    filterable
+                    @change="handleChangeCity"
+                  />
+                </el-form-item>
+                <el-form-item label="销售公告车型名称：" prop="registeredModelName">
+                  <fetch-select
+                    v-model="form.vehicleRegisteredModelId"
+                    filterable
+                    clearable
+                    remote
+                    reserve-keyword
+                    :options="modelOptions"
+                    placeholder="请选择"
+                    :remote-method="serchModel"
+                    @change="handleChangeModel"
+                    value-key="id"
+                    label-key="name"
+                  />
+                </el-form-item>
+                <el-form-item label="状态：" prop="status">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="StatusEnum"
+                    v-model="form.status"
+                    placeholder="请选择"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="备注：" prop="remark">
+                  <el-input
+                    type="textarea"
+                    placeholder="请输入"
+                    v-model="form.remark"
+                    clearable
+                    maxLength="500"
+                    show-word-limit
+                  />
+                </el-form-item>
+              </el-form>
+              <!-- 详情模式 -->
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+                <el-form-item label="地区公告编号：">
+                  {{ form.code }}
+                </el-form-item>
+                <el-form-item label="城市名称：">
+                  {{ form.cityName }}
+                </el-form-item>
+                <el-form-item label="销售公告车型名称：">
+                  {{ form.registeredModelName }}
+                </el-form-item>
+                <el-form-item label="状态：">
+                  {{ form.statusLabel }}
+                </el-form-item>
+                <el-form-item label="创建人：">
+                  {{ form.creatorName }}
+                </el-form-item>
+                <el-form-item label="创建时间：">
+                  {{ form.createTime }}
+                </el-form-item>
+                <el-form-item label="更改人：">
+                  {{ form.modifierName }}
+                </el-form-item>
+                <el-form-item label="更改时间：">
+                  {{ form.updateTime }}
+                </el-form-item>
+                <el-form-item label="备注：">
+                  {{ form.remark }}
+                </el-form-item>
+              </el-form>
+            </div>
+          </section>
+        </el-main>
+      </edit-base-container>
+    </template>
+    <template #right>
+      <div class="page-common-edit">
+        <!-- 右侧栏组件，自行开发 -->
+      </div>
+    </template>
+  </edit-page-layout>
 </template>
 
 <script>
@@ -106,140 +124,109 @@ import { getDetail, addOrUpdate } from '@/api/vehstock/basic/regionNoticeDirecto
 import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum, cityPage, vehicleSalesVersionList } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
+import EditPageLayout from '@/libs/components/EditPageLayout';
+import EditBaseContainer from '@/libs/components/EditBaseContainer';
+import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
+import commonMixins from '@/libs/mixins/commonMixins';
 
 const defaultForm = {
-  // 多选时字段有变化，自行修复
   code: '',
   cityCode: '',
   cityName: '',
   registeredModelName: '',
   vehicleRegisteredModelId: null,
   status: '',
+  statusLabel: '',
   remark: '',
+  creatorName: '',
+  createTime: '',
+  id: '',
+  creator: '',
+  modifier: '',
+  modifierName: '',
+  updateTime: '',
+  statusDesc: '',
+  dataSource: '',
+  ownerOrgId: '',
 };
 
 export default {
   name: 'regionNoticeDirectoryEdit',
-  mixins: [permissions],
-  // 集中视图预留
   props: {
     id: {
       type: [String, Number],
       default: null
     }
   },
+  computed: {
+    _id () {
+      return this.id || this.$route.query.id || this.form.id;
+    },
+    title () {
+      return '地区对应公告目录：' + (this.form.code || '');
+    }
+  },
+  mixins: [routeGuard, permissions, commonMixins],
   components: {
     FetchSelect,
+    EditPageLayout,
+    EditBaseContainer
   },
   data () {
+    const form = this.getDefautlForm();
     return {
+      pageTitle: '地区对应公告目录',
+      pageType: 'edit',
+      moduleKey: 'AISVS-regionNoticeDirectory',
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
-      moduleKey: 'AISVS-regionNoticeDirectory',
-      form: { ...defaultForm },
-      originalForm: { ...defaultForm },
+      form: { ...form },
+      originalForm: { ...form },
       options: [],
       modelOptions: [],
       rules: {
-        code: [
-          { required: false, message: '请输入地区公告编号', trigger: 'blur' }
-        ],
         cityCode: [
           { required: true, message: '请选择城市', trigger: 'change' }
         ],
         registeredModelName: [
-          { required: true, message: '请输入销售公告车型名称', trigger: 'blur' }
+          { required: true, message: '请选择销售公告车型名称', trigger: 'change' }
         ],
         status: [
           { required: true, message: '请选择状态', trigger: 'change' }
         ],
-        remark: [
-          { required: false, message: '请输入备注', trigger: 'blur' }
-        ],
-      },
-      pickerOptions: {
-        shortcuts: [{
-          text: '最近一周',
-          onClick (picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-            picker.$emit('pick', [start, end]);
-          }
-        }, {
-          text: '最近一个月',
-          onClick (picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-            picker.$emit('pick', [start, end]);
-          }
-        }, {
-          text: '最近三个月',
-          onClick (picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-            picker.$emit('pick', [start, end]);
-          }
-        }]
       }
     };
   },
-  mounted () {
-    this.getDetailData();
-    this.getCity();
-  },
-  beforeRouteLeave (to, from, next) {
-    if (JSON.stringify(this.form) === JSON.stringify(this.originalForm)) {
-      next();
-    } else {
-      this.$confirm('确定要放弃修改吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        next();
-      }).catch(() => {
-        next(false);
-      });
-    }
-  },
   methods: {
-    handleBack () {
-      this.$router.back();
+    openPane () {
+      this.$refs.editLayout.openPane();
     },
-    getDetailData () {
-      const id = this.id || this.$route.query.id;
-      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['地区对应公告目录', `${id ? '编辑' : '新建'}`]);
+    detailRequest () {
+      const id = this._id;
       if (id) {
-        getDetail(id).then(async res => {
-          this.loading = false;
-          Object.assign(this.form, res);
-          Object.assign(this.originalForm, res);
-        });
+        return getDetail(id);
       }
+      return {};
     },
-    // 城市下拉
+    submitRequest () {
+      return addOrUpdate({ ...this.form });
+    },
+    async fetchOptions (code) {
+      if (code) {
+        return getEnum(code);
+      }
+      return [];
+    },
     async getCity () {
       const params = {
         page: 1,
         size: -1
       };
       const res = await cityPage(params);
-      const list = res.records || [];
-      return list;
-      // this.options = list.map(item => {
-      //   return {
-      //     ...item,
-      //     label: item.areaName,
-      //     value: item.areaCode
-      //   };
-      // });
+      return res.records || [];
     },
-    // 公告销售车型
     async serchModel (query) {
       const res = await vehicleSalesVersionList({ registeredModelNameLike: query, size: 100 });
       this.modelOptions = res?.map(item => {
@@ -248,64 +235,23 @@ export default {
           label: item.name,
           value: item.id,
         };
-      });
+      }) || [];
     },
-    // 选择以后城市改变
     handleChangeCity (val, selectedOption) {
-      this.form.cityName = selectedOption.areaName;
-      // const item = this.options.find(item => item.value === val);
-      // if (item) {
-      //   this.form.cityName = item.label;
-      // }
+      this.form.cityName = selectedOption?.areaName || '';
     },
-    // 销售公告车型名称改变
     handleChangeModel (val) {
       const item = this.modelOptions.find(item => item.value === val);
       if (item) {
         this.form.vehicleRegisteredModelId = item.value;
+        this.form.registeredModelName = item.name;
       }
     },
-    submitForm (formName, rest = false) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.submitLoading = true;
-          addOrUpdate({ ...this.form }).then(res => {
-            this.$message({
-              message: '保存成功',
-              type: 'success'
-            });
-            const id = this.$route.query.id;
-            if (rest || !id) {
-              this.resetForm(formName);
-            } else {
-              this.getDetailData();
-            }
-          }).finally(() => {
-            this.submitLoading = false;
-          });
-        }
-      });
-    },
-    resetForm (formName) {
-      this.$refs[formName].resetFields();
-      this.tableData = [];
-      this.form = { ...defaultForm };
-    },
-    // handleJumpAuditLog () {
-    //   this.$router.push({
-    //     path: '/xxx/auditLog',
-    //     query: {
-    //       tableCode: '',
-    //       tableId: ''
-    //     }
-    //   });
-    // },
-    async fetchOptions (code) {
-      if (code) {
-        return getEnum(code);
-      }
-      return [];
-    },
+    getDefautlForm () {
+      return {
+        ...defaultForm
+      };
+    }
   }
 };
 </script>
