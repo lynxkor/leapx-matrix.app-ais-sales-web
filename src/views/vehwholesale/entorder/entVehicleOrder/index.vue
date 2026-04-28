@@ -107,7 +107,7 @@
             <fetch-select
               :options="settleStatusOptions"
               v-model="form.settleStatuses"
-              placeholder="请选择订单状态"
+              placeholder="请选择结算状态"
               clearable
               multiple
               filterable

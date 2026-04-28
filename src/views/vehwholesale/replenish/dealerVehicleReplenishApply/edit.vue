@@ -488,7 +488,7 @@ export default {
         { field: 'confirmRemark', title: '确认说明', width: '150' },
         { field: 'prodScheduleActivityName', title: '专项活动', width: '120' },
         { field: 'confirmStatusLabel', title: '确认状态', width: '120' },
-        { field: 'statusLabel', title: '订单状态', width: '120' },
+        { field: 'orderStatusLabel', title: '订单状态', width: '120' },
         { field: 'orderTime', title: '订单时间', width: '180' },
         { field: 'allocateTime', title: '配车时间', width: '180' },
         { field: 'settleTime', title: '结算时间', width: '180' },
