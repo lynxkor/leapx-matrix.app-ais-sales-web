@@ -33,11 +33,11 @@
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="订单状态：" prop="status">
+                <el-form-item label="订单状态：" prop="orderStatus">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vw_wholesale_order_status"
-                    v-model="form.status"
+                    v-model="form.orderStatus"
                     placeholder="请选择"
                     clearable
                     filterable
@@ -199,7 +199,7 @@
                       placeholder="请选择"
                       clearable
                       filterable
-                      :disabled = 'form.status === 99 || form.status === "99"'
+                      :disabled = 'form.orderStatus === 99 || form.orderStatus === "99"'
                     />
                 </el-form-item>
                 <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
@@ -215,8 +215,8 @@
                 <!-- <el-form-item label="批售订单号：" prop="wholesaleOrderCode">
                   {{ form.wholesaleOrderCode }}
                 </el-form-item> -->
-                <el-form-item label="订单状态：" prop="statusLabel">
-                  {{ form.statusLabel }}
+                <el-form-item label="订单状态：" prop="orderStatusLabel">
+                  {{ form.orderStatusLabel }}
                 </el-form-item>
                 <el-form-item label="确认状态：" prop="confirmStatusLabel">
                   {{ form.confirmStatusLabel }}
@@ -618,7 +618,7 @@
                     filterable
                      labelKey="fundTypeLabel"
                     valueKey="fundType"
-                    :disabled="needAutoAllocateCarStatus.includes(form.status)"
+                    :disabled="needAutoAllocateCarStatus.includes(form.orderStatus)"
                     @change="clearCache"
                   />
                 </el-form-item>
@@ -1203,7 +1203,7 @@ export default {
         });
         return false;
       };
-      if (!this.ALLOWED_STATUS.includes(item.status)) {
+      if (!this.ALLOWED_STATUS.includes(item.orderStatus)) {
         this.$message({
           type: 'error',
           message: '订单[订单状态]必须为[未配车,配车失败]!'
@@ -1227,7 +1227,7 @@ export default {
         });
         return false;
       };
-      if (!this.ALLOWED_STATUS.includes(item.status)) {
+      if (!this.ALLOWED_STATUS.includes(item.orderStatus)) {
         this.$message({
           type: 'error',
           message: '订单[订单状态]必须为[未配车,配车失败]!'
@@ -1313,7 +1313,7 @@ export default {
 
     },
     allAllowCancel (item) {
-      if (!this.ALLOWED_STATUS.includes(item.status)) {
+      if (!this.ALLOWED_STATUS.includes(item.orderStatus)) {
         this.$message({
           type: 'error',
           message: '订单已完成配车，不允许作废!'

@@ -26,6 +26,12 @@
             <el-form-item label="产地：" prop="productarea">
               {{ info.productarea }}
             </el-form-item>
+            <el-form-item label="车辆交付状态：" prop="vehicleDeliveryStatusLabel">
+              {{ info.vehicleDeliveryStatusLabel }}
+            </el-form-item>
+            <el-form-item label="是否配车：" prop="carAllocatedLabel">
+              {{ info.carAllocatedLabel }}
+            </el-form-item>
             <el-form-item label="制造工厂：" prop="factory">
               {{ info.factory }}
             </el-form-item>

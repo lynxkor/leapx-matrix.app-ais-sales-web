@@ -225,7 +225,7 @@ export default {
         remark: [
           { required: true, message: '请输入备注', trigger: 'change' }
         ],
-        status: [
+        orderStatus: [
           { required: true, message: '请选择订单状态', trigger: 'change' }
         ],
         statusDesc: [

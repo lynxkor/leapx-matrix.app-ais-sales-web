@@ -131,11 +131,11 @@ export default {
       this.dialogVisible = true;
       // 保存外部传入的固定参数，重置时需要保留
       this.externalParams = { ...params };
-      const { materialsCode } = params;
+      const { materialsCode, saleDealerCode } = params;
       if (materialsCode) {
         const matchRes = await materialsCodeGetList({ materialsCode: materialsCode, status: 1 });
         const materialsCodeList = (matchRes.records || []).map(item => item.matchMaterialsCode);
-        this.searchForm = { ...defaultSearchForm, materialsCodeList: [...materialsCodeList, materialsCode] };
+        this.searchForm = { ...defaultSearchForm, materialsCodeList: [...materialsCodeList, materialsCode], saleDealerCode: saleDealerCode };
       } else {
         this.searchForm = { ...defaultSearchForm, ...params };
       }

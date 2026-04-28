@@ -23,7 +23,7 @@
             </div>
             <div class="common-section-body">
               <!-- 编辑模式 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="160px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="物料编码：" prop="materialsCode">
                   <el-input placeholder="请输入" v-model="form.materialsCode" clearable maxlength="30" />
                 </el-form-item>
@@ -119,7 +119,7 @@
               </el-form>
 
               <!-- 详情模式 -->
-              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" label-width="160px" v-show="!(isEditing || !_id)">
                 <el-form-item label="物料编码：">
                   {{ form.materialsCode }}
                 </el-form-item>
@@ -127,37 +127,37 @@
                   {{ form.materialsDesc }}
                 </el-form-item>
                 <el-form-item label="车系：">
-                  <el-link type="primary" :href="`/datacenter/materials/vehicleSeries/detail?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="车型：">
-                  <el-link type="primary" :href="`/datacenter/materials/vehicleModel/detail?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="年款：">
-                  <el-link type="primary" :href="`/datacenter/materials/vehicleYearType/detail?id=${form.yearTypeId}`" target="_blank">{{ form.yearTypeName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${form.yearTypeId}`" target="_blank">{{ form.yearTypeName }}</el-link>
                 </el-form-item>
                 <el-form-item label="外观：">
-                  <el-link type="primary" :href="`/datacenter/materials/vehicleExterior/detail?id=${form.exteriorId}`" target="_blank">{{ form.exteriorName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleexterior/edit?id=${form.exteriorId}`" target="_blank">{{ form.exteriorName }}</el-link>
                 </el-form-item>
                 <el-form-item label="内饰：">
-                  <el-link type="primary" :href="`/datacenter/materials/vehicleInterior/detail?id=${form.interiorId}`" target="_blank">{{ form.interiorName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleinterior/edit?id=${form.interiorId}`" target="_blank">{{ form.interiorName }}</el-link>
                 </el-form-item>
                 <el-form-item label="车顶：">
-                  <el-link type="primary" :href="`/datacenter/materials/vehicleRoof/detail?id=${form.roofId}`" target="_blank">{{ form.roofName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleroof/edit?id=${form.roofId}`" target="_blank">{{ form.roofName }}</el-link>
                 </el-form-item>
                 <el-form-item label="轮毂：">
-                  <el-link type="primary" :href="`/datacenter/materials/vehicleWheelHub/detail?id=${form.wheelHubId}`" target="_blank">{{ form.wheelHubName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclewheelhub/edit?id=${form.wheelHubId}`" target="_blank">{{ form.wheelHubName }}</el-link>
                 </el-form-item>
                 <el-form-item label="续航里程：">
-                  <el-link type="primary" :href="`/datacenter/materials/vehicleDrivingRange/detail?id=${form.drivingRangeId}`" target="_blank">{{ form.drivingRangeName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicledrivingrange/edit?id=${form.drivingRangeId}`" target="_blank">{{ form.drivingRangeName }}</el-link>
                 </el-form-item>
                 <el-form-item label="选配动力：">
-                  <el-link type="primary" :href="`/datacenter/materials/vehicleRangePower/detail?id=${form.rangePowerId}`" target="_blank">{{ form.rangePowerName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclerangepower/edit?id=${form.rangePowerId}`" target="_blank">{{ form.rangePowerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="选装包：">
-                  <el-link type="primary" :href="`/datacenter/materials/vehicleOptionPackage/detail?id=${form.optionPackageId}`" target="_blank">{{ form.optionPackageName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleoptionpackage/edit?id=${form.optionPackageId}`" target="_blank">{{ form.optionPackageName }}</el-link>
                 </el-form-item>
                 <el-form-item label="电池电芯：">
-                  <el-link type="primary" :href="`/datacenter/materials/vehicleBatteryCell/detail?id=${form.batteryCellId}`" target="_blank">{{ form.batteryCellName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclebatterycell/edit?id=${form.batteryCellId}`" target="_blank">{{ form.batteryCellName }}</el-link>
                 </el-form-item>
                 <el-form-item label="状态：">
                   {{ form.statusLabel }}
@@ -172,13 +172,13 @@
               <h2>价格信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="160px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="整车价格：">
                   <el-input-number placeholder="请输入" v-model="form.price" clearable :controls="false"
                     :precision="2" :min="0.00" :step="0.01"/>
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" label-width="160px" v-show="!(isEditing || !_id)">
                 <el-form-item label="整车价格：">
                   {{ form.price }}
                 </el-form-item>
@@ -216,16 +216,16 @@
                 </el-form-item>
               </el-form>
 
-              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" label-width="160px" v-show="!(isEditing || !_id)">
                 <el-form-item
-                  v-for="(item, index) in formItems"
+                  v-for="(item, index) in formItemsLabel"
                   :key="index"
                   :label="item.label"
                 >
-                  {{ getPropsLabel(item.prop) }}
+                  {{ form.props[item.prop] }}
                 </el-form-item>
                 <el-form-item label="停产状态：">
-                  {{ getDiscontinueStatusLabel() }}
+                  {{ form.props.discontinueStatusLabel }}
                 </el-form-item>
               </el-form>
             </div>
@@ -333,6 +333,15 @@ export default {
         { label: '是否允许企业客户销售：', prop: 'allowCustomerSales' },
         { label: '是否允许批售确认：', prop: 'allowWholesaleConfirm' },
         { label: '是否允许改配：', prop: 'allowConfigurationModify' }
+      ],
+      formItemsLabel: [
+        { label: '是否允许现车批售：', prop: 'allowWholesaleLabel' },
+        { label: '是否允许排产申请：', prop: 'allowProductionScheduleLabel' },
+        { label: '是否允许展车批售：', prop: 'allowDisplayVehicleWholesaleLabel' },
+        { label: '是否允许试驾车批售：', prop: 'allowTestDriveVehicleWholesaleLabel' },
+        { label: '是否允许企业客户销售：', prop: 'allowCustomerSalesLabel' },
+        { label: '是否允许批售确认：', prop: 'allowWholesaleConfirmLabel' },
+        { label: '是否允许改配：', prop: 'allowConfigurationModifyLabel' }
       ],
       loading: false,
       submitLoading: false,

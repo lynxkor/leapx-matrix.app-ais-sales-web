@@ -23,17 +23,15 @@
           <section class="common-section">
             <div class="common-section-body">
               <!-- 订单基本信息 -->
-              <el-form :inline="true" class="form-detail">
-                <el-form-item label="订单编号：" prop="po" style="font-weight: bold">
-                  {{ form.po }}
-                </el-form-item>
-                <el-form-item label="订单状态：" prop="poStatusLabel">
-                  {{ form.poStatusLabel }}
-                </el-form-item>
-                <el-form-item label="创建时间：" prop="createTime">
-                  {{ form.createTime }}
-                </el-form-item>
-              </el-form>
+               <div class="form-details">
+                <div>
+                  订单状态：{{ form.poStatusLabel }}
+                </div>
+                <el-divider direction="vertical"></el-divider>
+                <div>
+                  创建时间：{{ form.createTime }}
+                </div>
+               </div>
             </div>
           </section>
 
@@ -461,3 +459,12 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.form-details {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: #6C6E6C;
+}
+</style>

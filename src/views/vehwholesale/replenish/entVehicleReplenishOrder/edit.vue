@@ -408,7 +408,6 @@
                   @remove-row="handleRemoveRow"
                   @page-size-change="pageSizeChange"
                   @current-page-change="currentPageChange"
-                  @value-change = "cellChange"
                   :auth="{edit: isEditing, delete: isEditing}"
                 />
               </div>
