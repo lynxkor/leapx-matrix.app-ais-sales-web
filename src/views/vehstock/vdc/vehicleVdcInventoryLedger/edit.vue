@@ -26,7 +26,7 @@
               <h2>基本信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail" label-width="150px">
+              <el-form :inline="true" class="form-detail">
                 <el-form-item label="VIN：" prop="vin">
                   {{ form.vin }}
                 </el-form-item>
@@ -137,7 +137,6 @@
                 v-else
                 :inline="true"
                 class="form-detail"
-                label-width="150px"
               >
                 <el-form-item label="订单编号：" prop="po">
                   {{ form.po }}
@@ -203,7 +202,7 @@
               <h2>物料信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail" label-width="150px">
+              <el-form :inline="true" class="form-detail">
                 <el-form-item label="物料编码：" prop="materialsCode">
                   {{ form.materialsCode }}
                 </el-form-item>
@@ -253,7 +252,7 @@
               <h2>生产信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail" label-width="150px">
+              <el-form :inline="true" class="form-detail">
                 <el-form-item label="工厂：" prop="factory">
                   {{ form.factory }}
                 </el-form-item>

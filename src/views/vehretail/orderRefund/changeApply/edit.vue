@@ -105,7 +105,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="申请编号：" prop="changeApplyCode">
                   {{ form.changeApplyCode }}
                 </el-form-item>
@@ -274,7 +274,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="原购车人名称：" prop="originalBuyerName">
                   {{ form.originalBuyerName }}
                 </el-form-item>
@@ -417,7 +417,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="变更后购车人名称：" prop="newBuyerName">
                   {{ form.newBuyerName }}
                 </el-form-item>
@@ -458,7 +458,7 @@
               <h2>申请记录</h2>
             </div>
             <div class="common-section-body">
-              <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="申请人：" prop="creatorName">
                   {{ form.creatorName }}
                 </el-form-item>
@@ -482,7 +482,7 @@
               <h2>审批记录</h2>
             </div>
             <div class="common-section-body">
-              <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
 <!--                <el-form-item label="审核人ID：" prop="auditorId">-->
 <!--                  {{ form.auditorId }}-->
 <!--                </el-form-item>-->

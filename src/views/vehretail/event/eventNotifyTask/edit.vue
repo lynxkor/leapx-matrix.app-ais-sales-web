@@ -184,7 +184,7 @@
               </el-form>
 
               <!-- 详情展示 -->
-              <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="事件任务ID：" prop="eventNotifyId">
                   {{ form.eventNotifyId }}
                 </el-form-item>

@@ -135,7 +135,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail" label-width="150px" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="配置编号：" prop="configCode">
                   {{ form.configCode }}
                 </el-form-item>
@@ -183,7 +183,7 @@
               <h2>复核信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail" label-width="150px">
+              <el-form :inline="true" class="form-detail">
                 <el-form-item label="复核状态：" prop="auditStatusLabel">
                   {{ form.auditStatusLabel }}
                 </el-form-item>

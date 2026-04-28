@@ -37,7 +37,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="原因二级分类编码：" prop="subCateName">
                   {{ form.subCateCode }}
                 </el-form-item>

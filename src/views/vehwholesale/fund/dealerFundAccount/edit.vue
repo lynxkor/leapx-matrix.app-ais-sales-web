@@ -91,7 +91,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail" label-width="150px" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="账户编号：" prop="fundAccountCode">
                   {{ form.fundAccountCode }}
                 </el-form-item>
@@ -134,7 +134,7 @@
               <h2 v-show="_id">余额信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail" label-width="150px">
+              <el-form :inline="true" class="form-detail">
                 <el-form-item label="可用余额：" prop="availableBalance">
                   {{ form.availableBalance }}
                 </el-form-item>
@@ -167,7 +167,7 @@
               <h2>配置信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail" label-width="150px">
+              <el-form :inline="true" class="form-detail">
                 <el-form-item label="是否允许使用返利：" prop="allowUseRebate">
                   {{ form.allowUseRebateLabel  }}
                 </el-form-item>
