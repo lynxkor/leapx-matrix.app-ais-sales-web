@@ -11,7 +11,6 @@
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
         :showEditBtn="form.permission.edit"
-        :on-success="getDetailData"
       >
         <template #status>
           {{ form.replenishApplyCode }}
@@ -290,7 +289,7 @@
               <h2>整车门店补货明细</h2>
             </div>
             <div class="common-section-body">
-              <el-button size="small" @click="handleAddRow" style="margin-bottom: 10px;" v-show = "form.permission.edit && _id && isEditing">添加补货明细</el-button>
+              <el-button size="small" @click="handleAddRow" style="margin-bottom: 10px;" v-show = "form.permission.edit && _id">添加补货明细</el-button>
               <div class="common-section-table">
                 <component-table
                   :tableData="form.details"
@@ -879,7 +878,7 @@ export default {
         auditOpinion: data.remark
       }).then(() => {
         this.$message.success('补货申请门店审核成功');
-        this.getDetailData();
+        this.$refs.containerRef.loadDetail();
       });
     },
     handelAuditForFactory (data) {
@@ -889,7 +888,7 @@ export default {
         auditOpinion: data.remark
       }).then(() => {
         this.$message.success('补货申请厂端审核成功');
-        this.getDetailData();
+        this.$refs.containerRef.loadDetail();
       });
     },
     updateApplyTotalQty () {
@@ -904,16 +903,6 @@ export default {
       });
       this.form.applyTotalQty = total;
     },
-    getDetailData () {
-      const id = this._id;
-      if (id) {
-        getDetail(id).then(res => {
-          this.loading = false;
-          Object.assign(this.form, res);
-          Object.assign(this.originalForm, res);
-        });
-      }
-    },
     handleUnused () {
       this.$confirm('是否执行作废操作？', '提示', {
         confirmButtonText: '确定',
@@ -922,7 +911,7 @@ export default {
       }).then(() => {
         unusedApply(this._id).then(() => {
           this.$message.success('补货申请已作废');
-          this.getDetailData();
+          this.$refs.containerRef.loadDetail();
         }).catch(() => {
           this.$message.error('补货申请作废失败');
         });
@@ -932,7 +921,7 @@ export default {
     handleSubmit () {
       replenishmentSubmit({ id: this._id }).then(() => {
         this.$message.success('补货申请提交成功');
-        this.getDetailData();
+        this.$refs.containerRef.loadDetail();
       });
     }
   }
