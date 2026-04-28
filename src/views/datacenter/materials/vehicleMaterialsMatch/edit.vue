@@ -48,7 +48,7 @@
               </el-form>
 
               <!-- 详情模式 -->
-              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" label-width="150px" v-show="!(isEditing || !_id)">
                 <el-form-item label="物料编码：">
                   {{ form.materials?.materialsCode }}
                 </el-form-item>
@@ -101,7 +101,7 @@
               </el-form>
 
               <!-- 详情模式 -->
-              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" label-width="150px" v-show="!(isEditing || !_id)">
                 <el-form-item label="可配物料编码：">
                   {{ form.matchMaterials?.materialsCode }}
                 </el-form-item>
@@ -358,15 +358,15 @@ export default {
       const id = this.form.materials?.[idKey];
       if (!id) return null;
       const routeMap = {
-        seriesId: '/datacenter/materials/vehicleSeries/detail',
-        modelId: '/datacenter/materials/vehicleModel/detail',
-        yearTypeId: '/datacenter/materials/vehicleYearType/detail',
-        exteriorId: '/datacenter/materials/vehicleExterior/detail',
-        interiorId: '/datacenter/materials/vehicleInterior/detail',
-        roofId: '/datacenter/materials/vehicleRoof/detail',
-        wheelHubId: '/datacenter/materials/vehicleWheelHub/detail',
-        optionPackageId: '/datacenter/materials/vehicleOptionPackage/detail',
-        batteryCellId: '/datacenter/materials/vehicleBatteryCell/detail'
+        seriesId: '/sales/datacenter/materials/vehicleseries/edit',
+        modelId: '/sales/datacenter/materials/vehiclemodel/edit',
+        yearTypeId: '/sales/datacenter/materials/vehicleyeartype/edit',
+        exteriorId: '/sales/datacenter/materials/vehicleexterior/edit',
+        interiorId: '/sales/datacenter/materials/vehicleinterior/edit',
+        roofId: '/sales/datacenter/materials/vehicleroof/edit',
+        wheelHubId: '/sales/datacenter/materials/vehiclewheelhub/edit',
+        optionPackageId: '/sales/datacenter/materials/vehicleoptionpackage/edit',
+        batteryCellId: '/sales/datacenter/materials/vehiclebatterycell/edit'
       };
       return routeMap[idKey] ? `${routeMap[idKey]}?id=${id}` : null;
     },
@@ -376,15 +376,15 @@ export default {
       const id = this.form.matchMaterials?.[idKey];
       if (!id) return null;
       const routeMap = {
-        seriesId: '/datacenter/materials/vehicleSeries/detail',
-        modelId: '/datacenter/materials/vehicleModel/detail',
-        yearTypeId: '/datacenter/materials/vehicleYearType/detail',
-        exteriorId: '/datacenter/materials/vehicleExterior/detail',
-        interiorId: '/datacenter/materials/vehicleInterior/detail',
-        roofId: '/datacenter/materials/vehicleRoof/detail',
-        wheelHubId: '/datacenter/materials/vehicleWheelHub/detail',
-        optionPackageId: '/datacenter/materials/vehicleOptionPackage/detail',
-        batteryCellId: '/datacenter/materials/vehicleBatteryCell/detail'
+        seriesId: '/sales/datacenter/materials/vehicleseries/edit',
+        modelId: '/sales/datacenter/materials/vehiclemodel/edit',
+        yearTypeId: '/sales/datacenter/materials/vehicleyeartype/edit',
+        exteriorId: '/sales/datacenter/materials/vehicleexterior/edit',
+        interiorId: '/sales/datacenter/materials/vehicleinterior/edit',
+        roofId: '/sales/datacenter/materials/vehicleroof/edit',
+        wheelHubId: '/sales/datacenter/materials/vehiclewheelhub/edit',
+        optionPackageId: '/sales/datacenter/materials/vehicleoptionpackage/edit',
+        batteryCellId: '/sales/datacenter/materials/vehiclebatterycell/edit'
       };
       return routeMap[idKey] ? `${routeMap[idKey]}?id=${id}` : null;
     }

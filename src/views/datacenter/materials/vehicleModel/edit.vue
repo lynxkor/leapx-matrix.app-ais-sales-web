@@ -90,10 +90,10 @@
                   {{ form.modelName }}
                 </el-form-item>
                 <el-form-item label="车系名称：">
-                  <el-link type="primary" :href="`/datacenter/materials/vehicleSeries/detail?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="系列名称：">
-                  <el-link type="primary" :href="`/datacenter/materials/vehicleModelLine/detail?id=${form.modelLineId}`" target="_blank">{{ form.modelLineName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodelline/edit?id=${form.modelLineId}`" target="_blank">{{ form.modelLineName }}</el-link>
                 </el-form-item>
                 <el-form-item label="备注：">
                   {{ form.remark }}

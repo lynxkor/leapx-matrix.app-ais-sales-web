@@ -82,7 +82,9 @@
                   {{ form.modelLineName }}
                 </el-form-item>
                 <el-form-item label="品牌名称：">
-                  {{ form.brandName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclebrand/edit?id=${form.brandId}`" target="_blank">
+                    {{ form.brandName }}
+                  </el-link>
                 </el-form-item>
                 <el-form-item label="状态：">
                   {{ form.statusLabel }}
