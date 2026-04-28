@@ -95,7 +95,7 @@
          <el-form-item label="订单状态">
           <fetch-select
               :options="orderStatusOptions"
-              v-model="form.statuses"
+              v-model="form.orderStatuses"
               placeholder="请选择订单状态"
               clearable
               multiple
@@ -107,7 +107,7 @@
             <fetch-select
               :options="settleStatusOptions"
               v-model="form.settleStatuses"
-              placeholder="请选择订单状态"
+              placeholder="请选择结算状态"
               clearable
               multiple
               filterable
@@ -308,7 +308,7 @@ export default {
           { props: 'pickupContactName', label: '接车联系人', visible: true, width: 200 },
           { props: 'pickupContactMobile', label: '接车联系电话', visible: true, width: 200 },
           { props: 'terminalStatusLabel', label: '终端状态', visible: true, width: 200 },
-          { props: 'statusLabel', label: '订单状态', visible: true, width: 200 },
+          { props: 'orderStatusLabel', label: '订单状态', visible: true, width: 200 },
           { props: 'emergencyOrderLabel', label: '是否紧急订单', visible: true, width: 200 },
           { props: 'orderSyncStatusLabel', label: '订单同步状态', visible: true, width: 200 },
           { props: 'allocateStatusLabel', label: '配车状态', visible: true, width: 200 },

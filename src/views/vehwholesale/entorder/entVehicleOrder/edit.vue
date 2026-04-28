@@ -12,7 +12,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.status === 3 || form.status === 50"
+        :showEditBtn="form.orderStatus === 3 || form.orderStatus === 50"
       >
         <template #status>
           <span>{{ form.entOrderCode }}</span>
@@ -136,10 +136,10 @@
                     disabled
                   />
                 </el-form-item>
-                 <el-form-item label="订单状态：" prop="status">
+                 <el-form-item label="订单状态：" prop="orderStatus">
                    <el-input
                     placeholder="请输入"
-                    v-model="form.statusLabel"
+                    v-model="form.orderStatusLabel"
                     clearable
                     disabled
                   />
@@ -288,8 +288,8 @@
                  <el-form-item label="订单时间：" prop="orderTime">
                   {{ form.orderTime }}
                 </el-form-item>
-                  <el-form-item label="订单状态：" prop="statusLabel">
-                  {{ form.statusLabel }}
+                  <el-form-item label="订单状态：" prop="orderStatusLabel">
+                  {{ form.orderStatusLabel }}
                 </el-form-item>
                 <el-form-item label="是否紧急订单：" prop="emergencyOrderLabel">
                   {{ form.emergencyOrderLabel }}

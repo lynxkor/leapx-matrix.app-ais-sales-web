@@ -11,7 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.status === 10 || form.status === 20"
+        :showEditBtn="form.auditStatus === 10 || form.auditStatus === 20"
       >
         <template #status>
          {{ form.backOrderCode }}
@@ -101,11 +101,11 @@
                     filterable
                   />
                 </el-form-item>
-                  <el-form-item label="退车订单状态：" prop="status">
+                  <el-form-item label="退车订单状态：" prop="auditStatus">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vw_vehicle_back_order_audit_status"
-                    v-model="form.status"
+                    v-model="form.auditStatus"
                     placeholder="请选择"
                     clearable
                     filterable
@@ -180,8 +180,8 @@
                    <el-form-item label="退车类型：" prop="backTypeLabel">
                   {{ form.backTypeLabel }}
                 </el-form-item>
-                  <el-form-item label="退车订单状态：" prop="statusLabel">
-                  {{ form.statusLabel }}
+                  <el-form-item label="退车订单状态：" prop="auditStatusLabel">
+                  {{ form.auditStatusLabel }}
                 </el-form-item>
                 <el-form-item label="退车备注：" prop="remark">
                   {{ form.remark }}
@@ -509,7 +509,7 @@ export default {
         backType: [
           { required: true, message: '请选择退车类型', trigger: 'change' }
         ],
-        status: [
+        auditStatus: [
           { required: true, message: '请选择退车订单状态', trigger: 'change' }
         ],
         remark: [
