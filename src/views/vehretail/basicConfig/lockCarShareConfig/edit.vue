@@ -97,7 +97,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
               <el-form-item label="资源共享组编码：" prop="shareGroupCode">
                   {{ form.shareGroupCode }}
                 </el-form-item>

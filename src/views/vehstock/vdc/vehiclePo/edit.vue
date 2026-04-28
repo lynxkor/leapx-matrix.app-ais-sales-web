@@ -40,7 +40,7 @@
               <h2>销售信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail" label-width="160px">
+              <el-form :inline="true" class="form-detail">
                 <el-form-item label="销售预留：" prop="reservedLabel">
                   {{ form.reservedLabel }}
                 </el-form-item>
@@ -83,7 +83,7 @@
               <h2>物料信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail" label-width="160px">
+              <el-form :inline="true" class="form-detail">
                 <el-form-item label="物料编码：" prop="materialsCode">
                   {{ form.materialsCode }}
                 </el-form-item>
@@ -132,7 +132,7 @@
               <h2>生产信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail" label-width="160px">
+              <el-form :inline="true" class="form-detail">
                 <el-form-item label="工厂：" prop="factory">
                   {{ form.factory }}
                 </el-form-item>
@@ -199,7 +199,7 @@
               <h2>SAP信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail" label-width="160px">
+              <el-form :inline="true" class="form-detail">
                 <el-form-item label="SAP流水号：" prop="serNo">
                   {{ form.serNo }}
                 </el-form-item>
