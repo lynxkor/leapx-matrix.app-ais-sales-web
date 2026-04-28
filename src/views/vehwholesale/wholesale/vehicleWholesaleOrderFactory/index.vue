@@ -19,7 +19,7 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_wholesale_order_status"
-          v-model="form.statuses"
+          v-model="form.orderStatuses"
           placeholder="请选择"
           clearable
           multiple
@@ -590,7 +590,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'statusLabel', label: '订单状态', visible: true, width: 200 },
+          { props: 'orderStatusLabel', label: '订单状态', visible: true, width: 200 },
           { props: 'orderTime', label: '订单时间', visible: true, width: 200 },
           { props: 'confirmTime', label: '确认时间', visible: true, width: 200 },
           // { props: 'saleDealerName', label: '销售公司名称', visible: true, width: 200 },
@@ -730,7 +730,7 @@ export default {
           });
           return false;
         };
-        if (!this.ALLOWED_STATUS.includes(item.status)) {
+        if (!this.ALLOWED_STATUS.includes(item.orderStatus)) {
           this.$message({
             type: 'error',
             message: '选择的数据中[订单状态]必须为[未配车,配车失败]!'
@@ -757,10 +757,10 @@ export default {
         return false;
       };
       for (const item of items) {
-        if (!this.ALLOWED_STATUS.includes(item.status)) {
+        if (!this.ALLOWED_STATUS.includes(item.orderStatus)) {
           this.$message({
             type: 'error',
-            message: '存在' + item.statusLabel + '的订单，请重新核对需要操作的订单！'
+            message: '存在' + item.orderStatusLabel + '的订单，请重新核对需要操作的订单！'
           });
           return false;
         };
@@ -802,10 +802,10 @@ export default {
         return false;
       };
       for (const item of items) {
-        if (!this.ALLOWED_STATUS.includes(item.status)) {
+        if (!this.ALLOWED_STATUS.includes(item.orderStatus)) {
           this.$message({
             type: 'error',
-            message: '存在' + item.statusLabel + '的订单，请重新核对需要操作的订单！'
+            message: '存在' + item.orderStatusLabel + '的订单，请重新核对需要操作的订单！'
           });
           return false;
         };
@@ -865,7 +865,7 @@ export default {
         return false;
       };
       for (const item of items) {
-        if (!this.SETTLED_SUCCESSFULLY_STATUS.includes(item.status)) {
+        if (!this.SETTLED_SUCCESSFULLY_STATUS.includes(item.orderStatus)) {
           this.$message({
             type: 'error',
             message: '选择的数据中[订单状态]必须为[结算成功]!'
@@ -899,7 +899,7 @@ export default {
         return false;
       };
       for (const item of items) {
-        if (!this.ALLOWED_CANCELALLOCATEVEHICLE_STATUS.includes(item.status)) {
+        if (!this.ALLOWED_CANCELALLOCATEVEHICLE_STATUS.includes(item.orderStatus)) {
           this.$message({
             type: 'error',
             message: '选择的数据中[订单状态]必须为[已完成配车、取消结算、结算失败]!'
@@ -955,7 +955,7 @@ export default {
         return false;
       };
       for (const item of items) {
-        if (!this.ALLOWED_STATUS.includes(item.status)) {
+        if (!this.ALLOWED_STATUS.includes(item.orderStatus)) {
           this.$message({
             type: 'error',
             message: '只有该订单状态【未配车、或配车失败】可以取消急单!'
@@ -1045,7 +1045,7 @@ export default {
           });
           return false;
         };
-        if (!this.ALLOWED_STATUS.includes(item.status)) {
+        if (!this.ALLOWED_STATUS.includes(item.orderStatus)) {
           this.$message({
             type: 'error',
             message: '选择的数据中[订单状态]必须为[未配车,配车失败]!'
@@ -1071,7 +1071,7 @@ export default {
         return false;
       };
       for (const item of items) {
-        if (!this.ALLOWED_STATUS.includes(item.status)) {
+        if (!this.ALLOWED_STATUS.includes(item.orderStatus)) {
           this.$message({
             type: 'error',
             message: '订单已完成配车，不允许作废!'
@@ -1097,7 +1097,7 @@ export default {
         return false;
       };
       for (const item of items) {
-        if (!this.ALLOWED_STATUS.includes(item.status)) {
+        if (!this.ALLOWED_STATUS.includes(item.orderStatus)) {
           this.$message({
             type: 'error',
             message: '只有【订单状态】为未配车、配车失败的记录可以设置，请核实！'
