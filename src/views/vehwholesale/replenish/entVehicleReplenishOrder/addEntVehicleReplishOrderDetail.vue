@@ -230,7 +230,7 @@ export default {
       });
     },
     async getVehicleMaterialsList (params) {
-      return vehicleMaterials({ materialsCodeLike: params, status: 1, pageSize: 20, allowCustomerSales: true });
+      return vehicleMaterials({ materialsCodeLike: params, status: 1, pageSize: 20, allowCustomerSales: true, discontinueStatus: 1 });
     },
     materialsSelect (val, row) {
       this.materialsform.materialsId = row.id;
