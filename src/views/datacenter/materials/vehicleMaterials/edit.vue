@@ -218,7 +218,7 @@
 
               <el-form :inline="true" class="form-detail" label-width="160px" v-show="!(isEditing || !_id)">
                 <el-form-item
-                  v-for="(item, index) in formItems"
+                  v-for="(item, index) in formItemsLabel"
                   :key="index"
                   :label="item.label"
                 >
@@ -326,6 +326,15 @@ export default {
       pageTitle: '销服-业务主数据-配置主数据-整车物料',
       discontinueStatusList: [],
       formItems: [
+        { label: '是否允许现车批售：', prop: 'allowWholesale' },
+        { label: '是否允许排产申请：', prop: 'allowProductionSchedule' },
+        { label: '是否允许展车批售：', prop: 'allowDisplayVehicleWholesale' },
+        { label: '是否允许试驾车批售：', prop: 'allowTestDriveVehicleWholesale' },
+        { label: '是否允许企业客户销售：', prop: 'allowCustomerSales' },
+        { label: '是否允许批售确认：', prop: 'allowWholesaleConfirm' },
+        { label: '是否允许改配：', prop: 'allowConfigurationModify' }
+      ],
+      formItemsLabel: [
         { label: '是否允许现车批售：', prop: 'allowWholesaleLabel' },
         { label: '是否允许排产申请：', prop: 'allowProductionScheduleLabel' },
         { label: '是否允许展车批售：', prop: 'allowDisplayVehicleWholesaleLabel' },
