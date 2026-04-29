@@ -271,8 +271,19 @@
                   <vxe-column field="originalWholesalePrice" title="原批售价格" width="120" />
                   <vxe-column field="originalRebateAmount" title="原返利使用金额" width="200" />
                   <vxe-column field="originalInvoicePrice" title="原开票价格" width="200" />
-                  <vxe-column field="returnPrice" title="退车价格" width="200" />
-                  <vxe-column field="returnInvoiceAmount" title="退车开票金额" width="200" />
+                  <vxe-column field="returnPrice" title="退车价格" width="200">
+                    <template #default="{ row }">
+                      <el-input
+                        v-if="isEditing"
+                        v-model="row.returnPrice"
+                        placeholder="请输入"
+                        clearable
+                        type="text"
+                      />
+                      <span v-else>{{ row.returnPrice }}</span>
+                    </template>
+                  </vxe-column>
+                  <vxe-column field="returnInvoiceAmount" title="退车开票金额" width="200" ></vxe-column>
                   <!-- 可编辑列：备注 -->
                   <vxe-column field="remark" title="备注说明" width="200">
                     <template #default="{ row }">
@@ -283,7 +294,7 @@
                         clearable
                         type="text"
                       />
-                      <span v-else>{{ row.remark || '-' }}</span>
+                      <span v-else>{{ row.remark }}</span>
                     </template>
                   </vxe-column>
                   <vxe-column field="storeOutboundConfirmer" title="门店出库确认人" width="200" />
@@ -394,7 +405,7 @@ const defaultForm = {
   modifierName: '',
   updateTime: '',
   remark: '',
-  status: '10',
+  auditStatus: '10',
   statusDesc: '',
   dataSource: '',
   returnOrderCode: '',
@@ -586,7 +597,14 @@ export default {
         {
           field: 'returnPrice',
           title: '退车价格',
-          width: '200'
+          width: '200',
+          editable: true,
+          editRender: {
+            name: 'ElInput',
+            props: {
+              type: 'Sring'
+            }
+          },
         },
         {
           field: 'returnInvoiceAmount',

@@ -5,7 +5,7 @@
       <h2>{{ title }}</h2>
     </div>
     <div class="common-section-body">
-    <el-form :label-width="labelWidth" :inline="true" class="form-detail">
+    <el-form :inline="true" class="form-detail">
       <el-form-item
         v-for="field in fields"
         :key="field.key"
