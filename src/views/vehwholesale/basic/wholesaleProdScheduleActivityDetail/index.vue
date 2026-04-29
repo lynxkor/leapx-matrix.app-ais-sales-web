@@ -217,12 +217,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/basic/wholesaleProdScheduleActivity/edit',
-                  query: {
-                    id: row.scheduleActivityId
-                  }
-                });
+                window.open(`/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=${row.scheduleActivityId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -234,12 +229,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleModelLine/detail',
-                  query: {
-                    id: row.modelLineId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleModelLine/edit?id=${row.modelLineId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -255,12 +245,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/partner/channelManagement/shopDetail',
-                  query: {
-                    dealerCode: row.dealerCode
-                  }
-                });
+                window.open(`/sales/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank');
               },
               type: 'primary'
             }]
