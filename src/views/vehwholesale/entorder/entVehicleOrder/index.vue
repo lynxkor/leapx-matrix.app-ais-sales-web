@@ -332,12 +332,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                  query: {
-                    id: row.financialOrganizationId
-                  }
-                });
+                window.open(`/sales/vehwholesale/fund/fundFinancialOrganization/detail?id=${row.financialOrganizationId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -365,12 +360,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleMaterials/edit',
-                  query: {
-                    id: row.materialsCode
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsCode}`, '_blank');
               },
               type: 'primary'
             }]

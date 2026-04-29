@@ -135,10 +135,20 @@
                    type="text">{{ form.vehicleSeriesName }}</el-button>
                 </el-form-item>
                 <el-form-item label="预算科目：" prop="budgetItemName">
-                  {{ form.budgetItemName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/vehwholesale/fund/fundBudgetItem/edit',
+                     query: { id: form.budgetItemId }
+                   })"
+                   type="text">{{ form.budgetItemName }}</el-button>
                 </el-form-item>
                 <el-form-item label="费用支持类型：" prop="feeSupportTypeName">
-                  {{ form.feeSupportTypeName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/vehwholesale/fund/fundFeeSupportType/edit',
+                     query: { id: form.feeSupportTypeId }
+                   })"
+                   type="text">{{ form.feeSupportTypeName }}</el-button>
                 </el-form-item>
                 <el-form-item label="有效开始日期：" prop="effectiveStartTime">
                   {{ form.effectiveStartTime }}

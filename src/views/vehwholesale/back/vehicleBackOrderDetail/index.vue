@@ -241,8 +241,30 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'wholesaleOrderCode', label: '整车批售订单编号', visible: true, width: 200 },
-          { props: 'entOrderCode', label: '企业客户整车订单编号', visible: true, width: 200 },
+          {
+            props: 'wholesaleOrderCode',
+            label: '整车批售订单编号',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${row.wholesaleOrderCode}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'entOrderCode',
+            label: '企业客户整车订单编号',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${row.entOrderCode}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'actualVehicleReturnLabel', label: '是否实车返厂', visible: true, width: 200 },
           { props: 'salesDeptReserveLabel', label: '销售部预留', visible: true, width: 200 },
           { props: 'vehicleLogisticsReserveLabel', label: '整车物流预留', visible: true, width: 200 },

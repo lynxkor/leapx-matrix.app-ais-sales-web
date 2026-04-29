@@ -280,7 +280,12 @@
                   {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="批售订单编号：" prop="wholesaleOrderCode">
-                  {{ form.wholesaleOrderCode }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
+                     query: { id: form.wholesaleOrderCode }
+                   })"
+                   type="text">{{ form.wholesaleOrderCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="车系名称：" prop="seriesName">
                   <el-button class="link" style="padding: 0;"
@@ -293,7 +298,12 @@
                    type="text">{{ form.seriesName }}</el-button>
                 </el-form-item>
                 <el-form-item label="企业客户整车订单号：" prop="entOrderCode">
-                  {{ form.entOrderCode }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/vehwholesale/entorder/entVehicleOrder/edit',
+                     query: { id: form.entOrderCode }
+                   })"
+                   type="text">{{ form.entOrderCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="是否实车返厂：" prop="actualVehicleReturnLabel">
                   {{ form.actualVehicleReturnLabel }}

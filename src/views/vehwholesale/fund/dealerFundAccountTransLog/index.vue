@@ -274,12 +274,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
-                  query: {
-                    id: row.wholesaleOrderId,
-                  }
-                });
+                window.open(`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${row.wholesaleOrderId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -291,12 +286,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/entorder/entVehicleOrder/edit',
-                  query: {
-                    id: row.entVehorderId,
-                  }
-                });
+                window.open(`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${row.entVehorderId}`, '_blank');
               },
               type: 'primary'
             }]
