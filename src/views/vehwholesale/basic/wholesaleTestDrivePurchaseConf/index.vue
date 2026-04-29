@@ -203,7 +203,18 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
+          {
+            props: 'materialsCode',
+            label: '物料编码',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           {
             props: 'seriesName',
@@ -212,12 +223,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleSeries/detail',
-                  query: {
-                    id: row.seriesId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -227,15 +233,9 @@ export default {
             label: '车型',
             visible: true,
             width: 200,
-            // 新增 buttons 配置
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleModel/detail',
-                  query: {
-                    id: row.modelId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -247,12 +247,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleYearType/detail',
-                  query: {
-                    id: row.vehicleYearTypeId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleYearType/edit?id=${row.vehicleYearTypeId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -264,12 +259,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleOptionPackage/detail',
-                  query: {
-                    id: row.optionPackageId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleOptionPackage/edit?id=${row.optionPackageId}`, '_blank');
               },
               type: 'primary'
             }]

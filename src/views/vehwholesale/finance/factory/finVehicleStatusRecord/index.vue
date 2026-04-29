@@ -284,10 +284,9 @@ export default {
           { props: 'taxIncludedPrice', label: '含税价格', visible: true, width: 200 },
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200 },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
-          { props: 'dealerCode', label: '经销商编码', visible: true, width: 200 },
           {
-            props: 'dealerName',
-            label: '经销商名称',
+            props: 'dealerCode',
+            label: '经销商编码',
             visible: true,
             width: 200,
             buttons: [{
@@ -301,6 +300,12 @@ export default {
               },
               type: 'primary'
             }]
+          },
+          {
+            props: 'dealerName',
+            label: '经销商名称',
+            visible: true,
+            width: 200,
           },
           { props: 'unifiedSocialCreditCode', label: '统一社会信用代码', visible: true, width: 200 },
           {
@@ -320,7 +325,18 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
+          {
+            props: 'materialsCode',
+            label: '物料编码',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsCode}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           { props: 'shipmentDate', label: '发车日期', visible: true, width: 200 },
           { props: 'receiveDate', label: '收车日期', visible: true, width: 200 },

@@ -122,13 +122,34 @@
               <!-- 详情模式 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="年款：">
-                  {{ form.vehicleYearType }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleYearType/edit',
+                      query: {
+                        id: form.vehicleYearTypeId,
+                      },
+                    })"
+                   type="text">{{ form.vehicleYearType }}</el-button>
                 </el-form-item>
                 <el-form-item label="系列：">
-                  {{ form.vehicleModelLine }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleModelLine/edit',
+                      query: {
+                        id: form.vehicleModelLineId,
+                      },
+                    })"
+                   type="text">{{ form.vehicleModelLine }}</el-button>
                 </el-form-item>
                 <el-form-item label="车系：">
-                  {{ form.seriesName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleSeries/edit',
+                      query: {
+                        id: form.seriesId,
+                      },
+                    })"
+                   type="text">{{ form.seriesName }}</el-button>
                 </el-form-item>
                 <el-form-item label="数量：">
                   {{ form.quantity }}

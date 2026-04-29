@@ -265,7 +265,14 @@
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationName" v-show="form.settleFundType==2010">
-                  {{ form.financialOrganizationName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/vehwholesale/fund/fundFinancialOrganization/edit',
+                      query: {
+                        id: form.financialOrganizationId,
+                      },
+                    })"
+                   type="text">{{ form.financialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="申请原因：" prop="applyReason">
                   {{ form.applyReason }}

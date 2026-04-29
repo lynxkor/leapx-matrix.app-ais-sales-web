@@ -168,8 +168,16 @@
             filterable
           />
         </el-form-item>
-      <el-form-item label="WMS同步结果">
-         <tag-input v-model="form.syncRemarks" placeholder="请输入" />
+      <el-form-item label="同步状态">
+         <fetch-select
+            :request="fetchOptions"
+            enumCode="vw_sync_status"
+            v-model="form.syncStatuses"
+            placeholder="请选择"
+            clearable
+            filterable
+            multiple
+          />
        </el-form-item>
       </template>
       <page-search-action
@@ -332,7 +340,8 @@ export default {
           { props: 'vin', label: 'VIN码', visible: true, width: 200 },
           { props: 'vehicleWarehouseName', label: '整车仓库', visible: true, width: 200 },
           { props: 'needSyncWmsLabel', label: '是否需要同步WMS', visible: true, width: 200 },
-          { props: 'syncRemark', label: 'WMS同步结果', visible: true, width: 200 },
+          { props: 'syncStatusLabel', label: '同步状态', visible: true, width: 200 },
+          // { props: 'syncRemark', label: 'WMS同步结果', visible: true, width: 200 },
           { props: 'certificatePledgedLabel', label: '合格证是否质押', visible: true, width: 200 },
           { props: 'certificateShippingWayLabel', label: '合格证发运方式', visible: true, width: 200 },
           {

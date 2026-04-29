@@ -82,10 +82,16 @@
                   {{ form.deliveryOrderCode }}
                 </el-form-item>
                 <el-form-item label="预算科目：">
-                  {{ form.budgetItemName }}
+                  <el-button class="link" style="padding: 0;" @click="navigateToRoute({
+                    path: '/vehwholesale/fund/fundBudgetItem/edit',
+                    query: { id: form.budgetItemId }
+                  })" type="text">{{ form.budgetItemName }}</el-button>
                 </el-form-item>
                 <el-form-item label="费用支持类型：">
-                  {{ form.feeSupportTypeName }}
+                  <el-button class="link" style="padding: 0;" @click="navigateToRoute({
+                    path: '/vehwholesale/fund/fundFeeSupportType/edit',
+                    query: { id: form.feeSupportTypeId }
+                  })" type="text">{{ form.feeSupportTypeName }}</el-button>
                 </el-form-item>
                 <el-form-item label="周期：">
                   {{ form.periodLabel }}
@@ -167,7 +173,9 @@ const defaultForm = {
   modelName: '',
   deliveryOrderCode: '',
   budgetItemName: '',
+  budgetItemId: '',
   feeSupportTypeName: '',
+  feeSupportTypeId: '',
   periodLabel: '',
   year: '',
   quarterLabel: '',
@@ -216,7 +224,12 @@ export default {
     async detailRequest () {
       const id = this._id;
       if (id) {
-        return await getDetail(id);
+        const res = await getDetail(id);
+        if (res) {
+          this.form.budgetItemId = res.budgetItemId || res.budget_item_id || '';
+          this.form.feeSupportTypeId = res.feeSupportTypeId || res.fee_support_type_id || '';
+        }
+        return res;
       }
       return {};
     },

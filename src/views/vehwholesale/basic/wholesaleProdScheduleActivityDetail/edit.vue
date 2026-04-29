@@ -253,7 +253,14 @@
                   {{ form.endTime }}
                 </el-form-item>
                   <el-form-item label="门店编码：" prop="dealerCode">
-                  {{ form.dealerCode }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/partner/channelManagement/shopDetail',
+                      query: {
+                        dealerCode: form.dealerCode,
+                      },
+                    })"
+                   type="text">{{ form.dealerCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="门店名称：" prop="dealerName">
                   {{ form.dealerName }}
@@ -288,7 +295,14 @@
                    type="text">{{ form.yearTypeName }}</el-button>
                 </el-form-item>
                   <el-form-item label="物料编码：" prop="materialsCode">
-                  {{ form.materialsCode }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleMaterials/edit',
+                      query: {
+                        id: form.materialsId,
+                      },
+                    })"
+                   type="text">{{ form.materialsCode }}</el-button>
                 </el-form-item>
                   <el-form-item label="物料描述：" prop="materialsDesc">
                   {{ form.materialsDesc }}
@@ -364,6 +378,7 @@ const defaultForm = {
   scheduleActivityId: '',
   dealerCode: '',
   dealerName: '',
+  dealerId: '',
   seriesId: '',
   seriesName: '',
   modelLineId: '',
@@ -522,7 +537,12 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        return getDetail(id).then(res => {
+          if (res.dealerId) {
+            this.form.dealerId = res.dealerId;
+          }
+          return res;
+        });
       }
     },
     submitRequest () {

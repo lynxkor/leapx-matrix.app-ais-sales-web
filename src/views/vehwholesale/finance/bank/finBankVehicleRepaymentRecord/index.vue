@@ -258,7 +258,18 @@ export default {
           },
           { props: 'vin', label: 'VIN号', visible: true, width: 200 },
           { props: 'repaymentDate', label: '还款日期', visible: true, width: 200 },
-          { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
+          {
+            props: 'materialsCode',
+            label: '物料编码',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsCode}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           { props: 'wholesaleOrderCode', label: '整车批售订单', visible: true, width: 200 },
           { props: 'customerOrderCode', label: '企业客户整车订单', visible: true, width: 200 },

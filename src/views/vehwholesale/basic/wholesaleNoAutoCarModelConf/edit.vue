@@ -67,10 +67,24 @@
               <!-- 详情模式 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="车型：">
-                  {{ form.modelName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleModel/edit',
+                      query: {
+                        id: form.modelId,
+                      },
+                    })"
+                   type="text">{{ form.modelName }}</el-button>
                 </el-form-item>
                 <el-form-item label="年款：">
-                  {{ form.vehicleYearType }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleYearType/edit',
+                      query: {
+                        id: form.vehicleYearTypeId,
+                      },
+                    })"
+                   type="text">{{ form.vehicleYearType }}</el-button>
                 </el-form-item>
                 <el-form-item label="不参与自动批售确认：">
                   {{ form.noJoinAutoConfirmLabel }}

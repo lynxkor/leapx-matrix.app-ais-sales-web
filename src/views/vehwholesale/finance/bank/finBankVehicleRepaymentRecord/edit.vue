@@ -73,7 +73,14 @@
                   {{ form.vehicleStatusLabel }}
                 </el-form-item>
                 <el-form-item label="物料编码：" prop="materialsCode">
-                  {{ form.materialsCode }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleMaterials/edit',
+                      query: {
+                        id: form.materialsCode,
+                      },
+                    })"
+                   type="text">{{ form.materialsCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="物料描述：" prop="materialsDesc">
                   {{ form.materialsDesc }}
@@ -117,6 +124,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 const defaultForm = {
   // 多选时字段有变化，自行修复
   materialsCode: '',
+  materialsId: '',
   code: '',
   dealerCompanyCode: '',
   dealerCompanyName: '',

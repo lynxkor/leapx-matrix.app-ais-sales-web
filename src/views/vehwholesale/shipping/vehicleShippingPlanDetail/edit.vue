@@ -181,6 +181,13 @@
                     clearable
                   />
                 </el-form-item>
+                <el-form-item label="同步状态：" prop="syncStatusLabel">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.syncStatusLabel"
+                    clearable
+                  />
+                </el-form-item>
                  <el-form-item label="WMS同步结果：" prop="syncRemark">
                   <el-input
                     placeholder="请输入"
@@ -314,6 +321,9 @@
                 </el-form-item>
                 <el-form-item label="是否需要同步WMS：" prop="needSyncWms">
                   {{ form.needSyncWmsLabel }}
+                </el-form-item>
+                 <el-form-item label="同步状态：" prop="syncStatusLabel">
+                  {{ form.syncStatusLabel }}
                 </el-form-item>
                  <el-form-item label="WMS同步结果：" prop="syncRemark">
                   {{ form.syncRemark }}

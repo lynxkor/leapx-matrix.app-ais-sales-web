@@ -248,14 +248,63 @@ export default {
           { props: 'allowLockRetailLabel', label: '是否锁零售单', visible: true, width: 200 },
           { props: 'startTime', label: '开始日期', visible: true, width: 200 },
           { props: 'endTime', label: '截止日期', visible: true, width: 200 },
-          { props: 'dealerCode', label: '门店编码', visible: true, width: 200 },
+          {
+            props: 'dealerCode',
+            label: '门店编码',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/partner/channelManagement/shopDetail',
+                  query: {
+                    dealerCode: row.dealerCode
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'dealerName', label: '门店名称', visible: true, width: 200 },
           { props: 'provinceName', label: '省份', visible: true, width: 200 },
           { props: 'cityName', label: '城市', visible: true, width: 200 },
           { props: 'applyOrderCategoryLabel', label: '适用订单分类', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系', visible: true, width: 200 },
-          { props: 'yearTypeName', label: '年款名称', visible: true, width: 200 },
-          { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
+          {
+            props: 'seriesName',
+            label: '车系',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'yearTypeName',
+            label: '年款名称',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleYearType/edit?id=${row.yearTypeId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'materialsCode',
+            label: '物料编码',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           { props: 'totalQuotaQty', label: '额度数量', visible: true, width: 200 },
           { props: 'usedQuotaQty', label: '已提报数量', visible: true, width: 200 },
@@ -382,6 +431,7 @@ export default {
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item,
+              dealerId: item.dealerId || '',
               deleteLoading: false
             };
           });

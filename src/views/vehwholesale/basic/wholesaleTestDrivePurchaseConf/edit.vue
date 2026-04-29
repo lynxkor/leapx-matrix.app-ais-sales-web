@@ -122,19 +122,54 @@
               <!-- 详情模式 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="物料编码：">
-                  {{ form.materialsCode }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleMaterials/edit',
+                      query: {
+                        id: form.materialsId,
+                      },
+                    })"
+                   type="text">{{ form.materialsCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="车系：">
-                  {{ form.seriesName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleSeries/edit',
+                      query: {
+                        id: form.seriesId,
+                      },
+                    })"
+                   type="text">{{ form.seriesName }}</el-button>
                 </el-form-item>
                 <el-form-item label="车型：">
-                  {{ form.modelName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleModel/edit',
+                      query: {
+                        id: form.modelId,
+                      },
+                    })"
+                   type="text">{{ form.modelName }}</el-button>
                 </el-form-item>
                 <el-form-item label="年款：">
-                  {{ form.vehicleYearType }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleYearType/edit',
+                      query: {
+                        id: form.vehicleYearTypeId,
+                      },
+                    })"
+                   type="text">{{ form.vehicleYearType }}</el-button>
                 </el-form-item>
                 <el-form-item label="选装包：">
-                  {{ form.optionPackageName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleOptionPackage/edit',
+                      query: {
+                        id: form.optionPackageId,
+                      },
+                    })"
+                   type="text">{{ form.optionPackageName }}</el-button>
                 </el-form-item>
                 <el-form-item label="允许试驾车批售：">
                   {{ form.allowTestDriveWholesaleLabel }}
