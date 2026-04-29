@@ -28,7 +28,7 @@
       </el-form-item>
       <template v-if="show">
         <el-form-item label="物料描述">
-          <tag-input v-model="form.materialsDescs" placeholder="请输入" />
+          <tag-input v-model="form.orderMaterialsDescs" placeholder="请输入" />
         </el-form-item>
          <el-form-item label="商城订单号">
           <tag-input v-model="form.mallOrderCodes" placeholder="请输入" />
@@ -597,7 +597,7 @@ export default {
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 200 },
           {
-            props: 'materialsDesc',
+            props: 'orderMaterialsDesc',
             label: '物料描述',
             visible: true,
             width: 200,
@@ -606,7 +606,7 @@ export default {
                 this.$router.push({
                   path: '/datacenter/materials/vehicleMaterials/edit',
                   query: {
-                    id: row.materialsId
+                    id: row.orderMaterialsId
                   }
                 });
               },
