@@ -48,9 +48,12 @@
               </el-form>
 
               <!-- 详情模式 -->
-              <el-form :inline="true" class="form-detail" label-width="150px" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="物料编码：">
-                  {{ form.materials?.materialsCode }}
+                  <el-link v-if="form.materials?.materialsCode" type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materials.materialsCode}`" target="_blank">
+                    {{ form.materials?.materialsCode }}
+                  </el-link>
+                  <span v-else>{{ form.materials?.materialsCode }}</span>
                 </el-form-item>
                 <el-form-item
                   v-for="(field, index) in formFields"
@@ -59,6 +62,9 @@
                 >
                   <el-link v-if="getMatchHref(field.key)" type="primary" :href="getMatchHref(field.key)" target="_blank">
                     {{ form.materials[field.key.replace('Id', 'Name')] || form.materials[field.key] || '' }}
+                  </el-link>
+                  <el-link v-else-if="field.key === 'materialsDesc' && form.materials?.materialsCode" type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materials.materialsCode}`" target="_blank">
+                    {{ form.materials[field.key] || '' }}
                   </el-link>
                   <span v-else>{{ form.materials[field.key] || '' }}</span>
                 </el-form-item>
@@ -101,9 +107,12 @@
               </el-form>
 
               <!-- 详情模式 -->
-              <el-form :inline="true" class="form-detail" label-width="150px" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="可配物料编码：">
-                  {{ form.matchMaterials?.materialsCode }}
+                  <el-link v-if="form.matchMaterials?.materialsCode" type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.matchMaterials.materialsCode}`" target="_blank">
+                    {{ form.matchMaterials?.materialsCode }}
+                  </el-link>
+                  <span v-else>{{ form.matchMaterials?.materialsCode }}</span>
                 </el-form-item>
                 <el-form-item
                   v-for="(field, index) in formFields1"
@@ -112,6 +121,9 @@
                 >
                   <el-link v-if="getMatchMaterialsHref(field.key)" type="primary" :href="getMatchMaterialsHref(field.key)" target="_blank">
                     {{ form.matchMaterials[field.key.replace('Id', 'Name')] || form.matchMaterials[field.key] || '' }}
+                  </el-link>
+                  <el-link v-else-if="field.key === 'materialsDesc' && form.matchMaterials?.materialsCode" type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.matchMaterials.materialsCode}`" target="_blank">
+                    {{ form.matchMaterials[field.key] || '' }}
                   </el-link>
                   <span v-else>{{ form.matchMaterials[field.key] || '' }}</span>
                 </el-form-item>
