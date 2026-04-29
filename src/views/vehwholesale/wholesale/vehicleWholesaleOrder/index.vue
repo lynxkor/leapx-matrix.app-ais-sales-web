@@ -28,7 +28,7 @@
       </el-form-item>
       <template v-if="show">
         <el-form-item label="物料描述">
-          <tag-input v-model="form.materialsDescs" placeholder="请输入" />
+          <tag-input v-model="form.orderMaterialsDescs" placeholder="请输入" />
         </el-form-item>
          <el-form-item label="商城订单号">
           <tag-input v-model="form.mallOrderCodes" placeholder="请输入" />
@@ -543,7 +543,23 @@ export default {
           // { props: 'saleDealerName', label: '销售公司名称', visible: true, width: 200 },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 200 },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
+          {
+            props: 'orderMaterialsDesc',
+            label: '物料描述',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleMaterials/edit',
+                  query: {
+                    id: row.orderMaterialsId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'allocateTime', label: '配车时间', visible: true, width: 200 },
           { props: 'settleTime', label: '结算时间', visible: true, width: 200 },
 

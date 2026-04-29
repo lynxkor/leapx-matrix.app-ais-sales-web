@@ -347,7 +347,23 @@ export default {
           { props: 'standardPrice', label: '标准价格', visible: true, width: 200 },
           // { props: 'standardPrice', label: '折扣金额', visible: true, width: 200 },
           { props: 'relatedTxnExTaxPrice', label: '关联交易不含税价', visible: true, width: 200 },
-          { props: 'materialsCode', label: '配车物料编码', visible: true, width: 200 },
+          {
+            props: 'materialsCode',
+            label: '配车物料编码',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleMaterials/edit',
+                  query: {
+                    id: row.materialsCode
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'erpSaleOrderCode', label: 'ERP销售订单号', visible: true, width: 200 },
           { props: 'modelName', label: '车型', visible: true, width: 200 },
           { props: 'yearTypeName', label: '年款', visible: true, width: 200 },

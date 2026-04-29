@@ -301,7 +301,14 @@
                   {{ form.emergencyOrderRemark }}
                 </el-form-item>
                   <el-form-item label="下单物料码：" prop="orderMaterialsCode">
-                  {{ form.orderMaterialsCode }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleMaterials/edit',
+                      query: {
+                        id: form.orderMaterialsCode,
+                      },
+                    })"
+                   type="text">{{ form.orderMaterialsCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="物料描述：" prop="orderMaterialsDesc">
                   {{ form.orderMaterialsDesc }}
@@ -625,7 +632,14 @@
                   {{ form.vin }}
                 </el-form-item>
                  <el-form-item label="配车物料编码：" prop="materialsCode">
-                  {{ form.materialsCode }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleMaterials/edit',
+                      query: {
+                        id: form.materialsCode,
+                      },
+                    })"
+                   type="text">{{ form.materialsCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="配车时间：" prop="allocateTime">
                   {{ form.allocateTime }}
