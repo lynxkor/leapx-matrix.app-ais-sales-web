@@ -216,12 +216,7 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/partner/channelManagement/shopDetail',
-                  query: {
-                    dealerCode: row.dealerCode,
-                  }
-                });
+                window.open(`/sales/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank');
               },
               type: 'primary'
             }]

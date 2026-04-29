@@ -260,12 +260,7 @@ export default {
             width: 100,
             buttons: [{
               click: (rowIndex, row) => {
-                this.navigateToRoute({
-                  path: '/datacenter/materials/vehicleSeries/detail',
-                  query: {
-                    id: row.seriesId,
-                  },
-                });
+                window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -277,12 +272,7 @@ export default {
             width: 100,
             buttons: [{
               click: (rowIndex, row) => {
-                this.navigateToRoute({
-                  path: '/datacenter/materials/vehicleYearType/detail',
-                  query: {
-                    id: row.yearTypeId,
-                  },
-                });
+                window.open(`/sales/datacenter/materials/vehicleYearType/edit?id=${row.yearTypeId}`, '_blank');
               },
               type: 'primary'
             }]

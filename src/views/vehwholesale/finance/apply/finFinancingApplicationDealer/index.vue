@@ -244,12 +244,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                  query: {
-                    id: row.fundFinancialOrganizationId
-                  }
-                });
+                window.open(`/sales/vehwholesale/fund/fundFinancialOrganization/detail?id=${row.fundFinancialOrganizationId}`, '_blank');
               },
               type: 'primary'
             }]

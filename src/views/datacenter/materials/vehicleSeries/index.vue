@@ -198,13 +198,7 @@ export default {
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleSeries/edit',
-                  query: {
-                    id: row.id,
-                    isEditing: false
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.id}&isEditing=false`, '_blank');
               },
               type: 'primary'
             }]
