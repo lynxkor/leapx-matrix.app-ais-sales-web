@@ -32,7 +32,7 @@
       v-if="showDelete"
       field="action"
       title="操作"
-      width="160"
+      width="120"
       fixed="right"
     >
       <template #default="{ row, rowIndex }">
