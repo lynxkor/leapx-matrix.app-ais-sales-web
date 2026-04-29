@@ -306,10 +306,12 @@
               <el-button size="small" @click="handleAddRow" style="margin-bottom: 10px;" v-show = "form.permission.edit && _id">添加补货明细</el-button>
               <div class="common-section-table">
                 <component-table
+                  ref="detailTableRef"
                   :tableData="form.details"
                   :columns="detailsColumns"
-                  :show-delete="isEditing || !_id"
+                  :show-delete="form.permission.edit && _id"
                   @delete-row="handleDeleteDetailRow"
+                  @save-row="handleSaveDetailRow"
                 />
               </div>
             </div>
@@ -578,6 +580,9 @@ export default {
         this.updateApplyTotalQty();
       }).catch(() => {
       });
+    },
+    handleSaveDetailRow () {
+      this.updateApplyTotalQty();
     },
     handleSave () {
       const dataList = this.$refs.addCommercialVehicle.tableList;

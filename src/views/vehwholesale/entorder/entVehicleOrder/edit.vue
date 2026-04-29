@@ -257,7 +257,10 @@
                 </el-form-item>
                  <el-form-item label="企业客户补货订单号：" prop="entReplenishOrderCode">
                   <el-button class="link" style="padding: 0;"
-                   @click="window.open('/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=' + form.entReplenishOrderId, '_blank')"
+                   @click="navigateToRoute({
+                     path: '/vehwholesale/replenish/entVehicleReplenishOrder/edit',
+                     query: { id: form.entReplenishOrderId }
+                   })"
                    type="text">{{ form.entReplenishOrderCode }}</el-button>
                 </el-form-item>
                  <el-form-item label="第七大区CBU订单号：" prop="cbuOrderCode">
@@ -736,37 +739,58 @@
                 </el-form-item>
                 <el-form-item label="车型：" prop="modelName">
                   <el-button class="link" style="padding: 0;"
-                   @click="window.open('/sales/datacenter/materials/vehicleModel/edit?id=' + form.modelId, '_blank')"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleModel/edit',
+                     query: { id: form.modelId }
+                   })"
                    type="text">{{ form.modelName }}</el-button>
                 </el-form-item>
                 <el-form-item label="年款：" prop="yearTypeName">
                   <el-button class="link" style="padding: 0;"
-                   @click="window.open('/sales/datacenter/materials/vehicleYearType/edit?id=' + form.yearTypeId, '_blank')"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleYearType/edit',
+                     query: { id: form.yearTypeId }
+                   })"
                    type="text">{{ form.yearTypeName }}</el-button>
                 </el-form-item>
                 <el-form-item label="选配续航：" prop="drivingRangeName">
                   <el-button class="link" style="padding: 0;"
-                   @click="window.open('/sales/datacenter/materials/vehicleDrivingRange/edit?id=' + form.drivingRangeId, '_blank')"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleDrivingRange/edit',
+                     query: { id: form.drivingRangeId }
+                   })"
                    type="text">{{ form.drivingRangeName }}</el-button>
                 </el-form-item>
                 <el-form-item label="外饰风格：" prop="exteriorName">
                   <el-button class="link" style="padding: 0;"
-                   @click="window.open('/sales/datacenter/materials/vehicleExterior/edit?id=' + form.exteriorId, '_blank')"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleExterior/edit',
+                     query: { id: form.exteriorId }
+                   })"
                    type="text">{{ form.exteriorName }}</el-button>
                 </el-form-item>
                 <el-form-item label="内饰风格：" prop="interiorName">
                   <el-button class="link" style="padding: 0;"
-                   @click="window.open('/sales/datacenter/materials/vehicleInterior/edit?id=' + form.interiorId, '_blank')"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleInterior/edit',
+                     query: { id: form.interiorId }
+                   })"
                    type="text">{{ form.interiorName }}</el-button>
                 </el-form-item>
                 <el-form-item label="选配轮毂：" prop="wheelHubName">
                   <el-button class="link" style="padding: 0;"
-                   @click="window.open('/sales/datacenter/materials/vehicleWheelHub/edit?id=' + form.wheelHubId, '_blank')"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleWheelHub/edit',
+                     query: { id: form.wheelHubId }
+                   })"
                    type="text">{{ form.wheelHubName }}</el-button>
                 </el-form-item>
                 <el-form-item label="选配动力：" prop="rangePowerName">
                   <el-button class="link" style="padding: 0;"
-                   @click="window.open('/sales/datacenter/materials/vehicleRangePower/edit?id=' + form.rangePowerId, '_blank')"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleRangePower/edit',
+                     query: { id: form.rangePowerId }
+                   })"
                    type="text">{{ form.rangePowerName }}</el-button>
                 </el-form-item>
               </el-form>
@@ -1131,7 +1155,6 @@ export default {
                 code: item.fundType,
                 message: item.fundTypeLabel
               });
-              console.log(item);
               if ((item.fundType === '2010' || item.fundType === 2010) && item.validIfCreditSaleAccount) {
                 this.financialOrganizationList.push({
                   id: item.financialOrganizationId,
@@ -1274,22 +1297,23 @@ export default {
           if (res.vehicleVdcInventory) {
             this.warehouseName = res.vehicleVdcInventory.warehouseName;
           }
-          const vm = res.vehicleMaterialsDo ? JSON.parse(JSON.stringify(res.vehicleMaterialsDo)) : JSON.parse(JSON.stringify(res));
-          // 尝试多种可能的字段名格式
-          this.form.modelId = vm.modelId;
-          this.form.modelName = vm.modelName;
-          this.form.yearTypeId = vm.yearTypeId;
-          this.form.yearTypeName = vm.yearTypeName;
-          this.form.drivingRangeId = vm.drivingRangeId;
-          this.form.drivingRangeName = vm.drivingRangeName;
-          this.form.exteriorId = vm.exteriorId;
-          this.form.exteriorName = vm.exteriorName;
-          this.form.interiorId = vm.interiorId;
-          this.form.interiorName = vm.interiorName;
-          this.form.wheelHubId = vm.wheelHubId;
-          this.form.wheelHubName = vm.wheelHubName;
-          this.form.rangePowerId = vm.rangePowerId;
-          this.form.rangePowerName = vm.rangePowerName;
+          const vm = res.vehicleMaterialsDo ? JSON.parse(JSON.stringify(res.vehicleMaterialsDo)) : null;
+          if (vm) {
+            this.form.modelId = vm.modelId || '';
+            this.form.modelName = vm.modelName || '';
+            this.form.yearTypeId = vm.yearTypeId || '';
+            this.form.yearTypeName = vm.yearTypeName || '';
+            this.form.drivingRangeId = vm.drivingRangeId || '';
+            this.form.drivingRangeName = vm.drivingRangeName || '';
+            this.form.exteriorId = vm.exteriorId || '';
+            this.form.exteriorName = vm.exteriorName || '';
+            this.form.interiorId = vm.interiorId || '';
+            this.form.interiorName = vm.interiorName || '';
+            this.form.wheelHubId = vm.wheelHubId || '';
+            this.form.wheelHubName = vm.wheelHubName || '';
+            this.form.rangePowerId = vm.rangePowerId || '';
+            this.form.rangePowerName = vm.rangePowerName || '';
+          }
           if (res.entReplenishOrderId) {
             this.form.entReplenishOrderId = res.entReplenishOrderId;
           }
@@ -1298,7 +1322,7 @@ export default {
           // 3. 【新增】数据加载完成后，再执行获取资金账户逻辑
           this.getFundAccount();
 
-          return res;
+          return this.form;
         });
       }
     },
