@@ -598,24 +598,19 @@ export default {
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 200 },
           {
-            props: 'materialsCode',
+            props: 'orderMaterialsCode',
             label: '物料编码',
             visible: true,
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleMaterials/edit',
-                  query: {
-                    id: row.materialsDesc
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.orderMaterialsCode}`, '_blank');
               },
               type: 'primary'
             }]
           },
           {
-            props: 'materialsDesc',
+            props: 'orderMaterialsDesc',
             label: '物料描述',
             visible: true,
             width: 200,
@@ -729,24 +724,6 @@ export default {
           { props: 'emergencyOrderTime', label: '设置急单时间', visible: true, width: 200 },
           { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 200 },
           // { props: 'downPaymentRatio', label: '配车顺序时间', visible: true, width: 200 },
-          {
-            props: 'orderMaterialCode',
-            label: '订单物料编码',
-            visible: true,
-            width: 200,
-            buttons: [{
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleMaterials/edit',
-                  query: {
-                    id: row.orderMaterialCode
-                  }
-                });
-              },
-              type: 'primary'
-            }]
-          },
-          { props: 'orderMaterialCode', label: '订单物料编码', visible: true, width: 200 },
           { props: 'needAutoAllocateCarLabel', label: '是否需要自动配车', visible: true, width: 200 },
           { props: 'dealerWarehouseName', label: '门店仓库名称', visible: true, width: 200 },
           { props: 'logisticsReserveLabel', label: '整车物流预留', visible: true, width: 200 },

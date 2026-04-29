@@ -247,7 +247,7 @@
                    @click="navigateToRoute({
                      path: '/datacenter/materials/vehicleMaterials/edit',
                       query: {
-                        id: form.orderMaterialsId,
+                        id: form.orderMaterialsCode,
                       },
                     })"
                    type="text">{{ form.orderMaterialsCode }}</el-button>

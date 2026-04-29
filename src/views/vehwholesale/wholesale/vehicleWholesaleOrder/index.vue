@@ -544,24 +544,19 @@ export default {
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 200 },
           {
-            props: 'materialsCode',
+            props: 'orderMaterialsCode',
             label: '物料编码',
             visible: true,
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleMaterials/edit',
-                  query: {
-                    id: row.materialsDesc
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.orderMaterialsCode}`, '_blank');
               },
               type: 'primary'
             }]
           },
           {
-            props: 'materialsDesc',
+            props: 'orderMaterialsDesc',
             label: '物料描述',
             visible: true,
             width: 200,
