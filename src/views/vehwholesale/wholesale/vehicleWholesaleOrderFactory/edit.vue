@@ -129,10 +129,10 @@
                     disabled
                   />
                 </el-form-item>
-                  <el-form-item label="物料描述：" prop="materialsDesc">
+                  <el-form-item label="物料描述：" prop="orderMaterialsDesc">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.materialsDesc"
+                    v-model="form.orderMaterialsDesc"
                     clearable
                     disabled
                   />

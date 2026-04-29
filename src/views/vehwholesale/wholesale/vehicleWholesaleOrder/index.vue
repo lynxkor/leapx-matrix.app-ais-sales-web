@@ -28,7 +28,7 @@
       </el-form-item>
       <template v-if="show">
         <el-form-item label="物料描述">
-          <tag-input v-model="form.orderMaterialsDescs" placeholder="请输入" />
+          <tag-input v-model="form.materialsDesc" placeholder="请输入" />
         </el-form-item>
          <el-form-item label="商城订单号">
           <tag-input v-model="form.mallOrderCodes" placeholder="请输入" />
@@ -544,8 +544,8 @@ export default {
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 200 },
           {
-            props: 'orderMaterialsDesc',
-            label: '物料描述',
+            props: 'materialsCode',
+            label: '物料编码',
             visible: true,
             width: 200,
             buttons: [{
@@ -553,12 +553,18 @@ export default {
                 this.$router.push({
                   path: '/datacenter/materials/vehicleMaterials/edit',
                   query: {
-                    id: row.orderMaterialsId
+                    id: row.materialsDesc
                   }
                 });
               },
               type: 'primary'
             }]
+          },
+          {
+            props: 'materialsDesc',
+            label: '物料描述',
+            visible: true,
+            width: 200,
           },
           { props: 'allocateTime', label: '配车时间', visible: true, width: 200 },
           { props: 'settleTime', label: '结算时间', visible: true, width: 200 },
@@ -585,10 +591,76 @@ export default {
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           // { props: 'dealerCompanyCode', label: '母公司代码', visible: true, width: 200 },
           // { props: 'saleDealerCode', label: '销售公司编码', visible: true, width: 200 },
-          { props: 'interiorName', label: '内饰', visible: true, width: 200 },
-          { props: 'modelName', label: '车型', visible: true, width: 200 },
-          { props: 'exteriorName', label: '外饰风格', visible: true, width: 200 },
-          { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 200 },
+          {
+            props: 'interiorName',
+            label: '内饰',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleInterior/edit',
+                  query: {
+                    id: row.interiorId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'modelName',
+            label: '车型',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleModel/edit',
+                  query: {
+                    id: row.modelId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'exteriorName',
+            label: '外饰风格',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleExterior/edit',
+                  query: {
+                    id: row.exteriorId
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'wheelHubName',
+            label: '选配轮毂',
+            visible: true,
+            width: 200,
+            buttons: [
+              {
+                click: (rowIndex, row) => {
+                  this.$router.push({
+                    path: '/datacenter/materials/vehicleWheelHub/edit',
+                    query: {
+                      id: row.wheelHubId
+                    }
+                  });
+                },
+                type: 'primary'
+              }
+            ]
+          },
           { props: 'specialRemark', label: '特殊备注', visible: true, width: 200 },
           { props: 'firstCancelAllocateTime', label: '首次取消配车时间', visible: true, width: 200 },
           { props: 'firstAllocateTime', label: '首次配车时间', visible: true, width: 200 },
@@ -600,7 +672,25 @@ export default {
           { props: 'createdShippingPlanLabel', label: '是否创建发运单计划', visible: true, width: 200 },
           { props: 'hasSettleFailedLabel', label: '是否存在结算失败', visible: true, width: 200 },
           { props: 'confirmUserName', label: '确认人', visible: true, width: 200 },
-          { props: 'yearTypeName', label: '年款', visible: true, width: 200 },
+          {
+            props: 'yearTypeName',
+            label: '年款',
+            visible: true,
+            width: 200,
+            buttons: [
+              {
+                click: (rowIndex, row) => {
+                  this.$router.push({
+                    path: '/datacenter/materials/vehicleYearType/edit',
+                    query: {
+                      id: row.yearTypeId
+                    }
+                  });
+                },
+                type: 'primary'
+              }
+            ]
+          },
           { props: 'settleWayLabel', label: '结算方式', visible: true, width: 200 },
           { props: 'allocateWayLabel', label: '配车方式', visible: true, width: 200 },
           { props: 'cooperateTypeLabel', label: '合作类型', visible: true, width: 200 },
