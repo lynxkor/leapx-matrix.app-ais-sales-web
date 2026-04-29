@@ -181,6 +181,13 @@
                     clearable
                   />
                 </el-form-item>
+                 <el-form-item label="WMS同步结果：" prop="syncRemark">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.syncRemark"
+                    clearable
+                  />
+                </el-form-item>
                 <el-form-item label="企业客户订单号：" prop="entVehicleOrderCode">
                   <el-input
                     placeholder="请输入"
@@ -285,6 +292,9 @@
                 </el-form-item>
                 <el-form-item label="是否需要同步WMS：" prop="needSyncWms">
                   {{ form.needSyncWmsLabel }}
+                </el-form-item>
+                 <el-form-item label="WMS同步结果：" prop="syncRemark">
+                  {{ form.syncRemark }}
                 </el-form-item>
                 <el-form-item label="企业客户订单号：" prop="entVehicleOrderCode">
                   {{ form.entVehicleOrderCode }}

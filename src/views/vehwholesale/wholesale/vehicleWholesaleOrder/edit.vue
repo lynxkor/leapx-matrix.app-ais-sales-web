@@ -120,10 +120,10 @@
                     disabled
                   />
                 </el-form-item>
-                  <el-form-item label="物料描述：" prop="materialsDesc">
+                  <el-form-item label="物料描述：" prop="orderMaterialsDesc">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.materialsDesc"
+                    v-model="form.orderMaterialsDesc"
                     clearable
                     disabled
                   />
@@ -242,8 +242,18 @@
                   <el-form-item label="订单时间：" prop="orderTime">
                   {{ form.orderTime }}
                 </el-form-item>
-                 <el-form-item label="物料描述：" prop="materialsDesc">
-                  {{ form.materialsDesc }}
+                 <el-form-item label="订单物料编码：" prop="orderMaterialsCode">
+                    <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                     path: '/datacenter/materials/vehicleMaterials/edit',
+                      query: {
+                        id: form.orderMaterialsId,
+                      },
+                    })"
+                   type="text">{{ form.orderMaterialsCode }}</el-button>
+                </el-form-item>
+                 <el-form-item label="物料描述：" prop="orderMaterialsDesc">
+                  {{ form.orderMaterialsDesc }}
                 </el-form-item>
                     <el-form-item label="专项活动：" prop="prodScheduleActivityName">
                   {{ form.prodScheduleActivityName }}

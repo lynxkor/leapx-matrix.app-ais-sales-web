@@ -3,21 +3,27 @@
     <div class="common-section-header">
       <div class="ais-select-group">
         <el-form :inline="true" :model="form" size="small" label-position="right" label-width="80px" class="form-edit">
-          <el-form-item label="车系：">
-            <fetch-select
-              v-model="form.seriesIds"
-              v-bind="selectOptions"
-              :remote-method="remoteMethods.series"
-            />
-          </el-form-item>
-          <el-form-item label="车型：">
-            <fetch-select
-              v-model="form.modelIdSet"
-              v-bind="selectOptions"
-              :remote-method="remoteMethods.model"
-            />
-          </el-form-item>
+          <el-form-item label="物料编码：">
+                <tag-input v-model="form.materialsCodeSet" placeholder="请输入" />
+            </el-form-item>
+            <el-form-item label="物料描述：">
+              <tag-input v-model="form.materialsDescSet" placeholder="请输入" />
+            </el-form-item>
           <template v-if="show">
+            <el-form-item label="车系：">
+              <fetch-select
+                v-model="form.seriesIds"
+                v-bind="selectOptions"
+                :remote-method="remoteMethods.series"
+              />
+            </el-form-item>
+            <el-form-item label="车型：">
+              <fetch-select
+                v-model="form.modelIdSet"
+                v-bind="selectOptions"
+                :remote-method="remoteMethods.model"
+              />
+            </el-form-item>
             <el-form-item label="年款：">
               <fetch-select
                 v-model="form.yearTypeIdSet"
@@ -59,12 +65,6 @@
                 v-bind="selectOptions"
                 :remote-method="remoteMethods.optional"
               />
-            </el-form-item>
-            <el-form-item label="物料编码：">
-                <tag-input v-model="form.materialsCodeSet" placeholder="请输入" />
-            </el-form-item>
-            <el-form-item label="物料描述：">
-              <tag-input v-model="form.materialsDescSet" placeholder="请输入" />
             </el-form-item>
           </template>
           <page-search-action v-model="show" is-expandable :loading="loading" @submit="onSubmit" @reset="onReset" />
