@@ -240,7 +240,14 @@
                   {{ form.wholesaleWayLabel }}
                 </el-form-item>
                 <el-form-item label="专项活动：" prop="prodScheduleActivityName" v-show="form.orderCategory + '' !== '2'">
-                  {{ form.prodScheduleActivityName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/vehwholesale/basic/wholesaleProdScheduleActivity/edit',
+                      query: {
+                        id: form.prodScheduleActivityId,
+                      },
+                    })"
+                   type="text"> {{ form.prodScheduleActivityName }}</el-button>
                 </el-form-item>
                 <el-form-item label="申请类别：" prop="applyCategoryLabel" v-show="form.orderCategory + '' === '2'">
                   {{ form.applyCategoryLabel }}

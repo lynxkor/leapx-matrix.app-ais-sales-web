@@ -303,7 +303,18 @@ export default {
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'needAutoAllocateCarLabel', label: '是否需要自动配车', visible: true, width: 200 },
           { props: 'needAsyncSapLabel', label: '是否需要同步SAP', visible: true, width: 200 },
-          { props: 'entReplenishOrderCode', label: '企业客户补货订单号', visible: true, width: 200 },
+          {
+            props: 'entReplenishOrderCode',
+            label: '企业客户补货订单号',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=${row.entReplenishOrderDetailId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'taxInvoiceCode', label: '税务发票号', visible: true, width: 200 },
           { props: 'pickupContactName', label: '接车联系人', visible: true, width: 200 },
           { props: 'pickupContactMobile', label: '接车联系电话', visible: true, width: 200 },
@@ -365,14 +376,91 @@ export default {
             }]
           },
           { props: 'erpSaleOrderCode', label: 'ERP销售订单号', visible: true, width: 200 },
-          { props: 'modelName', label: '车型', visible: true, width: 200 },
-          { props: 'yearTypeName', label: '年款', visible: true, width: 200 },
+          {
+            props: 'modelName',
+            label: '车型',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'yearTypeName',
+            label: '年款',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleYearType/edit?id=${row.yearTypeId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
-          { props: 'drivingRangeName', label: '选配续航', visible: true, width: 200 },
-          { props: 'exteriorName', label: '外饰风格', visible: true, width: 200 },
-          { props: 'interiorName', label: '内饰风格', visible: true, width: 200 },
-          { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 200 },
-          { props: 'rangePowerName', label: '选配动力', visible: true, width: 200 },
+          {
+            props: 'drivingRangeName',
+            label: '选配续航',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleDrivingRange/edit?id=${row.drivingRangeId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'exteriorName',
+            label: '外饰风格',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleExterior/edit?id=${row.exteriorId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'interiorName',
+            label: '内饰风格',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleInterior/edit?id=${row.interiorId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'wheelHubName',
+            label: '选配轮毂',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleWheelHub/edit?id=${row.wheelHubId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'rangePowerName',
+            label: '选配动力',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleRangePower/edit?id=${row.rangePowerId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
           { props: 'vehicleReturnFlagLabel', label: '退车标识', visible: true, width: 200 }
@@ -680,13 +768,21 @@ export default {
             return {
               ...item,
               modelName: vehicleMaterials.modelName || '',
+              modelId: vehicleMaterials.modelId || '',
               materialsDesc: vehicleMaterials.materialsDesc || '',
+              materialsId: vehicleMaterials.materialsId || '',
               drivingRangeName: vehicleMaterials.drivingRangeName || '',
+              drivingRangeId: vehicleMaterials.drivingRangeId || '',
               rangePowerName: vehicleMaterials.rangePowerName || '',
+              rangePowerId: vehicleMaterials.rangePowerId || '',
               exteriorName: vehicleMaterials.exteriorName || '',
+              exteriorId: vehicleMaterials.exteriorId || '',
               interiorName: vehicleMaterials.interiorName || '',
+              interiorId: vehicleMaterials.interiorId || '',
               wheelHubName: vehicleMaterials.wheelHubName || '',
+              wheelHubId: vehicleMaterials.wheelHubId || '',
               yearTypeName: vehicleMaterials.yearTypeName || '',
+              yearTypeId: vehicleMaterials.yearTypeId || '',
               deleteLoading: false
             };
           });

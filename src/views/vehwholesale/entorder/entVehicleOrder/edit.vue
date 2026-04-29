@@ -256,7 +256,9 @@
                   {{ form.entOrderCode }}
                 </el-form-item>
                  <el-form-item label="企业客户补货订单号：" prop="entReplenishOrderCode">
-                  {{ form.entReplenishOrderCode }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="window.open('/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=' + form.entReplenishOrderId, '_blank')"
+                   type="text">{{ form.entReplenishOrderCode }}</el-button>
                 </el-form-item>
                  <el-form-item label="第七大区CBU订单号：" prop="cbuOrderCode">
                   {{ form.cbuOrderCode }}
@@ -732,6 +734,41 @@
                  <el-form-item label="终端状态：" prop="terminalStatusLabel">
                   {{ form.terminalStatusLabel }}
                 </el-form-item>
+                <el-form-item label="车型：" prop="modelName">
+                  <el-button class="link" style="padding: 0;"
+                   @click="window.open('/sales/datacenter/materials/vehicleModel/edit?id=' + form.modelId, '_blank')"
+                   type="text">{{ form.modelName }}</el-button>
+                </el-form-item>
+                <el-form-item label="年款：" prop="yearTypeName">
+                  <el-button class="link" style="padding: 0;"
+                   @click="window.open('/sales/datacenter/materials/vehicleYearType/edit?id=' + form.yearTypeId, '_blank')"
+                   type="text">{{ form.yearTypeName }}</el-button>
+                </el-form-item>
+                <el-form-item label="选配续航：" prop="drivingRangeName">
+                  <el-button class="link" style="padding: 0;"
+                   @click="window.open('/sales/datacenter/materials/vehicleDrivingRange/edit?id=' + form.drivingRangeId, '_blank')"
+                   type="text">{{ form.drivingRangeName }}</el-button>
+                </el-form-item>
+                <el-form-item label="外饰风格：" prop="exteriorName">
+                  <el-button class="link" style="padding: 0;"
+                   @click="window.open('/sales/datacenter/materials/vehicleExterior/edit?id=' + form.exteriorId, '_blank')"
+                   type="text">{{ form.exteriorName }}</el-button>
+                </el-form-item>
+                <el-form-item label="内饰风格：" prop="interiorName">
+                  <el-button class="link" style="padding: 0;"
+                   @click="window.open('/sales/datacenter/materials/vehicleInterior/edit?id=' + form.interiorId, '_blank')"
+                   type="text">{{ form.interiorName }}</el-button>
+                </el-form-item>
+                <el-form-item label="选配轮毂：" prop="wheelHubName">
+                  <el-button class="link" style="padding: 0;"
+                   @click="window.open('/sales/datacenter/materials/vehicleWheelHub/edit?id=' + form.wheelHubId, '_blank')"
+                   type="text">{{ form.wheelHubName }}</el-button>
+                </el-form-item>
+                <el-form-item label="选配动力：" prop="rangePowerName">
+                  <el-button class="link" style="padding: 0;"
+                   @click="window.open('/sales/datacenter/materials/vehicleRangePower/edit?id=' + form.rangePowerId, '_blank')"
+                   type="text">{{ form.rangePowerName }}</el-button>
+                </el-form-item>
               </el-form>
             </div>
           </section>
@@ -900,6 +937,7 @@ const defaultForm = {
   needAsyncSap: '',
   entReplenishOrderCode: '',
   entReplenishOrderDetailId: '',
+  entReplenishOrderId: '',
   taxInvoiceCode: '',
   invoiceTime: '',
   provinceCode: '',
@@ -956,6 +994,20 @@ const defaultForm = {
   downPaymentRatio: '',
   cancelTime: '',
   cancelRemark: '',
+  modelId: '',
+  modelName: '',
+  yearTypeId: '',
+  yearTypeName: '',
+  drivingRangeId: '',
+  drivingRangeName: '',
+  exteriorId: '',
+  exteriorName: '',
+  interiorId: '',
+  interiorName: '',
+  wheelHubId: '',
+  wheelHubName: '',
+  rangePowerId: '',
+  rangePowerName: '',
 };
 
 export default {
@@ -1212,6 +1264,7 @@ export default {
       const id = this._id;
       if (id) {
         return getDetail(id).then(res => {
+          console.log('完整返回数据:', res);
           // 1. 更新表单数据
           this.form = { ...this.form, ...res };
           // 2. 如果有原始表单引用，也同步更新
@@ -1219,10 +1272,28 @@ export default {
           //   this.$refs.containerRef.originalForm = { ...res };
           // }
           if (res.vehicleVdcInventory) {
-            console.log('原始表单数据:111111', res.vehicleVdcInventory.warehouseName);
             this.warehouseName = res.vehicleVdcInventory.warehouseName;
           }
-          console.log('原始表单数据:222222', this.form);
+          const vm = res.vehicleMaterialsDo ? JSON.parse(JSON.stringify(res.vehicleMaterialsDo)) : JSON.parse(JSON.stringify(res));
+          // 尝试多种可能的字段名格式
+          this.form.modelId = vm.modelId;
+          this.form.modelName = vm.modelName;
+          this.form.yearTypeId = vm.yearTypeId;
+          this.form.yearTypeName = vm.yearTypeName;
+          this.form.drivingRangeId = vm.drivingRangeId;
+          this.form.drivingRangeName = vm.drivingRangeName;
+          this.form.exteriorId = vm.exteriorId;
+          this.form.exteriorName = vm.exteriorName;
+          this.form.interiorId = vm.interiorId;
+          this.form.interiorName = vm.interiorName;
+          this.form.wheelHubId = vm.wheelHubId;
+          this.form.wheelHubName = vm.wheelHubName;
+          this.form.rangePowerId = vm.rangePowerId;
+          this.form.rangePowerName = vm.rangePowerName;
+          if (res.entReplenishOrderId) {
+            this.form.entReplenishOrderId = res.entReplenishOrderId;
+          }
+          console.log('处理后的form.modelName:', this.form.modelName);
 
           // 3. 【新增】数据加载完成后，再执行获取资金账户逻辑
           this.getFundAccount();
