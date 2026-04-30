@@ -244,7 +244,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/vehwholesale/fund/fundFinancialOrganization/detail?id=${row.fundFinancialOrganizationId}`, '_blank');
+                window.open(`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${row.fundFinancialOrganizationId}`, '_blank');
               },
               type: 'primary'
             }]

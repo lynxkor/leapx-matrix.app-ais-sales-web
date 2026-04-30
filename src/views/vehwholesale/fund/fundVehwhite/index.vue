@@ -190,12 +190,7 @@ export default {
             width: 300,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/partner/channelManagement/shopDetail',
-                  query: {
-                    dealerCode: row.dealerCode,
-                  }
-                });
+                this.openWindow('/sales/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode);
               },
               type: 'primary'
             }]
@@ -210,12 +205,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
-                  query: {
-                    id: row.wholesaleOrderId,
-                  }
-                });
+                this.openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.wholesaleOrderId);
               },
               type: 'primary'
             }]
@@ -227,12 +217,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/entorder/entVehicleOrder/edit',
-                  query: {
-                    id: row.enterpriseOrderId,
-                  }
-                });
+                this.openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + row.enterpriseOrderId);
               },
               type: 'primary'
             }]
@@ -277,6 +262,9 @@ export default {
     this.getData();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     // 排序
     handleSortChange (value) {
       this.sortColumns = (value || []).map(item => {

@@ -299,14 +299,7 @@
                   {{ form.orderTime }}
                 </el-form-item>
                 <el-form-item label="订单物料编码：" prop="orderMaterialsCode">
-                    <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/datacenter/materials/vehicleMaterials/edit',
-                      query: {
-                        id: form.orderMaterialsCode,
-                      },
-                    })"
-                   type="text">{{ form.orderMaterialsCode }}</el-button>
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + form.orderMaterialsCode)">{{ form.orderMaterialsCode }}</el-button>
                 </el-form-item>
                  <el-form-item label="物料描述：" prop="orderMaterialsDesc">
                    {{ form.orderMaterialsDesc }}
@@ -878,7 +871,7 @@
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构名称：" prop="financialOrganizationName">
-                  {{ form.financialOrganizationName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.financialOrganizationId)">{{ form.financialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="零售价：" prop="retailPrice">
                   {{ form.retailPrice }}
@@ -1241,6 +1234,9 @@ export default {
     this.fetchOrderCategoryOptions();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     formatDateTime (date) {
       if (!date) return '';
       const d = new Date(date);

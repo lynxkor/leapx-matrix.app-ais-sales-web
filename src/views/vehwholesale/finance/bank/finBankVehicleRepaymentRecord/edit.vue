@@ -32,14 +32,7 @@
                   {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationName">
-                   <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                      query: {
-                        id: form.fundFinancialOrganizationId,
-                      },
-                    })"
-                   type="text">{{ form.fundFinancialOrganizationName }}</el-button>
+                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.fundFinancialOrganizationId)">{{ form.fundFinancialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
                   {{ form.statusLabel }}
@@ -73,14 +66,7 @@
                   {{ form.vehicleStatusLabel }}
                 </el-form-item>
                 <el-form-item label="物料编码：" prop="materialsCode">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/datacenter/materials/vehicleMaterials/edit',
-                      query: {
-                        id: form.materialsCode,
-                      },
-                    })"
-                   type="text">{{ form.materialsCode }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + form.materialsCode)">{{ form.materialsCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="物料描述：" prop="materialsDesc">
                   {{ form.materialsDesc }}
@@ -199,6 +185,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

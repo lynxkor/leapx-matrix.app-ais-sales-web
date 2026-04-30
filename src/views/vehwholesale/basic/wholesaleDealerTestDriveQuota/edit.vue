@@ -130,19 +130,19 @@
               <!-- 详情模式 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="门店编码：">
-                  {{ form.dealerCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)">{{ form.dealerCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="门店名称：">
                   {{ form.dealerName }}
                 </el-form-item>
                 <el-form-item label="年款：">
-                  {{ form.vehicleYearType }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleYearType/edit?id=' + form.vehicleYearTypeId)">{{ form.vehicleYearType }}</el-button>
                 </el-form-item>
                 <el-form-item label="系列：">
-                  {{ form.vehicleModelLine }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModelLine/edit?id=' + form.vehicleModelLineId)">{{ form.vehicleModelLine }}</el-button>
                 </el-form-item>
                 <el-form-item label="车系：">
-                  {{ form.seriesName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.seriesId)">{{ form.seriesName }}</el-button>
                 </el-form-item>
                 <el-form-item label="累计已申请数：">
                   {{ form.requestQty }}
@@ -261,6 +261,9 @@ export default {
     };
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     openPane () {
       this.$refs.editLayout.openPane();
     },

@@ -264,9 +264,35 @@ export default {
           },
           { props: 'auditStatusLabel', label: '退车订单状态', visible: true, width: 200 },
           { props: 'backTime', label: '退车日期', visible: true, width: 200 },
-          { props: 'dealerCompanyName', label: '经销商', visible: true, width: 200 },
+          {
+            props: 'dealerCompanyName',
+            label: '经销商',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                if (row.dealerCompanyCode) {
+                  window.open(`/sales/partner/channelManagement/parentCompany/edit?dealerCode=${row.dealerCompanyCode}`, '_blank');
+                }
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
-          { props: 'entCustomerName', label: '企业客户', visible: true, width: 200 },
+          {
+            props: 'entCustomerName',
+            label: '企业客户',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                if (row.entCustomerCode) {
+                  window.open(`/sales/partner/channelManagement/parentCompany/edit?dealerCode=${row.entCustomerCode}`, '_blank');
+                }
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'backTypeLabel', label: '退车类型', visible: true, width: 200 },
           { props: 'orderTypeLabel', label: '单据类型', visible: true, width: 200 },
           { props: 'remark', label: '退车备注', visible: true, width: 200 },

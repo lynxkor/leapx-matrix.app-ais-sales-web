@@ -332,7 +332,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/vehwholesale/fund/fundFinancialOrganization/detail?id=${row.financialOrganizationId}`, '_blank');
+                window.open(`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${row.financialOrganizationId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -354,13 +354,13 @@ export default {
           // { props: 'standardPrice', label: '折扣金额', visible: true, width: 200 },
           { props: 'relatedTxnExTaxPrice', label: '关联交易不含税价', visible: true, width: 200 },
           {
-            props: 'materialsCode',
-            label: '配车物料编码',
+            props: 'orderMaterialsCode',
+            label: '订单物料编码',
             visible: true,
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsCode}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.orderMaterialsCode}`, '_blank');
               },
               type: 'primary'
             }]
@@ -390,7 +390,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
+          { props: 'orderMaterialsDesc', label: '订单物料描述', visible: true, width: 200 },
           {
             props: 'drivingRangeName',
             label: '选配续航',
@@ -759,8 +759,6 @@ export default {
               ...item,
               modelName: vehicleMaterials.modelName || '',
               modelId: vehicleMaterials.modelId || '',
-              materialsDesc: vehicleMaterials.materialsDesc || '',
-              materialsId: vehicleMaterials.materialsId || '',
               drivingRangeName: vehicleMaterials.drivingRangeName || '',
               drivingRangeId: vehicleMaterials.drivingRangeId || '',
               rangePowerName: vehicleMaterials.rangePowerName || '',

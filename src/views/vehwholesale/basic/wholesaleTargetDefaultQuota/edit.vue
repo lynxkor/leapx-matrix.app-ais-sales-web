@@ -57,7 +57,7 @@
               <!-- 详情模式 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="车系：">
-                  {{ form.seriesName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.seriesId)">{{ form.seriesName }}</el-button>
                 </el-form-item>
                 <el-form-item label="批售目标数：">
                   {{ form.wholesaleTargetQty }}
@@ -154,6 +154,9 @@ export default {
     };
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     openPane () {
       this.$refs.editLayout.openPane();
     },

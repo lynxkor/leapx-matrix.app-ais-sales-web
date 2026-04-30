@@ -26,16 +26,10 @@
                   {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="门店名称：">
-                  <el-button class="link" style="padding: 0;" @click="navigateToRoute({
-                    path: '/partner/channelManagement/shopDetail',
-                    query: { dealerCode: form.dealerCode }
-                  })" type="text">{{ form.dealerName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)">{{ form.dealerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="返利核算单编号：">
-                  <el-button class="link" style="padding: 0;" @click="navigateToRoute({
-                    path: '/vehwholesale/rebate/fundVehicleRebateBill/detail',
-                    query: { id: form.rebateBillId }
-                  })" type="text">{{ form.rebateBillCode }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/rebate/fundVehicleRebateBill/edit?id=' + form.rebateBillId)">{{ form.rebateBillCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="单据状态：">
                   {{ form.billStatusLabel }}
@@ -67,31 +61,19 @@
                   {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="车系：">
-                  <el-button class="link" style="padding: 0;" @click="navigateToRoute({
-                    path: '/datacenter/materials/vehicleSeries/detail',
-                    query: { id: form.seriesId }
-                  })" type="text">{{ form.seriesName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.seriesId)">{{ form.seriesName }}</el-button>
                 </el-form-item>
                 <el-form-item label="基本车型：">
-                  <el-button class="link" style="padding: 0;" @click="navigateToRoute({
-                    path: '/datacenter/materials/vehicleModel/detail',
-                    query: { id: form.modelId }
-                  })" type="text">{{ form.modelName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + form.modelId)">{{ form.modelName }}</el-button>
                 </el-form-item>
                 <el-form-item label="交车单号：">
                   {{ form.deliveryOrderCode }}
                 </el-form-item>
                 <el-form-item label="预算科目：">
-                  <el-button class="link" style="padding: 0;" @click="navigateToRoute({
-                    path: '/vehwholesale/fund/fundBudgetItem/edit',
-                    query: { id: form.budgetItemId }
-                  })" type="text">{{ form.budgetItemName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundBudgetItem/edit?id=' + form.budgetItemId)">{{ form.budgetItemName }}</el-button>
                 </el-form-item>
                 <el-form-item label="费用支持类型：">
-                  <el-button class="link" style="padding: 0;" @click="navigateToRoute({
-                    path: '/vehwholesale/fund/fundFeeSupportType/edit',
-                    query: { id: form.feeSupportTypeId }
-                  })" type="text">{{ form.feeSupportTypeName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFeeSupportType/edit?id=' + form.feeSupportTypeId)">{{ form.feeSupportTypeName }}</el-button>
                 </el-form-item>
                 <el-form-item label="周期：">
                   {{ form.periodLabel }}
@@ -221,6 +203,9 @@ export default {
     }
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     async detailRequest () {
       const id = this._id;
       if (id) {

@@ -593,12 +593,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleInterior/edit',
-                  query: {
-                    id: row.interiorId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleInterior/edit?id=${row.interiorId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -610,12 +605,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleModel/edit',
-                  query: {
-                    id: row.modelId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -627,12 +617,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleExterior/edit',
-                  query: {
-                    id: row.exteriorId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleExterior/edit?id=${row.exteriorId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -645,12 +630,7 @@ export default {
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  this.$router.push({
-                    path: '/datacenter/materials/vehicleWheelHub/edit',
-                    query: {
-                      id: row.wheelHubId
-                    }
-                  });
+                  window.open(`/sales/datacenter/materials/vehicleWheelHub/edit?id=${row.wheelHubId}`, '_blank');
                 },
                 type: 'primary'
               }
@@ -675,12 +655,7 @@ export default {
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  this.$router.push({
-                    path: '/datacenter/materials/vehicleYearType/edit',
-                    query: {
-                      id: row.yearTypeId
-                    }
-                  });
+                  window.open(`/sales/datacenter/materials/vehicleYearType/edit?id=${row.yearTypeId}`, '_blank');
                 },
                 type: 'primary'
               }

@@ -21,24 +21,10 @@
               {{ info.dealerCompanyName  }}
             </el-form-item>
             <el-form-item label="资金账户编号：" prop="fundAccountCode">
-               <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/vehwholesale/fund/dealerFundAccount/edit',
-                      query: {
-                        id: info.fundAccountId,
-                      },
-                    })"
-                   type="text">{{info.fundAccountCode}}</el-button>
+               <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/dealerFundAccount/edit?id=' + info.fundAccountId)">{{info.fundAccountCode}}</el-button>
             </el-form-item>
             <el-form-item label="赊销额度编号：" prop="creditSalesLimitCode">
-              <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/vehwholesale/creditsales/fundOwnCreditSalesLimit/detail',
-                      query: {
-                        id: info.ownCreditSalesLimitId,
-                      },
-                    })"
-                   type="text">{{info.creditSalesLimitCode}}</el-button>
+              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/creditsales/fundOwnCreditSalesLimit/detail?id=' + info.ownCreditSalesLimitId)">{{info.creditSalesLimitCode}}</el-button>
             </el-form-item>
             <el-form-item label="创建时间：" prop="createTime">
               {{ info.createTime  }}
@@ -53,24 +39,10 @@
               {{ info.vin  }}
             </el-form-item>
             <el-form-item label="整车批售订单：" prop="wholesaleOrderCode">
-              <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
-                      query: {
-                        id: info.wholesaleOrderId,
-                      },
-                    })"
-                   type="text">{{info.wholesaleOrderCode}}</el-button>
+              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + info.wholesaleOrderId)">{{info.wholesaleOrderCode}}</el-button>
             </el-form-item>
             <el-form-item label="企业客户整车订单：" prop="entVehorderCode">
-              <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/vehwholesale/entorder/entVehicleOrder/edit',
-                      query: {
-                        id: info.entVehorderId,
-                      },
-                    })"
-                   type="text">{{info.entVehorderCode}}</el-button>
+              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + info.entVehorderId)">{{info.entVehorderCode}}</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -157,6 +129,9 @@ export default {
     this.getData();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     handleEdit () {
       this.$router.push({
         path: '/vehwholesale/creditsales/fundOwnCreditSalesDetail/edit',

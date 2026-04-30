@@ -212,14 +212,7 @@
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                      query: {
-                        id: form.financialOrganizationId,
-                      },
-                    })"
-                   type="text">{{ form.financialOrganizationName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.financialOrganizationId)">{{ form.financialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="是否赊销：" prop="creditSaleFlagLabel">
                   {{ form.creditSaleFlagLabel }}
@@ -777,6 +770,9 @@ export default {
     this.getCompanyList();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     getFundAccountBysaleCompany (val, row) {
       this.form.saleCompanyId = row.id;
       this.settleFundTypeOptions = [];

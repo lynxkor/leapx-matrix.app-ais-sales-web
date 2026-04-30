@@ -48,12 +48,7 @@
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financeOrganizationName">
                    <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                      query: {
-                        id: form.financeOrganizationId,
-                      },
-                    })"
+                   @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.financeOrganizationId)"
                    type="text">{{ form.financeOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
@@ -153,6 +148,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

@@ -225,12 +225,7 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                this.navigateToRoute({
-                  path: '/partner/channelManagement/shopDetail',
-                  query: {
-                    dealerCode: row.dealerCode,
-                  },
-                });
+                this.openWindow('/sales/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode);
               },
               type: 'primary'
             }]
@@ -294,6 +289,9 @@ export default {
     });
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     async listVehicleYearType (query) {
       try {
         const res = await listVehicleYearType({ yearTypeNameLike: query });
