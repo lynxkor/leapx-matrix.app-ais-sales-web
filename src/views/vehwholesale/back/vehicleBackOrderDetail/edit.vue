@@ -351,9 +351,6 @@
                 <el-form-item label="物流部预留：" prop="vehicleLogisticsReserveLabel">
                   {{ form.vehicleLogisticsReserveLabel }}
                 </el-form-item>
-                 <el-form-item label="订单接口同步结果：" prop="syncSapMsg">
-                  {{ form.syncSapMsg }}
-                </el-form-item>
                  <el-form-item label="SAP 退货单号：" prop="erpBackOrder">
                   {{ form.erpBackOrder }}
                 </el-form-item>
@@ -362,6 +359,9 @@
                 </el-form-item>
                 <el-form-item label="备注：" prop="remark">
                   {{ form.remark }}
+                </el-form-item>
+                 <el-form-item label="订单接口同步结果：" prop="syncSapMsg"  class="form-item-full">
+                  {{ form.syncSapMsg }}
                 </el-form-item>
               </el-form>
             </div>
