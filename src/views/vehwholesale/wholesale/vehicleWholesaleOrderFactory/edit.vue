@@ -278,16 +278,16 @@
                   {{ form.confirmStatusLabel }}
                 </el-form-item>
                 <el-form-item label="销售门店：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/partner/channelManagement/shopDetail?dealerCode=' + form.saleDealerCode)">{{ form.saleDealerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="交付门店名称：" prop="deliveryDealerName">
-                  {{ form.deliveryDealerName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/partner/channelManagement/shopDetail?dealerCode=' + form.deliveryDealerCode)">{{ form.deliveryDealerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="门店仓库名称：" prop="dealerWarehouseName">
                   {{ form.dealerWarehouseName }}
                 </el-form-item>
                  <el-form-item label="整车补货单号：" prop="replenishApplyCode">
-                  {{ form.replenishApplyCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=' + form.replenishApplyCode)">{{ form.replenishApplyCode }}</el-button>
                 </el-form-item>
                    <el-form-item label="订单分类：" prop="orderCategoryLabel">
                   {{ form.orderCategoryLabel }}
@@ -338,7 +338,7 @@
                   {{ form.allowLockRetailLabel }}
                 </el-form-item>
                  <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
-                  {{ form.replenishApplyDetailCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=' + form.replenishApplyDetailCode)">{{ form.replenishApplyDetailCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="指定发运方式：" prop="deliveryWayLabel">
                   {{ form.deliveryWayLabel }}

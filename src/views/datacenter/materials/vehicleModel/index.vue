@@ -226,9 +226,9 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'yearTypeName', label: '年款名称', visible: true, width: 200 },
-          { props: 'modelLineName', label: '系列名称', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
+          { props: 'yearTypeName', label: '年款名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleYearType/edit?id=${row.yearTypeId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'modelLineName', label: '系列名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleModelLine/edit?id=${row.modelLineId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'seriesName', label: '车系名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`, '_blank'); }, type: 'primary' }] },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },

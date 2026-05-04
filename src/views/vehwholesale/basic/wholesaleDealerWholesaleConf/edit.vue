@@ -125,7 +125,7 @@
                   {{ form.spotWholesaleEnabledLabel }}
                 </el-form-item>
                 <el-form-item label="母公司：">
-                  {{ form.dealerParentOrgName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?dealCode=' + form.dealerParentOrgId)">{{ form.dealerParentOrgName }}</el-button>
                 </el-form-item>
               </el-form>
             </div>

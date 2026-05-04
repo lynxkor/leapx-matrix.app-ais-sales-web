@@ -26,7 +26,7 @@
               {{ info.financialOrganizationName  }}
             </el-form-item>
             <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-              {{ info.dealerCompanyCode  }}
+              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?dealerCode=' + info.dealerCompanyCode)">{{ info.dealerCompanyCode }}</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -161,6 +161,9 @@ export default {
     this.getData();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     pageChange (page) {
       this.optionObj.form.page = page;
       this.getList();

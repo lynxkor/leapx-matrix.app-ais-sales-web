@@ -136,7 +136,7 @@
                   {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  {{ form.dealerCompanyCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?dealerCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
                 </el-form-item>
                   <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationName">
                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.fundFinancialOrganizationId)">{{ form.fundFinancialOrganizationName }}</el-button>
@@ -151,7 +151,7 @@
                   {{ form.mainDealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="主体公司编码：" prop="mainDealerCompanyCode">
-                  {{ form.mainDealerCompanyCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?dealerCode=' + form.mainDealerCompanyCode)">{{ form.mainDealerCompanyCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="创建者名称：" prop="creatorName">
                   {{ form.creatorName }}

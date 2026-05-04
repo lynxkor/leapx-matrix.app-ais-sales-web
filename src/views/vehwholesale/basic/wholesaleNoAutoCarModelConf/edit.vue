@@ -67,24 +67,10 @@
               <!-- 详情模式 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="车型：">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/datacenter/materials/vehicleModel/edit',
-                      query: {
-                        id: form.modelId,
-                      },
-                    })"
-                   type="text">{{ form.modelName }}</el-button>
+                  <el-button class="link" style="padding: 0;" @click="openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + form.modelId)" type="text">{{ form.modelName }}</el-button>
                 </el-form-item>
                 <el-form-item label="年款：">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/datacenter/materials/vehicleYearType/edit',
-                      query: {
-                        id: form.vehicleYearTypeId,
-                      },
-                    })"
-                   type="text">{{ form.vehicleYearType }}</el-button>
+                  <el-button class="link" style="padding: 0;" @click="openWindow('/sales/datacenter/materials/vehicleYearType/edit?id=' + form.vehicleYearTypeId)" type="text">{{ form.vehicleYearType }}</el-button>
                 </el-form-item>
                 <el-form-item label="不参与自动批售确认：">
                   {{ form.noJoinAutoConfirmLabel }}
@@ -185,6 +171,9 @@ export default {
     };
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     openPane () {
       this.$refs.editLayout.openPane();
     },

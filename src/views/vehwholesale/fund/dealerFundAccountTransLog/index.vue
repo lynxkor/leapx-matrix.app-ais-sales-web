@@ -300,8 +300,8 @@ export default {
             }]
           },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260 },
-          { props: 'dealerComapnyCode', label: '母公司编码', visible: true, width: 150 },
-          { props: 'fundAccountCode', label: '账户编号', visible: true, width: 200 },
+          { props: 'dealerComapnyCode', label: '母公司编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?dealerCode=${row.dealerComapnyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'fundAccountCode', label: '账户编号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/fund/dealerFundAccount/edit?id=${row.fundAccountId}`, '_blank'); }, type: 'primary' }] },
           { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 }
         ],

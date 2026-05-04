@@ -12,7 +12,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          <span class="status primary">{{ form.statusLabel }}</span>
+          <span>{{ form.wholesaleTargetDefaultQuotaName }}</span>
         </template>
         <el-main>
           <section class="common-section">
