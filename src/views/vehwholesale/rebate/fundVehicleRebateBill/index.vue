@@ -217,7 +217,7 @@ export default {
             }]
           },
           // { pops: 'rebateBillDetailCode', label: '返利核算单明细编号', visible: true, width: 200 },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260 },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           {
             props: 'dealerName',
             label: '门店名称',
@@ -225,7 +225,7 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                this.openWindow('/sales/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode);
+                this.openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode);
               },
               type: 'primary'
             }]

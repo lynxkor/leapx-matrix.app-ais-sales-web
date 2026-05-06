@@ -22,35 +22,30 @@
           <el-button size="small">按钮2</el-button> -->
           <el-button
             @click="openCancelShow"
-            v-if="form.refundStatus === 1010 || form.refundStatus === 1040"
-            v-permission="moduleKey + '-cancel'"
+            v-if="canCancel && (form.refundStatus === 1010 || form.refundStatus === 1040)"
             size="small">
             作废
           </el-button>
           <el-button
             @click="openCommitShow"
-            v-if="form.refundStatus === 1010 || form.refundStatus === 1040"
-            v-permission="moduleKey + '-commit'">
+            v-if="canCommit && (form.refundStatus === 1010 || form.refundStatus === 1040)">
             提交审批
           </el-button>
           <el-button
             @click="openPreAuditShow"
-            v-permission="moduleKey + '-preApprove'"
-            v-if="form.refundStatus === 1020"
+            v-if="canPreApprove && form.refundStatus === 1020"
           >
             初审
           </el-button>
           <el-button
             @click="openAuditShow"
-            v-permission="moduleKey + '-approve'"
-            v-if="form.refundStatus === 1025"
+            v-if="canApprove && form.refundStatus === 1025"
           >
             审核
           </el-button>
           <el-button
             @click="openFinalAuditShow"
-            v-permission="moduleKey + '-finalApprove'"
-            v-if="form.refundStatus === 1027"
+            v-if="canFinalApprove && form.refundStatus === 1027"
           >
             终审
           </el-button>
@@ -883,6 +878,12 @@ export default {
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
       moduleKey: 'AISVRRO-retailOrderRefund',
+      // 权限控制
+      canCancel: false, // 作废
+      canCommit: false, // 提交审批
+      canPreApprove: false, // 初审
+      canApprove: false, // 审核
+      canFinalApprove: false, // 终审
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
@@ -940,6 +941,7 @@ export default {
     };
   },
   created () {
+    this.initPermissions();
     const mallOrderCode = this.$route.query.mallOrderCode;
     if (mallOrderCode) {
       this.form.mallOrderCode = mallOrderCode;
@@ -958,6 +960,14 @@ export default {
   mounted () {
   },
   methods: {
+    // 初始化权限
+    initPermissions () {
+      this.canCancel = this.permissions.has(`${this.moduleKey}-cancel`);
+      this.canCommit = this.permissions.has(`${this.moduleKey}-commit`);
+      this.canPreApprove = this.permissions.has(`${this.moduleKey}-preApprove`);
+      this.canApprove = this.permissions.has(`${this.moduleKey}-approve`);
+      this.canFinalApprove = this.permissions.has(`${this.moduleKey}-finalApprove`);
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

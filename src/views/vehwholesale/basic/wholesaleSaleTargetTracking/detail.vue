@@ -35,7 +35,7 @@
               {{ info.cooperationTypeLabel  }}
             </el-form-item>
             <el-form-item label="门店编码：" prop="dealerCode">
-              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/partner/channelManagement/shopDetail?dealerCode=' + info.dealerCode)">{{info.dealerCode}}</el-button>
+              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + info.dealerCode)">{{info.dealerCode}}</el-button>
             </el-form-item>
             <el-form-item label="门店名称：" prop="dealerName">
                   {{info.dealerName}}

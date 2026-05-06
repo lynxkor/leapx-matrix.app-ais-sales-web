@@ -37,11 +37,11 @@
                   {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="parentCompanyName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?dealerCode=' + form.parentCompanyCode)">{{ form.parentCompanyName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.parentCompanyCode)">{{ form.parentCompanyName }}</el-button>
                 </el-form-item>
                 <el-form-item label="门店：" prop="dealerName">
                   <el-button class="link" style="padding: 0;"
-                   @click="openWindow('/sales/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)"
+                   @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)"
                    type="text">{{form.dealerName}}</el-button>
                 </el-form-item>
                 <el-form-item label="企业客户：" prop="enterpriseCustomerName">

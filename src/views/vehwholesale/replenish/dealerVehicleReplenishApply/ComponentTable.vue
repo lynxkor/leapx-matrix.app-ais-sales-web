@@ -6,8 +6,6 @@
     resizable
     border="inner"
     size="medium"
-    height="auto"
-    min-height="200px"
     max-height="600px"
     width="1000px"
     :checkbox-config="{ checkField: 'checked' }"
@@ -19,11 +17,14 @@
       v-bind="column"
     >
       <template v-if="column.field === 'applyQty'" #default="{ row }">
-        <el-input
+        <el-input-number
           v-if="editingRowId === row._uid"
+          :step="1"
+          :min="0"
+          :max="999"
+          :controls="false"
           v-model="row.applyQty"
           size="small"
-          @blur="handleBlur(row)"
         />
         <span v-else>{{ row.applyQty }}</span>
       </template>
@@ -91,9 +92,6 @@ export default {
     },
     handleCellClick ({ row }) {
       this.editingRowId = row._uid;
-    },
-    handleBlur () {
-      this.editingRowId = null;
     },
     handleSave (row, rowIndex) {
       this.editingRowId = null;

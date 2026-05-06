@@ -16,21 +16,18 @@
         <template #extraButtons>
           <el-button
             @click="openCancelShow"
-            v-if="form.applyStatus === 1010 || form.applyStatus === 1040"
-            v-permission="moduleKey + '-cancel'"
+            v-if="canCancel && (form.applyStatus === 1010 || form.applyStatus === 1040)"
             size="small">
             作废
           </el-button>
           <el-button
             @click="openCommitShow"
-            v-if="form.applyStatus === 1010 || form.applyStatus === 1040"
-            v-permission="moduleKey + '-commit'">
+            v-if="canCommit && (form.applyStatus === 1010 || form.applyStatus === 1040)">
             提交审批
           </el-button>
           <el-button
             @click="openAuditShow"
-            v-permission="moduleKey + '-approve'"
-            v-if="form.applyStatus === 1020"
+            v-if="canApprove && form.applyStatus === 1020"
           >
             审核
           </el-button>
@@ -681,6 +678,10 @@ export default {
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVRROCA-retailOrderChangeApply',
+      // 权限控制
+      canCancel: false, // 作废
+      canCommit: false, // 提交审批
+      canApprove: false, // 审核
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
@@ -1046,6 +1047,7 @@ export default {
     };
   },
   created () {
+    this.initPermissions();
     const mallOrderCode = this.$route.query.mallOrderCode;
     if (mallOrderCode) {
       this.form.mallOrderCode = mallOrderCode;
@@ -1064,6 +1066,12 @@ export default {
   mounted () {
   },
   methods: {
+    // 初始化权限
+    initPermissions () {
+      this.canCancel = this.permissions.has(`${this.moduleKey}-cancel`);
+      this.canCommit = this.permissions.has(`${this.moduleKey}-commit`);
+      this.canApprove = this.permissions.has(`${this.moduleKey}-approve`);
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

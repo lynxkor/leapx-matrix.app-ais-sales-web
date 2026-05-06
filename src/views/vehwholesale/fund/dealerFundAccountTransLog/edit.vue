@@ -36,10 +36,10 @@
                   {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerComapnyCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?dealerCode=' + form.dealerComapnyCode)">{{ form.dealerComapnyCode }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerComapnyCode)">{{ form.dealerComapnyCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="销售公司名称：" prop="saleCompanyName">
-                   {{ form.saleCompanyName  }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/fund/fundSaleCompany/edit?id=' + form.saleCompanyId)">{{ form.saleCompanyName }}</el-button>
                 </el-form-item>
                 <el-form-item label="资金类型：" prop="fundTypeLabel">
                   {{ form.fundTypeLabel }}
@@ -81,11 +81,11 @@
                    type="text">{{form.entVehorderCode}}</el-button>
                 </el-form-item>
                 <el-form-item label="交车单号：" prop="deliveryOrderCode">
-                  {{ form.deliveryOrderCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehretail/orderManager/deliveryOrder/edit?id=' + form.deliveryOrderCode)">{{ form.deliveryOrderCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="门店名称：" prop="dealerName">
                   <el-button class="link" style="padding: 0;"
-                   @click="openWindow('/sales/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)"
+                   @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)"
                    type="text">{{form.dealerName}}</el-button>
                 </el-form-item>
                  <el-form-item label="入账凭证号：" prop="transactionReceiptCode">
