@@ -221,27 +221,13 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="活动编码：" prop="activityCode">
-                  {{ form.activityCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=' + form.scheduleActivityId)">{{ form.activityCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="活动名称：" prop="activityName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/vehwholesale/basic/wholesaleProdScheduleActivity/edit',
-                      query: {
-                        id: form.scheduleActivityId,
-                      },
-                    })"
-                   type="text">{{ form.activityName }}</el-button>
+                  {{ form.activityName }}
                 </el-form-item>
                  <el-form-item label="车系名称：" prop="seriesName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                       path: '/datacenter/materials/vehicleSeries/detail',
-                      query: {
-                        id: form.seriesId,
-                      },
-                    })"
-                   type="text">{{ form.seriesName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.seriesId)">{{ form.seriesName }}</el-button>
                 </el-form-item>
                   <el-form-item label="是否锁零售单：" prop="allowLockRetailLabel">
                   {{ form.allowLockRetailLabel }}
@@ -253,7 +239,7 @@
                   {{ form.endTime }}
                 </el-form-item>
                   <el-form-item label="门店编码：" prop="dealerCode">
-                  {{ form.dealerCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)">{{ form.dealerCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="门店名称：" prop="dealerName">
                   {{ form.dealerName }}
@@ -268,27 +254,13 @@
                   {{ form.applyOrderCategoryLabel }}
                 </el-form-item>
                 <el-form-item label="系列名称：" prop="modelLineName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                        path: '/datacenter/materials/vehicleModelLine/detail',
-                      query: {
-                        id: form.modelLineId,
-                      },
-                    })"
-                   type="text">{{ form.modelLineName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModelLine/edit?id=' + form.modelLineId)">{{ form.modelLineName }}</el-button>
                 </el-form-item>
                   <el-form-item label="年款名称：" prop="yearTypeName">
-                     <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/datacenter/materials/vehicleYearType/detail',
-                      query: {
-                        id: form.yearTypeId,
-                      },
-                    })"
-                   type="text">{{ form.yearTypeName }}</el-button>
+                     <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleYearType/edit?id=' + form.yearTypeId)">{{ form.yearTypeName }}</el-button>
                 </el-form-item>
                   <el-form-item label="物料编码：" prop="materialsCode">
-                  {{ form.materialsCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + form.materialsId)">{{ form.materialsCode }}</el-button>
                 </el-form-item>
                   <el-form-item label="物料描述：" prop="materialsDesc">
                   {{ form.materialsDesc }}
@@ -364,6 +336,7 @@ const defaultForm = {
   scheduleActivityId: '',
   dealerCode: '',
   dealerName: '',
+  dealerId: '',
   seriesId: '',
   seriesName: '',
   modelLineId: '',
@@ -519,10 +492,18 @@ export default {
     this.detailRequest();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        return getDetail(id).then(res => {
+          if (res.dealerId) {
+            this.form.dealerId = res.dealerId;
+          }
+          return res;
+        });
       }
     },
     submitRequest () {

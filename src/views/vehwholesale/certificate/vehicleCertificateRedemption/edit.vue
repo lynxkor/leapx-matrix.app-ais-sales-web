@@ -152,24 +152,10 @@
                   {{ form.materialsCode }}
                 </el-form-item>
                     <el-form-item label="车系名称：" prop="seriesName">
-                      <el-button class="link" style="padding: 0;"
-                        @click="navigateToRoute({
-                            path: '/datacenter/materials/vehicleSeries/detail',
-                            query: {
-                              id: form.seriesId,
-                            },
-                          })"
-                        type="text">{{ form.seriesName }}</el-button>
+                      <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.seriesId)">{{ form.seriesName }}</el-button>
                 </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
-                  <el-button class="link" style="padding: 0;"
-                        @click="navigateToRoute({
-                            path: '/datacenter/materials/vehicleModel/detail',
-                            query: {
-                              id: form.modelId,
-                            },
-                          })"
-                        type="text">{{ form.modelName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + form.modelId)">{{ form.modelName }}</el-button>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
@@ -692,6 +678,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     otherentOrderCode (val, row) {
       this.form.dealerCompanyName = row.entCustomerName || '';
       this.form.dealerCompanyCode = row.entCustomerCode || '';

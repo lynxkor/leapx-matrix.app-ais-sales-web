@@ -181,6 +181,13 @@
                     clearable
                   />
                 </el-form-item>
+                <el-form-item label="同步状态：" prop="syncStatusLabel">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.syncStatusLabel"
+                    clearable
+                  />
+                </el-form-item>
                  <el-form-item label="WMS同步结果：" prop="syncRemark">
                   <el-input
                     placeholder="请输入"
@@ -226,6 +233,14 @@
                     clearable
                   />
                 </el-form-item>
+                <el-form-item label="状态：" prop="statusLabel">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.statusLabel"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
               </el-form>
               <el-form
                 label-width="150px"
@@ -234,7 +249,7 @@
                 v-show="!(isEditing || !_id)"
               >
                 <el-form-item label="VIN码：" prop="vin">
-                  {{ form.vin }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?id=' + form.vehicleVdcInventory.id)">{{ form.vin }}</el-button>
                 </el-form-item>
                 <el-form-item label="整车仓库：" prop="vehicleWarehouseName">
                   {{ form.vehicleWarehouseName }}
@@ -249,10 +264,10 @@
                   {{ form.certificateShippingWayLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="organizationName">
-                  {{ form.organizationName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.financialOrganizationId)"> {{ form.organizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="车系：" prop="seriesName">
-                  {{ form.seriesName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.seriesId)"> {{ form.seriesName }}</el-button>
                 </el-form-item>
                 <el-form-item label="所属大区：" prop="regionName">
                   {{ form.regionName }}
@@ -273,7 +288,7 @@
                   {{ form.actualDeliveryWay }}
                 </el-form-item>
                 <el-form-item label="批售订单号：" prop="wholesaleOrderCode">
-                  {{ form.wholesaleOrderCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + form.wholesaleOrderCode)">{{ form.wholesaleOrderCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="发运计划：" prop="shippingPlanDetailCode">
                   {{ form.shippingPlanDetailCode }}
@@ -293,11 +308,14 @@
                 <el-form-item label="是否需要同步WMS：" prop="needSyncWms">
                   {{ form.needSyncWmsLabel }}
                 </el-form-item>
+                 <el-form-item label="同步状态：" prop="syncStatusLabel">
+                  {{ form.syncStatusLabel }}
+                </el-form-item>
                  <el-form-item label="WMS同步结果：" prop="syncRemark">
                   {{ form.syncRemark }}
                 </el-form-item>
                 <el-form-item label="企业客户订单号：" prop="entVehicleOrderCode">
-                  {{ form.entVehicleOrderCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + form.entVehicleOrderCode)">{{ form.entVehicleOrderCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="承运记录编码：" prop="carrierRecordCode">
                   {{ form.carrierRecordCode }}
@@ -310,6 +328,9 @@
                 </el-form-item>
                 <el-form-item label="备注：" prop="remark">
                   {{ form.remark }}
+                </el-form-item>
+                <el-form-item label="状态：" prop="statusLabel">
+                  {{ form.statusLabel }}
                 </el-form-item>
               </el-form>
             </div>
@@ -513,8 +534,8 @@
                 <el-form-item label="整车工厂：" prop="factoryNames">
                   {{ form.factoryNames }}
                 </el-form-item>
-                <el-form-item label="是否冻结：" prop="statusLabel">
-                  {{ form.statusLabel }}
+                <el-form-item label="是否冻结：" prop="vehicleStatusLabel">
+                  {{ form.vehicleStatusLabel }}
                 </el-form-item>
                 <el-form-item label="仓库分类：" prop="warehouseTypeLabel">
                   {{ form.warehouseTypeLabel }}
@@ -639,52 +660,31 @@
                 v-show="!(isEditing || !_id)"
               >
                 <el-form-item label="车系：" prop="seriesName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/datacenter/materials/vehicleSeries/detail',
-                      query: {
-                        id: form.seriesId,
-                      },
-                    })"
-                   type="text"> {{ form.seriesName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.seriesId)"> {{ form.seriesName }}</el-button>
                 </el-form-item>
                 <el-form-item label="车型：" prop="modelName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/datacenter/materials/vehicleModel/detail',
-                      query: {
-                        id: form.modelId,
-                      },
-                    })"
-                   type="text"> {{ form.modelName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + form.modelId)"> {{ form.modelName }}</el-button>
                 </el-form-item>
                 <el-form-item label="物料描述：" prop="materialsDesc">
-                  {{ form.materialsDesc }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + form.materialsId)"> {{ form.materialsDesc }}</el-button>
                 </el-form-item>
                 <el-form-item label="选配续航：" prop="drivingRangeName">
-                  {{ form.drivingRangeName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleDrivingRange/edit?id=' + form.drivingRangeId)"> {{ form.drivingRangeName }}</el-button>
                 </el-form-item>
                 <el-form-item label="选配动力：" prop="rangePowerName">
-                  {{ form.rangePowerName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleRangePower/edit?id=' + form.rangePowerId)"> {{ form.rangePowerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="外饰风格：" prop="exteriorName">
-                  {{ form.exteriorName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleExterior/edit?id=' + form.exteriorId)"> {{ form.exteriorName }}</el-button>
                 </el-form-item>
                 <el-form-item label="内饰风格：" prop="interiorName">
-                  {{ form.interiorName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleInterior/edit?id=' + form.interiorId)"> {{ form.interiorName }}</el-button>
                 </el-form-item>
                 <el-form-item label="选配轮毂：" prop="wheelHubName">
-                  {{ form.wheelHubName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleWheelHub/edit?id=' + form.wheelHubId)"> {{ form.wheelHubName }}</el-button>
                 </el-form-item>
                 <el-form-item label="选装包：" prop="optionPackageName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/datacenter/materials/vehicleOptionPackage/detail',
-                      query: {
-                        id: form.optionPackageId,
-                      },
-                    })"
-                   type="text"> {{ form.optionPackageName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleOptionPackage/edit?id=' + form.optionPackageId)"> {{ form.optionPackageName }}</el-button>
                 </el-form-item>
               </el-form>
             </div>
@@ -829,6 +829,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {
@@ -837,16 +840,25 @@ export default {
           return {
             ...res,
             drivingRangeName: res.vehicleMaterials?.drivingRangeName || '',
+            drivingRangeId: res.vehicleMaterials?.drivingRangeId || '',
             rangePowerName: res.vehicleMaterials?.rangePowerName || '',
+            rangePowerId: res.vehicleMaterials?.rangePowerId || '',
             exteriorName: res.vehicleMaterials?.exteriorName || '',
+            exteriorId: res.vehicleMaterials?.exteriorId || '',
             interiorName: res.vehicleMaterials?.interiorName || '',
+            interiorId: res.vehicleMaterials?.interiorId || '',
             wheelHubName: res.vehicleMaterials?.wheelHubName || '',
+            wheelHubId: res.vehicleMaterials?.wheelHubId || '',
             optionPackageName: res.vehicleMaterials?.optionPackageName || '',
             optionPackageId: res.vehicleMaterials?.optionPackageId || '',
             modelName: res.vehicleMaterials?.modelName || '',
             modelId: res.vehicleMaterials?.modelId || '',
+            seriesName: res.vehicleMaterials?.seriesName || '',
+            seriesId: res.vehicleMaterials?.seriesId || '',
             materialsDesc: res.vehicleMaterials?.materialsDesc || '',
+            materialsId: res.vehicleMaterials?.materialsCode || '',
             // 金融机构
+            financialOrganizationId: res.financialOrganization?.id || '',
             organizationName: res.financialOrganization?.organizationName || '',
             inboundDateTime: res.vehicleVdcInventory?.inboundDateTime || '',
             vehicleDeliveryStatusLabel: res.vehicleVdcInventory?.vehicleDeliveryStatusLabel || '',
@@ -857,7 +869,7 @@ export default {
             warehouseName: res.vehicleWarehouse?.warehouseName || '',
             warehouseCode: res.vehicleWarehouse?.warehouseCode || '',
             factoryNames: res.vehicleWarehouse?.factoryNames || '',
-            statusLabel: res.vehicleWarehouse?.statusLabel || '',
+            vehicleStatusLabel: res.vehicleWarehouse?.statusLabel || '',
             warehouseTypeLabel: res.vehicleWarehouse?.warehouseTypeLabel || '',
             vehicleWareaddress: res.vehicleWarehouse?.address || '',
             province: res.vehicleWarehouse?.province || '',

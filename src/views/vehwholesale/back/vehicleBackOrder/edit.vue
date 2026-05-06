@@ -169,10 +169,10 @@
                   {{ form.orderTypeLabel }}
                 </el-form-item>
                  <el-form-item label="经销商：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/partner/channelManagement/parentCompany/edit?dealerCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
                 </el-form-item>
                  <el-form-item label="企业客户名称：" prop="entCustomerName">
-                  {{ form.entCustomerName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/partner/channelManagement/parentCompany/edit?dealerCode=' + form.entCustomerCode)">{{ form.entCustomerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="大区：" prop="regionName">
                   {{ form.regionName }}
@@ -655,6 +655,9 @@ export default {
     this.fetchBooleanEnum();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     getRegionrName (val, row) {
       this.form.regionName = row.orgName;
     },

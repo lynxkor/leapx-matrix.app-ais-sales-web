@@ -122,19 +122,19 @@
               <!-- 详情模式 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="物料编码：">
-                  {{ form.materialsCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + form.materialsId)">{{ form.materialsCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="车系：">
-                  {{ form.seriesName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.seriesId)">{{ form.seriesName }}</el-button>
                 </el-form-item>
                 <el-form-item label="车型：">
-                  {{ form.modelName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + form.modelId)">{{ form.modelName }}</el-button>
                 </el-form-item>
                 <el-form-item label="年款：">
-                  {{ form.vehicleYearType }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleYearType/edit?id=' + form.vehicleYearTypeId)">{{ form.vehicleYearType }}</el-button>
                 </el-form-item>
                 <el-form-item label="选装包：">
-                  {{ form.optionPackageName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleOptionPackage/edit?id=' + form.optionPackageId)">{{ form.optionPackageName }}</el-button>
                 </el-form-item>
                 <el-form-item label="允许试驾车批售：">
                   {{ form.allowTestDriveWholesaleLabel }}
@@ -246,6 +246,9 @@ export default {
     };
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     openPane () {
       this.$refs.editLayout.openPane();
     },

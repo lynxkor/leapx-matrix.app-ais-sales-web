@@ -166,7 +166,7 @@ export default {
           { props: 'vin', label: '门店库存台账', visible: true, width: 200 },
           { props: 'modelName', label: '车型', visible: true, width: 200 },
           { props: 'changeTypeLabel', label: '用途变更类型', visible: true, width: 140 },
-          { props: 'originalOrderType', label: '原批售订单分类', visible: true, width: 150 },
+          { props: 'originalOrderTypeLabel', label: '原批售订单分类', visible: true, width: 150 },
           { props: 'originalReservedLabel', label: '原是否预留', visible: true, width: 130 },
           { props: 'originalReservedType', label: '原预留类型', visible: true, width: 160 },
           { props: 'changedReservedLabel', label: '变更后是否预留', visible: true, width: 140 },

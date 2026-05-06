@@ -63,7 +63,14 @@
               <!-- 详情模式 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="门店编码：">
-                  {{ form.dealerCode }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="navigateToRoute({
+                      path: '/partner/channelManagement/shopDetail',
+                      query: {
+                        dealerCode: form.dealerCode,
+                      },
+                    })"
+                   type="text">{{ form.dealerCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="门店名称：">
                   {{ form.dealerName }}

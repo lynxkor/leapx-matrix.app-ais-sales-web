@@ -263,12 +263,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.navigateToRoute({
-                  path: '/partner/channelManagement/shopDetail',
-                  query: {
-                    dealerCode: row.dealerCode
-                  }
-                });
+                window.open('/sales/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode, '_blank');
               },
               type: 'primary'
             }]
@@ -283,12 +278,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleSeries/detail',
-                  query: {
-                    id: row.seriesId
-                  }
-                });
+                this.openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId);
               },
               type: 'primary'
             }]
@@ -351,6 +341,9 @@ export default {
     this.getData();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     handleImportWholesale () {
       this.uploadDialogVisibleWholesale = true;
     },

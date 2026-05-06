@@ -544,24 +544,19 @@ export default {
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 200 },
           {
-            props: 'materialsCode',
+            props: 'orderMaterialsCode',
             label: '物料编码',
             visible: true,
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleMaterials/edit',
-                  query: {
-                    id: row.materialsDesc
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.orderMaterialsCode}`, '_blank');
               },
               type: 'primary'
             }]
           },
           {
-            props: 'materialsDesc',
+            props: 'orderMaterialsDesc',
             label: '物料描述',
             visible: true,
             width: 200,
@@ -570,7 +565,7 @@ export default {
           { props: 'settleTime', label: '结算时间', visible: true, width: 200 },
 
           { props: 'vin', label: '配车VIN码', visible: true, width: 200 },
-          { props: 'replenishApplyCode', label: '整车补货单号', visible: true, width: 200 },
+          { props: 'replenishApplyCode', label: '整车补货单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=${row.replenishApplyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
           { props: 'provinceName', label: '省份', visible: true, width: 200 },
           { props: 'cityName', label: '城市', visible: true, width: 200 },
@@ -588,7 +583,7 @@ export default {
           { props: 'erpInvoiceCode', label: 'ERP发票号', visible: true, width: 200 },
           { props: 'syncSapMsg', label: '同步SAP状态', visible: true, width: 200 },
           { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?dealerCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           // { props: 'dealerCompanyCode', label: '母公司代码', visible: true, width: 200 },
           // { props: 'saleDealerCode', label: '销售公司编码', visible: true, width: 200 },
           {
@@ -598,12 +593,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleInterior/edit',
-                  query: {
-                    id: row.interiorId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleInterior/edit?id=${row.interiorId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -615,12 +605,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleModel/edit',
-                  query: {
-                    id: row.modelId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -632,12 +617,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleExterior/edit',
-                  query: {
-                    id: row.exteriorId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleExterior/edit?id=${row.exteriorId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -650,12 +630,7 @@ export default {
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  this.$router.push({
-                    path: '/datacenter/materials/vehicleWheelHub/edit',
-                    query: {
-                      id: row.wheelHubId
-                    }
-                  });
+                  window.open(`/sales/datacenter/materials/vehicleWheelHub/edit?id=${row.wheelHubId}`, '_blank');
                 },
                 type: 'primary'
               }
@@ -680,12 +655,7 @@ export default {
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  this.$router.push({
-                    path: '/datacenter/materials/vehicleYearType/edit',
-                    query: {
-                      id: row.yearTypeId
-                    }
-                  });
+                  window.open(`/sales/datacenter/materials/vehicleYearType/edit?id=${row.yearTypeId}`, '_blank');
                 },
                 type: 'primary'
               }

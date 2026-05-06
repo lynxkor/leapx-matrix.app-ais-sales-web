@@ -228,19 +228,19 @@
                   {{ form.saleDealerCode }}
                 </el-form-item>
                 <el-form-item label="销售门店：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/partner/channelManagement/shopDetail?dealerCode=' + form.saleDealerCode)">{{ form.saleDealerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="订单分类：" prop="orderCategoryLabel">
                   {{ form.orderCategoryLabel }}
                 </el-form-item>
                 <el-form-item label="交付门店：" prop="deliveryDealerName">
-                  {{ form.deliveryDealerName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/partner/channelManagement/shopDetail?dealerCode=' + form.deliveryDealerCode)">{{ form.deliveryDealerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="批售方式：" prop="wholesaleWayLabel">
                   {{ form.wholesaleWayLabel }}
                 </el-form-item>
                 <el-form-item label="专项活动：" prop="prodScheduleActivityName" v-show="form.orderCategory + '' !== '2'">
-                  {{ form.prodScheduleActivityName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=' + form.prodScheduleActivityId)"> {{ form.prodScheduleActivityName }}</el-button>
                 </el-form-item>
                 <el-form-item label="申请类别：" prop="applyCategoryLabel" v-show="form.orderCategory + '' === '2'">
                   {{ form.applyCategoryLabel }}
@@ -258,7 +258,7 @@
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationName" v-show="form.settleFundType==2010">
-                  {{ form.financialOrganizationName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.financialOrganizationId)">{{ form.financialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="申请原因：" prop="applyReason">
                   {{ form.applyReason }}
@@ -292,10 +292,12 @@
               <el-button size="small" @click="handleAddRow" style="margin-bottom: 10px;" v-show = "form.permission.edit && _id">添加补货明细</el-button>
               <div class="common-section-table">
                 <component-table
+                  ref="detailTableRef"
                   :tableData="form.details"
                   :columns="detailsColumns"
-                  :show-delete="isEditing || !_id"
+                  :show-delete="form.permission.edit && _id"
                   @delete-row="handleDeleteDetailRow"
+                  @save-row="handleSaveDetailRow"
                 />
               </div>
             </div>
@@ -554,6 +556,9 @@ export default {
     this.fetchsettleFundTypeOptions();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     handleDeleteDetailRow (row, rowIndex) {
       this.$confirm(`确定要删除${row.replenishApplyDetailCode}表格数据吗`, '提示', {
         confirmButtonText: '确定',
@@ -564,6 +569,9 @@ export default {
         this.updateApplyTotalQty();
       }).catch(() => {
       });
+    },
+    handleSaveDetailRow () {
+      this.updateApplyTotalQty();
     },
     handleSave () {
       const dataList = this.$refs.addCommercialVehicle.tableList;

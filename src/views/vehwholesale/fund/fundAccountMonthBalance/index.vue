@@ -202,7 +202,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'parentCompanyName', label: '母公司名称', visible: true, width: 200 },
+          { props: 'parentCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?dealerCode=${row.parentCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'year', label: '年份', visible: true, width: 200 },
           { props: 'month', label: '月份', visible: true, width: 200 },
           { props: 'periodBeginBalance', label: '本期期初', visible: true, width: 200 },
@@ -217,12 +217,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                  query: {
-                    id: row.financeOrganizationId
-                  }
-                });
+                window.open(`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${row.financeOrganizationId}`, '_blank');
               },
               type: 'primary'
             }]

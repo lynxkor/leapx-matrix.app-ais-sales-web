@@ -288,12 +288,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleSeries/detail',
-                  query: {
-                    id: row.seriesId
-                  }
-                });
+                this.openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId);
               },
               type: 'primary'
             }]
@@ -305,12 +300,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleModel/detail',
-                  query: {
-                    id: row.modelId
-                  }
-                });
+                this.openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + row.modelId);
               },
               type: 'primary'
             }]
@@ -399,6 +389,9 @@ export default {
     this.getVehicleModelList();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     // 获取车辆系列列表
     async getVehicleSeriesList (query = '') {
       try {

@@ -199,7 +199,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/creditsales/fundOwnCreditSalesDetail/detail',
+                  path: '/vehwholesale/creditsales/fundOwnCreditSalesDetail/edit',
                   query: {
                     id: row.id
                   }
@@ -216,12 +216,7 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/partner/channelManagement/shopDetail',
-                  query: {
-                    dealerCode: row.dealerCode,
-                  }
-                });
+                window.open(`/sales/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank');
               },
               type: 'primary'
             }]
@@ -233,12 +228,7 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
-                  query: {
-                    id: row.wholesaleOrderId,
-                  }
-                });
+                this.openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.wholesaleOrderId);
               },
               type: 'primary'
             }]
@@ -250,12 +240,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/entorder/entVehicleOrder/edit',
-                  query: {
-                    id: row.entVehorderId,
-                  }
-                });
+                this.openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + row.entVehorderId);
               },
               type: 'primary'
             }]
@@ -270,7 +255,7 @@ export default {
           { props: 'creditSalesDays', label: '赊销天数', visible: true, width: 100 },
           { props: 'repaymentTime', label: '还款时间', visible: true, width: 200 },
           { props: 'creditSalesFee', label: '赊销费用', visible: true, width: 100 },
-          { props: 'certificateRedemptionApplyId', label: '合格证赎回申请', visible: true, width: 120 },
+          { props: 'certificateRedemptionApplyId', label: '合格证赎回申请', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/certificate/vehicleCertificateRedemption/edit?id=${row.certificateRedemptionApplyId}`, '_blank'); }, type: 'primary' }] },
           { props: 'overdueFee', label: '超期赊销费用', visible: true, width: 120 },
           { props: 'penaltyFee', label: '违约金', visible: true, width: 100 },
           // { props: 'voucherNo', label: '凭证号', visible: true, width: 200 },
@@ -338,6 +323,9 @@ export default {
     });
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     handleListSelect (row) {
       this.clickItemId = row.id;
     },

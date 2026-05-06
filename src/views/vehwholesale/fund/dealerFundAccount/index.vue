@@ -212,7 +212,8 @@ export default {
             props: 'dealerCompanyCode',
             label: '母公司编码',
             visible: true,
-            width: 150
+            width: 150,
+            buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?dealerCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }]
           },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 100 },
           { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 100 },
@@ -223,12 +224,7 @@ export default {
             width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                  query: {
-                    id: row.financialOrganizationId
-                  }
-                });
+                window.open(`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${row.financialOrganizationId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -242,7 +238,7 @@ export default {
           { props: 'totalRechargeAmount', label: '累计充值金额', visible: true, width: 100 },
           { props: 'totalSettleAmount', label: '累计结算金额', visible: true, width: 150 },
           { props: 'lastTradeTime', label: '最近交易时间', visible: true, width: 200 },
-          { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200 },
+          { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/vehwholesale/fund/fundSaleCompany/edit?id=${row.saleCompanyId}`, '_blank'); }, type: 'primary' }] },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',

@@ -171,7 +171,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/creditsales/fundOwnCreditSalesLimit/detail',
+                  path: '/vehwholesale/creditsales/fundOwnCreditSalesLimit/edit',
                   query: {
                     id: row.id
                   }
@@ -180,7 +180,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 150 },
+          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?dealerCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240 },
           { props: 'creditAccountStatusLabel', label: '赊销账户状态', visible: true, width: 120 },
           { props: 'creditAmount', label: '授信额度', visible: true, width: 120 },

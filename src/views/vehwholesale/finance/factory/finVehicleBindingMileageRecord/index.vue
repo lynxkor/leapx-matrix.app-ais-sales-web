@@ -232,12 +232,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                  query: {
-                    id: row.fundFinancialOrganizationId
-                  }
-                });
+                this.openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.fundFinancialOrganizationId);
               },
               type: 'primary'
             }]
@@ -279,6 +274,9 @@ export default {
     this.getData();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     handleBatchSync () {
       if (this.selectionList.length === 0) {
         this.$message({

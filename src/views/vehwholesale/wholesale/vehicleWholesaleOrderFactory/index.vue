@@ -28,7 +28,7 @@
       </el-form-item>
       <template v-if="show">
         <el-form-item label="物料描述">
-          <tag-input v-model="form.orderMaterialsDescs" placeholder="请输入" />
+          <tag-input v-model="form.materialsDesc" placeholder="请输入" />
         </el-form-item>
          <el-form-item label="商城订单号">
           <tag-input v-model="form.mallOrderCodes" placeholder="请输入" />
@@ -218,6 +218,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    multiple
                   />
         </el-form-item>
             <el-form-item label="确认时间">
@@ -597,24 +598,19 @@ export default {
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 200 },
           {
-            props: 'materialsCode',
+            props: 'orderMaterialsCode',
             label: '物料编码',
             visible: true,
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleMaterials/edit',
-                  query: {
-                    id: row.materialsDesc
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.orderMaterialsCode}`, '_blank');
               },
               type: 'primary'
             }]
           },
           {
-            props: 'materialsDesc',
+            props: 'orderMaterialsDesc',
             label: '物料描述',
             visible: true,
             width: 200,
@@ -622,11 +618,11 @@ export default {
           { props: 'allocateTime', label: '配车时间', visible: true, width: 200 },
           { props: 'settleTime', label: '结算时间', visible: true, width: 200 },
           { props: 'vin', label: '配车VIN码', visible: true, width: 200 },
-          { props: 'replenishApplyCode', label: '整车补货单号', visible: true, width: 200 },
+          { props: 'replenishApplyCode', label: '整车补货单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=${row.replenishApplyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
           { props: 'provinceName', label: '省份', visible: true, width: 200 },
           { props: 'cityName', label: '城市', visible: true, width: 200 },
-          { props: 'prodScheduleActivityName', label: '专项活动', visible: true, width: 200 },
+          { props: 'prodScheduleActivityName', label: '专项活动', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=${row.prodScheduleActivityId}`, '_blank'); }, type: 'primary' }] },
           { props: 'allowLockRetailLabel', label: '允许锁零售单', visible: true, width: 200 },
           { props: 'retailPrice', label: '零售价', visible: true, width: 200 },
           { props: 'invoiceDiscountTypeLabel', label: '开票类型', visible: true, width: 200 },
@@ -640,7 +636,7 @@ export default {
           { props: 'erpInvoiceCode', label: 'ERP发票号', visible: true, width: 200 },
           { props: 'syncSapMsg', label: '同步SAP状态', visible: true, width: 200 },
           { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?dealerCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           // { props: 'dealerCompanyCode', label: '母公司代码', visible: true, width: 200 },
           // { props: 'saleDealerCode', label: '销售公司编码', visible: true, width: 200 },
           {
@@ -650,12 +646,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleInterior/edit',
-                  query: {
-                    id: row.interiorId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleInterior/edit?id=${row.interiorId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -667,12 +658,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleModel/edit',
-                  query: {
-                    id: row.modelId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -684,12 +670,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleExterior/edit',
-                  query: {
-                    id: row.exteriorId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleExterior/edit?id=${row.exteriorId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -702,12 +683,7 @@ export default {
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  this.$router.push({
-                    path: '/datacenter/materials/vehicleWheelHub/edit',
-                    query: {
-                      id: row.wheelHubId
-                    }
-                  });
+                  window.open(`/sales/datacenter/materials/vehicleWheelHub/edit?id=${row.wheelHubId}`, '_blank');
                 },
                 type: 'primary'
               }
@@ -732,12 +708,7 @@ export default {
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  this.$router.push({
-                    path: '/datacenter/materials/vehicleYearType/edit',
-                    query: {
-                      id: row.yearTypeId
-                    }
-                  });
+                  window.open(`/sales/datacenter/materials/vehicleYearType/edit?id=${row.yearTypeId}`, '_blank');
                 },
                 type: 'primary'
               }
@@ -753,24 +724,6 @@ export default {
           { props: 'emergencyOrderTime', label: '设置急单时间', visible: true, width: 200 },
           { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 200 },
           // { props: 'downPaymentRatio', label: '配车顺序时间', visible: true, width: 200 },
-          {
-            props: 'orderMaterialCode',
-            label: '订单物料编码',
-            visible: true,
-            width: 200,
-            buttons: [{
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleMaterials/edit',
-                  query: {
-                    id: row.orderMaterialCode
-                  }
-                });
-              },
-              type: 'primary'
-            }]
-          },
-          { props: 'orderMaterialCode', label: '订单物料编码', visible: true, width: 200 },
           { props: 'needAutoAllocateCarLabel', label: '是否需要自动配车', visible: true, width: 200 },
           { props: 'dealerWarehouseName', label: '门店仓库名称', visible: true, width: 200 },
           { props: 'logisticsReserveLabel', label: '整车物流预留', visible: true, width: 200 },

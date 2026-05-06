@@ -126,19 +126,18 @@
                 </el-form-item>
                 <el-form-item label="车系名称：" prop="vehicleSeriesName">
                    <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                    path: '/datacenter/materials/vehicleSeries/detail',
-                      query: {
-                        id: form.vehicleSeriesId,
-                      },
-                    })"
+                   @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.vehicleSeriesId)"
                    type="text">{{ form.vehicleSeriesName }}</el-button>
                 </el-form-item>
                 <el-form-item label="预算科目：" prop="budgetItemName">
-                  {{ form.budgetItemName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="openWindow('/sales/vehwholesale/fund/fundBudgetItem/edit?id=' + form.budgetItemId)"
+                   type="text">{{ form.budgetItemName }}</el-button>
                 </el-form-item>
                 <el-form-item label="费用支持类型：" prop="feeSupportTypeName">
-                  {{ form.feeSupportTypeName }}
+                  <el-button class="link" style="padding: 0;"
+                   @click="openWindow('/sales/vehwholesale/fund/fundFeeSupportType/edit?id=' + form.feeSupportTypeId)"
+                   type="text">{{ form.feeSupportTypeName }}</el-button>
                 </el-form-item>
                 <el-form-item label="有效开始日期：" prop="effectiveStartTime">
                   {{ form.effectiveStartTime }}
@@ -312,6 +311,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

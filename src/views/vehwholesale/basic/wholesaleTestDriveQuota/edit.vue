@@ -122,13 +122,13 @@
               <!-- 详情模式 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="年款：">
-                  {{ form.vehicleYearType }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleYearType/edit?id=' + form.vehicleYearTypeId)">{{ form.vehicleYearType }}</el-button>
                 </el-form-item>
                 <el-form-item label="系列：">
-                  {{ form.vehicleModelLine }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModelLine/edit?id=' + form.vehicleModelLineId)">{{ form.vehicleModelLine }}</el-button>
                 </el-form-item>
                 <el-form-item label="车系：">
-                  {{ form.seriesName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.seriesId)">{{ form.seriesName }}</el-button>
                 </el-form-item>
                 <el-form-item label="数量：">
                   {{ form.quantity }}
@@ -269,6 +269,9 @@ export default {
     this.fetchShopTypeEnum();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     openPane () {
       this.$refs.editLayout.openPane();
     },
