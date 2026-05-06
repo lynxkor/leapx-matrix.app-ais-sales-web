@@ -32,6 +32,7 @@
           <el-button v-if="canUploadInvoice && form.status === 5" size="small" @click="handleUploadInvoice">上传发票</el-button>
           <el-button v-if="canCancelPayment && form.status === 5" size="small" @click="handlePaymentWithdraw">收款撤回</el-button>
           <el-button v-if="canCancelDelivery && form.status === 7" size="small" @click="handleDeliveryWithdraw">交车撤回</el-button>
+          <el-button v-if="form.deliveryConfirmStatus !== 99" v-permission="moduleKey+'-pushDeliveryActive'" size="small" @click="handleDeliveryActive">推送激活信息</el-button>
         </template>
         <el-main>
           <!--  -->
