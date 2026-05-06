@@ -171,8 +171,8 @@
         </div>
       </section>
       <!-- <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="dialogVisible = false">取 消</el-button>
-        <el-button size="small" type="primary" @click="confirm">确 定</el-button>
+        <el-button size="small" @click="dialogVisible = false">取消</el-button>
+        <el-button size="small" type="primary" @click="confirm">确定</el-button>
       </div> -->
     </div><el-dialog
       width="300px"

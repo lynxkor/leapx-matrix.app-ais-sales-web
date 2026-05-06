@@ -154,8 +154,8 @@
         </el-row>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="closeSetAttr">取 消</el-button>
-        <el-button size="small" type="primary" @click="confirmSetAttr">确 定</el-button>
+        <el-button size="small" @click="closeSetAttr">取消</el-button>
+        <el-button size="small" type="primary" @click="confirmSetAttr">确定</el-button>
       </div>
     </el-dialog>
 
