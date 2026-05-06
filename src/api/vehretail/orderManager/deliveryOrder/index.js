@@ -226,3 +226,11 @@ export function deletePayRecord (data) {
 export function completeDelivery (data) {
   return api.jsonPost(prefix + 'completeDelivery', data);
 }
+
+/**
+ * 推送激活信息
+ * @param {Object} data
+ */
+export function pushDeliveryActive (data) {
+  return api.jsonPost(prefix + 'pushDeliveryActive', data);
+}

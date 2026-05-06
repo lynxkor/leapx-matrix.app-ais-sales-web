@@ -32,6 +32,7 @@
           <el-button v-if="form.status === 5" v-permission="moduleKey+'-uploadInvoice'" size="small" @click="handleUploadInvoice">上传发票</el-button>
           <el-button v-if="form.status === 5" v-permission="moduleKey+'-cancelPayment'" size="small" @click="handlePaymentWithdraw">收款撤回</el-button>
           <el-button v-if="form.status === 7" v-permission="moduleKey+'-cancelDelivery'" size="small" @click="handleDeliveryWithdraw">交车撤回</el-button>
+          <el-button v-if="form.deliveryConfirmStatus !== 99" v-permission="moduleKey+'-pushDeliveryActive'" size="small" @click="handleDeliveryActive">推送激活信息</el-button>
         </template>
         <el-main>
           <!--  -->
@@ -394,7 +395,7 @@ import {
   deliveryConfirmResign, // 交车确认单重签
   deliveryConfirmPush, // 交车确认单推送
   deliveryConfirm, // 交车确认单生成
-  checkCarBuyerPhoneRegistered, // 校验购车人手机号是否注册零跑APP
+  checkCarBuyerPhoneRegistered, pushDeliveryActive, // 校验购车人手机号是否注册零跑APP
 } from '@/api/vehretail/orderManager/deliveryOrder/index';
 import {
   getEffectiveByDeliveryOrderId
@@ -1108,6 +1109,14 @@ export default {
           this.$message.error('暂无生成交车确认单');
         }
       }).catch(() => {});
+    },
+    // 交车确认单激活
+    handleDeliveryActive () {
+      pushDeliveryActive({ deliveryOrderId: this.form.deliveryOrderId, retailOrderId: this.form.retailOrderId })
+        .then(res => {
+          this.$message.success('交车确认单激活推送成功');
+          this.getDetail();
+        });
     },
     // 上传发票
     handleUploadInvoice () {
