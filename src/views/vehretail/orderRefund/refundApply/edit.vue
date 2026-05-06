@@ -794,7 +794,7 @@ const defaultForm = {
   refundBank: '',
   refundBankUser: '',
   refundBankAccount: '',
-  orderRefundType: 10,
+  orderRefundType: 20,
   cateCode: '',
   refundReason: '',
   firstSubmitTime: '',
