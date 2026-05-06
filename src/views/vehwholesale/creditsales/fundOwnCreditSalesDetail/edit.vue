@@ -194,7 +194,7 @@
                   {{ form.creditSalesDetailCode }}
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
                 </el-form-item>
                 <el-form-item label="资金账户编号：" prop="fundAccountCode">
                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/dealerFundAccount/edit?id=' + form.fundAccountId)">{{ form.fundAccountCode }}</el-button>

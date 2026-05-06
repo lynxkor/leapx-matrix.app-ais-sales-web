@@ -43,7 +43,7 @@
                    type="text">{{ form.financialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="是否允许使用返利：" prop="allowUseRebate">
                   <fetch-select
@@ -102,7 +102,7 @@
                    type="text">{{ form.financialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="是否允许使用返利：" prop="allowUseRebateLabel">
                   {{ form.allowUseRebateLabel }}

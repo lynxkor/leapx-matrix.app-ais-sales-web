@@ -265,7 +265,7 @@
                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/fund/fundSaleCompany/edit?id=' + form.saleCompanyId)">{{ form.saleCompanyName }}</el-button>
                 </el-form-item>
                  <el-form-item label="企业客户名称：" prop="entCustomerName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.entCustomerCode)">{{ form.entCustomerName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.entCustomerCode)">{{ form.entCustomerName }}</el-button>
                 </el-form-item>
                  <el-form-item label="销售门店名称：" prop="saleDealerName">
                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.saleDealerCode)">{{ form.saleDealerName }}</el-button>

@@ -244,7 +244,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?id=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           {
             props: 'fundFinancialOrganizationName',
@@ -269,7 +269,7 @@ export default {
           { props: 'repaymentRecordCode', label: '还款记录编号', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },
-          { props: 'dealerCompanyName', label: '经销商名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?id=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCompanyName', label: '经销商名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',

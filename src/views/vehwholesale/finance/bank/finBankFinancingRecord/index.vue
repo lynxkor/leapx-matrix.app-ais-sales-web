@@ -249,7 +249,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?id=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           {
             props: 'fundFinancialOrganizationName',

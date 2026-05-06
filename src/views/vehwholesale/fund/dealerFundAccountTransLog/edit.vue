@@ -36,7 +36,7 @@
                   {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerComapnyCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.dealerComapnyCode)">{{ form.dealerComapnyCode }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerComapnyCode)">{{ form.dealerComapnyCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="销售公司名称：" prop="saleCompanyName">
                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/fund/fundSaleCompany/edit?id=' + form.saleCompanyId)">{{ form.saleCompanyName }}</el-button>
