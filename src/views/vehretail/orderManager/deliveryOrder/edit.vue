@@ -19,19 +19,19 @@
         </template>
         <template #extraButtons>
           <!-- 交车状态： 1-待预约 2-待检测 3-已检测 4-已预约 5-已收尾款 6-车联网已开通 7-交车完成 99-作废 -->
-          <el-button v-if="form.status === 1" v-permission="moduleKey+'-appointment'" size="small" @click="handleAppointmentDelivery">预约交车</el-button>
-          <el-button v-if="form.status === 5" v-permission="moduleKey+'-deliveryConfirm'" size="small" :loading="buttonLoading['generateConfirmOrder']" @click="handleGenerateConfirmOrder">交车确认单生成</el-button>
-          <el-button v-if="form.status === 4" v-permission="moduleKey+'-changeAppointmentTime'" size="small" @click="handleChangeAppointmentTime">更改预约时间</el-button>
-          <el-button v-if="form.status === 4" v-permission="moduleKey+'-cancelOrderRights'" size="small" @click="handleVerifyOrderRights">核销订单权益</el-button>
-          <el-button v-if="form.status === 4 && form.payRightsList && form.payRightsList.some(item => item.paymentType === 1060 || item.paymentType === '1060')" v-permission="moduleKey+'-revertCancelOrderRights'" size="small" :loading="buttonLoading['verifyWithdraw']" @click="handleVerifyWithdraw">核销撤回</el-button>
-          <el-button v-if="form.status === 4" v-permission="moduleKey+'-addPaymentRecord'" size="small" @click="handleAddPaymentRecord">添加收款记录</el-button>
-          <el-button v-if="form.status === 4" v-permission="moduleKey+'-confirmPayment'" size="small" :loading="buttonLoading['confirmPayment']" @click="handleConfirmPayment">确认收款</el-button>
-          <el-button v-if="form.status === 4 && form.deliveryConfirmPdfUrl" v-permission="moduleKey+'-deliveryConfirmPush'" size="small" :loading="buttonLoading['repushConfirmOrder']" @click="handleRepushConfirmOrder">交车确认单补推</el-button>
-          <el-button v-if="form.status !== 7 && form.status !== 99 && form.deliveryConfirmStatus === 15" v-permission="moduleKey+'-deliveryConfirmResign'" size="small" @click="handleReSignConfirmOrder">交车确认单重签</el-button>
-          <el-button v-if="form.deliveryConfirmStatus === 15 && form.status !== 99" v-permission="moduleKey+'-viewDeliveryConfirm'" size="small" @click="handleViewConfirmOrder">查看交车确认单</el-button>
-          <el-button v-if="form.status === 5" v-permission="moduleKey+'-uploadInvoice'" size="small" @click="handleUploadInvoice">上传发票</el-button>
-          <el-button v-if="form.status === 5" v-permission="moduleKey+'-cancelPayment'" size="small" @click="handlePaymentWithdraw">收款撤回</el-button>
-          <el-button v-if="form.status === 7" v-permission="moduleKey+'-cancelDelivery'" size="small" @click="handleDeliveryWithdraw">交车撤回</el-button>
+          <el-button v-if="canAppointment && form.status === 1" size="small" @click="handleAppointmentDelivery">预约交车</el-button>
+          <el-button v-if="canDeliveryConfirm && form.status === 5" size="small" :loading="buttonLoading['generateConfirmOrder']" @click="handleGenerateConfirmOrder">交车确认单生成</el-button>
+          <el-button v-if="canChangeAppointmentTime && form.status === 4" size="small" @click="handleChangeAppointmentTime">更改预约时间</el-button>
+          <el-button v-if="canCancelOrderRights && form.status === 4" size="small" @click="handleVerifyOrderRights">核销订单权益</el-button>
+          <el-button v-if="canRevertCancelOrderRights && form.status === 4 && form.payRightsList && form.payRightsList.some(item => item.paymentType === 1060 || item.paymentType === '1060')" size="small" :loading="buttonLoading['verifyWithdraw']" @click="handleVerifyWithdraw">核销撤回</el-button>
+          <el-button v-if="canAddPaymentRecord && form.status === 4" size="small" @click="handleAddPaymentRecord">添加收款记录</el-button>
+          <el-button v-if="canConfirmPayment && form.status === 4" size="small" :loading="buttonLoading['confirmPayment']" @click="handleConfirmPayment">确认收款</el-button>
+          <el-button v-if="canDeliveryConfirmPush && form.status === 4 && form.deliveryConfirmPdfUrl" size="small" :loading="buttonLoading['repushConfirmOrder']" @click="handleRepushConfirmOrder">交车确认单补推</el-button>
+          <el-button v-if="canDeliveryConfirmResign && form.status !== 7 && form.status !== 99 && form.deliveryConfirmStatus === 15" size="small" @click="handleReSignConfirmOrder">交车确认单重签</el-button>
+          <el-button v-if="canViewDeliveryConfirm && form.deliveryConfirmStatus === 15 && form.status !== 99" size="small" @click="handleViewConfirmOrder">查看交车确认单</el-button>
+          <el-button v-if="canUploadInvoice && form.status === 5" size="small" @click="handleUploadInvoice">上传发票</el-button>
+          <el-button v-if="canCancelPayment && form.status === 5" size="small" @click="handlePaymentWithdraw">收款撤回</el-button>
+          <el-button v-if="canCancelDelivery && form.status === 7" size="small" @click="handleDeliveryWithdraw">交车撤回</el-button>
         </template>
         <el-main>
           <!--  -->
@@ -554,6 +554,20 @@ export default {
       reloadKey: 0,
       // 按钮 loading 状态集合
       buttonLoading: {},
+      // 权限控制
+      canAppointment: false, // 预约交车
+      canDeliveryConfirm: false, // 交车确认单生成
+      canChangeAppointmentTime: false, // 更改预约时间
+      canCancelOrderRights: false, // 核销订单权益
+      canRevertCancelOrderRights: false, // 核销撤回
+      canAddPaymentRecord: false, // 添加收款记录
+      canConfirmPayment: false, // 确认收款
+      canDeliveryConfirmPush: false, // 交车确认单补推
+      canDeliveryConfirmResign: false, // 交车确认单重签
+      canViewDeliveryConfirm: false, // 查看交车确认单
+      canUploadInvoice: false, // 上传发票
+      canCancelPayment: false, // 收款撤回
+      canCancelDelivery: false, // 交车撤回
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
@@ -729,6 +743,9 @@ export default {
       ]
     };
   },
+  created () {
+    this.initPermissions();
+  },
   mounted () {
     this.$nextTick(() => {
       // 需要默认隐藏的 section 标识列表
@@ -745,6 +762,22 @@ export default {
   },
   methods: {
     getPaymentRecordList,
+    // 初始化权限
+    initPermissions () {
+      this.canAppointment = this.permissions.has(`${this.moduleKey}-appointment`);
+      this.canDeliveryConfirm = this.permissions.has(`${this.moduleKey}-deliveryConfirm`);
+      this.canChangeAppointmentTime = this.permissions.has(`${this.moduleKey}-changeAppointmentTime`);
+      this.canCancelOrderRights = this.permissions.has(`${this.moduleKey}-cancelOrderRights`);
+      this.canRevertCancelOrderRights = this.permissions.has(`${this.moduleKey}-revertCancelOrderRights`);
+      this.canAddPaymentRecord = this.permissions.has(`${this.moduleKey}-addPaymentRecord`);
+      this.canConfirmPayment = this.permissions.has(`${this.moduleKey}-confirmPayment`);
+      this.canDeliveryConfirmPush = this.permissions.has(`${this.moduleKey}-deliveryConfirmPush`);
+      this.canDeliveryConfirmResign = this.permissions.has(`${this.moduleKey}-deliveryConfirmResign`);
+      this.canViewDeliveryConfirm = this.permissions.has(`${this.moduleKey}-viewDeliveryConfirm`);
+      this.canUploadInvoice = this.permissions.has(`${this.moduleKey}-uploadInvoice`);
+      this.canCancelPayment = this.permissions.has(`${this.moduleKey}-cancelPayment`);
+      this.canCancelDelivery = this.permissions.has(`${this.moduleKey}-cancelDelivery`);
+    },
     handleSaleUserChange (val, row, name) {
       this.form[name + 'Name'] = row.username;
     },
