@@ -28,7 +28,7 @@
       </el-form-item>
       <template v-if="show">
         <el-form-item label="物料描述">
-          <tag-input v-model="form.materialsDesc" placeholder="请输入" />
+          <tag-input v-model="form.materialsDescs" placeholder="请输入" />
         </el-form-item>
          <el-form-item label="商城订单号">
           <tag-input v-model="form.mallOrderCodes" placeholder="请输入" />
