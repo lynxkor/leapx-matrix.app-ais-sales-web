@@ -567,11 +567,13 @@ export default {
       }).then(() => {
         this.form.details.splice(rowIndex, 1);
         this.updateApplyTotalQty();
+        this.submitRequest();
       }).catch(() => {
       });
     },
     handleSaveDetailRow () {
       this.updateApplyTotalQty();
+      this.submitRequest();
     },
     handleSave () {
       const dataList = this.$refs.addCommercialVehicle.tableList;
@@ -606,6 +608,7 @@ export default {
       this.form.details = [...updatedDetails, ...newDetails];
       this.updateApplyTotalQty();
       this.$refs.editLayout.closePane();
+      this.submitRequest();
     },
     handleCancel () {
       this.$refs.editLayout.closePane();
@@ -692,9 +695,11 @@ export default {
 
       return addOrUpdate(params).then(res => {
         this.isEditing = false;
+        this.$refs.containerRef.loadDetail();
         return res;
       }).catch(error => {
         this.$message.error('保存失败');
+        this.$refs.containerRef.loadDetail();
         throw error;
       });
     },
