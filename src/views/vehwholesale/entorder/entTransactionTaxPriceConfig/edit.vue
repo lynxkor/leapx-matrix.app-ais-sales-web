@@ -91,7 +91,7 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="销售公司：" prop="saleCompanyName">
-                  {{ form.saleCompanyName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/fund/fundSaleCompany/edit?id=' + form.saleCompanyId)">{{ form.saleCompanyName }}</el-button>
                 </el-form-item>
                  <el-form-item label="订单分类：" prop="orderCategoryLabel">
                   {{ form.orderCategoryLabel }}
@@ -236,6 +236,9 @@ export default {
     this.getCompanyList();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     getCompanyList (query) {
       return companyList({ companyNameLike: query, status: 1 });
     },

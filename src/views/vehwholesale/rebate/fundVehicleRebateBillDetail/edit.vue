@@ -26,7 +26,7 @@
                   {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="门店名称：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)">{{ form.dealerName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)">{{ form.dealerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="返利核算单编号：">
                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/rebate/fundVehicleRebateBill/edit?id=' + form.rebateBillId)">{{ form.rebateBillCode }}</el-button>

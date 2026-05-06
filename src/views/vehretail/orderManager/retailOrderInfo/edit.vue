@@ -25,8 +25,8 @@
           <el-button size="small" :loading="manualVehicleLoading" v-if="canOperateOrder && canManualLock && form.wholesaleBindStatus !== 1" @click="handleManualVehicleAllocation">手工配车</el-button>
           <el-button size="small" :loading="autoLockLoading" v-if="canOperateOrder && canAutoLock && form.wholesaleBindStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
           <el-button size="small" :loading="agreementLoading" v-if="canQuerySnapShot" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
-          <el-button size="small" v-if="canOperateOrder && canRetailOrderRefund && !(form.orderStatus === 10 || (form.orderStatus === 7 && form.deliveryOrder && form.deliveryOrder.status === 5))" @click="handleOrderRefund">订单退订</el-button>
-          <el-button size="small" :loading="changeApplyLoading" v-if="canOperateOrder && canRetailOrderChangeApply" @click="handleCarOwnerChangeApplication">购车人变更申请</el-button>
+          <el-button size="small" v-if="canOperateOrder && canRetailOrderRefund && !(orm.orderStatus === 15 || form.orderStatus === 10 || (form.orderStatus === 7 && form.deliveryOrder && form.deliveryOrder.status === 5))" @click="handleOrderRefund">订单退订</el-button>
+          <el-button size="small" :loading="changeApplyLoading" v-if="canOperateOrder && canRetailOrderChangeApply && form.orderStatus !== 10" @click="handleCarOwnerChangeApplication">购车人变更申请</el-button>
           <el-button size="small" :loading="qualityIssueLoading" v-if="canOperateOrder && canOrderUnlockApply && form.wholesaleBindStatus === 1 && (form.orderStatus === 6 || form.orderStatus === 7)" @click="handleQualityIssueUnbindApplication">质量问题解绑申请</el-button>
           <el-button size="small" v-if="canVrEquityApply && form.orderStatus === 99" @click="handleEquityApply">权益申请</el-button>
           <!-- 团购申请: 订单确认(3)/生产中(5)/车辆在途(6)/等待交车(7)/交车完成(9)/待门店向工厂付款(30)/车辆发运准备中(40) -->

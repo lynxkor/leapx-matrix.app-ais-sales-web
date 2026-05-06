@@ -26,10 +26,10 @@
                   {{ form.rebateBillCode }}
                 </el-form-item>
                 <el-form-item label="母公司名称：">
-                  {{ form.dealerCompanyName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
                 </el-form-item>
                 <el-form-item label="门店名称：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)">{{ form.dealerName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)">{{ form.dealerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="创建时间：">
                   {{ form.createTime }}
@@ -69,7 +69,19 @@
                 :extra-params="{ rebateBillId: _id }"
               >
                 <template #rebateBillDetailCode="{ row }">
-                  <el-link type="success" target="_blank" :href="`/vehwholesale/rebate/fundVehicleRebateBillDetail/detail?id=${row.id}`">{{ row.rebateBillDetailCode }}</el-link>
+                  <el-link type="success" target="_blank" :href="`/vehwholesale/rebate/fundVehicleRebateBillDetail/edit?id=${row.id}`">{{ row.rebateBillDetailCode }}</el-link>
+                </template>
+                <template #modelName="{ row }">
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + row.modelId)">{{ row.modelName }}</el-button>
+                </template>
+                <template #seriesName="{ row }">
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId)">{{ row.seriesName }}</el-button>
+                </template>
+                <template #budgetItemName="{ row }">
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/fund/fundbudgetitem/edit?id=' + row.budgetItemId)">{{ row.budgetItemName }}</el-button>
+                </template>
+                <template #feeSupportTypeName="{ row }">
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/fund/fundFeeSupportType/edit?id=' + row.feeSupportTypeId)">{{ row.feeSupportTypeName }}</el-button>
                 </template>
               </ComponentTable>
             </div>
@@ -132,12 +144,12 @@ export default {
         { field: 'vin', title: 'VIN号', width: '170' },
         { field: 'bizOrderNo', title: '业务单据号', width: '180' },
         { field: 'rebateAmount', title: '核销金额', width: '100' },
-        { field: 'modelName', title: '基本车型', width: '180' },
-        { field: 'seriesName', title: '车系', width: '120' },
+        { field: 'modelName', title: '基本车型', width: '180', slots: { default: 'modelName' } },
+        { field: 'seriesName', title: '车系', width: '120', slots: { default: 'seriesName' } },
         { field: 'remark', title: '备注', width: '320' },
         { field: 'billStatusLabel', title: '单据状态', width: '100' },
-        { field: 'budgetItemName', title: '预算科目', width: '140' },
-        { field: 'feeSupportTypeName', title: '费用支持类型', width: '120' },
+        { field: 'budgetItemName', title: '预算科目', width: '140', slots: { default: 'budgetItemName' } },
+        { field: 'feeSupportTypeName', title: '费用支持类型', width: '120', slots: { default: 'feeSupportTypeName' } },
         { field: 'reviewTime', title: '复审时间', width: '160' },
         { field: 'createTime', title: '创建时间', width: '160' }
       ]

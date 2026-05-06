@@ -299,7 +299,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'auditStatusLabel', label: '审核状态', visible: true, width: 200 },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 200 },
@@ -335,7 +335,7 @@ export default {
             }]
           },
           { props: 'dealerWarehouseName', label: '门店仓库名称', visible: true, width: 200 },
-          { props: 'deliveryDealerName', label: '交付门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/partner/channelManagement/shopDetail?dealerCode=${row.deliveryDealerCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'deliveryDealerName', label: '交付门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.deliveryDealerCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
