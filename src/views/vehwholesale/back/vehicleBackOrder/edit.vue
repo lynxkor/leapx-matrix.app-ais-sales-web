@@ -169,10 +169,10 @@
                   {{ form.orderTypeLabel }}
                 </el-form-item>
                  <el-form-item label="经销商：" prop="dealerCompanyName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/partner/channelManagement/parentCompany/edit?dealerCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
                 </el-form-item>
                  <el-form-item label="企业客户名称：" prop="entCustomerName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/partner/channelManagement/parentCompany/edit?dealerCode=' + form.entCustomerCode)">{{ form.entCustomerName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.entCustomerCode)">{{ form.entCustomerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="大区：" prop="regionName">
                   {{ form.regionName }}

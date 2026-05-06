@@ -262,13 +262,13 @@
                   {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?dealerCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="经销商名称：" prop="dealerName">
                   {{ form.dealerName }}
                 </el-form-item>
                  <el-form-item label="经销商编码：" prop="dealerCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)">{{ form.dealerCode }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)">{{ form.dealerCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="统一社会信用代码：" prop="unifiedSocialCreditCode">
                   {{ form.unifiedSocialCreditCode }}

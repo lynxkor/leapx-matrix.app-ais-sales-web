@@ -302,8 +302,8 @@
                 <el-form-item label="交付门店：" prop="deliveryDealerName">
                   {{ form.deliveryDealerName }}
                 </el-form-item>
-                <el-form-item label="收货时间：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                <el-form-item label="收货时间：" prop="">
+                  {{ form }}
                 </el-form-item>
                 <el-form-item label="是否需要同步WMS：" prop="needSyncWms">
                   {{ form.needSyncWmsLabel }}

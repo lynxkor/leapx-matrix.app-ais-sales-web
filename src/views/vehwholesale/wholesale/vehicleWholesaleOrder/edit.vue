@@ -336,6 +336,22 @@
                       disabled
                     />
                 </el-form-item>
+                <el-form-item label="配车物料码：" prop="materialsCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.materialsCode"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="配车物料描述：" prop="materialsDesc">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.materialsDesc"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
                    <el-form-item label="配车VIN码：" prop="vin">
                   <el-input
                     placeholder="请输入"
@@ -537,6 +553,12 @@
                 </el-form-item>
                   <el-form-item label="配车方式：" prop="allocateWayLabel">
                   {{ form.allocateWayLabel }}
+                </el-form-item>
+                <el-form-item label="配车物料码：" prop="materialsCode">
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + form.materialsCode)">{{ form.materialsCode }}</el-button>
+                </el-form-item>
+                <el-form-item label="配车物料描述：" prop="materialsDesc">
+                  {{ form.materialsDesc }}
                 </el-form-item>
                 <el-form-item label="配车VIN码：" prop="vin">
                   {{ form.vin }}

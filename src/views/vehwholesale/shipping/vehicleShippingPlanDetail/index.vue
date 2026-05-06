@@ -393,7 +393,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 if (row.saleDealerCode) {
-                  window.open(`/sales/partner/channelManagement/parentCompany/edit?dealerCode=${row.saleDealerCode}`, '_blank');
+                  window.open(`/partner/channelManagement/parentCompany/edit?id=${row.saleDealerCode}`, '_blank');
                 }
               },
               type: 'primary'

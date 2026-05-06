@@ -130,7 +130,7 @@
               <!-- 详情模式 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="门店编码：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)">{{ form.dealerCode }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)">{{ form.dealerCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="门店名称：">
                   {{ form.dealerName }}

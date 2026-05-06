@@ -245,7 +245,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank');
+                window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank');
               },
               type: 'primary'
             }]

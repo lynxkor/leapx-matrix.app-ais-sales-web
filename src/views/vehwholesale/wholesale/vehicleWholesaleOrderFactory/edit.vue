@@ -278,10 +278,10 @@
                   {{ form.confirmStatusLabel }}
                 </el-form-item>
                 <el-form-item label="销售门店：" prop="saleDealerName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/partner/channelManagement/shopDetail?dealerCode=' + form.saleDealerCode)">{{ form.saleDealerName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.saleDealerCode)">{{ form.saleDealerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="交付门店名称：" prop="deliveryDealerName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/partner/channelManagement/shopDetail?dealerCode=' + form.deliveryDealerCode)">{{ form.deliveryDealerName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.deliveryDealerCode)">{{ form.deliveryDealerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="门店仓库名称：" prop="dealerWarehouseName">
                   {{ form.dealerWarehouseName }}
@@ -393,6 +393,22 @@
                       filterable
                       disabled
                     />
+                </el-form-item>
+                <el-form-item label="配车物料码：" prop="materialsCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.materialsCode"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="配车物料描述：" prop="materialsDesc">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.materialsDesc"
+                    clearable
+                    disabled
+                  />
                 </el-form-item>
                    <el-form-item label="配车VIN码：" prop="vin">
                   <el-input
@@ -638,6 +654,12 @@
                 </el-form-item>
                   <el-form-item label="配车方式：" prop="allocateWayLabel">
                   {{ form.allocateWayLabel }}
+                </el-form-item>
+                <el-form-item label="配车物料码：" prop="materialsCode">
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + form.materialsCode)">{{ form.materialsCode }}</el-button>
+                </el-form-item>
+                <el-form-item label="配车物料描述：" prop="materialsDesc">
+                  {{ form.materialsDesc }}
                 </el-form-item>
                 <el-form-item label="配车VIN码：" prop="vin">
                   {{ form.vin }}

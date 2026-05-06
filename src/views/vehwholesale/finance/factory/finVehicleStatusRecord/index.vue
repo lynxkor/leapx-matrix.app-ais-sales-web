@@ -277,12 +277,18 @@ export default {
             }]
           },
           { props: 'financingDataSourceLabel', label: '融资数据来源', visible: true, width: 200 },
-          { props: 'orderCode', label: '订单号', visible: true, width: 200 },
+          {
+            props: 'orderCode',
+            label: '订单号',
+            visible: true,
+            width: 200,
+            buttons: [{ click: (rowIndex, row) => { if (row.financingDataSource === 30) { this.openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.orderCode); } else if (row.financingDataSource === 40) { this.openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + row.orderCode); } }, type: 'primary' }]
+          },
           { props: 'vehicleStatusLabel', label: '车辆状态', visible: true, width: 200 },
           { props: 'vin', label: 'VIN号', visible: true, width: 200 },
           { props: 'financingAmount', label: '融资金额', visible: true, width: 200 },
           { props: 'taxIncludedPrice', label: '含税价格', visible: true, width: 200 },
-          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?dealerCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?id=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           {
             props: 'dealerCode',
@@ -291,7 +297,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.openWindow('/sales/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode);
+                this.openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode);
               },
               type: 'primary'
             }]
