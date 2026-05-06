@@ -154,8 +154,8 @@
         </el-row>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="closeSetAttr">取 消</el-button>
-        <el-button size="small" type="primary" @click="confirmSetAttr">确 定</el-button>
+        <el-button size="small" @click="closeSetAttr">取消</el-button>
+        <el-button size="small" type="primary" @click="confirmSetAttr">确定</el-button>
       </div>
     </el-dialog>
 
@@ -250,13 +250,7 @@ export default {
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleMaterials/edit',
-                  query: {
-                    id: row.id,
-                    isEditing: false
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.id}`, '_blank');
               },
               type: 'primary'
             }]
@@ -269,8 +263,8 @@ export default {
             visible: true,
             width: 200
           },
-          { props: 'batteryCellName', label: '电池电芯名称', visible: true, width: 200 },
-          { props: 'modelName', label: '车型名称', visible: true, width: 200 },
+          { props: 'batteryCellName', label: '电池电芯名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleBatteryCell/edit?id=${row.batteryCellId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'modelName', label: '车型名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`, '_blank'); }, type: 'primary' }] },
           { props: 'allowWholesaleLabel', label: '是否允许现车批售', visible: true, width: 200 },
           { props: 'allowProductionScheduleLabel', label: '是否允许排产申请', visible: true, width: 200 },
           { props: 'allowDisplayVehicleWholesaleLabel', label: '是否允许展车批售', visible: true, width: 200 },
@@ -279,16 +273,16 @@ export default {
           { props: 'allowConfigurationModifyLabel', label: '是否允许改配', visible: true, width: 200 },
           { props: 'allowTestDriveVehicleWholesaleLabel', label: '是否允许试驾车批售', visible: true, width: 200 },
           { props: 'allowCustomerSalesLabel', label: '是否允许企业客户销售	', visible: true, width: 200 },
-          { props: 'yearTypeName', label: '车型年款', visible: true, width: 200 },
-          { props: 'modelLineName', label: '系列名称', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
-          { props: 'drivingRangeName', label: '选配续航', visible: true, width: 200 },
-          { props: 'rangePowerName', label: '选配动力', visible: true, width: 200 },
-          { props: 'exteriorName', label: '外观名称', visible: true, width: 200 },
-          { props: 'interiorName', label: '内饰名称', visible: true, width: 200 },
-          { props: 'wheelHubName', label: '轮毂名称', visible: true, width: 200 },
-          { props: 'roofName', label: '车顶名称', visible: true, width: 200 },
-          { props: 'optionPackageName', label: '选装包名称', visible: true, width: 200 },
+          { props: 'yearTypeName', label: '车型年款', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleYearType/edit?id=${row.yearTypeId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'modelLineName', label: '系列名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleModelLine/edit?id=${row.modelLineId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'seriesName', label: '车系名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'drivingRangeName', label: '选配续航', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleDrivingRange/edit?id=${row.drivingRangeId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'rangePowerName', label: '选配动力', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleRangePower/edit?id=${row.rangePowerId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'exteriorName', label: '外观名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleExterior/edit?id=${row.exteriorId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'interiorName', label: '内饰名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleInterior/edit?id=${row.interiorId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'wheelHubName', label: '轮毂名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleWheelHub/edit?id=${row.wheelHubId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'roofName', label: '车顶名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleRoof/edit?id=${row.roofId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'optionPackageName', label: '选装包名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleOptionPackage/edit?id=${row.optionPackageId}`, '_blank'); }, type: 'primary' }] },
           { props: 'discontinueStatusLabel', label: '停产状态', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },

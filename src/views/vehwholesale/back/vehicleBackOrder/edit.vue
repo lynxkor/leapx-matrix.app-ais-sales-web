@@ -11,7 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.status === 10 || form.status === 20"
+        :showEditBtn="form.auditStatus === 10 || form.auditStatus === 20"
       >
         <template #status>
          {{ form.backOrderCode }}
@@ -101,11 +101,11 @@
                     filterable
                   />
                 </el-form-item>
-                  <el-form-item label="退车订单状态：" prop="status">
+                  <el-form-item label="退车订单状态：" prop="auditStatus">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vw_vehicle_back_order_audit_status"
-                    v-model="form.status"
+                    v-model="form.auditStatus"
                     placeholder="请选择"
                     clearable
                     filterable
@@ -169,10 +169,10 @@
                   {{ form.orderTypeLabel }}
                 </el-form-item>
                  <el-form-item label="经销商：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
                 </el-form-item>
                  <el-form-item label="企业客户名称：" prop="entCustomerName">
-                  {{ form.entCustomerName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.entCustomerCode)">{{ form.entCustomerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="大区：" prop="regionName">
                   {{ form.regionName }}
@@ -180,8 +180,8 @@
                    <el-form-item label="退车类型：" prop="backTypeLabel">
                   {{ form.backTypeLabel }}
                 </el-form-item>
-                  <el-form-item label="退车订单状态：" prop="statusLabel">
-                  {{ form.statusLabel }}
+                  <el-form-item label="退车订单状态：" prop="auditStatusLabel">
+                  {{ form.auditStatusLabel }}
                 </el-form-item>
                 <el-form-item label="退车备注：" prop="remark">
                   {{ form.remark }}
@@ -271,8 +271,19 @@
                   <vxe-column field="originalWholesalePrice" title="原批售价格" width="120" />
                   <vxe-column field="originalRebateAmount" title="原返利使用金额" width="200" />
                   <vxe-column field="originalInvoicePrice" title="原开票价格" width="200" />
-                  <vxe-column field="returnPrice" title="退车价格" width="200" />
-                  <vxe-column field="returnInvoiceAmount" title="退车开票金额" width="200" />
+                  <vxe-column field="returnPrice" title="退车价格" width="200">
+                    <template #default="{ row }">
+                      <el-input
+                        v-if="isEditing"
+                        v-model="row.returnPrice"
+                        placeholder="请输入"
+                        clearable
+                        type="text"
+                      />
+                      <span v-else>{{ row.returnPrice }}</span>
+                    </template>
+                  </vxe-column>
+                  <vxe-column field="returnInvoiceAmount" title="退车开票金额" width="200" ></vxe-column>
                   <!-- 可编辑列：备注 -->
                   <vxe-column field="remark" title="备注说明" width="200">
                     <template #default="{ row }">
@@ -283,7 +294,7 @@
                         clearable
                         type="text"
                       />
-                      <span v-else>{{ row.remark || '-' }}</span>
+                      <span v-else>{{ row.remark }}</span>
                     </template>
                   </vxe-column>
                   <vxe-column field="storeOutboundConfirmer" title="门店出库确认人" width="200" />
@@ -394,7 +405,7 @@ const defaultForm = {
   modifierName: '',
   updateTime: '',
   remark: '',
-  status: '10',
+  auditStatus: '10',
   statusDesc: '',
   dataSource: '',
   returnOrderCode: '',
@@ -509,7 +520,7 @@ export default {
         backType: [
           { required: true, message: '请选择退车类型', trigger: 'change' }
         ],
-        status: [
+        auditStatus: [
           { required: true, message: '请选择退车订单状态', trigger: 'change' }
         ],
         remark: [
@@ -586,7 +597,14 @@ export default {
         {
           field: 'returnPrice',
           title: '退车价格',
-          width: '200'
+          width: '200',
+          editable: true,
+          editRender: {
+            name: 'ElInput',
+            props: {
+              type: 'Sring'
+            }
+          },
         },
         {
           field: 'returnInvoiceAmount',
@@ -637,6 +655,9 @@ export default {
     this.fetchBooleanEnum();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     getRegionrName (val, row) {
       this.form.regionName = row.orgName;
     },

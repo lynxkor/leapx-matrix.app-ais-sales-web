@@ -197,10 +197,10 @@
                   {{ form.salesMarketLabel }}
                 </el-form-item>
                 <el-form-item label="企业客户名称：" prop="entCustomerName">
-                  {{ form.entCustomerName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.entCustomerCode)">{{ form.entCustomerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="销售公司：" prop="saleCompanyName">
-                  {{ form.saleCompanyName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/fund/fundSaleCompany/edit?id=' + form.saleCompanyId)">{{ form.saleCompanyName }}</el-button>
                 </el-form-item>
                  <el-form-item label="销售门店名称：" prop="saleDealerName">
                   {{ form.saleDealerName }}
@@ -212,14 +212,7 @@
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                      query: {
-                        id: form.financialOrganizationId,
-                      },
-                    })"
-                   type="text">{{ form.financialOrganizationName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.financialOrganizationId)">{{ form.financialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="是否赊销：" prop="creditSaleFlagLabel">
                   {{ form.creditSaleFlagLabel }}
@@ -408,7 +401,6 @@
                   @remove-row="handleRemoveRow"
                   @page-size-change="pageSizeChange"
                   @current-page-change="currentPageChange"
-                  @value-change = "cellChange"
                   :auth="{edit: isEditing, delete: isEditing}"
                 />
               </div>
@@ -778,6 +770,9 @@ export default {
     this.getCompanyList();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     getFundAccountBysaleCompany (val, row) {
       this.form.saleCompanyId = row.id;
       this.settleFundTypeOptions = [];
@@ -791,7 +786,6 @@ export default {
       if (!this.form.entCustomerName || !this.form.saleCompanyName) {
         return;
       }
-      console.log('getFundAccount', this.form);
       const params = {
         dealerCompanyCodes: [this.form.entCustomerCode],
         allowEntOrderSettle: '1',
@@ -823,11 +817,6 @@ export default {
         }
       }).catch(() => {
       });
-    },
-    cellChange (val, row) {
-      if (this.form.orderCategory === 21) {
-        val.row.standardPrice = val.value;
-      }
     },
     formatDateTime (date) {
       if (!date) return '';
@@ -973,6 +962,7 @@ export default {
           idSet: [this._id],
         }).then(res => {
           // 重新加载详情数据
+          this.$message.success('提交成功');
           if (this.$refs.containerRef) {
             this.$refs.containerRef.loadDetail();
           }
@@ -1149,10 +1139,9 @@ export default {
       const id = this._id;
       if (id) {
         return getDetail(id).then(res => {
-          this.form = { ...this.form, ...res };
           this.getDealersForParentCompany(res.entCustomerCode);
           this.getFundAccount();
-          console.log(this.form);
+          this.form = { ...this.form, ...res };
           // 设置 areaCode 并匹配省市区名称
           if (res.provinceCode && res.cityCode) {
             this.areaCode = [

@@ -13,7 +13,7 @@
         :showEditBtn="true"
       >
         <template #status>
-          <span class="status primary">{{ form.statusLabel }}</span>
+          <span :class="['status', form.status ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
         </template>
         <el-main>
           <!-- 基础信息 -->
@@ -75,7 +75,9 @@
                   {{ form.seriesName }}
                 </el-form-item>
                 <el-form-item label="系列名称：">
-                  {{ form.modelLineName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodelline/edit?id=${form.modelLineId}`" target="_blank">
+                    {{ form.modelLineName }}
+                  </el-link>
                 </el-form-item>
                 <el-form-item label="状态：">
                   {{ form.statusLabel }}

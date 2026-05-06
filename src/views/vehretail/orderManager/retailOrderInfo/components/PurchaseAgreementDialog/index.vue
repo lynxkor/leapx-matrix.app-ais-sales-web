@@ -10,8 +10,8 @@
   >
     <div class="agreement-container" v-html="content"></div>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="handleClose">取 消</el-button>
-      <el-button type="primary" @click="handleConfirm">确 定</el-button>
+      <el-button @click="handleClose">取消</el-button>
+      <el-button type="primary" @click="handleConfirm">确定</el-button>
     </span>
   </el-dialog>
 </template>

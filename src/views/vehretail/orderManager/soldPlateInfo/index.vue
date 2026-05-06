@@ -121,7 +121,7 @@ import {
   deleteItem,
   enableItem,
   submitBatch,
-  revocation,
+  // revocation,
   revocationBatch, cancelBatch
 } from '@/api/vehretail/orderManager/soldPlateInfo/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel } from '@/api/common';
@@ -238,7 +238,7 @@ export default {
           { props: 'saleOrgId', label: '门店id', visible: false, width: 200 },
           { props: 'saleDealerCode', label: '门店编码', visible: false, width: 200 },
           { props: 'carSaleSversionId', label: '公告车型ID', visible: false, width: 200 },
-          { props: 'vehiclePlaceOrigin', label: '产地', visible: false, width: 200 },
+          { props: 'vehiclePlaceOriginLabel', label: '产地', visible: false, width: 200 },
           { props: 'enginenNumber', label: '发动机号', visible: false, width: 200 },
           { props: 'certificateNo', label: '合格证号', visible: false, width: 200 },
           { props: 'invoiceRecordCode', label: '整车开票记录编号', visible: false, width: 200 },

@@ -234,17 +234,12 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                  query: {
-                    id: row.fundFinancialOrganizationId
-                  }
-                });
+                this.openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.fundFinancialOrganizationId);
               },
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200 },
+          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?id=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           {
             props: 'dealerCode',
@@ -253,33 +248,12 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/partner/channelManagement/shopDetail',
-                  query: {
-                    dealerCode: row.dealerCode
-                  }
-                });
+                this.openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode);
               },
               type: 'primary'
             }]
           },
-          {
-            props: 'dealerName',
-            label: '经销商名称',
-            visible: true,
-            width: 200,
-            buttons: [{
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/partner/channelManagement/shopDetail',
-                  query: {
-                    dealerCode: row.dealerCode
-                  }
-                });
-              },
-              type: 'primary'
-            }]
-          },
+          { props: 'dealerName', label: '经销商名称', visible: true, width: 200 },
           { props: 'unifiedSocialCreditCode', label: '统一社会信用代码', visible: true, width: 200 },
           { props: 'cooperationDate', label: '合作时间', visible: true, width: 200 },
           { props: 'hasFixedBusinessPremisesLabel', label: '是否有固定经营场所', visible: true, width: 200 },
@@ -308,6 +282,9 @@ export default {
     this.fetchfinancingDataSourceOptions();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
 
     async getDealerParentOrgListByCode (params) {
       return getParentCompany({ parentCompanyCode: params });

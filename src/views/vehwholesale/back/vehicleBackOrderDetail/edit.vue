@@ -268,7 +268,7 @@
                   {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="销售门店名称：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.saleDealerCode)">{{ form.saleDealerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="车辆处理状态：" prop="processStatusLabel">
                   {{ form.processStatusLabel }}
@@ -277,23 +277,16 @@
                   {{ form.regionName }}
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
                 </el-form-item>
                 <el-form-item label="批售订单编号：" prop="wholesaleOrderCode">
-                  {{ form.wholesaleOrderCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + form.wholesaleOrderCode)">{{ form.wholesaleOrderCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="车系名称：" prop="seriesName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/datacenter/materials/vehicleSeries/detail',
-                      query: {
-                        id: form.seriesId,
-                      },
-                    })"
-                   type="text">{{ form.seriesName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.seriesId)">{{ form.seriesName }}</el-button>
                 </el-form-item>
                 <el-form-item label="企业客户整车订单号：" prop="entOrderCode">
-                  {{ form.entOrderCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + form.entOrderCode)">{{ form.entOrderCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="是否实车返厂：" prop="actualVehicleReturnLabel">
                   {{ form.actualVehicleReturnLabel }}
@@ -314,14 +307,7 @@
                   {{ form.returnRebateAmount }}
                 </el-form-item>
                 <el-form-item label="车型：" prop="modelName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/datacenter/materials/vehicleModel/detail',
-                      query: {
-                        id: form.modelId,
-                      },
-                    })"
-                   type="text">{{ form.modelName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + form.modelId)">{{ form.modelName }}</el-button>
                 </el-form-item>
                 <el-form-item label="门店出库确认人：" prop="storeOutboundConfirmer">
                   {{ form.storeOutboundConfirmer }}
@@ -341,9 +327,6 @@
                 <el-form-item label="物流部预留：" prop="vehicleLogisticsReserveLabel">
                   {{ form.vehicleLogisticsReserveLabel }}
                 </el-form-item>
-                 <el-form-item label="订单接口同步结果：" prop="syncSapMsg">
-                  {{ form.syncSapMsg }}
-                </el-form-item>
                  <el-form-item label="SAP 退货单号：" prop="erpBackOrder">
                   {{ form.erpBackOrder }}
                 </el-form-item>
@@ -352,6 +335,9 @@
                 </el-form-item>
                 <el-form-item label="备注：" prop="remark">
                   {{ form.remark }}
+                </el-form-item>
+                 <el-form-item label="订单接口同步结果：" prop="syncSapMsg"  class="form-item-full">
+                  {{ JSON.parse(form.syncSapMsg || '{}')?.message || '' }}
                 </el-form-item>
               </el-form>
             </div>
@@ -487,6 +473,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     handleDel () {
       const ids = [this._id];
       const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';

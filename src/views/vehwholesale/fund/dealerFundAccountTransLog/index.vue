@@ -250,12 +250,7 @@ export default {
             width: 100,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                  query: {
-                    id: row.financialOrganizationId
-                  }
-                });
+                this.openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.financialOrganizationId);
               },
               type: 'primary'
             }]
@@ -274,12 +269,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
-                  query: {
-                    id: row.wholesaleOrderId,
-                  }
-                });
+                window.open(`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${row.wholesaleOrderId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -291,17 +281,12 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/entorder/entVehicleOrder/edit',
-                  query: {
-                    id: row.entVehorderId,
-                  }
-                });
+                window.open(`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${row.entVehorderId}`, '_blank');
               },
               type: 'primary'
             }]
           },
-          { props: 'deliveryOrderCode', label: '交车单', visible: true, width: 200 },
+          { props: 'deliveryOrderCode', label: '交车单', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehretail/orderManager/deliveryOrder/edit?id=${row.deliveryOrderCode}`, '_blank'); }, type: 'primary' }] },
           {
             props: 'dealerName',
             label: '门店名称',
@@ -309,19 +294,14 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/partner/channelManagement/shopDetail',
-                  query: {
-                    dealerCode: row.dealerCode,
-                  }
-                });
+                this.openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode);
               },
               type: 'primary'
             }]
           },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260 },
-          { props: 'dealerComapnyCode', label: '母公司编码', visible: true, width: 150 },
-          { props: 'fundAccountCode', label: '账户编号', visible: true, width: 200 },
+          { props: 'dealerComapnyCode', label: '母公司编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?id=${row.dealerComapnyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'fundAccountCode', label: '账户编号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/fund/dealerFundAccount/edit?id=${row.fundAccountId}`, '_blank'); }, type: 'primary' }] },
           { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 }
         ],
@@ -335,6 +315,9 @@ export default {
     this.getData();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     async transactionTypes () {
       try {
         const res = await getEnum('vw_transaction_type');

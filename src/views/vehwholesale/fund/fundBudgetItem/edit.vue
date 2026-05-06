@@ -69,7 +69,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail" label-width="150px" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="预算科目名称：" prop="budgetItemName">
                   {{ form.budgetItemName }}
                 </el-form-item>

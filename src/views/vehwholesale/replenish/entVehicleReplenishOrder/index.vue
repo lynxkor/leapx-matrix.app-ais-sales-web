@@ -261,8 +261,8 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'entCustomerName', label: '企业客户名称', visible: true, width: 200 },
-          { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200 },
+          { props: 'entCustomerName', label: '企业客户名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?id=${row.entCustomerCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/vehwholesale/fund/fundSaleCompany/edit?id=${row.saleCompanyId}`, '_blank'); }, type: 'primary' }] },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 200 },
           {
@@ -272,12 +272,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                  query: {
-                    id: row.financialOrganizationId
-                  }
-                });
+                this.openWindow('/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.financialOrganizationId);
               },
               type: 'primary'
             }]
@@ -310,13 +305,7 @@ export default {
                 return row.auditStatus === 0 || row.auditStatus === 4;
               },
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/replenish/entVehicleReplenishOrder/edit',
-                  query: {
-                    id: row.id,
-                    isEditing: true
-                  }
-                });
+                this.openWindow('/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=' + row.id + '&isEditing=true');
               },
               type: 'info'
             }, {
@@ -362,6 +351,9 @@ export default {
     this.fetchSettleFundTypeOptions();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     async fetchSettleFundTypeOptions () {
       const response = await getEnum('vw_fundtype');
       this.settleFundTypeOptions = response.filter(item => {

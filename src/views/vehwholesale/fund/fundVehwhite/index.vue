@@ -190,17 +190,12 @@ export default {
             width: 300,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/partner/channelManagement/shopDetail',
-                  query: {
-                    dealerCode: row.dealerCode,
-                  }
-                });
+                this.openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode);
               },
               type: 'primary'
             }]
           },
-          { props: 'parentCompanyName', label: '母公司名称', visible: true, width: 300 },
+          { props: 'parentCompanyName', label: '母公司名称', visible: true, width: 300, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?id=${row.parentCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'enterpriseCustomerName', label: '企业客户', visible: true, width: 200 },
           { props: 'vin', label: 'VIN号', visible: true, width: 200 },
           {
@@ -210,12 +205,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
-                  query: {
-                    id: row.wholesaleOrderId,
-                  }
-                });
+                this.openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.wholesaleOrderId);
               },
               type: 'primary'
             }]
@@ -227,12 +217,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/entorder/entVehicleOrder/edit',
-                  query: {
-                    id: row.enterpriseOrderId,
-                  }
-                });
+                this.openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + row.enterpriseOrderId);
               },
               type: 'primary'
             }]
@@ -277,6 +262,9 @@ export default {
     this.getData();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     // 排序
     handleSortChange (value) {
       this.sortColumns = (value || []).map(item => {

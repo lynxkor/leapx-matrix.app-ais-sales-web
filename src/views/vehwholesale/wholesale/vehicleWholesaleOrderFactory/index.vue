@@ -19,7 +19,7 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_wholesale_order_status"
-          v-model="form.statuses"
+          v-model="form.orderStatuses"
           placeholder="请选择"
           clearable
           multiple
@@ -28,7 +28,7 @@
       </el-form-item>
       <template v-if="show">
         <el-form-item label="物料描述">
-          <tag-input v-model="form.materialsDescs" placeholder="请输入" />
+          <tag-input v-model="form.materialsDesc" placeholder="请输入" />
         </el-form-item>
          <el-form-item label="商城订单号">
           <tag-input v-model="form.mallOrderCodes" placeholder="请输入" />
@@ -218,6 +218,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    multiple
                   />
         </el-form-item>
             <el-form-item label="确认时间">
@@ -590,21 +591,39 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'statusLabel', label: '订单状态', visible: true, width: 200 },
+          { props: 'orderStatusLabel', label: '订单状态', visible: true, width: 200 },
           { props: 'orderTime', label: '订单时间', visible: true, width: 200 },
           { props: 'confirmTime', label: '确认时间', visible: true, width: 200 },
           // { props: 'saleDealerName', label: '销售公司名称', visible: true, width: 200 },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 200 },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
+          {
+            props: 'orderMaterialsCode',
+            label: '物料编码',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.orderMaterialsCode}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'orderMaterialsDesc',
+            label: '物料描述',
+            visible: true,
+            width: 200,
+          },
           { props: 'allocateTime', label: '配车时间', visible: true, width: 200 },
           { props: 'settleTime', label: '结算时间', visible: true, width: 200 },
+          { props: 'materialsCode', label: '配车物料码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'vin', label: '配车VIN码', visible: true, width: 200 },
-          { props: 'replenishApplyCode', label: '整车补货单号', visible: true, width: 200 },
+          { props: 'replenishApplyCode', label: '整车补货单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=${row.replenishApplyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
           { props: 'provinceName', label: '省份', visible: true, width: 200 },
           { props: 'cityName', label: '城市', visible: true, width: 200 },
-          { props: 'prodScheduleActivityName', label: '专项活动', visible: true, width: 200 },
+          { props: 'prodScheduleActivityName', label: '专项活动', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=${row.prodScheduleActivityId}`, '_blank'); }, type: 'primary' }] },
           { props: 'allowLockRetailLabel', label: '允许锁零售单', visible: true, width: 200 },
           { props: 'retailPrice', label: '零售价', visible: true, width: 200 },
           { props: 'invoiceDiscountTypeLabel', label: '开票类型', visible: true, width: 200 },
@@ -618,13 +637,59 @@ export default {
           { props: 'erpInvoiceCode', label: 'ERP发票号', visible: true, width: 200 },
           { props: 'syncSapMsg', label: '同步SAP状态', visible: true, width: 200 },
           { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?id=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           // { props: 'dealerCompanyCode', label: '母公司代码', visible: true, width: 200 },
           // { props: 'saleDealerCode', label: '销售公司编码', visible: true, width: 200 },
-          { props: 'interiorName', label: '内饰', visible: true, width: 200 },
-          { props: 'modelName', label: '车型', visible: true, width: 200 },
-          { props: 'exteriorName', label: '外饰风格', visible: true, width: 200 },
-          { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 200 },
+          {
+            props: 'interiorName',
+            label: '内饰',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleInterior/edit?id=${row.interiorId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'modelName',
+            label: '车型',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'exteriorName',
+            label: '外饰风格',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleExterior/edit?id=${row.exteriorId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'wheelHubName',
+            label: '选配轮毂',
+            visible: true,
+            width: 200,
+            buttons: [
+              {
+                click: (rowIndex, row) => {
+                  window.open(`/sales/datacenter/materials/vehicleWheelHub/edit?id=${row.wheelHubId}`, '_blank');
+                },
+                type: 'primary'
+              }
+            ]
+          },
           { props: 'specialRemark', label: '特殊备注', visible: true, width: 200 },
           { props: 'firstCancelAllocateTime', label: '首次取消配车时间', visible: true, width: 200 },
           { props: 'firstAllocateTime', label: '首次配车时间', visible: true, width: 200 },
@@ -636,7 +701,20 @@ export default {
           { props: 'createdShippingPlanLabel', label: '是否创建发运单计划', visible: true, width: 200 },
           { props: 'hasSettleFailedLabel', label: '是否存在结算失败', visible: true, width: 200 },
           { props: 'confirmUserName', label: '确认人', visible: true, width: 200 },
-          { props: 'yearTypeName', label: '年款', visible: true, width: 200 },
+          {
+            props: 'yearTypeName',
+            label: '年款',
+            visible: true,
+            width: 200,
+            buttons: [
+              {
+                click: (rowIndex, row) => {
+                  window.open(`/sales/datacenter/materials/vehicleYearType/edit?id=${row.yearTypeId}`, '_blank');
+                },
+                type: 'primary'
+              }
+            ]
+          },
           { props: 'settleWayLabel', label: '结算方式', visible: true, width: 200 },
           { props: 'allocateWayLabel', label: '配车方式', visible: true, width: 200 },
           { props: 'cooperateTypeLabel', label: '合作类型', visible: true, width: 200 },
@@ -647,8 +725,6 @@ export default {
           { props: 'emergencyOrderTime', label: '设置急单时间', visible: true, width: 200 },
           { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 200 },
           // { props: 'downPaymentRatio', label: '配车顺序时间', visible: true, width: 200 },
-          { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
-          { props: 'orderMaterialCode', label: '订单物料编码', visible: true, width: 200 },
           { props: 'needAutoAllocateCarLabel', label: '是否需要自动配车', visible: true, width: 200 },
           { props: 'dealerWarehouseName', label: '门店仓库名称', visible: true, width: 200 },
           { props: 'logisticsReserveLabel', label: '整车物流预留', visible: true, width: 200 },
@@ -730,7 +806,7 @@ export default {
           });
           return false;
         };
-        if (!this.ALLOWED_STATUS.includes(item.status)) {
+        if (!this.ALLOWED_STATUS.includes(item.orderStatus)) {
           this.$message({
             type: 'error',
             message: '选择的数据中[订单状态]必须为[未配车,配车失败]!'
@@ -757,10 +833,10 @@ export default {
         return false;
       };
       for (const item of items) {
-        if (!this.ALLOWED_STATUS.includes(item.status)) {
+        if (!this.ALLOWED_STATUS.includes(item.orderStatus)) {
           this.$message({
             type: 'error',
-            message: '存在' + item.statusLabel + '的订单，请重新核对需要操作的订单！'
+            message: '存在' + item.orderStatusLabel + '的订单，请重新核对需要操作的订单！'
           });
           return false;
         };
@@ -802,10 +878,10 @@ export default {
         return false;
       };
       for (const item of items) {
-        if (!this.ALLOWED_STATUS.includes(item.status)) {
+        if (!this.ALLOWED_STATUS.includes(item.orderStatus)) {
           this.$message({
             type: 'error',
-            message: '存在' + item.statusLabel + '的订单，请重新核对需要操作的订单！'
+            message: '存在' + item.orderStatusLabel + '的订单，请重新核对需要操作的订单！'
           });
           return false;
         };
@@ -865,7 +941,7 @@ export default {
         return false;
       };
       for (const item of items) {
-        if (!this.SETTLED_SUCCESSFULLY_STATUS.includes(item.status)) {
+        if (!this.SETTLED_SUCCESSFULLY_STATUS.includes(item.orderStatus)) {
           this.$message({
             type: 'error',
             message: '选择的数据中[订单状态]必须为[结算成功]!'
@@ -899,7 +975,7 @@ export default {
         return false;
       };
       for (const item of items) {
-        if (!this.ALLOWED_CANCELALLOCATEVEHICLE_STATUS.includes(item.status)) {
+        if (!this.ALLOWED_CANCELALLOCATEVEHICLE_STATUS.includes(item.orderStatus)) {
           this.$message({
             type: 'error',
             message: '选择的数据中[订单状态]必须为[已完成配车、取消结算、结算失败]!'
@@ -955,7 +1031,7 @@ export default {
         return false;
       };
       for (const item of items) {
-        if (!this.ALLOWED_STATUS.includes(item.status)) {
+        if (!this.ALLOWED_STATUS.includes(item.orderStatus)) {
           this.$message({
             type: 'error',
             message: '只有该订单状态【未配车、或配车失败】可以取消急单!'
@@ -1045,7 +1121,7 @@ export default {
           });
           return false;
         };
-        if (!this.ALLOWED_STATUS.includes(item.status)) {
+        if (!this.ALLOWED_STATUS.includes(item.orderStatus)) {
           this.$message({
             type: 'error',
             message: '选择的数据中[订单状态]必须为[未配车,配车失败]!'
@@ -1071,7 +1147,7 @@ export default {
         return false;
       };
       for (const item of items) {
-        if (!this.ALLOWED_STATUS.includes(item.status)) {
+        if (!this.ALLOWED_STATUS.includes(item.orderStatus)) {
           this.$message({
             type: 'error',
             message: '订单已完成配车，不允许作废!'
@@ -1097,7 +1173,7 @@ export default {
         return false;
       };
       for (const item of items) {
-        if (!this.ALLOWED_STATUS.includes(item.status)) {
+        if (!this.ALLOWED_STATUS.includes(item.orderStatus)) {
           this.$message({
             type: 'error',
             message: '只有【订单状态】为未配车、配车失败的记录可以设置，请核实！'

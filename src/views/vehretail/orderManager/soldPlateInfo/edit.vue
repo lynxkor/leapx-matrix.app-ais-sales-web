@@ -221,7 +221,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail" label-width="150px" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="VIN码：">
                   {{ form.vin }}
                 </el-form-item>
@@ -361,7 +361,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail" label-width="150px" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="发票VIN号：">
                   {{ form.invoiceVin }}
                 </el-form-item>
@@ -491,7 +491,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail" label-width="150px" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="行驶证VIN号：">
                   {{ form.drivingLicenseVin }}
                 </el-form-item>
@@ -618,7 +618,7 @@
                 />
               </el-form-item>
             </el-form>
-            <el-form :inline="true" class="form-detail" label-width="150px" v-show="!(isEditing || !_id)">
+            <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
               <el-form-item label="提交时间：">
                 {{ form.submitTime }}
               </el-form-item>

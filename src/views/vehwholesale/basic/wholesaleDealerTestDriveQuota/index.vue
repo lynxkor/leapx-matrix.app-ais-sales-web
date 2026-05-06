@@ -258,33 +258,18 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/basic/wholesaleDealerTestDriveQuota/detail',
+                  path: '/vehwholesale/basic/wholesaleDealerTestDriveQuota/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },
               type: 'primary'
             }]
           },
-          { props: 'dealerCode', label: '门店编码', visible: true, width: 200 },
-          {
-            props: 'dealerName',
-            label: '门店名称',
-            visible: true,
-            width: 200,
-            buttons: [{
-              click: (rowIndex, row) => {
-                this.navigateToRoute({
-                  path: '/partner/channelManagement/shopDetail',
-                  query: {
-                    dealerCode: row.dealerCode
-                  }
-                });
-              },
-              type: 'primary'
-            }]
-          },
+          { props: 'dealerCode', label: '门店编码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerName', label: '门店名称', visible: true, width: 200 },
           {
             props: 'vehicleYearType',
             label: '年款',
@@ -292,12 +277,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleYearType/detail',
-                  query: {
-                    id: row.vehicleYearTypeId
-                  }
-                });
+                window.open('/sales/datacenter/materials/vehicleYearType/edit?id=' + row.vehicleYearTypeId, '_blank');
               },
               type: 'primary'
             }]
@@ -309,12 +289,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleModelLine/detail',
-                  query: {
-                    id: row.vehicleModelLineId
-                  }
-                });
+                window.open('/sales/datacenter/materials/vehicleModelLine/edit?id=' + row.vehicleModelLineId, '_blank');
               },
               type: 'primary'
             }]
@@ -326,12 +301,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleSeries/detail',
-                  query: {
-                    id: row.seriesId
-                  }
-                });
+                window.open('/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId, '_blank');
               },
               type: 'primary'
             }]

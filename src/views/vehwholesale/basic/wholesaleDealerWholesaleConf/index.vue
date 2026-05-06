@@ -212,34 +212,35 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/basic/wholesaleDealerWholesaleConf/detail',
+                  path: '/vehwholesale/basic/wholesaleDealerWholesaleConf/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },
               type: 'primary'
             }]
           },
-          { props: 'dealerCode', label: '门店编码', visible: true, width: 200 },
+          {
+            props: 'dealerCode',
+            label: '门店编码',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
           {
             props: 'dealerName',
             label: '门店名称',
             visible: true,
             width: 200,
-            buttons: [{
-              click: (rowIndex, row) => {
-                this.navigateToRoute({
-                  path: '/partner/channelManagement/shopDetail',
-                  query: {
-                    dealerCode: row.dealerCode
-                  }
-                });
-              },
-              type: 'primary'
-            }]
           },
-          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 200 },
+          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?dealCode=${row.dealerParentOrgId}`, '_blank'); }, type: 'primary' }] },
           { props: 'autoAllocationEnabledLabel', label: '开启自动配车', visible: true, width: 120 },
           { props: 'autoSettlementEnabledLabel', label: '开启自动结算', visible: true, width: 120 },
           { props: 'productionRequestEnabledLabel', label: '允许排产申请', visible: true, width: 120 },

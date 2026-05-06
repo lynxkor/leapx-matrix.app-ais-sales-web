@@ -63,7 +63,7 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_vehicle_back_order_audit_status"
-          v-model="form.statuses"
+          v-model="form.auditStatuses"
           placeholder="请选择"
           clearable
           multiple
@@ -200,6 +200,7 @@ const defaultForm = {
   regionName: '',
   returnType: '',
   orderType: '',
+  auditStatus: '',
 };
 
 const pageSize = 20;
@@ -261,11 +262,37 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'statusLabel', label: '退车订单状态', visible: true, width: 200 },
+          { props: 'auditStatusLabel', label: '退车订单状态', visible: true, width: 200 },
           { props: 'backTime', label: '退车日期', visible: true, width: 200 },
-          { props: 'dealerCompanyName', label: '经销商', visible: true, width: 200 },
+          {
+            props: 'dealerCompanyName',
+            label: '经销商',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                if (row.dealerCompanyCode) {
+                  window.open(`/partner/channelManagement/parentCompany/edit?id=${row.dealerCompanyCode}`, '_blank');
+                }
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
-          { props: 'entCustomerName', label: '企业客户', visible: true, width: 200 },
+          {
+            props: 'entCustomerName',
+            label: '企业客户',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                if (row.entCustomerCode) {
+                  window.open(`/partner/channelManagement/parentCompany/edit?id=${row.entCustomerCode}`, '_blank');
+                }
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'backTypeLabel', label: '退车类型', visible: true, width: 200 },
           { props: 'orderTypeLabel', label: '单据类型', visible: true, width: 200 },
           { props: 'remark', label: '退车备注', visible: true, width: 200 },
@@ -283,7 +310,7 @@ export default {
             buttons: [{
               name: '编辑',
               show: (row) => {
-                return row.status === 10 || row.status === 20;
+                return row.auditStatus === 10 || row.auditStatus === 20;
               },
               click: (rowIndex, row) => {
                 this.$router.push({
@@ -298,7 +325,7 @@ export default {
             }, {
               name: '删除',
               show: (row) => {
-                return row.status === 10 || row.status === 20;
+                return row.auditStatus === 10 || row.auditStatus === 20;
               },
               popconfirmConfirmButtonType: 'danger',
               popconfirmConfirmButtonText: '删除',

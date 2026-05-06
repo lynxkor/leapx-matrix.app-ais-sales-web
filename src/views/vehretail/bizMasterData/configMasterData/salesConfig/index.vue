@@ -104,6 +104,12 @@
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="formData" :rules="rules" ref="ruleForm" label-width="160px" class="form-edit">
                 <el-form-item label="赊销车辆是否还款：" prop="creditStatus">
+                <el-tooltip
+                    content="开启后，当整车开票记录上传附件时会校验赊销车辆是否完成还款"
+                    placement="top"
+                    effect="light"
+                    :disabled="formData.creditStatus !== '1'"
+                  >
                   <el-select
                     v-model="formData.creditStatus"
                     placeholder="请选择"
@@ -119,6 +125,7 @@
                       :value="item.code"
                     />
                   </el-select>
+                </el-tooltip>
                 </el-form-item>
                 <el-form-item label="融资车辆是否还款：" prop="financeStatus">
                   <el-select

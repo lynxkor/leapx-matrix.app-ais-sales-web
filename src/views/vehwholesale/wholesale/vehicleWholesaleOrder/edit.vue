@@ -33,11 +33,11 @@
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="订单状态：" prop="status">
+                <el-form-item label="订单状态：" prop="orderStatus">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vw_wholesale_order_status"
-                    v-model="form.status"
+                    v-model="form.orderStatus"
                     placeholder="请选择"
                     clearable
                     filterable
@@ -120,10 +120,10 @@
                     disabled
                   />
                 </el-form-item>
-                  <el-form-item label="物料描述：" prop="materialsDesc">
+                  <el-form-item label="物料描述：" prop="orderMaterialsDesc">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.materialsDesc"
+                    v-model="form.orderMaterialsDesc"
                     clearable
                     disabled
                   />
@@ -199,7 +199,7 @@
                       placeholder="请选择"
                       clearable
                       filterable
-                      :disabled = 'form.status === 99 || form.status === "99"'
+                      :disabled = 'form.orderStatus === 99 || form.orderStatus === "99"'
                     />
                 </el-form-item>
                 <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
@@ -215,8 +215,8 @@
                 <!-- <el-form-item label="批售订单号：" prop="wholesaleOrderCode">
                   {{ form.wholesaleOrderCode }}
                 </el-form-item> -->
-                <el-form-item label="订单状态：" prop="statusLabel">
-                  {{ form.statusLabel }}
+                <el-form-item label="订单状态：" prop="orderStatusLabel">
+                  {{ form.orderStatusLabel }}
                 </el-form-item>
                 <el-form-item label="确认状态：" prop="confirmStatusLabel">
                   {{ form.confirmStatusLabel }}
@@ -231,7 +231,7 @@
                   {{ form.dealerWarehouseName }}
                 </el-form-item>
                  <el-form-item label="整车补货单号：" prop="replenishApplyCode">
-                  {{ form.replenishApplyCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=' + form.replenishApplyCode)">{{ form.replenishApplyCode }}</el-button>
                 </el-form-item>
                    <el-form-item label="订单分类：" prop="orderCategoryLabel">
                   {{ form.orderCategoryLabel }}
@@ -242,8 +242,11 @@
                   <el-form-item label="订单时间：" prop="orderTime">
                   {{ form.orderTime }}
                 </el-form-item>
-                 <el-form-item label="物料描述：" prop="materialsDesc">
-                  {{ form.materialsDesc }}
+                 <el-form-item label="订单物料编码：" prop="orderMaterialsCode">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + form.orderMaterialsCode)">{{ form.orderMaterialsCode }}</el-button>
+                </el-form-item>
+                 <el-form-item label="物料描述：" prop="orderMaterialsDesc">
+                  {{ form.orderMaterialsDesc }}
                 </el-form-item>
                     <el-form-item label="专项活动：" prop="prodScheduleActivityName">
                   {{ form.prodScheduleActivityName }}
@@ -280,7 +283,7 @@
                   {{ form.allowLockRetailLabel }}
                 </el-form-item>
                  <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
-                  {{ form.replenishApplyDetailCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=' + form.replenishApplyDetailCode)">{{ form.replenishApplyDetailCode }}</el-button>
                 </el-form-item>
               </el-form>
             </div>
@@ -332,6 +335,22 @@
                       filterable
                       disabled
                     />
+                </el-form-item>
+                <el-form-item label="配车物料码：" prop="materialsCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.materialsCode"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="配车物料描述：" prop="materialsDesc">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.materialsDesc"
+                    clearable
+                    disabled
+                  />
                 </el-form-item>
                    <el-form-item label="配车VIN码：" prop="vin">
                   <el-input
@@ -535,6 +554,12 @@
                   <el-form-item label="配车方式：" prop="allocateWayLabel">
                   {{ form.allocateWayLabel }}
                 </el-form-item>
+                <el-form-item label="配车物料码：" prop="materialsCode">
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + form.materialsCode)">{{ form.materialsCode }}</el-button>
+                </el-form-item>
+                <el-form-item label="配车物料描述：" prop="materialsDesc">
+                  {{ form.materialsDesc }}
+                </el-form-item>
                 <el-form-item label="配车VIN码：" prop="vin">
                   {{ form.vin }}
                 </el-form-item>
@@ -618,7 +643,7 @@
                     filterable
                      labelKey="fundTypeLabel"
                     valueKey="fundType"
-                    :disabled="needAutoAllocateCarStatus.includes(form.status)"
+                    :disabled="needAutoAllocateCarStatus.includes(form.orderStatus)"
                     @change="clearCache"
                   />
                 </el-form-item>
@@ -757,7 +782,7 @@
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构名称：" prop="financialOrganizationName">
-                  {{ form.financialOrganizationName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.financialOrganizationId)">{{ form.financialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="零售价：" prop="retailPrice">
                   {{ form.retailPrice }}
@@ -1111,6 +1136,9 @@ export default {
     this.fetchOrderCategoryOptions();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     async fetchOrderCategoryOptions () {
       const response = await getEnum('vw_order_category');
       // 过滤出 code 为 0、2、20 的数据，且确保 code 是字符串类型
@@ -1203,7 +1231,7 @@ export default {
         });
         return false;
       };
-      if (!this.ALLOWED_STATUS.includes(item.status)) {
+      if (!this.ALLOWED_STATUS.includes(item.orderStatus)) {
         this.$message({
           type: 'error',
           message: '订单[订单状态]必须为[未配车,配车失败]!'
@@ -1227,7 +1255,7 @@ export default {
         });
         return false;
       };
-      if (!this.ALLOWED_STATUS.includes(item.status)) {
+      if (!this.ALLOWED_STATUS.includes(item.orderStatus)) {
         this.$message({
           type: 'error',
           message: '订单[订单状态]必须为[未配车,配车失败]!'
@@ -1313,7 +1341,7 @@ export default {
 
     },
     allAllowCancel (item) {
-      if (!this.ALLOWED_STATUS.includes(item.status)) {
+      if (!this.ALLOWED_STATUS.includes(item.orderStatus)) {
         this.$message({
           type: 'error',
           message: '订单已完成配车，不允许作废!'

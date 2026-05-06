@@ -79,7 +79,7 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="门店名称：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.saleDealerCode)">{{ form.saleDealerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="批售总金额：" prop="totalWholesaleAmount">
                   {{ form.totalWholesaleAmount }}
@@ -225,7 +225,7 @@ export default {
         remark: [
           { required: true, message: '请输入备注', trigger: 'change' }
         ],
-        status: [
+        orderStatus: [
           { required: true, message: '请选择订单状态', trigger: 'change' }
         ],
         statusDesc: [

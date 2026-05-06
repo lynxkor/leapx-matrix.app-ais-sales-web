@@ -219,10 +219,39 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'backOrderCode', label: '退车订单编号', visible: true, width: 200 },
+          {
+            props: 'backOrderCode',
+            label: '退车订单编号',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehwholesale/back/vehicleBackOrder/edit',
+                  query: {
+                    id: row.backOrderCode
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'vin', label: 'VIN码', visible: true, width: 200 },
           { props: 'processStatusLabel', label: '车辆处理状态', visible: true, width: 200 },
-          { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
+          {
+            props: 'saleDealerName',
+            label: '销售门店名称',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                if (row.saleDealerCode) {
+                  window.open(`/partner/channelManagement/parentCompany/edit?id=${row.saleDealerCode}`, '_blank');
+                }
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
           {
             props: 'seriesName',
@@ -231,22 +260,52 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleSeries/detail',
-                  query: {
-                    id: row.seriesId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`, '_blank');
               },
               type: 'primary'
             }]
           },
-          { props: 'wholesaleOrderCode', label: '整车批售订单编号', visible: true, width: 200 },
-          { props: 'entOrderCode', label: '企业客户整车订单编号', visible: true, width: 200 },
+          {
+            props: 'wholesaleOrderCode',
+            label: '整车批售订单编号',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${row.wholesaleOrderCode}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'entOrderCode',
+            label: '企业客户整车订单编号',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${row.entOrderCode}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'actualVehicleReturnLabel', label: '是否实车返厂', visible: true, width: 200 },
           { props: 'salesDeptReserveLabel', label: '销售部预留', visible: true, width: 200 },
           { props: 'vehicleLogisticsReserveLabel', label: '整车物流预留', visible: true, width: 200 },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
+          {
+            props: 'dealerCompanyName',
+            label: '母公司名称',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                if (row.dealerCompanyCode) {
+                  window.open(`/partner/channelManagement/parentCompany/edit?id=${row.dealerCompanyCode}`, '_blank');
+                }
+              },
+              type: 'primary'
+            }]
+          },
           {
             props: 'modelName',
             label: '车型名称',
@@ -254,12 +313,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleModel/detail',
-                  query: {
-                    id: row.modelId,
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`, '_blank');
               },
               type: 'primary'
             }]

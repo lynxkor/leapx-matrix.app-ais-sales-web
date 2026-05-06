@@ -207,18 +207,35 @@ export default {
             width: 150,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleSeries/detail',
-                  query: {
-                    id: row.vehicleSeriesId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.vehicleSeriesId}`, '_blank');
               },
               type: 'primary'
             }]
           },
-          { props: 'budgetItemName', label: '预算科目', visible: true, width: 220 },
-          { props: 'feeSupportTypeName', label: '费用支持类型', visible: true, width: 150 },
+          {
+            props: 'budgetItemName',
+            label: '预算科目',
+            visible: true,
+            width: 220,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/vehwholesale/fund/fundBudgetItem/edit?id=${row.budgetItemId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'feeSupportTypeName',
+            label: '费用支持类型',
+            visible: true,
+            width: 150,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/vehwholesale/fund/fundFeeSupportType/edit?id=${row.feeSupportTypeId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'effectiveStartTime', label: '有效开始日期', visible: true, width: 150 },
           { props: 'effectiveEndTime', label: '有效结束日期', visible: true, width: 150 },
           { props: 'remark', label: '备注', visible: true, width: 200 },

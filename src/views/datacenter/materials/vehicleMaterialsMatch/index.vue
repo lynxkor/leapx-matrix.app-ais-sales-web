@@ -181,9 +181,26 @@ export default {
             label: '物料编码',
             visible: true,
             width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsCode}`, '_blank');
+              },
+              type: 'primary'
+            }]
           },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
-          { props: 'matchMaterialsCode', label: '可配物料编码', visible: true, width: 200 },
+          {
+            props: 'matchMaterialsCode',
+            label: '可配物料编码',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.matchMaterialsCode}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'matchMaterialsDesc', label: '可配物料描述', visible: true, width: 200 },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },

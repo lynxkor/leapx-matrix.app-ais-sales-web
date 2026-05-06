@@ -39,16 +39,11 @@
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationName">
                   <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                      query: {
-                        id: form.financialOrganizationId,
-                      },
-                    })"
+                   @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.financialOrganizationId)"
                    type="text">{{ form.financialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  {{ form.dealerCompanyCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="是否允许使用返利：" prop="allowUseRebate">
                   <fetch-select
@@ -91,7 +86,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail" label-width="150px" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="账户编号：" prop="fundAccountCode">
                   {{ form.fundAccountCode }}
                 </el-form-item>
@@ -103,16 +98,11 @@
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationName">
                    <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                      query: {
-                        id: form.financialOrganizationId,
-                      },
-                    })"
+                   @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.financialOrganizationId)"
                    type="text">{{ form.financialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  {{ form.dealerCompanyCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="是否允许使用返利：" prop="allowUseRebateLabel">
                   {{ form.allowUseRebateLabel }}
@@ -134,7 +124,7 @@
               <h2 v-show="_id">余额信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail" label-width="150px">
+              <el-form :inline="true" class="form-detail">
                 <el-form-item label="可用余额：" prop="availableBalance">
                   {{ form.availableBalance }}
                 </el-form-item>
@@ -167,7 +157,7 @@
               <h2>配置信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail" label-width="150px">
+              <el-form :inline="true" class="form-detail">
                 <el-form-item label="是否允许使用返利：" prop="allowUseRebate">
                   {{ form.allowUseRebateLabel  }}
                 </el-form-item>
@@ -322,6 +312,9 @@ export default {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车资金账户', '编辑']);
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

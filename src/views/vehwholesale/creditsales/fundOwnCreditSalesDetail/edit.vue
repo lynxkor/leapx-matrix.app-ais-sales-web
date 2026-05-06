@@ -4,7 +4,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        :title="title"
+        title="赊销明细编号："
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -194,22 +194,22 @@
                   {{ form.creditSalesDetailCode }}
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
                 </el-form-item>
-                <el-form-item label="资金账户编号：" prop="fundAccountId">
-                  {{ form.fundAccountId }}
+                <el-form-item label="资金账户编号：" prop="fundAccountCode">
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/dealerFundAccount/edit?id=' + form.fundAccountId)">{{ form.fundAccountCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="门店名称：" prop="dealerName">
-                  {{ form.dealerName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)">{{ form.dealerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="VIN号：" prop="vin">
                   {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="整车批售订单：" prop="wholesaleOrderCode">
-                  {{ form.wholesaleOrderCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + form.wholesaleOrderCode)">{{ form.wholesaleOrderCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="企业客户整车订单：" prop="entVehorderCode">
-                  {{ form.entVehorderCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + form.entVehorderCode)">{{ form.entVehorderCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="车辆价格：" prop="retailPrice">
                   {{ form.retailPrice }}
@@ -251,7 +251,7 @@
                   {{ form.voucherNo }}
                 </el-form-item>
                 <el-form-item label="合格证赎回申请：" prop="certificateRedemptionApplyId">
-                  {{ form.certificateRedemptionApplyId }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/certificate/vehicleCertificateRedemption/edit?id=' + form.certificateRedemptionApplyId)">{{ form.certificateRedemptionApplyId }}</el-button>
                 </el-form-item>
                 <el-form-item label="创建人：" prop="creatorName">
                   {{ form.creatorName }}
@@ -343,7 +343,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '赊销明细编号：' + this.form.creditSalesDetailCode;
+      return '赊销明细编号：';
     }
   },
   watch: {
@@ -441,6 +441,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

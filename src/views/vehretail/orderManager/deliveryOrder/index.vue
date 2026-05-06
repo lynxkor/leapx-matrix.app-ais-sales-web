@@ -274,7 +274,7 @@ export default {
           { props: 'vin', label: 'VIN', visible: true, width: 200 },
           { props: 'modelName', label: '车型名称', visible: true, width: 200 },
           { props: 'carBuyerName', label: '购车人姓名', visible: false, width: 200 },
-          { props: 'vehicleGuidePrice', label: '整车指导价（原补贴后价格）', visible: false, width: 200 },
+          { props: 'vehicleGuidePrice', label: '整车指导价', visible: false, width: 200 },
           { props: 'depositReceivable', label: '应收定金', visible: false, width: 200 },
           { props: 'receivableAmount', label: '门店应收金额', visible: false, width: 200 },
           { props: 'equityDeductionTotalAmount', label: '权益抵扣总额', visible: false, width: 200 },

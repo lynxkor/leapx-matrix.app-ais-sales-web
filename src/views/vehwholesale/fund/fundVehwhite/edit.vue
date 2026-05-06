@@ -25,38 +25,23 @@
                 </el-form-item>
                 <el-form-item label="整车批售订单：" prop="wholesaleOrderCode">
                   <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
-                      query: {
-                        id: form.wholesaleOrderId,
-                      },
-                    })"
+                   @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + form.wholesaleOrderId)"
                    type="text">{{form.wholesaleOrderCode}}</el-button>
                 </el-form-item>
                 <el-form-item label="企业客户整车订单：" prop="enterpriseOrderCode">
                   <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/vehwholesale/entorder/entVehicleOrder/edit',
-                      query: {
-                        id: form.enterpriseOrderId,
-                      },
-                    })"
+                   @click="openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + form.enterpriseOrderId)"
                    type="text">{{form.enterpriseOrderCode}}</el-button>
                 </el-form-item>
                 <el-form-item label="VIN号：" prop="vin">
                   {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="parentCompanyName">
-                  {{ form.parentCompanyName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.parentCompanyCode)">{{ form.parentCompanyName }}</el-button>
                 </el-form-item>
                 <el-form-item label="门店：" prop="dealerName">
                   <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/partner/channelManagement/shopDetail',
-                      query: {
-                        dealerCode: form.dealerCode,
-                      },
-                    })"
+                   @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)"
                    type="text">{{form.dealerName}}</el-button>
                 </el-form-item>
                 <el-form-item label="企业客户：" prop="enterpriseCustomerName">
@@ -341,6 +326,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

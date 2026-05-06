@@ -179,9 +179,10 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/basic/wholesaleNoAutoCarModelConf/detail',
+                  path: '/vehwholesale/basic/wholesaleNoAutoCarModelConf/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },
@@ -195,12 +196,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleModel/detail',
-                  query: {
-                    id: row.modelId
-                  }
-                });
+                window.open('/sales/datacenter/materials/vehicleModel/edit?id=' + row.modelId, '_blank');
               },
               type: 'primary'
             }]
@@ -212,12 +208,7 @@ export default {
             width: 100,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleYearType/detail',
-                  query: {
-                    id: row.vehicleYearTypeId
-                  }
-                });
+                window.open('/sales/datacenter/materials/vehicleYearType/edit?id=' + row.vehicleYearTypeId, '_blank');
               },
               type: 'primary'
             }]

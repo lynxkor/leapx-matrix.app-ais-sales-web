@@ -126,9 +126,10 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehstock/basic/vehicleInventoryStock/detail',
+                  path: '/vehstock/basic/vehicleInventoryStock/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },
@@ -156,7 +157,8 @@ export default {
                 this.$router.push({
                   path: '/vehstock/basic/vehicleInventoryStock/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },

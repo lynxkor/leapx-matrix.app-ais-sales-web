@@ -275,7 +275,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/rebate/fundVehicleRebateBillDetail/detail',
+                  path: '/vehwholesale/rebate/fundVehicleRebateBillDetail/edit',
                   query: {
                     id: row.id
                   }
@@ -318,12 +318,7 @@ export default {
             width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                this.navigateToRoute({
-                  path: '/datacenter/materials/vehicleModel/detail',
-                  query: {
-                    id: row.modelId,
-                  },
-                });
+                window.open(`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -335,20 +330,37 @@ export default {
             width: 100,
             buttons: [{
               click: (rowIndex, row) => {
-                this.navigateToRoute({
-                  path: '/datacenter/materials/vehicleSeries/detail',
-                  query: {
-                    id: row.seriesId,
-                  },
-                });
+                window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`, '_blank');
               },
               type: 'primary'
             }]
           },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'billStatusLabel', label: '单据状态', visible: true, width: 100 },
-          { props: 'budgetItemName', label: '预算科目', visible: true, width: 100 },
-          { props: 'feeSupportTypeName', label: '费用支持类型', visible: true, width: 150 },
+          {
+            props: 'budgetItemName',
+            label: '预算科目',
+            visible: true,
+            width: 100,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/vehwholesale/fund/fundBudgetItem/edit?id=${row.budgetItemId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'feeSupportTypeName',
+            label: '费用支持类型',
+            visible: true,
+            width: 150,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/vehwholesale/fund/fundFeeSupportType/edit?id=${row.feeSupportTypeId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'auditorName', label: '初审人', visible: true, width: 100 },
           { props: 'auditTime', label: '初审时间', visible: true, width: 200 },
           { props: 'auditOpinion', label: '初审意见', visible: true, width: 200 },

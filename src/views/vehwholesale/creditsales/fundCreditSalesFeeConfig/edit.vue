@@ -145,24 +145,10 @@
                   {{ form.creditSalesFeeConfigCode }}
                 </el-form-item>
                 <el-form-item label="车系：" prop="seriesName">
-                    <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/datacenter/materials/vehicleSeries/detail',
-                      query: {
-                        id: form.seriesId,
-                      },
-                    })"
-                   type="text">{{form.seriesName}}</el-button>
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.seriesId)">{{form.seriesName}}</el-button>
                 </el-form-item>
                 <el-form-item label="年款：" prop="yearTypeName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/datacenter/materials/vehicleYearType/detail',
-                      query: {
-                        id: form.yearTypeId,
-                      },
-                    })"
-                   type="text">{{form.yearTypeName}}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleYearType/edit?id=' + form.yearTypeId)">{{form.yearTypeName}}</el-button>
                 </el-form-item>
                 <el-form-item label="首付款比例%：" prop="downPaymentRatio">
                   {{ form.downPaymentRatio }}
@@ -375,6 +361,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

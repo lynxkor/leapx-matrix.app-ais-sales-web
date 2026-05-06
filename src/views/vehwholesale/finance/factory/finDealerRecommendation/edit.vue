@@ -154,17 +154,10 @@
                   {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  {{ form.dealerCompanyCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="推荐金融机构：" prop="recFinancialOrganizationName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                      query: {
-                        id: form.recFinancialOrganizationId,
-                      },
-                    })"
-                   type="text">{{ form.recFinancialOrganizationName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.recFinancialOrganizationId)">{{ form.recFinancialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="推荐额度(万元)：" prop="recAmount">
                   {{ form.recAmount }}
@@ -337,6 +330,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     handleBatchSync () {
       if (this.form.syncStatus !== 40) {
         this.$message({
