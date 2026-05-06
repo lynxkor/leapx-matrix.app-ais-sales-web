@@ -687,7 +687,7 @@
                 <el-table-column prop="paymentWayLabel" label="支付渠道" width="180"/>
                 <el-table-column prop="paymentTime" label="付款时间" width="180"/>
                 <el-table-column prop="refundTime" label="退款时间" width="180"/>
-                <el-table-column prop="refundResult" label="退款结果" width="180"/>
+                <el-table-column prop="refundResultLabel" label="退款结果" width="180"/>
                 <el-table-column prop="refundRemark" label="退款说明" width="180"/>
               </el-table>
             </div>
