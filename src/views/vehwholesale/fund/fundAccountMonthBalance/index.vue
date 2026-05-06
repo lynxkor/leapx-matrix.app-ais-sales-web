@@ -202,7 +202,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'parentCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?id=${row.parentCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'parentCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.parentCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'year', label: '年份', visible: true, width: 200 },
           { props: 'month', label: '月份', visible: true, width: 200 },
           { props: 'periodBeginBalance', label: '本期期初', visible: true, width: 200 },
