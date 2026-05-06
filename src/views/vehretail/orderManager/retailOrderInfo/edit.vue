@@ -19,21 +19,18 @@
         </template>
         <template #extraButtons>
           <!-- <el-button size="small" type="primary" @click="handleEquityInquiry">权益查询</el-button> -->
-          <el-button size="small" :loading="printLoading" v-if="canOperateOrder" @click="handlePrintContractTermination">打印合同解除协议</el-button>
+          <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" :loading="printLoading" v-if="canOperateOrder" @click="handlePrintContractTermination">打印合同解除协议</el-button>
           <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" :loading="setSpecialMarkLoading" @click="handleSetSpecialMark">设置特殊标识</el-button>
-          <el-button size="small" :loading="modifyConfigLoading" v-if="canOperateOrder && form.orderStatus === 3 && form.wholesaleBindStatus !== 1" @click="handleModifyConfiguration">修改配置</el-button>
-          <el-button size="small" :loading="manualVehicleLoading" v-if="canOperateOrder && form.wholesaleBindStatus !== 1" @click="handleManualVehicleAllocation">手工配车</el-button>
-          <el-button size="small" :loading="autoLockLoading" v-if="canOperateOrder && form.wholesaleBindStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
-          <el-button size="small" :loading="agreementLoading" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
-          <el-button
-            v-if="canOperateOrder && !(form.orderStatus === 10 || (form.orderStatus === 7 && form.deliveryOrder && form.deliveryOrder.status === 5))"
-            size="small"
-            :loading="orderRefundLoading"
-            @click="handleOrderRefund">
-            订单退订
-          </el-button>
-          <el-button size="small" :loading="changeApplyLoading" v-if="canOperateOrder" @click="handleCarOwnerChangeApplication">购车人变更申请</el-button>
-          <el-button size="small" :loading="qualityIssueLoading" v-if="canOperateOrder && form.wholesaleBindStatus === 1 && (form.orderStatus === 6 || form.orderStatus === 7)" @click="handleQualityIssueUnbindApplication">质量问题解绑申请</el-button>
+          <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" :loading="modifyConfigLoading" v-if="canOperateOrder && form.orderStatus === 3 && form.wholesaleBindStatus !== 1" @click="handleModifyConfiguration">修改配置</el-button>
+          <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" :loading="manualVehicleLoading" v-if="canOperateOrder && form.wholesaleBindStatus !== 1" @click="handleManualVehicleAllocation">手工配车</el-button>
+          <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" :loading="autoLockLoading" v-if="canOperateOrder && form.wholesaleBindStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
+          <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" :loading="agreementLoading" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
+          <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" v-if="canOperateOrder && !(form.orderStatus === 10 || (form.orderStatus === 7 && form.deliveryOrder && form.deliveryOrder.status === 5))" @click="handleOrderRefund">订单退订</el-button>
+          <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" :loading="changeApplyLoading" v-if="canOperateOrder" @click="handleCarOwnerChangeApplication">购车人变更申请</el-button>
+          <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" :loading="qualityIssueLoading" v-if="canOperateOrder && form.wholesaleBindStatus === 1 && (form.orderStatus === 6 || form.orderStatus === 7)" @click="handleQualityIssueUnbindApplication">质量问题解绑申请</el-button>
+          <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" v-if="form.orderStatus === 99" @click="handleEquityApply">权益申请</el-button>
+          <!-- 团购申请: 订单确认(3)/生产中(5)/车辆在途(6)/等待交车(7)/交车完成(9)/待门店向工厂付款(30)/车辆发运准备中(40) -->
+          <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" v-if="[3, 5, 6, 7, 9, 30, 40].includes(form.orderStatus)" @click="handleGroupbuyApply">团购申请</el-button>
         </template>
         <!-- 固定悬浮导航栏 -->
         <div class="fixed-nav" :class="{ 'is-collapsed': isNavCollapsed }">
@@ -839,14 +836,12 @@ export default {
     },
     // 订单退订
     handleOrderRefund () {
-      this.orderRefundLoading = true;
       this.navigateToRoute({
         path: '/sales/vehretail/orderRefund/refundApply/edit',
         query: {
           mallOrderCode: this.form.mallOrderCode,
         },
       }, true);
-      this.orderRefundLoading = false;
     },
     // 购车人变更申请
     handleCarOwnerChangeApplication () {
@@ -879,6 +874,24 @@ export default {
         this.$message.error('该订单未绑定批售且订单状态不是车辆在途/等待交车，不能进行质量问题解绑申请');
       }
       this.qualityIssueLoading = false;
+    },
+    // 权益申请
+    handleEquityApply () {
+      this.navigateToRoute({
+        path: '/vehretail/orderManager/vrEquityApply/edit',
+        query: {
+          retailOrderCode: this.form.retailOrderCode
+        }
+      }, true);
+    },
+    // 团购申请
+    handleGroupbuyApply () {
+      this.navigateToRoute({
+        path: '/vehretail/orderManager/vrGroupbuyOrderEquityApply/edit',
+        query: {
+          retailOrderCode: this.form.retailOrderCode
+        }
+      }, true);
     },
     // 将显示字段配置转换为表格列配置
     convertToTableColumns (displayFields) {
