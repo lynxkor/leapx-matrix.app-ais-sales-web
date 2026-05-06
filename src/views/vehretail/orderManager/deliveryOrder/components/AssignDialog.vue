@@ -27,8 +27,8 @@
     </el-form>
     <slot name="footer">
       <div slot="footer">
-        <el-button @click="handleClose">取 消</el-button>
-        <el-button type="primary" :loading="submitLoading" @click="handleSubmit">确 定</el-button>
+        <el-button @click="handleClose">取消</el-button>
+        <el-button type="primary" :loading="submitLoading" @click="handleSubmit">确定</el-button>
       </div>
     </slot>
   </el-dialog>

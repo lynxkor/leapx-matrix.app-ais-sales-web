@@ -18,22 +18,12 @@
             </el-form-item>
             <el-form-item label="车型：" prop="modelName">
                <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/datacenter/materials/vehicleModel/detail',
-                      query: {
-                        id: info.modelId,
-                      },
-                    })"
+                   @click="openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + info.modelId)"
                    type="text">{{info.modelName}}</el-button>
             </el-form-item>
             <el-form-item label="年款：" prop="vehicleYearType">
               <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/datacenter/materials/vehicleYearType/detail',
-                      query: {
-                        id: info.vehicleYearTypeId,
-                      },
-                    })"
+                   @click="openWindow('/sales/datacenter/materials/vehicleYearType/edit?id=' + info.vehicleYearTypeId)"
                    type="text">{{info.vehicleYearType}}</el-button>
             </el-form-item>
             <el-form-item label="订单分类：" prop="orderCategory">
@@ -166,6 +156,9 @@ export default {
     this.getData();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     handleEdit () {
       this.$router.push({
         path: '/vehwholesale/basic/wholesaleVehicleSaleModelConf/edit',

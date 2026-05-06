@@ -122,34 +122,13 @@
               <!-- 详情模式 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="年款：">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/datacenter/materials/vehicleYearType/edit',
-                      query: {
-                        id: form.vehicleYearTypeId,
-                      },
-                    })"
-                   type="text">{{ form.vehicleYearType }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleYearType/edit?id=' + form.vehicleYearTypeId)">{{ form.vehicleYearType }}</el-button>
                 </el-form-item>
                 <el-form-item label="系列：">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/datacenter/materials/vehicleModelLine/edit',
-                      query: {
-                        id: form.vehicleModelLineId,
-                      },
-                    })"
-                   type="text">{{ form.vehicleModelLine }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModelLine/edit?id=' + form.vehicleModelLineId)">{{ form.vehicleModelLine }}</el-button>
                 </el-form-item>
                 <el-form-item label="车系：">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/datacenter/materials/vehicleSeries/edit',
-                      query: {
-                        id: form.seriesId,
-                      },
-                    })"
-                   type="text">{{ form.seriesName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.seriesId)">{{ form.seriesName }}</el-button>
                 </el-form-item>
                 <el-form-item label="数量：">
                   {{ form.quantity }}
@@ -290,6 +269,9 @@ export default {
     this.fetchShopTypeEnum();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     openPane () {
       this.$refs.editLayout.openPane();
     },

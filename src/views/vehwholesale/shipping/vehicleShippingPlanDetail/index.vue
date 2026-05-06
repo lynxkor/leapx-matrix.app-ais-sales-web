@@ -337,7 +337,20 @@ export default {
           },
           { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 200 },
           { props: 'shippedLabel', label: '是否发运', visible: true, width: 200 },
-          { props: 'vin', label: 'VIN码', visible: true, width: 200 },
+          {
+            props: 'vin',
+            label: 'VIN码',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                if (row.vehicleVdcInventory?.id) {
+                  window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?id=${row.vehicleVdcInventory.id}`, '_blank');
+                }
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'vehicleWarehouseName', label: '整车仓库', visible: true, width: 200 },
           { props: 'needSyncWmsLabel', label: '是否需要同步WMS', visible: true, width: 200 },
           { props: 'syncStatusLabel', label: '同步状态', visible: true, width: 200 },
@@ -372,7 +385,20 @@ export default {
           { props: 'pickupContactName', label: '接车人', visible: true, width: 200 },
           { props: 'pickupContactMobile', label: '接车人电话', visible: true, width: 200 },
           { props: 'regionName', label: '大区', visible: true, width: 200 },
-          { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
+          {
+            props: 'saleDealerName',
+            label: '销售门店名称',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                if (row.saleDealerCode) {
+                  window.open(`/sales/partner/channelManagement/parentCompany/edit?dealerCode=${row.saleDealerCode}`, '_blank');
+                }
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'dealerWarehouseName', label: '门店仓库', visible: true, width: 200 },
           { props: 'deliveryDealerName', label: '交付门店', visible: true, width: 200 },
           { props: 'remark', label: '备注', visible: true, width: 200 },

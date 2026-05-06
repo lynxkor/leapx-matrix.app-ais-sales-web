@@ -249,7 +249,7 @@
                 v-show="!(isEditing || !_id)"
               >
                 <el-form-item label="VIN码：" prop="vin">
-                  {{ form.vin }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?id=' + form.vehicleVdcInventory.id)">{{ form.vin }}</el-button>
                 </el-form-item>
                 <el-form-item label="整车仓库：" prop="vehicleWarehouseName">
                   {{ form.vehicleWarehouseName }}
@@ -264,24 +264,10 @@
                   {{ form.certificateShippingWayLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="organizationName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/vehwholesale/fund/fundFinancialOrganization/edit',
-                      query: {
-                        id: form.financialOrganizationId,
-                      },
-                    })"
-                   type="text"> {{ form.organizationName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.financialOrganizationId)"> {{ form.organizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="车系：" prop="seriesName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/datacenter/materials/vehicleSeries/edit',
-                      query: {
-                        id: form.seriesId,
-                      },
-                    })"
-                   type="text"> {{ form.seriesName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.seriesId)"> {{ form.seriesName }}</el-button>
                 </el-form-item>
                 <el-form-item label="所属大区：" prop="regionName">
                   {{ form.regionName }}
@@ -302,7 +288,7 @@
                   {{ form.actualDeliveryWay }}
                 </el-form-item>
                 <el-form-item label="批售订单号：" prop="wholesaleOrderCode">
-                  {{ form.wholesaleOrderCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + form.wholesaleOrderCode)">{{ form.wholesaleOrderCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="发运计划：" prop="shippingPlanDetailCode">
                   {{ form.shippingPlanDetailCode }}
@@ -329,7 +315,7 @@
                   {{ form.syncRemark }}
                 </el-form-item>
                 <el-form-item label="企业客户订单号：" prop="entVehicleOrderCode">
-                  {{ form.entVehicleOrderCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + form.entVehicleOrderCode)">{{ form.entVehicleOrderCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="承运记录编码：" prop="carrierRecordCode">
                   {{ form.carrierRecordCode }}
@@ -674,94 +660,31 @@
                 v-show="!(isEditing || !_id)"
               >
                 <el-form-item label="车系：" prop="seriesName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/sales/datacenter/materials/vehicleSeries/edit',
-                      query: {
-                        id: form.seriesId,
-                      },
-                    })"
-                   type="text"> {{ form.seriesName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.seriesId)"> {{ form.seriesName }}</el-button>
                 </el-form-item>
                 <el-form-item label="车型：" prop="modelName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/datacenter/materials/vehicleModel/detail',
-                      query: {
-                        id: form.modelId,
-                      },
-                    })"
-                   type="text"> {{ form.modelName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + form.modelId)"> {{ form.modelName }}</el-button>
                 </el-form-item>
                 <el-form-item label="物料描述：" prop="materialsDesc">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/datacenter/materials/vehicleMaterials/edit',
-                      query: {
-                        id: form.materialsId,
-                      },
-                    })"
-                   type="text"> {{ form.materialsDesc }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + form.materialsId)"> {{ form.materialsDesc }}</el-button>
                 </el-form-item>
                 <el-form-item label="选配续航：" prop="drivingRangeName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/datacenter/materials/vehicleDrivingRange/edit',
-                      query: {
-                        id: form.drivingRangeId,
-                      },
-                    })"
-                   type="text"> {{ form.drivingRangeName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleDrivingRange/edit?id=' + form.drivingRangeId)"> {{ form.drivingRangeName }}</el-button>
                 </el-form-item>
                 <el-form-item label="选配动力：" prop="rangePowerName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/datacenter/materials/vehicleRangePower/edit',
-                      query: {
-                        id: form.rangePowerId,
-                      },
-                    })"
-                   type="text"> {{ form.rangePowerName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleRangePower/edit?id=' + form.rangePowerId)"> {{ form.rangePowerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="外饰风格：" prop="exteriorName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/datacenter/materials/vehicleExterior/edit',
-                      query: {
-                        id: form.exteriorId,
-                      },
-                    })"
-                   type="text"> {{ form.exteriorName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleExterior/edit?id=' + form.exteriorId)"> {{ form.exteriorName }}</el-button>
                 </el-form-item>
                 <el-form-item label="内饰风格：" prop="interiorName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/datacenter/materials/vehicleInterior/edit',
-                      query: {
-                        id: form.interiorId,
-                      },
-                    })"
-                   type="text"> {{ form.interiorName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleInterior/edit?id=' + form.interiorId)"> {{ form.interiorName }}</el-button>
                 </el-form-item>
                 <el-form-item label="选配轮毂：" prop="wheelHubName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/datacenter/materials/vehicleWheelHub/edit',
-                      query: {
-                        id: form.wheelHubId,
-                      },
-                    })"
-                   type="text"> {{ form.wheelHubName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleWheelHub/edit?id=' + form.wheelHubId)"> {{ form.wheelHubName }}</el-button>
                 </el-form-item>
                 <el-form-item label="选装包：" prop="optionPackageName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/datacenter/materials/vehicleOptionPackage/detail',
-                      query: {
-                        id: form.optionPackageId,
-                      },
-                    })"
-                   type="text"> {{ form.optionPackageName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleOptionPackage/edit?id=' + form.optionPackageId)"> {{ form.optionPackageName }}</el-button>
                 </el-form-item>
               </el-form>
             </div>
@@ -906,6 +829,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

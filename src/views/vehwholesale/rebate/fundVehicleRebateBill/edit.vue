@@ -29,10 +29,7 @@
                   {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="门店名称：">
-                  <el-button class="link" style="padding: 0;" @click="navigateToRoute({
-                    path: '/partner/channelManagement/shopDetail',
-                    query: { dealerCode: form.dealerCode }
-                  })" type="text">{{ form.dealerName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)">{{ form.dealerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="创建时间：">
                   {{ form.createTime }}
@@ -155,6 +152,9 @@ export default {
     }
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     async detailRequest () {
       const id = this._id;
       if (id) {

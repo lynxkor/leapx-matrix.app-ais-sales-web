@@ -318,12 +318,7 @@ export default {
             width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                this.navigateToRoute({
-                  path: '/datacenter/materials/vehicleModel/edit',
-                  query: {
-                    id: row.modelId,
-                  },
-                });
+                window.open(`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -335,12 +330,7 @@ export default {
             width: 100,
             buttons: [{
               click: (rowIndex, row) => {
-                this.navigateToRoute({
-                  path: '/datacenter/materials/vehicleSeries/edit',
-                  query: {
-                    id: row.seriesId,
-                  },
-                });
+                window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -354,12 +344,7 @@ export default {
             width: 100,
             buttons: [{
               click: (rowIndex, row) => {
-                this.navigateToRoute({
-                  path: '/vehwholesale/fund/fundBudgetItem/edit',
-                  query: {
-                    id: row.budgetItemId,
-                  },
-                });
+                window.open(`/sales/vehwholesale/fund/fundBudgetItem/edit?id=${row.budgetItemId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -371,12 +356,7 @@ export default {
             width: 150,
             buttons: [{
               click: (rowIndex, row) => {
-                this.navigateToRoute({
-                  path: '/vehwholesale/fund/fundFeeSupportType/edit',
-                  query: {
-                    id: row.feeSupportTypeId,
-                  },
-                });
+                window.open(`/sales/vehwholesale/fund/fundFeeSupportType/edit?id=${row.feeSupportTypeId}`, '_blank');
               },
               type: 'primary'
             }]

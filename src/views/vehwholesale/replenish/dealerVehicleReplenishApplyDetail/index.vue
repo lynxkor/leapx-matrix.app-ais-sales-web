@@ -248,16 +248,71 @@ export default {
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 200 },
-          { props: 'prodScheduleActivity', label: '专项活动名称', visible: true, width: 200 },
+          {
+            props: 'prodScheduleActivity',
+            label: '专项活动名称',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.openWindow('/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=' + row.prodScheduleActivityId);
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'applyCategoryLabel', label: '申请类别', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
-          { props: 'modelName', label: '车型名称', visible: true, width: 200 },
+          {
+            props: 'seriesName',
+            label: '车系名称',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId);
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'modelName',
+            label: '车型名称',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + row.modelId);
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 200 },
-          { props: 'financialOrganization', label: '金融机构名称', visible: true, width: 200 },
+          {
+            props: 'financialOrganization',
+            label: '金融机构名称',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.financialOrganizationId);
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'applyQty', label: '申请数量', visible: true, width: 200 },
           { props: 'replenishApplyDetailCode', label: '整车补货明细单号', visible: true, width: 200 },
-          { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
+          {
+            props: 'materialsCode',
+            label: '物料编码',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.materialsCode);
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
           { props: 'applyTime', label: '申请时间', visible: true, width: 200 },
           { props: 'auditDateTime', label: '审核时间', visible: true, width: 200 },
@@ -318,6 +373,9 @@ export default {
     this.fetchOrderCategoryOptions();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     handleListSelect (row) {
       this.clickItemId = row.id;
     },

@@ -136,17 +136,10 @@
                   {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  {{ form.dealerCompanyCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?dealerCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
                 </el-form-item>
                   <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                      query: {
-                        id: form.fundFinancialOrganizationId,
-                      },
-                    })"
-                   type="text">{{ form.fundFinancialOrganizationName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.fundFinancialOrganizationId)">{{ form.fundFinancialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="是否合作：" prop="isCooperation">
                   {{ form.isCooperationLabel }}
@@ -158,7 +151,7 @@
                   {{ form.mainDealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="主体公司编码：" prop="mainDealerCompanyCode">
-                  {{ form.mainDealerCompanyCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?dealerCode=' + form.mainDealerCompanyCode)">{{ form.mainDealerCompanyCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="创建者名称：" prop="creatorName">
                   {{ form.creatorName }}
@@ -337,6 +330,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     repairItemSearch (query) { return fundGetList({ organizationNameLike: query, status: 1 }); },
     genereteFinCustomerPurchaseRecord () {
       this.$confirm('是否生成一笔客户采购记录?', '提示', {

@@ -56,8 +56,8 @@
   </el-form>
     <template v-slot:footer>
       <div class="dialog-footer">
-        <el-button size="small" @click="close">取 消</el-button>
-        <el-button size="small" :loading="submitLoading" type="primary" @click="submit()">确 定</el-button>
+        <el-button size="small" @click="close">取消</el-button>
+        <el-button size="small" :loading="submitLoading" type="primary" @click="submit()">确定</el-button>
       </div>
     </template>
 

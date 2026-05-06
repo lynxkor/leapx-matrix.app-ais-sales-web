@@ -35,14 +35,7 @@
               {{ info.cooperationTypeLabel  }}
             </el-form-item>
             <el-form-item label="门店编码：" prop="dealerCode">
-              <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/partner/channelManagement/shopDetail',
-                      query: {
-                        dealerCode: info.dealerCode,
-                      },
-                    })"
-                   type="text">{{info.dealerCode}}</el-button>
+              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/partner/channelManagement/shopDetail?dealerCode=' + info.dealerCode)">{{info.dealerCode}}</el-button>
             </el-form-item>
             <el-form-item label="门店名称：" prop="dealerName">
                   {{info.dealerName}}
@@ -57,14 +50,7 @@
               {{ info.cityName  }}
             </el-form-item>
             <el-form-item label="车系：" prop="seriesName">
-              <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/datacenter/materials/vehicleSeries/detail',
-                      query: {
-                        id: info.seriesId,
-                      },
-                    })"
-                   type="text">{{info.seriesName}}</el-button>
+              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + info.seriesId)">{{info.seriesName}}</el-button>
             </el-form-item>
             <el-form-item label="新增缴定订单数：" prop="newOrderQty">
               {{ info.newOrderQty  }}
@@ -175,6 +161,9 @@ export default {
     this.getData();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     handleWholesaleEdit () {
       this.$router.push({
         path: '/vehwholesale/basic/wholesalesaletargettracking/wholesaleEdit',

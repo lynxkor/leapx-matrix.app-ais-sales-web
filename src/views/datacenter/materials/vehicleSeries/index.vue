@@ -203,7 +203,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'modelLineName', label: '系列名称', visible: true, width: 200 },
+          { props: 'modelLineName', label: '系列名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleModelLine/edit?id=${row.modelLineId}`, '_blank'); }, type: 'primary' }] },
           { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 200 },
