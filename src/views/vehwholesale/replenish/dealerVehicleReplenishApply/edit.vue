@@ -124,11 +124,16 @@
                   />
                 </el-form-item>
                 <el-form-item label="门店仓库：" prop="dealerWarehouseName">
-                  <el-input
-                    placeholder="请输入门店仓库"
+                  <fetch-select
+                    remote
+                    :remote-method="storeWarehouseSearch"
                     v-model="form.dealerWarehouseName"
+                    placeholder="请选择门店仓库"
+                    labelKey="warehouseName"
+                    valueKey="warehouseName"
                     clearable
-                    :disabled="true"
+                    filterable
+                    @change="handleChangeDealerWarehouse"
                   />
                 </el-form-item>
                 <el-form-item label="审核状态：" prop="auditStatus">
@@ -345,7 +350,7 @@ import { getDetail, addOrUpdate, dealerAuditValid, factoryAuditValid, dealerAppr
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum, getDealerDetailByCode, getRigion, listOrgStoreInfo } from '@/api/common';
+import { getEnum, getDealerDetailByCode, getRigion, listOrgStoreInfo, listOrgWarehouseStoreInfo } from '@/api/common';
 import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import { getList as listWholesaleProdScheduleActivity } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivityDetail/index';
 import routeGuard from '@/libs/mixins/routeGuard';
@@ -546,6 +551,9 @@ export default {
         applyReason: [
           { required: true, message: '请输入申请原因', trigger: 'change' },
           { max: 150, message: '最多输入150个字符', trigger: 'blur' }
+        ],
+        dealerWarehouseName: [
+          { required: true, message: '请选择门店仓库', trigger: 'change' }
         ]
       }
     };
@@ -788,6 +796,22 @@ export default {
         console.error('获取资金账户失败:', error);
       }
     },
+    async storeWarehouseSearch () {
+      if (this.form.deliveryDealerCode) {
+        return await listOrgWarehouseStoreInfo({ storeCode: this.form.deliveryDealerCode });
+      }
+    },
+    handleChangeDealerWarehouse (val, record) {
+      if (record) {
+        this.form.dealerWarehouseCode = record.warehouseCode || '';
+        this.form.dealerWarehouseAddress = record.warehouseDetailAddress || '';
+        this.form.dealerWarehouseName = record.warehouseName || '';
+      } else {
+        this.form.dealerWarehouseCode = '';
+        this.form.dealerWarehouseAddress = '';
+        this.form.dealerWarehouseName = '';
+      }
+    },
     async handleChangeDealer (val, record) {
       this.dealerCompanyCodes = record?.parentCompanyCode || '';
       this.form.saleDealerName = record?.storeName || '';
@@ -796,16 +820,23 @@ export default {
       this.form.regionName = record?.region || '';
       this.form.prodScheduleActivityId = '';
       this.form.prodScheduleActivityName = '';
+      // 清空门店仓库相关字段，使组件的下拉值被清空
+      this.form.dealerWarehouseCode = '';
+      this.form.dealerWarehouseAddress = '';
+      this.form.dealerWarehouseName = '';
+      this.form.deliveryDealerCode = '';
+      this.form.deliveryDealerName = '';
+
       this.processFundAccountData(this.dealerCompanyCodes);
       try {
         const dealerResponse = await getDealerDetailByCode(this.form.saleDealerCode);
         this.form.deliveryDealerCode = dealerResponse?.exclusiveDeliveryStoreCode || '';
         this.form.deliveryDealerName = dealerResponse?.exclusiveDeliveryStoreName || '';
         if (this.form.deliveryDealerCode) {
-          const deliveryDealerResponse = await getDealerDetailByCode(this.form.deliveryDealerCode);
-          this.form.dealerWarehouseCode = deliveryDealerResponse?.storeWarehouseResp?.warehouseCode || '';
-          this.form.dealerWarehouseAddress = deliveryDealerResponse?.storeWarehouseResp?.warehouseDetailAddress || '';
-          this.form.dealerWarehouseName = deliveryDealerResponse?.storeWarehouseResp?.warehouseName || '';
+          const warehouseList = await this.storeWarehouseSearch();
+          if (warehouseList.records && warehouseList.records.length > 0) {
+            this.handleChangeDealerWarehouse(null, warehouseList.records[0]);
+          }
         }
       } catch (error) {
         console.error('获取经销商信息失败:', error);
@@ -934,7 +965,7 @@ export default {
         this.$message.success('补货申请提交成功');
         this.getDetailData();
       });
-    }
+    },
   }
 };
 </script>
