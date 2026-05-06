@@ -124,6 +124,7 @@
                 </el-form-item>
                 <el-form-item label="门店仓库：" prop="dealerWarehouseName">
                   <fetch-select
+                    ref="dealerWarehouseRef"
                     remote
                     :remote-method="storeWarehouseSearch"
                     v-model="form.dealerWarehouseName"
@@ -836,6 +837,7 @@ export default {
       this.form.dealerWarehouseCode = '';
       this.form.dealerWarehouseAddress = '';
       this.form.dealerWarehouseName = '';
+      this.$refs.dealerWarehouseRef.remoteOptions = [];
       this.form.deliveryDealerCode = '';
       this.form.deliveryDealerName = '';
 
