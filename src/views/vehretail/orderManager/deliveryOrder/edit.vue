@@ -394,7 +394,7 @@ import {
   deliveryConfirmResign, // 交车确认单重签
   deliveryConfirmPush, // 交车确认单推送
   deliveryConfirm, // 交车确认单生成
-  checkCarBuyerPhoneRegistered, // 校验购车人手机号是否注册零跑APP
+  checkCarBuyerPhoneRegistered, pushDeliveryActive, // 校验购车人手机号是否注册零跑APP
 } from '@/api/vehretail/orderManager/deliveryOrder/index';
 import {
   getEffectiveByDeliveryOrderId
@@ -1141,6 +1141,14 @@ export default {
           this.$message.error('暂无生成交车确认单');
         }
       }).catch(() => {});
+    },
+    // 交车确认单激活
+    handleDeliveryActive () {
+      pushDeliveryActive({ deliveryOrderId: this.form.deliveryOrderId, retailOrderId: this.form.retailOrderId })
+        .then(res => {
+          this.$message.success('交车确认单激活推送成功');
+          this.getDetail();
+        });
     },
     // 上传发票
     handleUploadInvoice () {

@@ -13,7 +13,7 @@
         :showEditBtn="true"
       >
         <template #status>
-          <span class="status primary">{{ form.statusLabel }}</span>
+          <span :class="['status', form.status ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
         </template>
         <el-main>
           <!-- 基本信息 -->
