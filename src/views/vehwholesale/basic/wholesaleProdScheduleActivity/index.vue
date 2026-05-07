@@ -216,6 +216,8 @@ export default {
               type: 'info'
             }, {
               name: '删除',
+              popconfirmConfirmButtonType: 'danger',
+              popconfirmConfirmButtonText: '删除',
               show: (row) => {
                 return row.usedQuotaQty === 0;
               },
