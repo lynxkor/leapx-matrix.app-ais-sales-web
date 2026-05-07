@@ -140,7 +140,7 @@ export default {
       if (type === 'vin') {
         // 跳转到 VDC 库存台账详情click: (row) => {
         this.navigateToRoute({
-          path: '/service/datacenter/vehicle/vehicleProfile/edit',
+          path: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
           query: {
             vin: row.vin
           }

@@ -460,7 +460,7 @@
                     class="link"
                     v-if="form.deliveryVin"
                     @click="navigateToRoute({
-                      path: '/datacenter/vehicle/vehicleProfile/edit',
+                      path: '/vehstock/vdc/vehicleVdcInventoryLedger/edit',
                       query: {
                         vin: form.deliveryVin,
                       },
