@@ -686,9 +686,9 @@ export default {
         { key: 'signatureTime', label: '签署时间' },
         { key: 'buyerMobileRegisteredLabel', label: '购车人手机是否注册' },
         { key: 'deliveryConfirmStatusLabel', label: '交车确认单状态' },
+        { key: 'cityDeliveryOrder', label: '城市交付顺序' },
         { key: 'deliveryConfirmSignUrl', label: '交车确认用户签名' },
         { key: 'deliveryConfirmPdfUrl', label: '交车确认PDF' },
-        { key: 'cityDeliveryOrder', label: '城市交付顺序' }
       ],
       basicInfoFields: [
         { key: 'deliveryOrderCode', label: '交车单编号' },

@@ -242,12 +242,12 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 100 },
+          { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 120 },
           {
             props: 'financialOrganizationName',
             label: '金融机构',
             visible: true,
-            width: 100,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
                 this.openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.financialOrganizationId);
@@ -255,8 +255,8 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'transactionTypeLabel', label: '交易类型', visible: true, width: 100 },
-          { props: 'transactionAmount', label: '交易金额', visible: true, width: 100 },
+          { props: 'transactionTypeLabel', label: '交易类型', visible: true, width: 120 },
+          { props: 'transactionAmount', label: '交易金额', visible: true, width: 120, align: 'right' },
           { props: 'transactionTime', label: '过账时间', visible: true, width: 200 },
           { props: 'transactionReceiptCode', label: '交易凭证号', visible: true, width: 200 },
           { props: 'lineNo', label: '行项目号', visible: true, width: 200 },
@@ -278,7 +278,7 @@ export default {
             props: 'entVehorderCode',
             label: '企业客户整车订单',
             visible: true,
-            width: 200,
+            width: 240,
             buttons: [{
               click: (rowIndex, row) => {
                 window.open(`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${row.entVehorderId}`, '_blank');
