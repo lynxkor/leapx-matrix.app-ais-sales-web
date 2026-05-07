@@ -10,6 +10,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :title="title"
       >
         <!-- <template #status>
           <span class="status primary">状态</span>
@@ -300,6 +301,9 @@ export default {
   computed: {
     _id () {
       return this.id || this.$route.query.id || this.form.id;
+    },
+    title () {
+      return 'PDI检查项：' + (this.form.name || '');
     }
   },
   watch: {
@@ -317,7 +321,6 @@ export default {
     return {
       pageTitle: '整车PDI检查项配置',
       pageType: 'edit',
-      title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVS-vehiclePdiCheckItemConfig',
       loading: false,

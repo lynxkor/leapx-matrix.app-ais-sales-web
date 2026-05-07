@@ -4,7 +4,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="地区对应公告目录："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -164,7 +164,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '地区对应公告目录：' + (this.form.code || '');
+      return '地区公告编号：' + (this.form.code || '');
     }
   },
   mixins: [routeGuard, permissions, commonMixins],

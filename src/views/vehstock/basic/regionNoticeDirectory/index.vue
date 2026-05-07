@@ -9,7 +9,7 @@
       class="ais-search-form"
     >
       <el-form-item label="城市">
-        <el-select v-model="form.cityCodeList" clearable filterable multiple placeholder="请选择">
+        <el-select v-model="form.cityCodeList" clearable filterable multiple collapse-tags placeholder="请选择">
           <el-option
             v-for="item in options"
             :key="item.value"

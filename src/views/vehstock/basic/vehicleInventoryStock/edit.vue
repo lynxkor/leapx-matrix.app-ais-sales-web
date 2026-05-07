@@ -22,24 +22,24 @@
             <div class="common-section-body">
               <!-- 编辑模式 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="编号" prop="code">
+                <el-form-item label="编号：" prop="code">
                   <el-input placeholder="系统自动创建" v-model="form.code" clearable disabled />
                 </el-form-item>
-                <el-form-item label="最小值" prop="quantityMin">
+                <el-form-item label="最小值：" prop="quantityMin">
                   <el-input type="number" placeholder="请输入" v-model="form.quantityMin" clearable />
                 </el-form-item>
-                <el-form-item label="最大值" prop="quantityMax">
+                <el-form-item label="最大值：" prop="quantityMax">
                   <el-input type="number" placeholder="请输入" v-model="form.quantityMax" clearable />
                 </el-form-item>
-                <el-form-item label="库存存量类型" prop="stockType">
+                <el-form-item label="库存存量类型：" prop="stockType">
                   <fetch-select :request="fetchOptions" enumCode="vehstock_stock_Type" v-model="form.stockType"
                     placeholder="请选择" clearable filterable />
                 </el-form-item>
-                <el-form-item label="状态" prop="status">
+                <el-form-item label="状态：" prop="status">
                   <fetch-select :request="fetchOptions" enumCode="StatusEnum" v-model="form.status" placeholder="请选择"
                     clearable filterable />
                 </el-form-item>
-                <el-form-item label="备注" prop="remark">
+                <el-form-item label="备注：" prop="remark">
                   <el-input placeholder="请输入" v-model="form.remark" clearable maxLength="500" show-word-limit
                     type="textarea" />
                 </el-form-item>
