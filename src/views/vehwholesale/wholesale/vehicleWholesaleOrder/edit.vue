@@ -18,12 +18,12 @@
         </template>
         <template #extraButtons >
           <el-button  size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
-          <el-button  :disabled="!form.buttonControl.confirmManualButton" size="small" @click="handleCheckConfirm" >审核确认</el-button>
-          <el-button  :disabled="!form.buttonControl.autoAllocateVehicle" size="small" @click="handleaAutoVehicleAllocation">自动配车</el-button>
-          <el-button  :disabled="!form.buttonControl.manualAllocateVehicle" size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
-          <el-button  :disabled="!form.buttonControl.submitSettleButton" size="small" @click="handleBatchSettleSubmit">提交结算</el-button>
-          <el-button  :disabled="!form.buttonControl.cancelSettle" size="small" @click="handleBatchCancelSettle">取消结算</el-button>
-          <el-button  :disabled="!form.buttonControl.cancelButton" size="small" @click="handleCancel">作废</el-button>
+          <el-button  v-if = "form.buttonControl && form.buttonControl.confirmManualButton" size="small" @click="handleCheckConfirm" >审核确认</el-button>
+          <el-button  v-if = "form.buttonControl && form.buttonControl.autoAllocateVehicle" size="small" @click="handleaAutoVehicleAllocation">自动配车</el-button>
+          <el-button  v-if = "form.buttonControl && form.buttonControl.manualAllocateVehicle" size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
+          <el-button  v-if = "form.buttonControl && form.buttonControl.submitSettleButton" size="small" @click="handleBatchSettleSubmit">提交结算</el-button>
+          <el-button  v-if = "form.buttonControl && form.buttonControl.cancelSettle" size="small" @click="handleBatchCancelSettle">取消结算</el-button>
+          <el-button  v-if = "form.buttonControl && form.buttonControl.cancelButton" size="small" @click="handleCancel">作废</el-button>
         </template>
         <el-main>
           <section class="common-section">

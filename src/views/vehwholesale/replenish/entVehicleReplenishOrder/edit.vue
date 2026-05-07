@@ -19,11 +19,11 @@
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button :disabled="!form.buttonsControls.editButton" size="small" @click="handleAddDetail" >添加补货明细</el-button>
-          <el-button :disabled="!form.buttonsControls.submitAuditButton" @click="handleCheckSubmit" >提交审批</el-button>
-          <el-button :disabled="!form.buttonsControls.auditButton"  size="small" @click="handleCheckStatus" >审核</el-button>
-          <el-button :disabled="!form.buttonsControls.cancelButton"  size="small" @click="handleCancel" >作废</el-button>
-          <el-button :disabled="!form.buttonsControls.deleteButton" size="small"  @click="handleDelete" >删除</el-button>
+          <el-button v-if ="form.buttonsControls && form.buttonsControls.editButton" size="small" @click="handleAddDetail" >添加补货明细</el-button>
+          <el-button v-if ="form.buttonsControls && form.buttonsControls.submitAuditButton" @click="handleCheckSubmit" >提交审批</el-button>
+          <el-button v-if ="form.buttonsControls && form.buttonsControls.auditButton"  size="small" @click="handleCheckStatus" >审核</el-button>
+          <el-button v-if ="form.buttonsControls && form.buttonsControls.cancelButton"  size="small" @click="handleCancel" >作废</el-button>
+          <el-button v-if ="form.buttonsControls && form.buttonsControls.deleteButton" size="small"  @click="handleDelete" >删除</el-button>
         </template>
         <el-main>
           <section class="common-section">

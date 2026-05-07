@@ -11,16 +11,16 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.certificateStatus === 10 && form.creditSettleStatus === 10"
+        :showEditBtn="form.buttonControl && form.buttonControl.edit"
       >
         <template #status>
           <span>{{ form.redemptionCode }}</span>
         </template>
         <template #extraButtons>
-          <el-button :disabled="!form.buttonControl.submitRedeem"  size="small" @click="handleSubmit">提交赎回</el-button>
-          <el-button :disabled="!form.buttonControl.submitRedeemAgain" size="small" @click="handleSubmitAgain">重新提交赎回</el-button>
-          <el-button :disabled="!form.buttonControl.confirmReceive" size="small" @click="handleconfirmSign">签收合格证</el-button>
-          <el-button :disabled="!form.buttonControl.delete" size="small" @click="handleDel">删除</el-button>
+          <el-button v-if = "form.buttonControl && form.buttonControl.submitRedeem"  size="small" @click="handleSubmit">提交赎回</el-button>
+          <el-button v-if = "form.buttonControl && form.buttonControl.submitRedeemAgain" size="small" @click="handleSubmitAgain">重新提交赎回</el-button>
+          <el-button v-if = "form.buttonControl && form.buttonControl.confirmReceive" size="small" @click="handleconfirmSign">签收合格证</el-button>
+          <el-button v-if = "form.buttonControl && form.buttonControl.delete" size="small" @click="handleDel">删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
