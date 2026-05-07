@@ -694,7 +694,7 @@ export default {
         { key: 'deliveryOrderCode', label: '交车单编号' },
         { key: 'vin', label: 'VIN 码', link: '/service/datacenter/vehicle/vehicleProfile/edit', paramKey: 'vin', paramName: 'vin' },
         { key: 'materialsCode', label: '整车物料', link: '/sales/datacenter/materials/vehiclematerials/edit', paramKey: 'materialsCode' },
-        { key: 'retailOrderCode', label: '整车订单', link: '/sales/vehretail/ordermanager/retailorderinfo/edit', paramKey: 'retailOrderCode' },
+        { key: 'retailOrderCode', label: '整车订单', link: '/sales/vehretail/ordermanager/retailorderinfo/edit', paramKey: 'retailOrderId' },
         { key: 'deliveryTime', label: '交车时间' },
         { key: 'statusLabel', label: '交车状态' },
         { key: 'createTime', label: '创建时间' }

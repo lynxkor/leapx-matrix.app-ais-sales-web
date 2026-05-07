@@ -47,6 +47,7 @@
     </div>
     <!-- TIPS: 填入项目id即可 -->
     <Upload :visible="uploadDialogVisible" :id="'1'" @close="handleUploadDialogClose" @getData="getData" />
+    <MessageDialog ref="messageDialogRef" />
   </div>
 </template>
 
@@ -58,6 +59,7 @@ import { getList, deleteItem, enableItem, inboundItem } from '@/api/vehstock/sto
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
+import MessageDialog from '@/libs/components/MessageDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
@@ -85,7 +87,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    MessageDialog
   },
   data () {
     return {
@@ -376,11 +379,16 @@ export default {
     // 批量入库
     handleBatchWarehousing () {
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('确定要批量入库吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
+      this.$refs.messageDialogRef.open({
+        title: '提示',
+        description: '确定要批量入库吗？',
+        type: 'info',
+        showCancel: true,
+        confirmText: '确定',
+        cancelText: '取消'
+      });
+      this.$refs.messageDialogRef.$off('confirm');
+      this.$refs.messageDialogRef.$once('confirm', () => {
         inboundItem(ids).then(() => {
           this.$message({
             type: 'success',
