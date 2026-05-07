@@ -444,7 +444,7 @@
               <!--附件上传组件 -->
               <AisAttachment
                 :businessId="_id"
-                :readonly="!isEditing"
+                :readonly="!_id || !(form.applyStatus === 1010 || form.applyStatus === 1040)"
                 configCode="mcs_vehorderapplylog"
                 attachType="订单信息变更申请附件"
               />
@@ -582,7 +582,7 @@ const defaultForm = {
   modelId: '',
   modelName: '',
   applyStatus: '',
-  changeType: 0,
+  changeType: 10,
   changeReason: '',
   changeExplain: '',
   originalBuyerName: '',

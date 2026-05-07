@@ -11,6 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :title="title"
       >
         <template #extraButtons>
           <el-button v-if="form.isPdiSubmit === 1 && form.isUnusual === 0" type="primary" size="small"  @click="handleDownloadPDF">下载PDF单据</el-button>
@@ -354,6 +355,9 @@ export default {
   computed: {
     _id () {
       return this.id || this.$route.query.id || this.form.id;
+    },
+    title () {
+      return 'PDI单号：' + this.form.code;
     }
   },
   watch: {
@@ -384,7 +388,6 @@ export default {
       viewPictureList: [],
       pageTitle: '门店整车PDI单',
       pageType: 'edit',
-      title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVS-storeVehiclePdi',
       loading: false,

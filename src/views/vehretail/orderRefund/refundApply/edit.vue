@@ -112,36 +112,36 @@
                   />
                 </el-form-item>
                 <el-form-item
-                  v-show="form.depositRefundType === '30'"
+                  v-show="form.depositRefundType === '15'"
                   label="退款银行：" prop="refundBank"
-                              :rules="form.depositRefundType === '30' ? rules.refundBank: []">
+                              :rules="form.depositRefundType === '15' ? rules.refundBank: []">
                   <el-input
                     placeholder="请输入"
                     v-model="form.refundBank"
-                    :disabled="form.depositRefundType !== '30'"
+                    :disabled="form.depositRefundType !== '15'"
                     clearable
                   />
                 </el-form-item>
                 <el-form-item
-                  v-show="form.depositRefundType === '30'"
+                  v-show="form.depositRefundType === '15'"
                   label="银行开户名：" prop="refundBankUser"
-                              :rules="form.depositRefundType === '30' ? rules.refundBankUser: []">
+                              :rules="form.depositRefundType === '15' ? rules.refundBankUser: []">
                   <el-input
                     placeholder="请输入"
                     v-model="form.refundBankUser"
-                    :disabled="form.depositRefundType !== '30'"
+                    :disabled="form.depositRefundType !== '15'"
                     clearable
                   />
                 </el-form-item>
                 <el-form-item
-                  v-show="form.depositRefundType === '30'"
+                  v-show="form.depositRefundType === '15'"
                   label="退款银行账号："
                               prop="refundBankAccount"
-                              :rules="form.depositRefundType === '30' ? rules.refundBankAccount: []">
+                              :rules="form.depositRefundType === '15' ? rules.refundBankAccount: []">
                   <el-input
                     placeholder="请输入"
                     v-model="form.refundBankAccount"
-                    :disabled="form.depositRefundType !== '30'"
+                    :disabled="form.depositRefundType !== '15'"
                     clearable
                   />
                 </el-form-item>
@@ -370,7 +370,7 @@
               <AisAttachment
                 ref="attachment"
                 :businessId="_id"
-                :readonly="!isEditing"
+                :readonly="!_id || !(form.refundStatus === 1010 || form.refundStatus === 1040)"
                 configCode="mcs_vehorderrefund"
                 attachType="订单信息变更申请附件"
               />
