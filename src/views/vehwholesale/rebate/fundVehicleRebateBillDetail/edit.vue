@@ -67,7 +67,7 @@
                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + form.modelId)">{{ form.modelName }}</el-button>
                 </el-form-item>
                 <el-form-item label="交车单号：">
-                  {{ form.deliveryOrderCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehretail/orderManager/deliveryOrder/edit?id=' + form.deliveryOrderCode)">{{ form.deliveryOrderCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="预算科目：">
                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundBudgetItem/edit?id=' + form.budgetItemId)">{{ form.budgetItemName }}</el-button>

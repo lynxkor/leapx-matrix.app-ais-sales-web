@@ -379,6 +379,9 @@
                   <template #materialsDesc="{ row }">
                     <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.materialsCode)">{{ row.materialsDesc }}</el-button>
                   </template>
+                  <template #prodScheduleActivityName="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=' + row.prodScheduleActivityId)">{{ row.prodScheduleActivityName }}</el-button>
+                  </template>
                 </component-table>
               </div>
             </div>
@@ -542,7 +545,7 @@ export default {
         { field: 'confirmTime', title: '确认时间', width: '180' },
         { field: 'noAutoConfirmReason', title: '未自动确认原因', width: '150' },
         { field: 'confirmRemark', title: '确认说明', width: '150' },
-        { field: 'prodScheduleActivityName', title: '专项活动', width: '120' },
+        { field: 'prodScheduleActivityName', title: '专项活动', width: '120', slots: { default: 'prodScheduleActivityName' } },
         { field: 'confirmStatusLabel', title: '确认状态', width: '120' },
         { field: 'orderStatusLabel', title: '订单状态', width: '120' },
         { field: 'orderTime', title: '订单时间', width: '180' },

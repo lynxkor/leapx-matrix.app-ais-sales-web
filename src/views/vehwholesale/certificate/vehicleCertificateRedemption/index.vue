@@ -276,8 +276,8 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
-          { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + row.dealerCompanyCode); }, type: 'primary' }] },
+          { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.saleDealerCode); }, type: 'primary' }] },
           { props: 'creditSettleStatusLabel', label: '赊销结算状态', visible: true, width: 200 },
           { props: 'certificateStatusLabel', label: '合格证状态', visible: true, width: 200 },
           { props: 'vin', label: 'VIN码', visible: true, width: 200 },
@@ -313,8 +313,8 @@ export default {
           { props: 'creditTime', label: '赊销日期', visible: true, width: 200 },
           { props: 'repaymentTime', label: '还款日期', visible: true, width: 200 },
           { props: 'creditDays', label: '赊销天数', visible: true, width: 200 },
-          { props: 'wholesaleOrderCode', label: '整车批售订单号', visible: true, width: 200 },
-          { props: 'entVehicleOrderCode', label: '企业客户整车订单号', visible: true, width: 200 },
+          { props: 'wholesaleOrderCode', label: '整车批售订单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.wholesaleOrderCode); }, type: 'primary' }] },
+          { props: 'entVehicleOrderCode', label: '企业客户整车订单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + row.entVehicleOrderCode); }, type: 'primary' }] },
           { props: 'receiverName', label: '收件人', visible: true, width: 200 },
           { props: 'receiverPhone', label: '收件人手机', visible: true, width: 200 },
           { props: 'receiverAddress', label: '收件地址', visible: true, width: 200 },

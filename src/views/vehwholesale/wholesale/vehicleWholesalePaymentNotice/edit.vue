@@ -115,12 +115,28 @@
                 >
                   <vxe-column field="paymentDetailCode" title="请款明细单号" />
                   <vxe-column field="paymentNoticeCode" title="请款通知单" />
-                  <vxe-column field="saleDealerName" title="门店名称" />
-                  <vxe-column field="materialsCode" title="物料编码" />
+                  <vxe-column field="saleDealerName" title="门店名称">
+                    <template #default="{ row }">
+                      <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.saleDealerCode)">{{ row.saleDealerName }}</el-button>
+                    </template>
+                  </vxe-column>
+                  <vxe-column field="materialsCode" title="物料编码">
+                    <template #default="{ row }">
+                      <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.materialsCode)">{{ row.materialsCode }}</el-button>
+                    </template>
+                  </vxe-column>
                   <vxe-column field="orderCategoryLabel" title="订单分类" />
                   <vxe-column field="entCustomerName" title="企业客户" />
-                  <vxe-column field="entVehicleOrderCode" title="企业客户订单号" />
-                  <vxe-column field="wholesaleOrderCode" title="批售订单号" />
+                  <vxe-column field="entVehicleOrderCode" title="企业客户订单号">
+                    <template #default="{ row }">
+                      <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + row.entVehicleOrderCode)">{{ row.entVehicleOrderCode }}</el-button>
+                    </template>
+                  </vxe-column>
+                  <vxe-column field="wholesaleOrderCode" title="批售订单号">
+                    <template #default="{ row }">
+                      <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.wholesaleOrderCode)">{{ row.wholesaleOrderCode }}</el-button>
+                    </template>
+                  </vxe-column>
                   <vxe-column field="wholesalePrice" title="批售价格"/>
                   <vxe-column field="orderTime" title="订单日期" />
                   <vxe-column field="createTime" title="创建时间" />
@@ -264,6 +280,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

@@ -953,7 +953,7 @@
                         {{ scope.row.fundTypeLabel }}
                         <!-- 判断条件：fundType 为 2010 (融资) 时拼接金融机构名称 -->
                         <span v-if="scope.row.fundType === '2010' || scope.row.fundType === 2010">
-                          - {{ scope.row.financialOrganizationName || '' }}
+                          - <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + scope.row.financialOrganizationId)">{{ scope.row.financialOrganizationName || '' }}</el-button>
                         </span>
                       </span>
                     </template>

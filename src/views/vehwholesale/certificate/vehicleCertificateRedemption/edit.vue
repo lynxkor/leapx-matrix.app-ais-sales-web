@@ -131,12 +131,12 @@
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="整车批售订单号：" prop="wholesaleOrderCode">
                   <el-tooltip :disabled="!form.wholesaleOrderCode" :content="form.wholesaleOrderCode" placement="top">
-                    <span>{{ form.wholesaleOrderCode }}</span>
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + form.wholesaleOrderCode)">{{ form.wholesaleOrderCode }}</el-button>
                   </el-tooltip>
                 </el-form-item>
                 <el-form-item label="企业客户整车订单号：" prop="entVehicleOrderCode">
                   <el-tooltip :disabled="!form.entVehicleOrderCode" :content="form.entVehicleOrderCode" placement="top">
-                    <span>{{ form.entVehicleOrderCode }}</span>
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + form.entVehicleOrderCode)">{{ form.entVehicleOrderCode }}</el-button>
                   </el-tooltip>
                 </el-form-item>
                   <el-form-item label="母公司名称：" prop="dealerCompanyName">
@@ -149,7 +149,7 @@
                   {{ form.vin }}
                 </el-form-item>
                     <el-form-item label="整车物料：" prop="materialsCode">
-                  {{ form.materialsCode }}
+                      <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + form.materialsCode)">{{ form.materialsCode }}</el-button>
                 </el-form-item>
                     <el-form-item label="车系名称：" prop="seriesName">
                       <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.seriesId)">{{ form.seriesName }}</el-button>
@@ -532,6 +532,8 @@ const defaultForm = {
   seriesName: '',
   modelId: '',
   modelName: '',
+  materialsId: '',
+  materialsCode: '',
   settleFundType: '',
   vehiclePrice: '',
   salePrice: '',
@@ -687,6 +689,7 @@ export default {
       this.form.saleDealerCode = row.saleDealerCode || '';
       this.form.saleDealerName = row.saleDealerName || '';
       this.form.vin = row.vin || '';
+      this.form.materialsId = row.materialsId || '';
       this.form.materialsCode = row.orderMaterialsCode || '';
       this.form.modelId = row.modelId || '';
       this.form.modelName = row.modelName || '';
@@ -724,6 +727,7 @@ export default {
       this.form.saleDealerCode = row.saleDealerCode || '';
       this.form.saleDealerName = row.saleDealerName || '';
       this.form.vin = row.vin || '';
+      this.form.materialsId = row.materialsId || '';
       this.form.materialsCode = row.orderMaterialsCode || '';
       this.form.modelId = row.modelId || '';
       this.form.modelName = row.modelName || '';
