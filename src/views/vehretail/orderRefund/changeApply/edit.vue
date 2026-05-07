@@ -582,7 +582,7 @@ const defaultForm = {
   modelId: '',
   modelName: '',
   applyStatus: '',
-  changeType: 0,
+  changeType: 10,
   changeReason: '',
   changeExplain: '',
   originalBuyerName: '',
