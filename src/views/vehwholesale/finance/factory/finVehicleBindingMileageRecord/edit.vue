@@ -37,7 +37,7 @@
                   {{ form.createTime }}
                 </el-form-item>
                 <el-form-item label="经销商名称：" prop="dealerName">
-                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)">{{form.dealerName}}</el-button>
+                   {{form.dealerName}}
                 </el-form-item>
                 <el-form-item label="经销商编码：" prop="dealerCode">
                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)">{{form.dealerCode}}</el-button>

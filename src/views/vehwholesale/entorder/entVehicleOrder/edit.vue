@@ -19,10 +19,10 @@
         </template>
         <template #extraButtons>
           <el-button  size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
-          <el-button  :disabled="!form.buttonControls.batchAllocateSubmitButton" size="small" @click="handlevinAllocateVehicle" >配车</el-button>
-          <el-button  :disabled="!form.buttonControls.cancelAllocateButton" size="small" @click="handlebatchCancelAllocateSubmit" >取消配车</el-button>
-          <el-button  :disabled="!form.buttonControls.submitSettleButton" size="small" @click="handlebatchSettleSubmit" >提交结算</el-button>
-          <el-button  :disabled="!form.buttonControls.cancelSettleButton" size="small" @click="handlebatchCancelSettleSubmit" >取消结算</el-button>
+          <el-button  v-if ="form.buttonControls && form.buttonControls.batchAllocateSubmitButton" size="small" @click="handlevinAllocateVehicle" >配车</el-button>
+          <el-button  v-if ="form.buttonControls && form.buttonControls.cancelAllocateButton" size="small" @click="handlebatchCancelAllocateSubmit" >取消配车</el-button>
+          <el-button  v-if ="form.buttonControls && form.buttonControls.submitSettleButton" size="small" @click="handlebatchSettleSubmit" >提交结算</el-button>
+          <el-button  v-if ="form.buttonControls && form.buttonControls.cancelSettleButton" size="small" @click="handlebatchCancelSettleSubmit" >取消结算</el-button>
         </template>
         <el-main>
           <section class="common-section">

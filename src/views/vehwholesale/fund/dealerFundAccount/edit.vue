@@ -180,7 +180,17 @@
             :extra-params="tableExtraParams"
             :table-config="{ title: '账户流水' }"
             section-key="accountTransLog"
-          />
+          >
+            <template #wholesaleOrderCode="{ row }">
+              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=' + row.wholesaleOrderCode)">{{ row.wholesaleOrderCode }}</el-button>
+            </template>
+            <template #entVehorderCode="{ row }">
+              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + row.entVehorderCode)">{{ row.entVehorderCode }}</el-button>
+            </template>
+            <template #dealerName="{ row }">
+              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode)">{{ row.dealerName }}</el-button>
+            </template>
+          </component-table>
         </el-main>
       </edit-base-container>
     </template>
@@ -281,10 +291,10 @@ export default {
         { field: 'lineNo', title: '行项目号', width: 200 },
         { field: 'remark', title: '备注', width: 260 },
         { field: 'vin', title: 'VIN码', width: 200 },
-        { field: 'wholesaleOrderCode', title: '整车补货订单', width: 200 },
-        { field: 'entVehorderCode', title: '企业客户整车订单', width: 200 },
+        { field: 'wholesaleOrderCode', title: '整车补货订单', width: 200, slots: { default: 'wholesaleOrderCode' } },
+        { field: 'entVehorderCode', title: '企业客户整车订单', width: 200, slots: { default: 'entVehorderCode' } },
         { field: 'deliveryOrderCode', title: '交车单', width: 200 },
-        { field: 'dealerName', title: '门店', width: 200 },
+        { field: 'dealerName', title: '门店', width: 200, slots: { default: 'dealerName' } },
         { field: 'createTime', title: '创建时间', width: 200 },
       ],
       tableExtraParams: {
