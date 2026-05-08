@@ -55,7 +55,7 @@
                     v-bind="selectOptions"
                   /> -->
                 </el-form-item>
-                <el-form-item label="订单状态" prop="orderStatus">
+                <el-form-item label="订单状态：" prop="orderStatus">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vr_order_status"

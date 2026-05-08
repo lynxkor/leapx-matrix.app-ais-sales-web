@@ -1,14 +1,5 @@
 <template>
   <div class="page-common m-vr-equity-category-list">
-    <el-form
-      :inline="true"
-      :model="form"
-      size="small"
-      label-position="right"
-      label-width="150px"
-      class="ais-search-form"
-    >
-    </el-form>
     <div class="ais-actions">
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
