@@ -222,10 +222,10 @@
                   {{ form.confirmStatusLabel }}
                 </el-form-item>
                 <el-form-item label="销售门店：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.saleDealerCode)">{{ form.saleDealerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="交付门店名称：" prop="deliveryDealerName">
-                  {{ form.deliveryDealerName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.deliveryDealerCode)">{{ form.deliveryDealerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="门店仓库名称：" prop="dealerWarehouseName">
                   {{ form.dealerWarehouseName }}
@@ -249,7 +249,7 @@
                   {{ form.orderMaterialsDesc }}
                 </el-form-item>
                     <el-form-item label="专项活动：" prop="prodScheduleActivityName">
-                  {{ form.prodScheduleActivityName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=' + form.prodScheduleActivityId)">{{ form.prodScheduleActivityName }}</el-button>
                 </el-form-item>
                   <!-- <el-form-item label="ERP发票号：" prop="erpInvoiceCode">
                   {{ form.erpInvoiceCode }}
@@ -261,12 +261,12 @@
                   {{ form.invoiceTime }}
                 </el-form-item>
 
-                <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
+                <!-- <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
                   {{ form.emergencyOrderTime }}
                 </el-form-item>
                  <el-form-item label="急单备注：" prop="emergencyOrderRemark">
                   {{ form.emergencyOrderRemark }}
-                </el-form-item>
+                </el-form-item> -->
                    <el-form-item label="确认说明：" prop="confirmRemark">
                   {{ form.confirmRemark }}
                 </el-form-item>
@@ -839,10 +839,12 @@
                 <el-table-column label="资金类型" width="180">
                     <template slot-scope="scope">
                       <span>
-                        {{ scope.row.fundTypeLabel }}
                         <!-- 判断条件：fundType 为 2010 (融资) 时拼接金融机构名称 -->
                         <span v-if="scope.row.fundType === '2010' || scope.row.fundType === 2010">
-                          - <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + scope.row.financialOrganizationId)">{{ scope.row.financialOrganizationName || '' }}</el-button>
+                        <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + scope.row.financialOrganizationId)">{{ scope.row.fundTypeLabel }}-{{ scope.row.financialOrganizationName || '' }}</el-button>
+                        </span>
+                        <span v-else>
+                          <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundAccount/edit?id=' + scope.row.id)">{{ scope.row.fundTypeLabel || '' }}</el-button>
                         </span>
                       </span>
                     </template>

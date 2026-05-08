@@ -305,7 +305,7 @@
                    {{ form.orderMaterialsDesc }}
                 </el-form-item>
                 <el-form-item label="专项活动：" prop="prodScheduleActivityName">
-                  {{ form.prodScheduleActivityName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=' + form.prodScheduleActivityId)">{{ form.prodScheduleActivityName }}</el-button>
                 </el-form-item>
                 <el-form-item label="税务发票号：" prop="taxInvoiceCode">
                   {{ form.taxInvoiceCode }}
@@ -950,10 +950,12 @@
                 <el-table-column label="资金类型" width="180">
                     <template slot-scope="scope">
                       <span>
-                        {{ scope.row.fundTypeLabel }}
                         <!-- 判断条件：fundType 为 2010 (融资) 时拼接金融机构名称 -->
                         <span v-if="scope.row.fundType === '2010' || scope.row.fundType === 2010">
-                          - <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + scope.row.financialOrganizationId)">{{ scope.row.financialOrganizationName || '' }}</el-button>
+                           <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + scope.row.financialOrganizationId)">{{ scope.row.fundTypeLabel }}-{{ scope.row.financialOrganizationName || '' }}</el-button>
+                        </span>
+                        <span v-else>
+                          <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/fund/dealerFundAccount/edit?id=' + scope.row.id)">{{ scope.row.fundTypeLabel || '' }}</el-button>
                         </span>
                       </span>
                     </template>
