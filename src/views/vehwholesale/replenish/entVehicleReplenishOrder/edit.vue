@@ -587,11 +587,11 @@ export default {
           field: 'materialsCode',
           title: '整车物料编码',
           width: '150',
-          formatter: (cellValue, row) => {
-            if (!row || !row.materialsId) return cellValue || '';
-            const url = '/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.materialsId;
-            return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.materialsCode || '') + '</a>';
-          }
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.materialsId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.materialsId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.materialsCode || '') + '</a>';
+          // }
         },
         {
           field: 'materialsDesc',
@@ -602,101 +602,101 @@ export default {
           field: 'modelName',
           title: '车型',
           width: '100',
-          formatter: (cellValue, row) => {
-            if (!row || !row.modelId) return cellValue || '';
-            const url = '/sales/datacenter/materials/vehicleModel/edit?id=' + row.modelId;
-            return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.modelName || '') + '</a>';
-          }
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.modelId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleModel/edit?id=' + row.modelId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.modelName || '') + '</a>';
+          // }
         },
         {
           field: 'drivingRangeName',
           title: '选配续航',
           width: '100',
-          formatter: (cellValue, row) => {
-            if (!row || !row.drivingRangeId) return cellValue || '';
-            const url = '/sales/datacenter/materials/vehicleDrivingRange/edit?id=' + row.drivingRangeId;
-            return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.drivingRangeName || '') + '</a>';
-          }
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.drivingRangeId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleDrivingRange/edit?id=' + row.drivingRangeId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.drivingRangeName || '') + '</a>';
+          // }
         },
         {
           field: 'rangePowerName',
           title: '选配动力',
           width: '100',
-          formatter: (cellValue, row) => {
-            if (!row || !row.rangePowerId) return cellValue || '';
-            const url = '/sales/datacenter/materials/vehicleRangePower/edit?id=' + row.rangePowerId;
-            return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.rangePowerName || '') + '</a>';
-          }
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.rangePowerId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleRangePower/edit?id=' + row.rangePowerId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.rangePowerName || '') + '</a>';
+          // }
         },
         {
           field: 'exteriorName',
           title: '外饰风格',
           width: '100',
-          formatter: (cellValue, row) => {
-            if (!row || !row.exteriorId) return cellValue || '';
-            const url = '/sales/datacenter/materials/vehicleExterior/edit?id=' + row.exteriorId;
-            return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.exteriorName || '') + '</a>';
-          }
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.exteriorId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleExterior/edit?id=' + row.exteriorId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.exteriorName || '') + '</a>';
+          // }
         },
         {
           field: 'interiorName',
           title: '内饰风格',
           width: '100',
-          formatter: (cellValue, row) => {
-            if (!row || !row.interiorId) return cellValue || '';
-            const url = '/sales/datacenter/materials/vehicleInterior/edit?id=' + row.interiorId;
-            return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.interiorName || '') + '</a>';
-          }
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.interiorId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleInterior/edit?id=' + row.interiorId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.interiorName || '') + '</a>';
+          // }
         },
         {
           field: 'wheelHubName',
           title: '选配轮毂',
           width: '100',
-          formatter: (cellValue, row) => {
-            if (!row || !row.wheelHubId) return cellValue || '';
-            const url = '/sales/datacenter/materials/vehicleWheelHub/edit?id=' + row.wheelHubId;
-            return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.wheelHubName || '') + '</a>';
-          }
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.wheelHubId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleWheelHub/edit?id=' + row.wheelHubId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.wheelHubName || '') + '</a>';
+          // }
         },
         {
           field: 'batteryCellName',
           title: '电池电芯',
           width: '100',
-          formatter: (cellValue, row) => {
-            if (!row || !row.batteryCellId) return cellValue || '';
-            const url = '/sales/datacenter/materials/vehicleBatteryCell/edit?id=' + row.batteryCellId;
-            return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.batteryCellName || '') + '</a>';
-          }
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.batteryCellId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleBatteryCell/edit?id=' + row.batteryCellId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.batteryCellName || '') + '</a>';
+          // }
         },
         {
           field: 'yearTypeName',
           title: '年款',
           width: '100',
-          formatter: (cellValue, row) => {
-            if (!row || !row.yearTypeId) return cellValue || '';
-            const url = '/sales/datacenter/materials/vehicleYearType/edit?id=' + row.yearTypeId;
-            return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.yearTypeName || '') + '</a>';
-          }
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.yearTypeId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleYearType/edit?id=' + row.yearTypeId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.yearTypeName || '') + '</a>';
+          // }
         },
         {
           field: 'roofName',
           title: '车顶风格',
           width: '100',
-          formatter: (cellValue, row) => {
-            if (!row || !row.roofId) return cellValue || '';
-            const url = '/sales/datacenter/materials/vehicleRoof/edit?id=' + row.roofId;
-            return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.roofName || '') + '</a>';
-          }
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.roofId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleRoof/edit?id=' + row.roofId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.roofName || '') + '</a>';
+          // }
         },
         {
           field: 'optionPackageName',
           title: '选装包',
           width: '80',
-          formatter: (cellValue, row) => {
-            if (!row || !row.optionPackageId) return cellValue || '';
-            const url = '/sales/datacenter/materials/vehicleOptionPackage/edit?id=' + row.optionPackageId;
-            return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.optionPackageName || '') + '</a>';
-          }
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.optionPackageId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleOptionPackage/edit?id=' + row.optionPackageId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.optionPackageName || '') + '</a>';
+          // }
         }
       ];
     }
