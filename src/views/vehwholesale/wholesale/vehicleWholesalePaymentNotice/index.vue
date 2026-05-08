@@ -82,7 +82,7 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canDelete" size="small" @click="handleBatchPost">发布</el-button>
+      <el-button v-permission="moduleKey+'-post'"  size="small" @click="handleBatchPost">发布</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div

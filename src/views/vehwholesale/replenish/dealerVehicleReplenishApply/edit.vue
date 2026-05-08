@@ -489,7 +489,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '整车补货单号：' + this.form.replenishApplyCode;
+      return '整车补货单号：';
     }
   },
   watch: {

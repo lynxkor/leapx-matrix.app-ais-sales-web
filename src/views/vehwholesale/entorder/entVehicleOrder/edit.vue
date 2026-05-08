@@ -18,11 +18,11 @@
           <span>{{ form.entOrderCode }}</span>
         </template>
         <template #extraButtons>
-          <el-button  size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
-          <el-button  v-if ="form.buttonControls && form.buttonControls.batchAllocateSubmitButton" size="small" @click="handlevinAllocateVehicle" >配车</el-button>
-          <el-button  v-if ="form.buttonControls && form.buttonControls.cancelAllocateButton" size="small" @click="handlebatchCancelAllocateSubmit" >取消配车</el-button>
-          <el-button  v-if ="form.buttonControls && form.buttonControls.submitSettleButton" size="small" @click="handlebatchSettleSubmit" >提交结算</el-button>
-          <el-button  v-if ="form.buttonControls && form.buttonControls.cancelSettleButton" size="small" @click="handlebatchCancelSettleSubmit" >取消结算</el-button>
+          <el-button  v-if = "perquerySapAccount" size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
+          <el-button  v-if ="perbatchAllocateSubmit && form.buttonControls && form.buttonControls.batchAllocateSubmitButton" size="small" @click="handlevinAllocateVehicle" >配车</el-button>
+          <el-button  v-if ="perbatchCancelAllocateSubmit && form.buttonControls && form.buttonControls.cancelAllocateButton" size="small" @click="handlebatchCancelAllocateSubmit" >取消配车</el-button>
+          <el-button  v-if ="perbatchSettleSubmit && form.buttonControls && form.buttonControls.submitSettleButton" size="small" @click="handlebatchSettleSubmit" >提交结算</el-button>
+          <el-button  v-if ="perbatchCancelSettleSubmit && form.buttonControls && form.buttonControls.cancelSettleButton" size="small" @click="handlebatchCancelSettleSubmit" >取消结算</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -1025,6 +1025,12 @@ export default {
       financialOrganizationList: [],
       warehouseName: '',
       accountData: [],
+      // 权限控制
+      perquerySapAccount: false,
+      perbatchAllocateSubmit: false,
+      perbatchCancelAllocateSubmit: false,
+      perbatchSettleSubmit: false,
+      perbatchCancelSettleSubmit: false,
       form: { ...form },
       originalForm: { ...form },
       detailsColumns: [
@@ -1040,7 +1046,17 @@ export default {
   mounted () {
     // this.fetchSettleFundTypeOptions();
   },
+  created () {
+    this.initPermissions();
+  },
   methods: {
+    initPermissions () {
+      this.perquerySapAccount = this.permissions.has(`${this.moduleKey}-querySapAccount`); // 查询账户余额
+      this.perbatchAllocateSubmit = this.permissions.has(`${this.moduleKey}-batchAllocateSubmit`); // 配车
+      this.perbatchCancelAllocateSubmit = this.permissions.has(`${this.moduleKey}-batchCancelAllocateSubmit`); // 取消配车
+      this.perbatchSettleSubmit = this.permissions.has(`${this.moduleKey}-batchSettleSubmit`);
+      this.perbatchCancelSettleSubmit = this.permissions.has(`${this.moduleKey}-batchCancelSettleSubmit`);
+    },
     openWindow (url) {
       window.open(url, '_blank');
     },
