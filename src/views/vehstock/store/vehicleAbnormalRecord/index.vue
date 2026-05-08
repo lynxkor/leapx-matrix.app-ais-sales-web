@@ -388,24 +388,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.m-vehicle-abnormal-record-list {}
-.ais-active {
-  margin-top: 20px;
-  // 修改 tabs 底部线条的样式
-  ::v-deep .el-tabs__nav-wrap::after {
-    height: 1px !important;
-    background-color: #E6E6E5 !important;
+.m-vehicle-vdc-inventory-ledger-list {
+  .ais-search-form {
+    border: 0;
   }
-  // 修改 tabs 默认字体样式
-  ::v-deep .el-tabs__item {
-    font-weight: normal !important; // 不加粗
-    color: #3B3E3B !important;     // 字体颜色
+  .ais-actions {
+    margin: 0px 0 16px 0;
   }
-
-  // 修改 tabs 激活状态下的字体样式（可选）
-  ::v-deep .el-tabs__item.is-active {
-    font-weight: normal !important; // 激活状态下也不加粗
-    color: #3B3E3B !important;     // 激活状态下的字体颜色
+  .ais-table-c {
+    height: calc(100% - 168px);
   }
 }
 </style>
