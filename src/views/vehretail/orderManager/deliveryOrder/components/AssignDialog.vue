@@ -13,8 +13,9 @@
       label-width="120px"
       label-position="left"
     >
-      <el-form-item label="订单交付顾问" prop="deliveryUserId">
+      <el-form-item label="订单交付顾问：" prop="deliveryUserId">
         <fetch-select
+          stlye="height: 32px;"
           v-model="form.deliveryUserId"
           clearable
           filterable
@@ -27,8 +28,8 @@
     </el-form>
     <slot name="footer">
       <div slot="footer">
-        <el-button @click="handleClose">取消</el-button>
-        <el-button type="primary" :loading="submitLoading" @click="handleSubmit">确定</el-button>
+        <el-button size="small" @click="handleClose">取消</el-button>
+        <el-button size="small" type="primary" :loading="submitLoading" @click="handleSubmit">确定</el-button>
       </div>
     </slot>
   </el-dialog>
@@ -145,4 +146,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+::v-deep .el-input__inner {
+  height: 32px;
+}
 </style>

@@ -283,12 +283,12 @@
             section-key="paymentRecords"
           >
             <template v-slot:operation_default="{ row }">
-              <el-button
+              <el-link
                 v-if="form.status === 4 && canDeletePaymentRecord(row) && isEditing"
-                type="text"
-                style="color: #67c23a;"
+                type="danger"
+                :underline="false"
                 @click="handleDeletePaymentRecord(row)"
-              >删除</el-button>
+              >删除</el-link>
             </template>
           </component-table>
           <!-- 预约记录 -->
