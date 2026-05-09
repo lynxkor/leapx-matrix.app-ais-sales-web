@@ -17,10 +17,10 @@
           <span class="status primary">{{ form.auditStatusLabel }}</span>
         </template>
         <template #extraButtons>
-          <el-button size="small" @click="handleSubmit" :disabled="!form.permission.submit">提交补货申请</el-button>
-          <el-button size="small" @click="handleAuditValidForDealer()" :disabled="!form.permission.dealerAudit">门店审核</el-button>
-          <el-button size="small" @click="handleAuditValidForFactory()" :disabled="!form.permission.factoryAudit">厂端审核</el-button>
-          <el-button size="small" @click="handleUnused" :disabled="!form.permission.cancel">作废</el-button>
+          <el-button size="small" @click="handleSubmit" v-if ="form.permission && form.permission.submit">提交补货申请</el-button>
+          <el-button size="small" @click="handleAuditValidForDealer()" v-if="form.permission && form.permission.dealerAudit">门店审核</el-button>
+          <el-button size="small" @click="handleAuditValidForFactory()" v-if="form.permission && form.permission.factoryAudit">厂端审核</el-button>
+          <el-button size="small" @click="handleUnused" v-if="form.permission && form.permission.cancel">作废</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -304,7 +304,20 @@
                   :show-delete="form.permission.edit && _id"
                   @delete-row="handleDeleteDetailRow"
                   @save-row="handleSaveDetailRow"
-                />
+                >
+                  <template #replenishApplyDetailCode="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=' + row.replenishApplyDetailCode)">{{ row.replenishApplyDetailCode }}</el-button>
+                  </template>
+                  <template #seriesName="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId)">{{ row.seriesName }}</el-button>
+                  </template>
+                  <template #modelName="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + row.modelId)">{{ row.modelName }}</el-button>
+                  </template>
+                  <template #materialsCode="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.materialsCode)">{{ row.materialsCode }}</el-button>
+                  </template>
+                </component-table>
               </div>
             </div>
           </section>
@@ -317,7 +330,12 @@
                 <component-table
                   :tableData="form.dealerFundAccounts"
                   :columns="columns"
-                />
+                >
+                  <template #fundTypeDisplay="{ row }">
+                    <el-button v-if="row.fundType === '2010' || row.fundType === 2010" class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.financialOrganizationId)">{{ row.fundTypeDisplay }}</el-button>
+                    <el-button v-else class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/fund/dealerFundAccount/edit?id=' + row.id)">{{ row.fundTypeDisplay }}</el-button>
+                  </template>
+                </component-table>
               </div>
             </div>
           </section>
@@ -330,7 +348,41 @@
                 <component-table
                   :tableData="form.wholesaleOrders"
                   :columns="wholesaleOrdersColumns"
-                />
+                >
+                  <template #wholesaleOrderCode="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.wholesaleOrderCode)">{{ row.wholesaleOrderCode }}</el-button>
+                  </template>
+                  <template #saleDealerName="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.saleDealerCode)">{{ row.saleDealerName }}</el-button>
+                  </template>
+                  <template #deliveryDealerName="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.deliveryDealerCode)">{{ row.deliveryDealerName }}</el-button>
+                  </template>
+                  <template #modelName="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + row.modelId)">{{ row.modelName }}</el-button>
+                  </template>
+                  <template #yearTypeName="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleYearType/edit?id=' + row.yearTypeId)">{{ row.yearTypeName }}</el-button>
+                  </template>
+                  <template #financialOrganizationName="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.financialOrganizationId)">{{ row.financialOrganizationName }}</el-button>
+                  </template>
+                  <template #exteriorName="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleExterior/edit?id=' + row.exteriorId)">{{ row.exteriorName }}</el-button>
+                  </template>
+                  <template #wheelHubName="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleWheelHub/edit?id=' + row.wheelHubId)">{{ row.wheelHubName }}</el-button>
+                  </template>
+                  <template #rangePowerName="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleRangePower/edit?id=' + row.rangePowerId)">{{ row.rangePowerName }}</el-button>
+                  </template>
+                  <template #materialsDesc="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.materialsCode)">{{ row.materialsDesc }}</el-button>
+                  </template>
+                  <template #prodScheduleActivityName="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=' + row.prodScheduleActivityId)">{{ row.prodScheduleActivityName }}</el-button>
+                  </template>
+                </component-table>
               </div>
             </div>
           </section>
@@ -437,7 +489,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '整车补货单号：' + this.form.replenishApplyCode;
+      return '整车补货单号：';
     }
   },
   watch: {
@@ -477,7 +529,7 @@ export default {
       originalForm: { ...form },
       tableData: [],
       columns: [
-        { field: 'fundTypeDisplay', title: '资金类型', width: '12%' },
+        { field: 'fundTypeDisplay', title: '资金类型', width: '12%', slots: { default: 'fundTypeDisplay' } },
         { field: 'availableBalance', title: '可用余额', width: '12%' },
         { field: 'frozenBalance', title: '冻结资金', width: '12%' },
         { field: 'availableCreditAmount', title: '剩余可用额度', width: '12%' },
@@ -487,41 +539,41 @@ export default {
         { field: 'expireTime', title: '额度失效日期', width: '14%' },
       ],
       wholesaleOrdersColumns: [
-        { field: 'wholesaleOrderCode', title: '批售订单号', width: '240' },
+        { field: 'wholesaleOrderCode', title: '批售订单号', width: '240', slots: { default: 'wholesaleOrderCode' } },
         { field: 'vin', title: '配车VIN码', width: '180' },
         { field: 'wholesalePrice', title: '批售价', width: '120' },
         { field: 'confirmTime', title: '确认时间', width: '180' },
         { field: 'noAutoConfirmReason', title: '未自动确认原因', width: '150' },
         { field: 'confirmRemark', title: '确认说明', width: '150' },
-        { field: 'prodScheduleActivityName', title: '专项活动', width: '120' },
+        { field: 'prodScheduleActivityName', title: '专项活动', width: '120', slots: { default: 'prodScheduleActivityName' } },
         { field: 'confirmStatusLabel', title: '确认状态', width: '120' },
         { field: 'orderStatusLabel', title: '订单状态', width: '120' },
         { field: 'orderTime', title: '订单时间', width: '180' },
         { field: 'allocateTime', title: '配车时间', width: '180' },
         { field: 'settleTime', title: '结算时间', width: '180' },
-        { field: 'saleDealerName', title: '销售门店', width: '150' },
-        { field: 'deliveryDealerName', title: '交付门店', width: '150' },
+        { field: 'saleDealerName', title: '销售门店', width: '150', slots: { default: 'saleDealerName' } },
+        { field: 'deliveryDealerName', title: '交付门店', width: '150', slots: { default: 'deliveryDealerName' } },
         { field: 'applyReason', title: '申请原因', width: '150' },
-        { field: 'modelName', title: '车型', width: '120' },
-        { field: 'yearTypeName', title: '年款', width: '100' },
-        { field: 'materialsDesc', title: '物料描述（L）', width: '350' },
+        { field: 'modelName', title: '车型', width: '120', slots: { default: 'modelName' } },
+        { field: 'yearTypeName', title: '年款', width: '100', slots: { default: 'yearTypeName' } },
+        { field: 'materialsDesc', title: '物料描述（L）', width: '350', slots: { default: 'materialsDesc' } },
         { field: '', title: '选配续航（L）', width: '150' },
-        { field: 'exteriorName', title: '外饰风格（L)', width: '120' },
-        { field: 'wheelHubName', title: '选配轮毂（L）', width: '120' },
-        { field: '', title: '选配动力（L）', width: '120' },
+        { field: 'exteriorName', title: '外饰风格（L)', width: '120', slots: { default: 'exteriorName' } },
+        { field: 'wheelHubName', title: '选配轮毂（L）', width: '120', slots: { default: 'wheelHubName' } },
+        { field: 'rangePowerName', title: '选配动力（L）', width: '120', slots: { default: 'rangePowerName' } },
         { field: 'remark', title: '描述', width: '150' },
         { field: 'orderCategoryLabel', title: '订单分类', width: '120' },
         { field: 'wholesaleWayLabel', title: '批售方式', width: '120' },
         { field: 'settleFundTypeLabel', title: '结算资金类型', width: '150' },
-        { field: 'financialOrganizationName', title: '金融机构', width: '150' },
+        { field: 'financialOrganizationName', title: '金融机构', width: '150', slots: { default: 'financialOrganizationName' } },
         { field: 'createTime', title: '创建时间', width: '180' },
         { field: 'vehicleReturnFlagLabel', title: '退车标识', width: '120' }
       ],
       detailsColumns: [
-        { field: 'replenishApplyDetailCode', title: '整车补货明细单号', width: '280' },
-        { field: 'seriesName', title: '车系', width: '120' },
-        { field: 'modelName', title: '车型', width: '200' },
-        { field: 'materialsCode', title: '物料编码', width: '250' },
+        { field: 'replenishApplyDetailCode', title: '整车补货明细单号', width: '280', slots: { default: 'replenishApplyDetailCode' } },
+        { field: 'seriesName', title: '车系', width: '120', slots: { default: 'seriesName' } },
+        { field: 'modelName', title: '车型', width: '200', slots: { default: 'modelName' } },
+        { field: 'materialsCode', title: '物料编码', width: '250', slots: { default: 'materialsCode' } },
         { field: 'materialsDesc', title: '物料描述（L）', width: '350' },
         { field: 'applyQty', title: '申请数量', width: '120' },
         { field: 'invoiceDiscountTypeLabel', title: '开票类型', width: '120' },

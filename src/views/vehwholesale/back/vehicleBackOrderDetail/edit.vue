@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="整车退车明细"
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -14,14 +14,14 @@
         :showEditBtn="form.processStatus === 10 || form.processStatus === 20"
       >
         <template #status>
-          {{ form.returnOrderCode }}
+          <!-- {{ form.returnOrderCode }} -->
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button :disabled="!form.buttonControl.confirmOutbound" size="small"  @click="handelConfirmOutbound">确认出库</el-button>
-          <el-button :disabled="!form.buttonControl.confirmInbound" size="small"  @click="handelConfirmVdcInbound">确认入库</el-button>
-          <el-button :disabled="!form.buttonControl.delete" size="small"  @click="handleDel">删除</el-button>
+          <el-button v-if="perconfirmOutbound && form.buttonControl && form.buttonControl.confirmOutbound" size="small"  @click="handelConfirmOutbound">确认出库</el-button>
+          <el-button v-if="perconfirmInbound && form.buttonControl && form.buttonControl.confirmInbound" size="small"  @click="handelConfirmVdcInbound">确认入库</el-button>
+          <el-button v-if="canDelete && form.buttonControl && form.buttonControl.delete" size="small"  @click="handleDel">删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -429,7 +429,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '主键：' + this.form.returnOrderCode;
     }
   },
   watch: {
@@ -455,6 +455,9 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       emptyText: '若要启用此内容，请创建记录',
+      // 权限配置
+      perconfirmOutbound: false,
+      perconfirmInbound: false,
       tableData: [
       ],
       rules: {
@@ -473,6 +476,10 @@ export default {
   mounted () {
   },
   methods: {
+    initPermissions () {
+      this.perconfirmOutbound = this.permissions.has(`${this.moduleKey}-confirmOutbound`); // 出库
+      this.perconfirmInbound = this.permissions.has(`${this.moduleKey}-confirmInbound`); // 入库
+    },
     openWindow (url) {
       window.open(url, '_blank');
     },

@@ -20,20 +20,16 @@
           <el-button size="small">按钮2</el-button> -->
         </template>
         <el-main>
-          <section class="common-section">
-            <div class="common-section-body">
               <!-- 订单基本信息 -->
-               <div class="form-details">
-                <div>
-                  订单状态：{{ form.poStatusLabel }}
-                </div>
-                <el-divider direction="vertical"></el-divider>
-                <div>
-                  创建时间：{{ form.createTime }}
-                </div>
-               </div>
+          <div class="form-details">
+            <div>
+              订单状态：{{ form.poStatusLabel }}
             </div>
-          </section>
+            <el-divider direction="vertical"></el-divider>
+            <div>
+              创建时间：{{ form.createTime }}
+            </div>
+          </div>
 
           <section class="common-section">
             <div class="common-section-header">
@@ -466,5 +462,6 @@ export default {
   align-items: center;
   font-size: 12px;
   color: #6C6E6C;
+  margin-top:8px;
 }
 </style>

@@ -6,10 +6,10 @@
     width="40%"
     @close="close"
   >
-    <el-form ref="dialogForm" :model="dialogForm" :rules="type === 'sales' ? rules : {}" label-position="left">
+    <el-form ref="dialogForm" :model="dialogForm" :rules="type === 'sales' ? rules : {}" label-width="100px">
       <el-row v-show="type === 'sales'">
         <el-form-item
-          label="变更原因"
+          label="变更原因:"
           prop="changeReason"
         >
           <fetch-select
@@ -27,7 +27,7 @@
       </el-row>
       <el-row v-show="type === 'sales'">
         <el-form-item
-          label="变更说明"
+          label="变更说明:"
           prop="saleStoreChangeRemark"
           label-position="left"
           :rules="isRemarkRequired ? rules.saleStoreChangeRemark : []"
@@ -36,7 +36,7 @@
             v-model="dialogForm.saleStoreChangeRemark"
             :rows="4"
             maxlength="500"
-            placeholder="变更说明"
+            placeholder="变更说明:"
             show-word-limit
             type="textarea"
             style="width: 60%"
@@ -45,7 +45,7 @@
       </el-row>
       <el-row>
         <el-form-item
-          label="更换门店"
+          label="更换门店:"
           prop="storeCode"
         >
           <fetch-select
@@ -74,8 +74,8 @@
       </el-row>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="close"> 取消 </el-button>
-      <el-button type="primary" @click="changeDealer"> 确定 </el-button>
+      <el-button size="small" @click="close"> 取消 </el-button>
+      <el-button size="small" type="primary" @click="changeDealer"> 确定 </el-button>
     </div>
   </el-dialog>
 </template>
@@ -276,4 +276,8 @@ export default {
     color: #909399;
   }
 }
+::v-deep .el-input__inner {
+    height: 32px;
+    line-height: 32px;
+  }
 </style>

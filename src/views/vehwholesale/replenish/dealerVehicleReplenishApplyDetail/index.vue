@@ -227,8 +227,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'replenishApplyCode',
-            label: '整车补货单号',
+            props: 'replenishApplyDetailCode',
+            label: '整车补货明细单号',
             visible: true,
             width: 200,
             fixed: 'left',
@@ -245,7 +245,7 @@ export default {
             }]
           },
           { props: 'auditStatusLabel', label: '审核状态', visible: true, width: 200 },
-          { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
+          { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.saleDealerCode); }, type: 'primary' }] },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 200 },
           {
@@ -300,7 +300,7 @@ export default {
             }]
           },
           { props: 'applyQty', label: '申请数量', visible: true, width: 200 },
-          { props: 'replenishApplyDetailCode', label: '整车补货明细单号', visible: true, width: 200 },
+          { props: 'replenishApplyCode', label: '整车补货单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApply/edit?id=' + row.replenishApplyCode); }, type: 'primary' }] },
           {
             props: 'materialsCode',
             label: '物料编码',

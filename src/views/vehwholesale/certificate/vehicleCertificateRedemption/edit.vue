@@ -5,22 +5,22 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="车辆合格证赎回："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.certificateStatus === 10 && form.creditSettleStatus === 10"
+        :showEditBtn="form.buttonControl && form.buttonControl.edit"
       >
         <template #status>
           <span>{{ form.redemptionCode }}</span>
         </template>
         <template #extraButtons>
-          <el-button :disabled="!form.buttonControl.submitRedeem"  size="small" @click="handleSubmit">提交赎回</el-button>
-          <el-button :disabled="!form.buttonControl.submitRedeemAgain" size="small" @click="handleSubmitAgain">重新提交赎回</el-button>
-          <el-button :disabled="!form.buttonControl.confirmReceive" size="small" @click="handleconfirmSign">签收合格证</el-button>
-          <el-button :disabled="!form.buttonControl.delete" size="small" @click="handleDel">删除</el-button>
+          <el-button v-if = "persubmit && form.buttonControl && form.buttonControl.submitRedeem"  size="small" @click="handleSubmit">提交赎回</el-button>
+          <el-button v-if = "persubmit && form.buttonControl && form.buttonControl.submitRedeemAgain" size="small" @click="handleSubmitAgain">重新提交赎回</el-button>
+          <el-button v-if = "perconfirmReceive && form.buttonControl && form.buttonControl.confirmReceive" size="small" @click="handleconfirmSign">签收合格证</el-button>
+          <el-button v-if = "canDelete && form.buttonControl && form.buttonControl.delete" size="small" @click="handleDel">删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -131,12 +131,12 @@
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="整车批售订单号：" prop="wholesaleOrderCode">
                   <el-tooltip :disabled="!form.wholesaleOrderCode" :content="form.wholesaleOrderCode" placement="top">
-                    <span>{{ form.wholesaleOrderCode }}</span>
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + form.wholesaleOrderCode)">{{ form.wholesaleOrderCode }}</el-button>
                   </el-tooltip>
                 </el-form-item>
                 <el-form-item label="企业客户整车订单号：" prop="entVehicleOrderCode">
                   <el-tooltip :disabled="!form.entVehicleOrderCode" :content="form.entVehicleOrderCode" placement="top">
-                    <span>{{ form.entVehicleOrderCode }}</span>
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + form.entVehicleOrderCode)">{{ form.entVehicleOrderCode }}</el-button>
                   </el-tooltip>
                 </el-form-item>
                   <el-form-item label="母公司名称：" prop="dealerCompanyName">
@@ -149,7 +149,7 @@
                   {{ form.vin }}
                 </el-form-item>
                     <el-form-item label="整车物料：" prop="materialsCode">
-                  {{ form.materialsCode }}
+                      <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + form.materialsCode)">{{ form.materialsCode }}</el-button>
                 </el-form-item>
                     <el-form-item label="车系名称：" prop="seriesName">
                       <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.seriesId)">{{ form.seriesName }}</el-button>
@@ -532,6 +532,8 @@ const defaultForm = {
   seriesName: '',
   modelId: '',
   modelName: '',
+  materialsId: '',
+  materialsCode: '',
   settleFundType: '',
   vehiclePrice: '',
   salePrice: '',
@@ -636,6 +638,10 @@ export default {
         value: 'code',
         children: 'child'
       },
+      // 权限控制
+      persubmit: false,
+      perconfirmReceive: false,
+
       areaOptions: JSON.parse(localStorage.areaTree),
       tableData: [
       ],
@@ -678,6 +684,10 @@ export default {
   mounted () {
   },
   methods: {
+    initPermissions () {
+      this.persubmit = this.permissions.has(`${this.moduleKey}-submit`);
+      this.perconfirmReceive = this.permissions.has(`${this.moduleKey}-confirmReceive`);
+    },
     openWindow (url) {
       window.open(url, '_blank');
     },
@@ -687,6 +697,7 @@ export default {
       this.form.saleDealerCode = row.saleDealerCode || '';
       this.form.saleDealerName = row.saleDealerName || '';
       this.form.vin = row.vin || '';
+      this.form.materialsId = row.materialsId || '';
       this.form.materialsCode = row.orderMaterialsCode || '';
       this.form.modelId = row.modelId || '';
       this.form.modelName = row.modelName || '';
@@ -724,6 +735,7 @@ export default {
       this.form.saleDealerCode = row.saleDealerCode || '';
       this.form.saleDealerName = row.saleDealerName || '';
       this.form.vin = row.vin || '';
+      this.form.materialsId = row.materialsId || '';
       this.form.materialsCode = row.orderMaterialsCode || '';
       this.form.modelId = row.modelId || '';
       this.form.modelName = row.modelName || '';

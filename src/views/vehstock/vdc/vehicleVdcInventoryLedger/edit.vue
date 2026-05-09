@@ -331,7 +331,7 @@
 </template>
 
 <script>
-import { getDetail, batchEdit } from '@/api/vehstock/vdc/vehicleVdcInventoryLedger/index';
+import { getDetail, batchEdit, getByVin } from '@/api/vehstock/vdc/vehicleVdcInventoryLedger/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -435,6 +435,9 @@ export default {
     _id () {
       return this.id || this.$route.query.id || this.form.id;
     },
+    _vin () {
+      return this.$route.query.vin || this.form.vin;
+    },
     title () {
       return 'VIN：' + this.form.vin;
     },
@@ -499,8 +502,12 @@ export default {
     },
     detailRequest () {
       const id = this._id;
+      const vin = this._vin;
       if (id) {
         return getDetail(id);
+      }
+      if (vin) {
+        return getByVin(vin);
       }
     },
     async submitRequest () {

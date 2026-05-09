@@ -315,6 +315,9 @@
                 </el-form-item>
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+                  <el-form-item label="整车补货明细单号：" prop="replenishApplyDetailCode">
+                  {{ form.replenishApplyDetailCode }}
+                </el-form-item>
                 <el-form-item label="整车补货单号：" prop="replenishApplyCode">
                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApply/edit?id=' + form.replenishApplyCode)">{{ form.replenishApplyCode }}</el-button>
                 </el-form-item>
@@ -353,9 +356,6 @@
                 </el-form-item>
                 <el-form-item label="申请数量：" prop="applyQty">
                   {{ form.applyQty }}
-                </el-form-item>
-                <el-form-item label="整车补货明细单号：" prop="replenishApplyDetailCode">
-                  {{ form.replenishApplyDetailCode }}
                 </el-form-item>
                 <el-form-item label="物料编码：" prop="materialsCode">
                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehiclematerials/edit?id=' + form.materialsCode)">{{ form.materialsCode }}</el-button>
@@ -481,7 +481,7 @@ export default {
     return {
       pageTitle: '整车门店补货申请明细',
       pageType: 'edit',
-      title: '整车补货单号：' + form.replenishApplyCode,
+      title: '整车补货明细单号：' + form.replenishApplyCode,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-dealerVehicleReplenishApplyDetail',
       loading: false,

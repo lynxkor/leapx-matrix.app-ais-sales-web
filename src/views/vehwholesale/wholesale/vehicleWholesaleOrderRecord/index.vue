@@ -67,7 +67,7 @@
             remote
             reserve-keyword
             labelKey="organizationName"
-            valueKey="organizationCode"
+            valueKey="id"
             v-model="form.financialOrganizationIds"
             placeholder="请选择"
             clearable
@@ -86,14 +86,14 @@
               filterable
             />
         </el-form-item>
-        <el-form-item label="母公司编码">
+        <el-form-item label="母公司">
           <fetch-select
               :remote-method="getParentCompany"
               remote
               v-model="form.dealerCompanyCodes"
               placeholder="请选择母公司名称"
               labelKey="companyName"
-              valueKey="companyName"
+              valueKey="companyCode"
               clearable
               filterable
               multiple
@@ -239,14 +239,14 @@ export default {
           { props: 'cancelAllocateVehicleTypeLabel', label: '取消配车类型', visible: true, width: 200 },
           { props: 'cancelSettleTime', label: '取消结算时间', visible: true, width: 200 },
           { props: 'cancelSettleTypeLabel', label: '取消结算说明', visible: true, width: 200 },
-          { props: 'saleDealerName', label: '销售门店', visible: true, width: 200 },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
-          { props: 'cooperateType', label: '合作类型', visible: true, width: 200 },
+          { props: 'saleDealerName', label: '销售门店', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open('/partner/channelManagement/shopDetail?dealerCode=' + row.saleDealerCode, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open('/partner/channelManagement/parentCompany/edit?companyCode=' + row.dealerCompanyCode, '_blank'); }, type: 'primary' }] },
+          { props: 'cooperateTypeLabel', label: '合作类型', visible: true, width: 200 },
           { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 200 },
-          { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 200 },
-          { props: 'orderMaterialsCode', label: '订单物料编码', visible: true, width: 200 },
-          { props: 'materialsCode', label: '配车物料码', visible: true, width: 200 },
-          { props: 'wholesaleOrderCode', label: '批售订单号', visible: true, width: 200 },
+          { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.financialOrganizationId, '_blank'); }, type: 'primary' }] },
+          { props: 'orderMaterialsCode', label: '订单物料编码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open('/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.orderMaterialsCode, '_blank'); }, type: 'primary' }] },
+          { props: 'materialsCode', label: '配车物料码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open('/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.materialsCode, '_blank'); }, type: 'primary' }] },
+          { props: 'wholesaleOrderCode', label: '批售订单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.wholesaleOrderCode, '_blank'); }, type: 'primary' }] },
           { props: 'retailOrderCode', label: '零售订单号', visible: true, width: 200 },
           { props: 'settleTime', label: '结算时间', visible: true, width: 200 },
           { props: 'allocateTime', label: '配车时间', visible: true, width: 200 },

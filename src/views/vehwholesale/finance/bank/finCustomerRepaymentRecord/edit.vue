@@ -167,7 +167,7 @@ export default {
     return {
       pageTitle: '客户还款记录',
       pageType: 'edit',
-      title: '编码：' + form.code,
+      title: '客户还款记录编码：' + form.code,
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-finCustomerRepaymentRecord',
       loading: false,

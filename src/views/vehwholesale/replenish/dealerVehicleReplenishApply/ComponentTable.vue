@@ -16,7 +16,10 @@
       :key="column.field || column.title"
       v-bind="column"
     >
-      <template v-if="column.field === 'applyQty'" #default="{ row }">
+      <template v-if="column.slots?.default" #default="{ row }">
+        <slot :name="column.slots.default" :row="row" />
+      </template>
+      <template v-else-if="column.field === 'applyQty'" #default="{ row }">
         <el-input-number
           v-if="editingRowId === row._uid"
           :step="1"

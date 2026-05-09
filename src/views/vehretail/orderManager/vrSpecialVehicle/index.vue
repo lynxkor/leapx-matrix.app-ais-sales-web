@@ -200,9 +200,9 @@ export default {
               click: (rowIndex, row) => {
                 if (row.vinId) {
                   this.navigateToRoute({
-                    path: '/sales/datacenter/vehicle/vehicleProfile/edit',
+                    path: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
                     query: {
-                      id: row.vinId
+                      vin: row.vin
                     }
                   }, true);
                 }

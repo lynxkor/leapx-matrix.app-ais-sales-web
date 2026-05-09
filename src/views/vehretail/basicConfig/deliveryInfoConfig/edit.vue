@@ -41,7 +41,7 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="状态">
+                <el-form-item label="状态：">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="StatusEnum"

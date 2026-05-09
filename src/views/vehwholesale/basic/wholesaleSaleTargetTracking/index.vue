@@ -253,12 +253,11 @@ export default {
           },
           { props: 'year', label: '年', visible: true, width: 200 },
           { props: 'month', label: '月', visible: true, width: 200 },
-          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 200 },
+          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + row.dealerParentOrgId); }, type: 'primary' }] },
           { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 200 },
-          { props: 'dealerCode', label: '门店编码', visible: true, width: 200 },
           {
-            props: 'dealerName',
-            label: '门店名称',
+            props: 'dealerCode',
+            label: '门店编码',
             visible: true,
             width: 200,
             buttons: [{
@@ -267,6 +266,12 @@ export default {
               },
               type: 'primary'
             }]
+          },
+          {
+            props: 'dealerName',
+            label: '门店名称',
+            visible: true,
+            width: 200,
           },
           { props: 'regionName', label: '大区', visible: true, width: 200 },
           { props: 'provinceName', label: '省份', visible: true, width: 200 },

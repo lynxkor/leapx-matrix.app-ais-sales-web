@@ -11,8 +11,16 @@
         :key="field.key"
         :label="field.label + '：'"
         :prop="field.key"
+        :class="field.class"
       >
-        {{ formData[field.key] || '' }}
+        <a v-if="field.download" class="el-link el-link--primary" :href="formData[field.key]" target="_blank" download>{{ formData[field.key] }}</a>
+        <el-link
+          v-else-if="field.link"
+          type="primary"
+          :href="getLinkUrl(field)"
+          :target="field.target || '_blank'"
+        >{{ formData[field.key] || '' }}</el-link>
+        <span v-else>{{ formData[field.key] || '' }}</span>
       </el-form-item>
     </el-form>
     </div>
@@ -53,6 +61,22 @@ export default {
     sectionKey: {
       type: String,
       default: ''
+    }
+  },
+  methods: {
+    getLinkUrl (field) {
+      if (!field.link) return '';
+      // paramKey: 指定 formData 中的字段作为参数值
+      // paramName: 指定 URL 参数名（默认为 id）
+      let url = field.link;
+      if (field.paramKey) {
+        const paramName = field.paramName || 'id';
+        const paramValue = this.formData[field.paramKey];
+        if (paramValue) {
+          url += `?${paramName}=${paramValue}`;
+        }
+      }
+      return url;
     }
   }
 };

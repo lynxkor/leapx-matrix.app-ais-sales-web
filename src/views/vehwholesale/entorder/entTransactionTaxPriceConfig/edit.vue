@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="关联交易计算比例："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -13,7 +13,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-            <span>{{ form.code }}</span>
+            <!-- <span>{{ form.code }}</span> -->
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
         </template>
@@ -184,7 +184,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '主键：' + this.form.code;
     }
   },
   watch: {

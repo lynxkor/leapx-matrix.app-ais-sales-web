@@ -13,7 +13,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          <span>{{ form.code }}</span>
+          <!-- <span>{{ form.code }}</span> -->
         </template>
         <template #extraButtons>
         </template>
@@ -80,12 +80,12 @@
                 <el-form-item label="还款车辆记录编号：" prop="vehicleRepaymentRecordCode">
                   {{ form.vehicleRepaymentRecordCode }}
                 </el-form-item>
-                <el-form-item label="经销商编码：" prop="dealerCompanyCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
-                </el-form-item>
                 <el-form-item label="经销商名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
                 </el-form-item>
+                <!-- <el-form-item label="经销商名称：" prop="dealerCompanyName">
+                  {{ form.dealerCompanyName }}
+                </el-form-item> -->
               </el-form>
             </div>
           </section>
@@ -158,6 +158,9 @@ export default {
   computed: {
     _id () {
       return this.id || this.$route.query.id || this.form.id;
+    },
+    title () {
+      return '银行车辆还款记录：' + (this.form.code || '');
     }
   },
   watch: {
@@ -175,7 +178,6 @@ export default {
     return {
       pageTitle: '银行还款车辆记录',
       pageType: 'edit',
-      title: '物料编码：' + form.materialsCode,
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-finBankVehicleRepaymentRecord',
       loading: false,
