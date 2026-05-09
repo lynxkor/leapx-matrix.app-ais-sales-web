@@ -32,6 +32,7 @@
           <el-button v-if="canUploadInvoice && form.status === 5" size="small" @click="handleUploadInvoice">上传发票</el-button>
           <el-button v-if="canCancelPayment && form.status === 5" size="small" @click="handlePaymentWithdraw">收款撤回</el-button>
           <el-button v-if="canCancelDelivery && form.status === 7" size="small" @click="handleDeliveryWithdraw">交车撤回</el-button>
+          <el-button v-if="canPushDeliveryActive && form.deliveryConfirmStatus !== 99" size="small" @click="handleDeliveryActive">推送激活信息</el-button>
         </template>
         <el-main>
           <!--  -->
@@ -568,6 +569,7 @@ export default {
       canUploadInvoice: false, // 上传发票
       canCancelPayment: false, // 收款撤回
       canCancelDelivery: false, // 交车撤回
+      canPushDeliveryActive: false, // 推送激活信息
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
@@ -777,6 +779,7 @@ export default {
       this.canUploadInvoice = this.permissions.has(`${this.moduleKey}-uploadInvoice`);
       this.canCancelPayment = this.permissions.has(`${this.moduleKey}-cancelPayment`);
       this.canCancelDelivery = this.permissions.has(`${this.moduleKey}-cancelDelivery`);
+      this.canPushDeliveryActive = this.permissions.has(`${this.moduleKey}-pushDeliveryActive`);
     },
     handleSaleUserChange (val, row, name) {
       this.form[name + 'Name'] = row.username;
