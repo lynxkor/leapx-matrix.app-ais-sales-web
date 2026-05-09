@@ -118,14 +118,14 @@
                     :picker-options="pickerOptions"
                     type="datetime"
                     value-format="yyyy-MM-dd HH:mm:ss"
-                    :disabled="isEditing===true"
+                    disabled
                   />
                 </el-form-item>
                   <el-form-item label="同步结果：" prop="syncResult">
                   <el-input
                     placeholder="请输入"
                     v-model="form.syncResult"
-                    :disabled="isEditing===true"
+                    disabled
                     clearable
                   />
                 </el-form-item>

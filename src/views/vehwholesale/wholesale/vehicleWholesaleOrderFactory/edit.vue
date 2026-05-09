@@ -18,7 +18,7 @@
         </template>
         <template #extraButtons >
           <el-button  v-if ="perquerySapAccount" size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
-          <el-button  v-if ="form.buttonControl && form.buttonControl.confirmManualButton" size="small" @click="handleCheckConfirm" >审核确认</el-button>
+          <el-button  v-if ="perbatchConfirm && form.buttonControl && form.buttonControl.confirmManualButton" size="small" @click="handleCheckConfirm" >审核确认</el-button>
           <el-button  v-if ="perbatchSetAutoAllocate && form.buttonControl && form.buttonControl.autoAllocateVehicle" size="small" @click="handleaAutoVehicleAllocation">自动配车</el-button>
           <el-button  v-if ="pervinAllocateVehicle && form.buttonControl && form.buttonControl.manualAllocateVehicle" size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
           <el-button  v-if ="perbatchCancelAllocate && form.buttonControl && form.buttonControl.cancelAllocateVehicle" size="small" @click="handleCancelAllocateVehicle">取消配车</el-button>
@@ -1200,7 +1200,7 @@ export default {
       fundTypeList: [],
       // 权限控制
       perquerySapAccount: false,
-      // perquerySapAccount : false,
+      perbatchConfirm: false,
       perbatchSetAutoAllocate: false,
       pervinAllocateVehicle: false,
       perbatchSettleSubmit: false,
@@ -1272,7 +1272,7 @@ export default {
   methods: {
     initPermissions () {
       this.perquerySapAccount = this.permissions.has(`${this.moduleKey}-querySapAccount`); // 查询整车账户余额
-      // this.perquerySapAccount = this.permissions.has(`${this.moduleKey}-querySapAccount`); // 审核确认 to do
+      this.perbatchConfirm = this.permissions.has(`${this.moduleKey}-batchConfirm`); // 审核确认 to do
       this.perbatchSetAutoAllocate = this.permissions.has(`${this.moduleKey}-batchSetAutoAllocate`); // 自动配车
       this.pervinAllocateVehicle = this.permissions.has(`${this.moduleKey}-vinAllocateVehicle`); // 手工配车
       this.perbatchSettleSubmit = this.permissions.has(`${this.moduleKey}-batchSettleSubmit`); // 提交结算
