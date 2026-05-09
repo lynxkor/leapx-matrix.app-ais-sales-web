@@ -52,10 +52,10 @@
                   {{ form.cancelSettleTypeLabel }}
                 </el-form-item>
                 <el-form-item label="销售门店：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.saleDealerCode)">{{ form.saleDealerName }}</el-button>
                 </el-form-item>
                  <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
                 </el-form-item>
                 <el-form-item label="合作类型：" prop="cooperateTypeLabel">
                   {{ form.cooperateTypeLabel }}
@@ -64,16 +64,16 @@
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationName">
-                  {{ form.financialOrganizationName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.financialOrganizationId)">{{ form.financialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="订单物料编码：" prop="orderMaterialsCode">
-                  {{ form.orderMaterialsCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + form.orderMaterialsCode)">{{ form.orderMaterialsCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="配车物料码：" prop="materialsCode">
-                  {{ form.materialsCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + form.materialsCode)">{{ form.materialsCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="批售订单号：" prop="wholesaleOrderCode">
-                  {{ form.wholesaleOrderCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + form.wholesaleOrderCode)">{{ form.wholesaleOrderCode }}</el-button>
                 </el-form-item>
                  <el-form-item label="零售订单号：" prop="retailOrderCode">
                   {{ form.retailOrderCode }}
@@ -205,6 +205,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {
