@@ -206,7 +206,7 @@
       <el-button v-if="canAddOrUpdate" size="small" @click="handleaAdOrUpdate">
         创建发运计划
       </el-button>
-      <el-button v-if="canAddOrUpdate" size="small" @click="handleSwitch">
+      <el-button v-permission="moduleKey+'-setSwitch'" size="small" @click="handleSwitch">
         设置定时任务开关
       </el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>

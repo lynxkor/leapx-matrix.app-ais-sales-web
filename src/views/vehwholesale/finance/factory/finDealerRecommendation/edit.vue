@@ -109,7 +109,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
-                    :disabled="isEditing===true"
+                    disabled
                   />
                 </el-form-item>
                  <el-form-item label="同步时间：" prop="syncTime">
@@ -118,14 +118,14 @@
                     :picker-options="pickerOptions"
                     type="datetime"
                     value-format="yyyy-MM-dd HH:mm:ss"
-                    :disabled="isEditing===true"
+                    disabled
                   />
                 </el-form-item>
                   <el-form-item label="同步结果：" prop="syncResult">
                   <el-input
                     placeholder="请输入"
                     v-model="form.syncResult"
-                    :disabled="isEditing===true"
+                    disabled
                     clearable
                   />
                 </el-form-item>
@@ -334,10 +334,12 @@ export default {
       window.open(url, '_blank');
     },
     handleBatchSync () {
-      if (this.form.syncStatus !== 40) {
+      const validSyncStatus = this.form.syncStatus === 40 || this.form.syncStatus === 10;
+      console.log(!validSyncStatus, this.form.status !== 0);
+      if (!validSyncStatus || this.form.status === 0) {
         this.$message({
           type: 'error',
-          message: '只有可用且同步失败的数据才能同步，请确认'
+          message: '同步失败或未同步的可用数据才能同步，请确认'
         });
         return;
       }
