@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="融资申请经销商："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -228,6 +228,9 @@ export default {
   computed: {
     _id () {
       return this.id || this.$route.query.id || this.form.id;
+    },
+    title () {
+      return '融资申请经销商：' + (this.form.code || '');
     }
   },
   watch: {
@@ -245,7 +248,6 @@ export default {
     return {
       pageTitle: '融资申请经销商',
       pageType: 'edit',
-      title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-finFinancingApplicationDealer',
       loading: false,

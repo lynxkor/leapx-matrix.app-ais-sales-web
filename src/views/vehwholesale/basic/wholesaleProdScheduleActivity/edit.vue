@@ -4,7 +4,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="排产专项活动："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -12,7 +12,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          {{ form.activityCode }}
+          <!-- {{ form.activityCode }} -->
         </template>
         <el-main>
           <section class="common-section">
@@ -349,6 +349,9 @@ export default {
   computed: {
     _id () {
       return this.id || this.$route.query.id || this.form.id;
+    },
+    title () {
+      return '排产专项活动：' + (this.form.activityCode || '');
     }
   },
   watch: {
@@ -407,7 +410,6 @@ export default {
     return {
       pageTitle: '排产专项活动',
       pageType: 'edit',
-      title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleProdScheduleActivity',
       loading: false,

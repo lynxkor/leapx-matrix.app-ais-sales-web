@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="经销商推荐函："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :submitRequest="submitRequest"
@@ -13,7 +13,7 @@
         :dataTransform="dataTransform"
       >
         <template #status>
-          <span >{{form.code}}</span>
+          <!-- <span >{{form.code}}</span> -->
         </template>
         <template #extraButtons>
           <el-button size="small" @click="handleBatchSync">推送金融机构</el-button>
@@ -265,6 +265,9 @@ export default {
   computed: {
     _id () {
       return this.id || this.$route.query.id || this.form.id;
+    },
+    title () {
+      return '经销商推荐函：' + (this.form.code || '');
     }
   },
   watch: {
@@ -282,7 +285,6 @@ export default {
     return {
       pageTitle: '经销商推荐函',
       pageType: 'edit',
-      title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-finDealerRecommendation',
       loading: false,

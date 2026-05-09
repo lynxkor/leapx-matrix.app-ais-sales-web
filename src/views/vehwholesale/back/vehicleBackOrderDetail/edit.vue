@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="整车退车明细"
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -14,7 +14,7 @@
         :showEditBtn="form.processStatus === 10 || form.processStatus === 20"
       >
         <template #status>
-          {{ form.returnOrderCode }}
+          <!-- {{ form.returnOrderCode }} -->
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
         </template>
@@ -429,7 +429,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '主键：' + this.form.returnOrderCode;
     }
   },
   watch: {

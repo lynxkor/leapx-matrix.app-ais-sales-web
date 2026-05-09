@@ -4,7 +4,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="整车销售模式配置："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -288,7 +288,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '整车销售模式配置：' + (this.form.modelName || '');
+      return '整车销售模式配置：' + (this.form.code || '');
     }
   },
   mixins: [routeGuard, permissions, commonMixins],

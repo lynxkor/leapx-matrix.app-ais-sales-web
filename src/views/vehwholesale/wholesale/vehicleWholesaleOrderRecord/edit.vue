@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="批售配车结算记录："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -14,7 +14,7 @@
         :showEditBtn="false"
       >
         <template #status>
-           {{ form.vin }}
+           <!-- {{ form.vin }} -->
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
         </template>
@@ -174,7 +174,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '配车结算记录：' + this.form.id;
+      return '配车结算记录：' + this.form.vin;
     }
   },
   watch: {

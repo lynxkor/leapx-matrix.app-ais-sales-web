@@ -6,7 +6,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="整车批售订单信息："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -14,7 +14,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          {{ form.wholesaleOrderCode }}
+          <!-- {{ form.wholesaleOrderCode }} -->
         </template>
         <template #extraButtons >
           <el-button  v-if ="perquerySapAccount" size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
@@ -1162,6 +1162,9 @@ export default {
   computed: {
     _id () {
       return this.id || this.$route.query.id || this.form.id;
+    },
+    title () {
+      return '整车批售订单信息：' + (this.form.wholesaleOrderCode || '');
     }
   },
   watch: {
@@ -1179,7 +1182,6 @@ export default {
     return {
       pageTitle: '整车批售订单',
       pageType: 'edit',
-      title: '批售订单号：' + form.wholesaleOrderCode,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-vehicleWholesaleOrderFactory',
       loading: false,

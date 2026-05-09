@@ -6,7 +6,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="企业客户整车订单:"
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -15,7 +15,7 @@
         :showEditBtn="form.orderStatus === 3 || form.orderStatus === 50"
       >
         <template #status>
-          <span>{{ form.entOrderCode }}</span>
+          <!-- <span>{{ form.entOrderCode }}</span> -->
         </template>
         <template #extraButtons>
           <el-button  v-if = "perquerySapAccount" size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
@@ -995,7 +995,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '主键：' + this.form.entOrderCode;
     }
   },
   watch: {

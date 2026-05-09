@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="企业客户补货订单："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -14,7 +14,7 @@
         :showEditBtn="form.auditStatus === 0 || form.auditStatus === 4"
       >
         <template #status>
-          {{ form.entReplenishOrderCode }}
+          <!-- {{ form.entReplenishOrderCode }} -->
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
         </template>
@@ -538,7 +538,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '主键：' + this.form.entReplenishOrderCode;
     },
     columns () {
       const isEdit = this.isEditing;
