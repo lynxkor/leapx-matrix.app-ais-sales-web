@@ -580,7 +580,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '合格证赎回编号：' + this.form.redemptionCode;
     }
   },
   watch: {

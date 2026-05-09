@@ -238,9 +238,9 @@
                 <el-form-item label="">
                   <el-button size="small" @click="handleAddRow" style="margin-left: 5px;">活动明细导入</el-button>
                 </el-form-item>
-                <el-form-item label=" ">
+                <el-form-item label="">
                   <el-button size="small" type="primary" @click="handleQuery">查询</el-button>
-                  <el-button size="small" @click="handleClear">清空</el-button>
+                  <el-button size="small" @click="handleClear">重置</el-button>
                 </el-form-item>
               </el-form>
             </div>

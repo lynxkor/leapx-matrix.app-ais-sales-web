@@ -429,7 +429,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '主键：' + this.form.returnOrderCode;
+      return '退车明细单号：' + this.form.backOrderDetailCode;
     }
   },
   watch: {

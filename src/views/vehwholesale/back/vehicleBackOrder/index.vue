@@ -119,7 +119,7 @@
       <!--  TIPS:根据产品增删功能按钮  -->
         <el-dropdown trigger="click" style="margin: 0 10px;" @command="handleAdd">
         <el-button size="small" type="primary" @click="showDropdown">
-          {{ dropdownLoading ? '加载中...' : '整车退车订单' }}
+          {{ dropdownLoading ? '加载中...' : '新增整车退车订单' }}
           <i class="iconfont icon-lxppc-down" />
         </el-button>
         <el-dropdown-menu slot="dropdown">
