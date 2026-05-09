@@ -560,7 +560,8 @@ export default {
     },
     changeDealerFun (data) {
       const param = {
-        saleStoreChangeType: data.saleStoreChangeType,
+        saleStoreChangeType: data.changeReasonCode,
+        saleStoreChangeName: data.changeReason,
         saleStoreChangeRemark: data.saleStoreChangeRemark,
         orderIdList: data.dataList.map(item => item.id),
         newStoreCode: data.storeCode,
