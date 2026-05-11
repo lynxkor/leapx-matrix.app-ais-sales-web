@@ -465,7 +465,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '整车退车订单：' + this.form.backOrderCode;
     }
   },
   watch: {

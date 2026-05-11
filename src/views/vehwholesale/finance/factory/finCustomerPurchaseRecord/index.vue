@@ -485,7 +485,7 @@ export default {
         if (!this.ALLOWED_STATUS.includes(item.syncStatus) || item.status !== 0) {
           this.$message({
             type: 'error',
-            message: '只有可用且同步失败的数据才能同步，请确认!'
+            message: '同步失败或未同步的可用数据才能同步，请确认!'
           });
           return false;
         };
@@ -511,7 +511,7 @@ export default {
       if (invalidItems.length > 0) {
         this.$message({
           type: 'error',
-          message: '只有可用且同步失败的数据才能同步，请确认'
+          message: '同步失败或未同步的可用数据才能同步，请确认'
         });
         return;
       }

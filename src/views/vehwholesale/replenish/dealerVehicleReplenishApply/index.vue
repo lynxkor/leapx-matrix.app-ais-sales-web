@@ -155,8 +155,8 @@
       <el-button size="small" :loading="vehicleWholesaleLoading" @click="vehicleWholesale">厂端现车批售</el-button>
       <el-button size="small" @click="factoryAuditValid(true)" :disabled="selectionList.length === 0">批量审核通过</el-button>
       <el-button size="small" @click="factoryAuditValid(false)" :disabled="selectionList.length === 0">批量审核驳回</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
       class="ais-table-c"
