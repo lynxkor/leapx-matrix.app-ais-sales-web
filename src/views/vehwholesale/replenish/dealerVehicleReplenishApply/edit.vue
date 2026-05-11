@@ -596,7 +596,7 @@ export default {
         applyCategory: [
           { required: false, message: '请选择申请类别', trigger: 'change' }
         ],
-        settleFundType: [
+        settleFundTypeLabel: [
           { required: true, message: '请选择结算资金类型', trigger: 'change' }
         ],
         financialOrganizationId: [
