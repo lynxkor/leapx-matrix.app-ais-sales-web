@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="发运计划明细:"
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -14,7 +14,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          {{ form.shippingPlanDetailCode }}
+          <!-- {{ form.shippingPlanDetailCode }} -->
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
         </template>
@@ -302,9 +302,9 @@
                 <el-form-item label="交付门店：" prop="deliveryDealerName">
                   {{ form.deliveryDealerName }}
                 </el-form-item>
-                <el-form-item label="收货时间：" prop="">
+                <!-- <el-form-item label="收货时间：" prop="">
                   {{ form }}
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="是否需要同步WMS：" prop="needSyncWms">
                   {{ form.needSyncWmsLabel }}
                 </el-form-item>
@@ -654,7 +654,6 @@
                 </el-form-item>
               </el-form>
               <el-form
-                label-width="150px"
                 :inline="true"
                 class="form-detail"
                 v-show="!(isEditing || !_id)"
@@ -790,7 +789,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '发运计划明细：' + this.form.id;
+      return '发运计划明细：' + this.form.shippingPlanDetailCode;
     }
   },
   watch: {

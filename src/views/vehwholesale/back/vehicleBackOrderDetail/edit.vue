@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="整车退车明细"
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -14,14 +14,14 @@
         :showEditBtn="form.processStatus === 10 || form.processStatus === 20"
       >
         <template #status>
-          {{ form.returnOrderCode }}
+          <!-- {{ form.returnOrderCode }} -->
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button :disabled="!form.buttonControl.confirmOutbound" size="small"  @click="handelConfirmOutbound">确认出库</el-button>
-          <el-button :disabled="!form.buttonControl.confirmInbound" size="small"  @click="handelConfirmVdcInbound">确认入库</el-button>
-          <el-button :disabled="!form.buttonControl.delete" size="small"  @click="handleDel">删除</el-button>
+          <el-button v-if="perconfirmOutbound && form.buttonControl && form.buttonControl.confirmOutbound" size="small"  @click="handelConfirmOutbound">确认出库</el-button>
+          <el-button v-if="perconfirmInbound && form.buttonControl && form.buttonControl.confirmInbound" size="small"  @click="handelConfirmVdcInbound">确认入库</el-button>
+          <el-button v-if="canDelete && form.buttonControl && form.buttonControl.delete" size="small"  @click="handleDel">删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -262,13 +262,13 @@
                   {{ form.backOrderDetailCode }}
                 </el-form-item>
                 <el-form-item label="退车订单编号：" prop="backOrderCode">
-                  {{ form.backOrderCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/back/vehicleBackOrder/edit?id=' + form.backOrderCode)">{{ form.backOrderCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="VIN码：" prop="vin">
                   {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="销售门店名称：" prop="saleDealerName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.saleDealerCode)">{{ form.saleDealerName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.saleDealerCode)">{{ form.saleDealerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="车辆处理状态：" prop="processStatusLabel">
                   {{ form.processStatusLabel }}
@@ -277,7 +277,7 @@
                   {{ form.regionName }}
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
                 </el-form-item>
                 <el-form-item label="批售订单编号：" prop="wholesaleOrderCode">
                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + form.wholesaleOrderCode)">{{ form.wholesaleOrderCode }}</el-button>
@@ -337,7 +337,7 @@
                   {{ form.remark }}
                 </el-form-item>
                  <el-form-item label="订单接口同步结果：" prop="syncSapMsg"  class="form-item-full">
-                  {{ JSON.parse(form.syncSapMsg || '{}')?.message || '' }}
+                  {{ form.syncSapMsg }}
                 </el-form-item>
               </el-form>
             </div>
@@ -429,7 +429,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '退车明细单号：' + this.form.backOrderDetailCode;
     }
   },
   watch: {
@@ -455,6 +455,9 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       emptyText: '若要启用此内容，请创建记录',
+      // 权限配置
+      perconfirmOutbound: false,
+      perconfirmInbound: false,
       tableData: [
       ],
       rules: {
@@ -472,7 +475,14 @@ export default {
   },
   mounted () {
   },
+  created () {
+    this.initPermissions();
+  },
   methods: {
+    initPermissions () {
+      this.perconfirmOutbound = this.permissions.has(`${this.moduleKey}-confirmOutbound`); // 出库
+      this.perconfirmInbound = this.permissions.has(`${this.moduleKey}-confirmInbound`); // 入库
+    },
     openWindow (url) {
       window.open(url, '_blank');
     },

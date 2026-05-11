@@ -220,7 +220,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?id=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
           { props: 'recAmount', label: '推荐额度(万元)', visible: true, width: 200 },
           {
@@ -337,7 +337,7 @@ export default {
       if (invalidItems.length > 0) {
         this.$message({
           type: 'error',
-          message: '只有可用且同步失败的数据才能同步，请确认'
+          message: '可用且同步失败或未同步的数据才能同步，请确认'
         });
         return;
       }

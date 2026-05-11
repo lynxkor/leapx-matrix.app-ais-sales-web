@@ -28,7 +28,7 @@
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
                   {{ form.dealerCompanyName }}
@@ -61,7 +61,7 @@
                   {{ form.creditAvailableExposure }}
                 </el-form-item>
                 <el-form-item label="经销商编码：" prop="dealerCompanyCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="经销商名称：" prop="dealerCompanyName">
                   {{ form.dealerCompanyName }}
@@ -167,7 +167,7 @@ export default {
     return {
       pageTitle: '客户还款记录',
       pageType: 'edit',
-      title: '编码：' + form.code,
+      title: '客户还款记录编码：' + form.code,
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-finCustomerRepaymentRecord',
       loading: false,

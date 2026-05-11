@@ -112,36 +112,36 @@
                   />
                 </el-form-item>
                 <el-form-item
-                  v-show="form.depositRefundType === '30'"
+                  v-show="form.depositRefundType === '15'"
                   label="退款银行：" prop="refundBank"
-                              :rules="form.depositRefundType === '30' ? rules.refundBank: []">
+                              :rules="form.depositRefundType === '15' ? rules.refundBank: []">
                   <el-input
                     placeholder="请输入"
                     v-model="form.refundBank"
-                    :disabled="form.depositRefundType !== '30'"
+                    :disabled="form.depositRefundType !== '15'"
                     clearable
                   />
                 </el-form-item>
                 <el-form-item
-                  v-show="form.depositRefundType === '30'"
+                  v-show="form.depositRefundType === '15'"
                   label="银行开户名：" prop="refundBankUser"
-                              :rules="form.depositRefundType === '30' ? rules.refundBankUser: []">
+                              :rules="form.depositRefundType === '15' ? rules.refundBankUser: []">
                   <el-input
                     placeholder="请输入"
                     v-model="form.refundBankUser"
-                    :disabled="form.depositRefundType !== '30'"
+                    :disabled="form.depositRefundType !== '15'"
                     clearable
                   />
                 </el-form-item>
                 <el-form-item
-                  v-show="form.depositRefundType === '30'"
+                  v-show="form.depositRefundType === '15'"
                   label="退款银行账号："
                               prop="refundBankAccount"
-                              :rules="form.depositRefundType === '30' ? rules.refundBankAccount: []">
+                              :rules="form.depositRefundType === '15' ? rules.refundBankAccount: []">
                   <el-input
                     placeholder="请输入"
                     v-model="form.refundBankAccount"
-                    :disabled="form.depositRefundType !== '30'"
+                    :disabled="form.depositRefundType !== '15'"
                     clearable
                   />
                 </el-form-item>
@@ -370,7 +370,7 @@
               <AisAttachment
                 ref="attachment"
                 :businessId="_id"
-                :readonly="!isEditing"
+                :readonly="!_id || !(form.refundStatus === 1010 || form.refundStatus === 1040)"
                 configCode="mcs_vehorderrefund"
                 attachType="订单信息变更申请附件"
               />
@@ -460,7 +460,7 @@
                     class="link"
                     v-if="form.deliveryVin"
                     @click="navigateToRoute({
-                      path: '/datacenter/vehicle/vehicleProfile/edit',
+                      path: '/vehstock/vdc/vehicleVdcInventoryLedger/edit',
                       query: {
                         vin: form.deliveryVin,
                       },
@@ -673,52 +673,20 @@
               </el-form>
             </div>
           </section>
-          <section class="common-section">
-            <div class="common-section-header" v-show="!(isEditing || !_id)">
-              <h2>退款记录</h2>
-            </div>
-            <div>
-              <el-table :data="form.payRefundRecordList" style="width: 100%" v-show="!(isEditing || !_id)">
-                <el-table-column prop="payCode" label="收款编号" width="180"/>
-                <el-table-column prop="paySerialNumber" label="支付流水号" width="180"/>
-                <el-table-column prop="payCategoryLabel" label="收款类型" width="180"/>
-                <el-table-column prop="paymentAmount" label="付款金额" width="180"/>
-                <el-table-column prop="paymentTypeLabel" label="支付方式" width="180"/>
-                <el-table-column prop="paymentWayLabel" label="支付渠道" width="180"/>
-                <el-table-column prop="paymentTime" label="付款时间" width="180"/>
-                <el-table-column prop="refundTime" label="退款时间" width="180"/>
-                <el-table-column prop="refundResult" label="退款结果" width="180"/>
-                <el-table-column prop="refundRemark" label="退款说明" width="180"/>
-              </el-table>
-            </div>
-          </section>
-          <section class="common-section">
-            <div class="common-section-header" v-show="!(isEditing || !_id)">
-              <h2>审批明细</h2>
-            </div>
-            <div>
-              <el-table :data="form.approveLogList" style="width: 60%" v-show="!(isEditing || !_id)">
-                <el-table-column
-                  prop="createTime"
-                  label="操作时间"
-                  width="180">
-                </el-table-column>
-                <el-table-column
-                  prop="operateStatusLabel"
-                  label="申请状态">
-                </el-table-column>
-                <el-table-column
-                  prop="operatorName"
-                  label="操作人"
-                  width="180">
-                </el-table-column>
-                <el-table-column
-                  prop="operateExplain"
-                  label="审核意见">
-                </el-table-column>
-              </el-table>
-            </div>
-          </section>
+          <component-table
+                v-if="!(isEditing || !_id)"
+                :table-config="{ title: '退款记录' }"
+                :table-data-external="form.payRefundRecordList"
+                :columns="refundColumns"
+                :show-pagination="false"
+              />
+          <component-table
+                v-if="!(isEditing || !_id)"
+                :table-config="{ title: '审批明细' }"
+                :table-data-external="form.approveLogList"
+                :columns="approveColumns"
+                :show-pagination="false"
+              />
           <refund-apply-audit-dialog
             :audit-type="auditType"
             :main-cate-code="form.cateCode"
@@ -753,6 +721,7 @@ import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
+import ComponentTable from '@/libs/components/ComponentTable/index.vue';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
@@ -789,7 +758,7 @@ const defaultForm = {
   refundBank: '',
   refundBankUser: '',
   refundBankAccount: '',
-  orderRefundType: 10,
+  orderRefundType: 20,
   cateCode: '',
   refundReason: '',
   firstSubmitTime: '',
@@ -808,6 +777,8 @@ const defaultForm = {
   orderCancelReason: '',
   orderCancelDescp: '',
   discontinueStatusLabel: '',
+  payRefundRecordList: [],
+  approveLogList: [],
 };
 
 export default {
@@ -828,6 +799,7 @@ export default {
     EditBaseContainer,
     AisAttachment,
     FetchSelect,
+    ComponentTable,
   },
   computed: {
     _id () {
@@ -893,6 +865,24 @@ export default {
       tableData: [
         { id: 1, name: '张三', age: 25, email: 'zhangsan@example.com' },
         { id: 2, name: '李四', age: 30, email: 'lisi@example.com' }
+      ],
+      refundColumns: [
+        { field: 'payCode', title: '收款编号', width: 180 },
+        { field: 'paySerialNumber', title: '支付流水号', width: 180 },
+        { field: 'payCategoryLabel', title: '收款类型', width: 180 },
+        { field: 'paymentAmount', title: '付款金额', width: 180 },
+        { field: 'paymentTypeLabel', title: '支付方式', width: 180 },
+        { field: 'paymentWayLabel', title: '支付渠道', width: 180 },
+        { field: 'paymentTime', title: '付款时间', width: 180 },
+        { field: 'refundTime', title: '退款时间', width: 180 },
+        { field: 'refundResultLabel', title: '退款结果', width: 180 },
+        { field: 'refundRemark', title: '退款说明', width: 180 }
+      ],
+      approveColumns: [
+        { field: 'createTime', title: '操作时间', width: 180 },
+        { field: 'operateStatusLabel', title: '申请状态', minWidth: 150 },
+        { field: 'operatorName', title: '操作人', width: 180 },
+        { field: 'operateExplain', title: '审核意见', minWidth: 200 }
       ],
       rules: {
         refundCode: [

@@ -372,7 +372,7 @@ export default {
               click: (rowIndex, row) => {
                 if (row.originalVin) {
                   this.navigateToRoute({
-                    path: '/sales/datacenter/vehicle/vehicleProfile/edit',
+                    path: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
                     query: {
                       vin: row.matchVin
                     }

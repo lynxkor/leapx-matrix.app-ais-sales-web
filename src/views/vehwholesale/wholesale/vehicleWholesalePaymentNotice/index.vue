@@ -82,7 +82,7 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canDelete" size="small" @click="handleBatchPost">发布</el-button>
+      <el-button v-permission="moduleKey+'-post'"  size="small" @click="handleBatchPost">发布</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
@@ -196,7 +196,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyName', label: '所属母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?id=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCompanyName', label: '所属母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'saleDealerName', label: '门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'pendingSettleCount', label: '待结算数', visible: true, width: 200 },
           { props: 'totalWholesaleAmount', label: '批售总金额', visible: true, width: 200 },

@@ -174,7 +174,7 @@
             </div>
             <div class="common-section-body">
               <div style="padding-bottom: 12px;">
-                <el-button size="small" @click="handleAddRow"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
+                <el-button size="small" @click="handleAddRow" type="primary" plain><i class="iconfont icon-lxppc-plus"></i> 新增</el-button>
               </div>
               <div class="common-section-table">
                 <attributeable-table
@@ -192,7 +192,7 @@
             </div>
             <div class="common-section-body">
               <div style="padding-bottom: 12px;">
-                <el-button size="small" @click="addReplace"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
+                <el-button size="small" @click="addReplace" type="primary" plain><i class="iconfont icon-lxppc-plus"></i> 新增</el-button>
                 <el-button size="small" @click="updatePrice" :disabled="selection.length === 0">修改市场指导价</el-button>
               </div>
                 <pricing-table
@@ -513,5 +513,8 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+  ::v-deep .btn-delete {
+    color: #B91919 !important;
   }
 </style>

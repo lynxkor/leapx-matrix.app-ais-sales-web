@@ -4,7 +4,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="自有资金赊销额度："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -12,7 +12,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          {{ form.creditSalesLimitCode }}
+          <!-- {{ form.creditSalesLimitCode }} -->
         </template>
         <el-main>
           <section class="common-section">
@@ -108,7 +108,7 @@
                   {{ form.creditSalesLimitCode }}
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
                   {{ form.dealerCompanyName }}

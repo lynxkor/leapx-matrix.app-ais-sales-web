@@ -62,20 +62,16 @@
             </div>
             <div class="common-section-body">
               <div class="common-section-header">
-                <div class="ais-select-group">
-                  <fetch-select
-                    style="width: 300px;"
-                    :remote-method="queryListData"
-                    remote
-                    placeholder="请选择"
-                    clearable
-                    value-key="storeCode"
-                    label-key="storeName"
-                    :disabled="!(isEditing || !_id)"
-                    @change="handleAddTableData"
-                  />
-                  <el-button type="primary" size="small">添加</el-button>
-                </div>
+                <base-search
+                  style="width: 300px;"
+                  :remote-method="queryListData"
+                  remote
+                  placeholder="请选择"
+                  clearable
+                  value-key="storeCode"
+                  label-key="storeName"
+                  @change="handleAddTableData"
+                />
               </div>
               <div class="common-section-table">
                 <vxe-table
@@ -129,7 +125,6 @@
 
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehstock/basic/storeInventoryTransferWhitelist/index';
-import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
@@ -139,6 +134,7 @@ import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import StoreInformationDialog from './StoreInformationDialog.vue';
+import BaseSearch from '@/libs/components/BaseSearch';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -161,7 +157,7 @@ export default {
   components: {
     EditPageLayout,
     EditBaseContainer,
-    FetchSelect,
+    BaseSearch,
     StoreInformationDialog
   },
   computed: {

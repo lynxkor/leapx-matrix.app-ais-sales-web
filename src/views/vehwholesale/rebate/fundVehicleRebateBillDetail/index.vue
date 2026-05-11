@@ -134,11 +134,11 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
-      <el-button v-permission="moduleKey+'-audit'" size="small" @click="handleBatchAudit()" >批量初审</el-button>
-      <el-button v-permission="moduleKey+'-review'" size="small" @click="handleBatchReview()" >批量复审</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <el-button v-permission="moduleKey+'-audit'" size="small" :disabled="selectionList.length === 0" @click="handleBatchAudit()" >批量初审</el-button>
+      <el-button v-permission="moduleKey+'-review'" size="small" :disabled="selectionList.length === 0" @click="handleBatchReview()" >批量复审</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" :disabled="selectionList.length === 0" @click="exportExcel">导出</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -284,7 +284,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260 },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           {
             props: 'dealerName',
             label: '门店名称',
@@ -369,7 +369,7 @@ export default {
           { props: 'reviewOpinion', label: '复审意见', visible: true, width: 120 },
           { props: 'postedLabel', label: '是否入账', visible: true, width: 100 },
           { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 100 },
-          { props: 'deliveryOrderCode', label: '交车单号', visible: true, width: 200 },
+          { props: 'deliveryOrderCode', label: '交车单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/sales/vehretail/orderManager/deliveryOrder/edit?id=' + row.deliveryOrderCode); }, type: 'primary' }] },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 100 },
           // { props: 'modifierName', label: '更新人', visible: true, width: 200 },
@@ -428,6 +428,9 @@ export default {
     });
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     async seriesSearch (query) {
       try {
         const res = await vehicleSeriesList({ seriesNameLike: query });

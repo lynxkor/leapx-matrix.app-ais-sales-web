@@ -4,7 +4,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="车辆预留配置："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -22,7 +22,7 @@
             <div class="common-section-body">
               <!-- 编辑模式 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="车辆预留编号" prop="code">
+                <el-form-item label="车辆预留编号：" prop="code">
                   <el-input
                     placeholder="系统自动创建"
                     v-model="form.code"
@@ -30,7 +30,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="类型" prop="type">
+                <el-form-item label="类型：" prop="type">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vehstock_reservation_type"
@@ -40,14 +40,14 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="业务编号" prop="bizCode">
+                <el-form-item label="业务编号：" prop="bizCode">
                   <el-input
                     placeholder="请输入"
                     v-model="form.bizCode"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="需预留数" prop="reserveNum">
+                <el-form-item label="需预留数：" prop="reserveNum">
                   <el-input
                     type="number"
                     placeholder="请输入"
@@ -55,7 +55,7 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="已预留数" prop="reservedNum">
+                <el-form-item label="已预留数：" prop="reservedNum">
                   <el-input
                     type="number"
                     placeholder="请输入"
@@ -64,7 +64,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="是否映射其他物料" prop="isRelatedMatch">
+                <el-form-item label="是否映射其他物料：" prop="isRelatedMatch">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="BooleanEnum"
@@ -74,7 +74,7 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="截取预留起始位" prop="reserveStartPos">
+                <el-form-item label="截取预留起始位：" prop="reserveStartPos">
                   <el-input
                     type="number"
                     placeholder="请输入"
@@ -82,7 +82,7 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="截取预留截止位" prop="reserveEndPos">
+                <el-form-item label="截取预留截止位：" prop="reserveEndPos">
                   <el-input
                     type="number"
                     placeholder="请输入"
@@ -90,14 +90,14 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="VIN截取预留值" prop="reserveCutValue">
+                <el-form-item label="VIN截取预留值：" prop="reserveCutValue">
                   <el-input
                     placeholder="请输入"
                     v-model="form.reserveCutValue"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="状态" prop="status">
+                <el-form-item label="状态：" prop="status">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="StatusEnum"
@@ -107,7 +107,7 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="备注" prop="remark">
+                <el-form-item label="备注：" prop="remark">
                   <el-input
                     type="textarea"
                     placeholder="请输入"

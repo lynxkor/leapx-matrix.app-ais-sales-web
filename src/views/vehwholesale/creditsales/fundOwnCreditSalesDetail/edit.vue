@@ -4,7 +4,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="赊销明细编号："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -12,7 +12,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          {{ form.creditSalesDetailCode }}
+          <!-- {{ form.creditSalesDetailCode }} -->
         </template>
         <el-main>
           <section class="common-section">
@@ -194,7 +194,7 @@
                   {{ form.creditSalesDetailCode }}
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
                 </el-form-item>
                 <el-form-item label="资金账户编号：" prop="fundAccountCode">
                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/dealerFundAccount/edit?id=' + form.fundAccountId)">{{ form.fundAccountCode }}</el-button>
@@ -343,7 +343,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '赊销明细编号：';
+      return '赊销明细编号：' + this.form.creditSalesDetailCode;
     }
   },
   watch: {

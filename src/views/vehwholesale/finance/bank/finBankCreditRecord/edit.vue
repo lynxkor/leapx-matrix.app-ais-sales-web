@@ -23,7 +23,7 @@
             <div class="common-section-body">
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
                   {{ form.dealerCompanyName }}
@@ -44,12 +44,12 @@
                   {{ form.statusDesc }}
                 </el-form-item>
                 <!--  经销商和母公司一致 -->
-                <el-form-item label="经销商编码：" prop="dealerCompanyCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
-                </el-form-item>
                 <el-form-item label="经销商名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
                 </el-form-item>
+                <!-- <el-form-item label="经销商名称：" prop="dealerCompanyName">
+                  {{ form.dealerCompanyName }}
+                </el-form-item> -->
               </el-form>
             </div>
           </section>

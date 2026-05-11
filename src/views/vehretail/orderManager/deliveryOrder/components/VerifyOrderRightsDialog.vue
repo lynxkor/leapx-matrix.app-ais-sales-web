@@ -91,7 +91,7 @@
               其他失败：{{ resultData.otherErrCount }}条
             </span>
             <div v-if="resultData.otherErr" class="fail-details">
-              <span class="fail-reason">{{ resultData.otherErr }}</span>
+              <span class="fail-reason" v-html="resultData.otherErr"></span>
             </div>
           </div>
         </div>

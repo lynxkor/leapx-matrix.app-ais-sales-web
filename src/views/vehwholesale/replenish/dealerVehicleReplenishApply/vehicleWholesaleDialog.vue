@@ -1,6 +1,6 @@
 <template>
   <el-dialog :title="title" width="1200px" :visible.sync="dialogVisible" @close="handleClose">
-    <div class="page-common m-account-list">
+    <div>
       <el-form
         ref="form"
         :model="form"
@@ -144,8 +144,8 @@
           </el-form-item>
         </template>
         <el-form-item label="">
-          <el-button :loading="loading" size="medium" type="primary" plain class="btn-search" @click="onSubmit">查询</el-button>
-          <el-button size="medium" class="btn-reset" @click="onReset">重置</el-button>
+          <el-button :loading="loading" size="small" type="primary" plain class="btn-search" @click="onSubmit">查询</el-button>
+          <el-button size="small" class="btn-reset" @click="onReset">重置</el-button>
           <span style="padding-left: 10px;" class="icon-expand curPoint" @click="toggleShow">
             {{ show ? "收起" : "展开"}}
             <i :class="show ? 'iconfont icon-lxppc-up' : 'iconfont icon-lxppc-down'"></i>
@@ -165,7 +165,7 @@
             stripe
             resizable
             border="inner"
-            size="medium"
+            size="small"
             height="auto"
             width="1000px"
             min-height="300px"
@@ -239,8 +239,8 @@
       </el-form>
     </div>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="handleCancel">取消</el-button>
-      <el-button type="primary" @click="handleSubmit" :loading="submitLoading">提交</el-button>
+      <el-button size="small" @click="handleCancel">取消</el-button>
+      <el-button size="small" type="primary" @click="handleSubmit" :loading="submitLoading">提交</el-button>
     </div>
   </el-dialog>
 </template>

@@ -72,11 +72,17 @@
             </div>
             <div class="common-section-body">
               <div class="common-section-header">
-                <div class="ais-select-group">
-                  <fetch-select style="width: 300px;" :remote-method="queryListData" remote placeholder="请选择" clearable
-                    value-key="id" label-key="vinDesc" :disabled="!(isEditing || !_id)" @change="handleAddTableData" />
-                  <el-button type="primary" size="small">添加</el-button>
-                </div>
+                <base-search
+                  style="width: 300px;"
+                  filterable
+                  clearable
+                  remote
+                  :remote-method="queryListData"
+                  @change="handleAddTableData"
+                  value-key="id"
+                  label-key="vinDesc"
+                  :disabled="!(isEditing || !_id)"
+                />
               </div>
               <div class="common-section-table">
                 <vxe-table ref="tableRef" stripe :data="form.vinList" show-overflow resizable border="inner" size="medium"
@@ -124,6 +130,7 @@
 import { getDetail, addOrUpdate } from '@/api/vehstock/store/vehiclePurposeChangeApply/index';
 import { getList } from '@/api/vehstock/store/storeInventoryLedger/index';
 import FetchSelect from '@/libs/components/FetchSelect';
+import BaseSearch from '@/libs/components/BaseSearch';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
@@ -176,7 +183,8 @@ export default {
   components: {
     EditPageLayout,
     EditBaseContainer,
-    FetchSelect
+    FetchSelect,
+    BaseSearch
   },
   computed: {
     _id () {

@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="融资申请经销商："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -136,7 +136,7 @@
                   {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
                 </el-form-item>
                   <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationName">
                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.fundFinancialOrganizationId)">{{ form.fundFinancialOrganizationName }}</el-button>
@@ -151,7 +151,7 @@
                   {{ form.mainDealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="主体公司编码：" prop="mainDealerCompanyCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.mainDealerCompanyCode)">{{ form.mainDealerCompanyCode }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.mainDealerCompanyCode)">{{ form.mainDealerCompanyCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="创建者名称：" prop="creatorName">
                   {{ form.creatorName }}
@@ -228,6 +228,9 @@ export default {
   computed: {
     _id () {
       return this.id || this.$route.query.id || this.form.id;
+    },
+    title () {
+      return '融资申请经销商：' + (this.form.code || '');
     }
   },
   watch: {
@@ -245,7 +248,6 @@ export default {
     return {
       pageTitle: '融资申请经销商',
       pageType: 'edit',
-      title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-finFinancingApplicationDealer',
       loading: false,

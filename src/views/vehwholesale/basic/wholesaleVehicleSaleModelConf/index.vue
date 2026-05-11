@@ -85,8 +85,8 @@
       <el-button v-permission="moduleKey+'-batchEdit'" size="small" @click="handleBatchEditValid" :disabled="selectionList.length === 0">批量编辑</el-button>
       <el-button v-permission="moduleKey+'-batchSubmit'" size="small" @click="handleBatchSubmitValid" :disabled="selectionList.length === 0">批量提交</el-button>
       <el-button v-permission="moduleKey+'-batchAudit'" size="small" @click="handleBatchAuditValid" :disabled="selectionList.length === 0">批量审核</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
       class="ais-table-c"

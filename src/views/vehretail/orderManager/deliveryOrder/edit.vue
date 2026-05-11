@@ -32,6 +32,7 @@
           <el-button v-if="canUploadInvoice && form.status === 5" size="small" @click="handleUploadInvoice">上传发票</el-button>
           <el-button v-if="canCancelPayment && form.status === 5" size="small" @click="handlePaymentWithdraw">收款撤回</el-button>
           <el-button v-if="canCancelDelivery && form.status === 7" size="small" @click="handleDeliveryWithdraw">交车撤回</el-button>
+          <el-button v-if="canPushDeliveryActive && form.deliveryConfirmStatus !== 99" size="small" @click="handleDeliveryActive">推送激活信息</el-button>
         </template>
         <el-main>
           <!--  -->
@@ -283,12 +284,12 @@
             section-key="paymentRecords"
           >
             <template v-slot:operation_default="{ row }">
-              <el-button
+              <el-link
                 v-if="form.status === 4 && canDeletePaymentRecord(row) && isEditing"
-                type="text"
-                style="color: #67c23a;"
+                type="danger"
+                :underline="false"
                 @click="handleDeletePaymentRecord(row)"
-              >删除</el-button>
+              >删除</el-link>
             </template>
           </component-table>
           <!-- 预约记录 -->
@@ -568,6 +569,7 @@ export default {
       canUploadInvoice: false, // 上传发票
       canCancelPayment: false, // 收款撤回
       canCancelDelivery: false, // 交车撤回
+      canPushDeliveryActive: false, // 推送激活信息
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
@@ -635,9 +637,9 @@ export default {
         { value: '1040', label: '已办结' }
       ],
       orderBelongingFields: [
-        { key: 'saleDealerName', label: '订单销售门店' },
+        { key: 'saleDealerName', label: '订单销售门店', link: '/partner/channelManagement/shopDetail', paramKey: 'saleDealerCode', paramName: 'dealerCode' },
         { key: 'saleUserName', label: '订单销售顾问' },
-        { key: 'deliveryDealerName', label: '订单交付门店' },
+        { key: 'deliveryDealerName', label: '订单交付门店', link: '/partner/channelManagement/shopDetail', paramKey: 'deliveryDealerCode', paramName: 'dealerCode' },
         { key: 'deliveryUserName', label: '订单交付顾问' },
         { key: 'deliveryDerivativeUserName', label: '交付衍生工程师' },
         { key: 'onSiteDeliveryUserName', label: '现场交付工程师' },
@@ -672,10 +674,10 @@ export default {
         { key: 'agentName', label: '代办联系人' },
         { key: 'guidePrice', label: '整车指导价' },
         { key: 'depositAmount', label: '定金金额' },
-        { key: 'orderMaterialCode', label: '订单物料码' },
-        { key: 'allocationMaterialCode', label: '配车物料码' },
-        { key: 'saleDealerName', label: '销售门店' },
-        { key: 'deliveryDealerName', label: '交付门店' }
+        { key: 'orderMaterialCode', label: '订单物料码', link: '/sales/datacenter/materials/vehiclematerials/edit', paramKey: 'orderMaterialCode' },
+        { key: 'allocationMaterialCode', label: '配车物料码', link: '/sales/datacenter/materials/vehiclematerials/edit', paramKey: 'allocationMaterialsCode' },
+        { key: 'saleDealerName', label: '销售门店', link: '/partner/channelManagement/shopDetail', paramKey: 'saleDealerCode', paramName: 'dealerCode' },
+        { key: 'deliveryDealerName', label: '交付门店', link: '/partner/channelManagement/shopDetail', paramKey: 'deliveryDealerCode', paramName: 'dealerCode' }
       ],
       realNameAuthFields: [
         { key: 'realNameAuthSourceLabel', label: '实名认证来源' },
@@ -686,15 +688,15 @@ export default {
         { key: 'signatureTime', label: '签署时间' },
         { key: 'buyerMobileRegisteredLabel', label: '购车人手机是否注册' },
         { key: 'deliveryConfirmStatusLabel', label: '交车确认单状态' },
-        { key: 'deliveryConfirmSignUrl', label: '交车确认用户签名' },
-        { key: 'deliveryConfirmPdfUrl', label: '交车确认PDF' },
-        { key: 'cityDeliveryOrder', label: '城市交付顺序' }
+        { key: 'cityDeliveryOrder', label: '城市交付顺序' },
+        { key: 'deliveryConfirmPdfUrl', label: '交车确认PDF', class: 'form-item-full', download: true },
+        { key: 'deliveryConfirmSignUrl', label: '交车确认用户签名', class: 'form-item-full', download: true },
       ],
       basicInfoFields: [
         { key: 'deliveryOrderCode', label: '交车单编号' },
-        { key: 'vin', label: 'VIN 码' },
-        { key: 'materialsCode', label: '整车物料' },
-        { key: 'retailOrderCode', label: '整车订单' },
+        { key: 'vin', label: 'VIN 码', link: '/service/datacenter/vehicle/vehicleProfile/edit', paramKey: 'vin', paramName: 'vin' },
+        { key: 'materialsCode', label: '整车物料', link: '/sales/datacenter/materials/vehiclematerials/edit', paramKey: 'materialsCode' },
+        { key: 'retailOrderCode', label: '整车订单', link: '/sales/vehretail/ordermanager/retailorderinfo/edit', paramKey: 'retailOrderId' },
         { key: 'deliveryTime', label: '交车时间' },
         { key: 'statusLabel', label: '交车状态' },
         { key: 'createTime', label: '创建时间' }
@@ -777,6 +779,7 @@ export default {
       this.canUploadInvoice = this.permissions.has(`${this.moduleKey}-uploadInvoice`);
       this.canCancelPayment = this.permissions.has(`${this.moduleKey}-cancelPayment`);
       this.canCancelDelivery = this.permissions.has(`${this.moduleKey}-cancelDelivery`);
+      this.canPushDeliveryActive = this.permissions.has(`${this.moduleKey}-pushDeliveryActive`);
     },
     handleSaleUserChange (val, row, name) {
       this.form[name + 'Name'] = row.username;

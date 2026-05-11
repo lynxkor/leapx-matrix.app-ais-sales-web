@@ -145,16 +145,18 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-permission="moduleKey+'-batchAllocateSubmit'" size="small" :disabled="selectionList.length === 0" @click="handleBatchAllocateVehicle">批量配车</el-button>
-      <el-button v-permission="moduleKey+'-batchCancelAllocateSubmit'" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancelAllocateVehicle">取消配车</el-button>
-      <el-button v-permission="moduleKey+'-batchSettleSubmit'" size="small" :disabled="selectionList.length === 0" @click="handleBatchSettleSubmit">批量结算</el-button>
-      <el-button v-permission="moduleKey+'-batchCancelSettleSubmit'" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancelSettle">取消结算</el-button>
-      <el-button v-permission="moduleKey+'-batchCancelOrders'" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancel">批量作废</el-button>
-      <el-button v-permission="moduleKey+'-setAutoAllocate'" size="small" :disabled="selectionList.length === 0" @click="handleBatchSetAutoAllocate">批量设置自动配车</el-button>
-      <el-button v-permission="moduleKey+'-setAutoAllocate'" size="small" :disabled="selectionList.length === 0" @click="handleBatchSetNotAutoAllocate">批量设置不自动配车</el-button>
-      <el-button v-permission="moduleKey+'-setEmergencyOrder'" size="small" :disabled="selectionList.length === 0" @click="handleSetEmergencyOrder">设置急单</el-button>
-      <el-button v-permission="moduleKey+'-setEmergencyOrder'" size="small" :disabled="selectionList.length === 0" @click="handleCancelEmergencyOrder">取消急单</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <button-group collapse-direction="left">
+        <el-button v-permission="moduleKey+'-batchAllocateSubmit'" size="small" :disabled="selectionList.length === 0" @click="handleBatchAllocateVehicle">批量配车</el-button>
+        <el-button v-permission="moduleKey+'-batchCancelAllocateSubmit'" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancelAllocateVehicle">取消配车</el-button>
+        <el-button v-permission="moduleKey+'-batchSettleSubmit'" size="small" :disabled="selectionList.length === 0" @click="handleBatchSettleSubmit">批量结算</el-button>
+        <el-button v-permission="moduleKey+'-batchCancelSettleSubmit'" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancelSettle">取消结算</el-button>
+        <el-button v-permission="moduleKey+'-batchCancelOrders'" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancel">批量作废</el-button>
+        <el-button v-permission="moduleKey+'-setAutoAllocate'" size="small" :disabled="selectionList.length === 0" @click="handleBatchSetAutoAllocate">批量设置自动配车</el-button>
+        <el-button v-permission="moduleKey+'-setAutoAllocate'" size="small" :disabled="selectionList.length === 0" @click="handleBatchSetNotAutoAllocate">批量设置不自动配车</el-button>
+        <el-button v-permission="moduleKey+'-setEmergencyOrder'" size="small" :disabled="selectionList.length === 0" @click="handleSetEmergencyOrder">设置急单</el-button>
+        <el-button v-permission="moduleKey+'-setEmergencyOrder'" size="small" :disabled="selectionList.length === 0" @click="handleCancelEmergencyOrder">取消急单</el-button>
+        <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      </button-group>
     </div>
     <div
       class="ais-table-c"
@@ -217,6 +219,7 @@ import { getList as companyList } from '@/api/vehwholesale/fund/fundSaleCompany/
 import BatchCancelInput from './BatchCancelInput.vue';
 import SetEmergencyOrderInput from './SetEmergencyOrderInput.vue';
 import TagInput from '@/libs/components/TagInput';
+import ButtonGroup from '@/libs/components/ButtonGroup';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   status: '',
@@ -246,7 +249,8 @@ export default {
     Upload,
     BatchCancelInput,
     TagInput,
-    SetEmergencyOrderInput
+    SetEmergencyOrderInput,
+    ButtonGroup
   },
   data () {
     return {
@@ -299,7 +303,7 @@ export default {
           },
           { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 200 },
           { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/vehwholesale/fund/fundSaleCompany/edit?id=${row.saleCompanyId}`, '_blank'); }, type: 'primary' }] },
-          { props: 'entCustomerName', label: '企业客户名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?id=${row.entCustomerCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'entCustomerName', label: '企业客户名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.entCustomerCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'needAutoAllocateCarLabel', label: '是否需要自动配车', visible: true, width: 200 },
           { props: 'needAsyncSapLabel', label: '是否需要同步SAP', visible: true, width: 200 },

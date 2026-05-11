@@ -1,5 +1,5 @@
 <template>
-  <div class="page-common m-refund-list">
+  <div class="page-common m-sales-proxy-list">
     <!--  TIPS: 自行调整如下label-width，满足label不换行  -->
     <el-form
       :inline="true"
@@ -23,20 +23,20 @@
           filterable
         />
       </el-form-item>
-      <el-form-item label="退订原因分类">
+      <el-form-item label="退订原因分类" v-show="this.visibleCount === 3 || show">
         <fetch-select
           v-bind="selectCategoryOptions"
           :remote-method="changeCategorySearch"
           v-model="form.cateCode"
         />
       </el-form-item>
-      <el-form-item label="购车人姓名">
-        <el-input v-model="form.buyerName" placeholder="请输入" />
-      </el-form-item>
-      <el-form-item label="购车人手机号">
-        <el-input v-model="form.buyerPhone" placeholder="请输入" />
-      </el-form-item>
       <template v-if="show">
+        <el-form-item label="购车人姓名">
+          <el-input v-model="form.buyerName" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="购车人手机号">
+          <el-input v-model="form.buyerPhone" placeholder="请输入" />
+        </el-form-item>
         <el-form-item label="销售门店">
           <el-input v-model="form.saleDealerName" placeholder="请输入" />
         </el-form-item>
@@ -72,14 +72,6 @@
         @reset="onReset"
       />
     </el-form>
-    <div class="ais-active">
-      <el-tabs v-model="refundStatusTab" @tab-click="handleRefundStatusClick">
-        <el-tab-pane label="全部用户退订申请" name="0" status="0" />
-        <el-tab-pane label="待初审" name="1020" status="1020" />
-        <el-tab-pane label="待审核" name="1025" status="1025"/>
-        <el-tab-pane label="待终审" name="1027" status="1027"/>
-      </el-tabs>
-    </div>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
@@ -92,9 +84,13 @@
 <!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>-->
 <!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>-->
     </div>
-    <div
-      class="ais-table-c"
-    >
+    <div class="ais-table-c">
+      <el-tabs v-model="refundStatusTab" @tab-click="handleRefundStatusClick">
+        <el-tab-pane label="全部用户退订申请" name="0" status="0" />
+        <el-tab-pane label="待初审" name="1020" status="1020" />
+        <el-tab-pane label="待审核" name="1025" status="1025"/>
+        <el-tab-pane label="待终审" name="1027" status="1027"/>
+      </el-tabs>
       <LPVxeTable
         ref="tableRef"
         v-loading="loading"
@@ -573,6 +569,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.m-refund-list {
+.m-sales-proxy-list {
+  ::v-deep .m-vxe-table .m-vxe-table-options {
+    top: -96px;
+  }
+  .ais-actions {
+    margin-bottom: 8px;
+  }
+  .ais-table-c {
+    height: calc(100% - 168px);
+  }
 }
 </style>

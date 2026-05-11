@@ -50,3 +50,11 @@ export function enableItem (data) {
 export function batchEdit (data) {
   return api.jsonPost(prefix + 'batchEdit', data);
 }
+
+/**
+ * 批量编辑
+ * @param {Object} data
+ */
+export function getByVin (data) {
+  return api.jsonPost(prefix + 'getByVin', data);
+}

@@ -4,7 +4,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="整车销售模式配置："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -12,7 +12,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          <span :class="['status', form.status ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
+          <!-- <span :class="['status', form.status ? 'primary' : 'danger']">{{ form.statusLabel }}</span> -->
         </template>
         <el-main>
           <section class="common-section">
@@ -22,7 +22,7 @@
             <div class="common-section-body">
               <!-- 编辑模式 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="车型" prop="modelId">
+                <el-form-item label="车型：" prop="modelId">
                   <fetch-select
                     filterable
                     clearable
@@ -35,7 +35,7 @@
                     :disabled="!!_id"
                   />
                 </el-form-item>
-                <el-form-item label="年款" prop="vehicleYearTypeId" v-show="!!!_id">
+                <el-form-item label="年款：" prop="vehicleYearTypeId" v-show="!!!_id">
                   <fetch-select
                     filterable
                     clearable
@@ -47,13 +47,13 @@
                     @change="(val, record) => {form.vehicleYearType = record?.label || ''}"
                   />
                 </el-form-item>
-                <el-form-item label="年款" prop="vehicleYearTypeId" v-show="!!_id">
+                <el-form-item label="年款：" prop="vehicleYearTypeId" v-show="!!_id">
                   <el-input
                     :value="form.vehicleYearType"
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="订单分类" prop="orderCategory">
+                <el-form-item label="订单分类：" prop="orderCategory">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vw_order_category"
@@ -64,7 +64,7 @@
                     :disabled="!!_id"
                   />
                 </el-form-item>
-                <el-form-item label="合作模式" prop="cooperationMode">
+                <el-form-item label="合作模式：" prop="cooperationMode">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="ws_cooperation_mode"
@@ -75,7 +75,7 @@
                     :disabled="!!_id"
                   />
                 </el-form-item>
-                <el-form-item label="开票优惠类型" prop="invoiceDiscountType">
+                <el-form-item label="开票优惠类型：" prop="invoiceDiscountType">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vw_invoice_type"
@@ -85,7 +85,7 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="开票系数" prop="invoiceCoefficient">
+                <el-form-item label="开票系数：" prop="invoiceCoefficient">
                   <el-input-number
                     :controls="false"
                     placeholder="请输入"
@@ -97,7 +97,7 @@
                     :precision="4"
                   />
                 </el-form-item>
-                <el-form-item label="返利使用类型" prop="rebateUseType">
+                <el-form-item label="返利使用类型：" prop="rebateUseType">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vw_rebate_use_type"
@@ -107,7 +107,7 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="返利使用系数" prop="rebateCoefficient">
+                <el-form-item label="返利使用系数：" prop="rebateCoefficient">
                   <el-input-number
                     :controls="false"
                     style="width: 100%;"
@@ -119,7 +119,7 @@
                     :precision="4"
                   />
                 </el-form-item>
-                <el-form-item label="母公司" prop="dealerParentOrgId">
+                <el-form-item label="母公司：" prop="dealerParentOrgId">
                   <fetch-select
                     filterable
                     clearable
@@ -132,7 +132,7 @@
                     @change="(val, record) => {form.dealerParentOrgName = record?.companyName || ''}"
                   />
                 </el-form-item>
-                <el-form-item label="开始日期" prop="startDate">
+                <el-form-item label="开始日期：" prop="startDate">
                   <el-date-picker
                     v-model="form.startDate"
                     format="yyyy-MM-dd HH:mm"
@@ -142,7 +142,7 @@
                     type="datetime"
                   />
                 </el-form-item>
-                <el-form-item label="截止日期" prop="endDate">
+                <el-form-item label="截止日期：" prop="endDate">
                   <el-date-picker
                     v-model="form.endDate"
                     format="yyyy-MM-dd HH:mm"
@@ -288,7 +288,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '整车销售模式配置：' + (this.form.modelName || '');
+      return '整车销售模式配置：' + (this.form.code || '');
     }
   },
   mixins: [routeGuard, permissions, commonMixins],

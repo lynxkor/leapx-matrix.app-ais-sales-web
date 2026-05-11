@@ -179,6 +179,18 @@
             multiple
           />
        </el-form-item>
+       <el-form-item label="创建时间">
+         <el-date-picker
+           :default-time="['00:00:00', '23:59:59']"
+           v-model="form.createTime"
+           type="daterange"
+           :picker-options="pickerOptions"
+           range-separator="至"
+           value-format="yyyy-MM-dd HH:mm:ss"
+           start-placeholder="开始日期"
+           end-placeholder="结束日期"
+         />
+       </el-form-item>
       </template>
       <page-search-action
         v-if="canList"
@@ -194,7 +206,7 @@
       <el-button v-if="canAddOrUpdate" size="small" @click="handleaAdOrUpdate">
         创建发运计划
       </el-button>
-      <el-button v-if="canAddOrUpdate" size="small" @click="handleSwitch">
+      <el-button v-permission="moduleKey+'-setSwitch'" size="small" @click="handleSwitch">
         设置定时任务开关
       </el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
@@ -267,7 +279,8 @@ const defaultForm = {
   cooperateType: '',
   actualDeliveryWay: '',
   regionName: '',
-  carrierRecordCode: ''
+  carrierRecordCode: '',
+  createTime: ''
 };
 
 const pageSize = 20;
@@ -393,7 +406,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 if (row.saleDealerCode) {
-                  window.open(`/partner/channelManagement/parentCompany/edit?id=${row.saleDealerCode}`, '_blank');
+                  window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.saleDealerCode}`, '_blank');
                 }
               },
               type: 'primary'
@@ -574,7 +587,34 @@ export default {
         // column: 'create_time',
         // sort: 'DESC'
         // }
-      ]
+      ],
+      pickerOptions: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick (picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: '最近一个月',
+          onClick (picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: '最近三个月',
+          onClick (picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+            picker.$emit('pick', [start, end]);
+          }
+        }]
+      }
     };
   },
   created () {

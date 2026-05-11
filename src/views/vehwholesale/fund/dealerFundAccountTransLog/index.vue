@@ -242,12 +242,12 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 100 },
+          { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 120 },
           {
             props: 'financialOrganizationName',
             label: '金融机构',
             visible: true,
-            width: 100,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
                 this.openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.financialOrganizationId);
@@ -255,8 +255,8 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'transactionTypeLabel', label: '交易类型', visible: true, width: 100 },
-          { props: 'transactionAmount', label: '交易金额', visible: true, width: 100 },
+          { props: 'transactionTypeLabel', label: '交易类型', visible: true, width: 120 },
+          { props: 'transactionAmount', label: '交易金额', visible: true, width: 120, align: 'right' },
           { props: 'transactionTime', label: '过账时间', visible: true, width: 200 },
           { props: 'transactionReceiptCode', label: '交易凭证号', visible: true, width: 200 },
           { props: 'lineNo', label: '行项目号', visible: true, width: 200 },
@@ -278,7 +278,7 @@ export default {
             props: 'entVehorderCode',
             label: '企业客户整车订单',
             visible: true,
-            width: 200,
+            width: 240,
             buttons: [{
               click: (rowIndex, row) => {
                 window.open(`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${row.entVehorderId}`, '_blank');
@@ -300,9 +300,9 @@ export default {
             }]
           },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260 },
-          { props: 'dealerComapnyCode', label: '母公司编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?id=${row.dealerComapnyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerComapnyCode', label: '母公司编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.dealerComapnyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'fundAccountCode', label: '账户编号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/fund/dealerFundAccount/edit?id=${row.fundAccountId}`, '_blank'); }, type: 'primary' }] },
-          { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200 },
+          { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/vehwholesale/fund/fundSaleCompany/edit?id=${row.saleCompanyId}`, '_blank'); }, type: 'primary' }] },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 }
         ],
         total: 0

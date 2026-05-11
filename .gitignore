@@ -26,3 +26,6 @@ debug.log
 
 # yapi数据临时文件
 /bin/generate.json
+
+# 调整中
+/.claude/skills/ui-refine

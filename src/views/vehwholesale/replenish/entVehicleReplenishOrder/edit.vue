@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="企业客户补货订单："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -14,16 +14,16 @@
         :showEditBtn="form.auditStatus === 0 || form.auditStatus === 4"
       >
         <template #status>
-          {{ form.entReplenishOrderCode }}
+          <!-- {{ form.entReplenishOrderCode }} -->
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button :disabled="!form.buttonsControls.editButton" size="small" @click="handleAddDetail" >添加补货明细</el-button>
-          <el-button :disabled="!form.buttonsControls.submitAuditButton" @click="handleCheckSubmit" >提交审批</el-button>
-          <el-button :disabled="!form.buttonsControls.auditButton"  size="small" @click="handleCheckStatus" >审核</el-button>
-          <el-button :disabled="!form.buttonsControls.cancelButton"  size="small" @click="handleCancel" >作废</el-button>
-          <el-button :disabled="!form.buttonsControls.deleteButton" size="small"  @click="handleDelete" >删除</el-button>
+          <el-button v-if ="peraddDetail && form.buttonsControls && form.buttonsControls.editButton" size="small" @click="handleAddDetail" >添加补货明细</el-button>
+          <el-button v-if ="perbatchSubmitAudit && form.buttonsControls && form.buttonsControls.submitAuditButton" @click="handleCheckSubmit" >提交审批</el-button>
+          <el-button v-if ="perbatchAudit && form.buttonsControls && form.buttonsControls.auditButton"  size="small" @click="handleCheckStatus" >审核</el-button>
+          <el-button v-if ="perbatchCancel && form.buttonsControls && form.buttonsControls.cancelButton"  size="small" @click="handleCancel" >作废</el-button>
+          <el-button v-if ="canDelete && form.buttonsControls && form.buttonsControls.deleteButton" size="small"  @click="handleDelete" >删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -197,7 +197,7 @@
                   {{ form.salesMarketLabel }}
                 </el-form-item>
                 <el-form-item label="企业客户名称：" prop="entCustomerName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?id=' + form.entCustomerCode)">{{ form.entCustomerName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.entCustomerCode)">{{ form.entCustomerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="销售公司：" prop="saleCompanyName">
                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/fund/fundSaleCompany/edit?id=' + form.saleCompanyId)">{{ form.saleCompanyName }}</el-button>
@@ -334,10 +334,10 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="审核人：" prop="auditorUserId">
+                <el-form-item label="审核人：" prop="auditorName">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.auditorUserId"
+                    v-model="form.auditorName"
                     clearable
                     disabled
                   />
@@ -402,7 +402,8 @@
                   @page-size-change="pageSizeChange"
                   @current-page-change="currentPageChange"
                   :auth="{edit: isEditing, delete: isEditing}"
-                />
+                >
+                </edit-table>
               </div>
               </div>
             </div>
@@ -537,7 +538,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '主键：' + this.form.entReplenishOrderCode;
     },
     columns () {
       const isEdit = this.isEditing;
@@ -586,6 +587,11 @@ export default {
           field: 'materialsCode',
           title: '整车物料编码',
           width: '150',
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.materialsId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.materialsId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.materialsCode || '') + '</a>';
+          // }
         },
         {
           field: 'materialsDesc',
@@ -596,51 +602,101 @@ export default {
           field: 'modelName',
           title: '车型',
           width: '100',
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.modelId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleModel/edit?id=' + row.modelId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.modelName || '') + '</a>';
+          // }
         },
         {
           field: 'drivingRangeName',
           title: '选配续航',
           width: '100',
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.drivingRangeId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleDrivingRange/edit?id=' + row.drivingRangeId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.drivingRangeName || '') + '</a>';
+          // }
         },
         {
           field: 'rangePowerName',
           title: '选配动力',
           width: '100',
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.rangePowerId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleRangePower/edit?id=' + row.rangePowerId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.rangePowerName || '') + '</a>';
+          // }
         },
         {
           field: 'exteriorName',
           title: '外饰风格',
           width: '100',
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.exteriorId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleExterior/edit?id=' + row.exteriorId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.exteriorName || '') + '</a>';
+          // }
         },
         {
           field: 'interiorName',
           title: '内饰风格',
           width: '100',
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.interiorId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleInterior/edit?id=' + row.interiorId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.interiorName || '') + '</a>';
+          // }
         },
         {
           field: 'wheelHubName',
           title: '选配轮毂',
           width: '100',
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.wheelHubId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleWheelHub/edit?id=' + row.wheelHubId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.wheelHubName || '') + '</a>';
+          // }
         },
         {
           field: 'batteryCellName',
           title: '电池电芯',
           width: '100',
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.batteryCellId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleBatteryCell/edit?id=' + row.batteryCellId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.batteryCellName || '') + '</a>';
+          // }
         },
         {
           field: 'yearTypeName',
           title: '年款',
           width: '100',
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.yearTypeId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleYearType/edit?id=' + row.yearTypeId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.yearTypeName || '') + '</a>';
+          // }
         },
         {
           field: 'roofName',
           title: '车顶风格',
           width: '100',
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.roofId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleRoof/edit?id=' + row.roofId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.roofName || '') + '</a>';
+          // }
         },
         {
           field: 'optionPackageName',
           title: '选装包',
           width: '80',
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.optionPackageId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleOptionPackage/edit?id=' + row.optionPackageId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.optionPackageName || '') + '</a>';
+          // }
         }
       ];
     }
@@ -727,6 +783,11 @@ export default {
         value: 'code',
         children: 'child'
       },
+      // 权限控制
+      peraddDetail: false,
+      perbatchSubmitAudit: false,
+      perbatchAudit: false,
+      perbatchCancel: false,
       areaOptions: JSON.parse(localStorage.areaTree),
       emptyText: '若要启用此内容，请创建记录',
       tableData: [],
@@ -769,7 +830,16 @@ export default {
     this.listNetworkParentCompany();
     this.getCompanyList();
   },
+  created () {
+    this.initPermissions();
+  },
   methods: {
+    initPermissions () {
+      this.peraddDetail = this.permissions.has(`${this.moduleKey}-addDetail`);
+      this.perbatchSubmitAudit = this.permissions.has(`${this.moduleKey}-batchSubmitAudit`);
+      this.perbatchAudit = this.permissions.has(`${this.moduleKey}-batchAudit`);
+      this.perbatchCancel = this.permissions.has(`${this.moduleKey}-batchCancel`);
+    },
     openWindow (url) {
       window.open(url, '_blank');
     },
@@ -1152,16 +1222,29 @@ export default {
           }
           res.detailList = res.detailList.map(detail => ({
             ...detail,
+            materialsId: detail.vehicleMaterials?.id,
+            materialsCode: detail.vehicleMaterials?.materialsCode || '',
             materialsDesc: detail.vehicleMaterials.materialsDesc || '',
+            modelId: detail.vehicleMaterials?.modelId,
             modelName: detail.vehicleMaterials.modelName || '',
+            seriesId: detail.vehicleMaterials?.seriesId,
+            drivingRangeId: detail.vehicleMaterials?.drivingRangeId,
             drivingRangeName: detail.vehicleMaterials.drivingRangeName || '',
+            rangePowerId: detail.vehicleMaterials?.rangePowerId,
             rangePowerName: detail.vehicleMaterials.rangePowerName || '',
+            exteriorId: detail.vehicleMaterials?.exteriorId,
             exteriorName: detail.vehicleMaterials.exteriorName || '',
+            interiorId: detail.vehicleMaterials?.interiorId,
             interiorName: detail.vehicleMaterials.interiorName || '',
+            wheelHubId: detail.vehicleMaterials?.wheelHubId,
             wheelHubName: detail.vehicleMaterials.wheelHubName || '',
+            batteryCellId: detail.vehicleMaterials?.batteryCellId,
             batteryCellName: detail.vehicleMaterials.batteryCellName || '',
+            yearTypeId: detail.vehicleMaterials?.yearTypeId,
             yearTypeName: detail.vehicleMaterials.yearTypeName || '',
+            roofId: detail.vehicleMaterials?.roofId,
             roofName: detail.vehicleMaterials.roofName || '',
+            optionPackageId: detail.vehicleMaterials?.optionPackageId,
             optionPackageName: detail.vehicleMaterials.optionPackageName || '',
           }));
           this.tableData = res.detailList;

@@ -4,7 +4,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="仓库配车关系："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -22,7 +22,7 @@
             <div class="common-section-body">
               <!-- 编辑模式 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="仓库配车编号" prop="code">
+                <el-form-item label="仓库配车编号：" prop="code">
                   <el-input
                     placeholder="系统自动生成"
                     v-model="form.code"
@@ -30,7 +30,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="整车仓库" prop="warehouseName">
+                <el-form-item label="整车仓库：" prop="warehouseName">
                   <fetch-select
                     v-model="form.warehouseCode"
                     filterable
@@ -45,7 +45,7 @@
                     label-key="warehouseName"
                   />
                 </el-form-item>
-                <el-form-item label="仓库分类" prop="warehouseType">
+                <el-form-item label="仓库分类：" prop="warehouseType">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vehstock_warehouse_type"
@@ -56,7 +56,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="省" prop="provinceCode">
+                <el-form-item label="省：" prop="provinceCode">
                   <fetch-select
                     v-model="form.provinceCode"
                     placeholder="请选择"
@@ -67,7 +67,7 @@
                     @change="handleChangeProvince"
                   />
                 </el-form-item>
-                <el-form-item label="市" prop="cityCode">
+                <el-form-item label="市：" prop="cityCode">
                   <fetch-select
                     v-model="form.cityCode"
                     placeholder="请选择"
@@ -78,7 +78,7 @@
                     @change="handleChangeCity"
                   />
                 </el-form-item>
-                <el-form-item label="配车优先级" prop="priority">
+                <el-form-item label="配车优先级：" prop="priority">
                   <el-input
                     type="number"
                     placeholder="请输入"
@@ -86,7 +86,7 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="状态" prop="status">
+                <el-form-item label="状态：" prop="status">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="StatusEnum"

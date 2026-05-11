@@ -258,7 +258,7 @@ const defaultForm = {
   preApprovalLabel: '',
   finalApproval: 0,
   finalApprovalLabel: '',
-  refundTypeDefault: 10,
+  refundTypeDefault: 5,
   refundTypeDefaultLabel: '',
   refundTypeSelect: 0,
   refundTypeSelectLabel: '',
