@@ -17,19 +17,19 @@ const devNeedCdn = false;
 const cdn = {
   // cdn：模块名称和模块作用域命名（对应window里面挂载的变量名称）
   externals: {
-    'element-ui': 'ELEMENT',
+    // 'element-ui': 'ELEMENT',
     axios: 'axios',
     vue: 'Vue',
     vuex: 'Vuex',
-    'vue-router': 'VueRouter',
+    // 'vue-router': 'VueRouter',
     AMap: 'AMap'
   },
   // cdn的js链接
   js: [
     '/js/vue.min.js',
     '/js/vuex.min.js',
-    '/js/vue-router.min.js',
-    '/js/index.js',
+    // '/js/vue-router.min.js',
+    // '/js/index.js',
     '/js/axios.min.js'
   ]
 };

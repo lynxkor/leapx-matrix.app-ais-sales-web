@@ -18,7 +18,7 @@
         </template>
         <template #extraButtons>
           <!--  v-if = "canAddOrUpdate && form.buttonControl && form.buttonControl.addVehicleButton"  -->
-          <el-button v-if = "canAddOrUpdate && form.buttonControl && form.buttonControl.addVehicleButton" size="small"  @click="handelAdd">添加车辆</el-button>
+          <el-button v-if = "peraddOrUpdateDetail && form.buttonControl && form.buttonControl.addVehicleButton" size="small"  @click="handelAdd">添加车辆</el-button>
           <el-button v-if = "persubmitAudit && form.buttonControl && form.buttonControl.submitButton" size="small"  @click="handelSubmit">提交</el-button>
           <el-button v-if = "peraudit && form.buttonControl && form.buttonControl.auditButton" size="small"  @click="handleAudit">审核</el-button>
           <el-button v-if = "percancel && form.buttonControl && form.buttonControl.canceledButton" size="small"  @click="handelCancel">作废</el-button>
@@ -466,7 +466,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '整车退车订单：' + this.form.backOrderCode;
@@ -535,6 +535,7 @@ export default {
       persubmitAudit: false,
       peraudit: false,
       percancel: false,
+      peraddOrUpdateDetail: false,
       rules: {
         orderType: [
           { required: true, message: '请选择单据类型', trigger: 'change' }
@@ -687,6 +688,7 @@ export default {
       this.persubmitAudit = this.permissions.has(`${this.moduleKey}-submitAudit`); // 提交
       this.peraudit = this.permissions.has(`${this.moduleKey}-audit`); // 审核
       this.percancel = this.permissions.has(`${this.moduleKey}-cancel`); // 作废
+      this.peraddOrUpdateDetail = this.permissions.has(`${this.moduleKey}-addOrUpdateDetail`); // 添加车辆
     },
     openWindow (url) {
       window.open(url, '_blank');

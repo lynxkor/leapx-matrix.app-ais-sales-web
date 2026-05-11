@@ -271,7 +271,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '自有资金赊销配置：' + this.form.configCode;

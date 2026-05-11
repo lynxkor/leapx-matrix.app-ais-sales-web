@@ -535,10 +535,10 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
-      return '主键：' + this.form.entReplenishOrderCode;
+      return '企业客户补货订单：' + this.form.entReplenishOrderCode;
     },
     columns () {
       const isEdit = this.isEditing;

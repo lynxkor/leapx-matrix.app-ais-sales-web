@@ -12,6 +12,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="canAddOrUpdate && form.buttonControl && form.buttonControl.editButton"
       >
         <template #status>
           <!-- {{ form.wholesaleOrderCode }} -->
@@ -287,7 +288,7 @@
                   {{ form.dealerWarehouseName }}
                 </el-form-item>
                  <el-form-item label="整车补货单号：" prop="replenishApplyCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=' + form.replenishApplyCode)">{{ form.replenishApplyCode }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApply/edit?id=' + form.replenishApplyCode)">{{ form.replenishApplyCode }}</el-button>
                 </el-form-item>
                    <el-form-item label="订单分类：" prop="orderCategoryLabel">
                   {{ form.orderCategoryLabel }}
@@ -1161,7 +1162,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '整车批售订单信息：' + (this.form.wholesaleOrderCode || '');

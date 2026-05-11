@@ -133,7 +133,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '门店自动确认批售配置：' + (this.form.dealerName || '');

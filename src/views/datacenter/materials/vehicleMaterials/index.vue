@@ -250,7 +250,13 @@ export default {
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.id}`, '_blank');
+                this.$router.push({
+                  path: '/datacenter/materials/vehicleMaterials/edit',
+                  query: {
+                    id: row.id,
+                    isEditing: false
+                  }
+                });
               },
               type: 'primary'
             }]

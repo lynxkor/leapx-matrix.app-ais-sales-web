@@ -577,7 +577,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '合格证赎回编号：' + this.form.redemptionCode;
