@@ -262,7 +262,7 @@
                   {{ form.backOrderDetailCode }}
                 </el-form-item>
                 <el-form-item label="退车订单编号：" prop="backOrderCode">
-                  {{ form.backOrderCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/back/vehicleBackOrder/edit?id=' + form.backOrderCode)">{{ form.backOrderCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="VIN码：" prop="vin">
                   {{ form.vin }}
@@ -337,7 +337,7 @@
                   {{ form.remark }}
                 </el-form-item>
                  <el-form-item label="订单接口同步结果：" prop="syncSapMsg"  class="form-item-full">
-                  {{ JSON.parse(form.syncSapMsg || '{}')?.message || '' }}
+                  {{ form.syncSapMsg }}
                 </el-form-item>
               </el-form>
             </div>

@@ -217,10 +217,14 @@
                   border="inner"
                 >
                   <!-- 业务列 -->
-                  <vxe-column field="backOrderDetailCode" title="退车明细单号" width="180" />
+                  <vxe-column field="backOrderDetailCode" title="退车明细单号" width="180">
+                    <template #default="{ row }">
+                      <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/back/vehicleBackOrderDetail/edit?id=' + row.backOrderDetailCode)">{{ row.backOrderDetailCode }}</el-button>
+                    </template>
+                  </vxe-column>
                   <vxe-column field="backOrderCode" title="退车订单号" width="200">
                     <template #default="{ row }">
-                      <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/back/vehicleBackOrder/edit?id=' + row.backOrderCode)">{{ row.backOrderCode }}</el-button>
+                      {{ row.backOrderCode }}
                     </template>
                   </vxe-column>
                   <vxe-column field="vin" title="VIN" width="100" />
