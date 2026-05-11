@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="整车退车订单:"
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -14,15 +14,16 @@
         :showEditBtn="form.auditStatus === 10 || form.auditStatus === 20"
       >
         <template #status>
-         {{ form.backOrderCode }}
+         <!-- {{ form.backOrderCode }} -->
         </template>
         <template #extraButtons>
-          <el-button   v-if = "form.buttonControl && form.buttonControl.addVehicleButton" size="small"  @click="handelAdd">添加车辆</el-button>
-          <el-button   v-if = "form.buttonControl && form.buttonControl.submitButton" size="small"  @click="handelSubmit">提交</el-button>
-          <el-button   v-if = "form.buttonControl && form.buttonControl.auditButton" size="small"  @click="handleAudit">审核</el-button>
-          <el-button   v-if = "form.buttonControl && form.buttonControl.canceledButton" size="small"  @click="handelCancel">作废</el-button>
-          <el-button   v-if = "form.buttonControl && form.buttonControl.importVehicleButton" size="small"  @click="handleImport">导入车辆</el-button>
-          <el-button   v-if = "form.buttonControl && form.buttonControl.deleteButton" size="small"  @click="handelDel">删除</el-button>
+          <!--  v-if = "canAddOrUpdate && form.buttonControl && form.buttonControl.addVehicleButton"  -->
+          <el-button v-if = "canAddOrUpdate && form.buttonControl && form.buttonControl.addVehicleButton" size="small"  @click="handelAdd">添加车辆</el-button>
+          <el-button v-if = "persubmitAudit && form.buttonControl && form.buttonControl.submitButton" size="small"  @click="handelSubmit">提交</el-button>
+          <el-button v-if = "peraudit && form.buttonControl && form.buttonControl.auditButton" size="small"  @click="handleAudit">审核</el-button>
+          <el-button v-if = "percancel && form.buttonControl && form.buttonControl.canceledButton" size="small"  @click="handelCancel">作废</el-button>
+          <el-button v-if = "canImport && form.buttonControl && form.buttonControl.importVehicleButton" size="small"  @click="handleImport">导入车辆</el-button>
+          <el-button v-if = "canDelete && form.buttonControl && form.buttonControl.deleteButton" size="small"  @click="handelDel">删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -216,10 +217,14 @@
                   border="inner"
                 >
                   <!-- 业务列 -->
-                  <vxe-column field="backOrderDetailCode" title="退车明细单号" width="180" />
+                  <vxe-column field="backOrderDetailCode" title="退车明细单号" width="180">
+                    <template #default="{ row }">
+                      <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/back/vehicleBackOrderDetail/edit?id=' + row.backOrderDetailCode)">{{ row.backOrderDetailCode }}</el-button>
+                    </template>
+                  </vxe-column>
                   <vxe-column field="backOrderCode" title="退车订单号" width="200">
                     <template #default="{ row }">
-                      <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/back/vehicleBackOrder/edit?id=' + row.backOrderCode)">{{ row.backOrderCode }}</el-button>
+                      {{ row.backOrderCode }}
                     </template>
                   </vxe-column>
                   <vxe-column field="vin" title="VIN" width="100" />
@@ -464,7 +469,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '整车退车订单：' + this.form.backOrderCode;
     }
   },
   watch: {
@@ -526,6 +531,10 @@ export default {
         // 对应表格里选型枚举
         // 如 type: [{label: 'xxx', value: 'xxx'}]
       },
+      // 权限控制
+      persubmitAudit: false,
+      peraudit: false,
+      percancel: false,
       rules: {
         orderType: [
           { required: true, message: '请选择单据类型', trigger: 'change' }
@@ -670,7 +679,15 @@ export default {
   mounted () {
     this.fetchBooleanEnum();
   },
+  created () {
+    this.initPermissions();
+  },
   methods: {
+    initPermissions () {
+      this.persubmitAudit = this.permissions.has(`${this.moduleKey}-submitAudit`); // 提交
+      this.peraudit = this.permissions.has(`${this.moduleKey}-audit`); // 审核
+      this.percancel = this.permissions.has(`${this.moduleKey}-cancel`); // 作废
+    },
     openWindow (url) {
       window.open(url, '_blank');
     },

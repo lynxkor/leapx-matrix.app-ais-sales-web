@@ -1,5 +1,5 @@
 <template>
-  <div class="page-common m-retail-order-info-list">
+  <div class="page-common m-sales-proxy-list">
     <!--  TIPS: 自行调整如下label-width，满足label不换行  -->
     <el-form
       :inline="true"
@@ -19,7 +19,7 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="批售订单号"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="批售订单号" v-show="this.visibleCount === 3 || show">
         <tag-input v-model="form.wholesaleOrderCodeList" clearable placeholder="请输入" />
       </el-form-item>
       <template v-if="show">
@@ -560,7 +560,8 @@ export default {
     },
     changeDealerFun (data) {
       const param = {
-        saleStoreChangeType: data.saleStoreChangeType,
+        saleStoreChangeType: data.changeReasonCode,
+        saleStoreChangeName: data.changeReason,
         saleStoreChangeRemark: data.saleStoreChangeRemark,
         orderIdList: data.dataList.map(item => item.id),
         newStoreCode: data.storeCode,
@@ -815,6 +816,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.m-retail-order-info-list {
+.m-sales-proxy-list {
+  ::v-deep .m-vxe-table .m-vxe-table-options {
+    top: -96px;
+  }
+  .ais-actions {
+    margin-bottom: 8px;
+  }
+  .ais-table-c {
+    height: calc(100% - 168px);
+  }
 }
 </style>

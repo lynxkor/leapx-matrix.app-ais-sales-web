@@ -4,7 +4,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="赊销明细编号："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -12,7 +12,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          {{ form.creditSalesDetailCode }}
+          <!-- {{ form.creditSalesDetailCode }} -->
         </template>
         <el-main>
           <section class="common-section">
@@ -343,7 +343,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '赊销明细编号：';
+      return '赊销明细编号：' + this.form.creditSalesDetailCode;
     }
   },
   watch: {

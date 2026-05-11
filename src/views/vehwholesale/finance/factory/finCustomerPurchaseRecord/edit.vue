@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="客户采购记录:"
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -14,7 +14,7 @@
         :showEditBtn="false"
       >
         <template #status>
-          <span>{{ form.code }}</span>
+          <!-- <span>{{ form.code }}</span> -->
         </template>
         <!-- <template #extraButtons>
           <el-button size="small">按钮1</el-button>
@@ -431,6 +431,9 @@ export default {
   computed: {
     _id () {
       return this.id || this.$route.query.id || this.form.id;
+    },
+    title () {
+      return '客户采购记录：' + (this.form.code || '');
     }
   },
   watch: {
@@ -448,7 +451,6 @@ export default {
     return {
       pageTitle: '客户采购记录',
       pageType: 'edit',
-      title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-finCustomerPurchaseRecord',
       loading: false,

@@ -6,7 +6,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="整车批售订单信息："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -14,17 +14,17 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          {{ form.wholesaleOrderCode }}
+          <!-- {{ form.wholesaleOrderCode }} -->
         </template>
         <template #extraButtons >
-          <el-button  size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
-          <el-button  v-if ="form.buttonControl && form.buttonControl.confirmManualButton" size="small" @click="handleCheckConfirm" >审核确认</el-button>
-          <el-button  v-if ="form.buttonControl && form.buttonControl.autoAllocateVehicle" size="small" @click="handleaAutoVehicleAllocation">自动配车</el-button>
-          <el-button  v-if ="form.buttonControl && form.buttonControl.manualAllocateVehicle" size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
-          <el-button  v-if ="form.buttonControl && form.buttonControl.cancelAllocateVehicle" size="small" @click="handleCancelAllocateVehicle">取消配车</el-button>
-          <el-button  v-if ="form.buttonControl && form.buttonControl.submitSettleButton" size="small" @click="handleBatchSettleSubmit">提交结算</el-button>
-          <el-button  v-if ="form.buttonControl && form.buttonControl.cancelSettle" size="small" @click="handleBatchCancelSettle">取消结算</el-button>
-          <el-button  v-if ="form.buttonControl && form.buttonControl.cancelButton" size="small" @click="handleCancel">作废</el-button>
+          <el-button  v-if ="perquerySapAccount" size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
+          <el-button  v-if ="perbatchConfirm && form.buttonControl && form.buttonControl.confirmManualButton" size="small" @click="handleCheckConfirm" >审核确认</el-button>
+          <el-button  v-if ="perbatchSetAutoAllocate && form.buttonControl && form.buttonControl.autoAllocateVehicle" size="small" @click="handleaAutoVehicleAllocation">自动配车</el-button>
+          <el-button  v-if ="pervinAllocateVehicle && form.buttonControl && form.buttonControl.manualAllocateVehicle" size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
+          <el-button  v-if ="perbatchCancelAllocate && form.buttonControl && form.buttonControl.cancelAllocateVehicle" size="small" @click="handleCancelAllocateVehicle">取消配车</el-button>
+          <el-button  v-if ="perbatchSettleSubmit && form.buttonControl && form.buttonControl.submitSettleButton" size="small" @click="handleBatchSettleSubmit">提交结算</el-button>
+          <el-button  v-if ="perbatchCancelSettle && form.buttonControl && form.buttonControl.cancelSettle" size="small" @click="handleBatchCancelSettle">取消结算</el-button>
+          <el-button  v-if ="perbatchCancel && form.buttonControl && form.buttonControl.cancelButton" size="small" @click="handleCancel">作废</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -305,7 +305,7 @@
                    {{ form.orderMaterialsDesc }}
                 </el-form-item>
                 <el-form-item label="专项活动：" prop="prodScheduleActivityName">
-                  {{ form.prodScheduleActivityName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=' + form.prodScheduleActivityId)">{{ form.prodScheduleActivityName }}</el-button>
                 </el-form-item>
                 <el-form-item label="税务发票号：" prop="taxInvoiceCode">
                   {{ form.taxInvoiceCode }}
@@ -662,7 +662,7 @@
                   {{ form.materialsDesc }}
                 </el-form-item>
                 <el-form-item label="配车VIN码：" prop="vin">
-                  {{ form.vin }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?id=' + form.vdcInventory.id)">{{ form.vin }}</el-button>
                 </el-form-item>
                 <el-form-item label="配车时间：" prop="allocateTime">
                   {{ form.allocateTime }}
@@ -950,10 +950,12 @@
                 <el-table-column label="资金类型" width="180">
                     <template slot-scope="scope">
                       <span>
-                        {{ scope.row.fundTypeLabel }}
                         <!-- 判断条件：fundType 为 2010 (融资) 时拼接金融机构名称 -->
                         <span v-if="scope.row.fundType === '2010' || scope.row.fundType === 2010">
-                          - <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + scope.row.financialOrganizationId)">{{ scope.row.financialOrganizationName || '' }}</el-button>
+                           <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + scope.row.financialOrganizationId)">{{ scope.row.fundTypeLabel }}-{{ scope.row.financialOrganizationName || '' }}</el-button>
+                        </span>
+                        <span v-else>
+                          <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/fund/dealerFundAccount/edit?id=' + scope.row.id)">{{ scope.row.fundTypeLabel || '' }}</el-button>
                         </span>
                       </span>
                     </template>
@@ -1160,6 +1162,9 @@ export default {
   computed: {
     _id () {
       return this.id || this.$route.query.id || this.form.id;
+    },
+    title () {
+      return '整车批售订单信息：' + (this.form.wholesaleOrderCode || '');
     }
   },
   watch: {
@@ -1177,7 +1182,6 @@ export default {
     return {
       pageTitle: '整车批售订单',
       pageType: 'edit',
-      title: '批售订单号：' + form.wholesaleOrderCode,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-vehicleWholesaleOrderFactory',
       loading: false,
@@ -1196,6 +1200,15 @@ export default {
       orderCategoryOptions: [],
       accountData: [],
       fundTypeList: [],
+      // 权限控制
+      perquerySapAccount: false,
+      perbatchConfirm: false,
+      perbatchSetAutoAllocate: false,
+      pervinAllocateVehicle: false,
+      perbatchSettleSubmit: false,
+      perbatchCancelSettle: false,
+      perbatchCancel: false,
+      perbatchCancelAllocate: false,
       detailsColumns: [
         { field: 'dealerCompanyName', title: '销售公司' },
         { field: 'gtext', title: '资金类型' },
@@ -1255,7 +1268,20 @@ export default {
     this.fetchSettleFundTypeOptions();
     this.fetchOrderCategoryOptions();
   },
+  created () {
+    this.initPermissions();
+  },
   methods: {
+    initPermissions () {
+      this.perquerySapAccount = this.permissions.has(`${this.moduleKey}-querySapAccount`); // 查询整车账户余额
+      this.perbatchConfirm = this.permissions.has(`${this.moduleKey}-batchConfirm`); // 审核确认 to do
+      this.perbatchSetAutoAllocate = this.permissions.has(`${this.moduleKey}-batchSetAutoAllocate`); // 自动配车
+      this.pervinAllocateVehicle = this.permissions.has(`${this.moduleKey}-vinAllocateVehicle`); // 手工配车
+      this.perbatchSettleSubmit = this.permissions.has(`${this.moduleKey}-batchSettleSubmit`); // 提交结算
+      this.perbatchCancelSettle = this.permissions.has(`${this.moduleKey}-batchCancelSettle`); // 取消结算
+      this.perbatchCancel = this.permissions.has(`${this.moduleKey}-batchCancel`); // 作废
+      this.perbatchCancelAllocate = this.permissions.has(`${this.moduleKey}-batchCancelAllocate`); // 取消结算
+    },
     openWindow (url) {
       window.open(url, '_blank');
     },

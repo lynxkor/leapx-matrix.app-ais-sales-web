@@ -4,7 +4,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="批售目标默认配额："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -12,7 +12,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          <span>{{ form.wholesaleTargetDefaultQuotaName }}</span>
+          <!-- <span>{{ form.wholesaleTargetDefaultQuotaName }}</span> -->
         </template>
         <el-main>
           <section class="common-section">
@@ -123,7 +123,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '批售目标默认配额：' + (this.form.seriesName || '');
+      return '批售目标默认配额：' + (this.form.wholesaleTargetDefaultQuotaName || '');
     }
   },
   mixins: [routeGuard, permissions, commonMixins],

@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="企业客户补货订单："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -14,16 +14,16 @@
         :showEditBtn="form.auditStatus === 0 || form.auditStatus === 4"
       >
         <template #status>
-          {{ form.entReplenishOrderCode }}
+          <!-- {{ form.entReplenishOrderCode }} -->
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button v-if ="form.buttonsControls && form.buttonsControls.editButton" size="small" @click="handleAddDetail" >添加补货明细</el-button>
-          <el-button v-if ="form.buttonsControls && form.buttonsControls.submitAuditButton" @click="handleCheckSubmit" >提交审批</el-button>
-          <el-button v-if ="form.buttonsControls && form.buttonsControls.auditButton"  size="small" @click="handleCheckStatus" >审核</el-button>
-          <el-button v-if ="form.buttonsControls && form.buttonsControls.cancelButton"  size="small" @click="handleCancel" >作废</el-button>
-          <el-button v-if ="form.buttonsControls && form.buttonsControls.deleteButton" size="small"  @click="handleDelete" >删除</el-button>
+          <el-button v-if ="peraddDetail && form.buttonsControls && form.buttonsControls.editButton" size="small" @click="handleAddDetail" >添加补货明细</el-button>
+          <el-button v-if ="perbatchSubmitAudit && form.buttonsControls && form.buttonsControls.submitAuditButton" @click="handleCheckSubmit" >提交审批</el-button>
+          <el-button v-if ="perbatchAudit && form.buttonsControls && form.buttonsControls.auditButton"  size="small" @click="handleCheckStatus" >审核</el-button>
+          <el-button v-if ="perbatchCancel && form.buttonsControls && form.buttonsControls.cancelButton"  size="small" @click="handleCancel" >作废</el-button>
+          <el-button v-if ="canDelete && form.buttonsControls && form.buttonsControls.deleteButton" size="small"  @click="handleDelete" >删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -538,7 +538,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '主键：' + this.form.entReplenishOrderCode;
     },
     columns () {
       const isEdit = this.isEditing;
@@ -783,6 +783,11 @@ export default {
         value: 'code',
         children: 'child'
       },
+      // 权限控制
+      peraddDetail: false,
+      perbatchSubmitAudit: false,
+      perbatchAudit: false,
+      perbatchCancel: false,
       areaOptions: JSON.parse(localStorage.areaTree),
       emptyText: '若要启用此内容，请创建记录',
       tableData: [],
@@ -825,7 +830,16 @@ export default {
     this.listNetworkParentCompany();
     this.getCompanyList();
   },
+  created () {
+    this.initPermissions();
+  },
   methods: {
+    initPermissions () {
+      this.peraddDetail = this.permissions.has(`${this.moduleKey}-addDetail`);
+      this.perbatchSubmitAudit = this.permissions.has(`${this.moduleKey}-batchSubmitAudit`);
+      this.perbatchAudit = this.permissions.has(`${this.moduleKey}-batchAudit`);
+      this.perbatchCancel = this.permissions.has(`${this.moduleKey}-batchCancel`);
+    },
     openWindow (url) {
       window.open(url, '_blank');
     },

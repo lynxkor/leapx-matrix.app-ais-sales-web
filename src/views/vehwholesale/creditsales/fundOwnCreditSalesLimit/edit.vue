@@ -4,7 +4,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="自有资金赊销额度："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -12,7 +12,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          {{ form.creditSalesLimitCode }}
+          <!-- {{ form.creditSalesLimitCode }} -->
         </template>
         <el-main>
           <section class="common-section">

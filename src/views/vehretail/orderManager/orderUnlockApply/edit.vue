@@ -487,6 +487,9 @@ export default {
     isAdding () {
       return this.$route.query.isAdding;
     },
+    title () {
+      return '申请单号：' + this.form.unlockApplyCode;
+    },
   },
   watch: {
     id: {
@@ -503,7 +506,6 @@ export default {
     return {
       pageTitle: '锁车解绑申请',
       pageType: 'edit',
-      title: '申请单号：' + form.unlockApplyCode,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-orderUnlockApply',
       loading: false,

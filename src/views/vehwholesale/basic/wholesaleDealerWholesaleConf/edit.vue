@@ -4,7 +4,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="门店批售设置："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -12,7 +12,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          <span class="status primary">{{ form.autoAllocationEnabledLabel }}</span>
+          <!-- <span class="status primary">{{ form.autoAllocationEnabledLabel }}</span> -->
         </template>
         <el-main>
           <section class="common-section">

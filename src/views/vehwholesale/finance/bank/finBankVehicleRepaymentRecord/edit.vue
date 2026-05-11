@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="银行车辆还款记录："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -13,7 +13,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          <span>{{ form.code }}</span>
+          <!-- <span>{{ form.code }}</span> -->
         </template>
         <template #extraButtons>
         </template>
@@ -158,6 +158,9 @@ export default {
   computed: {
     _id () {
       return this.id || this.$route.query.id || this.form.id;
+    },
+    title () {
+      return '银行车辆还款记录：' + (this.form.code || '');
     }
   },
   watch: {
@@ -175,7 +178,6 @@ export default {
     return {
       pageTitle: '银行还款车辆记录',
       pageType: 'edit',
-      title: '物料编码：' + form.materialsCode,
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-finBankVehicleRepaymentRecord',
       loading: false,

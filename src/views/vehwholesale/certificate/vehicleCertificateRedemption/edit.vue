@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="车辆合格证赎回："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -17,10 +17,10 @@
           <span>{{ form.redemptionCode }}</span>
         </template>
         <template #extraButtons>
-          <el-button v-if = "form.buttonControl && form.buttonControl.submitRedeem"  size="small" @click="handleSubmit">提交赎回</el-button>
-          <el-button v-if = "form.buttonControl && form.buttonControl.submitRedeemAgain" size="small" @click="handleSubmitAgain">重新提交赎回</el-button>
-          <el-button v-if = "form.buttonControl && form.buttonControl.confirmReceive" size="small" @click="handleconfirmSign">签收合格证</el-button>
-          <el-button v-if = "form.buttonControl && form.buttonControl.delete" size="small" @click="handleDel">删除</el-button>
+          <el-button v-if = "persubmit && form.buttonControl && form.buttonControl.submitRedeem"  size="small" @click="handleSubmit">提交赎回</el-button>
+          <el-button v-if = "persubmit && form.buttonControl && form.buttonControl.submitRedeemAgain" size="small" @click="handleSubmitAgain">重新提交赎回</el-button>
+          <el-button v-if = "perconfirmReceive && form.buttonControl && form.buttonControl.confirmReceive" size="small" @click="handleconfirmSign">签收合格证</el-button>
+          <el-button v-if = "canDelete && form.buttonControl && form.buttonControl.delete" size="small" @click="handleDel">删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -580,7 +580,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '合格证赎回编号：' + this.form.redemptionCode;
     }
   },
   watch: {
@@ -638,6 +638,10 @@ export default {
         value: 'code',
         children: 'child'
       },
+      // 权限控制
+      persubmit: false,
+      perconfirmReceive: false,
+
       areaOptions: JSON.parse(localStorage.areaTree),
       tableData: [
       ],
@@ -680,6 +684,10 @@ export default {
   mounted () {
   },
   methods: {
+    initPermissions () {
+      this.persubmit = this.permissions.has(`${this.moduleKey}-submit`);
+      this.perconfirmReceive = this.permissions.has(`${this.moduleKey}-confirmReceive`);
+    },
     openWindow (url) {
       window.open(url, '_blank');
     },

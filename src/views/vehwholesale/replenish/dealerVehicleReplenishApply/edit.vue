@@ -333,7 +333,7 @@
                 >
                   <template #fundTypeDisplay="{ row }">
                     <el-button v-if="row.fundType === '2010' || row.fundType === 2010" class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.financialOrganizationId)">{{ row.fundTypeDisplay }}</el-button>
-                    <span v-else>{{ row.fundTypeDisplay }}</span>
+                    <el-button v-else class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/fund/dealerFundAccount/edit?id=' + row.id)">{{ row.fundTypeDisplay }}</el-button>
                   </template>
                 </component-table>
               </div>
@@ -489,7 +489,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '整车补货单号：' + this.form.replenishApplyCode;
+      return '整车补货单号：';
     }
   },
   watch: {
@@ -596,7 +596,7 @@ export default {
         applyCategory: [
           { required: false, message: '请选择申请类别', trigger: 'change' }
         ],
-        settleFundType: [
+        settleFundTypeLabel: [
           { required: true, message: '请选择结算资金类型', trigger: 'change' }
         ],
         financialOrganizationId: [
@@ -921,7 +921,7 @@ export default {
       this.form.financialOrganizationName = '';
       this.form.settleFundType = row.fundType;
       this.form.settleFundTypeLabel = row.fundTypeLabel;
-      if (val + '' === '1050') {
+      if (val === '赊销-零跑') {
         this.form.isCreditSale = 1;
       } else {
         this.form.isCreditSale = 0;

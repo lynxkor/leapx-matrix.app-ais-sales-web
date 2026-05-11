@@ -13,7 +13,10 @@
         :showEditBtn="form.permissions.edit"
       >
         <template #status>
-          <span class="status primary"> {{ form.auditStatusLabel }}</span>
+          <span v-if="form.auditStatus === 10" class="status link">{{ form.auditStatusLabel }}</span>
+          <span v-else-if="form.auditStatus === 20 || form.auditStatus === 70" class="status danger">{{ form.auditStatusLabel }}</span>
+          <span v-else-if="[30, 40, 50, 60].includes(form.auditStatus)" class="status success">{{ form.auditStatusLabel }}</span>
+          <span v-else class="status success">{{ form.auditStatusLabel }}</span>
         </template>
         <template #extraButtons>
           <el-button size="small" @click="auditLog">申请记录</el-button>

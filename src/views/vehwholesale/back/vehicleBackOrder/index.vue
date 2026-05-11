@@ -119,7 +119,7 @@
       <!--  TIPS:根据产品增删功能按钮  -->
         <el-dropdown trigger="click" style="margin: 0 10px;" @command="handleAdd">
         <el-button size="small" type="primary" @click="showDropdown">
-          {{ dropdownLoading ? '加载中...' : '整车退车订单' }}
+          {{ dropdownLoading ? '加载中...' : '新增整车退车订单' }}
           <i class="iconfont icon-lxppc-down" />
         </el-button>
         <el-dropdown-menu slot="dropdown">
@@ -132,8 +132,8 @@
         </el-dropdown-menu>
       </el-dropdown>
       <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
-      <el-button v-if="canExport"  size="small" @click="handleAudit" :disabled="selectionList.length === 0">审核</el-button>
-      <el-button v-if="canExport"  size="small" @click="handleCancel" :disabled="selectionList.length === 0">作废</el-button>
+      <el-button v-permission="moduleKey+'-audit'"  size="small" @click="handleAudit" :disabled="selectionList.length === 0">审核</el-button>
+      <el-button v-permission="moduleKey+'-cancel'" size="small" @click="handleCancel" :disabled="selectionList.length === 0">作废</el-button>
       <el-button v-if="canExport"  size="small" @click="exportExcel">导出</el-button>
     </div>
     <div

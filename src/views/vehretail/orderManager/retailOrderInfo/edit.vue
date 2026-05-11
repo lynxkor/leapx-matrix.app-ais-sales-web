@@ -903,7 +903,7 @@ export default {
     // 权益申请
     handleEquityApply () {
       this.navigateToRoute({
-        path: '/vehretail/orderManager/vrEquityApply/edit',
+        path: '/sales/vehretail/orderManager/vrEquityApply/edit',
         query: {
           retailOrderCode: this.form.retailOrderCode
         }
@@ -912,7 +912,7 @@ export default {
     // 团购申请
     handleGroupbuyApply () {
       this.navigateToRoute({
-        path: '/vehretail/orderManager/vrGroupbuyOrderEquityApply/edit',
+        path: '/sales/vehretail/orderManager/vrGroupbuyOrderEquityApply/edit',
         query: {
           retailOrderCode: this.form.retailOrderCode
         }

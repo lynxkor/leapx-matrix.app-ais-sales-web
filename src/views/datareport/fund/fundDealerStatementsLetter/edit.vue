@@ -276,11 +276,11 @@
                   <el-form-item label="备件返利期末账户：">
                     {{ form.spareRebateClosingBalance }}
                   </el-form-item>
-                  <el-form-item label="备件返利期间使用小计：">
-                    {{ form.spareRebatePeriodUsage }}
-                  </el-form-item>
                   <el-form-item label="备件返利期间入账小计：">
                     {{ form.spareRebatePeriodEntry }}
+                  </el-form-item>
+                  <el-form-item label="备件返利期间使用小计：">
+                    {{ form.spareRebatePeriodUsage }}
                   </el-form-item>
                 </el-form>
                 <vxe-table
