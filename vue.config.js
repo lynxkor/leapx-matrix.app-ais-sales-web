@@ -25,13 +25,13 @@ const cdn = {
     AMap: 'AMap'
   },
   // cdn的js链接
-  js: [
-    '/js/vue.min.js',
-    '/js/vuex.min.js',
-    // '/js/vue-router.min.js',
-    // '/js/index.js',
-    '/js/axios.min.js'
-  ]
+  // js: [
+  //   '/js/vue.min.js',
+  //   '/js/vuex.min.js',
+  //   '/js/vue-router.min.js',
+  //   '/js/index.js',
+  //   '/js/axios.min.js'
+  // ]
 };
 
 const port = 7779; // dev port
