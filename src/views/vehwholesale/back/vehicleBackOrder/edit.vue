@@ -18,7 +18,7 @@
         </template>
         <template #extraButtons>
           <!--  v-if = "canAddOrUpdate && form.buttonControl && form.buttonControl.addVehicleButton"  -->
-          <el-button size="small"  @click="handelAdd">添加车辆</el-button>
+          <el-button v-if = "canAddOrUpdate && form.buttonControl && form.buttonControl.addVehicleButton" size="small"  @click="handelAdd">添加车辆</el-button>
           <el-button v-if = "persubmitAudit && form.buttonControl && form.buttonControl.submitButton" size="small"  @click="handelSubmit">提交</el-button>
           <el-button v-if = "peraudit && form.buttonControl && form.buttonControl.auditButton" size="small"  @click="handleAudit">审核</el-button>
           <el-button v-if = "percancel && form.buttonControl && form.buttonControl.canceledButton" size="small"  @click="handelCancel">作废</el-button>
