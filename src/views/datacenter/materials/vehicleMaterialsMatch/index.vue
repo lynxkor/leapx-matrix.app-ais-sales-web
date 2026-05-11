@@ -188,7 +188,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 300 },
           {
             props: 'matchMaterialsCode',
             label: '可配物料编码',
@@ -201,13 +201,13 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'matchMaterialsDesc', label: '可配物料描述', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'statusDesc', label: '说明', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '更新人', visible: true, width: 200 },
-          { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
+          { props: 'matchMaterialsDesc', label: '可配物料描述', visible: true, width: 300 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 90 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 300 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 180 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 180 },
+          { props: 'modifierName', label: '更新人', visible: true, width: 180 },
+          { props: 'updateTime', label: '更新时间', visible: true, width: 180 },
           {
             props: 'operate',
             label: '操作',

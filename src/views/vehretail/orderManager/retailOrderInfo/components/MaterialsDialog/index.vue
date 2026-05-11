@@ -32,7 +32,7 @@
           :remote-method="remoteMethods.model"
         />
       </el-form-item>
-        <el-form-item label="年款：" v-show="this.visibleCount === 3 || isExpanded">
+        <el-form-item label="年款：" v-show="isExpanded">
           <fetch-select
             v-model="searchForm.yearTypeId"
             v-bind="selectOptions"
