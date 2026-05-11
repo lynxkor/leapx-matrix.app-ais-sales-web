@@ -914,7 +914,7 @@ import BatchCancelInput from './BatchCancelInput.vue';
 import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import BatchCancelSettleInput from './BatchCancelSettleInput.vue';
 import ComponentTable from './ComponentTable.vue';
-import VXETable from 'vxe-table';
+
 import 'vxe-table/lib/index.css';
 const defaultForm = {
   // 多选时字段有变化，自行修复
