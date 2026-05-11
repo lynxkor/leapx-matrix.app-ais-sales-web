@@ -862,7 +862,7 @@ export default {
       this.form.financialOrganizationName = '';
       this.form.settleFundType = row.fundType;
       this.form.settleFundTypeLabel = row.fundTypeLabel;
-      if (val + '' === '1050') {
+      if (val === '赊销-零跑') {
         this.form.isCreditSale = 1;
       } else {
         this.form.isCreditSale = 0;
