@@ -131,9 +131,10 @@ module.exports = {
         localesToKeep: ['zh-cn']
       })
     ],
-    externals: isProduction || devNeedCdn ? cdn.externals : {
-      AMap: 'AMap'
-    },
+    // 不用cdn，防止微前端应用之间相互污染
+    // externals: isProduction || devNeedCdn ? cdn.externals : {
+    //   AMap: 'AMap'
+    // },
     devtool: isProduction ? false : 'source-map'
   },
   css: {
