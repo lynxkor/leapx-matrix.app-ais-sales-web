@@ -475,6 +475,9 @@ export default {
   },
   mounted () {
   },
+  created () {
+    this.initPermissions();
+  },
   methods: {
     initPermissions () {
       this.perconfirmOutbound = this.permissions.has(`${this.moduleKey}-confirmOutbound`); // 出库
