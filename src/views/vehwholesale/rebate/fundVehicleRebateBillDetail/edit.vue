@@ -196,7 +196,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '整车返利核算单明细：' + (this.form.rebateBillDetailCode || '');

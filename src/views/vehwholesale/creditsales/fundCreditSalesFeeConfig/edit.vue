@@ -251,7 +251,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '记录编号：' + this.form.creditSalesFeeConfigCode;

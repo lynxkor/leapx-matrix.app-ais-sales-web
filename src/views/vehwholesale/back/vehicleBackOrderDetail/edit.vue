@@ -11,7 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.processStatus === 10 || form.processStatus === 20"
+        :showEditBtn="form.auditStatus === 10 || form.auditStatus === 20"
       >
         <template #status>
           <!-- {{ form.returnOrderCode }} -->
@@ -426,7 +426,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '退车明细单号：' + this.form.backOrderDetailCode;
