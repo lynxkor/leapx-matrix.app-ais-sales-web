@@ -120,7 +120,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '批售目标默认配额：' + (this.form.wholesaleTargetDefaultQuotaName || '');
