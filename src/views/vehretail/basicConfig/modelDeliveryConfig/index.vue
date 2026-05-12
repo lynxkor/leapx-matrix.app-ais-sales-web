@@ -247,9 +247,9 @@ export default {
           { props: 'openDeliveryStatusLabel', label: '是否开启交付', visible: true, width: 200 },
           { props: 'openDeliveryDate', label: '开启交付日期', visible: true, width: 200 },
           { props: 'noOpenDeliveryText', label: '未开启交付文案', visible: true, width: 200 },
-          { props: 'remark', label: '备注', visible: true, width: 200 },
+          { props: 'remark', label: '备注', visible: true, width: 580 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 80 },
           {
             props: 'operate',
             label: '操作',

@@ -105,7 +105,7 @@
                 <el-form-item label="年款名称：" prop="yearTypeName">
                   {{ form.yearTypeName }}
                 </el-form-item>
-                <el-form-item label="订单状态" prop="orderStatus">
+                <el-form-item label="订单状态：" prop="orderStatus">
                   {{ form.orderStatusLabel }}
                 </el-form-item>
                 <el-form-item label="允许门店取消锁车：">

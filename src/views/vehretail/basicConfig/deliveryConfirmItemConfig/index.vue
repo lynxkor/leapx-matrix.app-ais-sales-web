@@ -232,7 +232,7 @@ export default {
           { props: 'effectiveDate', label: '生效日期', visible: true, width: 200 },
           { props: 'invalidDate', label: '失效日期', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 80 },
           {
             props: 'operate',
             label: '操作',

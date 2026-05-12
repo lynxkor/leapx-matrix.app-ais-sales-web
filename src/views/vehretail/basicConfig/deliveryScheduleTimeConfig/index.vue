@@ -171,7 +171,7 @@ export default {
           { props: 'timePeriod', label: '时间段', visible: true, width: 200 },
           { props: 'startTime', label: '开始时间', visible: true, width: 200 },
           { props: 'endTime', label: '结束时间', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 80 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',

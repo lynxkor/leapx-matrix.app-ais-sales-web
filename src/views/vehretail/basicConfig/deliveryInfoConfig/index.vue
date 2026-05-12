@@ -179,7 +179,7 @@ export default {
             }]
           },
           { props: 'infoCategoryLabel', label: '信息类别', visible: true, width: 150 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 120 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 80 },
           { props: 'createTime', label: '创建时间', visible: true, width: 180 },
           {
             props: 'operate',

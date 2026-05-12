@@ -155,7 +155,7 @@ export default {
           { props: 'financePlanName', label: '金融方案名称', visible: true, width: 200 },
           { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 200 },
           { props: 'financePlanTypeLabel', label: '金融方案类型', visible: true, width: 200 },
-          { props: 'statusLabel', label: '金融产品状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '金融产品状态', visible: true, width: 80 },
           { props: 'priority', label: '优先级', visible: true, width: 200 },
           { props: 'updateTime', label: '最近更新时间', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true, fixed: 'right' }

@@ -309,7 +309,7 @@ export default {
           { props: 'purchaseTypeLabel', label: '购车类型', visible: true, width: 100 },
           { props: 'priceBeforeSubsidy', label: '补贴前价格', visible: true, width: 120, align: 'right' },
           { props: 'priceAfterSubsidy', label: '补贴后价格', visible: true, width: 120, align: 'right' },
-          { props: 'subsidyAmount', label: '补贴金额', visible: true, width: 120, align: 'right' },
+          { props: 'subsidyAmount', label: '补贴金额', visible: true, width: 100, align: 'right' },
           { props: 'deposit', label: '定金', visible: true, width: 100, align: 'right' },
           { props: 'vehiclePrice', label: '整车价格', visible: true, width: 100, align: 'right' },
           { props: 'priceCompareLabel', label: '价格对比', visible: true, width: 100 },

@@ -846,22 +846,23 @@ export default {
     getFundAccountBysaleCompany (val, row) {
       this.form.saleCompanyId = row.id;
       this.settleFundTypeOptions = [];
-      this.getFundAccount();
-    },
-    getFundAccount () {
       this.form.settleFundType = '';
       this.form.settleFundTypeLabel = '';
       this.settleFundTypeOptions = [];
       this.financialOrganizationOptions = [];
-      if (!this.form.entCustomerName || !this.form.saleCompanyName) {
-        return;
-      }
+      this.getFundAccount();
+    },
+    getFundAccount () {
+      // if (!this.form.entCustomerName || !this.form.saleCompanyName) {
+      //   return;
+      // }
       const params = {
         dealerCompanyCodes: [this.form.entCustomerCode],
         allowEntOrderSettle: '1',
         saleCompanyIds: [this.form.saleCompanyId]
       };
       accountList(params).then((res) => {
+        console.log('getFundAccount11111', res);
         if (res && res.records) {
           // 【新增】使用 Map 进行去重，key 为 fundType
           const uniqueMap = new Map();
@@ -876,6 +877,7 @@ export default {
           });
           // 将 Map 的值转换为数组并赋值
           this.settleFundTypeOptions = Array.from(uniqueMap.values());
+          console.log('this.settleFundTypeOptions', this.settleFundTypeOptions);
 
           // 筛选金融机构选项：fundType === 2010 且 validIfCreditSaleAccount === true
           this.financialOrganizationOptions = res.records
@@ -1173,7 +1175,10 @@ export default {
       this.form.latitude = '';
       this.form.longitude = '';
       this.getDealersForParentCompany(val);
+      this.form.settleFundType = '';
+      this.form.settleFundTypeLabel = '';
       this.settleFundTypeOptions = [];
+      this.financialOrganizationOptions = [];
       this.getFundAccount();
     },
     async repairItemSearch (query) {
@@ -1210,8 +1215,8 @@ export default {
       if (id) {
         return getDetail(id).then(res => {
           this.getDealersForParentCompany(res.entCustomerCode);
-          this.getFundAccount();
           this.form = { ...this.form, ...res };
+          this.getFundAccount();
           // 设置 areaCode 并匹配省市区名称
           if (res.provinceCode && res.cityCode) {
             this.areaCode = [

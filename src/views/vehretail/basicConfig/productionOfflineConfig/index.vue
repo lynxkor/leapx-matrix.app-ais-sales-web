@@ -235,7 +235,7 @@ export default {
           { props: 'optionPackageName', label: '选装包名称', visible: true, width: 200 },
           { props: 'wheelHubName', label: '轮毂名称', visible: true, width: 200 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 80 },
           {
             props: 'operate',
             label: '操作',
