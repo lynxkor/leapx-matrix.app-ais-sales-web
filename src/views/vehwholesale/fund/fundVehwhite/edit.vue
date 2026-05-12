@@ -24,25 +24,19 @@
                   {{ form.documentTypeLabel }}
                 </el-form-item>
                 <el-form-item label="整车批售订单：" prop="wholesaleOrderCode">
-                  <el-button class="link" style="padding: 0;"
-                   @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + form.wholesaleOrderId)"
-                   type="text">{{form.wholesaleOrderCode}}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${form.wholesaleOrderId}`" target="_blank">{{form.wholesaleOrderCode}}</el-link>
                 </el-form-item>
                 <el-form-item label="企业客户整车订单：" prop="enterpriseOrderCode">
-                  <el-button class="link" style="padding: 0;"
-                   @click="openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + form.enterpriseOrderId)"
-                   type="text">{{form.enterpriseOrderCode}}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${form.enterpriseOrderId}`" target="_blank">{{form.enterpriseOrderCode}}</el-link>
                 </el-form-item>
                 <el-form-item label="VIN号：" prop="vin">
                   {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="parentCompanyName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.parentCompanyCode)">{{ form.parentCompanyName }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.parentCompanyCode}`" target="_blank">{{ form.parentCompanyName }}</el-link>
                 </el-form-item>
                 <el-form-item label="门店：" prop="dealerName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)"
-                   type="text">{{form.dealerName}}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{form.dealerName}}</el-link>
                 </el-form-item>
                 <el-form-item label="企业客户：" prop="enterpriseCustomerName">
                   {{ form.enterpriseCustomerName }}

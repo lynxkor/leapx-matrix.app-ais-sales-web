@@ -253,7 +253,7 @@ export default {
           },
           { props: 'year', label: '年', visible: true, width: 200 },
           { props: 'month', label: '月', visible: true, width: 200 },
-          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + row.dealerParentOrgId); }, type: 'primary' }] },
+          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/partner/channelManagement/companyDetails?companyCode=' + row.dealerParentOrgId); }, type: 'primary' }] },
           { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 200 },
           {
             props: 'dealerCode',

@@ -240,7 +240,7 @@ export default {
             visible: true,
             width: 200,
           },
-          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?dealCode=${row.dealerParentOrgId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?dealCode=${row.dealerParentOrgId}`, '_blank'); }, type: 'primary' }] },
           { props: 'autoAllocationEnabledLabel', label: '开启自动配车', visible: true, width: 120 },
           { props: 'autoSettlementEnabledLabel', label: '开启自动结算', visible: true, width: 120 },
           { props: 'productionRequestEnabledLabel', label: '允许排产申请', visible: true, width: 120 },

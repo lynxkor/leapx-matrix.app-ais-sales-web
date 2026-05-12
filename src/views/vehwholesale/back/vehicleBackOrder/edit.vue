@@ -170,10 +170,10 @@
                   {{ form.orderTypeLabel }}
                 </el-form-item>
                  <el-form-item label="经销商：" prop="dealerCompanyName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
                 </el-form-item>
                  <el-form-item label="企业客户名称：" prop="entCustomerName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.entCustomerCode)">{{ form.entCustomerName }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.entCustomerCode}`" target="_blank">{{ form.entCustomerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="大区：" prop="regionName">
                   {{ form.regionName }}
@@ -219,7 +219,7 @@
                   <!-- 业务列 -->
                   <vxe-column field="backOrderDetailCode" title="退车明细单号" width="180">
                     <template #default="{ row }">
-                      <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/back/vehicleBackOrderDetail/edit?id=' + row.backOrderDetailCode)">{{ row.backOrderDetailCode }}</el-button>
+                      <el-link type="primary" :href="`/sales/vehwholesale/back/vehicleBackOrderDetail/edit?id=${row.backOrderDetailCode}`" target="_blank">{{ row.backOrderDetailCode }}</el-link>
                     </template>
                   </vxe-column>
                   <vxe-column field="backOrderCode" title="退车订单号" width="200">
@@ -231,17 +231,17 @@
                   <vxe-column field="processStatusLabel" title="车辆处理状态" width="150" />
                   <vxe-column field="saleDealerName" title="门店名称" width="120">
                     <template #default="{ row }">
-                      <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.saleDealerCode)">{{ row.saleDealerName }}</el-button>
+                      <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`" target="_blank">{{ row.saleDealerName }}</el-link>
                     </template>
                   </vxe-column>
                   <vxe-column field="wholesaleOrderCode" title="整车批售订单号" width="200">
                     <template #default="{ row }">
-                      <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.wholesaleOrderCode)">{{ row.wholesaleOrderCode }}</el-button>
+                      <el-link type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${row.wholesaleOrderCode}`" target="_blank">{{ row.wholesaleOrderCode }}</el-link>
                     </template>
                   </vxe-column>
                   <vxe-column field="entOrderCode" title="企业客户整车订单号" width="200">
                     <template #default="{ row }">
-                      <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + row.entOrderCode)">{{ row.entOrderCode }}</el-button>
+                      <el-link type="primary" :href="`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${row.entOrderCode}`" target="_blank">{{ row.entOrderCode }}</el-link>
                     </template>
                   </vxe-column>
                   <!-- <vxe-column field="actualVehicleReturnLabel" title="是否实车返厂" width="150" /> -->

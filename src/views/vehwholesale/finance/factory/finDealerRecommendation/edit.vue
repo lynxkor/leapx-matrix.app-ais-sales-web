@@ -154,10 +154,10 @@
                   {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="推荐金融机构：" prop="recFinancialOrganizationName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.recFinancialOrganizationId)">{{ form.recFinancialOrganizationName }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.recFinancialOrganizationId}`" target="_blank">{{ form.recFinancialOrganizationName }}</el-link>
                 </el-form-item>
                 <el-form-item label="推荐额度(万元)：" prop="recAmount">
                   {{ form.recAmount }}

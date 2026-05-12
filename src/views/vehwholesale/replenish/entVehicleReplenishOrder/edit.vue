@@ -197,10 +197,10 @@
                   {{ form.salesMarketLabel }}
                 </el-form-item>
                 <el-form-item label="企业客户名称：" prop="entCustomerName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.entCustomerCode)">{{ form.entCustomerName }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.entCustomerCode}`" target="_blank">{{ form.entCustomerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="销售公司：" prop="saleCompanyName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/fund/fundSaleCompany/edit?id=' + form.saleCompanyId)">{{ form.saleCompanyName }}</el-button>
+                  <el-link type="primary" :href="`/vehwholesale/fund/fundSaleCompany/edit?id=${form.saleCompanyId}`" target="_blank">{{ form.saleCompanyName }}</el-link>
                 </el-form-item>
                  <el-form-item label="销售门店名称：" prop="saleDealerName">
                   {{ form.saleDealerName }}
@@ -212,7 +212,7 @@
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.financialOrganizationId)">{{ form.financialOrganizationName }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.financialOrganizationId}`" target="_blank">{{ form.financialOrganizationName }}</el-link>
                 </el-form-item>
                 <el-form-item label="是否赊销：" prop="creditSaleFlagLabel">
                   {{ form.creditSaleFlagLabel }}

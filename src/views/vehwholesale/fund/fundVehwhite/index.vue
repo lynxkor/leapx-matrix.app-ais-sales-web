@@ -195,7 +195,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'parentCompanyName', label: '母公司名称', visible: true, width: 300, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.parentCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'parentCompanyName', label: '母公司名称', visible: true, width: 300, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.parentCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'enterpriseCustomerName', label: '企业客户', visible: true, width: 200 },
           { props: 'vin', label: 'VIN号', visible: true, width: 200 },
           {

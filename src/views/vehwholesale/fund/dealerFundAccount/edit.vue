@@ -38,12 +38,14 @@
                   {{ form.fundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.financialOrganizationId)"
-                   type="text">{{ form.financialOrganizationName }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.financialOrganizationId}`" target="_blank">
+                    {{ form.financialOrganizationName }}
+                  </el-link>
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">
+                    {{ form.dealerCompanyCode }}
+                  </el-link>
                 </el-form-item>
                 <el-form-item label="是否允许使用返利：" prop="allowUseRebate">
                   <fetch-select
@@ -97,12 +99,14 @@
                   {{ form.fundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationName">
-                   <el-button class="link" style="padding: 0;"
-                   @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.financialOrganizationId)"
-                   type="text">{{ form.financialOrganizationName }}</el-button>
+                   <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.financialOrganizationId}`" target="_blank">
+                     {{ form.financialOrganizationName }}
+                   </el-link>
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">
+                    {{ form.dealerCompanyCode }}
+                  </el-link>
                 </el-form-item>
                 <el-form-item label="是否允许使用返利：" prop="allowUseRebateLabel">
                   {{ form.allowUseRebateLabel }}
@@ -182,13 +186,19 @@
             section-key="accountTransLog"
           >
             <template #wholesaleOrderCode="{ row }">
-              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=' + row.wholesaleOrderCode)">{{ row.wholesaleOrderCode }}</el-button>
+              <el-link type="primary" :href="`/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=${row.wholesaleOrderCode}`" target="_blank">
+                {{ row.wholesaleOrderCode }}
+              </el-link>
             </template>
             <template #entVehorderCode="{ row }">
-              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + row.entVehorderCode)">{{ row.entVehorderCode }}</el-button>
+              <el-link type="primary" :href="`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${row.entVehorderCode}`" target="_blank">
+                {{ row.entVehorderCode }}
+              </el-link>
             </template>
             <template #dealerName="{ row }">
-              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode)">{{ row.dealerName }}</el-button>
+              <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`" target="_blank">
+                {{ row.dealerName }}
+              </el-link>
             </template>
           </component-table>
         </el-main>

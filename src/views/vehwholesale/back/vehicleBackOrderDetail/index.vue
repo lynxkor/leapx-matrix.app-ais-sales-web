@@ -295,7 +295,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 if (row.dealerCompanyCode) {
-                  window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.dealerCompanyCode}`, '_blank');
+                  window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank');
                 }
               },
               type: 'primary'

@@ -262,13 +262,13 @@
                   {{ form.backOrderDetailCode }}
                 </el-form-item>
                 <el-form-item label="退车订单编号：" prop="backOrderCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/back/vehicleBackOrder/edit?id=' + form.backOrderCode)">{{ form.backOrderCode }}</el-button>
+                  <el-link type="primary" :href="`/vehwholesale/back/vehicleBackOrder/edit?id=${form.backOrderCode}`" target="_blank">{{ form.backOrderCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="VIN码：" prop="vin">
                   {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="销售门店名称：" prop="saleDealerName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.saleDealerCode)">{{ form.saleDealerName }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="车辆处理状态：" prop="processStatusLabel">
                   {{ form.processStatusLabel }}
@@ -277,16 +277,16 @@
                   {{ form.regionName }}
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
                 </el-form-item>
                 <el-form-item label="批售订单编号：" prop="wholesaleOrderCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + form.wholesaleOrderCode)">{{ form.wholesaleOrderCode }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${form.wholesaleOrderCode}`" target="_blank">{{ form.wholesaleOrderCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="车系名称：" prop="seriesName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.seriesId)">{{ form.seriesName }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleSeries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="企业客户整车订单号：" prop="entOrderCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + form.entOrderCode)">{{ form.entOrderCode }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${form.entOrderCode}`" target="_blank">{{ form.entOrderCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="是否实车返厂：" prop="actualVehicleReturnLabel">
                   {{ form.actualVehicleReturnLabel }}
@@ -307,7 +307,7 @@
                   {{ form.returnRebateAmount }}
                 </el-form-item>
                 <el-form-item label="车型：" prop="modelName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + form.modelId)">{{ form.modelName }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleModel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="门店出库确认人：" prop="storeOutboundConfirmer">
                   {{ form.storeOutboundConfirmer }}

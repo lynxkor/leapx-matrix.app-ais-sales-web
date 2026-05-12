@@ -272,7 +272,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 if (row.dealerCompanyCode) {
-                  window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.dealerCompanyCode}`, '_blank');
+                  window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank');
                 }
               },
               type: 'primary'
@@ -287,7 +287,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 if (row.entCustomerCode) {
-                  window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.entCustomerCode}`, '_blank');
+                  window.open(`/partner/channelManagement/companyDetails?companyCode=${row.entCustomerCode}`, '_blank');
                 }
               },
               type: 'primary'
