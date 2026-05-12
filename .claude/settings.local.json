@@ -9,7 +9,11 @@
       "Bash(npm install:*)",
       "Bash(npm run build:*)",
       "Bash(curl:*)",
-      "Bash(npm cache *)"
+      "Bash(npm cache *)",
+      "Bash(awk -F'\"' '{print $2}')",
+      "Bash(grep -v '：$')",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
     ],
     "additionalDirectories": [
       "d:\\ais\\app-ais-sales-front\\src\\api\\maintain\\basic\\dealerStation"
