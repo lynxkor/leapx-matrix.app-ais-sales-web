@@ -227,8 +227,8 @@ export default {
           { props: 'regionName', label: '大区', visible: true, width: 200 },
           { props: 'timeValue', label: '时效值', visible: true, width: 200 },
           { props: 'adjustValue', label: '调整值', visible: true, width: 200 },
-          { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'remark', label: '备注', visible: true, width: 380 },
+          { props: 'statusLabel', label: '状态', visible: true },
           {
             props: 'operate',
             label: '操作',
