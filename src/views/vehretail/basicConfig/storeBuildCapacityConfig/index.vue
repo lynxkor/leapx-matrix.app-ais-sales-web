@@ -152,7 +152,7 @@ export default {
             }]
           },
           { props: 'buildStoreTypeLabel', label: '建店类型', visible: true, width: 180 },
-          { props: 'singleMonthDeliveryCapacity', label: '单人月度交付承载力', visible: true, width: 200 },
+          { props: 'singleMonthDeliveryCapacity', label: '单人月度交付承载力', visible: true, width: 200, align: 'right' },
           { props: 'statusLabel', label: '状态', visible: true, width: 80 },
           { props: 'createTime', label: '创建时间', visible: true, width: 180 },
           {
