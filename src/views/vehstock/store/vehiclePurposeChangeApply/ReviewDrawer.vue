@@ -109,7 +109,7 @@ export default {
       }
 
       // 拼接完整URL
-      const baseUrl = process.env.VUE_APP_FILE_SERVICE_URL || '';
+      const baseUrl = window.APP_AIS_WEB_CONFIG.VUE_APP_FILE_SERVICE_URL || '';
       const fullUrl = fileUrl.startsWith('http') ? fileUrl : baseUrl + fileUrl;
 
       // 提取文件名
