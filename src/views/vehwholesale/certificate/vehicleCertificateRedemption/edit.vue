@@ -392,7 +392,6 @@
                     v-model="form.receiverName"
                     clearable
                     maxlength="15"
-                    :disabled="!isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="收件人手机：" prop="receiverPhone">
@@ -400,7 +399,6 @@
                     placeholder="请输入"
                     v-model="form.receiverPhone"
                     clearable
-                    :disabled="!isEditing"
                   />
                 </el-form-item>
                  <el-form-item label="省市区：" prop="areaCode">
@@ -411,7 +409,6 @@
                     :options="areaOptions"
                     filterable
                     @change="handleChangeArea"
-                    :disabled="!isEditing"
                     clearable>
                   </el-cascader>
                 </el-form-item>
@@ -421,7 +418,6 @@
                     v-model="form.receiverAddress"
                     clearable
                     maxlength="300"
-                    :disabled="!isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="快递单号：" prop="expressCode">

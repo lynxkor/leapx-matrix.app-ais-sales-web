@@ -306,7 +306,7 @@
                   @save-row="handleSaveDetailRow"
                 >
                   <template #replenishApplyDetailCode="{ row }">
-                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=' + row.replenishApplyDetailCode)">{{ row.replenishApplyDetailCode }}</el-button>
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=' + row.id)">{{ row.replenishApplyDetailCode }}</el-button>
                   </template>
                   <template #seriesName="{ row }">
                     <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId)">{{ row.seriesName }}</el-button>
@@ -350,7 +350,7 @@
                   :columns="wholesaleOrdersColumns"
                 >
                   <template #wholesaleOrderCode="{ row }">
-                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.wholesaleOrderCode)">{{ row.wholesaleOrderCode }}</el-button>
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.id)">{{ row.wholesaleOrderCode }}</el-button>
                   </template>
                   <template #saleDealerName="{ row }">
                     <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.saleDealerCode)">{{ row.saleDealerName }}</el-button>
