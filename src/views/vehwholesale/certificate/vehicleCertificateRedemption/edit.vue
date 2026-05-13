@@ -14,7 +14,7 @@
         :showEditBtn="form.buttonControl && form.buttonControl.edit"
       >
         <template #status>
-          <span>{{ form.redemptionCode }}</span>
+          <!-- <span>{{ form.redemptionCode }}</span> -->
         </template>
         <template #extraButtons>
           <el-button v-if = "persubmit && form.buttonControl && form.buttonControl.submitRedeem"  size="small" @click="handleSubmit">提交赎回</el-button>
@@ -678,6 +678,9 @@ export default {
     };
   },
   mounted () {
+  },
+  created () {
+    this.initPermissions();
   },
   methods: {
     initPermissions () {

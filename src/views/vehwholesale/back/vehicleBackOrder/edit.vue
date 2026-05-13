@@ -366,7 +366,6 @@
                 <AisAttachment
                   :businessId="_id"
                   configCode="vehicle_back_order"
-                  attachType="其他"
                   ref="attachment"
                 />
               </div>
