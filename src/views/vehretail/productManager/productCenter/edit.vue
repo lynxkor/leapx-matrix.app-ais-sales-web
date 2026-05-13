@@ -134,10 +134,10 @@
                   {{ form.purchaseTypeLabel }}
                 </el-form-item>
                 <el-form-item label="商品状态：">
-                  {{ form.productStatusLabel }}
+                  <span :class="['status-tag', form.productStatus === '0' ? 'primary' : 'danger']">{{ form.productStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="是否需要支付：">
-                  {{ form.needPayStatusLabel }}
+                  <span :class="['status-tag', form.needPayStatus ? 'primary' : 'link']">{{ form.needPayStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="支付方式：">
                   {{ form.payMethodLabel }}
@@ -146,7 +146,7 @@
                   {{ form.depositAmount }}
                 </el-form-item>
                 <el-form-item label="是否需要支付定金：">
-                  {{ form.needDepositStatusLabel }}
+                  <span :class="['status-tag', form.needDepositStatus ? 'primary' : 'link']">{{ form.needDepositStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="简介：">
                   {{ form.introduction }}

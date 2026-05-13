@@ -641,10 +641,10 @@
                 {{ form.auditRemark }}
               </el-form-item>
               <el-form-item label="审核状态：">
-                {{ form.statusLabel }}
+                <span class="status-tag link">{{ form.statusLabel }}</span>
               </el-form-item>
               <el-form-item label="是否自动审核：">
-                {{ form.autoAuditStatusLabel}}
+                <span :class="['status-tag', form.autoAuditStatus === 1 ? 'primary' : 'danger']">{{ form.autoAuditStatusLabel}}</span>
               </el-form-item>
             </el-form>
           </div>

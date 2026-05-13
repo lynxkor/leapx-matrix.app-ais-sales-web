@@ -180,7 +180,7 @@
                   {{ form.remark }}
                 </el-form-item>
                 <el-form-item label="状态 0-禁用;1-启用：" prop="status">
-                  {{ form.statusLabel }}
+                  <span :class="['status-tag', form.status === 1 ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
                 </el-form-item>
               </el-form>
             </div>

@@ -136,7 +136,7 @@
                   {{ form.creatorName }}
                 </el-form-item>
                 <el-form-item label="申请状态：" prop="applyStatus">
-                  {{ form.applyStatusLabel }}
+                  <span class="status-tag link">{{ form.applyStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="数据来源：" prop="dataSource">
                   {{ form.dataSourceLabel }}
@@ -295,7 +295,7 @@
                   >{{ form.originalSaleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="整车订单状态：" prop="originalOrderStatus">
-                  {{ form.originalOrderStatusLabel }}
+                  <span class="status-tag link">{{ form.originalOrderStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="原订单物料码：" prop="originalMaterialsCode">
                   <el-button
