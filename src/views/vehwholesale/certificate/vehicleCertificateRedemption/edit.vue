@@ -679,6 +679,9 @@ export default {
   },
   mounted () {
   },
+  created () {
+    this.initPermissions();
+  },
   methods: {
     initPermissions () {
       this.persubmit = this.permissions.has(`${this.moduleKey}-submit`);
