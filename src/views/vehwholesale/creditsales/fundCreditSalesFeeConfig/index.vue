@@ -277,11 +277,11 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 150 },
+          { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 150, align: 'right' },
           { props: 'useRebateLabel', label: '是否使用返利', visible: true, width: 120 },
           { props: 'minUsageDays', label: '使用天数下限', visible: true, width: 120 },
           { props: 'maxUsageDays', label: '使用天数上限', visible: true, width: 120 },
-          { props: 'creditSalesFee', label: '赊销费用', visible: true, width: 150 },
+          { props: 'creditSalesFee', label: '赊销费用', visible: true, width: 150, align: 'right' },
           { props: 'effectiveStartTime', label: '有效开始日期', visible: true, width: 200 },
           { props: 'effectiveEndTime', label: '有效结束日期', visible: true, width: 200 },
           { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },

@@ -220,16 +220,16 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'financingDataSourceLabel', label: '融资数据来源', visible: true, width: 200 },
-          { props: 'vin', label: 'VIN号', visible: true, width: 200 },
-          { props: 'vehicleNetworkMileage', label: '车联网里程（公里）', visible: true, width: 200 },
-          { props: 'isVehicleBoundLabel', label: '是否人车绑定', visible: true, width: 200 },
-          { props: 'bindingDate', label: '绑车日期', visible: true, width: 200 },
+          { props: 'financingDataSourceLabel', label: '融资数据来源', visible: true, width: 120 },
+          { props: 'vin', label: 'VIN号', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }] },
+          { props: 'vehicleNetworkMileage', label: '车联网里程（公里）', visible: true, width: 120, align: 'right' },
+          { props: 'isVehicleBoundLabel', label: '是否人车绑定', visible: true, width: 120 },
+          { props: 'bindingDate', label: '绑车日期', visible: true, width: 120 },
           {
             props: 'fundFinancialOrganizationName',
             label: '融资金融机构',
             visible: true,
-            width: 200,
+            width: 140,
             buttons: [{
               click: (rowIndex, row) => {
                 this.openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.fundFinancialOrganizationId);
@@ -237,15 +237,15 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'deliveryDate', label: '交车日期', visible: true, width: 200 },
-          { props: 'actualLongitude', label: '实车位置经度', visible: true, width: 200 },
-          { props: 'actualLatitude', label: '实车位置纬度', visible: true, width: 200 },
-          { props: 'syncStatusLabel', label: '同步状态', visible: true, width: 200 },
+          { props: 'deliveryDate', label: '交车日期', visible: true, width: 120 },
+          { props: 'actualLongitude', label: '实车位置经度', visible: true, width: 120, align: 'right' },
+          { props: 'actualLatitude', label: '实车位置纬度', visible: true, width: 120, align: 'right' },
+          { props: 'syncStatusLabel', label: '同步状态', visible: true, width: 100 },
           { props: 'syncResult', label: '同步结果', visible: true, width: 200 },
-          { props: 'syncCount', label: '推送次数', visible: true, width: 200 },
-          { props: 'syncTime', label: '同步时间', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'syncCount', label: '推送次数', visible: true, width: 100 },
+          { props: 'syncTime', label: '同步时间', visible: true, width: 180 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 180 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 100 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },
           {
             props: 'operate',
