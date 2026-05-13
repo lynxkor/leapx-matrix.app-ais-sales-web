@@ -128,6 +128,12 @@
                 </el-tooltip>
                 </el-form-item>
                 <el-form-item label="交车融资车辆还款校验：" prop="financeStatus">
+                  <el-tooltip
+                    content="开启后，当整车开票记录上传附件时会校验融资车辆是否完成还款"
+                    placement="top"
+                    effect="light"
+                    :disabled="formData.financeStatus !== '1'"
+                  >
                   <el-select
                     v-model="formData.financeStatus"
                     placeholder="请选择"
@@ -143,8 +149,15 @@
                       :value="item.code"
                     />
                   </el-select>
+                </el-tooltip>
                 </el-form-item>
                 <el-form-item label="交车手机号注册校验：" prop="phoneRegisterStatus">
+                  <el-tooltip
+                    content="开启后，当整车开票记录上传附件时会校验购车人手机号是否创建零跑APP账号"
+                    placement="top"
+                    effect="light"
+                    :disabled="formData.phoneRegisterStatus !== '1'"
+                  >
                   <el-select
                     v-model="formData.phoneRegisterStatus"
                     placeholder="请选择"
@@ -160,6 +173,7 @@
                       :value="item.code"
                     />
                   </el-select>
+                </el-tooltip>
                 </el-form-item>
                 <el-form-item label="交车单分派通知：" prop="deliveryAssignmentStatus">
                   <el-select
