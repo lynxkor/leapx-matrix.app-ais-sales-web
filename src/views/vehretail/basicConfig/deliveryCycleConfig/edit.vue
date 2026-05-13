@@ -86,7 +86,7 @@
                   {{ form.createTime }}
                 </el-form-item>
                 <el-form-item label="状态：" prop="statusLabel">
-                  {{ form.statusLabel }}
+                  <span :class="['status-tag', form.status === 1 ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
                 </el-form-item>
               </el-form>
             </div>

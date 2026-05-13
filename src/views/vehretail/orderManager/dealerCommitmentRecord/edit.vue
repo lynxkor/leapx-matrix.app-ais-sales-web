@@ -188,7 +188,7 @@
                   {{ form.isOriginalLabel }}
                 </el-form-item>
                 <el-form-item label="兑现状态：" prop="fulfillStatus">
-                  {{ form.fulfillStatusLabel }}
+                  <span :class="['status-tag', form.fulfillStatus === 1 ? 'primary' : 'warning']">{{ form.fulfillStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="待兑现说明：" prop="fulfillDesc">
                   {{ form.fulfillDesc }}
