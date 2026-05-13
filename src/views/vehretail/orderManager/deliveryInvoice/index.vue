@@ -12,7 +12,7 @@
       <el-form-item label="VIN码">
         <tag-input
           placeholder="请输入"
-          v-model="form.vinList"
+          v-model="form.matchVinList"
           clearable
         />
       </el-form-item>
