@@ -125,7 +125,7 @@
                   {{ form.cityName }}
                 </el-form-item>
                 <el-form-item label="是否开启交付：" prop="openDeliveryStatus">
-                  {{ form.openDeliveryStatusLabel }}
+                  <span :class="['status-tag', form.openDeliveryStatus === 1 ? 'primary' : 'danger']">{{ form.openDeliveryStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="开启交付日期：" prop="openDeliveryDate">
                   {{ form.openDeliveryDate }}
@@ -137,7 +137,7 @@
                   {{ form.remark }}
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
-                  {{ form.statusLabel }}
+                  <span :class="['status-tag', form.status === 1 ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
                 </el-form-item>
               </el-form>
             </div>

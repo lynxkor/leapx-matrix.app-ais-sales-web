@@ -95,13 +95,13 @@
                   {{ form.deliveryDealerName }}
                 </el-form-item>
                 <el-form-item label="是否开启自动分派：" prop="autoAllocationStatus">
-                  {{ form.autoAllocationStatusLabel }}
+                  <span :class="['status-tag', form.autoAllocationStatus === 1 ? 'primary' : 'danger']">{{ form.autoAllocationStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="自动分派方式：" prop="autoAllocationType">
                   {{ form.autoAllocationTypeLabel }}
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
-                  {{ form.statusLabel }}
+                  <span :class="['status-tag', form.status === 1 ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}

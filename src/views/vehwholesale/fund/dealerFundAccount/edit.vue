@@ -32,18 +32,22 @@
                   {{ form.fundAccountCode }}
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">
+                    {{ form.dealerCompanyName }}
+                  </el-link>
                 </el-form-item>
                 <el-form-item label="资金类型：" prop="fundTypeLabel">
                   {{ form.fundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.financialOrganizationId)"
-                   type="text">{{ form.financialOrganizationName }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.financialOrganizationId}`" target="_blank">
+                    {{ form.financialOrganizationName }}
+                  </el-link>
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">
+                    {{ form.dealerCompanyCode }}
+                  </el-link>
                 </el-form-item>
                 <el-form-item label="是否允许使用返利：" prop="allowUseRebate">
                   <fetch-select
@@ -91,18 +95,22 @@
                   {{ form.fundAccountCode }}
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">
+                    {{ form.dealerCompanyName }}
+                  </el-link>
                 </el-form-item>
                 <el-form-item label="资金类型：" prop="fundTypeLabel">
                   {{ form.fundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationName">
-                   <el-button class="link" style="padding: 0;"
-                   @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.financialOrganizationId)"
-                   type="text">{{ form.financialOrganizationName }}</el-button>
+                   <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.financialOrganizationId}`" target="_blank">
+                     {{ form.financialOrganizationName }}
+                   </el-link>
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">
+                    {{ form.dealerCompanyCode }}
+                  </el-link>
                 </el-form-item>
                 <el-form-item label="是否允许使用返利：" prop="allowUseRebateLabel">
                   {{ form.allowUseRebateLabel }}
@@ -182,13 +190,24 @@
             section-key="accountTransLog"
           >
             <template #wholesaleOrderCode="{ row }">
-              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=' + row.wholesaleOrderCode)">{{ row.wholesaleOrderCode }}</el-button>
+              <el-link type="primary" :href="`/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=${row.wholesaleOrderCode}`" target="_blank">
+                {{ row.wholesaleOrderCode }}
+              </el-link>
             </template>
             <template #entVehorderCode="{ row }">
-              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + row.entVehorderCode)">{{ row.entVehorderCode }}</el-button>
+              <el-link type="primary" :href="`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${row.entVehorderCode}`" target="_blank">
+                {{ row.entVehorderCode }}
+              </el-link>
             </template>
             <template #dealerName="{ row }">
-              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode)">{{ row.dealerName }}</el-button>
+              <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`" target="_blank">
+                {{ row.dealerName }}
+              </el-link>
+            </template>
+            <template #deliveryOrderCode="{ row }">
+              <el-link type="primary" :href="`/sales/vehretail/orderManager/deliveryOrder/edit?id=${row.deliveryOrderCode}`" target="_blank">
+                {{ row.deliveryOrderCode }}
+              </el-link>
             </template>
           </component-table>
         </el-main>
@@ -254,7 +273,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '账户编号：' + this.form.fundAccountCode;
@@ -285,15 +304,15 @@ export default {
       columns: [
         { field: 'transLogCode', title: '流水编号', width: 240, clickable: true },
         { field: 'transactionTypeLabel', title: '交易类型', width: 120 },
-        { field: 'transactionAmount', title: '交易金额', width: 160 },
+        { field: 'transactionAmount', title: '交易金额', width: 140, align: 'right' },
         { field: 'transactionTime', title: '过账时间', width: 200 },
         { field: 'transactionReceiptCode', title: '入账凭证号', width: 200 },
-        { field: 'lineNo', title: '行项目号', width: 200 },
-        { field: 'remark', title: '备注', width: 260 },
-        { field: 'vin', title: 'VIN码', width: 200 },
+        { field: 'lineNo', title: '行项目号', width: 140, align: 'right' },
+        { field: 'remark', title: '备注', width: 200 },
+        { field: 'vin', title: 'VIN码', width: 180 },
         { field: 'wholesaleOrderCode', title: '整车补货订单', width: 200, slots: { default: 'wholesaleOrderCode' } },
         { field: 'entVehorderCode', title: '企业客户整车订单', width: 200, slots: { default: 'entVehorderCode' } },
-        { field: 'deliveryOrderCode', title: '交车单', width: 200 },
+        { field: 'deliveryOrderCode', title: '交车单', width: 200, slots: { default: 'deliveryOrderCode' } },
         { field: 'dealerName', title: '门店', width: 200, slots: { default: 'dealerName' } },
         { field: 'createTime', title: '创建时间', width: 200 },
       ],

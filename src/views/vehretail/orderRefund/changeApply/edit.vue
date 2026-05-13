@@ -136,7 +136,7 @@
                   {{ form.creatorName }}
                 </el-form-item>
                 <el-form-item label="申请状态：" prop="applyStatus">
-                  {{ form.applyStatusLabel }}
+                  <span class="status-tag link">{{ form.applyStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="数据来源：" prop="dataSource">
                   {{ form.dataSourceLabel }}
@@ -295,7 +295,7 @@
                   >{{ form.originalSaleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="整车订单状态：" prop="originalOrderStatus">
-                  {{ form.originalOrderStatusLabel }}
+                  <span class="status-tag link">{{ form.originalOrderStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="原订单物料码：" prop="originalMaterialsCode">
                   <el-button
@@ -497,26 +497,18 @@
               <h2>审批明细</h2>
             </div>
             <div>
-              <el-table :data="form.logList" style="width: 60%" v-show="!(isEditing || !_id)">
-                <el-table-column
-                  prop="creatorName"
-                  label="操作人"
-                  width="180">
-                </el-table-column>
-                <el-table-column
-                  prop="operateStatusLabel"
-                  label="操作状态">
-                </el-table-column>
-                <el-table-column
-                  prop="operateExplain"
-                  label="操作描述">
-                </el-table-column>
-                <el-table-column
-                  prop="createTime"
-                  label="创建时间"
-                  width="180">
-                </el-table-column>
-              </el-table>
+              <vxe-table
+                :data="form.logList"
+                height="300"
+                stripe
+                :resizable="true"
+              >
+                <vxe-column type="seq" title="序号" width="80" fixed="left"></vxe-column>
+                <vxe-column field="creatorName" title="操作人" min-width="150"></vxe-column>
+                <vxe-column field="operateStatusLabel" title="操作状态" min-width="150"></vxe-column>
+                <vxe-column field="operateExplain" title="操作描述" min-width="200"></vxe-column>
+                <vxe-column field="createTime" title="创建时间" min-width="180"></vxe-column>
+              </vxe-table>
             </div>
         </section>
         <audit-dialog

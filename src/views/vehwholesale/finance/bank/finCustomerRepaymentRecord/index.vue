@@ -120,11 +120,11 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -244,13 +244,13 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
+          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 140, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           {
             props: 'fundFinancialOrganizationName',
             label: '融资金融机构',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
                 this.openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.fundFinancialOrganizationId);
@@ -258,18 +258,16 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'repaymentAmount', label: '还款金额', visible: true, width: 200 },
-          { props: 'repaymentDate', label: '还款日期', visible: true, width: 200 },
-          { props: 'creditOccupiedExposure', label: '授信占用敞口', visible: true, width: 200 },
-          { props: 'creditAvailableExposure', label: '授信可用敞口', visible: true, width: 200 },
+          { props: 'repaymentAmount', label: '还款金额', visible: true, width: 120, align: 'right' },
+          { props: 'creditOccupiedExposure', label: '授信占用敞口', visible: true, width: 150, align: 'right' },
+          { props: 'creditAvailableExposure', label: '授信可用敞口', visible: true, width: 150, align: 'right' },
           { props: 'financingApplicationCode', label: '融资申请编码', visible: true, width: 200 },
-          { props: 'financingTypeLabel', label: '融资类型', visible: true, width: 200 },
-          { props: 'repaymentStatusLabel', label: '还款状态', visible: true, width: 200 },
-          { props: 'businessModeLabel', label: '业务模式', visible: true, width: 200 },
+          { props: 'financingTypeLabel', label: '融资类型', visible: true, width: 120 },
+          { props: 'repaymentStatusLabel', label: '还款状态', visible: true, width: 120 },
+          { props: 'businessModeLabel', label: '业务模式', visible: true, width: 120 },
           { props: 'repaymentRecordCode', label: '还款记录编号', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 100 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },
-          { props: 'dealerCompanyName', label: '经销商名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',

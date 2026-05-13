@@ -12,6 +12,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="canAddOrUpdate && form.buttonControl && form.buttonControl.editButton"
       >
         <template #status>
           <!-- {{ form.wholesaleOrderCode }} -->
@@ -231,7 +232,7 @@
                   {{ form.dealerWarehouseName }}
                 </el-form-item>
                  <el-form-item label="整车补货单号：" prop="replenishApplyCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=' + form.replenishApplyCode)">{{ form.replenishApplyCode }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApply/edit?id=' + form.replenishApplyCode)">{{ form.replenishApplyCode }}</el-button>
                 </el-form-item>
                    <el-form-item label="订单分类：" prop="orderCategoryLabel">
                   {{ form.orderCategoryLabel }}
@@ -835,28 +836,35 @@
             </div>
             <div class="common-section-body">
               <div class="common-section-table">
-                <el-table :data="form.dealerFundAccounts" border style="width: 100%">
-                <el-table-column label="资金类型" width="180">
-                    <template slot-scope="scope">
-                      <span>
-                        <!-- 判断条件：fundType 为 2010 (融资) 时拼接金融机构名称 -->
-                        <span v-if="scope.row.fundType === '2010' || scope.row.fundType === 2010">
-                        <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + scope.row.financialOrganizationId)">{{ scope.row.fundTypeLabel }}-{{ scope.row.financialOrganizationName || '' }}</el-button>
+                <div class="component-table">
+                  <vxe-table
+                    ref="table"
+                    :data="form.dealerFundAccounts"
+                    stripe
+                    resizable
+                    border="inner"
+                    size="medium"
+                    show-overflow
+                  >
+                    <vxe-column field="fundTypeLabel" title="资金类型" width="180">
+                      <template #default="{ row }">
+                        <span v-if="row.fundType === '2010' || row.fundType === 2010">
+                          <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.financialOrganizationId)">{{ row.fundTypeLabel }}-{{ row.financialOrganizationName || '' }}</el-button>
                         </span>
                         <span v-else>
-                          <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundAccount/edit?id=' + scope.row.id)">{{ scope.row.fundTypeLabel || '' }}</el-button>
+                          <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/dealerFundAccount/edit?id=' + row.id)">{{ row.fundTypeLabel || '' }}</el-button>
                         </span>
-                      </span>
-                    </template>
-                  </el-table-column>
-                <el-table-column prop="availableBalance" label="可用余额" />
-                <el-table-column prop="frozenBalance" label="冻结资金" />
-                <el-table-column prop="availableCreditAmount" label="剩余可用额度" />
-                <el-table-column prop="downPaymentRatio" label="首付款比例%" />
-                <el-table-column prop="creditAccountStatusLabel" label="赊销账户状态" />
-                <el-table-column prop="effectiveTime" label="额度生效日期" />
-                <el-table-column prop="expireTime" label="额度失效日期" />
-              </el-table>
+                      </template>
+                    </vxe-column>
+                    <vxe-column field="availableBalance" title="可用余额" />
+                    <vxe-column field="frozenBalance" title="冻结资金" />
+                    <vxe-column field="availableCreditAmount" title="剩余可用额度" />
+                    <vxe-column field="downPaymentRatio" title="首付款比例%" />
+                    <vxe-column field="creditAccountStatusLabel" title="赊销账户状态" />
+                    <vxe-column field="effectiveTime" title="额度生效日期" />
+                    <vxe-column field="expireTime" title="额度失效日期" />
+                  </vxe-table>
+                </div>
               </div>
             </div>
           </section>
@@ -906,6 +914,8 @@ import BatchCancelInput from './BatchCancelInput.vue';
 import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import BatchCancelSettleInput from './BatchCancelSettleInput.vue';
 import ComponentTable from './ComponentTable.vue';
+
+import 'vxe-table/lib/index.css';
 const defaultForm = {
   // 多选时字段有变化，自行修复
   wholesaleOrderCode: '',
@@ -1042,7 +1052,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '整车批售订单信息：' + (this.form.wholesaleOrderCode || '');

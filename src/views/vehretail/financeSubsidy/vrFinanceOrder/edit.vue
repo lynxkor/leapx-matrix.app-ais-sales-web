@@ -28,7 +28,7 @@
                   {{ form.installmentOrderCode }}
                 </el-form-item>
                 <el-form-item label="金融订单状态：">
-                  {{ form.financeOrderStatusLabel }}
+                  <span class="status-tag link">{{ form.financeOrderStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="VIN码：">
                   {{ form.vin }}

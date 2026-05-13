@@ -281,7 +281,7 @@
                   {{ form.submitTime }}
                 </el-form-item>
                 <el-form-item label="终端状态：" prop="status">
-                  {{ form.statusLabel }}
+                  <span class="status-tag link">{{ form.statusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="创建人：" prop="creatorName">
                   {{ form.creatorName }}

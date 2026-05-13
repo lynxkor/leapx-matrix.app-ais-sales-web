@@ -14,10 +14,11 @@
         :showEditBtn="form.auditStatus === 10 || form.auditStatus === 20"
       >
         <template #status>
-         {{ form.backOrderCode }}
+         <!-- {{ form.backOrderCode }} -->
         </template>
         <template #extraButtons>
-          <el-button v-if = "canAddOrUpdate && form.buttonControl && form.buttonControl.addVehicleButton" size="small"  @click="handelAdd">添加车辆</el-button>
+          <!--  v-if = "canAddOrUpdate && form.buttonControl && form.buttonControl.addVehicleButton"  -->
+          <el-button v-if = "peraddOrUpdateDetail && form.buttonControl && form.buttonControl.addVehicleButton" size="small"  @click="handelAdd">添加车辆</el-button>
           <el-button v-if = "persubmitAudit && form.buttonControl && form.buttonControl.submitButton" size="small"  @click="handelSubmit">提交</el-button>
           <el-button v-if = "peraudit && form.buttonControl && form.buttonControl.auditButton" size="small"  @click="handleAudit">审核</el-button>
           <el-button v-if = "percancel && form.buttonControl && form.buttonControl.canceledButton" size="small"  @click="handelCancel">作废</el-button>
@@ -169,10 +170,10 @@
                   {{ form.orderTypeLabel }}
                 </el-form-item>
                  <el-form-item label="经销商：" prop="dealerCompanyName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
                 </el-form-item>
                  <el-form-item label="企业客户名称：" prop="entCustomerName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.entCustomerCode)">{{ form.entCustomerName }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.entCustomerCode}`" target="_blank">{{ form.entCustomerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="大区：" prop="regionName">
                   {{ form.regionName }}
@@ -216,27 +217,31 @@
                   border="inner"
                 >
                   <!-- 业务列 -->
-                  <vxe-column field="backOrderDetailCode" title="退车明细单号" width="180" />
+                  <vxe-column field="backOrderDetailCode" title="退车明细单号" width="180">
+                    <template #default="{ row }">
+                      <el-link type="primary" :href="`/sales/vehwholesale/back/vehicleBackOrderDetail/edit?id=${row.backOrderDetailCode}`" target="_blank">{{ row.backOrderDetailCode }}</el-link>
+                    </template>
+                  </vxe-column>
                   <vxe-column field="backOrderCode" title="退车订单号" width="200">
                     <template #default="{ row }">
-                      <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/back/vehicleBackOrder/edit?id=' + row.backOrderCode)">{{ row.backOrderCode }}</el-button>
+                      {{ row.backOrderCode }}
                     </template>
                   </vxe-column>
                   <vxe-column field="vin" title="VIN" width="100" />
                   <vxe-column field="processStatusLabel" title="车辆处理状态" width="150" />
                   <vxe-column field="saleDealerName" title="门店名称" width="120">
                     <template #default="{ row }">
-                      <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.saleDealerCode)">{{ row.saleDealerName }}</el-button>
+                      <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`" target="_blank">{{ row.saleDealerName }}</el-link>
                     </template>
                   </vxe-column>
                   <vxe-column field="wholesaleOrderCode" title="整车批售订单号" width="200">
                     <template #default="{ row }">
-                      <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.wholesaleOrderCode)">{{ row.wholesaleOrderCode }}</el-button>
+                      <el-link type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${row.wholesaleOrderCode}`" target="_blank">{{ row.wholesaleOrderCode }}</el-link>
                     </template>
                   </vxe-column>
                   <vxe-column field="entOrderCode" title="企业客户整车订单号" width="200">
                     <template #default="{ row }">
-                      <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + row.entOrderCode)">{{ row.entOrderCode }}</el-button>
+                      <el-link type="primary" :href="`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${row.entOrderCode}`" target="_blank">{{ row.entOrderCode }}</el-link>
                     </template>
                   </vxe-column>
                   <!-- <vxe-column field="actualVehicleReturnLabel" title="是否实车返厂" width="150" /> -->
@@ -461,10 +466,10 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '整车退车订单：' + this.form.backOrderCode;
     }
   },
   watch: {
@@ -530,6 +535,7 @@ export default {
       persubmitAudit: false,
       peraudit: false,
       percancel: false,
+      peraddOrUpdateDetail: false,
       rules: {
         orderType: [
           { required: true, message: '请选择单据类型', trigger: 'change' }
@@ -682,6 +688,7 @@ export default {
       this.persubmitAudit = this.permissions.has(`${this.moduleKey}-submitAudit`); // 提交
       this.peraudit = this.permissions.has(`${this.moduleKey}-audit`); // 审核
       this.percancel = this.permissions.has(`${this.moduleKey}-cancel`); // 作废
+      this.peraddOrUpdateDetail = this.permissions.has(`${this.moduleKey}-addOrUpdateDetail`); // 添加车辆
     },
     openWindow (url) {
       window.open(url, '_blank');

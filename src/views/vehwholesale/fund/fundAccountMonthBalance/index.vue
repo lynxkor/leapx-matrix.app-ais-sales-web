@@ -188,7 +188,7 @@ export default {
             props: 'code',
             label: '编号',
             visible: true,
-            width: 200,
+            width: 180,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -202,19 +202,19 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'parentCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.parentCompanyCode}`, '_blank'); }, type: 'primary' }] },
-          { props: 'year', label: '年份', visible: true, width: 200 },
-          { props: 'month', label: '月份', visible: true, width: 200 },
-          { props: 'periodBeginBalance', label: '本期期初', visible: true, width: 200 },
-          { props: 'periodEndBalance', label: '本期期末', visible: true, width: 200 },
-          { props: 'periodUseAmount', label: '本期使用金额', visible: true, width: 200 },
-          { props: 'periodEntryAmount', label: '本期入账金额', visible: true, width: 200 },
-          { props: 'accountTypeLabel', label: '账户类型', visible: true, width: 200 },
+          { props: 'parentCompanyName', label: '母公司名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.parentCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'year', label: '年份', visible: true, width: 80 },
+          { props: 'month', label: '月份', visible: true, width: 80 },
+          { props: 'periodBeginBalance', label: '本期期初', visible: true, width: 120, align: 'right' },
+          { props: 'periodEndBalance', label: '本期期末', visible: true, width: 120, align: 'right' },
+          { props: 'periodUseAmount', label: '本期使用金额', visible: true, width: 120, align: 'right' },
+          { props: 'periodEntryAmount', label: '本期入账金额', visible: true, width: 120, align: 'right' },
+          { props: 'accountTypeLabel', label: '账户类型', visible: true, width: 100 },
           {
             props: 'financeOrganizationName',
             label: '金融机构',
             visible: true,
-            width: 200,
+            width: 140,
             buttons: [{
               click: (rowIndex, row) => {
                 window.open(`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${row.financeOrganizationId}`, '_blank');
@@ -222,7 +222,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 180 },
           {
             props: 'operate',
             label: '操作',

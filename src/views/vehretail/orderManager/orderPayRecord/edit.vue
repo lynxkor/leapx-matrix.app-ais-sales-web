@@ -152,7 +152,7 @@
                   {{ form.deliveryTime }}
                 </el-form-item>
                 <el-form-item label="交车状态：" prop="deliveryStatus">
-                  {{ deliveryStatusLabel }}
+                  <span class="status-tag link">{{ deliveryStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="缴定金时间：" prop="depositPaymentTime">
                   {{ form.depositPaymentTime }}

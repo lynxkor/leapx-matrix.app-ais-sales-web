@@ -238,11 +238,11 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
+          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'creditAccountStatusLabel', label: '赊销账户状态', visible: true, width: 150 },
-          { props: 'creditAmount', label: '授信额度', visible: true, width: 150 },
-          { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 150 },
+          { props: 'creditAmount', label: '授信额度', visible: true, width: 150, align: 'right' },
+          { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 150, align: 'right' },
           { props: 'effectiveTime', label: '额度生效日期', visible: true, width: 200 },
           { props: 'expireTime', label: '额度失效日期', visible: true, width: 200 },
           { props: 'configUserName', label: '配置人', visible: true, width: 200 },

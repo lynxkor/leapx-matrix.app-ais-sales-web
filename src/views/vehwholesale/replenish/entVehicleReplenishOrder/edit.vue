@@ -197,10 +197,10 @@
                   {{ form.salesMarketLabel }}
                 </el-form-item>
                 <el-form-item label="企业客户名称：" prop="entCustomerName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.entCustomerCode)">{{ form.entCustomerName }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.entCustomerCode}`" target="_blank">{{ form.entCustomerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="销售公司：" prop="saleCompanyName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/fund/fundSaleCompany/edit?id=' + form.saleCompanyId)">{{ form.saleCompanyName }}</el-button>
+                  <el-link type="primary" :href="`/vehwholesale/fund/fundSaleCompany/edit?id=${form.saleCompanyId}`" target="_blank">{{ form.saleCompanyName }}</el-link>
                 </el-form-item>
                  <el-form-item label="销售门店名称：" prop="saleDealerName">
                   {{ form.saleDealerName }}
@@ -212,7 +212,7 @@
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.financialOrganizationId)">{{ form.financialOrganizationName }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.financialOrganizationId}`" target="_blank">{{ form.financialOrganizationName }}</el-link>
                 </el-form-item>
                 <el-form-item label="是否赊销：" prop="creditSaleFlagLabel">
                   {{ form.creditSaleFlagLabel }}
@@ -535,10 +535,10 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
-      return '主键：' + this.form.entReplenishOrderCode;
+      return '企业客户补货订单：' + this.form.entReplenishOrderCode;
     },
     columns () {
       const isEdit = this.isEditing;
@@ -846,22 +846,23 @@ export default {
     getFundAccountBysaleCompany (val, row) {
       this.form.saleCompanyId = row.id;
       this.settleFundTypeOptions = [];
-      this.getFundAccount();
-    },
-    getFundAccount () {
       this.form.settleFundType = '';
       this.form.settleFundTypeLabel = '';
       this.settleFundTypeOptions = [];
       this.financialOrganizationOptions = [];
-      if (!this.form.entCustomerName || !this.form.saleCompanyName) {
-        return;
-      }
+      this.getFundAccount();
+    },
+    getFundAccount () {
+      // if (!this.form.entCustomerName || !this.form.saleCompanyName) {
+      //   return;
+      // }
       const params = {
         dealerCompanyCodes: [this.form.entCustomerCode],
         allowEntOrderSettle: '1',
         saleCompanyIds: [this.form.saleCompanyId]
       };
       accountList(params).then((res) => {
+        console.log('getFundAccount11111', res);
         if (res && res.records) {
           // 【新增】使用 Map 进行去重，key 为 fundType
           const uniqueMap = new Map();
@@ -876,6 +877,7 @@ export default {
           });
           // 将 Map 的值转换为数组并赋值
           this.settleFundTypeOptions = Array.from(uniqueMap.values());
+          console.log('this.settleFundTypeOptions', this.settleFundTypeOptions);
 
           // 筛选金融机构选项：fundType === 2010 且 validIfCreditSaleAccount === true
           this.financialOrganizationOptions = res.records
@@ -1173,7 +1175,10 @@ export default {
       this.form.latitude = '';
       this.form.longitude = '';
       this.getDealersForParentCompany(val);
+      this.form.settleFundType = '';
+      this.form.settleFundTypeLabel = '';
       this.settleFundTypeOptions = [];
+      this.financialOrganizationOptions = [];
       this.getFundAccount();
     },
     async repairItemSearch (query) {
@@ -1210,8 +1215,8 @@ export default {
       if (id) {
         return getDetail(id).then(res => {
           this.getDealersForParentCompany(res.entCustomerCode);
-          this.getFundAccount();
           this.form = { ...this.form, ...res };
+          this.getFundAccount();
           // 设置 areaCode 并匹配省市区名称
           if (res.provinceCode && res.cityCode) {
             this.areaCode = [

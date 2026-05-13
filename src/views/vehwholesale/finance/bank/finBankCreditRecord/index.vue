@@ -123,11 +123,11 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -244,13 +244,13 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
+          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           {
             props: 'fundFinancialOrganizationName',
             label: '融资金融机构',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
                 this.openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.fundFinancialOrganizationId);
@@ -258,23 +258,23 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'creditLimit', label: '授信额度', visible: true, width: 200 },
-          { props: 'usedLimit', label: '已用额度', visible: true, width: 200 },
-          { props: 'availableLimit', label: '剩余可用额度', visible: true, width: 200 },
-          { props: 'wholesaleExposureLimit', label: '批复敞口额度', visible: true, width: 200 },
-          { props: 'occupiedExposureLimit', label: '占用敞口额度', visible: true, width: 200 },
-          { props: 'usedExposureLimit', label: '可用敞口额度', visible: true, width: 200 },
-          { props: 'maxCreditLimit', label: '最高授信额度', visible: true, width: 200 },
-          { props: 'depositRatio', label: '保证金比例%', visible: true, width: 200 },
-          { props: 'limitEffectiveDate', label: '额度生效日期', visible: true, width: 200 },
-          { props: 'limitExpiryDate', label: '额度失效日期', visible: true, width: 200 },
-          { props: 'businessModeLabel', label: '业务模式', visible: true, width: 200 },
+          { props: 'creditLimit', label: '授信额度', visible: true, width: 140, align: 'right' },
+          { props: 'usedLimit', label: '已用额度', visible: true, width: 140, align: 'right' },
+          { props: 'availableLimit', label: '剩余可用额度', visible: true, width: 140, align: 'right' },
+          { props: 'wholesaleExposureLimit', label: '批复敞口额度', visible: true, width: 140, align: 'right' },
+          { props: 'occupiedExposureLimit', label: '占用敞口额度', visible: true, width: 140, align: 'right' },
+          { props: 'usedExposureLimit', label: '可用敞口额度', visible: true, width: 140, align: 'right' },
+          { props: 'maxCreditLimit', label: '最高授信额度', visible: true, width: 140, align: 'right' },
+          { props: 'depositRatio', label: '保证金比例%', visible: true, width: 120, align: 'right' },
+          { props: 'limitEffectiveDate', label: '额度生效日期', visible: true, width: 180 },
+          { props: 'limitExpiryDate', label: '额度失效日期', visible: true, width: 180 },
+          { props: 'businessModeLabel', label: '业务模式', visible: true, width: 160 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'creditRecordCode', label: '授信记录编码', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'creditRecordCode', label: '授信记录编码', visible: true, width: 180 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 100 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 160 },
+          { props: 'updateTime', label: '修改时间', visible: true, width: 160 },
           {
             props: 'operate',
             label: '操作',

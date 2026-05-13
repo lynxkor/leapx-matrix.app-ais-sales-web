@@ -131,19 +131,19 @@
                   {{ form.yearTypeName }}
                 </el-form-item>
                 <el-form-item label="预售急单设置：" prop="preSaleUrgentStatus">
-                  {{ form.preSaleUrgentStatusLabel }}
+                  <span :class="['status-tag', form.preSaleUrgentStatus === 1 ? 'primary' : 'danger']">{{ form.preSaleUrgentStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="预售锁单时间要求：" prop="preSaleLockTime">
                   {{ form.preSaleLockTime }}
                 </el-form-item>
                 <el-form-item label="盲订急单设置：" prop="blindOrderUrgentStatusLabel">
-                  {{ form.blindOrderUrgentStatusLabel }}
+                  <span :class="['status-tag', form.blindOrderUrgentStatus === 1 ? 'primary' : 'danger']">{{ form.blindOrderUrgentStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="盲订锁单时间要求：" prop="blindOrderLockTime">
                   {{ form.blindOrderLockTime }}
                 </el-form-item>
                  <el-form-item label="状态：" prop="status">
-                  {{ form.statusLabel }}
+                  <span :class="['status-tag', form.status === 1 ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="备注：" prop="remark">
                   {{ form.remark }}

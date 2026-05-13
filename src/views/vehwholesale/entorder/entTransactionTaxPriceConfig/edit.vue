@@ -181,10 +181,10 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
-      return '主键：' + this.form.code;
+      return '关联交易计算比例：' + this.form.code;
     }
   },
   watch: {

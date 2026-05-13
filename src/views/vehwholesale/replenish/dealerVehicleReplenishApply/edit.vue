@@ -306,7 +306,7 @@
                   @save-row="handleSaveDetailRow"
                 >
                   <template #replenishApplyDetailCode="{ row }">
-                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=' + row.replenishApplyDetailCode)">{{ row.replenishApplyDetailCode }}</el-button>
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=' + row.id)">{{ row.replenishApplyDetailCode }}</el-button>
                   </template>
                   <template #seriesName="{ row }">
                     <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId)">{{ row.seriesName }}</el-button>
@@ -350,7 +350,7 @@
                   :columns="wholesaleOrdersColumns"
                 >
                   <template #wholesaleOrderCode="{ row }">
-                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.wholesaleOrderCode)">{{ row.wholesaleOrderCode }}</el-button>
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.id)">{{ row.wholesaleOrderCode }}</el-button>
                   </template>
                   <template #saleDealerName="{ row }">
                     <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.saleDealerCode)">{{ row.saleDealerName }}</el-button>
@@ -486,7 +486,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '整车补货单号：';
@@ -596,7 +596,7 @@ export default {
         applyCategory: [
           { required: false, message: '请选择申请类别', trigger: 'change' }
         ],
-        settleFundType: [
+        settleFundTypeLabel: [
           { required: true, message: '请选择结算资金类型', trigger: 'change' }
         ],
         financialOrganizationId: [
@@ -921,7 +921,7 @@ export default {
       this.form.financialOrganizationName = '';
       this.form.settleFundType = row.fundType;
       this.form.settleFundTypeLabel = row.fundTypeLabel;
-      if (val + '' === '1050') {
+      if (val === '赊销-零跑') {
         this.form.isCreditSale = 1;
       } else {
         this.form.isCreditSale = 0;

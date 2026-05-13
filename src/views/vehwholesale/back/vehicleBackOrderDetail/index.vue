@@ -226,12 +226,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/back/vehicleBackOrder/edit',
-                  query: {
-                    id: row.backOrderCode
-                  }
-                });
+                window.open('/vehwholesale/back/vehicleBackOrder/edit?id=' + row.backOrderCode, '_blank');
               },
               type: 'primary'
             }]
@@ -246,7 +241,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 if (row.saleDealerCode) {
-                  window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.saleDealerCode}`, '_blank');
+                  window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank');
                 }
               },
               type: 'primary'
@@ -300,7 +295,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 if (row.dealerCompanyCode) {
-                  window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.dealerCompanyCode}`, '_blank');
+                  window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank');
                 }
               },
               type: 'primary'
@@ -337,7 +332,7 @@ export default {
             buttons: [{
               name: '编辑',
               show: (row) => {
-                return row.processStatus === 10 || row.processStatus === 20;
+                return row.auditStatus === 10 || row.auditStatus === 20;
               },
               click: (rowIndex, row) => {
                 this.$router.push({
@@ -355,7 +350,7 @@ export default {
               popconfirmConfirmButtonText: '删除',
               popconfirmTitle: '此操作将永久删除, 是否继续?',
               show: (row) => {
-                return row.processStatus === 10 || row.processStatus === 20;
+                return row.auditStatus === 10 || row.auditStatus === 20;
               },
               click: (rowIndex, row) => {
                 deleteItem(

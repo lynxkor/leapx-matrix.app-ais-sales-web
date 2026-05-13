@@ -184,7 +184,7 @@ export default {
             }]
           },
           { props: 'couponName', label: '优惠券', visible: true, width: 150 },
-          { props: 'discountAmount', label: '优惠金额', visible: true, width: 120 },
+          { props: 'discountAmount', label: '优惠金额', visible: true, width: 120, align: 'right' },
           { props: 'validStartTime', label: '有效开始时间', visible: true, width: 180 },
           { props: 'validEndTime', label: '有效截止时间', visible: true, width: 180 },
           { props: 'creatorName', label: '负责人', visible: true, width: 120 },

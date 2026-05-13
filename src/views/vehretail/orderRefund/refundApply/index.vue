@@ -84,17 +84,13 @@
 <!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>-->
 <!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>-->
     </div>
-    <div class="ais-active">
+    <div class="ais-table-c">
       <el-tabs v-model="refundStatusTab" @tab-click="handleRefundStatusClick">
         <el-tab-pane label="全部用户退订申请" name="0" status="0" />
         <el-tab-pane label="待初审" name="1020" status="1020" />
         <el-tab-pane label="待审核" name="1025" status="1025"/>
         <el-tab-pane label="待终审" name="1027" status="1027"/>
       </el-tabs>
-    </div>
-    <div
-      class="ais-table-c"
-    >
       <LPVxeTable
         ref="tableRef"
         v-loading="loading"

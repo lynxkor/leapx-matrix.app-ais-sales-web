@@ -107,7 +107,7 @@
               <!-- 详情模式 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="门店编码：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)">{{ form.dealerCode }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="门店名称：">
                   {{ form.dealerName }}
@@ -125,7 +125,7 @@
                   {{ form.spotWholesaleEnabledLabel }}
                 </el-form-item>
                 <el-form-item label="母公司：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?dealCode=' + form.dealerParentOrgId)">{{ form.dealerParentOrgName }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?dealCode=${form.dealerParentOrgId}`" target="_blank">{{ form.dealerParentOrgName }}</el-link>
                 </el-form-item>
               </el-form>
             </div>
@@ -186,7 +186,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '门店批售设置：' + (this.form.dealerName || '');

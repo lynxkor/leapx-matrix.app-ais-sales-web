@@ -49,10 +49,10 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <!-- <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button> -->
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -144,7 +144,12 @@ export default {
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${row.id}`, '_blank');
+                this.$router.push({
+                  path: '/vehwholesale/fund/fundFinancialOrganization/edit',
+                  query: {
+                    id: row.id
+                  }
+                });
               },
               type: 'primary'
             }]
@@ -154,7 +159,7 @@ export default {
           { props: 'sapFundType', label: 'SAP资金类型编码', visible: true, width: 150 },
           { props: 'certificateShippingWayLabel', label: '合格证发运方式', visible: true, width: 150 },
           { props: 'enableBankDirectConnectionLabel', label: '是否开启银企直连', visible: true, width: 180 },
-          { props: 'rebateUsageQuota', label: '开启返利使用额度', visible: true, width: 180 },
+          { props: 'rebateUsageQuota', label: '开启返利使用额度', visible: true, width: 150, align: 'right' },
           { props: 'createPurchaseRecordLabel', label: '是否生成采购记录', visible: true, width: 180 },
           { props: 'statusLabel', label: '状态', visible: true, width: 100 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },

@@ -99,7 +99,7 @@
                 <el-form-item label="联系人手机号码：">
                   {{ form.contactPhone }}
                 </el-form-item>
-                <el-form-item label="备注：">
+                <el-form-item label="备注：" style="width: 100%;">
                   {{ form.remark }}
                 </el-form-item>
               </el-form>

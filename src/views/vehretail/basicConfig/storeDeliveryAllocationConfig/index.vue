@@ -195,7 +195,7 @@ export default {
           { props: 'deliveryDealerName', label: '交付门店名称', visible: true, width: 200 },
           { props: 'autoAllocationStatusLabel', label: '是否开启自动分派', visible: true, width: 200 },
           { props: 'autoAllocationTypeLabel', label: '自动分派方式', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 80 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',

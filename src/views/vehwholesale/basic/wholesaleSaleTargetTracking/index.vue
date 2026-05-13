@@ -128,12 +128,12 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-permission="moduleKey+'-importExcelByWholesale'" size="small" @click="handleImportWholesale">批售导入</el-button>
-      <el-button v-permission="moduleKey+'-importExcelByRetail'" size="small" @click="handleImportRetail">零售导入</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-permission="moduleKey+'-importExcelByWholesale'" size="small" @click="handleImportWholesale">批售导入</el-button>
+      <el-button v-permission="moduleKey+'-importExcelByRetail'" size="small" @click="handleImportRetail">零售导入</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -253,7 +253,7 @@ export default {
           },
           { props: 'year', label: '年', visible: true, width: 200 },
           { props: 'month', label: '月', visible: true, width: 200 },
-          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + row.dealerParentOrgId); }, type: 'primary' }] },
+          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/partner/channelManagement/companyDetails?companyCode=' + row.dealerParentOrgId); }, type: 'primary' }] },
           { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 200 },
           {
             props: 'dealerCode',

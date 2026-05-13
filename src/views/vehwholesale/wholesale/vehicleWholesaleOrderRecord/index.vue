@@ -240,7 +240,7 @@ export default {
           { props: 'cancelSettleTime', label: '取消结算时间', visible: true, width: 200 },
           { props: 'cancelSettleTypeLabel', label: '取消结算说明', visible: true, width: 200 },
           { props: 'saleDealerName', label: '销售门店', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open('/partner/channelManagement/shopDetail?dealerCode=' + row.saleDealerCode, '_blank'); }, type: 'primary' }] },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open('/partner/channelManagement/parentCompany/edit?companyCode=' + row.dealerCompanyCode, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open('/partner/channelManagement/companyDetails?companyCode=' + row.dealerCompanyCode, '_blank'); }, type: 'primary' }] },
           { props: 'cooperateTypeLabel', label: '合作类型', visible: true, width: 200 },
           { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 200 },
           { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.financialOrganizationId, '_blank'); }, type: 'primary' }] },

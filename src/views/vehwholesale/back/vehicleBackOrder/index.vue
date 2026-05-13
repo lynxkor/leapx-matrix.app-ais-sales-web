@@ -119,7 +119,7 @@
       <!--  TIPS:根据产品增删功能按钮  -->
         <el-dropdown trigger="click" style="margin: 0 10px;" @command="handleAdd">
         <el-button size="small" type="primary" @click="showDropdown">
-          {{ dropdownLoading ? '加载中...' : '整车退车订单' }}
+          {{ dropdownLoading ? '加载中...' : '新增整车退车订单' }}
           <i class="iconfont icon-lxppc-down" />
         </el-button>
         <el-dropdown-menu slot="dropdown">
@@ -272,7 +272,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 if (row.dealerCompanyCode) {
-                  window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.dealerCompanyCode}`, '_blank');
+                  window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank');
                 }
               },
               type: 'primary'
@@ -287,7 +287,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 if (row.entCustomerCode) {
-                  window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.entCustomerCode}`, '_blank');
+                  window.open(`/partner/channelManagement/companyDetails?companyCode=${row.entCustomerCode}`, '_blank');
                 }
               },
               type: 'primary'

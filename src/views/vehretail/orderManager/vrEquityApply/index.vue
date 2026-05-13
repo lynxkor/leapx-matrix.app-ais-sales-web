@@ -352,7 +352,7 @@ export default {
           },
           { props: 'replacementTypeLabel', label: '置换类型', visible: true, width: 120 },
           { props: 'otherBrand', label: '其他品牌', visible: true, width: 150 },
-          { props: 'discountAmount', label: '优惠金额', visible: true, width: 120 },
+          { props: 'discountAmount', label: '优惠金额', visible: true, width: 120, align: 'right' },
           { props: 'isIssuedLabel', label: '是否发放', visible: true, width: 120 },
           { props: 'expectedIssueDate', label: '预计发放日期', visible: true, width: 150 },
           { props: 'issueTypeLabel', label: '发放类型', visible: true, width: 120 },
