@@ -418,7 +418,6 @@
                 <AisAttachment
                   :businessId="_id"
                   configCode="ent_vehicle_replenish_order"
-                  attachType="其他"
                   ref="attachment"
                 />
               </div>
