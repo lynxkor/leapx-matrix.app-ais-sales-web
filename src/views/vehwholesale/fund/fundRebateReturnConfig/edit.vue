@@ -125,19 +125,13 @@
                   {{ form.rebateTypeLabel }}
                 </el-form-item>
                 <el-form-item label="车系名称：" prop="vehicleSeriesName">
-                   <el-button class="link" style="padding: 0;"
-                   @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.vehicleSeriesId)"
-                   type="text">{{ form.vehicleSeriesName }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleSeries/edit?id=${form.vehicleSeriesId}`" target="_blank">{{ form.vehicleSeriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="预算科目：" prop="budgetItemName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="openWindow('/sales/vehwholesale/fund/fundBudgetItem/edit?id=' + form.budgetItemId)"
-                   type="text">{{ form.budgetItemName }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundBudgetItem/edit?id=${form.budgetItemId}`" target="_blank">{{ form.budgetItemName }}</el-link>
                 </el-form-item>
                 <el-form-item label="费用支持类型：" prop="feeSupportTypeName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="openWindow('/sales/vehwholesale/fund/fundFeeSupportType/edit?id=' + form.feeSupportTypeId)"
-                   type="text">{{ form.feeSupportTypeName }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFeeSupportType/edit?id=${form.feeSupportTypeId}`" target="_blank">{{ form.feeSupportTypeName }}</el-link>
                 </el-form-item>
                 <el-form-item label="有效开始日期：" prop="effectiveStartTime">
                   {{ form.effectiveStartTime }}

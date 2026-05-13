@@ -29,7 +29,7 @@
                   <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
                 </el-form-item>
                 <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationName">
                    <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.fundFinancialOrganizationId}`" target="_blank">{{ form.fundFinancialOrganizationName }}</el-link>

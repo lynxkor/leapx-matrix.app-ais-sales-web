@@ -32,7 +32,9 @@
                   {{ form.fundAccountCode }}
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">
+                    {{ form.dealerCompanyName }}
+                  </el-link>
                 </el-form-item>
                 <el-form-item label="资金类型：" prop="fundTypeLabel">
                   {{ form.fundTypeLabel }}
@@ -93,7 +95,9 @@
                   {{ form.fundAccountCode }}
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">
+                    {{ form.dealerCompanyName }}
+                  </el-link>
                 </el-form-item>
                 <el-form-item label="资金类型：" prop="fundTypeLabel">
                   {{ form.fundTypeLabel }}
@@ -200,6 +204,11 @@
                 {{ row.dealerName }}
               </el-link>
             </template>
+            <template #deliveryOrderCode="{ row }">
+              <el-link type="primary" :href="`/sales/vehretail/orderManager/deliveryOrder/edit?id=${row.deliveryOrderCode}`" target="_blank">
+                {{ row.deliveryOrderCode }}
+              </el-link>
+            </template>
           </component-table>
         </el-main>
       </edit-base-container>
@@ -295,15 +304,15 @@ export default {
       columns: [
         { field: 'transLogCode', title: '流水编号', width: 240, clickable: true },
         { field: 'transactionTypeLabel', title: '交易类型', width: 120 },
-        { field: 'transactionAmount', title: '交易金额', width: 160 },
+        { field: 'transactionAmount', title: '交易金额', width: 140, align: 'right' },
         { field: 'transactionTime', title: '过账时间', width: 200 },
         { field: 'transactionReceiptCode', title: '入账凭证号', width: 200 },
-        { field: 'lineNo', title: '行项目号', width: 200 },
-        { field: 'remark', title: '备注', width: 260 },
-        { field: 'vin', title: 'VIN码', width: 200 },
+        { field: 'lineNo', title: '行项目号', width: 140, align: 'right' },
+        { field: 'remark', title: '备注', width: 200 },
+        { field: 'vin', title: 'VIN码', width: 180 },
         { field: 'wholesaleOrderCode', title: '整车补货订单', width: 200, slots: { default: 'wholesaleOrderCode' } },
         { field: 'entVehorderCode', title: '企业客户整车订单', width: 200, slots: { default: 'entVehorderCode' } },
-        { field: 'deliveryOrderCode', title: '交车单', width: 200 },
+        { field: 'deliveryOrderCode', title: '交车单', width: 200, slots: { default: 'deliveryOrderCode' } },
         { field: 'dealerName', title: '门店', width: 200, slots: { default: 'dealerName' } },
         { field: 'createTime', title: '创建时间', width: 200 },
       ],

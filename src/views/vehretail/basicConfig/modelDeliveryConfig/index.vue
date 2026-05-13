@@ -14,7 +14,7 @@
           filterable
           clearable
           remote
-          v-model="form.cityName"
+          v-model="form.cityCode"
           :remote-method="getCityList"
           value-key="areaCode"
           label-key="areaName"
@@ -172,7 +172,7 @@ import EditPage from './edit.vue';
 const defaultForm = {
   createTime: '',
   status: '',
-  cityName: '',
+  cityCode: '',
   modelName: '',
   yearTypeName: '',
   openDeliveryStatus: '',

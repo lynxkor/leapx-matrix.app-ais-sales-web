@@ -31,13 +31,13 @@
                   <el-link type="primary" :href="`/sales/vehwholesale/fund/dealerFundAccount/edit?id=${form.fundAccountId}`" target="_blank">{{form.fundAccountCode}}</el-link>
                 </el-form-item>
                  <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerComapnyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerComapnyCode">
                   <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerComapnyCode}`" target="_blank">{{ form.dealerComapnyCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="销售公司名称：" prop="saleCompanyName">
-                  <el-link type="primary" :href="`/vehwholesale/fund/fundSaleCompany/edit?id=${form.saleCompanyId}`" target="_blank">{{ form.saleCompanyName }}</el-link>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundSaleCompany/edit?id=${form.saleCompanyId}`" target="_blank">{{ form.saleCompanyName }}</el-link>
                 </el-form-item>
                 <el-form-item label="资金类型：" prop="fundTypeLabel">
                   {{ form.fundTypeLabel }}

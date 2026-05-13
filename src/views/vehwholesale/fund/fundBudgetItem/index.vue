@@ -145,7 +145,7 @@ export default {
             props: 'budgetItemName',
             label: '预算科目名称',
             visible: true,
-            width: 180,
+            width: 240,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -161,10 +161,10 @@ export default {
           },
           { props: 'budgetItemCode', label: '预算科目编码', visible: true, width: 120 },
           { props: 'statusLabel', label: '状态', visible: true, width: 100 },
-          { props: 'statusDesc', label: '说明', visible: true, width: 150 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 120 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 180 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 160 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改人', visible: true, width: 120 },
+          { props: 'modifierName', label: '修改人', visible: true, width: 160 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
             props: 'operate',

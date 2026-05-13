@@ -197,7 +197,7 @@ export default {
           },
           { props: 'parentCompanyName', label: '母公司名称', visible: true, width: 300, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.parentCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'enterpriseCustomerName', label: '企业客户', visible: true, width: 200 },
-          { props: 'vin', label: 'VIN号', visible: true, width: 200 },
+          { props: 'vin', label: 'VIN号', visible: true, width: 180 },
           {
             props: 'wholesaleOrderCode',
             label: '整车批售订单',

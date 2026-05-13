@@ -64,7 +64,7 @@
                   <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="经销商名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}

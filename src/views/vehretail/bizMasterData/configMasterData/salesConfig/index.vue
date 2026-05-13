@@ -108,7 +108,6 @@
                     content="开启后，当整车开票记录上传附件时会校验赊销车辆是否完成还款"
                     placement="top"
                     effect="light"
-                    :disabled="formData.creditStatus !== '1'"
                   >
                   <el-select
                     v-model="formData.creditStatus"
@@ -132,7 +131,6 @@
                     content="开启后，当整车开票记录上传附件时会校验融资车辆是否完成还款"
                     placement="top"
                     effect="light"
-                    :disabled="formData.financeStatus !== '1'"
                   >
                   <el-select
                     v-model="formData.financeStatus"
@@ -156,7 +154,6 @@
                     content="开启后，当整车开票记录上传附件时会校验购车人手机号是否创建零跑APP账号"
                     placement="top"
                     effect="light"
-                    :disabled="formData.phoneRegisterStatus !== '1'"
                   >
                   <el-select
                     v-model="formData.phoneRegisterStatus"
