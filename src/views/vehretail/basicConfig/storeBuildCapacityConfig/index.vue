@@ -83,7 +83,7 @@
 import debounce from 'lodash.debounce';
 import { LPVxeTable } from '@leapmotor/design';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehretail/basicConfig/storeBuildCapacityConfig/index';
+import { getList, enableItem } from '@/api/vehretail/basicConfig/storeBuildCapacityConfig/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getBuildType } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import responsiveSearchForm from '@/libs/mixins/responsive';
