@@ -57,13 +57,8 @@
           </section>
 
           <!-- 整车返利核算单明细 -->
-          <section class="common-section">
-            <div class="common-section-header">
-              <h2>整车返利核算单明细</h2>
-            </div>
-            <div class="common-section-body">
               <ComponentTable
-                :table-config="{ title: '' }"
+                :table-config="{ title: '整车返利核算单明细' }"
                 :columns="tableColumns"
                 :api-method="getList"
                 :extra-params="{ rebateBillId: _id }"
@@ -84,8 +79,6 @@
                   <el-link type="primary" :href="`/vehwholesale/fund/fundFeeSupportType/edit?id=${row.feeSupportTypeId}`" target="_blank">{{ row.feeSupportTypeName }}</el-link>
                 </template>
               </ComponentTable>
-            </div>
-          </section>
         </el-main>
       </edit-base-container>
     </template>

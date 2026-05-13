@@ -161,10 +161,10 @@ export default {
             }]
           },
           { props: 'applyNo', label: '申请单号', visible: true, width: 200 },
-          { props: 'dealerName', label: '申请门店名称', visible: true, width: 200 },
+          { props: 'dealerName', label: '申请门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'applyStatusLabel', label: '申请状态', visible: true, width: 120 },
-          { props: 'vin', label: '门店库存台账', visible: true, width: 200 },
-          { props: 'modelName', label: '车型', visible: true, width: 200 },
+          { props: 'vin', label: '门店库存台账', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }] },
+          { props: 'modelName', label: '车型', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclemodel/edit?id=${row.modelId}`, '_blank'); }, type: 'primary' }] },
           { props: 'changeTypeLabel', label: '用途变更类型', visible: true, width: 140 },
           { props: 'originalOrderTypeLabel', label: '原批售订单分类', visible: true, width: 150 },
           { props: 'originalReservedLabel', label: '原是否预留', visible: true, width: 130 },
