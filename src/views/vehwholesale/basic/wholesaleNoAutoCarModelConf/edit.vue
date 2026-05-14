@@ -27,7 +27,8 @@
                     filterable
                     clearable
                     remote
-                    v-model="form.modelName"
+                    v-model="form.modelId"
+                    :params="form.modelName"
                     :remote-method="getModelIdList"
                     value-key="id"
                     label-key="name"

@@ -105,7 +105,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-续航里程',
+      pageTitle: '续航里程',
       pageType: 'list',
       moduleKey: 'AISDC-vehicleDrivingRange',
       form: {

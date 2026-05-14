@@ -114,7 +114,7 @@ export default {
   mixins: [routeGuard, permissions, commonMixins],
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-年款',
+      pageTitle: '年款',
       pageType: 'edit',
       moduleKey: 'AISDC-vehicleYearType',
       loading: false,

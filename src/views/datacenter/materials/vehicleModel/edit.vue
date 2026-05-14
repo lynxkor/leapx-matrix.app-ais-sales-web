@@ -190,7 +190,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '销服-业务主数据-配置主数据-车型',
+      pageTitle: '车型',
       pageType: 'edit',
       moduleKey: 'AISDC-vehicleModel',
       loading: false,

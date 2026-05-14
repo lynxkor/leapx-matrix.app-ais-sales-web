@@ -152,7 +152,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-选装包',
+      pageTitle: '选装包',
       pageType: 'list',
       moduleKey: 'AISDC-vehicleOptionPackage',
       form: {

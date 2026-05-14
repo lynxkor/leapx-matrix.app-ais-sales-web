@@ -137,7 +137,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-物料可配关系',
+      pageTitle: '物料可配关系',
       pageType: 'list',
       moduleKey: 'AISDC-vehicleMaterialsMatch',
       form: {

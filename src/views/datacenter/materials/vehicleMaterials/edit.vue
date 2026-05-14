@@ -323,7 +323,7 @@ export default {
     return {
       moduleKey: 'AISDC-vehicleMaterials',
       pageType: 'edit',
-      pageTitle: '销服-业务主数据-配置主数据-整车物料',
+      pageTitle: '整车物料',
       discontinueStatusList: [],
       formItems: [
         { label: '是否允许现车批售：', prop: 'allowWholesale' },

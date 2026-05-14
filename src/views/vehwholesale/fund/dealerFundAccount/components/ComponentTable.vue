@@ -267,12 +267,7 @@ export default {
     // 处理 transLogCode 点击跳转
     handleTransLogClick (row) {
       if (row && row.id) {
-        this.$router.push({
-          path: '/vehwholesale/fund/dealerFundAccountTransLog/edit',
-          query: {
-            id: row.id
-          }
-        });
+        window.open(`/vehwholesale/fund/dealerFundAccountTransLog/edit?id=${row.id}`, '_blank');
       }
     }
   }

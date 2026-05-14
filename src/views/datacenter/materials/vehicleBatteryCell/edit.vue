@@ -130,7 +130,7 @@ export default {
   mixins: [routeGuard, permissions, commonMixins],
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-电池电芯',
+      pageTitle: '电池电芯',
       pageType: 'edit',
       moduleKey: 'AISDC-vehicleBatteryCell',
       loading: false,

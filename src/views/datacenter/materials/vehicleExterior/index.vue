@@ -112,7 +112,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-外观',
+      pageTitle: '外观',
       pageType: 'list',
       moduleKey: 'AISDC-vehicleExterior',
       form: {

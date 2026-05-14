@@ -165,7 +165,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-系列',
+      pageTitle: '系列',
       pageType: 'list',
       moduleKey: 'AISDC-vehicleModelLine',
       form: {

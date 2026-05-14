@@ -221,7 +221,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-整车物料',
+      pageTitle: '整车物料',
       pageType: 'list',
       moduleKey: 'AISDC-vehicleMaterials',
       form: {

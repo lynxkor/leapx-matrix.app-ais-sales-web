@@ -112,7 +112,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-年款',
+      pageTitle: '年款',
       pageType: 'list',
       moduleKey: 'AISDC-vehicleYearType',
       form: {
