@@ -21,17 +21,17 @@ const cdn = {
     axios: 'axios',
     vue: 'Vue',
     vuex: 'Vuex',
-    // 'vue-router': 'VueRouter',
+    'vue-router': 'VueRouter',
     AMap: 'AMap'
   },
   // cdn的js链接
-  // js: [
-  //   '/js/vue.min.js',
-  //   '/js/vuex.min.js',
-  //   '/js/vue-router.min.js',
-  //   '/js/index.js',
-  //   '/js/axios.min.js'
-  // ]
+  js: [
+    // '/js/vue.min.js',
+    // '/js/vuex.min.js',
+    // '/js/vue-router.min.js',
+    // '/js/index.js',
+    // '/js/axios.min.js'
+  ]
 };
 
 const port = 7779; // dev port
@@ -98,6 +98,56 @@ module.exports = {
       alias: {
         '@': resolve('src'),
         'element-ui': '@leapmotor/element-ui'
+      }
+    },
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+        cacheGroups: {
+          vendors: {
+            name: 'chunk-vendors',
+            test: /[\\/]node_modules[\\/]/,
+            priority: -10,
+            chunks: 'all'
+          },
+          // 提取 ali-oss 到独立 chunk，避免在每个页面重复打包
+          alioss: {
+            name: 'chunk-alioss',
+            test: /[\\/]node_modules[\\/]ali-oss[\\/]/,
+            priority: 20,
+            chunks: 'all'
+          },
+          // 提取 vxe-table 和 vxe-pc-ui 到独立 chunk
+          vxe: {
+            name: 'chunk-vxe',
+            test: /[\\/]node_modules[\\/](vxe-table|vxe-pc-ui)[\\/]/,
+            priority: 20,
+            chunks: 'all'
+          },
+          // 提取 src/libs 共享组件（FetchSelect等）
+          commonLibs: {
+            name: 'chunk-common-libs',
+            test: /[\\/]src[\\/]libs[\\/]/,
+            minChunks: 2,
+            priority: 10,
+            chunks: 'all',
+            reuseExistingChunk: true
+          },
+          // 提取 src/common 共享工具和常量
+          commonUtils: {
+            name: 'chunk-common-utils',
+            test: /[\\/]src[\\/]common[\\/]/,
+            minChunks: 2,
+            priority: 5,
+            chunks: 'all',
+            reuseExistingChunk: true
+          },
+          default: {
+            minChunks: 2,
+            priority: -20,
+            reuseExistingChunk: true
+          }
+        }
       }
     },
     // module: {

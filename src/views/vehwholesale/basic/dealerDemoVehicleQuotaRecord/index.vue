@@ -41,7 +41,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import { getList } from '@/api/vehwholesale/basic/dealerDemoVehicleQuotaRecord/index';
 import { getTableConfig, getEnum } from '@/api/common';
 // import FetchSelect from '@/libs/components/FetchSelect';

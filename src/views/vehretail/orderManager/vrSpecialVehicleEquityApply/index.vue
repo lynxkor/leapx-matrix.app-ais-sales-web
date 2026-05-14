@@ -122,7 +122,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList } from '@/api/vehretail/orderManager/vrSpecialVehicleEquityApply/index';
 import { getTableConfig, exportTable, getEnum, vehicleModelList, listOrgStoreInfo } from '@/api/common';
