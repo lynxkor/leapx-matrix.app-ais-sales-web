@@ -348,13 +348,13 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 200 },
-          { props: 'shippedLabel', label: '是否发运', visible: true, width: 200 },
+          { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 120 },
+          { props: 'shippedLabel', label: '是否发运', visible: true, width: 120 },
           {
             props: 'vin',
             label: 'VIN码',
             visible: true,
-            width: 200,
+            width: 180,
             buttons: [{
               click: (rowIndex, row) => {
                 if (row.vehicleVdcInventory?.id) {
@@ -364,17 +364,17 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'vehicleWarehouseName', label: '整车仓库', visible: true, width: 200 },
-          { props: 'needSyncWmsLabel', label: '是否需要同步WMS', visible: true, width: 200 },
-          { props: 'syncStatusLabel', label: '同步状态', visible: true, width: 200 },
+          { props: 'vehicleWarehouseName', label: '整车仓库', visible: true, width: 180 },
+          { props: 'needSyncWmsLabel', label: '是否需要同步WMS', visible: true, width: 210 },
+          { props: 'syncStatusLabel', label: '同步状态', visible: true, width: 150 },
           // { props: 'syncRemark', label: 'WMS同步结果', visible: true, width: 200 },
-          { props: 'certificatePledgedLabel', label: '合格证是否质押', visible: true, width: 200 },
-          { props: 'certificateShippingWayLabel', label: '合格证发运方式', visible: true, width: 200 },
+          { props: 'certificatePledgedLabel', label: '合格证是否质押', visible: true, width: 210 },
+          { props: 'certificateShippingWayLabel', label: '合格证发运方式', visible: true, width: 240 },
           {
             props: 'organizationName',
             label: '金融机构',
             visible: true,
-            width: 200,
+            width: 180,
             buttons: [
               {
                 click: (rowIndex, row) => {
@@ -384,40 +384,40 @@ export default {
               }
             ]
           },
-          { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 200 },
-          { props: 'cooperateTypeLabel', label: '合作类型', visible: true, width: 200 },
-          { props: 'deliveryWayLabel', label: '指定发运方式', visible: true, width: 200 },
-          { props: 'actualDeliveryWayLabel', label: '发运方式', visible: true, width: 200 },
-          { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
-          { props: 'provinceName', label: '省份', visible: true, width: 200 },
-          { props: 'cityName', label: '城市', visible: true, width: 200 },
-          { props: 'districtName', label: '区县', visible: true, width: 200 },
-          { props: 'longitude', label: '经度', visible: true, width: 200 },
-          { props: 'latitude', label: '维度', visible: true, width: 200 },
+          { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 150 },
+          { props: 'cooperateTypeLabel', label: '合作类型', visible: true, width: 150 },
+          { props: 'deliveryWayLabel', label: '指定发运方式', visible: true, width: 180 },
+          { props: 'actualDeliveryWayLabel', label: '发运方式', visible: true, width: 150 },
+          { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 150 },
+          { props: 'provinceName', label: '省份', visible: true, width: 120 },
+          { props: 'cityName', label: '城市', visible: true, width: 120 },
+          { props: 'districtName', label: '区县', visible: true, width: 120 },
+          { props: 'longitude', label: '经度', visible: true, width: 120 },
+          { props: 'latitude', label: '维度', visible: true, width: 120 },
           { props: 'address', label: '交车地址', visible: true, width: 200 },
-          { props: 'pickupContactName', label: '接车人', visible: true, width: 200 },
-          { props: 'pickupContactMobile', label: '接车人电话', visible: true, width: 200 },
-          { props: 'regionName', label: '大区', visible: true, width: 200 },
+          { props: 'pickupContactName', label: '接车人', visible: true, width: 150 },
+          { props: 'pickupContactMobile', label: '接车人电话', visible: true, width: 180 },
+          { props: 'regionName', label: '大区', visible: true, width: 120 },
           {
             props: 'saleDealerName',
             label: '销售门店名称',
             visible: true,
-            width: 200,
+            width: 180,
             buttons: [{
               click: (rowIndex, row) => {
                 if (row.saleDealerCode) {
-                  window.open(`/partner/channelManagement/companyDetails?companyCode=${row.saleDealerCode}`, '_blank');
+                  window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank');
                 }
               },
               type: 'primary'
             }]
           },
-          { props: 'dealerWarehouseName', label: '门店仓库', visible: true, width: 200 },
-          { props: 'deliveryDealerName', label: '交付门店', visible: true, width: 200 },
+          { props: 'dealerWarehouseName', label: '门店仓库', visible: true, width: 180 },
+          { props: 'deliveryDealerName', label: '交付门店', visible: true, width: 150 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'carrierRecordCode', label: '承运记录编码', visible: true, width: 200 },
-          { props: 'entCustomerName', label: '企业客户', visible: true, width: 200 },
-          { props: 'entCustomerOrderTime', label: '企业下单时间', visible: true, width: 200 },
+          { props: 'carrierRecordCode', label: '承运记录编码', visible: true, width: 180 },
+          { props: 'entCustomerName', label: '企业客户', visible: true, width: 150 },
+          { props: 'entCustomerOrderTime', label: '企业下单时间', visible: true, width: 180 },
           {
             props: 'materialsDesc',
             label: '物料描述',
@@ -425,7 +425,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsId}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -434,11 +434,11 @@ export default {
             props: 'drivingRangeName',
             label: '选配续航',
             visible: true,
-            width: 200,
+            width: 150,
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  window.open(`/sales/datacenter/materials/vehicleDrivingRange/edit?id=${row.drivingRangeId}`, '_blank');
+                  window.open(`/sales/datacenter/materials/vehicledrivingrange/edit?id=${row.drivingRangeId}`, '_blank');
                 },
                 type: 'primary'
               }
@@ -448,11 +448,11 @@ export default {
             props: 'rangePowerName',
             label: '选配动力',
             visible: true,
-            width: 200,
+            width: 150,
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  window.open(`/sales/datacenter/materials/vehicleRangePower/edit?id=${row.rangePowerId}`, '_blank');
+                  window.open(`/sales/datacenter/materials/vehiclerangepower/edit?id=${row.rangePowerId}`, '_blank');
                 },
                 type: 'primary'
               }
@@ -462,11 +462,11 @@ export default {
             props: 'exteriorName',
             label: '外饰风格',
             visible: true,
-            width: 200,
+            width: 150,
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  window.open(`/sales/datacenter/materials/vehicleExterior/edit?id=${row.exteriorId}`, '_blank');
+                  window.open(`/sales/datacenter/materials/vehicleexterior/edit?id=${row.exteriorId}`, '_blank');
                 },
                 type: 'primary'
               }
@@ -476,11 +476,11 @@ export default {
             props: 'interiorName',
             label: '内饰风格',
             visible: true,
-            width: 200,
+            width: 150,
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  window.open(`/sales/datacenter/materials/vehicleInterior/edit?id=${row.interiorId}`, '_blank');
+                  window.open(`/sales/datacenter/materials/vehicleinterior/edit?id=${row.interiorId}`, '_blank');
                 },
                 type: 'primary'
               }
@@ -490,10 +490,10 @@ export default {
             props: 'modelName',
             label: '车型名称',
             visible: true,
-            width: 200,
+            width: 150,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehiclemodel/edit?id=${row.modelId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -502,10 +502,10 @@ export default {
             props: 'seriesName',
             label: '车系名称',
             visible: true,
-            width: 200,
+            width: 150,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehicleseries/edit?id=${row.seriesId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -514,11 +514,11 @@ export default {
             props: 'wheelHubName',
             label: '选配轮毂',
             visible: true,
-            width: 200,
+            width: 150,
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  window.open(`/sales/datacenter/materials/vehicleWheelHub/edit?id=${row.wheelHubId}`, '_blank');
+                  window.open(`/sales/datacenter/materials/vehiclewheelhub/edit?id=${row.wheelHubId}`, '_blank');
                 },
                 type: 'primary'
               }
@@ -528,19 +528,19 @@ export default {
             props: 'optionPackageName',
             label: '选装包',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  window.open(`/sales/datacenter/materials/vehicleOptionPackage/edit?id=${row.optionPackageId}`, '_blank');
+                  window.open(`/sales/datacenter/materials/vehicleoptionpackage/edit?id=${row.optionPackageId}`, '_blank');
                 },
                 type: 'primary'
               }
             ]
           },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 90 },
+          { props: 'creatorName', label: '创建者', visible: true, width: 120 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 160 },
           // {
           //   props: 'operate',
           //   label: '操作',
