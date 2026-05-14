@@ -397,7 +397,7 @@ export default {
           { required: true, message: '请选择年款', trigger: 'blur' }
         ],
         seriesId: [
-          { required: true, message: '请输入车型名称', trigger: 'blur' }
+          { required: true, message: '请输入车系名称', trigger: 'blur' }
         ],
         modelId: [
           { required: true, message: '请输入车型名称', trigger: 'blur' }
@@ -419,6 +419,12 @@ export default {
         ],
         batteryCellId: [
           { required: true, message: '请输入电池电芯名称', trigger: 'blur' }
+        ],
+        drivingRangeId:[
+          { required: true, message: '请输入续航里程', trigger: 'blur' }
+        ],
+        rangePowerId:[
+          { required: true, message: '请输入选配动力名称', trigger: 'blur' }
         ],
         status: [
           { required: true, message: '请选择状态', trigger: 'change' }

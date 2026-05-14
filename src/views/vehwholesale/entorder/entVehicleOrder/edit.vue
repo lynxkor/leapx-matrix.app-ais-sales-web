@@ -622,7 +622,7 @@
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
 
                 <el-form-item label="配车VIN码：" prop="vin">
-                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?id=${form.vehicleVdcInventory.id}`" target="_blank">{{ form.vin }}</el-link>
+                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?id=${form.vehicleVdcInventory?.id}`" target="_blank">{{ form.vin }}</el-link>
                 </el-form-item>
                  <el-form-item label="配车物料编码：" prop="materialsCode">
                   <el-link type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
