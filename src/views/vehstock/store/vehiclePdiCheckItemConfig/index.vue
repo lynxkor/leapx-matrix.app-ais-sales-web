@@ -144,6 +144,8 @@ export default {
           { props: 'atlasCoordLeft', label: '图谱坐标left', visible: true, width: 140, align: 'right' },
           { props: 'atlasCoordBottom', label: '图谱坐标bottom', visible: true, width: 140, align: 'right' },
           { props: 'atlasCoordRight', label: '图谱坐标right', visible: true, width: 140, align: 'right' },
+          { props: 'atlasCoordX', label: '图谱坐标X', visible: true, width: 140, align: 'right' },
+          { props: 'atlasCoordY', label: '图谱坐标Y', visible: true, width: 140, align: 'right' },
           { props: 'atlasUrl', label: '图谱地址', visible: true, width: 200 },
           { props: 'effectiveOn', label: '生效日期', visible: true, width: 200 },
           { props: 'expiredOn', label: '失效日期', visible: true, width: 200 },
