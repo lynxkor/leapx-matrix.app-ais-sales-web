@@ -236,7 +236,7 @@ export default {
             props: 'wholesaleSaleTargetTrackingCode',
             label: '编号',
             visible: true,
-            width: 200,
+            width: 150,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -251,15 +251,15 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'year', label: '年', visible: true, width: 200 },
-          { props: 'month', label: '月', visible: true, width: 200 },
-          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/partner/channelManagement/companyDetails?companyCode=' + row.dealerParentOrgId); }, type: 'primary' }] },
-          { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 200 },
+          { props: 'year', label: '年', visible: true, width: 80 },
+          { props: 'month', label: '月', visible: true, width: 60 },
+          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open('/partner/channelManagement/companyDetails?companyCode=' + row.dealerParentOrgId, '_blank'); }, type: 'primary' }] },
+          { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 120 },
           {
             props: 'dealerCode',
             label: '门店编码',
             visible: true,
-            width: 200,
+            width: 150,
             buttons: [{
               click: (rowIndex, row) => {
                 window.open('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode, '_blank');
@@ -271,33 +271,33 @@ export default {
             props: 'dealerName',
             label: '门店名称',
             visible: true,
-            width: 200,
+            width: 180,
           },
-          { props: 'regionName', label: '大区', visible: true, width: 200 },
-          { props: 'provinceName', label: '省份', visible: true, width: 200 },
-          { props: 'cityName', label: '城市', visible: true, width: 200 },
+          { props: 'regionName', label: '大区', visible: true, width: 100 },
+          { props: 'provinceName', label: '省份', visible: true, width: 100 },
+          { props: 'cityName', label: '城市', visible: true, width: 100 },
           {
             props: 'seriesName',
             label: '车系',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                this.openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId);
+                window.open('/sales/datacenter/materials/vehicleseries/edit?id=' + row.seriesId, '_blank');
               },
               type: 'primary'
             }]
           },
-          { props: 'newOrderQty', label: '新增缴定订单数', visible: true, width: 200 },
-          { props: 'newLockTargetQty', label: '新增锁单目标数', visible: true, width: 200 },
-          { props: 'netLockTargetQty', label: '净增锁单目标数', visible: true, width: 200 },
-          { props: 'wholesaleAssessmentTargetQty', label: '批售考核目标数', visible: true, width: 200 },
-          { props: 'deliveryTargetQty', label: '交付目标数', visible: true, width: 200 },
-          { props: 'wholesaleTargetQty', label: '批售目标数', visible: true, width: 200 },
-          { props: 'confirmedQty', label: '已确认数量', visible: true, width: 200 },
-          { props: 'wholesaleRemark', label: '批售备注', visible: true, width: 200 },
-          { props: 'retailRemark', label: '零售备注', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
+          { props: 'newOrderQty', label: '新增缴定订单数', visible: true, width: 150, align: 'right' },
+          { props: 'newLockTargetQty', label: '新增锁单目标数', visible: true, width: 150, align: 'right' },
+          { props: 'netLockTargetQty', label: '净增锁单目标数', visible: true, width: 150, align: 'right' },
+          { props: 'wholesaleAssessmentTargetQty', label: '批售考核目标数', visible: true, width: 150, align: 'right' },
+          { props: 'deliveryTargetQty', label: '交付目标数', visible: true, width: 120, align: 'right' },
+          { props: 'wholesaleTargetQty', label: '批售目标数', visible: true, width: 120, align: 'right' },
+          { props: 'confirmedQty', label: '已确认数量', visible: true, width: 120, align: 'right' },
+          { props: 'wholesaleRemark', label: '批售备注', visible: true, width: 180 },
+          { props: 'retailRemark', label: '零售备注', visible: true, width: 180 },
+          { props: 'modifierName', label: '修改者名称', visible: true, width: 140 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
             props: 'operate',

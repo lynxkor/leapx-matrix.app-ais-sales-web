@@ -137,7 +137,7 @@ export default {
             props: 'wholesaleTargetDefaultQuotaName',
             label: '名称',
             visible: true,
-            width: 200,
+            width: 150,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -156,17 +156,17 @@ export default {
             props: 'seriesName',
             label: '车系',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehicleseries/edit?id=${row.seriesId}`, '_blank');
               },
               type: 'primary'
             }]
           },
-          { props: 'wholesaleTargetQty', label: '批售目标数', visible: true, width: 200 },
+          { props: 'wholesaleTargetQty', label: '批售目标数', visible: true, width: 120, align: 'right' },
           { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
+          { props: 'modifierName', label: '修改者名称', visible: true, width: 140 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
             props: 'operate',

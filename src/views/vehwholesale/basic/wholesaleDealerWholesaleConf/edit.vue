@@ -110,7 +110,7 @@
                   <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="门店名称：">
-                  {{ form.dealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="开启自动配车：">
                   {{ form.autoAllocationEnabledLabel }}
@@ -125,7 +125,7 @@
                   {{ form.spotWholesaleEnabledLabel }}
                 </el-form-item>
                 <el-form-item label="母公司：">
-                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?dealCode=${form.dealerParentOrgId}`" target="_blank">{{ form.dealerParentOrgName }}</el-link>
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerParentOrgId}`" target="_blank">{{ form.dealerParentOrgName }}</el-link>
                 </el-form-item>
               </el-form>
             </div>
