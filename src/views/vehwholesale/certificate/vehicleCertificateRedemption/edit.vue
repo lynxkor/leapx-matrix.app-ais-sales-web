@@ -503,6 +503,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { getAreaTree } from '@/utils';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -638,7 +639,7 @@ export default {
       persubmit: false,
       perconfirmReceive: false,
 
-      areaOptions: JSON.parse(localStorage.areaTree),
+      areaOptions: getAreaTree(),
       tableData: [
       ],
       orderDialogVisible: false,

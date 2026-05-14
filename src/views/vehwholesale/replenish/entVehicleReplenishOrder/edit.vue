@@ -455,6 +455,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { getAreaTree } from '@/utils';
 import AddEntVehicleReplishOrderDetail from './addEntVehicleReplishOrderDetail.vue';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import auditDialog from '@/libs/components/auditDialog';
@@ -787,7 +788,7 @@ export default {
       perbatchSubmitAudit: false,
       perbatchAudit: false,
       perbatchCancel: false,
-      areaOptions: JSON.parse(localStorage.areaTree),
+      areaOptions: getAreaTree(),
       emptyText: '若要启用此内容，请创建记录',
       tableData: [],
       options: {

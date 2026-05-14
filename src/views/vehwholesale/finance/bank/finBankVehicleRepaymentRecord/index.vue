@@ -267,7 +267,7 @@ export default {
           },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 240 },
           { props: 'wholesaleOrderCode', label: '整车批售订单', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${row.wholesaleOrderCode}`, '_blank'); }, type: 'primary' }] },
-          { props: 'customerOrderCode', label: '企业客户整车订单', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${row.customerOrderId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'customerOrderCode', label: '企业客户整车订单', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${row.customerOrderCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'vehicleStatusLabel', label: '车辆状态', visible: true, width: 120 },
           { props: 'vehicleRepaymentRecordCode', label: '还款车辆记录编号', visible: true, width: 180 },
           {

@@ -704,6 +704,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { getAreaTree } from '@/utils';
 import { getList as getVehicleProfileList } from '@/api/datacenter/vehicle/vehicleProfile';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 import auditDialog from '@/libs/components/auditDialog/index.vue';
@@ -838,7 +839,7 @@ export default {
         { label: '附件资料', required: true, configCode: 'mcs_subsidies', attachType: '附件资料' }
       ],
       yes_no_enum: YES_NO_ENUM,
-      provinceSelector: JSON.parse(localStorage.areaTree),
+      provinceSelector: getAreaTree(),
       citySelector: [],
       districtSelector: [],
       form: { ...form },
@@ -1255,7 +1256,7 @@ export default {
       this.form.saleDealerName = val ? selectedOption.storeName : null;
     },
     handleProvinceChange (code) {
-      console.log(JSON.parse(localStorage.areaTree));
+      console.log(getAreaTree());
       this.form.provinceCode = null;
       this.form.provinceName = null;
       this.form.cityCode = null;
