@@ -64,7 +64,6 @@
                 :inline="true"
                 class="form-detail"
                 v-show="!(isEditing || !_id)"
-                label-width="150px"
               >
                 <el-form-item label="年款名称：">
                   {{ form.yearTypeName }}

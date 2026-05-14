@@ -17,10 +17,10 @@
           <!-- <span>{{ form.redemptionCode }}</span> -->
         </template>
         <template #extraButtons>
-          <el-button v-if = "persubmit && form.buttonControl && form.buttonControl.submitRedeem"  size="small" @click="handleSubmit">提交赎回</el-button>
-          <el-button v-if = "persubmit && form.buttonControl && form.buttonControl.submitRedeemAgain" size="small" @click="handleSubmitAgain">重新提交赎回</el-button>
-          <el-button v-if = "perconfirmReceive && form.buttonControl && form.buttonControl.confirmReceive" size="small" @click="handleconfirmSign">签收合格证</el-button>
-          <el-button v-if = "canDelete && form.buttonControl && form.buttonControl.delete" size="small" @click="handleDel">删除</el-button>
+          <el-button v-if = "persubmit && form.buttonControl && form.buttonControl.submitRedeem"  size="small" :loading="submitLoading" @click="handleSubmit">提交赎回</el-button>
+          <el-button v-if = "persubmit && form.buttonControl && form.buttonControl.submitRedeemAgain" size="small" :loading="submitLoading" @click="handleSubmitAgain">重新提交赎回</el-button>
+          <el-button v-if = "perconfirmReceive && form.buttonControl && form.buttonControl.confirmReceive" size="small" :loading="confirmReceiveLoading" @click="handleconfirmSign">签收合格证</el-button>
+          <el-button v-if = "canDelete && form.buttonControl && form.buttonControl.delete" size="small" :loading="deleteLoading" @click="handleDel">删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -130,32 +130,28 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="整车批售订单号：" prop="wholesaleOrderCode">
-                  <el-tooltip :disabled="!form.wholesaleOrderCode" :content="form.wholesaleOrderCode" placement="top">
-                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + form.wholesaleOrderCode)">{{ form.wholesaleOrderCode }}</el-button>
-                  </el-tooltip>
+                  <el-link type="primary" :href="'/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + form.wholesaleOrderCode" target="_blank">{{ form.wholesaleOrderCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="企业客户整车订单号：" prop="entVehicleOrderCode">
-                  <el-tooltip :disabled="!form.entVehicleOrderCode" :content="form.entVehicleOrderCode" placement="top">
-                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + form.entVehicleOrderCode)">{{ form.entVehicleOrderCode }}</el-button>
-                  </el-tooltip>
+                  <el-link type="primary" :href="'/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + form.entVehicleOrderCode" target="_blank">{{ form.entVehicleOrderCode }}</el-link>
                 </el-form-item>
                   <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-link type="primary" :href="'/partner/channelManagement/companyDetails?companyCode=' + form.dealerCompanyCode" target="_blank">{{ form.dealerCompanyName }}</el-link>
                 </el-form-item>
                 <el-form-item label="销售门店名称：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-link type="primary" :href="'/partner/channelManagement/shopDetail?dealerCode=' + form.saleDealerCode" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="VIN码：" prop="vin">
-                  {{ form.vin }}
+                  <el-link type="primary" :href="'/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=' + form.vin" target="_blank">{{ form.vin }}</el-link>
                 </el-form-item>
                     <el-form-item label="整车物料：" prop="materialsCode">
-                      <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + form.materialsCode)">{{ form.materialsCode }}</el-button>
+                  <el-link type="primary" :href="'/sales/datacenter/materials/vehiclematerials/edit?id=' + form.materialsCode" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                     <el-form-item label="车系名称：" prop="seriesName">
-                      <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.seriesId)">{{ form.seriesName }}</el-button>
+                  <el-link type="primary" :href="'/sales/datacenter/materials/vehicleseries/edit?id=' + form.seriesId" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + form.modelId)">{{ form.modelName }}</el-button>
+                  <el-link type="primary" :href="'/sales/datacenter/materials/vehiclemodel/edit?id=' + form.modelId" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
@@ -503,6 +499,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { getAreaTree } from '@/utils';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -618,7 +615,6 @@ export default {
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
       moduleKey: 'AISVW-vehicleCertificateRedemption',
       loading: false,
-      submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       orderCategory: routeOrderCategory,
@@ -637,8 +633,12 @@ export default {
       // 权限控制
       persubmit: false,
       perconfirmReceive: false,
+      // loading状态
+      submitLoading: false,
+      confirmReceiveLoading: false,
+      deleteLoading: false,
 
-      areaOptions: JSON.parse(localStorage.areaTree),
+      areaOptions: getAreaTree(),
       tableData: [
       ],
       orderDialogVisible: false,
@@ -837,11 +837,14 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.submitLoading = true;
         submit({
           idSet: [this._id],
         }).then(() => {
           this.$message.success('提交成功');
           this.$refs.containerRef.loadDetail();
+        }).finally(() => {
+          this.submitLoading = false;
         });
       }).catch(() => {});
     },
@@ -851,11 +854,14 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.submitLoading = true;
         submit({
           idSet: [this._id],
         }).then(() => {
           this.$message.success('提交成功');
           this.$refs.containerRef.loadDetail();
+        }).finally(() => {
+          this.submitLoading = false;
         });
       }).catch(() => {});
     },
@@ -866,11 +872,14 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.confirmReceiveLoading = true;
         batchconfirmSign({
           idSet: ids,
         }).then(() => {
           this.$message.success('签收合格证成功');
           this.$refs.containerRef.loadDetail();
+        }).finally(() => {
+          this.confirmReceiveLoading = false;
         });
       }).catch(() => {});
     },
@@ -884,12 +893,15 @@ export default {
         customClass: 'ais-leave-tips',
         showClose: false
       }).then(() => {
+        this.deleteLoading = true;
         deleteItem({
           idSet: ids
         }).then(() => {
           this.$router.push({
             path: '/vehwholesale/certificate/vehicleCertificateRedemption',
           });
+        }).finally(() => {
+          this.deleteLoading = false;
         });
       }).catch(() => {});
     },

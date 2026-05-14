@@ -437,16 +437,20 @@ export default {
         {
           field: 'dealerCode',
           title: '门店编码',
-          width: '120',
-          // formatter: (cellValue, row) => {
-          //   if (!row.dealerCode) return '';
-          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode + '\', \'_blank\')">' + row.dealerCode + '</a>';
-          // }
+          width: '150',
+          formatter: (cellValue, row) => {
+            if (!row.dealerCode) return '';
+            return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode + '\', \'_blank\')">' + row.dealerCode + '</a>';
+          }
         },
         {
           field: 'dealerName',
           title: '门店名称',
-          width: '200'
+          width: '180',
+          formatter: (cellValue, row) => {
+            if (!row.dealerCode) return row.dealerName || '';
+            return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode + '\', \'_blank\')">' + row.dealerName + '</a>';
+          }
         },
         {
           field: 'provinceName',
@@ -466,29 +470,29 @@ export default {
         {
           field: 'seriesName',
           title: '车系',
-          width: '100',
-          // formatter: (cellValue, row) => {
-          //   if (!row.seriesId || !row.seriesName || row.seriesName === 'null' || row.seriesName === 'undefined') return '';
-          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId + '\', \'_blank\')">' + row.seriesName + '</a>';
-          // }
+          width: '120',
+          formatter: (cellValue, row) => {
+            if (!row.seriesId || !row.seriesName || row.seriesName === 'null' || row.seriesName === 'undefined') return '';
+            return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/sales/datacenter/materials/vehicleseries/edit?id=' + row.seriesId + '\', \'_blank\')">' + row.seriesName + '</a>';
+          }
         },
         {
           field: 'yearTypeName',
           title: '年款',
-          width: '100',
-          // formatter: (cellValue, row) => {
-          //   if (!row.yearTypeId || !row.yearTypeName || row.yearTypeName === 'null' || row.yearTypeName === 'undefined') return '';
-          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'/sales/datacenter/materials/vehicleYearType/edit?id=' + row.yearTypeId + '\', \'_blank\')">' + row.yearTypeName + '</a>';
-          // }
+          width: '120',
+          formatter: (cellValue, row) => {
+            if (!row.yearTypeId || !row.yearTypeName || row.yearTypeName === 'null' || row.yearTypeName === 'undefined') return '';
+            return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/sales/datacenter/materials/vehicleyeartype/edit?id=' + row.yearTypeId + '\', \'_blank\')">' + row.yearTypeName + '</a>';
+          }
         },
         {
           field: 'materialsCode',
           title: '物料编码',
-          width: '150',
-          // formatter: (cellValue, row) => {
-          //   if (!row.materialsId || !row.materialsCode || row.materialsCode === 'null' || row.materialsCode === 'undefined') return '';
-          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.materialsId + '\', \'_blank\')">' + row.materialsCode + '</a>';
-          // }
+          width: '180',
+          formatter: (cellValue, row) => {
+            if (!row.materialsId || !row.materialsCode || row.materialsCode === 'null' || row.materialsCode === 'undefined') return '';
+            return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/sales/datacenter/materials/vehiclematerials/edit?id=' + row.materialsId + '\', \'_blank\')">' + row.materialsCode + '</a>';
+          }
         },
         {
           field: 'materialsDesc',
@@ -499,6 +503,7 @@ export default {
           field: 'totalQuotaQty',
           title: '额度',
           width: '120',
+          align: 'right',
           editable: true,
           editRender: {
             name: 'ElInput',
@@ -513,12 +518,14 @@ export default {
         {
           field: 'usedQuotaQty',
           title: '已提报数量',
-          width: '120'
+          width: '120',
+          align: 'right'
         },
         {
           field: 'remainQuotaQty',
           title: '剩余可用',
-          width: '120'
+          width: '120',
+          align: 'right'
         },
         {
           field: 'createTime',

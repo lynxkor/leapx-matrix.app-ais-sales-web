@@ -160,7 +160,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getRigion, listOrgStoreInfo, vehicleSeriesList } from '@/api/common';
@@ -255,7 +255,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.openWindow('/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=' + row.prodScheduleActivityId);
+                this.openWindow('/sales/vehwholesale/basic/wholesaleprodscheduleactivity/edit?id=' + row.prodScheduleActivityId);
               },
               type: 'primary'
             }]
@@ -268,7 +268,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId);
+                this.openWindow('/sales/datacenter/materials/vehicleseries/edit?id=' + row.seriesId);
               },
               type: 'primary'
             }]
@@ -280,7 +280,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + row.modelId);
+                this.openWindow('/sales/datacenter/materials/vehiclemodel/edit?id=' + row.modelId);
               },
               type: 'primary'
             }]
@@ -299,8 +299,8 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'applyQty', label: '申请数量', visible: true, width: 200 },
-          { props: 'replenishApplyCode', label: '整车补货单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApply/edit?id=' + row.replenishApplyCode); }, type: 'primary' }] },
+          { props: 'applyQty', label: '申请数量', visible: true, width: 120, align: 'right' },
+          { props: 'replenishApplyCode', label: '整车补货单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApply/edit?id=' + row.replenishApplyId); }, type: 'primary' }] },
           {
             props: 'materialsCode',
             label: '物料编码',
@@ -308,17 +308,28 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.materialsCode);
+                this.openWindow('/sales/datacenter/materials/vehiclematerials/edit?id=' + row.materialsId);
               },
               type: 'primary'
             }]
           },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
+          {
+            props: 'materialsDesc',
+            label: '物料描述',
+            visible: true,
+            width: 240,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.openWindow('/sales/datacenter/materials/vehiclematerials/edit?id=' + row.materialsId);
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'applyTime', label: '申请时间', visible: true, width: 200 },
           { props: 'auditDateTime', label: '审核时间', visible: true, width: 200 },
           { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
           { props: 'invoiceDiscountTypeLabel', label: '开票优惠类型', visible: true, width: 200 },
-          { props: 'invoiceCoefficient', label: '开票系数', visible: true, width: 200 },
+          { props: 'invoiceCoefficient', label: '开票系数', visible: true, width: 120, align: 'right' },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',

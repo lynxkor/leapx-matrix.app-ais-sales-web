@@ -38,7 +38,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/basicConfig/vrEquityCategory/index';
 import { getTableConfig, tableAddOrUpdate, exportTable } from '@/api/common';
 import Upload from '@/libs/components/UploadDialog';

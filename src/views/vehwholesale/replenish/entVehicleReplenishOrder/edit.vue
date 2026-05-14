@@ -20,10 +20,10 @@
         </template>
         <template #extraButtons>
           <el-button v-if ="peraddDetail && form.buttonsControls && form.buttonsControls.editButton" size="small" @click="handleAddDetail" >添加补货明细</el-button>
-          <el-button v-if ="perbatchSubmitAudit && form.buttonsControls && form.buttonsControls.submitAuditButton" @click="handleCheckSubmit" >提交审批</el-button>
+          <el-button v-if ="perbatchSubmitAudit && form.buttonsControls && form.buttonsControls.submitAuditButton" @click="handleCheckSubmit" :loading="handleCheckSubmitLoading">提交审批</el-button>
           <el-button v-if ="perbatchAudit && form.buttonsControls && form.buttonsControls.auditButton"  size="small" @click="handleCheckStatus" >审核</el-button>
-          <el-button v-if ="perbatchCancel && form.buttonsControls && form.buttonsControls.cancelButton"  size="small" @click="handleCancel" >作废</el-button>
-          <el-button v-if ="canDelete && form.buttonsControls && form.buttonsControls.deleteButton" size="small"  @click="handleDelete" >删除</el-button>
+          <el-button v-if ="perbatchCancel && form.buttonsControls && form.buttonsControls.cancelButton"  size="small" @click="handleCancel" :loading="handleCancelLoading">作废</el-button>
+          <el-button v-if ="canDelete && form.buttonsControls && form.buttonsControls.deleteButton" size="small"  @click="handleDelete" :loading="handleDeleteLoading">删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -200,7 +200,7 @@
                   <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.entCustomerCode}`" target="_blank">{{ form.entCustomerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="销售公司：" prop="saleCompanyName">
-                  <el-link type="primary" :href="`/vehwholesale/fund/fundSaleCompany/edit?id=${form.saleCompanyId}`" target="_blank">{{ form.saleCompanyName }}</el-link>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundSaleCompany/edit?id=${form.saleCompanyId}`" target="_blank">{{ form.saleCompanyName }}</el-link>
                 </el-form-item>
                  <el-form-item label="销售门店名称：" prop="saleDealerName">
                   {{ form.saleDealerName }}
@@ -455,6 +455,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { getAreaTree } from '@/utils';
 import AddEntVehicleReplishOrderDetail from './addEntVehicleReplishOrderDetail.vue';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import auditDialog from '@/libs/components/auditDialog';
@@ -787,7 +788,10 @@ export default {
       perbatchSubmitAudit: false,
       perbatchAudit: false,
       perbatchCancel: false,
-      areaOptions: JSON.parse(localStorage.areaTree),
+      handleCheckSubmitLoading: false,
+      handleCancelLoading: false,
+      handleDeleteLoading: false,
+      areaOptions: getAreaTree(),
       emptyText: '若要启用此内容，请创建记录',
       tableData: [],
       options: {
@@ -1028,18 +1032,18 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        // 提交审批接口 判断是否需要初审
+        this.handleCheckSubmitLoading = true;
         batchSubmitAudit({
           idSet: [this._id],
         }).then(res => {
-          // 重新加载详情数据
           this.$message.success('提交成功');
           if (this.$refs.containerRef) {
             this.$refs.containerRef.loadDetail();
           }
           this.detailRequest();
-          // 或者关闭编辑状态
           this.isEditing = false;
+        }).finally(() => {
+          this.handleCheckSubmitLoading = false;
         });
       }).catch(() => {});
     },
@@ -1050,16 +1054,19 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.handleCancelLoading = true;
         batchCancel({
           idSet: [this._id],
         }).then(() => {
           this.$message.success('作废成功');
           this.$refs.containerRef.loadDetail();
+        }).finally(() => {
+          this.handleCancelLoading = false;
         });
       }).catch(() => {});
     },
 
-    handleDelete () { // 删除
+    handleDelete () {
       const ids = [this._id];
       const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
       this.$confirm(message, '', {
@@ -1069,10 +1076,13 @@ export default {
         customClass: 'ais-leave-tips',
         showClose: false
       }).then(() => {
+        this.handleDeleteLoading = true;
         deleteItem(ids).then(() => {
           this.$router.push({
             path: '/vehwholesale/replenish/entVehicleReplenishOrder',
           });
+        }).finally(() => {
+          this.handleDeleteLoading = false;
         });
       }).catch(() => {});
     },

@@ -47,7 +47,13 @@
             />
       </el-form-item>
       <el-form-item label="创建时间" v-show="this.visibleCount === 3 || show">
-          <el-date-picker
+        <dateranges
+          v-model="form.createTime"
+          :setDefault="true"
+          deftTime="最近一周"
+          :limtNum="3"
+          ref="transactionTime"/>
+          <!-- <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.createTime"
             type="daterange"
@@ -56,7 +62,7 @@
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-          />
+          /> -->
         </el-form-item>
       <template v-if="show" >
         <el-form-item label="首付款比例" >
@@ -166,7 +172,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/creditsales/fundCreditSalesFeeConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
@@ -177,6 +183,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import dateranges from '@/libs/components/dateranges';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleYearType } from '@/api/common';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -205,6 +212,7 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
+    dateranges,
     Upload
   },
   data () {
