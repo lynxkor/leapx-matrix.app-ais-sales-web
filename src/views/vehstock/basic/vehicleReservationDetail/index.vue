@@ -55,20 +55,6 @@
           :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
           start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
-        <el-form-item label="创建人">
-          <el-input
-            placeholder="请输入"
-            v-model="form.createByName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="更新人">
-          <el-input
-            placeholder="请输入"
-            v-model="form.updateByName"
-            clearable
-          />
-        </el-form-item>
       </template>
       <page-search-action
         v-model="show"
