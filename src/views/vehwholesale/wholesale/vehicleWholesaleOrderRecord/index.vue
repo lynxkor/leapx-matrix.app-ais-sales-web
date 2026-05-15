@@ -217,8 +217,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'vin',
-            label: 'VIN码',
+            props: 'wholesaleOrderRecordCode',
+            label: '批售配车结算记录编号',
             visible: true,
             width: 200,
             fixed: 'left',
@@ -234,6 +234,7 @@ export default {
               type: 'primary'
             }]
           },
+          { props: 'vin', label: 'VIN码', visible: true, width: 120 },
           { props: 'operateTypeLabel', label: '操作类型', visible: true, width: 120 },
           { props: 'cancelAllocateTime', label: '取消配车时间', visible: true, width: 160 },
           { props: 'cancelAllocateVehicleTypeLabel', label: '取消配车类型', visible: true, width: 140 },

@@ -177,7 +177,7 @@ export default {
       return this.id || this.form.id || this.$route.query.id;
     },
     title () {
-      return '配车结算记录：' + this.form.vin;
+      return '配车结算记录：' + this.form.wholesaleOrderRecordCode;
     }
   },
   watch: {

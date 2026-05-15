@@ -48,7 +48,8 @@
 </template>
 <script>
 import {
-  login, getAreaTree
+  login,
+  getAreaTree
   // loginUserCenter
   // getMiddlePlatformMapping
 } from '@/api/user';
@@ -104,15 +105,16 @@ export default {
       };
       // 登陆验证
       login(encrypt(this.form)).then(res => {
-        // let params = {
-        //   username: this.form.account,
-        //   password: encryptUC(this.form.password),
-        //   client_id: 'LXP'
-        // };
-        // console.log(params);
         this.iskey = false;
         this.$store.commit('SET_LOGIN_INFO', res);
-        this.$store.commit('SET_PAGE_RESOURCE', res.resources);
+        if (res?.resources?.length) {
+          this.$store.commit('SET_PAGE_RESOURCE', res.resources);
+        } else {
+          this.$store.commit('SET_PAGE_RESOURCE', {
+            pageSource: res?.resourceTagList || [],
+            sourceUrl: res?.resourceUriList || []
+          });
+        }
         getAreaTree().then(res => {
           localStorage.setItem('areaTree', JSON.stringify(res));
           this.$store.commit('SET_AREATREE', res);

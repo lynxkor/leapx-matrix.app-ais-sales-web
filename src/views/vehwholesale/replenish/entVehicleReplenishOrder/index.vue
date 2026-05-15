@@ -305,7 +305,7 @@ export default {
                 return row.auditStatus === 0 || row.auditStatus === 4;
               },
               click: (rowIndex, row) => {
-                this.openWindow('/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=' + row.id + '&isEditing=true');
+                this.openWindow('/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=' + row.id + '&isEditing=true');
               },
               type: 'info'
             }, {

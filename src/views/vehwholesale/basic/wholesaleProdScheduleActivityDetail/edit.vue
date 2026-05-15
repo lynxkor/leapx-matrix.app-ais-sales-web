@@ -221,7 +221,7 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="活动编码：" prop="activityCode">
-                  <el-link type="primary" :href="`/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=${form.scheduleActivityId}`" target="_blank">{{ form.activityCode }}</el-link>
+                  <el-link type="primary" :href="`/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=${form.scheduleActivityId}`" target="_blank">{{ form.activityCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="活动名称：" prop="activityName">
                   {{ form.activityName }}
