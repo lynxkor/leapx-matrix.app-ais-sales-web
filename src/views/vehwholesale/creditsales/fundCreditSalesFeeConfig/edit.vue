@@ -4,7 +4,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="赊销资费设置:"
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -12,7 +12,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          {{ form.creditSalesFeeConfigCode }}
+          <!-- {{ form.creditSalesFeeConfigCode }} -->
         </template>
         <el-main>
           <section class="common-section">
@@ -251,7 +251,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '记录编号：' + this.form.creditSalesFeeConfigCode;

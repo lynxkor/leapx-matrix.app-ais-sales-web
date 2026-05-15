@@ -85,8 +85,8 @@
       <el-button v-permission="moduleKey+'-batchEdit'" size="small" @click="handleBatchEditValid" :disabled="selectionList.length === 0">批量编辑</el-button>
       <el-button v-permission="moduleKey+'-batchSubmit'" size="small" @click="handleBatchSubmitValid" :disabled="selectionList.length === 0">批量提交</el-button>
       <el-button v-permission="moduleKey+'-batchAudit'" size="small" @click="handleBatchAuditValid" :disabled="selectionList.length === 0">批量审核</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -120,7 +120,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchAuditValid, batchSubmitValid, batchAudit, batchSubmit, batchEditValid, batchEdit } from '@/api/vehwholesale/basic/wholesaleVehicleSaleModelConf/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, vehicleModelYearTypeRelationDistinctYeayType } from '@/api/common';
@@ -185,7 +185,7 @@ export default {
             props: 'code',
             label: '编码',
             visible: true,
-            width: 200,
+            width: 150,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -204,10 +204,10 @@ export default {
             props: 'modelName',
             label: '车型',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehiclemodel/edit?id=${row.modelId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -216,30 +216,30 @@ export default {
             props: 'vehicleYearType',
             label: '年款',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehicleYearType/edit?id=${row.vehicleYearTypeId}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehicleyeartype/edit?id=${row.vehicleYearTypeId}`, '_blank');
               },
               type: 'primary'
             }]
           },
-          { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
-          { props: 'cooperationModeLabel', label: '合作模式', visible: true, width: 200 },
-          { props: 'invoiceDiscountTypeLabel', label: '开票优惠类型', visible: true, width: 200 },
-          { props: 'invoiceCoefficient', label: '开票系数', visible: true, width: 200 },
-          { props: 'rebateUseTypeLabel', label: '返利使用类型', visible: true, width: 200 },
-          { props: 'rebateCoefficient', label: '返利使用系数', visible: true, width: 200 },
-          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 200 },
-          { props: 'startDate', label: '开始日期', visible: true, width: 200 },
-          { props: 'endDate', label: '截止日期', visible: true, width: 200 },
-          { props: 'submitterName', label: '提交人', visible: true, width: 200 },
-          { props: 'submitTime', label: '提交时间', visible: true, width: 200 },
-          { props: 'auditorName', label: '审核人', visible: true, width: 200 },
-          { props: 'auditTime', label: '审核时间', visible: true, width: 200 },
-          { props: 'auditStatusLabel', label: '审核状态', visible: true, width: 200 },
-          { props: 'auditOpinion', label: '审核意见', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
+          { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 120 },
+          { props: 'cooperationModeLabel', label: '合作模式', visible: true, width: 120 },
+          { props: 'invoiceDiscountTypeLabel', label: '开票优惠类型', visible: true, width: 150 },
+          { props: 'invoiceCoefficient', label: '开票系数', visible: true, width: 100, align: 'right' },
+          { props: 'rebateUseTypeLabel', label: '返利使用类型', visible: true, width: 150 },
+          { props: 'rebateCoefficient', label: '返利使用系数', visible: true, width: 100, align: 'right' },
+          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 180 },
+          { props: 'startDate', label: '开始日期', visible: true, width: 160 },
+          { props: 'endDate', label: '截止日期', visible: true, width: 160 },
+          { props: 'submitterName', label: '提交人', visible: true, width: 100 },
+          { props: 'submitTime', label: '提交时间', visible: true, width: 180 },
+          { props: 'auditorName', label: '审核人', visible: true, width: 100 },
+          { props: 'auditTime', label: '审核时间', visible: true, width: 180 },
+          { props: 'auditStatusLabel', label: '审核状态', visible: true, width: 100 },
+          { props: 'auditOpinion', label: '审核意见', visible: true, width: 180 },
+          { props: 'modifierName', label: '修改者名称', visible: true, width: 140 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
             props: 'operate',

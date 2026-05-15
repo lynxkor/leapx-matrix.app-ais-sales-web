@@ -20,7 +20,7 @@
               {{ info.bizCode  }}
             </el-form-item>
             <el-form-item label="VIN：" prop="vin">
-              {{ info.vin  }}
+              <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${info.vin}`" target="_blank">{{ info.vin }}</el-link>
             </el-form-item>
             <el-form-item label="预留时间：" prop="reserveTime">
               {{ info.reserveTime  }}

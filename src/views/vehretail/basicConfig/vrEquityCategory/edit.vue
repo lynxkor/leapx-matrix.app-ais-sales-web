@@ -60,7 +60,7 @@
                   {{ form.applicationConditionsLabel }}
                 </el-form-item>
                 <el-form-item label="状态：">
-                  {{ form.statusLabel }}
+                  <span :class="['status-tag', form.status === 1 ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
                 </el-form-item>
               </el-form>
             </div>

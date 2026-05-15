@@ -6,34 +6,37 @@
     width="40%"
     @close="close"
   >
-    <el-form ref="dialogForm" :model="dialogForm" :rules="type === 'sales' ? rules : {}" label-position="left">
+    <el-form ref="dialogForm" :model="dialogForm" :rules="type === 'sales' ? rules : {}" label-width="100px">
       <el-row v-show="type === 'sales'">
         <el-form-item
-          label="变更原因"
-          prop="saleStoreChangeType"
+          label="变更原因:"
+          prop="changeReason"
         >
           <fetch-select
-            :request="fetchOptions"
-            enumCode="vr_store_change_type"
-            v-model="dialogForm.saleStoreChangeType"
+            :remote-method="fetchReasonOptions"
+            remote
+            v-model="dialogForm.changeReason"
             placeholder="请选择"
             clearable
             filterable
+            value-key="code"
+            label-key="name"
+            @change="handleChangeReason"
           />
         </el-form-item>
       </el-row>
       <el-row v-show="type === 'sales'">
         <el-form-item
-          label="变更说明"
+          label="变更说明:"
           prop="saleStoreChangeRemark"
           label-position="left"
-          :rules="this.dialogForm.saleStoreChangeType === '2' ? this.rules.saleStoreChangeRemark : []"
+          :rules="isRemarkRequired ? rules.saleStoreChangeRemark : []"
         >
           <el-input
             v-model="dialogForm.saleStoreChangeRemark"
             :rows="4"
             maxlength="500"
-            placeholder="变更说明"
+            placeholder="变更说明:"
             show-word-limit
             type="textarea"
             style="width: 60%"
@@ -42,7 +45,7 @@
       </el-row>
       <el-row>
         <el-form-item
-          label="更换门店"
+          label="更换门店:"
           prop="storeCode"
         >
           <fetch-select
@@ -71,15 +74,16 @@
       </el-row>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="close"> 取消 </el-button>
-      <el-button type="primary" @click="changeDealer"> 确定 </el-button>
+      <el-button size="small" @click="close"> 取消 </el-button>
+      <el-button size="small" type="primary" @click="changeDealer"> 确定 </el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
 import FetchSelect from '@/libs/components/FetchSelect';
-import { getEnum, tableAddOrUpdate, listOrgStoreInfo } from '@/api/common';
+import { tableAddOrUpdate, listOrgStoreInfo } from '@/api/common';
+import { fetchReasonLabelList } from '@/api/vehretail/orderRefund/changeReason';
 
 export default {
   name: 'ChangeDealer',
@@ -101,14 +105,15 @@ export default {
       showOption: false,
       dialogShow: false,
       dialogForm: {
-        saleStoreChangeType: null,
+        changeReasonCode: '',
+        changeReason: '',
         saleStoreChangeRemark: '',
         storeCode: '',
         storeName: '',
         cooperationTypeLabel: '',
       },
       rules: {
-        saleStoreChangeType: [
+        changeReason: [
           { required: true, message: '请选择变更原因', trigger: 'change' }
         ],
         saleStoreChangeRemark: [
@@ -146,6 +151,9 @@ export default {
     },
     dialogTitle () {
       return this.type === 'sales' ? '更换销售门店' : '更换交付门店';
+    },
+    isRemarkRequired () {
+      return this.dialogForm.changeReason && this.dialogForm.changeReason.includes('其他');
     }
   },
   methods: {
@@ -175,20 +183,35 @@ export default {
     saveOrUpdate (data) {
       return tableAddOrUpdate(data);
     },
-    async fetchOptions (code) {
-      if (code) {
-        return getEnum(code);
+    fetchReasonOptions (keyword) {
+      const res = fetchReasonLabelList({ changeReason: keyword, changeType: 30 });
+      return res || [];
+    },
+    handleChangeReason (val, obj) {
+      if (val && obj) {
+        this.dialogForm.changeReason = obj.name;
+        this.dialogForm.changeReasonCode = obj.code;
+      } else {
+        this.dialogForm.changeReason = '';
+        this.dialogForm.changeReasonCode = '';
       }
-      return [];
     },
     show (type) {
       this.type = type;
       this.dialogShow = true;
       this.getData();
+      this.fetchReasonOptions();
     },
     close () {
       this.dialogShow = false;
-      this.dialogForm = { result: '', remark: '' };
+      this.dialogForm = {
+        changeReasonCode: '',
+        changeReason: '',
+        saleStoreChangeRemark: '',
+        storeCode: '',
+        storeName: '',
+        cooperationTypeLabel: '',
+      };
       this.$nextTick(() => {
         this.$refs.dialogForm.clearValidate();
       });
@@ -253,4 +276,8 @@ export default {
     color: #909399;
   }
 }
+::v-deep .el-input__inner {
+    height: 32px;
+    line-height: 32px;
+  }
 </style>

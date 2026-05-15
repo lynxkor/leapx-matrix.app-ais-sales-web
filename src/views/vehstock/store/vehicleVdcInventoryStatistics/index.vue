@@ -94,7 +94,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/store/vehicleVdcInventoryStatistics/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, page, vehicleSeriesList, listVehicleYearType, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage } from '@/api/common';

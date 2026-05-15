@@ -119,7 +119,7 @@
       <!--  TIPS:根据产品增删功能按钮  -->
         <el-dropdown trigger="click" style="margin: 0 10px;" @command="handleAdd">
         <el-button size="small" type="primary" @click="showDropdown">
-          {{ dropdownLoading ? '加载中...' : '整车退车订单' }}
+          {{ dropdownLoading ? '加载中...' : '新增整车退车订单' }}
           <i class="iconfont icon-lxppc-down" />
         </el-button>
         <el-dropdown-menu slot="dropdown">
@@ -132,8 +132,8 @@
         </el-dropdown-menu>
       </el-dropdown>
       <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
-      <el-button v-if="canExport"  size="small" @click="handleAudit" :disabled="selectionList.length === 0">审核</el-button>
-      <el-button v-if="canExport"  size="small" @click="handleCancel" :disabled="selectionList.length === 0">作废</el-button>
+      <el-button v-permission="moduleKey+'-audit'"  size="small" @click="handleAudit" :disabled="selectionList.length === 0">审核</el-button>
+      <el-button v-permission="moduleKey+'-cancel'" size="small" @click="handleCancel" :disabled="selectionList.length === 0">作废</el-button>
       <el-button v-if="canExport"  size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
@@ -175,7 +175,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, audit, cancel } from '@/api/vehwholesale/back/vehicleBackOrder/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getRigion, listOrgStoreInfo } from '@/api/common';
@@ -248,7 +248,7 @@ export default {
             props: 'backOrderCode',
             label: '退车订单号',
             visible: true,
-            width: 200,
+            width: 150,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -262,45 +262,45 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'auditStatusLabel', label: '退车订单状态', visible: true, width: 200 },
-          { props: 'backTime', label: '退车日期', visible: true, width: 200 },
+          { props: 'auditStatusLabel', label: '退车订单状态', visible: true, width: 120 },
+          { props: 'backTime', label: '退车日期', visible: true, width: 160 },
           {
             props: 'dealerCompanyName',
             label: '经销商',
             visible: true,
-            width: 200,
+            width: 240,
             buttons: [{
               click: (rowIndex, row) => {
                 if (row.dealerCompanyCode) {
-                  window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.dealerCompanyCode}`, '_blank');
+                  window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank');
                 }
               },
               type: 'primary'
             }]
           },
-          { props: 'regionName', label: '所属大区', visible: true, width: 200 },
+          { props: 'regionName', label: '所属大区', visible: true, width: 120 },
           {
             props: 'entCustomerName',
             label: '企业客户',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
                 if (row.entCustomerCode) {
-                  window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.entCustomerCode}`, '_blank');
+                  window.open(`/partner/channelManagement/companyDetails?companyCode=${row.entCustomerCode}`, '_blank');
                 }
               },
               type: 'primary'
             }]
           },
-          { props: 'backTypeLabel', label: '退车类型', visible: true, width: 200 },
-          { props: 'orderTypeLabel', label: '单据类型', visible: true, width: 200 },
+          { props: 'backTypeLabel', label: '退车类型', visible: true, width: 120 },
+          { props: 'orderTypeLabel', label: '单据类型', visible: true, width: 120 },
           { props: 'remark', label: '退车备注', visible: true, width: 200 },
-          { props: 'auditorUserName', label: '审核人', visible: true, width: 200 },
-          { props: 'auditTime', label: '审核时间', visible: true, width: 200 },
+          { props: 'auditorUserName', label: '审核人', visible: true, width: 100 },
+          { props: 'auditTime', label: '审核时间', visible: true, width: 160 },
           { props: 'auditOpinion', label: '退车审核说明', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 100 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 160 },
           {
             props: 'operate',
             label: '操作',

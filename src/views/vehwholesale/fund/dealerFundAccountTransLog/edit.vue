@@ -28,26 +28,22 @@
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                  <el-form-item label="账户编号：" prop="fundAccountCode">
-                  <el-button class="link" style="padding: 0;"
-                   @click="openWindow('/sales/vehwholesale/fund/dealerFundAccount/edit?id=' + form.fundAccountId)"
-                   type="text">{{form.fundAccountCode}}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/dealerFundAccount/edit?id=${form.fundAccountId}`" target="_blank">{{form.fundAccountCode}}</el-link>
                 </el-form-item>
                  <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerComapnyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerComapnyCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerComapnyCode)">{{ form.dealerComapnyCode }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerComapnyCode}`" target="_blank">{{ form.dealerComapnyCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="销售公司名称：" prop="saleCompanyName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/fund/fundSaleCompany/edit?id=' + form.saleCompanyId)">{{ form.saleCompanyName }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundSaleCompany/edit?id=${form.saleCompanyId}`" target="_blank">{{ form.saleCompanyName }}</el-link>
                 </el-form-item>
                 <el-form-item label="资金类型：" prop="fundTypeLabel">
                   {{ form.fundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.financialOrganizationId)"
-                   type="text">{{ form.financialOrganizationName }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.financialOrganizationId}`" target="_blank">{{ form.financialOrganizationName }}</el-link>
                 </el-form-item>
               </el-form>
             </div>
@@ -71,22 +67,16 @@
                   {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="整车批售订单：" prop="wholesaleOrderCode">
-                  <el-button class="link" style="padding: 0;"
-                   @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + form.wholesaleOrderId)"
-                   type="text">{{form.wholesaleOrderCode}}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${form.wholesaleOrderId}`" target="_blank">{{form.wholesaleOrderCode}}</el-link>
                 </el-form-item>
                 <el-form-item label="企业客户整车订单：" prop="entVehorderCode">
-                  <el-button class="link" style="padding: 0;"
-                   @click="openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + form.entVehorderId)"
-                   type="text">{{form.entVehorderCode}}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${form.entVehorderId}`" target="_blank">{{form.entVehorderCode}}</el-link>
                 </el-form-item>
                 <el-form-item label="交车单号：" prop="deliveryOrderCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehretail/orderManager/deliveryOrder/edit?id=' + form.deliveryOrderCode)">{{ form.deliveryOrderCode }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehretail/orderManager/deliveryOrder/edit?id=${form.deliveryOrderCode}`" target="_blank">{{ form.deliveryOrderCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="门店名称：" prop="dealerName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)"
-                   type="text">{{form.dealerName}}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{form.dealerName}}</el-link>
                 </el-form-item>
                  <el-form-item label="入账凭证号：" prop="transactionReceiptCode">
                   {{ form.transactionReceiptCode }}
@@ -185,7 +175,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '流水编号：' + this.form.transLogCode;

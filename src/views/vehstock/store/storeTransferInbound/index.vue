@@ -53,7 +53,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, inboundItem } from '@/api/vehstock/store/storeTransferInbound/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
@@ -133,10 +133,10 @@ export default {
             }]
           },
           { props: 'transferNo', label: '整车调拨单号', visible: true, width: 200 },
-          { props: 'vin', label: 'VIN', visible: true, width: 200 },
-          { props: 'sourceDealerName', label: '源门店名称', visible: true, width: 200 },
+          { props: 'vin', label: 'VIN', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }] },
+          { props: 'sourceDealerName', label: '源门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.sourceDealerCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'sourceDealerAddress', label: '源门店地址', visible: true, width: 200 },
-          { props: 'targetDealerName', label: '目标门店名称', visible: true, width: 200 },
+          { props: 'targetDealerName', label: '目标门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.targetDealerCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'targetDealerAddress', label: '目标门店地址', visible: true, width: 200 },
           { props: 'moveoutTime', label: '移出时间', visible: true, width: 200 },
           { props: 'moveinTime', label: '移入时间', visible: true, width: 200 },

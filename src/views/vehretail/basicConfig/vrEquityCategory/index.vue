@@ -38,7 +38,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/basicConfig/vrEquityCategory/index';
 import { getTableConfig, tableAddOrUpdate, exportTable } from '@/api/common';
 import Upload from '@/libs/components/UploadDialog';
@@ -104,7 +104,7 @@ export default {
             }]
           },
           { props: 'applicationConditionsLabel', label: '申请条件', visible: true, width: 180 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 120 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 80 },
           { props: 'creatorName', label: '创建人', visible: true, width: 180 },
           { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true }
         ],

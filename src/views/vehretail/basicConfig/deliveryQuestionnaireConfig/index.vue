@@ -101,7 +101,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/basicConfig/deliveryQuestionnaireConfig/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList } from '@/api/common';
@@ -185,7 +185,7 @@ export default {
           { props: 'effectiveDate', label: '生效日期', visible: true, width: 200 },
           { props: 'invalidDate', label: '失效日期', visible: true, width: 200 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 80 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',

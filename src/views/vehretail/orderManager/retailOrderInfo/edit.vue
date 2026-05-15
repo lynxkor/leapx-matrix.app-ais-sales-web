@@ -903,7 +903,7 @@ export default {
     // 权益申请
     handleEquityApply () {
       this.navigateToRoute({
-        path: '/vehretail/orderManager/vrEquityApply/edit',
+        path: '/sales/vehretail/orderManager/vrEquityApply/edit',
         query: {
           retailOrderCode: this.form.retailOrderCode
         }
@@ -912,7 +912,7 @@ export default {
     // 团购申请
     handleGroupbuyApply () {
       this.navigateToRoute({
-        path: '/vehretail/orderManager/vrGroupbuyOrderEquityApply/edit',
+        path: '/sales/vehretail/orderManager/vrGroupbuyOrderEquityApply/edit',
         query: {
           retailOrderCode: this.form.retailOrderCode
         }
@@ -1157,7 +1157,7 @@ export default {
   background-color: rgba(255, 255, 255, 0.95);
   border-radius: 8px;
   padding: 15px 10px;
-  padding-right: 30px;
+  // padding-right: 30px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   border: 1px solid #ebeef5;
   backdrop-filter: blur(10px);

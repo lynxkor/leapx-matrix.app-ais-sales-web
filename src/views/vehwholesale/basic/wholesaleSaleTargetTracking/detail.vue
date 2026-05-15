@@ -29,7 +29,7 @@
               {{ info.dealerParentOrgId  }}
             </el-form-item> -->
             <el-form-item label="母公司：" prop="dealerParentOrgName">
-              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + info.dealerParentOrgId)">{{ info.dealerParentOrgName }}</el-button>
+              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/companyDetails?companyCode=' + info.dealerParentOrgId)">{{ info.dealerParentOrgName }}</el-button>
             </el-form-item>
             <el-form-item label="合作类型：" prop="cooperationType">
               {{ info.cooperationTypeLabel  }}

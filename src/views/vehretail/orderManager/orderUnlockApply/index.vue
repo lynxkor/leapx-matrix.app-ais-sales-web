@@ -135,7 +135,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, enableItem, auditApply, submitApply, batchVoidedApply } from '@/api/vehretail/orderManager/orderUnlockApply/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo } from '@/api/common';
@@ -454,10 +454,13 @@ export default {
         return;
       }
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('此操作将作废对应申请单, 是否继续?', '提示', {
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将作废对应申请单, 是否继续?</div>';
+      this.$confirm(message, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        customClass: 'ais-leave-tips',
+        dangerouslyUseHTMLString: true,
+        showClose: false
       }).then(() => {
         batchVoidedApply(ids).then(() => {
           this.$message({

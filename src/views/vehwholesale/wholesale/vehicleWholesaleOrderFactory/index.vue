@@ -344,19 +344,21 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-permission="moduleKey+'-batchConfirm'" size="small" :disabled="selectionList.length === 0" @click="handleBatchConfirm">批量确认</el-button>
-      <el-button v-permission="moduleKey+'-batchAllocateVehicle'" size="small" :disabled="selectionList.length === 0" @click="handleBatchAllocateVehicle">批量配车</el-button>
-      <el-button v-permission="moduleKey+'-batchSettleSubmit'"  size="small" :disabled="selectionList.length === 0" @click="handleBatchSettleSubmit">批量结算</el-button>
-      <el-button v-permission="moduleKey+'-batchCancelSettle'" :disabled="selectionList.length === 0" @click="handleBatchCancelSettle">批量取消结算</el-button>
-      <el-button v-permission="moduleKey+'-batchCancel'" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancel">批量作废</el-button>
-      <el-button v-permission="moduleKey+'-batchSetAutoAllocate'" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancelAllocateVehicle">批量取消配车</el-button>
-      <el-button v-permission="moduleKey+'-batchSetAutoAllocate'" size="small" :disabled="selectionList.length === 0" @click="handleBatchSetAutoAllocate">批量设置自动配车</el-button>
-      <el-button v-permission="moduleKey+'-batchSetAutoAllocate'" size="small" :disabled="selectionList.length === 0" @click="handleBatchSetNotAutoAllocate">批量设置不自动配车</el-button>
-      <el-button v-permission="moduleKey+'-setEmergencyOrder'" size="small" :disabled="selectionList.length === 0" @click="handleSetEmergencyOrder">设置急单</el-button>
-      <el-button v-permission="moduleKey+'-setEmergencyOrder'" size="small" :disabled="selectionList.length === 0" @click="handleCancelEmergencyOrder">取消急单</el-button>
-      <el-button v-permission="moduleKey+'-refreshPrice'" size="small" @click="handleRefreshPriceCoefficient">刷新价格</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <button-group collapse-direction="left">
+        <el-button v-permission="moduleKey+'-batchConfirm'" size="small" :disabled="selectionList.length === 0" @click="handleBatchConfirm">批量确认</el-button>
+        <el-button v-permission="moduleKey+'-batchAllocateVehicle'" size="small" :disabled="selectionList.length === 0" @click="handleBatchAllocateVehicle">批量配车</el-button>
+        <el-button v-permission="moduleKey+'-batchSettleSubmit'"  size="small" :disabled="selectionList.length === 0" @click="handleBatchSettleSubmit">批量结算</el-button>
+        <el-button v-permission="moduleKey+'-batchCancelSettle'" :disabled="selectionList.length === 0" @click="handleBatchCancelSettle">批量取消结算</el-button>
+        <el-button v-permission="moduleKey+'-batchCancel'" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancel">批量作废</el-button>
+        <el-button v-permission="moduleKey+'-batchSetAutoAllocate'" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancelAllocateVehicle">批量取消配车</el-button>
+        <el-button v-permission="moduleKey+'-batchSetAutoAllocate'" size="small" :disabled="selectionList.length === 0" @click="handleBatchSetAutoAllocate">批量设置自动配车</el-button>
+        <el-button v-permission="moduleKey+'-batchSetAutoAllocate'" size="small" :disabled="selectionList.length === 0" @click="handleBatchSetNotAutoAllocate">批量设置不自动配车</el-button>
+        <el-button v-permission="moduleKey+'-setEmergencyOrder'" size="small" :disabled="selectionList.length === 0" @click="handleSetEmergencyOrder">设置急单</el-button>
+        <el-button v-permission="moduleKey+'-setEmergencyOrder'" size="small" :disabled="selectionList.length === 0" @click="handleCancelEmergencyOrder">取消急单</el-button>
+        <el-button v-permission="moduleKey+'-refreshPrice'" size="small" @click="handleRefreshPriceCoefficient">刷新价格</el-button>
+        <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+        <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      </button-group>
     </div>
     <div
       class="ais-table-c"
@@ -428,7 +430,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchConfirmItem, setEmergencyOrderItem, batchCancelItem, batchAllocateVehicleItem, batchSettleSubmitItem, batchCancelSettleItem, batchSetAutoAllocateItem, refreshPriceItem, batchCancleAllocateVehicleItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, vehicleModelList, cityPage, getProvinceTree, getParentCompany, getRigion } from '@/api/common';
@@ -441,6 +443,7 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
+import ButtonGroup from '@/libs/components/ButtonGroup';
 import BatchCancelInput from './BatchCancelInput.vue';
 import BatchAllocateVehicleInput from './BatchAllocateVehicleInput.vue';
 import CancleBatchAllocateVehicleInput from './CancleBatchAllocateVehicleInput.vue';
@@ -533,7 +536,8 @@ export default {
     SetEmergencyOrderInput,
     BatchAllocateVehicleInput,
     CancleBatchAllocateVehicleInput,
-    BatchCancelSettleInput
+    BatchCancelSettleInput,
+    ButtonGroup
   },
   data () {
     return {
@@ -591,12 +595,12 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'orderStatusLabel', label: '订单状态', visible: true, width: 200 },
-          { props: 'orderTime', label: '订单时间', visible: true, width: 200 },
-          { props: 'confirmTime', label: '确认时间', visible: true, width: 200 },
+          { props: 'orderStatusLabel', label: '订单状态', visible: true, width: 100 },
+          { props: 'orderTime', label: '订单时间', visible: true, width: 180 },
+          { props: 'confirmTime', label: '确认时间', visible: true, width: 180 },
           // { props: 'saleDealerName', label: '销售公司名称', visible: true, width: 200 },
-          { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
-          { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 200 },
+          { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 120 },
+          { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 120 },
           {
             props: 'orderMaterialsCode',
             label: '物料编码',
@@ -604,7 +608,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.orderMaterialsCode}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.orderMaterialsId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -613,31 +617,37 @@ export default {
             props: 'orderMaterialsDesc',
             label: '物料描述',
             visible: true,
-            width: 200,
+            width: 240,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.orderMaterialsId}`, '_blank');
+              },
+              type: 'primary'
+            }]
           },
           { props: 'allocateTime', label: '配车时间', visible: true, width: 200 },
           { props: 'settleTime', label: '结算时间', visible: true, width: 200 },
-          { props: 'materialsCode', label: '配车物料码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
-          { props: 'vin', label: '配车VIN码', visible: true, width: 200 },
-          { props: 'replenishApplyCode', label: '整车补货单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=${row.replenishApplyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'materialsCode', label: '配车物料码', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'vin', label: '配车VIN码', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }] },
+          { props: 'replenishApplyCode', label: '整车补货单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/replenish/dealerVehicleReplenishApply/edit?id=${row.replenishApplyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
           { props: 'provinceName', label: '省份', visible: true, width: 200 },
           { props: 'cityName', label: '城市', visible: true, width: 200 },
           { props: 'prodScheduleActivityName', label: '专项活动', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=${row.prodScheduleActivityId}`, '_blank'); }, type: 'primary' }] },
           { props: 'allowLockRetailLabel', label: '允许锁零售单', visible: true, width: 200 },
-          { props: 'retailPrice', label: '零售价', visible: true, width: 200 },
-          { props: 'invoiceDiscountTypeLabel', label: '开票类型', visible: true, width: 200 },
-          { props: 'invoiceCoefficient', label: '开票系数', visible: true, width: 200 },
-          { props: 'wholesalePrice', label: '批售价', visible: true, width: 200 },
-          { props: 'rebateUseTypeLabel', label: '返利使用类型', visible: true, width: 200 },
-          { props: 'rebateCoefficient', label: '返利使用系数', visible: true, width: 200 },
-          { props: 'usedRebateAmount', label: '使用返利金额', visible: true, width: 200 },
+          { props: 'retailPrice', label: '零售价', visible: true, width: 120, align: 'right' },
+          { props: 'invoiceDiscountTypeLabel', label: '开票类型', visible: true, width: 120 },
+          { props: 'invoiceCoefficient', label: '开票系数', visible: true, width: 120, align: 'right' },
+          { props: 'wholesalePrice', label: '批售价', visible: true, width: 120, align: 'right' },
+          { props: 'rebateUseTypeLabel', label: '返利使用类型', visible: true, width: 150 },
+          { props: 'rebateCoefficient', label: '返利使用系数', visible: true, width: 150, align: 'right' },
+          { props: 'usedRebateAmount', label: '使用返利金额', visible: true, width: 150, align: 'right' },
           { props: 'erpSaleOrderCode', label: 'ERP销售订单号', visible: true, width: 200 },
           { props: 'erpDeliverOrder', label: 'ERP交货单', visible: true, width: 200 },
           { props: 'erpInvoiceCode', label: 'ERP发票号', visible: true, width: 200 },
           { props: 'syncSapMsg', label: '同步SAP状态', visible: true, width: 200 },
           { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           // { props: 'dealerCompanyCode', label: '母公司代码', visible: true, width: 200 },
           // { props: 'saleDealerCode', label: '销售公司编码', visible: true, width: 200 },
           {
@@ -647,7 +657,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehicleInterior/edit?id=${row.interiorId}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehicleinterior/edit?id=${row.interiorId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -659,7 +669,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehiclemodel/edit?id=${row.modelId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -671,7 +681,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehicleExterior/edit?id=${row.exteriorId}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehicleexterior/edit?id=${row.exteriorId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -684,7 +694,7 @@ export default {
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  window.open(`/sales/datacenter/materials/vehicleWheelHub/edit?id=${row.wheelHubId}`, '_blank');
+                  window.open(`/sales/datacenter/materials/vehiclewheelhub/edit?id=${row.wheelHubId}`, '_blank');
                 },
                 type: 'primary'
               }
@@ -709,7 +719,7 @@ export default {
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  window.open(`/sales/datacenter/materials/vehicleYearType/edit?id=${row.yearTypeId}`, '_blank');
+                  window.open(`/sales/datacenter/materials/vehicleyeartype/edit?id=${row.yearTypeId}`, '_blank');
                 },
                 type: 'primary'
               }
@@ -719,11 +729,11 @@ export default {
           { props: 'allocateWayLabel', label: '配车方式', visible: true, width: 200 },
           { props: 'cooperateTypeLabel', label: '合作类型', visible: true, width: 200 },
           { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 200 },
-          { props: 'creditSalesAmount', label: '融资金额/赊账', visible: true, width: 200 },
-          { props: 'emergencyOrderLabel', label: '是否紧急订单', visible: true, width: 200 },
-          { props: 'emergencyOrderRemark', label: '急单备注', visible: true, width: 200 },
-          { props: 'emergencyOrderTime', label: '设置急单时间', visible: true, width: 200 },
-          { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 200 },
+          { props: 'creditSalesAmount', label: '融资金额/赊账', visible: true, width: 180, align: 'right' },
+          { props: 'emergencyOrderLabel', label: '是否紧急订单', visible: true, width: 150 },
+          { props: 'emergencyOrderRemark', label: '急单备注', visible: true, width: 180 },
+          { props: 'emergencyOrderTime', label: '设置急单时间', visible: true, width: 160 },
+          { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 150, align: 'right' },
           // { props: 'downPaymentRatio', label: '配车顺序时间', visible: true, width: 200 },
           { props: 'needAutoAllocateCarLabel', label: '是否需要自动配车', visible: true, width: 200 },
           { props: 'dealerWarehouseName', label: '门店仓库名称', visible: true, width: 200 },
@@ -1512,7 +1522,7 @@ export default {
 <style lang="scss" scoped>
 .m-order-list {
   ::v-deep .m-vxe-table-options{
-    top: -50px;
+    top: -96px;
   }
 }
 </style>

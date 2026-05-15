@@ -112,7 +112,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehstock/basic/vehiclereservationconfig/detail',
+      path: '/vehstock/basic/vehicleReservationConfig/detail',
       name: 'vehicleReservationConfigDetail',
       component: () => import('@/views/vehstock/basic/vehicleReservationConfig/detail.vue'),
 
@@ -121,7 +121,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehstock/basic/vehiclereservationconfig/edit',
+      path: '/vehstock/basic/vehicleReservationConfig/edit',
       name: 'vehicleReservationConfigEdit',
       component: () => import('@/views/vehstock/basic/vehicleReservationConfig/edit.vue'),
 
@@ -139,7 +139,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehstock/basic/vehiclereservationdetail/detail',
+      path: '/vehstock/basic/vehicleReservationDetail/detail',
       name: 'vehicleReservationDetailDetail',
       component: () => import('@/views/vehstock/basic/vehicleReservationDetail/detail.vue'),
 
@@ -157,7 +157,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehstock/basic/warehousevehiclerelation/detail',
+      path: '/vehstock/basic/warehouseVehicleRelation/detail',
       name: 'warehouseVehicleRelationDetail',
       component: () => import('@/views/vehstock/basic/warehouseVehicleRelation/detail.vue'),
 
@@ -166,7 +166,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehstock/basic/warehousevehiclerelation/edit',
+      path: '/vehstock/basic/warehouseVehicleRelation/edit',
       name: 'warehouseVehicleRelationEdit',
       component: () => import('@/views/vehstock/basic/warehouseVehicleRelation/edit.vue'),
 
@@ -184,7 +184,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/datacenter/materials/vehiclebrand/detail',
+      path: '/datacenter/materials/vehicleBrand/detail',
       name: 'vehicleBrandDetail',
       component: () => import('@/views/datacenter/materials/vehicleBrand/detail.vue'),
 
@@ -193,7 +193,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/datacenter/materials/vehiclebrand/edit',
+      path: '/datacenter/materials/vehicleBrand/edit',
       name: 'vehicleBrandEdit',
       component: () => import('@/views/datacenter/materials/vehicleBrand/edit.vue'),
 
@@ -211,7 +211,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/datacenter/materials/vehiclemodelline/detail',
+      path: '/datacenter/materials/vehicleModelLine/detail',
       name: 'vehicleModelLineDetail',
       component: () => import('@/views/datacenter/materials/vehicleModelLine/detail.vue'),
 
@@ -220,7 +220,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/datacenter/materials/vehiclemodelline/edit',
+      path: '/datacenter/materials/vehicleModelLine/edit',
       name: 'vehicleModelLineEdit',
       component: () => import('@/views/datacenter/materials/vehicleModelLine/edit.vue'),
 
@@ -238,7 +238,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/datacenter/materials/vehicleoptionpackage/detail',
+      path: '/datacenter/materials/vehicleOptionPackage/detail',
       name: 'vehicleOptionPackageDetail',
       component: () => import('@/views/datacenter/materials/vehicleOptionPackage/detail.vue'),
 
@@ -247,7 +247,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/datacenter/materials/vehicleoptionpackage/edit',
+      path: '/datacenter/materials/vehicleOptionPackage/edit',
       name: 'vehicleOptionPackageEdit',
       component: () => import('@/views/datacenter/materials/vehicleOptionPackage/edit.vue'),
 
@@ -265,7 +265,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/datacenter/materials/vehicleregisteredmodel/detail',
+      path: '/datacenter/materials/vehicleRegisteredModel/detail',
       name: 'vehicleRegisteredModelDetail',
       component: () => import('@/views/datacenter/materials/vehicleRegisteredModel/detail.vue'),
 
@@ -274,7 +274,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/datacenter/materials/vehicleregisteredmodel/edit',
+      path: '/datacenter/materials/vehicleRegisteredModel/edit',
       name: 'vehicleRegisteredModelEdit',
       component: () => import('@/views/datacenter/materials/vehicleRegisteredModel/edit.vue'),
 
@@ -292,7 +292,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/datacenter/materials/vehicleroof/detail',
+      path: '/datacenter/materials/vehicleRoof/detail',
       name: 'vehicleRoofDetail',
       component: () => import('@/views/datacenter/materials/vehicleRoof/detail.vue'),
 
@@ -301,7 +301,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/datacenter/materials/vehicleroof/edit',
+      path: '/datacenter/materials/vehicleRoof/edit',
       name: 'vehicleRoofEdit',
       component: () => import('@/views/datacenter/materials/vehicleRoof/edit.vue'),
 
@@ -319,7 +319,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/datacenter/materials/vehiclebatterycell/detail',
+      path: '/datacenter/materials/vehicleBatteryCell/detail',
       name: 'vehicleBatteryCellDetail',
       component: () => import('@/views/datacenter/materials/vehicleBatteryCell/detail.vue'),
 
@@ -328,7 +328,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/datacenter/materials/vehiclebatterycell/edit',
+      path: '/datacenter/materials/vehicleBatteryCell/edit',
       name: 'vehicleBatteryCellEdit',
       component: () => import('@/views/datacenter/materials/vehicleBatteryCell/edit.vue'),
 
@@ -346,7 +346,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/datacenter/materials/vehicleyeartype/detail',
+      path: '/datacenter/materials/vehicleYearType/detail',
       name: 'vehicleYearTypeDetail',
       component: () => import('@/views/datacenter/materials/vehicleYearType/detail.vue'),
 
@@ -355,7 +355,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/datacenter/materials/vehicleyeartype/edit',
+      path: '/datacenter/materials/vehicleYearType/edit',
       name: 'vehicleYearTypeEdit',
       component: () => import('@/views/datacenter/materials/vehicleYearType/edit.vue'),
 
@@ -373,7 +373,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/datacenter/materials/vehiclerangepower/detail',
+      path: '/datacenter/materials/vehicleRangePower/detail',
       name: 'vehicleRangePowerDetail',
       component: () => import('@/views/datacenter/materials/vehicleRangePower/detail.vue'),
 
@@ -382,7 +382,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/datacenter/materials/vehiclerangepower/edit',
+      path: '/datacenter/materials/vehicleRangePower/edit',
       name: 'vehicleRangePowerEdit',
       component: () => import('@/views/datacenter/materials/vehicleRangePower/edit.vue'),
 
@@ -400,7 +400,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/datacenter/materials/vehiclewheelhub/detail',
+      path: '/datacenter/materials/vehicleWheelHub/detail',
       name: 'vehicleWheelHubDetail',
       component: () => import('@/views/datacenter/materials/vehicleWheelHub/detail.vue'),
 
@@ -409,7 +409,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/datacenter/materials/vehiclewheelhub/edit',
+      path: '/datacenter/materials/vehicleWheelHub/edit',
       name: 'vehicleWheelHubEdit',
       component: () => import('@/views/datacenter/materials/vehicleWheelHub/edit.vue'),
 
@@ -427,7 +427,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/datacenter/materials/vehicleexterior/detail',
+      path: '/datacenter/materials/vehicleExterior/detail',
       name: 'vehicleExteriorDetail',
       component: () => import('@/views/datacenter/materials/vehicleExterior/detail.vue'),
 
@@ -436,7 +436,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/datacenter/materials/vehicleexterior/edit',
+      path: '/datacenter/materials/vehicleExterior/edit',
       name: 'vehicleExteriorEdit',
       component: () => import('@/views/datacenter/materials/vehicleExterior/edit.vue'),
 
@@ -454,7 +454,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/datacenter/materials/vehicleinterior/detail',
+      path: '/datacenter/materials/vehicleInterior/detail',
       name: 'vehicleInteriorDetail',
       component: () => import('@/views/datacenter/materials/vehicleInterior/detail.vue'),
 
@@ -463,7 +463,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/datacenter/materials/vehicleinterior/edit',
+      path: '/datacenter/materials/vehicleInterior/edit',
       name: 'vehicleInteriorEdit',
       component: () => import('@/views/datacenter/materials/vehicleInterior/edit.vue'),
 
@@ -481,7 +481,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/datacenter/materials/vehicledrivingrange/detail',
+      path: '/datacenter/materials/vehicleDrivingRange/detail',
       name: 'vehicleDrivingRangeDetail',
       component: () => import('@/views/datacenter/materials/vehicleDrivingRange/detail.vue'),
 
@@ -490,7 +490,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/datacenter/materials/vehicledrivingrange/edit',
+      path: '/datacenter/materials/vehicleDrivingRange/edit',
       name: 'vehicleDrivingRangeEdit',
       component: () => import('@/views/datacenter/materials/vehicleDrivingRange/edit.vue'),
 
@@ -508,7 +508,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/datacenter/materials/vehiclematerials/detail',
+      path: '/datacenter/materials/vehicleMaterials/detail',
       name: 'vehicleMaterialsDetail',
       component: () => import('@/views/datacenter/materials/vehicleMaterials/detail.vue'),
 
@@ -517,7 +517,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/datacenter/materials/vehiclematerials/edit',
+      path: '/datacenter/materials/vehicleMaterials/edit',
       name: 'vehicleMaterialsEdit',
       component: () => import('@/views/datacenter/materials/vehicleMaterials/edit.vue'),
 
@@ -535,7 +535,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/datacenter/materials/vehiclematerialsmatch/detail',
+      path: '/datacenter/materials/vehicleMaterialsMatch/detail',
       name: 'vehicleMaterialsMatchDetail',
       component: () => import('@/views/datacenter/materials/vehicleMaterialsMatch/detail.vue'),
 
@@ -544,7 +544,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/datacenter/materials/vehiclematerialsmatch/edit',
+      path: '/datacenter/materials/vehicleMaterialsMatch/edit',
       name: 'vehicleMaterialsMatchEdit',
       component: () => import('@/views/datacenter/materials/vehicleMaterialsMatch/edit.vue'),
 
@@ -570,7 +570,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/datacenter/materials/vehicleseries/detail',
+      path: '/datacenter/materials/vehicleSeries/detail',
       name: 'vehicleSeriesDetail',
       component: () => import('@/views/datacenter/materials/vehicleSeries/detail.vue'),
 
@@ -579,7 +579,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/datacenter/materials/vehicleseries/edit',
+      path: '/datacenter/materials/vehicleSeries/edit',
       name: 'vehicleSeriesEdit',
       component: () => import('@/views/datacenter/materials/vehicleSeries/edit.vue'),
 
@@ -597,7 +597,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/datacenter/materials/vehiclemodel/detail',
+      path: '/datacenter/materials/vehicleModel/detail',
       name: 'vehicleModelDetail',
       component: () => import('@/views/datacenter/materials/vehicleModel/detail.vue'),
 
@@ -606,7 +606,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/datacenter/materials/vehiclemodel/edit',
+      path: '/datacenter/materials/vehicleModel/edit',
       name: 'vehicleModelEdit',
       component: () => import('@/views/datacenter/materials/vehicleModel/edit.vue'),
 
@@ -615,7 +615,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/datacenter/materials/vehiclemodel/edit',
+      path: '/datacenter/materials/vehicleModel/edit',
       name: 'vehicleModelEdit',
       component: () => import('@/views/datacenter/materials/vehicleModel/edit.vue'),
 
@@ -687,7 +687,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/fund/fundbudgetitem/detail',
+      path: '/vehwholesale/fund/fundBudgetItem/detail',
       name: 'fundBudgetItemDetail',
       component: () => import('@/views/vehwholesale/fund/fundBudgetItem/detail.vue'),
 
@@ -696,7 +696,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/fund/fundbudgetitem/edit',
+      path: '/vehwholesale/fund/fundBudgetItem/edit',
       name: 'fundBudgetItemEdit',
       component: () => import('@/views/vehwholesale/fund/fundBudgetItem/edit.vue'),
 
@@ -714,7 +714,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/fund/fundfeesupporttype/detail',
+      path: '/vehwholesale/fund/fundFeeSupportType/detail',
       name: 'fundFeeSupportTypeDetail',
       component: () => import('@/views/vehwholesale/fund/fundFeeSupportType/detail.vue'),
 
@@ -723,7 +723,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/fund/fundfeesupporttype/edit',
+      path: '/vehwholesale/fund/fundFeeSupportType/edit',
       name: 'fundFeeSupportTypeEdit',
       component: () => import('@/views/vehwholesale/fund/fundFeeSupportType/edit.vue'),
 
@@ -741,7 +741,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/fund/fundrebatereturnconfig/detail',
+      path: '/vehwholesale/fund/fundRebateReturnConfig/detail',
       name: 'fundRebateReturnConfigDetail',
       component: () => import('@/views/vehwholesale/fund/fundRebateReturnConfig/detail.vue'),
 
@@ -750,7 +750,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/fund/fundrebatereturnconfig/edit',
+      path: '/vehwholesale/fund/fundRebateReturnConfig/edit',
       name: 'fundRebateReturnConfigEdit',
       component: () => import('@/views/vehwholesale/fund/fundRebateReturnConfig/edit.vue'),
 
@@ -768,7 +768,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/fund/fundfinancialorganization/detail',
+      path: '/vehwholesale/fund/fundFinancialOrganization/detail',
       name: 'fundFinancialOrganizationDetail',
       component: () => import('@/views/vehwholesale/fund/fundFinancialOrganization/detail.vue'),
 
@@ -777,7 +777,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/fund/fundfinancialorganization/edit',
+      path: '/vehwholesale/fund/fundFinancialOrganization/edit',
       name: 'fundFinancialOrganizationEdit',
       component: () => import('@/views/vehwholesale/fund/fundFinancialOrganization/edit.vue'),
 
@@ -795,7 +795,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/fund/fundsalecompany/detail',
+      path: '/vehwholesale/fund/fundSaleCompany/detail',
       name: 'fundSaleCompanyDetail',
       component: () => import('@/views/vehwholesale/fund/fundSaleCompany/detail.vue'),
 
@@ -804,7 +804,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/fund/fundsalecompany/edit',
+      path: '/vehwholesale/fund/fundSaleCompany/edit',
       name: 'fundSaleCompanyEdit',
       component: () => import('@/views/vehwholesale/fund/fundSaleCompany/edit.vue'),
 
@@ -849,7 +849,7 @@ const routes = [
         // keepAlive: true
       }
     }, {
-      path: '/vehwholesale/basic/wholesaletestdrivepurchaseconf/detail',
+      path: '/vehwholesale/basic/wholesaleTestDrivePurchaseConf/detail',
       name: 'wholesaleTestDrivePurchaseConfDetail',
       component: () => import('@/views/vehwholesale/basic/wholesaleTestDrivePurchaseConf/detail.vue'),
 
@@ -858,7 +858,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/basic/wholesaletestdrivepurchaseconf/edit',
+      path: '/vehwholesale/basic/wholesaleTestDrivePurchaseConf/edit',
       name: 'wholesaleTestDrivePurchaseConfEdit',
       component: () => import('@/views/vehwholesale/basic/wholesaleTestDrivePurchaseConf/edit.vue'),
 
@@ -903,7 +903,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/basic/wholesalesaletargettracking/detail',
+      path: '/vehwholesale/basic/wholesaleSaleTargetTracking/detail',
       name: 'wholesaleSaleTargetTrackingDetail',
       component: () => import('@/views/vehwholesale/basic/wholesaleSaleTargetTracking/detail.vue'),
 
@@ -912,7 +912,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/basic/wholesalesaletargettracking/wholesaleEdit',
+      path: '/vehwholesale/basic/wholesaleSaleTargetTracking/wholesaleEdit',
       name: 'wholesaleSaleTargetTrackingWholesaleEdit',
       component: () => import('@/views/vehwholesale/basic/wholesaleSaleTargetTracking/wholesaleEdit.vue'),
 
@@ -921,7 +921,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/basic/wholesalesaletargettracking/retailEdit',
+      path: '/vehwholesale/basic/wholesaleSaleTargetTracking/retailEdit',
       name: 'wholesaleSaleTargetTrackingRetailEdit',
       component: () => import('@/views/vehwholesale/basic/wholesaleSaleTargetTracking/retailEdit.vue'),
 
@@ -939,7 +939,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/basic/wholesalenoautocarmodelconf/detail',
+      path: '/vehwholesale/basic/wholesaleNoAutoCarModelConf/detail',
       name: 'wholesaleNoAutoCarModelConfDetail',
       component: () => import('@/views/vehwholesale/basic/wholesaleNoAutoCarModelConf/detail.vue'),
 
@@ -948,7 +948,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/basic/wholesalenoautocarmodelconf/edit',
+      path: '/vehwholesale/basic/wholesaleNoAutoCarModelConf/edit',
       name: 'wholesaleNoAutoCarModelConfEdit',
       component: () => import('@/views/vehwholesale/basic/wholesaleNoAutoCarModelConf/edit.vue'),
 
@@ -966,7 +966,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/basic/wholesaletargetdefaultquota/detail',
+      path: '/vehwholesale/basic/wholesaleTargetDefaultQuota/detail',
       name: 'wholesaleTargetDefaultQuotaDetail',
       component: () => import('@/views/vehwholesale/basic/wholesaleTargetDefaultQuota/detail.vue'),
 
@@ -975,7 +975,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/basic/wholesaletargetdefaultquota/edit',
+      path: '/vehwholesale/basic/wholesaleTargetDefaultQuota/edit',
       name: 'wholesaleTargetDefaultQuotaEdit',
       component: () => import('@/views/vehwholesale/basic/wholesaleTargetDefaultQuota/edit.vue'),
 
@@ -993,7 +993,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/basic/wholesaletestdrivequota/detail',
+      path: '/vehwholesale/basic/wholesaleTestDriveQuota/detail',
       name: 'wholesaleTestDriveQuotaDetail',
       component: () => import('@/views/vehwholesale/basic/wholesaleTestDriveQuota/detail.vue'),
 
@@ -1002,7 +1002,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/basic/wholesaletestdrivequota/edit',
+      path: '/vehwholesale/basic/wholesaleTestDriveQuota/edit',
       name: 'wholesaleTestDriveQuotaEdit',
       component: () => import('@/views/vehwholesale/basic/wholesaleTestDriveQuota/edit.vue'),
 
@@ -1020,7 +1020,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/basic/wholesaledealerautoconfirmconf/detail',
+      path: '/vehwholesale/basic/wholesaleDealerAutoConfirmConf/detail',
       name: 'wholesaleDealerAutoConfirmConfDetail',
       component: () => import('@/views/vehwholesale/basic/wholesaleDealerAutoConfirmConf/detail.vue'),
 
@@ -1029,7 +1029,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/basic/wholesaledealerautoconfirmconf/edit',
+      path: '/vehwholesale/basic/wholesaleDealerAutoConfirmConf/edit',
       name: 'wholesaleDealerAutoConfirmConfEdit',
       component: () => import('@/views/vehwholesale/basic/wholesaleDealerAutoConfirmConf/edit.vue'),
 
@@ -1047,7 +1047,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/basic/wholesaledealerwholesaleconf/detail',
+      path: '/vehwholesale/basic/wholesaleDealerWholesaleConf/detail',
       name: 'wholesaleDealerWholesaleConfDetail',
       component: () => import('@/views/vehwholesale/basic/wholesaleDealerWholesaleConf/detail.vue'),
 
@@ -1056,7 +1056,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/basic/wholesaledealerwholesaleconf/edit',
+      path: '/vehwholesale/basic/wholesaleDealerWholesaleConf/edit',
       name: 'wholesaleDealerWholesaleConfEdit',
       component: () => import('@/views/vehwholesale/basic/wholesaleDealerWholesaleConf/edit.vue'),
 
@@ -1074,7 +1074,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/basic/dealerdemovehiclequotarecord/detail',
+      path: '/vehwholesale/basic/dealerDemoVehicleQuotaRecord/detail',
       name: 'dealerDemoVehicleQuotaRecordDetail',
       component: () => import('@/views/vehwholesale/basic/dealerDemoVehicleQuotaRecord/detail.vue'),
 
@@ -1083,7 +1083,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/basic/dealerdemovehiclequotarecord/edit',
+      path: '/vehwholesale/basic/dealerDemoVehicleQuotaRecord/edit',
       name: 'dealerDemoVehicleQuotaRecordEdit',
       component: () => import('@/views/vehwholesale/basic/dealerDemoVehicleQuotaRecord/edit.vue'),
 
@@ -1101,7 +1101,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/basic/wholesalevehiclesalemodelconf/detail',
+      path: '/vehwholesale/basic/wholesaleVehicleSaleModelConf/detail',
       name: 'wholesaleVehicleSaleModelConfDetail',
       component: () => import('@/views/vehwholesale/basic/wholesaleVehicleSaleModelConf/detail.vue'),
 
@@ -1110,7 +1110,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/basic/wholesalevehiclesalemodelconf/edit',
+      path: '/vehwholesale/basic/wholesaleVehicleSaleModelConf/edit',
       name: 'wholesaleVehicleSaleModelConfEdit',
       component: () => import('@/views/vehwholesale/basic/wholesaleVehicleSaleModelConf/edit.vue'),
 
@@ -1128,7 +1128,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehstock/vdc/vehiclevdcinventoryledger/detail',
+      path: '/vehstock/vdc/vehicleVdcInventoryLedger/detail',
       name: 'vehicleVdcInventoryLedgerDetail',
       component: () => import('@/views/vehstock/vdc/vehicleVdcInventoryLedger/detail.vue'),
 
@@ -1137,7 +1137,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehstock/vdc/vehiclevdcinventoryledger/edit',
+      path: '/vehstock/vdc/vehicleVdcInventoryLedger/edit',
       name: 'vehicleVdcInventoryLedgerEdit',
       component: () => import('@/views/vehstock/vdc/vehicleVdcInventoryLedger/edit.vue'),
 
@@ -1155,7 +1155,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/productmanager/productSkuPrice/detail',
+      path: '/vehretail/productManager/productSkuPrice/detail',
       name: 'productManagerDetail',
       component: () => import('@/views/vehretail/productManager/productSkuPrice/detail.vue'),
 
@@ -1164,7 +1164,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehretail/productmanager/productSkuPrice/edit',
+      path: '/vehretail/productManager/productSkuPrice/edit',
       name: 'productManagerEdit',
       component: () => import('@/views/vehretail/productManager/productSkuPrice/edit.vue'),
 
@@ -1182,7 +1182,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/productmanager/productcenter/detail',
+      path: '/vehretail/productManager/productCenter/detail',
       name: 'productCenterDetail',
       component: () => import('@/views/vehretail/productManager/productCenter/detail.vue'),
 
@@ -1191,7 +1191,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehretail/productmanager/productcenter/edit',
+      path: '/vehretail/productManager/productCenter/edit',
       name: 'productCenterEdit',
       component: () => import('@/views/vehretail/productManager/productCenter/edit.vue'),
 
@@ -1209,7 +1209,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/rebate/fundvehiclerebatebill/detail',
+      path: '/vehwholesale/rebate/fundVehicleRebateBill/detail',
       name: 'fundVehicleRebateBillDetail',
       component: () => import('@/views/vehwholesale/rebate/fundVehicleRebateBill/detail.vue'),
 
@@ -1218,7 +1218,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/rebate/fundvehiclerebatebill/edit',
+      path: '/vehwholesale/rebate/fundVehicleRebateBill/edit',
       name: 'fundVehicleRebateBillEdit',
       component: () => import('@/views/vehwholesale/rebate/fundVehicleRebateBill/edit.vue'),
 
@@ -1236,7 +1236,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/rebate/fundvehiclerebatebilldetail/detail',
+      path: '/vehwholesale/rebate/fundVehicleRebateBillDetail/detail',
       name: 'fundVehicleRebateBillDetailDetail',
       component: () => import('@/views/vehwholesale/rebate/fundVehicleRebateBillDetail/detail.vue'),
 
@@ -1245,7 +1245,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/rebate/fundvehiclerebatebilldetail/edit',
+      path: '/vehwholesale/rebate/fundVehicleRebateBillDetail/edit',
       name: 'fundVehicleRebateBillDetailEdit',
       component: () => import('@/views/vehwholesale/rebate/fundVehicleRebateBillDetail/edit.vue'),
 
@@ -1263,7 +1263,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/creditsales/fundowncreditsaleslimit/detail',
+      path: '/vehwholesale/creditsales/fundOwnCreditSalesLimit/detail',
       name: 'fundOwnCreditSalesLimitDetail',
       component: () => import('@/views/vehwholesale/creditsales/fundOwnCreditSalesLimit/detail.vue'),
 
@@ -1272,7 +1272,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/creditsales/fundowncreditsaleslimit/edit',
+      path: '/vehwholesale/creditsales/fundOwnCreditSalesLimit/edit',
       name: 'fundOwnCreditSalesLimitEdit',
       component: () => import('@/views/vehwholesale/creditsales/fundOwnCreditSalesLimit/edit.vue'),
 
@@ -1290,7 +1290,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/creditsales/fundowncreditsalesconfig/detail',
+      path: '/vehwholesale/creditsales/fundOwnCreditSalesConfig/detail',
       name: 'fundOwnCreditSalesConfigDetail',
       component: () => import('@/views/vehwholesale/creditsales/fundOwnCreditSalesConfig/detail.vue'),
 
@@ -1299,7 +1299,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/creditsales/fundowncreditsalesconfig/edit',
+      path: '/vehwholesale/creditsales/fundOwnCreditSalesConfig/edit',
       name: 'fundOwnCreditSalesConfigReview',
       component: () => import('@/views/vehwholesale/creditsales/fundOwnCreditSalesConfig/edit.vue'),
 
@@ -1308,7 +1308,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/creditsales/fundowncreditsalesconfig/review',
+      path: '/vehwholesale/creditsales/fundOwnCreditSalesConfig/review',
       name: 'fundOwnCreditSalesConfigEdit',
       component: () => import('@/views/vehwholesale/creditsales/fundOwnCreditSalesConfig/review.vue'),
 
@@ -1326,7 +1326,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/creditsales/fundcreditsalesfeeconfig/detail',
+      path: '/vehwholesale/creditsales/fundCreditSalesFeeConfig/detail',
       name: 'fundCreditSalesFeeConfigDetail',
       component: () => import('@/views/vehwholesale/creditsales/fundCreditSalesFeeConfig/detail.vue'),
 
@@ -1335,7 +1335,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/creditsales/fundcreditsalesfeeconfig/edit',
+      path: '/vehwholesale/creditsales/fundCreditSalesFeeConfig/edit',
       name: 'fundCreditSalesFeeConfigEdit',
       component: () => import('@/views/vehwholesale/creditsales/fundCreditSalesFeeConfig/edit.vue'),
 
@@ -1365,7 +1365,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/creditsales/fundowncreditsalesdetail/edit',
+      path: '/vehwholesale/creditsales/fundOwnCreditSalesDetail/edit',
       name: 'pageEdit',
       component: () => import('@/views/vehwholesale/creditsales/fundOwnCreditSalesDetail/edit.vue'),
 
@@ -1383,7 +1383,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/creditsales/fundowncreditsalesdetail/detail',
+      path: '/vehwholesale/creditsales/fundOwnCreditSalesDetail/detail',
       name: 'fundOwnCreditSalesDetailDetail',
       component: () => import('@/views/vehwholesale/creditsales/fundOwnCreditSalesDetail/detail.vue'),
 
@@ -1392,7 +1392,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/creditsales/fundowncreditsalesdetail/edit',
+      path: '/vehwholesale/creditsales/fundOwnCreditSalesDetail/edit',
       name: 'fundOwnCreditSalesDetailEdit',
       component: () => import('@/views/vehwholesale/creditsales/fundOwnCreditSalesDetail/edit.vue'),
 
@@ -1410,7 +1410,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/creditsales/fundowncreditsalesdetail/detail',
+      path: '/vehwholesale/creditsales/fundOwnCreditSalesDetail/detail',
       name: 'fundOwnCreditSalesDetailDetail',
       component: () => import('@/views/vehwholesale/creditsales/fundOwnCreditSalesDetail/detail.vue'),
 
@@ -1419,7 +1419,7 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/creditsales/fundowncreditsalesdetail/edit',
+      path: '/vehwholesale/creditsales/fundOwnCreditSalesDetail/edit',
       name: 'fundOwnCreditSalesDetailEdit',
       component: () => import('@/views/vehwholesale/creditsales/fundOwnCreditSalesDetail/edit.vue'),
 
@@ -1437,7 +1437,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/basic/wholesaleprodscheduleactivity/edit',
+      path: '/vehwholesale/basic/wholesaleProdScheduleActivity/edit',
       name: 'wholesaleProdScheduleActivityEdit',
       component: () => import('@/views/vehwholesale/basic/wholesaleProdScheduleActivity/edit.vue'),
 
@@ -1455,7 +1455,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/basic/wholesaleprodscheduleactivity/edit',
+      path: '/vehwholesale/basic/wholesaleProdScheduleActivity/edit',
       name: 'wholesaleProdScheduleActivityEdit',
       component: () => import('@/views/vehwholesale/basic/wholesaleProdScheduleActivity/edit.vue'),
 
@@ -1473,7 +1473,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/basic/wholesaleprodscheduleactivitydetail/edit',
+      path: '/vehwholesale/basic/wholesaleProdScheduleActivityDetail/edit',
       name: 'wholesaleProdScheduleActivityDetailEdit',
       component: () => import('@/views/vehwholesale/basic/wholesaleProdScheduleActivityDetail/edit.vue'),
 
@@ -1580,7 +1580,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehstock/store/vehiclepdicheckitemconfig/edit',
+      path: '/vehstock/store/vehiclePdiCheckItemConfig/edit',
       name: 'vehiclePdiCheckItemConfigEdit',
       component: () => import('@/views/vehstock/store/vehiclePdiCheckItemConfig/edit.vue'),
 
@@ -1598,7 +1598,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehstock/store/storevehiclepdi/edit',
+      path: '/vehstock/store/storeVehiclePdi/edit',
       name: 'storeVehiclePdiEdit',
       component: () => import('@/views/vehstock/store/storeVehiclePdi/edit.vue'),
 
@@ -1616,7 +1616,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehstock/store/storeinventoryledger/edit',
+      path: '/vehstock/store/storeInventoryLedger/edit',
       name: 'storeInventoryLedgerEdit',
       component: () => import('@/views/vehstock/store/storeInventoryLedger/edit.vue'),
 
@@ -1706,7 +1706,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/finance/bank/finbankfinancingrecord/edit',
+      path: '/vehwholesale/finance/bank/finBankFinancingRecord/edit',
       name: 'finBankFinancingRecordEdit',
       component: () => import('@/views/vehwholesale/finance/bank/finBankFinancingRecord/edit.vue'),
 
@@ -1724,7 +1724,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/finance/bank/fincustomerrepaymentrecord/edit',
+      path: '/vehwholesale/finance/bank/finCustomerRepaymentRecord/edit',
       name: 'finCustomerRepaymentRecordEdit',
       component: () => import('@/views/vehwholesale/finance/bank/finCustomerRepaymentRecord/edit.vue'),
 
@@ -1745,7 +1745,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/finance/bank/finbankvehiclerepaymentrecord/edit',
+      path: '/vehwholesale/finance/bank/finBankVehicleRepaymentRecord/edit',
       name: 'finBankVehicleRepaymentRecordEdit',
       component: () => import('@/views/vehwholesale/finance/bank/finBankVehicleRepaymentRecord/edit.vue'),
 
@@ -1835,7 +1835,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/finance/factory/fincustomerpurchaserecord/edit',
+      path: '/vehwholesale/finance/factory/finCustomerPurchaseRecord/edit',
       name: 'finCustomerPurchaseRecordEdit',
       component: () => import('@/views/vehwholesale/finance/factory/finCustomerPurchaseRecord/edit.vue'),
 
@@ -1853,7 +1853,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/finance/factory/findealerrecommendation/edit',
+      path: '/vehwholesale/finance/factory/finDealerRecommendation/edit',
       name: 'finDealerRecommendationEdit',
       component: () => import('@/views/vehwholesale/finance/factory/finDealerRecommendation/edit.vue'),
 
@@ -1871,7 +1871,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/ordermanager/orderunlockapply/edit',
+      path: '/vehretail/orderManager/orderUnlockApply/edit',
       name: 'orderUnlockApplyEdit',
       component: () => import('@/views/vehretail/orderManager/orderUnlockApply/edit.vue'),
 
@@ -1925,7 +1925,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/basicconfig/retailorderunlockconfig/edit',
+      path: '/vehretail/basicConfig/retailOrderUnlockConfig/edit',
       name: 'retailOrderUnlockConfigEdit',
       component: () => import('@/views/vehretail/basicConfig/retailOrderUnlockConfig/edit.vue'),
 
@@ -1943,7 +1943,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/basicconfig/retailorderunlockreasonconfig/edit',
+      path: '/vehretail/basicConfig/retailOrderUnlockReasonConfig/edit',
       name: 'retailOrderUnlockReasonConfigEdit',
       component: () => import('@/views/vehretail/basicConfig/retailOrderUnlockReasonConfig/edit.vue'),
 
@@ -1961,7 +1961,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/ordermanager/retailorderinfo/edit',
+      path: '/vehretail/orderManager/retailOrderInfo/edit',
       name: 'retailOrderInfoEdit',
       component: () => import('@/views/vehretail/orderManager/retailOrderInfo/edit.vue'),
 
@@ -1997,7 +1997,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/basicconfig/deliverycycletimeconfig/edit',
+      path: '/vehretail/basicConfig/deliveryCycleTimeConfig/edit',
       name: 'deliveryCycleTimeConfigEdit',
       component: () => import('@/views/vehretail/basicConfig/deliveryCycleTimeConfig/edit.vue'),
 
@@ -2069,7 +2069,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/ordermanager/orderconfigchange/edit',
+      path: '/vehretail/orderManager/orderConfigChange/edit',
       name: 'orderConfigChangeEdit',
       component: () => import('@/views/vehretail/orderManager/orderConfigChange/edit.vue'),
 
@@ -2141,7 +2141,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/orderRefund/refundapprovallog/edit',
+      path: '/vehretail/orderRefund/refundApprovalLog/edit',
       name: 'orderRefundApprovalLogEdit',
       component: () => import('@/views/vehretail/orderRefund/refundApprovalLog/edit.vue'),
 
@@ -2231,7 +2231,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/basicconfig/modeldeliveryconfig/edit',
+      path: '/vehretail/basicConfig/modelDeliveryConfig/edit',
       name: 'modelDeliveryConfigEdit',
       component: () => import('@/views/vehretail/basicConfig/modelDeliveryConfig/edit.vue'),
 
@@ -2249,7 +2249,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/basicconfig/productionofflineconfig/edit',
+      path: '/vehretail/basicConfig/productionOfflineConfig/edit',
       name: 'productionOfflineConfigEdit',
       component: () => import('@/views/vehretail/basicConfig/productionOfflineConfig/edit.vue'),
 
@@ -2267,7 +2267,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/basicconfig/orderurgentconfig/edit',
+      path: '/vehretail/basicConfig/orderUrgentConfig/edit',
       name: 'orderUrgentConfigEdit',
       component: () => import('@/views/vehretail/basicConfig/orderUrgentConfig/edit.vue'),
 
@@ -2284,7 +2284,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/basicconfig/lockcarshareconfig/edit',
+      path: '/vehretail/basicConfig/lockCarShareConfig/edit',
       name: 'lockCarShareConfigEdit',
       component: () => import('@/views/vehretail/basicConfig/lockCarShareConfig/edit.vue'),
 
@@ -2302,7 +2302,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/bizmasterdata/configmasterdata/salesconfig/edit',
+      path: '/vehretail/bizMasterData/configMasterData/salesConfig/edit',
       name: 'salesConfigEdit',
       component: () => import('@/views/vehretail/bizMasterData/configMasterData/salesConfig/edit.vue'),
 
@@ -2320,7 +2320,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/shipping/vehicleshippingplandetail/edit',
+      path: '/vehwholesale/shipping/vehicleShippingPlanDetail/edit',
       name: 'vehicleShippingPlanDetailEdit',
       component: () => import('@/views/vehwholesale/shipping/vehicleShippingPlanDetail/edit.vue'),
 
@@ -2347,7 +2347,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/financesubsidy/vrfinanceorder/edit',
+      path: '/vehretail/financeSubsidy/vrFinanceOrder/edit',
       name: 'vrFinanceOrderEdit',
       component: () => import('@/views/vehretail/financeSubsidy/vrFinanceOrder/edit.vue'),
 
@@ -2491,7 +2491,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/basicconfig/deliveryconfirmitemconfig/edit',
+      path: '/vehretail/basicConfig/deliveryConfirmItemConfig/edit',
       name: 'deliveryConfirmItemConfigEdit',
       component: () => import('@/views/vehretail/basicConfig/deliveryConfirmItemConfig/edit.vue'),
 
@@ -2545,7 +2545,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/wholesale/vehiclewholesaleorderrecord/edit',
+      path: '/vehwholesale/wholesale/vehicleWholesaleOrderRecord/edit',
       name: 'vehicleWholesaleOrderRecordEdit',
       component: () => import('@/views/vehwholesale/wholesale/vehicleWholesaleOrderRecord/edit.vue'),
 
@@ -2572,7 +2572,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/basicconfig/deliveryscheduletimeconfig/edit',
+      path: '/vehretail/basicConfig/deliveryScheduleTimeConfig/edit',
       name: 'deliveryScheduleTimeConfigEdit',
       component: () => import('@/views/vehretail/basicConfig/deliveryScheduleTimeConfig/edit.vue'),
 
@@ -2590,7 +2590,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/basicconfig/deliveryappointmenttimeconfig/edit',
+      path: '/vehretail/basicConfig/deliveryAppointmentTimeConfig/edit',
       name: 'deliveryAppointmentTimeConfigEdit',
       component: () => import('@/views/vehretail/basicConfig/deliveryAppointmentTimeConfig/edit.vue'),
 
@@ -2608,7 +2608,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/basicconfig/storedeliveryallocationconfig/edit',
+      path: '/vehretail/basicConfig/storeDeliveryAllocationConfig/edit',
       name: 'storeDeliveryAllocationConfigEdit',
       component: () => import('@/views/vehretail/basicConfig/storeDeliveryAllocationConfig/edit.vue'),
 
@@ -2626,7 +2626,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/replenish/entvehiclereplenishorder/edit',
+      path: '/vehwholesale/replenish/entVehicleReplenishOrder/edit',
       name: 'entVehicleReplenishOrderEdit',
       component: () => import('@/views/vehwholesale/replenish/entVehicleReplenishOrder/edit.vue'),
 
@@ -2644,7 +2644,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/entorder/entvehicleorder/edit',
+      path: '/vehwholesale/entorder/entVehicleOrder/edit',
       name: 'entVehicleOrderEdit',
       component: () => import('@/views/vehwholesale/entorder/entVehicleOrder/edit.vue'),
 
@@ -2662,7 +2662,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/entorder/enttransactiontaxpriceconfig/edit',
+      path: '/vehwholesale/entorder/entTransactionTaxPriceConfig/edit',
       name: 'entTransactionTaxPriceConfigEdit',
       component: () => import('@/views/vehwholesale/entorder/entTransactionTaxPriceConfig/edit.vue'),
 
@@ -2680,7 +2680,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/basicconfig/activationmodeconfig/edit',
+      path: '/vehretail/basicConfig/activationModeConfig/edit',
       name: 'activationModeConfigEdit',
       component: () => import('@/views/vehretail/basicConfig/activationModeConfig/edit.vue'),
 
@@ -2698,7 +2698,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/basicconfig/deliveryquestionnaireconfig/edit',
+      path: '/vehretail/basicConfig/deliveryQuestionnaireConfig/edit',
       name: 'deliveryQuestionnaireConfigEdit',
       component: () => import('@/views/vehretail/basicConfig/deliveryQuestionnaireConfig/edit.vue'),
 
@@ -2716,7 +2716,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/ordermanager/deliveryInvoice/edit',
+      path: '/vehretail/orderManager/deliveryInvoice/edit',
       name: 'deliveryInvoiceEdit',
       component: () => import('@/views/vehretail/orderManager/deliveryInvoice/edit.vue'),
 
@@ -2734,7 +2734,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehstock/basic/storeinventorytransferwhitelist/edit',
+      path: '/vehstock/basic/storeInventoryTransferWhitelist/edit',
       name: 'storeInventoryTransferWhitelistEdit',
       component: () => import('@/views/vehstock/basic/storeInventoryTransferWhitelist/edit.vue'),
 
@@ -2788,7 +2788,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehstock/store/storeinventorytransfer/edit',
+      path: '/vehstock/store/storeInventoryTransfer/edit',
       name: 'storeInventoryTransferEdit',
       component: () => import('@/views/vehstock/store/storeInventoryTransfer/edit.vue'),
 
@@ -2806,7 +2806,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehstock/store/storetransferinbound/edit',
+      path: '/vehstock/store/storeTransferInbound/edit',
       name: 'storeTransferInboundEdit',
       component: () => import('@/views/vehstock/store/storeTransferInbound/edit.vue'),
 
@@ -2842,7 +2842,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/back/vehiclebackorder/edit',
+      path: '/vehwholesale/back/vehicleBackOrder/edit',
       name: 'vehicleBackOrderEdit',
       component: () => import('@/views/vehwholesale/back/vehicleBackOrder/edit.vue'),
 
@@ -2860,7 +2860,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/back/vehiclebackorderdetail/edit',
+      path: '/vehwholesale/back/vehicleBackOrderDetail/edit',
       name: 'vehicleBackOrderDetailEdit',
       component: () => import('@/views/vehwholesale/back/vehicleBackOrderDetail/edit.vue'),
 
@@ -2878,7 +2878,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/certificate/vehiclecertificateredemption/edit',
+      path: '/vehwholesale/certificate/vehicleCertificateRedemption/edit',
       name: 'vehicleCertificateRedemptionEdit',
       component: () => import('@/views/vehwholesale/certificate/vehicleCertificateRedemption/edit.vue'),
 
@@ -2896,7 +2896,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/wholesale/vehiclewholesalepaymentnotice/edit',
+      path: '/vehwholesale/wholesale/vehicleWholesalePaymentNotice/edit',
       name: 'vehicleWholesalePaymentNoticeEdit',
       component: () => import('@/views/vehwholesale/wholesale/vehicleWholesalePaymentNotice/edit.vue'),
 
@@ -2923,7 +2923,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehstock/store/storesharedinventory/edit',
+      path: '/vehstock/store/storeSharedInventory/edit',
       name: 'storeSharedInventoryEdit',
       component: () => import('@/views/vehstock/store/storeSharedInventory/edit.vue'),
 
@@ -2941,7 +2941,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehstock/store/eopmaterialdemandtotal/edit',
+      path: '/vehstock/store/eopMaterialDemandTotal/edit',
       name: 'eopMaterialDemandTotalEdit',
       component: () => import('@/views/vehstock/store/eopMaterialDemandTotal/edit.vue'),
 
@@ -2959,7 +2959,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehstock/store/eopmaterialdemandtotalrecord/edit',
+      path: '/vehstock/store/eopMaterialDemandTotalRecord/edit',
       name: 'eopMaterialDemandTotalRecordEdit',
       component: () => import('@/views/vehstock/store/eopMaterialDemandTotalRecord/edit.vue'),
 
@@ -3036,7 +3036,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/ordermanager/dealercommitmentconfig/edit',
+      path: '/vehretail/orderManager/dealerCommitmentConfig/edit',
       name: 'dealerCommitmentConfigEdit',
       component: () => import('@/views/vehretail/orderManager/dealerCommitmentConfig/edit.vue'),
 
@@ -3054,7 +3054,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehretail/ordermanager/dealercommitmentrecord/edit',
+      path: '/vehretail/orderManager/dealerCommitmentRecord/edit',
       name: 'dealerCommitmentRecordEdit',
       component: () => import('@/views/vehretail/orderManager/dealerCommitmentRecord/edit.vue'),
 

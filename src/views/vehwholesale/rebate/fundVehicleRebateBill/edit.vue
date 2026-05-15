@@ -26,10 +26,10 @@
                   {{ form.rebateBillCode }}
                 </el-form-item>
                 <el-form-item label="母公司名称：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
                 </el-form-item>
                 <el-form-item label="门店名称：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)">{{ form.dealerName }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="创建时间：">
                   {{ form.createTime }}
@@ -57,13 +57,8 @@
           </section>
 
           <!-- 整车返利核算单明细 -->
-          <section class="common-section">
-            <div class="common-section-header">
-              <h2>整车返利核算单明细</h2>
-            </div>
-            <div class="common-section-body">
               <ComponentTable
-                :table-config="{ title: '' }"
+                :table-config="{ title: '整车返利核算单明细' }"
                 :columns="tableColumns"
                 :api-method="getList"
                 :extra-params="{ rebateBillId: _id }"
@@ -72,20 +67,18 @@
                   <el-link type="success" target="_blank" :href="`/vehwholesale/rebate/fundVehicleRebateBillDetail/edit?id=${row.id}`">{{ row.rebateBillDetailCode }}</el-link>
                 </template>
                 <template #modelName="{ row }">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + row.modelId)">{{ row.modelName }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`" target="_blank">{{ row.modelName }}</el-link>
                 </template>
                 <template #seriesName="{ row }">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId)">{{ row.seriesName }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`" target="_blank">{{ row.seriesName }}</el-link>
                 </template>
                 <template #budgetItemName="{ row }">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/fund/fundbudgetitem/edit?id=' + row.budgetItemId)">{{ row.budgetItemName }}</el-button>
+                  <el-link type="primary" :href="`/vehwholesale/fund/fundbudgetitem/edit?id=${row.budgetItemId}`" target="_blank">{{ row.budgetItemName }}</el-link>
                 </template>
                 <template #feeSupportTypeName="{ row }">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/fund/fundFeeSupportType/edit?id=' + row.feeSupportTypeId)">{{ row.feeSupportTypeName }}</el-button>
+                  <el-link type="primary" :href="`/vehwholesale/fund/fundFeeSupportType/edit?id=${row.feeSupportTypeId}`" target="_blank">{{ row.feeSupportTypeName }}</el-link>
                 </template>
               </ComponentTable>
-            </div>
-          </section>
         </el-main>
       </edit-base-container>
     </template>
@@ -157,7 +150,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '整车返利核算单：' + (this.form.rebateBillCode || '');

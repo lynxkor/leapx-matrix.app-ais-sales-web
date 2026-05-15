@@ -93,7 +93,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/basicConfig/deliveryAppointmentTimeConfig/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, cityListByName } from '@/api/common';
@@ -173,7 +173,7 @@ export default {
           },
           { props: 'cityName', label: '市', visible: true, width: 200 },
           { props: 'timeLimitHour', label: '时效（小时）', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 80 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',

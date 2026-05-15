@@ -20,7 +20,7 @@ import { getDetail, addOrUpdate } from '@/api/datacenter/materials/salesParamete
 export default {
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-销售参数配置',
+      pageTitle: '销售参数配置',
       moduleKey: 'AISVS-salesParameterConfig',
       status: true,
       detailData: {}

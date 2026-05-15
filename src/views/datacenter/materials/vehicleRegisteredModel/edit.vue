@@ -139,7 +139,7 @@ export default {
   mixins: [routeGuard, permissions, commonMixins],
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-公告车型',
+      pageTitle: '公告车型',
       pageType: 'edit',
       moduleKey: 'AISDC-vehicleRegisteredModel',
       loading: false,

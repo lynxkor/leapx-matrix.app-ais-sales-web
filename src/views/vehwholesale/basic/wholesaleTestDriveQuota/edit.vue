@@ -4,7 +4,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="试驾车默认配额："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -22,7 +22,7 @@
             <div class="common-section-body">
               <!-- 编辑模式 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="年款" prop="vehicleYearTypeId">
+                <el-form-item label="年款：" prop="vehicleYearTypeId">
                   <fetch-select
                     filterable
                     clearable
@@ -36,7 +36,7 @@
                     @change="(val, record) => {form.vehicleYearType = record?.name || ''}"
                   />
                 </el-form-item>
-                <el-form-item label="系列" prop="vehicleModelLineId">
+                <el-form-item label="系列：" prop="vehicleModelLineId">
                   <fetch-select
                     filterable
                     clearable
@@ -50,7 +50,7 @@
                     @change="handleVehicleModelLineChange"
                   />
                 </el-form-item>
-                <el-form-item label="车系" prop="seriesId">
+                <el-form-item label="车系：" prop="seriesId">
                   <fetch-select
                     filterable
                     clearable
@@ -62,7 +62,7 @@
                     @change="(val, record) => {form.seriesName = record?.name || ''}"
                   />
                 </el-form-item>
-                <el-form-item label="数量" prop="quantity">
+                <el-form-item label="数量：" prop="quantity">
                   <el-input-number
                     :controls="false"
                     placeholder="请输入"
@@ -72,7 +72,7 @@
                     :precision="0"
                   />
                 </el-form-item>
-                <el-form-item label="建店类型" prop="mcDealerType">
+                <el-form-item label="建店类型：" prop="mcDealerType">
                   <el-cascader
                     v-model="form.mcDealerType"
                     :options="shopTypeList"
@@ -84,7 +84,7 @@
                     :disabled="!!_id"
                   />
                 </el-form-item>
-                <el-form-item label="城市" prop="cityCode">
+                <el-form-item label="城市：" prop="cityCode">
                   <fetch-select
                     filterable
                     clearable
@@ -97,7 +97,7 @@
                     @change="(val, record) => {form.cityName = record?.areaName || ''}"
                   />
                 </el-form-item>
-                <el-form-item label="开始日期" prop="startDate">
+                <el-form-item label="开始日期：" prop="startDate">
                   <el-date-picker
                     v-model="form.startDate"
                     format="yyyy-MM-dd HH:mm"
@@ -107,7 +107,7 @@
                     type="datetime"
                   />
                 </el-form-item>
-                <el-form-item label="截止日期" prop="endDate">
+                <el-form-item label="截止日期：" prop="endDate">
                   <el-date-picker
                     v-model="form.endDate"
                     format="yyyy-MM-dd HH:mm"
@@ -122,13 +122,13 @@
               <!-- 详情模式 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="年款：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleYearType/edit?id=' + form.vehicleYearTypeId)">{{ form.vehicleYearType }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${form.vehicleYearTypeId}`" target="_blank">{{ form.vehicleYearType }}</el-link>
                 </el-form-item>
                 <el-form-item label="系列：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModelLine/edit?id=' + form.vehicleModelLineId)">{{ form.vehicleModelLine }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodelline/edit?id=${form.vehicleModelLineId}`" target="_blank">{{ form.vehicleModelLine }}</el-link>
                 </el-form-item>
                 <el-form-item label="车系：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.seriesId)">{{ form.seriesName }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="数量：">
                   {{ form.quantity }}
@@ -212,7 +212,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '试驾车默认配额：' + (this.form.vehicleYearType || '');

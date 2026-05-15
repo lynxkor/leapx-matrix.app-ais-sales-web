@@ -200,7 +200,7 @@
 </template>
 
 <script>
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { queryOrderStatusBackRecord } from '@/api/vehretail/orderManager/retailOrderInfo';
 import { getTimeRangeByTypeFormat } from '@/libs/utils/time';

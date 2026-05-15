@@ -60,7 +60,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/store/vehicleAbnormalRecord/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo } from '@/api/common';
@@ -126,13 +126,13 @@ export default {
         },
         dataProp: [
           { props: 'abnormalRecordNo', label: '异常记录单号', visible: true, width: 200 },
-          { props: 'vin', label: 'VIN', visible: true, width: 200 },
+          { props: 'vin', label: 'VIN', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }] },
           { props: 'electricity', label: '车辆电量(%)', visible: true, width: 140, align: 'right' },
           { props: 'fenceCrossedTypeLabel', label: '车辆异常类型', visible: true, width: 140 },
           { props: 'continuousLowBatteryDays', label: '连续低电量天数', visible: true, width: 150, align: 'right' },
           { props: 'abnormalRecordTime', label: '异常记录时间', visible: true, width: 200 },
           { props: 'vechicleStatusLabel', label: '车辆状态', visible: true, width: 100 },
-          { props: 'saleDealerName', label: '销售门店', visible: true, width: 200 },
+          { props: 'saleDealerName', label: '销售门店', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'dealerWarehouseName', label: '门店仓库', visible: true, width: 200 },
           { props: 'dealerWarehouseAddress', label: '仓库地址', visible: true, width: 200 },
           { props: 'vehicleArrivalOn', label: '物流到店日期', visible: true, width: 200 },
@@ -143,8 +143,8 @@ export default {
           { props: 'actualVehicleLatitude', label: '实车位置纬度', visible: true, width: 140 },
           { props: 'warehouseLongitude', label: '仓库位置经度', visible: true, width: 140 },
           { props: 'warehouseLatitude', label: '仓库位置纬度', visible: true, width: 140 },
-          { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
+          { props: 'materialsCode', label: '物料编码', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 160 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },

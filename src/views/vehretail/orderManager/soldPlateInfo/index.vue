@@ -114,7 +114,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import {
   getList,
@@ -217,7 +217,7 @@ export default {
           { props: 'idCardNo', label: '证件号码', visible: true, width: 200 },
           { props: 'invoiceNo', label: '发票号码', visible: true, width: 200 },
           { props: 'invoiceTime', label: '开票日期', visible: true, width: 200 },
-          { props: 'invoiceAmount', label: '发票金额', visible: true, width: 200 },
+          { props: 'invoiceAmount', label: '发票金额', visible: true, width: 200, align: 'right' },
           { props: 'plateNo', label: '车牌号码', visible: true, width: 200 },
           { props: 'vehicleRegisterAddress', label: '车辆注册地址', visible: true, width: 200 },
           { props: 'plateDate', label: '上牌日期', visible: true, width: 200 },

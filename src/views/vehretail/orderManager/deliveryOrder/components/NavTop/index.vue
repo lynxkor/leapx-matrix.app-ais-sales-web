@@ -1,8 +1,8 @@
 <template>
   <section>
-    <div class="common-section-header">
-      <h2>{{title}}</h2>
-    </div>
+    <!-- <div class="common-section-header"> -->
+      <!-- <h2>{{title}}</h2> -->
+    <!-- </div> -->
     <div class="common-section-body">
       <div class="page-common-nav">
         <div :class="{'nav-item': true, 'active': isActive(item.code)}" v-for="item in list" :key="item.code" @click="handleClick(item.code)">
@@ -168,5 +168,8 @@ export default {
       }
     }
   }
+}
+h2 {
+  font-size: 16px;
 }
 </style>

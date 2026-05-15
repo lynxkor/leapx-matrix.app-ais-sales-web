@@ -8,14 +8,14 @@
     >
       <el-switch
         v-model="localStatus"
-        active-color="#13ce66"
+        active-color="#009100"
         inactive-color="#cccccc"
         active-text="开启"
         inactive-text="关闭"
       />
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取消</el-button>
-        <el-button type="primary" @click="confirm">确定</el-button>
+        <el-button size="small" @click="cancel">取消</el-button>
+        <el-button size="small" type="primary" @click="confirm">确定</el-button>
       </div>
     </el-dialog>
   </div>

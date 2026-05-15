@@ -107,22 +107,22 @@
                   {{ form.unlockReason }}
                 </el-form-item>
                 <el-form-item label="门店申请选择：" prop="storeApplyStatus">
-                  {{ form.storeApplyStatusLabel }}
+                  <span :class="['status-tag', form.storeApplyStatus === 1 ? 'primary' : 'danger']">{{ form.storeApplyStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="门店解锁选择：" prop="storeUnlockStatus">
-                  {{ form.storeUnlockStatusLabel }}
+                  <span :class="['status-tag', form.storeUnlockStatus === 1 ? 'primary' : 'danger']">{{ form.storeUnlockStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="厂端解锁选择：" prop="factoryUnlockStatus">
-                  {{ form.factoryUnlockStatusLabel }}
+                  <span :class="['status-tag', form.factoryUnlockStatus === 1 ? 'primary' : 'danger']">{{ form.factoryUnlockStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="需要同步APP：" prop="syncAppStatus">
-                  {{ form.syncAppStatusLabel }}
+                  <span :class="['status-tag', form.syncAppStatus === 1 ? 'primary' : 'danger']">{{ form.syncAppStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="原因解释名称：" prop="reasonExplain">
                   {{ form.reasonExplain }}
                 </el-form-item>
                 <el-form-item label="状态变更描述：" prop="statusLabel">
-                  {{ form.statusLabel }}
+                  <span :class="['status-tag', form.status === 1 ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}

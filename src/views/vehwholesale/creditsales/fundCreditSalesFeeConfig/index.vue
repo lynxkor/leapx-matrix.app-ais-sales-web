@@ -47,7 +47,13 @@
             />
       </el-form-item>
       <el-form-item label="创建时间" v-show="this.visibleCount === 3 || show">
-          <el-date-picker
+        <dateranges
+          v-model="form.createTime"
+          :setDefault="true"
+          deftTime="最近一周"
+          :limtNum="3"
+          ref="transactionTime"/>
+          <!-- <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.createTime"
             type="daterange"
@@ -56,7 +62,7 @@
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-          />
+          /> -->
         </el-form-item>
       <template v-if="show" >
         <el-form-item label="首付款比例" >
@@ -129,11 +135,11 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -166,7 +172,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/creditsales/fundCreditSalesFeeConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
@@ -177,6 +183,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
+import dateranges from '@/libs/components/dateranges';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleYearType } from '@/api/common';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -184,10 +191,8 @@ const defaultForm = {
   creditSalesFeeConfigCode: '',
   seriesName: '',
   yearTypeName: '',
-  downPaymentRatio: '',
   useRebate: '',
   minUsageDays: '',
-  maxUsageDays: '',
   creditSalesFee: '',
   effectiveStartTime: '',
   effectiveEndTime: '',
@@ -207,6 +212,7 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
+    dateranges,
     Upload
   },
   data () {
@@ -277,11 +283,11 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 150 },
+          { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 150, align: 'right' },
           { props: 'useRebateLabel', label: '是否使用返利', visible: true, width: 120 },
           { props: 'minUsageDays', label: '使用天数下限', visible: true, width: 120 },
           { props: 'maxUsageDays', label: '使用天数上限', visible: true, width: 120 },
-          { props: 'creditSalesFee', label: '赊销费用', visible: true, width: 150 },
+          { props: 'creditSalesFee', label: '赊销费用', visible: true, width: 150, align: 'right' },
           { props: 'effectiveStartTime', label: '有效开始日期', visible: true, width: 200 },
           { props: 'effectiveEndTime', label: '有效结束日期', visible: true, width: 200 },
           { props: 'statusDesc', label: '状态变更描述', visible: true, width: 200 },

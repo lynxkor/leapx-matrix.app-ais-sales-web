@@ -4,7 +4,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="不自动批售确认车型："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -21,13 +21,14 @@
             </div>
             <div class="common-section-body">
               <!-- 编辑模式 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="160px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="车型：" prop="modelName">
                   <fetch-select
                     filterable
                     clearable
                     remote
-                    v-model="form.modelName"
+                    v-model="form.modelId"
+                    :params="form.modelName"
                     :remote-method="getModelIdList"
                     value-key="id"
                     label-key="name"
@@ -67,10 +68,10 @@
               <!-- 详情模式 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="车型：">
-                  <el-button class="link" style="padding: 0;" @click="openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + form.modelId)" type="text">{{ form.modelName }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="年款：">
-                  <el-button class="link" style="padding: 0;" @click="openWindow('/sales/datacenter/materials/vehicleYearType/edit?id=' + form.vehicleYearTypeId)" type="text">{{ form.vehicleYearType }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${form.vehicleYearTypeId}`" target="_blank">{{ form.vehicleYearType }}</el-link>
                 </el-form-item>
                 <el-form-item label="不参与自动批售确认：">
                   {{ form.noJoinAutoConfirmLabel }}
@@ -133,7 +134,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '不自动批售确认车型：' + (this.form.modelName || '');

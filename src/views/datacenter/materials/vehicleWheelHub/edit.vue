@@ -114,7 +114,7 @@ export default {
   mixins: [routeGuard, permissions, commonMixins],
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-轮毂',
+      pageTitle: '轮毂',
       pageType: 'edit',
       moduleKey: 'AISDC-vehicleWheelHub',
       loading: false,

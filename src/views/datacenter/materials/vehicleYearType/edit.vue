@@ -64,7 +64,6 @@
                 :inline="true"
                 class="form-detail"
                 v-show="!(isEditing || !_id)"
-                label-width="150px"
               >
                 <el-form-item label="年款名称：">
                   {{ form.yearTypeName }}
@@ -114,7 +113,7 @@ export default {
   mixins: [routeGuard, permissions, commonMixins],
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-年款',
+      pageTitle: '年款',
       pageType: 'edit',
       moduleKey: 'AISDC-vehicleYearType',
       loading: false,

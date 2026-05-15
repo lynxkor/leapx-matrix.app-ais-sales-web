@@ -16,6 +16,18 @@ const UCSchema = {
 };
 
 /**
+ * 安全获取省市区树数据
+ * @returns {Array} 省市区树数据，解析失败时返回空数组
+ */
+export function getAreaTree () {
+  try {
+    return JSON.parse(localStorage.getItem('areaTree')) || [];
+  } catch {
+    return [];
+  }
+}
+
+/**
  * 过滤参数
  * @export
  * @param {*} params

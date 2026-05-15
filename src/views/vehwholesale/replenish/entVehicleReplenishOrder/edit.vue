@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="企业客户补货订单："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -14,16 +14,16 @@
         :showEditBtn="form.auditStatus === 0 || form.auditStatus === 4"
       >
         <template #status>
-          {{ form.entReplenishOrderCode }}
+          <!-- {{ form.entReplenishOrderCode }} -->
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button v-if ="form.buttonsControls && form.buttonsControls.editButton" size="small" @click="handleAddDetail" >添加补货明细</el-button>
-          <el-button v-if ="form.buttonsControls && form.buttonsControls.submitAuditButton" @click="handleCheckSubmit" >提交审批</el-button>
-          <el-button v-if ="form.buttonsControls && form.buttonsControls.auditButton"  size="small" @click="handleCheckStatus" >审核</el-button>
-          <el-button v-if ="form.buttonsControls && form.buttonsControls.cancelButton"  size="small" @click="handleCancel" >作废</el-button>
-          <el-button v-if ="form.buttonsControls && form.buttonsControls.deleteButton" size="small"  @click="handleDelete" >删除</el-button>
+          <el-button v-if ="peraddDetail && form.buttonsControls && form.buttonsControls.editButton" size="small" @click="handleAddDetail" >添加补货明细</el-button>
+          <el-button v-if ="perbatchSubmitAudit && form.buttonsControls && form.buttonsControls.submitAuditButton" @click="handleCheckSubmit" :loading="handleCheckSubmitLoading">提交审批</el-button>
+          <el-button v-if ="perbatchAudit && form.buttonsControls && form.buttonsControls.auditButton"  size="small" @click="handleCheckStatus" >审核</el-button>
+          <el-button v-if ="perbatchCancel && form.buttonsControls && form.buttonsControls.cancelButton"  size="small" @click="handleCancel" :loading="handleCancelLoading">作废</el-button>
+          <el-button v-if ="canDelete && form.buttonsControls && form.buttonsControls.deleteButton" size="small"  @click="handleDelete" :loading="handleDeleteLoading">删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -197,10 +197,10 @@
                   {{ form.salesMarketLabel }}
                 </el-form-item>
                 <el-form-item label="企业客户名称：" prop="entCustomerName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.entCustomerCode)">{{ form.entCustomerName }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.entCustomerCode}`" target="_blank">{{ form.entCustomerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="销售公司：" prop="saleCompanyName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/fund/fundSaleCompany/edit?id=' + form.saleCompanyId)">{{ form.saleCompanyName }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundSaleCompany/edit?id=${form.saleCompanyId}`" target="_blank">{{ form.saleCompanyName }}</el-link>
                 </el-form-item>
                  <el-form-item label="销售门店名称：" prop="saleDealerName">
                   {{ form.saleDealerName }}
@@ -212,7 +212,7 @@
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.financialOrganizationId)">{{ form.financialOrganizationName }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.financialOrganizationId}`" target="_blank">{{ form.financialOrganizationName }}</el-link>
                 </el-form-item>
                 <el-form-item label="是否赊销：" prop="creditSaleFlagLabel">
                   {{ form.creditSaleFlagLabel }}
@@ -418,7 +418,6 @@
                 <AisAttachment
                   :businessId="_id"
                   configCode="ent_vehicle_replenish_order"
-                  attachType="其他"
                   ref="attachment"
                 />
               </div>
@@ -456,6 +455,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { getAreaTree } from '@/utils';
 import AddEntVehicleReplishOrderDetail from './addEntVehicleReplishOrderDetail.vue';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import auditDialog from '@/libs/components/auditDialog';
@@ -535,10 +535,10 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '企业客户补货订单：' + this.form.entReplenishOrderCode;
     },
     columns () {
       const isEdit = this.isEditing;
@@ -783,7 +783,15 @@ export default {
         value: 'code',
         children: 'child'
       },
-      areaOptions: JSON.parse(localStorage.areaTree),
+      // 权限控制
+      peraddDetail: false,
+      perbatchSubmitAudit: false,
+      perbatchAudit: false,
+      perbatchCancel: false,
+      handleCheckSubmitLoading: false,
+      handleCancelLoading: false,
+      handleDeleteLoading: false,
+      areaOptions: getAreaTree(),
       emptyText: '若要启用此内容，请创建记录',
       tableData: [],
       options: {
@@ -825,29 +833,39 @@ export default {
     this.listNetworkParentCompany();
     this.getCompanyList();
   },
+  created () {
+    this.initPermissions();
+  },
   methods: {
+    initPermissions () {
+      this.peraddDetail = this.permissions.has(`${this.moduleKey}-addDetail`);
+      this.perbatchSubmitAudit = this.permissions.has(`${this.moduleKey}-batchSubmitAudit`);
+      this.perbatchAudit = this.permissions.has(`${this.moduleKey}-batchAudit`);
+      this.perbatchCancel = this.permissions.has(`${this.moduleKey}-batchCancel`);
+    },
     openWindow (url) {
       window.open(url, '_blank');
     },
     getFundAccountBysaleCompany (val, row) {
       this.form.saleCompanyId = row.id;
       this.settleFundTypeOptions = [];
-      this.getFundAccount();
-    },
-    getFundAccount () {
       this.form.settleFundType = '';
       this.form.settleFundTypeLabel = '';
       this.settleFundTypeOptions = [];
       this.financialOrganizationOptions = [];
-      if (!this.form.entCustomerName || !this.form.saleCompanyName) {
-        return;
-      }
+      this.getFundAccount();
+    },
+    getFundAccount () {
+      // if (!this.form.entCustomerName || !this.form.saleCompanyName) {
+      //   return;
+      // }
       const params = {
         dealerCompanyCodes: [this.form.entCustomerCode],
         allowEntOrderSettle: '1',
         saleCompanyIds: [this.form.saleCompanyId]
       };
       accountList(params).then((res) => {
+        console.log('getFundAccount11111', res);
         if (res && res.records) {
           // 【新增】使用 Map 进行去重，key 为 fundType
           const uniqueMap = new Map();
@@ -862,6 +880,7 @@ export default {
           });
           // 将 Map 的值转换为数组并赋值
           this.settleFundTypeOptions = Array.from(uniqueMap.values());
+          console.log('this.settleFundTypeOptions', this.settleFundTypeOptions);
 
           // 筛选金融机构选项：fundType === 2010 且 validIfCreditSaleAccount === true
           this.financialOrganizationOptions = res.records
@@ -1013,18 +1032,18 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        // 提交审批接口 判断是否需要初审
+        this.handleCheckSubmitLoading = true;
         batchSubmitAudit({
           idSet: [this._id],
         }).then(res => {
-          // 重新加载详情数据
           this.$message.success('提交成功');
           if (this.$refs.containerRef) {
             this.$refs.containerRef.loadDetail();
           }
           this.detailRequest();
-          // 或者关闭编辑状态
           this.isEditing = false;
+        }).finally(() => {
+          this.handleCheckSubmitLoading = false;
         });
       }).catch(() => {});
     },
@@ -1035,16 +1054,19 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.handleCancelLoading = true;
         batchCancel({
           idSet: [this._id],
         }).then(() => {
           this.$message.success('作废成功');
           this.$refs.containerRef.loadDetail();
+        }).finally(() => {
+          this.handleCancelLoading = false;
         });
       }).catch(() => {});
     },
 
-    handleDelete () { // 删除
+    handleDelete () {
       const ids = [this._id];
       const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
       this.$confirm(message, '', {
@@ -1054,10 +1076,13 @@ export default {
         customClass: 'ais-leave-tips',
         showClose: false
       }).then(() => {
+        this.handleDeleteLoading = true;
         deleteItem(ids).then(() => {
           this.$router.push({
             path: '/vehwholesale/replenish/entVehicleReplenishOrder',
           });
+        }).finally(() => {
+          this.handleDeleteLoading = false;
         });
       }).catch(() => {});
     },
@@ -1159,7 +1184,10 @@ export default {
       this.form.latitude = '';
       this.form.longitude = '';
       this.getDealersForParentCompany(val);
+      this.form.settleFundType = '';
+      this.form.settleFundTypeLabel = '';
       this.settleFundTypeOptions = [];
+      this.financialOrganizationOptions = [];
       this.getFundAccount();
     },
     async repairItemSearch (query) {
@@ -1196,8 +1224,8 @@ export default {
       if (id) {
         return getDetail(id).then(res => {
           this.getDealersForParentCompany(res.entCustomerCode);
-          this.getFundAccount();
           this.form = { ...this.form, ...res };
+          this.getFundAccount();
           // 设置 areaCode 并匹配省市区名称
           if (res.provinceCode && res.cityCode) {
             this.areaCode = [

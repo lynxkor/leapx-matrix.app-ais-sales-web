@@ -141,7 +141,7 @@ export const orderChangeApplicationDisplayFields = [
   { key: 'applyStatusLabel', label: '申请状态' },
   { key: 'changeTypeLabel', label: '变更类型' },
   { key: 'changeReason', label: '变成原因' },
-  { key: 'changeDescription', label: '变更说明' },
+  { key: 'changeExplain', label: '变更说明' },
   { key: 'deliveryStatusLabel', label: '是否完成交车' },
   { key: 'createTime', label: '创建时间' }
 ];

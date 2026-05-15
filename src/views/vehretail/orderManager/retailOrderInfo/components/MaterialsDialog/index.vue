@@ -32,13 +32,14 @@
           :remote-method="remoteMethods.model"
         />
       </el-form-item>
-        <el-form-item label="年款：">
+        <el-form-item label="年款：" v-show="isExpanded">
           <fetch-select
             v-model="searchForm.yearTypeId"
             v-bind="selectOptions"
             :remote-method="remoteMethods.yearType"
           />
         </el-form-item>
+        <template v-if="isExpanded">
         <el-form-item label="外观：">
           <fetch-select
             v-model="searchForm.exteriorId"
@@ -77,16 +78,21 @@
         <el-form-item label="物料编码：">
           <el-input v-model="searchForm.materialsCode" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="物料描述：">
-          <el-input v-model="searchForm.materialsDesc" placeholder="请输入" />
+        <el-form-item label="物料描述：" class="materials-desc">
+          <el-input v-model="searchForm.materialsDesc" placeholder="请输入" style="width: 100%;" />
         </el-form-item>
-        <el-form-item>
-          <el-button size="small" type="primary" @click="handleSearch">查询</el-button>
+        </template>
+        <el-form-item label="">
+          <el-button size="small" type="primary" plain @click="handleSearch">查询</el-button>
           <el-button size="small" @click="handleReset">重置</el-button>
+          <span class="icon-expand curPoint" @click="isExpanded = !isExpanded">
+            {{ isExpanded ? "收起" : "展开"}}
+            <i :class="isExpanded ? 'iconfont icon-lxppc-up' : 'iconfont icon-lxppc-down'"></i>
+          </span>
         </el-form-item>
       </el-form>
 
-    <div class="page-common m-account-list">
+    <div class="materials-content">
       <div class="table-container">
         <vxe-table
           ref="materialTable"
@@ -178,6 +184,7 @@ export default {
   data () {
     return {
       dialogVisible: false,
+      isExpanded: false,
       searchForm: { ...defaultSearchForm },
       materialList: [],
       total: 0,
@@ -368,6 +375,11 @@ export default {
 
 <style lang="scss" scoped>
 .m-materials-dialog {
+  .materials-content {
+    height: 100%;
+    padding: 0 16px 16px;
+  }
+
   .table-container {
     margin-top: 20px;
   }
@@ -379,7 +391,12 @@ export default {
     margin-bottom: 12px;
     margin-right: 15px;
   }
-
+  .materials-desc {
+    width: 66.6%;
+    ::v-deep .el-form-item__content {
+      width: 75%;
+    }
+  }
   .dialog-footer {
     text-align: right;
   }

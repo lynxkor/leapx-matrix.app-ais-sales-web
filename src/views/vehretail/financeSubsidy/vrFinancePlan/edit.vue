@@ -95,7 +95,7 @@
                   {{ form.financePlanTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融产品状态：">
-                  {{ form.statusLabel }}
+                  <span :class="['status-tag', form.status === 1 ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="优先级：">
                   {{ form.priority }}

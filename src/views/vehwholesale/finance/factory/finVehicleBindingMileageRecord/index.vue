@@ -90,12 +90,12 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchSync" :disabled="selectionList.length === 0">批量同步</el-button>
+      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -128,7 +128,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, pushFinVehicleBindingMileageRecordToBank } from '@/api/vehwholesale/finance/factory/finVehicleBindingMileageRecord/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
@@ -220,16 +220,16 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'financingDataSourceLabel', label: '融资数据来源', visible: true, width: 200 },
-          { props: 'vin', label: 'VIN号', visible: true, width: 200 },
-          { props: 'vehicleNetworkMileage', label: '车联网里程（公里）', visible: true, width: 200 },
-          { props: 'isVehicleBoundLabel', label: '是否人车绑定', visible: true, width: 200 },
-          { props: 'bindingDate', label: '绑车日期', visible: true, width: 200 },
+          { props: 'financingDataSourceLabel', label: '融资数据来源', visible: true, width: 120 },
+          { props: 'vin', label: 'VIN号', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }] },
+          { props: 'vehicleNetworkMileage', label: '车联网里程（公里）', visible: true, width: 120, align: 'right' },
+          { props: 'isVehicleBoundLabel', label: '是否人车绑定', visible: true, width: 120 },
+          { props: 'bindingDate', label: '绑车日期', visible: true, width: 120 },
           {
             props: 'fundFinancialOrganizationName',
             label: '融资金融机构',
             visible: true,
-            width: 200,
+            width: 140,
             buttons: [{
               click: (rowIndex, row) => {
                 this.openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.fundFinancialOrganizationId);
@@ -237,15 +237,15 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'deliveryDate', label: '交车日期', visible: true, width: 200 },
-          { props: 'actualLongitude', label: '实车位置经度', visible: true, width: 200 },
-          { props: 'actualLatitude', label: '实车位置纬度', visible: true, width: 200 },
-          { props: 'syncStatusLabel', label: '同步状态', visible: true, width: 200 },
+          { props: 'deliveryDate', label: '交车日期', visible: true, width: 120 },
+          { props: 'actualLongitude', label: '实车位置经度', visible: true, width: 120, align: 'right' },
+          { props: 'actualLatitude', label: '实车位置纬度', visible: true, width: 120, align: 'right' },
+          { props: 'syncStatusLabel', label: '同步状态', visible: true, width: 100 },
           { props: 'syncResult', label: '同步结果', visible: true, width: 200 },
-          { props: 'syncCount', label: '推送次数', visible: true, width: 200 },
-          { props: 'syncTime', label: '同步时间', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'syncCount', label: '推送次数', visible: true, width: 100 },
+          { props: 'syncTime', label: '同步时间', visible: true, width: 180 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 180 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 100 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },
           {
             props: 'operate',
@@ -293,7 +293,7 @@ export default {
       if (invalidItems.length > 0) {
         this.$message({
           type: 'error',
-          message: '只有可用且同步失败的数据才能同步，请确认'
+          message: '同步失败或未同步的可用数据才能同步，请确认'
         });
         return;
       }
