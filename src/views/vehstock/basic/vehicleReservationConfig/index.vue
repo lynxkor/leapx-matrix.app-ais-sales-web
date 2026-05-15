@@ -162,8 +162,8 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'typeLabel', label: '类型', visible: true, width: 140 },
-          { props: 'bizCode', label: '业务编号', visible: true, width: 200 },
+          { props: 'typeLabel', label: '预留类型', visible: true, width: 140 },
+          { props: 'bizCode', label: '预留内容', visible: true, width: 200 },
           { props: 'reserveNum', label: '需预留数', visible: true, align: 'right', width: 120 },
           { props: 'reservedNum', label: '已预留数', visible: true, align: 'right', width: 120 },
           { props: 'isCompletedLabel', label: '是否预留完成', visible: true, width: 140 },
