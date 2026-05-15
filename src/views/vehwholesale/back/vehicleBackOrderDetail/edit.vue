@@ -262,7 +262,7 @@
                   {{ form.backOrderDetailCode }}
                 </el-form-item>
                 <el-form-item label="退车订单编号：" prop="backOrderCode">
-                  <el-link type="primary" :href="`/vehwholesale/back/vehicleBackOrder/edit?id=${form.backOrderCode}`" target="_blank">{{ form.backOrderCode }}</el-link>
+                  <el-link type="primary" :href="`/sales/vehwholesale/back/vehicleBackOrder/edit?id=${form.backOrderCode}`" target="_blank">{{ form.backOrderCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="VIN码：" prop="vin">
                   {{ form.vin }}

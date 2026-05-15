@@ -262,7 +262,7 @@
                   {{ form.cbuOrderCode }}
                 </el-form-item>
                  <el-form-item label="销售公司：" prop="saleCompanyName">
-                  <el-link type="primary" :href="`/vehwholesale/fund/fundSaleCompany/edit?id=${form.saleCompanyId}`" target="_blank">{{ form.saleCompanyName }}</el-link>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundSaleCompany/edit?id=${form.saleCompanyId}`" target="_blank">{{ form.saleCompanyName }}</el-link>
                 </el-form-item>
                  <el-form-item label="企业客户名称：" prop="entCustomerName">
                   <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.entCustomerCode}`" target="_blank">{{ form.entCustomerName }}</el-link>
