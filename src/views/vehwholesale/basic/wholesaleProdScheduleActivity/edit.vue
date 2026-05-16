@@ -236,12 +236,12 @@
                   <tag-input v-model="detailForm.dealerNames" placeholder="请输入" style="margin-top:4px"/>
                 </el-form-item>
                 <el-form-item label="">
-                  <el-button size="small" type="primary" @click="handleQuery">查询</el-button>
+                  <el-button size="small" type="primary" plain @click="handleQuery" style="margin-left: 10px;">查询</el-button>
                   <el-button size="small" @click="handleClear">重置</el-button>
                 </el-form-item>
               </el-form>
               <div class="ais-actions">
-                <el-button size="small" @click="handleAddRow">活动明细导入</el-button>
+                <el-button size="small" @click="handleAddRow" style="margin-left: 15px;">活动明细导入</el-button>
               </div>
             </div>
             <div class="common-section-body">
@@ -263,7 +263,41 @@
                   @page-size-change="pageSizeChange"
                   @current-page-change="currentPageChange"
                   :auth="{edit: isEditing, delete: isEditing}"
-                />
+                >
+                  <template #default="{ row, column }">
+                    <template v-if="column.property === 'dealerCode' && row.dealerCode">
+                      <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`" target="_blank">
+                        {{ row.dealerCode }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'dealerName' && row.dealerCode">
+                      <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`" target="_blank">
+                        {{ row.dealerName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'seriesName' && row.seriesId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${row.seriesId}`" target="_blank">
+                        {{ row.seriesName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'yearTypeName' && row.yearTypeId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${row.yearTypeId}`" target="_blank">
+                        {{ row.yearTypeName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'materialsCode' && row.materialsId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsId}`" target="_blank">
+                        {{ row.materialsCode }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.formatter">
+                      {{ column.formatter(row[column.field], row, column) }}
+                    </template>
+                    <template v-else>
+                      {{ row[column.field] }}
+                    </template>
+                  </template>
+                </edit-table>
               </div>
             </div>
             <!-- TIPS: 填入项目id即可 -->
