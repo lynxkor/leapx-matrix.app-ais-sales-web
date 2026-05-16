@@ -172,7 +172,7 @@
               <h2>价格信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="160px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" label-width="160px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="整车价格：">
                   <el-input-number placeholder="请输入" v-model="form.price" clearable :controls="false"
                     :precision="2" :min="0.00" :step="0.01"/>
@@ -192,7 +192,7 @@
               <h2>属性信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="170px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" label-width="170px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item
                   v-for="(item, index) in formItems"
                   :key="index"
