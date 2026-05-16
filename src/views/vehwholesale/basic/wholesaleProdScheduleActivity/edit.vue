@@ -235,7 +235,9 @@
                 <el-form-item label="门店名称：">
                   <tag-input v-model="detailForm.dealerNames" placeholder="请输入" style="margin-top:4px"/>
                 </el-form-item>
-                <el-form-item label="">
+                 <el-form-item label="" >
+                </el-form-item>
+                <el-form-item label="" style="text-align: right;">
                   <el-button size="small" type="primary" plain @click="handleQuery" style="margin-left: 10px;">查询</el-button>
                   <el-button size="small" @click="handleClear">重置</el-button>
                 </el-form-item>
