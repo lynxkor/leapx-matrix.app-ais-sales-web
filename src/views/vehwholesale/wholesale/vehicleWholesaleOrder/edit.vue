@@ -849,7 +849,7 @@
                     <vxe-column field="fundTypeLabel" title="资金类型" width="180">
                       <template #default="{ row }">
                         <span v-if="row.fundType === '2010' || row.fundType === 2010">
-                          <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.financialOrganizationId)">{{ row.fundTypeLabel }}-{{ row.financialOrganizationName || '' }}</el-button>
+                          <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/dealerFundAccount/edit?id=' + row.id)">{{ row.fundTypeLabel }}-{{ row.financialOrganizationName || '' }}</el-button>
                         </span>
                         <span v-else>
                           <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/dealerFundAccount/edit?id=' + row.id)">{{ row.fundTypeLabel || '' }}</el-button>

@@ -953,7 +953,7 @@
                       <span>
                         <!-- 判断条件：fundType 为 2010 (融资) 时拼接金融机构名称 -->
                         <span v-if="scope.row.fundType === '2010' || scope.row.fundType === 2010">
-                           <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${scope.row.financialOrganizationId}`" target="_blank">{{ scope.row.fundTypeLabel }}-{{ scope.row.financialOrganizationName || '' }}</el-link>
+                           <el-link type="primary" :href="`/sales/vehwholesale/fund/dealerFundAccount/edit?id=${scope.row.id}`" target="_blank">{{ scope.row.fundTypeLabel }}-{{ scope.row.financialOrganizationName || '' }}</el-link>
                         </span>
                         <span v-else>
                           <el-link type="primary" :href="`/sales/vehwholesale/fund/dealerFundAccount/edit?id=${scope.row.id}`" target="_blank">{{ scope.row.fundTypeLabel || '' }}</el-link>

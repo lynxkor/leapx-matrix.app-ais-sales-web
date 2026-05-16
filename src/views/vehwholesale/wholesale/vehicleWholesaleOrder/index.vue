@@ -312,11 +312,11 @@
     >
       <div>
         <el-tabs v-model="tabName" @tab-click="handleClickTab">
-          <el-tab-pane label="未完成批售订单" name="2"></el-tab-pane>
-          <el-tab-pane label="待处理现车批售" name="3"></el-tab-pane>
+          <el-tab-pane label="全量" name="1"></el-tab-pane>
+          <!-- <el-tab-pane label="未完成批售订单" name="2"></el-tab-pane> -->
+          <!-- <el-tab-pane label="待处理现车批售" name="3"></el-tab-pane> -->
           <el-tab-pane label="待结算批售单" name="4"></el-tab-pane>
           <el-tab-pane label="待配车批售单" name="5"></el-tab-pane>
-          <el-tab-pane label="全量" name="1"></el-tab-pane>
         </el-tabs>
       </div>
       <LPVxeTable
@@ -494,7 +494,7 @@ export default {
       form: {
         ...defaultForm
       },
-      tabName: '2',
+      tabName: '1',
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,

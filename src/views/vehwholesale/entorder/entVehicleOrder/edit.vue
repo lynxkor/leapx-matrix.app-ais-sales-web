@@ -995,7 +995,7 @@ export default {
       return this.id || this.form.id || this.$route.query.id;
     },
     title () {
-      return '主键：' + this.form.entOrderCode;
+      return '企业客户整车订单：' + this.form.entOrderCode;
     }
   },
   watch: {

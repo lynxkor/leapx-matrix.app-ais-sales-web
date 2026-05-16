@@ -221,7 +221,7 @@ export default {
       return this.id || this.form.id || this.$route.query.id;
     },
     title () {
-      return '主键：' + this.form.paymentNoticeCode;
+      return '批售请款通知管理：' + this.form.paymentNoticeCode;
     }
   },
   watch: {

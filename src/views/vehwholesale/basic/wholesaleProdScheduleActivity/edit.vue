@@ -113,7 +113,7 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="创建者名称：">
+                <el-form-item label="创建者名称：" v-show="_id">
                   <el-input
                     placeholder="请输入"
                     v-model="form.creatorName"
@@ -121,7 +121,7 @@
                     disabled
                   />
                 </el-form-item>
-                  <el-form-item label="创建时间：">
+                  <el-form-item label="创建时间：" >
                     <el-date-picker
                     type="datetime"
                     v-model="form.createTime"
@@ -236,13 +236,13 @@
                   <tag-input v-model="detailForm.dealerNames" placeholder="请输入" style="margin-top:4px"/>
                 </el-form-item>
                 <el-form-item label="">
-                  <el-button size="small" @click="handleAddRow" style="margin-left: 5px;">活动明细导入</el-button>
-                </el-form-item>
-                <el-form-item label="">
                   <el-button size="small" type="primary" @click="handleQuery">查询</el-button>
                   <el-button size="small" @click="handleClear">重置</el-button>
                 </el-form-item>
               </el-form>
+              <div class="ais-actions">
+                <el-button size="small" @click="handleAddRow">活动明细导入</el-button>
+              </div>
             </div>
             <div class="common-section-body">
               <div class="common-section-table">
@@ -438,19 +438,19 @@ export default {
           field: 'dealerCode',
           title: '门店编码',
           width: '150',
-          formatter: (cellValue, row) => {
-            if (!row.dealerCode) return '';
-            return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode + '\', \'_blank\')">' + row.dealerCode + '</a>';
-          }
+          // formatter: (cellValue, row) => {
+          //   if (!row.dealerCode) return '';
+          //   return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode + '\', \'_blank\')">' + row.dealerCode + '</a>';
+          // }
         },
         {
           field: 'dealerName',
           title: '门店名称',
           width: '180',
-          formatter: (cellValue, row) => {
-            if (!row.dealerCode) return row.dealerName || '';
-            return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode + '\', \'_blank\')">' + row.dealerName + '</a>';
-          }
+          // formatter: (cellValue, row) => {
+          //   if (!row.dealerCode) return row.dealerName || '';
+          //   return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode + '\', \'_blank\')">' + row.dealerName + '</a>';
+          // }
         },
         {
           field: 'provinceName',
@@ -471,28 +471,28 @@ export default {
           field: 'seriesName',
           title: '车系',
           width: '120',
-          formatter: (cellValue, row) => {
-            if (!row.seriesId || !row.seriesName || row.seriesName === 'null' || row.seriesName === 'undefined') return '';
-            return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/sales/datacenter/materials/vehicleseries/edit?id=' + row.seriesId + '\', \'_blank\')">' + row.seriesName + '</a>';
-          }
+          // formatter: (cellValue, row) => {
+          //   if (!row.seriesId || !row.seriesName || row.seriesName === 'null' || row.seriesName === 'undefined') return '';
+          //   return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/sales/datacenter/materials/vehicleseries/edit?id=' + row.seriesId + '\', \'_blank\')">' + row.seriesName + '</a>';
+          // }
         },
         {
           field: 'yearTypeName',
           title: '年款',
           width: '120',
-          formatter: (cellValue, row) => {
-            if (!row.yearTypeId || !row.yearTypeName || row.yearTypeName === 'null' || row.yearTypeName === 'undefined') return '';
-            return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/sales/datacenter/materials/vehicleyeartype/edit?id=' + row.yearTypeId + '\', \'_blank\')">' + row.yearTypeName + '</a>';
-          }
+          // formatter: (cellValue, row) => {
+          //   if (!row.yearTypeId || !row.yearTypeName || row.yearTypeName === 'null' || row.yearTypeName === 'undefined') return '';
+          //   return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/sales/datacenter/materials/vehicleyeartype/edit?id=' + row.yearTypeId + '\', \'_blank\')">' + row.yearTypeName + '</a>';
+          // }
         },
         {
           field: 'materialsCode',
           title: '物料编码',
           width: '180',
-          formatter: (cellValue, row) => {
-            if (!row.materialsId || !row.materialsCode || row.materialsCode === 'null' || row.materialsCode === 'undefined') return '';
-            return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/sales/datacenter/materials/vehiclematerials/edit?id=' + row.materialsId + '\', \'_blank\')">' + row.materialsCode + '</a>';
-          }
+          // formatter: (cellValue, row) => {
+          //   if (!row.materialsId || !row.materialsCode || row.materialsCode === 'null' || row.materialsCode === 'undefined') return '';
+          //   return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/sales/datacenter/materials/vehiclematerials/edit?id=' + row.materialsId + '\', \'_blank\')">' + row.materialsCode + '</a>';
+          // }
         },
         {
           field: 'materialsDesc',
