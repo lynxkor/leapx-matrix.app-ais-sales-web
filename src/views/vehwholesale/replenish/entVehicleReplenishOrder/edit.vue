@@ -469,6 +469,7 @@ const defaultForm = {
   // 多选时字段有变化，自行修复
   id: '',
   creator: '',
+  settleFundTypeLabel: '',
   creatorName: '',
   createTime: new Date(),
   modifier: '',
@@ -810,7 +811,7 @@ export default {
           { required: true, message: '请输入是否赊销', trigger: 'change' }
         ],
         settleFundTypeLabel: [
-          { required: true, message: '请选择结算资金类型', trigger: 'blur' }
+          { required: true, message: '请选择结算资金类型', trigger: 'change' }
         ],
         orderTime: [
           { required: true, message: '请选择订单时间', trigger: 'change' }

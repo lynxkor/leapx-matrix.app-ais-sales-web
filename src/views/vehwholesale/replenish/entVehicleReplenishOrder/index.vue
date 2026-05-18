@@ -305,7 +305,13 @@ export default {
                 return row.auditStatus === 0 || row.auditStatus === 4;
               },
               click: (rowIndex, row) => {
-                this.openWindow('/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=' + row.id + '&isEditing=true');
+                this.$router.push({
+                  path: '/vehwholesale/replenish/entVehicleReplenishOrder/edit',
+                  query: {
+                    id: row.id,
+                    isEditing: true
+                  }
+                });
               },
               type: 'info'
             }, {
