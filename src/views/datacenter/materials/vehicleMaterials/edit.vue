@@ -420,10 +420,10 @@ export default {
         batteryCellId: [
           { required: true, message: '请输入电池电芯名称', trigger: 'blur' }
         ],
-        drivingRangeId:[
+        drivingRangeId: [
           { required: true, message: '请输入续航里程', trigger: 'blur' }
         ],
-        rangePowerId:[
+        rangePowerId: [
           { required: true, message: '请输入选配动力名称', trigger: 'blur' }
         ],
         status: [

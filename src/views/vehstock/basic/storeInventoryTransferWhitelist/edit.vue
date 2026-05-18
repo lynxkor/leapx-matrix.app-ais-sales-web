@@ -224,7 +224,7 @@ export default {
     },
     // 删除子表数据
     handleDeleteRow (index) {
-      const item = this.form.storeInventoryTransferWhitelistDetailList[index];
+      // const item = this.form.storeInventoryTransferWhitelistDetailList[index];
       this.form.storeInventoryTransferWhitelistDetailList.splice(index, 1);
       addOrUpdate({ ...this.form }).then(res => {
         this.$message.success('保存成功');
