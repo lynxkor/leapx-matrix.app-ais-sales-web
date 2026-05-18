@@ -403,6 +403,66 @@
                   @current-page-change="currentPageChange"
                   :auth="{edit: isEditing, delete: isEditing}"
                 >
+                  <template #default="{ row, column }">
+                    <template v-if="column.property === 'materialsCode' && row.materialsId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsId}`" target="_blank">
+                        {{ row.materialsCode }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'modelName' && row.modelId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`" target="_blank">
+                        {{ row.modelName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'drivingRangeName' && row.drivingRangeId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleDrivingRange/edit?id=${row.drivingRangeId}`" target="_blank">
+                        {{ row.drivingRangeName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'rangePowerName' && row.rangePowerId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleRangePower/edit?id=${row.rangePowerId}`" target="_blank">
+                        {{ row.rangePowerName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'exteriorName' && row.exteriorId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleExterior/edit?id=${row.exteriorId}`" target="_blank">
+                        {{ row.exteriorName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'interiorName' && row.interiorId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleInterior/edit?id=${row.interiorId}`" target="_blank">
+                        {{ row.interiorName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'wheelHubName' && row.wheelHubId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleWheelHub/edit?id=${row.wheelHubId}`" target="_blank">
+                        {{ row.wheelHubName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'batteryCellName' && row.batteryCellId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleBatteryCell/edit?id=${row.batteryCellId}`" target="_blank">
+                        {{ row.batteryCellName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'yearTypeName' && row.yearTypeId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleYearType/edit?id=${row.yearTypeId}`" target="_blank">
+                        {{ row.yearTypeName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'roofName' && row.roofId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleRoof/edit?id=${row.roofId}`" target="_blank">
+                        {{ row.roofName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'optionPackageName' && row.optionPackageId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleOptionPackage/edit?id=${row.optionPackageId}`" target="_blank">
+                        {{ row.optionPackageName }}
+                      </el-link>
+                    </template>
+                    <template v-else>
+                      {{ row[column.property] }}
+                    </template>
+                  </template>
                 </edit-table>
               </div>
               </div>
