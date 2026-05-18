@@ -15,7 +15,15 @@
         <el-form-item label="配车VIN码">
           <tag-input v-model="form.vins" placeholder="请输入" />
         </el-form-item>
-      <el-form-item label="订单状态" v-show="this.visibleCount === 3 || show">
+         <el-form-item label="创建时间"  v-show="this.visibleCount === 3 || show">
+        <dateranges
+        v-model="form.createTime"
+        :setDefault="true"
+        deftTime="本年"
+        ref="transactionTime"/>
+        </el-form-item>
+      <template v-if="show">
+        <el-form-item label="订单状态">
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_wholesale_order_status"
@@ -26,7 +34,6 @@
           filterable
         />
       </el-form-item>
-      <template v-if="show">
         <el-form-item label="物料描述">
           <tag-input v-model="form.orderMaterialDescs" placeholder="请输入" />
         </el-form-item>
@@ -240,13 +247,6 @@
             clearable
           />
         </el-form-item> -->
-        <el-form-item label="创建时间">
-        <dateranges
-            v-model="form.createTime"
-            :setDefault="true"
-            deftTime="本年"
-            ref="transactionTime"/>
-        </el-form-item>
           <el-form-item label="是否已锁定">
             <fetch-select
             :request="fetchOptions"
@@ -703,25 +703,13 @@ export default {
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
-    // 默认最近一年
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setFullYear(startDate.getFullYear() - 1);
-    this.form.createTime = [
-      this.formatDate(startDate) + ' 00:00:00',
-      this.formatDate(endDate) + ' 23:59:59'
-    ];
-    this.getData();
+    this.$nextTick(() => {
+      this.getData();
+    });
     this.getCity();
     this.fetchSettleFundTypeOptions();
   },
   methods: {
-    formatDate (date) {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
-    },
     async fetchSettleFundTypeOptions () {
       const response = await getEnum('vw_fundtype');
       this.settleFundTypeOptions = response.filter(item => {
@@ -1264,7 +1252,6 @@ export default {
       this.form = { ...defaultForm };
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
-      this.form.createTime = [];
       this.getData();
     },
     exportExcel () {

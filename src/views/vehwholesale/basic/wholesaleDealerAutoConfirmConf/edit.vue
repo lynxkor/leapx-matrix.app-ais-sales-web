@@ -12,7 +12,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          <span class="status primary">{{ form.openAutoConfirmLabel }}</span>
+          <!-- <span class="status primary">{{ form.openAutoConfirmLabel }}</span> -->
         </template>
         <el-main>
           <section class="common-section">

@@ -12,7 +12,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          <span class="status primary">{{ form.allowTestDriveWholesaleLabel }}</span>
+          <!-- <span class="status primary">{{ form.allowTestDriveWholesaleLabel }}</span> -->
         </template>
         <el-main>
           <section class="common-section">
