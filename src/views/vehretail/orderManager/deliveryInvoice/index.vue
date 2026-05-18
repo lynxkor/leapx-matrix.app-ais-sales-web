@@ -12,7 +12,7 @@
       <el-form-item label="VIN码">
         <tag-input
           placeholder="请输入"
-          v-model="form.vinList"
+          v-model="form.matchVinList"
           clearable
         />
       </el-form-item>
@@ -148,7 +148,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { batchCancel, enableItem, getList } from '@/api/vehretail/orderManager/deliveryInvoice/index';
 import { exportTable, getEnum, getTableConfig, listOrgStoreInfo, tableAddOrUpdate } from '@/api/common';
@@ -243,7 +243,7 @@ export default {
           { props: 'mallOrderCode', label: '商城订单编号', visible: true, width: 200 },
           { props: 'retailOrderCode', label: '整车订单', visible: true, width: 200 },
           { props: 'invoiceCode', label: '发票代码', visible: false, width: 200 },
-          { props: 'invoiceAmount', label: '发票金额', visible: false, width: 200 },
+          { props: 'invoiceAmount', label: '发票金额', visible: false, width: 200, align: 'right' },
           { props: 'certificateNo', label: '发票合格证号', visible: false, width: 200 },
           { props: 'engineNumber', label: '发票发动机号', visible: false, width: 200 },
           { props: 'carBuyerName', label: '证件识别的客户姓名', visible: false, width: 200 },

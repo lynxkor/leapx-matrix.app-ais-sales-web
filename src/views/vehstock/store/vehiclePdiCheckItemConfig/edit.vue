@@ -146,6 +146,24 @@
                     clearable
                   />
                 </el-form-item>
+                <el-form-item label="图谱坐标X：" prop="atlasCoordX">
+                  <el-input
+                    type="number"
+                    placeholder="请输入"
+                    v-model="form.atlasCoordX"
+                    @input="val => form.atlasCoordX = val.replace(/[^-+0-9.]|e|E|(\.\d*\.)|^(\.+)|(-+.*-+)/g, '')"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="图谱坐标Y：" prop="atlasCoordY">
+                  <el-input
+                    type="number"
+                    placeholder="请输入"
+                    v-model="form.atlasCoordY"
+                    @input="val => form.atlasCoordY = val.replace(/[^-+0-9.]|e|E|(\.\d*\.)|^(\.+)|(-+.*-+)/g, '')"
+                    clearable
+                  />
+                </el-form-item>
                 <el-form-item label="状态：" prop="status">
                   <fetch-select
                     :request="fetchOptions"
@@ -215,6 +233,12 @@
                 <el-form-item label="图谱坐标right：" prop="atlasCoordRight">
                   {{ form.atlasCoordRight }}
                 </el-form-item>
+                <el-form-item label="图谱坐标X：" prop="atlasCoordX">
+                  {{ form.atlasCoordX }}
+                </el-form-item>
+                <el-form-item label="图谱坐标Y：" prop="atlasCoordY">
+                  {{ form.atlasCoordY }}
+                </el-form-item>
                 <el-form-item label="状态：" prop="status">
                   {{ form.statusLabel }}
                 </el-form-item>
@@ -277,6 +301,8 @@ const defaultForm = {
   atlasCoordLeft: '',
   atlasCoordBottom: '',
   atlasCoordRight: '',
+  atlasCoordX: '',
+  atlasCoordY: '',
   atlasUrl: '',
   effectiveOn: '',
   expiredOn: '',
@@ -415,6 +441,12 @@ export default {
         ],
         atlasCoordRight: [
           { required: false, message: '图谱坐标right', trigger: 'change' }
+        ],
+        atlasCoordX: [
+          { required: false, message: '图谱坐标X', trigger: 'change' }
+        ],
+        atlasCoordY: [
+          { required: false, message: '图谱坐标Y', trigger: 'change' }
         ],
         status: [
           { required: false, message: '请选择状态', trigger: 'change' }

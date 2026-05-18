@@ -118,7 +118,7 @@
                   {{ form.deliveryOrderCode }}
                 </el-form-item>
                 <el-form-item label="整车开票状态：">
-                  {{ form.statusLabel }}
+                  <span class="status-tag link">{{ form.statusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="创建时间：">
                   {{ form.createTime }}
@@ -427,7 +427,7 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="整车订单状态：">
-                  {{ form.orderStatusLabel }}
+                  <span class="status-tag link">{{ form.orderStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="商城下单时间：">
                   {{ form.orderTime }}

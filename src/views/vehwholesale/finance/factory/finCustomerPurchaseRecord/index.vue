@@ -138,7 +138,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, pushFinCustomerPurchaseRecordToBank } from '@/api/vehwholesale/finance/factory/finCustomerPurchaseRecord/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
@@ -225,13 +225,13 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dataMonth', label: '数据月份', visible: true, width: 200 },
-          { props: 'totalAmount', label: '金额合计', visible: true, width: 200 },
+          { props: 'dataMonth', label: '数据月份', visible: true, width: 120 },
+          { props: 'totalAmount', label: '金额合计', visible: true, width: 120, align: 'right' },
           {
             props: 'fundFinancialOrganizationName',
             label: '融资金融机构',
             visible: true,
-            width: 200,
+            width: 140,
             buttons: [{
               click: (rowIndex, row) => {
                 this.openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.fundFinancialOrganizationId);
@@ -239,8 +239,8 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
+          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           {
             props: 'dealerCode',
             label: '经销商编码',
@@ -253,18 +253,18 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerName', label: '经销商名称', visible: true, width: 200 },
-          { props: 'unifiedSocialCreditCode', label: '统一社会信用代码', visible: true, width: 200 },
-          { props: 'cooperationDate', label: '合作时间', visible: true, width: 200 },
-          { props: 'hasFixedBusinessPremisesLabel', label: '是否有固定经营场所', visible: true, width: 200 },
+          { props: 'dealerName', label: '经销商名称', visible: true, width: 240 },
+          { props: 'unifiedSocialCreditCode', label: '统一社会信用代码', visible: true, width: 180 },
+          { props: 'cooperationDate', label: '合作时间', visible: true, width: 140 },
+          { props: 'hasFixedBusinessPremisesLabel', label: '是否有固定经营场所', visible: true, width: 180 },
           { props: 'fixedBusinessPremises', label: '固定经营场所', visible: true, width: 200 },
-          { props: 'syncStatusLabel', label: '同步状态', visible: true, width: 200 },
-          { props: 'syncResult', label: '同步结果', visible: true, width: 200 },
-          { props: 'syncCount', label: '推送次数', visible: true, width: 200 },
-          { props: 'financingDataSourceLabel', label: '融资数据来源', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'syncStatusLabel', label: '同步状态', visible: true, width: 120 },
+          { props: 'syncResult', label: '同步结果', visible: true, width: 120 },
+          { props: 'syncCount', label: '推送次数', visible: true, width: 100 },
+          { props: 'financingDataSourceLabel', label: '融资数据来源', visible: true, width: 150 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 100 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 }
+          { props: 'createTime', label: '创建时间', visible: true, width: 201800 }
         ],
         total: 0
       }

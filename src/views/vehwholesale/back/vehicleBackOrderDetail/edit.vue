@@ -11,7 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.processStatus === 10 || form.processStatus === 20"
+        :showEditBtn="form.auditStatus === 10 || form.auditStatus === 20"
       >
         <template #status>
           <!-- {{ form.returnOrderCode }} -->
@@ -19,9 +19,9 @@
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button v-if="perconfirmOutbound && form.buttonControl && form.buttonControl.confirmOutbound" size="small"  @click="handelConfirmOutbound">确认出库</el-button>
-          <el-button v-if="perconfirmInbound && form.buttonControl && form.buttonControl.confirmInbound" size="small"  @click="handelConfirmVdcInbound">确认入库</el-button>
-          <el-button v-if="canDelete && form.buttonControl && form.buttonControl.delete" size="small"  @click="handleDel">删除</el-button>
+          <el-button v-if="perconfirmOutbound && form.buttonControl && form.buttonControl.confirmOutbound" size="small"  :loading="outboundLoading" @click="handelConfirmOutbound">确认出库</el-button>
+          <el-button v-if="perconfirmInbound && form.buttonControl && form.buttonControl.confirmInbound" size="small"  :loading="inboundLoading" @click="handelConfirmVdcInbound">确认入库</el-button>
+          <el-button v-if="canDelete && form.buttonControl && form.buttonControl.delete" size="small"  :loading="deleteLoading" @click="handleDel">删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -262,13 +262,13 @@
                   {{ form.backOrderDetailCode }}
                 </el-form-item>
                 <el-form-item label="退车订单编号：" prop="backOrderCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/back/vehicleBackOrder/edit?id=' + form.backOrderCode)">{{ form.backOrderCode }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/back/vehicleBackOrder/edit?id=${form.backOrderCode}`" target="_blank">{{ form.backOrderCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="VIN码：" prop="vin">
                   {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="销售门店名称：" prop="saleDealerName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.saleDealerCode)">{{ form.saleDealerName }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="车辆处理状态：" prop="processStatusLabel">
                   {{ form.processStatusLabel }}
@@ -277,16 +277,16 @@
                   {{ form.regionName }}
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
                 </el-form-item>
                 <el-form-item label="批售订单编号：" prop="wholesaleOrderCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + form.wholesaleOrderCode)">{{ form.wholesaleOrderCode }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${form.wholesaleOrderCode}`" target="_blank">{{ form.wholesaleOrderCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="车系名称：" prop="seriesName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.seriesId)">{{ form.seriesName }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="企业客户整车订单号：" prop="entOrderCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + form.entOrderCode)">{{ form.entOrderCode }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${form.entOrderCode}`" target="_blank">{{ form.entOrderCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="是否实车返厂：" prop="actualVehicleReturnLabel">
                   {{ form.actualVehicleReturnLabel }}
@@ -307,7 +307,7 @@
                   {{ form.returnRebateAmount }}
                 </el-form-item>
                 <el-form-item label="车型：" prop="modelName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + form.modelId)">{{ form.modelName }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="门店出库确认人：" prop="storeOutboundConfirmer">
                   {{ form.storeOutboundConfirmer }}
@@ -426,7 +426,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '退车明细单号：' + this.form.backOrderDetailCode;
@@ -458,6 +458,10 @@ export default {
       // 权限配置
       perconfirmOutbound: false,
       perconfirmInbound: false,
+      // loading状态
+      outboundLoading: false,
+      inboundLoading: false,
+      deleteLoading: false,
       tableData: [
       ],
       rules: {
@@ -496,6 +500,7 @@ export default {
         customClass: 'ais-leave-tips',
         showClose: false
       }).then(() => {
+        this.deleteLoading = true;
         deleteItem({
           idSet: ids
         }).then(() => {
@@ -503,6 +508,8 @@ export default {
             path: '/vehwholesale/back/vehicleBackOrderDetail',
           });
           this.getData();
+        }).finally(() => {
+          this.deleteLoading = false;
         });
       }).catch(() => {});
     },
@@ -512,11 +519,14 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.outboundLoading = true;
         confirmOutbound({
           idSet: [this._id],
         }).then(() => {
           this.$message.success('提交成功');
           this.$refs.containerRef.loadDetail();
+        }).finally(() => {
+          this.outboundLoading = false;
         });
       }).catch(() => {});
     },
@@ -526,11 +536,14 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.inboundLoading = true;
         confirmVdcInbound({
           idSet: [this._id],
         }).then(() => {
           this.$message.success('提交成功');
           this.$refs.containerRef.loadDetail();
+        }).finally(() => {
+          this.inboundLoading = false;
         });
       }).catch(() => {});
     },

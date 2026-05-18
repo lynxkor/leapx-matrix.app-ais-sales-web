@@ -52,7 +52,7 @@
                   {{ form.applyNo }}
                 </el-form-item>
                 <el-form-item label="申请门店：" prop="dealerName">
-                  {{ form.dealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="申请人：" prop="creatorName">
                   {{ form.creatorName }}
@@ -256,7 +256,7 @@ export default {
     },
     // 删除子表数据
     handleDeleteRow (index) {
-      const item = this.form.vinList[index];
+      // const item = this.form.vinList[index];
       this.form.vinList.splice(index, 1);
       // 根据需求调用接口
       // deletePartVehModel([item.id]).then(res => {

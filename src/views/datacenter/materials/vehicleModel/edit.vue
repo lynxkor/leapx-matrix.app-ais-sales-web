@@ -127,6 +127,8 @@
                   :show-toolbar="false"
                   :options="options"
                   :auth="{edit: canAddOrUpdate, delete: canDelete}"
+                  :enableSingleRowSave="true"
+                  @save-row-edit="saveRowEdit"
                 />
               </div>
             </div>
@@ -188,7 +190,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '销服-业务主数据-配置主数据-车型',
+      pageTitle: '车型',
       pageType: 'edit',
       moduleKey: 'AISDC-vehicleModel',
       loading: false,
@@ -346,6 +348,16 @@ export default {
         }).catch(error => {
           reject(error);
         });
+      });
+    },
+    async saveRowEdit (row, defer) {
+      const tableData = await this.handleSaveTable();
+      const data = { ...this.form, yearTypeIds: tableData };
+      addOrUpdate(data).then(id => {
+        defer.resolve(id);
+        this.$refs.containerRef.loadDetail();
+      }).catch(() => {
+        defer.reject();
       });
     }
   }

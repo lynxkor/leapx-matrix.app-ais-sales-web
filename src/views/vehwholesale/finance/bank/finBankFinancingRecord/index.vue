@@ -161,7 +161,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/finance/bank/finBankFinancingRecord/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
@@ -249,13 +249,13 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
+          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           {
             props: 'fundFinancialOrganizationName',
             label: '融资金融机构',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
                 this.openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.fundFinancialOrganizationId);
@@ -263,19 +263,19 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'financingAmount', label: '融资金额', visible: true, width: 200 },
-          { props: 'financingTypeLabel', label: '融资类型', visible: true, width: 200 },
+          { props: 'financingAmount', label: '融资金额', visible: true, width: 120, align: 'right' },
+          { props: 'financingTypeLabel', label: '融资类型', visible: true, width: 140 },
           { props: 'iouNumber', label: '借据号', visible: true, width: 200 },
           { props: 'subTicketRange', label: '子票区间', visible: true, width: 200 },
-          { props: 'accountDate', label: '出账日期', visible: true, width: 200 },
-          { props: 'businessModeLabel', label: '业务模式', visible: true, width: 200 },
-          { props: 'financingStartDate', label: '融资开始日期', visible: true, width: 200 },
-          { props: 'financingExpiryDate', label: '融资到期日期', visible: true, width: 200 },
-          { props: 'depositRatio', label: '保证金比例%', visible: true, width: 200 },
-          { props: 'depositAmount', label: '保证金金额', visible: true, width: 200 },
+          { props: 'accountDate', label: '出账日期', visible: true, width: 160 },
+          { props: 'businessModeLabel', label: '业务模式', visible: true, width: 140 },
+          { props: 'financingStartDate', label: '融资开始日期', visible: true, width: 160 },
+          { props: 'financingExpiryDate', label: '融资到期日期', visible: true, width: 160 },
+          { props: 'depositRatio', label: '保证金比例%', visible: true, width: 120, align: 'right' },
+          { props: 'depositAmount', label: '保证金金额', visible: true, width: 120, align: 'right' },
           { props: 'acceptanceBankName', label: '承兑银行名称', visible: true, width: 200 },
           { props: 'financingApplicationCode', label: '融资申请编码', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 100 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {

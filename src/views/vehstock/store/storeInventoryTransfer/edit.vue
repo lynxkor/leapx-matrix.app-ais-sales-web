@@ -27,6 +27,7 @@
                 <el-form-item label="目标门店名称：" prop="targetDealerCode">
                   <fetch-select
                     :remote-method="getDealerListByName"
+                    :params="form.targetDealerName"
                     remote
                     v-model="form.targetDealerCode"
                     placeholder="请输入门店编码或名称"
@@ -41,7 +42,6 @@
                 <el-form-item label="目标门店仓库名称：" prop="targetDealerWarehouseCode">
                   <fetch-select
                     :options="warehouseOptions"
-                    remote
                     v-model="form.targetDealerWarehouseCode"
                     placeholder="请输入门店仓库编码或名称"
                     labelKey="warehouseName"
@@ -227,8 +227,8 @@ export default {
     },
     'form.targetDealerCode': {
       handler (newVal) {
-        if (newVal && this.isEditing) {
-          // 仅在编辑模式且有值时拉取仓库列表，以确保回显时能从列表中匹配到名称
+        if (newVal) {
+          // 拉取仓库列表，以确保回显时能从列表中匹配到名称
           this.fetchWarehouseOptions(newVal, false); // 第二个参数设为 false，防止自动重置
         }
       },
@@ -301,13 +301,8 @@ export default {
     },
     // 删除子表数据
     handleDeleteRow (index) {
-      // const item = this.form.storeInventoryTransferDetailList[index];
-      this.form.storeInventoryTransferDetailList.splice(index, 1);
-      // 根据需求调用接口
-      // deletePartVehModel([item.id]).then(res => {
-      //   this.$message.success('删除成功');
-      //   this.tableData.splice(index, 1);
-      // });
+      const list = this.form.storeInventoryTransferDetailList || [];
+      list.splice(index, 1);
     },
     // 查询新增项的列表
     queryListData (queryString) {
@@ -334,7 +329,8 @@ export default {
         return;
       }
       // 检查是否已存在
-      const exists = this.form.storeInventoryTransferDetailList.some(item => item.id === record.id);
+      const list = this.form.storeInventoryTransferDetailList || [];
+      const exists = list.some(item => item.id === record.id);
       if (exists) {
         this.$message.warning('请勿重复添加');
         return;

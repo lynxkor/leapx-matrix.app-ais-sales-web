@@ -152,7 +152,7 @@
         </el-dropdown-menu>
       </el-dropdown>
       <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
-      <el-button v-permission="moduleKey+'-confirmReceive'"  size="small" @click="handleconfirmSign" :disabled="selectionList.length === 0">签收合格证</el-button>
+      <el-button v-permission="moduleKey+'-confirmReceive'"  size="small" :loading="confirmSignLoading" @click="handleconfirmSign" :disabled="selectionList.length === 0">签收合格证</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
@@ -188,7 +188,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchconfirmSign } from '@/api/vehwholesale/certificate/vehicleCertificateRedemption/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany, listOrgStoreInfo, vehicleSeriesList, vehicleModelList } from '@/api/common';
@@ -250,6 +250,7 @@ export default {
       dropdownLoading: false,
       validatedOrderategoryList: [],
       clickItemId: '',
+      confirmSignLoading: false,
       optionObj: {
         id: 'vehicleCertificateRedemptionTable',
         dataList: [],
@@ -262,7 +263,7 @@ export default {
             props: 'redemptionCode',
             label: '合格证赎回编号',
             visible: true,
-            width: 200,
+            width: 210,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -276,19 +277,19 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + row.dealerCompanyCode); }, type: 'primary' }] },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { this.openWindow('/partner/channelManagement/companyDetails?companyCode=' + row.dealerCompanyCode); }, type: 'primary' }] },
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.saleDealerCode); }, type: 'primary' }] },
-          { props: 'creditSettleStatusLabel', label: '赊销结算状态', visible: true, width: 200 },
-          { props: 'certificateStatusLabel', label: '合格证状态', visible: true, width: 200 },
-          { props: 'vin', label: 'VIN码', visible: true, width: 200 },
+          { props: 'creditSettleStatusLabel', label: '赊销结算状态', visible: true, width: 120 },
+          { props: 'certificateStatusLabel', label: '合格证状态', visible: true, width: 100 },
+          { props: 'vin', label: 'VIN码', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { this.openWindow('/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=' + row.vin); }, type: 'primary' }] },
           {
             props: 'seriesName',
             label: '车系名称',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                this.openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId);
+                this.openWindow('/sales/datacenter/materials/vehicleseries/edit?id=' + row.seriesId);
               },
               type: 'primary'
             }]
@@ -297,30 +298,30 @@ export default {
             props: 'modelName',
             label: '车型名称',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                this.openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + row.modelId);
+                this.openWindow('/sales/datacenter/materials/vehiclemodel/edit?id=' + row.modelId);
               },
               type: 'primary'
             }]
           },
-          { props: 'vehiclePrice', label: '车辆售价（零售价）', visible: true, width: 200 },
-          { props: 'settleFundTypeLabel', label: '资金结算类型', visible: true, width: 200 },
-          { props: 'downPaymentRatio', label: '首付款比例', visible: true, width: 200 },
-          { props: 'downPaymentAmount', label: '首付款金额', visible: true, width: 200 },
-          { props: 'creditDebtAmount', label: '赊销欠款金额', visible: true, width: 200 },
-          { props: 'creditTime', label: '赊销日期', visible: true, width: 200 },
-          { props: 'repaymentTime', label: '还款日期', visible: true, width: 200 },
-          { props: 'creditDays', label: '赊销天数', visible: true, width: 200 },
-          { props: 'wholesaleOrderCode', label: '整车批售订单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.wholesaleOrderCode); }, type: 'primary' }] },
-          { props: 'entVehicleOrderCode', label: '企业客户整车订单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + row.entVehicleOrderCode); }, type: 'primary' }] },
-          { props: 'receiverName', label: '收件人', visible: true, width: 200 },
-          { props: 'receiverPhone', label: '收件人手机', visible: true, width: 200 },
+          { props: 'vehiclePrice', label: '车辆售价（零售价）', visible: true, width: 180, align: 'right' },
+          { props: 'settleFundTypeLabel', label: '资金结算类型', visible: true, width: 150 },
+          { props: 'downPaymentRatio', label: '首付款比例', visible: true, width: 120, align: 'right' },
+          { props: 'downPaymentAmount', label: '首付款金额', visible: true, width: 120, align: 'right' },
+          { props: 'creditDebtAmount', label: '赊销欠款金额', visible: true, width: 120, align: 'right' },
+          { props: 'creditTime', label: '赊销日期', visible: true, width: 160 },
+          { props: 'repaymentTime', label: '还款日期', visible: true, width: 160 },
+          { props: 'creditDays', label: '赊销天数', visible: true, width: 100, align: 'right' },
+          { props: 'wholesaleOrderCode', label: '整车批售订单号', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { this.openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.wholesaleOrderCode); }, type: 'primary' }] },
+          { props: 'entVehicleOrderCode', label: '企业客户整车订单号', visible: true, width: 210, buttons: [{ click: (rowIndex, row) => { this.openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + row.entVehicleOrderCode); }, type: 'primary' }] },
+          { props: 'receiverName', label: '收件人', visible: true, width: 120 },
+          { props: 'receiverPhone', label: '收件人手机', visible: true, width: 150 },
           { props: 'receiverAddress', label: '收件地址', visible: true, width: 200 },
-          { props: 'expressCode', label: '快递单号', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'expressCode', label: '快递单号', visible: true, width: 150 },
+          { props: 'creatorName', label: '创建者名称', visible: true, width: 120 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 160 },
           {
             props: 'operate',
             label: '操作',
@@ -631,11 +632,14 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.confirmSignLoading = true;
         batchconfirmSign({
           idSet: ids,
         }).then(() => {
           this.$message.success('签收合格证成功');
           this.getData();
+        }).finally(() => {
+          this.confirmSignLoading = false;
         });
       }).catch(() => {});
     },

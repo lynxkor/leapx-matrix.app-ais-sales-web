@@ -252,7 +252,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, getOrderUnlockConfig, batchReplaceStore, getDetailDecryptField, getSysConfigParamValue } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import {
@@ -273,6 +273,7 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { getAreaTree } from '@/utils';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
 import UnlockDialog from './components/UnlockDialog';
@@ -368,7 +369,7 @@ export default {
         value: 'code',
         children: 'child'
       },
-      areaOptions: JSON.parse(localStorage.areaTree),
+      areaOptions: getAreaTree(),
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
       activeTab: 'all',
@@ -444,8 +445,8 @@ export default {
           { props: 'lockTime', label: '锁单时间', visible: true, width: 180 },
           { props: 'wholesaleOrderCode', label: '批售订单号', visible: true, width: 200 },
           { props: 'wholesaleBindStatusLabel', label: '是否绑定批售', visible: true, width: 140 },
-          { props: 'priceAfterSubsidy', label: '补贴后价格', visible: true, width: 140 },
-          { props: 'depositAmount', label: '应收定金', visible: true, width: 120 },
+          { props: 'priceAfterSubsidy', label: '补贴后价格', visible: true, width: 140, align: 'right' },
+          { props: 'depositAmount', label: '应收定金', visible: true, width: 120, align: 'right' },
           { props: 'agentName', label: '代办联系人', visible: true, width: 140 },
           { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 120 },
           { props: 'saleDealerName', label: '订单销售门店', visible: true, width: 240 },

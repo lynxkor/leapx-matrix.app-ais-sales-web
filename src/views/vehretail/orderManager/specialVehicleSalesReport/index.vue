@@ -146,7 +146,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, submitReport, cancelReport, revokeReport, adjustVehicleAttribute, batchCancelReports, batchRevokeReports } from '@/api/vehretail/orderManager/specialVehicleSalesReport/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo, listVehicleModel } from '@/api/common';
@@ -275,7 +275,7 @@ export default {
           { props: 'address', label: '车主详细地址', visible: true, width: 150 },
           { props: 'invoiceNo', label: '发票号码', visible: true, width: 180, sortable: true },
           { props: 'invoiceDate', label: '开票日期', visible: true, width: 180, sortable: true },
-          { props: 'invoiceAmount', label: '发票金额', visible: true, width: 180, sortable: true },
+          { props: 'invoiceAmount', label: '发票金额', visible: true, width: 180, sortable: true, align: 'right' },
           { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true },
           {
             props: 'operate',

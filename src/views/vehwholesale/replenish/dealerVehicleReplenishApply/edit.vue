@@ -306,7 +306,7 @@
                   @save-row="handleSaveDetailRow"
                 >
                   <template #replenishApplyDetailCode="{ row }">
-                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=' + row.replenishApplyDetailCode)">{{ row.replenishApplyDetailCode }}</el-button>
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=' + row.id)">{{ row.replenishApplyDetailCode }}</el-button>
                   </template>
                   <template #seriesName="{ row }">
                     <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId)">{{ row.seriesName }}</el-button>
@@ -332,8 +332,8 @@
                   :columns="columns"
                 >
                   <template #fundTypeDisplay="{ row }">
-                    <el-button v-if="row.fundType === '2010' || row.fundType === 2010" class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.financialOrganizationId)">{{ row.fundTypeDisplay }}</el-button>
-                    <el-button v-else class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/fund/dealerFundAccount/edit?id=' + row.id)">{{ row.fundTypeDisplay }}</el-button>
+                    <el-button v-if="row.fundType === '2010' || row.fundType === 2010" class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/dealerFundAccount/edit?id=' + row.id)">{{ row.fundTypeDisplay }}</el-button>
+                    <el-button v-else class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/dealerFundAccount/edit?id=' + row.id)">{{ row.fundTypeDisplay }}</el-button>
                   </template>
                 </component-table>
               </div>
@@ -350,7 +350,7 @@
                   :columns="wholesaleOrdersColumns"
                 >
                   <template #wholesaleOrderCode="{ row }">
-                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.wholesaleOrderCode)">{{ row.wholesaleOrderCode }}</el-button>
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.id)">{{ row.wholesaleOrderCode }}</el-button>
                   </template>
                   <template #saleDealerName="{ row }">
                     <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.saleDealerCode)">{{ row.saleDealerName }}</el-button>
@@ -486,7 +486,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '整车补货单号：';

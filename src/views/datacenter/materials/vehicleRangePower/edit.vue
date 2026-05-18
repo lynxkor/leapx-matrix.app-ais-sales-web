@@ -114,7 +114,7 @@ export default {
   mixins: [routeGuard, permissions, commonMixins],
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-选配动力',
+      pageTitle: '选配动力',
       pageType: 'edit',
       moduleKey: 'AISDC-vehicleRangePower',
       loading: false,

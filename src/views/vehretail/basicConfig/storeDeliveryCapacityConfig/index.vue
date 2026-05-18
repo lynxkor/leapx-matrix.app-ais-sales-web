@@ -93,7 +93,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/basicConfig/storeDeliveryCapacityConfig/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo } from '@/api/common';
@@ -176,8 +176,8 @@ export default {
           { props: 'deliveryDealerName', label: '交付门店', visible: true, width: 200 },
           { props: 'deliveryUserName', label: '交付工程师', visible: true, width: 150 },
           { props: 'autoAssignSort', label: '自动分派排序', visible: true, width: 150 },
-          { props: 'monthlyDeliveryCapacity', label: '月度交付承载数量', visible: true, width: 180 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 120 },
+          { props: 'monthlyDeliveryCapacity', label: '月度交付承载数量', visible: true, width: 180, align: 'right' },
+          { props: 'statusLabel', label: '状态', visible: true, width: 80 },
           { props: 'createTime', label: '创建时间', visible: true, width: 180 },
           {
             props: 'operate',

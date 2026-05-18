@@ -143,7 +143,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '销服-业务主数据-配置主数据-车系',
+      pageTitle: '车系',
       pageType: 'edit',
       moduleKey: 'AISDC-vehicleSeries',
       loading: false,

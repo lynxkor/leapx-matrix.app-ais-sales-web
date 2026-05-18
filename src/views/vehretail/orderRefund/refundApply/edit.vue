@@ -265,7 +265,7 @@
                   {{ form.cateName }}
                 </el-form-item>
                 <el-form-item label="申请单状态：" prop="refundStatusLabel">
-                  {{ form.refundStatusLabel }}
+                  <span class="status-tag link">{{ form.refundStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="定金退回方式：" prop="depositRefundTypeLabel">
                   {{ form.depositRefundTypeLabel }}
@@ -301,7 +301,7 @@
                   <el-button size="small" type="primary" plain @click="openVehicleStockShow">查询库存车</el-button>
                 </el-form-item>
                 <el-form-item label="是否停产：" prop="discontinueStatusLabel">
-                  {{ form.discontinueStatusLabel}}
+                  <span :class="['status-tag', form.discontinueStatus === 0 ? 'primary' : 'danger']">{{ form.discontinueStatusLabel}}</span>
                 </el-form-item>
                 <el-form-item label="基本车型：" prop="modelName">
                   <el-button
@@ -383,7 +383,7 @@
             <div class="common-section-body">
               <el-form :inline="true" class="form-detail">
                 <el-form-item label="整车订单状态：" prop="orderStatus">
-                  {{ form.orderStatusLabel }}
+                  <span class="status-tag link">{{ form.orderStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="商城订单编号：" prop="mallOrderCode">
                   {{ form.mallOrderCode }}

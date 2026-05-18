@@ -23,13 +23,13 @@
                   {{ form.rebateBillDetailCode }}
                 </el-form-item>
                 <el-form-item label="母公司名称：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/parentCompany/edit?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
                 </el-form-item>
                 <el-form-item label="门店名称：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)">{{ form.dealerName }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="返利核算单编号：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/rebate/fundVehicleRebateBill/edit?id=' + form.rebateBillId)">{{ form.rebateBillCode }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/rebate/fundVehicleRebateBill/edit?id=${form.rebateBillId}`" target="_blank">{{ form.rebateBillCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="单据状态：">
                   {{ form.billStatusLabel }}
@@ -61,19 +61,19 @@
                   {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="车系：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.seriesId)">{{ form.seriesName }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleSeries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="基本车型：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + form.modelId)">{{ form.modelName }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleModel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="交车单号：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehretail/orderManager/deliveryOrder/edit?id=' + form.deliveryOrderCode)">{{ form.deliveryOrderCode }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehretail/orderManager/deliveryOrder/edit?id=${form.deliveryOrderCode}`" target="_blank">{{ form.deliveryOrderCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="预算科目：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundBudgetItem/edit?id=' + form.budgetItemId)">{{ form.budgetItemName }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundBudgetItem/edit?id=${form.budgetItemId}`" target="_blank">{{ form.budgetItemName }}</el-link>
                 </el-form-item>
                 <el-form-item label="费用支持类型：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFeeSupportType/edit?id=' + form.feeSupportTypeId)">{{ form.feeSupportTypeName }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFeeSupportType/edit?id=${form.feeSupportTypeId}`" target="_blank">{{ form.feeSupportTypeName }}</el-link>
                 </el-form-item>
                 <el-form-item label="周期：">
                   {{ form.periodLabel }}
@@ -196,7 +196,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '整车返利核算单明细：' + (this.form.rebateBillDetailCode || '');

@@ -57,7 +57,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, publishItem, offShelfItem, invalidItem } from '@/api/vehstock/store/storeSharedInventory/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel } from '@/api/common';
@@ -139,18 +139,18 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'vin', label: 'VIN', visible: true, width: 200 },
+          { props: 'vin', label: 'VIN', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }] },
           { props: 'sharedVehicleStatusLabel', label: '共享车辆状态', visible: true, width: 140 },
           { props: 'sharedVehicleCategoryLabel', label: '共享车辆类别', visible: true, width: 140 },
-          { props: 'dealerName', label: '门店', visible: true, width: 200 },
-          { props: 'modelName', label: '车型', visible: true, width: 160 },
-          { props: 'yearTypeName', label: '年款', visible: true, width: 100 },
+          { props: 'dealerName', label: '门店', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'modelName', label: '车型', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclemodel/edit?id=${row.modelId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'yearTypeName', label: '年款', visible: true, width: 100, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleyeartype/edit?id=${row.yearTypeId}`, '_blank'); }, type: 'primary' }] },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
-          { props: 'exteriorName', label: '外观', visible: true, width: 100 },
-          { props: 'interiorName', label: '内饰', visible: true, width: 100 },
-          { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 100 },
-          { props: 'optionPackageName', label: '选装包', visible: true, width: 120 },
-          { props: 'parentCompanyName', label: '所属母公司', visible: true, width: 200 },
+          { props: 'exteriorName', label: '外观', visible: true, width: 100, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleexterior/edit?id=${row.exteriorId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'interiorName', label: '内饰', visible: true, width: 100, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleinterior/edit?id=${row.interiorId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclewheelhub/edit?id=${row.wheelHubId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'optionPackageName', label: '选装包', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleoptionpackage/edit?id=${row.optionPackageId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'parentCompanyName', label: '所属母公司', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.parentCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'regionName', label: '大区', visible: true, width: 100 },
           { props: 'provinceName', label: '省', visible: true, width: 100 },
           { props: 'cityName', label: '市', visible: true, width: 100 },

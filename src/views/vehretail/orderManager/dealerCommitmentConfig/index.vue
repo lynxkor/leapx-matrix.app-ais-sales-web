@@ -92,7 +92,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/orderManager/dealerCommitmentConfig/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
@@ -179,7 +179,7 @@ export default {
           { props: 'commitmentType', label: '承诺类型', visible: true, width: 180 },
           { props: 'commitmentContent', label: '承诺内容', visible: true, width: 200 },
           { props: 'hasOriginalLabel', label: '含原厂配置', visible: true, width: 120, type: 'select', options: YES_NO_ENUM },
-          { props: 'statusLabel', label: '状态', visible: true, width: 100, type: 'select', options: [{ label: '启用', value: 1 }, { label: '禁用', value: 0 }] },
+          { props: 'statusLabel', label: '状态', visible: true, width: 80, type: 'select', options: [{ label: '启用', value: 1 }, { label: '禁用', value: 0 }] },
           { props: 'createTime', label: '创建时间', visible: true, width: 160 },
           {
             props: 'operate',

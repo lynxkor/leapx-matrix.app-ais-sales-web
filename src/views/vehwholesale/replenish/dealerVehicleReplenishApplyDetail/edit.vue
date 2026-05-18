@@ -319,13 +319,13 @@
                   {{ form.replenishApplyDetailCode }}
                 </el-form-item>
                 <el-form-item label="整车补货单号：" prop="replenishApplyCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApply/edit?id=' + form.replenishApplyCode)">{{ form.replenishApplyCode }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/replenish/dealerVehicleReplenishApply/edit?id=${form.replenishApplyCode}`" target="_blank">{{ form.replenishApplyCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="审核状态：" prop="auditStatus">
                   {{ form.auditStatusLabel }}
                 </el-form-item>
                 <el-form-item label="销售门店名称：" prop="saleDealerName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.saleDealerCode)">{{ form.saleDealerName }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="所属大区：" prop="regionName">
                   {{ form.regionName }}
@@ -334,16 +334,16 @@
                   {{ form.wholesaleWayLabel }}
                 </el-form-item>
                 <el-form-item label="专项活动名称：" prop="prodScheduleActivity">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/basic/wholesaleprodscheduleactivity/edit?id=' + form.prodScheduleActivityId)">{{ form.prodScheduleActivity }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/basic/wholesaleprodscheduleactivity/edit?id=${form.prodScheduleActivityId}`" target="_blank">{{ form.prodScheduleActivity }}</el-link>
                 </el-form-item>
                 <el-form-item label="申请类别：" prop="applyCategory">
                   {{ form.applyCategoryLabel }}
                 </el-form-item>
                 <el-form-item label="车系名称：" prop="seriesName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleseries/edit?id=' + form.seriesId)">{{ form.seriesName }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehiclemodel/edit?id=' + form.modelId)">{{ form.modelName }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="订单分类：" prop="orderCategory">
                   {{ form.orderCategoryLabel }}
@@ -352,13 +352,13 @@
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构名称：" prop="financialOrganization">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.financialOrganizationId)">{{ form.financialOrganization }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.financialOrganizationId}`" target="_blank">{{ form.financialOrganization }}</el-link>
                 </el-form-item>
                 <el-form-item label="申请数量：" prop="applyQty">
                   {{ form.applyQty }}
                 </el-form-item>
                 <el-form-item label="物料编码：" prop="materialsCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehiclematerials/edit?id=' + form.materialsCode)">{{ form.materialsCode }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="物料描述：" prop="materialsDesc">
                   {{ form.materialsDesc }}
@@ -463,7 +463,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     }
   },
   watch: {

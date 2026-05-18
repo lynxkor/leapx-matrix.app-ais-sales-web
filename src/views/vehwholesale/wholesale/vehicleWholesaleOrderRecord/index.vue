@@ -151,7 +151,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrderRecord/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany, listOrgStoreInfo } from '@/api/common';
@@ -217,8 +217,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'vin',
-            label: 'VIN码',
+            props: 'wholesaleOrderRecordCode',
+            label: '批售配车结算记录编号',
             visible: true,
             width: 200,
             fixed: 'left',
@@ -234,24 +234,25 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'operateTypeLabel', label: '操作类型', visible: true, width: 200 },
-          { props: 'cancelAllocateTime', label: '取消配车时间', visible: true, width: 200 },
-          { props: 'cancelAllocateVehicleTypeLabel', label: '取消配车类型', visible: true, width: 200 },
-          { props: 'cancelSettleTime', label: '取消结算时间', visible: true, width: 200 },
+          { props: 'vin', label: 'VIN码', visible: true, width: 120 },
+          { props: 'operateTypeLabel', label: '操作类型', visible: true, width: 120 },
+          { props: 'cancelAllocateTime', label: '取消配车时间', visible: true, width: 160 },
+          { props: 'cancelAllocateVehicleTypeLabel', label: '取消配车类型', visible: true, width: 140 },
+          { props: 'cancelSettleTime', label: '取消结算时间', visible: true, width: 160 },
           { props: 'cancelSettleTypeLabel', label: '取消结算说明', visible: true, width: 200 },
           { props: 'saleDealerName', label: '销售门店', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open('/partner/channelManagement/shopDetail?dealerCode=' + row.saleDealerCode, '_blank'); }, type: 'primary' }] },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open('/partner/channelManagement/parentCompany/edit?companyCode=' + row.dealerCompanyCode, '_blank'); }, type: 'primary' }] },
-          { props: 'cooperateTypeLabel', label: '合作类型', visible: true, width: 200 },
-          { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 200 },
-          { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.financialOrganizationId, '_blank'); }, type: 'primary' }] },
-          { props: 'orderMaterialsCode', label: '订单物料编码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open('/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.orderMaterialsCode, '_blank'); }, type: 'primary' }] },
-          { props: 'materialsCode', label: '配车物料码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open('/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.materialsCode, '_blank'); }, type: 'primary' }] },
-          { props: 'wholesaleOrderCode', label: '批售订单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.wholesaleOrderCode, '_blank'); }, type: 'primary' }] },
-          { props: 'retailOrderCode', label: '零售订单号', visible: true, width: 200 },
-          { props: 'settleTime', label: '结算时间', visible: true, width: 200 },
-          { props: 'allocateTime', label: '配车时间', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open('/partner/channelManagement/companyDetails?companyCode=' + row.dealerCompanyCode, '_blank'); }, type: 'primary' }] },
+          { props: 'cooperateTypeLabel', label: '合作类型', visible: true, width: 140 },
+          { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 140 },
+          { props: 'financialOrganizationName', label: '金融机构', visible: true, width: 140, buttons: [{ click: (rowIndex, row) => { window.open('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.financialOrganizationId, '_blank'); }, type: 'primary' }] },
+          { props: 'orderMaterialsCode', label: '订单物料编码', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open('/sales/datacenter/materials/vehiclematerials/edit?id=' + row.orderMaterialsCode, '_blank'); }, type: 'primary' }] },
+          { props: 'materialsCode', label: '配车物料码', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open('/sales/datacenter/materials/vehiclematerials/edit?id=' + row.materialsCode, '_blank'); }, type: 'primary' }] },
+          { props: 'wholesaleOrderCode', label: '批售订单号', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.wholesaleOrderCode, '_blank'); }, type: 'primary' }] },
+          { props: 'retailOrderCode', label: '零售订单号', visible: true, width: 180 },
+          { props: 'settleTime', label: '结算时间', visible: true, width: 160 },
+          { props: 'allocateTime', label: '配车时间', visible: true, width: 160 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 100 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 160 },
         ],
         total: 0
       },

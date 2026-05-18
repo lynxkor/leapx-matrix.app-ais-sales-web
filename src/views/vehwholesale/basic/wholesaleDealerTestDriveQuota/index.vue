@@ -184,7 +184,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleDealerTestDriveQuota/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo, listVehicleYearType, vehicleModelLineList, vehicleSeriesList } from '@/api/common';
@@ -268,49 +268,16 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCode', label: '门店编码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode, '_blank'); }, type: 'primary' }] },
-          { props: 'dealerName', label: '门店名称', visible: true, width: 200 },
-          {
-            props: 'vehicleYearType',
-            label: '年款',
-            visible: true,
-            width: 200,
-            buttons: [{
-              click: (rowIndex, row) => {
-                window.open('/sales/datacenter/materials/vehicleYearType/edit?id=' + row.vehicleYearTypeId, '_blank');
-              },
-              type: 'primary'
-            }]
-          },
-          {
-            props: 'vehicleModelLine',
-            label: '系列',
-            visible: true,
-            width: 200,
-            buttons: [{
-              click: (rowIndex, row) => {
-                window.open('/sales/datacenter/materials/vehicleModelLine/edit?id=' + row.vehicleModelLineId, '_blank');
-              },
-              type: 'primary'
-            }]
-          },
-          {
-            props: 'seriesName',
-            label: '车系',
-            visible: true,
-            width: 200,
-            buttons: [{
-              click: (rowIndex, row) => {
-                window.open('/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId, '_blank');
-              },
-              type: 'primary'
-            }]
-          },
-          { props: 'requestQty', label: '累计已申请数', visible: true, width: 200 },
-          { props: 'changeDesc', label: '调整说明', visible: true, width: 200 },
-          { props: 'quotaQty', label: '配额数量', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
+          { props: 'dealerCode', label: '门店编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerName', label: '门店名称', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode, '_blank'); }, type: 'primary' }] },
+          { props: 'vehicleYearType', label: '年款', visible: true, width: 100, buttons: [{ click: (rowIndex, row) => { window.open('/sales/datacenter/materials/vehicleyeartype/edit?id=' + row.vehicleYearTypeId, '_blank'); }, type: 'primary' }] },
+          { props: 'vehicleModelLine', label: '系列', visible: true, width: 100, buttons: [{ click: (rowIndex, row) => { window.open('/sales/datacenter/materials/vehiclemodelline/edit?id=' + row.vehicleModelLineId, '_blank'); }, type: 'primary' }] },
+          { props: 'seriesName', label: '车系', visible: true, width: 100, buttons: [{ click: (rowIndex, row) => { window.open('/sales/datacenter/materials/vehicleseries/edit?id=' + row.seriesId, '_blank'); }, type: 'primary' }] },
+          { props: 'requestQty', label: '累计已申请数', visible: true, width: 120, align: 'right' },
+          { props: 'changeDesc', label: '调整说明', visible: true, width: 180 },
+          { props: 'quotaQty', label: '配额数量', visible: true, width: 100, align: 'right' },
+          { props: 'statusLabel', label: '状态', visible: true, width: 78 },
+          { props: 'modifierName', label: '修改者名称', visible: true, width: 140 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
             props: 'operate',

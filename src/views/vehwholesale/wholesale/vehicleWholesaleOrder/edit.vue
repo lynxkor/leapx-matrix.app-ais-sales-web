@@ -12,16 +12,17 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="canAddOrUpdate && form.buttonControl && form.buttonControl.editButton"
       >
         <template #status>
           <!-- {{ form.wholesaleOrderCode }} -->
         </template>
         <template #extraButtons >
-          <el-button  v-if = "perquerySapAccount" size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
-          <el-button  v-if = "perbatchConfirm && form.buttonControl && form.buttonControl.confirmManualButton" size="small" @click="handleCheckConfirm" >审核确认</el-button>
-          <el-button  v-if = "perbatchSetAutoAllocate && form.buttonControl && form.buttonControl.autoAllocateVehicle" size="small" @click="handleaAutoVehicleAllocation">自动配车</el-button>
+          <el-button  v-if = "perquerySapAccount" size="small" :loading="querySapAccountLoading" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
+          <el-button  v-if = "perbatchConfirm && form.buttonControl && form.buttonControl.confirmManualButton" size="small" :loading="checkConfirmLoading" @click="handleCheckConfirm" >审核确认</el-button>
+          <el-button  v-if = "perbatchSetAutoAllocate && form.buttonControl && form.buttonControl.autoAllocateVehicle" size="small" :loading="autoVehicleAllocationLoading" @click="handleaAutoVehicleAllocation">自动配车</el-button>
           <el-button  v-if = "pervinAllocateVehicle && form.buttonControl && form.buttonControl.manualAllocateVehicle" size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
-          <el-button  v-if = "perbatchSettleSubmit && form.buttonControl && form.buttonControl.submitSettleButton" size="small" @click="handleBatchSettleSubmit">提交结算</el-button>
+          <el-button  v-if = "perbatchSettleSubmit && form.buttonControl && form.buttonControl.submitSettleButton" size="small" :loading="batchSettleSubmitLoading" @click="handleBatchSettleSubmit">提交结算</el-button>
           <el-button  v-if = "perbatchCancelSettle && form.buttonControl && form.buttonControl.cancelSettle" size="small" @click="handleBatchCancelSettle">取消结算</el-button>
           <el-button  v-if = "perbatchCancel && form.buttonControl && form.buttonControl.cancelButton" size="small" @click="handleCancel">作废</el-button>
         </template>
@@ -222,16 +223,16 @@
                   {{ form.confirmStatusLabel }}
                 </el-form-item>
                 <el-form-item label="销售门店：" prop="saleDealerName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.saleDealerCode)">{{ form.saleDealerName }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="交付门店名称：" prop="deliveryDealerName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.deliveryDealerCode)">{{ form.deliveryDealerName }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.deliveryDealerCode}`" target="_blank">{{ form.deliveryDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="门店仓库名称：" prop="dealerWarehouseName">
                   {{ form.dealerWarehouseName }}
                 </el-form-item>
                  <el-form-item label="整车补货单号：" prop="replenishApplyCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=' + form.replenishApplyCode)">{{ form.replenishApplyCode }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApply/edit?id=' + form.replenishApplyCode)">{{ form.replenishApplyCode }}</el-button>
                 </el-form-item>
                    <el-form-item label="订单分类：" prop="orderCategoryLabel">
                   {{ form.orderCategoryLabel }}
@@ -243,7 +244,7 @@
                   {{ form.orderTime }}
                 </el-form-item>
                  <el-form-item label="订单物料编码：" prop="orderMaterialsCode">
-                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + form.orderMaterialsCode)">{{ form.orderMaterialsCode }}</el-button>
+                    <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.orderMaterialsCode}`" target="_blank">{{ form.orderMaterialsCode }}</el-link>
                 </el-form-item>
                  <el-form-item label="物料描述：" prop="orderMaterialsDesc">
                   {{ form.orderMaterialsDesc }}
@@ -555,13 +556,13 @@
                   {{ form.allocateWayLabel }}
                 </el-form-item>
                 <el-form-item label="配车物料码：" prop="materialsCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + form.materialsCode)">{{ form.materialsCode }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="配车物料描述：" prop="materialsDesc">
                   {{ form.materialsDesc }}
                 </el-form-item>
                 <el-form-item label="配车VIN码：" prop="vin">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?id=' + form.vdcInventory.id)">{{ form.vin }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
                 </el-form-item>
                 <el-form-item label="配车时间：" prop="allocateTime">
                   {{ form.allocateTime }}
@@ -848,10 +849,10 @@
                     <vxe-column field="fundTypeLabel" title="资金类型" width="180">
                       <template #default="{ row }">
                         <span v-if="row.fundType === '2010' || row.fundType === 2010">
-                          <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.financialOrganizationId)">{{ row.fundTypeLabel }}-{{ row.financialOrganizationName || '' }}</el-button>
+                          <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/dealerFundAccount/edit?id=' + row.id)">{{ row.fundTypeLabel }}-{{ row.financialOrganizationName || '' }}</el-button>
                         </span>
                         <span v-else>
-                          <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundAccount/edit?id=' + row.id)">{{ row.fundTypeLabel || '' }}</el-button>
+                          <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/dealerFundAccount/edit?id=' + row.id)">{{ row.fundTypeLabel || '' }}</el-button>
                         </span>
                       </template>
                     </vxe-column>
@@ -913,7 +914,7 @@ import BatchCancelInput from './BatchCancelInput.vue';
 import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import BatchCancelSettleInput from './BatchCancelSettleInput.vue';
 import ComponentTable from './ComponentTable.vue';
-import VXETable from 'vxe-table';
+
 import 'vxe-table/lib/index.css';
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -1051,7 +1052,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '整车批售订单信息：' + (this.form.wholesaleOrderCode || '');
@@ -1079,6 +1080,10 @@ export default {
       showManualVehicleDialog: false,
       showBatchCancelDialog: false,
       showBatchCancelSettleDialog: false,
+      querySapAccountLoading: false,
+      checkConfirmLoading: false,
+      autoVehicleAllocationLoading: false,
+      batchSettleSubmitLoading: false,
       showComponentTabelDialog: false,
       yes_no_enum: YES_NO_ENUM,
       true_false_enum: TRUE_FALSE_ENUM,
@@ -1190,6 +1195,7 @@ export default {
       });
     },
     handlequerySAPAccountBalance () {
+      this.querySapAccountLoading = true;
       const params = {
         id: this._id,
       };
@@ -1198,6 +1204,8 @@ export default {
         this.accountData = res;
         console.log(this.accountData);
         this.showComponentTabelDialog = true;
+      }).finally(() => {
+        this.querySapAccountLoading = false;
       });
     },
     async fetchSettleFundTypeOptions () {
@@ -1229,6 +1237,7 @@ export default {
       this.showBatchCancelSettleDialog = true;
     },
     handleBatchSettleSubmit () {
+      this.batchSettleSubmitLoading = true;
       const ids = [this._id];
       console.log('handleBatchSettleSubmit', ids);
       this.$confirm('是否需要对批售订单进行结算?', '操作提醒', {
@@ -1244,8 +1253,12 @@ export default {
             message: '提交成功!'
           });
           this.getData();
+        }).finally(() => {
+          this.batchSettleSubmitLoading = false;
         });
-      }).catch(() => {});
+      }).catch(() => {
+        this.batchSettleSubmitLoading = false;
+      });
     },
     getDetailData () {
       if (this._id) {
@@ -1300,6 +1313,7 @@ export default {
     handleCheckConfirm () { //
       // const checkStatus = this.allAllowConfirm(this.form);
       // if (checkStatus) {
+      this.checkConfirmLoading = true;
       this.$confirm('是否需要对批售订单进行确认?', '操作提醒', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -1313,13 +1327,18 @@ export default {
             message: '提交成功!'
           });
           this.getDetailData();
+        }).finally(() => {
+          this.checkConfirmLoading = false;
         });
-      }).catch(() => {});
+      }).catch(() => {
+        this.checkConfirmLoading = false;
+      });
       // }
     },
     handleaAutoVehicleAllocation () { // 自动配车
       // const checkStatus = this.allAutoVehicleAllocation(this.form);
       // if (checkStatus) {
+      this.autoVehicleAllocationLoading = true;
       this.$confirm('是否需要对批售订单进行自动配车?', '操作提醒', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -1334,8 +1353,12 @@ export default {
             message: '提交成功!'
           });
           this.getDetailData();
+        }).finally(() => {
+          this.autoVehicleAllocationLoading = false;
         });
-      }).catch(() => {});
+      }).catch(() => {
+        this.autoVehicleAllocationLoading = false;
+      });
       // }
     },
     handleManualVehicleAllocation () { // 手工配车

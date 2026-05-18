@@ -119,7 +119,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList } from '@/api/vehretail/financeSubsidy/vrFinanceOrder/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getRigion } from '@/api/common';
@@ -215,21 +215,21 @@ export default {
           { props: 'partnerName', label: '合作伙伴名称', visible: true, width: 150 },
           { props: 'dealerName', label: '门店名称', visible: true, width: 240 },
           { props: 'respManName', label: '负责人', visible: true, width: 280 },
-          { props: 'invoiceAmount', label: '开票金额', visible: true, width: 120 },
-          { props: 'terminalPrice', label: '终端售价', visible: true, width: 120 },
-          { props: 'downPayment', label: '首付金额（元）', visible: true, width: 150 },
-          { props: 'loanAmount', label: '放款金额', visible: true, width: 120 },
-          { props: 'vehicleLoanAmount', label: '车款贷款金额', visible: true, width: 150 },
-          { props: 'derivativeFeeLoanAmount', label: '衍生费用贷款金额', visible: true, width: 200 },
-          { props: 'interestBeforeDiscount', label: '贴息前利息金额', visible: true, width: 150 },
-          { props: 'handlingFeeBeforeDiscount', label: '贴息前手续费金额', visible: true, width: 150 },
+          { props: 'invoiceAmount', label: '开票金额', visible: true, width: 120, align: 'right' },
+          { props: 'terminalPrice', label: '终端售价', visible: true, width: 120, align: 'right' },
+          { props: 'downPayment', label: '首付金额（元）', visible: true, width: 150, align: 'right' },
+          { props: 'loanAmount', label: '放款金额', visible: true, width: 120, align: 'right' },
+          { props: 'vehicleLoanAmount', label: '车款贷款金额', visible: true, width: 150, align: 'right' },
+          { props: 'derivativeFeeLoanAmount', label: '衍生费用贷款金额', visible: true, width: 200, align: 'right' },
+          { props: 'interestBeforeDiscount', label: '贴息前利息金额', visible: true, width: 150, align: 'right' },
+          { props: 'handlingFeeBeforeDiscount', label: '贴息前手续费金额', visible: true, width: 150, align: 'right' },
           { props: 'annualRateBeforeDiscount', label: '贴息前年化利率', visible: true, width: 150 },
           { props: 'installmentPeriods', label: '分期期数', visible: true, width: 120 },
           { props: 'loanRate', label: '贷款费率（%）', visible: true, width: 120 },
-          { props: 'totalInterest', label: '总利息金额', visible: true, width: 120 },
-          { props: 'manufacturerDiscountAmount', label: '厂家贴息金额', visible: true, width: 150 },
+          { props: 'totalInterest', label: '总利息金额', visible: true, width: 120, align: 'right' },
+          { props: 'manufacturerDiscountAmount', label: '厂家贴息金额', visible: true, width: 150, align: 'right' },
           { props: 'manufacturerDiscountRate', label: '厂家贴息费率（%）', visible: true, width: 150 },
-          { props: 'customerBearInterest', label: '客户承担利息金额', visible: true, width: 150 },
+          { props: 'customerBearInterest', label: '客户承担利息金额', visible: true, width: 150, align: 'right' },
           { props: 'loanApplicationTime', label: '贷款申请时间', visible: true, width: 180 },
           { props: 'loanDisbursementDate', label: '放款日期', visible: true, width: 120 },
           { props: 'deliveryDate', label: '交车日期', visible: true, width: 120 },

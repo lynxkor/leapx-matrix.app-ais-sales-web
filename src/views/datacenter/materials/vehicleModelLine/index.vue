@@ -121,7 +121,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/datacenter/materials/vehicleModelLine/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleBrandNameList } from '@/api/common';
@@ -165,7 +165,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-系列',
+      pageTitle: '系列',
       pageType: 'list',
       moduleKey: 'AISDC-vehicleModelLine',
       form: {
@@ -189,7 +189,7 @@ export default {
             props: 'modelLineName',
             label: '系列名称',
             visible: true,
-            width: 200,
+            width: 120,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -204,13 +204,13 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'brandName', label: '品牌名称', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'statusDesc', label: '说明', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '更改人', visible: true, width: 200 },
-          { props: 'updateTime', label: '更改时间', visible: true, width: 200 },
+          { props: 'brandName', label: '品牌名称', visible: true, width: 120 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 60 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 300 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 180 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 180 },
+          { props: 'modifierName', label: '更改人', visible: true, width: 180 },
+          { props: 'updateTime', label: '更改时间', visible: true, width: 180 },
           {
             props: 'operate',
             label: '操作',

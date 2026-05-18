@@ -181,7 +181,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, pushVehicleStatusToBank } from '@/api/vehwholesale/finance/factory/finVehicleStatusRecord/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
@@ -276,7 +276,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'financingDataSourceLabel', label: '融资数据来源', visible: true, width: 200 },
+          { props: 'financingDataSourceLabel', label: '融资数据来源', visible: true, width: 120 },
           {
             props: 'orderCode',
             label: '订单号',
@@ -284,12 +284,12 @@ export default {
             width: 200,
             buttons: [{ click: (rowIndex, row) => { if (row.financingDataSource === 30) { this.openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.orderCode); } else if (row.financingDataSource === 40) { this.openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + row.orderCode); } }, type: 'primary' }]
           },
-          { props: 'vehicleStatusLabel', label: '车辆状态', visible: true, width: 200 },
-          { props: 'vin', label: 'VIN号', visible: true, width: 200 },
-          { props: 'financingAmount', label: '融资金额', visible: true, width: 200 },
-          { props: 'taxIncludedPrice', label: '含税价格', visible: true, width: 200 },
-          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
+          { props: 'vehicleStatusLabel', label: '车辆状态', visible: true, width: 120 },
+          { props: 'vin', label: 'VIN号', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }] },
+          { props: 'financingAmount', label: '融资金额', visible: true, width: 120, align: 'right' },
+          { props: 'taxIncludedPrice', label: '含税价格', visible: true, width: 120, align: 'right' },
+          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           {
             props: 'dealerCode',
             label: '经销商编码',
@@ -306,14 +306,15 @@ export default {
             props: 'dealerName',
             label: '经销商名称',
             visible: true,
-            width: 200,
+            width: 240,
+            buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank'); }, type: 'primary' }]
           },
           { props: 'unifiedSocialCreditCode', label: '统一社会信用代码', visible: true, width: 200 },
           {
             props: 'fundFinancialOrganizationName',
             label: '融资金融机构',
             visible: true,
-            width: 200,
+            width: 140,
             buttons: [{
               click: (rowIndex, row) => {
                 this.openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.fundFinancialOrganizationId);
@@ -334,13 +335,13 @@ export default {
             }]
           },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
-          { props: 'shipmentDate', label: '发车日期', visible: true, width: 200 },
-          { props: 'receiveDate', label: '收车日期', visible: true, width: 200 },
-          { props: 'syncStatusLabel', label: '同步状态', visible: true, width: 200 },
+          { props: 'shipmentDate', label: '发车日期', visible: true, width: 180 },
+          { props: 'receiveDate', label: '收车日期', visible: true, width: 180 },
+          { props: 'syncStatusLabel', label: '同步状态', visible: true, width: 120 },
           { props: 'syncResult', label: '同步结果', visible: true, width: 200 },
-          { props: 'syncCount', label: '推送次数', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'syncCount', label: '推送次数', visible: true, width: 100 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 180 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 100 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },
           {
             props: 'operate',

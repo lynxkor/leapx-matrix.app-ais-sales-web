@@ -112,7 +112,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/datacenter/materials/vehicleOptionPackage/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
@@ -152,7 +152,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-选装包',
+      pageTitle: '选装包',
       pageType: 'list',
       moduleKey: 'AISDC-vehicleOptionPackage',
       form: {
@@ -176,7 +176,7 @@ export default {
             props: 'optionPackageName',
             label: '选装包名称',
             visible: true,
-            width: 200,
+            width: 240,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -191,12 +191,12 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'statusDesc', label: '说明', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '更改人', visible: true, width: 200 },
-          { props: 'updateTime', label: '更改时间', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 60 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 300 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 180 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 180 },
+          { props: 'modifierName', label: '更改人', visible: true, width: 180 },
+          { props: 'updateTime', label: '更改时间', visible: true, width: 180 },
           {
             props: 'operate',
             label: '操作',

@@ -139,7 +139,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList } from '@/api/vehretail/orderManager/vrGroupbuyOrderEquityApply/index';
 import { getTableConfig, exportTable, getEnum, vehicleModelList, vehicleSeriesList, listOrgStoreInfo, vehicleMaterials } from '@/api/common';
@@ -267,7 +267,7 @@ export default {
           { props: 'modelName', label: '车型', visible: true, width: 240 },
           { props: 'seriesName', label: '车系', visible: true, width: 240 },
           { props: 'couponName', label: '优惠券', visible: true, width: 120 },
-          { props: 'discountAmount', label: '优惠金额', visible: true, width: 120 },
+          { props: 'discountAmount', label: '优惠金额', visible: true, width: 120, align: 'right' },
           { props: 'submitTime', label: '提交时间', visible: true, width: 180 },
           { props: 'firstAuditTime', label: '初审时间', visible: true, width: 180 },
           { props: 'reviewAuditTime', label: '复审时间', visible: true, width: 180 },

@@ -160,7 +160,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/finance/bank/finBankCreditRecord/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
@@ -244,13 +244,13 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/parentCompany/edit?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
+          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           {
             props: 'fundFinancialOrganizationName',
             label: '融资金融机构',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
                 this.openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.fundFinancialOrganizationId);
@@ -258,23 +258,23 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'creditLimit', label: '授信额度', visible: true, width: 200 },
-          { props: 'usedLimit', label: '已用额度', visible: true, width: 200 },
-          { props: 'availableLimit', label: '剩余可用额度', visible: true, width: 200 },
-          { props: 'wholesaleExposureLimit', label: '批复敞口额度', visible: true, width: 200 },
-          { props: 'occupiedExposureLimit', label: '占用敞口额度', visible: true, width: 200 },
-          { props: 'usedExposureLimit', label: '可用敞口额度', visible: true, width: 200 },
-          { props: 'maxCreditLimit', label: '最高授信额度', visible: true, width: 200 },
-          { props: 'depositRatio', label: '保证金比例%', visible: true, width: 200 },
-          { props: 'limitEffectiveDate', label: '额度生效日期', visible: true, width: 200 },
-          { props: 'limitExpiryDate', label: '额度失效日期', visible: true, width: 200 },
-          { props: 'businessModeLabel', label: '业务模式', visible: true, width: 200 },
+          { props: 'creditLimit', label: '授信额度', visible: true, width: 140, align: 'right' },
+          { props: 'usedLimit', label: '已用额度', visible: true, width: 140, align: 'right' },
+          { props: 'availableLimit', label: '剩余可用额度', visible: true, width: 140, align: 'right' },
+          { props: 'wholesaleExposureLimit', label: '批复敞口额度', visible: true, width: 140, align: 'right' },
+          { props: 'occupiedExposureLimit', label: '占用敞口额度', visible: true, width: 140, align: 'right' },
+          { props: 'usedExposureLimit', label: '可用敞口额度', visible: true, width: 140, align: 'right' },
+          { props: 'maxCreditLimit', label: '最高授信额度', visible: true, width: 140, align: 'right' },
+          { props: 'depositRatio', label: '保证金比例%', visible: true, width: 120, align: 'right' },
+          { props: 'limitEffectiveDate', label: '额度生效日期', visible: true, width: 180 },
+          { props: 'limitExpiryDate', label: '额度失效日期', visible: true, width: 180 },
+          { props: 'businessModeLabel', label: '业务模式', visible: true, width: 160 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'creditRecordCode', label: '授信记录编码', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'creditRecordCode', label: '授信记录编码', visible: true, width: 180 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 100 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 160 },
+          { props: 'updateTime', label: '修改时间', visible: true, width: 160 },
           {
             props: 'operate',
             label: '操作',

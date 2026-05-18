@@ -292,7 +292,7 @@
                   {{ form.unlockApplyCode }}
                 </el-form-item>
                 <el-form-item label="申请单状态：" prop="applyStatus">
-                  {{ form.applyStatusLabel }}
+                  <span class="status-tag link">{{ form.applyStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="申请时间：" prop="applyTime">
                   {{ form.applyTime }}
@@ -358,13 +358,13 @@
                   {{ form.unlockTypeLabel }}
                 </el-form-item>
                 <el-form-item label="解绑时订单状态：" prop="orderStatus">
-                  {{ form.orderStatusLabel }}
+                  <span class="status-tag link">{{ form.orderStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="车辆是否预留：" prop="carReserveStatus">
-                  {{ form.carReserveStatusLabel }}
+                  <span :class="['status-tag', form.carReserveStatus ? 'primary' : 'link']">{{ form.carReserveStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="是否自动生成：" prop="autoGenerateStatus">
-                  {{ form.autoGenerateStatusLabel }}
+                  <span :class="['status-tag', form.autoGenerateStatus ? 'primary' : 'link']">{{ form.autoGenerateStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="退订申请单号：" prop="refundApplyCode">
                   {{ form.refundApplyCode }}

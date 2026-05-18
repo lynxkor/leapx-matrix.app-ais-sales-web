@@ -54,7 +54,7 @@
                   {{ form.financeProductTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融产品状态：">
-                  {{ form.financeProductStatusLabel }}
+                  <span :class="['status-tag', form.financeProductStatus === 1 ? 'primary' : 'danger']">{{ form.financeProductStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="付息方式：">
                   {{ form.interestPaymentMethodLabel }}

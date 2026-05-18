@@ -41,7 +41,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import { getList } from '@/api/vehwholesale/basic/dealerDemoVehicleQuotaRecord/index';
 import { getTableConfig, getEnum } from '@/api/common';
 // import FetchSelect from '@/libs/components/FetchSelect';
@@ -99,17 +99,18 @@ export default {
             props: 'changeBeforeQty',
             label: '变化前数量',
             visible: true,
-            width: 200,
+            width: 120,
+            align: 'right',
           },
-          { props: 'changeAfterQty', label: '变化后数量', visible: true, width: 200 },
-          { props: 'changeQty', label: '变化数量', visible: true, width: 200 },
-          { props: 'changeTime', label: '变化时间', visible: true, width: 200 },
-          { props: 'logDataSourceLabel', label: '数据来源', visible: true, width: 200 },
-          { props: 'relatedFormCode', label: '相关单号', visible: true, width: 200 },
+          { props: 'changeAfterQty', label: '变化后数量', visible: true, width: 120, align: 'right' },
+          { props: 'changeQty', label: '变化数量', visible: true, width: 100, align: 'right' },
+          { props: 'changeTime', label: '变化时间', visible: true, width: 180 },
+          { props: 'logDataSourceLabel', label: '数据来源', visible: true, width: 120 },
+          { props: 'relatedFormCode', label: '相关单号', visible: true, width: 180 },
           { props: 'changeDesc', label: '调整说明', visible: true, width: 200 },
-          { props: 'changeDescFileId', label: '附件调整说明', visible: true, width: 200 },
-          { props: 'responsibleName', label: '负责人', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'changeDescFileId', label: '附件调整说明', visible: true, width: 180 },
+          { props: 'responsibleName', label: '负责人', visible: true, width: 100 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 180 },
         ],
         total: 0
       }

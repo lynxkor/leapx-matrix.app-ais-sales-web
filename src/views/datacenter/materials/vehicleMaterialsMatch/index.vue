@@ -98,7 +98,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/datacenter/materials/vehicleMaterialsMatch/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
@@ -137,7 +137,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-物料可配关系',
+      pageTitle: '物料可配关系',
       pageType: 'list',
       moduleKey: 'AISDC-vehicleMaterialsMatch',
       form: {
@@ -188,7 +188,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 300 },
           {
             props: 'matchMaterialsCode',
             label: '可配物料编码',
@@ -201,13 +201,13 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'matchMaterialsDesc', label: '可配物料描述', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'statusDesc', label: '说明', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '更新人', visible: true, width: 200 },
-          { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
+          { props: 'matchMaterialsDesc', label: '可配物料描述', visible: true, width: 300 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 90 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 300 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 180 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 180 },
+          { props: 'modifierName', label: '更新人', visible: true, width: 180 },
+          { props: 'updateTime', label: '更新时间', visible: true, width: 180 },
           {
             props: 'operate',
             label: '操作',
