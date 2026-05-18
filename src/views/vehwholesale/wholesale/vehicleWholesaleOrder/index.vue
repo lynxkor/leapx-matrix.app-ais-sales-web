@@ -241,16 +241,11 @@
           />
         </el-form-item> -->
         <el-form-item label="创建时间">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
+        <dateranges
             v-model="form.createTime"
-            type="daterange"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
+            :setDefault="true"
+            deftTime="本年"
+            ref="transactionTime"/>
         </el-form-item>
           <el-form-item label="是否已锁定">
             <fetch-select
@@ -395,6 +390,7 @@ import CancleBatchAllocateVehicleInput from './CancleBatchAllocateVehicleInput.v
 import SetEmergencyOrderInput from './SetEmergencyOrderInput.vue';
 import BatchCancelSettleInput from './BatchCancelSettleInput.vue';
 import ButtonGroup from '@/libs/components/ButtonGroup';
+import dateranges from '@/libs/components/dateranges';
 import { listIdNames as listWholesaleProdScheduleActivity } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivity/index';
 
 const defaultForm = {
@@ -425,7 +421,7 @@ const defaultForm = {
   erpSaleOrderCode: '',
   erpInvoiceCode: '',
   syncSapMsg: '',
-  createTime: '',
+  createTime: [],
   dealerCompanyCode: '',
   applyReason: '',
   dealerCompanyName: '',
@@ -483,7 +479,8 @@ export default {
     BatchAllocateVehicleInput,
     CancleBatchAllocateVehicleInput,
     BatchCancelSettleInput,
-    ButtonGroup
+    ButtonGroup,
+    dateranges
   },
   data () {
     return {
@@ -706,11 +703,25 @@ export default {
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
+    // 默认最近一年
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setFullYear(startDate.getFullYear() - 1);
+    this.form.createTime = [
+      this.formatDate(startDate) + ' 00:00:00',
+      this.formatDate(endDate) + ' 23:59:59'
+    ];
     this.getData();
     this.getCity();
     this.fetchSettleFundTypeOptions();
   },
   methods: {
+    formatDate (date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    },
     async fetchSettleFundTypeOptions () {
       const response = await getEnum('vw_fundtype');
       this.settleFundTypeOptions = response.filter(item => {
@@ -1253,6 +1264,7 @@ export default {
       this.form = { ...defaultForm };
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
+      this.form.createTime = [];
       this.getData();
     },
     exportExcel () {
