@@ -182,7 +182,7 @@ export default {
             buttons: [{
               name: '编辑',
               show: (row) => {
-                return (row.auditStatus === 1 || row.auditStatus === 5) && this.permissions.has(`${this.moduleKey}-update`) && this.directOrgCodes.includes(row.sourceDealerCode);
+                return (row.auditStatus === 1 || row.auditStatus === 5) && this.canAddOrUpdate && this.directOrgCodes.includes(row.sourceDealerCode);
               },
               click: (rowIndex, row) => {
                 this.$router.push({
