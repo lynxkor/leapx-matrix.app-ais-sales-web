@@ -1252,6 +1252,7 @@ export default {
           // if (this.$refs.containerRef) {
           //   this.$refs.containerRef.originalForm = { ...res };
           // }
+          this.warehouseName = '';
           if (res.vehicleVdcInventory) {
             this.warehouseName = res.vehicleVdcInventory.warehouseName;
           }
