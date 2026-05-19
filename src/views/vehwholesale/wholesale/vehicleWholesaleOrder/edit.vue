@@ -284,7 +284,7 @@
                   {{ form.allowLockRetailLabel }}
                 </el-form-item>
                  <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=' + form.replenishApplyDetailCode)">{{ form.replenishApplyDetailCode }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=' + form.replenishApplyDetailId)">{{ form.replenishApplyDetailCode }}</el-button>
                 </el-form-item>
               </el-form>
             </div>

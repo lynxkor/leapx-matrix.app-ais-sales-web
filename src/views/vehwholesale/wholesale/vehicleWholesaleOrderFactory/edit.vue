@@ -339,7 +339,7 @@
                   {{ form.allowLockRetailLabel }}
                 </el-form-item>
                  <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
-                  <el-link type="primary" :href="`/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=${form.replenishApplyDetailCode}`" target="_blank">{{ form.replenishApplyDetailCode }}</el-link>
+                  <el-link type="primary" :href="`/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=${form.replenishApplyDetailId}`" target="_blank">{{ form.replenishApplyDetailCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="指定发运方式：" prop="deliveryWayLabel">
                   {{ form.deliveryWayLabel }}
