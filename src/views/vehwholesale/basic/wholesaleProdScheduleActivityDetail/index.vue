@@ -60,13 +60,19 @@
             :options="seriesList"
              />
       </el-form-item>
-       <el-form-item label="车型">
-          <fetch-select
+       <el-form-item label="系列">
+
+        <fetch-select remote
+        :params="form.modelLineName"
+        :remote-method="getVehicleModelLineList"
+         v-model="form.modelLineIds" placeholder="请选择" value-key="id" label-key="name" multiple clearable collapseTags filterable/>
+
+          <!-- <fetch-select
             :remote-method="modelSearch"
             remote
             reserve-keyword
             :options="modelList" v-model="form.modelLineIds" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable
-            />
+            /> -->
         </el-form-item>
         <el-form-item label="物料编码">
           <tag-input v-model="form.materialsCodes" placeholder="请输入" />
@@ -131,7 +137,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivityDetail/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelList } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelList, vehicleModelLineList } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -193,8 +199,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'activityCode',
-            label: '活动编码',
+            props: 'activityDetailCode',
+            label: '活动明细编码',
             visible: true,
             width: 150,
             fixed: 'left',
@@ -224,7 +230,7 @@ export default {
           },
           {
             props: 'modelLineName',
-            label: '车型',
+            label: '系列',
             visible: true,
             width: 120,
             buttons: [{
@@ -319,6 +325,10 @@ export default {
     this.getData();
   },
   methods: {
+    async getVehicleModelLineList (val) {
+      const res = await vehicleModelLineList({ size: 1000, modelLineNameLike: val });
+      return res;
+    },
     async seriesSearch (query) {
       try {
         const res = await vehicleSeriesList({ seriesNameLike: query });
