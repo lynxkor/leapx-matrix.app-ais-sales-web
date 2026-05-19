@@ -52,7 +52,7 @@
                   {{ form.modifierName }}
                 </el-form-item>
                 <el-form-item label="物料编码：" prop="materialsCode">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsId}`" target="_blank">{{ form.materialsCode }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="收车确认人：" prop="receivedBy">
                   {{ form.receivedBy }}

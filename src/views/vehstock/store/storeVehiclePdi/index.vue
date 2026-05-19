@@ -222,7 +222,7 @@ export default {
           { props: 'modelName', label: '车型', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclemodel/edit?id=${row.modelId}`, '_blank'); }, type: 'primary' }] },
           { props: 'yearTypeName', label: '年款', visible: true, width: 80, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleyeartype/edit?id=${row.yearTypeId}`, '_blank'); }, type: 'primary' }] },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
-          { props: 'materialsCode', label: '物料编码', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'materialsCode', label: '物料编码', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'deliveryDealerName', label: '交付门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.deliveryDealerCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'pdiSubmitBy', label: 'PDI提交人', visible: true, width: 160 },
