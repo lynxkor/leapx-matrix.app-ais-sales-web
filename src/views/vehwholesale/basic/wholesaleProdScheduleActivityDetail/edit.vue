@@ -375,7 +375,7 @@ export default {
       return this.id || this.form.id || this.$route.query.id;
     },
     title () {
-      return '排产专项活动明细：' + (this.form.activityCode || '');
+      return '排产专项活动明细：' + (this.form.activityDetailCode || '');
     }
   },
   watch: {
