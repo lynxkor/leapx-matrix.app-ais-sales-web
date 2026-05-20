@@ -48,7 +48,7 @@
                     :disabled="!!_id"
                   />
                 </el-form-item>
-                <el-form-item label="年款：" prop="vehicleYearTypeId">
+                <el-form-item label="年款：" prop="vehicleYearType">
                   <fetch-select
                     filterable
                     clearable
