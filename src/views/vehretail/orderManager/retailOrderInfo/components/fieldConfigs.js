@@ -47,8 +47,8 @@ export const orderFundDisplayFields = [
 
 // 订单物料信息字段配置
 export const materialsDisplayFields = [
-  { key: 'skuCode', label: '商品SKU编码' },
-  { key: 'productCode', label: '商品编码' },
+  // { key: 'skuCode', label: '商品SKU编码' },
+  // { key: 'productCode', label: '商品编码' },
   { key: 'materialsCode', label: '物料编码' },
   { key: 'seriesName', label: '车系名称' },
   { key: 'modelName', label: '车型名称' },

@@ -3,7 +3,7 @@
     <template #left>
       <!-- TIPS: 如果需要竖排，direction="vertical" -->
       <edit-base-container ref="containerRef" :id="_id" :title="title" :isEditing.sync="isEditing" :form.sync="form"
-        :originalForm.sync="originalForm" :submitRequest="submitRequest" :detailRequest="detailRequest">
+        :originalForm.sync="originalForm" :submitRequest="submitRequest" :detailRequest="detailRequest" :showEditBtn="showEditBtn">
         <template #status>
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
@@ -214,6 +214,19 @@ export default {
     },
     title () {
       return '主键：' + this.form.id;
+    },
+    userInfo () {
+      try {
+        return JSON.parse(localStorage.getItem('userInfo') || '{}');
+      } catch (e) {
+        return {};
+      }
+    },
+    directOrgCodes () {
+      return (this.userInfo.orgPostUserList || []).map(item => item.orgCode);
+    },
+    showEditBtn () {
+      return (this.form.auditStatus === 1 || this.form.auditStatus === 5) && this.directOrgCodes.includes(this.form.sourceDealerCode);
     }
   },
   watch: {

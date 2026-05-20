@@ -1,7 +1,7 @@
 <template>
   <el-form :model="form" ref="formRef" :rules="rules" label-position="right" label-width="120px" :inline="true">
     <el-form-item label="SKU编码">
-      <el-input v-model="form.productCode" placeholder="请输入SKU编码" disabled />
+      <el-input v-model="form.skuCode" placeholder="请输入SKU编码" disabled />
     </el-form-item>
     <el-form-item label="销售属性" prop="saleAttribute">
       <el-select
@@ -47,6 +47,7 @@ import {
 } from '@/api/vehretail/productManager/productCenter/index';
 
 const defaultForm = {
+  skuCode: '',
   productCode: '',
   saleAttribute: [],
   marketGuidePrice: null,

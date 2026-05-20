@@ -18,11 +18,11 @@
           <!-- <span>{{ form.entOrderCode }}</span> -->
         </template>
         <template #extraButtons>
-          <el-button  v-if = "perquerySapAccount" size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
-          <el-button  v-if ="perbatchAllocateSubmit && form.buttonControls && form.buttonControls.batchAllocateSubmitButton" size="small" @click="handlevinAllocateVehicle" >配车</el-button>
-          <el-button  v-if ="perbatchCancelAllocateSubmit && form.buttonControls && form.buttonControls.cancelAllocateButton" size="small" @click="handlebatchCancelAllocateSubmit" >取消配车</el-button>
-          <el-button  v-if ="perbatchSettleSubmit && form.buttonControls && form.buttonControls.submitSettleButton" size="small" @click="handlebatchSettleSubmit" >提交结算</el-button>
-          <el-button  v-if ="perbatchCancelSettleSubmit && form.buttonControls && form.buttonControls.cancelSettleButton" size="small" @click="handlebatchCancelSettleSubmit" >取消结算</el-button>
+          <el-button v-if = "perquerySapAccount" size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
+          <el-button v-if ="perbatchAllocateSubmit && form.buttonControls && form.buttonControls.batchAllocateSubmitButton" size="small" @click="handlevinAllocateVehicle" >配车</el-button>
+          <el-button v-if ="perbatchCancelAllocateSubmit && form.buttonControls && form.buttonControls.cancelAllocateButton" size="small" @click="handlebatchCancelAllocateSubmit" >取消配车</el-button>
+          <el-button v-if ="perbatchSettleSubmit && form.buttonControls && form.buttonControls.submitSettleButton" size="small" @click="handlebatchSettleSubmit" >提交结算</el-button>
+          <el-button v-if ="perbatchCancelSettleSubmit && form.buttonControls && form.buttonControls.cancelSettleButton" size="small" @click="handlebatchCancelSettleSubmit" >取消结算</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -1252,6 +1252,7 @@ export default {
           // if (this.$refs.containerRef) {
           //   this.$refs.containerRef.originalForm = { ...res };
           // }
+          this.warehouseName = '';
           if (res.vehicleVdcInventory) {
             this.warehouseName = res.vehicleVdcInventory.warehouseName;
           }

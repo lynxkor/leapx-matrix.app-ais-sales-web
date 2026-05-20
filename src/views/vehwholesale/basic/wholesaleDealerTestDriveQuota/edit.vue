@@ -78,14 +78,20 @@
                 </el-form-item>
                 <el-form-item label="车系：" prop="seriesId">
                   <fetch-select
+                    v-if="!_id"
                     filterable
                     clearable
                     :options="vehicleSeriesOptions"
                     v-model="form.seriesId"
                     value-key="id"
                     label-key="name"
-                    :disabled="!!_id"
                     @change="(val, record) => {form.seriesName = record?.name || ''}"
+                  />
+                  <el-input v-else
+                    placeholder="请输入"
+                    v-model="form.seriesName"
+                    clearable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="累计已申请数：" prop="requestQty">

@@ -119,7 +119,7 @@
               </el-form>
 
               <!-- 详情模式 -->
-              <el-form :inline="true" class="form-detail" label-width="160px" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="物料编码：">
                   {{ form.materialsCode }}
                 </el-form-item>
@@ -178,7 +178,7 @@
                     :precision="2" :min="0.00" :step="0.01"/>
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail" label-width="160px" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="整车价格：">
                   {{ form.price }}
                 </el-form-item>
@@ -216,7 +216,7 @@
                 </el-form-item>
               </el-form>
 
-              <el-form :inline="true" class="form-detail" label-width="160px" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item
                   v-for="(item, index) in formItemsLabel"
                   :key="index"

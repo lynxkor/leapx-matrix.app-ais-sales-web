@@ -102,6 +102,7 @@ const defaultForm = {
   budgetItemCode: '',
   status: '',
   modifierName: '',
+  statusIncludeList: ['1']
 };
 
 const pageSize = 20;

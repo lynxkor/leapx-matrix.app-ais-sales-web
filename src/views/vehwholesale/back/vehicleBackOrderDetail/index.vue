@@ -226,7 +226,7 @@ export default {
             width: 150,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open('/vehwholesale/back/vehicleBackOrder/edit?id=' + row.backOrderCode, '_blank');
+                window.open('/sales/vehwholesale/back/vehicleBackOrder/edit?id=' + row.backOrderCode, '_blank');
               },
               type: 'primary'
             }]

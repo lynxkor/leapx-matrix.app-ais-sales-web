@@ -674,6 +674,9 @@ export default {
         receiverAddress: [
           { required: true, message: '请输入收件地址', trigger: 'change' }
         ],
+        areaCode: [
+          { required: true, message: '请选择省市区', trigger: 'change' }
+        ],
       }
     };
   },

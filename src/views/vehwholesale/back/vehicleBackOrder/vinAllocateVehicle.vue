@@ -11,7 +11,7 @@
         class="ais-search-form"
       >
         <el-form-item label="VIN：">
-          <el-input v-model="vinCode" clearable placeholder="请输入"/>
+          <el-input v-model="vinCode" clearable placeholder="请输入"  @keydown.enter.native.prevent/>
         </el-form-item>
         <el-form-item label="">
           <el-button :loading="loading" size="small" type="primary" plain class="btn-search" @click="onSubmit">查询</el-button>
