@@ -10,6 +10,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="false"
       >
         <template #status>
           <!-- {{ form.creditSalesDetailCode }} -->
@@ -20,7 +21,7 @@
               <h2 v-show="_id">基础信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-if="isEditing || !_id">
                 <el-form-item label="赊销明细编号：" prop="creditSalesDetailCode">
                   <el-input
                     placeholder="请输入赊销明细编号"
@@ -250,8 +251,8 @@
                 <el-form-item label="凭证编号：" prop="voucherNo">
                   {{ form.voucherNo }}
                 </el-form-item>
-                <el-form-item label="合格证赎回申请：" prop="certificateRedemptionApplyId">
-                  <el-link type="primary" :href="`/sales/vehwholesale/certificate/vehicleCertificateRedemption/edit?id=${form.certificateRedemptionApplyId}`" target="_blank">{{ form.certificateRedemptionApplyId }}</el-link>
+                <el-form-item label="合格证赎回申请：" prop="redemptionCode">
+                  <el-link type="primary" :href="`/sales/vehwholesale/certificate/vehicleCertificateRedemption/edit?id=${form.certificateRedemptionApplyId}`" target="_blank">{{ form.redemptionCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="创建人：" prop="creatorName">
                   {{ form.creatorName }}

@@ -33,17 +33,25 @@
         <tag-input v-model="form.entVehorderCodes" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="赊销天数下限">
-          <el-input
-            placeholder="请输入"
+        <el-input-number
             v-model="form.mincreditSalesDays"
-            clearable
+            :allow-empty="true"
+            :controls="false"
+            :min="0"
+            :precision="0"
+            placeholder="请输入"
+            style="width: 100%;"
           />
         </el-form-item>
         <el-form-item label="赊销天数上限">
-          <el-input
-            placeholder="请输入"
+          <el-input-number
             v-model="form.maxcreditSalesDays"
-            clearable
+            :allow-empty="true"
+            :controls="false"
+            :min="0"
+            :precision="0"
+            placeholder="请输入"
+            style="width: 100%;"
           />
         </el-form-item>
         <el-form-item label="是否还款">
@@ -255,7 +263,7 @@ export default {
           { props: 'creditSalesDays', label: '赊销天数', visible: true, width: 100, align: 'right' },
           { props: 'repaymentTime', label: '还款时间', visible: true, width: 200 },
           { props: 'creditSalesFee', label: '赊销费用', visible: true, width: 100, align: 'right' },
-          { props: 'certificateRedemptionApplyId', label: '合格证赎回申请', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/certificate/vehicleCertificateRedemption/edit?id=${row.certificateRedemptionApplyId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'redemptionCode', label: '合格证赎回申请', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/certificate/vehicleCertificateRedemption/edit?id=${row.certificateRedemptionApplyId}`, '_blank'); }, type: 'primary' }] },
           { props: 'overdueFee', label: '超期赊销费用', visible: true, width: 120, align: 'right' },
           { props: 'penaltyFee', label: '违约金', visible: true, width: 100, align: 'right' },
           // { props: 'voucherNo', label: '凭证号', visible: true, width: 200 },

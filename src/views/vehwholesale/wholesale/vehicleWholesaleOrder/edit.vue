@@ -1167,7 +1167,7 @@ export default {
   methods: {
     initPermissions () {
       this.perquerySapAccount = this.permissions.has(`${this.moduleKey}-querySapAccount`); // 查询整车账户余额
-      this.perbatchConfirm = this.permissions.has(`${this.moduleKey}-perbatchConfirm`); // 审核确认
+      this.perbatchConfirm = this.permissions.has(`${this.moduleKey}-batchConfirm`); // 审核确认
       this.perbatchSetAutoAllocate = this.permissions.has(`${this.moduleKey}-batchSetAutoAllocate`); // 自动配车
       this.pervinAllocateVehicle = this.permissions.has(`${this.moduleKey}-vinAllocateVehicle`); // 手工配车
       this.perbatchSettleSubmit = this.permissions.has(`${this.moduleKey}-batchSettleSubmit`); // 提交结算
