@@ -57,6 +57,9 @@
           <fetch-select :request="fetchOptions" enumCode="vehstock_vdc_common_composite_query"
             v-model="form.vdcCommonCompositeQuery" placeholder="请选择" clearable filterable />
         </el-form-item>
+      <el-form-item label="订单编号">
+        <tag-input v-model="form.poList" placeholder="请输入" />
+      </el-form-item>
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
         @reset="onReset" />
@@ -114,6 +117,7 @@ const defaultForm = {
   warehouseCodeList: [],
   vinLike: '',
   vinList: [],
+  poList: [],
   materialsDescLike: '',
   materialsDescList: [],
   vehicleDeliveryStatusList: ['3', '4'],
@@ -615,6 +619,10 @@ export default {
       if (Array.isArray(this.form.vinList) && this.form.vinList.length <= 1) {
         delete data.vinList;
         data.vinLike = this.form.vinList[0] || '';
+      }
+      if (Array.isArray(this.form.poList) && this.form.poList.length <= 1) {
+        delete data.poList;
+        data.vinLike = this.form.poList[0] || '';
       }
       if (Array.isArray(this.form.materialsDescList) && this.form.materialsDescList.length <= 1) {
         delete data.materialsDescList;
