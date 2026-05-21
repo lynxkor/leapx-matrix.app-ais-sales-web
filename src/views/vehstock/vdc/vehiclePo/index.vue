@@ -146,6 +146,7 @@ const defaultForm = {
   zppNoList: [],
   vinLike: '',
   vinList: [],
+  poLike: '',
   poList: [],
   poStatusList: ['2', '3', '4', '5', '6', '7', '8', '9'],
   carAllocated: '0',
@@ -476,7 +477,7 @@ export default {
       }
       if (Array.isArray(this.form.poList) && this.form.poList.length <= 1) {
         delete data.poList;
-        data.vinLike = this.form.poList[0] || '';
+        data.poLike = this.form.poList[0] || '';
       }
       if (Array.isArray(this.form.materialsDescList) && this.form.materialsDescList.length <= 1) {
         delete data.materialsDescList;

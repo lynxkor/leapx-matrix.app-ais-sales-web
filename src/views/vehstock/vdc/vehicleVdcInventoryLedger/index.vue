@@ -117,6 +117,7 @@ const defaultForm = {
   warehouseCodeList: [],
   vinLike: '',
   vinList: [],
+  poLike: '',
   poList: [],
   materialsDescLike: '',
   materialsDescList: [],
@@ -622,7 +623,7 @@ export default {
       }
       if (Array.isArray(this.form.poList) && this.form.poList.length <= 1) {
         delete data.poList;
-        data.vinLike = this.form.poList[0] || '';
+        data.poLike = this.form.poList[0] || '';
       }
       if (Array.isArray(this.form.materialsDescList) && this.form.materialsDescList.length <= 1) {
         delete data.materialsDescList;
