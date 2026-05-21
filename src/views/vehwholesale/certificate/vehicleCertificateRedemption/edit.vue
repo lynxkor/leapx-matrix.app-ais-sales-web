@@ -464,10 +464,10 @@
                   {{ form.expressCode }}
                 </el-form-item>
                 <el-form-item label="快递照片链接地址：" prop="expressPhotoUrl">
-                  {{ form.expressPhotoUrl }}
+                   <el-link type="primary" :href="form.expressPhotoUrl" target="_blank">{{ form.expressPhotoUrl }}</el-link>
                 </el-form-item>
                 <el-form-item label="合格证照片链接地址：" prop="certificatePhotoUrl">
-                  {{ form.certificatePhotoUrl }}
+                  <el-link type="primary" :href="form.certificatePhotoUrl" target="_blank">{{ form.certificatePhotoUrl }}</el-link>
                 </el-form-item>
               </el-form>
             </div>
@@ -673,9 +673,6 @@ export default {
         ],
         receiverAddress: [
           { required: true, message: '请输入收件地址', trigger: 'change' }
-        ],
-        areaCode: [
-          { required: true, message: '请选择省市区', trigger: 'change' }
         ],
       }
     };
@@ -929,6 +926,11 @@ export default {
       if (!wholesaleFormValid) {
         const message = orderCategory === '10' ? '整车批售订单号' : '企业客户订单号';
         throw new Error(message + '校验失败');
+      }
+      // 校验省市区
+      if (!this.areaCode || this.areaCode.length < 3) {
+        this.$message.error('请选择完整的省市区');
+        throw new Error('省市区校验失败');
       }
       if (!this.areaCode || this.areaCode.length === 0) {
         this.form.receiverProvinceCode = '';
