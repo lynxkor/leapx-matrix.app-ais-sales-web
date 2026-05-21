@@ -73,7 +73,7 @@
                   <el-link type="primary" :href="`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${form.entVehorderId}`" target="_blank">{{form.entVehorderCode}}</el-link>
                 </el-form-item>
                 <el-form-item label="交车单号：" prop="deliveryOrderCode">
-                  <el-link type="primary" :href="`/sales/vehretail/orderManager/deliveryOrder/edit?id=${form.deliveryOrderCode}`" target="_blank">{{ form.deliveryOrderCode }}</el-link>
+                  <el-link type="primary" :href="`/sales/vehretail/orderManager/deliveryOrder/edit?id=${form.deliveryOrderId}`" target="_blank">{{ form.deliveryOrderCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="门店名称：" prop="dealerName">
                   <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{form.dealerName}}</el-link>

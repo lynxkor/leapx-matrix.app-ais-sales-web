@@ -210,7 +210,7 @@
               </el-link>
             </template>
             <template #deliveryOrderCode="{ row }">
-              <el-link type="primary" :href="`/sales/vehretail/orderManager/deliveryOrder/edit?id=${row.deliveryOrderCode}`" target="_blank">
+              <el-link type="primary" :href="`/sales/vehretail/orderManager/deliveryOrder/edit?id=${row.deliveryOrderId}`" target="_blank">
                 {{ row.deliveryOrderCode }}
               </el-link>
             </template>

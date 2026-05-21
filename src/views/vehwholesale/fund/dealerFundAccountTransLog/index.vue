@@ -286,7 +286,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'deliveryOrderCode', label: '交车单', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehretail/orderManager/deliveryOrder/edit?id=${row.deliveryOrderCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'deliveryOrderCode', label: '交车单', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehretail/orderManager/deliveryOrder/edit?id=${row.deliveryOrderId}`, '_blank'); }, type: 'primary' }] },
           {
             props: 'dealerName',
             label: '门店名称',
