@@ -103,7 +103,7 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="配车VIN码：">
-                  {{ form.matchVin }}
+                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.matchVin}`" target="_blank">{{ form.matchVin }}</el-link>
                 </el-form-item>
                 <el-form-item label="销售门店：">
                   {{ form.saleDealerName }}
@@ -112,7 +112,7 @@
                   {{ form.deliveryDealerName }}
                 </el-form-item>
                 <el-form-item label="整车订单：">
-                  {{ form.retailOrderCode }}
+                  <el-link v-if="form.retailOrderId" type="primary" :href="`/sales/vehretail/ordermanager/retailorderinfo/edit?id=${form.retailOrderId}`" target="_blank">{{ form.retailOrderCode }}</el-link><span v-else>{{ form.retailOrderCode }}</span>
                 </el-form-item>
                 <el-form-item label="交车单：">
                   {{ form.deliveryOrderCode }}
@@ -247,7 +247,7 @@
                   {{ form.invoiceAmount }}
                 </el-form-item>
                 <el-form-item label="发票VIN码：">
-                  {{ form.vin }}
+                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
                 </el-form-item>
                 <el-form-item label="发票合格证号：">
                   {{ form.certificateNo }}
@@ -463,7 +463,7 @@
                   {{ form.depositAmount }}
                 </el-form-item>
                 <el-form-item label="订单物料码：">
-                  {{ form.materialsCode }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="配车物料码：">
                   {{ form.allocationMaterialCode }}
@@ -475,7 +475,7 @@
                   {{ form.deliveryDealerName }}
                 </el-form-item>
                 <el-form-item label="交车VIN码：">
-                  {{ form.deliveryVin }}
+                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.deliveryVin}`" target="_blank">{{ form.deliveryVin }}</el-link>
                 </el-form-item>
                 <el-form-item label="交车时间：">
                   {{ form.deliveryTime }}
