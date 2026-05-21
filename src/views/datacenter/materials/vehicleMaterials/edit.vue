@@ -119,7 +119,7 @@
               </el-form>
 
               <!-- 详情模式 -->
-              <el-form :inline="true" class="form-detail" label-width="160px" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="物料编码：">
                   {{ form.materialsCode }}
                 </el-form-item>
@@ -172,13 +172,13 @@
               <h2>价格信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="160px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" label-width="160px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="整车价格：">
                   <el-input-number placeholder="请输入" v-model="form.price" clearable :controls="false"
                     :precision="2" :min="0.00" :step="0.01"/>
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail" label-width="160px" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="整车价格：">
                   {{ form.price }}
                 </el-form-item>
@@ -192,7 +192,7 @@
               <h2>属性信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="170px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" label-width="170px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item
                   v-for="(item, index) in formItems"
                   :key="index"
@@ -216,7 +216,7 @@
                 </el-form-item>
               </el-form>
 
-              <el-form :inline="true" class="form-detail" label-width="160px" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item
                   v-for="(item, index) in formItemsLabel"
                   :key="index"
@@ -323,7 +323,7 @@ export default {
     return {
       moduleKey: 'AISDC-vehicleMaterials',
       pageType: 'edit',
-      pageTitle: '销服-业务主数据-配置主数据-整车物料',
+      pageTitle: '整车物料',
       discontinueStatusList: [],
       formItems: [
         { label: '是否允许现车批售：', prop: 'allowWholesale' },
@@ -397,7 +397,7 @@ export default {
           { required: true, message: '请选择年款', trigger: 'blur' }
         ],
         seriesId: [
-          { required: true, message: '请输入车型名称', trigger: 'blur' }
+          { required: true, message: '请输入车系名称', trigger: 'blur' }
         ],
         modelId: [
           { required: true, message: '请输入车型名称', trigger: 'blur' }
@@ -419,6 +419,12 @@ export default {
         ],
         batteryCellId: [
           { required: true, message: '请输入电池电芯名称', trigger: 'blur' }
+        ],
+        drivingRangeId: [
+          { required: true, message: '请输入续航里程', trigger: 'blur' }
+        ],
+        rangePowerId: [
+          { required: true, message: '请输入选配动力名称', trigger: 'blur' }
         ],
         status: [
           { required: true, message: '请选择状态', trigger: 'change' }

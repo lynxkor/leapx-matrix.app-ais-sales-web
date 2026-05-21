@@ -56,7 +56,7 @@
               </el-form>
             </div>
           </section>
-          <section class="common-section">
+          <section class="common-section" v-if="_id">
             <div class="common-section-header">
               <h2>门店信息</h2>
             </div>
@@ -91,7 +91,7 @@
                   <vxe-column field="provinceName" title="省" min-width="15%" />
                   <vxe-column field="cityName" title="市" min-width="15%" />
                   <vxe-column field="remark" title="备注" min-width="15%" />
-                  <vxe-column title="操作" width="100" fixed="right" v-if="isEditing || !_id">
+                  <vxe-column title="操作" width="100" fixed="right" v-if="_id && canAddOrUpdate">
                     <template #default="{ rowIndex }">
                       <el-popconfirm title="确认要删除行信息吗？" @confirm="handleDeleteRow(rowIndex)" confirm-button-text="删除" confirm-button-type="danger">
                         <span slot="reference" type="text" size="small" class="btn-delete">删除</span>
@@ -224,8 +224,11 @@ export default {
     },
     // 删除子表数据
     handleDeleteRow (index) {
-      const item = this.form.storeInventoryTransferWhitelistDetailList[index];
+      // const item = this.form.storeInventoryTransferWhitelistDetailList[index];
       this.form.storeInventoryTransferWhitelistDetailList.splice(index, 1);
+      addOrUpdate({ ...this.form }).then(res => {
+        this.$message.success('保存成功');
+      });
       // 根据需求调用接口
       // deletePartVehModel([item.id]).then(res => {
       //   this.$message.success('删除成功');
@@ -268,6 +271,9 @@ export default {
         cityCode: record.cityCode,
         cityName: record.cityName,
         remark: record.remark,
+      });
+      addOrUpdate({ ...this.form }).then(res => {
+        this.$message.success('保存成功');
       });
     },
     getDefautlForm () {

@@ -18,11 +18,11 @@
           <!-- <span>{{ form.entOrderCode }}</span> -->
         </template>
         <template #extraButtons>
-          <el-button  v-if = "perquerySapAccount" size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
-          <el-button  v-if ="perbatchAllocateSubmit && form.buttonControls && form.buttonControls.batchAllocateSubmitButton" size="small" @click="handlevinAllocateVehicle" >配车</el-button>
-          <el-button  v-if ="perbatchCancelAllocateSubmit && form.buttonControls && form.buttonControls.cancelAllocateButton" size="small" @click="handlebatchCancelAllocateSubmit" >取消配车</el-button>
-          <el-button  v-if ="perbatchSettleSubmit && form.buttonControls && form.buttonControls.submitSettleButton" size="small" @click="handlebatchSettleSubmit" >提交结算</el-button>
-          <el-button  v-if ="perbatchCancelSettleSubmit && form.buttonControls && form.buttonControls.cancelSettleButton" size="small" @click="handlebatchCancelSettleSubmit" >取消结算</el-button>
+          <el-button v-if = "perquerySapAccount" size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
+          <el-button v-if ="perbatchAllocateSubmit && form.buttonControls && form.buttonControls.batchAllocateSubmitButton" size="small" @click="handlevinAllocateVehicle" >配车</el-button>
+          <el-button v-if ="perbatchCancelAllocateSubmit && form.buttonControls && form.buttonControls.cancelAllocateButton" size="small" @click="handlebatchCancelAllocateSubmit" >取消配车</el-button>
+          <el-button v-if ="perbatchSettleSubmit && form.buttonControls && form.buttonControls.submitSettleButton" size="small" @click="handlebatchSettleSubmit" >提交结算</el-button>
+          <el-button v-if ="perbatchCancelSettleSubmit && form.buttonControls && form.buttonControls.cancelSettleButton" size="small" @click="handlebatchCancelSettleSubmit" >取消结算</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -262,7 +262,7 @@
                   {{ form.cbuOrderCode }}
                 </el-form-item>
                  <el-form-item label="销售公司：" prop="saleCompanyName">
-                  <el-link type="primary" :href="`/vehwholesale/fund/fundSaleCompany/edit?id=${form.saleCompanyId}`" target="_blank">{{ form.saleCompanyName }}</el-link>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundSaleCompany/edit?id=${form.saleCompanyId}`" target="_blank">{{ form.saleCompanyName }}</el-link>
                 </el-form-item>
                  <el-form-item label="企业客户名称：" prop="entCustomerName">
                   <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.entCustomerCode}`" target="_blank">{{ form.entCustomerName }}</el-link>
@@ -622,7 +622,7 @@
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
 
                 <el-form-item label="配车VIN码：" prop="vin">
-                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?id=${form.vehicleVdcInventory.id}`" target="_blank">{{ form.vin }}</el-link>
+                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?id=${form.vehicleVdcInventory?.id}`" target="_blank">{{ form.vin }}</el-link>
                 </el-form-item>
                  <el-form-item label="配车物料编码：" prop="materialsCode">
                   <el-link type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
@@ -995,7 +995,7 @@ export default {
       return this.id || this.form.id || this.$route.query.id;
     },
     title () {
-      return '主键：' + this.form.entOrderCode;
+      return '企业客户整车订单：' + this.form.entOrderCode;
     }
   },
   watch: {
@@ -1252,6 +1252,7 @@ export default {
           // if (this.$refs.containerRef) {
           //   this.$refs.containerRef.originalForm = { ...res };
           // }
+          this.warehouseName = '';
           if (res.vehicleVdcInventory) {
             this.warehouseName = res.vehicleVdcInventory.warehouseName;
           }

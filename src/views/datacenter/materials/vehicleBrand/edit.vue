@@ -129,7 +129,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '销服-业务主数据-配置主数据-品牌',
+      pageTitle: '品牌',
       pageType: 'edit',
       moduleKey: 'AISDC-vehicleBrand',
       loading: false,

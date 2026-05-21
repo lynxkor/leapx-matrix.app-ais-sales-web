@@ -114,7 +114,7 @@ export default {
   mixins: [routeGuard, permissions, commonMixins],
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-内饰',
+      pageTitle: '内饰',
       pageType: 'edit',
       moduleKey: 'AISDC-vehicleInterior',
       loading: false,

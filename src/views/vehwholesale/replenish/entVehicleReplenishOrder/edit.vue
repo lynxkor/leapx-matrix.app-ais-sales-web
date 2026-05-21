@@ -20,10 +20,10 @@
         </template>
         <template #extraButtons>
           <el-button v-if ="peraddDetail && form.buttonsControls && form.buttonsControls.editButton" size="small" @click="handleAddDetail" >添加补货明细</el-button>
-          <el-button v-if ="perbatchSubmitAudit && form.buttonsControls && form.buttonsControls.submitAuditButton" @click="handleCheckSubmit" >提交审批</el-button>
+          <el-button v-if ="perbatchSubmitAudit && form.buttonsControls && form.buttonsControls.submitAuditButton" @click="handleCheckSubmit" :loading="handleCheckSubmitLoading">提交审批</el-button>
           <el-button v-if ="perbatchAudit && form.buttonsControls && form.buttonsControls.auditButton"  size="small" @click="handleCheckStatus" >审核</el-button>
-          <el-button v-if ="perbatchCancel && form.buttonsControls && form.buttonsControls.cancelButton"  size="small" @click="handleCancel" >作废</el-button>
-          <el-button v-if ="canDelete && form.buttonsControls && form.buttonsControls.deleteButton" size="small"  @click="handleDelete" >删除</el-button>
+          <el-button v-if ="perbatchCancel && form.buttonsControls && form.buttonsControls.cancelButton"  size="small" @click="handleCancel" :loading="handleCancelLoading">作废</el-button>
+          <el-button v-if ="canDelete && form.buttonsControls && form.buttonsControls.deleteButton" size="small"  @click="handleDelete" :loading="handleDeleteLoading">删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -200,7 +200,7 @@
                   <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.entCustomerCode}`" target="_blank">{{ form.entCustomerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="销售公司：" prop="saleCompanyName">
-                  <el-link type="primary" :href="`/vehwholesale/fund/fundSaleCompany/edit?id=${form.saleCompanyId}`" target="_blank">{{ form.saleCompanyName }}</el-link>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundSaleCompany/edit?id=${form.saleCompanyId}`" target="_blank">{{ form.saleCompanyName }}</el-link>
                 </el-form-item>
                  <el-form-item label="销售门店名称：" prop="saleDealerName">
                   {{ form.saleDealerName }}
@@ -403,6 +403,66 @@
                   @current-page-change="currentPageChange"
                   :auth="{edit: isEditing, delete: isEditing}"
                 >
+                  <template #default="{ row, column }">
+                    <template v-if="column.property === 'materialsCode' && row.materialsId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsId}`" target="_blank">
+                        {{ row.materialsCode }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'modelName' && row.modelId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`" target="_blank">
+                        {{ row.modelName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'drivingRangeName' && row.drivingRangeId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleDrivingRange/edit?id=${row.drivingRangeId}`" target="_blank">
+                        {{ row.drivingRangeName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'rangePowerName' && row.rangePowerId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleRangePower/edit?id=${row.rangePowerId}`" target="_blank">
+                        {{ row.rangePowerName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'exteriorName' && row.exteriorId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleExterior/edit?id=${row.exteriorId}`" target="_blank">
+                        {{ row.exteriorName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'interiorName' && row.interiorId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleInterior/edit?id=${row.interiorId}`" target="_blank">
+                        {{ row.interiorName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'wheelHubName' && row.wheelHubId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleWheelHub/edit?id=${row.wheelHubId}`" target="_blank">
+                        {{ row.wheelHubName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'batteryCellName' && row.batteryCellId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleBatteryCell/edit?id=${row.batteryCellId}`" target="_blank">
+                        {{ row.batteryCellName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'yearTypeName' && row.yearTypeId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleYearType/edit?id=${row.yearTypeId}`" target="_blank">
+                        {{ row.yearTypeName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'roofName' && row.roofId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleRoof/edit?id=${row.roofId}`" target="_blank">
+                        {{ row.roofName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'optionPackageName' && row.optionPackageId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleOptionPackage/edit?id=${row.optionPackageId}`" target="_blank">
+                        {{ row.optionPackageName }}
+                      </el-link>
+                    </template>
+                    <template v-else>
+                      {{ row[column.property] }}
+                    </template>
+                  </template>
                 </edit-table>
               </div>
               </div>
@@ -418,7 +478,6 @@
                 <AisAttachment
                   :businessId="_id"
                   configCode="ent_vehicle_replenish_order"
-                  attachType="其他"
                   ref="attachment"
                 />
               </div>
@@ -456,6 +515,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { getAreaTree } from '@/utils';
 import AddEntVehicleReplishOrderDetail from './addEntVehicleReplishOrderDetail.vue';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import auditDialog from '@/libs/components/auditDialog';
@@ -469,6 +529,7 @@ const defaultForm = {
   // 多选时字段有变化，自行修复
   id: '',
   creator: '',
+  settleFundTypeLabel: '',
   creatorName: '',
   createTime: new Date(),
   modifier: '',
@@ -788,7 +849,10 @@ export default {
       perbatchSubmitAudit: false,
       perbatchAudit: false,
       perbatchCancel: false,
-      areaOptions: JSON.parse(localStorage.areaTree),
+      handleCheckSubmitLoading: false,
+      handleCancelLoading: false,
+      handleDeleteLoading: false,
+      areaOptions: getAreaTree(),
       emptyText: '若要启用此内容，请创建记录',
       tableData: [],
       options: {
@@ -807,7 +871,7 @@ export default {
           { required: true, message: '请输入是否赊销', trigger: 'change' }
         ],
         settleFundTypeLabel: [
-          { required: true, message: '请选择结算资金类型', trigger: 'blur' }
+          { required: true, message: '请选择结算资金类型', trigger: 'change' }
         ],
         orderTime: [
           { required: true, message: '请选择订单时间', trigger: 'change' }
@@ -1029,18 +1093,18 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        // 提交审批接口 判断是否需要初审
+        this.handleCheckSubmitLoading = true;
         batchSubmitAudit({
           idSet: [this._id],
         }).then(res => {
-          // 重新加载详情数据
           this.$message.success('提交成功');
           if (this.$refs.containerRef) {
             this.$refs.containerRef.loadDetail();
           }
           this.detailRequest();
-          // 或者关闭编辑状态
           this.isEditing = false;
+        }).finally(() => {
+          this.handleCheckSubmitLoading = false;
         });
       }).catch(() => {});
     },
@@ -1051,16 +1115,19 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.handleCancelLoading = true;
         batchCancel({
           idSet: [this._id],
         }).then(() => {
           this.$message.success('作废成功');
           this.$refs.containerRef.loadDetail();
+        }).finally(() => {
+          this.handleCancelLoading = false;
         });
       }).catch(() => {});
     },
 
-    handleDelete () { // 删除
+    handleDelete () {
       const ids = [this._id];
       const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
       this.$confirm(message, '', {
@@ -1070,10 +1137,13 @@ export default {
         customClass: 'ais-leave-tips',
         showClose: false
       }).then(() => {
+        this.handleDeleteLoading = true;
         deleteItem(ids).then(() => {
           this.$router.push({
             path: '/vehwholesale/replenish/entVehicleReplenishOrder',
           });
+        }).finally(() => {
+          this.handleDeleteLoading = false;
         });
       }).catch(() => {});
     },

@@ -189,6 +189,11 @@
             :table-config="{ title: '账户流水' }"
             section-key="accountTransLog"
           >
+           <template #transLogCode="{ row }">
+              <el-link type="primary" :href="`/sales/vehwholesale/fund/dealerFundAccountTransLog/edit?id=${row.id}`" target="_blank">
+                {{ row.wholesaleOrderCode }}
+              </el-link>
+            </template>
             <template #wholesaleOrderCode="{ row }">
               <el-link type="primary" :href="`/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=${row.wholesaleOrderCode}`" target="_blank">
                 {{ row.wholesaleOrderCode }}
@@ -302,7 +307,7 @@ export default {
       latestTransLog: {},
       yes_no_enum_map: YES_NO_ENUM_MAP,
       columns: [
-        { field: 'transLogCode', title: '流水编号', width: 240, clickable: true },
+        { field: 'transLogCode', title: '流水编号', width: 240, slots: { default: 'transLogCode' } },
         { field: 'transactionTypeLabel', title: '交易类型', width: 120 },
         { field: 'transactionAmount', title: '交易金额', width: 140, align: 'right' },
         { field: 'transactionTime', title: '过账时间', width: 200 },

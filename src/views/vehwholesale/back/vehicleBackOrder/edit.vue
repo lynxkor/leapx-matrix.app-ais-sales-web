@@ -19,11 +19,11 @@
         <template #extraButtons>
           <!--  v-if = "canAddOrUpdate && form.buttonControl && form.buttonControl.addVehicleButton"  -->
           <el-button v-if = "peraddOrUpdateDetail && form.buttonControl && form.buttonControl.addVehicleButton" size="small"  @click="handelAdd">添加车辆</el-button>
-          <el-button v-if = "persubmitAudit && form.buttonControl && form.buttonControl.submitButton" size="small"  @click="handelSubmit">提交</el-button>
-          <el-button v-if = "peraudit && form.buttonControl && form.buttonControl.auditButton" size="small"  @click="handleAudit">审核</el-button>
-          <el-button v-if = "percancel && form.buttonControl && form.buttonControl.canceledButton" size="small"  @click="handelCancel">作废</el-button>
+          <el-button v-if = "persubmitAudit && form.buttonControl && form.buttonControl.submitButton" size="small"  :loading="submitLoading" @click="handelSubmit">提交</el-button>
+          <el-button v-if = "peraudit && form.buttonControl && form.buttonControl.auditButton" size="small"  :loading="auditLoading" @click="handleAudit">审核</el-button>
+          <el-button v-if = "percancel && form.buttonControl && form.buttonControl.canceledButton" size="small"  :loading="cancelLoading" @click="handelCancel">作废</el-button>
           <el-button v-if = "canImport && form.buttonControl && form.buttonControl.importVehicleButton" size="small"  @click="handleImport">导入车辆</el-button>
-          <el-button v-if = "canDelete && form.buttonControl && form.buttonControl.deleteButton" size="small"  @click="handelDel">删除</el-button>
+          <el-button v-if = "canDelete && form.buttonControl && form.buttonControl.deleteButton" size="small"  :loading="deleteLoading" @click="handelDel">删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -222,24 +222,24 @@
                       <el-link type="primary" :href="`/sales/vehwholesale/back/vehicleBackOrderDetail/edit?id=${row.backOrderDetailCode}`" target="_blank">{{ row.backOrderDetailCode }}</el-link>
                     </template>
                   </vxe-column>
-                  <vxe-column field="backOrderCode" title="退车订单号" width="200">
+                  <vxe-column field="backOrderCode" title="退车订单号" width="150">
                     <template #default="{ row }">
                       {{ row.backOrderCode }}
                     </template>
                   </vxe-column>
-                  <vxe-column field="vin" title="VIN" width="100" />
-                  <vxe-column field="processStatusLabel" title="车辆处理状态" width="150" />
+                  <vxe-column field="vin" title="VIN" width="180" />
+                  <vxe-column field="processStatusLabel" title="车辆处理状态" width="180" />
                   <vxe-column field="saleDealerName" title="门店名称" width="120">
                     <template #default="{ row }">
                       <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`" target="_blank">{{ row.saleDealerName }}</el-link>
                     </template>
                   </vxe-column>
-                  <vxe-column field="wholesaleOrderCode" title="整车批售订单号" width="200">
+                  <vxe-column field="wholesaleOrderCode" title="整车批售订单号" width="210">
                     <template #default="{ row }">
                       <el-link type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${row.wholesaleOrderCode}`" target="_blank">{{ row.wholesaleOrderCode }}</el-link>
                     </template>
                   </vxe-column>
-                  <vxe-column field="entOrderCode" title="企业客户整车订单号" width="200">
+                  <vxe-column field="entOrderCode" title="企业客户整车订单号" width="270">
                     <template #default="{ row }">
                       <el-link type="primary" :href="`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${row.entOrderCode}`" target="_blank">{{ row.entOrderCode }}</el-link>
                     </template>
@@ -289,10 +289,10 @@
                           <span v-else>{{ row.vehicleLogisticsReserveLabel }}</span>
                     </template>
                   </vxe-column>
-                  <vxe-column field="originalWholesalePrice" title="原批售价格" width="120" />
-                  <vxe-column field="originalRebateAmount" title="原返利使用金额" width="200" />
-                  <vxe-column field="originalInvoicePrice" title="原开票价格" width="200" />
-                  <vxe-column field="returnPrice" title="退车价格" width="200">
+                  <vxe-column field="originalWholesalePrice" title="原批售价格" width="150" align="right" />
+                  <vxe-column field="originalRebateAmount" title="原返利使用金额" width="210" align="right" />
+                  <vxe-column field="originalInvoicePrice" title="原开票价格" width="150" align="right" />
+                  <vxe-column field="returnPrice" title="退车价格" width="120" align="right">
                     <template #default="{ row }">
                       <el-input
                         v-if="isEditing"
@@ -304,7 +304,7 @@
                       <span v-else>{{ row.returnPrice }}</span>
                     </template>
                   </vxe-column>
-                  <vxe-column field="returnInvoiceAmount" title="退车开票金额" width="200" ></vxe-column>
+                  <vxe-column field="returnInvoiceAmount" title="退车开票金额" width="180" align="right"></vxe-column>
                   <!-- 可编辑列：备注 -->
                   <vxe-column field="remark" title="备注说明" width="200">
                     <template #default="{ row }">
@@ -318,10 +318,10 @@
                       <span v-else>{{ row.remark }}</span>
                     </template>
                   </vxe-column>
-                  <vxe-column field="storeOutboundConfirmer" title="门店出库确认人" width="200" />
-                  <vxe-column field="storeOutboundTime" title="门店出库确认时间" width="200" />
-                  <vxe-column field="vdcInboundConfirmer" title="VDC入库确认人" width="200" />
-                  <vxe-column field="vdcInboundTime" title="VDC入库确认时间" width="200" />
+                  <vxe-column field="storeOutboundConfirmer" title="门店出库确认人" width="180" />
+                  <vxe-column field="storeOutboundTime" title="门店出库确认时间" width="160" />
+                  <vxe-column field="vdcInboundConfirmer" title="VDC入库确认人" width="180" />
+                  <vxe-column field="vdcInboundTime" title="VDC入库确认时间" width="160" />
                   <vxe-column field="createTime" title="创建时间" width="200" />
                    <!-- 新增：操作列 -->
                    <vxe-column
@@ -366,7 +366,6 @@
                 <AisAttachment
                   :businessId="_id"
                   configCode="vehicle_back_order"
-                  attachType="其他"
                   ref="attachment"
                 />
               </div>
@@ -536,6 +535,10 @@ export default {
       peraudit: false,
       percancel: false,
       peraddOrUpdateDetail: false,
+      // loading状态
+      auditLoading: false,
+      cancelLoading: false,
+      deleteLoading: false,
       rules: {
         orderType: [
           { required: true, message: '请选择单据类型', trigger: 'change' }
@@ -796,11 +799,14 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.cancelLoading = true;
         cancel({
           idSet: [this._id],
         }).then(() => {
           this.$message.success('提交成功');
           this.$refs.containerRef.loadDetail();
+        }).finally(() => {
+          this.cancelLoading = false;
         });
       }).catch(() => {});
     },
@@ -816,15 +822,19 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.submitLoading = true;
         submitAudit({
           idSet: [this._id],
         }).then(() => {
           this.$message.success('提交成功');
           this.$refs.containerRef.loadDetail();
+        }).finally(() => {
+          this.submitLoading = false;
         });
       }).catch(() => {});
     },
     handleBatchAudit (data) {
+      this.auditLoading = true;
       let params = {
         idSet: [this._id],
         audit: data.result,
@@ -843,6 +853,8 @@ export default {
           });
         }
         this.$refs.containerRef.loadDetail();
+      }).finally(() => {
+        this.auditLoading = false;
       });
     },
     handleAudit () {
@@ -859,6 +871,7 @@ export default {
         customClass: 'ais-leave-tips',
         showClose: false
       }).then(() => {
+        this.deleteLoading = true;
         deleteItem(
           { idSet: [ids] }
         ).then(() => {
@@ -866,6 +879,8 @@ export default {
             path: '/vehwholesale/back/vehicleBackOrder',
           });
           this.getData();
+        }).finally(() => {
+          this.deleteLoading = false;
         });
       }).catch(() => {});
     },

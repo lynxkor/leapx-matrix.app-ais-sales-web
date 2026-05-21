@@ -65,7 +65,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-选配动力', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['选配动力', '详情']);
     this.getData();
   },
   methods: {

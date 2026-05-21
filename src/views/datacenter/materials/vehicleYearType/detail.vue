@@ -68,7 +68,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-年款', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['年款', '详情']);
     this.getData();
   },
   methods: {

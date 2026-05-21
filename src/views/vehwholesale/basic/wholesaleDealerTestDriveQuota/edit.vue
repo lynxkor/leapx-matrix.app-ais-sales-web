@@ -48,7 +48,7 @@
                     :disabled="!!_id"
                   />
                 </el-form-item>
-                <el-form-item label="年款：" prop="vehicleYearTypeId">
+                <el-form-item label="年款：" prop="vehicleYearType">
                   <fetch-select
                     filterable
                     clearable
@@ -78,14 +78,20 @@
                 </el-form-item>
                 <el-form-item label="车系：" prop="seriesId">
                   <fetch-select
+                    v-if="!_id"
                     filterable
                     clearable
                     :options="vehicleSeriesOptions"
                     v-model="form.seriesId"
                     value-key="id"
                     label-key="name"
-                    :disabled="!!_id"
                     @change="(val, record) => {form.seriesName = record?.name || ''}"
+                  />
+                  <el-input v-else
+                    placeholder="请输入"
+                    v-model="form.seriesName"
+                    clearable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="累计已申请数：" prop="requestQty">
@@ -130,19 +136,19 @@
               <!-- 详情模式 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="门店编码：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.dealerCode)">{{ form.dealerCode }}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="门店名称：">
-                  {{ form.dealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="年款：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleYearType/edit?id=' + form.vehicleYearTypeId)">{{ form.vehicleYearType }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${form.vehicleYearTypeId}`" target="_blank">{{ form.vehicleYearType }}</el-link>
                 </el-form-item>
                 <el-form-item label="系列：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModelLine/edit?id=' + form.vehicleModelLineId)">{{ form.vehicleModelLine }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodelline/edit?id=${form.vehicleModelLineId}`" target="_blank">{{ form.vehicleModelLine }}</el-link>
                 </el-form-item>
                 <el-form-item label="车系：">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + form.seriesId)">{{ form.seriesName }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="累计已申请数：">
                   {{ form.requestQty }}

@@ -149,7 +149,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleTestDriveQuota/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getBuildType, cityListByName, listVehicleYearType, vehicleModelLineList, vehicleSeriesList } from '@/api/common';
@@ -214,7 +214,7 @@ export default {
             props: 'code',
             label: '编码',
             visible: true,
-            width: 200,
+            width: 150,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -233,10 +233,10 @@ export default {
             props: 'vehicleYearType',
             label: '年款',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehicleYearType/edit?id=${row.vehicleYearTypeId}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehicleyeartype/edit?id=${row.vehicleYearTypeId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -245,10 +245,10 @@ export default {
             props: 'vehicleModelLine',
             label: '系列',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehicleModelLine/edit?id=${row.vehicleModelLineId}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehiclemodelline/edit?id=${row.vehicleModelLineId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -257,21 +257,21 @@ export default {
             props: 'seriesName',
             label: '车系',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehicleseries/edit?id=${row.seriesId}`, '_blank');
               },
               type: 'primary'
             }]
           },
-          { props: 'quantity', label: '数量', visible: true, width: 200 },
-          { props: 'mcDealerTypeLabel', label: '建店类型', visible: true, width: 200 },
-          { props: 'cityName', label: '城市', visible: true, width: 200 },
-          { props: 'startDate', label: '开始日期', visible: true, width: 200 },
-          { props: 'endDate', label: '截止日期', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
+          { props: 'quantity', label: '数量', visible: true, width: 100, align: 'right' },
+          { props: 'mcDealerTypeLabel', label: '建店类型', visible: true, width: 120 },
+          { props: 'cityName', label: '城市', visible: true, width: 120 },
+          { props: 'startDate', label: '开始日期', visible: true, width: 160 },
+          { props: 'endDate', label: '截止日期', visible: true, width: 160 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 78 },
+          { props: 'modifierName', label: '修改者名称', visible: true, width: 140 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
             props: 'operate',

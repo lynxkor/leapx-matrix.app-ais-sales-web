@@ -246,7 +246,7 @@ export default {
     const form = this.getDefautlForm();
     return {
       pageType: 'edit',
-      pageTitle: '销服-业务主数据-配置主数据-物料可配关系',
+      pageTitle: '物料可配关系',
       moduleKey: 'AISDC-vehicleMaterialsMatch',
       formFields: [
         { label: '物料描述：', key: 'materialsDesc' },

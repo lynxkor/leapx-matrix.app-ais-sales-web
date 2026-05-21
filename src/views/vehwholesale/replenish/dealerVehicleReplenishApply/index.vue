@@ -201,7 +201,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 // createRequestValid
 import { getList, deleteItem, enableItem, factoryAuditValid } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
@@ -301,9 +301,9 @@ export default {
             }]
           },
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank'); }, type: 'primary' }] },
-          { props: 'auditStatusLabel', label: '审核状态', visible: true, width: 200 },
-          { props: 'regionName', label: '所属大区', visible: true, width: 200 },
-          { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 200 },
+          { props: 'auditStatusLabel', label: '审核状态', visible: true, width: 120 },
+          { props: 'regionName', label: '所属大区', visible: true, width: 100 },
+          { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 120 },
           {
             props: 'prodScheduleActivityName',
             label: '专项活动',
@@ -318,16 +318,16 @@ export default {
           },
           { props: 'serials', label: '车系组合', visible: true, width: 200 },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
-          { props: 'applyTotalQty', label: '申请总数量', visible: true, width: 200 },
-          { props: 'applyTime', label: '申请时间', visible: true, width: 200 },
+          { props: 'applyTotalQty', label: '申请总数量', visible: true, width: 140 },
+          { props: 'applyTime', label: '申请时间', visible: true, width: 160 },
           { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
-          { props: 'auditDateTime', label: '审批时间', visible: true, width: 200 },
-          { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 200 },
+          { props: 'auditDateTime', label: '审批时间', visible: true, width: 160 },
+          { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 140 },
           {
             props: 'financialOrganizationName',
             label: '金融机构',
             visible: true,
-            width: 200,
+            width: 160,
             buttons: [{
               click: (rowIndex, row) => {
                 window.open(`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${row.financialOrganizationId}`, '_blank');
@@ -336,9 +336,9 @@ export default {
             }]
           },
           { props: 'dealerWarehouseName', label: '门店仓库名称', visible: true, width: 200 },
-          { props: 'deliveryDealerName', label: '交付门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.deliveryDealerCode}`, '_blank'); }, type: 'primary' }] },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'deliveryDealerName', label: '交付门店名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.deliveryDealerCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'creatorName', label: '创建者名称', visible: true, width: 160 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 160 },
           {
             props: 'operate',
             label: '操作',

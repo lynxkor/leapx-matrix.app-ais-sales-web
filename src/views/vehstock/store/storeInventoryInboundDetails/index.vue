@@ -58,7 +58,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/store/storeInventoryInboundDetails/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
@@ -120,16 +120,17 @@ export default {
         },
         dataProp: [
           { props: 'name', label: '车辆入库单号', visible: true, width: 200 },
-          { props: 'vin', label: 'VIN', visible: true, width: 200 },
-          { props: 'materialsCode', label: '物料编码', visible: true, width: 180 },
+          { props: 'vin', label: 'VIN', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }] },
+          { props: 'materialsCode', label: '物料编码', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsId}`, '_blank'); }, type: 'primary' }] },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
-          { props: 'drivingRangeName', label: '续航里程', visible: true, width: 100 },
-          { props: 'rangePowerName', label: '选配动力', visible: true, width: 120 },
-          { props: 'exteriorName', label: '外观', visible: true, width: 100 },
-          { props: 'interiorName', label: '内饰', visible: true, width: 100 },
-          { props: 'modelName', label: '车型', visible: true, width: 140 },
-          { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 120 },
-          { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
+          { props: 'drivingRangeName', label: '续航里程', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicledrivingrange/edit?id=${row.drivingRangeId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'rangePowerName', label: '选配动力', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclerangepower/edit?id=${row.rangePowerId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'exteriorName', label: '外观', visible: true, width: 100, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleexterior/edit?id=${row.exteriorId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'interiorName', label: '内饰', visible: true, width: 100, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleinterior/edit?id=${row.interiorId}`, '_blank'); }, type: 'primary' }] },
+          // { props: 'seriesName', label: '车系', visible: true, width: 100, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleseries/edit?id=${row.seriesId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'modelName', label: '车型', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclemodel/edit?id=${row.modelId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclewheelhub/edit?id=${row.wheelHubId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'dealerWarehouseName', label: '门店仓库名称', visible: true, width: 200 },
           { props: 'moveTypeLabel', label: '入库类型', visible: true, width: 120 },
           { props: 'moveinDate', label: '入库时间', visible: true, width: 200 },

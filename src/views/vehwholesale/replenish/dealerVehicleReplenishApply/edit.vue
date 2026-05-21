@@ -332,8 +332,8 @@
                   :columns="columns"
                 >
                   <template #fundTypeDisplay="{ row }">
-                    <el-button v-if="row.fundType === '2010' || row.fundType === 2010" class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.financialOrganizationId)">{{ row.fundTypeDisplay }}</el-button>
-                    <el-button v-else class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/fund/dealerFundAccount/edit?id=' + row.id)">{{ row.fundTypeDisplay }}</el-button>
+                    <el-button v-if="row.fundType === '2010' || row.fundType === 2010" class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/dealerFundAccount/edit?id=' + row.id)">{{ row.fundTypeDisplay }}</el-button>
+                    <el-button v-else class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/dealerFundAccount/edit?id=' + row.id)">{{ row.fundTypeDisplay }}</el-button>
                   </template>
                 </component-table>
               </div>

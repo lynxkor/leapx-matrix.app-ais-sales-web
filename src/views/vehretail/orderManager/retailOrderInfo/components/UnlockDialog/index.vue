@@ -189,7 +189,7 @@ export default {
       this.form.orderUnlockFileReqList = [];
     },
     getList (params) {
-      getList({ ...params, pageNum: 1 }).then(res => {
+      getList({ ...params, pageNum: 1, status: 1 }).then(res => {
         this.unlockReasonOptions = res.records;
       }).catch(() => {
       });
