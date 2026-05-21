@@ -374,7 +374,7 @@ export default {
     },
     // 获取流水列表 API
     getListApi (params) {
-      return getList({ ...params, fundAccountId: this._id });
+      return getList({ ...params, fundAccountId: this._id, transactionTypes: ['0', '1', '3', '4', '6', '7', '8', '10'] });
     },
     async fetchOptions (code) {
       if (code) {
