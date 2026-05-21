@@ -112,7 +112,7 @@
                     {{ form.dealerCompanyCode }}
                   </el-link>
                 </el-form-item>
-                <el-form-item label="是否允许使用返利：" prop="allowUseRebateLabel">
+                <!-- <el-form-item label="是否允许使用返利：" prop="allowUseRebateLabel">
                   {{ form.allowUseRebateLabel }}
                 </el-form-item>
                 <el-form-item label="是否允许企业订单结算：" prop="allowEntOrderSettleLabel">
@@ -123,7 +123,7 @@
                 </el-form-item>
                 <el-form-item label="资金结算顺序：" prop="settleSort">
                   {{ form.settleSort }}
-                </el-form-item>
+                </el-form-item> -->
               </el-form>
             </div>
           </section>
@@ -191,7 +191,7 @@
           >
            <template #transLogCode="{ row }">
               <el-link type="primary" :href="`/sales/vehwholesale/fund/dealerFundAccountTransLog/edit?id=${row.id}`" target="_blank">
-                {{ row.wholesaleOrderCode }}
+                {{ row.transLogCode }}
               </el-link>
             </template>
             <template #wholesaleOrderCode="{ row }">

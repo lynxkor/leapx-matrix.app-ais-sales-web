@@ -196,7 +196,7 @@ const defaultForm = {
   requestQty: '0',
   changeDesc: '',
   quotaQty: '0',
-  status: '',
+  status: 1,
   modifierName: '',
   updateTime: '',
   id: '',
