@@ -350,7 +350,7 @@
                   {{ form.orderUserId }}
                 </el-form-item>
                 <el-form-item label="销售门店：">
-                  {{ form.saleDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="合作类型：">
                   {{ form.cooperationTypeLabel }}

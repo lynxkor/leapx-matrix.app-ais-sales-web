@@ -433,10 +433,10 @@
               </el-form>
               <el-form :inline="true" class="form-detail1" v-show="!(isEditing || !_id)">
                 <el-form-item label="销售门店：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="交付门店：" prop="deliveryDealerName">
-                  {{ form.deliveryDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.deliveryDealerCode}`" target="_blank">{{ form.deliveryDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="专属服务门店：" prop="exclusiveServiceStoreName">
                   {{ form.exclusiveServiceStoreName }}

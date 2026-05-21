@@ -92,7 +92,7 @@
                   {{ form.allocationConfigCode }}
                 </el-form-item>
                 <el-form-item label="交付门店名称：" prop="deliveryDealerName">
-                  {{ form.deliveryDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.deliveryDealerCode}`" target="_blank">{{ form.deliveryDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="是否开启自动分派：" prop="autoAllocationStatus">
                   <span :class="['status-tag', form.autoAllocationStatus === 1 ? 'primary' : 'danger']">{{ form.autoAllocationStatusLabel }}</span>
