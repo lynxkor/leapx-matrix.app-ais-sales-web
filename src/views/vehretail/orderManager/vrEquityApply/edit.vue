@@ -727,6 +727,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 import FetchSelect from '@/libs/components/FetchSelect';
 import auditDialog from '@/libs/components/auditDialog';
+import { formatDateTime } from '@/libs/utils';
 
 const defaultForm = {
   id: '',
@@ -1113,7 +1114,7 @@ export default {
       this.form.optionPackageId = order.materials.optionPackageId || '';
       this.form.optionPackageName = order.materials.optionPackageName || '';
       this.form.orderStatus = order.orderStatus || null;
-      this.form.originalBenefitDate = order.rightsEnjoyDate || '';
+      this.form.originalBenefitDate = order.rightsEnjoyDate ? formatDateTime(order.rightsEnjoyDate, 'data') : '';
 
       // 重新查询权益类别列表，更新下拉框选项
       await this.getEquityCategoryList();
