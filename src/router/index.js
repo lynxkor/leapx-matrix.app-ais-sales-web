@@ -2568,7 +2568,7 @@ const routes = [
       component: () => import('@/views/vehretail/basicConfig/deliveryScheduleTimeConfig/index.vue'),
 
       meta: {
-        name: '交付排程时间段配置管理',
+        name: '交付排程时间段配置',
         keepAlive: true
       }
     }, {
@@ -2577,7 +2577,7 @@ const routes = [
       component: () => import('@/views/vehretail/basicConfig/deliveryScheduleTimeConfig/edit.vue'),
 
       meta: {
-        name: '交付排程时间段配置管理详情',
+        name: '交付排程时间段配置详情',
         noResourceUrl: 'true'
       }
     }, {
@@ -2586,7 +2586,7 @@ const routes = [
       component: () => import('@/views/vehretail/basicConfig/deliveryAppointmentTimeConfig/index.vue'),
 
       meta: {
-        name: '交付预约时效配置管理',
+        name: '交付预约时效配置',
         keepAlive: true
       }
     }, {
@@ -2595,7 +2595,7 @@ const routes = [
       component: () => import('@/views/vehretail/basicConfig/deliveryAppointmentTimeConfig/edit.vue'),
 
       meta: {
-        name: '交付预约时效配置管理详情',
+        name: '交付预约时效配置详情',
         noResourceUrl: 'true'
       }
     }, {
@@ -2604,7 +2604,7 @@ const routes = [
       component: () => import('@/views/vehretail/basicConfig/storeDeliveryAllocationConfig/index.vue'),
 
       meta: {
-        name: '门店交付分派配置管理',
+        name: '门店交付分派配置',
         keepAlive: true
       }
     }, {
@@ -2613,7 +2613,7 @@ const routes = [
       component: () => import('@/views/vehretail/basicConfig/storeDeliveryAllocationConfig/edit.vue'),
 
       meta: {
-        name: '门店交付分派配置管理详情',
+        name: '门店交付分派配置详情',
         noResourceUrl: 'true'
       }
     }, {
@@ -2676,7 +2676,7 @@ const routes = [
       component: () => import('@/views/vehretail/basicConfig/activationModeConfig/index.vue'),
 
       meta: {
-        name: '激活模式配置管理',
+        name: '激活模式配置',
         keepAlive: true
       }
     }, {
@@ -2685,7 +2685,7 @@ const routes = [
       component: () => import('@/views/vehretail/basicConfig/activationModeConfig/edit.vue'),
 
       meta: {
-        name: '激活模式配置管理详情',
+        name: '激活模式配置详情',
         noResourceUrl: 'true'
       }
     }, {
@@ -2694,7 +2694,7 @@ const routes = [
       component: () => import('@/views/vehretail/basicConfig/deliveryQuestionnaireConfig/index.vue'),
 
       meta: {
-        name: '交付满意度问卷配置管理',
+        name: '交付满意度问卷配置',
         keepAlive: true
       }
     }, {
@@ -2703,7 +2703,7 @@ const routes = [
       component: () => import('@/views/vehretail/basicConfig/deliveryQuestionnaireConfig/edit.vue'),
 
       meta: {
-        name: '交付满意度问卷配置管理详情',
+        name: '交付满意度问卷配置详情',
         noResourceUrl: 'true'
       }
     }, {

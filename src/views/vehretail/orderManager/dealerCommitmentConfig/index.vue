@@ -130,7 +130,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '承诺配置管理',
+      pageTitle: '承诺配置',
       pageType: 'list',
       // TIPS: 权限前缀 AISVR，根据实际情况修改
       moduleKey: 'AISVR-dealerCommitmentConfig',
@@ -279,7 +279,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '承诺配置管理',
+        businessType: '承诺配置',
         dataFetchPath: '/vr/web/order/dealerCommitmentConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -287,7 +287,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '承诺配置管理.xlsx');
+            await downloadExcel(res.excelUrl, '承诺配置.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

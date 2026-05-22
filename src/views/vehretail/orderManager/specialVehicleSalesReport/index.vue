@@ -186,7 +186,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '特殊车辆销售提报管理',
+      pageTitle: '特殊车辆销售提报',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVRFDI-specialVehicleSalesReport',
@@ -366,7 +366,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '特殊车辆销售提报管理',
+        businessType: '特殊车辆销售提报',
         dataFetchPath: '/vr/web/delivery/specialVehicleSalesReport/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -374,7 +374,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '特殊车辆销售提报管理.xlsx');
+            await downloadExcel(res.excelUrl, '特殊车辆销售提报.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
