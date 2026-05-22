@@ -7,5 +7,5 @@ const prefix = 'datareport/web/order/retailOrderInfo/';
  * @param {Object} data
  */
 export function getList (data) {
-  return api.jsonPost(prefix + 'queryOrderStatusBackRecord', data);
+  return api.jsonPost(prefix + 'pageOrderStatusBackRecord', data);
 };

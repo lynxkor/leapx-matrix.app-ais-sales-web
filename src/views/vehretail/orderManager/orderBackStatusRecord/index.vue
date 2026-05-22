@@ -28,7 +28,7 @@
           remote
           @change="modelListChange"
         >
-          <el-option
+        <el-option
           v-for="item in modelList"
           :key="item.value"
           :label="item.label"
@@ -148,7 +148,7 @@
         />
       </el-form-item>
       <el-form-item label="是否回退记录">
-        <fetch-select :options="yes_no_enum" v-value="true" disabled placeholder="请选择" clearable />
+        <fetch-select :options="yes_no_enum" value=1 disabled placeholder="请选择" clearable />
       </el-form-item>
       <el-form-item label="操作时间">
         <dateranges
@@ -388,7 +388,7 @@ export default {
         ],
         total: 0
       },
-      isAsc: true
+      isAsc: false
     };
   },
   created () {
@@ -401,13 +401,13 @@ export default {
   },
   methods: {
     handleSortChange (value) {
-      this.isAsc = !this.isAsc;
+      this.isAsc = value[0].order === 'asc';
       this.getData();
     },
     async modelSearch () {
       const res = await vehicleModelList({ seriesId: this.form.seriesId, status: 1 });
       if (res.length) {
-        const vehicleModelData = res.records.map(item => {
+        const vehicleModelData = res.map(item => {
           return {
             ...item,
             label: item.name,
