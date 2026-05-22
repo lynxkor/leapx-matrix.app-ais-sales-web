@@ -163,7 +163,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车批售-整车资金-资金账户月度余额',
+      pageTitle: '资金账户月度余额',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-fundAccountMonthBalance',

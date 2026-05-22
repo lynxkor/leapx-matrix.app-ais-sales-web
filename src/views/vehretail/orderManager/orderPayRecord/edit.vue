@@ -25,10 +25,10 @@
             <div class="common-section-body">
               <el-form :inline="true" class="form-detail">
                 <el-form-item label="整车订单：" prop="retailOrderCode">
-                  {{ form.retailOrderCode }}
+                  <el-link v-if="form.retailOrderId" type="primary" :href="`/sales/vehretail/ordermanager/retailorderinfo/edit?id=${form.retailOrderId}`" target="_blank">{{ form.retailOrderCode }}</el-link><span v-else>{{ form.retailOrderCode }}</span>
                 </el-form-item>
                 <el-form-item label="门店：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="交车单：" prop="deliveryNote">
                   {{ form.deliveryNote }}
@@ -116,7 +116,7 @@
                   {{ form.deliveryNote }}
                 </el-form-item>
                 <el-form-item label="VIN码：" prop="vin">
-                  {{ form.vin }}
+                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
                 </el-form-item>
                 <el-form-item label="收款类型：" prop="payCategory">
                   {{ payCategoryLabel }}
@@ -140,10 +140,10 @@
                   {{ form.payCode }}
                 </el-form-item>
                 <el-form-item label="整车订单：" prop="retailOrderCode">
-                  {{ form.retailOrderCode }}
+                  <el-link v-if="form.retailOrderId" type="primary" :href="`/sales/vehretail/ordermanager/retailorderinfo/edit?id=${form.retailOrderId}`" target="_blank">{{ form.retailOrderCode }}</el-link><span v-else>{{ form.retailOrderCode }}</span>
                 </el-form-item>
                 <el-form-item label="门店：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="所属母公司：" prop="parentCompany">
                   {{ form.parentCompany }}

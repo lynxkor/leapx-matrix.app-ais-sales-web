@@ -350,7 +350,7 @@
                   {{ form.orderUserId }}
                 </el-form-item>
                 <el-form-item label="销售门店：">
-                  {{ form.saleDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="合作类型：">
                   {{ form.cooperationTypeLabel }}
@@ -426,22 +426,22 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="订单物料码：">
-                  {{ form.materialsCode }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="物料描述：">
-                  {{ form.materialsDesc }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsDesc }}</el-link>
                 </el-form-item>
                 <el-form-item label="基本车系：">
-                  {{ form.seriesName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="基本车型：">
-                  {{ form.modelName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="车辆年型：">
                   {{ form.vehicleYearType }}
                 </el-form-item>
                 <el-form-item label="选装包：">
-                  {{ form.optionPackageName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleoptionpackage/edit?id=${form.optionPackageId}`" target="_blank">{{ form.optionPackageName }}</el-link>
                 </el-form-item>
               </el-form>
             </div>
@@ -727,6 +727,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 import FetchSelect from '@/libs/components/FetchSelect';
 import auditDialog from '@/libs/components/auditDialog';
+import { formatDateTime } from '@/libs/utils';
 
 const defaultForm = {
   id: '',
@@ -1113,7 +1114,7 @@ export default {
       this.form.optionPackageId = order.materials.optionPackageId || '';
       this.form.optionPackageName = order.materials.optionPackageName || '';
       this.form.orderStatus = order.orderStatus || null;
-      this.form.originalBenefitDate = order.rightsEnjoyDate || '';
+      this.form.originalBenefitDate = order.rightsEnjoyDate ? formatDateTime(order.rightsEnjoyDate, 'data') : '';
 
       // 重新查询权益类别列表，更新下拉框选项
       await this.getEquityCategoryList();

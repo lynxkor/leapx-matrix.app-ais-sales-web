@@ -301,7 +301,7 @@
                   {{ form.retailOrderId }}
                 </el-form-item>
                 <el-form-item label="零售订单号：" prop="retailOrderCode">
-                  {{ form.retailOrderCode }}
+                  <el-link v-if="form.retailOrderId" type="primary" :href="`/sales/vehretail/ordermanager/retailorderinfo/edit?id=${form.retailOrderId}`" target="_blank">{{ form.retailOrderCode }}</el-link><span v-else>{{ form.retailOrderCode }}</span>
                 </el-form-item>
                 <el-form-item label="商城订单号：" prop="mallOrderCode">
                   {{ form.mallOrderCode }}
@@ -310,7 +310,7 @@
                   {{ form.saleDealerCode }}
                 </el-form-item>
                 <el-form-item label="销售门店名称：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="收款类型 0-贷款;1-定金;2-尾款;3-权益抵扣;4-贷款首付款;5-定金权益;6-门店优惠;7-机动车发票其他费用;8-意向金：" prop="payCategory">
                   {{ form.payCategory }}

@@ -10,6 +10,7 @@
         :dataTransform="dataTransform"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="form.auditStatus === 0 || form.auditStatus === 2"
       >
         <template #status>
         </template>

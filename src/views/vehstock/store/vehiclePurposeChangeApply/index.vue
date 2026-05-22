@@ -10,9 +10,15 @@
         <el-input placeholder="请输入" v-model="form.applyNo" clearable />
       </el-form-item>
       <el-form-item label="申请门店" v-show="this.visibleCount === 3 || show">
-        <fetch-select :remote-method="getDealerListByName" remote v-model="form.dealerCodeList" placeholder="请输入门店编码或名称"
+        <el-select v-model="form.dealerCodeList" clearable filterable multiple collapse-tags>
+          <el-option v-for="item in applyStoreCodeList" :key="item.orgCode" :label="item.orgName" :value="item.orgCode">
+            <span style="float: left">{{ item.orgName }}</span>
+            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.orgCode }}</span>
+          </el-option>
+        </el-select>
+        <!-- <fetch-select :remote-method="getDealerListByName" remote v-model="form.dealerCodeList" placeholder="请输入门店编码或名称"
           labelKey="storeName" valueKey="storeCode" subLabelKey="storeCode" clearable filterable multiple
-          collapse-tags />
+          collapse-tags /> -->
       </el-form-item>
       <template v-if="show">
         <el-form-item label="用途变更类型">
@@ -123,6 +129,7 @@ export default {
         ...defaultForm
       },
       selectionList: [],
+      applyStoreCodeList: (this.$store.state.user.userInfo.orgPostUserList || []).filter(item => item.orgType === '1060'),
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -134,6 +141,7 @@ export default {
       reviewDrawerVisible: false, // 审核记录抽屉
       reviewData: {}, // 审核记录数据
       clickItemId: '',
+      userId: this.$store.state.user.userInfo.userId,
       optionObj: {
         id: 'vehiclePurposeChangeApplyTable',
         dataList: [],
@@ -264,6 +272,7 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
+    console.log('this.$store.state:', this.$store.state.user.userInfo.userId);
   },
   methods: {
     // 排序

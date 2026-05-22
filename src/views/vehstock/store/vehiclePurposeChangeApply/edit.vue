@@ -68,7 +68,7 @@
           </section>
           <section class="common-section">
             <div class="common-section-header">
-              <h2>门店库存调拨明细</h2>
+              <h2>明细信息</h2>
             </div>
             <div class="common-section-body">
               <div class="common-section-header">

@@ -69,7 +69,7 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
-import { getApplyUserStoreList, getLoginUser } from '@/libs/api/common';
+// import { getApplyUserStoreList } from '@/libs/api/common';
 import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
@@ -121,24 +121,24 @@ export default {
           size: pageSize
         },
         dataProp: [
-          {
-            props: 'id',
-            label: '主键',
-            visible: false,
-            width: 200,
-            fixed: 'left',
-            buttons: [{
-              click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehstock/store/storeSharedInventory/edit',
-                  query: {
-                    id: row.id
-                  }
-                });
-              },
-              type: 'primary'
-            }]
-          },
+          // {
+          //   props: 'id',
+          //   label: '主键',
+          //   visible: false,
+          //   width: 200,
+          //   fixed: 'left',
+          //   buttons: [{
+          //     click: (rowIndex, row) => {
+          //       this.$router.push({
+          //         path: '/vehstock/store/storeSharedInventory/edit',
+          //         query: {
+          //           id: row.id
+          //         }
+          //       });
+          //     },
+          //     type: 'primary'
+          //   }]
+          // },
           { props: 'vin', label: 'VIN', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }] },
           { props: 'sharedVehicleStatusLabel', label: '共享车辆状态', visible: true, width: 140 },
           { props: 'sharedVehicleCategoryLabel', label: '共享车辆类别', visible: true, width: 140 },
@@ -171,7 +171,7 @@ export default {
               {
                 name: '发布',
                 show: (row) => {
-                  return this.dealerList.includes(Number(row.dealerCode)) && row.sharedVehicleStatus === 5;
+                  return this.dealerList.includes(row.dealerCode) && row.sharedVehicleStatus === 5;
                 },
                 popconfirmTitle: '是否确定发布?',
                 click: (rowIndex, row) => {
@@ -192,7 +192,7 @@ export default {
               }, {
                 name: '作废',
                 show: (row) => {
-                  return this.dealerList.includes(Number(row.dealerCode)) && (row.sharedVehicleStatus === 5 || row.sharedVehicleStatus === 10);
+                  return this.dealerList.includes(row.dealerCode) && (row.sharedVehicleStatus === 5 || row.sharedVehicleStatus === 10);
                 },
                 popconfirmTitle: '是否确定作废?',
                 click: (rowIndex, row) => {
@@ -213,7 +213,7 @@ export default {
               }, {
                 name: '下架',
                 show: (row) => {
-                  return this.dealerList.includes(Number(row.dealerCode)) && row.sharedVehicleStatus === 10;
+                  return this.dealerList.includes(row.dealerCode) && row.sharedVehicleStatus === 10;
                 },
                 popconfirmTitle: '是否确定下架?',
                 click: (rowIndex, row) => {
@@ -435,8 +435,11 @@ export default {
     },
     // 查询申请人门店 get请求
     async getDealerDetailByCode () {
-      const res = await getApplyUserStoreList();
-      this.dealerList = (res || []).map(item => Number(item.applyUserStoreCode)); // 提取门店id
+      const data = (this.$store.state.user.userInfo.orgPostUserList || []).filter(item => item.orgType === '1060');
+      console.log('data:', data);
+
+      this.dealerList = data.map(item => item.orgCode); // 提取门店code
+      console.log('this.dealerList:', this.dealerList);
       this.getData();
     },
   }

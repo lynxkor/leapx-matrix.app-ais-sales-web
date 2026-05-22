@@ -400,11 +400,12 @@
                  <el-form-item label="省市区：" prop="areaCode">
                   <el-cascader
                     placeholder="请选择省市区"
-                    v-model="areaCode"
+                    v-model="form.areaCode"
                     :props="orgProps"
                     :options="areaOptions"
                     filterable
                     @change="handleChangeArea"
+                    :validateEvent="false"
                     clearable>
                   </el-cascader>
                 </el-form-item>
@@ -550,6 +551,7 @@ const defaultForm = {
   expressPhotoUrl: '',
   certificatePhotoUrl: '',
   dataSource: '',
+  areaCode: [],
 };
 
 export default {
@@ -618,7 +620,6 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       orderCategory: routeOrderCategory,
-      areaCode: [],
       originalForm: { ...form },
       emptyText: '若要启用此内容，请创建记录',
       wholesaleOrderCodeList: [],
@@ -674,6 +675,21 @@ export default {
         receiverAddress: [
           { required: true, message: '请输入收件地址', trigger: 'change' }
         ],
+        areaCode: [
+          {
+            required: true,
+            message: '请选择省市区',
+            trigger: 'change',
+            validator: (_rule, _value, callback) => {
+              const area = _rule.fullField ? this.form[_rule.fullField] : this.form.areaCode;
+              if (!area || area.length === 0) {
+                callback(new Error('请选择省市区'));
+              } else {
+                callback();
+              }
+            }
+          }
+        ],
       }
     };
   },
@@ -724,8 +740,8 @@ export default {
         this.form.receiverDistrictCode = res.receiverDistrictCode;
         this.form.receiverDistrictName = res.receiverCityName;
         this.form.receiverAddress = res.receiverAddress;
-        this.areaCode = [res.receiverProvinceCode, res.receiverCityCode, res.receiverDistrictCode].filter(Boolean);
-        console.log('this.areaCode', this.areaCode);
+        this.form.areaCode = [res.receiverProvinceCode, res.receiverCityCode, res.receiverDistrictCode].filter(Boolean);
+        console.log('this.areaCode', this.form.areaCode);
       });
     },
     otherwholesaleOrderInfo (val, row) {
@@ -761,8 +777,8 @@ export default {
         this.form.receiverDistrictCode = res.receiverDistrictCode;
         this.form.receiverDistrictName = res.receiverCityName;
         this.form.receiverAddress = res.receiverAddress;
-        this.areaCode = [res.receiverProvinceCode, res.receiverCityCode, res.receiverDistrictCode].filter(Boolean);
-        console.log('this.areaCode', this.areaCode);
+        this.form.areaCode = [res.receiverProvinceCode, res.receiverCityCode, res.receiverDistrictCode].filter(Boolean);
+        console.log('this.areaCode', this.form.areaCode);
       });
     },
     async getDealerListByName (params) {
@@ -909,8 +925,8 @@ export default {
       const id = this._id;
       if (id) {
         return getDetail(id).then(res => {
-          this.areaCode = [res.receiverProvinceCode, res.receiverCityCode, res.receiverDistrictCode];
-          console.log('res', this.areaCode);
+          res.areaCode = [res.receiverProvinceCode, res.receiverCityCode, res.receiverDistrictCode];
+          console.log('res', this.form.areaCode);
           return res;
         });
       }
@@ -927,12 +943,7 @@ export default {
         const message = orderCategory === '10' ? '整车批售订单号' : '企业客户订单号';
         throw new Error(message + '校验失败');
       }
-      // 校验省市区
-      if (!this.areaCode || this.areaCode.length < 3) {
-        this.$message.error('请选择完整的省市区');
-        throw new Error('省市区校验失败');
-      }
-      if (!this.areaCode || this.areaCode.length === 0) {
+      if (!this.form.areaCode || this.form.areaCode.length === 0) {
         this.form.receiverProvinceCode = '';
         this.form.receiverProvinceName = '';
         this.form.receiverCityCode = '';
