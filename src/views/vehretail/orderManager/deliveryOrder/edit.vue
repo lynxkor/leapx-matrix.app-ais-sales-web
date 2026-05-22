@@ -285,7 +285,7 @@
           >
             <template v-slot:operation_default="{ row }">
               <el-link
-                v-if="form.status === 4 && canDeletePaymentRecord(row) && isEditing"
+                v-if="form.status === 4 && canDeletePaymentRecord(row)"
                 type="danger"
                 :underline="false"
                 @click="handleDeletePaymentRecord(row)"
