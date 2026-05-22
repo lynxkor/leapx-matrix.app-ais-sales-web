@@ -369,7 +369,7 @@ export default {
           { props: 'reviewOpinion', label: '复审意见', visible: true, width: 120 },
           { props: 'postedLabel', label: '是否入账', visible: true, width: 100 },
           { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 100 },
-          { props: 'deliveryOrderCode', label: '交车单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/sales/vehretail/orderManager/deliveryOrder/edit?id=' + row.deliveryOrderCode); }, type: 'primary' }] },
+          { props: 'deliveryOrderCode', label: '交车单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/sales/vehretail/orderManager/deliveryOrder/edit?id=' + row.deliveryOrderId); }, type: 'primary' }] },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 100 },
           // { props: 'modifierName', label: '更新人', visible: true, width: 200 },

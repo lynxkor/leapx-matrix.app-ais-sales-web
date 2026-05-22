@@ -159,16 +159,16 @@
                   {{ form.orderMaterialsCode }}
                 </el-form-item>
                 <el-form-item label="销售门店：">
-                  {{ form.dealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="合作类型：">
                   {{ form.cooperationTypeLabel || '-' }}
                 </el-form-item>
                 <el-form-item label="车型：">
-                  {{ form.modelName || '-' }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName || '-' }}</el-link>
                 </el-form-item>
                 <el-form-item label="车系：">
-                  {{ form.seriesName || '-' }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName || '-' }}</el-link>
                 </el-form-item>
                 <el-form-item label="购车人姓名：">
                   {{ form.buyerName }}
@@ -231,7 +231,7 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="门店名称：">
-                  {{ form.dealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="门店编码：">
                   {{ form.dealerCode }}
@@ -339,7 +339,7 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="物料描述：">
-                  {{ form.materialsDesc }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsDesc }}</el-link>
                 </el-form-item>
               </el-form>
             </div>
@@ -564,10 +564,10 @@
                   {{ form.allocationMaterialsCode }}
                 </el-form-item>
                 <el-form-item label="销售门店：">
-                  {{ form.saleDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="交付门店：">
-                  {{ form.deliveryDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.deliveryDealerCode}`" target="_blank">{{ form.deliveryDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="交车VIN码：">
                   {{ form.deliveryVin }}

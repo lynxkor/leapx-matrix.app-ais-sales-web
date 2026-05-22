@@ -125,10 +125,10 @@
                   {{ form.createTime }}
                 </el-form-item>
                 <el-form-item label="车系名称：" prop="seriesName">
-                  {{ form.seriesName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="年款名称：" prop="yearTypeName">
-                  {{ form.yearTypeName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${form.yearTypeId}`" target="_blank">{{ form.yearTypeName }}</el-link>
                 </el-form-item>
                 <el-form-item label="预售急单设置：" prop="preSaleUrgentStatus">
                   <span :class="['status-tag', form.preSaleUrgentStatus === 1 ? 'primary' : 'danger']">{{ form.preSaleUrgentStatusLabel }}</span>

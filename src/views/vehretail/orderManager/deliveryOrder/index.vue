@@ -47,7 +47,6 @@
           <fetch-select
             filterable
             clearable
-            multiple
             remote
             collapseTags
             v-model="form.saleDealerCode"
@@ -60,10 +59,9 @@
           <fetch-select
             filterable
             clearable
-            multiple
             remote
             collapseTags
-            v-model="form.exclusiveServiceStoreCode"
+            v-model="form.deliveryDealerCode"
             :remote-method="remoteMethods.getServiceDealer"
             value-key="storeCode"
             label-key="storeName"
@@ -219,10 +217,10 @@ export default {
           return await listVehicleModel({ modelNameLike: query, status: 1 });
         },
         getSaleDealer: async (query) => {
-          return await listOrgStoreInfo({ modelNameLike: query, isSales: true });
+          return await listOrgStoreInfo({ keyword: query, isSales: true });
         },
         getServiceDealer: async (query) => {
-          return await listOrgStoreInfo({ modelNameLike: query, isSupportDeliver: true });
+          return await listOrgStoreInfo({ keyword: query, isSupportDeliver: true });
         }
       },
       optionObj: {

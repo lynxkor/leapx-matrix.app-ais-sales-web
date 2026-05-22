@@ -10,7 +10,7 @@
       class="ais-search-form"
     >
       <el-form-item label="退订申请单号">
-        <tag-input v-model="form.refundCodeList" placeholder="请输入" />
+        <tag-input v-model="form.refundCodeList" placeholder="请输入" clearable/>
       </el-form-item>
       <el-form-item label="申请状态"  v-show="this.visibleCount === 3 || show">
         <fetch-select
@@ -32,22 +32,22 @@
       </el-form-item>
       <template v-if="show">
         <el-form-item label="购车人姓名">
-          <el-input v-model="form.buyerName" placeholder="请输入" />
+          <el-input v-model="form.buyerName" placeholder="请输入"  clearable/>
         </el-form-item>
         <el-form-item label="购车人手机号">
-          <el-input v-model="form.buyerPhone" placeholder="请输入" />
+          <el-input v-model="form.buyerPhone" placeholder="请输入"  clearable/>
         </el-form-item>
         <el-form-item label="销售门店">
-          <el-input v-model="form.saleDealerName" placeholder="请输入" />
+          <tag-input v-model="form.saleDealerNameList" placeholder="请输入"  clearable/>
         </el-form-item>
         <el-form-item label="基础车型">
-          <el-input v-model="form.modelName" placeholder="请输入" />
+          <el-input v-model="form.modelName" placeholder="请输入"  clearable/>
         </el-form-item>
         <el-form-item label="商城订单编号">
-          <tag-input v-model="form.mallOrderCodeList" placeholder="请输入" />
+          <tag-input v-model="form.mallOrderCodeList" placeholder="请输入"  clearable/>
         </el-form-item>
         <el-form-item label="整车订单号">
-          <tag-input v-model="form.retailOrderCodeList" placeholder="请输入" />
+          <tag-input v-model="form.retailOrderCodeList" placeholder="请输入"  clearable/>
         </el-form-item>
         <el-form-item label="申请时间">
           <el-date-picker
@@ -60,6 +60,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             @change="handleCreateTimeChange"
+            clearable
           />
         </el-form-item>
       </template>
