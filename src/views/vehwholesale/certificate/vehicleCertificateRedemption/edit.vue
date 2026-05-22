@@ -925,7 +925,7 @@ export default {
       const id = this._id;
       if (id) {
         return getDetail(id).then(res => {
-          this.form.areaCode = [res.receiverProvinceCode, res.receiverCityCode, res.receiverDistrictCode].filter(Boolean);
+          res.areaCode = [res.receiverProvinceCode, res.receiverCityCode, res.receiverDistrictCode];
           console.log('res', this.form.areaCode);
           return res;
         });
