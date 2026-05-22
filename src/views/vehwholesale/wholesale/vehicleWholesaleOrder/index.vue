@@ -15,9 +15,9 @@
         <el-form-item label="配车VIN码">
           <tag-input v-model="form.vins" placeholder="请输入" />
         </el-form-item>
-         <el-form-item label="创建时间"  v-show="this.visibleCount === 3 || show">
+         <el-form-item label="订单时间"  v-show="this.visibleCount === 3 || show">
         <dateranges
-        v-model="form.createTime"
+        v-model="form.orderTime"
         :setDefault="true"
         deftTime="本年"
         ref="transactionTime"/>
@@ -86,10 +86,10 @@
         />
           <!-- <tag-input v-model="form.replenishApplyCodes" placeholder="请输入" /> -->
         </el-form-item>
-      <el-form-item label="订单时间"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="创建时间" >
         <el-date-picker
          :default-time="['00:00:00', '23:59:59']"
-          v-model="form.orderTime"
+          v-model="form.createTime"
           type="daterange"
           :picker-options="pickerOptions"
           range-separator="至"
@@ -397,7 +397,7 @@ const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   wholesaleOrderCode: '',
   status: '',
-  orderTime: '',
+  orderTime: [],
   confirmTime: '',
   saleDealerCode: '',
   orderCategory: '',
@@ -541,7 +541,7 @@ export default {
           { props: 'orderStatusLabel', label: '订单状态', visible: true, width: 100 },
           { props: 'orderTime', label: '订单时间', visible: true, width: 200 },
           { props: 'confirmTime', label: '确认时间', visible: true, width: 200 },
-          // { props: 'saleDealerName', label: '销售公司名称', visible: true, width: 200 },
+          { props: 'saleDealerName', label: '销售公司', visible: true, width: 200 },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 100 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 120 },
           {

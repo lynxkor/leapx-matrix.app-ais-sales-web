@@ -156,7 +156,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '批售请款通知管理',
+      pageTitle: '批售请款通知',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-vehicleWholesalePaymentNotice',

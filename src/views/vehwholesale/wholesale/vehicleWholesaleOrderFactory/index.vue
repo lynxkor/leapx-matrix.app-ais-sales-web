@@ -598,7 +598,7 @@ export default {
           { props: 'orderStatusLabel', label: '订单状态', visible: true, width: 100 },
           { props: 'orderTime', label: '订单时间', visible: true, width: 180 },
           { props: 'confirmTime', label: '确认时间', visible: true, width: 180 },
-          // { props: 'saleDealerName', label: '销售公司名称', visible: true, width: 200 },
+          { props: 'saleDealerName', label: '销售公司名称', visible: true, width: 200 },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 120 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 120 },
           {

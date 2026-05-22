@@ -280,7 +280,8 @@ const defaultForm = {
   actualDeliveryWay: '',
   regionName: '',
   carrierRecordCode: '',
-  createTime: ''
+  createTime: '',
+  status: 1,
 };
 
 const pageSize = 20;
