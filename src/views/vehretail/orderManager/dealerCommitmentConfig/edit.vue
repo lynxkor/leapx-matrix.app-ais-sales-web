@@ -162,7 +162,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '承诺配置管理',
+      pageTitle: '承诺配置',
       pageType: 'edit',
       // TIPS: 权限前缀 AISVR，根据实际情况修改，name为小写驼峰格式
       moduleKey: 'AISVR-dealerCommitmentConfig',

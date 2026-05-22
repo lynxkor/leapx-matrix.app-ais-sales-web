@@ -157,7 +157,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '激活模式配置管理',
+      pageTitle: '激活模式配置',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-activationModeConfig',
@@ -297,7 +297,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '激活模式配置管理',
+        businessType: '激活模式配置',
         dataFetchPath: 'vr/web/basicConfig/activationModeConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -305,7 +305,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '激活模式配置管理.xlsx');
+            await downloadExcel(res.excelUrl, '激活模式配置.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',
