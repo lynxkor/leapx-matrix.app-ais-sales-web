@@ -78,18 +78,18 @@
             :remote-method="remoteMethods.optional"
           />
       </el-form-item>
-      <!-- <el-form-item label="整车订单状态">
+      <el-form-item label="商城订单号">
+        <el-input v-model="form.mallOrderCode" clearable placeholder="请输入" />
+      </el-form-item>
+      <el-form-item label="整车订单状态">
         <fetch-select
           :request="fetchOptions"
           enumCode="vr_order_status"
-          v-model="form.orderStatus"
+          v-model="form.retailOrderStatus"
           placeholder="请选择"
           clearable
           filterable
         />
-      </el-form-item> -->
-      <el-form-item label="商城订单号">
-        <el-input v-model="form.mallOrderCode" clearable placeholder="请输入" />
       </el-form-item>
       <el-form-item label="原订单状态">
         <fetch-select
@@ -193,7 +193,7 @@
 <script>
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList as queryOrderStatusBackRecord } from '@/api/vehretail/orderManager/vrRetailOrderBackRecord/index';
+import { getList as pageOrderStatusBackRecord } from '@/api/vehretail/orderManager/vrRetailOrderBackRecord/index';
 import { getTimeRangeByTypeFormat } from '@/libs/utils/time';
 import commonMixins from '@/libs/mixins/commonMixins';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -381,7 +381,7 @@ export default {
           { props: 'deliveryTime', label: '交车时间', visible: true, width: 180 },
           { props: 'statusRollbackFlagLabel', label: '是否回退记录', visible: true, width: 120 },
           { props: 'orderStatusLabel', label: '整车订单状态', visible: true, width: 150 },
-          { props: 'originalOrderStatusLabel', label: '原始订单状态', visible: true, width: 150 },
+          { props: 'originalOrderStatusLabel', label: '原订单状态', visible: true, width: 150 },
           { props: 'newOrderStatusLabel', label: '新订单状态', visible: true, width: 150 },
           { props: 'operationDesc', label: '操作描述', visible: true, width: 200 },
           { props: 'operationTime', label: '操作时间', visible: true, width: 180, fixed: 'right', sortable: true }
@@ -468,13 +468,13 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       const reqParams = this.getFormData() || {};
-      if (this.selectionList.length > 0) {
-        const ids = this.selectionList.map(item => item.id) || [];
-        reqParams.ids = ids;
-      }
+      // if (this.selectionList.length > 0) {
+      //   const ids = this.selectionList.map(item => item.id) || [];
+      //   reqParams.ids = ids;
+      // }
       exportTable({
         businessType: '回退订单状态记录',
-        dataFetchPath: 'datareport/web/order/retailOrderInfo/queryOrderStatusBackRecord',
+        dataFetchPath: 'datareport/web/order/retailOrderInfo/pageOrderStatusBackRecord',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -502,7 +502,7 @@ export default {
       this.loading = true;
       this.selectionList = [];
 
-      queryOrderStatusBackRecord({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
+      pageOrderStatusBackRecord({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
           this.optionObj.dataList = res.records.map(item => {
             return {
