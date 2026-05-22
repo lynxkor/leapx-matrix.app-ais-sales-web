@@ -68,12 +68,12 @@
                     :disabled="true"
                   />
                 </el-form-item>
-                <el-form-item label="交付门店：" prop="deliveryDealerCode">
+                <el-form-item label="交付门店：" prop="deliveryDealerName">
                   <fetch-select
                     filterable
                     clearable
                     remote
-                    v-model="form.deliveryDealerCode"
+                    v-model="form.deliveryDealerName"
                     :remote-method="getDealerListByName"
                     value-key="storeCode"
                     label-key="storeName"
