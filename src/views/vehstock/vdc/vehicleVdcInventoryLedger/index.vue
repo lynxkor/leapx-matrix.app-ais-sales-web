@@ -11,6 +11,7 @@
       </el-form-item>
       <el-form-item label="VDC入库时间" v-show="this.visibleCount === 3 || show">
         <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.inboundDateTime" type="daterange"
+        unlink-panels
           :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
           start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>

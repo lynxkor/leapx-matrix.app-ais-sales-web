@@ -116,6 +116,7 @@
          :default-time="['00:00:00', '23:59:59']"
           v-model="form.depositTime"
           type="daterange"
+          unlink-panels
           :picker-options="pickerOptions"
           range-separator="至"
           value-format="yyyy-MM-dd HH:mm:ss"
@@ -123,11 +124,33 @@
           end-placeholder="结束日期"
         />
       </el-form-item>
+      <el-form-item label="是否回退记录">
+        <fetch-select :options="yes_no_enum" v-model="form.statusRollbackFlag" disabled placeholder="请选择" clearable />
+      </el-form-item>
+      <el-form-item label="操作时间">
+        <dateranges
+            v-model="form.createTime"
+            :setDefault="true"
+            deftTime="最近一周"
+          />
+        <!-- <el-date-picker
+         :default-time="['00:00:00', '23:59:59']"
+          v-model="form.createTime"
+          type="daterange"
+          unlink-panels
+          :picker-options="pickerOptions"
+          range-separator="至"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        /> -->
+      </el-form-item>
       <el-form-item label="批售配车时间">
         <el-date-picker
          :default-time="['00:00:00', '23:59:59']"
           v-model="form.wholesaleAllocationTime"
           type="daterange"
+          unlink-panels
           :picker-options="pickerOptions"
           range-separator="至"
           value-format="yyyy-MM-dd HH:mm:ss"
@@ -140,6 +163,7 @@
          :default-time="['00:00:00', '23:59:59']"
           v-model="form.allocationSettlementTime"
           type="daterange"
+          unlink-panels
           :picker-options="pickerOptions"
           range-separator="至"
           value-format="yyyy-MM-dd HH:mm:ss"
