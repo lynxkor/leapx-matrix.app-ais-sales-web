@@ -118,6 +118,13 @@
                     disabled
                   />
                 </el-form-item>
+                <el-form-item label="功能演示视频链接：" prop="videoLink">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.videoLink"
+                    disabled
+                  />
+                </el-form-item>
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="车系名称：" prop="seriesName">
@@ -143,6 +150,9 @@
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
+                </el-form-item>
+                <el-form-item label="功能演示视频链接：" prop="videoLink">
+                  {{ form.videoLink }}
                 </el-form-item>
               </el-form>
             </div>
