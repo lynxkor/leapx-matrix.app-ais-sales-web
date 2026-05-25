@@ -142,6 +142,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.orderSortTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -154,6 +155,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.paymentTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -166,6 +168,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.deliveryTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -178,6 +181,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.createTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
