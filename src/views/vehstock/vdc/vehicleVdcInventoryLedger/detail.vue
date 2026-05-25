@@ -110,7 +110,7 @@
             <el-form-item label="销售预留操作人：" prop="salesReservationOperatorName">
               {{ info.salesReservationOperatorName }}
             </el-form-item>
-            <el-form-item label="允许锁零售单1：" prop="allowLockRetail">
+            <el-form-item label="允许锁零售单：" prop="allowLockRetail">
               {{ info.allowLockRetailLabel }}
             </el-form-item>
             <el-form-item label="ERP销售订单号：" prop="erpSalesOrder">
@@ -128,7 +128,7 @@
             <el-form-item label="同步SAP状态：" prop="sapSyncStatus" style="width: 100%;">
               {{ info.sapSyncStatus }}
             </el-form-item>
-            <el-form-item label="整车物流预留备注1：" prop="vehicleLogisticsReserveRemark" style="width: 100%;">
+            <el-form-item label="整车物流预留备注：" prop="vehicleLogisticsReserveRemark" style="width: 100%;">
               {{ info.vehicleLogisticsReserveRemark }}
             </el-form-item>
             <el-form-item label="特殊预留备注：" prop="specialReserveRemark" style="width: 100%;">
