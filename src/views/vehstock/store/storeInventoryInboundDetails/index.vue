@@ -122,8 +122,8 @@ export default {
         dataProp: [
           { props: 'name', label: '车辆入库单号', visible: true, width: 200 },
           { props: 'vin', label: 'VIN', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }] },
-          { props: 'materialsCode', label: '物料编码', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsId}`, '_blank'); }, type: 'primary' }] },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
+          { props: 'materialsCode', label: '物料编码', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'drivingRangeName', label: '续航里程', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicledrivingrange/edit?id=${row.drivingRangeId}`, '_blank'); }, type: 'primary' }] },
           { props: 'rangePowerName', label: '选配动力', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclerangepower/edit?id=${row.rangePowerId}`, '_blank'); }, type: 'primary' }] },
           { props: 'exteriorName', label: '外观', visible: true, width: 100, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleexterior/edit?id=${row.exteriorId}`, '_blank'); }, type: 'primary' }] },
