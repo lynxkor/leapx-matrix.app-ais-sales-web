@@ -854,7 +854,7 @@ export default {
           { required: false, message: '请输入开票名称', trigger: 'change' }
         ],
         invoiceTime: [
-          { required: false, message: '请选择开票时间', trigger: 'change' }
+          { required: true, message: '请选择开票时间', trigger: 'change' }
         ],
         invoiceAmount: [
           { required: false, message: '请输入发票金额', trigger: 'change' }

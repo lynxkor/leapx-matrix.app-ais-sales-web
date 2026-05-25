@@ -122,7 +122,6 @@
                   <el-input
                     placeholder="请输入"
                     v-model="form.videoLink"
-                    disabled
                   />
                 </el-form-item>
               </el-form>
