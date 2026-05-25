@@ -34,18 +34,18 @@
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
         @reset="onReset" />
     </el-form>
-    <div class="ais-active">
-      <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="主页" name="homePage"></el-tab-pane>
-        <el-tab-pane label="电量不足" name="fenceCrossed"></el-tab-pane>
-        <el-tab-pane label="实车交付未出库" name="fenceNotCrossed"></el-tab-pane>
-      </el-tabs>
-    </div>
+    <!-- <div class="ais-active">
+    </div> -->
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div class="ais-table-c">
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="主页" name="homePage"></el-tab-pane>
+        <el-tab-pane label="电量不足" name="fenceCrossed"></el-tab-pane>
+        <el-tab-pane label="实车交付未出库" name="fenceNotCrossed"></el-tab-pane>
+      </el-tabs>
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed centralized
         :option-obj="optionObj" :get-config="getConfig" :save-or-update="saveOrUpdate"
         @paginationChange="paginationChange" @handleSelect="handleSelectionChange" @listSelect="handleListSelect"
@@ -388,12 +388,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.m-vehicle-vdc-inventory-ledger-list {
-  .ais-search-form {
-    border: 0;
+.m-vehicle-abnormal-record-list {
+  ::v-deep .m-vxe-table .m-vxe-table-options {
+    top: -96px;
   }
   .ais-actions {
-    margin: 0px 0 16px 0;
+    margin-bottom: 8px;
   }
   .ais-table-c {
     height: calc(100% - 168px);
