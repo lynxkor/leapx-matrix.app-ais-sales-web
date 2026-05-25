@@ -996,7 +996,7 @@ export default {
     },
     openDialogShow () {
       // 确认时间
-      const warnMsg = '系统中的开票日期' + this.form.invoiceTime + '，请确认是否正确；若正确，请点击继续交车；若不正确，请点击取消并修改。';
+      const warnMsg = (this.form.invoiceTime ? '系统中的开票日期' + this.form.invoiceTime : '系统中的开票日期为空') + '，请确认是否正确；若正确，请点击继续交车；若不正确，请点击取消并修改。';
       this.$confirm(warnMsg, '操作提醒', {
         confirmButtonText: '继续交车',
         cancelButtonText: '取消',
