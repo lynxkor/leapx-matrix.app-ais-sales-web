@@ -1,6 +1,6 @@
 <template>
   <div class="page-common m-vr-equity-category-list">
-    <div class="ais-actions">
+    <div class="ais-actions" style="margin-top: 0;">
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>

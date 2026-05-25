@@ -501,7 +501,10 @@
                 :data="form.logList"
                 height="300"
                 stripe
+                border="inner"
                 :resizable="true"
+                show-overflow
+                size="medium"
               >
                 <vxe-column type="seq" title="序号" width="80" fixed="left"></vxe-column>
                 <vxe-column field="creatorName" title="操作人" min-width="150"></vxe-column>
