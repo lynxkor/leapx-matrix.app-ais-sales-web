@@ -31,37 +31,16 @@
                   {{ form.code }}
                 </el-form-item>
                 <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationName">
-                   <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                      query: {
-                        id: form.fundFinancialOrganizationId,
-                      },
-                    })"
-                   type="text">{{ form.fundFinancialOrganizationName }}</el-button>
+                   <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.fundFinancialOrganizationId}`" target="_blank">{{ form.fundFinancialOrganizationName }}</el-link>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
                 </el-form-item>
                 <el-form-item label="经销商名称：" prop="dealerName">
-                   <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/partner/channelManagement/shopDetail',
-                      query: {
-                        dealerCode: form.dealerCode,
-                      },
-                    })"
-                   type="text">{{form.dealerName}}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="经销商编码：" prop="dealerCode">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/partner/channelManagement/shopDetail',
-                      query: {
-                        dealerCode: form.dealerCode,
-                      },
-                    })"
-                   type="text">{{form.dealerCode}}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="统一社会信用代码：" prop="unifiedSocialCreditCode">
                   {{ form.unifiedSocialCreditCode }}
@@ -83,7 +62,7 @@
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="VIN号：" prop="vin">
-                  {{ form.vin }}
+                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
                 </el-form-item>
                 <el-form-item label="融资数据来源：" prop="financingDataSource">
                   {{ form.financingDataSourceLabel }}
@@ -192,7 +171,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     }
   },
   watch: {
@@ -223,6 +202,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

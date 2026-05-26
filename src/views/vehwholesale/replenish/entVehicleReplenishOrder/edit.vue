@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="企业客户补货订单："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -14,16 +14,16 @@
         :showEditBtn="form.auditStatus === 0 || form.auditStatus === 4"
       >
         <template #status>
-          {{ form.entReplenishOrderCode }}
+          <!-- {{ form.entReplenishOrderCode }} -->
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
         </template>
         <template #extraButtons>
-          <el-button :disabled="!form.buttonsControls.editButton" size="small" @click="handleAddDetail" >添加补货明细</el-button>
-          <el-button :disabled="!form.buttonsControls.submitAuditButton" @click="handleCheckSubmit" >提交审批</el-button>
-          <el-button :disabled="!form.buttonsControls.auditButton"  size="small" @click="handleCheckStatus" >审核</el-button>
-          <el-button :disabled="!form.buttonsControls.cancelButton"  size="small" @click="handleCancel" >作废</el-button>
-          <el-button :disabled="!form.buttonsControls.deleteButton" size="small"  @click="handleDelete" >删除</el-button>
+          <el-button v-if ="peraddDetail && form.buttonsControls && form.buttonsControls.editButton" size="small" @click="handleAddDetail" >添加补货明细</el-button>
+          <el-button v-if ="perbatchSubmitAudit && form.buttonsControls && form.buttonsControls.submitAuditButton" @click="handleCheckSubmit" :loading="handleCheckSubmitLoading">提交审批</el-button>
+          <el-button v-if ="perbatchAudit && form.buttonsControls && form.buttonsControls.auditButton"  size="small" @click="handleCheckStatus" >审核</el-button>
+          <el-button v-if ="perbatchCancel && form.buttonsControls && form.buttonsControls.cancelButton"  size="small" @click="handleCancel" :loading="handleCancelLoading">作废</el-button>
+          <el-button v-if ="canDelete && form.buttonsControls && form.buttonsControls.deleteButton" size="small"  @click="handleDelete" :loading="handleDeleteLoading">删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -197,10 +197,10 @@
                   {{ form.salesMarketLabel }}
                 </el-form-item>
                 <el-form-item label="企业客户名称：" prop="entCustomerName">
-                  {{ form.entCustomerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.entCustomerCode}`" target="_blank">{{ form.entCustomerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="销售公司：" prop="saleCompanyName">
-                  {{ form.saleCompanyName }}
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundSaleCompany/edit?id=${form.saleCompanyId}`" target="_blank">{{ form.saleCompanyName }}</el-link>
                 </el-form-item>
                  <el-form-item label="销售门店名称：" prop="saleDealerName">
                   {{ form.saleDealerName }}
@@ -212,14 +212,7 @@
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                      query: {
-                        id: form.financialOrganizationId,
-                      },
-                    })"
-                   type="text">{{ form.financialOrganizationName }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.financialOrganizationId}`" target="_blank">{{ form.financialOrganizationName }}</el-link>
                 </el-form-item>
                 <el-form-item label="是否赊销：" prop="creditSaleFlagLabel">
                   {{ form.creditSaleFlagLabel }}
@@ -341,10 +334,10 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="审核人：" prop="auditorUserId">
+                <el-form-item label="审核人：" prop="auditorName">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.auditorUserId"
+                    v-model="form.auditorName"
                     clearable
                     disabled
                   />
@@ -408,9 +401,69 @@
                   @remove-row="handleRemoveRow"
                   @page-size-change="pageSizeChange"
                   @current-page-change="currentPageChange"
-                  @value-change = "cellChange"
                   :auth="{edit: isEditing, delete: isEditing}"
-                />
+                >
+                  <template #default="{ row, column }">
+                    <template v-if="column.property === 'materialsCode' && row.materialsId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsId}`" target="_blank">
+                        {{ row.materialsCode }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'modelName' && row.modelId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`" target="_blank">
+                        {{ row.modelName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'drivingRangeName' && row.drivingRangeId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleDrivingRange/edit?id=${row.drivingRangeId}`" target="_blank">
+                        {{ row.drivingRangeName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'rangePowerName' && row.rangePowerId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleRangePower/edit?id=${row.rangePowerId}`" target="_blank">
+                        {{ row.rangePowerName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'exteriorName' && row.exteriorId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleExterior/edit?id=${row.exteriorId}`" target="_blank">
+                        {{ row.exteriorName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'interiorName' && row.interiorId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleInterior/edit?id=${row.interiorId}`" target="_blank">
+                        {{ row.interiorName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'wheelHubName' && row.wheelHubId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleWheelHub/edit?id=${row.wheelHubId}`" target="_blank">
+                        {{ row.wheelHubName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'batteryCellName' && row.batteryCellId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleBatteryCell/edit?id=${row.batteryCellId}`" target="_blank">
+                        {{ row.batteryCellName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'yearTypeName' && row.yearTypeId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleYearType/edit?id=${row.yearTypeId}`" target="_blank">
+                        {{ row.yearTypeName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'roofName' && row.roofId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleRoof/edit?id=${row.roofId}`" target="_blank">
+                        {{ row.roofName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'optionPackageName' && row.optionPackageId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleOptionPackage/edit?id=${row.optionPackageId}`" target="_blank">
+                        {{ row.optionPackageName }}
+                      </el-link>
+                    </template>
+                    <template v-else>
+                      {{ row[column.property] }}
+                    </template>
+                  </template>
+                </edit-table>
               </div>
               </div>
             </div>
@@ -425,7 +478,6 @@
                 <AisAttachment
                   :businessId="_id"
                   configCode="ent_vehicle_replenish_order"
-                  attachType="其他"
                   ref="attachment"
                 />
               </div>
@@ -463,6 +515,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { getAreaTree } from '@/utils';
 import AddEntVehicleReplishOrderDetail from './addEntVehicleReplishOrderDetail.vue';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import auditDialog from '@/libs/components/auditDialog';
@@ -476,6 +529,7 @@ const defaultForm = {
   // 多选时字段有变化，自行修复
   id: '',
   creator: '',
+  settleFundTypeLabel: '',
   creatorName: '',
   createTime: new Date(),
   modifier: '',
@@ -542,10 +596,10 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '企业客户补货订单：' + this.form.entReplenishOrderCode;
     },
     columns () {
       const isEdit = this.isEditing;
@@ -594,6 +648,11 @@ export default {
           field: 'materialsCode',
           title: '整车物料编码',
           width: '150',
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.materialsId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.materialsId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.materialsCode || '') + '</a>';
+          // }
         },
         {
           field: 'materialsDesc',
@@ -604,51 +663,101 @@ export default {
           field: 'modelName',
           title: '车型',
           width: '100',
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.modelId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleModel/edit?id=' + row.modelId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.modelName || '') + '</a>';
+          // }
         },
         {
           field: 'drivingRangeName',
           title: '选配续航',
           width: '100',
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.drivingRangeId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleDrivingRange/edit?id=' + row.drivingRangeId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.drivingRangeName || '') + '</a>';
+          // }
         },
         {
           field: 'rangePowerName',
           title: '选配动力',
           width: '100',
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.rangePowerId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleRangePower/edit?id=' + row.rangePowerId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.rangePowerName || '') + '</a>';
+          // }
         },
         {
           field: 'exteriorName',
           title: '外饰风格',
           width: '100',
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.exteriorId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleExterior/edit?id=' + row.exteriorId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.exteriorName || '') + '</a>';
+          // }
         },
         {
           field: 'interiorName',
           title: '内饰风格',
           width: '100',
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.interiorId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleInterior/edit?id=' + row.interiorId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.interiorName || '') + '</a>';
+          // }
         },
         {
           field: 'wheelHubName',
           title: '选配轮毂',
           width: '100',
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.wheelHubId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleWheelHub/edit?id=' + row.wheelHubId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.wheelHubName || '') + '</a>';
+          // }
         },
         {
           field: 'batteryCellName',
           title: '电池电芯',
           width: '100',
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.batteryCellId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleBatteryCell/edit?id=' + row.batteryCellId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.batteryCellName || '') + '</a>';
+          // }
         },
         {
           field: 'yearTypeName',
           title: '年款',
           width: '100',
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.yearTypeId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleYearType/edit?id=' + row.yearTypeId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.yearTypeName || '') + '</a>';
+          // }
         },
         {
           field: 'roofName',
           title: '车顶风格',
           width: '100',
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.roofId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleRoof/edit?id=' + row.roofId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.roofName || '') + '</a>';
+          // }
         },
         {
           field: 'optionPackageName',
           title: '选装包',
           width: '80',
+          // formatter: (cellValue, row) => {
+          //   if (!row || !row.optionPackageId) return cellValue || '';
+          //   const url = '/sales/datacenter/materials/vehicleOptionPackage/edit?id=' + row.optionPackageId;
+          //   return '<a class="link" style="color: #009100;" href="javascript:void(0);" onclick="window.open(\'' + url + '\', \'_blank\')">' + (row.optionPackageName || '') + '</a>';
+          // }
         }
       ];
     }
@@ -735,7 +844,15 @@ export default {
         value: 'code',
         children: 'child'
       },
-      areaOptions: JSON.parse(localStorage.areaTree),
+      // 权限控制
+      peraddDetail: false,
+      perbatchSubmitAudit: false,
+      perbatchAudit: false,
+      perbatchCancel: false,
+      handleCheckSubmitLoading: false,
+      handleCancelLoading: false,
+      handleDeleteLoading: false,
+      areaOptions: getAreaTree(),
       emptyText: '若要启用此内容，请创建记录',
       tableData: [],
       options: {
@@ -754,7 +871,7 @@ export default {
           { required: true, message: '请输入是否赊销', trigger: 'change' }
         ],
         settleFundTypeLabel: [
-          { required: true, message: '请选择结算资金类型', trigger: 'blur' }
+          { required: true, message: '请选择结算资金类型', trigger: 'change' }
         ],
         orderTime: [
           { required: true, message: '请选择订单时间', trigger: 'change' }
@@ -777,27 +894,39 @@ export default {
     this.listNetworkParentCompany();
     this.getCompanyList();
   },
+  created () {
+    this.initPermissions();
+  },
   methods: {
+    initPermissions () {
+      this.peraddDetail = this.permissions.has(`${this.moduleKey}-addDetail`);
+      this.perbatchSubmitAudit = this.permissions.has(`${this.moduleKey}-batchSubmitAudit`);
+      this.perbatchAudit = this.permissions.has(`${this.moduleKey}-batchAudit`);
+      this.perbatchCancel = this.permissions.has(`${this.moduleKey}-batchCancel`);
+    },
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     getFundAccountBysaleCompany (val, row) {
       this.form.saleCompanyId = row.id;
       this.settleFundTypeOptions = [];
-      this.getFundAccount();
-    },
-    getFundAccount () {
       this.form.settleFundType = '';
       this.form.settleFundTypeLabel = '';
       this.settleFundTypeOptions = [];
       this.financialOrganizationOptions = [];
-      if (!this.form.entCustomerName || !this.form.saleCompanyName) {
-        return;
-      }
-      console.log('getFundAccount', this.form);
+      this.getFundAccount();
+    },
+    getFundAccount () {
+      // if (!this.form.entCustomerName || !this.form.saleCompanyName) {
+      //   return;
+      // }
       const params = {
         dealerCompanyCodes: [this.form.entCustomerCode],
         allowEntOrderSettle: '1',
         saleCompanyIds: [this.form.saleCompanyId]
       };
       accountList(params).then((res) => {
+        console.log('getFundAccount11111', res);
         if (res && res.records) {
           // 【新增】使用 Map 进行去重，key 为 fundType
           const uniqueMap = new Map();
@@ -812,6 +941,7 @@ export default {
           });
           // 将 Map 的值转换为数组并赋值
           this.settleFundTypeOptions = Array.from(uniqueMap.values());
+          console.log('this.settleFundTypeOptions', this.settleFundTypeOptions);
 
           // 筛选金融机构选项：fundType === 2010 且 validIfCreditSaleAccount === true
           this.financialOrganizationOptions = res.records
@@ -823,11 +953,6 @@ export default {
         }
       }).catch(() => {
       });
-    },
-    cellChange (val, row) {
-      if (this.form.orderCategory === 21) {
-        val.row.standardPrice = val.value;
-      }
     },
     formatDateTime (date) {
       if (!date) return '';
@@ -968,17 +1093,18 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        // 提交审批接口 判断是否需要初审
+        this.handleCheckSubmitLoading = true;
         batchSubmitAudit({
           idSet: [this._id],
         }).then(res => {
-          // 重新加载详情数据
+          this.$message.success('提交成功');
           if (this.$refs.containerRef) {
             this.$refs.containerRef.loadDetail();
           }
           this.detailRequest();
-          // 或者关闭编辑状态
           this.isEditing = false;
+        }).finally(() => {
+          this.handleCheckSubmitLoading = false;
         });
       }).catch(() => {});
     },
@@ -989,16 +1115,19 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.handleCancelLoading = true;
         batchCancel({
           idSet: [this._id],
         }).then(() => {
           this.$message.success('作废成功');
           this.$refs.containerRef.loadDetail();
+        }).finally(() => {
+          this.handleCancelLoading = false;
         });
       }).catch(() => {});
     },
 
-    handleDelete () { // 删除
+    handleDelete () {
       const ids = [this._id];
       const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将永久删除, 是否继续</div>';
       this.$confirm(message, '', {
@@ -1008,10 +1137,13 @@ export default {
         customClass: 'ais-leave-tips',
         showClose: false
       }).then(() => {
+        this.handleDeleteLoading = true;
         deleteItem(ids).then(() => {
           this.$router.push({
             path: '/vehwholesale/replenish/entVehicleReplenishOrder',
           });
+        }).finally(() => {
+          this.handleDeleteLoading = false;
         });
       }).catch(() => {});
     },
@@ -1113,7 +1245,10 @@ export default {
       this.form.latitude = '';
       this.form.longitude = '';
       this.getDealersForParentCompany(val);
+      this.form.settleFundType = '';
+      this.form.settleFundTypeLabel = '';
       this.settleFundTypeOptions = [];
+      this.financialOrganizationOptions = [];
       this.getFundAccount();
     },
     async repairItemSearch (query) {
@@ -1149,10 +1284,9 @@ export default {
       const id = this._id;
       if (id) {
         return getDetail(id).then(res => {
-          this.form = { ...this.form, ...res };
           this.getDealersForParentCompany(res.entCustomerCode);
+          this.form = { ...this.form, ...res };
           this.getFundAccount();
-          console.log(this.form);
           // 设置 areaCode 并匹配省市区名称
           if (res.provinceCode && res.cityCode) {
             this.areaCode = [
@@ -1163,16 +1297,29 @@ export default {
           }
           res.detailList = res.detailList.map(detail => ({
             ...detail,
+            materialsId: detail.vehicleMaterials?.id,
+            materialsCode: detail.vehicleMaterials?.materialsCode || '',
             materialsDesc: detail.vehicleMaterials.materialsDesc || '',
+            modelId: detail.vehicleMaterials?.modelId,
             modelName: detail.vehicleMaterials.modelName || '',
+            seriesId: detail.vehicleMaterials?.seriesId,
+            drivingRangeId: detail.vehicleMaterials?.drivingRangeId,
             drivingRangeName: detail.vehicleMaterials.drivingRangeName || '',
+            rangePowerId: detail.vehicleMaterials?.rangePowerId,
             rangePowerName: detail.vehicleMaterials.rangePowerName || '',
+            exteriorId: detail.vehicleMaterials?.exteriorId,
             exteriorName: detail.vehicleMaterials.exteriorName || '',
+            interiorId: detail.vehicleMaterials?.interiorId,
             interiorName: detail.vehicleMaterials.interiorName || '',
+            wheelHubId: detail.vehicleMaterials?.wheelHubId,
             wheelHubName: detail.vehicleMaterials.wheelHubName || '',
+            batteryCellId: detail.vehicleMaterials?.batteryCellId,
             batteryCellName: detail.vehicleMaterials.batteryCellName || '',
+            yearTypeId: detail.vehicleMaterials?.yearTypeId,
             yearTypeName: detail.vehicleMaterials.yearTypeName || '',
+            roofId: detail.vehicleMaterials?.roofId,
             roofName: detail.vehicleMaterials.roofName || '',
+            optionPackageId: detail.vehicleMaterials?.optionPackageId,
             optionPackageName: detail.vehicleMaterials.optionPackageName || '',
           }));
           this.tableData = res.detailList;

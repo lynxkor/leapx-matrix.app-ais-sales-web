@@ -10,9 +10,15 @@
         <el-input placeholder="请输入" v-model="form.applyNo" clearable />
       </el-form-item>
       <el-form-item label="申请门店" v-show="this.visibleCount === 3 || show">
-        <fetch-select :remote-method="getDealerListByName" remote v-model="form.dealerCodeList" placeholder="请输入门店编码或名称"
+        <el-select v-model="form.dealerCodeList" clearable filterable multiple collapse-tags>
+          <el-option v-for="item in applyStoreCodeList" :key="item.orgCode" :label="item.orgName" :value="item.orgCode">
+            <span style="float: left">{{ item.orgName }}</span>
+            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.orgCode }}</span>
+          </el-option>
+        </el-select>
+        <!-- <fetch-select :remote-method="getDealerListByName" remote v-model="form.dealerCodeList" placeholder="请输入门店编码或名称"
           labelKey="storeName" valueKey="storeCode" subLabelKey="storeCode" clearable filterable multiple
-          collapse-tags />
+          collapse-tags /> -->
       </el-form-item>
       <template v-if="show">
         <el-form-item label="用途变更类型">
@@ -25,6 +31,7 @@
         </el-form-item>
         <el-form-item label="创建时间">
           <el-date-picker v-model="form.createTime" type="daterange" :picker-options="pickerOptions"
+          unlink-panels
             value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期" end-placeholder="结束日期" />
         </el-form-item>
         <el-form-item label="车型">
@@ -68,7 +75,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, enableItemSubmit, enableItemCancel } from '@/api/vehstock/store/vehiclePurposeChangeApply/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel } from '@/api/common';
@@ -123,6 +130,7 @@ export default {
         ...defaultForm
       },
       selectionList: [],
+      applyStoreCodeList: (this.$store.state.user.userInfo.orgPostUserList || []).filter(item => item.orgType === '1060'),
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -134,6 +142,7 @@ export default {
       reviewDrawerVisible: false, // 审核记录抽屉
       reviewData: {}, // 审核记录数据
       clickItemId: '',
+      userId: this.$store.state.user.userInfo.userId,
       optionObj: {
         id: 'vehiclePurposeChangeApplyTable',
         dataList: [],
@@ -161,12 +170,12 @@ export default {
             }]
           },
           { props: 'applyNo', label: '申请单号', visible: true, width: 200 },
-          { props: 'dealerName', label: '申请门店名称', visible: true, width: 200 },
+          { props: 'dealerName', label: '申请门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'applyStatusLabel', label: '申请状态', visible: true, width: 120 },
-          { props: 'vin', label: '门店库存台账', visible: true, width: 200 },
-          { props: 'modelName', label: '车型', visible: true, width: 200 },
+          { props: 'vin', label: '门店库存台账', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }] },
+          { props: 'modelName', label: '车型', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclemodel/edit?id=${row.modelId}`, '_blank'); }, type: 'primary' }] },
           { props: 'changeTypeLabel', label: '用途变更类型', visible: true, width: 140 },
-          { props: 'originalOrderType', label: '原批售订单分类', visible: true, width: 150 },
+          { props: 'originalOrderTypeLabel', label: '原批售订单分类', visible: true, width: 150 },
           { props: 'originalReservedLabel', label: '原是否预留', visible: true, width: 130 },
           { props: 'originalReservedType', label: '原预留类型', visible: true, width: 160 },
           { props: 'changedReservedLabel', label: '变更后是否预留', visible: true, width: 140 },
@@ -264,6 +273,7 @@ export default {
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
+    console.log('this.$store.state:', this.$store.state.user.userInfo.userId);
   },
   methods: {
     // 排序

@@ -122,7 +122,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList } from '@/api/vehretail/orderManager/vrSpecialVehicleEquityApply/index';
 import { getTableConfig, exportTable, getEnum, vehicleModelList, listOrgStoreInfo } from '@/api/common';
@@ -204,9 +204,9 @@ export default {
               click: (rowIndex, row) => {
                 if (row.vinId) {
                   this.navigateToRoute({
-                    path: '/sales/datacenter/vehicle/vehicleProfile/edit',
+                    path: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
                     query: {
-                      id: row.vinId
+                      vin: row.vin
                     }
                   }, true);
                 }
@@ -273,7 +273,7 @@ export default {
           { props: 'newOwnerIdNumber', label: '新车主证件号码', visible: true, width: 180 },
           { props: 'newOwnerIdTypeLabel', label: '新车主证件类型', visible: true, width: 150 },
           { props: 'ocrInvoiceDate', label: '发票识别的开票日期', visible: true, width: 180 },
-          { props: 'ocrInvoiceAmount', label: '发票识别的开票金额', visible: true, width: 150 },
+          { props: 'ocrInvoiceAmount', label: '发票识别的开票金额', visible: true, width: 150, align: 'right' },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 180, fixed: 'right', sortable: true },
           {

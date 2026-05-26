@@ -28,7 +28,7 @@
           remote
           @change="modelListChange"
         >
-          <el-option
+        <el-option
           v-for="item in modelList"
           :key="item.value"
           :label="item.label"
@@ -66,7 +66,7 @@
       </el-form-item>
       <el-form-item label="轮毂">
           <fetch-select
-            v-model="form.wheelHubId"
+            v-model="form.wheelId"
             v-bind="selectOptions"
             :remote-method="remoteMethods.wheel"
           />
@@ -78,16 +78,19 @@
             :remote-method="remoteMethods.optional"
           />
       </el-form-item>
-      <!-- <el-form-item label="整车订单状态">
+      <el-form-item label="商城订单号">
+        <el-input v-model="form.mallOrderCode" clearable placeholder="请输入" />
+      </el-form-item>
+      <el-form-item label="整车订单状态">
         <fetch-select
           :request="fetchOptions"
           enumCode="vr_order_status"
-          v-model="form.orderStatus"
+          v-model="form.retailOrderStatus"
           placeholder="请选择"
           clearable
           filterable
         />
-      </el-form-item> -->
+      </el-form-item>
       <el-form-item label="原订单状态">
         <fetch-select
           :request="fetchOptions"
@@ -102,20 +105,18 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="vr_order_status"
-          v-model="form.orderStatus"
+          v-model="form.newOrderStatus"
           placeholder="请选择"
           clearable
           filterable
         />
       </el-form-item>
-      <el-form-item label="商城订单号">
-        <el-input v-model="form.mallOrderCode" clearable placeholder="请输入" />
-      </el-form-item>
       <el-form-item label="缴定金时间">
         <el-date-picker
          :default-time="['00:00:00', '23:59:59']"
-          v-model="form.paymentTime"
+          v-model="form.depositTime"
           type="daterange"
+          unlink-panels
           :picker-options="pickerOptions"
           range-separator="至"
           value-format="yyyy-MM-dd HH:mm:ss"
@@ -123,31 +124,12 @@
           end-placeholder="结束日期"
         />
       </el-form-item>
-      <el-form-item label="是否回退记录">
-        <fetch-select :options="yes_no_enum" v-model="form.statusRollbackFlag" disabled placeholder="请选择" clearable />
-      </el-form-item>
-      <el-form-item label="操作时间">
-        <dateranges
-            v-model="form.createTime"
-            :setDefault="true"
-            deftTime="最近一周"
-          />
-        <!-- <el-date-picker
-         :default-time="['00:00:00', '23:59:59']"
-          v-model="form.createTime"
-          type="daterange"
-          :picker-options="pickerOptions"
-          range-separator="至"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        /> -->
-      </el-form-item>
       <el-form-item label="批售配车时间">
         <el-date-picker
          :default-time="['00:00:00', '23:59:59']"
-          v-model="form.wholesaleMatchTime"
+          v-model="form.wholesaleAllocationTime"
           type="daterange"
+          unlink-panels
           :picker-options="pickerOptions"
           range-separator="至"
           value-format="yyyy-MM-dd HH:mm:ss"
@@ -158,14 +140,25 @@
       <el-form-item label="批售结算时间">
         <el-date-picker
          :default-time="['00:00:00', '23:59:59']"
-          v-model="form.wholesaleSettlementTime"
+          v-model="form.allocationSettlementTime"
           type="daterange"
+          unlink-panels
           :picker-options="pickerOptions"
           range-separator="至"
           value-format="yyyy-MM-dd HH:mm:ss"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
         />
+      </el-form-item>
+      <el-form-item label="是否回退记录">
+        <fetch-select :options="yes_no_enum" v-model="form.statusRollbackFlag" placeholder="请选择" clearable />
+      </el-form-item>
+      <el-form-item label="操作时间">
+        <dateranges
+            v-model="form.operationTime"
+            :setDefault="true"
+            deftTime="最近一周"
+          />
       </el-form-item>
       </template>
       <page-search-action
@@ -192,6 +185,7 @@
         :get-config="getConfig"
         :save-or-update="saveOrUpdate"
         @paginationChange="paginationChange"
+        @sortChange="handleSortChange"
         @handleSelect="handleSelectionChange"
       >
       </LPVxeTable>
@@ -200,11 +194,13 @@
 </template>
 
 <script>
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { queryOrderStatusBackRecord } from '@/api/vehretail/orderManager/retailOrderInfo';
+import { getList as pageOrderStatusBackRecord } from '@/api/vehretail/orderManager/vrRetailOrderBackRecord/index';
+import { getDetailDecryptField } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import { getTimeRangeByTypeFormat } from '@/libs/utils/time';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { YES_NO_ENUM } from '@/libs/constants';
 import {
   getTableConfig,
   tableAddOrUpdate,
@@ -221,7 +217,6 @@ import {
   vehicleRoof,
 } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
-import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { downloadExcel } from '@/libs/utils';
@@ -233,17 +228,17 @@ const defaultForm = {
   yearTypeId: '',
   exteriorId: '',
   interiorId: '',
-  wheelHubId: '',
+  wheelId: '',
   optionPackageId: '',
-  orderStatus: '',
+  statusRollbackFlag: '1',
+  retailOrderStatus: '',
   originalOrderStatus: '',
   newOrderStatus: '',
   mallOrderCode: '',
-  paymentTime: '',
-  statusRollbackFlag: 1,
-  createTime: '', // 待后端确认字段
-  wholesaleMatchTime: '', // 待后端确认字段
-  wholesaleSettlementTime: '', // 待后端确认字段
+  depositTime: '',
+  operationTime: '',
+  wholesaleAllocationTime: '',
+  allocationSettlementTime: '',
 };
 
 const pageSize = 20;
@@ -318,7 +313,7 @@ export default {
         },
         dataProp: [
           {
-            props: 'retailOrderCode',
+            props: 'orderNo',
             label: '整车订单号',
             visible: true,
             width: 200,
@@ -335,7 +330,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'mallOrderCode', label: '商城订单号', visible: true, width: 200 },
+          { props: 'mallOrderNo', label: '商城订单号', visible: true, width: 200 },
           {
             props: 'saleDealerName',
             label: '订单销售门店',
@@ -345,9 +340,9 @@ export default {
               click: (rowIndex, row) => {
                 if (row.saleDealerCode) {
                   this.navigateToRoute({
-                    path: '/partner/channelManagement/shopBasicsMessageDetails',
+                    path: '/partner/channelManagement/shopDetail',
                     query: {
-                      id: row.ownerOrgId
+                      dealerCode: row.saleDealerCode
                     }
                   }, true);
                 }
@@ -355,16 +350,30 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'carBuyerName', label: '购车人姓名', visible: true, width: 120 },
-          { props: 'carBuyerPhone', label: '购车人手机', visible: true, width: 140 },
-          { props: 'regionName', label: '大区', visible: true, width: 160 },
-          { props: 'provinceName', label: '省份', visible: true, width: 160 },
-          { props: 'cityName', label: '城市', visible: true, width: 160 },
-          { props: 'seriesName', label: '车系', visible: true, width: 120 },
-          { props: 'modelName', label: '车型', visible: true, width: 160 },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 300 },
           {
-            props: 'matchVin',
+            props: 'customerName',
+            label: '购车人姓名',
+            visible: true,
+            width: 120,
+            mask: true,
+            getValue: (row) => getDetailDecryptField(row.orderId, 'carBuyerName')
+          },
+          {
+            props: 'customerPhone',
+            label: '购车人手机号',
+            visible: true,
+            width: 140,
+            mask: true,
+            getValue: (row) => getDetailDecryptField(row.orderId, 'carBuyerPhone')
+          },
+          { props: 'region', label: '大区', visible: true, width: 120 },
+          { props: 'province', label: '省份', visible: true, width: 120 },
+          { props: 'city', label: '城市', visible: true, width: 120 },
+          { props: 'seriesName', label: '车系', visible: true, width: 120 },
+          { props: 'modelName', label: '车型', visible: true, width: 120 },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
+          {
+            props: 'vin',
             label: '配车 VIN 号',
             visible: true,
             width: 180,
@@ -372,9 +381,9 @@ export default {
               click: (rowIndex, row) => {
                 if (row.originalVin) {
                   this.navigateToRoute({
-                    path: '/sales/datacenter/vehicle/vehicleProfile/edit',
+                    path: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
                     query: {
-                      vin: row.matchVin
+                      vin: row.vin
                     }
                   }, true);
                 }
@@ -382,34 +391,38 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'paymentTime', label: '缴定金时间', visible: true, width: 200 },
-          { props: 'confirmTime', label: '确认批售时间', visible: true, width: 200 },
-          { props: 'allocateTime', label: '批售配车时间', visible: true, width: 200 },
-          { props: 'settleTime', label: '配售结算时间', visible: true, width: 200 },
-          { props: 'shippingTime', label: '发运时间', visible: true, width: 200 },
-          { props: 'arrivalTime', label: '车辆到店时间', visible: true, width: 200 },
-          { props: 'deliveryTime', label: '交车时间', visible: true, width: 200 },
-          { props: 'statusRollbackFlagLabel', label: '是否回退记录', visible: true, width: 140 },
-          { props: 'newOrderStatusLabel', label: '整车订单状态', visible: true, width: 150 },
-          { props: 'originalOrderStatusLabel', label: '原始订单状态', visible: true, width: 150 },
-          { props: 'orderStatusLabel', label: '新订单状态', visible: true, width: 150 },
-          { props: 'operationDescription', label: '操作描述', visible: true, width: 300 },
-          { props: 'operationTime', label: '操作时间', visible: true, width: 200 },
-          { props: 'operator', label: '操作人', visible: true, width: 120, fixed: 'right' }
+          { props: 'depositTime', label: '缴定金时间', visible: true, width: 180 },
+          { props: 'confirmTime', label: '确认批售时间', visible: true, width: 180 },
+          { props: 'allocateTime', label: '批售配车时间', visible: true, width: 180 },
+          { props: 'settleTime', label: '配售结算时间', visible: true, width: 180 },
+          { props: 'shippingTime', label: '发运时间', visible: true, width: 180 },
+          { props: 'arrivalTime', label: '车辆到店时间', visible: true, width: 180 },
+          { props: 'deliveryTime', label: '交车时间', visible: true, width: 180 },
+          { props: 'statusRollbackFlagLabel', label: '是否回退记录', visible: true, width: 120 },
+          { props: 'orderStatusLabel', label: '整车订单状态', visible: true, width: 150 },
+          { props: 'originalOrderStatusLabel', label: '原订单状态', visible: true, width: 150 },
+          { props: 'newOrderStatusLabel', label: '新订单状态', visible: true, width: 150 },
+          { props: 'operationDesc', label: '操作描述', visible: true, width: 200 },
+          { props: 'operationTime', label: '操作时间', visible: true, width: 180, fixed: 'right', sortable: true }
         ],
         total: 0
-      }
+      },
+      isAsc: false
     };
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     const { startTime, endTime } = getTimeRangeByTypeFormat('最近一周');
-    this.form.createTime = [startTime, endTime];
+    this.form.operationTime = [startTime, endTime];
     this.getData();
     this.modelSearch();
     this.listVehicleYearType();
   },
   methods: {
+    handleSortChange (value) {
+      this.isAsc = value[0].order === 'asc';
+      this.getData();
+    },
     async modelSearch () {
       const res = await vehicleModelList({ seriesId: this.form.seriesId, status: 1 });
       if (res.length) {
@@ -474,13 +487,13 @@ export default {
     exportExcel () {
       this.exportLoading = true;
       const reqParams = this.getFormData() || {};
-      if (this.selectionList.length > 0) {
-        const ids = this.selectionList.map(item => item.id) || [];
-        reqParams.ids = ids;
-      }
+      // if (this.selectionList.length > 0) {
+      //   const ids = this.selectionList.map(item => item.id) || [];
+      //   reqParams.ids = ids;
+      // }
       exportTable({
         businessType: '回退订单状态记录',
-        dataFetchPath: 'vr/web/order/orderBackStatusRecord/page',
+        dataFetchPath: 'datareport/web/order/retailOrderInfo/pageOrderStatusBackRecord',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -508,7 +521,7 @@ export default {
       this.loading = true;
       this.selectionList = [];
 
-      queryOrderStatusBackRecord({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
+      pageOrderStatusBackRecord({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
           this.optionObj.dataList = res.records.map(item => {
             return {
@@ -554,7 +567,7 @@ export default {
           delete data[key];
         }
       });
-      const timeFields = ['paymentTime', 'wholesaleMatchTime', 'wholesaleSettlementTime', 'createTime'];
+      const timeFields = ['depositTime', 'operationTime', 'wholesaleAllocationTime', 'allocationSettlementTime'];
       timeFields.forEach(field => {
         if (this.form[field]) {
           delete data[field];
@@ -564,7 +577,7 @@ export default {
           }
         }
       });
-
+      data.isAsc = this.isAsc;
       return data;
     },
     async fetchOptions (code) {

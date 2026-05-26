@@ -41,7 +41,7 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="状态">
+                <el-form-item label="状态：">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="StatusEnum"
@@ -63,7 +63,7 @@
                   {{ form.infoCategoryLabel }}
                 </el-form-item>
                 <el-form-item label="状态：">
-                  {{ form.statusLabel }}
+                  <span :class="['status-tag', form.status === 1 ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="创建时间：">
                   {{ form.createTime }}

@@ -47,21 +47,6 @@
                     @change="handleLevelChange"
                   />
                 </el-form-item>
-                <el-form-item label="上级项目：" prop="parentItem">
-                  <fetch-select
-                    ref="parentItemSelect"
-                    :remote-method="remoteMethods.listParentForOption"
-                    :params="form.parentItem"
-                    v-model="form.parentItem"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                    remote
-                    reserve-keyword
-                    labelKey="itemName"
-                    valueKey="id"
-                  />
-                </el-form-item>
                 <el-form-item label="车型名称：" prop="modelId">
                   <fetch-select
                     :remote-method="remoteMethods.model"
@@ -78,6 +63,22 @@
                     :params="form.yearTypeName"
                     v-bind="selectOptions"
                     @change="getYearName"
+                  />
+                </el-form-item>
+                <el-form-item label="上级项目：" prop="parentItem">
+                  <fetch-select
+                    ref="parentItemSelect"
+                    :remote-method="remoteMethods.listParentForOption"
+                    :params="form.parentItem"
+                    v-model="form.parentItem"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                    remote
+                    reserve-keyword
+                    labelKey="itemName"
+                    subLabelKey="modelName"
+                    valueKey="id"
                   />
                 </el-form-item>
                 <el-form-item label="选装包名称：" prop="optionPackageId">
@@ -140,17 +141,17 @@
                 <el-form-item label="层级：" prop="level">
                   {{ form.levelLabel }}
                 </el-form-item>
-                <el-form-item label="上级项目：" prop="parentItem">
-                  {{ form.parentItemName }}
-                </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
-                  {{ form.modelName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="年款名称：" prop="yearTypeName">
-                  {{ form.yearTypeName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${form.yearTypeId}`" target="_blank">{{ form.yearTypeName }}</el-link>
+                </el-form-item>
+                <el-form-item label="上级项目：" prop="parentItemName">
+                  {{ form.parentItemName }}
                 </el-form-item>
                 <el-form-item label="选装包名称：" prop="optionPackageName">
-                  {{ form.optionPackageName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleoptionpackage/edit?id=${form.optionPackageId}`" target="_blank">{{ form.optionPackageName }}</el-link>
                 </el-form-item>
                 <el-form-item label="检查方式：" prop="checkMethod">
                   {{ form.checkMethodLabel }}
@@ -165,7 +166,7 @@
                   {{ form.invalidDate }}
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
-                  {{ form.statusLabel }}
+                  <span :class="['status-tag', form.status === 1 ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}

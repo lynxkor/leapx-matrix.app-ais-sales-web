@@ -20,24 +20,10 @@
               {{ info.dealerCompanyName  }}
             </el-form-item>
             <el-form-item label="门店名称：" prop="dealerName">
-              <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/partner/channelManagement/shopDetail',
-                      query: {
-                        dealerCode: info.dealerCode,
-                      },
-                    })"
-                   type="text">{{info.dealerName}}</el-button>
+              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + info.dealerCode)">{{info.dealerName}}</el-button>
             </el-form-item>
             <el-form-item label="返利核算单编号: " prop="rebateBillCode">
-              <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/vehwholesale/rebate/fundVehicleRebateBill/detail',
-                      query: {
-                        id: info.rebateBillId,
-                      },
-                    })"
-                   type="text">{{info.rebateBillCode}}</el-button>
+              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/rebate/fundVehicleRebateBill/detail?id=' + info.rebateBillId)">{{info.rebateBillCode}}</el-button>
             </el-form-item>
             <el-form-item label="单据状态：" prop="billStatus">
               {{ info.billStatusLabel  }}
@@ -68,33 +54,19 @@
               {{ info.vin  }}
             </el-form-item>
             <el-form-item label="车系：" prop="seriesName">
-              <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/datacenter/materials/vehicleSeries/detail',
-                      query: {
-                        id: info.seriesId,
-                      },
-                    })"
-                   type="text">{{info.seriesName}}</el-button>
+              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/detail?id=' + info.seriesId)">{{info.seriesName}}</el-button>
             </el-form-item>
              <el-form-item label="基本车型：" prop="modelName">
-               <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/datacenter/materials/vehicleModel/detail',
-                      query: {
-                        id: info.modelId,
-                      },
-                    })"
-                   type="text">{{info.modelName}}</el-button>
+               <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModel/detail?id=' + info.modelId)">{{info.modelName}}</el-button>
             </el-form-item>
             <el-form-item label="交车单号：" prop="deliveryOrderCode">
               {{ info.deliveryOrderCode  }}
             </el-form-item>
              <el-form-item label="预算科目：" prop="budgetItemName">
-              {{ info.budgetItemName  }}
+              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundBudgetItem/edit?id=' + info.budgetItemId)">{{info.budgetItemName}}</el-button>
             </el-form-item>
             <el-form-item label="费用支持类型：" prop="feeSupportTypeName">
-              {{ info.feeSupportTypeName  }}
+              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFeeSupportType/edit?id=' + info.feeSupportTypeId)">{{info.feeSupportTypeName}}</el-button>
             </el-form-item>
              <el-form-item label="周期：" prop="periodLabel">
               {{ info.periodLabel  }}
@@ -174,6 +146,9 @@ export default {
     this.getData();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     handleEdit () {
       this.$router.push({
         path: '/vehwholesale/rebate/fundVehicleRebateBillDetail/edit',

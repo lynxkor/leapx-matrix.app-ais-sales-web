@@ -71,7 +71,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/datacenter/materials/vehicleBrand/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
@@ -107,7 +107,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-品牌',
+      pageTitle: '品牌',
       pageType: 'list',
       moduleKey: 'AISDC-vehicleBrand',
       form: {
@@ -131,12 +131,12 @@ export default {
             props: 'brandName',
             label: '品牌名称',
             visible: true,
-            width: 200,
+            width: 120,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/datacenter/materials/vehicleBrand/detail',
+                  path: '/datacenter/materials/vehicleBrand/edit',
                   query: {
                     id: row.id
                   }
@@ -145,11 +145,11 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'statusDesc', label: '说明', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 120 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 240 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 180 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '更新人', visible: true, width: 200 },
+          { props: 'modifierName', label: '更新人', visible: true, width: 180 },
           { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
           {
             props: 'operate',
@@ -163,7 +163,8 @@ export default {
                 this.$router.push({
                   path: '/datacenter/materials/vehicleBrand/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },

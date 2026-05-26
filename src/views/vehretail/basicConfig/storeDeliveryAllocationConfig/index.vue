@@ -56,6 +56,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.createTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -113,7 +114,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/basicConfig/storeDeliveryAllocationConfig/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo } from '@/api/common';
@@ -152,7 +153,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '门店交付分派配置管理',
+      pageTitle: '门店交付分派配置',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-storeDeliveryAllocationConfig',
@@ -195,7 +196,7 @@ export default {
           { props: 'deliveryDealerName', label: '交付门店名称', visible: true, width: 200 },
           { props: 'autoAllocationStatusLabel', label: '是否开启自动分派', visible: true, width: 200 },
           { props: 'autoAllocationTypeLabel', label: '自动分派方式', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 80 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',
@@ -278,7 +279,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '门店交付分派配置管理',
+        businessType: '门店交付分派配置',
         dataFetchPath: 'vr/web/basicConfig/storeDeliveryAllocationConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -286,7 +287,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '门店交付分派配置管理.xlsx');
+            await downloadExcel(res.excelUrl, '门店交付分派配置.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

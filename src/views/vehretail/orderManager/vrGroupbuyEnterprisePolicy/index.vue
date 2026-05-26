@@ -45,6 +45,7 @@
          :default-time="['00:00:00', '23:59:59']"
           v-model="form.validStartTime"
           type="daterange"
+          unlink-panels
           :picker-options="pickerOptions"
           range-separator="至"
           value-format="yyyy-MM-dd HH:mm:ss"
@@ -57,6 +58,7 @@
          :default-time="['00:00:00', '23:59:59']"
           v-model="form.validEndTime"
           type="daterange"
+          unlink-panels
           :picker-options="pickerOptions"
           range-separator="至"
           value-format="yyyy-MM-dd HH:mm:ss"
@@ -95,7 +97,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList } from '@/api/vehretail/orderManager/vrGroupbuyEnterprisePolicy/index';
 import { getTableConfig, exportTable, vehicleSeriesList } from '@/api/common';
@@ -184,7 +186,7 @@ export default {
             }]
           },
           { props: 'couponName', label: '优惠券', visible: true, width: 150 },
-          { props: 'discountAmount', label: '优惠金额', visible: true, width: 120 },
+          { props: 'discountAmount', label: '优惠金额', visible: true, width: 120, align: 'right' },
           { props: 'validStartTime', label: '有效开始时间', visible: true, width: 180 },
           { props: 'validEndTime', label: '有效截止时间', visible: true, width: 180 },
           { props: 'creatorName', label: '负责人', visible: true, width: 120 },

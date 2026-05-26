@@ -37,6 +37,7 @@
          :default-time="['00:00:00', '23:59:59']"
           v-model="form.createTime"
           type="daterange"
+          unlink-panels
           :picker-options="pickerOptions"
           range-separator="至"
           value-format="yyyy-MM-dd HH:mm:ss"
@@ -109,7 +110,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/entorder/entTransactionTaxPriceConfig/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
@@ -188,9 +189,9 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200 },
+          { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/vehwholesale/fund/fundSaleCompany/edit?id=${row.saleCompanyId}`, '_blank'); }, type: 'primary' }] },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
-          { props: 'txnTaxPriceRate', label: '关联交易价格比例', visible: true, width: 200 },
+          { props: 'txnTaxPriceRate', label: '关联交易价格比例', visible: true, width: 200, align: 'right' },
           { props: 'expireTime', label: '失效时间', visible: true, width: 200 },
           { props: 'effectiveTime', label: '生效时间', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
@@ -214,6 +215,8 @@ export default {
               type: 'info'
             }, {
               name: '删除',
+              popconfirmConfirmButtonType: 'danger',
+              popconfirmConfirmButtonText: '删除',
               popconfirmTitle: '此操作将永久删除, 是否继续?',
               click: (rowIndex, row) => {
                 deleteItem([row.id]).then(() => {

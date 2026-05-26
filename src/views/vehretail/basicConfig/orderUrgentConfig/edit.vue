@@ -120,30 +120,30 @@
                     />
                 </el-form-item>
               </el-form>
-              <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
                 </el-form-item>
                 <el-form-item label="车系名称：" prop="seriesName">
-                  {{ form.seriesName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="年款名称：" prop="yearTypeName">
-                  {{ form.yearTypeName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${form.yearTypeId}`" target="_blank">{{ form.yearTypeName }}</el-link>
                 </el-form-item>
                 <el-form-item label="预售急单设置：" prop="preSaleUrgentStatus">
-                  {{ form.preSaleUrgentStatusLabel }}
+                  <span :class="['status-tag', form.preSaleUrgentStatus === 1 ? 'primary' : 'danger']">{{ form.preSaleUrgentStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="预售锁单时间要求：" prop="preSaleLockTime">
                   {{ form.preSaleLockTime }}
                 </el-form-item>
                 <el-form-item label="盲订急单设置：" prop="blindOrderUrgentStatusLabel">
-                  {{ form.blindOrderUrgentStatusLabel }}
+                  <span :class="['status-tag', form.blindOrderUrgentStatus === 1 ? 'primary' : 'danger']">{{ form.blindOrderUrgentStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="盲订锁单时间要求：" prop="blindOrderLockTime">
                   {{ form.blindOrderLockTime }}
                 </el-form-item>
                  <el-form-item label="状态：" prop="status">
-                  {{ form.statusLabel }}
+                  <span :class="['status-tag', form.status === 1 ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="备注：" prop="remark">
                   {{ form.remark }}

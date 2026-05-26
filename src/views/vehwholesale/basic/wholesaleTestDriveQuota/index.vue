@@ -96,6 +96,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.updateTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -116,11 +117,11 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -149,7 +150,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleTestDriveQuota/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getBuildType, cityListByName, listVehicleYearType, vehicleModelLineList, vehicleSeriesList } from '@/api/common';
@@ -214,14 +215,15 @@ export default {
             props: 'code',
             label: '编码',
             visible: true,
-            width: 200,
+            width: 150,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/basic/wholesaleTestDriveQuota/detail',
+                  path: '/vehwholesale/basic/wholesaleTestDriveQuota/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },
@@ -232,15 +234,10 @@ export default {
             props: 'vehicleYearType',
             label: '年款',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleYearType/detail',
-                  query: {
-                    id: row.vehicleYearTypeId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleyeartype/edit?id=${row.vehicleYearTypeId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -249,15 +246,10 @@ export default {
             props: 'vehicleModelLine',
             label: '系列',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleModelLine/detail',
-                  query: {
-                    id: row.vehicleModelLineId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehiclemodelline/edit?id=${row.vehicleModelLineId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -266,26 +258,21 @@ export default {
             props: 'seriesName',
             label: '车系',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleSeries/detail',
-                  query: {
-                    id: row.seriesId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleseries/edit?id=${row.seriesId}`, '_blank');
               },
               type: 'primary'
             }]
           },
-          { props: 'quantity', label: '数量', visible: true, width: 200 },
-          { props: 'mcDealerTypeLabel', label: '建店类型', visible: true, width: 200 },
-          { props: 'cityName', label: '城市', visible: true, width: 200 },
-          { props: 'startDate', label: '开始日期', visible: true, width: 200 },
-          { props: 'endDate', label: '截止日期', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
+          { props: 'quantity', label: '数量', visible: true, width: 100, align: 'right' },
+          { props: 'mcDealerTypeLabel', label: '建店类型', visible: true, width: 120 },
+          { props: 'cityName', label: '城市', visible: true, width: 120 },
+          { props: 'startDate', label: '开始日期', visible: true, width: 160 },
+          { props: 'endDate', label: '截止日期', visible: true, width: 160 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 78 },
+          { props: 'modifierName', label: '修改者名称', visible: true, width: 140 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
             props: 'operate',

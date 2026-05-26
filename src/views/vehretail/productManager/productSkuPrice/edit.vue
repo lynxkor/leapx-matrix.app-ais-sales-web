@@ -139,10 +139,14 @@
                   {{ form.skuCode }}
                 </el-form-item>
                 <el-form-item label="商品编码：">
-                  {{ form.productCode }}
+                  <el-link type="primary" :href="`/sales/vehretail/productManager/productCenter/edit?id=${form.productId}`" target="_blank">
+                    {{ form.productCode }}
+                  </el-link>
                 </el-form-item>
                 <el-form-item label="整车物料：">
-                  {{ form.materialsCode }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.vehicleMaterialsId}`" target="_blank">
+                    {{ form.materialsCode }}
+                  </el-link>
                 </el-form-item>
                 <el-form-item label="购车类型：">
                   {{ form.purchaseTypeLabel }}

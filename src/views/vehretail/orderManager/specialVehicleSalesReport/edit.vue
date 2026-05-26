@@ -224,10 +224,10 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="VIN码：" prop="vin">
-                  {{ form.vin }}
+                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
                 </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
-                  {{ form.modelName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="车辆属性：" prop="vehicleAttribute">
                   {{ form.vehicleAttributeLabel }}
@@ -251,7 +251,7 @@
                   {{ form.storeInventoryId }}
                 </el-form-item>
                 <el-form-item label="整车批售单号：" prop="wholesaleOrderCode">
-                  {{ form.wholesaleOrderCode }}
+                  <el-link v-if="form.wholesaleOrderId" type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${form.wholesaleOrderId}`" target="_blank">{{ form.wholesaleOrderCode }}</el-link><span v-else>{{ form.wholesaleOrderCode }}</span>
                 </el-form-item>
                 <el-form-item label="证件识别的客户姓名：" prop="ocrCarBuyerName">
                   {{ form.ocrCarBuyerName }}
@@ -281,7 +281,7 @@
                   {{ form.submitTime }}
                 </el-form-item>
                 <el-form-item label="终端状态：" prop="status">
-                  {{ form.statusLabel }}
+                  <span class="status-tag link">{{ form.statusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="创建人：" prop="creatorName">
                   {{ form.creatorName }}
@@ -433,10 +433,10 @@
               </el-form>
               <el-form :inline="true" class="form-detail1" v-show="!(isEditing || !_id)">
                 <el-form-item label="销售门店：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="交付门店：" prop="deliveryDealerName">
-                  {{ form.deliveryDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.deliveryDealerCode}`" target="_blank">{{ form.deliveryDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="专属服务门店：" prop="exclusiveServiceStoreName">
                   {{ form.exclusiveServiceStoreName }}
@@ -605,7 +605,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '特殊车辆销售提报管理',
+      pageTitle: '特殊车辆销售提报',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
       moduleKey: 'AISVRFDI-specialVehicleSalesReport',

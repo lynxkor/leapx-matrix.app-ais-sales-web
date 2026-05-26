@@ -93,7 +93,7 @@
                   {{ form.companyName }}
                 </el-form-item>
                 <el-form-item label="车系：">
-                  {{ form.seriesName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="优惠券：">
                   {{ form.couponName }}

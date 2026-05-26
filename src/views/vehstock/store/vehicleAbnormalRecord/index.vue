@@ -34,18 +34,18 @@
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
         @reset="onReset" />
     </el-form>
-    <div class="ais-active">
-      <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="主页" name="homePage"></el-tab-pane>
-        <el-tab-pane label="电量不足" name="fenceCrossed"></el-tab-pane>
-        <el-tab-pane label="实车交付未出库" name="fenceNotCrossed"></el-tab-pane>
-      </el-tabs>
-    </div>
+    <!-- <div class="ais-active">
+    </div> -->
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div class="ais-table-c">
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="主页" name="homePage"></el-tab-pane>
+        <el-tab-pane label="电量不足" name="fenceCrossed"></el-tab-pane>
+        <el-tab-pane label="实车交付未出库" name="fenceNotCrossed"></el-tab-pane>
+      </el-tabs>
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed centralized
         :option-obj="optionObj" :get-config="getConfig" :save-or-update="saveOrUpdate"
         @paginationChange="paginationChange" @handleSelect="handleSelectionChange" @listSelect="handleListSelect"
@@ -60,7 +60,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/store/vehicleAbnormalRecord/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo } from '@/api/common';
@@ -126,13 +126,13 @@ export default {
         },
         dataProp: [
           { props: 'abnormalRecordNo', label: '异常记录单号', visible: true, width: 200 },
-          { props: 'vin', label: 'VIN', visible: true, width: 200 },
+          { props: 'vin', label: 'VIN', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }] },
           { props: 'electricity', label: '车辆电量(%)', visible: true, width: 140, align: 'right' },
           { props: 'fenceCrossedTypeLabel', label: '车辆异常类型', visible: true, width: 140 },
           { props: 'continuousLowBatteryDays', label: '连续低电量天数', visible: true, width: 150, align: 'right' },
           { props: 'abnormalRecordTime', label: '异常记录时间', visible: true, width: 200 },
           { props: 'vechicleStatusLabel', label: '车辆状态', visible: true, width: 100 },
-          { props: 'saleDealerName', label: '销售门店', visible: true, width: 200 },
+          { props: 'saleDealerName', label: '销售门店', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'dealerWarehouseName', label: '门店仓库', visible: true, width: 200 },
           { props: 'dealerWarehouseAddress', label: '仓库地址', visible: true, width: 200 },
           { props: 'vehicleArrivalOn', label: '物流到店日期', visible: true, width: 200 },
@@ -143,8 +143,8 @@ export default {
           { props: 'actualVehicleLatitude', label: '实车位置纬度', visible: true, width: 140 },
           { props: 'warehouseLongitude', label: '仓库位置经度', visible: true, width: 140 },
           { props: 'warehouseLatitude', label: '仓库位置纬度', visible: true, width: 140 },
-          { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
+          { props: 'materialsCode', label: '物料编码', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 160 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
@@ -388,24 +388,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.m-vehicle-abnormal-record-list {}
-.ais-active {
-  margin-top: 20px;
-  // 修改 tabs 底部线条的样式
-  ::v-deep .el-tabs__nav-wrap::after {
-    height: 1px !important;
-    background-color: #E6E6E5 !important;
+.m-vehicle-abnormal-record-list {
+  ::v-deep .m-vxe-table .m-vxe-table-options {
+    top: -96px;
   }
-  // 修改 tabs 默认字体样式
-  ::v-deep .el-tabs__item {
-    font-weight: normal !important; // 不加粗
-    color: #3B3E3B !important;     // 字体颜色
+  .ais-actions {
+    margin-bottom: 8px;
   }
-
-  // 修改 tabs 激活状态下的字体样式（可选）
-  ::v-deep .el-tabs__item.is-active {
-    font-weight: normal !important; // 激活状态下也不加粗
-    color: #3B3E3B !important;     // 激活状态下的字体颜色
+  .ais-table-c {
+    height: calc(100% - 168px);
   }
 }
 </style>

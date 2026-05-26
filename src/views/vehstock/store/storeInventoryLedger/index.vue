@@ -19,6 +19,7 @@
             :default-time="['00:00:00', '23:59:59']"
             v-model="form.moveoutDateTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
@@ -34,6 +35,7 @@
             :default-time="['00:00:00', '23:59:59']"
             v-model="form.vehicleArrivalOnTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
@@ -131,6 +133,7 @@
             :default-time="['00:00:00', '23:59:59']"
             v-model="form.poentryOnTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
@@ -142,6 +145,7 @@
             :default-time="['00:00:00', '23:59:59']"
             v-model="form.moveinDateTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
@@ -200,7 +204,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/store/storeInventoryLedger/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleModel, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleSalesVersionList, listOrgStoreInfo } from '@/api/common';
@@ -325,18 +329,18 @@ export default {
           { props: 'isFenceCrossedLabel', label: '是否异常车辆', visible: true, width: 140 },
           { props: 'fenceCrossedTypeLabel', label: '车辆异常类型', visible: true, width: 140 },
           { props: 'vehdeLiveriedOn', label: '标识记录日期', visible: true, width: 200 },
-          { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
-          { props: 'deliveryDealerName', label: '交付门店名称', visible: true, width: 200 },
-          { props: 'poentryDealerName', label: '采购入库门店名称', visible: true, width: 200 },
+          { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'deliveryDealerName', label: '交付门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.deliveryDealerCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'poentryDealerName', label: '采购入库门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.poentryDealerCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'poentryOn', label: '采购入库时间', visible: true, width: 200 },
           { props: 'inboundTimeLyLabel', label: '入库是否及时', visible: true, width: 140 },
-          { props: 'materialsCode', label: '物料编码', visible: true, width: 180 },
-          { props: 'seriesName', label: '车系', visible: true, width: 120 },
-          { props: 'modelName', label: '车型', visible: true, width: 140 },
-          { props: 'exteriorName', label: '外观', visible: true, width: 100 },
-          { props: 'interiorName', label: '内饰', visible: true, width: 100 },
-          { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 120 },
-          { props: 'optionPackageName', label: '选装包', visible: true, width: 120 },
+          { props: 'materialsCode', label: '物料编码', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'seriesName', label: '车系', visible: true, width: 100, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleseries/edit?id=${row.seriesId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'modelName', label: '车型', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclemodel/edit?id=${row.modelId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'exteriorName', label: '外观', visible: true, width: 80, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleexterior/edit?id=${row.exteriorId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'interiorName', label: '内饰', visible: true, width: 80, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleinterior/edit?id=${row.interiorId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclewheelhub/edit?id=${row.wheelHubId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'optionPackageName', label: '选装包', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleoptionpackage/edit?id=${row.optionPackageId}`, '_blank'); }, type: 'primary' }] },
           { props: 'moveinDate', label: '入库时间', visible: true, width: 200 },
           { props: 'receivedBy', label: '收车确认人', visible: true, width: 160 },
           { props: 'receivedOn', label: '收车确认时间', visible: true, width: 200 },

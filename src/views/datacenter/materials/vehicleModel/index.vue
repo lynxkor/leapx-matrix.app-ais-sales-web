@@ -98,11 +98,11 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -133,7 +133,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/datacenter/materials/vehicleModel/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelLineList, listVehicleModel } from '@/api/common';
@@ -186,7 +186,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-车型',
+      pageTitle: '车型',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISDC-vehicleModel',
@@ -211,30 +211,31 @@ export default {
             props: 'modelName',
             label: '车型名称',
             visible: true,
-            width: 200,
+            width: 220,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/datacenter/materials/vehicleModel/detail',
+                  path: '/datacenter/materials/vehicleModel/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },
               type: 'primary'
             }]
           },
-          { props: 'yearTypeName', label: '年款名称', visible: true, width: 200 },
-          { props: 'modelLineName', label: '系列名称', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
-          { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'statusDesc', label: '说明', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '更改人', visible: true, width: 200 },
-          { props: 'updateTime', label: '更改时间', visible: true, width: 200 },
+          { props: 'yearTypeName', label: '年款名称', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleYearType/edit?id=${row.yearTypeId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'modelLineName', label: '系列名称', visible: true, width: 140, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleModelLine/edit?id=${row.modelLineId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'seriesName', label: '车系名称', visible: true, width: 140, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'remark', label: '备注', visible: true, width: 300 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 60 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 300 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 180 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 180 },
+          { props: 'modifierName', label: '更改人', visible: true, width: 180 },
+          { props: 'updateTime', label: '更改时间', visible: true, width: 180 },
           {
             props: 'operate',
             label: '操作',
@@ -247,7 +248,8 @@ export default {
                 this.$router.push({
                   path: '/datacenter/materials/vehicleModel/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },

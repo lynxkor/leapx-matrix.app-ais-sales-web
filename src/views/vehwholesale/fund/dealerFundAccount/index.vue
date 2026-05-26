@@ -112,7 +112,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList } from '@/api/vehwholesale/fund/account/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, loginUserGet } from '@/api/common';
@@ -212,9 +212,10 @@ export default {
             props: 'dealerCompanyCode',
             label: '母公司编码',
             visible: true,
-            width: 150
+            width: 120,
+            buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }]
           },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 100 },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 100 },
           {
             props: 'financialOrganizationName',
@@ -223,26 +224,21 @@ export default {
             width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                  query: {
-                    id: row.financialOrganizationId
-                  }
-                });
+                window.open(`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${row.financialOrganizationId}`, '_blank');
               },
               type: 'primary'
             }]
           },
           { props: 'settleSort', label: '结算顺序', visible: true, width: 120 },
-          { props: 'allowUseRebateLabel', label: '是否允许使用返利', visible: true, width: 200 },
-          { props: 'allowEntOrderSettleLabel', label: '是否允许企业订单结算', visible: true, width: 200 },
-          { props: 'entOrderQuota', label: '企业订单额度系数', visible: true, width: 200 },
-          { props: 'availableBalance', label: '可用余额', visible: true, width: 100 },
-          { props: 'frozenBalance', label: '冻结余额', visible: true, width: 100 },
-          { props: 'totalRechargeAmount', label: '累计充值金额', visible: true, width: 100 },
-          { props: 'totalSettleAmount', label: '累计结算金额', visible: true, width: 150 },
+          { props: 'allowUseRebateLabel', label: '是否允许使用返利', visible: true, width: 180 },
+          { props: 'allowEntOrderSettleLabel', label: '是否允许企业订单结算', visible: true, width: 180 },
+          { props: 'entOrderQuota', label: '企业订单额度系数', visible: true, width: 150, align: 'right' },
+          { props: 'availableBalance', label: '可用余额', visible: true, width: 140, align: 'right' },
+          { props: 'frozenBalance', label: '冻结余额', visible: true, width: 140, align: 'right' },
+          { props: 'totalRechargeAmount', label: '累计充值金额', visible: true, width: 150, align: 'right' },
+          { props: 'totalSettleAmount', label: '累计结算金额', visible: true, width: 150, align: 'right' },
           { props: 'lastTradeTime', label: '最近交易时间', visible: true, width: 200 },
-          { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200 },
+          { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/fund/fundSaleCompany/edit?id=${row.saleCompanyId}`, '_blank'); }, type: 'primary' }] },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',

@@ -22,35 +22,30 @@
           <el-button size="small">按钮2</el-button> -->
           <el-button
             @click="openCancelShow"
-            v-if="form.refundStatus === 1010 || form.refundStatus === 1040"
-            v-permission="moduleKey + '-cancel'"
+            v-if="canCancel && (form.refundStatus === 1010 || form.refundStatus === 1040)"
             size="small">
             作废
           </el-button>
           <el-button
             @click="openCommitShow"
-            v-if="form.refundStatus === 1010 || form.refundStatus === 1040"
-            v-permission="moduleKey + '-commit'">
+            v-if="canCommit && (form.refundStatus === 1010 || form.refundStatus === 1040)">
             提交审批
           </el-button>
           <el-button
             @click="openPreAuditShow"
-            v-permission="moduleKey + '-preApprove'"
-            v-if="form.refundStatus === 1020"
+            v-if="canPreApprove && form.refundStatus === 1020"
           >
             初审
           </el-button>
           <el-button
             @click="openAuditShow"
-            v-permission="moduleKey + '-approve'"
-            v-if="form.refundStatus === 1025"
+            v-if="canApprove && form.refundStatus === 1025"
           >
             审核
           </el-button>
           <el-button
             @click="openFinalAuditShow"
-            v-permission="moduleKey + '-finalApprove'"
-            v-if="form.refundStatus === 1027"
+            v-if="canFinalApprove && form.refundStatus === 1027"
           >
             终审
           </el-button>
@@ -117,36 +112,36 @@
                   />
                 </el-form-item>
                 <el-form-item
-                  v-show="form.depositRefundType === '30'"
+                  v-show="form.depositRefundType === '15'"
                   label="退款银行：" prop="refundBank"
-                              :rules="form.depositRefundType === '30' ? rules.refundBank: []">
+                              :rules="form.depositRefundType === '15' ? rules.refundBank: []">
                   <el-input
                     placeholder="请输入"
                     v-model="form.refundBank"
-                    :disabled="form.depositRefundType !== '30'"
+                    :disabled="form.depositRefundType !== '15'"
                     clearable
                   />
                 </el-form-item>
                 <el-form-item
-                  v-show="form.depositRefundType === '30'"
+                  v-show="form.depositRefundType === '15'"
                   label="银行开户名：" prop="refundBankUser"
-                              :rules="form.depositRefundType === '30' ? rules.refundBankUser: []">
+                              :rules="form.depositRefundType === '15' ? rules.refundBankUser: []">
                   <el-input
                     placeholder="请输入"
                     v-model="form.refundBankUser"
-                    :disabled="form.depositRefundType !== '30'"
+                    :disabled="form.depositRefundType !== '15'"
                     clearable
                   />
                 </el-form-item>
                 <el-form-item
-                  v-show="form.depositRefundType === '30'"
+                  v-show="form.depositRefundType === '15'"
                   label="退款银行账号："
                               prop="refundBankAccount"
-                              :rules="form.depositRefundType === '30' ? rules.refundBankAccount: []">
+                              :rules="form.depositRefundType === '15' ? rules.refundBankAccount: []">
                   <el-input
                     placeholder="请输入"
                     v-model="form.refundBankAccount"
-                    :disabled="form.depositRefundType !== '30'"
+                    :disabled="form.depositRefundType !== '15'"
                     clearable
                   />
                 </el-form-item>
@@ -256,9 +251,9 @@
                   <el-button
                     class="link"
                     @click="navigateToRoute({
-                      path: '/vehretail/orderManager/retailOrderInfo',
+                      path: '/vehretail/orderManager/retailOrderInfo/edit',
                       query: {
-                        retailOrderCode: form.retailOrderCode,
+                        id: form.retailOrderId,
                       },
                     })"
                     type="text">{{form.retailOrderCode}}</el-button>
@@ -270,7 +265,7 @@
                   {{ form.cateName }}
                 </el-form-item>
                 <el-form-item label="申请单状态：" prop="refundStatusLabel">
-                  {{ form.refundStatusLabel }}
+                  <span class="status-tag link">{{ form.refundStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="定金退回方式：" prop="depositRefundTypeLabel">
                   {{ form.depositRefundTypeLabel }}
@@ -294,39 +289,41 @@
                   {{ form.refundReason }}
                 </el-form-item>
                 <el-form-item label="订单物料码：" prop="materialsCode">
-                  {{ form.materialsCode }}
+                  <el-button
+                    class="link"
+                    @click="navigateToRoute({
+                        path: '/datacenter/materials/vehicleMaterials/detail',
+                        query: { id: form.materialsId }
+                    })"
+                    v-if="form.materialsCode"
+                    type="text">{{ form.materialsCode }}</el-button>
+                  <span v-else>{{ form.materialsCode }}</span>
                   <el-button size="small" type="primary" plain @click="openVehicleStockShow">查询库存车</el-button>
                 </el-form-item>
                 <el-form-item label="是否停产：" prop="discontinueStatusLabel">
-                  {{ form.discontinueStatusLabel}}
-                </el-form-item>
-                <el-form-item label="车型ID：" prop="modelId">
-                  {{ form.modelId }}
+                  <span :class="['status-tag', form.discontinueStatus === 0 ? 'primary' : 'danger']">{{ form.discontinueStatusLabel}}</span>
                 </el-form-item>
                 <el-form-item label="基本车型：" prop="modelName">
                   <el-button
                     class="link"
                     @click="navigateToRoute({
-                      path: '/partner/businessData/carType',
+                      path: '/datacenter/materials/vehicleModel/detail',
                       query: {
-                        modelName: form.modelName,
-                      },
+                        id: form.modelId,
+                      }
                     })"
                     type="text">{{form.modelName}}</el-button>
                 </el-form-item>
 <!--                <el-form-item label="销售门店编码：" prop="originalSaleDealerCode">-->
 <!--                  {{ form.saleDealerCode }}-->
 <!--                </el-form-item>-->
-                <el-form-item label="销售门店：" prop="originalSaleDealerName">
+                <el-form-item label="销售门店：" prop="saleDealerName">
                   <el-button
                     class="link"
-                    @click="navigateToRoute({
-                      path: '/partner/channelManagement/shopBasicsMessage',
-                      query: {
-                        saleDealerName: form.saleDealerName,
-                      },
-                    })"
+                    v-if="form.saleDealerName"
+                    @click="handleRouteToStoreDetail(form.saleDealerCode)"
                     type="text">{{form.saleDealerName}}</el-button>
+                  <span v-else>{{ form.saleDealerName }}</span>
                 </el-form-item>
 <!--                <el-form-item label="省编码：" prop="provinceCode">-->
 <!--                  {{ form.provinceCode }}-->
@@ -373,7 +370,7 @@
               <AisAttachment
                 ref="attachment"
                 :businessId="_id"
-                :readonly="!isEditing"
+                :readonly="!_id || !(form.refundStatus === 1010 || form.refundStatus === 1040)"
                 configCode="mcs_vehorderrefund"
                 attachType="订单信息变更申请附件"
               />
@@ -386,7 +383,7 @@
             <div class="common-section-body">
               <el-form :inline="true" class="form-detail">
                 <el-form-item label="整车订单状态：" prop="orderStatus">
-                  {{ form.orderStatusLabel }}
+                  <span class="status-tag link">{{ form.orderStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="商城订单编号：" prop="mallOrderCode">
                   {{ form.mallOrderCode }}
@@ -428,27 +425,48 @@
                   {{ form.priceAfterSubsidy }}
                 </el-form-item>
                 <el-form-item label="订单物料码：" prop="materialsCode">
-                  {{ form.materialsCode }}
+                  <el-button
+                    class="link"
+                    v-if="form.materialsCode"
+                    @click="navigateToRoute({
+                        path: '/datacenter/materials/vehicleMaterials/detail',
+                        query: { id: form.materialsId }
+                    })"
+                    type="text">{{ form.materialsCode }}</el-button>
+                  <span v-else>{{ form.materialsCode }}</span>
                 </el-form-item>
                 <el-form-item label="配车物料编码：" prop="allocationMaterialCode">
-                  {{ form.allocationMaterialCode }}
+                  <el-button
+                    class="link"
+                    v-if="form.allocationMaterialCode"
+                    @click="handleRouteToVehicleMaterials(form.allocationMaterialCode)"
+                    type="text">{{ form.allocationMaterialCode }}</el-button>
+                  <span v-else>{{ form.allocationMaterialCode }}</span>
                 </el-form-item>
                 <el-form-item label="销售门店：" prop="saleDealerName">
                   <el-button
                     class="link"
-                    @click="navigateToRoute({
-                      path: '/partner/channelManagement/shopBasicsMessage',
-                      query: {
-                        saleDealerName: form.saleDealerName,
-                      },
-                    })"
+                    @click="handleRouteToStoreDetail(form.saleDealerCode)"
                     type="text">{{form.saleDealerName}}</el-button>
                 </el-form-item>
-                <el-form-item label="交付门店名称：" prop="deliveryDealerName">
-                  {{ form.deliveryDealerName }}
+                <el-form-item label="交付门店：" prop="deliveryDealerName">
+                  <el-button
+                    class="link"
+                    @click="handleRouteToStoreDetail(form.deliveryDealerCode)"
+                    type="text">{{form.deliveryDealerName}}</el-button>
                 </el-form-item>
                 <el-form-item label="交车VIN码：" prop="deliveryVin">
-                  {{ form.deliveryVin }}
+                  <el-button
+                    class="link"
+                    v-if="form.deliveryVin"
+                    @click="navigateToRoute({
+                      path: '/vehstock/vdc/vehicleVdcInventoryLedger/edit',
+                      query: {
+                        vin: form.deliveryVin,
+                      },
+                    })"
+                    type="text">{{ form.deliveryVin }}</el-button>
+                  <span v-else>{{ form.deliveryVin }}</span>
                 </el-form-item>
                 <el-form-item label="交车时间：" prop="deliveryTime">
                   {{ form.deliveryTime }}
@@ -463,45 +481,137 @@
                   {{ form.orderCancelDescp }}
                 </el-form-item>
                 <el-form-item label="基本车系：" prop="seriesName">
-                  {{ form.seriesName }}
+                  <el-button
+                    class="link"
+                    @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleSeries/detail',
+                      query: {
+                        id: form.seriesId,
+                      },
+                    })"
+                    type="text">{{form.seriesName}}</el-button>
                 </el-form-item>
                 <el-form-item label="基本车型：" prop="modelName">
                   <el-button
                     class="link"
                     @click="navigateToRoute({
-                      path: '/partner/businessData/carType',
+                      path: '/datacenter/materials/vehicleModel/detail',
                       query: {
-                        modelName: form.modelName,
+                        id: form.modelId
                       },
                     })"
                     type="text">{{form.modelName}}</el-button>
                 </el-form-item>
                 <el-form-item label="物料编码：" prop="materialsCode">
-                  {{ form.materialsCode }}
+                  <el-button
+                    class="link"
+                    v-if="form.materialsCode"
+                    @click="navigateToRoute({
+                        path: '/datacenter/materials/vehicleMaterials/detail',
+                        query: { id: form.materialsId }
+                    })"
+                    type="text">{{ form.materialsCode }}</el-button>
+                  <span v-else>{{ form.materialsCode }}</span>
                 </el-form-item>
                 <el-form-item label="物料描述：" prop="materialsDesc">
-                  {{ form.materialsDesc }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsDesc }}</el-link>
                 </el-form-item>
                 <el-form-item label="选配动力：" prop="rangePowerName">
-                  {{ form.rangePowerName }}
+                  <el-button
+                    class="link"
+                    v-if="form.rangePowerName"
+                    @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleRangePower/detail',
+                      query: {
+                        id: form.rangePowerId,
+                      },
+                    })"
+                    type="text">{{ form.rangePowerName }}</el-button>
+                  <span v-else>{{ form.rangePowerName }}</span>
                 </el-form-item>
-                <el-form-item label="续航里程：" prop="drivingRangeName">
-                  {{ form.drivingRangeName }}
+                <el-form-item label="选配续航：" prop="drivingRangeName">
+                  <el-button
+                    class="link"
+                    v-if="form.drivingRangeName"
+                    @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleDrivingRange/detail',
+                      query: {
+                        id: form.drivingRangeId,
+                      },
+                    })"
+                    type="text"
+                  >{{ form.drivingRangeName }}</el-button>
+                  <span v-else>{{ form.drivingRangeName }}</span>
                 </el-form-item>
-                <el-form-item label="外观名称：" prop="exteriorName">
-                  {{ form.exteriorName }}
+                <el-form-item label="外饰风格：" prop="exteriorName">
+                  <el-button
+                    class="link"
+                    v-if="form.exteriorName"
+                    @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleExterior/detail',
+                      query: {
+                        id: form.exteriorId,
+                      },
+                    })"
+                    type="text"
+                  >{{ form.exteriorName }}</el-button>
+                  <span v-else>{{ form.exteriorName }}</span>
                 </el-form-item>
-                <el-form-item label="内饰名称：" prop="interiorName">
-                  {{ form.interiorName }}
+                <el-form-item label="内饰风格：" prop="interiorName">
+                  <el-button
+                    class="link"
+                    v-if="form.interiorName"
+                    @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleInterior/detail',
+                      query: {
+                        id: form.interiorId,
+                      },
+                    })"
+                    type="text"
+                  >{{ form.interiorName }}</el-button>
+                  <span v-else>{{ form.interiorName }}</span>
                 </el-form-item>
-                <el-form-item label="轮毂名称：" prop="wheelHubName">
-                  {{ form.wheelHubName }}
+                <el-form-item label="选配轮毂：" prop="wheelHubName">
+                  <el-button
+                    class="link"
+                    v-if="form.wheelHubName"
+                    @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleWheelHub/detail',
+                      query: {
+                        id: form.wheelHubId,
+                      },
+                    })"
+                    type="text"
+                  >{{ form.wheelHubName }}</el-button>
+                  <span v-else>{{ form.wheelHubName }}</span>
                 </el-form-item>
-                <el-form-item label="年款名称：" prop="yearTypeName">
-                  {{ form.yearTypeName }}
+                <el-form-item label="车辆年型（L）：" prop="yearTypeName">
+                  <el-button
+                    class="link"
+                    v-if="form.yearTypeName"
+                    @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleYearType/detail',
+                      query: {
+                        id: form.yearTypeId,
+                      },
+                    })"
+                    type="text"
+                  >{{ form.yearTypeName }}</el-button>
+                  <span v-else>{{ form.yearTypeName }}</span>
                 </el-form-item>
-                <el-form-item label="选装包名称：" prop="optionPackageName">
-                  {{ form.optionPackageName }}
+                <el-form-item label="选装包：" prop="optionPackageName">
+                  <el-button
+                    class="link"
+                    v-if="form.optionPackageName"
+                    @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleOptionPackage/detail',
+                      query: {
+                        id: form.optionPackageId,
+                      },
+                    })"
+                    type="text"
+                  >{{ form.optionPackageName }}</el-button>
+                  <span v-else>{{ form.optionPackageName }}</span>
                 </el-form-item>
                 <el-form-item label="特殊备注：" prop="remark">
                   {{ form.specialRemark }}
@@ -563,52 +673,20 @@
               </el-form>
             </div>
           </section>
-          <section class="common-section">
-            <div class="common-section-header" v-show="!(isEditing || !_id)">
-              <h2>退款记录</h2>
-            </div>
-            <div>
-              <el-table :data="form.payRefundRecordList" style="width: 100%" v-show="!(isEditing || !_id)">
-                <el-table-column prop="payCode" label="收款编号" width="180"/>
-                <el-table-column prop="paySerialNumber" label="支付流水号" width="180"/>
-                <el-table-column prop="payCategoryLabel" label="收款类型" width="180"/>
-                <el-table-column prop="paymentAmount" label="付款金额" width="180"/>
-                <el-table-column prop="paymentTypeLabel" label="支付方式" width="180"/>
-                <el-table-column prop="paymentWayLabel" label="支付渠道" width="180"/>
-                <el-table-column prop="paymentTime" label="付款时间" width="180"/>
-                <el-table-column prop="refundTime" label="退款时间" width="180"/>
-                <el-table-column prop="refundResult" label="退款结果" width="180"/>
-                <el-table-column prop="refundRemark" label="退款说明" width="180"/>
-              </el-table>
-            </div>
-          </section>
-          <section class="common-section">
-            <div class="common-section-header" v-show="!(isEditing || !_id)">
-              <h2>审批明细</h2>
-            </div>
-            <div>
-              <el-table :data="form.approveLogList" style="width: 60%" v-show="!(isEditing || !_id)">
-                <el-table-column
-                  prop="createTime"
-                  label="操作时间"
-                  width="180">
-                </el-table-column>
-                <el-table-column
-                  prop="operateStatusLabel"
-                  label="申请状态">
-                </el-table-column>
-                <el-table-column
-                  prop="operatorName"
-                  label="操作人"
-                  width="180">
-                </el-table-column>
-                <el-table-column
-                  prop="operateExplain"
-                  label="审核意见">
-                </el-table-column>
-              </el-table>
-            </div>
-          </section>
+          <component-table
+                v-if="!(isEditing || !_id)"
+                :table-config="{ title: '退款记录' }"
+                :table-data-external="form.payRefundRecordList"
+                :columns="refundColumns"
+                :show-pagination="false"
+              />
+          <component-table
+                v-if="!(isEditing || !_id)"
+                :table-config="{ title: '审批明细' }"
+                :table-data-external="form.approveLogList"
+                :columns="approveColumns"
+                :show-pagination="false"
+              />
           <refund-apply-audit-dialog
             :audit-type="auditType"
             :main-cate-code="form.cateCode"
@@ -643,6 +721,7 @@ import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
+import ComponentTable from '@/libs/components/ComponentTable/index.vue';
 import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
@@ -654,6 +733,7 @@ import RefundApplyAuditDialog from '@/views/vehretail/orderRefund/refundApply/au
 import { getList as getMaterialInfoList } from '@/api/datacenter/materials/vehicleMaterials/index';
 import FinancialOrderDialog from './components/FinancialOrderDialog.vue';
 import VehicleStockDialog from './components/VehicleStockDialog.vue';
+import navigate from '@/libs/utils/navigate';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -678,7 +758,7 @@ const defaultForm = {
   refundBank: '',
   refundBankUser: '',
   refundBankAccount: '',
-  orderRefundType: 10,
+  orderRefundType: 20,
   cateCode: '',
   refundReason: '',
   firstSubmitTime: '',
@@ -697,6 +777,8 @@ const defaultForm = {
   orderCancelReason: '',
   orderCancelDescp: '',
   discontinueStatusLabel: '',
+  payRefundRecordList: [],
+  approveLogList: [],
 };
 
 export default {
@@ -717,6 +799,7 @@ export default {
     EditBaseContainer,
     AisAttachment,
     FetchSelect,
+    ComponentTable,
   },
   computed: {
     _id () {
@@ -767,6 +850,12 @@ export default {
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
       moduleKey: 'AISVRRO-retailOrderRefund',
+      // 权限控制
+      canCancel: false, // 作废
+      canCommit: false, // 提交审批
+      canPreApprove: false, // 初审
+      canApprove: false, // 审核
+      canFinalApprove: false, // 终审
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
@@ -776,6 +865,24 @@ export default {
       tableData: [
         { id: 1, name: '张三', age: 25, email: 'zhangsan@example.com' },
         { id: 2, name: '李四', age: 30, email: 'lisi@example.com' }
+      ],
+      refundColumns: [
+        { field: 'payCode', title: '收款编号', width: 180 },
+        { field: 'paySerialNumber', title: '支付流水号', width: 180 },
+        { field: 'payCategoryLabel', title: '收款类型', width: 180 },
+        { field: 'paymentAmount', title: '付款金额', width: 180 },
+        { field: 'paymentTypeLabel', title: '支付方式', width: 180 },
+        { field: 'paymentWayLabel', title: '支付渠道', width: 180 },
+        { field: 'paymentTime', title: '付款时间', width: 180 },
+        { field: 'refundTime', title: '退款时间', width: 180 },
+        { field: 'refundResultLabel', title: '退款结果', width: 180 },
+        { field: 'refundRemark', title: '退款说明', width: 180 }
+      ],
+      approveColumns: [
+        { field: 'createTime', title: '操作时间', width: 180 },
+        { field: 'operateStatusLabel', title: '申请状态', minWidth: 150 },
+        { field: 'operatorName', title: '操作人', width: 180 },
+        { field: 'operateExplain', title: '审核意见', minWidth: 200 }
       ],
       rules: {
         refundCode: [
@@ -824,6 +931,7 @@ export default {
     };
   },
   created () {
+    this.initPermissions();
     const mallOrderCode = this.$route.query.mallOrderCode;
     if (mallOrderCode) {
       this.form.mallOrderCode = mallOrderCode;
@@ -842,6 +950,14 @@ export default {
   mounted () {
   },
   methods: {
+    // 初始化权限
+    initPermissions () {
+      this.canCancel = this.permissions.has(`${this.moduleKey}-cancel`);
+      this.canCommit = this.permissions.has(`${this.moduleKey}-commit`);
+      this.canPreApprove = this.permissions.has(`${this.moduleKey}-preApprove`);
+      this.canApprove = this.permissions.has(`${this.moduleKey}-approve`);
+      this.canFinalApprove = this.permissions.has(`${this.moduleKey}-finalApprove`);
+    },
     detailRequest () {
       const id = this._id;
       if (id) {
@@ -991,6 +1107,20 @@ export default {
       this.form.cityCode = val ? selectedOption.cityCode : '';
       this.form.cityName = val ? selectedOption.cityName : '';
       this.form.depositAmount = val ? selectedOption.depositAmount : '';
+      this.form.rangePowerId = val ? selectedOption.rangePowerId : '';
+      this.form.rangePowerName = val ? selectedOption.rangePowerName : '';
+      this.form.drivingRangeId = val ? selectedOption.drivingRangeId : '';
+      this.form.drivingRangeName = val ? selectedOption.drivingRangeName : '';
+      this.form.exteriorId = val ? selectedOption.exteriorId : '';
+      this.form.exteriorName = val ? selectedOption.exteriorName : '';
+      this.form.interiorId = val ? selectedOption.interiorId : '';
+      this.form.interiorName = val ? selectedOption.interiorName : '';
+      this.form.wheelHubId = val ? selectedOption.wheelHubId : '';
+      this.form.wheelHubName = val ? selectedOption.wheelHubName : '';
+      this.form.yearTypeId = val ? selectedOption.yearTypeId : '';
+      this.form.yearTypeName = val ? selectedOption.yearTypeName : '';
+      this.form.optionPackageId = val ? selectedOption.optionPackageId : '';
+      this.form.optionPackageName = val ? selectedOption.optionPackageName : '';
       // 查询物料是否停产
       if (this.form.materialsCode) {
         getMaterialInfoList({ materialsCodeLike: this.form.materialsCode, pageSize: 1 })
@@ -1095,6 +1225,42 @@ export default {
       }
       // 或者关闭编辑状态
       this.isEditing = false;
+    },
+    handleRouteToStoreDetail (storeCode) {
+      navigate(
+        {
+          path: '/partner/channelManagement/shopDetail',
+          query: {
+            dealerCode: storeCode
+          },
+        },
+        true,
+        this.$router
+      );
+    },
+    handleRouteToVehicleMaterials (materialsCode) {
+      if (!materialsCode) {
+        return;
+      }
+      // 通过物料码查询物料列表获取ID
+      getMaterialInfoList({ materialsCodeLike: materialsCode, pageSize: 1 })
+        .then(res => {
+          if (res.records && res.records.length > 0) {
+            const material = res.records[0];
+            navigate(
+              {
+                path: '/sales/datacenter/materials/vehicleMaterials/detail',
+                query: {
+                  id: material.id,
+                },
+              },
+              true,
+              this.$router
+            );
+          } else {
+            this.$message.warning('未找到物料信息');
+          }
+        });
     }
   }
 };

@@ -11,6 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="false"
       >
         <template #status>
           <span>{{ form.code }}</span>
@@ -28,20 +29,13 @@
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  {{ form.dealerCompanyCode }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
                   {{ form.dealerCompanyName }}
                 </el-form-item>
                 <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                      query: {
-                        id: form.fundFinancialOrganizationId,
-                      },
-                    })"
-                   type="text">{{ form.fundFinancialOrganizationName }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.fundFinancialOrganizationId}`" target="_blank">{{ form.fundFinancialOrganizationName }}</el-link>
                 </el-form-item>
                 <el-form-item label="还款金额：" prop="repaymentAmount">
                   {{ form.repaymentAmount }}
@@ -67,8 +61,11 @@
                 <el-form-item label="授信可用敞口：" prop="creditAvailableExposure">
                   {{ form.creditAvailableExposure }}
                 </el-form-item>
-                <el-form-item label="经销商名称：" prop="dealerName">
-                  {{ form.dealerName }}
+                <el-form-item label="经销商编码：" prop="dealerCompanyCode">
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyCode }}</el-link>
+                </el-form-item>
+                <el-form-item label="经销商名称：" prop="dealerCompanyName">
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
@@ -153,7 +150,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     }
   },
   watch: {
@@ -171,7 +168,7 @@ export default {
     return {
       pageTitle: '客户还款记录',
       pageType: 'edit',
-      title: '编码：' + form.code,
+      title: '客户还款记录编码：' + form.code,
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-finCustomerRepaymentRecord',
       loading: false,
@@ -184,6 +181,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

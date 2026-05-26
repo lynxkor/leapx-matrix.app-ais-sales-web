@@ -72,6 +72,7 @@
          :default-time="['00:00:00', '23:59:59']"
           v-model="form.createTime"
           type="daterange"
+          unlink-panels
           :picker-options="pickerOptions"
           range-separator="至"
           value-format="yyyy-MM-dd HH:mm:ss"
@@ -129,7 +130,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/basicConfig/orderUrgentConfig/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleYearType } from '@/api/common';
@@ -222,7 +223,7 @@ export default {
           { props: 'blindOrderUrgentStatusLabel', label: '盲订急单设置', visible: true, width: 200 },
           { props: 'blindOrderLockTime', label: '盲订锁单时间要求', visible: true, width: 200 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 80 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',

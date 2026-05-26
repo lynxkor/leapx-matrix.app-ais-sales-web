@@ -53,6 +53,7 @@
             :default-time="['00:00:00', '23:59:59']"
             v-model="form.createTimeRange"
             type="daterange"
+            unlink-panels
             range-separator="至"
             start-placeholder="开始时间"
             end-placeholder="结束时间"
@@ -114,14 +115,14 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import {
   getList,
   deleteItem,
   enableItem,
   submitBatch,
-  revocation,
+  // revocation,
   revocationBatch, cancelBatch
 } from '@/api/vehretail/orderManager/soldPlateInfo/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel } from '@/api/common';
@@ -217,7 +218,7 @@ export default {
           { props: 'idCardNo', label: '证件号码', visible: true, width: 200 },
           { props: 'invoiceNo', label: '发票号码', visible: true, width: 200 },
           { props: 'invoiceTime', label: '开票日期', visible: true, width: 200 },
-          { props: 'invoiceAmount', label: '发票金额', visible: true, width: 200 },
+          { props: 'invoiceAmount', label: '发票金额', visible: true, width: 200, align: 'right' },
           { props: 'plateNo', label: '车牌号码', visible: true, width: 200 },
           { props: 'vehicleRegisterAddress', label: '车辆注册地址', visible: true, width: 200 },
           { props: 'plateDate', label: '上牌日期', visible: true, width: 200 },
@@ -238,7 +239,7 @@ export default {
           { props: 'saleOrgId', label: '门店id', visible: false, width: 200 },
           { props: 'saleDealerCode', label: '门店编码', visible: false, width: 200 },
           { props: 'carSaleSversionId', label: '公告车型ID', visible: false, width: 200 },
-          { props: 'vehiclePlaceOrigin', label: '产地', visible: false, width: 200 },
+          { props: 'vehiclePlaceOriginLabel', label: '产地', visible: false, width: 200 },
           { props: 'enginenNumber', label: '发动机号', visible: false, width: 200 },
           { props: 'certificateNo', label: '合格证号', visible: false, width: 200 },
           { props: 'invoiceRecordCode', label: '整车开票记录编号', visible: false, width: 200 },

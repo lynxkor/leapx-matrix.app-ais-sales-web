@@ -12,7 +12,7 @@
       <el-form-item label="VIN码">
         <tag-input
           placeholder="请输入"
-          v-model="form.vinList"
+          v-model="form.matchVinList"
           clearable
         />
       </el-form-item>
@@ -20,7 +20,7 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="vr_delivery_invoice_status"
-          v-model="form.status"
+          v-model="form.statusIncludeList"
           placeholder="请选择"
           clearable
           multiple
@@ -88,6 +88,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.createTimeRange"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -148,10 +149,10 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { batchCancel, enableItem, getList } from '@/api/vehretail/orderManager/deliveryInvoice/index';
-import {exportTable, getEnum, getTableConfig, listOrgStoreInfo, tableAddOrUpdate} from '@/api/common';
+import { exportTable, getEnum, getTableConfig, listOrgStoreInfo, tableAddOrUpdate } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -243,7 +244,7 @@ export default {
           { props: 'mallOrderCode', label: '商城订单编号', visible: true, width: 200 },
           { props: 'retailOrderCode', label: '整车订单', visible: true, width: 200 },
           { props: 'invoiceCode', label: '发票代码', visible: false, width: 200 },
-          { props: 'invoiceAmount', label: '发票金额', visible: false, width: 200 },
+          { props: 'invoiceAmount', label: '发票金额', visible: false, width: 200, align: 'right' },
           { props: 'certificateNo', label: '发票合格证号', visible: false, width: 200 },
           { props: 'engineNumber', label: '发票发动机号', visible: false, width: 200 },
           { props: 'carBuyerName', label: '证件识别的客户姓名', visible: false, width: 200 },

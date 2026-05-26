@@ -42,6 +42,7 @@
           <el-date-picker
             v-model="form.createTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -60,6 +61,7 @@
           <el-date-picker
             v-model="form.updateTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -80,10 +82,10 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <!-- <el-button size="small" @click="handleImport">导入</el-button> -->
-      <el-button v-if="canExport"  :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <!-- <el-button size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canExport"  :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -112,7 +114,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/datacenter/materials/vehicleOptionPackage/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
@@ -152,7 +154,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-选装包',
+      pageTitle: '选装包',
       pageType: 'list',
       moduleKey: 'AISDC-vehicleOptionPackage',
       form: {
@@ -176,26 +178,27 @@ export default {
             props: 'optionPackageName',
             label: '选装包名称',
             visible: true,
-            width: 200,
+            width: 240,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/datacenter/materials/vehicleOptionPackage/detail',
+                  path: '/datacenter/materials/vehicleOptionPackage/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },
               type: 'primary'
             }]
           },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'statusDesc', label: '说明', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '更改人', visible: true, width: 200 },
-          { props: 'updateTime', label: '更改时间', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 60 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 300 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 180 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 180 },
+          { props: 'modifierName', label: '更改人', visible: true, width: 180 },
+          { props: 'updateTime', label: '更改时间', visible: true, width: 180 },
           {
             props: 'operate',
             label: '操作',
@@ -208,7 +211,8 @@ export default {
                 this.$router.push({
                   path: '/datacenter/materials/vehicleOptionPackage/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },

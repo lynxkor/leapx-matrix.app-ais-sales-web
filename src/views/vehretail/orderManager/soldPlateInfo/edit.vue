@@ -164,14 +164,19 @@
                   />
                 </el-form-item>
                 <el-form-item label="产地：" prop="vehiclePlaceOrigin">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="vehicle_place_origin"
+<!--                  <fetch-select-->
+<!--                    :request="fetchOptions"-->
+<!--                    enumCode="vehicle_place_origin"-->
+<!--                    v-model="form.vehiclePlaceOrigin"-->
+<!--                    placeholder="请选择"-->
+<!--                    clearable-->
+<!--                    filterable-->
+<!--                    disabled-->
+<!--                  />-->
+                  <el-input
+                    placeholder="请输入"
                     v-model="form.vehiclePlaceOrigin"
-                    placeholder="请选择"
                     clearable
-                    filterable
-                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="发动机号：" prop="enginenNumber">
@@ -221,15 +226,15 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail" label-width="150px" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="VIN码：">
-                  {{ form.vin }}
+                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
                 </el-form-item>
                 <el-form-item label="车型名称：">
-                  {{ form.modelName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="门店：">
-                  {{ form.saleDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="车主姓名：">
                   {{ form.carBuyerName }}
@@ -250,7 +255,8 @@
                   {{ form.carSalesVersionName }}
                 </el-form-item>
                 <el-form-item label="产地：">
-                  {{ form.vehiclePlaceOriginLabel }}
+<!--                  {{ form.vehiclePlaceOriginLabel }}-->
+                  {{ form.vehiclePlaceOrigin }}
                 </el-form-item>
                 <el-form-item label="发动机号：">
                   {{ form.enginenNumber }}
@@ -361,7 +367,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail" label-width="150px" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="发票VIN号：">
                   {{ form.invoiceVin }}
                 </el-form-item>
@@ -491,7 +497,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail" label-width="150px" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="行驶证VIN号：">
                   {{ form.drivingLicenseVin }}
                 </el-form-item>
@@ -618,7 +624,7 @@
                 />
               </el-form-item>
             </el-form>
-            <el-form :inline="true" class="form-detail" label-width="150px" v-show="!(isEditing || !_id)">
+            <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
               <el-form-item label="提交时间：">
                 {{ form.submitTime }}
               </el-form-item>
@@ -641,10 +647,10 @@
                 {{ form.auditRemark }}
               </el-form-item>
               <el-form-item label="审核状态：">
-                {{ form.statusLabel }}
+                <span class="status-tag link">{{ form.statusLabel }}</span>
               </el-form-item>
               <el-form-item label="是否自动审核：">
-                {{ form.autoAuditStatusLabel}}
+                <span :class="['status-tag', form.autoAuditStatus === 1 ? 'primary' : 'danger']">{{ form.autoAuditStatusLabel}}</span>
               </el-form-item>
             </el-form>
           </div>
@@ -704,6 +710,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { getAreaTree } from '@/utils';
 import { getList as getVehicleProfileList } from '@/api/datacenter/vehicle/vehicleProfile';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 import auditDialog from '@/libs/components/auditDialog/index.vue';
@@ -838,7 +845,7 @@ export default {
         { label: '附件资料', required: true, configCode: 'mcs_subsidies', attachType: '附件资料' }
       ],
       yes_no_enum: YES_NO_ENUM,
-      provinceSelector: JSON.parse(localStorage.areaTree),
+      provinceSelector: getAreaTree(),
       citySelector: [],
       districtSelector: [],
       form: { ...form },
@@ -1255,7 +1262,7 @@ export default {
       this.form.saleDealerName = val ? selectedOption.storeName : null;
     },
     handleProvinceChange (code) {
-      console.log(JSON.parse(localStorage.areaTree));
+      console.log(getAreaTree());
       this.form.provinceCode = null;
       this.form.provinceName = null;
       this.form.cityCode = null;

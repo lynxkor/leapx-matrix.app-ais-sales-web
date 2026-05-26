@@ -5,22 +5,22 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="车辆合格证赎回："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.certificateStatus === 10 && form.creditSettleStatus === 10"
+        :showEditBtn="form.buttonControl && form.buttonControl.edit"
       >
         <template #status>
-          <span>{{ form.redemptionCode }}</span>
+          <!-- <span>{{ form.redemptionCode }}</span> -->
         </template>
         <template #extraButtons>
-          <el-button :disabled="!form.buttonControl.submitRedeem"  size="small" @click="handleSubmit">提交赎回</el-button>
-          <el-button :disabled="!form.buttonControl.submitRedeemAgain" size="small" @click="handleSubmitAgain">重新提交赎回</el-button>
-          <el-button :disabled="!form.buttonControl.confirmReceive" size="small" @click="handleconfirmSign">签收合格证</el-button>
-          <el-button :disabled="!form.buttonControl.delete" size="small" @click="handleDel">删除</el-button>
+          <el-button v-if = "persubmit && form.buttonControl && form.buttonControl.submitRedeem"  size="small" :loading="submitLoading" @click="handleSubmit">提交赎回</el-button>
+          <el-button v-if = "persubmit && form.buttonControl && form.buttonControl.submitRedeemAgain" size="small" :loading="submitLoading" @click="handleSubmitAgain">重新提交赎回</el-button>
+          <el-button v-if = "perconfirmReceive && form.buttonControl && form.buttonControl.confirmReceive" size="small" :loading="confirmReceiveLoading" @click="handleconfirmSign">签收合格证</el-button>
+          <el-button v-if = "canDelete && form.buttonControl && form.buttonControl.delete" size="small" :loading="deleteLoading" @click="handleDel">删除</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -130,46 +130,28 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="整车批售订单号：" prop="wholesaleOrderCode">
-                  <el-tooltip :disabled="!form.wholesaleOrderCode" :content="form.wholesaleOrderCode" placement="top">
-                    <span>{{ form.wholesaleOrderCode }}</span>
-                  </el-tooltip>
+                  <el-link type="primary" :href="'/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + form.wholesaleOrderCode" target="_blank">{{ form.wholesaleOrderCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="企业客户整车订单号：" prop="entVehicleOrderCode">
-                  <el-tooltip :disabled="!form.entVehicleOrderCode" :content="form.entVehicleOrderCode" placement="top">
-                    <span>{{ form.entVehicleOrderCode }}</span>
-                  </el-tooltip>
+                  <el-link type="primary" :href="'/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + form.entVehicleOrderCode" target="_blank">{{ form.entVehicleOrderCode }}</el-link>
                 </el-form-item>
                   <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-link type="primary" :href="'/partner/channelManagement/companyDetails?companyCode=' + form.dealerCompanyCode" target="_blank">{{ form.dealerCompanyName }}</el-link>
                 </el-form-item>
                 <el-form-item label="销售门店名称：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-link type="primary" :href="'/partner/channelManagement/shopDetail?dealerCode=' + form.saleDealerCode" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="VIN码：" prop="vin">
-                  {{ form.vin }}
+                  <el-link type="primary" :href="'/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=' + form.vin" target="_blank">{{ form.vin }}</el-link>
                 </el-form-item>
                     <el-form-item label="整车物料：" prop="materialsCode">
-                  {{ form.materialsCode }}
+                  <el-link type="primary" :href="'/sales/datacenter/materials/vehiclematerials/edit?id=' + form.materialsCode" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                     <el-form-item label="车系名称：" prop="seriesName">
-                      <el-button class="link" style="padding: 0;"
-                        @click="navigateToRoute({
-                            path: '/datacenter/materials/vehicleSeries/detail',
-                            query: {
-                              id: form.seriesId,
-                            },
-                          })"
-                        type="text">{{ form.seriesName }}</el-button>
+                  <el-link type="primary" :href="'/sales/datacenter/materials/vehicleseries/edit?id=' + form.seriesId" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
-                  <el-button class="link" style="padding: 0;"
-                        @click="navigateToRoute({
-                            path: '/datacenter/materials/vehicleModel/detail',
-                            query: {
-                              id: form.modelId,
-                            },
-                          })"
-                        type="text">{{ form.modelName }}</el-button>
+                  <el-link type="primary" :href="'/sales/datacenter/materials/vehiclemodel/edit?id=' + form.modelId" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
@@ -406,7 +388,6 @@
                     v-model="form.receiverName"
                     clearable
                     maxlength="15"
-                    :disabled="!isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="收件人手机：" prop="receiverPhone">
@@ -414,18 +395,17 @@
                     placeholder="请输入"
                     v-model="form.receiverPhone"
                     clearable
-                    :disabled="!isEditing"
                   />
                 </el-form-item>
                  <el-form-item label="省市区：" prop="areaCode">
                   <el-cascader
                     placeholder="请选择省市区"
-                    v-model="areaCode"
+                    v-model="form.areaCode"
                     :props="orgProps"
                     :options="areaOptions"
                     filterable
                     @change="handleChangeArea"
-                    :disabled="!isEditing"
+                    :validateEvent="false"
                     clearable>
                   </el-cascader>
                 </el-form-item>
@@ -435,7 +415,6 @@
                     v-model="form.receiverAddress"
                     clearable
                     maxlength="300"
-                    :disabled="!isEditing"
                   />
                 </el-form-item>
                 <el-form-item label="快递单号：" prop="expressCode">
@@ -486,10 +465,10 @@
                   {{ form.expressCode }}
                 </el-form-item>
                 <el-form-item label="快递照片链接地址：" prop="expressPhotoUrl">
-                  {{ form.expressPhotoUrl }}
+                   <el-link type="primary" :href="form.expressPhotoUrl" target="_blank">{{ form.expressPhotoUrl }}</el-link>
                 </el-form-item>
                 <el-form-item label="合格证照片链接地址：" prop="certificatePhotoUrl">
-                  {{ form.certificatePhotoUrl }}
+                  <el-link type="primary" :href="form.certificatePhotoUrl" target="_blank">{{ form.certificatePhotoUrl }}</el-link>
                 </el-form-item>
               </el-form>
             </div>
@@ -521,6 +500,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { getAreaTree } from '@/utils';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -546,6 +526,8 @@ const defaultForm = {
   seriesName: '',
   modelId: '',
   modelName: '',
+  materialsId: '',
+  materialsCode: '',
   settleFundType: '',
   vehiclePrice: '',
   salePrice: '',
@@ -569,6 +551,7 @@ const defaultForm = {
   expressPhotoUrl: '',
   certificatePhotoUrl: '',
   dataSource: '',
+  areaCode: [],
 };
 
 export default {
@@ -589,10 +572,10 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '合格证赎回编号：' + this.form.redemptionCode;
     }
   },
   watch: {
@@ -634,11 +617,9 @@ export default {
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
       moduleKey: 'AISVW-vehicleCertificateRedemption',
       loading: false,
-      submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       orderCategory: routeOrderCategory,
-      areaCode: [],
       originalForm: { ...form },
       emptyText: '若要启用此内容，请创建记录',
       wholesaleOrderCodeList: [],
@@ -650,7 +631,15 @@ export default {
         value: 'code',
         children: 'child'
       },
-      areaOptions: JSON.parse(localStorage.areaTree),
+      // 权限控制
+      persubmit: false,
+      perconfirmReceive: false,
+      // loading状态
+      submitLoading: false,
+      confirmReceiveLoading: false,
+      deleteLoading: false,
+
+      areaOptions: getAreaTree(),
       tableData: [
       ],
       orderDialogVisible: false,
@@ -686,18 +675,44 @@ export default {
         receiverAddress: [
           { required: true, message: '请输入收件地址', trigger: 'change' }
         ],
+        areaCode: [
+          {
+            required: true,
+            message: '请选择省市区',
+            trigger: 'change',
+            validator: (_rule, _value, callback) => {
+              const area = _rule.fullField ? this.form[_rule.fullField] : this.form.areaCode;
+              if (!area || area.length === 0) {
+                callback(new Error('请选择省市区'));
+              } else {
+                callback();
+              }
+            }
+          }
+        ],
       }
     };
   },
   mounted () {
   },
+  created () {
+    this.initPermissions();
+  },
   methods: {
+    initPermissions () {
+      this.persubmit = this.permissions.has(`${this.moduleKey}-submit`);
+      this.perconfirmReceive = this.permissions.has(`${this.moduleKey}-confirmReceive`);
+    },
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     otherentOrderCode (val, row) {
       this.form.dealerCompanyName = row.entCustomerName || '';
       this.form.dealerCompanyCode = row.entCustomerCode || '';
       this.form.saleDealerCode = row.saleDealerCode || '';
       this.form.saleDealerName = row.saleDealerName || '';
       this.form.vin = row.vin || '';
+      this.form.materialsId = row.materialsId || '';
       this.form.materialsCode = row.orderMaterialsCode || '';
       this.form.modelId = row.modelId || '';
       this.form.modelName = row.modelName || '';
@@ -725,8 +740,8 @@ export default {
         this.form.receiverDistrictCode = res.receiverDistrictCode;
         this.form.receiverDistrictName = res.receiverCityName;
         this.form.receiverAddress = res.receiverAddress;
-        this.areaCode = [res.receiverProvinceCode, res.receiverCityCode, res.receiverDistrictCode].filter(Boolean);
-        console.log('this.areaCode', this.areaCode);
+        this.form.areaCode = [res.receiverProvinceCode, res.receiverCityCode, res.receiverDistrictCode].filter(Boolean);
+        console.log('this.areaCode', this.form.areaCode);
       });
     },
     otherwholesaleOrderInfo (val, row) {
@@ -735,6 +750,7 @@ export default {
       this.form.saleDealerCode = row.saleDealerCode || '';
       this.form.saleDealerName = row.saleDealerName || '';
       this.form.vin = row.vin || '';
+      this.form.materialsId = row.materialsId || '';
       this.form.materialsCode = row.orderMaterialsCode || '';
       this.form.modelId = row.modelId || '';
       this.form.modelName = row.modelName || '';
@@ -761,8 +777,8 @@ export default {
         this.form.receiverDistrictCode = res.receiverDistrictCode;
         this.form.receiverDistrictName = res.receiverCityName;
         this.form.receiverAddress = res.receiverAddress;
-        this.areaCode = [res.receiverProvinceCode, res.receiverCityCode, res.receiverDistrictCode].filter(Boolean);
-        console.log('this.areaCode', this.areaCode);
+        this.form.areaCode = [res.receiverProvinceCode, res.receiverCityCode, res.receiverDistrictCode].filter(Boolean);
+        console.log('this.areaCode', this.form.areaCode);
       });
     },
     async getDealerListByName (params) {
@@ -837,11 +853,14 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.submitLoading = true;
         submit({
           idSet: [this._id],
         }).then(() => {
           this.$message.success('提交成功');
           this.$refs.containerRef.loadDetail();
+        }).finally(() => {
+          this.submitLoading = false;
         });
       }).catch(() => {});
     },
@@ -851,11 +870,14 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.submitLoading = true;
         submit({
           idSet: [this._id],
         }).then(() => {
           this.$message.success('提交成功');
           this.$refs.containerRef.loadDetail();
+        }).finally(() => {
+          this.submitLoading = false;
         });
       }).catch(() => {});
     },
@@ -866,11 +888,14 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.confirmReceiveLoading = true;
         batchconfirmSign({
           idSet: ids,
         }).then(() => {
           this.$message.success('签收合格证成功');
           this.$refs.containerRef.loadDetail();
+        }).finally(() => {
+          this.confirmReceiveLoading = false;
         });
       }).catch(() => {});
     },
@@ -884,12 +909,15 @@ export default {
         customClass: 'ais-leave-tips',
         showClose: false
       }).then(() => {
+        this.deleteLoading = true;
         deleteItem({
           idSet: ids
         }).then(() => {
           this.$router.push({
             path: '/vehwholesale/certificate/vehicleCertificateRedemption',
           });
+        }).finally(() => {
+          this.deleteLoading = false;
         });
       }).catch(() => {});
     },
@@ -897,8 +925,8 @@ export default {
       const id = this._id;
       if (id) {
         return getDetail(id).then(res => {
-          this.areaCode = [res.receiverProvinceCode, res.receiverCityCode, res.receiverDistrictCode];
-          console.log('res', this.areaCode);
+          res.areaCode = [res.receiverProvinceCode, res.receiverCityCode, res.receiverDistrictCode];
+          console.log('res', this.form.areaCode);
           return res;
         });
       }
@@ -915,7 +943,7 @@ export default {
         const message = orderCategory === '10' ? '整车批售订单号' : '企业客户订单号';
         throw new Error(message + '校验失败');
       }
-      if (!this.areaCode || this.areaCode.length === 0) {
+      if (!this.form.areaCode || this.form.areaCode.length === 0) {
         this.form.receiverProvinceCode = '';
         this.form.receiverProvinceName = '';
         this.form.receiverCityCode = '';

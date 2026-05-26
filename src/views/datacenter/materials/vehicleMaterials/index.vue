@@ -106,7 +106,6 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button size="small" type="primary" v-if="canAddOrUpdate" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button :loading="exportLoading" size="small" v-if="canExport" @click="exportExcel">导出</el-button>
       <!-- <el-button size="small" v-if="canDelete" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
       <el-button size="small" v-if="canEnableOrDisable" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button size="small" v-if="canEnableOrDisable" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
@@ -114,6 +113,7 @@
       <el-button size="small" v-permission="moduleKey + '-importMaterials'" @click="handleImport('vehicleMaterialsImport')">导入物料</el-button>
       <el-button size="small" v-permission="moduleKey + '-importPrice'" @click="handleImport('vehicleMaterialsImportPrice')">导入价格</el-button>
       <el-button size="small" v-permission="moduleKey + '-importProperties'" @click="handleImport('vehicleMaterialsImportProps')">导入属性</el-button>
+      <el-button :loading="exportLoading" size="small" v-if="canExport" @click="exportExcel">导出</el-button>
       <!-- <el-button :loading="exportLoading" size="small" @click="exportExcel">导出</el-button> -->
     </div>
     <div class="ais-table-c">
@@ -154,8 +154,8 @@
         </el-row>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="closeSetAttr">取 消</el-button>
-        <el-button size="small" type="primary" @click="confirmSetAttr">确 定</el-button>
+        <el-button size="small" @click="closeSetAttr">取消</el-button>
+        <el-button size="small" type="primary" @click="confirmSetAttr">确定</el-button>
       </div>
     </el-dialog>
 
@@ -170,7 +170,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchUpdateProps } from '@/api/datacenter/materials/vehicleMaterials/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelList, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage, vehicleBatteryCell, vehicleRoof, vehicleModelYearTypeRelationDistinctYeayType, listVehicleYearType } from '@/api/common';
@@ -221,7 +221,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-整车物料',
+      pageTitle: '整车物料',
       pageType: 'list',
       moduleKey: 'AISDC-vehicleMaterials',
       form: {
@@ -251,51 +251,53 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/datacenter/materials/vehicleMaterials/detail',
+                  path: '/datacenter/materials/vehicleMaterials/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },
               type: 'primary'
             }]
           },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
-          // { props: 'yearTypeName', label: '年款名称', visible: true, width: 200 },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 300 },
+          // { props: 'yearTypeName', label: '年款名称', visible: true, width: 120 },
           {
             props: 'price',
             label: '整车价格',
             visible: true,
-            width: 200
+            width: 120,
+            align: 'right'
           },
-          { props: 'batteryCellName', label: '电池电芯名称', visible: true, width: 200 },
-          { props: 'modelName', label: '车型名称', visible: true, width: 200 },
-          { props: 'allowWholesaleLabel', label: '是否允许现车批售', visible: true, width: 200 },
-          { props: 'allowProductionScheduleLabel', label: '是否允许排产申请', visible: true, width: 200 },
-          { props: 'allowDisplayVehicleWholesaleLabel', label: '是否允许展车批售', visible: true, width: 200 },
-          { props: 'allowWholesaleConfirmLabel', label: '是否允许批售确认', visible: true, width: 200 },
-          // { props: 'allowTestDriveVehicleWholesaleLabel', label: '是否允许试驾车批售', visible: true, width: 200 },
-          { props: 'allowConfigurationModifyLabel', label: '是否允许改配', visible: true, width: 200 },
-          { props: 'allowTestDriveVehicleWholesaleLabel', label: '是否允许试驾车批售', visible: true, width: 200 },
-          { props: 'allowCustomerSalesLabel', label: '是否允许企业客户销售	', visible: true, width: 200 },
-          { props: 'yearTypeName', label: '车型年款', visible: true, width: 200 },
-          { props: 'modelLineName', label: '系列名称', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
-          { props: 'drivingRangeName', label: '选配续航', visible: true, width: 200 },
-          { props: 'rangePowerName', label: '选配动力', visible: true, width: 200 },
-          { props: 'exteriorName', label: '外观名称', visible: true, width: 200 },
-          { props: 'interiorName', label: '内饰名称', visible: true, width: 200 },
-          { props: 'wheelHubName', label: '轮毂名称', visible: true, width: 200 },
-          { props: 'roofName', label: '车顶名称', visible: true, width: 200 },
-          { props: 'optionPackageName', label: '选装包名称', visible: true, width: 200 },
-          { props: 'discontinueStatusLabel', label: '停产状态', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          // { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          // { props: 'statusDesc', label: '说明', visible: true, width: 200 },
-          // { props: 'creatorName', label: '创建人', visible: true, width: 200 },
-          // { props: 'modifierName', label: '更新人', visible: true, width: 200 },
-          // { props: 'updateTime', label: '更新时间', visible: true, width: 200 },
+          { props: 'batteryCellName', label: '电池电芯名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleBatteryCell/edit?id=${row.batteryCellId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'modelName', label: '车型名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'allowWholesaleLabel', label: '是否允许现车批售', visible: true, width: 120 },
+          { props: 'allowProductionScheduleLabel', label: '是否允许排产申请', visible: true, width: 120 },
+          { props: 'allowDisplayVehicleWholesaleLabel', label: '是否允许展车批售', visible: true, width: 120 },
+          { props: 'allowWholesaleConfirmLabel', label: '是否允许批售确认', visible: true, width: 120 },
+          // { props: 'allowTestDriveVehicleWholesaleLabel', label: '是否允许试驾车批售', visible: true, width: 120 },
+          { props: 'allowConfigurationModifyLabel', label: '是否允许改配', visible: true, width: 120 },
+          { props: 'allowTestDriveVehicleWholesaleLabel', label: '是否允许试驾车批售', visible: true, width: 120 },
+          { props: 'allowCustomerSalesLabel', label: '是否允许企业客户销售	', visible: true, width: 120 },
+          { props: 'yearTypeName', label: '车型年款', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleYearType/edit?id=${row.yearTypeId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'modelLineName', label: '系列名称', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleModelLine/edit?id=${row.modelLineId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'seriesName', label: '车系名称', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'drivingRangeName', label: '选配续航', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleDrivingRange/edit?id=${row.drivingRangeId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'rangePowerName', label: '选配动力', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleRangePower/edit?id=${row.rangePowerId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'exteriorName', label: '外观名称', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleExterior/edit?id=${row.exteriorId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'interiorName', label: '内饰名称', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleInterior/edit?id=${row.interiorId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'wheelHubName', label: '轮毂名称', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleWheelHub/edit?id=${row.wheelHubId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'roofName', label: '车顶名称', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleRoof/edit?id=${row.roofId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'optionPackageName', label: '选装包名称', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleOptionPackage/edit?id=${row.optionPackageId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'discontinueStatusLabel', label: '停产状态', visible: true, width: 120 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 60 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 180 },
+          // { props: 'statusLabel', label: '状态', visible: true, width: 60 },
+          // { props: 'statusDesc', label: '说明', visible: true, width: 300 },
+          // { props: 'creatorName', label: '创建人', visible: true, width: 180 },
+          // { props: 'modifierName', label: '更新人', visible: true, width: 180 },
+          // { props: 'updateTime', label: '更新时间', visible: true, width: 180 },
           {
             props: 'operate',
             label: '操作',
@@ -308,7 +310,8 @@ export default {
                 this.$router.push({
                   path: '/datacenter/materials/vehicleMaterials/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },

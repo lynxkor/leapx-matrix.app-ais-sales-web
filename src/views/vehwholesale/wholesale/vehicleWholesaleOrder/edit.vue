@@ -6,24 +6,25 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="整车批售订单信息："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="canAddOrUpdate && form.buttonControl && form.buttonControl.editButton"
       >
         <template #status>
-          {{ form.wholesaleOrderCode }}
+          <!-- {{ form.wholesaleOrderCode }} -->
         </template>
         <template #extraButtons >
-          <el-button  size="small" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
-          <el-button  :disabled="!form.buttonControl.confirmManualButton" size="small" @click="handleCheckConfirm" >审核确认</el-button>
-          <el-button  :disabled="!form.buttonControl.autoAllocateVehicle" size="small" @click="handleaAutoVehicleAllocation">自动配车</el-button>
-          <el-button  :disabled="!form.buttonControl.manualAllocateVehicle" size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
-          <el-button  :disabled="!form.buttonControl.submitSettleButton" size="small" @click="handleBatchSettleSubmit">提交结算</el-button>
-          <el-button  :disabled="!form.buttonControl.cancelSettle" size="small" @click="handleBatchCancelSettle">取消结算</el-button>
-          <el-button  :disabled="!form.buttonControl.cancelButton" size="small" @click="handleCancel">作废</el-button>
+          <el-button  v-if = "perquerySapAccount" size="small" :loading="querySapAccountLoading" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
+          <el-button  v-if = "perbatchConfirm && form.buttonControl && form.buttonControl.confirmManualButton" size="small" :loading="checkConfirmLoading" @click="handleCheckConfirm" >审核确认</el-button>
+          <el-button  v-if = "perbatchSetAutoAllocate && form.buttonControl && form.buttonControl.autoAllocateVehicle" size="small" :loading="autoVehicleAllocationLoading" @click="handleaAutoVehicleAllocation">自动配车</el-button>
+          <el-button  v-if = "pervinAllocateVehicle && form.buttonControl && form.buttonControl.manualAllocateVehicle" size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
+          <el-button  v-if = "perbatchSettleSubmit && form.buttonControl && form.buttonControl.submitSettleButton" size="small" :loading="batchSettleSubmitLoading" @click="handleBatchSettleSubmit">提交结算</el-button>
+          <el-button  v-if = "perbatchCancelSettle && form.buttonControl && form.buttonControl.cancelSettle" size="small" @click="handleBatchCancelSettle">取消结算</el-button>
+          <el-button  v-if = "perbatchCancel && form.buttonControl && form.buttonControl.cancelButton" size="small" @click="handleCancel">作废</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -33,11 +34,11 @@
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="订单状态：" prop="status">
+                <el-form-item label="订单状态：" prop="orderStatus">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vw_wholesale_order_status"
-                    v-model="form.status"
+                    v-model="form.orderStatus"
                     placeholder="请选择"
                     clearable
                     filterable
@@ -120,10 +121,10 @@
                     disabled
                   />
                 </el-form-item>
-                  <el-form-item label="物料描述：" prop="materialsDesc">
+                  <el-form-item label="物料描述：" prop="orderMaterialsDesc">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.materialsDesc"
+                    v-model="form.orderMaterialsDesc"
                     clearable
                     disabled
                   />
@@ -199,7 +200,7 @@
                       placeholder="请选择"
                       clearable
                       filterable
-                      :disabled = 'form.status === 99 || form.status === "99"'
+                      :disabled = 'form.orderStatus === 99 || form.orderStatus === "99"'
                     />
                 </el-form-item>
                 <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
@@ -215,23 +216,23 @@
                 <!-- <el-form-item label="批售订单号：" prop="wholesaleOrderCode">
                   {{ form.wholesaleOrderCode }}
                 </el-form-item> -->
-                <el-form-item label="订单状态：" prop="statusLabel">
-                  {{ form.statusLabel }}
+                <el-form-item label="订单状态：" prop="orderStatusLabel">
+                  {{ form.orderStatusLabel }}
                 </el-form-item>
                 <el-form-item label="确认状态：" prop="confirmStatusLabel">
                   {{ form.confirmStatusLabel }}
                 </el-form-item>
                 <el-form-item label="销售门店：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="交付门店名称：" prop="deliveryDealerName">
-                  {{ form.deliveryDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.deliveryDealerCode}`" target="_blank">{{ form.deliveryDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="门店仓库名称：" prop="dealerWarehouseName">
                   {{ form.dealerWarehouseName }}
                 </el-form-item>
                  <el-form-item label="整车补货单号：" prop="replenishApplyCode">
-                  {{ form.replenishApplyCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApply/edit?id=' + form.replenishApplyCode)">{{ form.replenishApplyCode }}</el-button>
                 </el-form-item>
                    <el-form-item label="订单分类：" prop="orderCategoryLabel">
                   {{ form.orderCategoryLabel }}
@@ -242,11 +243,14 @@
                   <el-form-item label="订单时间：" prop="orderTime">
                   {{ form.orderTime }}
                 </el-form-item>
-                 <el-form-item label="物料描述：" prop="materialsDesc">
-                  {{ form.materialsDesc }}
+                 <el-form-item label="订单物料编码：" prop="orderMaterialsCode">
+                    <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.orderMaterialsCode}`" target="_blank">{{ form.orderMaterialsCode }}</el-link>
+                </el-form-item>
+                 <el-form-item label="物料描述：" prop="orderMaterialsDesc">
+                  {{ form.orderMaterialsDesc }}
                 </el-form-item>
                     <el-form-item label="专项活动：" prop="prodScheduleActivityName">
-                  {{ form.prodScheduleActivityName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=' + form.prodScheduleActivityId)">{{ form.prodScheduleActivityName }}</el-button>
                 </el-form-item>
                   <!-- <el-form-item label="ERP发票号：" prop="erpInvoiceCode">
                   {{ form.erpInvoiceCode }}
@@ -258,12 +262,12 @@
                   {{ form.invoiceTime }}
                 </el-form-item>
 
-                <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
+                <!-- <el-form-item label="设置急单时间：" prop="emergencyOrderTime">
                   {{ form.emergencyOrderTime }}
                 </el-form-item>
                  <el-form-item label="急单备注：" prop="emergencyOrderRemark">
                   {{ form.emergencyOrderRemark }}
-                </el-form-item>
+                </el-form-item> -->
                    <el-form-item label="确认说明：" prop="confirmRemark">
                   {{ form.confirmRemark }}
                 </el-form-item>
@@ -280,7 +284,7 @@
                   {{ form.allowLockRetailLabel }}
                 </el-form-item>
                  <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
-                  {{ form.replenishApplyDetailCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=' + form.replenishApplyDetailId)">{{ form.replenishApplyDetailCode }}</el-button>
                 </el-form-item>
               </el-form>
             </div>
@@ -332,6 +336,22 @@
                       filterable
                       disabled
                     />
+                </el-form-item>
+                <el-form-item label="配车物料码：" prop="materialsCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.materialsCode"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="配车物料描述：" prop="materialsDesc">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.materialsDesc"
+                    clearable
+                    disabled
+                  />
                 </el-form-item>
                    <el-form-item label="配车VIN码：" prop="vin">
                   <el-input
@@ -535,8 +555,14 @@
                   <el-form-item label="配车方式：" prop="allocateWayLabel">
                   {{ form.allocateWayLabel }}
                 </el-form-item>
+                <el-form-item label="配车物料码：" prop="materialsCode">
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
+                </el-form-item>
+                <el-form-item label="配车物料描述：" prop="materialsDesc">
+                  {{ form.materialsDesc }}
+                </el-form-item>
                 <el-form-item label="配车VIN码：" prop="vin">
-                  {{ form.vin }}
+                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
                 </el-form-item>
                 <el-form-item label="配车时间：" prop="allocateTime">
                   {{ form.allocateTime }}
@@ -611,26 +637,28 @@
                <el-form :inline="true" :model="form" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="结算资金类型：" prop="settleFundType">
                   <fetch-select
-                   :options="settleFundTypeOptions"
-                    v-model="form.settleFundType"
+                   :options="fundTypeList"
+                    v-model="form.settleFundTypeLabel"
                     placeholder="请选择"
                     clearable
                     filterable
-                    :disabled="needAutoAllocateCarStatus.includes(form.status)"
+                     labelKey="fundTypeLabel"
+                    valueKey="fundType"
+                    :disabled="needAutoAllocateCarStatus.includes(form.orderStatus)"
                     @change="clearCache"
                   />
                 </el-form-item>
                    <el-form-item label="金融机构名称：" prop="financialOrganizationId">
                     <fetch-select
                    :options="financialOrganizationList"
-                    v-model="form.financialOrganizationId"
+                    v-model="form.financialOrganizationName"
                     placeholder="请选择"
                     clearable
                     filterable
                     labelKey="name"
                     valueKey="id"
                     @change="getNewfinancialOrganization"
-                    :disabled="form.settleFundType !== '2010'"
+                    :disabled="form.settleFundType !== 2010"
                   />
                     <!-- <fetch-select
                     :remote-method="repairItemSearch"
@@ -755,7 +783,7 @@
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构名称：" prop="financialOrganizationName">
-                  {{ form.financialOrganizationName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.financialOrganizationId)">{{ form.financialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="零售价：" prop="retailPrice">
                   {{ form.retailPrice }}
@@ -808,26 +836,35 @@
             </div>
             <div class="common-section-body">
               <div class="common-section-table">
-                <el-table :data="form.dealerFundAccounts" border style="width: 100%">
-                <el-table-column label="资金类型" width="180">
-                    <template slot-scope="scope">
-                      <span>
-                        {{ scope.row.fundTypeLabel }}
-                        <!-- 判断条件：fundType 为 1050 (赊销) 时拼接金融机构名称 -->
-                        <span v-if="scope.row.fundType === '2010' || scope.row.fundType === 2010">
-                          - {{ scope.row.financialOrganizationName || '' }}
+                <div class="component-table">
+                  <vxe-table
+                    ref="table"
+                    :data="form.dealerFundAccounts"
+                    stripe
+                    resizable
+                    border="inner"
+                    size="medium"
+                    show-overflow
+                  >
+                    <vxe-column field="fundTypeLabel" title="资金类型" width="180">
+                      <template #default="{ row }">
+                        <span v-if="row.fundType === '2010' || row.fundType === 2010">
+                          <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/dealerFundAccount/edit?id=' + row.id)">{{ row.fundTypeLabel }}-{{ row.financialOrganizationName || '' }}</el-button>
                         </span>
-                      </span>
-                    </template>
-                  </el-table-column>
-                <el-table-column prop="availableBalance" label="可用余额" />
-                <el-table-column prop="frozenBalance" label="冻结资金" />
-                <el-table-column prop="availableCreditAmount" label="剩余可用额度" />
-                <el-table-column prop="downPaymentRatio" label="首付款比例%" />
-                <el-table-column prop="creditAccountStatusLabel" label="赊销账户状态" />
-                <el-table-column prop="effectiveTime" label="额度生效日期" />
-                <el-table-column prop="expireTime" label="额度失效日期" />
-              </el-table>
+                        <span v-else>
+                          <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/dealerFundAccount/edit?id=' + row.id)">{{ row.fundTypeLabel || '' }}</el-button>
+                        </span>
+                      </template>
+                    </vxe-column>
+                    <vxe-column field="availableBalance" title="可用余额" />
+                    <vxe-column field="frozenBalance" title="冻结资金" />
+                    <vxe-column field="availableCreditAmount" title="剩余可用额度" />
+                    <vxe-column field="downPaymentRatio" title="首付款比例%" />
+                    <vxe-column field="creditAccountStatusLabel" title="赊销账户状态" />
+                    <vxe-column field="effectiveTime" title="额度生效日期" />
+                    <vxe-column field="expireTime" title="额度失效日期" />
+                  </vxe-table>
+                </div>
               </div>
             </div>
           </section>
@@ -877,6 +914,8 @@ import BatchCancelInput from './BatchCancelInput.vue';
 import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import BatchCancelSettleInput from './BatchCancelSettleInput.vue';
 import ComponentTable from './ComponentTable.vue';
+
+import 'vxe-table/lib/index.css';
 const defaultForm = {
   // 多选时字段有变化，自行修复
   wholesaleOrderCode: '',
@@ -1013,7 +1052,10 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
+    },
+    title () {
+      return '整车批售订单信息：' + (this.form.wholesaleOrderCode || '');
     }
   },
   watch: {
@@ -1031,7 +1073,6 @@ export default {
     return {
       pageTitle: '整车批售订单',
       pageType: 'edit',
-      title: '批售订单号：' + form.wholesaleOrderCode,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-vehicleWholesaleOrder',
       loading: false,
@@ -1039,6 +1080,10 @@ export default {
       showManualVehicleDialog: false,
       showBatchCancelDialog: false,
       showBatchCancelSettleDialog: false,
+      querySapAccountLoading: false,
+      checkConfirmLoading: false,
+      autoVehicleAllocationLoading: false,
+      batchSettleSubmitLoading: false,
       showComponentTabelDialog: false,
       yes_no_enum: YES_NO_ENUM,
       true_false_enum: TRUE_FALSE_ENUM,
@@ -1046,8 +1091,17 @@ export default {
       settleFundTypeOptions: [],
       orderCategoryOptions: [],
       financialOrganizationList: [],
+      fundTypeList: [],
       needAutoAllocateCarStatus: [1, 2, 10, 21, 99, 3],
       accountData: [],
+      // 权限控制
+      perquerySapAccount: false,
+      perbatchConfirm: false,
+      perbatchSetAutoAllocate: false,
+      pervinAllocateVehicle: false,
+      perbatchSettleSubmit: false,
+      perbatchCancelSettle: false,
+      perbatchCancel: false,
       detailsColumns: [
         { field: 'dealerCompanyName', title: '销售公司' },
         { field: 'gtext', title: '资金类型' },
@@ -1107,7 +1161,22 @@ export default {
     this.fetchSettleFundTypeOptions();
     this.fetchOrderCategoryOptions();
   },
+  created () {
+    this.initPermissions();
+  },
   methods: {
+    initPermissions () {
+      this.perquerySapAccount = this.permissions.has(`${this.moduleKey}-querySapAccount`); // 查询整车账户余额
+      this.perbatchConfirm = this.permissions.has(`${this.moduleKey}-batchConfirm`); // 审核确认
+      this.perbatchSetAutoAllocate = this.permissions.has(`${this.moduleKey}-batchSetAutoAllocate`); // 自动配车
+      this.pervinAllocateVehicle = this.permissions.has(`${this.moduleKey}-vinAllocateVehicle`); // 手工配车
+      this.perbatchSettleSubmit = this.permissions.has(`${this.moduleKey}-batchSettleSubmit`); // 提交结算
+      this.perbatchCancelSettle = this.permissions.has(`${this.moduleKey}-batchCancelSettle`); // 取消结算
+      this.perbatchCancel = this.permissions.has(`${this.moduleKey}-batchCancel`); // 作废
+    },
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     async fetchOrderCategoryOptions () {
       const response = await getEnum('vw_order_category');
       // 过滤出 code 为 0、2、20 的数据，且确保 code 是字符串类型
@@ -1126,6 +1195,7 @@ export default {
       });
     },
     handlequerySAPAccountBalance () {
+      this.querySapAccountLoading = true;
       const params = {
         id: this._id,
       };
@@ -1134,6 +1204,8 @@ export default {
         this.accountData = res;
         console.log(this.accountData);
         this.showComponentTabelDialog = true;
+      }).finally(() => {
+        this.querySapAccountLoading = false;
       });
     },
     async fetchSettleFundTypeOptions () {
@@ -1165,6 +1237,7 @@ export default {
       this.showBatchCancelSettleDialog = true;
     },
     handleBatchSettleSubmit () {
+      this.batchSettleSubmitLoading = true;
       const ids = [this._id];
       console.log('handleBatchSettleSubmit', ids);
       this.$confirm('是否需要对批售订单进行结算?', '操作提醒', {
@@ -1180,8 +1253,12 @@ export default {
             message: '提交成功!'
           });
           this.getData();
+        }).finally(() => {
+          this.batchSettleSubmitLoading = false;
         });
-      }).catch(() => {});
+      }).catch(() => {
+        this.batchSettleSubmitLoading = false;
+      });
     },
     getDetailData () {
       if (this._id) {
@@ -1200,7 +1277,7 @@ export default {
         });
         return false;
       };
-      if (!this.ALLOWED_STATUS.includes(item.status)) {
+      if (!this.ALLOWED_STATUS.includes(item.orderStatus)) {
         this.$message({
           type: 'error',
           message: '订单[订单状态]必须为[未配车,配车失败]!'
@@ -1224,7 +1301,7 @@ export default {
         });
         return false;
       };
-      if (!this.ALLOWED_STATUS.includes(item.status)) {
+      if (!this.ALLOWED_STATUS.includes(item.orderStatus)) {
         this.$message({
           type: 'error',
           message: '订单[订单状态]必须为[未配车,配车失败]!'
@@ -1236,6 +1313,7 @@ export default {
     handleCheckConfirm () { //
       // const checkStatus = this.allAllowConfirm(this.form);
       // if (checkStatus) {
+      this.checkConfirmLoading = true;
       this.$confirm('是否需要对批售订单进行确认?', '操作提醒', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -1249,13 +1327,18 @@ export default {
             message: '提交成功!'
           });
           this.getDetailData();
+        }).finally(() => {
+          this.checkConfirmLoading = false;
         });
-      }).catch(() => {});
+      }).catch(() => {
+        this.checkConfirmLoading = false;
+      });
       // }
     },
     handleaAutoVehicleAllocation () { // 自动配车
       // const checkStatus = this.allAutoVehicleAllocation(this.form);
       // if (checkStatus) {
+      this.autoVehicleAllocationLoading = true;
       this.$confirm('是否需要对批售订单进行自动配车?', '操作提醒', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -1270,8 +1353,12 @@ export default {
             message: '提交成功!'
           });
           this.getDetailData();
+        }).finally(() => {
+          this.autoVehicleAllocationLoading = false;
         });
-      }).catch(() => {});
+      }).catch(() => {
+        this.autoVehicleAllocationLoading = false;
+      });
       // }
     },
     handleManualVehicleAllocation () { // 手工配车
@@ -1310,7 +1397,7 @@ export default {
 
     },
     allAllowCancel (item) {
-      if (!this.ALLOWED_STATUS.includes(item.status)) {
+      if (!this.ALLOWED_STATUS.includes(item.orderStatus)) {
         this.$message({
           type: 'error',
           message: '订单已完成配车，不允许作废!'
@@ -1348,9 +1435,18 @@ export default {
         return getDetail(id).then((res) => {
           // 1. 初始化或清空列表，防止重复添加
           this.financialOrganizationList = [];
+          const uniqueLabels = new Set();
           // 2. 处理 dealerFundAccounts
           if (res.dealerFundAccounts && Array.isArray(res.dealerFundAccounts)) {
             res.dealerFundAccounts = res.dealerFundAccounts.map(account => {
+              if (account.fundTypeLabel !== '现金' && account.validIfCreditSaleAccount === true) {
+                uniqueLabels.add(
+                  {
+                    fundType: account.fundType,
+                    fundTypeLabel: account.fundTypeLabel,
+                  }
+                );
+              }
               if ((account.fundType === '2010' || account.fundType === 2010) && account.financialOrganizationId && account.financialOrganizationName) {
                 // 检查是否已存在，避免重复
                 const exists = this.financialOrganizationList.some(item => item.id === account.financialOrganizationId);
@@ -1361,6 +1457,7 @@ export default {
                   });
                 }
               }
+              this.fundTypeList = Array.from(uniqueLabels);
               // 原有的映射逻辑
               return {
                 ...account,
@@ -1377,7 +1474,9 @@ export default {
         }).catch(() => {});
       }
     },
-    clearCache () {
+    clearCache (val, row) {
+      this.form.settleFundType = row.fundType;
+      this.form.settleFundTypeLabel = row.fundTypeLabel;
       this.form.financialOrganizationId = '';
       this.form.financialOrganizationName = '';
     },

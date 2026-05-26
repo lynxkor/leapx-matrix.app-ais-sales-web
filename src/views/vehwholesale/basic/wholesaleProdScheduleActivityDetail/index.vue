@@ -20,6 +20,7 @@
          :default-time="['00:00:00', '23:59:59']"
           v-model="form.createTime"
           type="daterange"
+          unlink-panels
           :picker-options="pickerOptions"
           range-separator="至"
           value-format="yyyy-MM-dd HH:mm:ss"
@@ -60,13 +61,19 @@
             :options="seriesList"
              />
       </el-form-item>
-       <el-form-item label="车型">
-          <fetch-select
+       <el-form-item label="系列">
+
+        <fetch-select remote
+        :params="form.modelLineName"
+        :remote-method="getVehicleModelLineList"
+         v-model="form.modelLineIds" placeholder="请选择" value-key="id" label-key="name" multiple clearable collapseTags filterable/>
+
+          <!-- <fetch-select
             :remote-method="modelSearch"
             remote
             reserve-keyword
             :options="modelList" v-model="form.modelLineIds" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable
-            />
+            /> -->
         </el-form-item>
         <el-form-item label="物料编码">
           <tag-input v-model="form.materialsCodes" placeholder="请输入" />
@@ -128,10 +135,10 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivityDetail/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelList } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelList, vehicleModelLineList } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -193,10 +200,10 @@ export default {
         },
         dataProp: [
           {
-            props: 'activityCode',
-            label: '活动编码',
+            props: 'activityDetailCode',
+            label: '活动明细编码',
             visible: true,
-            width: 200,
+            width: 150,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -214,52 +221,86 @@ export default {
             props: 'activityName',
             label: '活动名称',
             visible: true,
-            width: 200,
+            width: 150,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/basic/wholesaleProdScheduleActivity/edit',
-                  query: {
-                    id: row.scheduleActivityId
-                  }
-                });
+                window.open(`/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=${row.scheduleActivityId}`, '_blank');
               },
               type: 'primary'
             }]
           },
           {
             props: 'modelLineName',
-            label: '车型',
+            label: '系列',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleModelLine/detail',
-                  query: {
-                    id: row.modelLineId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehiclemodelline/edit?id=${row.modelLineId}`, '_blank');
               },
               type: 'primary'
             }]
           },
-          { props: 'deliveryWayLabel', label: '指定发运方式', visible: true, width: 200 },
-          { props: 'allowLockRetailLabel', label: '是否锁零售单', visible: true, width: 200 },
-          { props: 'startTime', label: '开始日期', visible: true, width: 200 },
-          { props: 'endTime', label: '截止日期', visible: true, width: 200 },
-          { props: 'dealerCode', label: '门店编码', visible: true, width: 200 },
-          { props: 'dealerName', label: '门店名称', visible: true, width: 200 },
-          { props: 'provinceName', label: '省份', visible: true, width: 200 },
-          { props: 'cityName', label: '城市', visible: true, width: 200 },
-          { props: 'applyOrderCategoryLabel', label: '适用订单分类', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系', visible: true, width: 200 },
-          { props: 'yearTypeName', label: '年款名称', visible: true, width: 200 },
-          { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
-          { props: 'totalQuotaQty', label: '额度数量', visible: true, width: 200 },
-          { props: 'usedQuotaQty', label: '已提报数量', visible: true, width: 200 },
-          { props: 'remainQuotaQty', label: '剩余可用', visible: true, width: 200 },
+          { props: 'deliveryWayLabel', label: '指定发运方式', visible: true, width: 140 },
+          { props: 'allowLockRetailLabel', label: '是否锁零售单', visible: true, width: 140 },
+          { props: 'startTime', label: '开始日期', visible: true, width: 160 },
+          { props: 'endTime', label: '截止日期', visible: true, width: 160 },
+          {
+            props: 'dealerCode',
+            label: '门店编码',
+            visible: true,
+            width: 150,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          { props: 'dealerName', label: '门店名称', visible: true, width: 180 },
+          { props: 'provinceName', label: '省份', visible: true, width: 100 },
+          { props: 'cityName', label: '城市', visible: true, width: 100 },
+          { props: 'applyOrderCategoryLabel', label: '适用订单分类', visible: true, width: 150 },
+          {
+            props: 'seriesName',
+            label: '车系',
+            visible: true,
+            width: 120,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleseries/edit?id=${row.seriesId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'yearTypeName',
+            label: '年款名称',
+            visible: true,
+            width: 120,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehicleyeartype/edit?id=${row.yearTypeId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'materialsCode',
+            label: '物料编码',
+            visible: true,
+            width: 160,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 300 },
+          { props: 'totalQuotaQty', label: '额度数量', visible: true, width: 120, align: 'right' },
+          { props: 'usedQuotaQty', label: '已提报数量', visible: true, width: 120, align: 'right' },
+          { props: 'remainQuotaQty', label: '剩余可用', visible: true, width: 120, align: 'right' },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',
@@ -285,6 +326,10 @@ export default {
     this.getData();
   },
   methods: {
+    async getVehicleModelLineList (val) {
+      const res = await vehicleModelLineList({ size: 1000, modelLineNameLike: val });
+      return res;
+    },
     async seriesSearch (query) {
       try {
         const res = await vehicleSeriesList({ seriesNameLike: query });
@@ -382,6 +427,7 @@ export default {
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item,
+              dealerId: item.dealerId || '',
               deleteLoading: false
             };
           });

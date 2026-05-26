@@ -39,6 +39,7 @@
          :default-time="['00:00:00', '23:59:59']"
           v-model="form.createTime"
           type="daterange"
+          unlink-panels
           :picker-options="pickerOptions"
           range-separator="至"
           value-format="yyyy-MM-dd HH:mm:ss"
@@ -52,6 +53,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.publishTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -82,7 +84,7 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canDelete" size="small" @click="handleBatchPost">发布</el-button>
+      <el-button v-permission="moduleKey+'-post'"  size="small" @click="handleBatchPost">发布</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
@@ -118,7 +120,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchPost } from '@/api/vehwholesale/wholesale/vehicleWholesalePaymentNotice/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo, getParentCompany } from '@/api/common';
@@ -156,7 +158,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '批售请款通知管理',
+      pageTitle: '批售请款通知',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-vehicleWholesalePaymentNotice',
@@ -182,7 +184,7 @@ export default {
             props: 'paymentNoticeCode',
             label: '请款通知单号',
             visible: true,
-            width: 200,
+            width: 220,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -196,14 +198,14 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyName', label: '所属母公司名称', visible: true, width: 200 },
-          { props: 'saleDealerName', label: '门店名称', visible: true, width: 200 },
-          { props: 'pendingSettleCount', label: '待结算数', visible: true, width: 200 },
-          { props: 'totalWholesaleAmount', label: '批售总金额', visible: true, width: 200 },
-          { props: 'publishStatusLabel', label: '发布状态', visible: true, width: 200 },
-          { props: 'publishTime', label: '发布时间', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建者名称', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'dealerCompanyName', label: '所属母公司名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'saleDealerName', label: '门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'pendingSettleCount', label: '待结算数', visible: true, width: 100, align: 'right' },
+          { props: 'totalWholesaleAmount', label: '批售总金额', visible: true, width: 120, align: 'right' },
+          { props: 'publishStatusLabel', label: '发布状态', visible: true, width: 120 },
+          { props: 'publishTime', label: '发布时间', visible: true, width: 160 },
+          { props: 'creatorName', label: '创建者名称', visible: true, width: 120 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 160 },
           // {
           //   props: 'operate',
           //   label: '操作',

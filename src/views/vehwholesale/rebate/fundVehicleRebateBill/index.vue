@@ -121,7 +121,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/rebate/fundVehicleRebateBill/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelList, listVehicleYearType } from '@/api/common';
@@ -206,10 +206,10 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/rebate/fundVehicleRebateBill/detail',
+                  path: '/vehwholesale/rebate/fundVehicleRebateBill/edit',
                   query: {
                     id: row.id,
-                    isEditing: true
+                    isEditing: false
                   }
                 });
               },
@@ -217,7 +217,7 @@ export default {
             }]
           },
           // { pops: 'rebateBillDetailCode', label: '返利核算单明细编号', visible: true, width: 200 },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260 },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           {
             props: 'dealerName',
             label: '门店名称',
@@ -225,12 +225,7 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                this.navigateToRoute({
-                  path: '/partner/channelManagement/shopDetail',
-                  query: {
-                    dealerCode: row.dealerCode,
-                  },
-                });
+                this.openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode);
               },
               type: 'primary'
             }]
@@ -294,6 +289,9 @@ export default {
     });
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     async listVehicleYearType (query) {
       try {
         const res = await listVehicleYearType({ yearTypeNameLike: query });

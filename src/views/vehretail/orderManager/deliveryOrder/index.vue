@@ -47,7 +47,6 @@
           <fetch-select
             filterable
             clearable
-            multiple
             remote
             collapseTags
             v-model="form.saleDealerCode"
@@ -60,10 +59,9 @@
           <fetch-select
             filterable
             clearable
-            multiple
             remote
             collapseTags
-            v-model="form.exclusiveServiceStoreCode"
+            v-model="form.deliveryDealerCode"
             :remote-method="remoteMethods.getServiceDealer"
             value-key="storeCode"
             label-key="storeName"
@@ -81,6 +79,7 @@
           :default-time="['00:00:00', '23:59:59']"
             v-model="form.appointmentTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -93,6 +92,7 @@
           :default-time="['00:00:00', '23:59:59']"
             v-model="form.createTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -142,7 +142,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList } from '@/api/vehretail/orderManager/deliveryOrder/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, listOrgStoreInfo } from '@/api/common';
@@ -219,10 +219,10 @@ export default {
           return await listVehicleModel({ modelNameLike: query, status: 1 });
         },
         getSaleDealer: async (query) => {
-          return await listOrgStoreInfo({ modelNameLike: query, isSales: true });
+          return await listOrgStoreInfo({ keyword: query, isSales: true });
         },
         getServiceDealer: async (query) => {
-          return await listOrgStoreInfo({ modelNameLike: query, isSupportDeliver: true });
+          return await listOrgStoreInfo({ keyword: query, isSupportDeliver: true });
         }
       },
       optionObj: {
@@ -274,11 +274,11 @@ export default {
           { props: 'vin', label: 'VIN', visible: true, width: 200 },
           { props: 'modelName', label: '车型名称', visible: true, width: 200 },
           { props: 'carBuyerName', label: '购车人姓名', visible: false, width: 200 },
-          { props: 'vehicleGuidePrice', label: '整车指导价（原补贴后价格）', visible: false, width: 200 },
-          { props: 'depositReceivable', label: '应收定金', visible: false, width: 200 },
-          { props: 'receivableAmount', label: '门店应收金额', visible: false, width: 200 },
-          { props: 'equityDeductionTotalAmount', label: '权益抵扣总额', visible: false, width: 200 },
-          { props: 'invoiceAmount', label: '开票金额', visible: false, width: 200 },
+          { props: 'vehicleGuidePrice', label: '整车指导价', visible: false, width: 200, align: 'right' },
+          { props: 'depositReceivable', label: '应收定金', visible: false, width: 200, align: 'right' },
+          { props: 'receivableAmount', label: '门店应收金额', visible: false, width: 200, align: 'right' },
+          { props: 'equityDeductionTotalAmount', label: '权益抵扣总额', visible: false, width: 200, align: 'right' },
+          { props: 'invoiceAmount', label: '开票金额', visible: false, width: 200, align: 'right' },
           { props: 'depositTime', label: '缴定金时间', visible: false, width: 200 },
           { props: 'lockTime', label: '锁单时间', visible: false, width: 200 },
           { props: 'notifyDeliveryTime', label: '触发交付通知时间', visible: false, width: 200 },
@@ -286,8 +286,8 @@ export default {
           { props: 'salesStoreName', label: '订单销售门店', visible: false, width: 200 },
           { props: 'deliveryStoreName', label: '订单交付门店', visible: false, width: 200 },
           { props: 'deliveryAdvisorName', label: '订单交付顾问', visible: false, width: 200 },
-          { props: 'deliveryBatteryPower', label: '交车时电量', visible: false, width: 200 },
-          { props: 'deliveryMileage', label: '交车时里程', visible: false, width: 200 },
+          { props: 'deliveryBatteryPower', label: '交车时电量', visible: false, width: 200, align: 'right' },
+          { props: 'deliveryMileage', label: '交车时里程', visible: false, width: 200, align: 'right' },
           { props: 'createTime', label: '创建时间', visible: false, width: 200 },
           {
             props: 'operate',

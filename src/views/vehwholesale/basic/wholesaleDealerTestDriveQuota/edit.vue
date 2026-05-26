@@ -1,144 +1,193 @@
 <template>
-  <!-- TIPS: 如果填写项大于15项，使用类名page-common-edit替换page-common-add -->
-  <div class="page-common-add">
-    <el-container>
-      <el-main>
-        <section class="common-section">
-          <div class="common-section-header">
-            <h2>基础信息</h2>
-          </div>
-          <div class="common-section-body">
-            <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
-            <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-            <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
-              <el-form-item label="门店编码" prop="dealerCode">
-                <fetch-select
-                  filterable
-                  clearable
-                  remote
-                  v-model="form.dealerCode"
-                  :remote-method="getDealerListByCode"
-                  value-key="storeCode"
-                  label-key="storeCode"
-                  @change="handleChangeDealer"
-                  :disabled="!!_id"
-                />
-              </el-form-item>
-              <el-form-item label="门店名称" prop="dealerName">
-                <fetch-select
-                  filterable
-                  clearable
-                  remote
-                  v-model="form.dealerName"
-                  :remote-method="getDealerListByName"
-                  value-key="storeCode"
-                  label-key="storeName"
-                  @change="handleChangeDealer"
-                  :disabled="!!_id"
-                />
-              </el-form-item>
-              <el-form-item label="年款" prop="vehicleYearTypeId">
-                <fetch-select
-                  filterable
-                  clearable
-                  remote
-                  v-model="form.vehicleYearTypeId"
-                  :params="form.vehicleYearType"
-                  :remote-method="getVehicleYearTypeList"
-                  value-key="id"
-                  label-key="name"
-                  :disabled="!!_id"
-                  @change="(val, record) => {form.vehicleYearType = record?.name || ''}"
-                />
-              </el-form-item>
-              <el-form-item label="系列" prop="vehicleModelLineId">
-                <fetch-select
-                  filterable
-                  clearable
-                  remote
-                  v-model="form.vehicleModelLineId"
-                  :params="form.vehicleModelLine"
-                  :remote-method="getVehicleModelLineList"
-                  value-key="id"
-                  label-key="name"
-                  :disabled="!!_id"
-                  @change="handleVehicleModelLineChange"
-                />
-              </el-form-item>
-              <el-form-item label="车系" prop="seriesId">
-                <fetch-select
-                  filterable
-                  clearable
-                  :options="vehicleSeriesOptions"
-                  v-model="form.seriesId"
-                  value-key="id"
-                  label-key="name"
-                  :disabled="!!_id"
-                  @change="(val, record) => {form.seriesName = record?.name || ''}"
-                />
-              </el-form-item>
-              <el-form-item label="累计已申请数" prop="requestQty">
-                <el-input-number
-                  :controls="false"
-                  placeholder="请输入"
-                  v-model="form.requestQty"
-                  clearable
-                  :precision="0"
-                  disabled
-                />
-              </el-form-item>
-              <el-form-item label="配额数量" prop="quotaQty">
-                <el-input-number
-                  :controls="false"
-                  placeholder="请输入"
-                  v-model="form.quotaQty"
-                  clearable
-                  :precision="0"
-                />
-              </el-form-item>
-              <el-form-item label="调整说明" prop="changeDesc">
-                <el-input
-                  type="textarea"
-                  :rows="3"
-                  placeholder="请输入"
-                  v-model="form.changeDesc"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="状态" prop="status">
-                <fetch-select
-                  :request="fetchOptions"
-                  enumCode="StatusEnum"
-                  v-model="form.status"
-                  placeholder="请选择"
-                  clearable
-                  filterable
-                />
-              </el-form-item>
-            </el-form>
-          </div>
-        </section>
-      </el-main>
-      <el-footer height="60px">
-        <el-button size="small" @click="handleBack">取消</el-button>
-        <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
-        <!-- <el-button size="small" @click="handleJumpAuditLog">审核日志</el-button> -->
-      </el-footer>
-    </el-container>
-  </div>
+  <edit-page-layout ref="editLayout" title="侧边栏标题" showPaneFooter>
+    <template #left>
+      <edit-base-container
+        ref="containerRef"
+        :id="_id"
+        :title="title"
+        :isEditing.sync="isEditing"
+        :form.sync="form"
+        :originalForm.sync="originalForm"
+        :submitRequest="submitRequest"
+        :detailRequest="detailRequest"
+      >
+        <template #status>
+          <span :class="['status', form.status ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
+        </template>
+        <el-main>
+          <section class="common-section">
+            <div class="common-section-header">
+              <h2>基础信息</h2>
+            </div>
+            <div class="common-section-body">
+              <!-- 编辑模式 -->
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+                <el-form-item label="门店编码：" prop="dealerCode">
+                  <fetch-select
+                    filterable
+                    clearable
+                    remote
+                    v-model="form.dealerCode"
+                    :remote-method="getDealerListByCode"
+                    value-key="storeCode"
+                    label-key="storeCode"
+                    @change="handleChangeDealer"
+                    :disabled="!!_id"
+                  />
+                </el-form-item>
+                <el-form-item label="门店名称：" prop="dealerName">
+                  <fetch-select
+                    filterable
+                    clearable
+                    remote
+                    v-model="form.dealerName"
+                    :remote-method="getDealerListByName"
+                    value-key="storeCode"
+                    label-key="storeName"
+                    @change="handleChangeDealer"
+                    :disabled="!!_id"
+                  />
+                </el-form-item>
+                <el-form-item label="年款：" prop="vehicleYearType">
+                  <fetch-select
+                    filterable
+                    clearable
+                    remote
+                    v-model="form.vehicleYearTypeId"
+                    :params="form.vehicleYearType"
+                    :remote-method="getVehicleYearTypeList"
+                    value-key="id"
+                    label-key="name"
+                    :disabled="!!_id"
+                    @change="(val, record) => {form.vehicleYearType = record?.name || ''}"
+                  />
+                </el-form-item>
+                <el-form-item label="系列：" prop="vehicleModelLineId">
+                  <fetch-select
+                    filterable
+                    clearable
+                    remote
+                    v-model="form.vehicleModelLineId"
+                    :params="form.vehicleModelLine"
+                    :remote-method="getVehicleModelLineList"
+                    value-key="id"
+                    label-key="name"
+                    :disabled="!!_id"
+                    @change="handleVehicleModelLineChange"
+                  />
+                </el-form-item>
+                <el-form-item label="车系：" prop="seriesId">
+                  <fetch-select
+                    v-if="!_id"
+                    filterable
+                    clearable
+                    :options="vehicleSeriesOptions"
+                    v-model="form.seriesId"
+                    value-key="id"
+                    label-key="name"
+                    @change="(val, record) => {form.seriesName = record?.name || ''}"
+                  />
+                  <el-input v-else
+                    placeholder="请输入"
+                    v-model="form.seriesName"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="累计已申请数：" prop="requestQty">
+                  <el-input-number
+                    :controls="false"
+                    placeholder="请输入"
+                    v-model="form.requestQty"
+                    clearable
+                    :precision="0"
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="配额数量：" prop="quotaQty">
+                  <el-input-number
+                    :controls="false"
+                    placeholder="请输入"
+                    v-model="form.quotaQty"
+                    clearable
+                    :precision="0"
+                  />
+                </el-form-item>
+                <el-form-item label="调整说明：" prop="changeDesc">
+                  <el-input
+                    type="textarea"
+                    :rows="3"
+                    placeholder="请输入"
+                    v-model="form.changeDesc"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="状态：" prop="status">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="StatusEnum"
+                    v-model="form.status"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                  />
+                </el-form-item>
+              </el-form>
+              <!-- 详情模式 -->
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+                <el-form-item label="门店编码：">
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerCode }}</el-link>
+                </el-form-item>
+                <el-form-item label="门店名称：">
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>
+                </el-form-item>
+                <el-form-item label="年款：">
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${form.vehicleYearTypeId}`" target="_blank">{{ form.vehicleYearType }}</el-link>
+                </el-form-item>
+                <el-form-item label="系列：">
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodelline/edit?id=${form.vehicleModelLineId}`" target="_blank">{{ form.vehicleModelLine }}</el-link>
+                </el-form-item>
+                <el-form-item label="车系：">
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
+                </el-form-item>
+                <el-form-item label="累计已申请数：">
+                  {{ form.requestQty }}
+                </el-form-item>
+                <el-form-item label="配额数量：">
+                  {{ form.quotaQty }}
+                </el-form-item>
+                <el-form-item label="调整说明：">
+                  {{ form.changeDesc }}
+                </el-form-item>
+                <el-form-item label="状态：">
+                  {{ form.statusLabel }}
+                </el-form-item>
+              </el-form>
+            </div>
+          </section>
+        </el-main>
+      </edit-base-container>
+    </template>
+    <template #right>
+      <div class="page-common-edit">
+        <!-- 右侧栏组件，自行开发 -->
+      </div>
+    </template>
+  </edit-page-layout>
 </template>
 
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehwholesale/basic/wholesaleDealerTestDriveQuota/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum, listOrgStoreInfo, listVehicleYearType, vehicleModelLineList, vehicleSeriesList } from '@/api/common';
+import EditPageLayout from '@/libs/components/EditPageLayout';
+import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 
 const defaultForm = {
-  // 多选时字段有变化，自行修复
   dealerCode: '',
   dealerName: '',
   vehicleYearType: '',
@@ -147,7 +196,7 @@ const defaultForm = {
   requestQty: '0',
   changeDesc: '',
   quotaQty: '0',
-  status: '',
+  status: 1,
   modifierName: '',
   updateTime: '',
   id: '',
@@ -166,7 +215,6 @@ const defaultForm = {
 
 export default {
   name: 'wholesaleDealerTestDriveQuotaEdit',
-  // 集中视图预留
   props: {
     id: {
       type: [String, Number],
@@ -175,19 +223,23 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
+    },
+    title () {
+      return '门店试驾车配额：' + (this.form.dealerName || '');
     }
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
     FetchSelect,
+    EditPageLayout,
+    EditBaseContainer
   },
   data () {
     const form = this.getDefautlForm();
     return {
       pageTitle: '门店试驾车配额',
       pageType: 'edit',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleDealerTestDriveQuota',
       loading: false,
       submitLoading: false,
@@ -205,17 +257,8 @@ export default {
         vehicleYearType: [
           { required: true, message: '请选择年款', trigger: 'change' }
         ],
-        vehicleModelLine: [
-          { required: true, message: '请输入系列', trigger: 'blur' }
-        ],
-        seriesName: [
-          { required: true, message: '请输入车系', trigger: 'blur' }
-        ],
-        requestQty: [
-          { required: true, message: '请输入累计已申请数', trigger: 'blur' }
-        ],
-        changeDesc: [
-          { required: false, message: '请输入调整说明', trigger: 'blur' }
+        vehicleModelLineId: [
+          { required: true, message: '请选择系列', trigger: 'change' }
         ],
         quotaQty: [
           { required: true, message: '请输入配额数量', trigger: 'blur' }
@@ -223,120 +266,26 @@ export default {
         status: [
           { required: true, message: '请选择状态', trigger: 'change' }
         ],
-        modifierName: [
-          { required: true, message: '请输入修改者名称', trigger: 'blur' }
-        ],
-        updateTime: [
-          { required: true, message: '请选择修改时间', trigger: 'change' }
-        ],
-        id: [
-          { required: true, message: '请输入主键', trigger: 'blur' }
-        ],
-        creator: [
-          { required: true, message: '请输入创建者', trigger: 'blur' }
-        ],
-        creatorName: [
-          { required: true, message: '请输入创建者名称', trigger: 'blur' }
-        ],
-        createTime: [
-          { required: true, message: '请选择创建时间', trigger: 'change' }
-        ],
-        modifier: [
-          { required: true, message: '请输入修改者', trigger: 'blur' }
-        ],
-        remark: [
-          { required: true, message: '请输入备注', trigger: 'blur' }
-        ],
-        statusDesc: [
-          { required: true, message: '请选择状态变更描述', trigger: 'change' }
-        ],
-        dataSource: [
-          { required: true, message: '请输入数据来源，140:新销服; 老销服:10', trigger: 'blur' }
-        ],
-        vehicleYearTypeId: [
-          { required: true, message: '请选择年款ID', trigger: 'change' }
-        ],
-        vehicleModelLineId: [
-          { required: true, message: '请输入系列ID', trigger: 'blur' }
-        ],
-        seriesId: [
-          { required: false, message: '请输入车系ID', trigger: 'blur' }
-        ],
-        ownerOrgId: [
-          { required: true, message: '请输入归属门店ID（组织ID），当数据权限归属到本组织以及本下级', trigger: 'blur' }
-        ],
       }
     };
   },
-  mounted () {
-    this.getDetailData();
-  },
   methods: {
-    handleBack () {
-      // this.$router.back();
-      let newPath = this.$route.path.replace(/\/edit$/, '');
-      this.$router.push(newPath);
+    openWindow (url) {
+      window.open(url, '_blank');
     },
-    getDetailData () {
-      const id = this.id || this.$route.query.id;
-      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['门店试驾车配额', `${id ? '编辑' : '新建'}`]);
+    openPane () {
+      this.$refs.editLayout.openPane();
+    },
+    detailRequest () {
+      const id = this._id;
       if (id) {
-        getDetail(id).then(res => {
-          this.loading = false;
-          Object.assign(this.form, res);
-          Object.assign(this.originalForm, res);
-        });
+        return getDetail(id);
       }
+      return {};
     },
-    submitForm (formName, rest = false) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.submitLoading = true;
-          addOrUpdate({ ...this.form }).then(res => {
-            this.$message({
-              message: '保存成功',
-              type: 'success'
-            });
-            const id = this.$route.query.id;
-            if (rest || !id) {
-              this.resetForm(formName);
-              const currentPath = this.$route.path;
-              this.$router.push({
-                path: currentPath,
-                query: { id: res }
-              });
-            } else {
-              this.getDetailData();
-            }
-          }).finally(() => {
-            this.submitLoading = false;
-          });
-        }
-      });
+    submitRequest () {
+      return addOrUpdate({ ...this.form });
     },
-    resetForm (formName) {
-      this.$refs[formName].resetFields();
-      this.tableData = [];
-      this.form = this.getDefautlForm();
-    },
-    getDefautlForm () {
-      // TIPS: 此处可添加表单默认值，如当前用户信息等
-      // const userInfo = this.$store.state.user.userInfo;
-      return {
-        ...defaultForm
-        // ownerId: userInfo.userId,
-        // ownerName: userInfo.userName,
-      };
-    },
-    // handleJumpAuditLog () {
-    //   this.$router.push({
-    //     path: '/xxx/auditLog',
-    //     query: {
-    //       tableCode: '',
-    //       tableId: ''
-    //     }
-    //   });
-    // },
     async fetchOptions (code) {
       if (code) {
         return getEnum(code);
@@ -364,20 +313,14 @@ export default {
     async getVehicleYearTypeList (params) {
       return listVehicleYearType({ yearTypeNameLike: params, status: 1 });
     },
-    // 处理系列选择变化
     async handleVehicleModelLineChange (val, record) {
-      // 更新系列名称
       this.form.vehicleModelLine = record?.name || '';
       this.form.seriesName = '';
       this.form.seriesId = '';
       this.vehicleSeriesOptions = [];
-
-      // 根据选择的系列获取对应的车系列表
       try {
         const response = await this.getVehicleSeriesListByModelLineId(val);
         this.vehicleSeriesOptions = response || [];
-
-        // 保持原有的表单字段更新逻辑
         if (record) {
           this.form.vehicleModelLine = record.name;
           this.form.vehicleModelLineId = record.id;
@@ -387,17 +330,20 @@ export default {
         this.vehicleSeriesOptions = [];
       }
     },
-    // 根据系列ID获取车系列表
     async getVehicleSeriesListByModelLineId (modelLineId) {
       if (!modelLineId) {
         return [];
       }
-      // 调用API获取特定系列下的车系列表
       const response = await vehicleSeriesList({
         modelLineId: modelLineId,
         status: 1
       });
       return response.data || response || [];
+    },
+    getDefautlForm () {
+      return {
+        ...defaultForm
+      };
     }
   }
 };

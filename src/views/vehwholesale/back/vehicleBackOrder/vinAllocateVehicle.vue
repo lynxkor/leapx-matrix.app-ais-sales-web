@@ -1,6 +1,6 @@
 <template>
   <el-dialog :title="title" width="1200px" :visible.sync="dialogVisible" @close="handleClose">
-    <div class="page-common m-account-list">
+    <div>
       <el-form
         ref="form"
         :model="form"
@@ -11,11 +11,11 @@
         class="ais-search-form"
       >
         <el-form-item label="VIN：">
-          <el-input v-model="vinCode" clearable placeholder="请输入"/>
+          <el-input v-model="vinCode" clearable placeholder="请输入"  @keydown.enter.native.prevent/>
         </el-form-item>
         <el-form-item label="">
-          <el-button :loading="loading" size="medium" type="primary" plain class="btn-search" @click="onSubmit">查询</el-button>
-          <el-button size="medium" class="btn-reset" @click="onReset">重置</el-button>
+          <el-button :loading="loading" size="small" type="primary" plain class="btn-search" @click="onSubmit">查询</el-button>
+          <el-button size="small" class="btn-reset" @click="onReset">重置</el-button>
         </el-form-item>
       </el-form>
       <section class="common-section">
@@ -60,8 +60,8 @@
       </section>
     </div>
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="handleSubmit" :loading="submitLoading">保存</el-button>
-      <el-button @click="handleCancel">取消</el-button>
+      <el-button size="small" type="primary" @click="handleSubmit" :loading="submitLoading">保存</el-button>
+      <el-button size="small" @click="handleCancel">取消</el-button>
     </div>
   </el-dialog>
 </template>

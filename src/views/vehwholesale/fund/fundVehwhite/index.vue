@@ -44,6 +44,7 @@
          :default-time="['00:00:00', '23:59:59']"
           v-model="form.createTime"
           type="daterange"
+          unlink-panels
           :picker-options="pickerOptions"
           range-separator="至"
           value-format="yyyy-MM-dd HH:mm:ss"
@@ -99,7 +100,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/fund/fundVehwhite/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
@@ -143,7 +144,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车批售-整车资金-车辆白名单管理',
+      pageTitle: '车辆白名单',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-fundVehwhite',
@@ -190,19 +191,14 @@ export default {
             width: 300,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/partner/channelManagement/shopDetail',
-                  query: {
-                    dealerCode: row.dealerCode,
-                  }
-                });
+                this.openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode);
               },
               type: 'primary'
             }]
           },
-          { props: 'parentCompanyName', label: '母公司名称', visible: true, width: 300 },
+          { props: 'parentCompanyName', label: '母公司名称', visible: true, width: 300, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.parentCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'enterpriseCustomerName', label: '企业客户', visible: true, width: 200 },
-          { props: 'vin', label: 'VIN号', visible: true, width: 200 },
+          { props: 'vin', label: 'VIN号', visible: true, width: 180 },
           {
             props: 'wholesaleOrderCode',
             label: '整车批售订单',
@@ -210,12 +206,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
-                  query: {
-                    id: row.wholesaleOrderId,
-                  }
-                });
+                this.openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.wholesaleOrderId);
               },
               type: 'primary'
             }]
@@ -227,12 +218,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/entorder/entVehicleOrder/edit',
-                  query: {
-                    id: row.enterpriseOrderId,
-                  }
-                });
+                this.openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + row.enterpriseOrderId);
               },
               type: 'primary'
             }]
@@ -277,6 +263,9 @@ export default {
     this.getData();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     // 排序
     handleSortChange (value) {
       this.sortColumns = (value || []).map(item => {

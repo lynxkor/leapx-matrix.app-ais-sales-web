@@ -4,15 +4,16 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="自有资金赊销额度："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="false"
       >
         <template #status>
-          {{ form.creditSalesLimitCode }}
+          <!-- {{ form.creditSalesLimitCode }} -->
         </template>
         <el-main>
           <section class="common-section">
@@ -108,10 +109,10 @@
                   {{ form.creditSalesLimitCode }}
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  {{ form.dealerCompanyCode }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
                 </el-form-item>
                 <el-form-item label="赊销账户状态：" prop="creditAccountStatusLabel">
                   {{ form.creditAccountStatusLabel }}
@@ -241,7 +242,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '赊销额度记录编号：' + this.form.creditSalesLimitCode;
@@ -337,6 +338,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

@@ -1,9 +1,9 @@
 <template>
   <section>
-    <div class="common-section-header">
-      <h2>{{title}}</h2>
-    </div>
-    <div class="common-section-body">
+    <!-- <div class="common-section-header"> -->
+      <!-- <h2>{{title}}</h2> -->
+    <!-- </div> -->
+    <div class="common-section-body" style="padding-left: 0;">
       <div class="page-common-nav">
         <div :class="{'nav-item': true, 'active': isActive(item.code)}" v-for="item in list" :key="item.code" @click="handleClick(item.code)">
           <span class="nav-item-text">{{ item.name }}</span>
@@ -168,5 +168,8 @@ export default {
       }
     }
   }
+}
+h2 {
+  font-size: 16px;
 }
 </style>

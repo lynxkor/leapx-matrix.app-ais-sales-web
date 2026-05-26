@@ -92,16 +92,16 @@
                   {{ form.allocationConfigCode }}
                 </el-form-item>
                 <el-form-item label="交付门店名称：" prop="deliveryDealerName">
-                  {{ form.deliveryDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.deliveryDealerCode}`" target="_blank">{{ form.deliveryDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="是否开启自动分派：" prop="autoAllocationStatus">
-                  {{ form.autoAllocationStatusLabel }}
+                  <span :class="['status-tag', form.autoAllocationStatus === 1 ? 'primary' : 'danger']">{{ form.autoAllocationStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="自动分派方式：" prop="autoAllocationType">
                   {{ form.autoAllocationTypeLabel }}
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
-                  {{ form.statusLabel }}
+                  <span :class="['status-tag', form.status === 1 ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
@@ -213,7 +213,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '门店交付分派配置管理',
+      pageTitle: '门店交付分派配置',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
       moduleKey: 'AISVR-storeDeliveryAllocationConfig',

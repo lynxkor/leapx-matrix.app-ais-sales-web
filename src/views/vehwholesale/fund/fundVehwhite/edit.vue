@@ -24,40 +24,19 @@
                   {{ form.documentTypeLabel }}
                 </el-form-item>
                 <el-form-item label="整车批售订单：" prop="wholesaleOrderCode">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
-                      query: {
-                        id: form.wholesaleOrderId,
-                      },
-                    })"
-                   type="text">{{form.wholesaleOrderCode}}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${form.wholesaleOrderId}`" target="_blank">{{form.wholesaleOrderCode}}</el-link>
                 </el-form-item>
                 <el-form-item label="企业客户整车订单：" prop="enterpriseOrderCode">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/vehwholesale/entorder/entVehicleOrder/edit',
-                      query: {
-                        id: form.enterpriseOrderId,
-                      },
-                    })"
-                   type="text">{{form.enterpriseOrderCode}}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${form.enterpriseOrderId}`" target="_blank">{{form.enterpriseOrderCode}}</el-link>
                 </el-form-item>
                 <el-form-item label="VIN号：" prop="vin">
                   {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="parentCompanyName">
-                  {{ form.parentCompanyName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.parentCompanyCode}`" target="_blank">{{ form.parentCompanyName }}</el-link>
                 </el-form-item>
                 <el-form-item label="门店：" prop="dealerName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/partner/channelManagement/shopDetail',
-                      query: {
-                        dealerCode: form.dealerCode,
-                      },
-                    })"
-                   type="text">{{form.dealerName}}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{form.dealerName}}</el-link>
                 </el-form-item>
                 <el-form-item label="企业客户：" prop="enterpriseCustomerName">
                   {{ form.enterpriseCustomerName }}
@@ -238,7 +217,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '车辆白名单：' + (this.form.code || '');
@@ -341,6 +320,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

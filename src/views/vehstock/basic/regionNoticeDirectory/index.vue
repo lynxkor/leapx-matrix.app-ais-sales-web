@@ -9,7 +9,7 @@
       class="ais-search-form"
     >
       <el-form-item label="城市">
-        <el-select v-model="form.cityCodeList" clearable filterable multiple placeholder="请选择">
+        <el-select v-model="form.cityCodeList" clearable filterable multiple collapse-tags placeholder="请选择">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -54,6 +54,7 @@
           <el-date-picker
             v-model="form.createTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
@@ -104,7 +105,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/basic/regionNoticeDirectory/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, cityPage, vehicleSalesVersionList } from '@/api/common';
@@ -171,9 +172,10 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehstock/basic/regionNoticeDirectory/detail',
+                  path: '/vehstock/basic/regionNoticeDirectory/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },
@@ -181,7 +183,7 @@ export default {
             }]
           },
           { props: 'cityName', label: '城市', visible: true, width: 120 },
-          { props: 'registeredModelName', label: '销售公告车型名称', visible: true, width: 200 },
+          { props: 'registeredModelName', label: '销售公告车型名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleregisteredmodel/edit?id=${row.vehicleRegisteredModelId}`, '_blank'); }, type: 'primary' }] },
           { props: 'statusLabel', label: '状态', visible: true, width: 78 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 120 },
@@ -200,7 +202,8 @@ export default {
                 this.$router.push({
                   path: '/vehstock/basic/regionNoticeDirectory/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },

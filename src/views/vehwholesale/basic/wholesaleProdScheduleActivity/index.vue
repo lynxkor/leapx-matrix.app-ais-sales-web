@@ -8,6 +8,7 @@
       </el-form-item>
       <el-form-item label="创建时间">
         <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.createTime" type="daterange"
+        unlink-panels
           :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
           start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
@@ -33,9 +34,9 @@
     <div class="ais-actions">
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i
           class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete"
         :disabled="selectionList.length === 0">批量删除</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div class="ais-table-c">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed centralized
@@ -86,7 +87,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, getDetail, updateQuotaQty } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivity/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
@@ -180,15 +181,15 @@ export default {
             }]
           },
           { props: 'activityName', label: '活动名称', visible: true, width: 200 },
-          { props: 'needAutoAllocateCarLabel', label: '是否需要自动配车', visible: true, width: 200 },
-          { props: 'deliveryWayLabel', label: '指定发运方式', visible: true, width: 200 },
-          { props: 'allowLockRetailLabel', label: '是否锁零售单', visible: true, width: 200 },
-          { props: 'totalQuotaQty', label: '额度数量', visible: true, width: 200 },
-          { props: 'usedQuotaQty', label: '已提报数量', visible: true, width: 200 },
-          { props: 'startTime', label: '开始日期', visible: true, width: 200 },
-          { props: 'endTime', label: '截止日期', visible: true, width: 200 },
-          { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
+          { props: 'needAutoAllocateCarLabel', label: '是否需要自动配车', visible: true, width: 160 },
+          { props: 'deliveryWayLabel', label: '指定发运方式', visible: true, width: 140 },
+          { props: 'allowLockRetailLabel', label: '是否锁零售单', visible: true, width: 140 },
+          { props: 'totalQuotaQty', label: '额度数量', visible: true, width: 100, align: 'right' },
+          { props: 'usedQuotaQty', label: '已提报数量', visible: true, width: 100, align: 'right' },
+          { props: 'startTime', label: '开始日期', visible: true, width: 160 },
+          { props: 'endTime', label: '截止日期', visible: true, width: 160 },
+          { props: 'remark', label: '备注', visible: true, width: 180 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 100 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',
@@ -216,6 +217,8 @@ export default {
               type: 'info'
             }, {
               name: '删除',
+              popconfirmConfirmButtonType: 'danger',
+              popconfirmConfirmButtonText: '删除',
               show: (row) => {
                 return row.usedQuotaQty === 0;
               },

@@ -28,33 +28,22 @@
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                  <el-form-item label="账户编号：" prop="fundAccountCode">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/vehwholesale/fund/dealerFundAccount/edit',
-                      query: {
-                        id: form.fundAccountId,
-                      },
-                    })"
-                   type="text">{{form.fundAccountCode}}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/dealerFundAccount/edit?id=${form.fundAccountId}`" target="_blank">{{form.fundAccountCode}}</el-link>
                 </el-form-item>
                  <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerComapnyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
                 </el-form-item>
-                <el-form-item label="销售公司：" prop="saleCompanyName">
-              {{ form.saleCompanyName  }}
-            </el-form-item>
+                <el-form-item label="母公司编码：" prop="dealerComapnyCode">
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerComapnyCode}`" target="_blank">{{ form.dealerComapnyCode }}</el-link>
+                </el-form-item>
+                <el-form-item label="销售公司名称：" prop="saleCompanyName">
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundSaleCompany/edit?id=${form.saleCompanyId}`" target="_blank">{{ form.saleCompanyName }}</el-link>
+                </el-form-item>
                 <el-form-item label="资金类型：" prop="fundTypeLabel">
                   {{ form.fundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                      query: {
-                        id: form.financialOrganizationId,
-                      },
-                    })"
-                   type="text">{{ form.financialOrganizationName }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.financialOrganizationId}`" target="_blank">{{ form.financialOrganizationName }}</el-link>
                 </el-form-item>
               </el-form>
             </div>
@@ -71,33 +60,28 @@
                  <el-form-item label="过账时间：" prop="transactionTime">
                   {{ form.transactionTime }}
                 </el-form-item>
-                <el-form-item label="VIN编码：" prop="vin">
+                <el-form-item label="交易类型：" prop="transactionTypeLabel">
+                  {{ form.transactionTypeLabel }}
+                </el-form-item>
+                <el-form-item label="VIN号：" prop="vin">
                   {{ form.vin }}
                 </el-form-item>
-                <el-form-item label="批售订单：" prop="wholesaleOrderCode">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
-                      query: {
-                        id: form.wholesaleOrderId,
-                      },
-                    })"
-                   type="text">{{form.wholesaleOrderCode}}</el-button>
+                <el-form-item label="整车批售订单：" prop="wholesaleOrderCode">
+                  <el-link type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${form.wholesaleOrderId}`" target="_blank">{{form.wholesaleOrderCode}}</el-link>
                 </el-form-item>
-                <el-form-item label="交车单：" prop="deliveryOrderCode">
-                  {{ form.deliveryOrderCode }}
+                <el-form-item label="企业客户整车订单：" prop="entVehorderCode">
+                  <el-link type="primary" :href="`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${form.entVehorderId}`" target="_blank">{{form.entVehorderCode}}</el-link>
+                </el-form-item>
+                <el-form-item label="交车单号：" prop="deliveryOrderCode">
+                  <el-link type="primary" :href="`/sales/vehretail/orderManager/deliveryOrder/edit?id=${form.deliveryOrderId}`" target="_blank">{{ form.deliveryOrderCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="门店名称：" prop="dealerName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/partner/channelManagement/shopDetail',
-                      query: {
-                        dealerCode: form.dealerCode,
-                      },
-                    })"
-                   type="text">{{form.dealerName}}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{form.dealerName}}</el-link>
                 </el-form-item>
-                <el-form-item label="行号：" prop="lineNo">
+                 <el-form-item label="入账凭证号：" prop="transactionReceiptCode">
+                  {{ form.transactionReceiptCode }}
+                </el-form-item>
+                <el-form-item label="行项目号：" prop="lineNo">
                   {{ form.lineNo }}
                 </el-form-item>
                 <el-form-item label="年度：" prop="yearNo">
@@ -191,7 +175,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '流水编号：' + this.form.transLogCode;
@@ -259,6 +243,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

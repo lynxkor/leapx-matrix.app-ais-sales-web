@@ -16,21 +16,18 @@
         <template #extraButtons>
           <el-button
             @click="openCancelShow"
-            v-if="form.applyStatus === 1010 || form.applyStatus === 1040"
-            v-permission="moduleKey + '-cancel'"
+            v-if="canCancel && (form.applyStatus === 1010 || form.applyStatus === 1040)"
             size="small">
             作废
           </el-button>
           <el-button
             @click="openCommitShow"
-            v-if="form.applyStatus === 1010 || form.applyStatus === 1040"
-            v-permission="moduleKey + '-commit'">
+            v-if="canCommit && (form.applyStatus === 1010 || form.applyStatus === 1040)">
             提交审批
           </el-button>
           <el-button
             @click="openAuditShow"
-            v-permission="moduleKey + '-approve'"
-            v-if="form.applyStatus === 1020"
+            v-if="canApprove && form.applyStatus === 1020"
           >
             审核
           </el-button>
@@ -105,7 +102,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="申请编号：" prop="changeApplyCode">
                   {{ form.changeApplyCode }}
                 </el-form-item>
@@ -116,7 +113,15 @@
                   {{ form.mallOrderCode }}
                 </el-form-item>
                 <el-form-item label="门店整车订单：" prop="retailOrderCode">
-                  {{ form.retailOrderCode }}
+                  <el-button
+                    class="link"
+                    @click="navigateToRoute({
+                      path: '/vehretail/orderManager/retailOrderInfo/edit',
+                      query: {
+                        id: form.retailOrderId,
+                      },
+                    })"
+                    type="text">{{form.retailOrderCode}}</el-button>
                 </el-form-item>
                 <el-form-item label="变更类型：" prop="changeType">
                   {{ form.changeTypeLabel }}
@@ -131,7 +136,7 @@
                   {{ form.creatorName }}
                 </el-form-item>
                 <el-form-item label="申请状态：" prop="applyStatus">
-                  {{ form.applyStatusLabel }}
+                  <span class="status-tag link">{{ form.applyStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="数据来源：" prop="dataSource">
                   {{ form.dataSourceLabel }}
@@ -222,15 +227,7 @@
                     disabled
                   />
                 </el-form-item>
-<!--                <el-form-item label="订单销售门店编码：" prop="saleDealerCode">-->
-<!--                  <el-input-->
-<!--                    placeholder="请输入"-->
-<!--                    v-model="form.saleDealerCode"-->
-<!--                    clearable-->
-<!--                    disabled-->
-<!--                  />-->
-<!--                </el-form-item>-->
-                <el-form-item label="订单销售门店名称：" prop="saleDealerName">
+                <el-form-item label="订单销售门店：" prop="saleDealerName">
                   <el-input
                     placeholder="请输入"
                     v-model="form.saleDealerName"
@@ -265,15 +262,7 @@
                     disabled
                   />
                 </el-form-item>
-<!--                <el-form-item label="原销售门店编码：" prop="originalSaleDealerCode">-->
-<!--                  <el-input-->
-<!--                    placeholder="请输入"-->
-<!--                    v-model="form.originalSaleDealerCode"-->
-<!--                    clearable-->
-<!--                    disabled-->
-<!--                  />-->
-<!--                </el-form-item>-->
-                <el-form-item label="原销售门店名称：" prop="originalSaleDealerName">
+                <el-form-item label="原销售门店：" prop="originalSaleDealerName">
                   <el-input
                     placeholder="请输入"
                     v-model="form.originalSaleDealerName"
@@ -282,7 +271,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="原购车人名称：" prop="originalBuyerName">
                   {{ form.originalBuyerName }}
                 </el-form-item>
@@ -298,39 +287,33 @@
                 <el-form-item label="原代办人：" prop="originalAgentName">
                   {{ form.originalAgentName }}
                 </el-form-item>
-                <el-form-item label="原销售门店编码：" prop="originalSaleDealerCode">
-                  {{ form.originalSaleDealerCode }}
-                </el-form-item>
-                <el-form-item label="原销售门店名称：" prop="originalSaleDealerName">
-                  <el-button
-                    class="link"
-                    @click="navigateToRoute({
-                      path: '/partner/channelManagement/shopBasicsMessage',
-                      query: {
-                        dealerCode: form.originalSaleDealerCode,
-                      },
-                    })"
-                    type="text">{{form.originalSaleDealerName}}</el-button>
+                <el-form-item label="原销售门店：" prop="originalSaleDealerName">
+                  <el-link
+                    type="primary"
+                    :href="`/partner/channelManagement/shopDetail?num=2&dealerCode=${form.originalSaleDealerCode}`"
+                    target="_blank"
+                  >{{ form.originalSaleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="整车订单状态：" prop="originalOrderStatus">
-                  {{ form.originalOrderStatusLabel }}
+                  <span class="status-tag link">{{ form.originalOrderStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="原订单物料码：" prop="originalMaterialsCode">
-                  {{ form.originalMaterialsCode }}
-                </el-form-item>
-<!--                <el-form-item label="订单销售门店编码：" prop="saleDealerCode">-->
-<!--                  {{ form.saleDealerCode }}-->
-<!--                </el-form-item>-->
-                <el-form-item label="订单销售门店名称：" prop="saleDealerName">
                   <el-button
                     class="link"
+                    v-if="form.originalMaterialsCode"
                     @click="navigateToRoute({
-                      path: '/partner/channelManagement/shopBasicsMessage',
-                      query: {
-                        dealerCode: form.saleDealerCode,
-                      },
+                        path: '/datacenter/materials/vehicleMaterials/detail',
+                        query: { id: form.originalMaterialsId }
                     })"
-                    type="text">{{form.saleDealerName}}</el-button>
+                    type="text">{{ form.originalMaterialsCode }}</el-button>
+                  <span v-else>{{ form.originalMaterialsCode }}</span>
+                </el-form-item>
+                <el-form-item label="订单销售门店：" prop="saleDealerName">
+                  <el-link
+                    type="primary"
+                    :href="`/partner/channelManagement/shopDetail?num=2&dealerCode=${form.saleDealerCode}`"
+                    target="_blank"
+                  >{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="缴定金时间：" prop="paymentTime">
                   {{ form.paymentTime }}
@@ -345,7 +328,15 @@
 <!--                  {{ form.modelId }}-->
 <!--                </el-form-item>-->
                 <el-form-item label="基本车型：" prop="modelName">
-                  {{ form.modelName }}
+                  <el-button
+                    class="link"
+                    @click="navigateToRoute({
+                      path: '/datacenter/materials/vehicleModel/detail',
+                      query: {
+                        id: form.modelId,
+                      }
+                    })"
+                    type="text">{{form.modelName}}</el-button>
                 </el-form-item>
               </el-form>
             </div>
@@ -423,7 +414,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="变更后购车人名称：" prop="newBuyerName">
                   {{ form.newBuyerName }}
                 </el-form-item>
@@ -439,9 +430,6 @@
                 <el-form-item label="变更后代办人：" prop="newAgentName">
                   {{ form.newAgentName }}
                 </el-form-item>
-                <el-form-item label="变更后销售门店编码：" prop="newSaleDealerCode">
-                  {{ form.newSaleDealerCode }}
-                </el-form-item>
                 <el-form-item label="变更后销售门店名称：" prop="newSaleDealerName">
                   {{ form.newSaleDealerName }}
                 </el-form-item>
@@ -456,7 +444,7 @@
               <!--附件上传组件 -->
               <AisAttachment
                 :businessId="_id"
-                :readonly="!isEditing"
+                :readonly="!_id || !(form.applyStatus === 1010 || form.applyStatus === 1040)"
                 configCode="mcs_vehorderapplylog"
                 attachType="订单信息变更申请附件"
               />
@@ -467,7 +455,7 @@
               <h2>申请记录</h2>
             </div>
             <div class="common-section-body">
-              <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="申请人：" prop="creatorName">
                   {{ form.creatorName }}
                 </el-form-item>
@@ -491,7 +479,7 @@
               <h2>审批记录</h2>
             </div>
             <div class="common-section-body">
-              <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
 <!--                <el-form-item label="审核人ID：" prop="auditorId">-->
 <!--                  {{ form.auditorId }}-->
 <!--                </el-form-item>-->
@@ -509,26 +497,21 @@
               <h2>审批明细</h2>
             </div>
             <div>
-              <el-table :data="form.logList" style="width: 60%" v-show="!(isEditing || !_id)">
-                <el-table-column
-                  prop="creatorName"
-                  label="操作人"
-                  width="180">
-                </el-table-column>
-                <el-table-column
-                  prop="operateStatusLabel"
-                  label="操作状态">
-                </el-table-column>
-                <el-table-column
-                  prop="operateExplain"
-                  label="操作描述">
-                </el-table-column>
-                <el-table-column
-                  prop="createTime"
-                  label="创建时间"
-                  width="180">
-                </el-table-column>
-              </el-table>
+              <vxe-table
+                :data="form.logList"
+                height="300"
+                stripe
+                border="inner"
+                :resizable="true"
+                show-overflow
+                size="medium"
+              >
+                <vxe-column type="seq" title="序号" width="80" fixed="left"></vxe-column>
+                <vxe-column field="creatorName" title="操作人" min-width="150"></vxe-column>
+                <vxe-column field="operateStatusLabel" title="操作状态" min-width="150"></vxe-column>
+                <vxe-column field="operateExplain" title="操作描述" min-width="200"></vxe-column>
+                <vxe-column field="createTime" title="创建时间" min-width="180"></vxe-column>
+              </vxe-table>
             </div>
         </section>
         <audit-dialog
@@ -556,7 +539,7 @@ import {
   getDetail,
   legalVerification,
   submit
-} from '@/api/vehretail/orderRefund/orderChange/index';
+} from '@/api/vehretail/orderRefund/orderChange';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -594,7 +577,7 @@ const defaultForm = {
   modelId: '',
   modelName: '',
   applyStatus: '',
-  changeType: 0,
+  changeType: 10,
   changeReason: '',
   changeExplain: '',
   originalBuyerName: '',
@@ -690,6 +673,10 @@ export default {
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVRROCA-retailOrderChangeApply',
+      // 权限控制
+      canCancel: false, // 作废
+      canCommit: false, // 提交审批
+      canApprove: false, // 审核
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
@@ -818,7 +805,7 @@ export default {
         saleDealerName: [
           {
             required: false,
-            message: '请输入订单销售门店名称',
+            message: '请输入订单销售门店',
             trigger: 'change',
           },
         ],
@@ -923,7 +910,7 @@ export default {
         originalSaleDealerName: [
           {
             required: true,
-            message: '请输入原销售门店名称',
+            message: '请输入原销售门店',
             trigger: 'change',
           },
         ],
@@ -1055,6 +1042,7 @@ export default {
     };
   },
   created () {
+    this.initPermissions();
     const mallOrderCode = this.$route.query.mallOrderCode;
     if (mallOrderCode) {
       this.form.mallOrderCode = mallOrderCode;
@@ -1073,6 +1061,12 @@ export default {
   mounted () {
   },
   methods: {
+    // 初始化权限
+    initPermissions () {
+      this.canCancel = this.permissions.has(`${this.moduleKey}-cancel`);
+      this.canCommit = this.permissions.has(`${this.moduleKey}-commit`);
+      this.canApprove = this.permissions.has(`${this.moduleKey}-approve`);
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

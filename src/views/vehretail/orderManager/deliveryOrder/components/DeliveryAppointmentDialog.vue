@@ -117,7 +117,6 @@
             v-model="appointmentForm.changeReason"
             placeholder="请选择"
             clearable
-            :disabled="!isChangeReasonRequired"
             style="width: 220px;"
           >
             <el-option
@@ -743,7 +742,7 @@ export default {
     background-color: #f5f7fa;
     border-radius: 4px;
     padding: 16px 20px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     display: flex;
     flex-wrap: wrap;
     gap: 24px;
@@ -758,6 +757,19 @@ export default {
         font-weight: 600;
       }
     }
+  }
+
+  ::v-deep .appointment-form {
+    .el-date-editor,
+    .el-select,
+    .el-input__inner {
+      height: 32px;
+      line-height: 32px;
+    }
+  }
+  ::v-deep .el-form-item  {
+    margin-bottom: 10px;
+
   }
 }
 </style>

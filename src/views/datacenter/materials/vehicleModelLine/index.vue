@@ -51,6 +51,7 @@
           <el-date-picker
             v-model="form.createTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -69,6 +70,7 @@
           <el-date-picker
             v-model="form.updateTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -88,10 +90,11 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-        <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <!-- <el-button size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+
     </div>
     <div
       class="ais-table-c"
@@ -120,7 +123,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/datacenter/materials/vehicleModelLine/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleBrandNameList } from '@/api/common';
@@ -130,7 +133,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-import { downloadExcel } from '@/libs/utils';
+import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
@@ -164,7 +167,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-系列',
+      pageTitle: '系列',
       pageType: 'list',
       moduleKey: 'AISDC-vehicleModelLine',
       form: {
@@ -188,27 +191,28 @@ export default {
             props: 'modelLineName',
             label: '系列名称',
             visible: true,
-            width: 200,
+            width: 120,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/datacenter/materials/vehicleModelLine/detail',
+                  path: '/datacenter/materials/vehicleModelLine/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },
               type: 'primary'
             }]
           },
-          { props: 'brandName', label: '品牌名称', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'statusDesc', label: '说明', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'modifierName', label: '更改人', visible: true, width: 200 },
-          { props: 'updateTime', label: '更改时间', visible: true, width: 200 },
+          { props: 'brandName', label: '品牌名称', visible: true, width: 120 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 60 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 300 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 180 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 180 },
+          { props: 'modifierName', label: '更改人', visible: true, width: 180 },
+          { props: 'updateTime', label: '更改时间', visible: true, width: 180 },
           {
             props: 'operate',
             label: '操作',
@@ -221,7 +225,8 @@ export default {
                 this.$router.push({
                   path: '/datacenter/materials/vehicleModelLine/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },
@@ -432,38 +437,12 @@ export default {
     },
     // 批量启用停用
     handleBatchEnable (status) {
-      const isDifferentStatus = this.selectionList.find(item => item.status === status);
-      const ids = this.selectionList.map(item => item.id) || [];
-      if (isDifferentStatus) {
-        this.$message({
-          type: 'warning',
-          message: `存在不是${status ? '启用' : '停用'}的数据，请确认!`
-        });
-      } else {
-        this.$prompt(`此操作将${status ? '启用' : '停用'}选中项，是否继续?`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-          inputPlaceholder: `请输入${status ? '启用' : '停用'}说明`
-        }).then(({ value }) => {
-          enableItem({
-            idSet: ids,
-            status,
-            statusDesc: value
-          }).then(() => {
-            this.$message({
-              type: 'success',
-              message: '操作成功!'
-            });
-            this.getData();
-          }).catch(() => {
-            this.$message({
-              type: 'error',
-              message: '操作失败!'
-            });
-          });
-        });
-      }
+      handleBatchStatusChange.call(this, {
+        selectionList: this.selectionList,
+        targetStatus: status,
+        apiFunc: enableItem,
+        refreshFunc: this.getData
+      });
     },
 
     async getBrandNameList (val) {

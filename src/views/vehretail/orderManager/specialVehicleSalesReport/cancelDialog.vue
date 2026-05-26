@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import FetchSelect from '@/libs/components/FetchSelect';
+// import FetchSelect from '@/libs/components/FetchSelect';
 import { getEnum } from '@/api/common';
 
 export default {
@@ -39,7 +39,7 @@ export default {
     }
   },
   components: {
-    FetchSelect
+    // FetchSelect
   },
   data () {
     return {

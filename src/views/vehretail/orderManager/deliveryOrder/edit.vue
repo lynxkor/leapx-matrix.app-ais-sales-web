@@ -19,19 +19,20 @@
         </template>
         <template #extraButtons>
           <!-- 交车状态： 1-待预约 2-待检测 3-已检测 4-已预约 5-已收尾款 6-车联网已开通 7-交车完成 99-作废 -->
-          <el-button v-if="form.status === 1" v-permission="moduleKey+'-appointment'" size="small" @click="handleAppointmentDelivery">预约交车</el-button>
-          <el-button v-if="form.status === 5" v-permission="moduleKey+'-deliveryConfirm'" size="small" :loading="buttonLoading['generateConfirmOrder']" @click="handleGenerateConfirmOrder">交车确认单生成</el-button>
-          <el-button v-if="form.status === 4" v-permission="moduleKey+'-changeAppointmentTime'" size="small" @click="handleChangeAppointmentTime">更改预约时间</el-button>
-          <el-button v-if="form.status === 4" v-permission="moduleKey+'-cancelOrderRights'" size="small" @click="handleVerifyOrderRights">核销订单权益</el-button>
-          <el-button v-if="form.status === 4 && form.payRightsList && form.payRightsList.some(item => item.paymentType === 1060 || item.paymentType === '1060')" v-permission="moduleKey+'-revertCancelOrderRights'" size="small" :loading="buttonLoading['verifyWithdraw']" @click="handleVerifyWithdraw">核销撤回</el-button>
-          <el-button v-if="form.status === 4" v-permission="moduleKey+'-addPaymentRecord'" size="small" @click="handleAddPaymentRecord">添加收款记录</el-button>
-          <el-button v-if="form.status === 4" v-permission="moduleKey+'-confirmPayment'" size="small" :loading="buttonLoading['confirmPayment']" @click="handleConfirmPayment">确认收款</el-button>
-          <el-button v-if="form.status === 4 && form.deliveryConfirmPdfUrl" v-permission="moduleKey+'-deliveryConfirmPush'" size="small" :loading="buttonLoading['repushConfirmOrder']" @click="handleRepushConfirmOrder">交车确认单补推</el-button>
-          <el-button v-if="form.status !== 7 && form.status !== 99 && form.deliveryConfirmStatus === 15" v-permission="moduleKey+'-deliveryConfirmResign'" size="small" @click="handleReSignConfirmOrder">交车确认单重签</el-button>
-          <el-button v-if="form.deliveryConfirmStatus === 15 && form.status !== 99" v-permission="moduleKey+'-viewDeliveryConfirm'" size="small" @click="handleViewConfirmOrder">查看交车确认单</el-button>
-          <el-button v-if="form.status === 5" v-permission="moduleKey+'-uploadInvoice'" size="small" @click="handleUploadInvoice">上传发票</el-button>
-          <el-button v-if="form.status === 5" v-permission="moduleKey+'-cancelPayment'" size="small" @click="handlePaymentWithdraw">收款撤回</el-button>
-          <el-button v-if="form.status === 7" v-permission="moduleKey+'-cancelDelivery'" size="small" @click="handleDeliveryWithdraw">交车撤回</el-button>
+          <el-button v-if="canAppointment && form.status === 1" size="small" @click="handleAppointmentDelivery">预约交车</el-button>
+          <el-button v-if="canDeliveryConfirm && form.status === 5" size="small" :loading="buttonLoading['generateConfirmOrder']" @click="handleGenerateConfirmOrder">交车确认单生成</el-button>
+          <el-button v-if="canChangeAppointmentTime && form.status === 4" size="small" @click="handleChangeAppointmentTime">更改预约时间</el-button>
+          <el-button v-if="canCancelOrderRights && form.status === 4" size="small" @click="handleVerifyOrderRights">核销订单权益</el-button>
+          <el-button v-if="canRevertCancelOrderRights && form.status === 4 && form.payRightsList && form.payRightsList.some(item => item.paymentType === 1060 || item.paymentType === '1060')" size="small" :loading="buttonLoading['verifyWithdraw']" @click="handleVerifyWithdraw">核销撤回</el-button>
+          <el-button v-if="canAddPaymentRecord && form.status === 4" size="small" @click="handleAddPaymentRecord">添加收款记录</el-button>
+          <el-button v-if="canConfirmPayment && form.status === 4" size="small" :loading="buttonLoading['confirmPayment']" @click="handleConfirmPayment">确认收款</el-button>
+          <el-button v-if="canDeliveryConfirmPush && form.status === 4 && form.deliveryConfirmPdfUrl" size="small" :loading="buttonLoading['repushConfirmOrder']" @click="handleRepushConfirmOrder">交车确认单补推</el-button>
+          <el-button v-if="canDeliveryConfirmResign && form.status !== 7 && form.status !== 99 && form.deliveryConfirmStatus === 15" size="small" @click="handleReSignConfirmOrder">交车确认单重签</el-button>
+          <el-button v-if="canViewDeliveryConfirm && form.deliveryConfirmStatus === 15 && form.status !== 99" size="small" @click="handleViewConfirmOrder">查看交车确认单</el-button>
+          <el-button v-if="canUploadInvoice && form.status === 5" size="small" @click="handleUploadInvoice">上传发票</el-button>
+          <el-button v-if="canCancelPayment && form.status === 5" size="small" @click="handlePaymentWithdraw">收款撤回</el-button>
+          <el-button v-if="canCancelDelivery && form.status === 7" size="small" @click="handleDeliveryWithdraw">交车撤回</el-button>
+          <el-button v-if="canPushDeliveryActive && form.deliveryConfirmStatus !== 99" size="small" @click="handleDeliveryActive">推送激活信息</el-button>
         </template>
         <el-main>
           <!--  -->
@@ -47,59 +48,95 @@
                   <el-input v-model="form.saleDealerName" disabled />
                 </el-form-item>
                 <el-form-item label="订单销售顾问：" prop="saleUserId">
-                  <fetch-select
+                  <el-select
                     filterable
                     clearable
                     remote
                     v-model="form.saleUserId"
-                    :params="form.saleUserName"
-                    :remote-method="remoteMethods.saleUser"
+                    :remote-method="(query) => handleRemoteSearch(query, 'saleUser')"
                     value-key="userId"
                     label-key="username"
-                    @change="(val, row) => handleSaleUserChange(val,row, 'saleUser')"
-                  />
+                    placeholder="请搜索"
+                    @focus="(e) => handleFocus(e, 'saleUser', 'saleUserOptions')"
+                    @change="(val) => handleSaleUserChange(val, 'saleUser')"
+                  >
+                    <el-option
+                      v-for="item in saleUserOptions"
+                      :key="item.userId"
+                      :label="item.username"
+                      :value="item.userId"
+                      :disabled="item.disabled"
+                    />
+                  </el-select>
                 </el-form-item>
                 <el-form-item label="订单交付门店：" prop="deliveryDealerName">
                   <el-input v-model="form.deliveryDealerName" disabled />
                 </el-form-item>
                 <el-form-item label="订单交付顾问：" prop="deliveryUserId">
-                  <fetch-select
+                  <el-select
                     filterable
                     clearable
                     remote
                     v-model="form.deliveryUserId"
-                    :params="form.deliveryUserName"
-                    :remote-method="remoteMethods.deliveryUser"
+                    :remote-method="(query) => handleRemoteSearch(query, 'deliveryUser')"
                     value-key="userId"
                     label-key="username"
-                    @change="(val, row) => handleSaleUserChange(val,row, 'deliveryUser')"
-                  />
+                    placeholder="请搜索"
+                    @focus="(e) => handleFocus(e, 'deliveryUser', 'deliveryUserOptions')"
+                    @change="(val) => handleSaleUserChange(val, 'deliveryUser')"
+                  >
+                    <el-option
+                      v-for="item in deliveryUserOptions"
+                      :key="item.userId"
+                      :label="item.username"
+                      :value="item.userId"
+                      :disabled="item.disabled"
+                    />
+                  </el-select>
                 </el-form-item>
                 <el-form-item label="交付衍生工程师：" prop="deliveryDerivativeUserId">
-                  <fetch-select
+                  <el-select
                     filterable
                     clearable
                     remote
                     v-model="form.deliveryDerivativeUserId"
-                    :params="form.deliveryDerivativeUserName"
-                    :remote-method="remoteMethods.deliveryDerive"
+                    :remote-method="(query) => handleRemoteSearch(query, 'deliveryDerive')"
                     value-key="userId"
                     label-key="username"
-                    @change="(val, row) => handleSaleUserChange(val,row, 'deliveryDerivativeUser')"
-                  />
+                    placeholder="请搜索"
+                    @focus="(e) => handleFocus(e, 'deliveryDerive', 'deliveryDeriveOptions')"
+                    @change="(val) => handleSaleUserChange(val, 'deliveryDerive')"
+                  >
+                    <el-option
+                      v-for="item in deliveryDeriveOptions"
+                      :key="item.userId"
+                      :label="item.username"
+                      :value="item.userId"
+                      :disabled="item.disabled"
+                    />
+                  </el-select>
                 </el-form-item>
                 <el-form-item label="现场交付工程师：" prop="onSiteDeliveryUserId">
-                  <fetch-select
+                  <el-select
                     filterable
                     clearable
                     remote
                     v-model="form.onSiteDeliveryUserId"
-                    :params="form.onSiteDeliveryUserName"
-                    :remote-method="remoteMethods.deliveryUser"
+                    :remote-method="(query) => handleRemoteSearch(query, 'onSiteDeliveryUser')"
                     value-key="userId"
                     label-key="username"
-                    @change="(val, row) => handleSaleUserChange(val,row, 'onSiteDeliveryUser')"
-                  />
+                    placeholder="请搜索"
+                    @focus="(e) => handleFocus(e, 'onSiteDeliveryUser', 'onSiteDeliveryUserOptions')"
+                    @change="(val) => handleSaleUserChange(val, 'onSiteDeliveryUser')"
+                  >
+                    <el-option
+                      v-for="item in onSiteDeliveryUserOptions"
+                      :key="item.userId"
+                      :label="item.username"
+                      :value="item.userId"
+                      :disabled="item.disabled"
+                    />
+                  </el-select>
                 </el-form-item>
                 <el-form-item label="专属服务门店：">
                   <el-input v-model="form.exclusiveServiceStoreName" disabled />
@@ -271,74 +308,6 @@
           <!-- 实名认证信息 -->
           <generic-detail-display title="实名认证信息" :form-data="form" :fields="realNameAuthFields" :label-width="labelWidth" section-key="realNameAuth" />
           <!-- 交车确认单 -->
-          <!-- <section class="common-section" v-show="isEditing || !_id">
-            <div class="common-section-header" data-section="deliveryInfo">
-              <h2>交车确认单</h2>
-            </div>
-            <div class="common-section-body">
-              <el-form :inline="true" :model="form" :label-width="labelWidth" class="form-edit">
-                <el-form-item label="签署数据来源：">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.signatureDataSourceDesc"
-                    clearable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="签署时间：">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.signatureTime"
-                    clearable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="购车人手机是否注册：">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.buyerMobileRegisteredLabel"
-                    clearable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="交车确认单状态：">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.deliveryConfirmStatusDesc"
-                    clearable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="交车确认用户签名：">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.deliveryConfirmSignUrl"
-                    clearable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="交车确认PDF：">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.deliveryConfirmPdfUrl"
-                    clearable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="城市交付顺序：">
-                  <el-input-number
-                    placeholder="请输入"
-                    v-model="form.cityDeliveryOrder"
-                    clearable
-                    :controls="false"
-                    :min="cityDeliveryOrderMin"
-                    :step="1"
-                  />
-                </el-form-item>
-              </el-form>
-            </div>
-          </section> -->
-          <!-- 交车确认单 -->
           <generic-detail-display title="交车确认单" :form-data="form" :fields="deliveryConfirmFields" :label-width="labelWidth" section-key="deliveryConfirm" />
           <!-- 收款记录&权益项抵扣记录 -->
           <component-table
@@ -346,18 +315,20 @@
             :table-config="{ title: '收款记录&权益项抵扣记录' }"
             :columns="paymentRecordColumns"
             :api-method="getPaymentRecordList"
+            :lazy="true"
             :extra-params="{ retailOrderCode: form.retailOrderCode }"
             section-key="paymentRecords"
           >
             <template v-slot:operation_default="{ row }">
-              <el-button
-                v-if="form.status !== 7 && form.status !== 99"
-                type="text"
-                style="color: #67c23a;"
+              <el-link
+                v-if="form.status === 4 && canDeletePaymentRecord(row)"
+                type="danger"
+                :underline="false"
                 @click="handleDeletePaymentRecord(row)"
-              >删除</el-button>
+              >删除</el-link>
             </template>
           </component-table>
+          <!-- 预约记录 -->
           <component-table
             ref="deliveryAppointmentRecordTable"
             :table-config="{ title: '预约记录' }"
@@ -365,7 +336,7 @@
             section-key="deliveryAppointmentRecordRecords"
             :tableDataExternal="form.appointmentRecordList"
           />
-          <!-- 预约记录 -->
+          <!-- 附件清单 -->
           <section class="common-section" section-key="appointmentRecords">
             <div class="common-section-header" data-section="orderBelonging">
               <h2>附件清单</h2>
@@ -399,6 +370,7 @@
         :orderUserId="form.orderUserId"
         :deliveryOrderId="form.deliveryOrderId"
         :shopCode="form.mallOrderCode"
+        :retailOrderId="form.retailOrderId"
         @refresh="getDetail"
       />
       <!-- 收款记录对话框组件 -->
@@ -458,13 +430,11 @@ import {
   viewDeliveryConfirm, // 交车确认单查看
   deliveryConfirmResign, // 交车确认单重签
   deliveryConfirmPush, // 交车确认单推送
-  revertCancelOrderRights, // 核销撤回
   deliveryConfirm, // 交车确认单生成
-  checkCarBuyerPhoneRegistered, // 校验购车人手机号是否注册零跑APP
+  checkCarBuyerPhoneRegistered, pushDeliveryActive, // 校验购车人手机号是否注册零跑APP
 } from '@/api/vehretail/orderManager/deliveryOrder/index';
 import {
-  getEffectiveByDeliveryOrderId,
-  getList as getInvoiceList
+  getEffectiveByDeliveryOrderId
 } from '@/api/vehretail/orderManager/deliveryInvoice/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
@@ -598,6 +568,14 @@ export default {
         }
       },
       immediate: true
+    },
+    'form.retailOrderCode': {
+      handler (val) {
+        console.log('[edit.vue] retailOrderCode changed to:', val);
+        if (val && this.$refs.paymentRecordTable) {
+          this.$refs.paymentRecordTable.refresh();
+        }
+      }
     }
   },
   data () {
@@ -613,35 +591,62 @@ export default {
       reloadKey: 0,
       // 按钮 loading 状态集合
       buttonLoading: {},
+      // 权限控制
+      canAppointment: false, // 预约交车
+      canDeliveryConfirm: false, // 交车确认单生成
+      canChangeAppointmentTime: false, // 更改预约时间
+      canCancelOrderRights: false, // 核销订单权益
+      canRevertCancelOrderRights: false, // 核销撤回
+      canAddPaymentRecord: false, // 添加收款记录
+      canConfirmPayment: false, // 确认收款
+      canDeliveryConfirmPush: false, // 交车确认单补推
+      canDeliveryConfirmResign: false, // 交车确认单重签
+      canViewDeliveryConfirm: false, // 查看交车确认单
+      canUploadInvoice: false, // 上传发票
+      canCancelPayment: false, // 收款撤回
+      canCancelDelivery: false, // 交车撤回
+      canPushDeliveryActive: false, // 推送激活信息
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
       emptyText: '若要启用此内容，请创建记录',
       tableData: [],
       cityDeliveryOrderMin: 0,
+      // 远程搜索下拉数据
+      saleUserOptions: [],
+      deliveryUserOptions: [],
+      deliveryDeriveOptions: [],
+      onSiteDeliveryUserOptions: [],
       // 当前确认收款数据
       currentConfirmPaymentData: {},
       // 远程搜索方法
       remoteMethods: {
         // 初始方法
-        saleUser: async (query) => {
-          // if (!query || query.length < 2) return [];
-          return await engineerList({ username: query, salesConfigKey: 'saleUser', orgCodeList: [this.form.saleDealerCode] });
+        saleUser: async (query, orgCode) => {
+          const dealerCode = orgCode || this.form.saleDealerCode;
+          if (!dealerCode) return [];
+          return await engineerList({ username: query, salesConfigKey: 'saleUser', orgCodeList: [dealerCode] });
         },
-        deliveryUser: async (query) => {
-          // if (!query || query.length < 2) return [];
-          return await engineerList({ username: query, salesConfigKey: 'deliveryUser', orgCodeList: [this.form.deliveryDealerCode] });
+        deliveryUser: async (query, orgCode) => {
+          const dealerCode = orgCode || this.form.deliveryDealerCode;
+          if (!dealerCode) return [];
+          return await engineerList({ username: query, salesConfigKey: 'deliveryUser', orgCodeList: [dealerCode] });
         },
-        deliveryDerive: async (query) => {
-          // if (!query || query.length < 2) return [];
-          return await engineerList({ username: query, salesConfigKey: 'deliveryDerive', orgCodeList: [this.form.deliveryDealerCode] });
+        deliveryDerive: async (query, orgCode) => {
+          const dealerCode = orgCode || this.form.deliveryDealerCode;
+          if (!dealerCode) return [];
+          return await engineerList({ username: query, salesConfigKey: 'deliveryDerive', orgCodeList: [dealerCode] });
         },
-        listParentForOption: async (query) => {
-          // if (!query || query.length < 2) return [];
-          return await engineerList({ username: query, salesConfigKey: 'deliveryDerive', orgCodeList: [this.form.deliveryDealerCode] });
+        listParentForOption: async (query, orgCode) => {
+          const dealerCode = orgCode || this.form.deliveryDealerCode;
+          if (!dealerCode) return [];
+          return await engineerList({ username: query, salesConfigKey: 'deliveryDerive', orgCodeList: [dealerCode] });
         },
       },
       rules: {
+        insuranceScheme: [
+          { required: true, message: '请选择保险方案', trigger: 'change' }
+        ],
         saleUserId: [
           { required: true, message: '请选择订单交付顾问', trigger: 'change' }
         ],
@@ -677,9 +682,9 @@ export default {
         { value: '1040', label: '已办结' }
       ],
       orderBelongingFields: [
-        { key: 'saleDealerName', label: '订单销售门店' },
+        { key: 'saleDealerName', label: '订单销售门店', link: '/partner/channelManagement/shopDetail', paramKey: 'saleDealerCode', paramName: 'dealerCode' },
         { key: 'saleUserName', label: '订单销售顾问' },
-        { key: 'deliveryDealerName', label: '订单交付门店' },
+        { key: 'deliveryDealerName', label: '订单交付门店', link: '/partner/channelManagement/shopDetail', paramKey: 'deliveryDealerCode', paramName: 'dealerCode' },
         { key: 'deliveryUserName', label: '订单交付顾问' },
         { key: 'deliveryDerivativeUserName', label: '交付衍生工程师' },
         { key: 'onSiteDeliveryUserName', label: '现场交付工程师' },
@@ -714,10 +719,12 @@ export default {
         { key: 'agentName', label: '代办联系人' },
         { key: 'guidePrice', label: '整车指导价' },
         { key: 'depositAmount', label: '定金金额' },
-        { key: 'orderMaterialCode', label: '订单物料码' },
-        { key: 'allocationMaterialCode', label: '配车物料码' },
-        { key: 'saleDealerName', label: '销售门店' },
-        { key: 'deliveryDealerName', label: '交付门店' }
+        { key: 'orderMaterialCode', label: '订单物料码', link: '/sales/datacenter/materials/vehiclematerials/edit', paramKey: 'orderMaterialCode' },
+        { key: 'allocationMaterialCode', label: '配车物料码', link: '/sales/datacenter/materials/vehiclematerials/edit', paramKey: 'allocationMaterialsCode' },
+        { key: 'saleDealerName', label: '销售门店', link: '/partner/channelManagement/shopDetail', paramKey: 'saleDealerCode', paramName: 'dealerCode' },
+        { key: 'deliveryDealerName', label: '交付门店', link: '/partner/channelManagement/shopDetail', paramKey: 'deliveryDealerCode', paramName: 'dealerCode' },
+        { key: 'deliveryVin', label: '交车VIN码' },
+        { key: 'deliveryTime', label: '交车时间' },
       ],
       realNameAuthFields: [
         { key: 'realNameAuthSourceLabel', label: '实名认证来源' },
@@ -728,15 +735,15 @@ export default {
         { key: 'signatureTime', label: '签署时间' },
         { key: 'buyerMobileRegisteredLabel', label: '购车人手机是否注册' },
         { key: 'deliveryConfirmStatusLabel', label: '交车确认单状态' },
-        { key: 'deliveryConfirmSignUrl', label: '交车确认用户签名' },
-        { key: 'deliveryConfirmPdfUrl', label: '交车确认PDF' },
-        { key: 'cityDeliveryOrder', label: '城市交付顺序' }
+        { key: 'cityDeliveryOrder', label: '城市交付顺序' },
+        { key: 'deliveryConfirmPdfUrl', label: '交车确认PDF', class: 'form-item-full', download: true },
+        { key: 'deliveryConfirmSignUrl', label: '交车确认用户签名', class: 'form-item-full', download: true },
       ],
       basicInfoFields: [
         { key: 'deliveryOrderCode', label: '交车单编号' },
-        { key: 'vin', label: 'VIN 码' },
-        { key: 'materialsCode', label: '整车物料' },
-        { key: 'retailOrderCode', label: '整车订单' },
+        { key: 'vin', label: 'VIN 码', link: '/service/datacenter/vehicle/vehicleProfile/edit', paramKey: 'vin', paramName: 'vin' },
+        { key: 'materialsCode', label: '整车物料', link: '/sales/datacenter/materials/vehiclematerials/edit', paramKey: 'materialsCode' },
+        { key: 'retailOrderCode', label: '整车订单', link: '/sales/vehretail/ordermanager/retailorderinfo/edit', paramKey: 'retailOrderId' },
         { key: 'deliveryTime', label: '交车时间' },
         { key: 'statusLabel', label: '交车状态' },
         { key: 'createTime', label: '创建时间' }
@@ -785,6 +792,9 @@ export default {
       ]
     };
   },
+  created () {
+    this.initPermissions();
+  },
   mounted () {
     this.$nextTick(() => {
       // 需要默认隐藏的 section 标识列表
@@ -801,8 +811,97 @@ export default {
   },
   methods: {
     getPaymentRecordList,
-    handleSaleUserChange (val, row, name) {
-      this.form[name + 'Name'] = row.username;
+    // 初始化权限
+    initPermissions () {
+      this.canAppointment = this.permissions.has(`${this.moduleKey}-appointment`);
+      this.canDeliveryConfirm = this.permissions.has(`${this.moduleKey}-deliveryConfirm`);
+      this.canChangeAppointmentTime = this.permissions.has(`${this.moduleKey}-changeAppointmentTime`);
+      this.canCancelOrderRights = this.permissions.has(`${this.moduleKey}-cancelOrderRights`);
+      this.canRevertCancelOrderRights = this.permissions.has(`${this.moduleKey}-revertCancelOrderRights`);
+      this.canAddPaymentRecord = this.permissions.has(`${this.moduleKey}-addPaymentRecord`);
+      this.canConfirmPayment = this.permissions.has(`${this.moduleKey}-confirmPayment`);
+      this.canDeliveryConfirmPush = this.permissions.has(`${this.moduleKey}-deliveryConfirmPush`);
+      this.canDeliveryConfirmResign = this.permissions.has(`${this.moduleKey}-deliveryConfirmResign`);
+      this.canViewDeliveryConfirm = this.permissions.has(`${this.moduleKey}-viewDeliveryConfirm`);
+      this.canUploadInvoice = this.permissions.has(`${this.moduleKey}-uploadInvoice`);
+      this.canCancelPayment = this.permissions.has(`${this.moduleKey}-cancelPayment`);
+      this.canCancelDelivery = this.permissions.has(`${this.moduleKey}-cancelDelivery`);
+      this.canPushDeliveryActive = this.permissions.has(`${this.moduleKey}-pushDeliveryActive`);
+    },
+    handleSaleUserChange (val, name) {
+      if (!val) {
+        // 清空时从当前 options 中找出被清空的值，重新塞入（不可选）
+        const optionsMap = {
+          saleUser: this.saleUserOptions,
+          deliveryUser: this.deliveryUserOptions,
+          deliveryDerivativeUser: this.deliveryDeriveOptions,
+          onSiteDeliveryUser: this.onSiteDeliveryUserOptions
+        };
+        const oldOptions = optionsMap[name] || [];
+        // 从 options 中找到不可选的那条（之前被禁用的）
+        const disabledItem = oldOptions.find(item => item.disabled);
+        if (disabledItem) {
+          // 重新查询，但结果中不包含这条数据，需要手动补入
+          this.handleRemoteSearch('', name, disabledItem);
+        }
+        return;
+      }
+      // 找到选中的选项，更新对应的 Name
+      const optionsMap = {
+        saleUser: this.saleUserOptions,
+        deliveryUser: this.deliveryUserOptions,
+        deliveryDerivativeUser: this.deliveryDeriveOptions,
+        onSiteDeliveryUser: this.onSiteDeliveryUserOptions
+      };
+      const options = optionsMap[name] || [];
+      const selected = options.find(item => String(item.userId) === String(val));
+      if (selected) {
+        this.form[name + 'Name'] = selected.username;
+      }
+    },
+    // 获取焦点时：如果下拉没数据则查询一次
+    handleFocus (_, type, optionsKey) {
+      const options = this[optionsKey];
+      if (!options || options.length === 0) {
+        this.handleRemoteSearch('', type);
+      }
+    },
+    // 远程搜索公共方法
+    async handleRemoteSearch (query, type, forceDisabledItem) {
+      const configMap = {
+        saleUser: { key: 'saleUser', method: this.remoteMethods.saleUser, formKey: 'saleUser', orgKey: 'saleDealerCode' },
+        deliveryUser: { key: 'deliveryUser', method: this.remoteMethods.deliveryUser, formKey: 'deliveryUser', orgKey: 'deliveryDealerCode' },
+        deliveryDerive: { key: 'deliveryDerive', method: this.remoteMethods.deliveryDerive, formKey: 'deliveryDerivativeUser', orgKey: 'deliveryDealerCode' },
+        onSiteDeliveryUser: { key: 'onSiteDeliveryUser', method: this.remoteMethods.deliveryUser, formKey: 'onSiteDeliveryUser', orgKey: 'deliveryDealerCode' }
+      };
+      const config = configMap[type];
+      if (!config) return;
+
+      const { key, method, formKey, orgKey } = config;
+      const orgCode = this.form[orgKey];
+      const res = await method(query, orgCode);
+      const list = res?.data || res || [];
+
+      // 外部数据合并：查询结果 + params值(如果有且不重复则添加并标注不可选)
+      const currentId = this.form[formKey + 'Id'];
+      const currentName = this.form[formKey + 'Name'];
+      const optionsKey = key + 'Options';
+
+      // 检查当前值是否在列表中，不在则添加
+      const exists = list.some(item => String(item.userId) === String(currentId));
+      const finalList = [...list];
+
+      // 优先使用 forceDisabledItem（清空回填场景），否则使用 currentId/currentName
+      if (forceDisabledItem) {
+        const itemExists = finalList.some(item => String(item.userId) === String(forceDisabledItem.userId));
+        if (!itemExists) {
+          finalList.push({ ...forceDisabledItem, disabled: true });
+        }
+      } else if (currentId && currentName && !exists) {
+        finalList.push({ userId: currentId, username: currentName, disabled: true });
+      }
+
+      this[optionsKey] = finalList;
     },
     onFinancialSchemeChange (val) {
       if (val === '1010') {
@@ -827,20 +926,23 @@ export default {
           res.deliveryUserId = res.deliveryUserId ? String(res.deliveryUserId) : '';
           res.deliveryDerivativeUserId = res.deliveryDerivativeUserId ? String(res.deliveryDerivativeUserId) : '';
           res.onSiteDeliveryUserId = res.onSiteDeliveryUserId ? String(res.onSiteDeliveryUserId) : '';
+          // 初始化下拉数据（无论是否有值都查询一次，确保下拉有数据）
+          this.$nextTick(() => {
+            this.handleRemoteSearch('', 'saleUser');
+            this.handleRemoteSearch('', 'deliveryUser');
+            this.handleRemoteSearch('', 'deliveryDerive');
+            this.handleRemoteSearch('', 'onSiteDeliveryUser');
+          });
           return res;
         });
       }
     },
     getDetail () {
-      getDetail(this._id).then(res => {
-        this.form = res;
-        // 刷新收款记录表格
-        this.$refs.paymentRecordTable?.refresh();
-        // 刷新附件列表
-        this.$refs.attachmentList?.refresh();
-        // 强制重新访问按钮组，解决 v-if 导致按钮增删后布局计算错误的问题
-        this.reloadKey++;
-      }).catch(() => {});
+      this.$refs.containerRef?.loadDetail();
+      // 刷新收款记录表格
+      this.$refs.paymentRecordTable?.refresh();
+      // 刷新附件列表
+      this.$refs.attachmentList?.refresh();
     },
     // 允许提交的字段白名单 (与 API 字段名一致)
     getSubmitFields () {
@@ -1024,18 +1126,15 @@ export default {
         this.$message.warning('请先保存订单信息');
         return;
       }
-      this.$refs.verifyOrderRightsDialog.open(this.form.mallOrderCode);
+      this.$refs.verifyOrderRightsDialog.open(this.form.mallOrderCode, 2);
     },
     // 核销撤回
-    async handleVerifyWithdraw () {
-      await this.withLoading('verifyWithdraw', async () => {
-        await revertCancelOrderRights({
-          deliveryOrderId: this.form.deliveryOrderId,
-          retailOrderId: this.form.retailOrderId,
-        });
-        this.$message.success('订单权益核销撤回成功');
-        this.getDetail();
-      });
+    handleVerifyWithdraw () {
+      if (!this._id) {
+        this.$message.warning('请先保存订单信息');
+        return;
+      }
+      this.$refs.verifyOrderRightsDialog.open(this.form.mallOrderCode, 4);
     },
     // 添加收款记录
     handleAddPaymentRecord () {
@@ -1172,6 +1271,14 @@ export default {
         }
       }).catch(() => {});
     },
+    // 交车确认单激活
+    handleDeliveryActive () {
+      pushDeliveryActive({ deliveryOrderId: this.form.deliveryOrderId, retailOrderId: this.form.retailOrderId })
+        .then(res => {
+          this.$message.success('交车确认单激活推送成功');
+          this.getDetail();
+        });
+    },
     // 上传发票
     handleUploadInvoice () {
       if (this.form.deliveryConfirmStatus === 5) {
@@ -1267,11 +1374,15 @@ export default {
         this.$message.success('删除成功');
         // 刷新表格数据
         this.$refs.paymentRecordTable?.refresh();
-        // 触发自定义事件，通知父组件（如果需要）
-        this.$emit('deleted', row);
+        this.getDetail();
       } catch (error) {
         console.error('Delete failed:', error);
       }
+    },
+    // 判断收款记录是否可以删除：已预约状态且收款类型为门店优惠/贷款/尾款/贷款首付款/机动车发票其他费用
+    canDeletePaymentRecord (row) {
+      const deletableTypes = [0, 2, 4, 6, 7]; // 贷款, 尾款, 贷款首付款, 门店优惠, 机动车发票其他费用
+      return deletableTypes.includes(row.payCategory);
     }
   }
 };

@@ -89,7 +89,7 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="车系名称：" prop="seriesName">
-                  {{ form.seriesName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="问卷编码：" prop="questionnaireCode">
                   {{ form.questionnaireCode }}
@@ -104,7 +104,7 @@
                   {{ form.remark }}
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
-                  {{ form.statusLabel }}
+                  <span :class="['status-tag', form.status === 1 ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
@@ -190,7 +190,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '交付满意度问卷配置管理',
+      pageTitle: '交付满意度问卷配置',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
       moduleKey: 'AISVR-deliveryQuestionnaireConfig',

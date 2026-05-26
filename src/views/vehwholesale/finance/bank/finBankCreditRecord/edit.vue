@@ -11,6 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="false"
       >
         <template #status>
           <span>{{ form.code }}</span>
@@ -23,20 +24,13 @@
             <div class="common-section-body">
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  {{ form.dealerCompanyCode }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/companyDetails?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
                 </el-form-item>
                 <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationName">
-                   <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                      query: {
-                        id: form.fundFinancialOrganizationId,
-                      },
-                    })"
-                   type="text">{{ form.fundFinancialOrganizationName }}</el-button>
+                   <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.fundFinancialOrganizationId}`" target="_blank">{{ form.fundFinancialOrganizationName }}</el-link>
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
                   {{ form.statusLabel }}
@@ -50,9 +44,13 @@
                 <el-form-item label="说明：" prop="statusDesc">
                   {{ form.statusDesc }}
                 </el-form-item>
-                <el-form-item label="经销商名称：" prop="dealerName">
-                  {{ form.dealerName }}
+                <!--  经销商和母公司一致 -->
+                <el-form-item label="经销商名称：" prop="dealerCompanyName">
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/companyDetails?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
                 </el-form-item>
+                <!-- <el-form-item label="经销商名称：" prop="dealerCompanyName">
+                  {{ form.dealerCompanyName }}
+                </el-form-item> -->
               </el-form>
             </div>
           </section>
@@ -174,7 +172,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     }
   },
   watch: {
@@ -205,6 +203,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

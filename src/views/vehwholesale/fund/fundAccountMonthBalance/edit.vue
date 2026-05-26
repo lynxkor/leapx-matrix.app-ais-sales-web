@@ -23,7 +23,7 @@
                   {{ form.code }}
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="parentCompanyName">
-                  {{ form.parentCompanyName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.parentCompanyCode}`" target="_blank">{{ form.parentCompanyName }}</el-link>
                 </el-form-item>
                 <el-form-item label="年份：" prop="year">
                   {{ form.year }}
@@ -47,14 +47,7 @@
                   {{ form.accountTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financeOrganizationName">
-                   <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                      query: {
-                        id: form.financeOrganizationId,
-                      },
-                    })"
-                   type="text">{{ form.financeOrganizationName }}</el-button>
+                   <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.financeOrganizationId}`" target="_blank">{{ form.financeOrganizationName }}</el-link>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
@@ -121,7 +114,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '资金账户月度余额：' + (this.form.code || '');
@@ -153,6 +146,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

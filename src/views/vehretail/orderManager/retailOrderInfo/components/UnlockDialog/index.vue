@@ -2,15 +2,16 @@
   <el-dialog
     class="m-confirmdoc-dialog"
     title="取消锁车"
-    width="500px"
+    width="30%"
     :visible.sync="dialogVisible"
     @close="close"
     @closed="closed"
     :z-index="2001"
   >
-  <el-form size="small" ref="form" :model="form" :rules="rules" label-position="right" label-width="140px">
+  <el-form size="small" ref="form" :model="form" :rules="rules" label-width="120px">
     <el-form-item label="申请原因：" prop="unlockReasonCode">
       <fetch-select
+        style="width: 100%"
         v-model="form.unlockReasonCode"
         :options="unlockReasonOptions"
         placeholder="请选择"
@@ -21,22 +22,27 @@
         @change="handleUnlockReasonCodeChange"
       />
     </el-form-item>
-    <el-form-item label="原因解释说明：" prop="reasonExplain">
+    <el-form-item label=" " prop="reasonExplain">
       <el-input v-model="form.reasonExplain" disabled class="unification-input" />
     </el-form-item>
     <el-form-item label="更换后配置：" prop="materialsCode" v-if="shouldShowMaterialField">
+      <el-button size="small" type="primary" plain @click="showMaterialsDialog()">选择配置</el-button>
+    </el-form-item>
+    <el-form-item label=" " v-if="shouldShowMaterialField">
       <el-input v-model="form.materialsCode" disabled class="unification-input" readonly />
-      <el-button size="small" type="primary" @click="showMaterialsDialog()">选择配置</el-button>
+      <!-- <span>{{ form.materialsCode }}</span> -->
     </el-form-item>
     <el-form-item label="处理方式：" prop="orderHandleType" v-if="shouldShowHandleTypeField">
-      <el-select v-model="form.orderHandleType">
+      <el-select v-model="form.orderHandleType" style="width: 100%">
         <el-option label="手动选择现车" :value="20" />
         <el-option label="系统自动匹配批售单" :value="30" />
       </el-select>
     </el-form-item>
     <el-form-item label="需绑定VIN号：" prop="bindVin" v-if="shouldShowVinField" :rules=" form.orderHandleType === 20 ? [{ required: true, message: '手动选择现车时，VIN必填', trigger: 'blur' }] : []">
+      <el-button size="small" type="primary" plain :disabled="form.orderHandleType !== 20" @click="showVinDialog()">选择车辆</el-button>
+    </el-form-item>
+    <el-form-item label=" " v-if="shouldShowVinField">
       <el-input v-model="form.bindVin" disabled class="unification-input" readonly />
-      <el-button size="small" type="primary" :disabled="form.orderHandleType !== 20" @click="showVinDialog()">选择车辆</el-button>
     </el-form-item>
     <el-form-item label="备注：" prop="remark">
       <el-input
@@ -56,8 +62,8 @@
   </el-form>
     <template v-slot:footer>
       <div class="dialog-footer">
-        <el-button size="small" @click="close">取 消</el-button>
-        <el-button size="small" :loading="submitLoading" type="primary" @click="submit()">确 定</el-button>
+        <el-button size="small" @click="close">取消</el-button>
+        <el-button size="small" :loading="submitLoading" type="primary" @click="submit()">确定</el-button>
       </div>
     </template>
 
@@ -183,7 +189,7 @@ export default {
       this.form.orderUnlockFileReqList = [];
     },
     getList (params) {
-      getList({ ...params, pageNum: 1 }).then(res => {
+      getList({ ...params, pageNum: 1, status: 1 }).then(res => {
         this.unlockReasonOptions = res.records;
       }).catch(() => {
       });
@@ -265,6 +271,6 @@ export default {
     }
   }
   .unification-input{
-    width: 215px;
+    // width: 215px;
   }
 </style>

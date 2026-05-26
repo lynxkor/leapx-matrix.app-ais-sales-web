@@ -68,7 +68,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="承载力配置编码：" prop="buildConfigCode">
                   {{ form.buildConfigCode }}
                 </el-form-item>
@@ -79,7 +79,7 @@
                   {{ form.singleMonthDeliveryCapacity }}
                 </el-form-item>
                 <el-form-item label="状态：" prop="statusLabel">
-                  {{ form.statusLabel }}
+                  <span :class="['status-tag', form.status === 1 ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime" v-if="form.createTime">
                   {{ form.createTime }}

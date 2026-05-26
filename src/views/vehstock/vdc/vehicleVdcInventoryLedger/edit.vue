@@ -20,24 +20,30 @@
           <el-button v-if="isBatchEdit" size="small" @click="handleBatchEdit">批量编辑</el-button>
         </template>
         <el-main>
-          <!-- 基础信息展示区域 -->
-          <section class="common-section">
+          <!-- 基础信息展示区域 - 仅在非批量编辑模式下显示 -->
+          <section v-if="!isBatchEdit" class="common-section">
             <div class="common-section-header">
               <h2>基本信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail" label-width="150px">
+              <el-form :inline="true" class="form-detail">
                 <el-form-item label="VIN：" prop="vin">
-                  {{ form.vin }}
+                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
                 </el-form-item>
                 <el-form-item label="物料编码：" prop="materialsCode">
-                  {{ form.materialsCode }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="车系：" prop="seriesName">
-                  {{ form.seriesName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="产地：" prop="productarea">
                   {{ form.productarea }}
+                </el-form-item>
+                <el-form-item label="车辆交付状态：" prop="vehicleDeliveryStatusLabel">
+                  {{ form.vehicleDeliveryStatusLabel }}
+                </el-form-item>
+                <el-form-item label="是否配车：" prop="carAllocatedLabel">
+                  {{ form.carAllocatedLabel }}
                 </el-form-item>
                 <el-form-item label="制造工厂：" prop="factory">
                   {{ form.factory }}
@@ -86,6 +92,7 @@
                 class="form-edit"
                 :inline="true"
               >
+                <!-- 可编辑的五个字段 -->
                 <el-form-item label="销售预留：" prop="reserved">
                   <fetch-select
                     :request="fetchOptions"
@@ -130,6 +137,63 @@
                     filterable
                   />
                 </el-form-item>
+                <!-- 仅在非批量编辑模式下显示其他只读字段 -->
+                <template v-if="!isBatchEdit">
+                  <el-form-item label="订单编号：" prop="po">
+                    <el-input v-model="form.po" disabled />
+                  </el-form-item>
+                  <el-form-item label="整车物流预留：" prop="logisticsReservedLabel">
+                    <el-input v-model="form.logisticsReservedLabel" disabled />
+                  </el-form-item>
+                  <el-form-item label="订单状态：" prop="poStatusLabel">
+                    <el-input v-model="form.poStatusLabel" disabled />
+                  </el-form-item>
+                  <el-form-item label="门店：" prop="dealerName">
+                    <el-input v-model="form.dealerName" disabled />
+                  </el-form-item>
+                  <el-form-item label="销售解除预留时间：" prop="salesCancelReservedon">
+                    <el-input v-model="form.salesCancelReservedon" disabled />
+                  </el-form-item>
+                  <el-form-item label="整车物流操作时间：" prop="vehicleLogisticsOperationTime">
+                    <el-input v-model="form.vehicleLogisticsOperationTime" disabled />
+                  </el-form-item>
+                  <el-form-item label="门店入库时间：" prop="dealerinTime">
+                    <el-input v-model="form.dealerinTime" disabled />
+                  </el-form-item>
+                  <el-form-item label="销售预留时间：" prop="salesReservedon">
+                    <el-input v-model="form.salesReservedon" disabled />
+                  </el-form-item>
+                  <el-form-item label="整车物流操作人：" prop="vehicleLogisticsOperatorName">
+                    <el-input v-model="form.vehicleLogisticsOperatorName" disabled />
+                  </el-form-item>
+                  <el-form-item label="订单类型：" prop="orderType">
+                    <el-input v-model="form.orderType" disabled />
+                  </el-form-item>
+                  <el-form-item label="退车标识：" prop="returnLabelLabel">
+                    <el-input v-model="form.returnLabelLabel" disabled />
+                  </el-form-item>
+                  <el-form-item label="销售预留操作人：" prop="salesReservationOperatorName">
+                    <el-input v-model="form.salesReservationOperatorName" disabled />
+                  </el-form-item>
+                  <el-form-item label="ERP销售订单号：" prop="erpSalesOrder">
+                    <el-input v-model="form.erpSalesOrder" disabled />
+                  </el-form-item>
+                  <el-form-item label="ERP交货单：" prop="erpDeliverOrder">
+                    <el-input v-model="form.erpDeliverOrder" disabled />
+                  </el-form-item>
+                  <el-form-item label="ERP发票号：" prop="erpInvoice">
+                    <el-input v-model="form.erpInvoice" disabled />
+                  </el-form-item>
+                  <el-form-item label="同步SAP时间：" prop="sapSyncTime">
+                    <el-input v-model="form.sapSyncTime" disabled />
+                  </el-form-item>
+                  <el-form-item label="同步SAP状态：" prop="sapSyncStatus">
+                    <el-input v-model="form.sapSyncStatus" disabled />
+                  </el-form-item>
+                  <el-form-item label="整车物流预留备注：" prop="vehicleLogisticsReserveRemark">
+                    <el-input v-model="form.vehicleLogisticsReserveRemark" disabled />
+                  </el-form-item>
+                </template>
               </el-form>
 
               <!-- 详情模式 -->
@@ -137,7 +201,6 @@
                 v-else
                 :inline="true"
                 class="form-detail"
-                label-width="150px"
               >
                 <el-form-item label="订单编号：" prop="po">
                   {{ form.po }}
@@ -184,6 +247,21 @@
                 <el-form-item label="允许锁零售单：" prop="allowLockRetailLabel">
                   {{ form.allowLockRetailLabel }}
                 </el-form-item>
+                <el-form-item label="ERP销售订单号：" prop="erpSalesOrder">
+                  {{ form.erpSalesOrder }}
+                </el-form-item>
+                <el-form-item label="ERP交货单：" prop="erpDeliverOrder">
+                  {{ form.erpDeliverOrder }}
+                </el-form-item>
+                <el-form-item label="ERP发票号：" prop="erpInvoice">
+                  {{ form.erpInvoice }}
+                </el-form-item>
+                <el-form-item label="同步SAP时间：" prop="sapSyncTime">
+                  {{ form.sapSyncTime }}
+                </el-form-item>
+                <el-form-item label="同步SAP状态：" prop="sapSyncStatus" style="width: 100%;">
+                  {{ form.sapSyncStatus }}
+                </el-form-item>
                 <el-form-item label="整车物流预留备注：" prop="vehicleLogisticsReserveRemark" style="width: 100%;">
                   {{ form.vehicleLogisticsReserveRemark }}
                 </el-form-item>
@@ -197,45 +275,45 @@
             </div>
           </section>
 
-          <!-- 物料信息展示区域 -->
-          <section class="common-section">
+          <!-- 物料信息展示区域 - 仅在非批量编辑模式下显示 -->
+          <section v-if="!isBatchEdit" class="common-section">
             <div class="common-section-header">
               <h2>物料信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail" label-width="150px">
+              <el-form :inline="true" class="form-detail">
                 <el-form-item label="物料编码：" prop="materialsCode">
                   {{ form.materialsCode }}
                 </el-form-item>
                 <el-form-item label="车系：" prop="seriesName">
-                  {{ form.seriesName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="车型：" prop="modelName">
-                  {{ form.modelName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="续航里程：" prop="drivingRangeName">
-                  {{ form.drivingRangeName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicledrivingrange/edit?id=${form.drivingRangeId}`" target="_blank">{{ form.drivingRangeName }}</el-link>
                 </el-form-item>
                 <el-form-item label="选配动力：" prop="rangePowerName">
-                  {{ form.rangePowerName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclerangepower/edit?id=${form.rangePowerId}`" target="_blank">{{ form.rangePowerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="外观：" prop="exteriorName">
-                  {{ form.exteriorName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleexterior/edit?id=${form.exteriorId}`" target="_blank">{{ form.exteriorName }}</el-link>
                 </el-form-item>
                 <el-form-item label="内饰：" prop="interiorName">
-                  {{ form.interiorName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleinterior/edit?id=${form.interiorId}`" target="_blank">{{ form.interiorName }}</el-link>
                 </el-form-item>
                 <el-form-item label="选配轮毂：" prop="wheelHubName">
-                  {{ form.wheelHubName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclewheelhub/edit?id=${form.wheelHubId}`" target="_blank">{{ form.wheelHubName }}</el-link>
                 </el-form-item>
                 <el-form-item label="电池电芯：" prop="batteryCellName">
-                  {{ form.batteryCellName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclebatterycell/edit?id=${form.batteryCellId}`" target="_blank">{{ form.batteryCellName }}</el-link>
                 </el-form-item>
                 <el-form-item label="年款：" prop="yearTypeName">
-                  {{ form.yearTypeName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${form.yearTypeId}`" target="_blank">{{ form.yearTypeName }}</el-link>
                 </el-form-item>
                 <el-form-item label="选装包：" prop="optionPackageName">
-                  {{ form.optionPackageName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleoptionpackage/edit?id=${form.optionPackageId}`" target="_blank">{{ form.optionPackageName }}</el-link>
                 </el-form-item>
                 <el-form-item label="是否允许现车批售：" prop="allowWholesaleLabel">
                   {{ form.allowWholesaleLabel }}
@@ -247,24 +325,24 @@
             </div>
           </section>
 
-          <!-- 生产信息展示区域 -->
-          <section class="common-section">
+          <!-- 生产信息展示区域 - 仅在非批量编辑模式下显示 -->
+          <section v-if="!isBatchEdit" class="common-section">
             <div class="common-section-header">
               <h2>生产信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail" label-width="150px">
+              <el-form :inline="true" class="form-detail">
                 <el-form-item label="工厂：" prop="factory">
                   {{ form.factory }}
                 </el-form-item>
                 <el-form-item label="VIN：" prop="vin">
-                  {{ form.vin }}
+                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
                 </el-form-item>
                 <el-form-item label="计划收车时间：" prop="planReceiveCarTime">
                   {{ form.planReceiveCarTime }}
                 </el-form-item>
                 <el-form-item label="公告车型：" prop="vehicleRegisteredModelName">
-                  {{ form.vehicleRegisteredModelName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleregisteredmodel/edit?id=${form.vehicleRegisteredModelId}`" target="_blank">{{ form.vehicleRegisteredModelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="合格证号：" prop="certNumber">
                   {{ form.certNumber }}
@@ -326,7 +404,7 @@
 </template>
 
 <script>
-import { getDetail, batchEdit } from '@/api/vehstock/vdc/vehicleVdcInventoryLedger/index';
+import { getDetail, batchEdit, getByVin } from '@/api/vehstock/vdc/vehicleVdcInventoryLedger/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -372,6 +450,11 @@ const defaultForm = {
   salesReservationOperatorName: '',
   allowLockRetail: '',
   allowLockRetailLabel: '',
+  erpSalesOrder: '',
+  erpDeliverOrder: '',
+  erpInvoice: '',
+  sapSyncTime: '',
+  sapSyncStatus: '',
   vehicleLogisticsReserveRemark: '',
   specialReserveRemark: '',
   salesRemark: '',
@@ -429,6 +512,9 @@ export default {
   computed: {
     _id () {
       return this.id || this.$route.query.id || this.form.id;
+    },
+    _vin () {
+      return this.$route.query.vin || this.form.vin;
     },
     title () {
       return 'VIN：' + this.form.vin;
@@ -494,8 +580,12 @@ export default {
     },
     detailRequest () {
       const id = this._id;
+      const vin = this._vin;
       if (id) {
         return getDetail(id);
+      }
+      if (vin) {
+        return getByVin(vin);
       }
     },
     async submitRequest () {

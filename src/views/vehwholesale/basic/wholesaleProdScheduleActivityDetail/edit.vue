@@ -4,7 +4,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="排产专项活动明细:"
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -14,7 +14,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-          {{ form.activityCode }}
+          <!-- {{ form.activityCode }} -->
         </template>
         <el-main>
           <section class="common-section">
@@ -221,27 +221,13 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="活动编码：" prop="activityCode">
-                  {{ form.activityCode }}
+                  <el-link type="primary" :href="`/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=${form.scheduleActivityId}`" target="_blank">{{ form.activityCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="活动名称：" prop="activityName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/vehwholesale/basic/wholesaleProdScheduleActivity/edit',
-                      query: {
-                        id: form.scheduleActivityId,
-                      },
-                    })"
-                   type="text">{{ form.activityName }}</el-button>
+                  {{ form.activityName }}
                 </el-form-item>
                  <el-form-item label="车系名称：" prop="seriesName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                       path: '/datacenter/materials/vehicleSeries/detail',
-                      query: {
-                        id: form.seriesId,
-                      },
-                    })"
-                   type="text">{{ form.seriesName }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                   <el-form-item label="是否锁零售单：" prop="allowLockRetailLabel">
                   {{ form.allowLockRetailLabel }}
@@ -253,7 +239,7 @@
                   {{ form.endTime }}
                 </el-form-item>
                   <el-form-item label="门店编码：" prop="dealerCode">
-                  {{ form.dealerCode }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="门店名称：" prop="dealerName">
                   {{ form.dealerName }}
@@ -268,27 +254,13 @@
                   {{ form.applyOrderCategoryLabel }}
                 </el-form-item>
                 <el-form-item label="系列名称：" prop="modelLineName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                        path: '/datacenter/materials/vehicleModelLine/detail',
-                      query: {
-                        id: form.modelLineId,
-                      },
-                    })"
-                   type="text">{{ form.modelLineName }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodelline/edit?id=${form.modelLineId}`" target="_blank">{{ form.modelLineName }}</el-link>
                 </el-form-item>
                   <el-form-item label="年款名称：" prop="yearTypeName">
-                     <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/datacenter/materials/vehicleYearType/detail',
-                      query: {
-                        id: form.yearTypeId,
-                      },
-                    })"
-                   type="text">{{ form.yearTypeName }}</el-button>
+                     <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${form.yearTypeId}`" target="_blank">{{ form.yearTypeName }}</el-link>
                 </el-form-item>
                   <el-form-item label="物料编码：" prop="materialsCode">
-                  {{ form.materialsCode }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsId}`" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                   <el-form-item label="物料描述：" prop="materialsDesc">
                   {{ form.materialsDesc }}
@@ -364,6 +336,7 @@ const defaultForm = {
   scheduleActivityId: '',
   dealerCode: '',
   dealerName: '',
+  dealerId: '',
   seriesId: '',
   seriesName: '',
   modelLineId: '',
@@ -399,7 +372,10 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
+    },
+    title () {
+      return '排产专项活动明细：' + (this.form.activityDetailCode || '');
     }
   },
   watch: {
@@ -417,7 +393,6 @@ export default {
     return {
       pageTitle: '排产专项活动明细',
       pageType: 'edit',
-      title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-wholesaleProdScheduleActivityDetail',
       loading: false,
@@ -519,10 +494,18 @@ export default {
     this.detailRequest();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        return getDetail(id).then(res => {
+          if (res.dealerId) {
+            this.form.dealerId = res.dealerId;
+          }
+          return res;
+        });
       }
     },
     submitRequest () {

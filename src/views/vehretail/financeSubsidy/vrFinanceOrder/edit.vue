@@ -28,13 +28,13 @@
                   {{ form.installmentOrderCode }}
                 </el-form-item>
                 <el-form-item label="金融订单状态：">
-                  {{ form.financeOrderStatusLabel }}
+                  <span class="status-tag link">{{ form.financeOrderStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="VIN码：">
-                  {{ form.vin }}
+                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
                 </el-form-item>
                 <el-form-item label="门店名称：">
-                  {{ form.dealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="合作伙伴名称：">
                   {{ form.partnerName }}

@@ -94,6 +94,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.startTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -106,6 +107,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.endTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -118,6 +120,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.createTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -175,7 +178,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/productManager/productSkuPrice/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleModel } from '@/api/common';
@@ -303,23 +306,23 @@ export default {
             }]
           },
           { props: 'skuCode', label: 'SKU编码', visible: true, width: 180 },
-          { props: 'productCode', label: '商品编码', visible: true, width: 150 },
-          { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 240 },
+          { props: 'productCode', label: '商品编码', visible: true, width: 120, align: 'left', buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehretail/productManager/productCenter/edit?id=${row.productId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'materialsCode', label: '物料编码', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.vehicleMaterialsId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 300, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.vehicleMaterialsId}`, '_blank'); }, type: 'primary' }] },
           { props: 'purchaseTypeLabel', label: '购车类型', visible: true, width: 100 },
-          { props: 'priceBeforeSubsidy', label: '补贴前价格', visible: true, width: 120 },
-          { props: 'priceAfterSubsidy', label: '补贴后价格', visible: true, width: 120 },
-          { props: 'subsidyAmount', label: '补贴金额', visible: true, width: 100 },
-          { props: 'deposit', label: '定金', visible: true, width: 100 },
-          { props: 'vehiclePrice', label: '整车价格', visible: true, width: 100 },
+          { props: 'priceBeforeSubsidy', label: '补贴前价格', visible: true, width: 120, align: 'right' },
+          { props: 'priceAfterSubsidy', label: '补贴后价格', visible: true, width: 120, align: 'right' },
+          { props: 'subsidyAmount', label: '补贴金额', visible: true, width: 100, align: 'right' },
+          { props: 'deposit', label: '定金', visible: true, width: 100, align: 'right' },
+          { props: 'vehiclePrice', label: '整车价格', visible: true, width: 100, align: 'right' },
           { props: 'priceCompareLabel', label: '价格对比', visible: true, width: 100 },
           { props: 'allowConfigChangeLabel', label: '允许改配', visible: true, width: 100 },
           { props: 'statusLabel', label: '状态', visible: true, width: 80 },
           { props: 'startTime', label: '开始日期', visible: true, width: 150 },
           { props: 'endTime', label: '截止日期', visible: true, width: 150 },
           { props: 'description', label: '描述', visible: true, width: 260 },
-          { props: 'seriesName', label: '车系', visible: true, width: 100 },
-          { props: 'modelName', label: '车型', visible: true, width: 100 },
+          { props: 'seriesName', label: '车系', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleseries/edit?id=${row.seriesId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'modelName', label: '车型', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclemodel/edit?id=${row.modelId}`, '_blank'); }, type: 'primary' }] },
           { props: 'creatorName', label: '创建者', visible: true, width: 120 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           // { props: 'modifierName', label: '修改者', visible: true, width: 200 },

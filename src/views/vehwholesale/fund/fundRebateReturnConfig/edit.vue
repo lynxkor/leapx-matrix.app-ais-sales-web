@@ -125,20 +125,13 @@
                   {{ form.rebateTypeLabel }}
                 </el-form-item>
                 <el-form-item label="车系名称：" prop="vehicleSeriesName">
-                   <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                    path: '/datacenter/materials/vehicleSeries/detail',
-                      query: {
-                        id: form.vehicleSeriesId,
-                      },
-                    })"
-                   type="text">{{ form.vehicleSeriesName }}</el-button>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleSeries/edit?id=${form.vehicleSeriesId}`" target="_blank">{{ form.vehicleSeriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="预算科目：" prop="budgetItemName">
-                  {{ form.budgetItemName }}
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundBudgetItem/edit?id=${form.budgetItemId}`" target="_blank">{{ form.budgetItemName }}</el-link>
                 </el-form-item>
                 <el-form-item label="费用支持类型：" prop="feeSupportTypeName">
-                  {{ form.feeSupportTypeName }}
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFeeSupportType/edit?id=${form.feeSupportTypeId}`" target="_blank">{{ form.feeSupportTypeName }}</el-link>
                 </el-form-item>
                 <el-form-item label="有效开始日期：" prop="effectiveStartTime">
                   {{ form.effectiveStartTime }}
@@ -227,7 +220,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '编码：' + this.form.rebateReturnConfigCode;
@@ -312,6 +305,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

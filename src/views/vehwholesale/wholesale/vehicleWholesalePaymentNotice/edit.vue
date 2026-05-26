@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="批售请款通知:"
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -14,7 +14,7 @@
         :showEditBtn="false"
       >
         <template #status>
-          {{ form.paymentNoticeCode }}
+          <!-- {{ form.paymentNoticeCode }} -->
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
         </template>
@@ -34,6 +34,14 @@
                   <el-input
                     placeholder="请输入"
                     v-model="form.saleDealerName"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="所属母公司：" prop="dealerCompanyName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.dealerCompanyName"
                     clearable
                     disabled
                   />
@@ -79,7 +87,10 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="门店名称：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
+                </el-form-item>
+                <el-form-item label="所属母公司：" prop="dealerCompanyName">
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
                 </el-form-item>
                 <el-form-item label="批售总金额：" prop="totalWholesaleAmount">
                   {{ form.totalWholesaleAmount }}
@@ -115,13 +126,29 @@
                 >
                   <vxe-column field="paymentDetailCode" title="请款明细单号" />
                   <vxe-column field="paymentNoticeCode" title="请款通知单" />
-                  <vxe-column field="saleDealerName" title="门店名称" />
-                  <vxe-column field="materialsCode" title="物料编码" />
+                  <vxe-column field="saleDealerName" title="门店名称">
+                    <template #default="{ row }">
+                      <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`" target="_blank">{{ row.saleDealerName }}</el-link>
+                    </template>
+                  </vxe-column>
+                  <vxe-column field="materialsCode" title="物料编码">
+                    <template #default="{ row }">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsCode}`" target="_blank">{{ row.materialsCode }}</el-link>
+                    </template>
+                  </vxe-column>
                   <vxe-column field="orderCategoryLabel" title="订单分类" />
                   <vxe-column field="entCustomerName" title="企业客户" />
-                  <vxe-column field="entVehicleOrderCode" title="企业客户订单号" />
-                  <vxe-column field="wholesaleOrderCode" title="批售订单号" />
-                  <vxe-column field="wholesalePrice" title="批售价格"/>
+                  <vxe-column field="entVehicleOrderCode" title="企业客户订单号">
+                    <template #default="{ row }">
+                      <el-link type="primary" :href="`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${row.entVehicleOrderCode}`" target="_blank">{{ row.entVehicleOrderCode }}</el-link>
+                    </template>
+                  </vxe-column>
+                  <vxe-column field="wholesaleOrderCode" title="批售订单号">
+                    <template #default="{ row }">
+                      <el-link type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${row.wholesaleOrderCode}`" target="_blank">{{ row.wholesaleOrderCode }}</el-link>
+                    </template>
+                  </vxe-column>
+                  <vxe-column field="wholesalePrice" title="批售价格" align="right"/>
                   <vxe-column field="orderTime" title="订单日期" />
                   <vxe-column field="createTime" title="创建时间" />
                 </vxe-table>
@@ -191,10 +218,10 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '批售请款通知管理：' + this.form.paymentNoticeCode;
     }
   },
   watch: {
@@ -225,7 +252,7 @@ export default {
         remark: [
           { required: true, message: '请输入备注', trigger: 'change' }
         ],
-        status: [
+        orderStatus: [
           { required: true, message: '请选择订单状态', trigger: 'change' }
         ],
         statusDesc: [
@@ -264,6 +291,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

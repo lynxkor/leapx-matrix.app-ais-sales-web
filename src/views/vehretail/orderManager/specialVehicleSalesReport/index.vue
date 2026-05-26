@@ -80,6 +80,7 @@
             :default-time="['00:00:00', '23:59:59']"
             v-model="form.createTimeRange"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -146,7 +147,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, submitReport, cancelReport, revokeReport, adjustVehicleAttribute, batchCancelReports, batchRevokeReports } from '@/api/vehretail/orderManager/specialVehicleSalesReport/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo, listVehicleModel } from '@/api/common';
@@ -186,7 +187,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '特殊车辆销售提报管理',
+      pageTitle: '特殊车辆销售提报',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVRFDI-specialVehicleSalesReport',
@@ -275,7 +276,7 @@ export default {
           { props: 'address', label: '车主详细地址', visible: true, width: 150 },
           { props: 'invoiceNo', label: '发票号码', visible: true, width: 180, sortable: true },
           { props: 'invoiceDate', label: '开票日期', visible: true, width: 180, sortable: true },
-          { props: 'invoiceAmount', label: '发票金额', visible: true, width: 180, sortable: true },
+          { props: 'invoiceAmount', label: '发票金额', visible: true, width: 180, sortable: true, align: 'right' },
           { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true },
           {
             props: 'operate',
@@ -366,7 +367,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '特殊车辆销售提报管理',
+        businessType: '特殊车辆销售提报',
         dataFetchPath: '/vr/web/delivery/specialVehicleSalesReport/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -374,7 +375,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '特殊车辆销售提报管理.xlsx');
+            await downloadExcel(res.excelUrl, '特殊车辆销售提报.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

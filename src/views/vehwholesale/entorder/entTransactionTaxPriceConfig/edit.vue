@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="关联交易计算比例："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -13,7 +13,7 @@
         :detailRequest="detailRequest"
       >
         <template #status>
-            <span>{{ form.code }}</span>
+            <!-- <span>{{ form.code }}</span> -->
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
         </template>
@@ -91,7 +91,7 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="销售公司：" prop="saleCompanyName">
-                  {{ form.saleCompanyName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/fund/fundSaleCompany/edit?id=' + form.saleCompanyId)">{{ form.saleCompanyName }}</el-button>
                 </el-form-item>
                  <el-form-item label="订单分类：" prop="orderCategoryLabel">
                   {{ form.orderCategoryLabel }}
@@ -181,10 +181,10 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
-      return '主键：' + this.form.id;
+      return '关联交易计算比例：' + this.form.code;
     }
   },
   watch: {
@@ -236,6 +236,9 @@ export default {
     this.getCompanyList();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     getCompanyList (query) {
       return companyList({ companyNameLike: query, status: 1 });
     },

@@ -87,7 +87,7 @@
                   {{ form.hasOriginalLabel }}
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
-                  {{ form.statusLabel }}
+                  <span :class="['status-tag', form.status === 1 ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
@@ -162,7 +162,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '承诺配置管理',
+      pageTitle: '承诺配置',
       pageType: 'edit',
       // TIPS: 权限前缀 AISVR，根据实际情况修改，name为小写驼峰格式
       moduleKey: 'AISVR-dealerCommitmentConfig',

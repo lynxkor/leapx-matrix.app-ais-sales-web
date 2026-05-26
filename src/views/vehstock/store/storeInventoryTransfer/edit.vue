@@ -3,7 +3,7 @@
     <template #left>
       <!-- TIPS: 如果需要竖排，direction="vertical" -->
       <edit-base-container ref="containerRef" :id="_id" :title="title" :isEditing.sync="isEditing" :form.sync="form"
-        :originalForm.sync="originalForm" :submitRequest="submitRequest" :detailRequest="detailRequest">
+        :originalForm.sync="originalForm" :submitRequest="submitRequest" :detailRequest="detailRequest" :showEditBtn="showEditBtn">
         <template #status>
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
@@ -27,6 +27,7 @@
                 <el-form-item label="目标门店名称：" prop="targetDealerCode">
                   <fetch-select
                     :remote-method="getDealerListByName"
+                    :params="form.targetDealerName"
                     remote
                     v-model="form.targetDealerCode"
                     placeholder="请输入门店编码或名称"
@@ -41,7 +42,6 @@
                 <el-form-item label="目标门店仓库名称：" prop="targetDealerWarehouseCode">
                   <fetch-select
                     :options="warehouseOptions"
-                    remote
                     v-model="form.targetDealerWarehouseCode"
                     placeholder="请输入门店仓库编码或名称"
                     labelKey="warehouseName"
@@ -84,11 +84,17 @@
             </div>
             <div class="common-section-body">
               <div class="common-section-header">
-                <div class="ais-select-group">
-                  <fetch-select style="width: 300px;" :remote-method="queryListData" remote placeholder="请选择" clearable
-                    value-key="id" label-key="vinDesc" :disabled="!(isEditing || !_id)" @change="handleAddTableData" />
-                  <el-button type="primary" size="small">添加</el-button>
-                </div>
+                <base-search
+                  style="width: 300px;"
+                  filterable
+                  clearable
+                  remote
+                  :remote-method="queryListData"
+                  @change="handleAddTableData"
+                  value-key="id"
+                  label-key="vinDesc"
+                  :disabled="!(isEditing || !_id)"
+                />
               </div>
               <div class="common-section-table">
                 <vxe-table ref="tableRef" stripe :data="form.storeInventoryTransferDetailList" show-overflow resizable border="inner" size="medium"
@@ -137,6 +143,7 @@
 import { getDetail, addOrUpdate } from '@/api/vehstock/store/storeInventoryTransfer/index';
 import { getList } from '@/api/vehstock/store/storeInventoryLedger/index';
 import FetchSelect from '@/libs/components/FetchSelect';
+import BaseSearch from '@/libs/components/BaseSearch';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum, listOrgWarehouseStoreInfo } from '@/api/common';
@@ -198,7 +205,8 @@ export default {
   components: {
     EditPageLayout,
     EditBaseContainer,
-    FetchSelect
+    FetchSelect,
+    BaseSearch
   },
   computed: {
     _id () {
@@ -206,6 +214,19 @@ export default {
     },
     title () {
       return '主键：' + this.form.id;
+    },
+    userInfo () {
+      try {
+        return JSON.parse(localStorage.getItem('userInfo') || '{}');
+      } catch (e) {
+        return {};
+      }
+    },
+    directOrgCodes () {
+      return (this.userInfo.orgPostUserList || []).map(item => item.orgCode);
+    },
+    showEditBtn () {
+      return (this.form.auditStatus === 1 || this.form.auditStatus === 5) && this.directOrgCodes.includes(this.form.sourceDealerCode);
     }
   },
   watch: {
@@ -219,8 +240,8 @@ export default {
     },
     'form.targetDealerCode': {
       handler (newVal) {
-        if (newVal && this.isEditing) {
-          // 仅在编辑模式且有值时拉取仓库列表，以确保回显时能从列表中匹配到名称
+        if (newVal) {
+          // 拉取仓库列表，以确保回显时能从列表中匹配到名称
           this.fetchWarehouseOptions(newVal, false); // 第二个参数设为 false，防止自动重置
         }
       },
@@ -293,13 +314,8 @@ export default {
     },
     // 删除子表数据
     handleDeleteRow (index) {
-      // const item = this.form.storeInventoryTransferDetailList[index];
-      this.form.storeInventoryTransferDetailList.splice(index, 1);
-      // 根据需求调用接口
-      // deletePartVehModel([item.id]).then(res => {
-      //   this.$message.success('删除成功');
-      //   this.tableData.splice(index, 1);
-      // });
+      const list = this.form.storeInventoryTransferDetailList || [];
+      list.splice(index, 1);
     },
     // 查询新增项的列表
     queryListData (queryString) {
@@ -326,7 +342,8 @@ export default {
         return;
       }
       // 检查是否已存在
-      const exists = this.form.storeInventoryTransferDetailList.some(item => item.id === record.id);
+      const list = this.form.storeInventoryTransferDetailList || [];
+      const exists = list.some(item => item.id === record.id);
       if (exists) {
         this.$message.warning('请勿重复添加');
         return;

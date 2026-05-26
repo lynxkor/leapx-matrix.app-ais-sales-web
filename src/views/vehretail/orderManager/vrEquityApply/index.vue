@@ -161,6 +161,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.submitTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -173,6 +174,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.depositTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -185,6 +187,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.lockTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -237,7 +240,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem } from '@/api/vehretail/orderManager/vrEquityApply/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleModelList, listOrgStoreInfo, vehicleMaterials } from '@/api/common';
@@ -352,7 +355,7 @@ export default {
           },
           { props: 'replacementTypeLabel', label: '置换类型', visible: true, width: 120 },
           { props: 'otherBrand', label: '其他品牌', visible: true, width: 150 },
-          { props: 'discountAmount', label: '优惠金额', visible: true, width: 120 },
+          { props: 'discountAmount', label: '优惠金额', visible: true, width: 120, align: 'right' },
           { props: 'isIssuedLabel', label: '是否发放', visible: true, width: 120 },
           { props: 'expectedIssueDate', label: '预计发放日期', visible: true, width: 150 },
           { props: 'issueTypeLabel', label: '发放类型', visible: true, width: 120 },
@@ -407,9 +410,9 @@ export default {
               click: (rowIndex, row) => {
                 if (row.originalVin) {
                   this.navigateToRoute({
-                    path: '/sales/datacenter/vehicle/vehicleProfile/edit',
+                    path: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
                     query: {
-                      id: row.originalVinId
+                      vin: row.originalVin
                     }
                   }, true);
                 }

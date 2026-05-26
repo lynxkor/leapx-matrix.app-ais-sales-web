@@ -31,6 +31,7 @@
           :default-time="['00:00:00', '23:59:59']"
           v-model="form.createTimeRange"
           type="daterange"
+          unlink-panels
           :picker-options="pickerOptions"
           range-separator="至"
           value-format="yyyy-MM-dd HH:mm:ss"
@@ -92,7 +93,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/orderManager/dealerCommitmentConfig/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
@@ -130,7 +131,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '承诺配置管理',
+      pageTitle: '承诺配置',
       pageType: 'list',
       // TIPS: 权限前缀 AISVR，根据实际情况修改
       moduleKey: 'AISVR-dealerCommitmentConfig',
@@ -179,7 +180,7 @@ export default {
           { props: 'commitmentType', label: '承诺类型', visible: true, width: 180 },
           { props: 'commitmentContent', label: '承诺内容', visible: true, width: 200 },
           { props: 'hasOriginalLabel', label: '含原厂配置', visible: true, width: 120, type: 'select', options: YES_NO_ENUM },
-          { props: 'statusLabel', label: '状态', visible: true, width: 100, type: 'select', options: [{ label: '启用', value: 1 }, { label: '禁用', value: 0 }] },
+          { props: 'statusLabel', label: '状态', visible: true, width: 80, type: 'select', options: [{ label: '启用', value: 1 }, { label: '禁用', value: 0 }] },
           { props: 'createTime', label: '创建时间', visible: true, width: 160 },
           {
             props: 'operate',
@@ -279,7 +280,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '承诺配置管理',
+        businessType: '承诺配置',
         dataFetchPath: '/vr/web/order/dealerCommitmentConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -287,7 +288,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '承诺配置管理.xlsx');
+            await downloadExcel(res.excelUrl, '承诺配置.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

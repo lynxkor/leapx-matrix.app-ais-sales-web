@@ -125,7 +125,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-整车物料', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['整车物料', '详情']);
     this.getData();
   },
   methods: {
@@ -133,7 +133,8 @@ export default {
       this.$router.push({
         path: '/datacenter/materials/vehicleMaterials/edit',
         query: {
-          id: this.$route.query.id
+          id: this.$route.query.id,
+          isEditing: true
         }
       });
     },

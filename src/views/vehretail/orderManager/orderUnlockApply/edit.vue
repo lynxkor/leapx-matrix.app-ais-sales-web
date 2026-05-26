@@ -292,7 +292,7 @@
                   {{ form.unlockApplyCode }}
                 </el-form-item>
                 <el-form-item label="申请单状态：" prop="applyStatus">
-                  {{ form.applyStatusLabel }}
+                  <span class="status-tag link">{{ form.applyStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="申请时间：" prop="applyTime">
                   {{ form.applyTime }}
@@ -301,7 +301,7 @@
                   {{ form.applyUserName }}
                 </el-form-item>
                 <el-form-item label="整车订单号：" prop="retailOrderCode">
-                  {{ form.retailOrderCode }}
+                  <el-link v-if="form.retailOrderId" type="primary" :href="`/sales/vehretail/ordermanager/retailorderinfo/edit?id=${form.retailOrderId}`" target="_blank">{{ form.retailOrderCode }}</el-link><span v-else>{{ form.retailOrderCode }}</span>
                 </el-form-item>
                 <el-form-item label="订单处理方式：" prop="orderHandleType">
                   {{ form.orderHandleTypeLabel }}
@@ -310,7 +310,7 @@
                   {{ form.unlockReason }}
                 </el-form-item>
                 <el-form-item label="新配置物料编码：" prop="materialsCode">
-                  {{ form.materialsCode }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="需要绑定VIN号：" prop="bindVin">
                   {{ form.bindVin }}
@@ -349,22 +349,22 @@
                   {{ form.paymentTime }}
                 </el-form-item>
                 <el-form-item label="VIN号：" prop="vin">
-                  {{ form.vin }}
+                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
                 </el-form-item>
                 <el-form-item label="批售订单号：" prop="wholesaleOrderCode">
-                  {{ form.wholesaleOrderCode }}
+                  <el-link v-if="form.wholesaleOrderId" type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${form.wholesaleOrderId}`" target="_blank">{{ form.wholesaleOrderCode }}</el-link><span v-else>{{ form.wholesaleOrderCode }}</span>
                 </el-form-item>
                 <el-form-item label="解绑方式：" prop="unlockType">
                   {{ form.unlockTypeLabel }}
                 </el-form-item>
                 <el-form-item label="解绑时订单状态：" prop="orderStatus">
-                  {{ form.orderStatusLabel }}
+                  <span class="status-tag link">{{ form.orderStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="车辆是否预留：" prop="carReserveStatus">
-                  {{ form.carReserveStatusLabel }}
+                  <span :class="['status-tag', form.carReserveStatus ? 'primary' : 'link']">{{ form.carReserveStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="是否自动生成：" prop="autoGenerateStatus">
-                  {{ form.autoGenerateStatusLabel }}
+                  <span :class="['status-tag', form.autoGenerateStatus ? 'primary' : 'link']">{{ form.autoGenerateStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="退订申请单号：" prop="refundApplyCode">
                   {{ form.refundApplyCode }}
@@ -487,6 +487,9 @@ export default {
     isAdding () {
       return this.$route.query.isAdding;
     },
+    title () {
+      return '申请单号：' + this.form.unlockApplyCode;
+    },
   },
   watch: {
     id: {
@@ -503,7 +506,6 @@ export default {
     return {
       pageTitle: '锁车解绑申请',
       pageType: 'edit',
-      title: '申请单号：' + form.unlockApplyCode,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-orderUnlockApply',
       loading: false,

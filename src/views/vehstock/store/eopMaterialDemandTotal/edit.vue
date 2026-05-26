@@ -27,7 +27,7 @@
                   {{ form.eopDemandNo }}
                 </el-form-item>
                 <el-form-item label="物料编码：" prop="materialsCode">
-                  {{ form.materialsCode }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsId}`" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="物料描述：" prop="materialsDesc">
                   {{ form.materialsDesc }}
@@ -54,13 +54,13 @@
                   {{ form.unmatchedVehicleQty }}
                 </el-form-item>
                 <el-form-item label="车系：" prop="seriesName">
-                  {{ form.seriesName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="车型：" prop="modelName">
-                  {{ form.modelName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="年款：" prop="yearTypeName">
-                  {{ form.yearTypeName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${form.yearTypeId}`" target="_blank">{{ form.yearTypeName }}</el-link>
                 </el-form-item>
                 <el-form-item label="备注：" prop="remark">
                   {{ form.remark }}

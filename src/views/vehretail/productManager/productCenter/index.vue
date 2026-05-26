@@ -42,6 +42,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.createTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -61,16 +62,18 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量上架</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(2)" :disabled="selectionList.length === 0">批量下架</el-button>
-      <el-button v-if="canImport" size="small" @click="handleImport('productInfoImport')">导入</el-button>
-      <el-button v-permission="moduleKey+'-saleAttributeimport'" size="small" @click="handleImport('productSaleAttributeImport')">订购属性导入</el-button>
-      <el-button v-permission="moduleKey+'-skuimport'" size="small" @click="saleAttributeImport('productSaleAttributeImport')">商品定价导入</el-button>
-      <el-button v-if="canExport" :loading="infoLoading" size="small" @click="exportExcel('productInfoImport')">导出</el-button>
-      <el-button v-permission="moduleKey+'-saleAttributeexport'" :loading="saleAttributeLoading" size="small" @click="saleAttributeExportExcel" :disabled="selectionList.length === 0">订购属性导出</el-button>
-      <el-button v-permission="moduleKey+'-skuexport'" :loading="skuPriceLoading" size="small" @click="exportExcel('productSkuPriceImport')" :disabled="selectionList.length === 0">商品定价导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <ButtonGroup maxWidth="85%" collapseDirection="left">
+        <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
+        <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量上架</el-button>
+        <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(2)" :disabled="selectionList.length === 0">批量下架</el-button>
+        <el-button v-if="canImport" size="small" @click="handleImport('productInfoImport')">导入</el-button>
+        <el-button v-permission="moduleKey+'-saleAttributeimport'" size="small" @click="handleImport('productSaleAttributeImport')">订购属性导入</el-button>
+        <el-button v-permission="moduleKey+'-skuimport'" size="small" @click="saleAttributeImport('productSaleAttributeImport')">商品定价导入</el-button>
+        <el-button v-if="canExport" :loading="infoLoading" size="small" @click="exportExcel('productInfoImport')">导出</el-button>
+        <el-button v-permission="moduleKey+'-saleAttributeexport'" :loading="saleAttributeLoading" size="small" @click="saleAttributeExportExcel" :disabled="selectionList.length === 0">订购属性导出</el-button>
+        <el-button v-permission="moduleKey+'-skuexport'" :loading="skuPriceLoading" size="small" @click="exportExcel('productSkuPriceImport')" :disabled="selectionList.length === 0">商品定价导出</el-button>
+        <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      </ButtonGroup>
     </div>
     <div
       class="ais-table-c"
@@ -110,7 +113,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, productSaleAttributeExport } from '@/api/vehretail/productManager/productCenter/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
@@ -123,6 +126,7 @@ import { downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import saleAttributeUpload from './saleAttributeUpload.vue';
+import ButtonGroup from '@/libs/components/ButtonGroup';
 import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
@@ -151,7 +155,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    Upload
+    Upload,
+    ButtonGroup
   },
   data () {
     return {

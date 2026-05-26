@@ -29,6 +29,7 @@
           <el-date-picker
             v-model="form.createTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
@@ -66,7 +67,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/basic/storeInventoryTransferWhitelist/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';

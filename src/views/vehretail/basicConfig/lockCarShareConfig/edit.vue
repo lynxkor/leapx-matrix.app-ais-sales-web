@@ -97,7 +97,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="150px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
               <el-form-item label="资源共享组编码：" prop="shareGroupCode">
                   {{ form.shareGroupCode }}
                 </el-form-item>
@@ -108,10 +108,10 @@
                   {{ form.resourceTypeLabel }}
                 </el-form-item>
                 <el-form-item label="销售门店名称：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
-                  {{ form.statusLabel }}
+                  <span :class="['status-tag', form.status === 1 ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="备注：" prop="remark">
                   {{ form.remark }}

@@ -117,7 +117,7 @@
                   {{ form.dimensionLabel }}
                 </el-form-item>
                 <el-form-item label="车型：" prop="modelName">
-                  {{ form.modelName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="城市：" prop="cityName">
                   {{ form.cityName }}
@@ -138,7 +138,7 @@
                   {{ form.remark }}
                 </el-form-item>
                 <el-form-item label="状态：" prop="statusLabel">
-                  {{ form.statusLabel }}
+                  <span :class="['status-tag', form.status === 1 ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
                 </el-form-item>
               </el-form>
             </div>

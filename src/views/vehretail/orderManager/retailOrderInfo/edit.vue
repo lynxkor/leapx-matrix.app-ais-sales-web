@@ -20,20 +20,17 @@
         <template #extraButtons>
           <!-- <el-button size="small" type="primary" @click="handleEquityInquiry">权益查询</el-button> -->
           <el-button size="small" :loading="printLoading" v-if="canOperateOrder" @click="handlePrintContractTermination">打印合同解除协议</el-button>
-          <el-button v-permission="moduleKey+'-setSpecialRemark'" size="small" :loading="setSpecialMarkLoading" @click="handleSetSpecialMark">设置特殊标识</el-button>
-          <el-button size="small" :loading="modifyConfigLoading" v-if="canOperateOrder && form.orderStatus === 3 && form.wholesaleBindStatus !== 1" @click="handleModifyConfiguration">修改配置</el-button>
-          <el-button size="small" :loading="manualVehicleLoading" v-if="canOperateOrder && form.wholesaleBindStatus !== 1" @click="handleManualVehicleAllocation">手工配车</el-button>
-          <el-button size="small" :loading="autoLockLoading" v-if="canOperateOrder && form.wholesaleBindStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
-          <el-button size="small" :loading="agreementLoading" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
-          <el-button
-            v-if="canOperateOrder && !(form.orderStatus === 10 || (form.orderStatus === 7 && form.deliveryOrder && form.deliveryOrder.status === 5))"
-            size="small"
-            :loading="orderRefundLoading"
-            @click="handleOrderRefund">
-            订单退订
-          </el-button>
-          <el-button size="small" :loading="changeApplyLoading" v-if="canOperateOrder" @click="handleCarOwnerChangeApplication">购车人变更申请</el-button>
-          <el-button size="small" :loading="qualityIssueLoading" v-if="canOperateOrder && form.wholesaleBindStatus === 1 && (form.orderStatus === 6 || form.orderStatus === 7)" @click="handleQualityIssueUnbindApplication">质量问题解绑申请</el-button>
+          <el-button size="small" :loading="setSpecialMarkLoading" v-if="canSetSpecialRemark" @click="handleSetSpecialMark">设置特殊标识</el-button>
+          <el-button size="small" :loading="modifyConfigLoading" v-if="canOperateOrder && canChangeOrderMaterials && form.orderStatus === 3 && form.wholesaleBindStatus !== 1" @click="handleModifyConfiguration">修改配置</el-button>
+          <el-button size="small" :loading="manualVehicleLoading" v-if="canOperateOrder && canManualLock && form.wholesaleBindStatus !== 1" @click="handleManualVehicleAllocation">手工配车</el-button>
+          <el-button size="small" :loading="autoLockLoading" v-if="canOperateOrder && canAutoLock && form.wholesaleBindStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
+          <el-button size="small" :loading="agreementLoading" v-if="canQuerySnapShot" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
+          <el-button size="small" v-if="canOperateOrder && canRetailOrderRefund && !(form.orderStatus === 15 || form.orderStatus === 10 || (form.orderStatus === 7 && form.deliveryOrder && form.deliveryOrder.status === 5))" @click="handleOrderRefund">订单退订</el-button>
+          <el-button size="small" :loading="changeApplyLoading" v-if="canOperateOrder && canRetailOrderChangeApply && form.orderStatus !== 10" @click="handleCarOwnerChangeApplication">购车人变更申请</el-button>
+          <el-button size="small" :loading="qualityIssueLoading" v-if="canOperateOrder && canOrderUnlockApply && form.wholesaleBindStatus === 1 && (form.orderStatus === 6 || form.orderStatus === 7)" @click="handleQualityIssueUnbindApplication">质量问题解绑申请</el-button>
+          <el-button size="small" v-if="canVrEquityApply && form.orderStatus === 99" @click="handleEquityApply">权益申请</el-button>
+          <!-- 团购申请: 订单确认(3)/生产中(5)/车辆在途(6)/等待交车(7)/交车完成(9)/待门店向工厂付款(30)/车辆发运准备中(40) -->
+          <el-button size="small" v-if="canVrGroupbuyOrderEquityApply && [3, 5, 6, 7, 9, 30, 40].includes(form.orderStatus)" @click="handleGroupbuyApply">团购申请</el-button>
         </template>
         <!-- 固定悬浮导航栏 -->
         <div class="fixed-nav" :class="{ 'is-collapsed': isNavCollapsed }">
@@ -384,6 +381,7 @@
             :tableDataExternal="form[tableConfig.field]"
             :extraParams="{ retailOrderCode: form.retailOrderCode }"
             :columns="tableConfig.columns"
+            :lazy="true"
             :apiMethod="tableConfig.apiMethod"
           />
           <!-- 组件位置不要放在右侧栏组件 -->
@@ -577,6 +575,17 @@ export default {
       orderRefundLoading: false, // 订单退订的 loading 状态
       changeApplyLoading: false, // 购车人变更申请的 loading 状态
       qualityIssueLoading: false, // 质量问题解绑申请的 loading 状态
+      // 权限控制
+      canSetSpecialRemark: false, // 设置特殊标识
+      canChangeOrderMaterials: false, // 修改配置
+      canManualLock: false, // 手工配车
+      canAutoLock: false, // 自动锁车
+      canQuerySnapShot: false, // 查看购车协议
+      canRetailOrderRefund: false, // 订单退订
+      canRetailOrderChangeApply: false, // 购车人变更申请
+      canOrderUnlockApply: false, // 质量问题解绑申请
+      canVrEquityApply: false, // 权益申请
+      canVrGroupbuyOrderEquityApply: false, // 团购申请
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
@@ -705,6 +714,7 @@ export default {
   },
   created () {
     this.loginUserGet();
+    this.initPermissions();
   },
   mounted () {
     // 监听滚动事件，高亮当前所在区域
@@ -786,6 +796,19 @@ export default {
       this.$refs.materialsDialog.show();
       this.modifyConfigLoading = false;
     },
+    // 初始化权限
+    initPermissions () {
+      this.canSetSpecialRemark = this.permissions.has(`${this.moduleKey}-setSpecialRemark`);
+      this.canChangeOrderMaterials = this.permissions.has(`${this.moduleKey}-changeOrderMaterials`);
+      this.canManualLock = this.permissions.has(`${this.moduleKey}-manualLock`);
+      this.canAutoLock = this.permissions.has(`${this.moduleKey}-autoLock`);
+      this.canQuerySnapShot = this.permissions.has(`${this.moduleKey}-querySnapShot`);
+      this.canRetailOrderRefund = this.permissions.has(`${this.moduleKey}-retailOrderRefund-addOrUpdate`);
+      this.canRetailOrderChangeApply = this.permissions.has(`${this.moduleKey}-retailOrderChangeApply-addOrUpdate`);
+      this.canOrderUnlockApply = this.permissions.has(`${this.moduleKey}-orderUnlockApply-addOrUpdate`);
+      this.canVrEquityApply = this.permissions.has(`${this.moduleKey}-vrEquityApply-addOrUpdate`);
+      this.canVrGroupbuyOrderEquityApply = this.permissions.has(`${this.moduleKey}-vrGroupbuyOrderEquityApply-addOrUpdate`);
+    },
     loginUserGet () {
       loginUserGet().then(res => {
         // true 店端 false 厂端
@@ -838,14 +861,12 @@ export default {
     },
     // 订单退订
     handleOrderRefund () {
-      this.orderRefundLoading = true;
       this.navigateToRoute({
         path: '/sales/vehretail/orderRefund/refundApply/edit',
         query: {
           mallOrderCode: this.form.mallOrderCode,
         },
       }, true);
-      this.orderRefundLoading = false;
     },
     // 购车人变更申请
     handleCarOwnerChangeApplication () {
@@ -878,6 +899,24 @@ export default {
         this.$message.error('该订单未绑定批售且订单状态不是车辆在途/等待交车，不能进行质量问题解绑申请');
       }
       this.qualityIssueLoading = false;
+    },
+    // 权益申请
+    handleEquityApply () {
+      this.navigateToRoute({
+        path: '/sales/vehretail/orderManager/vrEquityApply/edit',
+        query: {
+          retailOrderCode: this.form.retailOrderCode
+        }
+      }, true);
+    },
+    // 团购申请
+    handleGroupbuyApply () {
+      this.navigateToRoute({
+        path: '/sales/vehretail/orderManager/vrGroupbuyOrderEquityApply/edit',
+        query: {
+          retailOrderCode: this.form.retailOrderCode
+        }
+      }, true);
     },
     // 将显示字段配置转换为表格列配置
     convertToTableColumns (displayFields) {
@@ -1118,7 +1157,7 @@ export default {
   background-color: rgba(255, 255, 255, 0.95);
   border-radius: 8px;
   padding: 15px 10px;
-  padding-right: 30px;
+  // padding-right: 30px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   border: 1px solid #ebeef5;
   backdrop-filter: blur(10px);

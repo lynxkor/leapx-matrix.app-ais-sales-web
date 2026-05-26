@@ -125,7 +125,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleTestDrivePurchaseConf/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleOptionPackage, listVehicleModel, vehicleModelYearTypeRelationDistinctYeayType, vehicleMaterials } from '@/api/common';
@@ -188,35 +188,42 @@ export default {
             props: 'code',
             label: '编码',
             visible: true,
-            width: 200,
+            width: 150,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/basic/wholesaleTestDrivePurchaseConf/detail',
+                  path: '/vehwholesale/basic/wholesaleTestDrivePurchaseConf/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },
               type: 'primary'
             }]
           },
-          { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
+          {
+            props: 'materialsCode',
+            label: '物料编码',
+            visible: true,
+            width: 160,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 300 },
           {
             props: 'seriesName',
             label: '车系',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleSeries/detail',
-                  query: {
-                    id: row.seriesId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleseries/edit?id=${row.seriesId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -225,16 +232,10 @@ export default {
             props: 'modelName',
             label: '车型',
             visible: true,
-            width: 200,
-            // 新增 buttons 配置
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleModel/detail',
-                  query: {
-                    id: row.modelId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehiclemodel/edit?id=${row.modelId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -243,15 +244,10 @@ export default {
             props: 'vehicleYearType',
             label: '年款',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleYearType/detail',
-                  query: {
-                    id: row.vehicleYearTypeId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleyeartype/edit?id=${row.vehicleYearTypeId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -260,21 +256,16 @@ export default {
             props: 'optionPackageName',
             label: '选装包',
             visible: true,
-            width: 200,
+            width: 150,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleOptionPackage/detail',
-                  query: {
-                    id: row.optionPackageId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleoptionpackage/edit?id=${row.optionPackageId}`, '_blank');
               },
               type: 'primary'
             }]
           },
-          { props: 'allowTestDriveWholesaleLabel', label: '允许试驾车批售', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
+          { props: 'allowTestDriveWholesaleLabel', label: '允许试驾车批售', visible: true, width: 160 },
+          { props: 'modifierName', label: '修改者名称', visible: true, width: 140 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
             props: 'operate',

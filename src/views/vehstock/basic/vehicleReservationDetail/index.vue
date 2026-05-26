@@ -52,23 +52,10 @@
         </el-form-item>
       <el-form-item label="VDC入库时间">
         <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.inboundDateTime" type="daterange"
+        unlink-panels
           :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
           start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
-        <el-form-item label="创建人">
-          <el-input
-            placeholder="请输入"
-            v-model="form.createByName"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="更新人">
-          <el-input
-            placeholder="请输入"
-            v-model="form.updateByName"
-            clearable
-          />
-        </el-form-item>
       </template>
       <page-search-action
         v-model="show"
@@ -110,7 +97,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import TagInput from '@/libs/components/TagInput';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/basic/vehicleReservationDetail/index';
@@ -197,17 +184,17 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'bizCode', label: '业务编号', visible: true, width: 200 },
-          { props: 'vin', label: 'VIN', visible: true, width: 200 },
-          { props: 'reserveTime', label: '预留时间', visible: true, width: 200 },
-          { props: 'reserveNum', label: '需预留数', visible: true, align: 'right', width: 120 },
-          { props: 'reservedNum', label: '已预留数', visible: true, align: 'right', width: 120 },
+          { props: 'bizCode', label: '业务编号', visible: true, width: 120 },
+          { props: 'vin', label: 'VIN', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }] },
+          { props: 'reserveTime', label: '预留时间', visible: true, width: 180 },
+          { props: 'reserveNum', label: '需预留数', visible: true, align: 'right', width: 100 },
+          { props: 'reservedNum', label: '已预留数', visible: true, align: 'right', width: 100 },
           { props: 'reservedLabel', label: '销售预留', visible: true, width: 120 },
-          { props: 'reservedTypeLabel', label: '销售预留类型', visible: true, width: 140 },
-          { props: 'logisticsReservedLabel', label: '整车物流预留', visible: true, width: 140 },
-          { props: 'vehicleDeliveryStatusLabel', label: '车辆交付状态', visible: true, width: 140 },
+          { props: 'reservedTypeLabel', label: '销售预留类型', visible: true, width: 120 },
+          { props: 'logisticsReservedLabel', label: '整车物流预留', visible: true, width: 120 },
+          { props: 'vehicleDeliveryStatusLabel', label: '车辆交付状态', visible: true, width: 120 },
           { props: 'vdcInventoryStatusLabel', label: '库存状态', visible: true, width: 120 },
-          { props: 'inboundDateTime', label: 'VDC入库时间', visible: true, width: 200 },
+          { props: 'inboundDateTime', label: 'VDC入库时间', visible: true, width: 180 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 120 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },

@@ -55,7 +55,7 @@
                     v-bind="selectOptions"
                   /> -->
                 </el-form-item>
-                <el-form-item label="订单状态" prop="orderStatus">
+                <el-form-item label="订单状态：" prop="orderStatus">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vr_order_status"
@@ -100,22 +100,22 @@
                   {{ form.unlockConfigCode }}
                 </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
-                  {{ form.modelName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="年款名称：" prop="yearTypeName">
-                  {{ form.yearTypeName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${form.yearTypeId}`" target="_blank">{{ form.yearTypeName }}</el-link>
                 </el-form-item>
-                <el-form-item label="订单状态" prop="orderStatus">
-                  {{ form.orderStatusLabel }}
+                <el-form-item label="订单状态：" prop="orderStatus">
+                  <span class="status-tag link">{{ form.orderStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="允许门店取消锁车：">
-                  {{ form.allowUnlockStatusLabel }}
+                  <span :class="['status-tag', form.allowUnlockStatus === 1 ? 'primary' : 'danger']">{{ form.allowUnlockStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="允许门店手工配车：">
-                  {{ form.allowManualCarStatusLabel }}
+                  <span :class="['status-tag', form.allowManualCarStatus === 1 ? 'primary' : 'danger']">{{ form.allowManualCarStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="状态：" prop="statusLabel">
-                  {{ form.statusLabel }}
+                  <span :class="['status-tag', form.status === 1 ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}

@@ -56,26 +56,22 @@
               </el-form>
             </div>
           </section>
-          <section class="common-section">
+          <section class="common-section" v-if="_id">
             <div class="common-section-header">
               <h2>门店信息</h2>
             </div>
             <div class="common-section-body">
               <div class="common-section-header">
-                <div class="ais-select-group">
-                  <fetch-select
-                    style="width: 300px;"
-                    :remote-method="queryListData"
-                    remote
-                    placeholder="请选择"
-                    clearable
-                    value-key="storeCode"
-                    label-key="storeName"
-                    :disabled="!(isEditing || !_id)"
-                    @change="handleAddTableData"
-                  />
-                  <el-button type="primary" size="small">添加</el-button>
-                </div>
+                <base-search
+                  style="width: 300px;"
+                  :remote-method="queryListData"
+                  remote
+                  placeholder="请选择"
+                  clearable
+                  value-key="storeCode"
+                  label-key="storeName"
+                  @change="handleAddTableData"
+                />
               </div>
               <div class="common-section-table">
                 <vxe-table
@@ -95,7 +91,7 @@
                   <vxe-column field="provinceName" title="省" min-width="15%" />
                   <vxe-column field="cityName" title="市" min-width="15%" />
                   <vxe-column field="remark" title="备注" min-width="15%" />
-                  <vxe-column title="操作" width="100" fixed="right" v-if="isEditing || !_id">
+                  <vxe-column title="操作" width="100" fixed="right" v-if="_id && canAddOrUpdate">
                     <template #default="{ rowIndex }">
                       <el-popconfirm title="确认要删除行信息吗？" @confirm="handleDeleteRow(rowIndex)" confirm-button-text="删除" confirm-button-type="danger">
                         <span slot="reference" type="text" size="small" class="btn-delete">删除</span>
@@ -129,7 +125,6 @@
 
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehstock/basic/storeInventoryTransferWhitelist/index';
-import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
@@ -139,6 +134,7 @@ import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import StoreInformationDialog from './StoreInformationDialog.vue';
+import BaseSearch from '@/libs/components/BaseSearch';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -161,7 +157,7 @@ export default {
   components: {
     EditPageLayout,
     EditBaseContainer,
-    FetchSelect,
+    BaseSearch,
     StoreInformationDialog
   },
   computed: {
@@ -228,8 +224,11 @@ export default {
     },
     // 删除子表数据
     handleDeleteRow (index) {
-      const item = this.form.storeInventoryTransferWhitelistDetailList[index];
+      // const item = this.form.storeInventoryTransferWhitelistDetailList[index];
       this.form.storeInventoryTransferWhitelistDetailList.splice(index, 1);
+      addOrUpdate({ ...this.form }).then(res => {
+        this.$message.success('保存成功');
+      });
       // 根据需求调用接口
       // deletePartVehModel([item.id]).then(res => {
       //   this.$message.success('删除成功');
@@ -272,6 +271,9 @@ export default {
         cityCode: record.cityCode,
         cityName: record.cityName,
         remark: record.remark,
+      });
+      addOrUpdate({ ...this.form }).then(res => {
+        this.$message.success('保存成功');
       });
     },
     getDefautlForm () {

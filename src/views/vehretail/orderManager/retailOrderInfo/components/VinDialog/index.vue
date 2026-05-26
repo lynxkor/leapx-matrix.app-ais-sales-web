@@ -62,8 +62,8 @@
 
     <template v-slot:footer>
       <div class="dialog-footer">
-        <el-button size="small" @click="close">取 消</el-button>
-        <el-button size="small" type="primary" :disabled="!selectedRow" :loading="confirmLoading" @click="confirmSelection">确 定</el-button>
+        <el-button size="small" @click="close">取消</el-button>
+        <el-button size="small" type="primary" :disabled="!selectedRow" :loading="confirmLoading" @click="confirmSelection">确定</el-button>
       </div>
     </template>
   </el-dialog>
@@ -72,13 +72,15 @@
 <script>
 import { getList } from '@/api/vehstock/store/storeInventoryLedger/index';
 import { manualLock } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getList as materialsCodeGetList } from '@/api/datacenter/materials/vehicleMaterialsMatch/index';
 
 const defaultSearchForm = {
   vinLike: '',
   // 固定筛选条件
   vechicleStatusList: ['11', '12', '20'], // 已入门店库/在途/待提交 PDI
   lockStatus: '0', // 未锁定
-  reservationStatusList: ['30'] // 正常车辆
+  reservationStatusList: ['30'], // 正常车辆
+  materialsCodeList: [] // 可配物料编码列表
 };
 
 export default {
@@ -125,11 +127,18 @@ export default {
   },
   methods: {
     // 打开对话框
-    show (params, data) {
+    async show (params, data) {
       this.dialogVisible = true;
       // 保存外部传入的固定参数，重置时需要保留
       this.externalParams = { ...params };
-      this.searchForm = { ...defaultSearchForm, ...params };
+      const { materialsCode, saleDealerCode } = params;
+      if (materialsCode) {
+        const matchRes = await materialsCodeGetList({ materialsCode: materialsCode, status: 1 });
+        const materialsCodeList = (matchRes.records || []).map(item => item.matchMaterialsCode);
+        this.searchForm = { ...defaultSearchForm, materialsCodeList: [...materialsCodeList, materialsCode], saleDealerCode: saleDealerCode };
+      } else {
+        this.searchForm = { ...defaultSearchForm, ...params };
+      }
       this.data = data;
       this.loadData();
     },

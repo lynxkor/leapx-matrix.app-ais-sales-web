@@ -1,6 +1,6 @@
 <template>
     <el-dialog class="m-start-work-dialog" title="请选择门店仓库" width="50%" :visible.sync="dialogVisible" @close="close">
-        <el-form ref="form" :model="form" label-width="80px" size="small">
+        <el-form ref="form" :model="form" label-width="120px" size="small">
             <el-form-item label="门店仓库：">
                 <el-select v-model="form.warehouseCode" placeholder="请选择门店" filterable remote reserve-keyword clearable
                     :remote-method="remoteMethod" size="small" style="width:100%" @change="handleOrgChange">
@@ -11,7 +11,7 @@
         </el-form>
         <template v-slot:footer>
             <div class="dialog-footer">
-                <el-button size="small" :loading="submitLoading" type="primary" @click="submit">确 定</el-button>
+                <el-button size="small" :loading="submitLoading" type="primary" @click="submit">确定</el-button>
             </div>
         </template>
     </el-dialog>

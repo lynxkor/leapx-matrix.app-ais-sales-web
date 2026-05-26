@@ -11,6 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="false"
       >
         <template #status>
           <span>{{ form.code }}</span>
@@ -31,43 +32,22 @@
                   {{ form.code }}
                 </el-form-item>
                 <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                      query: {
-                        id: form.fundFinancialOrganizationId,
-                      },
-                    })"
-                   type="text">{{ form.fundFinancialOrganizationName }}</el-button>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.fundFinancialOrganizationId}`" target="_blank">{{ form.fundFinancialOrganizationName }}</el-link>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  {{ form.dealerCompanyCode }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
                 </el-form-item>
                 <el-form-item label="经销商编码：" prop="dealerCode">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/partner/channelManagement/shopDetail',
-                      query: {
-                        dealerCode: form.dealerCode,
-                      },
-                    })"
-                   type="text">{{form.dealerName}}</el-button>
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{form.dealerCode}}</el-link>
                 </el-form-item>
                 <el-form-item label="经销商名称：" prop="dealerName">
-                  <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                      path: '/partner/channelManagement/shopDetail',
-                      query: {
-                        dealerCode: form.dealerCode,
-                      },
-                    })"
-                   type="text">{{form.dealerName}}</el-button>
+                  {{form.dealerName}}
                 </el-form-item>
                 <el-form-item label="统一社会信用代码：" prop="unifiedSocialCreditCode">
                   {{ form.unifiedSocialCreditCode }}
@@ -89,7 +69,7 @@
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="VIN号：" prop="vin">
-                  {{ form.vin }}
+                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
                 </el-form-item>
                 <el-form-item label="车辆状态：" prop="vehicleStatus">
                   {{ form.vehicleStatusLabel }}
@@ -104,10 +84,12 @@
                   {{ form.taxIncludedPrice }}
                 </el-form-item>
                 <el-form-item label="订单号：" prop="orderCode">
-                  {{ form.orderCode }}
+                  <el-link v-if="form.financingDataSource === 30" type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${form.orderId || form.orderCode}`" target="_blank">{{ form.orderCode }}</el-link>
+                  <el-link v-else-if="form.financingDataSource === 40" type="primary" :href="`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${form.orderId || form.orderCode}`" target="_blank">{{ form.orderCode }}</el-link>
+                  <span v-else>{{ form.orderCode }}</span>
                 </el-form-item>
                 <el-form-item label="物料编码：" prop="materialsCode">
-                  {{ form.materialsCode }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="物料描述：" prop="materialsDesc">
                   {{ form.materialsDesc }}
@@ -208,7 +190,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     }
   },
   watch: {
@@ -239,6 +221,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

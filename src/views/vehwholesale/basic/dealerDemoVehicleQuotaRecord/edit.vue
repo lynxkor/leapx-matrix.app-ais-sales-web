@@ -100,7 +100,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     }
   },
   mixins: [routeGuard, permissions, commonMixins],
@@ -173,6 +173,7 @@ export default {
             dealerCode: this.form.dealerCode,
             vehicleYearTypeId: this.form.vehicleYearTypeId,
             vehicleModelLineId: this.form.vehicleModelLineId,
+            seriesId: this.form.seriesId,
             file: fileDto
           };
           updateTestDriveQuota(submitForm).then(res => {

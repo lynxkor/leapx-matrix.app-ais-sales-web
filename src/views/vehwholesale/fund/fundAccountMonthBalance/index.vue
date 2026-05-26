@@ -122,7 +122,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/fund/fundAccountMonthBalance/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
@@ -163,7 +163,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '整车批售-整车资金-资金账户月度余额',
+      pageTitle: '资金账户月度余额',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-fundAccountMonthBalance',
@@ -188,7 +188,7 @@ export default {
             props: 'code',
             label: '编号',
             visible: true,
-            width: 200,
+            width: 180,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -202,32 +202,27 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'parentCompanyName', label: '母公司名称', visible: true, width: 200 },
-          { props: 'year', label: '年份', visible: true, width: 200 },
-          { props: 'month', label: '月份', visible: true, width: 200 },
-          { props: 'periodBeginBalance', label: '本期期初', visible: true, width: 200 },
-          { props: 'periodEndBalance', label: '本期期末', visible: true, width: 200 },
-          { props: 'periodUseAmount', label: '本期使用金额', visible: true, width: 200 },
-          { props: 'periodEntryAmount', label: '本期入账金额', visible: true, width: 200 },
-          { props: 'accountTypeLabel', label: '账户类型', visible: true, width: 200 },
+          { props: 'parentCompanyName', label: '母公司名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.parentCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'year', label: '年份', visible: true, width: 80 },
+          { props: 'month', label: '月份', visible: true, width: 80 },
+          { props: 'periodBeginBalance', label: '本期期初', visible: true, width: 120, align: 'right' },
+          { props: 'periodEndBalance', label: '本期期末', visible: true, width: 120, align: 'right' },
+          { props: 'periodUseAmount', label: '本期使用金额', visible: true, width: 120, align: 'right' },
+          { props: 'periodEntryAmount', label: '本期入账金额', visible: true, width: 120, align: 'right' },
+          { props: 'accountTypeLabel', label: '账户类型', visible: true, width: 100 },
           {
             props: 'financeOrganizationName',
             label: '金融机构',
             visible: true,
-            width: 200,
+            width: 140,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                  query: {
-                    id: row.financeOrganizationId
-                  }
-                });
+                window.open(`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${row.financeOrganizationId}`, '_blank');
               },
               type: 'primary'
             }]
           },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 180 },
           {
             props: 'operate',
             label: '操作',

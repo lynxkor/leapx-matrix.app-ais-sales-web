@@ -118,19 +118,25 @@
                     disabled
                   />
                 </el-form-item>
+                <el-form-item label="功能演示视频链接：" prop="videoLink">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.videoLink"
+                  />
+                </el-form-item>
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="车系名称：" prop="seriesName">
-                  {{ form.seriesName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
-                  {{ form.modelName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="年款名称：" prop="yearTypeName">
-                  {{ form.yearTypeName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${form.yearTypeId}`" target="_blank">{{ form.yearTypeName }}</el-link>
                 </el-form-item>
                 <el-form-item label="选装包名称：" prop="optionPackageName">
-                  {{ form.optionPackageName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleoptionpackage/edit?id=${form.optionPackageId}`" target="_blank">{{ form.optionPackageName }}</el-link>
                 </el-form-item>
                 <el-form-item label="车型定义：" prop="modelDefinition">
                   {{ form.modelDefinition }}
@@ -139,10 +145,13 @@
                   {{ form.activationDocument }}
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
-                  {{ form.statusLabel }}
+                  <span :class="['status-tag', form.status === 1 ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
+                </el-form-item>
+                <el-form-item label="功能演示视频链接：" prop="videoLink">
+                  {{ form.videoLink }}
                 </el-form-item>
               </el-form>
             </div>
@@ -248,7 +257,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '激活模式配置管理',
+      pageTitle: '激活模式配置',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
       moduleKey: 'AISVR-activationModeConfig',

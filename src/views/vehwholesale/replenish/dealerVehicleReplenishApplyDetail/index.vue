@@ -160,7 +160,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getRigion, listOrgStoreInfo, vehicleSeriesList } from '@/api/common';
@@ -227,8 +227,8 @@ export default {
         },
         dataProp: [
           {
-            props: 'replenishApplyCode',
-            label: '整车补货单号',
+            props: 'replenishApplyDetailCode',
+            label: '整车补货明细单号',
             visible: true,
             width: 200,
             fixed: 'left',
@@ -245,25 +245,91 @@ export default {
             }]
           },
           { props: 'auditStatusLabel', label: '审核状态', visible: true, width: 200 },
-          { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
+          { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.saleDealerCode); }, type: 'primary' }] },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 200 },
-          { props: 'prodScheduleActivity', label: '专项活动名称', visible: true, width: 200 },
+          {
+            props: 'prodScheduleActivity',
+            label: '专项活动名称',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.openWindow('/sales/vehwholesale/basic/wholesaleprodscheduleactivity/edit?id=' + row.prodScheduleActivityId);
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'applyCategoryLabel', label: '申请类别', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系名称', visible: true, width: 200 },
-          { props: 'modelName', label: '车型名称', visible: true, width: 200 },
+          {
+            props: 'seriesName',
+            label: '车系名称',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.openWindow('/sales/datacenter/materials/vehicleseries/edit?id=' + row.seriesId);
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'modelName',
+            label: '车型名称',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.openWindow('/sales/datacenter/materials/vehiclemodel/edit?id=' + row.modelId);
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 200 },
-          { props: 'financialOrganization', label: '金融机构名称', visible: true, width: 200 },
-          { props: 'applyQty', label: '申请数量', visible: true, width: 200 },
-          { props: 'replenishApplyDetailCode', label: '整车补货明细单号', visible: true, width: 200 },
-          { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
+          {
+            props: 'financialOrganization',
+            label: '金融机构名称',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.financialOrganizationId);
+              },
+              type: 'primary'
+            }]
+          },
+          { props: 'applyQty', label: '申请数量', visible: true, width: 120, align: 'right' },
+          { props: 'replenishApplyCode', label: '整车补货单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApply/edit?id=' + row.replenishApplyId); }, type: 'primary' }] },
+          {
+            props: 'materialsCode',
+            label: '物料编码',
+            visible: true,
+            width: 200,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.openWindow('/sales/datacenter/materials/vehiclematerials/edit?id=' + row.materialsId);
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'materialsDesc',
+            label: '物料描述',
+            visible: true,
+            width: 240,
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.openWindow('/sales/datacenter/materials/vehiclematerials/edit?id=' + row.materialsId);
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'applyTime', label: '申请时间', visible: true, width: 200 },
           { props: 'auditDateTime', label: '审核时间', visible: true, width: 200 },
           { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
           { props: 'invoiceDiscountTypeLabel', label: '开票优惠类型', visible: true, width: 200 },
-          { props: 'invoiceCoefficient', label: '开票系数', visible: true, width: 200 },
+          { props: 'invoiceCoefficient', label: '开票系数', visible: true, width: 120, align: 'right' },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',
@@ -318,6 +384,9 @@ export default {
     this.fetchOrderCategoryOptions();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     handleListSelect (row) {
       this.clickItemId = row.id;
     },

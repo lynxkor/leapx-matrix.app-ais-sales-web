@@ -19,6 +19,7 @@
          :default-time="['00:00:00', '23:59:59']"
           v-model="form.transactionTime"
           type="daterange"
+          unlink-panels
           :picker-options="pickerOptions"
           range-separator="至"
           value-format="yyyy-MM-dd HH:mm:ss"
@@ -146,7 +147,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/fund/accountTranslog/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
@@ -242,29 +243,24 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 100 },
+          { props: 'fundTypeLabel', label: '资金类型', visible: true, width: 120 },
           {
             props: 'financialOrganizationName',
             label: '金融机构',
             visible: true,
-            width: 100,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                  query: {
-                    id: row.financialOrganizationId
-                  }
-                });
+                this.openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.financialOrganizationId);
               },
               type: 'primary'
             }]
           },
           { props: 'transactionTypeLabel', label: '交易类型', visible: true, width: 100 },
-          { props: 'transactionAmount', label: '交易金额', visible: true, width: 100 },
+          { props: 'transactionAmount', label: '交易金额', visible: true, width: 140, align: 'right' },
           { props: 'transactionTime', label: '过账时间', visible: true, width: 200 },
           { props: 'transactionReceiptCode', label: '交易凭证号', visible: true, width: 200 },
-          { props: 'lineNo', label: '行项目号', visible: true, width: 200 },
+          { props: 'lineNo', label: '行项目号', visible: true, width: 140, align: 'right' },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'vin', label: '整车VIN编码', visible: true, width: 200 },
           {
@@ -274,12 +270,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
-                  query: {
-                    id: row.wholesaleOrderId,
-                  }
-                });
+                window.open(`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${row.wholesaleOrderId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -288,20 +279,15 @@ export default {
             props: 'entVehorderCode',
             label: '企业客户整车订单',
             visible: true,
-            width: 200,
+            width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/entorder/entVehicleOrder/edit',
-                  query: {
-                    id: row.entVehorderId,
-                  }
-                });
+                window.open(`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${row.entVehorderId}`, '_blank');
               },
               type: 'primary'
             }]
           },
-          { props: 'deliveryOrderCode', label: '交车单', visible: true, width: 200 },
+          { props: 'deliveryOrderCode', label: '交车单', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehretail/orderManager/deliveryOrder/edit?id=${row.deliveryOrderId}`, '_blank'); }, type: 'primary' }] },
           {
             props: 'dealerName',
             label: '门店名称',
@@ -309,20 +295,15 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/partner/channelManagement/shopDetail',
-                  query: {
-                    dealerCode: row.dealerCode,
-                  }
-                });
+                this.openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode);
               },
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260 },
-          { props: 'dealerComapnyCode', label: '母公司编码', visible: true, width: 150 },
-          { props: 'fundAccountCode', label: '账户编号', visible: true, width: 200 },
-          { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200 },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerComapnyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerComapnyCode', label: '母公司编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerComapnyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'fundAccountCode', label: '账户编号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/fund/dealerFundAccount/edit?id=${row.fundAccountId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/fund/fundSaleCompany/edit?id=${row.saleCompanyId}`, '_blank'); }, type: 'primary' }] },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 }
         ],
         total: 0
@@ -335,6 +316,9 @@ export default {
     this.getData();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     async transactionTypes () {
       try {
         const res = await getEnum('vw_transaction_type');

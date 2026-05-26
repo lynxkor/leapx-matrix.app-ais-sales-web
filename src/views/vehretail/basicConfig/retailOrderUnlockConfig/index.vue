@@ -74,6 +74,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.createTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -132,7 +133,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/basicConfig/retailOrderUnlockConfig/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, listVehicleModel, vehicleModelYearTypeRelationDistinctYeayType } from '@/api/common';
@@ -235,10 +236,10 @@ export default {
           },
           { props: 'modelName', label: '车型名称', visible: true, width: 200 },
           { props: 'yearTypeName', label: '年款名称', visible: true, width: 200 },
-          { props: 'orderStatusLabel', label: '订单状态', visible: true, width: 200 },
+          { props: 'orderStatusLabel', label: '订单状态', visible: true, width: 150 },
           { props: 'allowUnlockStatusLabel', label: '允许门店取消锁车', visible: true, width: 200 },
           { props: 'allowManualCarStatusLabel', label: '允许门店手工配车', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 80 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',

@@ -10,6 +10,7 @@
         :dataTransform="dataTransform"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="form.auditStatus === 0 || form.auditStatus === 2"
       >
         <template #status>
         </template>
@@ -135,15 +136,15 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail" label-width="150px" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="配置编号：" prop="configCode">
                   {{ form.configCode }}
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  {{ form.dealerCompanyCode }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="赊销账户状态：" prop="creditAccountStatusLabel">
                   {{ form.creditAccountStatusLabel }}
@@ -183,7 +184,7 @@
               <h2>复核信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail" label-width="150px">
+              <el-form :inline="true" class="form-detail">
                 <el-form-item label="复核状态：" prop="auditStatusLabel">
                   {{ form.auditStatusLabel }}
                 </el-form-item>
@@ -271,7 +272,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '自有资金赊销配置：' + this.form.configCode;
@@ -360,6 +361,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     handleAudit (data) {
       console.log('handleAudit', data);
       const params = {

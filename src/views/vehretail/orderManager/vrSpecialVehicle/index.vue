@@ -129,7 +129,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList } from '@/api/vehretail/orderManager/vrSpecialVehicle/index';
 import { getTableConfig, exportTable, vehicleSeriesList, vehicleExterior, vehicleInterior, vehicleModelList, listVehicleYearType, vehicleOptionPackage } from '@/api/common';
@@ -200,9 +200,9 @@ export default {
               click: (rowIndex, row) => {
                 if (row.vinId) {
                   this.navigateToRoute({
-                    path: '/sales/datacenter/vehicle/vehicleProfile/edit',
+                    path: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
                     query: {
-                      id: row.vinId
+                      vin: row.vin
                     }
                   }, true);
                 }

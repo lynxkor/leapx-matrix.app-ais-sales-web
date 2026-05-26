@@ -14,8 +14,8 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="formData" :rules="rules" ref="ruleForm2" label-width="160px" class="form-edit">
-                <el-form-item label="销售顾问配置" prop="saleDeliveryUserConfigName">
+              <el-form :inline="true" :model="formData" :rules="rules" ref="ruleForm2" label-width="180px" class="form-edit">
+                <el-form-item label="销售顾问配置：" prop="saleDeliveryUserConfigName">
                   <el-tooltip
                     :content="tooltipContentMap.saleUser.join(', ')"
                     placement="top"
@@ -41,7 +41,7 @@
                     </el-select>
                   </el-tooltip>
                 </el-form-item>
-                <el-form-item label="交付顾问配置" prop="deliveryUserConfigName">
+                <el-form-item label="交付顾问配置：" prop="deliveryUserConfigName">
                   <el-tooltip
                     :content="tooltipContentMap.deliveryUser.join(', ')"
                     placement="top"
@@ -67,7 +67,7 @@
                     </el-select>
                   </el-tooltip>
                 </el-form-item>
-                <el-form-item label="交付衍生工程师配置" prop="deliveryDeriveConfigName">
+                <el-form-item label="交付衍生工程师配置：" prop="deliveryDeriveConfigName">
                   <el-tooltip
                     :content="tooltipContentMap.deliveryDerive.join(', ')"
                     placement="top"
@@ -102,8 +102,13 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="formData" :rules="rules" ref="ruleForm" label-width="160px" class="form-edit">
-                <el-form-item label="赊销车辆是否还款：" prop="creditStatus">
+              <el-form :inline="true" :model="formData" :rules="rules" ref="ruleForm" label-width="180px" class="form-edit">
+                <el-form-item label="交车赊销车辆还款校验：" prop="creditStatus">
+                <el-tooltip
+                    content="开启后，当整车开票记录上传附件时会校验赊销车辆是否完成还款"
+                    placement="top"
+                    effect="light"
+                  >
                   <el-select
                     v-model="formData.creditStatus"
                     placeholder="请选择"
@@ -119,8 +124,14 @@
                       :value="item.code"
                     />
                   </el-select>
+                </el-tooltip>
                 </el-form-item>
-                <el-form-item label="融资车辆是否还款：" prop="financeStatus">
+                <el-form-item label="交车融资车辆还款校验：" prop="financeStatus">
+                  <el-tooltip
+                    content="开启后，当整车开票记录上传附件时会校验融资车辆是否完成还款"
+                    placement="top"
+                    effect="light"
+                  >
                   <el-select
                     v-model="formData.financeStatus"
                     placeholder="请选择"
@@ -136,8 +147,14 @@
                       :value="item.code"
                     />
                   </el-select>
+                </el-tooltip>
                 </el-form-item>
-                <el-form-item label="手机号注册校验：" prop="phoneRegisterStatus">
+                <el-form-item label="交车手机号注册校验：" prop="phoneRegisterStatus">
+                  <el-tooltip
+                    content="开启后，当整车开票记录上传附件时会校验购车人手机号是否创建零跑APP账号"
+                    placement="top"
+                    effect="light"
+                  >
                   <el-select
                     v-model="formData.phoneRegisterStatus"
                     placeholder="请选择"
@@ -153,6 +170,7 @@
                       :value="item.code"
                     />
                   </el-select>
+                </el-tooltip>
                 </el-form-item>
                 <el-form-item label="交车单分派通知：" prop="deliveryAssignmentStatus">
                   <el-select
@@ -275,13 +293,13 @@ export default {
           { required: true, message: '请选择交付衍生工程师配置', trigger: 'change' }
         ],
         financeStatus: [
-          { required: true, message: '请选择融资车辆是否还款', trigger: 'change' }
+          { required: true, message: '请选择交车融资车辆还款校验', trigger: 'change' }
         ],
         creditStatus: [
-          { required: true, message: '请选择赊销车辆是否还款', trigger: 'change' }
+          { required: true, message: '请选择交车赊销车辆还款校验', trigger: 'change' }
         ],
         phoneRegisterStatus: [
-          { required: true, message: '请选择手机号注册校验', trigger: 'change' }
+          { required: true, message: '请选择交车手机号注册校验', trigger: 'change' }
         ],
         deliveryAssignmentStatus: [
           { required: true, message: '交车单分派通知', trigger: 'blur' }
@@ -355,21 +373,21 @@ export default {
             {
               salesConfigGroup: 'deliveryConfig',
               salesConfigKey: 'credit',
-              salesConfigName: '赊销车辆是否还款',
+              salesConfigName: '交车赊销车辆还款校验',
               salesConfigType: 'single',
               saleConfigValue: JSON.stringify([{ roleCode: '', roleName: '' }])
             },
             {
               salesConfigGroup: 'deliveryConfig',
               salesConfigKey: 'finance',
-              salesConfigName: '融资车辆是否还款',
+              salesConfigName: '交车融资车辆还款校验',
               salesConfigType: 'single',
               saleConfigValue: JSON.stringify([{ roleCode: '', roleName: '' }])
             },
             {
               salesConfigGroup: 'deliveryConfig',
               salesConfigKey: 'phoneRegister',
-              salesConfigName: '手机号注册校验',
+              salesConfigName: '交车手机号注册校验',
               salesConfigType: 'single',
               saleConfigValue: JSON.stringify([{ roleCode: '', roleName: '' }])
             },

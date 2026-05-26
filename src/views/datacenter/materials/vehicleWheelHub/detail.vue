@@ -68,7 +68,7 @@ export default {
     };
   },
   created () {
-    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['销服-业务主数据-配置主数据-轮毂', '详情']);
+    this.$store.commit('SET_ACTIVE_BREADCRUMB', ['轮毂', '详情']);
     this.getData();
   },
   methods: {
@@ -76,7 +76,8 @@ export default {
       this.$router.push({
         path: '/datacenter/materials/vehicleWheelHub/edit',
         query: {
-          id: this.$route.query.id
+          id: this.$route.query.id,
+          isEditing: true
         }
       });
     },

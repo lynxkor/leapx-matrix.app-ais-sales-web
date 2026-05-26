@@ -1,15 +1,6 @@
 <template>
   <div class="page-common m-vr-equity-category-list">
-    <el-form
-      :inline="true"
-      :model="form"
-      size="small"
-      label-position="right"
-      label-width="150px"
-      class="ais-search-form"
-    >
-    </el-form>
-    <div class="ais-actions">
+    <div class="ais-actions" style="margin-top: 0;">
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
@@ -47,7 +38,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/basicConfig/vrEquityCategory/index';
 import { getTableConfig, tableAddOrUpdate, exportTable } from '@/api/common';
 import Upload from '@/libs/components/UploadDialog';
@@ -113,7 +104,7 @@ export default {
             }]
           },
           { props: 'applicationConditionsLabel', label: '申请条件', visible: true, width: 180 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 120 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 80 },
           { props: 'creatorName', label: '创建人', visible: true, width: 180 },
           { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true }
         ],

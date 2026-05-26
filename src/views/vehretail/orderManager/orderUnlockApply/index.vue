@@ -79,6 +79,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.createTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -135,7 +136,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, enableItem, auditApply, submitApply, batchVoidedApply } from '@/api/vehretail/orderManager/orderUnlockApply/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo } from '@/api/common';
@@ -444,20 +445,23 @@ export default {
     },
     // 批量删除
     handleBatchVoided () {
-      // 只有草稿状态的申请单才能作废 选择项中包含不是草稿状态的申请单时，提示用户
-      const validIds = this.selectionList.filter(item => item.applyStatus === 1010).map(item => item.id) || [];
+      // 只有草稿状态 和 已驳回状态的申请单才能作废 选择项中包含不是草稿状态 或者 已驳回的申请单时，提示用户
+      const validIds = this.selectionList.filter(item => item.applyStatus === 1010 || item.applyStatus === 1040).map(item => item.id) || [];
       if (validIds.length !== this.selectionList.length) {
         this.$message({
           type: 'error',
-          message: '只能作废草稿状态的申请单!'
+          message: '只能作废草稿状态和已驳回状态的申请单!'
         });
         return;
       }
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('此操作将作废对应申请单, 是否继续?', '提示', {
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将作废对应申请单, 是否继续?</div>';
+      this.$confirm(message, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        customClass: 'ais-leave-tips',
+        dangerouslyUseHTMLString: true,
+        showClose: false
       }).then(() => {
         batchVoidedApply(ids).then(() => {
           this.$message({

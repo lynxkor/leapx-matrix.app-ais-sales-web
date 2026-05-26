@@ -26,7 +26,7 @@
           filterable
         />
       </el-form-item>
-      <el-form-item label="是否需要初审">
+      <el-form-item label="是否需要初审" v-show="this.visibleCount === 3 || show">
         <fetch-select
           :request="fetchOptions"
           enumCode="BooleanEnum"
@@ -36,17 +36,17 @@
           filterable
         />
       </el-form-item>
-      <el-form-item label="是否需要终审">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="BooleanEnum"
-          v-model="form.finalApproval"
-          placeholder="请选择"
-          clearable
-          filterable
-        />
-      </el-form-item>
       <template v-if="show">
+        <el-form-item label="是否需要终审">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.finalApproval"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
         <el-form-item label="退还方式是否允许选择">
           <fetch-select
             :request="fetchOptions"
@@ -107,7 +107,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/orderRefund/category';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';

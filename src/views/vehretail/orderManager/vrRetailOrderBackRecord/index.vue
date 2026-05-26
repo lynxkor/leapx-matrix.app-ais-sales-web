@@ -96,6 +96,7 @@
             :default-time="['00:00:00', '23:59:59']"
             v-model="form.payDepositTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -117,6 +118,7 @@
             :default-time="['00:00:00', '23:59:59']"
             v-model="form.operationTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -129,6 +131,7 @@
             :default-time="['00:00:00', '23:59:59']"
             v-model="form.wholesaleAllocationTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -141,6 +144,7 @@
             :default-time="['00:00:00', '23:59:59']"
             v-model="form.wholesaleSettlementTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -182,7 +186,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList } from '@/api/vehretail/orderManager/vrRetailOrderBackRecord/index';
 import { getTableConfig, exportTable } from '@/api/common';

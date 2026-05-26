@@ -66,6 +66,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.recDate"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -78,6 +79,7 @@
          :default-time="['00:00:00', '23:59:59']"
           v-model="form.createTime"
           type="daterange"
+          unlink-panels
           :picker-options="pickerOptions"
           range-separator="至"
           value-format="yyyy-MM-dd HH:mm:ss"
@@ -141,7 +143,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, pushfinDealerRecommendationToBank } from '@/api/vehwholesale/finance/factory/finDealerRecommendation/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
@@ -220,9 +222,9 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200 },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
-          { props: 'recAmount', label: '推荐额度(万元)', visible: true, width: 200 },
+          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 140, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'recAmount', label: '推荐额度(万元)', visible: true, width: 120, align: 'right' },
           {
             props: 'recFinancialOrganizationName',
             label: '推荐金融机构',
@@ -230,25 +232,20 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                  query: {
-                    id: row.recFinancialOrganizationId
-                  }
-                });
+                this.openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.recFinancialOrganizationId);
               },
               type: 'primary'
             }]
           },
-          { props: 'recDate', label: '推荐日期', visible: true, width: 200 },
-          { props: 'depositRatio', label: '保证金比例%', visible: true, width: 200 },
-          { props: 'syncStatusLabel', label: '同步状态', visible: true, width: 200 },
-          { props: 'syncResult', label: '同步结果', visible: true, width: 200 },
-          { props: 'syncTime', label: '同步时间', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'recDate', label: '推荐日期', visible: true, width: 120 },
+          { props: 'depositRatio', label: '保证金比例%', visible: true, width: 120, align: 'right' },
+          { props: 'syncStatusLabel', label: '同步状态', visible: true, width: 120 },
+          { props: 'syncResult', label: '同步结果', visible: true, width: 120 },
+          { props: 'syncTime', label: '同步时间', visible: true, width: 160 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 100 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
-          { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 180 },
+          { props: 'updateTime', label: '修改时间', visible: true, width: 180 },
           {
             props: 'operate',
             label: '操作',
@@ -322,6 +319,9 @@ export default {
     this.getData();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     // 批量同步
     handleBatchSync () {
       if (this.selectionList.length === 0) {
@@ -339,7 +339,7 @@ export default {
       if (invalidItems.length > 0) {
         this.$message({
           type: 'error',
-          message: '只有可用且同步失败的数据才能同步，请确认'
+          message: '同步失败或未同步的可用数据才能同步，请确认'
         });
         return;
       }

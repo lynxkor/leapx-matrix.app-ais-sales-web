@@ -107,6 +107,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.auditTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -134,11 +135,11 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
-      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-permission="moduleKey+'-audit'" size="small" @click="handleBatchAudit()" >批量初审</el-button>
       <el-button v-permission="moduleKey+'-review'" size="small" @click="handleBatchReview()" >批量复审</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -181,7 +182,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, reviewItem, auditItem } from '@/api/vehwholesale/rebate/fundVehicleRebateBillDetail/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleModelList, getParentCompany } from '@/api/common';
@@ -275,7 +276,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/rebate/fundVehicleRebateBillDetail/detail',
+                  path: '/vehwholesale/rebate/fundVehicleRebateBillDetail/edit',
                   query: {
                     id: row.id
                   }
@@ -284,7 +285,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260 },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           {
             props: 'dealerName',
             label: '门店名称',
@@ -318,12 +319,7 @@ export default {
             width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                this.navigateToRoute({
-                  path: '/datacenter/materials/vehicleModel/detail',
-                  query: {
-                    id: row.modelId,
-                  },
-                });
+                window.open(`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -335,20 +331,37 @@ export default {
             width: 100,
             buttons: [{
               click: (rowIndex, row) => {
-                this.navigateToRoute({
-                  path: '/datacenter/materials/vehicleSeries/detail',
-                  query: {
-                    id: row.seriesId,
-                  },
-                });
+                window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`, '_blank');
               },
               type: 'primary'
             }]
           },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'billStatusLabel', label: '单据状态', visible: true, width: 100 },
-          { props: 'budgetItemName', label: '预算科目', visible: true, width: 100 },
-          { props: 'feeSupportTypeName', label: '费用支持类型', visible: true, width: 150 },
+          {
+            props: 'budgetItemName',
+            label: '预算科目',
+            visible: true,
+            width: 100,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/vehwholesale/fund/fundBudgetItem/edit?id=${row.budgetItemId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'feeSupportTypeName',
+            label: '费用支持类型',
+            visible: true,
+            width: 150,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/vehwholesale/fund/fundFeeSupportType/edit?id=${row.feeSupportTypeId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'auditorName', label: '初审人', visible: true, width: 100 },
           { props: 'auditTime', label: '初审时间', visible: true, width: 200 },
           { props: 'auditOpinion', label: '初审意见', visible: true, width: 200 },
@@ -357,7 +370,7 @@ export default {
           { props: 'reviewOpinion', label: '复审意见', visible: true, width: 120 },
           { props: 'postedLabel', label: '是否入账', visible: true, width: 100 },
           { props: 'dataSourceLabel', label: '数据来源', visible: true, width: 100 },
-          { props: 'deliveryOrderCode', label: '交车单号', visible: true, width: 200 },
+          { props: 'deliveryOrderCode', label: '交车单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { this.openWindow('/sales/vehretail/orderManager/deliveryOrder/edit?id=' + row.deliveryOrderId); }, type: 'primary' }] },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 100 },
           // { props: 'modifierName', label: '更新人', visible: true, width: 200 },
@@ -416,6 +429,9 @@ export default {
     });
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     async seriesSearch (query) {
       try {
         const res = await vehicleSeriesList({ seriesNameLike: query });

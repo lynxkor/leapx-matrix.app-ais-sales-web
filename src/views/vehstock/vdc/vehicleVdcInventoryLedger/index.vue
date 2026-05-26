@@ -11,6 +11,7 @@
       </el-form-item>
       <el-form-item label="VDC入库时间" v-show="this.visibleCount === 3 || show">
         <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.inboundDateTime" type="daterange"
+        unlink-panels
           :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
           start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
@@ -57,6 +58,9 @@
           <fetch-select :request="fetchOptions" enumCode="vehstock_vdc_common_composite_query"
             v-model="form.vdcCommonCompositeQuery" placeholder="请选择" clearable filterable />
         </el-form-item>
+      <el-form-item label="订单编号">
+        <tag-input v-model="form.poList" placeholder="请输入" />
+      </el-form-item>
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
         @reset="onReset" />
@@ -95,7 +99,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/vdc/vehicleVdcInventoryLedger/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleSalesVersionList, page } from '@/api/common';
@@ -114,6 +118,8 @@ const defaultForm = {
   warehouseCodeList: [],
   vinLike: '',
   vinList: [],
+  poLike: '',
+  poList: [],
   materialsDescLike: '',
   materialsDescList: [],
   vehicleDeliveryStatusList: ['3', '4'],
@@ -192,40 +198,40 @@ export default {
             props: 'inboundDateTime',
             label: 'VDC入库时间',
             visible: true,
-            width: 200,
+            width: 160,
           },
           { props: 'stockAge', label: '库龄（天）', visible: true, align: 'right', width: 120 },
           { props: 'warehouseName', label: '整车仓库', visible: true, width: 120 },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
-          { props: 'allowWholesaleLabel', label: '是否允许现车批售', visible: true, width: 160 },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 240 },
+          { props: 'allowWholesaleLabel', label: '是否允许现车批售', visible: true, width: 180 },
           { props: 'vehicleDeliveryStatusLabel', label: '车辆交付状态', visible: true, width: 160 },
           { props: 'carAllocatedLabel', label: '是否配车', visible: true, width: 120 },
-          { props: 'carAllocatedDateTime', label: '配车时间', visible: true, width: 200 },
+          { props: 'carAllocatedDateTime', label: '配车时间', visible: true, width: 160 },
           { props: 'reservedLabel', label: '销售预留', visible: true, width: 120 },
           { props: 'reservedTypeLabel', label: '销售预留类型', visible: true, width: 140 },
           { props: 'logisticsReservedLabel', label: '整车物流预留', visible: true, width: 140 },
-          { props: 'batteryCellName', label: '电池电芯', visible: true, width: 140 },
+          { props: 'batteryCellName', label: '电池电芯', visible: true, width: 140, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclebatterycell/edit?id=${row.batteryCellId}`, '_blank'); }, type: 'primary' }] },
           { props: 'returnLabelLabel', label: '退车标识', visible: true, width: 120 },
           { props: 'allowLockRetailLabel', label: '允许锁零售单', visible: true, width: 140 },
-          { props: 'vehicleRegisteredModelName', label: '公告车型', visible: true, width: 140 },
+          { props: 'vehicleRegisteredModelName', label: '公告车型', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleregisteredmodel/edit?id=${row.vehicleRegisteredModelId}`, '_blank'); }, type: 'primary' }] },
           { props: 'electricity', label: '电量（%）', visible: true, align: 'right', width: 120 },
           { props: 'electricityon', label: '电量获取时间', visible: true, width: 200 },
           { props: 'salesRemark', label: '销售备注', visible: true, width: 200 },
           { props: 'specialReserveRemark', label: '特殊预留备注', visible: true, width: 200 },
           { props: 'vehicleLogisticsReserveRemark', label: '整车物流预留备注', visible: true, width: 200 },
-          { props: 'yearTypeName', label: '年款', visible: true, width: 100 },
-          { props: 'materialsCode', label: '物料编码', visible: true, width: 200 },
-          { props: 'seriesName', label: '车系', visible: true, width: 120 },
-          { props: 'modelName', label: '车型', visible: true, width: 160 },
-          { props: 'shipViaLabel', label: '发运方式', visible: true, width: 200 },
+          { props: 'yearTypeName', label: '年款', visible: true, width: 80, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleyeartype/edit?id=${row.yearTypeId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'materialsCode', label: '物料编码', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'seriesName', label: '车系', visible: true, width: 100, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleseries/edit?id=${row.seriesId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'modelName', label: '车型', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclemodel/edit?id=${row.modelId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'shipViaLabel', label: '发运方式', visible: true, width: 120 },
           { props: 'vdcInventoryStatusLabel', label: '库存状态', visible: true, width: 120 },
-          { props: 'po', label: '订单编号', visible: true, width: 200 },
-          { props: 'optionPackageName', label: '选装包', visible: true, width: 200 },
-          { props: 'rangePowerName', label: '选配动力', visible: true, width: 140 },
-          { props: 'drivingRangeName', label: '续航里程', visible: true, width: 120 },
-          { props: 'exteriorName', label: '外观', visible: true, width: 120 },
-          { props: 'interiorName', label: '内饰', visible: true, width: 120 },
-          { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 140 },
+          { props: 'po', label: '订单编号', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehiclePo/edit?id=${row.poId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'optionPackageName', label: '选装包', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleoptionpackage/edit?id=${row.optionPackageId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'rangePowerName', label: '选配动力', visible: true, width: 140, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclerangepower/edit?id=${row.rangePowerId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'drivingRangeName', label: '续航里程', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicledrivingrange/edit?id=${row.drivingRangeId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'exteriorName', label: '外观', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleexterior/edit?id=${row.exteriorId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'interiorName', label: '内饰', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleinterior/edit?id=${row.interiorId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 140, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclewheelhub/edit?id=${row.wheelHubId}`, '_blank'); }, type: 'primary' }] },
           { props: 'outboundDateTime', label: 'VDC出库时间', visible: true, width: 200 },
           { props: 'bulkoutLabel', label: '是否批量出库', visible: true, width: 140 },
           { props: 'offlineTime', label: '下线时间', visible: true, width: 200 },
@@ -234,6 +240,8 @@ export default {
           { props: 'erpSalesOrder', label: 'ERP销售订单号', visible: true, width: 200 },
           { props: 'erpDeliverOrder', label: 'ERP交货单', visible: true, width: 200 },
           { props: 'erpInvoice', label: 'ERP发票号', visible: true, width: 200 },
+          { props: 'sapSyncTime', label: '同步SAP时间', visible: true, width: 200 },
+          { props: 'sapSyncStatus', label: '同步SAP状态', visible: true, width: 200 },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 140 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 140 },
@@ -616,6 +624,10 @@ export default {
         delete data.vinList;
         data.vinLike = this.form.vinList[0] || '';
       }
+      if (Array.isArray(this.form.poList) && this.form.poList.length <= 1) {
+        delete data.poList;
+        data.poLike = this.form.poList[0] || '';
+      }
       if (Array.isArray(this.form.materialsDescList) && this.form.materialsDescList.length <= 1) {
         delete data.materialsDescList;
         data.materialsDescLike = this.form.materialsDescList[0] || '';
@@ -706,24 +718,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.m-vehicle-vdc-inventory-ledger-list {}
-.ais-active {
-  margin-top: 20px;
-  // 修改 tabs 底部线条的样式
-  ::v-deep .el-tabs__nav-wrap::after {
-    height: 1px !important;
-    background-color: #E6E6E5 !important;
+.m-vehicle-vdc-inventory-ledger-list {
+  .ais-search-form {
+    border: 0;
   }
-  // 修改 tabs 默认字体样式
-  ::v-deep .el-tabs__item {
-    font-weight: normal !important; // 不加粗
-    color: #3B3E3B !important;     // 字体颜色
+  .ais-actions {
+    margin: 0px 0 16px 0;
   }
-
-  // 修改 tabs 激活状态下的字体样式（可选）
-  ::v-deep .el-tabs__item.is-active {
-    font-weight: normal !important; // 激活状态下也不加粗
-    color: #3B3E3B !important;     // 激活状态下的字体颜色
+  .ais-table-c {
+    height: calc(100% - 168px);
   }
 }
 </style>

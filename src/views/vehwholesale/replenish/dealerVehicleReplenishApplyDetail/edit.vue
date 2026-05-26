@@ -315,14 +315,17 @@
                 </el-form-item>
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+                  <el-form-item label="整车补货明细单号：" prop="replenishApplyDetailCode">
+                  {{ form.replenishApplyDetailCode }}
+                </el-form-item>
                 <el-form-item label="整车补货单号：" prop="replenishApplyCode">
-                  {{ form.replenishApplyCode }}
+                  <el-link type="primary" :href="`/sales/vehwholesale/replenish/dealerVehicleReplenishApply/edit?id=${form.replenishApplyCode}`" target="_blank">{{ form.replenishApplyCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="审核状态：" prop="auditStatus">
                   {{ form.auditStatusLabel }}
                 </el-form-item>
                 <el-form-item label="销售门店名称：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="所属大区：" prop="regionName">
                   {{ form.regionName }}
@@ -331,16 +334,16 @@
                   {{ form.wholesaleWayLabel }}
                 </el-form-item>
                 <el-form-item label="专项活动名称：" prop="prodScheduleActivity">
-                  {{ form.prodScheduleActivity }}
+                  <el-link type="primary" :href="`/sales/vehwholesale/basic/wholesaleprodscheduleactivity/edit?id=${form.prodScheduleActivityId}`" target="_blank">{{ form.prodScheduleActivity }}</el-link>
                 </el-form-item>
                 <el-form-item label="申请类别：" prop="applyCategory">
                   {{ form.applyCategoryLabel }}
                 </el-form-item>
                 <el-form-item label="车系名称：" prop="seriesName">
-                  {{ form.seriesName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
-                  {{ form.modelName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="订单分类：" prop="orderCategory">
                   {{ form.orderCategoryLabel }}
@@ -349,16 +352,13 @@
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构名称：" prop="financialOrganization">
-                  {{ form.financialOrganization }}
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.financialOrganizationId}`" target="_blank">{{ form.financialOrganization }}</el-link>
                 </el-form-item>
                 <el-form-item label="申请数量：" prop="applyQty">
                   {{ form.applyQty }}
                 </el-form-item>
-                <el-form-item label="整车补货明细单号：" prop="replenishApplyDetailCode">
-                  {{ form.replenishApplyDetailCode }}
-                </el-form-item>
                 <el-form-item label="物料编码：" prop="materialsCode">
-                  {{ form.materialsCode }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="物料描述：" prop="materialsDesc">
                   {{ form.materialsDesc }}
@@ -463,7 +463,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     }
   },
   watch: {
@@ -481,7 +481,7 @@ export default {
     return {
       pageTitle: '整车门店补货申请明细',
       pageType: 'edit',
-      title: '整车补货单号：' + form.replenishApplyCode,
+      title: '整车补货明细单号：' + form.replenishApplyCode,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-dealerVehicleReplenishApplyDetail',
       loading: false,
@@ -644,6 +644,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

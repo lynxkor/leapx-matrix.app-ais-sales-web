@@ -93,6 +93,7 @@
             :default-time="['00:00:00', '23:59:59']"
               v-model="form.createTime"
               type="daterange"
+              unlink-panels
               :picker-options="pickerOptions"
               range-separator="至"
               value-format="yyyy-MM-dd HH:mm:ss"
@@ -124,10 +125,10 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <!-- <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button> -->
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -155,7 +156,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/finance/apply/finFinancingApplicationDealer/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
@@ -235,31 +236,26 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
-          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200 },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           {
             props: 'fundFinancialOrganizationName',
             label: '融资金融机构',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                  query: {
-                    id: row.fundFinancialOrganizationId
-                  }
-                });
+                window.open(`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${row.fundFinancialOrganizationId}`, '_blank');
               },
               type: 'primary'
             }]
           },
-          { props: 'isCooperationLabel', label: '是否合作', visible: true, width: 200 },
-          { props: 'mainDealerCompanyName', label: '主体母公司名称', visible: true, width: 200 },
-          { props: 'mainDealerCompanyCode', label: '主体公司编码', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'isCooperationLabel', label: '是否合作', visible: true, width: 120 },
+          { props: 'mainDealerCompanyName', label: '主体母公司名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.mainDealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'mainDealerCompanyCode', label: '主体公司编码', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.mainDealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'statusLabel', label: '状态', visible: true, width: 90 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 140 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',

@@ -42,10 +42,10 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <!-- <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button> -->
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -74,7 +74,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/datacenter/materials/vehicleInterior/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
@@ -112,7 +112,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '销服-业务主数据-配置主数据-内饰',
+      pageTitle: '内饰',
       pageType: 'list',
       moduleKey: 'AISDC-vehicleInterior',
       form: {
@@ -136,24 +136,25 @@ export default {
             props: 'interiorName',
             label: '内饰名称',
             visible: true,
-            width: 200,
+            width: 150,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/datacenter/materials/vehicleInterior/detail',
+                  path: '/datacenter/materials/vehicleInterior/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },
               type: 'primary'
             }]
           },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
-          { props: 'statusDesc', label: '说明', visible: true, width: 200 },
-          { props: 'creatorName', label: '创建人', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 60 },
+          { props: 'statusDesc', label: '说明', visible: true, width: 300 },
+          { props: 'creatorName', label: '创建人', visible: true, width: 180 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 180 },
           {
             props: 'operate',
             label: '操作',
@@ -166,7 +167,8 @@ export default {
                 this.$router.push({
                   path: '/datacenter/materials/vehicleInterior/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },

@@ -89,10 +89,10 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <!-- <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button> -->
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -121,7 +121,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/fund/fundRebateReturnConfig/index';
 import { listIdNames as fundBudgetItemList } from '@/api/vehwholesale/fund/fundBudgetItem/index';
@@ -207,18 +207,35 @@ export default {
             width: 150,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleSeries/detail',
-                  query: {
-                    id: row.vehicleSeriesId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.vehicleSeriesId}`, '_blank');
               },
               type: 'primary'
             }]
           },
-          { props: 'budgetItemName', label: '预算科目', visible: true, width: 220 },
-          { props: 'feeSupportTypeName', label: '费用支持类型', visible: true, width: 150 },
+          {
+            props: 'budgetItemName',
+            label: '预算科目',
+            visible: true,
+            width: 220,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/vehwholesale/fund/fundBudgetItem/edit?id=${row.budgetItemId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'feeSupportTypeName',
+            label: '费用支持类型',
+            visible: true,
+            width: 150,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/vehwholesale/fund/fundFeeSupportType/edit?id=${row.feeSupportTypeId}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
           { props: 'effectiveStartTime', label: '有效开始日期', visible: true, width: 150 },
           { props: 'effectiveEndTime', label: '有效结束日期', visible: true, width: 150 },
           { props: 'remark', label: '备注', visible: true, width: 200 },

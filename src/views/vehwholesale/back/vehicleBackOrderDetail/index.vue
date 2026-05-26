@@ -82,6 +82,7 @@
          :default-time="['00:00:00', '23:59:59']"
           v-model="form.createTime"
           type="daterange"
+          unlink-panels
           :picker-options="pickerOptions"
           range-separator="至"
           value-format="yyyy-MM-dd HH:mm:ss"
@@ -137,7 +138,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/back/vehicleBackOrderDetail/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getRigion, vehicleSeriesList, listOrgStoreInfo, getParentCompany } from '@/api/common';
@@ -205,7 +206,7 @@ export default {
             props: 'backOrderDetailCode',
             label: '退车明细单号',
             visible: true,
-            width: 200,
+            width: 180,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -219,61 +220,110 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'backOrderCode', label: '退车订单编号', visible: true, width: 200 },
-          { props: 'vin', label: 'VIN码', visible: true, width: 200 },
-          { props: 'processStatusLabel', label: '车辆处理状态', visible: true, width: 200 },
-          { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
-          { props: 'regionName', label: '所属大区', visible: true, width: 200 },
+          {
+            props: 'backOrderCode',
+            label: '退车订单编号',
+            visible: true,
+            width: 150,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open('/sales/vehwholesale/back/vehicleBackOrder/edit?id=' + row.backOrderCode, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          { props: 'vin', label: 'VIN码', visible: true, width: 180 },
+          { props: 'processStatusLabel', label: '车辆处理状态', visible: true, width: 150 },
+          {
+            props: 'saleDealerName',
+            label: '销售门店名称',
+            visible: true,
+            width: 150,
+            buttons: [{
+              click: (rowIndex, row) => {
+                if (row.saleDealerCode) {
+                  window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank');
+                }
+              },
+              type: 'primary'
+            }]
+          },
+          { props: 'regionName', label: '所属大区', visible: true, width: 120 },
           {
             props: 'seriesName',
             label: '车系名称',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleSeries/detail',
-                  query: {
-                    id: row.seriesId
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehicleseries/edit?id=${row.seriesId}`, '_blank');
               },
               type: 'primary'
             }]
           },
-          { props: 'wholesaleOrderCode', label: '整车批售订单编号', visible: true, width: 200 },
-          { props: 'entOrderCode', label: '企业客户整车订单编号', visible: true, width: 200 },
-          { props: 'actualVehicleReturnLabel', label: '是否实车返厂', visible: true, width: 200 },
-          { props: 'salesDeptReserveLabel', label: '销售部预留', visible: true, width: 200 },
-          { props: 'vehicleLogisticsReserveLabel', label: '整车物流预留', visible: true, width: 200 },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
+          {
+            props: 'wholesaleOrderCode',
+            label: '整车批售订单编号',
+            visible: true,
+            width: 180,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${row.wholesaleOrderCode}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          {
+            props: 'entOrderCode',
+            label: '企业客户整车订单编号',
+            visible: true,
+            width: 210,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open(`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${row.entOrderCode}`, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
+          { props: 'actualVehicleReturnLabel', label: '是否实车返厂', visible: true, width: 150 },
+          { props: 'salesDeptReserveLabel', label: '销售部预留', visible: true, width: 120 },
+          { props: 'vehicleLogisticsReserveLabel', label: '整车物流预留', visible: true, width: 150 },
+          {
+            props: 'dealerCompanyName',
+            label: '母公司名称',
+            visible: true,
+            width: 150,
+            buttons: [{
+              click: (rowIndex, row) => {
+                if (row.dealerCompanyCode) {
+                  window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank');
+                }
+              },
+              type: 'primary'
+            }]
+          },
           {
             props: 'modelName',
             label: '车型名称',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleModel/detail',
-                  query: {
-                    id: row.modelId,
-                  }
-                });
+                window.open(`/sales/datacenter/materials/vehiclemodel/edit?id=${row.modelId}`, '_blank');
               },
               type: 'primary'
             }]
           },
-          { props: 'originalWholesalePrice', label: '原批售价格', visible: true, width: 200 },
-          { props: 'originalRebateAmount', label: '原返利使用金额', visible: true, width: 200 },
-          { props: 'originalInvoicePrice', label: '原开票价格', visible: true, width: 200 },
-          { props: 'returnInvoiceAmount', label: '退车开票价格', visible: true, width: 200 },
+          { props: 'originalWholesalePrice', label: '原批售价格', visible: true, width: 150, align: 'right' },
+          { props: 'originalRebateAmount', label: '原返利使用金额', visible: true, width: 180, align: 'right' },
+          { props: 'originalInvoicePrice', label: '原开票价格', visible: true, width: 150, align: 'right' },
+          { props: 'returnInvoiceAmount', label: '退车开票价格', visible: true, width: 150, align: 'right' },
           { props: 'remark', label: '备注', visible: true, width: 200 },
-          { props: 'storeOutboundConfirmer', label: '门店出库确认人', visible: true, width: 200 },
-          { props: 'storeOutboundTime', label: '门店出库确认时间', visible: true, width: 200 },
-          { props: 'vdcInboundConfirmer', label: 'VDC入库确认人', visible: true, width: 200 },
-          { props: 'vdcInboundTime', label: 'VDC入库确认时间', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'storeOutboundConfirmer', label: '门店出库确认人', visible: true, width: 150 },
+          { props: 'storeOutboundTime', label: '门店出库确认时间', visible: true, width: 160 },
+          { props: 'vdcInboundConfirmer', label: 'VDC入库确认人', visible: true, width: 150 },
+          { props: 'vdcInboundTime', label: 'VDC入库确认时间', visible: true, width: 160 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 160 },
           {
             props: 'operate',
             label: '操作',
@@ -283,7 +333,7 @@ export default {
             buttons: [{
               name: '编辑',
               show: (row) => {
-                return row.processStatus === 10 || row.processStatus === 20;
+                return row.auditStatus === 10 || row.auditStatus === 20;
               },
               click: (rowIndex, row) => {
                 this.$router.push({
@@ -301,7 +351,7 @@ export default {
               popconfirmConfirmButtonText: '删除',
               popconfirmTitle: '此操作将永久删除, 是否继续?',
               show: (row) => {
-                return row.processStatus === 10 || row.processStatus === 20;
+                return row.auditStatus === 10 || row.auditStatus === 20;
               },
               click: (rowIndex, row) => {
                 deleteItem(

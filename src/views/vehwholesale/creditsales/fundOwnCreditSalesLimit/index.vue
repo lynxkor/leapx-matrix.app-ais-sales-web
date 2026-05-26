@@ -17,6 +17,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.createTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -103,7 +104,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesLimit/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
@@ -171,7 +172,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/creditsales/fundOwnCreditSalesLimit/detail',
+                  path: '/vehwholesale/creditsales/fundOwnCreditSalesLimit/edit',
                   query: {
                     id: row.id
                   }
@@ -180,17 +181,17 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 150 },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240 },
+          { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 150, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'creditAccountStatusLabel', label: '赊销账户状态', visible: true, width: 120 },
-          { props: 'creditAmount', label: '授信额度', visible: true, width: 120 },
-          { props: 'downPaymentRatio', label: '首付款比例', visible: true, width: 100 },
-          { props: 'totalDrawnAmount', label: '累计提款金额', visible: true, width: 120 },
-          { props: 'usedCreditAmount', label: '已用额度', visible: true, width: 100 },
-          { props: 'usedRatio', label: '资金使用率', visible: true, width: 100 },
-          { props: 'availableCreditAmount', label: '剩余可用额度', visible: true, width: 120 },
-          { props: 'totalCreditSalesAmount', label: '累计赊销金额', visible: true, width: 120 },
-          { props: 'remainingReceivableAmount', label: '剩余应收账款', visible: true, width: 140 },
+          { props: 'creditAmount', label: '授信额度', visible: true, width: 120, align: 'right' },
+          { props: 'downPaymentRatio', label: '首付款比例', visible: true, width: 100, align: 'right' },
+          { props: 'totalDrawnAmount', label: '累计提款金额', visible: true, width: 120, align: 'right' },
+          { props: 'usedCreditAmount', label: '已用额度', visible: true, width: 100, align: 'right' },
+          { props: 'usedRatio', label: '资金使用率', visible: true, width: 100, align: 'right' },
+          { props: 'availableCreditAmount', label: '剩余可用额度', visible: true, width: 120, align: 'right' },
+          { props: 'totalCreditSalesAmount', label: '累计赊销金额', visible: true, width: 120, align: 'right' },
+          { props: 'remainingReceivableAmount', label: '剩余应收账款', visible: true, width: 140, align: 'right' },
           { props: 'latestSettleDateTime', label: '最近结算时间', visible: true, width: 200 },
           { props: 'effectiveTime', label: '额度生效日期', visible: true, width: 200 },
           { props: 'expireTime', label: '额度失效日期', visible: true, width: 200 },

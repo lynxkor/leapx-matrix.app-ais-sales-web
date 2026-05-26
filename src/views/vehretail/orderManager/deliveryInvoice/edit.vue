@@ -101,24 +101,24 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="配车VIN码：">
-                  {{ form.matchVin }}
+                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.matchVin}`" target="_blank">{{ form.matchVin }}</el-link>
                 </el-form-item>
                 <el-form-item label="销售门店：">
-                  {{ form.saleDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="交付门店：">
-                  {{ form.deliveryDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.deliveryDealerCode}`" target="_blank">{{ form.deliveryDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="整车订单：">
-                  {{ form.retailOrderCode }}
+                  <el-link v-if="form.retailOrderId" type="primary" :href="`/sales/vehretail/ordermanager/retailorderinfo/edit?id=${form.retailOrderId}`" target="_blank">{{ form.retailOrderCode }}</el-link><span v-else>{{ form.retailOrderCode }}</span>
                 </el-form-item>
                 <el-form-item label="交车单：">
                   {{ form.deliveryOrderCode }}
                 </el-form-item>
                 <el-form-item label="整车开票状态：">
-                  {{ form.statusLabel }}
+                  <span class="status-tag link">{{ form.statusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="创建时间：">
                   {{ form.createTime }}
@@ -224,7 +224,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="发票代码：">
                   {{ form.invoiceCode }}
                 </el-form-item>
@@ -247,7 +247,7 @@
                   {{ form.invoiceAmount }}
                 </el-form-item>
                 <el-form-item label="发票VIN码：">
-                  {{ form.vin }}
+                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
                 </el-form-item>
                 <el-form-item label="发票合格证号：">
                   {{ form.certificateNo }}
@@ -425,9 +425,9 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="整车订单状态：">
-                  {{ form.orderStatusLabel }}
+                  <span class="status-tag link">{{ form.orderStatusLabel }}</span>
                 </el-form-item>
                 <el-form-item label="商城下单时间：">
                   {{ form.orderTime }}
@@ -463,19 +463,19 @@
                   {{ form.depositAmount }}
                 </el-form-item>
                 <el-form-item label="订单物料码：">
-                  {{ form.materialsCode }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="配车物料码：">
                   {{ form.allocationMaterialCode }}
                 </el-form-item>
                 <el-form-item label="销售门店：">
-                  {{ form.saleDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="交付门店：">
-                  {{ form.deliveryDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.deliveryDealerCode}`" target="_blank">{{ form.deliveryDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="交车VIN码：">
-                  {{ form.deliveryVin }}
+                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.deliveryVin}`" target="_blank">{{ form.deliveryVin }}</el-link>
                 </el-form-item>
                 <el-form-item label="交车时间：">
                   {{ form.deliveryTime }}
@@ -526,7 +526,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="交车时间：">
                   {{ form.deliveryTime }}
                 </el-form-item>
@@ -564,7 +564,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form label-width="180px" :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="证件识别的客户姓名：">
                   {{ form.carBuyerName }}
                 </el-form-item>
@@ -854,7 +854,7 @@ export default {
           { required: false, message: '请输入开票名称', trigger: 'change' }
         ],
         invoiceTime: [
-          { required: false, message: '请选择开票时间', trigger: 'change' }
+          { required: true, message: '请选择开票时间', trigger: 'change' }
         ],
         invoiceAmount: [
           { required: false, message: '请输入发票金额', trigger: 'change' }
@@ -996,7 +996,7 @@ export default {
     },
     openDialogShow () {
       // 确认时间
-      const warnMsg = '系统中的开票日期' + this.form.invoiceTime + '，请确认是否正确；若正确，请点击继续交车；若不正确，请点击取消并修改。';
+      const warnMsg = (this.form.invoiceTime ? '系统中的开票日期' + this.form.invoiceTime : '系统中的开票日期为空') + '，请确认是否正确；若正确，请点击继续交车；若不正确，请点击取消并修改。';
       this.$confirm(warnMsg, '操作提醒', {
         confirmButtonText: '继续交车',
         cancelButtonText: '取消',

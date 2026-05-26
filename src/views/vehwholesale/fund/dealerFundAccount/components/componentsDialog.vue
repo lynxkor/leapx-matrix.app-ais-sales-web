@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" width="75%" :visible.sync="dialogVisible" @close="handleClose">
+  <el-dialog :title="title" width="75%" height="560px" :visible.sync="dialogVisible" @close="handleClose">
     <div>
       <el-form
         ref="form"
@@ -166,15 +166,17 @@
               @checkboxChange="checkboxChange"
               @current-page-change="pageChange"
               @page-size-change="sizeChange"
+              maxHeight="300px"
             />
           </div>
         </div>
       </section>
       <!-- <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="dialogVisible = false">取 消</el-button>
-        <el-button size="small" type="primary" @click="confirm">确 定</el-button>
+        <el-button size="small" @click="dialogVisible = false">取消</el-button>
+        <el-button size="small" type="primary" @click="confirm">确定</el-button>
       </div> -->
-    </div><el-dialog
+    </div>
+    <el-dialog
       width="300px"
       :visible.sync="innerVisible"
       append-to-body
@@ -485,6 +487,15 @@ export default {
   }
   .el-dialog__footer {
     display: none;
+  }
+}
+
+::v-deep .el-dialog {
+  border-radius: 8px;
+  overflow: hidden;
+  .el-dialog__body {
+    max-height: 560px;
+    overflow-y: auto;
   }
 }
 .input-with-buttons {

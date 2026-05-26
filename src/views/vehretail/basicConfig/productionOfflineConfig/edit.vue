@@ -153,22 +153,22 @@
                   {{ form.statusDesc }}
                 </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
-                  {{ form.modelName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="年款名称：" prop="yearTypeName">
-                  {{ form.yearTypeName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${form.yearTypeId}`" target="_blank">{{ form.yearTypeName }}</el-link>
                 </el-form-item>
                 <el-form-item label="外观名称：" prop="exteriorName">
-                  {{ form.exteriorName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleexterior/edit?id=${form.exteriorId}`" target="_blank">{{ form.exteriorName }}</el-link>
                 </el-form-item>
                 <el-form-item label="内饰名称：" prop="interiorName">
-                  {{ form.interiorName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleinterior/edit?id=${form.interiorId}`" target="_blank">{{ form.interiorName }}</el-link>
                 </el-form-item>
                 <el-form-item label="轮毂名称：" prop="wheelHubName">
-                  {{ form.wheelHubName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclewheelhub/edit?id=${form.wheelHubId}`" target="_blank">{{ form.wheelHubName }}</el-link>
                 </el-form-item>
                 <el-form-item label="选装包名称：" prop="optionPackageName">
-                  {{ form.optionPackageName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleoptionpackage/edit?id=${form.optionPackageId}`" target="_blank">{{ form.optionPackageName }}</el-link>
                 </el-form-item>
                 <el-form-item label="排产天数：" prop="productionDays">
                   {{ form.productionDays }}
@@ -180,7 +180,7 @@
                   {{ form.remark }}
                 </el-form-item>
                 <el-form-item label="状态 0-禁用;1-启用：" prop="status">
-                  {{ form.statusLabel }}
+                  <span :class="['status-tag', form.status === 1 ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
                 </el-form-item>
               </el-form>
             </div>

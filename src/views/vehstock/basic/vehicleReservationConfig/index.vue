@@ -88,7 +88,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/basic/vehicleReservationConfig/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
@@ -152,17 +152,18 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehstock/basic/vehicleReservationConfig/detail',
+                  path: '/vehstock/basic/vehicleReservationConfig/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },
               type: 'primary'
             }]
           },
-          { props: 'typeLabel', label: '类型', visible: true, width: 140 },
-          { props: 'bizCode', label: '业务编号', visible: true, width: 200 },
+          { props: 'typeLabel', label: '预留类型', visible: true, width: 140 },
+          { props: 'bizCode', label: '预留内容', visible: true, width: 200 },
           { props: 'reserveNum', label: '需预留数', visible: true, align: 'right', width: 120 },
           { props: 'reservedNum', label: '已预留数', visible: true, align: 'right', width: 120 },
           { props: 'isCompletedLabel', label: '是否预留完成', visible: true, width: 140 },
@@ -187,7 +188,8 @@ export default {
                 this.$router.push({
                   path: '/vehstock/basic/vehicleReservationConfig/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: true
                   }
                 });
               },

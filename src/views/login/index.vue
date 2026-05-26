@@ -40,15 +40,16 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="onSubmit">确 定</el-button>
+          <el-button @click="dialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="onSubmit">确定</el-button>
       </span>
     </el-dialog> -->
   </div>
 </template>
 <script>
 import {
-  login, getAreaTree
+  login,
+  getAreaTree
   // loginUserCenter
   // getMiddlePlatformMapping
 } from '@/api/user';
@@ -104,17 +105,18 @@ export default {
       };
       // 登陆验证
       login(encrypt(this.form)).then(res => {
-        // let params = {
-        //   username: this.form.account,
-        //   password: encryptUC(this.form.password),
-        //   client_id: 'LXP'
-        // };
-        // console.log(params);
         this.iskey = false;
         this.$store.commit('SET_LOGIN_INFO', res);
-        this.$store.commit('SET_PAGE_RESOURCE', res.resources);
+        if (res?.resources?.length) {
+          this.$store.commit('SET_PAGE_RESOURCE', res.resources);
+        } else {
+          this.$store.commit('SET_PAGE_RESOURCE', {
+            pageSource: res?.resourceTagList || [],
+            sourceUrl: res?.resourceUriList || []
+          });
+        }
         getAreaTree().then(res => {
-          localStorage.getItem('areaTree', JSON.stringify(res));
+          localStorage.setItem('areaTree', JSON.stringify(res));
           this.$store.commit('SET_AREATREE', res);
         }).catch(() => {});
         if (!!this.$route.query.id && !!this.$route.query.url) {

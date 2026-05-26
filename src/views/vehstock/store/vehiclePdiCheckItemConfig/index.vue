@@ -55,7 +55,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/store/vehiclePdiCheckItemConfig/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
@@ -136,14 +136,16 @@ export default {
           { props: 'parentName', label: '上级检查项', visible: true, width: 160 },
           { props: 'layerTypeLabel', label: '层级', visible: true, width: 78 },
           { props: 'serialno', label: '同级排序', visible: true, width: 120, align: 'right' },
-          { props: 'modelName', label: '车型', visible: true, width: 160 },
-          { props: 'seriesName', label: '车系', visible: true, width: 160 },
+          { props: 'modelName', label: '车型', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclemodel/edit?id=${row.modelId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'seriesName', label: '车系', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleseries/edit?id=${row.seriesId}`, '_blank'); }, type: 'primary' }] },
           { props: 'checkModeLabel', label: '检查方式', visible: true, width: 140 },
           { props: 'isAtlasLabel', label: '是否图谱', visible: true, width: 120 },
           { props: 'atlasCoordTop', label: '图谱坐标top', visible: true, width: 140, align: 'right' },
           { props: 'atlasCoordLeft', label: '图谱坐标left', visible: true, width: 140, align: 'right' },
           { props: 'atlasCoordBottom', label: '图谱坐标bottom', visible: true, width: 140, align: 'right' },
           { props: 'atlasCoordRight', label: '图谱坐标right', visible: true, width: 140, align: 'right' },
+          { props: 'atlasCoordX', label: '图谱坐标X', visible: true, width: 140, align: 'right' },
+          { props: 'atlasCoordY', label: '图谱坐标Y', visible: true, width: 140, align: 'right' },
           { props: 'atlasUrl', label: '图谱地址', visible: true, width: 200 },
           { props: 'effectiveOn', label: '生效日期', visible: true, width: 200 },
           { props: 'expiredOn', label: '失效日期', visible: true, width: 200 },

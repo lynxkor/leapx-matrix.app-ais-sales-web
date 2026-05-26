@@ -128,12 +128,12 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-permission="moduleKey+'-importExcelByWholesale'" size="small" @click="handleImportWholesale">批售导入</el-button>
-      <el-button v-permission="moduleKey+'-importExcelByRetail'" size="small" @click="handleImportRetail">零售导入</el-button>
-      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-permission="moduleKey+'-importExcelByWholesale'" size="small" @click="handleImportWholesale">批售导入</el-button>
+      <el-button v-permission="moduleKey+'-importExcelByRetail'" size="small" @click="handleImportRetail">零售导入</el-button>
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -168,7 +168,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleSaleTargetTracking/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getProvinceTree, getRigion, listOrgStoreInfo, vehicleSeriesList, getParentCompany } from '@/api/common';
@@ -236,72 +236,68 @@ export default {
             props: 'wholesaleSaleTargetTrackingCode',
             label: '编号',
             visible: true,
-            width: 200,
+            width: 150,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
                   path: '/vehwholesale/basic/wholesaleSaleTargetTracking/detail',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    isEditing: false
                   }
                 });
               },
               type: 'primary'
             }]
           },
-          { props: 'year', label: '年', visible: true, width: 200 },
-          { props: 'month', label: '月', visible: true, width: 200 },
-          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 200 },
-          { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 200 },
-          { props: 'dealerCode', label: '门店编码', visible: true, width: 200 },
+          { props: 'year', label: '年', visible: true, width: 80 },
+          { props: 'month', label: '月', visible: true, width: 60 },
+          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open('/partner/channelManagement/companyDetails?companyCode=' + row.dealerParentOrgId, '_blank'); }, type: 'primary' }] },
+          { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 120 },
+          {
+            props: 'dealerCode',
+            label: '门店编码',
+            visible: true,
+            width: 150,
+            buttons: [{
+              click: (rowIndex, row) => {
+                window.open('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode, '_blank');
+              },
+              type: 'primary'
+            }]
+          },
           {
             props: 'dealerName',
             label: '门店名称',
             visible: true,
-            width: 200,
-            buttons: [{
-              click: (rowIndex, row) => {
-                this.navigateToRoute({
-                  path: '/partner/channelManagement/shopDetail',
-                  query: {
-                    dealerCode: row.dealerCode
-                  }
-                });
-              },
-              type: 'primary'
-            }]
+            width: 180,
           },
-          { props: 'regionName', label: '大区', visible: true, width: 200 },
-          { props: 'provinceName', label: '省份', visible: true, width: 200 },
-          { props: 'cityName', label: '城市', visible: true, width: 200 },
+          { props: 'regionName', label: '大区', visible: true, width: 100 },
+          { props: 'provinceName', label: '省份', visible: true, width: 100 },
+          { props: 'cityName', label: '城市', visible: true, width: 100 },
           {
             props: 'seriesName',
             label: '车系',
             visible: true,
-            width: 200,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/datacenter/materials/vehicleSeries/detail',
-                  query: {
-                    id: row.seriesId
-                  }
-                });
+                window.open('/sales/datacenter/materials/vehicleseries/edit?id=' + row.seriesId, '_blank');
               },
               type: 'primary'
             }]
           },
-          { props: 'newOrderQty', label: '新增缴定订单数', visible: true, width: 200 },
-          { props: 'newLockTargetQty', label: '新增锁单目标数', visible: true, width: 200 },
-          { props: 'netLockTargetQty', label: '净增锁单目标数', visible: true, width: 200 },
-          { props: 'wholesaleAssessmentTargetQty', label: '批售考核目标数', visible: true, width: 200 },
-          { props: 'deliveryTargetQty', label: '交付目标数', visible: true, width: 200 },
-          { props: 'wholesaleTargetQty', label: '批售目标数', visible: true, width: 200 },
-          { props: 'confirmedQty', label: '已确认数量', visible: true, width: 200 },
-          { props: 'wholesaleRemark', label: '批售备注', visible: true, width: 200 },
-          { props: 'retailRemark', label: '零售备注', visible: true, width: 200 },
-          { props: 'modifierName', label: '修改者名称', visible: true, width: 200 },
+          { props: 'newOrderQty', label: '新增缴定订单数', visible: true, width: 150, align: 'right' },
+          { props: 'newLockTargetQty', label: '新增锁单目标数', visible: true, width: 150, align: 'right' },
+          { props: 'netLockTargetQty', label: '净增锁单目标数', visible: true, width: 150, align: 'right' },
+          { props: 'wholesaleAssessmentTargetQty', label: '批售考核目标数', visible: true, width: 150, align: 'right' },
+          { props: 'deliveryTargetQty', label: '交付目标数', visible: true, width: 120, align: 'right' },
+          { props: 'wholesaleTargetQty', label: '批售目标数', visible: true, width: 120, align: 'right' },
+          { props: 'confirmedQty', label: '已确认数量', visible: true, width: 120, align: 'right' },
+          { props: 'wholesaleRemark', label: '批售备注', visible: true, width: 180 },
+          { props: 'retailRemark', label: '零售备注', visible: true, width: 180 },
+          { props: 'modifierName', label: '修改者名称', visible: true, width: 140 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
             props: 'operate',
@@ -350,6 +346,9 @@ export default {
     this.getData();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     handleImportWholesale () {
       this.uploadDialogVisibleWholesale = true;
     },

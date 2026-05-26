@@ -1,5 +1,5 @@
 <template>
-  <div class="page-common m-retail-order-info-list">
+  <div class="page-common m-sales-proxy-list">
     <!--  TIPS: 自行调整如下label-width，满足label不换行  -->
     <el-form
       :inline="true"
@@ -19,7 +19,7 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="批售订单号"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="批售订单号" v-show="this.visibleCount === 3 || show">
         <tag-input v-model="form.wholesaleOrderCodeList" clearable placeholder="请输入" />
       </el-form-item>
       <template v-if="show">
@@ -142,6 +142,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.orderSortTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -154,6 +155,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.paymentTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -166,6 +168,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.deliveryTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -178,6 +181,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.createTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -197,7 +201,7 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-       <el-button v-if="canAddOrUpdate" size="small" :disabled="selectionList.length !== 1 || (selectionList.length > 0 && selectionList[0].lockStatus === 0)" @click="handleUnlock">取消锁车</el-button>
+       <el-button v-permission="moduleKey+'-perUnlock'" size="small" :disabled="selectionList.length !== 1 || (selectionList.length > 0 && selectionList[0].lockStatus === 0)" @click="handleUnlock">取消锁车</el-button>
        <el-button v-permission="moduleKey+'-changeSaleDealer'" size="small" @click="handleChangeDealer('sales')" :disabled="selectionList.length === 0">更换销售门店</el-button>
        <el-button v-permission="moduleKey+'-changeDeliveryDealer'" size="small" @click="handleChangeDealer('support')" :disabled="selectionList.length === 0">更换交付门店</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
@@ -252,7 +256,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, getOrderUnlockConfig, batchReplaceStore, getDetailDecryptField, getSysConfigParamValue } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import {
@@ -273,6 +277,7 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { getAreaTree } from '@/utils';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
 import UnlockDialog from './components/UnlockDialog';
@@ -368,7 +373,7 @@ export default {
         value: 'code',
         children: 'child'
       },
-      areaOptions: JSON.parse(localStorage.areaTree),
+      areaOptions: getAreaTree(),
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
       activeTab: 'all',
@@ -444,8 +449,8 @@ export default {
           { props: 'lockTime', label: '锁单时间', visible: true, width: 180 },
           { props: 'wholesaleOrderCode', label: '批售订单号', visible: true, width: 200 },
           { props: 'wholesaleBindStatusLabel', label: '是否绑定批售', visible: true, width: 140 },
-          { props: 'priceAfterSubsidy', label: '补贴后价格', visible: true, width: 140 },
-          { props: 'depositAmount', label: '应收定金', visible: true, width: 120 },
+          { props: 'priceAfterSubsidy', label: '补贴后价格', visible: true, width: 140, align: 'right' },
+          { props: 'depositAmount', label: '应收定金', visible: true, width: 120, align: 'right' },
           { props: 'agentName', label: '代办联系人', visible: true, width: 140 },
           { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 120 },
           { props: 'saleDealerName', label: '订单销售门店', visible: true, width: 240 },
@@ -491,7 +496,7 @@ export default {
             buttons: [{
               name: '修改配置',
               show: (row) => {
-                return row.orderStatus !== 9 && row.orderStatus !== 99 && row.orderStatus === 3 && row.wholesaleBindStatus !== 1;
+                return row.orderStatus === 3 && row.wholesaleBindStatus !== 1 && this.permissions.has(`${this.moduleKey}-changeOrderMaterials`);
               },
               click: (rowIndex, row) => {
                 this.changeConfiguration(row);
@@ -560,7 +565,8 @@ export default {
     },
     changeDealerFun (data) {
       const param = {
-        saleStoreChangeType: data.saleStoreChangeType,
+        saleStoreChangeType: data.changeReasonCode,
+        saleStoreChangeName: data.changeReason,
         saleStoreChangeRemark: data.saleStoreChangeRemark,
         orderIdList: data.dataList.map(item => item.id),
         newStoreCode: data.storeCode,
@@ -815,6 +821,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.m-retail-order-info-list {
+.m-sales-proxy-list {
+  ::v-deep .m-vxe-table .m-vxe-table-options {
+    top: -96px;
+  }
+  .ais-actions {
+    margin-bottom: 8px;
+  }
+  .ais-table-c {
+    height: calc(100% - 168px);
+  }
 }
 </style>

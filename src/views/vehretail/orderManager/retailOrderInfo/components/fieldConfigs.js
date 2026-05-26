@@ -47,8 +47,8 @@ export const orderFundDisplayFields = [
 
 // 订单物料信息字段配置
 export const materialsDisplayFields = [
-  { key: 'skuCode', label: '商品SKU编码' },
-  { key: 'productCode', label: '商品编码' },
+  // { key: 'skuCode', label: '商品SKU编码' },
+  // { key: 'productCode', label: '商品编码' },
   { key: 'materialsCode', label: '物料编码' },
   { key: 'seriesName', label: '车系名称' },
   { key: 'modelName', label: '车型名称' },
@@ -141,7 +141,7 @@ export const orderChangeApplicationDisplayFields = [
   { key: 'applyStatusLabel', label: '申请状态' },
   { key: 'changeTypeLabel', label: '变更类型' },
   { key: 'changeReason', label: '变成原因' },
-  { key: 'changeDescription', label: '变更说明' },
+  { key: 'changeExplain', label: '变更说明' },
   { key: 'deliveryStatusLabel', label: '是否完成交车' },
   { key: 'createTime', label: '创建时间' }
 ];

@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="批售配车结算记录："
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -14,7 +14,7 @@
         :showEditBtn="false"
       >
         <template #status>
-           {{ form.vin }}
+           <!-- {{ form.vin }} -->
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
         </template>
@@ -31,7 +31,7 @@
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                  <el-form-item label="VIN码：" prop="vin">
-                  {{ form.vin }}
+                 {{ form.vin }}
                 </el-form-item>
                  <el-form-item label="操作类型：" prop="operateTypeLabel">
                   {{ form.operateTypeLabel }}
@@ -52,10 +52,10 @@
                   {{ form.cancelSettleTypeLabel }}
                 </el-form-item>
                 <el-form-item label="销售门店：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                  <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
                 </el-form-item>
                 <el-form-item label="合作类型：" prop="cooperateTypeLabel">
                   {{ form.cooperateTypeLabel }}
@@ -64,16 +64,16 @@
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationName">
-                  {{ form.financialOrganizationName }}
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.financialOrganizationId}`" target="_blank">{{ form.financialOrganizationName }}</el-link>
                 </el-form-item>
                 <el-form-item label="订单物料编码：" prop="orderMaterialsCode">
-                  {{ form.orderMaterialsCode }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.orderMaterialsCode}`" target="_blank">{{ form.orderMaterialsCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="配车物料码：" prop="materialsCode">
-                  {{ form.materialsCode }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="批售订单号：" prop="wholesaleOrderCode">
-                  {{ form.wholesaleOrderCode }}
+                  <el-link type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${form.wholesaleOrderCode}`" target="_blank">{{ form.wholesaleOrderCode }}</el-link>
                 </el-form-item>
                  <el-form-item label="零售订单号：" prop="retailOrderCode">
                   {{ form.retailOrderCode }}
@@ -171,10 +171,10 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
-      return '配车结算记录：' + this.form.id;
+      return '配车结算记录：' + this.form.wholesaleOrderRecordCode;
     }
   },
   watch: {
@@ -205,6 +205,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

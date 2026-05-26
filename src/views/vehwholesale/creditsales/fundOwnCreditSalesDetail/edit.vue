@@ -10,9 +10,10 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :showEditBtn="false"
       >
         <template #status>
-          {{ form.creditSalesDetailCode }}
+          <!-- {{ form.creditSalesDetailCode }} -->
         </template>
         <el-main>
           <section class="common-section">
@@ -20,7 +21,7 @@
               <h2 v-show="_id">基础信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-if="isEditing || !_id">
                 <el-form-item label="赊销明细编号：" prop="creditSalesDetailCode">
                   <el-input
                     placeholder="请输入赊销明细编号"
@@ -194,22 +195,22 @@
                   {{ form.creditSalesDetailCode }}
                 </el-form-item>
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
                 </el-form-item>
-                <el-form-item label="资金账户编号：" prop="fundAccountId">
-                  {{ form.fundAccountId }}
+                <el-form-item label="资金账户编号：" prop="fundAccountCode">
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/dealerFundAccount/edit?id=${form.fundAccountId}`" target="_blank">{{ form.fundAccountCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="门店名称：" prop="dealerName">
-                  {{ form.dealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="VIN号：" prop="vin">
                   {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="整车批售订单：" prop="wholesaleOrderCode">
-                  {{ form.wholesaleOrderCode }}
+                  <el-link type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${form.wholesaleOrderCode}`" target="_blank">{{ form.wholesaleOrderCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="企业客户整车订单：" prop="entVehorderCode">
-                  {{ form.entVehorderCode }}
+                  <el-link type="primary" :href="`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${form.entVehorderCode}`" target="_blank">{{ form.entVehorderCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="车辆价格：" prop="retailPrice">
                   {{ form.retailPrice }}
@@ -250,8 +251,8 @@
                 <el-form-item label="凭证编号：" prop="voucherNo">
                   {{ form.voucherNo }}
                 </el-form-item>
-                <el-form-item label="合格证赎回申请：" prop="certificateRedemptionApplyId">
-                  {{ form.certificateRedemptionApplyId }}
+                <el-form-item label="合格证赎回申请：" prop="redemptionCode">
+                  <el-link type="primary" :href="`/sales/vehwholesale/certificate/vehicleCertificateRedemption/edit?id=${form.certificateRedemptionApplyId}`" target="_blank">{{ form.redemptionCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="创建人：" prop="creatorName">
                   {{ form.creatorName }}
@@ -340,7 +341,7 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
       return '赊销明细编号：' + this.form.creditSalesDetailCode;
@@ -441,6 +442,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

@@ -60,6 +60,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.createTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -117,7 +118,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/basicConfig/activationModeConfig/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleModel, listVehicleYearType, vehicleOptionPackage } from '@/api/common';
@@ -157,7 +158,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '激活模式配置管理',
+      pageTitle: '激活模式配置',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-activationModeConfig',
@@ -201,7 +202,7 @@ export default {
           { props: 'optionPackageName', label: '选装包名称', visible: true, width: 200 },
           { props: 'modelDefinition', label: '车型定义', visible: true, width: 200 },
           { props: 'activationDocument', label: '激活文案', visible: true, width: 200 },
-          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 80 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           {
             props: 'operate',
@@ -297,7 +298,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '激活模式配置管理',
+        businessType: '激活模式配置',
         dataFetchPath: 'vr/web/basicConfig/activationModeConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -305,7 +306,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '激活模式配置管理.xlsx');
+            await downloadExcel(res.excelUrl, '激活模式配置.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

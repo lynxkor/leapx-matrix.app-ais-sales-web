@@ -88,6 +88,7 @@
           <el-date-picker
             v-model="form.eventAtRange"
             type="daterange"
+            unlink-panels
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -140,7 +141,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import {
   deleteItem,

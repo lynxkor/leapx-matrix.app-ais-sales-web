@@ -33,17 +33,25 @@
         <tag-input v-model="form.entVehorderCodes" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="赊销天数下限">
-          <el-input
-            placeholder="请输入"
+        <el-input-number
             v-model="form.mincreditSalesDays"
-            clearable
+            :allow-empty="true"
+            :controls="false"
+            :min="0"
+            :precision="0"
+            placeholder="请输入"
+            style="width: 100%;"
           />
         </el-form-item>
         <el-form-item label="赊销天数上限">
-          <el-input
-            placeholder="请输入"
+          <el-input-number
             v-model="form.maxcreditSalesDays"
-            clearable
+            :allow-empty="true"
+            :controls="false"
+            :min="0"
+            :precision="0"
+            placeholder="请输入"
+            style="width: 100%;"
           />
         </el-form-item>
         <el-form-item label="是否还款">
@@ -61,6 +69,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.repaymentTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -126,7 +135,7 @@
 
 <script>
 import debounce from 'lodash.debounce';
-import { LPVxeTable } from '@leapmotor/design';
+import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/creditsales/fundOwnCreditSalesDetail/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
@@ -199,7 +208,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/creditsales/fundOwnCreditSalesDetail/detail',
+                  path: '/vehwholesale/creditsales/fundOwnCreditSalesDetail/edit',
                   query: {
                     id: row.id
                   }
@@ -208,7 +217,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200 },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           {
             props: 'dealerName',
             label: '门店名称',
@@ -216,12 +225,7 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/partner/channelManagement/shopDetail',
-                  query: {
-                    dealerCode: row.dealerCode,
-                  }
-                });
+                window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank');
               },
               type: 'primary'
             }]
@@ -233,12 +237,7 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
-                  query: {
-                    id: row.wholesaleOrderId,
-                  }
-                });
+                this.openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.wholesaleOrderId);
               },
               type: 'primary'
             }]
@@ -250,29 +249,24 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/entorder/entVehicleOrder/edit',
-                  query: {
-                    id: row.entVehorderId,
-                  }
-                });
+                this.openWindow('/sales/vehwholesale/entorder/entVehicleOrder/edit?id=' + row.entVehorderId);
               },
               type: 'primary'
             }]
           },
           { props: 'vin', label: 'VIN号', visible: true, width: 200 },
-          { props: 'wholesalePrice', label: '批售价/折扣价', visible: true, width: 150 },
-          { props: 'cashAmount', label: '现金金额', visible: true, width: 120 },
-          { props: 'rebateAmount', label: '返利金额', visible: true, width: 120 },
-          { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 120 },
-          { props: 'creditSalesAmount', label: '赊销金额', visible: true, width: 100 },
+          { props: 'wholesalePrice', label: '批售价/折扣价', visible: true, width: 150, align: 'right' },
+          { props: 'cashAmount', label: '现金金额', visible: true, width: 120, align: 'right' },
+          { props: 'rebateAmount', label: '返利金额', visible: true, width: 120, align: 'right' },
+          { props: 'downPaymentRatio', label: '首付款比例%', visible: true, width: 120, align: 'right' },
+          { props: 'creditSalesAmount', label: '赊销金额', visible: true, width: 100, align: 'right' },
           { props: 'creditSalesTime', label: '赊销时间', visible: true, width: 200 },
-          { props: 'creditSalesDays', label: '赊销天数', visible: true, width: 100 },
+          { props: 'creditSalesDays', label: '赊销天数', visible: true, width: 100, align: 'right' },
           { props: 'repaymentTime', label: '还款时间', visible: true, width: 200 },
-          { props: 'creditSalesFee', label: '赊销费用', visible: true, width: 100 },
-          { props: 'certificateRedemptionApplyId', label: '合格证赎回申请', visible: true, width: 120 },
-          { props: 'overdueFee', label: '超期赊销费用', visible: true, width: 120 },
-          { props: 'penaltyFee', label: '违约金', visible: true, width: 100 },
+          { props: 'creditSalesFee', label: '赊销费用', visible: true, width: 100, align: 'right' },
+          { props: 'redemptionCode', label: '合格证赎回申请', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/certificate/vehicleCertificateRedemption/edit?id=${row.certificateRedemptionApplyId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'overdueFee', label: '超期赊销费用', visible: true, width: 120, align: 'right' },
+          { props: 'penaltyFee', label: '违约金', visible: true, width: 100, align: 'right' },
           // { props: 'voucherNo', label: '凭证号', visible: true, width: 200 },
           // { props: 'creatorName', label: '创建人', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
@@ -338,6 +332,9 @@ export default {
     });
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     handleListSelect (row) {
       this.clickItemId = row.id;
     },

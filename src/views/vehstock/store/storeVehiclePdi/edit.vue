@@ -11,6 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :title="title"
       >
         <template #extraButtons>
           <el-button v-if="form.isPdiSubmit === 1 && form.isUnusual === 0" type="primary" size="small"  @click="handleDownloadPDF">下载PDF单据</el-button>
@@ -27,7 +28,7 @@
                   {{ form.code }}
                 </el-form-item>
                 <el-form-item label="VIN：" prop="vin">
-                  {{ form.vin }}
+                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
@@ -51,7 +52,7 @@
                   {{ form.modifierName }}
                 </el-form-item>
                 <el-form-item label="物料编码：" prop="materialsCode">
-                  {{ form.materialsCode }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="收车确认人：" prop="receivedBy">
                   {{ form.receivedBy }}
@@ -63,34 +64,34 @@
                   {{ form.materialsDesc }}
                 </el-form-item>
                 <el-form-item label="车系：" prop="seriesName">
-                  {{ form.seriesName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="车型：" prop="modelName">
-                  {{ form.modelName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="外观：" prop="exteriorName">
-                  {{ form.exteriorName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleexterior/edit?id=${form.exteriorId}`" target="_blank">{{ form.exteriorName }}</el-link>
                 </el-form-item>
                 <el-form-item label="续航里程：" prop="drivingRangeName">
-                  {{ form.drivingRangeName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicledrivingrange/edit?id=${form.drivingRangeId}`" target="_blank">{{ form.drivingRangeName }}</el-link>
                 </el-form-item>
                 <el-form-item label="选配动力：" prop="rangePowerName">
-                  {{ form.rangePowerName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclerangepower/edit?id=${form.rangePowerId}`" target="_blank">{{ form.rangePowerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="电池电芯：" prop="batteryCellName">
-                  {{ form.batteryCellName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclebatterycell/edit?id=${form.batteryCellId}`" target="_blank">{{ form.batteryCellName }}</el-link>
                 </el-form-item>
                 <el-form-item label="内饰：" prop="interiorName">
-                  {{ form.interiorName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleinterior/edit?id=${form.interiorId}`" target="_blank">{{ form.interiorName }}</el-link>
                 </el-form-item>
                 <el-form-item label="选配轮毂：" prop="wheelHubName">
-                  {{ form.wheelHubName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclewheelhub/edit?id=${form.wheelHubId}`" target="_blank">{{ form.wheelHubName }}</el-link>
                 </el-form-item>
                 <el-form-item label="年款：" prop="yearTypeName">
-                  {{ form.yearTypeName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${form.yearTypeId}`" target="_blank">{{ form.yearTypeName }}</el-link>
                 </el-form-item>
                 <el-form-item label="选配包：" prop="optionPackageName">
-                  {{ form.optionPackageName }}
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleoptionpackage/edit?id=${form.optionPackageId}`" target="_blank">{{ form.optionPackageName }}</el-link>
                 </el-form-item>
               </el-form>
             </div>
@@ -102,10 +103,10 @@
             <div class="common-section-body">
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="销售门店名称：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="交付门店名称：" prop="deliveryDealerName">
-                  {{ form.deliveryDealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.deliveryDealerCode}`" target="_blank">{{ form.deliveryDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="大区：" prop="regionName">
                   {{ form.regionName }}
@@ -354,6 +355,9 @@ export default {
   computed: {
     _id () {
       return this.id || this.$route.query.id || this.form.id;
+    },
+    title () {
+      return 'PDI单号：' + this.form.code;
     }
   },
   watch: {
@@ -384,7 +388,6 @@ export default {
       viewPictureList: [],
       pageTitle: '门店整车PDI单',
       pageType: 'edit',
-      title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVS-storeVehiclePdi',
       loading: false,

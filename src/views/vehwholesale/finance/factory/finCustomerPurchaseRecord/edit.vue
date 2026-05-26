@@ -5,7 +5,7 @@
       <edit-base-container
         ref="containerRef"
         :id="_id"
-        title="客户采购记录:"
+        :title="title"
         :isEditing.sync="isEditing"
         :form.sync="form"
         :originalForm.sync="originalForm"
@@ -14,7 +14,7 @@
         :showEditBtn="false"
       >
         <template #status>
-          <span>{{ form.code }}</span>
+          <!-- <span>{{ form.code }}</span> -->
         </template>
         <!-- <template #extraButtons>
           <el-button size="small">按钮1</el-button>
@@ -259,16 +259,16 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="母公司名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
                 </el-form-item>
                 <el-form-item label="母公司编码：" prop="dealerCompanyCode">
-                  {{ form.dealerCompanyCode }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="经销商名称：" prop="dealerName">
-                  {{ form.dealerName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>
                 </el-form-item>
                  <el-form-item label="经销商编码：" prop="dealerCode">
-                  {{ form.dealerCode }}
+                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="统一社会信用代码：" prop="unifiedSocialCreditCode">
                   {{ form.unifiedSocialCreditCode }}
@@ -283,14 +283,7 @@
                   {{ form.cooperationDate }}
                 </el-form-item>
                 <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationName">
-                 <el-button class="link" style="padding: 0;"
-                   @click="navigateToRoute({
-                     path: '/vehwholesale/fund/fundFinancialOrganization/detail',
-                      query: {
-                        id: form.fundFinancialOrganizationId,
-                      },
-                    })"
-                   type="text">{{ form.fundFinancialOrganizationName }}</el-button>
+                 <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.fundFinancialOrganizationId}`" target="_blank">{{ form.fundFinancialOrganizationName }}</el-link>
                 </el-form-item>
                 <el-form-item label="编码：" prop="code">
                   {{ form.code }}
@@ -437,7 +430,10 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
+    },
+    title () {
+      return '客户采购记录：' + (this.form.code || '');
     }
   },
   watch: {
@@ -455,7 +451,6 @@ export default {
     return {
       pageTitle: '客户采购记录',
       pageType: 'edit',
-      title: '主键：' + form.id,
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-finCustomerPurchaseRecord',
       loading: false,
@@ -588,6 +583,9 @@ export default {
   mounted () {
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     detailRequest () {
       const id = this._id;
       if (id) {

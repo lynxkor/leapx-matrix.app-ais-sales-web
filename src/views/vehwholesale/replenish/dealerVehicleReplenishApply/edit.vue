@@ -11,17 +11,16 @@
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
         :showEditBtn="form.permission.edit"
-        :on-success="getDetailData"
       >
         <template #status>
           {{ form.replenishApplyCode }}
           <span class="status primary">{{ form.auditStatusLabel }}</span>
         </template>
         <template #extraButtons>
-          <el-button size="small" @click="handleSubmit" :disabled="!form.permission.submit">提交补货申请</el-button>
-          <el-button size="small" @click="handleAuditValidForDealer()" :disabled="!form.permission.dealerAudit">门店审核</el-button>
-          <el-button size="small" @click="handleAuditValidForFactory()" :disabled="!form.permission.factoryAudit">厂端审核</el-button>
-          <el-button size="small" @click="handleUnused" :disabled="!form.permission.cancel">作废</el-button>
+          <el-button size="small" @click="handleSubmit" v-if ="form.permission && form.permission.submit">提交补货申请</el-button>
+          <el-button size="small" @click="handleAuditValidForDealer()" v-if="form.permission && form.permission.dealerAudit">门店审核</el-button>
+          <el-button size="small" @click="handleAuditValidForFactory()" v-if="form.permission && form.permission.factoryAudit">厂端审核</el-button>
+          <el-button size="small" @click="handleUnused" v-if="form.permission && form.permission.cancel">作废</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -69,12 +68,12 @@
                     :disabled="true"
                   />
                 </el-form-item>
-                <el-form-item label="交付门店：" prop="deliveryDealerCode">
+                <el-form-item label="交付门店：" prop="deliveryDealerName">
                   <fetch-select
                     filterable
                     clearable
                     remote
-                    v-model="form.deliveryDealerCode"
+                    v-model="form.deliveryDealerName"
                     :remote-method="getDealerListByName"
                     value-key="storeCode"
                     label-key="storeName"
@@ -124,11 +123,17 @@
                   />
                 </el-form-item>
                 <el-form-item label="门店仓库：" prop="dealerWarehouseName">
-                  <el-input
-                    placeholder="请输入门店仓库"
+                  <fetch-select
+                    ref="dealerWarehouseRef"
+                    remote
+                    :remote-method="storeWarehouseSearch"
                     v-model="form.dealerWarehouseName"
+                    placeholder="请选择门店仓库"
+                    labelKey="warehouseName"
+                    valueKey="warehouseName"
                     clearable
-                    :disabled="true"
+                    filterable
+                    @change="handleChangeDealerWarehouse"
                   />
                 </el-form-item>
                 <el-form-item label="审核状态：" prop="auditStatus">
@@ -151,12 +156,13 @@
                     :disabled="true"
                   />
                 </el-form-item>
-                <el-form-item label="结算资金类型：" prop="settleFundType">
+                <el-form-item label="结算资金类型：" prop="settleFundTypeLabel">
                   <fetch-select
-                    :options="settleFundTypeOptions"
-                    enumCode="vw_fundtype"
-                    v-model="form.settleFundType"
+                    :options="fundTypeList"
+                    v-model="form.settleFundTypeLabel"
                     placeholder="请选择结算资金类型"
+                    labelKey="fundTypeLabel"
+                    valueKey="fundTypeLabel"
                     clearable
                     filterable
                     @change="handleChangeFundType"
@@ -166,10 +172,10 @@
                   label="金融机构："
                   prop="financialOrganizationId"
                   :rules="form.settleFundType + '' === '2010' ? rules.financialOrganizationId: []"
-                  v-show="form.settleFundType + '' === '2010'"
+                  v-show="form.settleFundType === '2010' || form.settleFundType === 2010"
                 >
                   <fetch-select
-                    :options="financialOrganizationList"
+                    :options="financingOrgIdList"
                     v-model="form.financialOrganizationId"
                     clearable
                     filterable
@@ -228,19 +234,19 @@
                   {{ form.saleDealerCode }}
                 </el-form-item>
                 <el-form-item label="销售门店：" prop="saleDealerName">
-                  {{ form.saleDealerName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.saleDealerCode)">{{ form.saleDealerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="订单分类：" prop="orderCategoryLabel">
                   {{ form.orderCategoryLabel }}
                 </el-form-item>
                 <el-form-item label="交付门店：" prop="deliveryDealerName">
-                  {{ form.deliveryDealerName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + form.deliveryDealerCode)">{{ form.deliveryDealerName }}</el-button>
                 </el-form-item>
                 <el-form-item label="批售方式：" prop="wholesaleWayLabel">
                   {{ form.wholesaleWayLabel }}
                 </el-form-item>
                 <el-form-item label="专项活动：" prop="prodScheduleActivityName" v-show="form.orderCategory + '' !== '2'">
-                  {{ form.prodScheduleActivityName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=' + form.prodScheduleActivityId)"> {{ form.prodScheduleActivityName }}</el-button>
                 </el-form-item>
                 <el-form-item label="申请类别：" prop="applyCategoryLabel" v-show="form.orderCategory + '' === '2'">
                   {{ form.applyCategoryLabel }}
@@ -258,7 +264,7 @@
                   {{ form.settleFundTypeLabel }}
                 </el-form-item>
                 <el-form-item label="金融机构：" prop="financialOrganizationName" v-show="form.settleFundType==2010">
-                  {{ form.financialOrganizationName }}
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + form.financialOrganizationId)">{{ form.financialOrganizationName }}</el-button>
                 </el-form-item>
                 <el-form-item label="申请原因：" prop="applyReason">
                   {{ form.applyReason }}
@@ -289,14 +295,29 @@
               <h2>整车门店补货明细</h2>
             </div>
             <div class="common-section-body">
-              <el-button size="small" @click="handleAddRow" style="margin-bottom: 10px;" v-show = "form.permission.edit && _id && isEditing">添加补货明细</el-button>
+              <el-button size="small" @click="handleAddRow" style="margin-bottom: 10px;" v-show = "form.permission.edit && _id">添加补货明细</el-button>
               <div class="common-section-table">
                 <component-table
+                  ref="detailTableRef"
                   :tableData="form.details"
                   :columns="detailsColumns"
-                  :show-delete="isEditing || !_id"
+                  :show-delete="form.permission.edit && _id"
                   @delete-row="handleDeleteDetailRow"
-                />
+                  @save-row="handleSaveDetailRow"
+                >
+                  <template #replenishApplyDetailCode="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=' + row.id)">{{ row.replenishApplyDetailCode }}</el-button>
+                  </template>
+                  <template #seriesName="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId)">{{ row.seriesName }}</el-button>
+                  </template>
+                  <template #modelName="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + row.modelId)">{{ row.modelName }}</el-button>
+                  </template>
+                  <template #materialsCode="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.materialsCode)">{{ row.materialsCode }}</el-button>
+                  </template>
+                </component-table>
               </div>
             </div>
           </section>
@@ -309,7 +330,12 @@
                 <component-table
                   :tableData="form.dealerFundAccounts"
                   :columns="columns"
-                />
+                >
+                  <template #fundTypeDisplay="{ row }">
+                    <el-button v-if="row.fundType === '2010' || row.fundType === 2010" class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/dealerFundAccount/edit?id=' + row.id)">{{ row.fundTypeDisplay }}</el-button>
+                    <el-button v-else class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/dealerFundAccount/edit?id=' + row.id)">{{ row.fundTypeDisplay }}</el-button>
+                  </template>
+                </component-table>
               </div>
             </div>
           </section>
@@ -322,7 +348,41 @@
                 <component-table
                   :tableData="form.wholesaleOrders"
                   :columns="wholesaleOrdersColumns"
-                />
+                >
+                  <template #wholesaleOrderCode="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=' + row.id)">{{ row.wholesaleOrderCode }}</el-button>
+                  </template>
+                  <template #saleDealerName="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.saleDealerCode)">{{ row.saleDealerName }}</el-button>
+                  </template>
+                  <template #deliveryDealerName="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.deliveryDealerCode)">{{ row.deliveryDealerName }}</el-button>
+                  </template>
+                  <template #modelName="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + row.modelId)">{{ row.modelName }}</el-button>
+                  </template>
+                  <template #yearTypeName="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleYearType/edit?id=' + row.yearTypeId)">{{ row.yearTypeName }}</el-button>
+                  </template>
+                  <template #financialOrganizationName="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.financialOrganizationId)">{{ row.financialOrganizationName }}</el-button>
+                  </template>
+                  <template #exteriorName="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleExterior/edit?id=' + row.exteriorId)">{{ row.exteriorName }}</el-button>
+                  </template>
+                  <template #wheelHubName="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleWheelHub/edit?id=' + row.wheelHubId)">{{ row.wheelHubName }}</el-button>
+                  </template>
+                  <template #rangePowerName="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleRangePower/edit?id=' + row.rangePowerId)">{{ row.rangePowerName }}</el-button>
+                  </template>
+                  <template #materialsDesc="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.materialsCode)">{{ row.materialsDesc }}</el-button>
+                  </template>
+                  <template #prodScheduleActivityName="{ row }">
+                    <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=' + row.prodScheduleActivityId)">{{ row.prodScheduleActivityName }}</el-button>
+                  </template>
+                </component-table>
               </div>
             </div>
           </section>
@@ -344,7 +404,7 @@ import { getDetail, addOrUpdate, dealerAuditValid, factoryAuditValid, dealerAppr
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum, getDealerDetailByCode, getRigion, listOrgStoreInfo } from '@/api/common';
+import { getEnum, getDealerDetailByCode, getRigion, listOrgStoreInfo, listOrgWarehouseStoreInfo } from '@/api/common';
 import { listIdNames as listFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 import { getList as listWholesaleProdScheduleActivity } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivityDetail/index';
 import routeGuard from '@/libs/mixins/routeGuard';
@@ -426,10 +486,10 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.$route.query.id || this.form.id;
+      return this.id || this.form.id || this.$route.query.id;
     },
     title () {
-      return '整车补货单号：' + this.form.replenishApplyCode;
+      return '整车补货单号：';
     }
   },
   watch: {
@@ -460,6 +520,8 @@ export default {
       orderCategoryOptions: [],
       settleFundTypeOptions: [],
       financialOrganizationList: [],
+      financingOrgIdList: [],
+      fundTypeList: [],
       dealerCompanyCodes: '', // 门店母公司
       loading: false,
       submitLoading: false,
@@ -467,7 +529,7 @@ export default {
       originalForm: { ...form },
       tableData: [],
       columns: [
-        { field: 'fundTypeLabel', title: '资金类型', width: '12%' },
+        { field: 'fundTypeDisplay', title: '资金类型', width: '12%', slots: { default: 'fundTypeDisplay' } },
         { field: 'availableBalance', title: '可用余额', width: '12%' },
         { field: 'frozenBalance', title: '冻结资金', width: '12%' },
         { field: 'availableCreditAmount', title: '剩余可用额度', width: '12%' },
@@ -477,41 +539,41 @@ export default {
         { field: 'expireTime', title: '额度失效日期', width: '14%' },
       ],
       wholesaleOrdersColumns: [
-        { field: 'wholesaleOrderCode', title: '批售订单号', width: '240' },
+        { field: 'wholesaleOrderCode', title: '批售订单号', width: '240', slots: { default: 'wholesaleOrderCode' } },
         { field: 'vin', title: '配车VIN码', width: '180' },
         { field: 'wholesalePrice', title: '批售价', width: '120' },
         { field: 'confirmTime', title: '确认时间', width: '180' },
         { field: 'noAutoConfirmReason', title: '未自动确认原因', width: '150' },
         { field: 'confirmRemark', title: '确认说明', width: '150' },
-        { field: 'prodScheduleActivityName', title: '专项活动', width: '120' },
+        { field: 'prodScheduleActivityName', title: '专项活动', width: '120', slots: { default: 'prodScheduleActivityName' } },
         { field: 'confirmStatusLabel', title: '确认状态', width: '120' },
-        { field: 'statusLabel', title: '订单状态', width: '120' },
+        { field: 'orderStatusLabel', title: '订单状态', width: '120' },
         { field: 'orderTime', title: '订单时间', width: '180' },
         { field: 'allocateTime', title: '配车时间', width: '180' },
         { field: 'settleTime', title: '结算时间', width: '180' },
-        { field: 'saleDealerName', title: '销售门店', width: '150' },
-        { field: 'deliveryDealerName', title: '交付门店', width: '150' },
+        { field: 'saleDealerName', title: '销售门店', width: '150', slots: { default: 'saleDealerName' } },
+        { field: 'deliveryDealerName', title: '交付门店', width: '150', slots: { default: 'deliveryDealerName' } },
         { field: 'applyReason', title: '申请原因', width: '150' },
-        { field: 'modelName', title: '车型', width: '120' },
-        { field: 'yearTypeName', title: '年款', width: '100' },
-        { field: 'materialsDesc', title: '物料描述（L）', width: '350' },
-        { field: '', title: '选配续航（L）', width: '150' },
-        { field: 'exteriorName', title: '外饰风格（L)', width: '120' },
-        { field: 'wheelHubName', title: '选配轮毂（L）', width: '120' },
-        { field: '', title: '选配动力（L）', width: '120' },
-        { field: 'remark', title: '描述', width: '150' },
+        { field: 'modelName', title: '车型', width: '120', slots: { default: 'modelName' } },
+        { field: 'yearTypeName', title: '年款', width: '100', slots: { default: 'yearTypeName' } },
+        { field: 'materialsDesc', title: '物料描述（L）', width: '350', slots: { default: 'materialsDesc' } },
+        // { field: '', title: '选配续航（L）', width: '150' },
+        { field: 'exteriorName', title: '外饰风格（L)', width: '120', slots: { default: 'exteriorName' } },
+        { field: 'wheelHubName', title: '选配轮毂（L）', width: '120', slots: { default: 'wheelHubName' } },
+        { field: 'rangePowerName', title: '选配动力（L）', width: '120', slots: { default: 'rangePowerName' } },
+        { field: 'syncSapMsg', title: '描述', width: '150' },
         { field: 'orderCategoryLabel', title: '订单分类', width: '120' },
         { field: 'wholesaleWayLabel', title: '批售方式', width: '120' },
         { field: 'settleFundTypeLabel', title: '结算资金类型', width: '150' },
-        { field: 'financialOrganizationName', title: '金融机构', width: '150' },
+        { field: 'financialOrganizationName', title: '金融机构', width: '150', slots: { default: 'financialOrganizationName' } },
         { field: 'createTime', title: '创建时间', width: '180' },
         { field: 'vehicleReturnFlagLabel', title: '退车标识', width: '120' }
       ],
       detailsColumns: [
-        { field: 'replenishApplyDetailCode', title: '整车补货明细单号', width: '280' },
-        { field: 'seriesName', title: '车系', width: '120' },
-        { field: 'modelName', title: '车型', width: '200' },
-        { field: 'materialsCode', title: '物料编码', width: '250' },
+        { field: 'replenishApplyDetailCode', title: '整车补货明细单号', width: '280', slots: { default: 'replenishApplyDetailCode' } },
+        { field: 'seriesName', title: '车系', width: '120', slots: { default: 'seriesName' } },
+        { field: 'modelName', title: '车型', width: '200', slots: { default: 'modelName' } },
+        { field: 'materialsCode', title: '物料编码', width: '250', slots: { default: 'materialsCode' } },
         { field: 'materialsDesc', title: '物料描述（L）', width: '350' },
         { field: 'applyQty', title: '申请数量', width: '120' },
         { field: 'invoiceDiscountTypeLabel', title: '开票类型', width: '120' },
@@ -534,7 +596,7 @@ export default {
         applyCategory: [
           { required: false, message: '请选择申请类别', trigger: 'change' }
         ],
-        settleFundType: [
+        settleFundTypeLabel: [
           { required: true, message: '请选择结算资金类型', trigger: 'change' }
         ],
         financialOrganizationId: [
@@ -543,6 +605,9 @@ export default {
         applyReason: [
           { required: true, message: '请输入申请原因', trigger: 'change' },
           { max: 150, message: '最多输入150个字符', trigger: 'blur' }
+        ],
+        dealerWarehouseName: [
+          { required: true, message: '请选择门店仓库', trigger: 'change' }
         ]
       }
     };
@@ -552,6 +617,9 @@ export default {
     this.fetchsettleFundTypeOptions();
   },
   methods: {
+    openWindow (url) {
+      window.open(url, '_blank');
+    },
     handleDeleteDetailRow (row, rowIndex) {
       this.$confirm(`确定要删除${row.replenishApplyDetailCode}表格数据吗`, '提示', {
         confirmButtonText: '确定',
@@ -560,8 +628,13 @@ export default {
       }).then(() => {
         this.form.details.splice(rowIndex, 1);
         this.updateApplyTotalQty();
+        this.submitRequest();
       }).catch(() => {
       });
+    },
+    handleSaveDetailRow () {
+      this.updateApplyTotalQty();
+      this.submitRequest();
     },
     handleSave () {
       const dataList = this.$refs.addCommercialVehicle.tableList;
@@ -596,6 +669,7 @@ export default {
       this.form.details = [...updatedDetails, ...newDetails];
       this.updateApplyTotalQty();
       this.$refs.editLayout.closePane();
+      this.submitRequest();
     },
     handleCancel () {
       this.$refs.editLayout.closePane();
@@ -603,23 +677,44 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id).then(res => {
+        return getDetail(id).then(async res => {
           const data = res;
+          data.wholesaleOrders.applyReason = res.applyReason;
+          if (data.saleDealerCode) {
+            try {
+              const list = await this.getDealerListByName(data.saleDealerName);
+              const dealerItem = list.records.find(item => item.storeCode === data.saleDealerCode);
+              if (dealerItem) {
+                const parentCompanyCode = dealerItem.parentCompanyCode;
+                data.dealerCompanyCodes = parentCompanyCode;
+                this.processFundAccountData(parentCompanyCode);
+              }
+            } catch (error) {
+              console.error('获取经销商列表失败:', error);
+            }
+          }
+
           if (data && data.orderCategory !== undefined && data.orderCategory !== null) {
             data.orderCategory = String(data.orderCategory);
           }
           if (data && data.dealerFundAccounts) {
             data.dealerFundAccounts = data.dealerFundAccounts.map(account => {
+              // 处理原有的信用额度逻辑
               if (account.creditSalesLimit) {
-                return {
-                  ...account,
-                  availableCreditAmount: account.creditSalesLimit.availableCreditAmount,
-                  downPaymentRatio: account.creditSalesLimit.downPaymentRatio,
-                  creditAccountStatusLabel: account.creditSalesLimit.creditAccountStatusLabel,
-                  effectiveTime: account.creditSalesLimit.effectiveTime,
-                  expireTime: account.creditSalesLimit.expireTime,
-                };
+                account.availableCreditAmount = account.creditSalesLimit.availableCreditAmount;
+                account.downPaymentRatio = account.creditSalesLimit.downPaymentRatio;
+                account.creditAccountStatusLabel = account.creditSalesLimit.creditAccountStatusLabel;
+                account.effectiveTime = account.creditSalesLimit.effectiveTime;
+                account.expireTime = account.creditSalesLimit.expireTime;
               }
+              const isFinancing = account.fundType === '2010' || account.fundType === 2010;
+              if (isFinancing && account.financialOrganizationName) {
+                // 若是融资，拼接银行名称
+                account.fundTypeDisplay = `${account.fundTypeLabel}-${account.financialOrganizationName}`;
+              } else {
+                account.fundTypeDisplay = account.fundTypeLabel;
+              }
+
               return account;
             });
           }
@@ -662,9 +757,11 @@ export default {
 
       return addOrUpdate(params).then(res => {
         this.isEditing = false;
+        this.$refs.containerRef.loadDetail();
         return res;
       }).catch(error => {
         this.$message.error('保存失败');
+        this.$refs.containerRef.loadDetail();
         throw error;
       });
     },
@@ -724,8 +821,64 @@ export default {
         };
       });
     },
+    async processFundAccountData (dealerCompanyCodes) {
+      if (!dealerCompanyCodes) {
+        return;
+      }
+      try {
+        const res = await listFundAccount({
+          dealerCompanyCodes: [dealerCompanyCodes],
+        });
+
+        if (res.records && Array.isArray(res.records)) {
+          const fundTypeMap = new Map();
+          const financingOrgMap = new Map();
+
+          res.records.forEach(account => {
+            if (account.fundType && account.validIfCreditSaleAccount) {
+              if (!fundTypeMap.has(account.fundType) && account.fundTypeLabel !== '返利') {
+                fundTypeMap.set(account.fundType, account.fundTypeLabel);
+              }
+            }
+
+            if (account.fundType === '2010' || account.fundType === 2010) {
+              if (account.financialOrganizationId && account.validIfCreditSaleAccount) {
+                if (!financingOrgMap.has(account.financialOrganizationId)) {
+                  financingOrgMap.set(account.financialOrganizationId, account.financialOrganizationName);
+                }
+              }
+            }
+          });
+          this.fundTypeList = Array.from(fundTypeMap.entries()).map(([type, label]) => ({
+            fundType: type,
+            fundTypeLabel: label
+          }));
+          this.financingOrgIdList = Array.from(financingOrgMap.entries()).map(([id, name]) => ({
+            id: id,
+            organizationName: name
+          }));
+        }
+      } catch (error) {
+        console.error('获取资金账户失败:', error);
+      }
+    },
+    async storeWarehouseSearch () {
+      if (this.form.deliveryDealerCode) {
+        return await listOrgWarehouseStoreInfo({ storeCode: this.form.deliveryDealerCode });
+      }
+    },
+    handleChangeDealerWarehouse (val, record) {
+      if (record) {
+        this.form.dealerWarehouseCode = record.warehouseCode || '';
+        this.form.dealerWarehouseAddress = record.warehouseDetailAddress || '';
+        this.form.dealerWarehouseName = record.warehouseName || '';
+      } else {
+        this.form.dealerWarehouseCode = '';
+        this.form.dealerWarehouseAddress = '';
+        this.form.dealerWarehouseName = '';
+      }
+    },
     async handleChangeDealer (val, record) {
-      console.log('handleChangeDealer', val, record);
       this.dealerCompanyCodes = record?.parentCompanyCode || '';
       this.form.saleDealerName = record?.storeName || '';
       this.form.saleDealerCode = record?.storeCode || '';
@@ -733,15 +886,24 @@ export default {
       this.form.regionName = record?.region || '';
       this.form.prodScheduleActivityId = '';
       this.form.prodScheduleActivityName = '';
+      // 清空门店仓库相关字段，使组件的下拉值被清空
+      this.form.dealerWarehouseCode = '';
+      this.form.dealerWarehouseAddress = '';
+      this.form.dealerWarehouseName = '';
+      this.$refs.dealerWarehouseRef.remoteOptions = [];
+      this.form.deliveryDealerCode = '';
+      this.form.deliveryDealerName = '';
+
+      this.processFundAccountData(this.dealerCompanyCodes);
       try {
         const dealerResponse = await getDealerDetailByCode(this.form.saleDealerCode);
         this.form.deliveryDealerCode = dealerResponse?.exclusiveDeliveryStoreCode || '';
         this.form.deliveryDealerName = dealerResponse?.exclusiveDeliveryStoreName || '';
         if (this.form.deliveryDealerCode) {
-          const deliveryDealerResponse = await getDealerDetailByCode(this.form.deliveryDealerCode);
-          this.form.dealerWarehouseCode = deliveryDealerResponse?.storeWarehouseResp?.warehouseCode || '';
-          this.form.dealerWarehouseAddress = deliveryDealerResponse?.storeWarehouseResp?.warehouseDetailAddress || '';
-          this.form.dealerWarehouseName = deliveryDealerResponse?.storeWarehouseResp?.warehouseName || '';
+          const warehouseList = await this.storeWarehouseSearch();
+          if (warehouseList.records && warehouseList.records.length > 0) {
+            this.handleChangeDealerWarehouse(null, warehouseList.records[0]);
+          }
         }
       } catch (error) {
         console.error('获取经销商信息失败:', error);
@@ -755,31 +917,16 @@ export default {
         this.form.applyCategory = '';
       }
     },
-    handleChangeFundType (val) {
-      if (val + '' !== '2010') {
-        this.form.financialOrganizationId = '';
-      }
-      if (val + '' === '1050') {
+    handleChangeFundType (val, row) {
+      this.form.financialOrganizationId = '';
+      this.form.financialOrganizationName = '';
+      this.form.settleFundType = row.fundType;
+      this.form.settleFundTypeLabel = row.fundTypeLabel;
+      if (val === '赊销-零跑') {
         this.form.isCreditSale = 1;
       } else {
         this.form.isCreditSale = 0;
       }
-      // 清空金融机构列表
-      this.financialOrganizationList = [];
-      listFundAccount({
-        dealerCompanyCodes: [this.dealerCompanyCodes],
-        fundTypes: [val]
-      }).then((res) => {
-        console.log('获取账户列表:', res.records);
-        // 筛选 validIfCreditSaleAccount === true 的记录
-        this.financialOrganizationList = res.records
-          .filter(account => account.validIfCreditSaleAccount === true)
-          .map(account => ({
-            id: account.id,
-            organizationName: account.financialOrganizationName
-          }));
-      }).catch(() => {});
-      console.log('结算资金类型改变:', val);
     },
     async getDealerListByName (params) {
       return await listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
@@ -830,7 +977,7 @@ export default {
         auditOpinion: data.remark
       }).then(() => {
         this.$message.success('补货申请门店审核成功');
-        this.getDetailData();
+        this.$refs.containerRef.loadDetail();
       });
     },
     handelAuditForFactory (data) {
@@ -840,7 +987,7 @@ export default {
         auditOpinion: data.remark
       }).then(() => {
         this.$message.success('补货申请厂端审核成功');
-        this.getDetailData();
+        this.$refs.containerRef.loadDetail();
       });
     },
     updateApplyTotalQty () {
@@ -855,16 +1002,6 @@ export default {
       });
       this.form.applyTotalQty = total;
     },
-    getDetailData () {
-      const id = this._id;
-      if (id) {
-        getDetail(id).then(res => {
-          this.loading = false;
-          Object.assign(this.form, res);
-          Object.assign(this.originalForm, res);
-        });
-      }
-    },
     handleUnused () {
       this.$confirm('是否执行作废操作？', '提示', {
         confirmButtonText: '确定',
@@ -873,7 +1010,7 @@ export default {
       }).then(() => {
         unusedApply(this._id).then(() => {
           this.$message.success('补货申请已作废');
-          this.getDetailData();
+          this.$refs.containerRef.loadDetail();
         }).catch(() => {
           this.$message.error('补货申请作废失败');
         });
@@ -883,9 +1020,9 @@ export default {
     handleSubmit () {
       replenishmentSubmit({ id: this._id }).then(() => {
         this.$message.success('补货申请提交成功');
-        this.getDetailData();
+        this.$refs.containerRef.loadDetail();
       });
-    }
+    },
   }
 };
 </script>
