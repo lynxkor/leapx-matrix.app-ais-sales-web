@@ -151,7 +151,7 @@
         />
       </el-form-item>
       <el-form-item label="是否回退记录">
-        <fetch-select :options="yes_no_enum" value=1 disabled placeholder="请选择" clearable />
+        <fetch-select :options="yes_no_enum" v-model="form.statusRollbackFlag" placeholder="请选择" clearable />
       </el-form-item>
       <el-form-item label="操作时间">
         <dateranges
@@ -197,6 +197,7 @@
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList as pageOrderStatusBackRecord } from '@/api/vehretail/orderManager/vrRetailOrderBackRecord/index';
+import { getDetailDecryptField } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import { getTimeRangeByTypeFormat } from '@/libs/utils/time';
 import commonMixins from '@/libs/mixins/commonMixins';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -229,6 +230,7 @@ const defaultForm = {
   interiorId: '',
   wheelId: '',
   optionPackageId: '',
+  statusRollbackFlag: '1',
   retailOrderStatus: '',
   originalOrderStatus: '',
   newOrderStatus: '',
@@ -338,9 +340,9 @@ export default {
               click: (rowIndex, row) => {
                 if (row.saleDealerCode) {
                   this.navigateToRoute({
-                    path: '/partner/channelManagement/shopBasicsMessageDetails',
+                    path: '/partner/channelManagement/shopDetail',
                     query: {
-                      id: row.ownerOrgId
+                      dealerCode: row.saleDealerCode
                     }
                   }, true);
                 }
@@ -348,8 +350,22 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'customerName', label: '购车人姓名', visible: true, width: 120 },
-          { props: 'customerPhone', label: '购车人手机', visible: true, width: 140 },
+          {
+            props: 'customerName',
+            label: '购车人姓名',
+            visible: true,
+            width: 120,
+            mask: true,
+            getValue: (row) => getDetailDecryptField(row.orderId, 'carBuyerName')
+          },
+          {
+            props: 'customerPhone',
+            label: '购车人手机号',
+            visible: true,
+            width: 140,
+            mask: true,
+            getValue: (row) => getDetailDecryptField(row.orderId, 'carBuyerPhone')
+          },
           { props: 'region', label: '大区', visible: true, width: 120 },
           { props: 'province', label: '省份', visible: true, width: 120 },
           { props: 'city', label: '城市', visible: true, width: 120 },

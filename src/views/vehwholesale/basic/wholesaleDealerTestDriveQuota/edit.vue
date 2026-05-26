@@ -257,6 +257,12 @@ export default {
         vehicleYearType: [
           { required: true, message: '请选择年款', trigger: 'change' }
         ],
+        vehicleModelLineId: [
+          { required: true, message: '请选择系列', trigger: 'change' }
+        ],
+        seriesId: [
+          { required: true, message: '请选择车系', trigger: 'change' }
+        ],
         quotaQty: [
           { required: true, message: '请输入配额数量', trigger: 'blur' }
         ],
