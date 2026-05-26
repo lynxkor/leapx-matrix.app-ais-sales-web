@@ -164,14 +164,19 @@
                   />
                 </el-form-item>
                 <el-form-item label="产地：" prop="vehiclePlaceOrigin">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="vehicle_place_origin"
+<!--                  <fetch-select-->
+<!--                    :request="fetchOptions"-->
+<!--                    enumCode="vehicle_place_origin"-->
+<!--                    v-model="form.vehiclePlaceOrigin"-->
+<!--                    placeholder="请选择"-->
+<!--                    clearable-->
+<!--                    filterable-->
+<!--                    disabled-->
+<!--                  />-->
+                  <el-input
+                    placeholder="请输入"
                     v-model="form.vehiclePlaceOrigin"
-                    placeholder="请选择"
                     clearable
-                    filterable
-                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="发动机号：" prop="enginenNumber">
@@ -250,7 +255,8 @@
                   {{ form.carSalesVersionName }}
                 </el-form-item>
                 <el-form-item label="产地：">
-                  {{ form.vehiclePlaceOriginLabel }}
+<!--                  {{ form.vehiclePlaceOriginLabel }}-->
+                  {{ form.vehiclePlaceOrigin }}
                 </el-form-item>
                 <el-form-item label="发动机号：">
                   {{ form.enginenNumber }}

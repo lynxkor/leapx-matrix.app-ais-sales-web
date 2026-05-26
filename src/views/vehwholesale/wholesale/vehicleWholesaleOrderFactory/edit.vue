@@ -767,7 +767,7 @@
                    <el-form-item label="金融机构名称：" prop="financialOrganizationId">
                     <fetch-select
                    :options="financialOrganizationList"
-                    v-model="form.financialOrganizationId"
+                    v-model="form.financialOrganizationName"
                     placeholder="请选择"
                     clearable
                     filterable
@@ -1584,7 +1584,7 @@ export default {
           // 2. 处理 dealerFundAccounts
           if (res.dealerFundAccounts && Array.isArray(res.dealerFundAccounts)) {
             res.dealerFundAccounts = res.dealerFundAccounts.map(account => {
-              if (account.fundTypeLabel !== '返利') {
+              if (account.fundTypeLabel !== '返利' && (account.fundTypeLabel === '"赊销-零跑' && account.validIfCreditSaleAccount !== false)) {
                 uniqueLabels.add(
                   {
                     fundType: account.fundType,
