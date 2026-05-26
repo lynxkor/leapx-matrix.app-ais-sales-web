@@ -155,28 +155,27 @@
             filterable
           />
         </el-form-item>
-          <el-form-item label="城市">
-             <el-select v-model="form.cityCodes" clearable filterable multiple placeholder="请选择">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-        </el-select>
-        </el-form-item>
-           <el-form-item label="省份">
+        <el-form-item label="省份">
             <fetch-select
               filterable
               clearable
               remote
-              v-model="form.provinceCodes"
+              v-model="form.provinceCode"
               :remote-method="getProvince"
-              multiple
               value-key="code"
               label-key="name"
               @change="handleChangeProvince"
             />
+        </el-form-item>
+          <el-form-item label="城市">
+            <fetch-select
+            filterable
+            clearable
+            v-model="form.cityCode"
+            :options="cityOptions"
+            value-key="code"
+            label-key="name"
+          />
         </el-form-item>
          <el-form-item label="所属母公司">
            <fetch-select
@@ -567,6 +566,7 @@ export default {
       yearTypeList: [],
       options: [],
       modelList: [],
+      cityOptions: [], // 市
       settleFundTypeOptions: [],
       ALLOWED_STATUS: [0, 11],
       ALLOWED_CANCELALLOCATEVEHICLE_STATUS: [1, 5, 4],
