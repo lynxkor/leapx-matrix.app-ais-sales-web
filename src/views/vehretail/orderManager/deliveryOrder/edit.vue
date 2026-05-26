@@ -57,6 +57,7 @@
                     value-key="userId"
                     label-key="username"
                     placeholder="请搜索"
+                    @focus="(e) => handleFocus(e, 'saleUser', 'saleUserOptions')"
                     @change="(val) => handleSaleUserChange(val, 'saleUser')"
                   >
                     <el-option
@@ -81,6 +82,7 @@
                     value-key="userId"
                     label-key="username"
                     placeholder="请搜索"
+                    @focus="(e) => handleFocus(e, 'deliveryUser', 'deliveryUserOptions')"
                     @change="(val) => handleSaleUserChange(val, 'deliveryUser')"
                   >
                     <el-option
@@ -102,7 +104,8 @@
                     value-key="userId"
                     label-key="username"
                     placeholder="请搜索"
-                    @change="(val) => handleSaleUserChange(val, 'deliveryDerivativeUser')"
+                    @focus="(e) => handleFocus(e, 'deliveryDerive', 'deliveryDeriveOptions')"
+                    @change="(val) => handleSaleUserChange(val, 'deliveryDerive')"
                   >
                     <el-option
                       v-for="item in deliveryDeriveOptions"
@@ -123,6 +126,7 @@
                     value-key="userId"
                     label-key="username"
                     placeholder="请搜索"
+                    @focus="(e) => handleFocus(e, 'onSiteDeliveryUser', 'onSiteDeliveryUserOptions')"
                     @change="(val) => handleSaleUserChange(val, 'onSiteDeliveryUser')"
                   >
                     <el-option
@@ -825,6 +829,23 @@ export default {
       this.canPushDeliveryActive = this.permissions.has(`${this.moduleKey}-pushDeliveryActive`);
     },
     handleSaleUserChange (val, name) {
+      if (!val) {
+        // 清空时从当前 options 中找出被清空的值，重新塞入（不可选）
+        const optionsMap = {
+          saleUser: this.saleUserOptions,
+          deliveryUser: this.deliveryUserOptions,
+          deliveryDerivativeUser: this.deliveryDeriveOptions,
+          onSiteDeliveryUser: this.onSiteDeliveryUserOptions
+        };
+        const oldOptions = optionsMap[name] || [];
+        // 从 options 中找到不可选的那条（之前被禁用的）
+        const disabledItem = oldOptions.find(item => item.disabled);
+        if (disabledItem) {
+          // 重新查询，但结果中不包含这条数据，需要手动补入
+          this.handleRemoteSearch('', name, disabledItem);
+        }
+        return;
+      }
       // 找到选中的选项，更新对应的 Name
       const optionsMap = {
         saleUser: this.saleUserOptions,
@@ -838,8 +859,15 @@ export default {
         this.form[name + 'Name'] = selected.username;
       }
     },
+    // 获取焦点时：如果下拉没数据则查询一次
+    handleFocus (_, type, optionsKey) {
+      const options = this[optionsKey];
+      if (!options || options.length === 0) {
+        this.handleRemoteSearch('', type);
+      }
+    },
     // 远程搜索公共方法
-    async handleRemoteSearch (query, type) {
+    async handleRemoteSearch (query, type, forceDisabledItem) {
       const configMap = {
         saleUser: { key: 'saleUser', method: this.remoteMethods.saleUser, formKey: 'saleUser', orgKey: 'saleDealerCode' },
         deliveryUser: { key: 'deliveryUser', method: this.remoteMethods.deliveryUser, formKey: 'deliveryUser', orgKey: 'deliveryDealerCode' },
@@ -862,7 +890,14 @@ export default {
       // 检查当前值是否在列表中，不在则添加
       const exists = list.some(item => String(item.userId) === String(currentId));
       const finalList = [...list];
-      if (currentId && currentName && !exists) {
+
+      // 优先使用 forceDisabledItem（清空回填场景），否则使用 currentId/currentName
+      if (forceDisabledItem) {
+        const itemExists = finalList.some(item => String(item.userId) === String(forceDisabledItem.userId));
+        if (!itemExists) {
+          finalList.push({ ...forceDisabledItem, disabled: true });
+        }
+      } else if (currentId && currentName && !exists) {
         finalList.push({ userId: currentId, username: currentName, disabled: true });
       }
 
@@ -891,12 +926,12 @@ export default {
           res.deliveryUserId = res.deliveryUserId ? String(res.deliveryUserId) : '';
           res.deliveryDerivativeUserId = res.deliveryDerivativeUserId ? String(res.deliveryDerivativeUserId) : '';
           res.onSiteDeliveryUserId = res.onSiteDeliveryUserId ? String(res.onSiteDeliveryUserId) : '';
-          // 初始化下拉数据
+          // 初始化下拉数据（无论是否有值都查询一次，确保下拉有数据）
           this.$nextTick(() => {
-            if (res.saleUserId) this.handleRemoteSearch('', 'saleUser');
-            if (res.deliveryUserId) this.handleRemoteSearch('', 'deliveryUser');
-            if (res.deliveryDerivativeUserId) this.handleRemoteSearch('', 'deliveryDerive');
-            if (res.onSiteDeliveryUserId) this.handleRemoteSearch('', 'onSiteDeliveryUser');
+            this.handleRemoteSearch('', 'saleUser');
+            this.handleRemoteSearch('', 'deliveryUser');
+            this.handleRemoteSearch('', 'deliveryDerive');
+            this.handleRemoteSearch('', 'onSiteDeliveryUser');
           });
           return res;
         });
