@@ -31,6 +31,7 @@
           :default-time="['00:00:00', '23:59:59']"
           v-model="form.createTime"
           type="daterange"
+          unlink-panels
           :picker-options="pickerOptions"
           range-separator="至"
           value-format="yyyy-MM-dd HH:mm:ss"
@@ -128,7 +129,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '交付排程时间段配置管理',
+      pageTitle: '交付排程时间段配置',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-deliveryScheduleTimeConfig',
@@ -251,7 +252,7 @@ export default {
         reqParams.ids = ids;
       }
       exportTable({
-        businessType: '交付排程时间段配置管理',
+        businessType: '交付排程时间段配置',
         dataFetchPath: 'vr/web/basicConfig/deliveryScheduleTimeConfig/page',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
@@ -259,7 +260,7 @@ export default {
       }).then(async res => {
         if (res && res.excelUrl) {
           try {
-            await downloadExcel(res.excelUrl, '交付排程时间段配置管理.xlsx');
+            await downloadExcel(res.excelUrl, '交付排程时间段配置.xlsx');
           } catch (error) {
             this.$message({
               type: 'error',

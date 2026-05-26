@@ -11,6 +11,7 @@
       </el-form-item>
       <el-form-item label="VDC入库时间" v-show="this.visibleCount === 3 || show">
         <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.inboundDateTime" type="daterange"
+        unlink-panels
           :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
           start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
@@ -239,6 +240,8 @@ export default {
           { props: 'erpSalesOrder', label: 'ERP销售订单号', visible: true, width: 200 },
           { props: 'erpDeliverOrder', label: 'ERP交货单', visible: true, width: 200 },
           { props: 'erpInvoice', label: 'ERP发票号', visible: true, width: 200 },
+          { props: 'sapSyncTime', label: '同步SAP时间', visible: true, width: 200 },
+          { props: 'sapSyncStatus', label: '同步SAP状态', visible: true, width: 200 },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 140 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 140 },

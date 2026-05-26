@@ -854,7 +854,7 @@ export default {
           { required: false, message: '请输入开票名称', trigger: 'change' }
         ],
         invoiceTime: [
-          { required: false, message: '请选择开票时间', trigger: 'change' }
+          { required: true, message: '请选择开票时间', trigger: 'change' }
         ],
         invoiceAmount: [
           { required: false, message: '请输入发票金额', trigger: 'change' }
@@ -996,7 +996,7 @@ export default {
     },
     openDialogShow () {
       // 确认时间
-      const warnMsg = '系统中的开票日期' + this.form.invoiceTime + '，请确认是否正确；若正确，请点击继续交车；若不正确，请点击取消并修改。';
+      const warnMsg = (this.form.invoiceTime ? '系统中的开票日期' + this.form.invoiceTime : '系统中的开票日期为空') + '，请确认是否正确；若正确，请点击继续交车；若不正确，请点击取消并修改。';
       this.$confirm(warnMsg, '操作提醒', {
         confirmButtonText: '继续交车',
         cancelButtonText: '取消',

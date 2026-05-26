@@ -767,7 +767,7 @@
                    <el-form-item label="金融机构名称：" prop="financialOrganizationId">
                     <fetch-select
                    :options="financialOrganizationList"
-                    v-model="form.financialOrganizationId"
+                    v-model="form.financialOrganizationName"
                     placeholder="请选择"
                     clearable
                     filterable

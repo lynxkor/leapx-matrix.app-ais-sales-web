@@ -48,59 +48,91 @@
                   <el-input v-model="form.saleDealerName" disabled />
                 </el-form-item>
                 <el-form-item label="订单销售顾问：" prop="saleUserId">
-                  <fetch-select
+                  <el-select
                     filterable
                     clearable
                     remote
                     v-model="form.saleUserId"
-                    :params="form.saleUserName"
-                    :remote-method="remoteMethods.saleUser"
+                    :remote-method="(query) => handleRemoteSearch(query, 'saleUser')"
                     value-key="userId"
                     label-key="username"
-                    @change="(val, row) => handleSaleUserChange(val,row, 'saleUser')"
-                  />
+                    placeholder="请搜索"
+                    @change="(val) => handleSaleUserChange(val, 'saleUser')"
+                  >
+                    <el-option
+                      v-for="item in saleUserOptions"
+                      :key="item.userId"
+                      :label="item.username"
+                      :value="item.userId"
+                      :disabled="item.disabled"
+                    />
+                  </el-select>
                 </el-form-item>
                 <el-form-item label="订单交付门店：" prop="deliveryDealerName">
                   <el-input v-model="form.deliveryDealerName" disabled />
                 </el-form-item>
                 <el-form-item label="订单交付顾问：" prop="deliveryUserId">
-                  <fetch-select
+                  <el-select
                     filterable
                     clearable
                     remote
                     v-model="form.deliveryUserId"
-                    :params="form.deliveryUserName"
-                    :remote-method="remoteMethods.deliveryUser"
+                    :remote-method="(query) => handleRemoteSearch(query, 'deliveryUser')"
                     value-key="userId"
                     label-key="username"
-                    @change="(val, row) => handleSaleUserChange(val,row, 'deliveryUser')"
-                  />
+                    placeholder="请搜索"
+                    @change="(val) => handleSaleUserChange(val, 'deliveryUser')"
+                  >
+                    <el-option
+                      v-for="item in deliveryUserOptions"
+                      :key="item.userId"
+                      :label="item.username"
+                      :value="item.userId"
+                      :disabled="item.disabled"
+                    />
+                  </el-select>
                 </el-form-item>
                 <el-form-item label="交付衍生工程师：" prop="deliveryDerivativeUserId">
-                  <fetch-select
+                  <el-select
                     filterable
                     clearable
                     remote
                     v-model="form.deliveryDerivativeUserId"
-                    :params="form.deliveryDerivativeUserName"
-                    :remote-method="remoteMethods.deliveryDerive"
+                    :remote-method="(query) => handleRemoteSearch(query, 'deliveryDerive')"
                     value-key="userId"
                     label-key="username"
-                    @change="(val, row) => handleSaleUserChange(val,row, 'deliveryDerivativeUser')"
-                  />
+                    placeholder="请搜索"
+                    @change="(val) => handleSaleUserChange(val, 'deliveryDerivativeUser')"
+                  >
+                    <el-option
+                      v-for="item in deliveryDeriveOptions"
+                      :key="item.userId"
+                      :label="item.username"
+                      :value="item.userId"
+                      :disabled="item.disabled"
+                    />
+                  </el-select>
                 </el-form-item>
                 <el-form-item label="现场交付工程师：" prop="onSiteDeliveryUserId">
-                  <fetch-select
+                  <el-select
                     filterable
                     clearable
                     remote
                     v-model="form.onSiteDeliveryUserId"
-                    :params="form.onSiteDeliveryUserName"
-                    :remote-method="remoteMethods.deliveryUser"
+                    :remote-method="(query) => handleRemoteSearch(query, 'onSiteDeliveryUser')"
                     value-key="userId"
                     label-key="username"
-                    @change="(val, row) => handleSaleUserChange(val,row, 'onSiteDeliveryUser')"
-                  />
+                    placeholder="请搜索"
+                    @change="(val) => handleSaleUserChange(val, 'onSiteDeliveryUser')"
+                  >
+                    <el-option
+                      v-for="item in onSiteDeliveryUserOptions"
+                      :key="item.userId"
+                      :label="item.username"
+                      :value="item.userId"
+                      :disabled="item.disabled"
+                    />
+                  </el-select>
                 </el-form-item>
                 <el-form-item label="专属服务门店：">
                   <el-input v-model="form.exclusiveServiceStoreName" disabled />
@@ -576,26 +608,35 @@ export default {
       emptyText: '若要启用此内容，请创建记录',
       tableData: [],
       cityDeliveryOrderMin: 0,
+      // 远程搜索下拉数据
+      saleUserOptions: [],
+      deliveryUserOptions: [],
+      deliveryDeriveOptions: [],
+      onSiteDeliveryUserOptions: [],
       // 当前确认收款数据
       currentConfirmPaymentData: {},
       // 远程搜索方法
       remoteMethods: {
         // 初始方法
-        saleUser: async (query) => {
-          // if (!query || query.length < 2) return [];
-          return await engineerList({ username: query, salesConfigKey: 'saleUser', orgCodeList: [this.form.saleDealerCode] });
+        saleUser: async (query, orgCode) => {
+          const dealerCode = orgCode || this.form.saleDealerCode;
+          if (!dealerCode) return [];
+          return await engineerList({ username: query, salesConfigKey: 'saleUser', orgCodeList: [dealerCode] });
         },
-        deliveryUser: async (query) => {
-          // if (!query || query.length < 2) return [];
-          return await engineerList({ username: query, salesConfigKey: 'deliveryUser', orgCodeList: [this.form.deliveryDealerCode] });
+        deliveryUser: async (query, orgCode) => {
+          const dealerCode = orgCode || this.form.deliveryDealerCode;
+          if (!dealerCode) return [];
+          return await engineerList({ username: query, salesConfigKey: 'deliveryUser', orgCodeList: [dealerCode] });
         },
-        deliveryDerive: async (query) => {
-          // if (!query || query.length < 2) return [];
-          return await engineerList({ username: query, salesConfigKey: 'deliveryDerive', orgCodeList: [this.form.deliveryDealerCode] });
+        deliveryDerive: async (query, orgCode) => {
+          const dealerCode = orgCode || this.form.deliveryDealerCode;
+          if (!dealerCode) return [];
+          return await engineerList({ username: query, salesConfigKey: 'deliveryDerive', orgCodeList: [dealerCode] });
         },
-        listParentForOption: async (query) => {
-          // if (!query || query.length < 2) return [];
-          return await engineerList({ username: query, salesConfigKey: 'deliveryDerive', orgCodeList: [this.form.deliveryDealerCode] });
+        listParentForOption: async (query, orgCode) => {
+          const dealerCode = orgCode || this.form.deliveryDealerCode;
+          if (!dealerCode) return [];
+          return await engineerList({ username: query, salesConfigKey: 'deliveryDerive', orgCodeList: [dealerCode] });
         },
       },
       rules: {
@@ -783,8 +824,49 @@ export default {
       this.canCancelDelivery = this.permissions.has(`${this.moduleKey}-cancelDelivery`);
       this.canPushDeliveryActive = this.permissions.has(`${this.moduleKey}-pushDeliveryActive`);
     },
-    handleSaleUserChange (val, row, name) {
-      this.form[name + 'Name'] = row.username;
+    handleSaleUserChange (val, name) {
+      // 找到选中的选项，更新对应的 Name
+      const optionsMap = {
+        saleUser: this.saleUserOptions,
+        deliveryUser: this.deliveryUserOptions,
+        deliveryDerivativeUser: this.deliveryDeriveOptions,
+        onSiteDeliveryUser: this.onSiteDeliveryUserOptions
+      };
+      const options = optionsMap[name] || [];
+      const selected = options.find(item => String(item.userId) === String(val));
+      if (selected) {
+        this.form[name + 'Name'] = selected.username;
+      }
+    },
+    // 远程搜索公共方法
+    async handleRemoteSearch (query, type) {
+      const configMap = {
+        saleUser: { key: 'saleUser', method: this.remoteMethods.saleUser, formKey: 'saleUser', orgKey: 'saleDealerCode' },
+        deliveryUser: { key: 'deliveryUser', method: this.remoteMethods.deliveryUser, formKey: 'deliveryUser', orgKey: 'deliveryDealerCode' },
+        deliveryDerive: { key: 'deliveryDerive', method: this.remoteMethods.deliveryDerive, formKey: 'deliveryDerivativeUser', orgKey: 'deliveryDealerCode' },
+        onSiteDeliveryUser: { key: 'onSiteDeliveryUser', method: this.remoteMethods.deliveryUser, formKey: 'onSiteDeliveryUser', orgKey: 'deliveryDealerCode' }
+      };
+      const config = configMap[type];
+      if (!config) return;
+
+      const { key, method, formKey, orgKey } = config;
+      const orgCode = this.form[orgKey];
+      const res = await method(query, orgCode);
+      const list = res?.data || res || [];
+
+      // 外部数据合并：查询结果 + params值(如果有且不重复则添加并标注不可选)
+      const currentId = this.form[formKey + 'Id'];
+      const currentName = this.form[formKey + 'Name'];
+      const optionsKey = key + 'Options';
+
+      // 检查当前值是否在列表中，不在则添加
+      const exists = list.some(item => String(item.userId) === String(currentId));
+      const finalList = [...list];
+      if (currentId && currentName && !exists) {
+        finalList.push({ userId: currentId, username: currentName, disabled: true });
+      }
+
+      this[optionsKey] = finalList;
     },
     onFinancialSchemeChange (val) {
       if (val === '1010') {
@@ -809,6 +891,13 @@ export default {
           res.deliveryUserId = res.deliveryUserId ? String(res.deliveryUserId) : '';
           res.deliveryDerivativeUserId = res.deliveryDerivativeUserId ? String(res.deliveryDerivativeUserId) : '';
           res.onSiteDeliveryUserId = res.onSiteDeliveryUserId ? String(res.onSiteDeliveryUserId) : '';
+          // 初始化下拉数据
+          this.$nextTick(() => {
+            if (res.saleUserId) this.handleRemoteSearch('', 'saleUser');
+            if (res.deliveryUserId) this.handleRemoteSearch('', 'deliveryUser');
+            if (res.deliveryDerivativeUserId) this.handleRemoteSearch('', 'deliveryDerive');
+            if (res.onSiteDeliveryUserId) this.handleRemoteSearch('', 'onSiteDeliveryUser');
+          });
           return res;
         });
       }

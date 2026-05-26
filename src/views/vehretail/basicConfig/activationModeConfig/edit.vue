@@ -118,6 +118,12 @@
                     disabled
                   />
                 </el-form-item>
+                <el-form-item label="功能演示视频链接：" prop="videoLink">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.videoLink"
+                  />
+                </el-form-item>
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="车系名称：" prop="seriesName">
@@ -143,6 +149,9 @@
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
+                </el-form-item>
+                <el-form-item label="功能演示视频链接：" prop="videoLink">
+                  {{ form.videoLink }}
                 </el-form-item>
               </el-form>
             </div>
@@ -248,7 +257,7 @@ export default {
   data () {
     const form = this.getDefautlForm();
     return {
-      pageTitle: '激活模式配置管理',
+      pageTitle: '激活模式配置',
       pageType: 'edit',
       // TIPS: 权限前缀 AISMC，根据实际情况修改，name为小写驼峰格式
       moduleKey: 'AISVR-activationModeConfig',

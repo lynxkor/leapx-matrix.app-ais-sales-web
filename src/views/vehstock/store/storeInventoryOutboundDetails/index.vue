@@ -25,6 +25,7 @@
             :default-time="['00:00:00', '23:59:59']"
             v-model="form.moveoutOnTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"

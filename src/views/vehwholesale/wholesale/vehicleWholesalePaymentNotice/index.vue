@@ -39,6 +39,7 @@
          :default-time="['00:00:00', '23:59:59']"
           v-model="form.createTime"
           type="daterange"
+          unlink-panels
           :picker-options="pickerOptions"
           range-separator="至"
           value-format="yyyy-MM-dd HH:mm:ss"
@@ -52,6 +53,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.publishTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -156,7 +158,7 @@ export default {
   },
   data () {
     return {
-      pageTitle: '批售请款通知管理',
+      pageTitle: '批售请款通知',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-vehicleWholesalePaymentNotice',

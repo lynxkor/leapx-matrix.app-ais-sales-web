@@ -28,6 +28,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="filterReviewform.auditTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -332,8 +333,32 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.batchReview-dialog {
+<style lang="scss" scoped>
+.filter-batchReview-dialog {
+  ::v-deep {
+    .el-dialog__body {
+      max-height: 560px;
+      overflow-y: auto;
+    }
+    .el-form-item {
+      margin-bottom: 10px;
+      .el-input__inner,
+      .el-select__inner {
+        height: 32px;
+        line-height: 32px;
+      }
+      .el-textarea__inner {
+        min-height: 32px !important;
+        height: 32px;
+      }
+    }
+    .el-date-editor {
+      .el-input__inner {
+        height: 32px;
+        line-height: 32px;
+      }
+    }
+  }
   .el-input-number {
     width: 100%;
   }

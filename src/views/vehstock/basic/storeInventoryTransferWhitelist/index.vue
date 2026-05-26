@@ -29,6 +29,7 @@
           <el-date-picker
             v-model="form.createTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"

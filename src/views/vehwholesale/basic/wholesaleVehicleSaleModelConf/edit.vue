@@ -86,14 +86,23 @@
                   />
                 </el-form-item>
                 <el-form-item label="开票系数：" prop="invoiceCoefficient">
-                  <el-input-number
+                  <el-input-number v-if="form.invoiceDiscountType === 0 || form.invoiceDiscountType === '0' "
                     :controls="false"
                     placeholder="请输入"
                     v-model="form.invoiceCoefficient"
                     clearable
                     style="width: 100%;"
                     :min="0"
-                    :max="100"
+                    :max="1"
+                    :precision="4"
+                  />
+                  <el-input-number v-else
+                    :controls="false"
+                    placeholder="请输入"
+                    v-model="form.invoiceCoefficient"
+                    clearable
+                    style="width: 100%;"
+                    :min="0"
                     :precision="4"
                   />
                 </el-form-item>
@@ -108,14 +117,23 @@
                   />
                 </el-form-item>
                 <el-form-item label="返利使用系数：" prop="rebateCoefficient">
-                  <el-input-number
+                  <el-input-number v-if="form.rebateUseType === 0 || form.rebateUseType === '0' "
                     :controls="false"
                     style="width: 100%;"
                     placeholder="请输入"
                     v-model="form.rebateCoefficient"
                     clearable
                     :min="0"
-                    :max="100"
+                    :max="1"
+                    :precision="4"
+                  />
+                  <el-input-number v-else
+                    :controls="false"
+                    style="width: 100%;"
+                    placeholder="请输入"
+                    v-model="form.rebateCoefficient"
+                    clearable
+                    :min="0"
                     :precision="4"
                   />
                 </el-form-item>

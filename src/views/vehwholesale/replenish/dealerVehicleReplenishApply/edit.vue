@@ -557,11 +557,11 @@ export default {
         { field: 'modelName', title: '车型', width: '120', slots: { default: 'modelName' } },
         { field: 'yearTypeName', title: '年款', width: '100', slots: { default: 'yearTypeName' } },
         { field: 'materialsDesc', title: '物料描述（L）', width: '350', slots: { default: 'materialsDesc' } },
-        { field: '', title: '选配续航（L）', width: '150' },
+        // { field: '', title: '选配续航（L）', width: '150' },
         { field: 'exteriorName', title: '外饰风格（L)', width: '120', slots: { default: 'exteriorName' } },
         { field: 'wheelHubName', title: '选配轮毂（L）', width: '120', slots: { default: 'wheelHubName' } },
         { field: 'rangePowerName', title: '选配动力（L）', width: '120', slots: { default: 'rangePowerName' } },
-        { field: 'remark', title: '描述', width: '150' },
+        { field: 'syncSapMsg', title: '描述', width: '150' },
         { field: 'orderCategoryLabel', title: '订单分类', width: '120' },
         { field: 'wholesaleWayLabel', title: '批售方式', width: '120' },
         { field: 'settleFundTypeLabel', title: '结算资金类型', width: '150' },
@@ -679,6 +679,7 @@ export default {
       if (id) {
         return getDetail(id).then(async res => {
           const data = res;
+          data.wholesaleOrders.applyReason = res.applyReason;
           if (data.saleDealerCode) {
             try {
               const list = await this.getDealerListByName(data.saleDealerName);

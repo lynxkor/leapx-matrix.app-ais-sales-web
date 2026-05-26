@@ -68,7 +68,7 @@
             label-key="orgName"
           />
         </el-form-item>
-        <el-form-item label="销售门店名称">
+        <el-form-item label="销售门店">
             <tag-input v-model="form.saleDealerNames" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="整车补货单号">
@@ -84,6 +84,7 @@
          :default-time="['00:00:00', '23:59:59']"
           v-model="form.orderTime"
           type="daterange"
+          unlink-panels
           :picker-options="pickerOptions"
           range-separator="至"
           value-format="yyyy-MM-dd HH:mm:ss"
@@ -96,6 +97,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.allocateTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -108,6 +110,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.settleTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -226,6 +229,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.confirmTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -245,6 +249,7 @@
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.createTime"
             type="daterange"
+            unlink-panels
             :picker-options="pickerOptions"
             range-separator="至"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -598,7 +603,7 @@ export default {
           { props: 'orderStatusLabel', label: '订单状态', visible: true, width: 100 },
           { props: 'orderTime', label: '订单时间', visible: true, width: 180 },
           { props: 'confirmTime', label: '确认时间', visible: true, width: 180 },
-          // { props: 'saleDealerName', label: '销售公司名称', visible: true, width: 200 },
+          { props: 'saleDealerName', label: '销售门店', visible: true, width: 200 },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 120 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 120 },
           {
