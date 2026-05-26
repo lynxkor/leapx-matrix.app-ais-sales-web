@@ -197,6 +197,7 @@
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList as pageOrderStatusBackRecord } from '@/api/vehretail/orderManager/vrRetailOrderBackRecord/index';
+import { getDetailDecryptField } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import { getTimeRangeByTypeFormat } from '@/libs/utils/time';
 import commonMixins from '@/libs/mixins/commonMixins';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -349,8 +350,22 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'customerName', label: '购车人姓名', visible: true, width: 120 },
-          { props: 'customerPhone', label: '购车人手机', visible: true, width: 140 },
+          {
+            props: 'customerName',
+            label: '购车人姓名',
+            visible: true,
+            width: 120,
+            mask: true,
+            getValue: (row) => getDetailDecryptField(row.orderId, 'carBuyerName')
+          },
+          {
+            props: 'customerPhone',
+            label: '购车人手机号',
+            visible: true,
+            width: 140,
+            mask: true,
+            getValue: (row) => getDetailDecryptField(row.orderId, 'carBuyerPhone')
+          },
           { props: 'region', label: '大区', visible: true, width: 120 },
           { props: 'province', label: '省份', visible: true, width: 120 },
           { props: 'city', label: '城市', visible: true, width: 120 },
