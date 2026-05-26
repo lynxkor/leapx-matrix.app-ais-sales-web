@@ -148,7 +148,7 @@
                   <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${form.yearTypeId}`" target="_blank">{{ form.yearTypeName }}</el-link>
                 </el-form-item>
                 <el-form-item label="上级项目：" prop="parentItem">
-                  {{ form.parentItemName }}
+                  {{ form.parentItem }}
                 </el-form-item>
                 <el-form-item label="选装包名称：" prop="optionPackageName">
                   <el-link type="primary" :href="`/sales/datacenter/materials/vehicleoptionpackage/edit?id=${form.optionPackageId}`" target="_blank">{{ form.optionPackageName }}</el-link>
