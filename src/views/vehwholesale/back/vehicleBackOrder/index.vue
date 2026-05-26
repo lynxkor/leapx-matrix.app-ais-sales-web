@@ -298,7 +298,7 @@ export default {
           { props: 'backTypeLabel', label: '退车类型', visible: true, width: 120 },
           { props: 'orderTypeLabel', label: '单据类型', visible: true, width: 120 },
           { props: 'remark', label: '退车备注', visible: true, width: 200 },
-          { props: 'auditorUserName', label: '审核人', visible: true, width: 100 },
+          { props: 'auditorName', label: '审核人', visible: true, width: 100 },
           { props: 'auditTime', label: '审核时间', visible: true, width: 160 },
           { props: 'auditOpinion', label: '退车审核说明', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 100 },
