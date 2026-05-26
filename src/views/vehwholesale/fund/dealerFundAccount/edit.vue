@@ -195,7 +195,7 @@
               </el-link>
             </template>
             <template #wholesaleOrderCode="{ row }">
-              <el-link type="primary" :href="`/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=${row.wholesaleOrderCode}`" target="_blank">
+              <el-link type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${row.wholesaleOrderCode}`" target="_blank">
                 {{ row.wholesaleOrderCode }}
               </el-link>
             </template>
@@ -315,7 +315,7 @@ export default {
         { field: 'lineNo', title: '行项目号', width: 140, align: 'right' },
         { field: 'remark', title: '备注', width: 200 },
         { field: 'vin', title: 'VIN码', width: 180 },
-        { field: 'wholesaleOrderCode', title: '整车补货订单', width: 200, slots: { default: 'wholesaleOrderCode' } },
+        { field: 'wholesaleOrderCode', title: '批售订单', width: 200, slots: { default: 'wholesaleOrderCode' } },
         { field: 'entVehorderCode', title: '企业客户整车订单', width: 200, slots: { default: 'entVehorderCode' } },
         { field: 'deliveryOrderCode', title: '交车单', width: 200, slots: { default: 'deliveryOrderCode' } },
         { field: 'dealerName', title: '门店', width: 200, slots: { default: 'dealerName' } },
