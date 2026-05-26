@@ -190,19 +190,19 @@
                   {{ form.allowLockRetailLabel }}
                 </el-form-item>
                 <el-form-item label="ERP销售订单号：" prop="erpSalesOrder">
-                  {{ info.erpSalesOrder }}
+                  {{ form.erpSalesOrder }}
                 </el-form-item>
                 <el-form-item label="ERP交货单：" prop="erpDeliverOrder">
-                  {{ info.erpDeliverOrder }}
+                  {{ form.erpDeliverOrder }}
                 </el-form-item>
                 <el-form-item label="ERP发票号：" prop="erpInvoice">
-                  {{ info.erpInvoice }}
+                  {{ form.erpInvoice }}
                 </el-form-item>
                 <el-form-item label="同步SAP时间：" prop="sapSyncTime">
-                  {{ info.sapSyncTime }}
+                  {{ form.sapSyncTime }}
                 </el-form-item>
                 <el-form-item label="同步SAP状态：" prop="sapSyncStatus" style="width: 100%;">
-                  {{ info.sapSyncStatus }}
+                  {{ form.sapSyncStatus }}
                 </el-form-item>
                 <el-form-item label="整车物流预留备注：" prop="vehicleLogisticsReserveRemark" style="width: 100%;">
                   {{ form.vehicleLogisticsReserveRemark }}
