@@ -340,9 +340,9 @@ export default {
               click: (rowIndex, row) => {
                 if (row.saleDealerCode) {
                   this.navigateToRoute({
-                    path: '/partner/channelManagement/shopBasicsMessageDetails',
+                    path: '/partner/channelManagement/shopDetail',
                     query: {
-                      id: row.ownerOrgId
+                      dealerCode: row.saleDealerCode
                     }
                   }, true);
                 }
