@@ -332,6 +332,12 @@ export default {
           });
           this.optionObj.total = res.total;
         }).finally(() => {
+          // this.optionObj.dataList = [];
+          // this.optionObj.total = 0;
+          this.loading = false;
+        }).catch(() => {
+          this.optionObj.dataList = [];
+          this.optionObj.total = 0;
           this.loading = false;
         });
     },
