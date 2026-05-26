@@ -148,7 +148,7 @@
         />
       </el-form-item>
       <el-form-item label="是否回退记录">
-        <fetch-select :options="yes_no_enum" value=1 disabled placeholder="请选择" clearable />
+        <fetch-select :options="yes_no_enum" v-model="form.statusRollbackFlag" disabled placeholder="请选择" clearable />
       </el-form-item>
       <el-form-item label="操作时间">
         <dateranges
@@ -226,6 +226,7 @@ const defaultForm = {
   interiorId: '',
   wheelId: '',
   optionPackageId: '',
+  statusRollbackFlag: '1',
   retailOrderStatus: '',
   originalOrderStatus: '',
   newOrderStatus: '',
