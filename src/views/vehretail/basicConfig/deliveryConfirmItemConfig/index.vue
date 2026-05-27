@@ -223,7 +223,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'parentItem', label: '上级项目', visible: true, width: 200 },
+          { props: 'parentItemName', label: '上级项目', visible: true, width: 200 },
           { props: 'levelLabel', label: '层级', visible: true, width: 200 },
           { props: 'checkMethodLabel', label: '检查方式', visible: true, width: 200 },
           { props: 'sameLevelSort', label: '同级排序', visible: true, width: 200 },
