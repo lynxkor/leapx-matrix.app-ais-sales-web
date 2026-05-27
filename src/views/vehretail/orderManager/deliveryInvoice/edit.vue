@@ -628,9 +628,26 @@
                 align="center"
               >
                 <template slot-scope="scope">
-              <span :class="{ 'warning-value': scope.row.isHighlighted }">
-                {{ scope.row.recognizedValue }}
-              </span>
+                  <!-- 车主证件类型使用下拉选择框 -->
+                  <fetch-select
+                    v-if="scope.row.fieldKey === 'carIdCardType'"
+                    :request="fetchOptions"
+                    enumCode="vehretail_id_card_type"
+                    v-model="scope.row.recognizedValue"
+                    placeholder="请选择"
+                    size="small"
+                    clearable
+                    filterable
+                    :class="{ 'warning-value': scope.row.isHighlighted }"
+                  />
+                  <!-- 其他字段使用普通输入框 -->
+                  <el-input
+                    v-else
+                    v-model="scope.row.recognizedValue"
+                    size="small"
+                    :disabled="scope.row.disabled"
+                    :class="{ 'warning-value': scope.row.isHighlighted }"
+                  />
                 </template>
               </el-table-column>
               <!-- 检验字段列 -->
@@ -679,7 +696,7 @@
 import {
   addOrUpdate,
   checkUpload,
-  confirmUpload,
+  confirmUpload, confirmUploadNew,
   deleteItem,
   getDetail
 } from '@/api/vehretail/orderManager/deliveryInvoice/index';
@@ -984,10 +1001,15 @@ export default {
       });
     },
     handleConfirmUpload () {
-      if (this.doComparisonData().length > 0) {
+      const validateFailed = this.comparisonData.some(item => item.isHighlighted);
+      if (validateFailed) {
         this.$message.warning('识别信息与校验信息不一致,请重新确认！');
       } else {
-        confirmUpload(this.form.id).then(res => {
+        const uploadConfirm = {};
+        this.comparisonData.forEach(item => {
+          uploadConfirm[item.fieldKey] = item.recognizedValue;
+        });
+        confirmUploadNew(uploadConfirm).then(res => {
           this.dialogVisible = false;
           // 重新加载详情数据
           this.reloadDetail();
@@ -1012,67 +1034,80 @@ export default {
     doComparisonData () {
       const comparisonData = [];
       // i.发票VIN=配车VIN,ii.开票名称=购车人姓名,iii.车主证件号码=证件号码,发票金额=开票金额,证件识别的客户姓名=购车人姓名,证件识别的证件号码=证件号码,车主证件类型=证件类型
-      if (!this.form.vin || !this.form.matchVin || this.form.vin !== this.form.matchVin) {
-        comparisonData.push({
-          fieldName: '发票VIN',
-          recognizedValue: this.form.vin,
-          checkField: '配车VIN',
-          checkValue: this.form.matchVin,
-          isHighlighted: true
-        });
-      }
-      if (!this.form.invoiceName || !this.form.orderCarBuyerName || this.form.invoiceName !== this.form.orderCarBuyerName) {
-        comparisonData.push({
-          fieldName: '开票名称',
-          recognizedValue: this.form.invoiceName,
-          checkField: '购车人姓名',
-          checkValue: this.form.orderCarBuyerName,
-          isHighlighted: true
-        });
-      }
-      if (!this.form.carBuyerName || !this.form.orderCarBuyerName || this.form.carBuyerName !== this.form.orderCarBuyerName) {
-        comparisonData.push({
-          fieldName: '证件识别的客户姓名',
-          recognizedValue: this.form.carBuyerName,
-          checkField: '购车人姓名',
-          checkValue: this.form.orderCarBuyerName,
-          isHighlighted: true
-        });
-      }
-      if (!this.form.carIdCardType || !this.form.orderIdCardType || this.form.carIdCardType !== this.form.orderIdCardType) {
-        comparisonData.push({
-          fieldName: '车主证件类型',
-          recognizedValue: this.form.carIdCardTypeLabel,
-          checkField: '证件类型',
-          checkValue: this.form.orderIdCardTypeLabel,
-        });
-      }
-      if (!this.form.carIdCardNo || !this.form.orderIdCardNo || this.form.carIdCardNo !== this.form.orderIdCardNo) {
-        comparisonData.push({
-          fieldName: '车主证件号码',
-          recognizedValue: this.form.carIdCardNo,
-          checkField: '证件号码',
-          checkValue: this.form.orderIdCardNo,
-        });
-      }
-      if (!this.form.idCardNo || !this.form.orderIdCardNo || this.form.idCardNo !== this.form.orderIdCardNo) {
-        comparisonData.push({
-          fieldName: '证件识别的证件号码',
-          recognizedValue: this.form.idCardNo,
-          checkField: '证件号码',
-          checkValue: this.form.orderIdCardNo,
-          isHighlighted: true
-        });
-      }
-      if (!this.form.invoiceAmount || !this.form.deliveryOrderInvoiceAmount || this.form.invoiceAmount !== this.form.deliveryOrderInvoiceAmount) {
-        comparisonData.push({
-          fieldName: '发票金额',
-          recognizedValue: this.form.invoiceAmount,
-          checkField: '开票金额',
-          checkValue: this.form.deliveryOrderInvoiceAmount,
-          isHighlighted: true
-        });
-      }
+      // 固定7行，不根据判空条件限制
+      comparisonData.push({
+        fieldKey: 'vin',
+        fieldName: '发票VIN',
+        recognizedValue: this.form.vin,
+        checkField: '配车VIN',
+        checkValue: this.form.matchVin,
+        isHighlighted: !this.form.vin || !this.form.matchVin || this.form.vin !== this.form.matchVin,
+        disabled: false
+      });
+      comparisonData.push({
+        fieldKey: 'invoiceName',
+        fieldName: '开票名称',
+        recognizedValue: this.form.invoiceName,
+        checkField: '购车人姓名',
+        checkValue: this.form.orderCarBuyerName,
+        isHighlighted: !this.form.invoiceName || !this.form.orderCarBuyerName || this.form.invoiceName !== this.form.orderCarBuyerName,
+        disabled: false
+      });
+      comparisonData.push({
+        fieldKey: 'carBuyerName',
+        fieldName: '证件识别的客户姓名',
+        recognizedValue: this.form.carBuyerName,
+        checkField: '购车人姓名',
+        checkValue: this.form.orderCarBuyerName,
+        isHighlighted: !this.form.carBuyerName || !this.form.orderCarBuyerName || this.form.carBuyerName !== this.form.orderCarBuyerName,
+        disabled: false
+      });
+      comparisonData.push({
+        fieldKey: 'carIdCardType',
+        fieldName: '车主证件类型',
+        recognizedValue: this.form.carIdCardType,
+        recognizedValueLabel: this.form.carIdCardTypeLabel,
+        checkField: '证件类型',
+        checkValue: this.form.orderIdCardTypeLabel,
+        isHighlighted: !this.form.carIdCardType || !this.form.orderIdCardType || this.form.carIdCardType !== this.form.orderIdCardType,
+        disabled: false
+      });
+      comparisonData.push({
+        fieldKey: 'carIdCardNo',
+        fieldName: '车主证件号码',
+        recognizedValue: this.form.carIdCardNo,
+        checkField: '证件号码',
+        checkValue: this.form.orderIdCardNo,
+        isHighlighted: !this.form.carIdCardNo || !this.form.orderIdCardNo || this.form.carIdCardNo !== this.form.orderIdCardNo,
+        disabled: false
+      });
+      comparisonData.push({
+        fieldKey: 'idCardNo',
+        fieldName: '证件识别的证件号码',
+        recognizedValue: this.form.idCardNo,
+        checkField: '证件号码',
+        checkValue: this.form.orderIdCardNo,
+        isHighlighted: !this.form.idCardNo || !this.form.orderIdCardNo || this.form.idCardNo !== this.form.orderIdCardNo,
+        disabled: false
+      });
+      comparisonData.push({
+        fieldKey: 'invoiceAmount',
+        fieldName: '发票金额',
+        recognizedValue: this.form.invoiceAmount,
+        checkField: '开票金额',
+        checkValue: this.form.deliveryOrderInvoiceAmount,
+        isHighlighted: !this.form.invoiceAmount || !this.form.deliveryOrderInvoiceAmount || this.form.invoiceAmount !== this.form.deliveryOrderInvoiceAmount,
+        disabled: true
+      });
+      comparisonData.push({
+        fieldKey: 'brandModel',
+        fieldName: '发票厂牌型号',
+        recognizedValue: this.form.brandModel,
+        checkField: '公告车型',
+        checkValue: this.form.carSalesVersionName,
+        isHighlighted: !this.form.brandModel || !this.form.carSalesVersionName || this.form.brandModel !== this.form.carSalesVersionName,
+        disabled: true
+      });
       return comparisonData;
     },
     handleUploadConfirm () {

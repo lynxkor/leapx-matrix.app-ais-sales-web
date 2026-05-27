@@ -52,6 +52,14 @@ export function confirmUpload (data) {
 }
 
 /**
+ * 确认上传
+ * @param {Object} data
+ */
+export function confirmUploadNew (data) {
+  return api.jsonPost(prefix + 'confirmUploadNew', data);
+}
+
+/**
  * VIN查询
  * @param {Object} data
  */
