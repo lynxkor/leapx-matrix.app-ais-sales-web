@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" width="1200px" :visible.sync="dialogVisible" @close="handleClose">
+  <el-dialog :title="title" width="1200px" height="560px" :visible.sync="dialogVisible" @close="handleClose">
     <div>
       <el-form
         ref="form"
@@ -145,7 +145,7 @@
         </template>
         <el-form-item label="">
           <el-button :loading="loading" size="small" type="primary" plain class="btn-search" @click="onSubmit">查询</el-button>
-          <el-button size="small" class="btn-reset" @click="onReset">重置</el-button>
+          <el-button size="small" class="btn-reset" style="font-weight: 400;" @click="onReset">重置</el-button>
           <span style="padding-left: 10px;" class="icon-expand curPoint" @click="toggleShow">
             {{ show ? "收起" : "展开"}}
             <i :class="show ? 'iconfont icon-lxppc-up' : 'iconfont icon-lxppc-down'"></i>
@@ -594,5 +594,8 @@ export default {
 .search-buttons .el-form-item {
   margin-bottom: 0;
   margin-left: 10px;
+}
+::v-deep .el-dialog__body {
+  padding: 20px 20px 0 20px;
 }
 </style>

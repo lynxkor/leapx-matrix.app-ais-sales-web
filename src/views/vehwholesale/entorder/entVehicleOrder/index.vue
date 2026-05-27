@@ -146,7 +146,7 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <button-group collapse-direction="left">
+      <button-group collapse-direction="left" maxWidth="95%">
         <el-button v-permission="moduleKey+'-batchAllocateSubmit'" size="small" :disabled="selectionList.length === 0" @click="handleBatchAllocateVehicle">批量配车</el-button>
         <el-button v-permission="moduleKey+'-batchCancelAllocateSubmit'" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancelAllocateVehicle">取消配车</el-button>
         <el-button v-permission="moduleKey+'-batchSettleSubmit'" size="small" :disabled="selectionList.length === 0" @click="handleBatchSettleSubmit">批量结算</el-button>

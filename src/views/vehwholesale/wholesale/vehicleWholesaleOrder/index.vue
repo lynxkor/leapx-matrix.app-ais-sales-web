@@ -290,7 +290,7 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <button-group collapse-direction="left">
+      <button-group collapse-direction="left" maxWidth="95%">
         <el-button v-permission="moduleKey+'-batchConfirm'"  size="small" :disabled="selectionList.length === 0" @click="handleBatchConfirm">批量确认</el-button>
         <el-button v-permission="moduleKey+'-batchAllocateVehicle'" size="small" :disabled="selectionList.length === 0" @click="handleBatchAllocateVehicle">批量配车</el-button>
         <el-button v-permission="moduleKey+'-batchSettleSubmit'"  size="small" :disabled="selectionList.length === 0" @click="handleBatchSettleSubmit">批量结算</el-button>
@@ -1459,7 +1459,7 @@ export default {
 <style lang="scss" scoped>
 .m-order-list {
   ::v-deep .m-vxe-table-options{
-    top: -96px;
+    top: -102px;
   }
 }
 </style>

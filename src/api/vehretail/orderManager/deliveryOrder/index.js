@@ -234,3 +234,11 @@ export function completeDelivery (data) {
 export function pushDeliveryActive (data) {
   return api.jsonPost(prefix + 'pushDeliveryActive', data);
 }
+
+/**
+ * 计算尾款
+ * @param {Object} data
+ */
+export function calculateDeliveryAmount (data) {
+  return api.jsonPost(prefix + 'calculateDeliveryAmount', data);
+}
