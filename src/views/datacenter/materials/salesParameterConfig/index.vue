@@ -4,8 +4,6 @@
       <el-form-item label="车辆交付模式">
           <el-switch
             v-model="detailData.vehicleDeliveryMode"
-            active-color="#13ce66"
-            inactive-color="#cccccc"
             :active-value="1"
             :inactive-value="0"
             @change="handleChange">
@@ -23,33 +21,36 @@ export default {
       pageTitle: '销售参数配置',
       moduleKey: 'AISVS-salesParameterConfig',
       status: true,
-      detailData: {}
+      detailData: {
+        vehicleDeliveryMode: 0,
+        oringinalVehicleDeliveryMode: 0
+      }
     };
   },
   async created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
-    let res = await getDetail();
-    this.detailData = res;
-    console.log('1111', this.detailData);
+    this.getData();
   },
   methods: {
-    async handleChange (val) {
-      const originalValue = this.detailData.vehicleDeliveryMode;
+    async getData () {
       try {
-        let res = addOrUpdate(
-          {
-            id: this.detailData.id,
-            vehicleDeliveryMode: val
-          }
-        );
-        if (res) {
-          this.$message.success('操作成功');
-          this.$emit('update:vehicleDeliveryMode', val);
-        }
-      } catch (error) {
-        this.$message.error('操作失败');
-        this.$emit('update:vehicleDeliveryMode', originalValue);
+        let res = await getDetail() || {};
+        this.detailData = res;
+        this.detailData.oringinalVehicleDeliveryMode = res?.vehicleDeliveryMode;
+      } catch (e) {
+        console.error(e);
       }
+    },
+    async handleChange (val) {
+      addOrUpdate({
+        id: this.detailData.id,
+        vehicleDeliveryMode: val
+      }).then(res => {
+        this.$message.success('操作成功');
+      }).catch(() => {
+        this.$message.error('操作失败');
+        this.detailData.vehicleDeliveryMode = this.detailData.oringinalVehicleDeliveryMode;
+      });
     }
   }
 };
