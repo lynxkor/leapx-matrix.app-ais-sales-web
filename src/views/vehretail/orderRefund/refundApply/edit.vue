@@ -1092,6 +1092,7 @@ export default {
       this.form.agentName = val ? selectedOption.agentName : '';
       this.form.saleDealerCode = val ? selectedOption.saleDealerCode : '';
       this.form.saleDealerName = val ? selectedOption.saleDealerName : '';
+      this.form.saleUserName = val ? selectedOption.saleUserName : '';
       this.form.materialsCode = val ? selectedOption.materialsCode : '';
       this.form.discontinueStatusLabel = null;
       this.form.orderTime = val ? selectedOption.orderTime : '';
