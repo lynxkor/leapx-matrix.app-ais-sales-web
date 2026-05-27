@@ -1004,7 +1004,7 @@ export default {
       });
     },
     handleConfirmUpload () {
-      const validateFailed = this.comparisonData.some(item => item.recognizedValue !== item.checkValue);
+      const validateFailed = this.comparisonData.some(item => !item.eqCheckIgnore && item.recognizedValue !== item.checkValue);
       if (validateFailed) {
         this.$message.warning('识别信息与校验信息不一致,请重新确认！');
       } else {
@@ -1075,6 +1075,7 @@ export default {
         checkField: '证件类型',
         checkValue: this.form.orderIdCardType,
         checkValueLabel: this.form.orderIdCardTypeLabel,
+        eqCheckIgnore: true,
         isLabel: true,
         isHighlighted: !this.form.carIdCardType || !this.form.orderIdCardType || this.form.carIdCardType !== this.form.orderIdCardType,
         disabled: false
