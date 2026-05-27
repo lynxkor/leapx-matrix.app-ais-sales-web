@@ -3,7 +3,7 @@
     <template #left>
       <!-- TIPS: 如果需要竖排，direction="vertical" -->
       <edit-base-container ref="containerRef" :id="_id" :title="title" :isEditing.sync="isEditing" :form.sync="form"
-        :originalForm.sync="originalForm" :submitRequest="submitRequest" :detailRequest="detailRequest">
+        :originalForm.sync="originalForm" :detailRequest="detailRequest" @submit="handleMySubmit">
         <template #status>
           <!-- 支持primary,warning,success,danger等状态 -->
           <!-- <span class="status primary">状态</span> -->
@@ -171,8 +171,10 @@ export default {
         return getDetail(id);
       }
     },
-    submitRequest () {
-      return addOrUpdate({ ...this.form });
+    async handleMySubmit (success) {
+      await addOrUpdate({ ...this.form });
+      this.$message.success('保存成功');
+      this.$router.push('/vehstock/store/storeSharedInventory');
     },
     // 打开侧边栏
     openPane () {
