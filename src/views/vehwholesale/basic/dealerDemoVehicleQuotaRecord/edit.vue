@@ -173,6 +173,7 @@ export default {
             dealerCode: this.form.dealerCode,
             vehicleYearTypeId: this.form.vehicleYearTypeId,
             vehicleModelLineId: this.form.vehicleModelLineId,
+            seriesId: this.form.seriesId,
             file: fileDto
           };
           updateTestDriveQuota(submitForm).then(res => {

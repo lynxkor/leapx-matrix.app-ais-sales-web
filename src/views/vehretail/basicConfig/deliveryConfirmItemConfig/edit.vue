@@ -147,7 +147,7 @@
                 <el-form-item label="年款名称：" prop="yearTypeName">
                   <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${form.yearTypeId}`" target="_blank">{{ form.yearTypeName }}</el-link>
                 </el-form-item>
-                <el-form-item label="上级项目：" prop="parentItem">
+                <el-form-item label="上级项目：" prop="parentItemName">
                   {{ form.parentItemName }}
                 </el-form-item>
                 <el-form-item label="选装包名称：" prop="optionPackageName">

@@ -245,7 +245,7 @@ export default {
           { required: true, message: '请选择系列', trigger: 'change' }
         ],
         seriesId: [
-          { required: true, message: '请选择车系', trigger: 'change' }
+          { required: false, message: '请选择车系', trigger: 'change' }
         ],
         quantity: [
           { required: true, message: '请输入数量', trigger: 'blur' }
@@ -254,7 +254,7 @@ export default {
           { required: true, message: '请选择建店类型', trigger: 'change' }
         ],
         cityCode: [
-          { required: true, message: '请选择城市', trigger: 'change' }
+          { required: false, message: '请选择城市', trigger: 'change' }
         ],
         startDate: [
           { required: true, message: '请选择开始日期', trigger: 'change' }
