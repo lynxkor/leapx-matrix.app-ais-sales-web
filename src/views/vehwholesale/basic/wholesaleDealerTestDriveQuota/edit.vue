@@ -78,20 +78,15 @@
                 </el-form-item>
                 <el-form-item label="车系：" prop="seriesId">
                   <fetch-select
-                    v-if="!_id"
                     filterable
                     clearable
-                    :options="vehicleSeriesOptions"
+                    remote
+                    :params="form.seriesName"
+                    :remote-method="remoteMethods.series"
                     v-model="form.seriesId"
-                    value-key="id"
-                    label-key="name"
+                    labelKey="name"
+                    valueKey="id"
                     @change="(val, record) => {form.seriesName = record?.name || ''}"
-                  />
-                  <el-input v-else
-                    placeholder="请输入"
-                    v-model="form.seriesName"
-                    clearable
-                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="累计已申请数：" prop="requestQty">
@@ -111,6 +106,7 @@
                     v-model="form.quotaQty"
                     clearable
                     :precision="0"
+                    :disabled="!!_id"
                   />
                 </el-form-item>
                 <el-form-item label="调整说明：" prop="changeDesc">
@@ -120,6 +116,7 @@
                     placeholder="请输入"
                     v-model="form.changeDesc"
                     clearable
+                    :disabled="!!_id"
                   />
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
@@ -246,7 +243,11 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
-      vehicleSeriesOptions: [],
+      remoteMethods: {
+        series: async (query) => {
+          return await vehicleSeriesList({ seriesNameLike: query, modelLineId: this.form.vehicleModelLineId, status: 1 });
+        }
+      },
       rules: {
         dealerCode: [
           { required: true, message: '请输入门店编码', trigger: 'blur' }
@@ -303,9 +304,6 @@ export default {
         this.form.dealerCode = selectedOption?.storeCode || '';
         this.form.dealerName = selectedOption?.storeName || '';
       }
-    },
-    async getVehicleSeriesList (params) {
-      return vehicleSeriesList({ seriesNameLike: params, status: 1 });
     },
     async getVehicleModelLineList (params) {
       return vehicleModelLineList({ modelLineNameLike: params, status: 1 });
