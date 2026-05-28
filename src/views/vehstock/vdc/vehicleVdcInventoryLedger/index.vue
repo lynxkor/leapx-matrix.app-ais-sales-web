@@ -62,7 +62,7 @@
           <tag-input v-model="form.poList" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="销售预留">
-          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.logisticsReserved"
+          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.reserved"
             placeholder="请选择" clearable filterable />
         </el-form-item>
         <el-form-item label="销售预留类型">
@@ -70,10 +70,10 @@
             placeholder="请选择" clearable filterable />
         </el-form-item>
         <el-form-item label="特殊预留备注">
-          <tag-input v-model="form.specialReserveRemarkLike" placeholder="请输入" />
+          <el-input placeholder="请输入" v-model="form.specialReserveRemarkLike" clearable />
         </el-form-item>
         <el-form-item label="整车物流预留备注">
-          <tag-input v-model="form.vehicleLogisticsReserveRemarkLike" placeholder="请输入" />
+          <el-input placeholder="请输入" v-model="form.vehicleLogisticsReserveRemarkLike" clearable />
         </el-form-item>
         <el-form-item label="VDC出库时间">
           <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.outboundDateTime" type="daterange"
@@ -92,7 +92,7 @@
           <el-input-number v-model="form.stockAgeLe" placeholder="请输入" :min="0" :max="99999" controls-position="right" style="width: 100%" />
         </el-form-item>
         <el-form-item label="制造工厂">
-          <tag-input v-model="form.factory" placeholder="请输入" />
+          <el-input placeholder="请输入" v-model="form.factory" clearable />
         </el-form-item>
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
