@@ -650,25 +650,10 @@ export default {
       if (!Array.isArray(this.form.details)) {
         this.form.details = [];
       }
-      const existingDetailsMap = new Map();
-      this.form.details.forEach(detail => {
-        if (detail.materialsCode) {
-          existingDetailsMap.set(detail.materialsCode, detail);
-        }
-      });
-      const newDetails = [];
-      const updatedDetails = [...this.form.details];
-      processedDataList.forEach(dataItem => {
-        const existingDetail = existingDetailsMap.get(dataItem.materialsCode);
-        if (existingDetail) {
-          existingDetail.applyQty = (Number(existingDetail.applyQty) || 0) + (Number(dataItem.applyQty) || 0);
-        } else {
-          newDetails.push(dataItem);
-        }
-      });
-      this.form.details = [...updatedDetails, ...newDetails];
+      // 将所有数据项直接添加到明细列表中，不进行任何合并
+      this.form.details = [...this.form.details, ...processedDataList];
       this.updateApplyTotalQty();
-      this.$refs.editLayout.closePane();
+      // this.$refs.editLayout.closePane();
       this.submitRequest();
     },
     handleCancel () {
@@ -748,11 +733,6 @@ export default {
       if ((!this.form.details || this.form.details.length <= 0) && this._id) {
         this.$message.error('请至少添加一条补货明细');
         return Promise.reject(new Error('请至少添加一条补货明细'));
-      }
-
-      if ((this.form.orderCategory === '2' || this.form.orderCategory === 2) && this.form.applyTotalQty !== 1 && this._id) {
-        this.$message.error('试驾车订单申请数量不能大于1');
-        return Promise.reject(new Error('试驾车订单申请数量不能大于1'));
       }
 
       return addOrUpdate(params).then(res => {

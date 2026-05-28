@@ -499,14 +499,18 @@
                   />
                 </el-form-item>
                 <el-form-item label="车辆属性：" prop="vehicleAttribute">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="vehicle_attribute_type"
-                    v-model="form.vehicleAttribute"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                  />
+                  <el-select v-model="form.vehicleAttribute">
+                    <el-option
+                      v-for="item in vehicleAttributeSelector"
+                      :key="item.code"
+                      :label="item.message"
+                      :value="item.code"
+                      :disabled="item.disabled"
+                      placeholder="请选择"
+                      clearable
+                      filterable
+                    />
+                  </el-select>
                 </el-form-item>
                 <el-form-item label="车主证件类型：" prop="carIdCardType">
                   <fetch-select
@@ -743,12 +747,12 @@ const defaultForm = {
   vehiclePlaceOrigin: '',
   carBuyerName: '',
   idCardNo: '',
-  vehicleAttribute: '',
+  vehicleAttribute: null,
   saleDealerCode: '',
   saleDealerName: '',
   deliveryDealerCode: '',
   deliveryDealerName: '',
-  dataSource: '',
+  dataSource: 150,
   orderStatus: '',
   orderSource: '',
   orderTime: '',
@@ -825,6 +829,16 @@ export default {
       submitLoading: false,
       uploadLoading: false,
       uploadLoadingCounter: 0,
+      // 车辆属性 1-家用 2-营运 4-B级车 10-J级车 20-J1级车 30-专车 60-报废灭失
+      vehicleAttributeSelector: [
+        { code: 1, message: '家用' },
+        { code: 2, message: '营运' },
+        { code: 4, message: 'B级车', disabled: true },
+        { code: 10, message: 'J级车', disabled: true },
+        { code: 20, message: 'J1级车', disabled: true },
+        { code: 30, message: '专车', disabled: true },
+        { code: 60, message: '报废灭失', disabled: true }
+      ],
       // 附件列表配置
       attachmentList: [
         { label: '车主身份证件', required: true, configCode: 'mcs_vehnetwork', attachType: '车主身份证件' },

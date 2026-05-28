@@ -118,7 +118,7 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item v-show="form.cateCode === '1210'" label="超时订单自动审核通过：" prop="expireOrderAutoPass">
+                <el-form-item v-show="form.cateName.includes('超期订单')" label="超时订单自动审核通过：" prop="expireOrderAutoPass">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="BooleanEnum"
@@ -129,10 +129,10 @@
                   />
                 </el-form-item>
                 <el-form-item
-                  v-if="form.cateCode === '1210'"
+                  v-if="form.cateName.includes('超期订单')"
                   label="超时订单时间设置："
                   prop="expireOrderTime"
-                  :rules="form.expireOrderAutoPass === 1 ? rules.expireOrderTime: []"
+                  :rules="Number(form.expireOrderAutoPass) === 1 ? rules.expireOrderTime: []"
                 >
                   <div>
                     <span>【缴定金时间】距离当前超过 </span>

@@ -224,7 +224,7 @@ export default {
             width: 150,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=${row.scheduleActivityId}`, '_blank');
+                window.open(`/sales//vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=${row.scheduleActivityId}`, '_blank');
               },
               type: 'primary'
             }]
