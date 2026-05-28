@@ -86,10 +86,10 @@
             placeholder="请选择" clearable filterable />
         </el-form-item>
         <el-form-item label="库龄最小天数">
-          <tag-input v-model="form.stockAgeGe" placeholder="请输入" />
+          <el-input-number v-model="form.stockAgeGe" placeholder="请输入" :min="0" :max="99999" controls-position="right" style="width: 100%" />
         </el-form-item>
         <el-form-item label="库龄最大天数">
-          <tag-input v-model="form.stockAgeLe" placeholder="请输入" />
+          <el-input-number v-model="form.stockAgeLe" placeholder="请输入" :min="0" :max="99999" controls-position="right" style="width: 100%" />
         </el-form-item>
         <el-form-item label="制造工厂">
           <tag-input v-model="form.factory" placeholder="请输入" />
