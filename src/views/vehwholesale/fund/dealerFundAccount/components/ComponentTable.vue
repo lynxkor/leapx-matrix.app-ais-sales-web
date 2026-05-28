@@ -267,7 +267,7 @@ export default {
     // 处理 transLogCode 点击跳转
     handleTransLogClick (row) {
       if (row && row.id) {
-        window.open(`/vehwholesale/fund/dealerFundAccountTransLog/edit?id=${row.id}`, '_blank');
+        window.open(`/sales/vehwholesale/fund/dealerFundAccountTransLog/edit?id=${row.id}`, '_blank');
       }
     }
   }
