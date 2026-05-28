@@ -21,7 +21,7 @@
                   :disabled="true"
                 />
               </el-form-item>
-              <el-form-item label="配额数" prop="changeAfterQty">
+              <el-form-item label="调整后配额数" prop="changeAfterQty">
                 <el-input-number
                   :controls="false"
                   placeholder="请输入"
