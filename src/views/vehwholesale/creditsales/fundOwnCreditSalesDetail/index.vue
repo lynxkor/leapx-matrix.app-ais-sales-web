@@ -114,6 +114,7 @@
         v-loading="loading"
         is-page
         checkboxFixed
+        is-checkbox
         centralized
         :option-obj="optionObj"
         :get-config="getConfig"
