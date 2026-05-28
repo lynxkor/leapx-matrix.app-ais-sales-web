@@ -69,6 +69,13 @@
             clearable
           />
         </el-form-item>
+        <el-form-item label="开票记录编号">
+          <el-input
+            placeholder="请输入"
+            v-model="form.deliveryInvoiceCode"
+            clearable
+          />
+        </el-form-item>
         <el-form-item label="交车单">
           <tag-input
             placeholder="请输入"
@@ -229,7 +236,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'vin', label: 'VIN', visible: true, width: 200 },
+          { props: 'matchVin', label: 'VIN', visible: true, width: 200 },
           { props: 'statusLabel', label: '整车开票状态', visible: true, width: 200 },
           { props: 'invoiceTime', label: '开票时间', visible: true, width: 200 },
           { props: 'invoiceName', label: '开票名称', visible: true, width: 200 },

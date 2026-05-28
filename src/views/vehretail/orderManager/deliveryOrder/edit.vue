@@ -33,6 +33,7 @@
           <el-button v-if="canCancelPayment && form.status === 5" size="small" @click="handlePaymentWithdraw">收款撤回</el-button>
           <el-button v-if="canCancelDelivery && form.status === 7" size="small" @click="handleDeliveryWithdraw">交车撤回</el-button>
           <el-button v-if="canPushDeliveryActive && form.deliveryConfirmStatus !== 99" size="small" @click="handleDeliveryActive">推送激活信息</el-button>
+          <el-button v-if="canCalculateDeliveryAmount && form.status === 4" size="small" :loading="buttonLoading['calculateDeliveryAmount']" @click="handleCalculateDeliveryAmount">计算尾款</el-button>
         </template>
         <el-main>
           <!--  -->
@@ -432,6 +433,7 @@ import {
   deliveryConfirmPush, // 交车确认单推送
   deliveryConfirm, // 交车确认单生成
   checkCarBuyerPhoneRegistered, pushDeliveryActive, // 校验购车人手机号是否注册零跑APP
+  calculateDeliveryAmount, // 计算尾款
 } from '@/api/vehretail/orderManager/deliveryOrder/index';
 import {
   getEffectiveByDeliveryOrderId
@@ -606,6 +608,7 @@ export default {
       canCancelPayment: false, // 收款撤回
       canCancelDelivery: false, // 交车撤回
       canPushDeliveryActive: false, // 推送激活信息
+      canCalculateDeliveryAmount: false, // 计算尾款
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
@@ -827,6 +830,7 @@ export default {
       this.canCancelPayment = this.permissions.has(`${this.moduleKey}-cancelPayment`);
       this.canCancelDelivery = this.permissions.has(`${this.moduleKey}-cancelDelivery`);
       this.canPushDeliveryActive = this.permissions.has(`${this.moduleKey}-pushDeliveryActive`);
+      this.canCalculateDeliveryAmount = this.permissions.has(`${this.moduleKey}-calculateDeliveryAmount`);
     },
     handleSaleUserChange (val, name) {
       if (!val) {
@@ -1353,6 +1357,14 @@ export default {
         this.$message.success('交车撤回成功');
         this.getDetail();
       }).catch(() => {});
+    },
+    // 计算尾款
+    async handleCalculateDeliveryAmount () {
+      await this.withLoading('calculateDeliveryAmount', async () => {
+        await calculateDeliveryAmount({ deliveryOrderId: this.form.deliveryOrderId });
+        this.$message.success('计算尾款成功');
+        this.$refs.containerRef?.loadDetail();
+      });
     },
     // 删除收款记录
     async handleDeletePaymentRecord (row) {

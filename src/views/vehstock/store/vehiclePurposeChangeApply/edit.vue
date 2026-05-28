@@ -25,16 +25,12 @@
                   <el-input placeholder="请输入" v-model="form.applyNo" clearable disabled />
                 </el-form-item>
                 <el-form-item label="申请门店：" prop="dealerCode">
-                  <fetch-select
-                    :remote-method="getDealerDetailByCode"
-                    remote
-                    v-model="form.dealerCode"
-                    placeholder="请选择"
-                    labelKey="applyUserStoreName"
-                    valueKey="applyUserStoreCode"
-                    clearable
-                    filterable
-                  />
+                  <el-select v-model="form.dealerCode" placeholder="请选择" clearable filterable collapse-tags>
+                    <el-option v-for="item in applyStoreCodeList" :key="item.orgCode" :label="item.orgName" :value="item.orgCode">
+                      <span style="float: left">{{ item.orgName }}</span>
+                      <span style="float: right; color: #8492a6; font-size: 13px">{{ item.orgCode }}</span>
+                    </el-option>
+                  </el-select>
                 </el-form-item>
                 <el-form-item label="申请人：" prop="creatorName">
                   <el-input placeholder="请输入" v-model="form.creatorName" clearable disabled />
@@ -216,6 +212,7 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
+      applyStoreCodeList: (this.$store.state.user.userInfo.orgPostUserList || []).filter(item => item.orgType === '1060'),
       emptyText: '若要启用此内容，请创建记录',
       tableData: [
         { id: 1, name: '张三', age: 25, email: 'zhangsan@example.com' },

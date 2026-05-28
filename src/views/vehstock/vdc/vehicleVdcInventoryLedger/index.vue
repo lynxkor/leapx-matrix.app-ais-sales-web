@@ -58,9 +58,42 @@
           <fetch-select :request="fetchOptions" enumCode="vehstock_vdc_common_composite_query"
             v-model="form.vdcCommonCompositeQuery" placeholder="请选择" clearable filterable />
         </el-form-item>
-      <el-form-item label="订单编号">
-        <tag-input v-model="form.poList" placeholder="请输入" />
-      </el-form-item>
+        <el-form-item label="订单编号">
+          <tag-input v-model="form.poList" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="销售预留">
+          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.reserved"
+            placeholder="请选择" clearable filterable />
+        </el-form-item>
+        <el-form-item label="销售预留类型">
+          <fetch-select :request="fetchOptions" enumCode="vehstock_reserved_type" v-model="form.reservedType"
+            placeholder="请选择" clearable filterable />
+        </el-form-item>
+        <el-form-item label="特殊预留备注">
+          <el-input placeholder="请输入" v-model="form.specialReserveRemarkLike" clearable />
+        </el-form-item>
+        <el-form-item label="整车物流预留备注">
+          <el-input placeholder="请输入" v-model="form.vehicleLogisticsReserveRemarkLike" clearable />
+        </el-form-item>
+        <el-form-item label="VDC出库时间">
+          <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.outboundDateTime" type="daterange"
+          unlink-panels
+            :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期" end-placeholder="结束日期" />
+        </el-form-item>
+        <el-form-item label="是否允许现车批售">
+          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.allowWholesale"
+            placeholder="请选择" clearable filterable />
+        </el-form-item>
+        <el-form-item label="库龄最小天数">
+          <el-input-number v-model="form.stockAgeGe" placeholder="请输入" :min="0" :max="99999" controls-position="right" style="width: 100%" :controls="false" :value-on-clear="null" />
+        </el-form-item>
+        <el-form-item label="库龄最大天数">
+          <el-input-number v-model="form.stockAgeLe" placeholder="请输入" :min="0" :max="99999" controls-position="right" style="width: 100%" :controls="false" :value-on-clear="null" />
+        </el-form-item>
+        <el-form-item label="制造工厂">
+          <el-input placeholder="请输入" v-model="form.factory" clearable />
+        </el-form-item>
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
         @reset="onReset" />
@@ -122,9 +155,12 @@ const defaultForm = {
   poList: [],
   materialsDescLike: '',
   materialsDescList: [],
-  vehicleDeliveryStatusList: ['3', '4'],
+  vehicleDeliveryStatusList: ['3'],
   carAllocated: '0',
   logisticsReserved: '0',
+  reserved: '',
+  reservedType: '',
+  allowWholesale: '',
   returnLabel: '',
   allowLockRetail: '',
   vehicleRegisteredModelIdList: [],
@@ -134,7 +170,13 @@ const defaultForm = {
   shipVia: '',
   vdcCommonCompositeQuery: '',
   lowBatteryCar: 0,
-  inboundDateTime: []
+  inboundDateTime: [],
+  specialReserveRemarkLike: '',
+  vehicleLogisticsReserveRemarkLike: '',
+  factory: '',
+  stockAgeGe: '',
+  stockAgeLe: '',
+  outboundDateTime: []
 };
 
 const pageSize = 20;
@@ -225,7 +267,7 @@ export default {
           { props: 'modelName', label: '车型', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclemodel/edit?id=${row.modelId}`, '_blank'); }, type: 'primary' }] },
           { props: 'shipViaLabel', label: '发运方式', visible: true, width: 120 },
           { props: 'vdcInventoryStatusLabel', label: '库存状态', visible: true, width: 120 },
-          { props: 'po', label: '订单编号', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehiclePo/edit?id=${row.poId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'po', label: '订单编号', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehiclePo/edit?id=${row.po}`, '_blank'); }, type: 'primary' }] },
           { props: 'optionPackageName', label: '选装包', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleoptionpackage/edit?id=${row.optionPackageId}`, '_blank'); }, type: 'primary' }] },
           { props: 'rangePowerName', label: '选配动力', visible: true, width: 140, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclerangepower/edit?id=${row.rangePowerId}`, '_blank'); }, type: 'primary' }] },
           { props: 'drivingRangeName', label: '续航里程', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicledrivingrange/edit?id=${row.drivingRangeId}`, '_blank'); }, type: 'primary' }] },
@@ -617,6 +659,13 @@ export default {
         if (this.form.inboundDateTime.length > 1) {
           data.inboundDateTimeStart = this.form.inboundDateTime[0];
           data.inboundDateTimeEnd = this.form.inboundDateTime[1];
+        }
+      }
+      if (this.form.outboundDateTime) {
+        delete data.outboundDateTime;
+        if (this.form.outboundDateTime.length > 1) {
+          data.outboundDateTimeStart = this.form.outboundDateTime[0];
+          data.outboundDateTimeEnd = this.form.outboundDateTime[1];
         }
       }
 

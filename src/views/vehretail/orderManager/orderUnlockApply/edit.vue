@@ -13,6 +13,11 @@
         :detailRequest="detailRequest"
         :showEditBtn="form.applyStatus === 1010 || form.applyStatus === 1040"
       >
+        <template #extraButtons>
+          <el-button v-permission="moduleKey+'-voided'" size="small" @click="handleBatchVoided" v-if="form.applyStatus === 1010 || form.applyStatus === 1040">作废</el-button>
+          <el-button v-permission="moduleKey+'-submit'" size="small" @click="handleBatchSubmit" v-if="form.applyStatus === 1010 || form.applyStatus === 1040">提交</el-button>
+          <el-button v-permission="moduleKey+'-audit'" size="small" @click="handleBatchAudit" v-if="form.applyStatus === 1020">审核</el-button>
+        </template>
         <el-main>
           <section class="common-section">
             <div class="common-section-header">
@@ -399,11 +404,17 @@
         <!-- 右侧栏组件，自行开发 -->
       </div>
     </template>
+    <audit-dialog
+      ref="auditDialogRef"
+      field="unlockApplyCode"
+      :auditDataList="dataList"
+      @audit="handleUnlkockApplyAudit"
+    />
   </edit-page-layout>
 </template>
 
 <script>
-import { getDetail, addOrUpdate } from '@/api/vehretail/orderManager/orderUnlockApply/index';
+import { getDetail, addOrUpdate, batchVoidedApply, submitApply, auditApply } from '@/api/vehretail/orderManager/orderUnlockApply/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -415,6 +426,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import { getOptionList } from '@/api/vehretail/basicConfig/retailOrderUnlockReasonConfig/index';
 import { findCanUnlockOrderList, getDetail as getRetailOrderDetail } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
+import auditDialog from '@/libs/components/auditDialog';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -478,7 +490,8 @@ export default {
     EditPageLayout,
     EditBaseContainer,
     FetchSelect,
-    AisAttachment
+    AisAttachment,
+    auditDialog
   },
   computed: {
     _id () {
@@ -565,6 +578,7 @@ export default {
         ],
       },
       canEditing: true,
+      dataList: []
     };
   },
   mounted () {
@@ -596,6 +610,69 @@ export default {
     }
   },
   methods: {
+    handleUnlkockApplyAudit (data) {
+      const ids = data.auditDataList.map(item => item.id) || [];
+      let reqParams = {
+        ids,
+        auditStatus: data.result,
+        auditRemark: data.remark
+      };
+      auditApply(reqParams).then((res) => {
+        this.$refs.containerRef.loadDetail();
+      });
+    },
+    handleBatchSubmit () {
+      const selectionList = [this.form];
+      // 弹窗确认
+      this.$confirm('确认提交吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const ids = selectionList.map(item => item.id) || [];
+        submitApply(ids).then(res => {
+          this.$refs.containerRef.loadDetail();
+        });
+      });
+    },
+    handleBatchAudit () {
+      this.dataList = [this.form];
+      this.$refs.auditDialogRef.show();
+    },
+    handleBatchVoided () {
+      const selectionList = [this.form];
+      // 只有草稿状态 和 已驳回状态的申请单才能作废 选择项中包含不是草稿状态 或者 已驳回的申请单时，提示用户
+      const validIds = selectionList.filter(item => item.applyStatus === 1010 || item.applyStatus === 1040).map(item => item.id) || [];
+      if (validIds.length !== selectionList.length) {
+        this.$message({
+          type: 'error',
+          message: '只能作废草稿状态和已驳回状态的申请单!'
+        });
+        return;
+      }
+      const ids = selectionList.map(item => item.id) || [];
+      const message = '<div class="ais-leave-tips-main"><i class="iconfont icon-lxppc-prompt"></i>提示</div><div class="ais-leave-tips-sub">此操作将作废对应申请单, 是否继续?</div>';
+      this.$confirm(message, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        customClass: 'ais-leave-tips',
+        dangerouslyUseHTMLString: true,
+        showClose: false
+      }).then(() => {
+        batchVoidedApply(ids).then(() => {
+          this.$message({
+            type: 'success',
+            message: '作废成功!'
+          });
+          this.$refs.containerRef.loadDetail();
+        }).catch(() => {
+          this.$message({
+            type: 'error',
+            message: '作废失败!'
+          });
+        });
+      }).catch(() => {});
+    },
     handleRetailOrderCodeChange (val) {
       if (!val) {
         return;
