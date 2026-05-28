@@ -666,9 +666,12 @@
                 align="center"
               >
                 <template slot-scope="scope">
-              <span :class="{ 'warning-value': scope.row.isHighlighted }">
-                {{ scope.row.checkValue }}
-              </span>
+                  <span v-if="scope.row.isLabel" :class="{ 'warning-value': scope.row.isHighlighted }">
+                    {{ scope.row.checkValueLabel }}
+                  </span>
+                  <span v-else :class="{ 'warning-value': scope.row.isHighlighted }">
+                    {{ scope.row.checkValue }}
+                  </span>
                 </template>
               </el-table-column>
             </el-table>
@@ -1001,11 +1004,13 @@ export default {
       });
     },
     handleConfirmUpload () {
-      const validateFailed = this.comparisonData.some(item => item.isHighlighted);
+      const validateFailed = this.comparisonData.some(item => !item.eqCheckIgnore && item.recognizedValue !== item.checkValue);
       if (validateFailed) {
         this.$message.warning('识别信息与校验信息不一致,请重新确认！');
       } else {
-        const uploadConfirm = {};
+        const uploadConfirm = {
+          id: this.form.id
+        };
         this.comparisonData.forEach(item => {
           uploadConfirm[item.fieldKey] = item.recognizedValue;
         });
@@ -1068,7 +1073,10 @@ export default {
         recognizedValue: this.form.carIdCardType,
         recognizedValueLabel: this.form.carIdCardTypeLabel,
         checkField: '证件类型',
-        checkValue: this.form.orderIdCardTypeLabel,
+        checkValue: this.form.orderIdCardType,
+        checkValueLabel: this.form.orderIdCardTypeLabel,
+        eqCheckIgnore: true,
+        isLabel: true,
         isHighlighted: !this.form.carIdCardType || !this.form.orderIdCardType || this.form.carIdCardType !== this.form.orderIdCardType,
         disabled: false
       });

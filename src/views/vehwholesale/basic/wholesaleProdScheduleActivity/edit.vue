@@ -91,17 +91,17 @@
                 </el-form-item>
                  <el-form-item label="开始日期：" prop="startTime">
                   <el-date-picker
-                    type="date"
+                    type="datetime"
                     v-model="form.startTime"
-                    value-format="yyyy-MM-dd"
+                     value-format="yyyy-MM-dd HH:mm:ss"
                     placeholder="请选择开始日期"
                   />
                 </el-form-item>
                 <el-form-item label="截止日期：" prop="endTime">
                   <el-date-picker
-                    type="date"
+                    type="datetime"
                     v-model="form.endTime"
-                    value-format="yyyy-MM-dd"
+                     value-format="yyyy-MM-dd HH:mm:ss"
                     placeholder="请选日期"
                   />
                 </el-form-item>
@@ -235,13 +235,18 @@
                 <el-form-item label="门店名称：">
                   <tag-input v-model="detailForm.dealerNames" placeholder="请输入" style="margin-top:4px"/>
                 </el-form-item>
-                <el-form-item label="">
-                  <el-button size="small" type="primary" plain @click="handleQuery" style="margin-left: 10px;">查询</el-button>
-                  <el-button size="small" @click="handleClear">重置</el-button>
-                  <el-button size="small" @click="handleAddRow" style="margin-left: 15px;">活动明细导入</el-button>
+                <!-- 按钮靠右对齐 -->
+                <el-form-item label="" class="form-item-btns" style="text-align: right;">
+                  <el-button size="small" type="primary" plain @click="handleQuery">查询</el-button>
+                  <el-button size="small" @click="handleClear" style="margin-left: 8px">重置</el-button>
                 </el-form-item>
               </el-form>
               <div class="ais-actions">
+                 <el-form>
+                  <el-form-item label="">
+                    <el-button size="small" @click="handleAddRow" style="margin-left: 15px;">活动明细导入</el-button>
+                  </el-form-item>
+                </el-form>
               </div>
             </div>
             <div class="common-section-body">
@@ -755,5 +760,12 @@ export default {
 <style lang="scss" scoped>
   ::v-deep .tag-input {
     line-height: 32px;
+  }
+  .form-edit {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .form-item-btns {
+    margin-left: auto;
   }
 </style>
