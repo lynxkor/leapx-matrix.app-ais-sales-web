@@ -224,7 +224,7 @@ export default {
               click: (rowIndex, row) => {
                 if (row.dealerId) {
                   this.navigateToRoute({
-                    path: '/partner/channelManagement/shopBasicsMessageDetails',
+                    path: '/partner/channelManagement/shopDetail',
                     query: {
                       id: row.dealerId
                     }

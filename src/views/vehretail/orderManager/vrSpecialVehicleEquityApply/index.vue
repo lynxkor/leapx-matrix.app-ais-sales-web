@@ -258,7 +258,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.navigateToRoute({
-                  path: '/partner/channelManagement/shopBasicsMessageDetails',
+                  path: '/partner/channelManagement/shopDetail',
                   query: {
                     id: row.saleDealerId
                   }
