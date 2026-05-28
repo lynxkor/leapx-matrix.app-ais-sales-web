@@ -496,15 +496,21 @@ export default {
       if (this.activeName === 'homePage') {
         this.form = { ...defaultForm };
         this.form.lowBatteryCar = 0;
+        this.form.stockAgeGe = null;
+        this.form.stockAgeLe = null;
         this.optionObj.form.page = 1;
         this.optionObj.form.pageSize = pageSize;
       } else if (this.activeName === 'lowBattery') {
         this.form = { ...defaultForm };
         this.form.lowBatteryCar = 1;
+        this.form.stockAgeGe = null;
+        this.form.stockAgeLe = null;
         this.optionDdl.form.page = 1;
         this.optionDdl.form.pageSize = pageSize;
       }
-      this.getData();
+      this.$nextTick(() => {
+        this.getData();
+      });
     },
     exportExcel () {
       this.exportLoading = true;
@@ -686,6 +692,14 @@ export default {
         data.materialsCodeLike = this.form.materialsCodeList[0] || '';
       }
 
+      // 处理库龄字段：如果值为0则删除（不传递给后端）
+      if (data.stockAgeGe === 0 || data.stockAgeGe === null) {
+        delete data.stockAgeGe;
+      }
+      if (data.stockAgeLe === 0 || data.stockAgeLe === null) {
+        delete data.stockAgeLe;
+      }
+
       return data;
     },
     async fetchOptions (code) {
@@ -761,6 +775,18 @@ export default {
           list: 1
         }
       });
+    },
+    // 处理库龄最小天数失焦
+    handleStockAgeGeBlur () {
+      if (this.form.stockAgeGe === 0 || this.form.stockAgeGe === '' || this.form.stockAgeGe === null) {
+        this.form.stockAgeGe = null;
+      }
+    },
+    // 处理库龄最大天数失焦
+    handleStockAgeLeBlur () {
+      if (this.form.stockAgeLe === 0 || this.form.stockAgeLe === '' || this.form.stockAgeLe === null) {
+        this.form.stockAgeLe = null;
+      }
     }
   }
 };
