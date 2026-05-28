@@ -174,8 +174,8 @@ const defaultForm = {
   specialReserveRemarkLike: '',
   vehicleLogisticsReserveRemarkLike: '',
   factory: '',
-  stockAgeGe: '',
-  stockAgeLe: '',
+  stockAgeGe: null,
+  stockAgeLe: null,
   outboundDateTime: []
 };
 
