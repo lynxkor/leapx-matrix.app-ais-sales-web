@@ -240,7 +240,7 @@ export default {
           { props: 'statusLabel', label: '整车开票状态', visible: true, width: 200 },
           { props: 'invoiceTime', label: '开票时间', visible: true, width: 200 },
           { props: 'invoiceName', label: '开票名称', visible: true, width: 200 },
-          { props: 'vehicleAttribute', label: '车辆属性', visible: true, width: 200 },
+          { props: 'vehicleAttributeLabel', label: '车辆属性', visible: true, width: 200 },
           { props: 'orderCarBuyerPhone', label: '购车人手机号码', visible: true, width: 200 },
           { props: 'orderIdCardTypeLabel', label: '车主证件类型', visible: true, width: 200 },
           { props: 'orderIdCardNo', label: '车主证件号码', visible: true, width: 200 },

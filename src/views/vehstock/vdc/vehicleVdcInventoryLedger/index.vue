@@ -86,10 +86,10 @@
             placeholder="请选择" clearable filterable />
         </el-form-item>
         <el-form-item label="库龄最小天数">
-          <el-input-number v-model="form.stockAgeGe" placeholder="请输入" :min="0" :max="99999" controls-position="right" style="width: 100%" :controls="false" />
+          <el-input v-model.number="form.stockAgeGe" placeholder="请输入" type="number" style="width: 100%" @blur="handleStockAgeGeBlur" />
         </el-form-item>
         <el-form-item label="库龄最大天数">
-          <el-input-number v-model="form.stockAgeLe" placeholder="请输入" :min="0" :max="99999" controls-position="right" style="width: 100%" :controls="false" />
+          <el-input v-model.number="form.stockAgeLe" placeholder="请输入" type="number" style="width: 100%" @blur="handleStockAgeLeBlur" />
         </el-form-item>
         <el-form-item label="制造工厂">
           <el-input placeholder="请输入" v-model="form.factory" clearable />
@@ -174,8 +174,8 @@ const defaultForm = {
   specialReserveRemarkLike: '',
   vehicleLogisticsReserveRemarkLike: '',
   factory: '',
-  stockAgeGe: '',
-  stockAgeLe: '',
+  stockAgeGe: null,
+  stockAgeLe: null,
   outboundDateTime: []
 };
 
@@ -496,15 +496,21 @@ export default {
       if (this.activeName === 'homePage') {
         this.form = { ...defaultForm };
         this.form.lowBatteryCar = 0;
+        this.form.stockAgeGe = null;
+        this.form.stockAgeLe = null;
         this.optionObj.form.page = 1;
         this.optionObj.form.pageSize = pageSize;
       } else if (this.activeName === 'lowBattery') {
         this.form = { ...defaultForm };
         this.form.lowBatteryCar = 1;
+        this.form.stockAgeGe = null;
+        this.form.stockAgeLe = null;
         this.optionDdl.form.page = 1;
         this.optionDdl.form.pageSize = pageSize;
       }
-      this.getData();
+      this.$nextTick(() => {
+        this.getData();
+      });
     },
     exportExcel () {
       this.exportLoading = true;
@@ -686,6 +692,14 @@ export default {
         data.materialsCodeLike = this.form.materialsCodeList[0] || '';
       }
 
+      // 处理库龄字段：如果值为0、null、undefined或空字符串则删除（不传递给后端）
+      if (data.stockAgeGe === 0 || data.stockAgeGe === null || data.stockAgeGe === undefined || data.stockAgeGe === '') {
+        delete data.stockAgeGe;
+      }
+      if (data.stockAgeLe === 0 || data.stockAgeLe === null || data.stockAgeLe === undefined || data.stockAgeLe === '') {
+        delete data.stockAgeLe;
+      }
+
       return data;
     },
     async fetchOptions (code) {
@@ -761,6 +775,28 @@ export default {
           list: 1
         }
       });
+    },
+    // 处理库龄最小天数失焦
+    handleStockAgeGeBlur () {
+      const value = this.form.stockAgeGe;
+      if (value === '' || value === null || value === undefined) {
+        this.form.stockAgeGe = null;
+      } else if (value < 0) {
+        this.form.stockAgeGe = 0;
+      } else if (value > 999999) {
+        this.form.stockAgeGe = 999999;
+      }
+    },
+    // 处理库龄最大天数失焦
+    handleStockAgeLeBlur () {
+      const value = this.form.stockAgeLe;
+      if (value === '' || value === null || value === undefined) {
+        this.form.stockAgeLe = null;
+      } else if (value < 0) {
+        this.form.stockAgeLe = 0;
+      } else if (value > 999999) {
+        this.form.stockAgeLe = 999999;
+      }
     }
   }
 };
