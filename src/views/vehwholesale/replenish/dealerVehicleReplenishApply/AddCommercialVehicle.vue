@@ -263,8 +263,15 @@ export default {
       return await listVehicleModel(params);
     },
     handleApplyQtyChange (row, value) {
-      const intValue = Math.max(0, Math.floor(value || 0));
+      // 检查父组件传入的订单分类，如果为试驾车则最大数量为1
+      let maxValue = 999; // 默认最大值
+      if (this.orderCategory === '2' || this.orderCategory === 2) { // '2' 代表试驾车
+        maxValue = 1;
+      }
+
+      const intValue = Math.max(0, Math.min(Math.floor(value || 0), maxValue));
       row.applyQty = intValue;
+
       if (row.id) {
         const existingIndex = this.tableList.findIndex(item => item.id === row.id);
         if (intValue > 0) {
