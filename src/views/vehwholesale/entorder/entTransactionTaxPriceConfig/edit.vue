@@ -96,7 +96,7 @@
                  <el-form-item label="订单分类：" prop="orderCategoryLabel">
                   {{ form.orderCategoryLabel }}
                 </el-form-item>
-                <el-form-item label="关联交易价比例：" prop="txnTaxPriceRate">
+                <el-form-item label="关联交易价比例(%)：" prop="txnTaxPriceRate">
                   {{ form.txnTaxPriceRate }}
                 </el-form-item>
                  <el-form-item label="生效时间：" prop="effectiveTime">
