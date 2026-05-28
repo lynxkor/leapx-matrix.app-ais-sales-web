@@ -91,17 +91,17 @@
                 </el-form-item>
                  <el-form-item label="开始日期：" prop="startTime">
                   <el-date-picker
-                    type="date"
+                    type="datetime"
                     v-model="form.startTime"
-                    value-format="yyyy-MM-dd"
+                     value-format="yyyy-MM-dd HH:mm:ss"
                     placeholder="请选择开始日期"
                   />
                 </el-form-item>
                 <el-form-item label="截止日期：" prop="endTime">
                   <el-date-picker
-                    type="date"
+                    type="datetime"
                     v-model="form.endTime"
-                    value-format="yyyy-MM-dd"
+                     value-format="yyyy-MM-dd HH:mm:ss"
                     placeholder="请选日期"
                   />
                 </el-form-item>
