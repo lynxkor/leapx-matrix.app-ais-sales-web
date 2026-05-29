@@ -271,6 +271,9 @@ export default {
           this.optionObj.total = res.total;
         }).finally(() => {
           this.loading = false;
+          this.$nextTick(() => {
+            this.$forceUpdate();
+          });
         });
     },
     // 需要防抖场景时使用

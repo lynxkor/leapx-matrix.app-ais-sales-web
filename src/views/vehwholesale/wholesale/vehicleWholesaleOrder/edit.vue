@@ -900,7 +900,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, batchConfirmItem, batchSetAutoAllocateItem, batchCancelItem, vinAllocateVehicleCheckItem, vinAllocateVehicleSubmitItem, batchSettleSubmitItem, batchCancelSettleItem, querySAPAccountBalance, batchAllocateVehicleItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import { getDetail, addOrUpdate, batchConfirmItem, batchCancelItem, vinAllocateVehicleCheckItem, vinAllocateVehicleSubmitItem, batchSettleSubmitItem, batchCancelSettleItem, querySAPAccountBalance, batchAllocateVehicleItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
