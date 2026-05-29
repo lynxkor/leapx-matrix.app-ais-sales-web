@@ -81,7 +81,6 @@
                 :inline="true"
                 class="form-detail"
                 v-show="!(isEditing || !_id)"
-                label-width="150px"
               >
                 <el-form-item label="公告车型名称：">
                   {{ form.registeredModelName }}
