@@ -28,7 +28,7 @@
                   {{ form.code }}
                 </el-form-item>
                 <el-form-item label="VIN：" prop="vin">
-                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
+                  >{{ form.vin }}
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
