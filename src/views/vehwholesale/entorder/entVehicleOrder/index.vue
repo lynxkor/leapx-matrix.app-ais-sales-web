@@ -315,7 +315,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=${row.entReplenishOrderDetailId}`, '_blank');
+                window.open(`/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=${row.entVehicleReplenishOrderId}`, '_blank');
               },
               type: 'primary'
             }]
