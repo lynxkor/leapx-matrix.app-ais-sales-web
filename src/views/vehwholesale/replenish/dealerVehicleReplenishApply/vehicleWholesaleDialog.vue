@@ -4,7 +4,7 @@
       <el-form
         ref="form"
         :model="form"
-        label-width="80px"
+        label-width="100px"
         :inline="true"
         size="small"
         label-position="right"
@@ -597,5 +597,8 @@ export default {
 }
 ::v-deep .el-dialog__body {
   padding: 20px 20px 0 20px;
+}
+::v-deep .el-form-item__label {
+  padding-right: 0;
 }
 </style>
