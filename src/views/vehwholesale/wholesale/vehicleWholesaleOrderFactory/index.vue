@@ -348,7 +348,7 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <button-group collapse-direction="left">
+      <ButtonGroup collapse-direction="left" size="small" class="ais-button-group">
         <el-button v-permission="moduleKey+'-batchConfirm'" size="small" :disabled="selectionList.length === 0" @click="handleBatchConfirm">批量确认</el-button>
         <el-button v-permission="moduleKey+'-batchAllocateVehicle'" size="small" :disabled="selectionList.length === 0" @click="handleBatchAllocateVehicle">批量配车</el-button>
         <el-button v-permission="moduleKey+'-batchSettleSubmit'"  size="small" :disabled="selectionList.length === 0" @click="handleBatchSettleSubmit">批量结算</el-button>
@@ -362,7 +362,7 @@
         <el-button v-permission="moduleKey+'-refreshPrice'" size="small" @click="handleRefreshPriceCoefficient">刷新价格</el-button>
         <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
         <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      </button-group>
+      </ButtonGroup>
     </div>
     <div
       class="ais-table-c"
@@ -1527,7 +1527,12 @@ export default {
 <style lang="scss" scoped>
 .m-order-list {
   ::v-deep .m-vxe-table-options{
-    top: -96px;
+    top: -105px;
+  }
+}
+.ais-button-group {
+  ::v-deep .el-button {
+    line-height: 7px
   }
 }
 </style>

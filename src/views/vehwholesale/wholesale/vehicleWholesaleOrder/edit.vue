@@ -900,7 +900,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, batchConfirmItem, batchSetAutoAllocateItem, batchCancelItem, vinAllocateVehicleCheckItem, vinAllocateVehicleSubmitItem, batchSettleSubmitItem, batchCancelSettleItem, querySAPAccountBalance } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import { getDetail, addOrUpdate, batchConfirmItem, batchCancelItem, vinAllocateVehicleCheckItem, vinAllocateVehicleSubmitItem, batchSettleSubmitItem, batchCancelSettleItem, querySAPAccountBalance, batchAllocateVehicleItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -1336,29 +1336,39 @@ export default {
       // }
     },
     handleaAutoVehicleAllocation () { // 自动配车
+      const data = {
+        idSet: [this.form.id],
+      };
+      batchAllocateVehicleItem(data).then(() => {
+        this.$message({
+          type: 'success',
+          message: '提交成功'
+        });
+        this.getDetailData();
+      });
       // const checkStatus = this.allAutoVehicleAllocation(this.form);
       // if (checkStatus) {
-      this.autoVehicleAllocationLoading = true;
-      this.$confirm('是否需要对批售订单进行自动配车?', '操作提醒', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        batchSetAutoAllocateItem({
-          ids: [this.form.id],
-          needAutoAllocateCar: 1
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '提交成功!'
-          });
-          this.getDetailData();
-        }).finally(() => {
-          this.autoVehicleAllocationLoading = false;
-        });
-      }).catch(() => {
-        this.autoVehicleAllocationLoading = false;
-      });
+      // this.autoVehicleAllocationLoading = true;
+      // this.$confirm('是否需要对批售订单进行自动配车?', '操作提醒', {
+      //   confirmButtonText: '确定',
+      //   cancelButtonText: '取消',
+      //   type: 'warning'
+      // }).then(() => {
+      //   batchSetAutoAllocateItem({
+      //     ids: [this.form.id],
+      //     needAutoAllocateCar: 1
+      //   }).then(() => {
+      //     this.$message({
+      //       type: 'success',
+      //       message: '提交成功!'
+      //     });
+      //     this.getDetailData();
+      //   }).finally(() => {
+      //     this.autoVehicleAllocationLoading = false;
+      //   });
+      // }).catch(() => {
+      //   this.autoVehicleAllocationLoading = false;
+      // });
       // }
     },
     handleManualVehicleAllocation () { // 手工配车
@@ -1366,7 +1376,7 @@ export default {
     },
     confirmVinSubmit (params, notice) {
       this.$confirm(notice, '操作提醒', {
-        confirmButtonText: '确定',
+        confirmButtonText: '确定配车',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {

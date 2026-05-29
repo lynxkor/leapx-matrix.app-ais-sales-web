@@ -91,12 +91,12 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="销售公司：" prop="saleCompanyName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/vehwholesale/fund/fundSaleCompany/edit?id=' + form.saleCompanyId)">{{ form.saleCompanyName }}</el-button>
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehwholesale/fund/fundSaleCompany/edit?id=' + form.saleCompanyId)">{{ form.saleCompanyName }}</el-button>
                 </el-form-item>
                  <el-form-item label="订单分类：" prop="orderCategoryLabel">
                   {{ form.orderCategoryLabel }}
                 </el-form-item>
-                <el-form-item label="关联交易价比例：" prop="txnTaxPriceRate">
+                <el-form-item label="关联交易价比例(%)：" prop="txnTaxPriceRate">
                   {{ form.txnTaxPriceRate }}
                 </el-form-item>
                  <el-form-item label="生效时间：" prop="effectiveTime">

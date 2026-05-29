@@ -256,7 +256,7 @@
                   {{ form.entOrderCode }}
                 </el-form-item>
                  <el-form-item label="企业客户补货订单号：" prop="entReplenishOrderCode">
-                  <el-link type="primary" :href="`/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=${form.entReplenishOrderCode}`" target="_blank">{{ form.entReplenishOrderCode }}</el-link>
+                  <el-link type="primary" :href="`/sales/vehwholesale/replenish/entVehicleReplenishOrder/edit?id=${form.entVehicleReplenishOrderId}`" target="_blank">{{ form.entReplenishOrderCode }}</el-link>
                 </el-form-item>
                  <el-form-item label="第七大区CBU订单号：" prop="cbuOrderCode">
                   {{ form.cbuOrderCode }}

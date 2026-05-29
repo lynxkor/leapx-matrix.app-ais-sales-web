@@ -703,7 +703,7 @@
 import {
   addOrUpdate,
   checkUpload,
-  confirmUpload, confirmUploadNew,
+  confirmUploadNew,
   deleteItem,
   getDetail
 } from '@/api/vehretail/orderManager/deliveryInvoice/index';
