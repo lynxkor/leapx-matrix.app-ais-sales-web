@@ -141,7 +141,7 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList } from '@/api/vehretail/orderManager/vrGroupbuyOrderEquityApply/index';
+import { getList, getDecryptField } from '@/api/vehretail/orderManager/vrGroupbuyOrderEquityApply/index';
 import { getTableConfig, exportTable, getEnum, vehicleModelList, vehicleSeriesList, listOrgStoreInfo, vehicleMaterials } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -260,8 +260,8 @@ export default {
           },
           { props: 'materialsCode', label: '订单物料码', visible: true, width: 260 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 500 },
-          { props: 'buyerName', label: '购车人姓名', visible: true, width: 120 },
-          { props: 'buyerPhone', label: '购车人手机号', visible: true, width: 150 },
+          { props: 'buyerName', label: '购车人姓名', visible: true, width: 120, mask: true, getValue: (row) => getDecryptField(row.id, 'buyerName') },
+          { props: 'buyerPhone', label: '购车人手机号', visible: true, width: 150, mask: true, getValue: (row) => getDecryptField(row.id, 'buyerPhone') },
           { props: 'userId', label: '下单人ID', visible: true, width: 200 },
           { props: 'companyName', label: '公司名称', visible: true, width: 300 },
           { props: 'modelName', label: '车型', visible: true, width: 240 },

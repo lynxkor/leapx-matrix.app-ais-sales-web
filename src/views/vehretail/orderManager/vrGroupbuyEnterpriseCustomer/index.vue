@@ -85,7 +85,7 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList } from '@/api/vehretail/orderManager/vrGroupbuyEnterpriseCustomer/index';
+import { getList, getDecryptField } from '@/api/vehretail/orderManager/vrGroupbuyEnterpriseCustomer/index';
 import { getTableConfig, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -156,8 +156,8 @@ export default {
             }]
           },
           { props: 'isCooperationLabel', label: '是否合作', visible: true, width: 120 },
-          { props: 'contactPerson', label: '联系人', visible: true, width: 120 },
-          { props: 'contactPhone', label: '联系人手机号码', visible: true, width: 150 },
+          { props: 'contactPerson', label: '联系人', visible: true, width: 120, mask: true, getValue: (row) => getDecryptField(row.id, 'contactPerson') },
+          { props: 'contactPhone', label: '联系人手机号码', visible: true, width: 150, mask: true, getValue: (row) => getDecryptField(row.id, 'contactPhone') },
           { props: 'groupCompanyTypeLabel', label: '团购企业类型', visible: true, width: 150 },
           { props: 'remark', label: '备注', visible: true, width: 150 },
           { props: 'creatorName', label: '创建人', visible: true, width: 120 },

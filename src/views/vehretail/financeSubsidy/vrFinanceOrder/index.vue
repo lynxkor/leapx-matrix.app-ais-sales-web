@@ -121,7 +121,7 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList } from '@/api/vehretail/financeSubsidy/vrFinanceOrder/index';
+import { getList, getDecryptField } from '@/api/vehretail/financeSubsidy/vrFinanceOrder/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getRigion } from '@/api/common';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
@@ -201,14 +201,14 @@ export default {
           { props: 'dealerHasCommissionLabel', label: '门店有无金融返佣', visible: true, width: 150 },
           { props: 'discountLabel', label: '是否贴息', visible: true, width: 120 },
           { props: 'financeOrderStatusLabel', label: '金融订单状态', visible: true, width: 150 },
-          { props: 'vin', label: 'VIN码', visible: true, width: 200 },
+          { props: 'vin', label: 'VIN码', visible: true, width: 200, mask: true, getValue: (row) => getDecryptField(row.id, 'vin') },
           { props: 'regionName', label: '所属区域和部门', visible: true, width: 180 },
           { props: 'cityName', label: '市', visible: true, width: 120 },
           { props: 'provinceName', label: '省', visible: true, width: 120 },
-          { props: 'carOwnerName', label: '车主姓名', visible: true, width: 120 },
-          { props: 'phoneNumber', label: '手机号码', visible: true, width: 150 },
+          { props: 'carOwnerName', label: '车主姓名', visible: true, width: 120, mask: true, getValue: (row) => getDecryptField(row.id, 'carOwnerName') },
+          { props: 'phoneNumber', label: '手机号码', visible: true, width: 150, mask: true, getValue: (row) => getDecryptField(row.id, 'phoneNumber') },
           { props: 'idTypeLabel', label: '证件类型', visible: true, width: 120 },
-          { props: 'idNumber', label: '身份证号', visible: true, width: 200 },
+          { props: 'idNumber', label: '身份证号', visible: true, width: 200, mask: true, getValue: (row) => getDecryptField(row.id, 'idNumber') },
           { props: 'basicCarModel', label: '基本车型', visible: true, width: 150 },
           { props: 'financeOrganizationName', label: '金融机构', visible: true, width: 150 },
           { props: 'discountScheme', label: '贴息方案', visible: true, width: 150 },

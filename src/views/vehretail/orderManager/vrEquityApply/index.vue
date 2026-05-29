@@ -242,7 +242,7 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem } from '@/api/vehretail/orderManager/vrEquityApply/index';
+import { getList, deleteItem, getDecryptField } from '@/api/vehretail/orderManager/vrEquityApply/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleModelList, listOrgStoreInfo, vehicleMaterials } from '@/api/common';
 import { getSelect as getEquityCategoryListApi } from '@/api/vehretail/basicConfig/vrEquityCategory/index';
 import FetchSelect from '@/libs/components/FetchSelect';
@@ -399,29 +399,32 @@ export default {
             }]
           },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 500 },
-          { props: 'buyerName', label: '购车人姓名', visible: true, width: 120 },
-          { props: 'buyerPhone', label: '购车人手机号', visible: true, width: 150 },
+          { props: 'buyerName', label: '购车人姓名', visible: true, width: 120, mask: true, getValue: (row) => getDecryptField(row.id, 'buyerName') },
+          { props: 'buyerPhone', label: '购车人手机号', visible: true, width: 150, mask: true, getValue: (row) => getDecryptField(row.id, 'buyerPhone') },
           {
             props: 'originalVin',
             label: '原车VIN号',
             visible: true,
             width: 200,
+            mask: true,
+            getValue: (row) => getDecryptField(row.id, 'originalVin'),
             buttons: [{
               click: (rowIndex, row) => {
                 if (row.originalVin) {
-                  this.navigateToRoute({
-                    path: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
-                    query: {
-                      vin: row.originalVin
-                    }
-                  }, true);
+                  // 直接用 then，不会报错
+                  getDecryptField(row.id, 'originalVin').then(realVin => {
+                    this.navigateToRoute({
+                      path: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
+                      query: { vin: realVin }
+                    }, true);
+                  });
                 }
               },
               type: 'primary'
             }]
           },
-          { props: 'originalOwnerName', label: '原车车主', visible: true, width: 120 },
-          { props: 'originalOwnerPhone', label: '原车主手机号', visible: true, width: 150 },
+          { props: 'originalOwnerName', label: '原车车主', visible: true, width: 120, mask: true, getValue: (row) => getDecryptField(row.id, 'originalOwnerName') },
+          { props: 'originalOwnerPhone', label: '原车主手机号', visible: true, width: 150, mask: true, getValue: (row) => getDecryptField(row.id, 'originalOwnerPhone') },
           { props: 'firstAuditTime', label: '初审时间', visible: true, width: 180 },
           { props: 'auditTime', label: '审核时间', visible: true, width: 180 },
           { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true },
