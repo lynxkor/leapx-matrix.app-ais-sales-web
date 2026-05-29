@@ -28,7 +28,7 @@
                   {{ form.code }}
                 </el-form-item>
                 <el-form-item label="VIN：" prop="vin">
-                  >{{ form.vin }}
+                  {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
