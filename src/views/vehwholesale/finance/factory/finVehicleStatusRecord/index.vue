@@ -299,7 +299,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode);
+                this.openWindow('/partner/channelManagement/companyDetails?companyCode=' + row.dealerCode);
               },
               type: 'primary'
             }]
@@ -309,7 +309,7 @@ export default {
             label: '经销商名称',
             visible: true,
             width: 240,
-            buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank'); }, type: 'primary' }]
+            buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCode}`, '_blank'); }, type: 'primary' }]
           },
           { props: 'unifiedSocialCreditCode', label: '统一社会信用代码', visible: true, width: 200 },
           {
