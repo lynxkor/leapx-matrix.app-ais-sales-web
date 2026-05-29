@@ -189,7 +189,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales//vehwholesale/fund/fundSaleCompany/edit?id=${row.saleCompanyId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'saleCompanyName', label: '销售公司', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/fund/fundSaleCompany/edit?id=${row.saleCompanyId}`, '_blank'); }, type: 'primary' }] },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 200 },
           { props: 'txnTaxPriceRate', label: '关联交易价格比例(%)', visible: true, width: 200, align: 'right' },
           { props: 'expireTime', label: '失效时间', visible: true, width: 200 },
