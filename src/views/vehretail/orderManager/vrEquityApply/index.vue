@@ -368,14 +368,7 @@ export default {
             width: 280,
             buttons: [{
               click: (rowIndex, row) => {
-                if (row.saleDealerCode) {
-                  this.navigateToRoute({
-                    path: '/partner/channelManagement/shopDetail',
-                    query: {
-                      id: row.saleDealerId
-                    }
-                  }, true);
-                }
+                window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank');
               },
               type: 'primary'
             }]

@@ -222,14 +222,7 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                if (row.dealerId) {
-                  this.navigateToRoute({
-                    path: '/partner/channelManagement/shopDetail',
-                    query: {
-                      id: row.dealerId
-                    }
-                  }, true);
-                }
+                window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank');
               },
               type: 'primary'
             }]

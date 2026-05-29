@@ -257,12 +257,7 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                this.navigateToRoute({
-                  path: '/partner/channelManagement/shopDetail',
-                  query: {
-                    id: row.saleDealerId
-                  }
-                }, true);
+                window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank');
               },
               type: 'primary'
             }]
