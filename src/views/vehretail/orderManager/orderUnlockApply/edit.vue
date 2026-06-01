@@ -465,7 +465,7 @@ const defaultForm = {
   applyTime: '',
   applyUserId: '',
   applyUserName: '',
-  orderHandleType: 10,
+  orderHandleType: 30,
   unlockReasonCode: '',
   bindVin: '',
   applyDesc: '',
@@ -570,7 +570,7 @@ export default {
           { required: true, message: '请输入零售订单号', trigger: 'change' }
         ],
         orderHandleType: [
-          { required: true, message: '请选择订单处理方式 10-暂不处理;20-手动选择现车;30-系统自动匹配批售单', trigger: 'change' }
+          { required: true, message: '请选择订单处理方式 30-暂不处理;10-手动选择现车;20-系统自动匹配批售单', trigger: 'change' }
         ],
         unlockReasonCode: [
           { required: true, message: '请输入订单解绑原因编码', trigger: 'change' }
