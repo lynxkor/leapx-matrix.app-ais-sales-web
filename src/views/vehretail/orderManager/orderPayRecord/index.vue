@@ -44,6 +44,30 @@
             v-bind="selectOptions"
             :remote-method="remoteMethods.model" />
         </el-form-item>
+        <el-form-item label="缴定金时间">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.fundPaymentTime"
+            type="daterange"
+            unlink-panels
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
+        <el-form-item label="交车时间">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.deliveryTime"
+            type="daterange"
+            unlink-panels
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
       </template>
       <page-search-action
         v-if="canList"
@@ -60,9 +84,29 @@
     </div>
     <div class="ais-active">
       <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="全部" name="all" />
         <el-tab-pane label="定金退款" name="depositRefund" />
         <el-tab-pane label="权益核销" name="benefitWriteOff" />
       </el-tabs>
+    </div>
+    <div class="ais-table-c" v-if="activeName === 'all'">
+      <LPVxeTable
+        :key="0"
+        ref="tableRef"
+        v-loading="loading"
+        is-checkbox
+        is-page
+        checkboxFixed
+        centralized
+        :option-obj="allOption"
+        :get-config="getConfigAll"
+        :save-or-update="saveOrUpdate"
+        @paginationChange="paginationChangeAll"
+        @handleSelect="handleSelectionChange"
+        @listSelect="handleListSelect"
+      >
+        <EditPage slot="centralizedViewSlot" :id="clickItemId"/>
+      </LPVxeTable>
     </div>
     <div class="ais-table-c" v-if="activeName === 'depositRefund'">
       <LPVxeTable
@@ -129,6 +173,8 @@ const defaultForm = {
   refundResult: '',
   modelId: '',
   vin: '',
+  fundPaymentTime: '',
+  deliveryTime: '',
 };
 
 const pageSize = 20;
@@ -224,7 +270,7 @@ export default {
           { props: 'paymentWayLabel', label: '支付渠道', visible: true, width: 120 },
           { props: 'refundStatusLabel', label: '申请单状态', visible: true, width: 120 },
           { props: 'orderSourceLabel', label: '订单来源', visible: true, width: 120 },
-          { props: 'depositPaymentTime', label: '缴定金时间', visible: true, width: 180 },
+          { props: 'fundPaymentTime', label: '缴定金时间', visible: true, width: 180 },
           { props: 'depositRefundTypeLabel', label: '定金退回方式', visible: true, width: 150 }
         ],
         total: 0
@@ -270,8 +316,70 @@ export default {
           { props: 'parentCompany', label: '所属母公司', visible: true, width: 220 },
           { props: 'deliveryTime', label: '交车时间', visible: true, width: 180 },
           { props: 'deliveryStatus', label: '交车状态', visible: true, width: 120 },
-          { props: 'depositPaymentTime', label: '缴定金时间', visible: true, width: 180 },
+          { props: 'fundPaymentTime', label: '缴定金时间', visible: true, width: 180 },
           { props: 'mallOrderCode', label: '商城订单编号', visible: true, width: 180 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 180 }
+        ],
+        total: 0
+      },
+      allOption: {
+        id: 'orderPayRecordAllTable',
+        dataList: [],
+        form: {
+          page: 1,
+          size: pageSize
+        },
+        dataProp: [
+          {
+            props: 'payCode',
+            label: '收款编号',
+            visible: true,
+            width: 160,
+            fixed: 'left',
+            buttons: [{
+              click: (rowIndex, row) => {
+                this.$router.push({
+                  path: '/vehretail/orderManager/orderPayRecord/edit',
+                  query: {
+                    id: row.id,
+                    type: this.activeName
+                  }
+                });
+              },
+              type: 'primary'
+            }]
+          },
+          { props: 'carBuyerName', label: '购车人姓名', visible: true, width: 120 },
+          { props: 'refundCode', label: '退订申请单', visible: true, width: 150 },
+          { props: 'mallOrderCode', label: '商城订单编号', visible: true, width: 160 },
+          { props: 'outTradeNo', label: '商城流水号', visible: true, width: 200 },
+          { props: 'paySerialNumber', label: '支付流水号', visible: true, width: 180 },
+          { props: 'paymentAmount', label: '付款金额', visible: true, width: 120, align: 'right' },
+          { props: 'paymentTime', label: '收款时间', visible: true, width: 180 },
+          { props: 'payCategoryLabel', label: '收款类型', visible: true, width: 120 },
+          { props: 'saleDealerName', label: '订单销售门店', visible: true, width: 200 },
+          { props: 'modelName', label: '车型名称', visible: true, width: 150 },
+          { props: 'orderCancelReason', label: '订单取消原因', visible: true, width: 150 },
+          { props: 'refundTime', label: '退款日期', visible: true, width: 180 },
+          { props: 'refundResult', label: '退款结果', visible: true, width: 120 },
+          { props: 'refundRemark', label: '退款说明', visible: true, width: 150 },
+          { props: 'finalApproveTime', label: '审核时间', visible: true, width: 180 },
+          { props: 'paymentTypeLabel', label: '支付方式', visible: true, width: 120 },
+          { props: 'paymentWayLabel', label: '支付渠道', visible: true, width: 120 },
+          { props: 'refundStatusLabel', label: '申请单状态', visible: true, width: 120 },
+          { props: 'orderSourceLabel', label: '订单来源', visible: true, width: 120 },
+          { props: 'fundPaymentTime', label: '缴定金时间', visible: true, width: 180 },
+          { props: 'depositRefundTypeLabel', label: '定金退回方式', visible: true, width: 150 },
+          { props: 'deliveryNote', label: '交车单', visible: true, width: 120 },
+          { props: 'vin', label: 'VIN码', visible: true, width: 180 },
+          { props: 'rightsTypeLabel', label: '权益类型', visible: true, width: 120 },
+          { props: 'rightsItem', label: '权益项名称', visible: true, width: 150 },
+          { props: 'remark', label: '备注', visible: true, width: 120 },
+          { props: 'rightsItemCode', label: '权益项编号', visible: true, width: 150 },
+          { props: 'retailOrderCode', label: '整车订单', visible: true, width: 180 },
+          { props: 'parentCompany', label: '所属母公司', visible: true, width: 220 },
+          { props: 'deliveryTime', label: '交车时间', visible: true, width: 180 },
+          { props: 'deliveryStatus', label: '交车状态', visible: true, width: 120 },
           { props: 'createTime', label: '创建时间', visible: true, width: 180 }
         ],
         total: 0
@@ -298,14 +406,17 @@ export default {
     onSubmit () {
       this.depositRefundOption.form.page = 1;
       this.lowEquityOption.form.page = 1;
+      this.allOption.form.page = 1;
       this.getData();
     },
     onReset () {
       this.form = { ...defaultForm };
       this.depositRefundOption.form.page = 1;
-      this.depositRefundOption.form.pageSize = pageSize;
+      this.depositRefundOption.form.size = pageSize;
       this.lowEquityOption.form.page = 1;
-      this.lowEquityOption.form.pageSize = pageSize;
+      this.lowEquityOption.form.size = pageSize;
+      this.allOption.form.page = 1;
+      this.allOption.form.size = pageSize;
       this.getData();
     },
     async fetchOptions (code) {
@@ -325,13 +436,17 @@ export default {
       let businessType = '订单收款记录';
       let dataFetchPath = 'vr/web/order/retailOrderPayRecord/page';
       let fileName = '订单收款记录.xlsx';
-      let currentOption = this.activeName === 'depositRefund' ? this.depositRefundOption : this.lowEquityOption;
+      let currentOption = this.activeName === 'depositRefund' ? this.depositRefundOption
+        : this.activeName === 'benefitWriteOff' ? this.lowEquityOption : this.allOption;
       if (this.activeName === 'depositRefund') {
         businessType = '定金退款记录';
         fileName = '定金退款记录.xlsx';
       } else if (this.activeName === 'benefitWriteOff') {
         businessType = '权益核销记录';
         fileName = '权益核销记录.xlsx';
+      } else if (this.activeName === 'all') {
+        businessType = '全部订单收款记录';
+        fileName = '全部订单收款记录.xlsx';
       }
 
       exportTable({
@@ -367,9 +482,10 @@ export default {
       this.loading = true;
       this.selectionList = [];
 
-      let currentOption = this.activeName === 'depositRefund' ? this.depositRefundOption : this.lowEquityOption;
+      let currentOption = this.activeName === 'depositRefund' ? this.depositRefundOption
+        : this.activeName === 'benefitWriteOff' ? this.lowEquityOption : this.allOption;
 
-      getList({ ...this.getFormData(), pageNum: currentOption.form.page, pageSize: currentOption.form.size })
+      getList({ ...this.getFormData(), pageNum: currentOption.form.page, pageSize: currentOption.form.size, type: this.activeName })
         .then(res => {
           console.log(res);
           currentOption.dataList = res.records.map(item => {
@@ -411,6 +527,17 @@ export default {
         });
       });
     },
+    getConfigAll () {
+      const tableId = 'orderPayRecordAllTable';
+      return new Promise((resolve, reject) => {
+        getTableConfig(tableId).then(data => {
+          resolve({ data });
+        }).catch(err => {
+          console.error(err);
+          resolve(mockConfig);
+        });
+      });
+    },
     saveOrUpdate (data) {
       return tableAddOrUpdate(data);
     },
@@ -430,6 +557,14 @@ export default {
       }
       this.debouncedGetData();
     },
+    paginationChangeAll (type, num) {
+      if (type === 'page') {
+        this.allOption.form.page = num;
+      } else {
+        this.allOption.form.size = num;
+      }
+      this.debouncedGetData();
+    },
     // 多选框选中数据
     handleSelectionChange (selection) {
       this.selectionList = selection;
@@ -443,6 +578,21 @@ export default {
           delete data[key];
         }
       });
+
+      if (this.form.fundPaymentTime) {
+        delete data.fundPaymentTime;
+        if (this.form.fundPaymentTime.length > 1) {
+          data.fundPaymentTimeStart = this.form.fundPaymentTime[0];
+          data.fundPaymentTimeEnd = this.form.fundPaymentTime[1];
+        }
+      }
+      if (this.form.deliveryTime) {
+        delete data.deliveryTime;
+        if (this.form.deliveryTime.length > 1) {
+          data.deliveryTimeStart = this.form.deliveryTime[0];
+          data.deliveryTimeEnd = this.form.deliveryTime[1];
+        }
+      }
 
       return data;
     },

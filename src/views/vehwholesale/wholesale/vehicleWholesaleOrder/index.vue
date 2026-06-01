@@ -1247,7 +1247,7 @@ export default {
     },
     handleAdd () {
       this.$router.push({
-        path: '/wholesale/vehicleWholesaleOrder/edit'
+        path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit'
       });
     },
     onSubmit () {
