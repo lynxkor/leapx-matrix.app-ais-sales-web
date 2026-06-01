@@ -412,11 +412,11 @@ export default {
     onReset () {
       this.form = { ...defaultForm };
       this.depositRefundOption.form.page = 1;
-      this.depositRefundOption.form.pageSize = pageSize;
+      this.depositRefundOption.form.size = pageSize;
       this.lowEquityOption.form.page = 1;
-      this.lowEquityOption.form.pageSize = pageSize;
+      this.lowEquityOption.form.size = pageSize;
       this.allOption.form.page = 1;
-      this.allOption.form.pageSize = pageSize;
+      this.allOption.form.size = pageSize;
       this.getData();
     },
     async fetchOptions (code) {
