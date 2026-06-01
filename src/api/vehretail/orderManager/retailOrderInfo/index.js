@@ -68,6 +68,14 @@ export function unlockReasonList (data) {
 };
 
 /**
+ * 取消锁车-单车-弹框检查该车
+ * @param {Object} data
+ */
+export function checkBeforePerUnlock (data) {
+  return api.jsonPost('vr/web/order/checkBeforePerUnlock', data);
+};
+
+/**
  * 取消锁车-单车提交
  * @param {Object} data
  */

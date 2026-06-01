@@ -1766,7 +1766,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/finance/factory/finvehiclebindingmileagerecord/edit',
+      path: '/vehwholesale/finance/factory/finVehicleBindingMileageRecord/edit',
       name: 'finVehicleBindingMileageRecordEdit',
 
       component: () => import(
@@ -1790,7 +1790,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/finance/factory/finvehiclestatusrecord/edit',
+      path: '/vehwholesale/finance/factory/finVehicleStatusRecord/edit',
       name: 'finVehicleStatusRecordEdit',
 
       component: () => import(
@@ -1814,7 +1814,7 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/finance/apply/finfinancingapplicationdealer/edit',
+      path: '/vehwholesale/finance/apply/finFinancingApplicationDealer/edit',
       name: 'finFinancingApplicationDealerEdit',
 
       component: () => import(

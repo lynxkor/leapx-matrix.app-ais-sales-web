@@ -309,7 +309,7 @@ export default {
               name: '批售编辑',
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/basic/wholesalesaletargettracking/wholesaleEdit',
+                  path: '/vehwholesale/basic/wholesaleSaleTargetTracking/wholesaleEdit',
                   query: {
                     id: row.id
                   }
@@ -321,7 +321,7 @@ export default {
               name: '零售编辑',
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/basic/wholesalesaletargettracking/retailEdit',
+                  path: '/vehwholesale/basic/wholesaleSaleTargetTracking/retailEdit',
                   query: {
                     id: row.id
                   }
