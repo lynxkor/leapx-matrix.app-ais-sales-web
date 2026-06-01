@@ -286,23 +286,7 @@ export default {
             }]
           },
           { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 260, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
-          {
-            props: 'dealerName',
-            label: '门店名称',
-            visible: true,
-            width: 240,
-            buttons: [{
-              click: (rowIndex, row) => {
-                this.navigateToRoute({
-                  path: '/partner/channelManagement/shopDetail',
-                  query: {
-                    dealerCode: row.dealerCode,
-                  },
-                });
-              },
-              type: 'primary'
-            }]
-          },
+          { props: 'dealerName', label: '门店名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerName}`, '_blank'); }, type: 'primary' }] },
           { props: 'periodLabel', label: '周期', visible: true, width: 100 },
           { props: 'year', label: '年度', visible: true, width: 100 },
           { props: 'quarterLabel', label: '季度', visible: true, width: 100 },

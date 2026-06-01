@@ -650,23 +650,8 @@ export default {
       if (!Array.isArray(this.form.details)) {
         this.form.details = [];
       }
-      const existingDetailsMap = new Map();
-      this.form.details.forEach(detail => {
-        if (detail.materialsCode) {
-          existingDetailsMap.set(detail.materialsCode, detail);
-        }
-      });
-      const newDetails = [];
-      const updatedDetails = [...this.form.details];
-      processedDataList.forEach(dataItem => {
-        const existingDetail = existingDetailsMap.get(dataItem.materialsCode);
-        if (existingDetail) {
-          existingDetail.applyQty = (Number(existingDetail.applyQty) || 0) + (Number(dataItem.applyQty) || 0);
-        } else {
-          newDetails.push(dataItem);
-        }
-      });
-      this.form.details = [...updatedDetails, ...newDetails];
+      // 将所有数据项直接添加到明细列表中，不进行任何合并
+      this.form.details = [...this.form.details, ...processedDataList];
       this.updateApplyTotalQty();
       // this.$refs.editLayout.closePane();
       this.submitRequest();

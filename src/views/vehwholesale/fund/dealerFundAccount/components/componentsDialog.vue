@@ -1,11 +1,11 @@
 <template>
-  <el-dialog :title="title" width="75%" height="560px" :visible.sync="dialogVisible" @close="handleClose">
+  <el-dialog :title="title" width="1400px" height="560px" :visible.sync="dialogVisible" @close="handleClose">
     <div>
       <el-form
         ref="form"
         :model="form"
         label-width="180px"
-        size="small"
+        size="small" :inline="true"
       >
         <template v-if="pageTpye === 'setRebateFlag'">
           <el-row>
@@ -463,6 +463,7 @@ export default {
 .long_text {
   ::v-deep .el-form-item__label {
     line-height: 20px;
+    padding-right: 0;
   }
   ::v-deep .el-input-number--small,.el-input-number {
     width: 100%;
@@ -518,5 +519,8 @@ export default {
   justify-content: flex-end;
   gap: 10px;
   padding-bottom: 10px;
+}
+::v-deep .el-form-item__label {
+  padding-right: 0;
 }
 </style>

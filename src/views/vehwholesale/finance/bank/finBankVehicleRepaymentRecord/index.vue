@@ -278,7 +278,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCompanyCode);
+                this.openWindow('/partner/channelManagement/companyDetails?companyCode=' + row.dealerCompanyCode);
               },
               type: 'primary'
             }]

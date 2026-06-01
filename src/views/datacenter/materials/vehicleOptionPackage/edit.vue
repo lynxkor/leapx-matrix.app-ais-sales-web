@@ -64,7 +64,6 @@
                 :inline="true"
                 class="form-detail"
                 v-show="!(isEditing || !_id)"
-                label-width="150px"
               >
                 <el-form-item label="选装包名称：">
                   {{ form.optionPackageName }}

@@ -14,7 +14,7 @@
         :title="title"
       >
         <template #extraButtons>
-          <el-button v-if="form.isPdiSubmit === 1 && form.isUnusual === 0" type="primary" size="small"  @click="handleDownloadPDF">下载PDF单据</el-button>
+          <el-button v-if="form.isPdiSubmit === 1 && form.isUnusual === 0 && canDownloadPDF" type="primary" size="small"  @click="handleDownloadPDF">下载PDF单据</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -28,7 +28,7 @@
                   {{ form.code }}
                 </el-form-item>
                 <el-form-item label="VIN：" prop="vin">
-                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
+                  {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
@@ -52,7 +52,7 @@
                   {{ form.modifierName }}
                 </el-form-item>
                 <el-form-item label="物料编码：" prop="materialsCode">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
+                  {{ form.materialsCode }}
                 </el-form-item>
                 <el-form-item label="收车确认人：" prop="receivedBy">
                   {{ form.receivedBy }}
@@ -64,34 +64,34 @@
                   {{ form.materialsDesc }}
                 </el-form-item>
                 <el-form-item label="车系：" prop="seriesName">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
+                  {{ form.seriesName }}
                 </el-form-item>
                 <el-form-item label="车型：" prop="modelName">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
+                 {{ form.modelName }}
                 </el-form-item>
                 <el-form-item label="外观：" prop="exteriorName">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleexterior/edit?id=${form.exteriorId}`" target="_blank">{{ form.exteriorName }}</el-link>
+                  {{ form.exteriorName }}
                 </el-form-item>
                 <el-form-item label="续航里程：" prop="drivingRangeName">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicledrivingrange/edit?id=${form.drivingRangeId}`" target="_blank">{{ form.drivingRangeName }}</el-link>
+                  {{ form.drivingRangeName }}
                 </el-form-item>
                 <el-form-item label="选配动力：" prop="rangePowerName">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclerangepower/edit?id=${form.rangePowerId}`" target="_blank">{{ form.rangePowerName }}</el-link>
+                  {{ form.rangePowerName }}
                 </el-form-item>
                 <el-form-item label="电池电芯：" prop="batteryCellName">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclebatterycell/edit?id=${form.batteryCellId}`" target="_blank">{{ form.batteryCellName }}</el-link>
+                  {{ form.batteryCellName }}
                 </el-form-item>
                 <el-form-item label="内饰：" prop="interiorName">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleinterior/edit?id=${form.interiorId}`" target="_blank">{{ form.interiorName }}</el-link>
+                  {{ form.interiorName }}
                 </el-form-item>
                 <el-form-item label="选配轮毂：" prop="wheelHubName">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclewheelhub/edit?id=${form.wheelHubId}`" target="_blank">{{ form.wheelHubName }}</el-link>
+                  {{ form.wheelHubName }}
                 </el-form-item>
                 <el-form-item label="年款：" prop="yearTypeName">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${form.yearTypeId}`" target="_blank">{{ form.yearTypeName }}</el-link>
+                 {{ form.yearTypeName }}
                 </el-form-item>
                 <el-form-item label="选配包：" prop="optionPackageName">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleoptionpackage/edit?id=${form.optionPackageId}`" target="_blank">{{ form.optionPackageName }}</el-link>
+                  {{ form.optionPackageName }}
                 </el-form-item>
               </el-form>
             </div>
@@ -103,10 +103,10 @@
             <div class="common-section-body">
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="销售门店名称：" prop="saleDealerName">
-                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
+                  {{ form.saleDealerName }}
                 </el-form-item>
                 <el-form-item label="交付门店名称：" prop="deliveryDealerName">
-                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.deliveryDealerCode}`" target="_blank">{{ form.deliveryDealerName }}</el-link>
+                 {{ form.deliveryDealerName }}
                 </el-form-item>
                 <el-form-item label="大区：" prop="regionName">
                   {{ form.regionName }}
@@ -385,6 +385,7 @@ export default {
       showPdfItemLoading: false,
       showPdfItemVisible: false,
       fileDialogVisible: false,
+      canDownloadPDF: false, // 下载PDF单据权限
       viewPictureList: [],
       pageTitle: '门店整车PDI单',
       pageType: 'edit',
@@ -417,6 +418,8 @@ export default {
     };
   },
   mounted () {
+    // 下载PDF单据权限检查
+    this.canDownloadPDF = this.permissions.has(`${this.moduleKey}-downloadPDF`);
   },
   methods: {
     // 是否异常=是，异常是否修复=否，则红色字体显示

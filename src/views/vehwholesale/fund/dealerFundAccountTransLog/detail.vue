@@ -115,7 +115,7 @@ export default {
   methods: {
     handleEdit () {
       this.$router.push({
-        path: '/vehwholesale/fund/accountTranslog/edit',
+        path: '/vehwholesale/fund/dealerFundAccountTransLog/edit',
         query: {
           id: this.$route.query.id
         }

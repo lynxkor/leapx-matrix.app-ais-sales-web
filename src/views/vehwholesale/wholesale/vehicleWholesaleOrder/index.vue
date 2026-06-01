@@ -17,10 +17,10 @@
         </el-form-item>
          <el-form-item label="订单时间"  v-show="this.visibleCount === 3 || show">
         <dateranges
-        v-model="form.orderTime"
-        :setDefault="true"
-        deftTime="本年"
-        ref="transactionTime"/>
+          v-model="form.orderTime"
+          :setDefault="true"
+          deftTime="最近一年"
+          ref="transactionTime"/>
         </el-form-item>
       <template v-if="show">
         <el-form-item label="订单状态">
@@ -1247,7 +1247,7 @@ export default {
     },
     handleAdd () {
       this.$router.push({
-        path: '/wholesale/vehicleWholesaleOrder/edit'
+        path: '/vehwholesale/wholesale/vehicleWholesaleOrder/edit'
       });
     },
     onSubmit () {

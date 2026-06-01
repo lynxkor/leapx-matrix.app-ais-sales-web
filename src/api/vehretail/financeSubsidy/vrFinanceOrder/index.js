@@ -41,3 +41,15 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+/**
+ * 查询加密数据
+ * @param {String} id
+ * @param {String} field
+ */
+export function getDecryptField (id, field) {
+  return api.jsonPost(prefix + 'getFieldDecryptValue', {
+    id: id,
+    decryptField: field
+  });
+}

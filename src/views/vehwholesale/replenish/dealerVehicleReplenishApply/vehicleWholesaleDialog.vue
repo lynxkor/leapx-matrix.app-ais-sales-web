@@ -4,7 +4,7 @@
       <el-form
         ref="form"
         :model="form"
-        label-width="80px"
+        label-width="100px"
         :inline="true"
         size="small"
         label-position="right"
@@ -168,8 +168,8 @@
             size="small"
             height="auto"
             width="1000px"
-            min-height="300px"
-            max-height="400px"
+            min-height="200px"
+            max-height="280px"
           >
             <vxe-column field="checkbox" title="补货数量" align="center" width="150">
               <template v-slot="{ row }">
@@ -597,5 +597,9 @@ export default {
 }
 ::v-deep .el-dialog__body {
   padding: 20px 20px 0 20px;
+  max-height: 460px;
+}
+::v-deep .el-form-item__label {
+  padding-right: 0;
 }
 </style>
