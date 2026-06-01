@@ -1315,7 +1315,7 @@ export default {
     },
     handleAdd () {
       this.$router.push({
-        path: '/wholesale/vehicleWholesaleOrderFactory/edit'
+        path: '/vehwholesale/wholesale/vehicleWholesaleOrderFactory/edit'
       });
     },
     onSubmit () {
