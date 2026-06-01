@@ -248,7 +248,7 @@
                   {{ form.certificateNo }}
                 </el-form-item>
                 <el-form-item label="门店库存台账：" prop="storeInventoryId">
-                  {{ form.storeInventoryId }}
+                  <el-link v-if="form.storeInventoryId" type="primary" :href="`/sales/vehstock/store/storeInventoryLedger/edit?id=${form.storeInventoryId}`" target="_blank">{{ form.storeInventoryId }}</el-link><span v-else>{{ form.storeInventoryId }}</span>
                 </el-form-item>
                 <el-form-item label="整车批售单号：" prop="wholesaleOrderCode">
                   <el-link v-if="form.wholesaleOrderId" type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${form.wholesaleOrderId}`" target="_blank">{{ form.wholesaleOrderCode }}</el-link><span v-else>{{ form.wholesaleOrderCode }}</span>
@@ -1127,10 +1127,20 @@ export default {
       this.form.deliveryDealerName = selectedOption.deliveryDealerName;
       this.form.exclusiveServiceStoreCode = selectedOption.vehicleProfileServiceResp.serviceDealerCode ? selectedOption.vehicleProfileServiceResp.serviceDealerCode + '' : '';
       this.form.exclusiveServiceStoreName = selectedOption.vehicleProfileServiceResp.serviceDealerName ? selectedOption.vehicleProfileServiceResp.serviceDealerName : '';
-      // 根据销售门店渲染专属服务、交付门店
-      // if (this.form.saleDealerCode) {
-      //   this.saleDealerSearch(selectedOption.salesDealerCode);
-      // }
+      // 获取门店库存信息
+      if (this.form.vin) {
+        this.refreshStoreInventoryLedger(this.form.vin);
+      }
+    },
+    refreshStoreInventoryLedger (vin) {
+      getStoreInventory({
+        vinLike: this.form.vin,
+        pageSize: 1
+      }).then(res => {
+        if (res.total > 0) {
+          this.form.storeInventoryId = res.records[0].id;
+        }
+      });
     },
     // 销售门店搜索并回显
     saleDealerSearch  (val) {
