@@ -85,7 +85,7 @@
 
 <script>
 
-import { perUnlock, getSysConfigParamValue } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { perUnlock, checkBeforePerUnlock, getSysConfigParamValue } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import { getList } from '@/api/vehretail/basicConfig/retailOrderUnlockReasonConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import MaterialsDialog from '../MaterialsDialog'; // 引入物料选择对话框
@@ -246,14 +246,37 @@ export default {
             changeProductSkuPriceId: this.form.changeProductSkuPriceId,
           };
           console.log('params:', params);
-          perUnlock(params).then(res => {
-            this.$message.success('取消锁车成功');
-            this.$emit('refresh');
-          }).finally(() => {
+          // 先调用弹框校验接口,根据返回的 transferVehicle 判断是否需要弹"调拨回原门店"提示
+          checkBeforePerUnlock(params).then(checkRes => {
+            const transferVehicle = checkRes && checkRes.transferVehicle;
+            if (transferVehicle) {
+              // 是调拨车辆,弹框询问是否需要调回原门店
+              const originalDealerName = (checkRes && checkRes.originalDealerName) || '';
+              this.$confirm(`订单车辆为自动调拨匹配，取消锁车是否自动调拨车辆回原门店（${originalDealerName}）`, '取消锁车', {
+                confirmButtonText: '调拨',
+                cancelButtonText: '不调拨',
+                type: 'warning'
+              }).then(() => {
+                this.doPerUnlock({ ...params, confirmTransferBack: true });
+              }).catch(() => {
+                this.doPerUnlock({ ...params, confirmTransferBack: false });
+              });
+            } else {
+              this.doPerUnlock(params);
+            }
+          }).catch(() => {
             this.submitLoading = false;
-            this.close();
           });
         }
+      });
+    },
+    doPerUnlock (params) {
+      perUnlock(params).then(res => {
+        this.$message.success('取消锁车成功');
+        this.$emit('refresh');
+      }).finally(() => {
+        this.submitLoading = false;
+        this.close();
       });
     }
 

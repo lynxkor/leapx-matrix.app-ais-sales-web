@@ -162,16 +162,11 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button size="small" @click="batchreseRvation('reserve')"
-      :disabled="selectionList.length === 0">批量预留</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="batchreseRvation('cancelReserve')"
-        :disabled="selectionList.length === 0">批量解预留</el-button>
-        <el-button v-if="canEnableOrDisable" size="small" @click="batchreseRvation('car')"
-        :disabled="selectionList.length === 0">运损车出库</el-button>
-        <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchMove"
-        :disabled="selectionList.length === 0">同门店移库</el-button>
-        <el-button v-if="canDelete" size="small" @click="handleBatchDelete"
-        :disabled="selectionList.length === 0">批量删除</el-button>
+      <el-button v-permission="moduleKey+'-batchReserve'" size="small" @click="batchreseRvation('reserve')" :disabled="selectionList.length === 0">批量预留</el-button>
+      <el-button v-permission="moduleKey+'-batchCancelReserve'" size="small" @click="batchreseRvation('cancelReserve')" :disabled="selectionList.length === 0">批量解预留</el-button>
+        <el-button v-permission="moduleKey+'-outbound'" size="small" @click="batchreseRvation('car')" :disabled="selectionList.length === 0">运损车出库</el-button>
+        <el-button v-permission="moduleKey+'-move'" size="small" @click="handleBatchMove" :disabled="selectionList.length === 0">同门店移库</el-button>
+        <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <!-- <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
         :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)"

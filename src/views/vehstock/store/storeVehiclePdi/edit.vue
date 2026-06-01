@@ -14,7 +14,7 @@
         :title="title"
       >
         <template #extraButtons>
-          <el-button v-if="form.isPdiSubmit === 1 && form.isUnusual === 0" type="primary" size="small"  @click="handleDownloadPDF">下载PDF单据</el-button>
+          <el-button v-if="form.isPdiSubmit === 1 && form.isUnusual === 0 && canDownloadPDF" type="primary" size="small"  @click="handleDownloadPDF">下载PDF单据</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -385,6 +385,7 @@ export default {
       showPdfItemLoading: false,
       showPdfItemVisible: false,
       fileDialogVisible: false,
+      canDownloadPDF: false, // 下载PDF单据权限
       viewPictureList: [],
       pageTitle: '门店整车PDI单',
       pageType: 'edit',
@@ -417,6 +418,8 @@ export default {
     };
   },
   mounted () {
+    // 下载PDF单据权限检查
+    this.canDownloadPDF = this.permissions.has(`${this.moduleKey}-downloadPDF`);
   },
   methods: {
     // 是否异常=是，异常是否修复=否，则红色字体显示
