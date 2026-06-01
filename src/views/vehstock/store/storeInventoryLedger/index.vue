@@ -162,16 +162,11 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button size="small" @click="batchreseRvation('reserve')"
-      :disabled="selectionList.length === 0">批量预留</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="batchreseRvation('cancelReserve')"
-        :disabled="selectionList.length === 0">批量解预留</el-button>
-        <el-button v-if="canEnableOrDisable" size="small" @click="batchreseRvation('car')"
-        :disabled="selectionList.length === 0">运损车出库</el-button>
-        <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchMove"
-        :disabled="selectionList.length === 0">同门店移库</el-button>
-        <el-button v-if="canDelete" size="small" @click="handleBatchDelete"
-        :disabled="selectionList.length === 0">批量删除</el-button>
+      <el-button v-permission="moduleKey+'-batchReserve'" size="small" @click="batchreseRvation('reserve')" :disabled="selectionList.length === 0">批量预留</el-button>
+      <el-button v-permission="moduleKey+'-batchCancelReserve'" size="small" @click="batchreseRvation('cancelReserve')" :disabled="selectionList.length === 0">批量解预留</el-button>
+        <el-button v-permission="moduleKey+'-outbound'" size="small" @click="batchreseRvation('car')" :disabled="selectionList.length === 0">运损车出库</el-button>
+        <el-button v-permission="moduleKey+'-move'" size="small" @click="handleBatchMove" :disabled="selectionList.length === 0">同门店移库</el-button>
+        <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <!-- <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
         :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)"
@@ -334,13 +329,13 @@ export default {
           { props: 'poentryDealerName', label: '采购入库门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.poentryDealerCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'poentryOn', label: '采购入库时间', visible: true, width: 200 },
           { props: 'inboundTimeLyLabel', label: '入库是否及时', visible: true, width: 140 },
-          { props: 'materialsCode', label: '物料编码', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
-          { props: 'seriesName', label: '车系', visible: true, width: 100, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleseries/edit?id=${row.seriesId}`, '_blank'); }, type: 'primary' }] },
-          { props: 'modelName', label: '车型', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclemodel/edit?id=${row.modelId}`, '_blank'); }, type: 'primary' }] },
-          { props: 'exteriorName', label: '外观', visible: true, width: 80, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleexterior/edit?id=${row.exteriorId}`, '_blank'); }, type: 'primary' }] },
-          { props: 'interiorName', label: '内饰', visible: true, width: 80, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleinterior/edit?id=${row.interiorId}`, '_blank'); }, type: 'primary' }] },
-          { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclewheelhub/edit?id=${row.wheelHubId}`, '_blank'); }, type: 'primary' }] },
-          { props: 'optionPackageName', label: '选装包', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleoptionpackage/edit?id=${row.optionPackageId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'materialsCode', label: '物料编码', visible: true, width: 160 },
+          { props: 'seriesName', label: '车系', visible: true, width: 100 },
+          { props: 'modelName', label: '车型', visible: true, width: 120 },
+          { props: 'exteriorName', label: '外观', visible: true, width: 80 },
+          { props: 'interiorName', label: '内饰', visible: true, width: 80 },
+          { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 120 },
+          { props: 'optionPackageName', label: '选装包', visible: true, width: 120 },
           { props: 'moveinDate', label: '入库时间', visible: true, width: 200 },
           { props: 'receivedBy', label: '收车确认人', visible: true, width: 160 },
           { props: 'receivedOn', label: '收车确认时间', visible: true, width: 200 },
