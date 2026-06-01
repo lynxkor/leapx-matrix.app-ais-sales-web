@@ -75,6 +75,7 @@
                     value-key="id"
                     label-key="retailOrderCode"
                     @change="handleRetailOrderCodeChange"
+                    subLabelKey="mallOrderCode"
                   />
                 </el-form-item>
                 <el-form-item label="订单处理方式：" prop="orderHandleType">
@@ -85,6 +86,7 @@
                     placeholder="请选择"
                     clearable
                     filterable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="订单解锁原因：" prop="unlockReasonCode">
