@@ -197,7 +197,7 @@ export default {
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVR-retailOrderPayRecord',
-      activeName: 'depositRefund',
+      activeName: 'all',
       form: {
         ...defaultForm
       },
