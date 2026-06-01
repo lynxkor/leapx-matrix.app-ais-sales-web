@@ -315,7 +315,7 @@ export default {
           { props: 'saleDealerName', label: '门店', visible: true, width: 200 },
           { props: 'parentCompany', label: '所属母公司', visible: true, width: 220 },
           { props: 'deliveryTime', label: '交车时间', visible: true, width: 180 },
-          { props: 'deliveryStatus', label: '交车状态', visible: true, width: 120 },
+          { props: 'deliveryStatusLabel', label: '交车状态', visible: true, width: 120 },
           { props: 'fundPaymentTime', label: '缴定金时间', visible: true, width: 180 },
           { props: 'mallOrderCode', label: '商城订单编号', visible: true, width: 180 },
           { props: 'createTime', label: '创建时间', visible: true, width: 180 }
@@ -379,7 +379,7 @@ export default {
           { props: 'retailOrderCode', label: '整车订单', visible: true, width: 180 },
           { props: 'parentCompany', label: '所属母公司', visible: true, width: 220 },
           { props: 'deliveryTime', label: '交车时间', visible: true, width: 180 },
-          { props: 'deliveryStatus', label: '交车状态', visible: true, width: 120 },
+          { props: 'deliveryStatusLabel', label: '交车状态', visible: true, width: 120 },
           { props: 'createTime', label: '创建时间', visible: true, width: 180 }
         ],
         total: 0
