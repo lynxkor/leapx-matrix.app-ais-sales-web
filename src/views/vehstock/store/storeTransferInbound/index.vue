@@ -166,7 +166,10 @@ export default {
                     type: 'success',
                     message: '入库成功!'
                   });
-                  this.getData();
+                  // 后端入库接口同步返回成功，但状态更新存在延迟，延迟一下再查询
+                  setTimeout(() => {
+                    this.getData();
+                  }, 800);
                 });
               },
               type: 'info'
@@ -261,7 +264,6 @@ export default {
 
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
-          console.log(res);
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item,
@@ -389,7 +391,10 @@ export default {
             type: 'success',
             message: '批量入库成功!'
           });
-          this.getData();
+          // 后端入库接口同步返回成功，但状态更新存在延迟，延迟一下再查询
+          setTimeout(() => {
+            this.getData();
+          }, 800);
         }).catch(() => {
           this.$message({
             type: 'error',

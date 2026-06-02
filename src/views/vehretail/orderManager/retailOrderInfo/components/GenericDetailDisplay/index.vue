@@ -13,14 +13,29 @@
         :prop="field.key"
         :class="field.class"
       >
-        <a v-if="field.download" class="el-link el-link--primary" :href="formData[field.key]" target="_blank" download>{{ formData[field.key] }}</a>
+        <LPEncrypted
+          v-if="field.encrypted && formData.id"
+          :value.sync="encryptedDisplay[field.key]"
+          :decryptMethod="() => decryptMethod(field.key)"
+          :key="field.key"
+        >
+          <a v-if="field.download" class="el-link el-link--primary" :href="displayValue(field)" target="_blank" download>{{ displayValue(field) }}</a>
+          <el-link
+            v-else-if="field.link"
+            type="primary"
+            :href="getLinkUrl(field)"
+            :target="field.target || '_blank'"
+          >{{ displayValue(field) }}</el-link>
+          <span v-else>{{ displayValue(field) }}</span>
+        </LPEncrypted>
+        <a v-else-if="field.download" class="el-link el-link--primary" :href="displayValue(field)" target="_blank" download>{{ displayValue(field) }}</a>
         <el-link
           v-else-if="field.link"
           type="primary"
           :href="getLinkUrl(field)"
           :target="field.target || '_blank'"
-        >{{ formData[field.key] || '' }}</el-link>
-        <span v-else>{{ formData[field.key] || '' }}</span>
+        >{{ displayValue(field) }}</el-link>
+        <span v-else>{{ displayValue(field) }}</span>
       </el-form-item>
     </el-form>
     </div>
@@ -28,8 +43,13 @@
 </template>
 
 <script>
+import LPEncrypted from '@/libs/components/LPEncrypted';
+
 export default {
   name: 'GenericDetailDisplay',
+  components: {
+    LPEncrypted
+  },
   props: {
     id: {
       type: String,
@@ -61,13 +81,38 @@ export default {
     sectionKey: {
       type: String,
       default: ''
+    },
+    // 字段解密方法（由父组件传入），参数 (id, field)，返回 Promise<string>
+    getDetailDecryptField: {
+      type: Function,
+      default: null
+    }
+  },
+  data () {
+    return {
+      // 用于承载加密字段的本地显示值，规避直接修改 prop
+      encryptedDisplay: {}
+    };
+  },
+  watch: {
+    formData: {
+      handler (val) {
+        // 同步 formData 中的加密字段到本地 display
+        const next = {};
+        this.fields.forEach(f => {
+          if (f.encrypted) {
+            next[f.key] = val && val[f.key] !== undefined ? val[f.key] : '';
+          }
+        });
+        this.encryptedDisplay = next;
+      },
+      immediate: true,
+      deep: true
     }
   },
   methods: {
     getLinkUrl (field) {
       if (!field.link) return '';
-      // paramKey: 指定 formData 中的字段作为参数值
-      // paramName: 指定 URL 参数名（默认为 id）
       let url = field.link;
       if (field.paramKey) {
         const paramName = field.paramName || 'id';
@@ -77,6 +122,19 @@ export default {
         }
       }
       return url;
+    },
+    displayValue (field) {
+      if (field.encrypted) {
+        return this.encryptedDisplay[field.key] || '';
+      }
+      return (this.formData && this.formData[field.key]) || '';
+    },
+    // 字段解密方法：由父组件通过 prop 注入具体的解密实现
+    decryptMethod (field) {
+      if (typeof this.getDetailDecryptField === 'function') {
+        return this.getDetailDecryptField(this.formData.id, field);
+      }
+      return Promise.resolve(this.encryptedDisplay[field] || '');
     }
   }
 };

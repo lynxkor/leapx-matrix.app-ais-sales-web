@@ -48,7 +48,7 @@
                   {{ form.applyNo }}
                 </el-form-item>
                 <el-form-item label="申请门店：" prop="dealerName">
-                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>
+                  {{ form.dealerName }}
                 </el-form-item>
                 <el-form-item label="申请人：" prop="creatorName">
                   {{ form.creatorName }}

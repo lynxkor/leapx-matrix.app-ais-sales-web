@@ -26,9 +26,9 @@ export const retailOrderDisplayFields = [
 
 // 购车人信息字段配置
 export const carOwnerDisplayFields = [
-  { key: 'carBuyerName', label: '购车人姓名' },
-  { key: 'carBuyerPhone', label: '购车人手机' },
-  { key: 'idCardTypeLabel', label: '证件类型' },
+  { key: 'carBuyerName', label: '购车人姓名', encrypted: true },
+  { key: 'carBuyerPhone', label: '购车人手机', encrypted: true },
+  { key: 'idCardTypeLabel', label: '证件类型', encrypted: true },
   { key: 'idCardNo', label: '证件号码' },
   { key: 'agentName', label: '代办联系人' },
   { key: 'orderUserName', label: '下单人姓名' },

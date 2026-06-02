@@ -272,8 +272,9 @@
           <generic-detail-display
             id="car-owner" class="common-section"
             :title="'购车人信息'"
-            :formData="{...form.carOwner, ...form}"
+            :formData="carOwnerFormData"
             :fields="carOwnerDisplayFields"
+            :getDetailDecryptField="getDetailDecryptField"
           />
           <generic-detail-display
             id="order-fund" class="common-section"
@@ -432,7 +433,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, autoLock, querySnapShot, setSpecialRemark, getUnbindContractUrl } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getDetail, addOrUpdate, autoLock, querySnapShot, setSpecialRemark, getUnbindContractUrl, getDetailDecryptField } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -543,6 +544,10 @@ export default {
     // 订单状态为9或99时不可操作
     canOperateOrder () {
       return this.form.orderStatus !== 9 && this.form.orderStatus !== 99;
+    },
+    // 购车人信息 formData：直接指向 form.carOwner 引用，便于 LPEncrypted 解密后同步回 form
+    carOwnerFormData () {
+      return this.form.carOwner || {};
     }
   },
   watch: {
@@ -550,6 +555,15 @@ export default {
       handler (val) {
         if (val && this.$refs.containerRef) {
           this.$refs.containerRef.loadDetail();
+        }
+      },
+      immediate: true
+    },
+    'form.id': {
+      handler (val) {
+        // 订单 id 变化时，同步到 form.carOwner.id，供 LPEncrypted 解密接口使用
+        if (val && this.form.carOwner) {
+          this.$set(this.form.carOwner, 'id', val);
         }
       },
       immediate: true
@@ -980,6 +994,10 @@ export default {
     },
     submitRequest () {
       return addOrUpdate({ ...this.form });
+    },
+    // 字段解密（用于 generic-detail-display 中的加解密展示）
+    getDetailDecryptField (id, field) {
+      return getDetailDecryptField(id, field);
     },
     // 打开侧边栏
     openPane () {

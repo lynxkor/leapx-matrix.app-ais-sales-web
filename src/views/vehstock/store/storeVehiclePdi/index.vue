@@ -213,7 +213,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'vin', label: 'VIN', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }] },
+          { props: 'vin', label: 'VIN', visible: true, width: 180 },
           { props: 'vehPdiTypeLabel', label: 'PDI类型', visible: true, width: 120 },
           { props: 'isPdiSubmitLabel', label: 'PDI是否完成提交', visible: true, width: 160 },
           { props: 'isUnusualLabel', label: '车辆是否存在异常', visible: true, width: 160 },
@@ -223,9 +223,9 @@ export default {
           { props: 'modelName', label: '车型', visible: true, width: 120 },
           { props: 'yearTypeName', label: '年款', visible: true, width: 80 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
-          { props: 'materialsCode', label: '物料编码', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
-          { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank'); }, type: 'primary' }] },
-          { props: 'deliveryDealerName', label: '交付门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.deliveryDealerCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'materialsCode', label: '物料编码', visible: true, width: 160 },
+          { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
+          { props: 'deliveryDealerName', label: '交付门店名称', visible: true, width: 200 },
           { props: 'pdiSubmitBy', label: 'PDI提交人', visible: true, width: 160 },
           { props: 'pdiSubmitOn', label: 'PDI提交时间', visible: true, width: 200 },
           { props: 'repairedBy', label: '异常修复确认人', visible: true, width: 160 },
