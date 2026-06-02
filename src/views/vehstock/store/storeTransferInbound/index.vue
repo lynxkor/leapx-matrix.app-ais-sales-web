@@ -381,25 +381,21 @@ export default {
     // 批量入库
     handleBatchWarehousing () {
       const ids = this.selectionList.map(item => item.id) || [];
-      console.log('[批量入库] 选中的ids:', ids, '选中数据:', this.selectionList);
       this.$confirm('确定要批量入库吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        inboundItem(ids).then((res) => {
-          console.log('[批量入库] 接口返回:', res);
+        inboundItem(ids).then(() => {
           this.$message({
             type: 'success',
             message: '批量入库成功!'
           });
-          console.log('[批量入库] 准备延迟 800ms 调用 getData 刷新');
           // 后端入库接口同步返回成功，但状态更新存在延迟，延迟一下再查询
           setTimeout(() => {
             this.getData();
           }, 800);
-        }).catch((err) => {
-          console.error('[批量入库] 接口报错:', err);
+        }).catch(() => {
           this.$message({
             type: 'error',
             message: '批量入库失败!'
