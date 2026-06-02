@@ -434,8 +434,9 @@ import {
   deliveryConfirm, // 交车确认单生成
   checkCarBuyerPhoneRegistered, pushDeliveryActive, // 校验购车人手机号是否注册零跑APP
   calculateDeliveryAmount, // 计算尾款
+  getDetailDecryptField, // 加密
 } from '@/api/vehretail/orderManager/deliveryOrder/index';
-import { getDetailDecryptField } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+// import { getDetailDecryptField } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import {
   getEffectiveByDeliveryOrderId
 } from '@/api/vehretail/orderManager/deliveryInvoice/index';
@@ -717,9 +718,9 @@ export default {
         { key: 'orderSource', label: '订单来源' },
         { key: 'orderUserId', label: '用户 ID' },
         { key: 'carBuyerName', label: '购车人姓名', encrypted: true },
-        { key: 'carBuyerPhone', label: '购车人手机' },
+        { key: 'carBuyerPhone', label: '购车人手机', encrypted: true },
         { key: 'idCardTypeLabel', label: '证件类型' },
-        { key: 'idCardNo', label: '证件号码' },
+        { key: 'idCardNo', label: '证件号码', encrypted: true },
         { key: 'agentName', label: '代办联系人' },
         { key: 'guidePrice', label: '整车指导价' },
         { key: 'depositAmount', label: '定金金额' },
@@ -727,7 +728,7 @@ export default {
         { key: 'allocationMaterialCode', label: '配车物料码', link: '/sales/datacenter/materials/vehiclematerials/edit', paramKey: 'allocationMaterialCode' },
         { key: 'saleDealerName', label: '销售门店', link: '/partner/channelManagement/shopDetail', paramKey: 'saleDealerCode', paramName: 'dealerCode' },
         { key: 'deliveryDealerName', label: '交付门店', link: '/partner/channelManagement/shopDetail', paramKey: 'deliveryDealerCode', paramName: 'dealerCode' },
-        { key: 'deliveryVin', label: '交车VIN码' },
+        { key: 'deliveryVin', label: '交车VIN码', encrypted: true },
         { key: 'deliveryTime', label: '交车时间' },
       ],
       realNameAuthFields: [

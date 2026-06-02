@@ -138,8 +138,7 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList } from '@/api/vehretail/orderManager/deliveryOrder/index';
-import { getDetailDecryptField } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getList, getDetailDecryptField } from '@/api/vehretail/orderManager/deliveryOrder/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -269,9 +268,9 @@ export default {
           },
           { props: 'statusLabel', label: '交车状态', visible: true, width: 200 },
           { props: 'appointmentTime', label: '预约提车时间', visible: true, width: 200 },
-          { props: 'vin', label: 'VIN', visible: true, width: 200, mask: true, getValue: (row) => getDetailDecryptField(row.retailOrderId, 'matchVin') },
+          { props: 'vin', label: 'VIN', visible: true, width: 200, mask: true, getValue: (row) => getDetailDecryptField(row.id, 'vin') },
           { props: 'modelName', label: '车型名称', visible: true, width: 200 },
-          { props: 'carBuyerName', label: '购车人姓名', visible: false, width: 200, mask: true, getValue: (row) => getDetailDecryptField(row.retailOrderId, 'carBuyerName') },
+          { props: 'carBuyerName', label: '购车人姓名', visible: false, width: 200, mask: true, getValue: (row) => getDetailDecryptField(row.id, 'carBuyerName') },
           { props: 'guidePrice', label: '整车指导价', visible: false, width: 200, align: 'right' },
           { props: 'depositAmount', label: '应收定金', visible: false, width: 200, align: 'right' },
           { props: 'receivableAmount', label: '门店应收金额', visible: false, width: 200, align: 'right' },

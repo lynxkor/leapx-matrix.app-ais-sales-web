@@ -28,8 +28,8 @@ export const retailOrderDisplayFields = [
 export const carOwnerDisplayFields = [
   { key: 'carBuyerName', label: '购车人姓名', encrypted: true },
   { key: 'carBuyerPhone', label: '购车人手机', encrypted: true },
-  { key: 'idCardTypeLabel', label: '证件类型', encrypted: true },
-  { key: 'idCardNo', label: '证件号码' },
+  { key: 'idCardTypeLabel', label: '证件类型' },
+  { key: 'idCardNo', label: '证件号码', encrypted: true },
   { key: 'agentName', label: '代办联系人' },
   { key: 'orderUserName', label: '下单人姓名' },
   { key: 'orderUserPhone', label: '下单人手机号' },

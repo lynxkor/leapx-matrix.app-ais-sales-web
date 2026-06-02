@@ -242,3 +242,20 @@ export function pushDeliveryActive (data) {
 export function calculateDeliveryAmount (data) {
   return api.jsonPost(prefix + 'calculateDeliveryAmount', data);
 }
+
+/**
+ * 查询加密数据
+ * @param {String} id
+ * @param {String} field
+ */
+export function getDetailDecryptField (id, field) {
+  let param = {
+    id,
+    decryptFields: [field]
+  };
+  return new Promise(resolve => {
+    api.jsonPost(prefix + 'viewOrderDesensitizationData', param).then(res => {
+      resolve(res[field]);
+    });
+  });
+}
