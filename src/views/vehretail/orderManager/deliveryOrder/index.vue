@@ -139,6 +139,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList } from '@/api/vehretail/orderManager/deliveryOrder/index';
+import { getDetailDecryptField } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -150,6 +151,7 @@ import EditPage from './edit.vue';
 import AssignDialog from './components/AssignDialog.vue';
 import TagInput from '@/libs/components/TagInput';
 import dateranges from '@/libs/components/dateranges';
+import { getTimeRangeByTypeFormat } from '@/libs/utils/time';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -267,21 +269,21 @@ export default {
           },
           { props: 'statusLabel', label: '交车状态', visible: true, width: 200 },
           { props: 'appointmentTime', label: '预约提车时间', visible: true, width: 200 },
-          { props: 'vin', label: 'VIN', visible: true, width: 200 },
+          { props: 'vin', label: 'VIN', visible: true, width: 200, mask: true, getValue: (row) => getDetailDecryptField(row.retailOrderId, 'matchVin') },
           { props: 'modelName', label: '车型名称', visible: true, width: 200 },
-          { props: 'carBuyerName', label: '购车人姓名', visible: false, width: 200 },
-          { props: 'vehicleGuidePrice', label: '整车指导价', visible: false, width: 200, align: 'right' },
-          { props: 'depositReceivable', label: '应收定金', visible: false, width: 200, align: 'right' },
+          { props: 'carBuyerName', label: '购车人姓名', visible: false, width: 200, mask: true, getValue: (row) => getDetailDecryptField(row.retailOrderId, 'carBuyerName') },
+          { props: 'guidePrice', label: '整车指导价', visible: false, width: 200, align: 'right' },
+          { props: 'depositAmount', label: '应收定金', visible: false, width: 200, align: 'right' },
           { props: 'receivableAmount', label: '门店应收金额', visible: false, width: 200, align: 'right' },
           { props: 'equityDeductionTotalAmount', label: '权益抵扣总额', visible: false, width: 200, align: 'right' },
           { props: 'invoiceAmount', label: '开票金额', visible: false, width: 200, align: 'right' },
-          { props: 'depositTime', label: '缴定金时间', visible: false, width: 200 },
+          { props: 'paymentTime', label: '缴定金时间', visible: false, width: 200 },
           { props: 'lockTime', label: '锁单时间', visible: false, width: 200 },
-          { props: 'notifyDeliveryTime', label: '触发交付通知时间', visible: false, width: 200 },
+          { props: 'deliveryNoticeTime', label: '触发交付通知时间', visible: false, width: 200 },
           { props: 'deliveryTime', label: '交车时间', visible: false, width: 200 },
-          { props: 'salesStoreName', label: '订单销售门店', visible: false, width: 200 },
-          { props: 'deliveryStoreName', label: '订单交付门店', visible: false, width: 200 },
-          { props: 'deliveryAdvisorName', label: '订单交付顾问', visible: false, width: 200 },
+          { props: 'saleDealerName', label: '订单销售门店', visible: false, width: 200 },
+          { props: 'deliveryDealerName', label: '订单交付门店', visible: false, width: 200 },
+          { props: 'deliveryUserName', label: '订单交付顾问', visible: false, width: 200 },
           { props: 'deliveryBatteryPower', label: '交车时电量', visible: false, width: 200, align: 'right' },
           { props: 'deliveryMileage', label: '交车时里程', visible: false, width: 200, align: 'right' },
           { props: 'createTime', label: '创建时间', visible: false, width: 200 },
@@ -321,6 +323,10 @@ export default {
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
+    // 创建时间默认最近三个月（dateranges 位于 v-if="show" 内，首次挂载时不会执行 setDefault，
+    // 提前在 model 上赋值，保证查询时默认带上时间段；展开后 dateranges 挂载也会再次同步）
+    const { startTime, endTime } = getTimeRangeByTypeFormat('最近三个月');
+    this.form.createTime = [startTime, endTime];
     this.getData();
   },
   methods: {
@@ -351,6 +357,9 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
+      // 重置后保留创建时间默认最近三个月
+      const { startTime, endTime } = getTimeRangeByTypeFormat('最近三个月');
+      this.form.createTime = [startTime, endTime];
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
       this.getData();
