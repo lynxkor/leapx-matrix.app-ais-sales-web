@@ -253,9 +253,6 @@ export default {
               type: 'info'
             }, {
               name: '审核记录',
-              show: (row) => {
-                return this.permissions.has(`${this.moduleKey}-approveRecord`);
-              },
               click: (rowIndex, row) => {
                 this.handleReview(row);
               },
