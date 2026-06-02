@@ -223,6 +223,20 @@
                     multiple
                   />
         </el-form-item>
+        <el-form-item label="金融机构名称">
+          <fetch-select
+            :remote-method="repairItemSearch"
+            remote
+            reserve-keyword
+            labelKey="name"
+            valueKey="id"
+            v-model="form.financialOrganizationIds"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
+        </el-form-item>
             <el-form-item label="确认时间">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
@@ -454,6 +468,7 @@ import CancleBatchAllocateVehicleInput from './CancleBatchAllocateVehicleInput.v
 import SetEmergencyOrderInput from './SetEmergencyOrderInput.vue';
 import BatchCancelSettleInput from './BatchCancelSettleInput.vue';
 import { listIdNames as listWholesaleProdScheduleActivity } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivity/index';
+import { listIdNames as listFundFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -734,6 +749,20 @@ export default {
           { props: 'allocateWayLabel', label: '配车方式', visible: true, width: 200 },
           { props: 'cooperateTypeLabel', label: '合作类型', visible: true, width: 200 },
           { props: 'settleFundTypeLabel', label: '结算资金类型', visible: true, width: 200 },
+          {
+            props: 'financialOrganizationName',
+            label: '金融机构',
+            visible: true,
+            width: 200,
+            buttons: [
+              {
+                click: (rowIndex, row) => {
+                  window.open(`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${row.financialOrganizationId}`, '_blank');
+                },
+                type: 'primary'
+              }
+            ]
+          },
           { props: 'creditSalesAmount', label: '融资金额/赊账', visible: true, width: 180, align: 'right' },
           { props: 'emergencyOrderLabel', label: '是否紧急订单', visible: true, width: 150 },
           { props: 'emergencyOrderRemark', label: '急单备注', visible: true, width: 180 },
@@ -781,6 +810,7 @@ export default {
     this.fetchSettleFundTypeOptions();
   },
   methods: {
+    repairItemSearch (query) { return listFundFinancialOrganization({ organizationNameLike: query, status: 1 }); },
     async fetchSettleFundTypeOptions () {
       const response = await getEnum('vw_fundtype');
       this.settleFundTypeOptions = response.filter(item => {
