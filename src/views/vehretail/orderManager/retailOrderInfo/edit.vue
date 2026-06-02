@@ -293,12 +293,14 @@
             :title="'锁/配车信息'"
             :formData="{...form, ...form.materials}"
             :fields="lockAllocationDisplayFields"
+            :getDetailDecryptField="getDetailDecryptField"
           />
           <generic-detail-display
             id="wholesale" class="common-section"
             :title="'批售信息'"
-            :formData="form.wholesaleOrderDetail || {}"
+            :formData="{...form, ...(form.wholesaleOrderDetail || {})}"
             :fields="wholesaleDisplayFields"
+            :getDetailDecryptField="getDetailDecryptField"
           />
           <generic-detail-display
             id="refund" class="common-section"
