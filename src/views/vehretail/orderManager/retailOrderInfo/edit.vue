@@ -272,7 +272,7 @@
           <generic-detail-display
             id="car-owner" class="common-section"
             :title="'购车人信息'"
-            :formData="carOwnerFormData"
+            :formData="{...form.carOwner, ...form}"
             :fields="carOwnerDisplayFields"
             :getDetailDecryptField="getDetailDecryptField"
           />

@@ -83,6 +83,19 @@
             clearable
           />
         </el-form-item>
+        <el-form-item label="金融订单状态">
+          <fetch-select
+            :options="financeOrderStatusOptions"
+            v-model="form.financeOrderStatusList"
+            :valueKey="'value'"
+            :labelKey="'label'"
+            placeholder="请选择"
+            clearable
+            filterable
+            multiple
+            collapse-tags
+          />
+        </el-form-item>
       </template>
       <page-search-action
         v-if="canList"
@@ -140,7 +153,8 @@ const defaultForm = {
   regionName: '',
   partnerName: '',
   dealerName: '',
-  basicCarModel: ''
+  basicCarModel: '',
+  financeOrderStatusList: []
 };
 
 const pageSize = 20;
@@ -169,6 +183,24 @@ export default {
       exportLoading: false,
       clickItemId: '',
       selectionList: [],
+      financeOrderStatusOptions: [
+        { label: '预审申请中', value: '0' },
+        { label: '预审审批中', value: '1' },
+        { label: '预审批通过', value: '2' },
+        { label: '预审拒绝', value: '3' },
+        { label: '分期审批中', value: '4' },
+        { label: '分期审批通过', value: '5' },
+        { label: '分期审批拒绝', value: '6' },
+        { label: '放款材料待补充', value: '7' },
+        { label: '待放款', value: '8' },
+        { label: '已放款', value: '9' },
+        { label: '放款拒绝', value: '10' },
+        { label: '订单取消', value: '11' },
+        { label: '订单退回', value: '12' },
+        { label: '待面签', value: '13' },
+        { label: '合同签署中', value: '14' },
+        { label: '客户经理变更', value: '101' }
+      ],
       optionObj: {
         id: 'vrFinanceOrderTable',
         dataList: [],
