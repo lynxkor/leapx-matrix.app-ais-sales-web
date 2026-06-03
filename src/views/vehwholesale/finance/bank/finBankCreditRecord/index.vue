@@ -31,7 +31,7 @@
           v-model="form.dealerCompanyNames"
           :param="form.dealerCompanyName"
           :remote-method="getDealerParentOrgListByName"
-          value-key="companyCode"
+          value-key="companyName"
           label-key="companyName"
         />
       </el-form-item>
