@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" width="1200px" height="560px" :visible.sync="dialogVisible" @close="handleClose">
+  <el-dialog :close-on-click-modal="false" :title="title" width="1200px" height="560px" :visible.sync="dialogVisible" @close="handleClose">
     <div>
       <el-form
         ref="form"
@@ -521,6 +521,8 @@ export default {
           }).catch(() => {
             this.submitLoading = false;
           });
+        } else {
+          this.$message.error('请选择结算资金类型');
         }
       });
     },
