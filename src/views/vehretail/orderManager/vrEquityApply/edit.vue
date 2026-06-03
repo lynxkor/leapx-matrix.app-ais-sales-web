@@ -10,7 +10,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.permissions.edit"
+        :showEditBtn="form.permissions.edit && perEdit"
       >
         <template #status>
           <span v-if="form.auditStatus === 10" class="status link">{{ form.auditStatusLabel }}</span>
@@ -20,11 +20,11 @@
         </template>
         <template #extraButtons>
           <el-button size="small" @click="auditLog">申请记录</el-button>
-          <el-button v-if = "form.permissions.cancel" size="small" @click="handleCancel">作废</el-button>
-          <el-button v-if = "form.permissions.submit" size="small" @click="handleSubmitApproval">提交审批</el-button>
-          <el-button v-if = "form.permissions.firstAudit" size="small" @click="handleAudit(1)">初审</el-button>
-          <el-button v-if = "form.permissions.audit" size="small" @click="handleAudit(2)">审核</el-button>
-          <el-button v-if = "form.permissions.auditRevoke" size="small" @click="handleRecall">审核撤回</el-button>
+          <el-button v-if = "form.permissions.cancel && perCancel" size="small" @click="handleCancel">作废</el-button>
+          <el-button v-if = "form.permissions.submit && perSubmit" size="small" @click="handleSubmitApproval">提交审批</el-button>
+          <el-button v-if = "form.permissions.firstAudit && perFirstAudit" size="small" @click="handleAudit(1)">初审</el-button>
+          <el-button v-if = "form.permissions.audit && perAudit" size="small" @click="handleAudit(2)">审核</el-button>
+          <el-button v-if = "form.permissions.auditRevoke && perAuditRevoke" size="small" @click="handleRecall">审核撤回</el-button>
         </template>
         <el-main>
           <!-- 基础信息 -->
@@ -839,6 +839,7 @@ export default {
   },
   mounted () {
     this.getEquityCategoryList();
+    this.initPermissions();
   },
   data () {
     const form = this.getDefautlForm();
@@ -852,6 +853,12 @@ export default {
       yes_no_enum_map: {},
       form: { ...form },
       originalForm: { ...form },
+      perEdit: false,
+      perCancel: false,
+      perSubmit: false,
+      perFirstAudit: false,
+      perAudit: false,
+      perAuditRevoke: false,
       fileList: [],
       equityCategoryOptions: [], // 权益类别选项列表
       logDialogVisible: false,
@@ -1266,6 +1273,15 @@ export default {
         // 其他情况下不需要验证
         callback();
       }
+    },
+
+    initPermissions () {
+      this.perEdit = this.permissions.has(`${this.moduleKey}-addOrUpdate`);
+      this.perCancel = this.permissions.has(`${this.moduleKey}-invalid`);
+      this.perSubmit = this.permissions.has(`${this.moduleKey}-submit`);
+      this.perFirstAudit = this.permissions.has(`${this.moduleKey}-firstApprove`);
+      this.perAudit = this.permissions.has(`${this.moduleKey}-approve`);
+      this.perAuditRevoke = this.permissions.has(`${this.moduleKey}-cancelApprove`);
     }
 
   }
