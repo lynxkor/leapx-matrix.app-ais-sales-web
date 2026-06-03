@@ -21,6 +21,7 @@
           label-key="companyCode"
         />
       </el-form-item>
+      <!-- 名称 -->
       <el-form-item label="母公司名称">
         <fetch-select
           filterable
@@ -30,7 +31,7 @@
           v-model="form.dealerCompanyNames"
           :param="form.dealerCompanyName"
           :remote-method="getDealerParentOrgListByName"
-          value-key="companyName"
+          value-key="companyCode"
           label-key="companyName"
         />
       </el-form-item>
