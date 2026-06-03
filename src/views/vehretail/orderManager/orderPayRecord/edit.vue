@@ -40,7 +40,7 @@
                   {{ form.outTradeNo }}
                 </el-form-item>
                 <el-form-item label="收款类型：" prop="payCategory">
-                  {{ payCategoryLabel }}
+                  {{ form.payCategoryLabel }}
                 </el-form-item>
                 <el-form-item label="付款金额：" prop="paymentAmount">
                   {{ form.paymentAmount }}
@@ -55,7 +55,7 @@
                   {{ form.payerName }}
                 </el-form-item>
                 <el-form-item label="支付渠道：" prop="paymentWay">
-                  {{ paymentWayLabel }}
+                  {{ form.paymentWayLabel }}
                 </el-form-item>
                 <el-form-item label="支付流水号：" prop="paySerialNumber">
                   {{ form.paySerialNumber }}
@@ -119,7 +119,7 @@
                   <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
                 </el-form-item>
                 <el-form-item v-if="type !== 'all'" label="收款类型：" prop="payCategory">
-                  {{ payCategoryLabel }}
+                  {{ form.payCategoryLabel }}
                 </el-form-item>
                 <el-form-item v-if="type !== 'all'" label="权益类型：" prop="rightsType">
                   {{ rightsTypeLabel }}
@@ -154,8 +154,8 @@
                 <el-form-item label="交车状态：" prop="deliveryStatusLabel">
                   <span class="status-tag link">{{ form.deliveryStatusLabel }}</span>
                 </el-form-item>
-                <el-form-item label="缴定金时间：" prop="depositPaymentTime">
-                  {{ form.depositPaymentTime }}
+                <el-form-item label="缴定金时间：" prop="fundPaymentTime">
+                  {{ form.fundPaymentTime }}
                 </el-form-item>
                 <el-form-item label="商城订单编号：" prop="mallOrderCode">
                   {{ form.mallOrderCode }}

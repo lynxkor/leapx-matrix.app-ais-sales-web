@@ -26,10 +26,10 @@ export const retailOrderDisplayFields = [
 
 // 购车人信息字段配置
 export const carOwnerDisplayFields = [
-  { key: 'carBuyerName', label: '购车人姓名' },
-  { key: 'carBuyerPhone', label: '购车人手机' },
+  { key: 'carBuyerName', label: '购车人姓名', encrypted: true },
+  { key: 'carBuyerPhone', label: '购车人手机', encrypted: true },
   { key: 'idCardTypeLabel', label: '证件类型' },
-  { key: 'idCardNo', label: '证件号码' },
+  { key: 'idCardNo', label: '证件号码', encrypted: true },
   { key: 'agentName', label: '代办联系人' },
   { key: 'orderUserName', label: '下单人姓名' },
   { key: 'orderUserPhone', label: '下单人手机号' },
@@ -70,8 +70,8 @@ export const lockAllocationDisplayFields = [
   { key: 'lockTime', label: '锁单时间' },
   { key: 'materialsCode', label: '订单物料码' },
   { key: 'allocationMaterialCode', label: '配车物料编码' },
-  { key: 'matchVin', label: '配车VIN码' },
-  { key: 'deliveryVin', label: '交车VIN码' },
+  { key: 'matchVin', label: '配车VIN码', encrypted: true },
+  { key: 'deliveryVin', label: '交车VIN码', encrypted: true },
   { key: 'deliveryTime', label: '交车时间' },
   { key: 'orderSortTime', label: '订单排序时间' },
   { key: 'changeConfigCount', label: '改配次数' },
@@ -84,7 +84,7 @@ export const wholesaleDisplayFields = [
   { key: 'lockWholesaleTime', label: '锁批售时间' },
   { key: 'confirmedCount', label: '批售确认次数' },
   { key: 'wholesaleOrderCode', label: '批售订单号' },
-  { key: 'matchVin', label: '配车VIN码' },
+  { key: 'matchVin', label: '配车VIN码', encrypted: true },
   { key: 'wholesaleOrderStatusLabel', label: '批售订单状态' },
   { key: 'confirmStatusLabel', label: '批售确认状态' },
   { key: 'confirmTime', label: '批售确认时间' },

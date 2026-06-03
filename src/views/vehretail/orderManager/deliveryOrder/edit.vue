@@ -301,11 +301,11 @@
             section-key="deliveryInfo"
           />
           <!-- 基础信息 -->
-          <generic-detail-display title="基础信息" :form-data="form" :fields="basicInfoFields" :label-width="labelWidth" section-key="basicInfo" />
+          <generic-detail-display title="基础信息" :form-data="form" :fields="basicInfoFields" :label-width="labelWidth" section-key="basicInfo" :getDetailDecryptField="getDetailDecryptField" />
           <!-- 预约信息 -->
           <generic-detail-display title="预约信息" :form-data="form" :fields="appointmentFields" :label-width="labelWidth" section-key="appointment" />
           <!-- 整车订单信息 -->
-          <generic-detail-display title="整车订单信息" :form-data="form" :fields="retailOrderFields" :label-width="labelWidth" section-key="retailOrder" />
+          <generic-detail-display title="整车订单信息" :form-data="form" :fields="retailOrderFields" :label-width="labelWidth" section-key="retailOrder" :getDetailDecryptField="getDetailDecryptField" />
           <!-- 实名认证信息 -->
           <generic-detail-display title="实名认证信息" :form-data="form" :fields="realNameAuthFields" :label-width="labelWidth" section-key="realNameAuth" />
           <!-- 交车确认单 -->
@@ -434,7 +434,9 @@ import {
   deliveryConfirm, // 交车确认单生成
   checkCarBuyerPhoneRegistered, pushDeliveryActive, // 校验购车人手机号是否注册零跑APP
   calculateDeliveryAmount, // 计算尾款
+  getDetailDecryptField, // 加密
 } from '@/api/vehretail/orderManager/deliveryOrder/index';
+// import { getDetailDecryptField } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import {
   getEffectiveByDeliveryOrderId
 } from '@/api/vehretail/orderManager/deliveryInvoice/index';
@@ -715,10 +717,10 @@ export default {
         { key: 'mallOrderCode', label: '商城订单编号' },
         { key: 'orderSource', label: '订单来源' },
         { key: 'orderUserId', label: '用户 ID' },
-        { key: 'carBuyerName', label: '购车人姓名' },
-        { key: 'carBuyerPhone', label: '购车人手机' },
+        { key: 'carBuyerName', label: '购车人姓名', encrypted: true },
+        { key: 'carBuyerPhone', label: '购车人手机', encrypted: true },
         { key: 'idCardTypeLabel', label: '证件类型' },
-        { key: 'idCardNo', label: '证件号码' },
+        { key: 'idCardNo', label: '证件号码', encrypted: true },
         { key: 'agentName', label: '代办联系人' },
         { key: 'guidePrice', label: '整车指导价' },
         { key: 'depositAmount', label: '定金金额' },
@@ -726,7 +728,7 @@ export default {
         { key: 'allocationMaterialCode', label: '配车物料码', link: '/sales/datacenter/materials/vehiclematerials/edit', paramKey: 'allocationMaterialCode' },
         { key: 'saleDealerName', label: '销售门店', link: '/partner/channelManagement/shopDetail', paramKey: 'saleDealerCode', paramName: 'dealerCode' },
         { key: 'deliveryDealerName', label: '交付门店', link: '/partner/channelManagement/shopDetail', paramKey: 'deliveryDealerCode', paramName: 'dealerCode' },
-        { key: 'deliveryVin', label: '交车VIN码' },
+        { key: 'deliveryVin', label: '交车VIN码', encrypted: true },
         { key: 'deliveryTime', label: '交车时间' },
       ],
       realNameAuthFields: [
@@ -744,7 +746,7 @@ export default {
       ],
       basicInfoFields: [
         { key: 'deliveryOrderCode', label: '交车单编号' },
-        { key: 'vin', label: 'VIN 码', link: '/service/datacenter/vehicle/vehicleProfile/edit', paramKey: 'vin', paramName: 'vin' },
+        { key: 'vin', label: 'VIN 码', encrypted: true, link: '/service/datacenter/vehicle/vehicleProfile/edit', paramKey: 'vin', paramName: 'vin' },
         { key: 'materialsCode', label: '整车物料', link: '/sales/datacenter/materials/vehiclematerials/edit', paramKey: 'materialsCode' },
         { key: 'retailOrderCode', label: '整车订单', link: '/sales/vehretail/ordermanager/retailorderinfo/edit', paramKey: 'retailOrderId' },
         { key: 'deliveryTime', label: '交车时间' },
@@ -921,6 +923,10 @@ export default {
       } finally {
         this.$delete(this.buttonLoading, actionName);
       }
+    },
+    // 字段解密（用于 generic-detail-display 中的加解密展示）
+    getDetailDecryptField (id, field) {
+      return getDetailDecryptField(id, field);
     },
     detailRequest () {
       const id = this._id;
