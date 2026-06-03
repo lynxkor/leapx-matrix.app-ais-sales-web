@@ -10,7 +10,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.permissions.edit"
+        :showEditBtn="form.permissions.edit && perEdit"
       >
         <template #status>
           <span v-if="form.auditStatus === 10" class="status link">{{ form.auditStatusLabel }}</span>
@@ -20,12 +20,11 @@
         </template>
         <template #extraButtons>
           <el-button v-if = "isShowAuditorBtn" size="small" @click="handleViewAuditUsers">查看审核人员</el-button>
-          <el-button v-if = "form.permissions.cancel" size="small" @click="handleCancel">作废</el-button>
-          <el-button v-if = "form.permissions.submit" size="small" @click="handleSubmitApproval">提交审批</el-button>
-          <el-button v-if = "form.permissions.firstApprove" size="small" @click="handleAudit(1)">初审</el-button>
-          <el-button v-if = "form.permissions.secondApprove" size="small" @click="handleAudit(2)">复审</el-button>
-          <el-button v-if = "form.permissions.finalApprove" size="small" @click="handleAudit(3)">终审</el-button>
-          <el-button v-if = "form.permissions.auditRevoke" size="small" @click="handleRecall">审核撤回</el-button>
+          <el-button v-if = "form.permissions.cancel && perCancel" size="small" @click="handleCancel">作废</el-button>
+          <el-button v-if = "form.permissions.submit && perSubmit" size="small" @click="handleSubmitApproval">提交审批</el-button>
+          <el-button v-if = "form.permissions.firstApprove && perFirstApprove" size="small" @click="handleAudit(1)">初审</el-button>
+          <el-button v-if = "form.permissions.secondApprove && perSecondApprove" size="small" @click="handleAudit(2)">复审</el-button>
+          <el-button v-if = "form.permissions.finalApprove && perFinalApprove" size="small" @click="handleAudit(3)">终审</el-button>
         </template>
         <el-main>
           <!-- 审核步骤条 -->
@@ -814,6 +813,12 @@ export default {
       auditorList: [],
       auditorDialogVisible: false, // 审核人员弹窗可见性
       buttonType: 1,
+      perEdit: false,
+      perCancel: false,
+      perSubmit: false,
+      perFirstApprove: false,
+      perSecondApprove: false,
+      perFinalApprove: false,
       rules: {
         companyName: [
           { required: true, message: '请选择公司名称', trigger: 'change' }
@@ -848,6 +853,7 @@ export default {
       this.getStepInfo(this._id);
       this.getApprovalDetail(this._id);
     }
+    this.initPermissions();
     this.initMallOrderCodeFromQuery();
   },
   methods: {
@@ -1119,6 +1125,15 @@ export default {
       this.$set(this.form, 'companyName', companyInfo?.companyName || '');
       this.$set(this.form, 'discountAmount', companyInfo?.discountAmount || null);
       this.$set(this.form, 'couponName', companyInfo?.couponName || '');
+    },
+
+    initPermissions () {
+      this.perEdit = this.permissions.has(`${this.moduleKey}-addOrUpdate`);
+      this.perCancel = this.permissions.has(`${this.moduleKey}-invalid`);
+      this.perSubmit = this.permissions.has(`${this.moduleKey}-submit`);
+      this.perFirstApprove = this.permissions.has(`${this.moduleKey}-firstApprove`);
+      this.perSecondApprove = this.permissions.has(`${this.moduleKey}-secondApprove`);
+      this.perFinalApprove = this.permissions.has(`${this.moduleKey}-finalApprove`);
     }
   }
 };

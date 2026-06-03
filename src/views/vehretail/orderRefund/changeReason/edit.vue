@@ -53,6 +53,16 @@
                     filterable
                   />
                 </el-form-item>
+                <el-form-item label="状态：" prop="status">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="StatusEnum"
+                    v-model="form.status"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                  />
+                </el-form-item>
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="变更原因代码：" prop="changeCode">
@@ -63,6 +73,9 @@
                 </el-form-item>
                 <el-form-item label="变更类型：" prop="changeTypeLabel">
                   {{ form.changeTypeLabel }}
+                </el-form-item>
+                <el-form-item label="状态：" prop="statusLabel">
+                  {{ form.statusLabel }}
                 </el-form-item>
                 <el-form-item label="创建者名称：" prop="creatorName">
                   {{ form.creatorName }}
