@@ -240,7 +240,7 @@ export default {
             }, {
               name: '调出审批',
               show: (row) => {
-                return row.auditStatus === 2 && row.outApproval !== 1 && this.permissions.has(`${this.moduleKey}-approveOut`) && this.allOrgCodes.includes(row.sourceDealerCode);
+                return row.auditStatus === 2 && this.permissions.has(`${this.moduleKey}-approveOut`) && this.allOrgCodes.includes(row.sourceDealerCode);
               },
               click: (rowIndex, row) => {
                 this.handleApproval(row, 'outApproval');
@@ -249,7 +249,7 @@ export default {
             }, {
               name: '调入审批',
               show: (row) => {
-                return row.auditStatus === 2 && row.inApproval !== 1 && this.permissions.has(`${this.moduleKey}-approveIn`) && this.allOrgCodes.includes(row.targetDealerCode);
+                return row.auditStatus === 3 && this.permissions.has(`${this.moduleKey}-approveIn`) && this.allOrgCodes.includes(row.targetDealerCode);
               },
               click: (rowIndex, row) => {
                 this.handleApproval(row, 'inApproval');
