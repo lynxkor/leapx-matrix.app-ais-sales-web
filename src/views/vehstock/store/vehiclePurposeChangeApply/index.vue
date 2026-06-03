@@ -196,7 +196,7 @@ export default {
               name: '提交',
               popconfirmTitle: '确认提交用途变更申请吗?',
               show: (row) => {
-                return (row.applyStatus === 1 || row.applyStatus === 6) && this.permissions.has(`${this.moduleKey}-submit`);
+                return (row.applyStatus === 10 || row.applyStatus === 20) && this.permissions.has(`${this.moduleKey}-submit`);
               },
               click: (rowIndex, row) => {
                 enableItemSubmit(row.id).then(res => {
@@ -212,7 +212,7 @@ export default {
               name: '作废',
               popconfirmTitle: '确认作废单据吗?',
               show: (row) => {
-                return (row.applyStatus === 1 || row.applyStatus === 6) && this.permissions.has(`${this.moduleKey}-cancel`);
+                return (row.applyStatus === 10 || row.applyStatus === 20) && this.permissions.has(`${this.moduleKey}-cancel`);
               },
               click: (rowIndex, row) => {
                 enableItemCancel(row.id).then(res => {
@@ -227,7 +227,7 @@ export default {
             }, {
               name: '零售经理审',
               show: (row) => {
-                return row.applyStatus === 2 && this.permissions.has(`${this.moduleKey}-approveByRetailManager`);
+                return row.applyStatus === 30 && this.permissions.has(`${this.moduleKey}-approveByRetailManager`);
               },
               click: (rowIndex, row) => {
                 this.handleApprove(row, 'retail');
@@ -236,7 +236,7 @@ export default {
             }, {
               name: '大区总审',
               show: (row) => {
-                return row.applyStatus === 3 && this.permissions.has(`${this.moduleKey}-approveByAreaManager`);
+                return row.applyStatus === 32 && this.permissions.has(`${this.moduleKey}-approveByAreaManager`);
               },
               click: (rowIndex, row) => {
                 this.handleApprove(row, 'region');
@@ -245,7 +245,7 @@ export default {
             }, {
               name: '总部审',
               show: (row) => {
-                return row.applyStatus === 4 && this.permissions.has(`${this.moduleKey}-approveByHeadquarters`);
+                return row.applyStatus === 34 && this.permissions.has(`${this.moduleKey}-approveByHeadquarters`);
               },
               click: (rowIndex, row) => {
                 this.handleApprove(row, 'headquarters');
