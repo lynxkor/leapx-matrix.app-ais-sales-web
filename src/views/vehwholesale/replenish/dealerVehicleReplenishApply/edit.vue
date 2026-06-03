@@ -653,7 +653,6 @@ export default {
       // 将所有数据项直接添加到明细列表中，不进行任何合并
       this.form.details = [...this.form.details, ...processedDataList];
       this.updateApplyTotalQty();
-      // this.$refs.editLayout.closePane();
       this.submitRequest();
     },
     handleCancel () {
@@ -738,6 +737,7 @@ export default {
       return addOrUpdate(params).then(res => {
         this.isEditing = false;
         this.$refs.containerRef.loadDetail();
+        this.handleCancel();
         return res;
       }).catch(error => {
         this.$message.error('保存失败');
