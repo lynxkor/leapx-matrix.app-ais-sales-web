@@ -170,6 +170,7 @@ export default {
           },
           { props: 'changeName', label: '变更原因名称', visible: true, width: 200 },
           { props: 'changeTypeLabel', label: '变更类型', visible: true, width: 200 },
+          { props: 'statusLabel', label: '状态', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
           {
             props: 'operate',
