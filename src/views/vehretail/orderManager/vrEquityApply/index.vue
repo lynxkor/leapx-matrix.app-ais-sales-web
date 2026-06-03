@@ -89,8 +89,9 @@
         </el-form-item>
         <el-form-item label="申请单状态">
           <fetch-select
-            :request="fetchOptions"
-            enumCode="vr_order_benefit_apply_status"
+            :options="auditStatusOptions"
+            :valueKey="'value'"
+            :labelKey="'label'"
             v-model="form.auditStatus"
             placeholder="请选择"
             clearable
@@ -303,6 +304,14 @@ export default {
       exportLoading: false,
       uploadDialogVisible: false,
       clickItemId: '',
+      auditStatusOptions: [
+        { label: '草稿', value: '10' },
+        { label: '驳回', value: '20' },
+        { label: '已提交', value: '30' },
+        { label: '已初审', value: '40' },
+        { label: '已终审', value: '60' },
+        { label: '作废', value: '70' }
+      ],
       optionObj: {
         id: 'vrEquityApplyTable',
         dataList: [],
