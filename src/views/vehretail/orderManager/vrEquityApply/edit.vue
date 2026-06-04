@@ -64,7 +64,7 @@
                     :disabled="true"
                   />
                 </el-form-item>
-                <el-form-item label="原车VIN号：" prop="originalVin" v-if="form.equityCategoryName === '增换购券'">
+                <el-form-item label="原车VIN号：" prop="originalVin" v-if="form.replacementType == 10 || form.replacementType == '10'">
                   <fetch-select
                     filterable
                     clearable
@@ -1098,9 +1098,12 @@ export default {
       this.form.orderId = record?.id || null;
 
       // 根据商城订单号获取订单详情
-      const order = await getRetailOrderDetail(
-        this.form.orderId,
-      );
+      let order = null;
+      if (!record) {
+        order = await getRetailOrderDetail(
+          this.form.orderId,
+        );
+      }
       // 更新订单相关信息
       this.form.mallOrderNo = order.mallOrderCode || '';
       this.form.vehicleOrderNo = order.retailOrderCode || '';
@@ -1156,7 +1159,7 @@ export default {
 
     // 原车VIN号变化时的处理
     async handleOriginalVinChange (query, record) {
-      if ((this.form.replacementType === 10 || this.form.replacementType === '10') && this.form.equityCategoryName === '增换购券') {
+      if (this.form.replacementType === 10 || this.form.replacementType === '10') {
         this.form.originalVinId = record.id || '';
         this.form.originalOwnerName = record.vehicleProfileOwnerResp.ownerName || '';
         this.form.originalOwnerPhone = record.vehicleProfileOwnerResp.mobilephone || '';
