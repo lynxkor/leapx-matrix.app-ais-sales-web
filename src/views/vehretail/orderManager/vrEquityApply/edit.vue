@@ -64,7 +64,7 @@
                     :disabled="true"
                   />
                 </el-form-item>
-                <el-form-item label="原车VIN号：" prop="originalVin">
+                <el-form-item label="原车VIN号：" prop="originalVin" v-if="form.replacementType == 10 || form.replacementType == '10'">
                   <fetch-select
                     filterable
                     clearable
@@ -74,7 +74,7 @@
                     value-key="vin"
                     label-key="vin"
                     placeholder="请选择原车VIN号"
-                    :disabled="form.replacementType == 20 || form.equityCategoryName === '跨月权益' || !form.permissions.draft  && isEditing"
+                    :disabled="!form.permissions.draft  && isEditing"
                     @change="handleOriginalVinChange"
                   />
                 </el-form-item>
@@ -94,7 +94,7 @@
                     :disabled="!form.permissions.draft && isEditing"
                   />
                 </el-form-item>
-                <el-form-item label="置换类型：" prop="replacementType" v-if="form.equityCategoryName === '增换购券' || form.equityCategoryName === '新标专项'">
+                <el-form-item label="置换类型：" prop="replacementType" v-if="form.equityCategoryName === '增换购券'">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vr_order_benefit_replacement_type"
@@ -549,7 +549,7 @@
           </section>
 
           <!-- 原车车主信息 -->
-          <section class="common-section" v-if="form.replacementType == 10 && (form.equityCategoryName === '新标专项' || form.equityCategoryName === '增值换购')">
+          <section class="common-section" v-if="form.replacementType == 10 || form.replacementType == '10'" >
             <div class="common-section-header">
               <h2>原车车主信息</h2>
             </div>
@@ -1053,11 +1053,21 @@ export default {
     async handleEquityCategoryChange (categoryId, record) {
       await this.validateSelectedVehicleOrder();
       this.form.equityCategoryName = record?.name || '';
-      if (this.form.equityCategoryName === '跨月权益') {
-        this.form.originalVin = '';
-        this.form.otherBrand = '';
-        this.form.discountAmount = '';
-      }
+      // 清空原车信息
+      this.form.originalVin = '';
+      this.form.originalOwnerName = '';
+      this.form.originalOwnerPhone = '';
+      this.form.originalOwnerIdType = null;
+      this.form.originalOwnerIdNumber = '';
+      this.form.originalMaterialsCode = '';
+      this.form.originalModelName = '';
+      this.form.originalModelId = '';
+      this.form.originalVinId = '';
+      this.form.originalMaterialsId = '';
+      // 清空置换类型
+      this.form.replacementType = '';
+      this.form.otherBrand = '';
+      this.form.discountAmount = '';
     },
 
     // 置换类型变化时的处理
@@ -1088,40 +1098,43 @@ export default {
       this.form.orderId = record?.id || null;
 
       // 根据商城订单号获取订单详情
-      const order = await getRetailOrderDetail(
-        this.form.orderId,
-      );
+      let order = null;
+      if (record) {
+        order = await getRetailOrderDetail(
+          this.form.orderId,
+        );
+      }
       // 更新订单相关信息
-      this.form.mallOrderNo = order.mallOrderCode || '';
-      this.form.vehicleOrderNo = order.retailOrderCode || '';
-      this.form.depositTime = order.paymentTime || '';
-      this.form.lockTime = order.lockTime || '';
-      this.form.agentContact = order.carOwner.agentName || '';
-      this.form.buyerName = order.carOwner.carBuyerName || '';
-      this.form.buyerPhone = order.carOwner.carBuyerPhone || '';
-      this.form.buyerIdType = order.carOwner.idCardType || '';
-      this.form.buyerIdNumber = order.carOwner.idCardNo || '';
-      this.form.orderUserId = order.orderUserId || '';
-      this.form.ownerOrgId = order.saleOrgId || '';
-      this.form.saleDealerName = order.saleDealerName || '';
-      this.form.saleDealerCode = order.saleDealerCode || '';
-      this.form.cooperationType = order.cooperationType || '';
-      this.form.regionName = order.regionName || '';
-      this.form.provinceName = order.provinceName || '';
-      this.form.cityName = order.cityName || '';
-      this.form.materialsId = order.materials.materialsId || '';
-      this.form.materialsCode = order.materials.materialsCode || '';
-      this.form.materialsDesc = order.materials.materialsDesc || '';
-      this.form.seriesName = order.materials.seriesName || '';
-      this.form.seriesId = order.materials.seriesId || '';
-      this.form.modelName = order.materials.modelName || '';
-      this.form.modelId = order.materials.modelId || '';
-      this.form.vehicleYearType = order.materials.yearTypeName || '';
-      this.form.vehicleYearTypeId = order.materials.yearTypeId || '';
-      this.form.optionPackageId = order.materials.optionPackageId || '';
-      this.form.optionPackageName = order.materials.optionPackageName || '';
-      this.form.orderStatus = order.orderStatus || null;
-      this.form.originalBenefitDate = order.rightsEnjoyDate ? formatDateTime(order.rightsEnjoyDate, 'data') : '';
+      this.form.mallOrderNo = order?.mallOrderCode || '';
+      this.form.vehicleOrderNo = order?.retailOrderCode || '';
+      this.form.depositTime = order?.paymentTime || '';
+      this.form.lockTime = order?.lockTime || '';
+      this.form.agentContact = order?.carOwner?.agentName || '';
+      this.form.buyerName = order?.carOwner?.carBuyerName || '';
+      this.form.buyerPhone = order?.carOwner?.carBuyerPhone || '';
+      this.form.buyerIdType = order?.carOwner?.idCardType || '';
+      this.form.buyerIdNumber = order?.carOwner?.idCardNo || '';
+      this.form.orderUserId = order?.orderUserId || '';
+      this.form.ownerOrgId = order?.saleOrgId || '';
+      this.form.saleDealerName = order?.saleDealerName || '';
+      this.form.saleDealerCode = order?.saleDealerCode || '';
+      this.form.cooperationType = order?.cooperationType || '';
+      this.form.regionName = order?.regionName || '';
+      this.form.provinceName = order?.provinceName || '';
+      this.form.cityName = order?.cityName || '';
+      this.form.materialsId = order?.materials?.materialsId || '';
+      this.form.materialsCode = order?.materials?.materialsCode || '';
+      this.form.materialsDesc = order?.materials?.materialsDesc || '';
+      this.form.seriesName = order?.materials?.seriesName || '';
+      this.form.seriesId = order?.materials?.seriesId || '';
+      this.form.modelName = order?.materials?.modelName || '';
+      this.form.modelId = order?.materials?.modelId || '';
+      this.form.vehicleYearType = order?.materials?.yearTypeName || '';
+      this.form.vehicleYearTypeId = order?.materials?.yearTypeId || '';
+      this.form.optionPackageId = order?.materials?.optionPackageId || '';
+      this.form.optionPackageName = order?.materials?.optionPackageName || '';
+      this.form.orderStatus = order?.orderStatus || null;
+      this.form.originalBenefitDate = order?.rightsEnjoyDate ? formatDateTime(order.rightsEnjoyDate, 'data') : '';
 
       // 重新查询权益类别列表，更新下拉框选项
       await this.getEquityCategoryList();
@@ -1132,7 +1145,7 @@ export default {
       // 检查三个关键字段是否都有值
       // 注意：权益大类为跨月权益时，置换类型可能为空，所以排除这种情况
       if (!this.form.mallOrderNo || !this.form.equityCategoryId ||
-          (!this.form.replacementType && this.form.equityCategoryName !== '跨月权益')) {
+          (!this.form.replacementType && this.form.equityCategoryName === '增换购券')) {
         return;
       }
       // 调用校验接口
@@ -1146,7 +1159,7 @@ export default {
 
     // 原车VIN号变化时的处理
     async handleOriginalVinChange (query, record) {
-      if ((this.form.replacementType === 10 || this.form.replacementType === '10') && (this.form.equityCategoryName === '新标专项' || this.form.equityCategoryName === '增值换购')) {
+      if (this.form.replacementType === 10 || this.form.replacementType === '10') {
         this.form.originalVinId = record.id || '';
         this.form.originalOwnerName = record.vehicleProfileOwnerResp.ownerName || '';
         this.form.originalOwnerPhone = record.vehicleProfileOwnerResp.mobilephone || '';
