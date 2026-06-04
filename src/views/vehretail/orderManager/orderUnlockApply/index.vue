@@ -257,7 +257,7 @@ export default {
             buttons: [{
               name: '编辑',
               show: (row) => {
-                return row.status === 1010 && row.status === 1040;
+                return row.applyStatus === 1010 || row.applyStatus === 1040;
               },
               click: (rowIndex, row) => {
                 const isEditing = row.applyStatus === 1010 || row.applyStatus === 1040;
