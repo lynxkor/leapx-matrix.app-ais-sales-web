@@ -114,7 +114,7 @@
       <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button> -->
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchSync" :disabled="selectionList.length === 0">批量推送金融机构</el-button>
+      <el-button v-permission="moduleKey+'-sync'" size="small" @click="handleBatchSync" :disabled="selectionList.length === 0">批量推送金融机构</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
