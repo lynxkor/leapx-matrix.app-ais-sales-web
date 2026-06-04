@@ -256,6 +256,9 @@ export default {
             fixed: 'right',
             buttons: [{
               name: '编辑',
+              show: (row) => {
+                return row.applyStatus === 1010 || row.applyStatus === 1040;
+              },
               click: (rowIndex, row) => {
                 const isEditing = row.applyStatus === 1010 || row.applyStatus === 1040;
                 this.$router.push({
