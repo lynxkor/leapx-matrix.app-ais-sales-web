@@ -145,6 +145,14 @@
                     disabled
                   />
                 </el-form-item>
+                 <el-form-item label="商城订单号：" prop="mallOrderCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.mallOrderCode"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
                    <el-form-item label="开票时间：" prop="invoiceTime">
                   <el-date-picker
                     :default-time="['00:00:00', '23:59:59']"
@@ -257,6 +265,9 @@
                 </el-form-item> -->
                 <el-form-item label="税务发票号：" prop="taxInvoiceCode">
                   {{ form.taxInvoiceCode }}
+                </el-form-item>
+                <el-form-item label="商城订单号：" prop="mallOrderCode">
+                  {{ form.mallOrderCode }}
                 </el-form-item>
                 <el-form-item label="开票时间：" prop="invoiceTime">
                   {{ form.invoiceTime }}

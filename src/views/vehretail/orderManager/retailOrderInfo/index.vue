@@ -575,24 +575,24 @@ export default {
       batchReplaceStore(param).then(res => {
         this.$message.success('变更成功');
         this.getData();
+      }).catch(() => {
+        this.$message.error('变更失败，请稍后重试');
       });
     },
     async changeConfiguration (row) {
       this.businessId = this.row.id;
       this.row = row;
-      console.log('row.depositAmount:', row.depositAmount, 'this.row.depositAmount:', this.row.depositAmount);
-      // 门店端校验
-      const res1 = await getSysConfigParamValue({ paramCode: 'veretailChangeConfigCount' });
-      console.log('res1:', res1);
-      console.log('row.changeConfigCount:', row.changeConfigCount);
-      console.log('this.accountFlag:', this.accountFlag);
-      const veretailChangeConfigCount = res1?.paramValue !== null && res1?.paramValue !== undefined ? Number(res1.paramValue) : 1;
-      // 检查返回结果是否有效
-      if (this.accountFlag && this.row.changeConfigCount >= veretailChangeConfigCount) {
-        this.$message.error('该订单修改配车次数已达上限');
-        return;
+      try {
+        const res1 = await getSysConfigParamValue({ paramCode: 'veretailChangeConfigCount' });
+        const veretailChangeConfigCount = res1?.paramValue !== null && res1?.paramValue !== undefined ? Number(res1.paramValue) : 1;
+        if (this.accountFlag && this.row.changeConfigCount >= veretailChangeConfigCount) {
+          this.$message.error('该订单修改配车次数已达上限');
+          return;
+        }
+        this.$refs.materialsDialog.show();
+      } catch (error) {
+        this.$message.error('获取配置参数失败');
       }
-      this.$refs.materialsDialog.show();
     },
     async handleUnlock () {
       this.businessId = this.selectionList[0]?.id;
@@ -724,6 +724,8 @@ export default {
             message: '请前往导出列表中查询导出结果'
           });
         }
+      }).catch(() => {
+        this.$message.error('导出失败，请稍后重试');
       }).finally(() => {
         this.exportLoading = false;
       });
@@ -734,14 +736,22 @@ export default {
 
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
-          console.log(res);
+          if (!res || !res.records) {
+            this.$message.warning('数据获取失败，请稍后重试');
+            this.optionObj.dataList = [];
+            this.optionObj.total = 0;
+            return;
+          }
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item,
               deleteLoading: false
             };
           });
-          this.optionObj.total = res.total;
+          this.optionObj.total = res.total || 0;
+        }).catch(() => {
+          this.optionObj.dataList = [];
+          this.optionObj.total = 0;
         }).finally(() => {
           this.loading = false;
         });

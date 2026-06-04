@@ -930,7 +930,7 @@ export default {
       this.navigateToRoute({
         path: '/sales/vehretail/orderManager/vrGroupbuyOrderEquityApply/edit',
         query: {
-          retailOrderCode: this.form.retailOrderCode
+          mallOrderCode: this.form.mallOrderCode
         }
       }, true);
     },

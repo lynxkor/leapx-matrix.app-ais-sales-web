@@ -848,12 +848,13 @@ export default {
       immediate: true
     },
   },
-  mounted () {
+  async mounted () {
     if (this._id) {
       this.getStepInfo(this._id);
       this.getApprovalDetail(this._id);
     }
     this.initPermissions();
+    this.initMallOrderCodeFromQuery();
   },
   methods: {
     async detailRequest () {
@@ -939,6 +940,32 @@ export default {
         pageSize: 20
       });
       return result;
+    },
+
+    // 根据商城订单号从远程列表中匹配记录
+    async findMallOrderRecord (mallOrderCode) {
+      const result = await this.getRetailOrderListByNo(mallOrderCode);
+      const records = result?.records || result || [];
+      return records.find(r => r.mallOrderCode === mallOrderCode) || null;
+    },
+
+    // 处理 URL 上携带的 mallOrderCode 查询参数：回填并触发选中逻辑
+    async initMallOrderCodeFromQuery () {
+      const mallOrderCode = this.$route.query.mallOrderCode;
+      if (!mallOrderCode) {
+        return;
+      }
+      this.$set(this.form, 'mallOrderCode', mallOrderCode);
+      try {
+        const record = await this.findMallOrderRecord(mallOrderCode);
+        if (record) {
+          await this.handleMallOrderCodeChange(mallOrderCode, record);
+        } else {
+          this.$message.warning('未找到该商城订单号对应的订单，请重新选择');
+        }
+      } catch (error) {
+        // 校验失败时 handleMallOrderCodeChange 内部已清空 mallOrderCode
+      }
     },
 
     // 处理商城订单号选择变化
