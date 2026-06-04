@@ -1021,7 +1021,7 @@
 </template>
 
 <script>
-import { batchCancleAllocateVehicleItem, getDetail, addOrUpdate, batchConfirmItem, batchSetAutoAllocateItem, batchCancelItem, vinAllocateVehicleSubmitItem, batchSettleSubmitItem, batchCancelSettleItem, vinAllocateVehicleCheckItem, querySAPAccountBalance, batchAllocateVehicleItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import { batchCancleAllocateVehicleItem, getDetail, addOrUpdate, batchConfirmItem, batchCancelItem, vinAllocateVehicleSubmitItem, batchSettleSubmitItem, batchCancelSettleItem, vinAllocateVehicleCheckItem, querySAPAccountBalance, batchAllocateVehicleItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
