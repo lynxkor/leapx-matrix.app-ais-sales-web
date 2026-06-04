@@ -1051,8 +1051,8 @@ export default {
 
     // 权益大类变化时的处理
     async handleEquityCategoryChange (categoryId, record) {
-      await this.validateSelectedVehicleOrder();
       this.form.equityCategoryName = record?.name || '';
+      await this.validateSelectedVehicleOrder();
       // 清空原车信息
       this.form.originalVin = '';
       this.form.originalOwnerName = '';
