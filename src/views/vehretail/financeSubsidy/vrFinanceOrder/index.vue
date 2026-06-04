@@ -351,12 +351,21 @@ export default {
 
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
+          if (!res || !res.records) {
+            this.$message.warning('数据获取失败，请稍后重试');
+            this.optionObj.dataList = [];
+            this.optionObj.total = 0;
+            return;
+          }
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item
             };
           });
-          this.optionObj.total = res.total;
+          this.optionObj.total = res.total || 0;
+        }).catch(() => {
+          this.optionObj.dataList = [];
+          this.optionObj.total = 0;
         }).finally(() => {
           this.loading = false;
         });
