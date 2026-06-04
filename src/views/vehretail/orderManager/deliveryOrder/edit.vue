@@ -1352,17 +1352,29 @@ export default {
     },
     // 收款撤回
     handlePaymentWithdraw () {
-      cancelPayment({ deliveryOrderId: this.form.deliveryOrderId, retailOrderId: this.form.retailOrderId }).then(res => {
-        this.$message.success('收款撤回成功');
-        this.getDetail();
-      }).catch(() => {});
+      this.$confirm('确认进行收款撤回操作吗？', '收款撤回提醒', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        cancelPayment({ deliveryOrderId: this.form.deliveryOrderId, retailOrderId: this.form.retailOrderId }).then(res => {
+          this.$message.success('收款撤回成功');
+          this.getDetail();
+        }).catch(() => {});
+      }).catch(() => { });
     },
     // 交车撤回
     handleDeliveryWithdraw () {
-      cancelDelivery({ deliveryOrderId: this.form.deliveryOrderId, retailOrderId: this.form.retailOrderId }).then(res => {
-        this.$message.success('交车撤回成功');
-        this.getDetail();
-      }).catch(() => {});
+      this.$confirm('确认进行交车撤回操作吗？', '交车撤回提醒', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        cancelDelivery({ deliveryOrderId: this.form.deliveryOrderId, retailOrderId: this.form.retailOrderId }).then(res => {
+          this.$message.success('交车撤回成功');
+          this.getDetail();
+        }).catch(() => {});
+      }).catch(() => { });
     },
     // 计算尾款
     async handleCalculateDeliveryAmount () {

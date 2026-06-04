@@ -66,3 +66,20 @@ export function submitApply (data) {
 export function batchVoidedApply (data) {
   return api.jsonPost(prefix + 'batchVoided', data);
 }
+
+/**
+ * 查询加密数据
+ * @param {String} id
+ * @param {String} field
+ */
+export function getDetailDecryptField (id, field) {
+  let param = {
+    id,
+    decryptFields: [field]
+  };
+  return new Promise(resolve => {
+    api.jsonPost(prefix + 'viewOrderDesensitizationData', param).then(res => {
+      resolve(res[field]);
+    });
+  });
+}
