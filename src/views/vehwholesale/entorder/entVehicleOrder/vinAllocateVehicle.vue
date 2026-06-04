@@ -204,9 +204,13 @@ export default {
       this.handleClose();
     },
     handleSubmit () {
-      console.log('提交数据:', this.selectedRow);
+      console.log('this.selectedRow:', this.selectedRow, this.vinCode);
+      if (this.selectedRow) {
+        this.$emit('confirm', this.selectedRow.vin);
+      } else if (!this.selectedRow && this.vinCode) {
+        this.$emit('confirm', this.vinCode);
+      }
       this.dialogVisible = false;
-      this.$emit('confirm', this.selectedRow.vin);
     },
   }
 };

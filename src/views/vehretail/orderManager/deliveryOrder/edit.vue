@@ -597,6 +597,7 @@ export default {
       buttonLoading: {},
       // 权限控制
       canAppointment: false, // 预约交车
+      canAddOrUpdate: false, // 编辑表单权限
       canDeliveryConfirm: false, // 交车确认单生成
       canChangeAppointmentTime: false, // 更改预约时间
       canCancelOrderRights: false, // 核销订单权益
@@ -819,6 +820,7 @@ export default {
     // 初始化权限
     initPermissions () {
       this.canAppointment = this.permissions.has(`${this.moduleKey}-appointment`);
+      this.canAddOrUpdate = this.permissions.has(`${this.moduleKey}-addOrUpdate`);
       this.canDeliveryConfirm = this.permissions.has(`${this.moduleKey}-deliveryConfirm`);
       this.canChangeAppointmentTime = this.permissions.has(`${this.moduleKey}-changeAppointmentTime`);
       this.canCancelOrderRights = this.permissions.has(`${this.moduleKey}-cancelOrderRights`);
@@ -1079,7 +1081,13 @@ export default {
         validateForm(this.$refs.ruleForm2)
       ]);
       if (!ruleForm1Valid || !ruleForm2Valid) {
-        this.$message.warning('请先填写并保存表单信息');
+        // 表单校验不通过：若有编辑权限，自动进入编辑模式；否则提示需要更新销售/交付顾问
+        if (this.canAddOrUpdate) {
+          this.isEditing = true;
+          this.$message.warning('请先完善销售/交付顾问等信息后重试');
+        } else {
+          this.$message.error('当前用户没有编辑权限，请联系相关人员更新销售/交付顾问');
+        }
         return;
       }
       // 2. 调用接口校验购车人手机号是否注册
