@@ -666,17 +666,18 @@
           :before-close="handleAuditorDialogClose"
           class="dialog-with-table"
         >
-          <vxe-table
-            ref="auditorTableRef"
-            :data="auditorList"
-            height="400"
-            stripe
-            :resizable="true"
-            :loading="auditorLoading"
-          >
-            <vxe-column field="auditorName" title="用户名" min-width="150" align="center"></vxe-column>
-            <vxe-column field="auditorOrgName" title="业务部门" min-width="200" align="center"></vxe-column>
-          </vxe-table>
+          <div v-loading="auditorLoading">
+            <vxe-table
+              ref="auditorTableRef"
+              :data="auditorList"
+              height="400"
+              stripe
+              :resizable="true"
+            >
+              <vxe-column field="auditorName" title="用户名" min-width="150" align="center"></vxe-column>
+              <vxe-column field="auditorOrgName" title="业务部门" min-width="200" align="center"></vxe-column>
+            </vxe-table>
+          </div>
         </el-dialog>
       </edit-base-container>
     </template>
