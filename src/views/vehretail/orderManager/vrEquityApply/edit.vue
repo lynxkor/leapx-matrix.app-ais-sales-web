@@ -1099,42 +1099,42 @@ export default {
 
       // 根据商城订单号获取订单详情
       let order = null;
-      if (!record) {
+      if (record) {
         order = await getRetailOrderDetail(
           this.form.orderId,
         );
       }
       // 更新订单相关信息
-      this.form.mallOrderNo = order.mallOrderCode || '';
-      this.form.vehicleOrderNo = order.retailOrderCode || '';
-      this.form.depositTime = order.paymentTime || '';
-      this.form.lockTime = order.lockTime || '';
-      this.form.agentContact = order.carOwner.agentName || '';
-      this.form.buyerName = order.carOwner.carBuyerName || '';
-      this.form.buyerPhone = order.carOwner.carBuyerPhone || '';
-      this.form.buyerIdType = order.carOwner.idCardType || '';
-      this.form.buyerIdNumber = order.carOwner.idCardNo || '';
-      this.form.orderUserId = order.orderUserId || '';
-      this.form.ownerOrgId = order.saleOrgId || '';
-      this.form.saleDealerName = order.saleDealerName || '';
-      this.form.saleDealerCode = order.saleDealerCode || '';
-      this.form.cooperationType = order.cooperationType || '';
-      this.form.regionName = order.regionName || '';
-      this.form.provinceName = order.provinceName || '';
-      this.form.cityName = order.cityName || '';
-      this.form.materialsId = order.materials.materialsId || '';
-      this.form.materialsCode = order.materials.materialsCode || '';
-      this.form.materialsDesc = order.materials.materialsDesc || '';
-      this.form.seriesName = order.materials.seriesName || '';
-      this.form.seriesId = order.materials.seriesId || '';
-      this.form.modelName = order.materials.modelName || '';
-      this.form.modelId = order.materials.modelId || '';
-      this.form.vehicleYearType = order.materials.yearTypeName || '';
-      this.form.vehicleYearTypeId = order.materials.yearTypeId || '';
-      this.form.optionPackageId = order.materials.optionPackageId || '';
-      this.form.optionPackageName = order.materials.optionPackageName || '';
-      this.form.orderStatus = order.orderStatus || null;
-      this.form.originalBenefitDate = order.rightsEnjoyDate ? formatDateTime(order.rightsEnjoyDate, 'data') : '';
+      this.form.mallOrderNo = order?.mallOrderCode || '';
+      this.form.vehicleOrderNo = order?.retailOrderCode || '';
+      this.form.depositTime = order?.paymentTime || '';
+      this.form.lockTime = order?.lockTime || '';
+      this.form.agentContact = order?.carOwner?.agentName || '';
+      this.form.buyerName = order?.carOwner?.carBuyerName || '';
+      this.form.buyerPhone = order?.carOwner?.carBuyerPhone || '';
+      this.form.buyerIdType = order?.carOwner?.idCardType || '';
+      this.form.buyerIdNumber = order?.carOwner?.idCardNo || '';
+      this.form.orderUserId = order?.orderUserId || '';
+      this.form.ownerOrgId = order?.saleOrgId || '';
+      this.form.saleDealerName = order?.saleDealerName || '';
+      this.form.saleDealerCode = order?.saleDealerCode || '';
+      this.form.cooperationType = order?.cooperationType || '';
+      this.form.regionName = order?.regionName || '';
+      this.form.provinceName = order?.provinceName || '';
+      this.form.cityName = order?.cityName || '';
+      this.form.materialsId = order?.materials?.materialsId || '';
+      this.form.materialsCode = order?.materials?.materialsCode || '';
+      this.form.materialsDesc = order?.materials?.materialsDesc || '';
+      this.form.seriesName = order?.materials?.seriesName || '';
+      this.form.seriesId = order?.materials?.seriesId || '';
+      this.form.modelName = order?.materials?.modelName || '';
+      this.form.modelId = order?.materials?.modelId || '';
+      this.form.vehicleYearType = order?.materials?.yearTypeName || '';
+      this.form.vehicleYearTypeId = order?.materials?.yearTypeId || '';
+      this.form.optionPackageId = order?.materials?.optionPackageId || '';
+      this.form.optionPackageName = order?.materials?.optionPackageName || '';
+      this.form.orderStatus = order?.orderStatus || null;
+      this.form.originalBenefitDate = order?.rightsEnjoyDate ? formatDateTime(order.rightsEnjoyDate, 'data') : '';
 
       // 重新查询权益类别列表，更新下拉框选项
       await this.getEquityCategoryList();
