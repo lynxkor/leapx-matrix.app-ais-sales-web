@@ -666,16 +666,18 @@
           :before-close="handleAuditorDialogClose"
           class="dialog-with-table"
         >
-          <vxe-table
-            ref="auditorTableRef"
-            :data="auditorList"
-            height="400"
-            stripe
-            :resizable="true"
-          >
-            <vxe-column field="auditorName" title="用户名" min-width="150" align="center"></vxe-column>
-            <vxe-column field="auditorOrgName" title="业务部门" min-width="200" align="center"></vxe-column>
-          </vxe-table>
+          <div v-loading="auditorLoading">
+            <vxe-table
+              ref="auditorTableRef"
+              :data="auditorList"
+              height="400"
+              stripe
+              :resizable="true"
+            >
+              <vxe-column field="auditorName" title="用户名" min-width="150" align="center"></vxe-column>
+              <vxe-column field="auditorOrgName" title="业务部门" min-width="200" align="center"></vxe-column>
+            </vxe-table>
+          </div>
         </el-dialog>
       </edit-base-container>
     </template>
@@ -812,6 +814,7 @@ export default {
       isShowAuditorBtn: false,
       auditorList: [],
       auditorDialogVisible: false, // 审核人员弹窗可见性
+      auditorLoading: false, // 审核人员加载状态
       buttonType: 1,
       perEdit: false,
       perCancel: false,
@@ -905,17 +908,18 @@ export default {
     },
     // 查看审核人员
     handleViewAuditUsers () {
-      try {
-        this.auditorDialogVisible = true;
-        queryAuditor({
-          cooperationType: this.form.cooperationType,
-          auditStatus: this.form.auditStatus
-        }).then(res => {
-          this.auditorList = res.auditorList || [];
-        });
-      } catch (error) {
+      this.auditorLoading = true;
+      this.auditorDialogVisible = true;
+      queryAuditor({
+        cooperationType: this.form.cooperationType,
+        auditStatus: this.form.auditStatus
+      }).then(res => {
+        this.auditorList = res.auditorList || [];
+      }).finally(() => {
+        this.auditorLoading = false;
+      }).catch((error) => {
         this.$message.error('获取审核人员失败：' + (error.message || '未知错误'));
-      }
+      });
     },
 
     // 审核人员弹窗相关方法
