@@ -274,10 +274,12 @@ export default {
       ]
     };
   },
-  created () {
+  async created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
+    // 先获取子级组织编码，保证 allOrgCodes 在首次渲染表格时已包含子级数据
+    // 否则「调入审批」按钮的 show 判断在初始化时会因为 descendantOrgCodes 为空而失效
+    await this.fetchDescendantOrgCodes();
     this.getData();
-    this.fetchDescendantOrgCodes();
   },
   methods: {
     // 排序
