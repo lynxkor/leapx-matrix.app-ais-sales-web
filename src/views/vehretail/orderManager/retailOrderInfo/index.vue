@@ -189,6 +189,17 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
+        <el-form-item label="证件类型">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vehretail_id_card_type"
+            v-model="form.idCardTypeList"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
+        </el-form-item>
       </template>
       <page-search-action
         v-if="canList"
@@ -335,6 +346,7 @@ const defaultForm = {
   deliveryTime: '',
   orderUserId: '',
   createTime: '',
+  idCardTypeList: [],
 };
 
 const pageSize = 20;
@@ -487,6 +499,7 @@ export default {
           { props: 'deliveryTime', label: '交车时间', visible: true, width: 200 },
           { props: 'orderUserId', label: '下单人UserID', visible: true, width: 180 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'idCardTypeLabel', label: '证据类型', visible: true, width: 200 },
           {
             props: 'operate',
             label: '操作',
