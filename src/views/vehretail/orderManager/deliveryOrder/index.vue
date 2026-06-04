@@ -107,7 +107,7 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-permission="moduleKey +'-assign'" :disabled="selectionList.length !== 1" size="small" @click="handleAssign">分派</el-button>
+      <el-button v-permission="moduleKey +'-assign'" :disabled="!canAssign" size="small" @click="handleAssign">分派</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -320,6 +320,13 @@ export default {
       ]
     };
   },
+  computed: {
+    // 分派按钮是否可点：至少选 1 条，且每条 status 都等于字符串 '1'（待预约）
+    canAssign () {
+      if (!this.selectionList || this.selectionList.length === 0) return false;
+      return this.selectionList.every(item => String(item.status) === '1');
+    }
+  },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     // 创建时间默认最近三个月（dateranges 位于 v-if="show" 内，首次挂载时不会执行 setDefault，
@@ -346,6 +353,23 @@ export default {
     handleAssign () {
       if (!this.selectionList || this.selectionList.length === 0) {
         this.$message('请选择要分派的交车单');
+        return;
+      }
+      // 规则1：所选交车单的 status 必须全部等于字符串 '1'（待预约）
+      const allStatusOne = this.selectionList.every(
+        item => String(item.status) === '1'
+      );
+      if (!allStatusOne) {
+        this.$message.warning('仅待预约状态的交车单允许分派');
+        return;
+      }
+      // 规则2：所选交车单的 deliveryDealerCode 必须全部一致
+      const firstCode = this.selectionList[0].deliveryDealerCode;
+      const allSameDealer = this.selectionList.every(
+        item => item.deliveryDealerCode === firstCode
+      );
+      if (!allSameDealer) {
+        this.$message.warning('交付门店不一致不允许分派');
         return;
       }
       this.$refs.assignDialog.open(this.selectionList);
