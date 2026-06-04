@@ -49,15 +49,15 @@
                     :disabled="form.id && form.id.length > 0"
                   />
                 </el-form-item>
-                <el-form-item label="车型名称：" prop="modelId">
+                <el-form-item label="车型名称：" prop="modelName">
                   <fetch-select
                     filterable
                     clearable
                     remote
                     reserve-keyword
-                    v-model="form.modelId"
+                    v-model="form.modelName"
                     :remote-method="vehicleModelSearch"
-                    :params="form.modelId"
+                    :params="form.modelName"
                     @change="vehicleModelChange"
                     value-key="id"
                     label-key="name"
@@ -79,6 +79,7 @@
                     :request="fetchOptions"
                     enumCode="vehicle_purpose_type"
                     v-model="form.vehiclePurpose"
+                    @change="vehiclePurposeChange"
                     placeholder="请选择车辆用途"
                     clearable
                     filterable
@@ -1093,6 +1094,8 @@ export default {
       }
     },
     clearForm () {
+      this.form.reservationStatus = null;
+      this.form.storeInventoryVin = null;
       // 清空表单
       this.$refs.ruleForm.resetFields();
       this.$refs.ruleForm1.resetFields();
@@ -1127,14 +1130,35 @@ export default {
     refreshStoreInventoryLedger (vin) {
       getStoreInventory({
         vinLike: this.form.vin,
+        vechicleStatusList: [11, 12, 13, 16, 20, 25],
         pageSize: 1
       }).then(res => {
         if (res.total > 0) {
-          this.form.storeInventoryId = res.records[0].id;
-          this.form.reservationStatus = res.records[0].reservationStatus;
-          this.form.storeInventoryVin = this.form.vin;
+          if (res.records[0].reservationStatus !== 10) {
+            this.$message.error('非试驾车的批售车辆，不允许提报!');
+            this.clearForm();
+          } else {
+            this.form.storeInventoryId = res.records[0].id;
+            this.form.reservationStatus = res.records[0].reservationStatus;
+            this.form.wholesaleOrderCode = res.records[0].wholesaleOrderCode;
+            this.form.storeInventoryVin = this.form.vin;
+            this.form.vehiclePurpose = 30;
+          }
         }
       });
+    },
+    vehiclePurposeChange (val) {
+      if (val) {
+        if (this.form.reservationStatus === 10 && val !== 30) {
+          this.$message.error('该车辆' + this.form.vin + '车辆类型为试驾车,车辆用途必须选择试驾车!');
+          this.form.vehiclePurpose = null;
+        } else {
+          if (val === 30) {
+            this.$message.error('该车辆的车辆类型不是试驾车，请核实!');
+            this.form.vehiclePurpose = null;
+          }
+        }
+      }
     },
     // 销售门店搜索并回显
     saleDealerSearch  (val) {
