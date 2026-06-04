@@ -119,7 +119,7 @@
                 <el-form-item label="门店库存台账：" prop="storeInventoryId">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.storeInventoryId"
+                    v-model="form.storeInventoryVin"
                     disabled
                     clearable
                   />
@@ -248,7 +248,7 @@
                   {{ form.certificateNo }}
                 </el-form-item>
                 <el-form-item label="门店库存台账：" prop="storeInventoryId">
-                  <el-link v-if="form.storeInventoryId" type="primary" :href="`/sales/vehstock/store/storeInventoryLedger/edit?id=${form.storeInventoryId}`" target="_blank">{{ form.storeInventoryId }}</el-link><span v-else>{{ form.storeInventoryId }}</span>
+                  <el-link v-if="form.storeInventoryId" type="primary" :href="`/sales/vehstock/store/storeInventoryLedger/edit?id=${form.storeInventoryId}`" target="_blank">{{ form.storeInventoryVin }}</el-link><span v-else>{{ form.storeInventoryVin }}</span>
                 </el-form-item>
                 <el-form-item label="整车批售单号：" prop="wholesaleOrderCode">
                   <el-link v-if="form.wholesaleOrderId" type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${form.wholesaleOrderId}`" target="_blank">{{ form.wholesaleOrderCode }}</el-link><span v-else>{{ form.wholesaleOrderCode }}</span>
@@ -565,6 +565,8 @@ const defaultForm = {
   invoiceAmount: '',
   documentCode: '',
   dataSource: '',
+  reservationStatus: null,
+  storeInventoryVin: null
 };
 
 export default {
@@ -929,17 +931,7 @@ export default {
     // 提交操作
     handleSubmit () {
       // 试乘试驾车校验
-      let vehicleTypeValidateFailed = false;
-      getStoreInventory({
-        vinLike: this.form.vin,
-        pageSize: 1
-      }).then(res => {
-        // console.log(JSON.stringify(res));
-        if (res.total > 0) {
-          vehicleTypeValidateFailed = res.records[0].reservationStatus === 10 && this.form.vehiclePurpose !== 30;
-        }
-      });
-      if (vehicleTypeValidateFailed) {
+      if (this.form.reservationStatus === 10 && this.form.vehiclePurpose !== 30) {
         this.$confirm(
           '该车辆为试驾车，车辆用途请选择试乘试驾车',
           '试乘试驾车校验提醒',
@@ -1139,6 +1131,8 @@ export default {
       }).then(res => {
         if (res.total > 0) {
           this.form.storeInventoryId = res.records[0].id;
+          this.form.reservationStatus = res.records[0].reservationStatus;
+          this.form.storeInventoryVin = this.form.vin;
         }
       });
     },
