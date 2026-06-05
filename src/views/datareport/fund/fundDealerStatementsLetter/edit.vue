@@ -109,6 +109,7 @@
                   ref="vehicleRebateTableRef"
                   stripe
                   :data="vehicleRebateData"
+                  :loading="vehicleRebateLoading"
                   show-overflow
                   resizable
                   border="inner"
@@ -168,6 +169,7 @@
                   ref="vehicleCashTableRef"
                   stripe
                   :data="vehicleCashData"
+                  :loading="vehicleCashLoading"
                   show-overflow
                   resizable
                   border="inner"
@@ -229,6 +231,7 @@
                   ref="spareCashTableRef"
                   stripe
                   :data="spareCashData"
+                  :loading="spareCashLoading"
                   show-overflow
                   resizable
                   border="inner"
@@ -287,6 +290,7 @@
                   ref="spareRebateTableRef"
                   stripe
                   :data="spareRebateData"
+                  :loading="spareRebateLoading"
                   show-overflow
                   resizable
                   border="inner"
@@ -425,7 +429,12 @@ export default {
         currentPage: 1,
         pageSize: 10,
         total: 0
-      }
+      },
+      // 表格加载状态
+      vehicleRebateLoading: false,
+      vehicleCashLoading: false,
+      spareCashLoading: false,
+      spareRebateLoading: false
     };
   },
   mounted () {
@@ -464,6 +473,7 @@ export default {
     },
     // 加载整车返利对账流水数据
     loadVehicleRebateData () {
+      this.vehicleRebateLoading = true;
       const params = {
         dealerReconLetterId: this._id,
         pageNum: this.vehicleRebatePage.currentPage,
@@ -477,10 +487,13 @@ export default {
         console.error('加载整车返利对账流水数据失败:', error);
         this.vehicleRebateData = [];
         this.vehicleRebatePage.total = 0;
+      }).finally(() => {
+        this.vehicleRebateLoading = false;
       });
     },
     // 加载备件返利对账流水数据
     loadSpareRebateData () {
+      this.spareRebateLoading = true;
       const params = {
         dealerReconLetterId: this._id,
         pageNum: this.spareRebatePage.currentPage,
@@ -494,10 +507,13 @@ export default {
         console.error('加载备件返利对账流水数据失败:', error);
         this.spareRebateData = [];
         this.spareRebatePage.total = 0;
+      }).finally(() => {
+        this.spareRebateLoading = false;
       });
     },
     // 加载整车现金对账流水数据
     loadVehicleCashData () {
+      this.vehicleCashLoading = true;
       const params = {
         storeReconLetterId: this._id,
         pageNum: this.vehicleCashPage.currentPage,
@@ -511,10 +527,13 @@ export default {
         console.error('加载整车现金对账流水数据失败:', error);
         this.vehicleCashData = [];
         this.vehicleCashPage.total = 0;
+      }).finally(() => {
+        this.vehicleCashLoading = false;
       });
     },
     // 加载备件现金对账流水数据
     loadSpareCashData () {
+      this.spareCashLoading = true;
       const params = {
         dealerReconLetterId: this._id,
         pageNum: this.spareCashPage.currentPage,
@@ -528,6 +547,8 @@ export default {
         console.error('加载备件现金对账流水数据失败:', error);
         this.spareCashData = [];
         this.spareCashPage.total = 0;
+      }).finally(() => {
+        this.spareCashLoading = false;
       });
     },
     // 整车返利对账流水 - 每页数量改变
