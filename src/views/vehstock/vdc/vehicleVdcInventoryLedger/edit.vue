@@ -514,11 +514,11 @@ const defaultForm = {
   remark: '',
   // 批量编辑模式下,标记对应字段是否需要变更
   // isReserved 同时控制"销售预留"和"销售预留类型"两个字段
-  // 批量模式默认全部勾选(true),用户取消勾选表示该字段不修改
-  isReserved: true,
-  isSalesRemark: true,
-  isSpecialReserveRemark: true,
-  isAllowLockRetail: true
+  // 单条编辑进入默认全部勾选(true),批量编辑进入默认全部不勾选(false)
+  isReserved: false,
+  isSalesRemark: false,
+  isSpecialReserveRemark: false,
+  isAllowLockRetail: false
 };
 
 export default {
@@ -596,16 +596,30 @@ export default {
       immediate: true
     },
     'form.reserved': {
-      handler (newVal, oldVal) {
+      handler (newVal) {
         // 当 销售预留 取消时,清空预留类型的校验提示
         if (!newVal) {
           this.$refs.ruleForm?.clearValidate?.('reservedType');
         }
       }
+    },
+    'form.reservedType' () {
+      // 销售预留类型变化后,如果 allOptions 已就绪,重新过滤 options,确保下拉与销售预留联动
+      if (this.allOptions && this.allOptions.length) {
+        this.updateOptionsByReserved();
+      }
     }
   },
   data () {
     const form = this.getDefaultForm();
+    // 单条编辑进入(id 存在)时,四个"是否修改"复选框默认勾选(true)
+    // 批量编辑进入(list=1)时,默认不勾选(false)
+    if (!this.$route.query.list) {
+      form.isReserved = true;
+      form.isSalesRemark = true;
+      form.isSpecialReserveRemark = true;
+      form.isAllowLockRetail = true;
+    }
     return {
       pageTitle: 'VDC库存台账',
       pageType: 'edit',
@@ -678,6 +692,15 @@ export default {
           type: 'warning'
         });
         const result = await batchEdit(submitData);
+        // 批量保存成功后,清理选中缓存并退回到列表页
+        if (this.isBatchEdit) {
+          localStorage.removeItem('selectedIds');
+          this.$router.push({
+            path: '/vehstock/vdc/vehicleVdcInventoryLedger'
+          });
+          // 返回 result,避免 EditBaseContainer 进入"loadDetail"分支
+          return result;
+        }
         return result;
       } catch (error) {
         if (error !== 'cancel') {
@@ -694,7 +717,12 @@ export default {
     },
     // 批量编辑 - 销售预留复选框切换(同时控制销售预留和销售预留类型)
     onReservedCheckChange () {
-      if (!this.form.isReserved && this.originalForm) {
+      if (this.form.isReserved) {
+        // 勾选修改时,清空销售预留与预留类型,等待用户重新选择
+        this.$set(this.form, 'reserved', '');
+        this.$set(this.form, 'reservedType', '');
+      } else if (this.originalForm) {
+        // 取消勾选:从 originalForm 还原
         if (this.originalForm.reserved !== undefined) {
           this.$set(this.form, 'reserved', this.originalForm.reserved);
         }
@@ -731,7 +759,11 @@ export default {
           value: Number(item.code)
         };
       });
-      this.updateOptionsByReserved();
+      // allOptions 已就绪:如果 form 数据也已就绪(reserved 有值),按销售预留过滤
+      // 这样无论 dataTransform 与 salesType 哪个先完成,都能正确展示下拉
+      if (this.form.reserved !== '' && this.form.reserved !== null && this.form.reserved !== undefined) {
+        this.updateOptionsByReserved();
+      }
     },
     // 根据 form.reserved 过滤 options,并在 reserved 明确为"否"且选项唯一时自动赋值 reservedType
     updateOptionsByReserved () {
@@ -756,12 +788,13 @@ export default {
       if ((this.isBatchEdit || this.isEditing) && !this.form.isReserved) {
         return;
       }
-      // 切换到"否"时清空 reservedType,由 updateOptionsByReserved 自动赋值为"可售"
-      // 切换到其他值时保留原 reservedType,避免丢值
-      if (Number(this.form.reserved) === 0) {
-        this.form.reservedType = '';
-      }
+      // 每次切换销售预留,都先清空销售预留类型,避免类型与预留状态不匹配
+      this.form.reservedType = '';
       this.updateOptionsByReserved();
+      // 切换到"否"时,只显示"可售",自动赋值
+      if (Number(this.form.reserved) === 0 && this.options.length === 1) {
+        this.form.reservedType = this.options[0].value;
+      }
     },
     // 详情接口数据转换:在 loadDetail 完成时根据 form.reserved 初始化 options
     dataTransform (data) {
