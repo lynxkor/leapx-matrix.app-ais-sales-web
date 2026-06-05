@@ -40,6 +40,16 @@
          <el-form-item label="商城订单号">
           <tag-input v-model="form.mallOrderCodes" placeholder="请输入" />
         </el-form-item>
+         <el-form-item label="ERP发票是否开票">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.invoiceFlag"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
           <el-form-item label="订单分类">
             <fetch-select
               :remote-method="getWholesaleEorderTyprList"
@@ -305,14 +315,14 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <button-group collapse-direction="left" maxWidth="95%">
-        <el-button v-permission="moduleKey+'-batchConfirm'"  size="small" :disabled="selectionList.length === 0" @click="handleBatchConfirm">批量确认</el-button>
-        <el-button v-permission="moduleKey+'-batchAllocateVehicle'" size="small" :disabled="selectionList.length === 0" @click="handleBatchAllocateVehicle">批量配车</el-button>
-        <el-button v-permission="moduleKey+'-batchSettleSubmit'"  size="small" :disabled="selectionList.length === 0" @click="handleBatchSettleSubmit">批量结算</el-button>
-        <el-button v-permission="moduleKey+'-batchCancelSettle'" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancelSettle">批量取消结算</el-button>
-        <el-button v-permission="moduleKey+'-batchCancel'" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancel">批量作废</el-button>
-        <el-button v-permission="moduleKey+'-batchSetAutoAllocate'"  size="small" :disabled="selectionList.length === 0" @click="handleBatchCancelAllocateVehicle">批量取消配车</el-button>
-        <el-button v-permission="moduleKey+'-batchSetAutoAllocate'"  size="small" :disabled="selectionList.length === 0" @click="handleBatchSetAutoAllocate">批量设置自动配车</el-button>
-        <el-button v-permission="moduleKey+'-batchSetAutoAllocate'" size="small" :disabled="selectionList.length === 0" @click="handleBatchSetNotAutoAllocate">批量设置不自动配车</el-button>
+        <el-button v-permission="moduleKey+'-batchConfirm'"  size="small" :disabled="selectionList.length === 0" @click="handleBatchConfirm">确认</el-button>
+        <el-button v-permission="moduleKey+'-batchAllocateVehicle'" size="small" :disabled="selectionList.length === 0" @click="handleBatchAllocateVehicle">配车</el-button>
+        <el-button v-permission="moduleKey+'-batchSettleSubmit'"  size="small" :disabled="selectionList.length === 0" @click="handleBatchSettleSubmit">结算</el-button>
+        <el-button v-permission="moduleKey+'-batchCancelSettle'" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancelSettle">取消结算</el-button>
+        <el-button v-permission="moduleKey+'-batchCancel'" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancel">作废</el-button>
+        <el-button v-permission="moduleKey+'-batchSetAutoAllocate'"  size="small" :disabled="selectionList.length === 0" @click="handleBatchCancelAllocateVehicle">取消配车</el-button>
+        <el-button v-permission="moduleKey+'-batchSetAutoAllocate'"  size="small" :disabled="selectionList.length === 0" @click="handleBatchSetAutoAllocate">设置自动配车</el-button>
+        <el-button v-permission="moduleKey+'-batchSetAutoAllocate'" size="small" :disabled="selectionList.length === 0" @click="handleBatchSetNotAutoAllocate">设置不自动配车</el-button>
         <el-button v-permission="moduleKey+'-setEmergencyOrder'"  size="small" :disabled="selectionList.length === 0" @click="handleSetEmergencyOrder">设置急单</el-button>
         <el-button v-permission="moduleKey+'-setEmergencyOrder'" size="small" :disabled="selectionList.length === 0" @click="handleCancelEmergencyOrder">取消急单</el-button>
         <el-button v-permission="moduleKey+'-refreshPrice'" size="small" @click="handleRefreshPriceCoefficient">刷新价格</el-button>
@@ -561,7 +571,20 @@ export default {
           { props: 'orderStatusLabel', label: '订单状态', visible: true, width: 100 },
           { props: 'orderTime', label: '订单时间', visible: true, width: 200 },
           { props: 'confirmTime', label: '确认时间', visible: true, width: 200 },
-          { props: 'saleDealerName', label: '销售门店', visible: true, width: 200 },
+          {
+            props: 'saleDealerName',
+            label: '销售门店',
+            visible: true,
+            width: 200,
+            buttons: [
+              {
+                click: (rowIndex, row) => {
+                  window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank');
+                },
+                type: 'primary'
+              }
+            ]
+          },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 100 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 120 },
           {
@@ -669,7 +692,20 @@ export default {
           { props: 'outboundTime', label: '出库时间', visible: true, width: 200 },
           { props: 'lockStatusLabel', label: '是否已锁定', visible: true, width: 200 },
           { props: 'lockTime', label: '锁定时间', visible: true, width: 200 },
-          { props: 'mallOrderCode', label: '商城订单号', visible: true, width: 200 },
+          {
+            props: 'mallOrderCode',
+            label: '商城订单号',
+            visible: true,
+            width: 200,
+            buttons: [
+              {
+                click: (rowIndex, row) => {
+                  window.open(`/sales/vehretail/orderManager/retailOrderInfo/edit?id=${row.retailOrderId}`, '_blank');
+                },
+                type: 'primary'
+              }
+            ]
+          },
           { props: 'confirmStatusLabel', label: '确认状态', visible: true, width: 200 },
           { props: 'createdShippingPlanLabel', label: '是否创建发运单计划', visible: true, width: 200 },
           { props: 'hasSettleFailedLabel', label: '是否存在结算失败', visible: true, width: 200 },
@@ -893,7 +929,7 @@ export default {
     },
     handleBatchSettleSubmit () {
       const ids = this.selectionList.map(item => item.id) || [];
-      this.$confirm('是否需要对批售订单进行批量结算?', '操作提醒', {
+      this.$confirm('是否需要对批售订单进行结算?', '操作提醒', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
