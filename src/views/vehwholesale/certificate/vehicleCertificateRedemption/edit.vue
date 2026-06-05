@@ -228,6 +228,22 @@
                     disabled
                   />
                 </el-form-item>
+                <el-form-item label="使用现金金额：" prop="usedCashAmount">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.usedCashAmount"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="使用返利金额：" prop="usedRebateAmount">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.usedRebateAmount"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
 
                  <el-form-item label="车辆售价：" prop="vehiclePrice">
                   <el-input
@@ -335,6 +351,12 @@
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="资金结算类型：" prop="settleFundTypeLabel">
                   {{ form.settleFundTypeLabel }}
+                </el-form-item>
+                <el-form-item label="使用现金金额：" prop="usedCashAmount">
+                  {{ form.usedCashAmount }}
+                </el-form-item>
+                <el-form-item label="使用返利金额：" prop="usedRebateAmount">
+                  {{ form.usedRebateAmount }}
                 </el-form-item>
                 <el-form-item label="车辆售价：" prop="vehiclePrice">
                   {{ form.vehiclePrice }}
