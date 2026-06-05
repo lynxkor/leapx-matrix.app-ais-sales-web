@@ -1188,7 +1188,8 @@ export default {
           // 3. 校验是否存在未核销权益
           const unverifiedRightsParams = {
             userId: this.form.orderUserId,
-            shopCode: this.form.mallOrderCode
+            shopCode: this.form.mallOrderCode,
+            rightsStatus: 2
           };
           const unverifiedRightsResult = await openGrantQuery(unverifiedRightsParams);
           let hasUnverifiedRights = false;

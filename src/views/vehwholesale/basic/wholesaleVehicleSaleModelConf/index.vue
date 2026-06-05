@@ -54,6 +54,17 @@
             filterable
           />
         </el-form-item>
+        <el-form-item label="母公司">
+          <fetch-select
+            filterable
+            clearable
+            remote
+            v-model="form.dealerParentOrgId"
+            :remote-method="getDealerParentOrgList"
+            value-key="companyCode"
+            label-key="companyName"
+          />
+        </el-form-item>
         <el-form-item label="修改时间">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
@@ -124,7 +135,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchAuditValid, batchSubmitValid, batchAudit, batchSubmit, batchEditValid, batchEdit } from '@/api/vehwholesale/basic/wholesaleVehicleSaleModelConf/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, vehicleModelYearTypeRelationDistinctYeayType } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel, vehicleModelYearTypeRelationDistinctYeayType, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -140,6 +151,7 @@ const defaultForm = {
   vehicleYearTypeId: '',
   orderCategory: '',
   auditStatus: '',
+  dealerParentOrgId: '',
   updateTime: '',
 };
 
@@ -472,6 +484,9 @@ export default {
     },
     async getModelIdList (params) {
       return listVehicleModel({ modelNameLike: params, status: 1 });
+    },
+    async getDealerParentOrgList (params) {
+      return getParentCompany({ parentCompanyName: params });
     },
     async handleModelChange (val, record) {
       this.yearTypeList = [];
