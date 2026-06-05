@@ -142,7 +142,7 @@
                     layout="total, sizes, prev, pager, next, jumper"
                     :total="vehicleRebatePage.total">
                   </el-pagination>
-                </div> 
+                </div>
               </div>
             </div>
           </section>
