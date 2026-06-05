@@ -8,7 +8,7 @@
     :close-on-click-modal="false"
     :modal-append-to-body="true"
   >
-    <div class="agreement-container" v-html="content"></div>
+    <div class="agreement-container" v-safe-html="content"></div>
     <span slot="footer" class="dialog-footer">
       <el-button @click="handleClose">取消</el-button>
       <el-button type="primary" @click="handleConfirm">确定</el-button>
