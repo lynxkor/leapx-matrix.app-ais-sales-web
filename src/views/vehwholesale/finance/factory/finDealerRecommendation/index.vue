@@ -13,11 +13,11 @@
         <fetch-select
             :remote-method="getDealerParentOrgListByName"
             remote
-            v-model="form.dealerCompanyNames"
+            v-model="form.dealerCompanyNamesCode"
             placeholder="请选择"
             :param="form.dealerCompanyName"
             labelKey="companyName"
-            valueKey="companyName"
+            valueKey="companyCode"
             clearable
             filterable
             multiple
@@ -476,6 +476,7 @@ export default {
     },
     getFormData () {
       const data = { ...this.form };
+      console.log(data);
 
       Object.keys(this.form).forEach(key => {
         if (data[key] === '' || data[key] === null) {
