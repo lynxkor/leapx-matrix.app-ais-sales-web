@@ -81,7 +81,7 @@
          :prop="Auditform.passOrReject === 0 ? 'opinion' : ''"
       >
         <template #label>
-          <span v-html="Auditform.passOrReject === 0 ? '<span style=\'color: red\'>*</span> 初审意见' : '初审意见'"></span>
+          <span v-safe-html="Auditform.passOrReject === 0 ? '<span style=\'color: red\'>*</span> 初审意见2' : '初审意见'"></span>
         </template>
         <el-input
           v-model="Auditform.opinion"
