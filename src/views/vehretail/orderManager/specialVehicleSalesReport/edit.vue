@@ -1116,9 +1116,9 @@ export default {
       this.form.idCardType = selectedOption.vehicleProfileOwnerResp.idcardType;
       this.form.idCardNo = selectedOption.vehicleProfileOwnerResp.idcardNo;
       this.form.address = selectedOption.vehicleProfileOwnerResp.homeAddress;
-      this.form.saleDealerCode = selectedOption.salesDealerCode + '';
+      this.form.saleDealerCode = selectedOption.salesDealerCode;
       this.form.saleDealerName = selectedOption.salesDealerName;
-      this.form.deliveryDealerCode = selectedOption.deliveryDealerCode + '';
+      this.form.deliveryDealerCode = selectedOption.deliveryDealerCode;
       this.form.deliveryDealerName = selectedOption.deliveryDealerName;
       this.form.exclusiveServiceStoreCode = selectedOption.vehicleProfileServiceResp.serviceDealerCode ? selectedOption.vehicleProfileServiceResp.serviceDealerCode + '' : '';
       this.form.exclusiveServiceStoreName = selectedOption.vehicleProfileServiceResp.serviceDealerName ? selectedOption.vehicleProfileServiceResp.serviceDealerName : '';
@@ -1143,6 +1143,10 @@ export default {
             this.form.wholesaleOrderCode = res.records[0].wholesaleOrderCode;
             this.form.storeInventoryVin = this.form.vin;
             this.form.vehiclePurpose = 30;
+            if (!this.form.saleDealerCode) {
+              this.form.saleDealerCode = res.records[0].saleDealerCode;
+              this.form.saleDealerName = res.records[0].saleDealerName;
+            }
           }
         }
       });
