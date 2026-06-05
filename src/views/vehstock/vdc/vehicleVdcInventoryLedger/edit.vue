@@ -10,6 +10,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :dataTransform="dataTransform"
       >
         <template #status>
           <!-- 支持primary,warning,success,danger等状态 -->
@@ -89,16 +90,16 @@
               <el-form
                 v-if="isEditing || isBatchEdit"
                 :model="form"
-                :rules="rules"
                 ref="ruleForm"
-                label-width="150px"
+                label-width="170px"
                 class="form-edit"
                 :inline="true"
               >
-                <!-- 可编辑的五个字段 -->
-                <el-form-item label="销售预留：" prop="reserved">
-                  <template v-if="isBatchEdit">
-                    <el-checkbox v-model="form.isReserved" @change="onReservedCheckChange">是否修改</el-checkbox>
+                <!-- 可编辑的五个字段(仅批量编辑显示"是否修改"复选框) -->
+                <el-form-item prop="reserved" :rules="formRules.reserved">
+                  <template #label>
+                    <el-checkbox v-if="isBatchEdit" v-model="form.isReserved" @change="onReservedCheckChange" class="batch-edit-check"> </el-checkbox>
+                    <span> 销售预留：</span>
                   </template>
                   <fetch-select
                     :request="fetchOptions"
@@ -111,7 +112,7 @@
                     :disabled="isBatchEdit && !form.isReserved"
                   />
                 </el-form-item>
-                <el-form-item label="销售预留类型：" prop="reservedType">
+                <el-form-item prop="reservedType" :rules="formRules.reservedType" label="销售预留类型：">
                   <el-select
                     v-model="form.reservedType"
                     placeholder="请选择"
@@ -128,21 +129,24 @@
                     </el-option>
                   </el-select>
                 </el-form-item>
-                <el-form-item label="销售备注：" prop="salesRemark">
-                  <template v-if="isBatchEdit">
-                    <el-checkbox v-model="form.isSalesRemark" @change="onCheckChange('isSalesRemark', 'salesRemark')">是否修改</el-checkbox>
+                <el-form-item prop="salesRemark" :rules="formRules.salesRemark">
+                  <template #label>
+                    <el-checkbox v-if="isBatchEdit" v-model="form.isSalesRemark" @change="onCheckChange('isSalesRemark', 'salesRemark')" class="batch-edit-check"> </el-checkbox>
+                    <span> 销售备注：</span>
                   </template>
                   <el-input placeholder="请输入" v-model="form.salesRemark" clearable :disabled="isBatchEdit && !form.isSalesRemark" />
                 </el-form-item>
-                <el-form-item label="特殊预留备注：" prop="specialReserveRemark">
-                  <template v-if="isBatchEdit">
-                    <el-checkbox v-model="form.isSpecialReserveRemark" @change="onCheckChange('isSpecialReserveRemark', 'specialReserveRemark')">是否修改</el-checkbox>
+                <el-form-item prop="specialReserveRemark" :rules="formRules.specialReserveRemark">
+                  <template #label>
+                    <el-checkbox v-if="isBatchEdit" v-model="form.isSpecialReserveRemark" @change="onCheckChange('isSpecialReserveRemark', 'specialReserveRemark')" class="batch-edit-check"> </el-checkbox>
+                    <span> 特殊预留备注：</span>
                   </template>
                   <el-input placeholder="请输入" v-model="form.specialReserveRemark" clearable :disabled="isBatchEdit && !form.isSpecialReserveRemark" />
                 </el-form-item>
-                <el-form-item label="允许锁零售单：" prop="allowLockRetail">
-                  <template v-if="isBatchEdit">
-                    <el-checkbox v-model="form.isAllowLockRetail" @change="onCheckChange('isAllowLockRetail', 'allowLockRetail')">是否修改</el-checkbox>
+                <el-form-item prop="allowLockRetail" :rules="formRules.allowLockRetail">
+                  <template #label>
+                    <el-checkbox v-if="isBatchEdit" v-model="form.isAllowLockRetail" @change="onCheckChange('isAllowLockRetail', 'allowLockRetail')" class="batch-edit-check"> </el-checkbox>
+                    <span> 允许锁零售单：</span>
                   </template>
                   <fetch-select
                     :request="fetchOptions"
@@ -419,7 +423,6 @@
     </template>
   </edit-page-layout>
 </template>
-
 <script>
 import { getDetail, batchEdit, getByVin } from '@/api/vehstock/vdc/vehicleVdcInventoryLedger/index';
 import FetchSelect from '@/libs/components/FetchSelect';
@@ -511,10 +514,11 @@ const defaultForm = {
   remark: '',
   // 批量编辑模式下,标记对应字段是否需要变更
   // isReserved 同时控制"销售预留"和"销售预留类型"两个字段
-  isReserved: false,
-  isSalesRemark: false,
-  isSpecialReserveRemark: false,
-  isAllowLockRetail: false
+  // 批量模式默认全部勾选(true),用户取消勾选表示该字段不修改
+  isReserved: true,
+  isSalesRemark: true,
+  isSpecialReserveRemark: true,
+  isAllowLockRetail: true
 };
 
 export default {
@@ -544,6 +548,41 @@ export default {
     },
     isBatchEdit () {
       return !!this.$route.query.list;
+    },
+    // 根据"是否修改"复选框动态生成校验规则
+    // 单条编辑: reserved/allowLockRetail 必填; reservedType 在 form.reserved 有值时必填
+    // 批量编辑: 只校验勾选的字段
+    formRules () {
+      // 批量编辑模式:按 isXxx 决定是否必填
+      if (this.isBatchEdit) {
+        return {
+          reserved: this.form.isReserved
+            ? [{ required: true, message: '请选择销售预留', trigger: 'change' }]
+            : [],
+          reservedType: this.form.isReserved
+            ? [{ required: true, message: '请选择销售预留类型', trigger: 'change' }]
+            : [],
+          salesRemark: this.form.isSalesRemark
+            ? [{ required: true, message: '请输入销售备注', trigger: 'blur' }]
+            : [],
+          specialReserveRemark: this.form.isSpecialReserveRemark
+            ? [{ required: true, message: '请输入特殊预留备注', trigger: 'blur' }]
+            : [],
+          allowLockRetail: this.form.isAllowLockRetail
+            ? [{ required: true, message: '请选择允许锁零售单', trigger: 'change' }]
+            : []
+        };
+      }
+      // 单条编辑模式:reserved 和 allowLockRetail 必填,reservedType 在 reserved 有值时必填
+      return {
+        reserved: [{ required: true, message: '请选择销售预留', trigger: 'change' }],
+        reservedType: this.form.reserved
+          ? [{ required: true, message: '请选择销售预留类型', trigger: 'change' }]
+          : [],
+        salesRemark: [],
+        specialReserveRemark: [],
+        allowLockRetail: [{ required: true, message: '请选择允许锁零售单', trigger: 'change' }]
+      };
     }
   },
   watch: {
@@ -558,11 +597,8 @@ export default {
     },
     'form.reserved': {
       handler (newVal, oldVal) {
-        // 编辑时 销售预留和预留类型绑定 填了销售预留  类型就必填
-        if (newVal) {
-          this.rules.reservedType[0].required = true;
-        } else {
-          this.rules.reservedType[0].required = false;
+        // 当 销售预留 取消时,清空预留类型的校验提示
+        if (!newVal) {
           this.$refs.ruleForm?.clearValidate?.('reservedType');
         }
       }
@@ -581,18 +617,7 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       allOptions: [], // 固定不变的原始数据源
-      options: [], // 动态显示的选项
-      rules: {
-        reserved: [
-          { required: true, message: '请输入销售预留', trigger: 'change' }
-        ],
-        reservedType: [
-          { required: true, message: '请选择销售预留类型', trigger: 'change' }
-        ],
-        allowLockRetail: [
-          { required: true, message: '请输入允许锁零售单', trigger: 'change' }
-        ],
-      }
+      options: [] // 动态显示的选项
     };
   },
   mounted () {
@@ -620,34 +645,30 @@ export default {
         let list = JSON.parse(localStorage.getItem('selectedIds'));
         submitData.ids = list;
         txt = '是否需要批量更新！';
-        // 批量编辑模式下,根据"是否修改"复选框决定是否提交对应字段
-        // isReserved 同时控制"销售预留"和"销售预留类型"
-        submitData.isReserved = !!this.form.isReserved;
-        submitData.isSalesRemark = !!this.form.isSalesRemark;
-        submitData.isSpecialReserveRemark = !!this.form.isSpecialReserveRemark;
-        submitData.isAllowLockRetail = !!this.form.isAllowLockRetail;
-        // 未勾选修改的字段,需要传值(后端接口要求)但用原值,后端通过 isXxx=false 跳过应用
-        if (!this.form.isReserved) {
-          submitData.reserved = this.originalForm.reserved ?? '';
-          submitData.reservedType = this.originalForm.reservedType ?? '';
-        }
-        if (!this.form.isSalesRemark) {
-          submitData.salesRemark = this.originalForm.salesRemark ?? '';
-        }
-        if (!this.form.isSpecialReserveRemark) {
-          submitData.specialReserveRemark = this.originalForm.specialReserveRemark ?? '';
-        }
-        if (!this.form.isAllowLockRetail) {
-          submitData.allowLockRetail = this.originalForm.allowLockRetail ?? '';
-        }
       } else {
         submitData.ids = [id];
         txt = '是否需要更新！';
-        // 单条编辑模式:isXxx 标记字段不参与提交
-        delete submitData.isReserved;
-        delete submitData.isSalesRemark;
-        delete submitData.isSpecialReserveRemark;
-        delete submitData.isAllowLockRetail;
+      }
+
+      // 根据"是否修改"复选框决定是否提交对应字段
+      // isReserved 同时控制"销售预留"和"销售预留类型"
+      submitData.isReserved = !!this.form.isReserved;
+      submitData.isSalesRemark = !!this.form.isSalesRemark;
+      submitData.isSpecialReserveRemark = !!this.form.isSpecialReserveRemark;
+      submitData.isAllowLockRetail = !!this.form.isAllowLockRetail;
+      // 未勾选修改的字段,需要传值(后端接口要求)但用原值,后端通过 isXxx=false 跳过应用
+      if (!this.form.isReserved) {
+        submitData.reserved = this.originalForm.reserved ?? '';
+        submitData.reservedType = this.originalForm.reservedType ?? '';
+      }
+      if (!this.form.isSalesRemark) {
+        submitData.salesRemark = this.originalForm.salesRemark ?? '';
+      }
+      if (!this.form.isSpecialReserveRemark) {
+        submitData.specialReserveRemark = this.originalForm.specialReserveRemark ?? '';
+      }
+      if (!this.form.isAllowLockRetail) {
+        submitData.allowLockRetail = this.originalForm.allowLockRetail ?? '';
       }
 
       try {
@@ -710,28 +731,46 @@ export default {
           value: Number(item.code)
         };
       });
-      if (Number(this.form.reserved) === 0) {
+      this.updateOptionsByReserved();
+    },
+    // 根据 form.reserved 过滤 options,并在 reserved 明确为"否"且选项唯一时自动赋值 reservedType
+    updateOptionsByReserved () {
+      // 判断 reserved 是否已经明确赋值（避免初始空值 '' 时被误判为"否"）
+      const hasReserved = this.form.reserved !== '' && this.form.reserved !== null && this.form.reserved !== undefined;
+      const isNo = hasReserved && Number(this.form.reserved) === 0;
+      if (isNo) {
         // 当 销售预留 为 否 时，只显示可售
         this.options = this.allOptions.filter(option => option.value === 1);
       } else {
         // 当 销售预留 不为 否 时，不显示可售
         this.options = this.allOptions.filter(option => option.value !== 1);
+      }
+      // 销售预留 明确为"否"时,理论上 allOptions 中只有一条数据（可售），自动赋值
+      if (isNo && this.options.length === 1) {
+        this.form.reservedType = this.options[0].value;
       }
     },
     // 点击销售预留改变预留类型值
     reservedChange () {
-      // 批量编辑模式下,未勾选"是否修改销售预留"时不应联动清空预留类型
-      if (this.isBatchEdit && !this.form.isReserved) {
+      // 单条/批量编辑模式下,未勾选"是否修改销售预留"时不应联动清空预留类型
+      if ((this.isBatchEdit || this.isEditing) && !this.form.isReserved) {
         return;
       }
-      this.form.reservedType = '';
+      // 切换到"否"时清空 reservedType,由 updateOptionsByReserved 自动赋值为"可售"
+      // 切换到其他值时保留原 reservedType,避免丢值
       if (Number(this.form.reserved) === 0) {
-        // 当 销售预留 为 否 时，只显示可售
-        this.options = this.allOptions.filter(option => option.value === 1);
-      } else {
-        // 当 销售预留 不为 否 时，不显示可售
-        this.options = this.allOptions.filter(option => option.value !== 1);
+        this.form.reservedType = '';
       }
+      this.updateOptionsByReserved();
+    },
+    // 详情接口数据转换:在 loadDetail 完成时根据 form.reserved 初始化 options
+    dataTransform (data) {
+      // allOptions 可能尚未准备好(取决于 salesType 与 loadDetail 的返回顺序)
+      // 这里同步处理一次:如果 allOptions 已就绪则立即过滤,否则由 salesType 完成时再过滤
+      if (this.allOptions && this.allOptions.length) {
+        this.updateOptionsByReserved();
+      }
+      return data;
     },
     // 批量编辑处理
     handleBatchEdit () {
