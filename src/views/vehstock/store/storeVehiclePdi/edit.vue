@@ -14,7 +14,7 @@
         :title="title"
       >
         <template #extraButtons>
-          <el-button v-if="form.isPdiSubmit === 1 && form.isUnusual === 0 && canDownloadPDF" type="primary" size="small"  @click="handleDownloadPDF">下载PDF单据</el-button>
+          <el-button v-if="form.isPdiSubmit === 1 && form.isUnusual === 0 && canDownloadPDF" type="primary" size="small" :loading="pdfBtnLoading" @click="handleDownloadPDF">下载PDF单据</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -384,6 +384,7 @@ export default {
     return {
       showPdfItemLoading: false,
       showPdfItemVisible: false,
+      pdfBtnLoading: false,
       fileDialogVisible: false,
       canDownloadPDF: false, // 下载PDF单据权限
       viewPictureList: [],
@@ -527,17 +528,25 @@ export default {
       this.viewPictureList = (row.abnormalUrl && row.abnormalUrl.split(',')) || [];
       this.fileDialogVisible = true;
     },
-    handleDownloadPDF () {
-      this.showPdfItemVisible = true;
-      this.$nextTick(async () => {
-        this.showPdfItemLoading = true;
-        let res = await getPdiEntryDetails(this.form.id);
-        this.showPdfItemLoading = false;
-        this.pdfData = res;
-        if (this.$refs.childPdfItem && this.pdfData) {
-          this.$refs.childPdfItem.handlePdf();
-        }
-      });
+    async handleDownloadPDF () {
+      this.pdfBtnLoading = true;
+      try {
+        this.showPdfItemVisible = true;
+        this.$nextTick(async () => {
+          this.showPdfItemLoading = true;
+          try {
+            let res = await getPdiEntryDetails(this.form.id);
+            this.pdfData = res;
+            if (this.$refs.childPdfItem && this.pdfData) {
+              this.$refs.childPdfItem.handlePdf();
+            }
+          } finally {
+            this.showPdfItemLoading = false;
+          }
+        });
+      } finally {
+        this.pdfBtnLoading = false;
+      }
     },
   }
 };

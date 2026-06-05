@@ -52,7 +52,7 @@ export default {
       form: {
         deliveryUserId: '',
         deliveryUserName: '',
-        retailOrderId: '',
+        retailOrderIds: [],
       },
       rules: {
         deliveryUserId: [
@@ -81,7 +81,7 @@ export default {
      */
     open (selectedRows) {
       this.form.deliveryDealerCode = selectedRows[0].deliveryDealerCode;
-      this.form.retailOrderId = selectedRows[0].retailOrderId;
+      this.form.retailOrderIds = selectedRows.map(r => r.retailOrderId);
       this.visible = true;
       this.getAdvisorList();
     },
@@ -111,7 +111,7 @@ export default {
       this.form = {
         deliveryUserId: '',
         deliveryUserName: '',
-        retailOrderId: '',
+        retailOrderIds: [],
       };
     },
     /**
@@ -123,7 +123,7 @@ export default {
         this.submitLoading = true;
         try {
           await assign({
-            retailOrderId: this.form.retailOrderId,
+            retailOrderIds: this.form.retailOrderIds,
             deliveryUserName: this.form.deliveryUserName,
             deliveryUserId: this.form.deliveryUserId
           });

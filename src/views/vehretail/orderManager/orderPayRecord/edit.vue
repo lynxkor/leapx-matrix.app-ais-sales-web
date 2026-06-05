@@ -49,7 +49,7 @@
                   {{ form.paymentTime }}
                 </el-form-item>
                 <el-form-item label="支付方式：" prop="paymentType">
-                  {{ paymentTypeLabel }}
+                  {{ form.paymentTypeLabel }}
                 </el-form-item>
                 <el-form-item label="支付人：" prop="payerName">
                   {{ form.payerName }}

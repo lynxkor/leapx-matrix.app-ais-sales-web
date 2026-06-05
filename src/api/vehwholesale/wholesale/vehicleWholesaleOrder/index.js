@@ -12,6 +12,14 @@ export function getList (data) {
 };
 
 /**
+ * 查询列表-LIST
+ * @param {Object} data
+ */
+export function getListV2 (data) {
+  return api.jsonPost(prefix + 'list', data);
+};
+
+/**
  * 新增或修改
  * @param {Object} data
  */
@@ -144,4 +152,12 @@ export function refreshPriceItem (data) {
  */
 export function querySAPAccountBalance (data) {
   return api.jsonPost(prefix + 'querySAPAccountBalance', data);
+}
+
+/**
+ * 设置允许零售锁单
+ * @param {Object} data
+ */
+export function batchSetAllowLockRetail (data) {
+  return api.jsonPost(prefix + 'batchSetAllowLockRetail', data);
 }

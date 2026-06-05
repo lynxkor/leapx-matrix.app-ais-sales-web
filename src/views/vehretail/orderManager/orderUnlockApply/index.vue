@@ -138,7 +138,7 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, enableItem, auditApply, submitApply, batchVoidedApply } from '@/api/vehretail/orderManager/orderUnlockApply/index';
+import { getList, enableItem, auditApply, submitApply, batchVoidedApply, getDetailDecryptField } from '@/api/vehretail/orderManager/orderUnlockApply/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -225,14 +225,14 @@ export default {
           { props: 'applyStatusLabel', label: '申请单状态', visible: true, width: 200 },
           { props: 'retailOrderCode', label: '零售订单号', visible: true, width: 200 },
           { props: 'mallOrderCode', label: '商城订单编号', visible: true, width: 200 },
-          { props: 'carBuyerName', label: '购车人姓名', visible: true, width: 200 },
-          { props: 'idCardNo', label: '购车人证件号码', visible: true, width: 200 },
+          { props: 'carBuyerName', label: '购车人姓名', visible: true, width: 200, mask: true, getValue: (row) => getDetailDecryptField(row.id, 'carBuyerName') },
+          { props: 'idCardNo', label: '购车人证件号码', visible: true, width: 200, mask: true, getValue: (row) => getDetailDecryptField(row.id, 'idCardNo') },
           { props: 'saleDealerName', label: '销售门店', visible: true, width: 200 },
           { props: 'applyReason', label: '申请原因', visible: true, width: 200 },
           { props: 'oaProcessCode', label: 'OA流程编号', visible: true, width: 200 },
           { props: 'materialsCode', label: '新配置物料编码', visible: true, width: 200 },
           { props: 'unlockReason', label: '订单解锁原因', visible: true, width: 200 },
-          { props: 'vin', label: 'VIN号', visible: true, width: 200 },
+          { props: 'vin', label: 'VIN号', visible: true, width: 200, mask: true, getValue: (row) => getDetailDecryptField(row.id, 'vin') },
           { props: 'lockTime', label: '锁车时间', visible: true, width: 200 },
           { props: 'submitTime', label: '提交时间', visible: true, width: 200 },
           { props: 'refundApplyCode', label: '退订申请单号', visible: true, width: 200 },
@@ -256,6 +256,9 @@ export default {
             fixed: 'right',
             buttons: [{
               name: '编辑',
+              show: (row) => {
+                return row.applyStatus === 1010 || row.applyStatus === 1040;
+              },
               click: (rowIndex, row) => {
                 const isEditing = row.applyStatus === 1010 || row.applyStatus === 1040;
                 this.$router.push({

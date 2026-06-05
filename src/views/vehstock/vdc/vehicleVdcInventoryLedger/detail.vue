@@ -38,6 +38,9 @@
             <el-form-item label="整车仓库：" prop="warehouseName">
               {{ info.warehouseName }}
             </el-form-item>
+            <el-form-item label="库存状态：" prop="vdcInventoryStatusLabel">
+              {{ info.vdcInventoryStatusLabel }}
+            </el-form-item>
             <el-form-item label="电量（%）：" prop="electricity">
               {{ info.electricity }}
             </el-form-item>

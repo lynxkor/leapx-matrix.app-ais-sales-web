@@ -552,15 +552,11 @@ export default {
         // 立即显示"生成中"消息
         this.$message({
           type: 'info',
-          message: '对账单重新生成中...请稍后再查看...",',
+          message: '对账单重新生成中...",',
         });
 
         // 异步执行重新生成操作
         regenerateStatement(row.id).then(res => {
-          this.$message({
-            type: 'success',
-            message: '对账单重新生成成功!'
-          });
           this.getData();
         });
       });

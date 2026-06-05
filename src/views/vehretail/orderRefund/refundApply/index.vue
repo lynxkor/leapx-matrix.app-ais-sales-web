@@ -79,7 +79,7 @@
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <el-button v-if="canImport" size="small" @click="handleDepositRefundTypeImport">导入定金退回方式</el-button>
       <el-button v-if="canImport" size="small" @click="handleFundResultImport">导入退订退款结果</el-button>
-      <el-button v-if="refundStatusTab !== '0'" size="small" @click="openBatchAuditShow">批量审核</el-button>
+      <el-button v-if="canBatchAudit && refundStatusTab !== '0'" size="small" @click="openBatchAuditShow">批量审核</el-button>
 <!--      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>-->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
 <!--      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>-->
@@ -193,6 +193,8 @@ export default {
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVRRO-retailOrderRefund',
+      // 权限控制
+      canBatchAudit: false,
       form: {
         ...defaultForm
       },
@@ -320,6 +322,10 @@ export default {
     this.getData();
   },
   methods: {
+    // 初始化权限
+    initPermissions () {
+      this.canBatchAudit = this.permissions.has(`${this.moduleKey}-batchAudit`);
+    },
     handleRefundStatusClick (item) {
       this.refundStatusTab = item.name;
       this.getData();
