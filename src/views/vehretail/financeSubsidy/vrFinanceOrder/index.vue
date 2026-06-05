@@ -29,10 +29,10 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="VIN">
+      <el-form-item label="配车VIN">
         <el-input
           placeholder="请输入"
-          v-model="form.vin"
+          v-model="form.matchVin"
           clearable
         />
       </el-form-item>
@@ -147,7 +147,7 @@ const defaultForm = {
   installmentOrderCode: '',
   mallOrderCode: '',
   code: '',
-  vin: '',
+  matchVin: '',
   carOwnerName: '',
   phoneNumber: '',
   regionName: '',
