@@ -266,6 +266,7 @@ export default {
               type: 'info'
             }, {
               name: '推送金融机构',
+              show: () => this.permissions.has(this.moduleKey + '-sync'),
               click: (rowIndex, row) => {
                 // 1. 校验状态是否可用
                 if (row.status !== 1) {
@@ -476,7 +477,6 @@ export default {
     },
     getFormData () {
       const data = { ...this.form };
-      console.log(data);
 
       Object.keys(this.form).forEach(key => {
         if (data[key] === '' || data[key] === null) {
