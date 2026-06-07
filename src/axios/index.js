@@ -44,6 +44,16 @@ const responseInterceptors = (instance, forbidToast) => {
     /**
     * code为非200是抛错 可结合自己业务进行修改
     */
+    // 守卫：非JSON响应（如502/503返回的HTML错误页）
+    const contentType = res.headers['content-type'] || '';
+    if (contentType.includes('text/html')) {
+      Message({
+        message: '服务器异常，请稍后再试',
+        type: 'error',
+        duration: 3000
+      });
+      return Promise.reject(new Error('Server returned non-JSON response'));
+    }
     // NEED_DECRYPT_LIST中接口返回参数解密
     const flag = NEED_DECRYPT(res.config.url);
     const response = flag ? decrypt(res.data) : res.data;
