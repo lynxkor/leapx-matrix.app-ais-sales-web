@@ -16,7 +16,7 @@
           <!-- <span >{{ form.code }}</span> -->
         </template>
          <template #extraButtons>
-          <el-button size="small" @click="genereteFinCustomerPurchaseRecord">生成采购记录</el-button>
+          <el-button  v-if ="perAddRecord" size="small" @click="genereteFinCustomerPurchaseRecord">生成采购记录</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -251,6 +251,7 @@ export default {
       // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-finFinancingApplicationDealer',
       loading: false,
+      perAddRecord: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
@@ -331,7 +332,14 @@ export default {
   },
   mounted () {
   },
+  created () {
+    this.initPermissions();
+  },
   methods: {
+    initPermissions () {
+      this.perAddRecord = this.permissions.has(`${this.moduleKey}-addRecord`);
+    },
+
     openWindow (url) {
       window.open(url, '_blank');
     },

@@ -34,12 +34,12 @@
     </el-form-item>
     <el-form-item label="处理方式：" prop="orderHandleType" v-if="shouldShowHandleTypeField">
       <el-select v-model="form.orderHandleType" style="width: 100%">
-        <el-option label="手动选择现车" :value="20" />
-        <el-option label="系统自动匹配批售单" :value="30" />
+        <el-option label="手动选择现车" :value="10" />
+        <el-option label="系统自动匹配批售单" :value="20" />
       </el-select>
     </el-form-item>
-    <el-form-item label="需绑定VIN号：" prop="bindVin" v-if="shouldShowVinField" :rules=" form.orderHandleType === 20 ? [{ required: true, message: '手动选择现车时，VIN必填', trigger: 'blur' }] : []">
-      <el-button size="small" type="primary" plain :disabled="form.orderHandleType !== 20" @click="showVinDialog()">选择车辆</el-button>
+    <el-form-item label="需绑定VIN号：" prop="bindVin" v-if="shouldShowVinField" :rules=" form.orderHandleType === 10 ? [{ required: true, message: '手动选择现车时，VIN必填', trigger: 'blur' }] : []">
+      <el-button size="small" type="primary" plain :disabled="form.orderHandleType !== 10" @click="showVinDialog()">选择车辆</el-button>
     </el-form-item>
     <el-form-item label=" " v-if="shouldShowVinField">
       <el-input v-model="form.bindVin" disabled class="unification-input" readonly />
@@ -85,7 +85,7 @@
 
 <script>
 
-import { perUnlock, getSysConfigParamValue } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { perUnlock, checkBeforePerUnlock, getSysConfigParamValue } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import { getList } from '@/api/vehretail/basicConfig/retailOrderUnlockReasonConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import MaterialsDialog from '../MaterialsDialog'; // 引入物料选择对话框
@@ -246,14 +246,37 @@ export default {
             changeProductSkuPriceId: this.form.changeProductSkuPriceId,
           };
           console.log('params:', params);
-          perUnlock(params).then(res => {
-            this.$message.success('取消锁车成功');
-            this.$emit('refresh');
-          }).finally(() => {
+          // 先调用弹框校验接口,根据返回的 transferVehicle 判断是否需要弹"调拨回原门店"提示
+          checkBeforePerUnlock(params).then(checkRes => {
+            const transferVehicle = checkRes && checkRes.transferVehicle;
+            if (transferVehicle) {
+              // 是调拨车辆,弹框询问是否需要调回原门店
+              const originalDealerName = (checkRes && checkRes.originalDealerName) || '';
+              this.$confirm(`订单车辆为自动调拨匹配，取消锁车是否自动调拨车辆回原门店（${originalDealerName}）`, '取消锁车', {
+                confirmButtonText: '调拨',
+                cancelButtonText: '不调拨',
+                type: 'warning'
+              }).then(() => {
+                this.doPerUnlock({ ...params, confirmTransferBack: true });
+              }).catch(() => {
+                this.doPerUnlock({ ...params, confirmTransferBack: false });
+              });
+            } else {
+              this.doPerUnlock(params);
+            }
+          }).catch(() => {
             this.submitLoading = false;
-            this.close();
           });
         }
+      });
+    },
+    doPerUnlock (params) {
+      perUnlock(params).then(res => {
+        this.$message.success('取消锁车成功');
+        this.$emit('refresh');
+      }).finally(() => {
+        this.submitLoading = false;
+        this.close();
       });
     }
 

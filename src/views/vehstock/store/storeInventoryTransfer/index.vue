@@ -157,9 +157,9 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'sourceDealerName', label: '源门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.sourceDealerCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'sourceDealerName', label: '源门店名称', visible: true, width: 200 },
           { props: 'sourceDealerAddress', label: '源门店地址', visible: true, width: 200 },
-          { props: 'targetDealerName', label: '目标门店名称', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.targetDealerCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'targetDealerName', label: '目标门店名称', visible: true, width: 200 },
           { props: 'targetDealerAddress', label: '目标门店地址', visible: true, width: 200 },
           { props: 'moveoutTime', label: '移出时间', visible: true, width: 200 },
           { props: 'moveinTime', label: '移入时间', visible: true, width: 200 },
@@ -240,7 +240,7 @@ export default {
             }, {
               name: '调出审批',
               show: (row) => {
-                return row.auditStatus === 2 && row.outApproval !== 1 && this.permissions.has(`${this.moduleKey}-approveOut`) && this.allOrgCodes.includes(row.sourceDealerCode);
+                return row.auditStatus === 2 && this.permissions.has(`${this.moduleKey}-approveOut`) && this.allOrgCodes.includes(row.sourceDealerCode);
               },
               click: (rowIndex, row) => {
                 this.handleApproval(row, 'outApproval');
@@ -249,7 +249,7 @@ export default {
             }, {
               name: '调入审批',
               show: (row) => {
-                return row.auditStatus === 2 && row.inApproval !== 1 && this.permissions.has(`${this.moduleKey}-approveIn`) && this.allOrgCodes.includes(row.targetDealerCode);
+                return row.auditStatus === 3 && this.permissions.has(`${this.moduleKey}-approveIn`) && this.allOrgCodes.includes(row.targetDealerCode);
               },
               click: (rowIndex, row) => {
                 this.handleApproval(row, 'inApproval');
@@ -274,10 +274,12 @@ export default {
       ]
     };
   },
-  created () {
+  async created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
+    // 先获取子级组织编码，保证 allOrgCodes 在首次渲染表格时已包含子级数据
+    // 否则「调入审批」按钮的 show 判断在初始化时会因为 descendantOrgCodes 为空而失效
+    await this.fetchDescendantOrgCodes();
     this.getData();
-    this.fetchDescendantOrgCodes();
   },
   methods: {
     // 排序

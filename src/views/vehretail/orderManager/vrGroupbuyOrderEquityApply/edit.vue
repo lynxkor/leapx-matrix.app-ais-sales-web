@@ -10,7 +10,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.permissions.edit"
+        :showEditBtn="form.permissions.edit && perEdit"
       >
         <template #status>
           <span v-if="form.auditStatus === 10" class="status link">{{ form.auditStatusLabel }}</span>
@@ -20,12 +20,11 @@
         </template>
         <template #extraButtons>
           <el-button v-if = "isShowAuditorBtn" size="small" @click="handleViewAuditUsers">查看审核人员</el-button>
-          <el-button v-if = "form.permissions.cancel" size="small" @click="handleCancel">作废</el-button>
-          <el-button v-if = "form.permissions.submit" size="small" @click="handleSubmitApproval">提交审批</el-button>
-          <el-button v-if = "form.permissions.firstApprove" size="small" @click="handleAudit(1)">初审</el-button>
-          <el-button v-if = "form.permissions.secondApprove" size="small" @click="handleAudit(2)">复审</el-button>
-          <el-button v-if = "form.permissions.finalApprove" size="small" @click="handleAudit(3)">终审</el-button>
-          <el-button v-if = "form.permissions.auditRevoke" size="small" @click="handleRecall">审核撤回</el-button>
+          <el-button v-if = "form.permissions.cancel && perCancel" size="small" @click="handleCancel">作废</el-button>
+          <el-button v-if = "form.permissions.submit && perSubmit" size="small" @click="handleSubmitApproval">提交审批</el-button>
+          <el-button v-if = "form.permissions.firstApprove && perFirstApprove" size="small" @click="handleAudit(1)">初审</el-button>
+          <el-button v-if = "form.permissions.secondApprove && perSecondApprove" size="small" @click="handleAudit(2)">复审</el-button>
+          <el-button v-if = "form.permissions.finalApprove && perFinalApprove" size="small" @click="handleAudit(3)">终审</el-button>
         </template>
         <el-main>
           <!-- 审核步骤条 -->
@@ -667,16 +666,18 @@
           :before-close="handleAuditorDialogClose"
           class="dialog-with-table"
         >
-          <vxe-table
-            ref="auditorTableRef"
-            :data="auditorList"
-            height="400"
-            stripe
-            :resizable="true"
-          >
-            <vxe-column field="auditorName" title="用户名" min-width="150" align="center"></vxe-column>
-            <vxe-column field="auditorOrgName" title="业务部门" min-width="200" align="center"></vxe-column>
-          </vxe-table>
+          <div v-loading="auditorLoading">
+            <vxe-table
+              ref="auditorTableRef"
+              :data="auditorList"
+              height="400"
+              stripe
+              :resizable="true"
+            >
+              <vxe-column field="auditorName" title="用户名" min-width="150" align="center"></vxe-column>
+              <vxe-column field="auditorOrgName" title="业务部门" min-width="200" align="center"></vxe-column>
+            </vxe-table>
+          </div>
         </el-dialog>
       </edit-base-container>
     </template>
@@ -813,7 +814,14 @@ export default {
       isShowAuditorBtn: false,
       auditorList: [],
       auditorDialogVisible: false, // 审核人员弹窗可见性
+      auditorLoading: false, // 审核人员加载状态
       buttonType: 1,
+      perEdit: false,
+      perCancel: false,
+      perSubmit: false,
+      perFirstApprove: false,
+      perSecondApprove: false,
+      perFinalApprove: false,
       rules: {
         companyName: [
           { required: true, message: '请选择公司名称', trigger: 'change' }
@@ -823,7 +831,7 @@ export default {
         ]
       },
       attachmentList: [
-        { label: '近6个月内社保或公积金或纳税证明', required: true, configCode: 'default', attachType: '默认' },
+        { label: '近6个月内社保或公积金或纳税证明', required: true, configCode: 'vr_groupbuy_order_equity_apply', attachType: '附件资料' },
         { label: '工作证或工作证明（需加盖公章）', required: true, configCode: 'vr_groupbuy_order_equity_apply', attachType: '工作证明' },
         { label: '购车人在所属单位门口处与公司门头合影照片', required: true, configCode: 'vr_groupbuy_order_equity_apply', attachType: '工作照' },
         { label: '户口本（户主页）', required: false, configCode: 'vr_groupbuy_order_equity_apply', attachType: '直系亲属证明（户主页）' },
@@ -843,11 +851,13 @@ export default {
       immediate: true
     },
   },
-  mounted () {
+  async mounted () {
     if (this._id) {
       this.getStepInfo(this._id);
       this.getApprovalDetail(this._id);
     }
+    this.initPermissions();
+    this.initMallOrderCodeFromQuery();
   },
   methods: {
     async detailRequest () {
@@ -898,17 +908,18 @@ export default {
     },
     // 查看审核人员
     handleViewAuditUsers () {
-      try {
-        this.auditorDialogVisible = true;
-        queryAuditor({
-          cooperationType: this.form.cooperationType,
-          auditStatus: this.form.auditStatus
-        }).then(res => {
-          this.auditorList = res.auditorList || [];
-        });
-      } catch (error) {
+      this.auditorLoading = true;
+      this.auditorDialogVisible = true;
+      queryAuditor({
+        cooperationType: this.form.cooperationType,
+        auditStatus: this.form.auditStatus
+      }).then(res => {
+        this.auditorList = res.auditorList || [];
+      }).finally(() => {
+        this.auditorLoading = false;
+      }).catch((error) => {
         this.$message.error('获取审核人员失败：' + (error.message || '未知错误'));
-      }
+      });
     },
 
     // 审核人员弹窗相关方法
@@ -933,6 +944,32 @@ export default {
         pageSize: 20
       });
       return result;
+    },
+
+    // 根据商城订单号从远程列表中匹配记录
+    async findMallOrderRecord (mallOrderCode) {
+      const result = await this.getRetailOrderListByNo(mallOrderCode);
+      const records = result?.records || result || [];
+      return records.find(r => r.mallOrderCode === mallOrderCode) || null;
+    },
+
+    // 处理 URL 上携带的 mallOrderCode 查询参数：回填并触发选中逻辑
+    async initMallOrderCodeFromQuery () {
+      const mallOrderCode = this.$route.query.mallOrderCode;
+      if (!mallOrderCode) {
+        return;
+      }
+      this.$set(this.form, 'mallOrderCode', mallOrderCode);
+      try {
+        const record = await this.findMallOrderRecord(mallOrderCode);
+        if (record) {
+          await this.handleMallOrderCodeChange(mallOrderCode, record);
+        } else {
+          this.$message.warning('未找到该商城订单号对应的订单，请重新选择');
+        }
+      } catch (error) {
+        // 校验失败时 handleMallOrderCodeChange 内部已清空 mallOrderCode
+      }
     },
 
     // 处理商城订单号选择变化
@@ -1092,6 +1129,15 @@ export default {
       this.$set(this.form, 'companyName', companyInfo?.companyName || '');
       this.$set(this.form, 'discountAmount', companyInfo?.discountAmount || null);
       this.$set(this.form, 'couponName', companyInfo?.couponName || '');
+    },
+
+    initPermissions () {
+      this.perEdit = this.permissions.has(`${this.moduleKey}-addOrUpdate`);
+      this.perCancel = this.permissions.has(`${this.moduleKey}-invalid`);
+      this.perSubmit = this.permissions.has(`${this.moduleKey}-submit`);
+      this.perFirstApprove = this.permissions.has(`${this.moduleKey}-firstApprove`);
+      this.perSecondApprove = this.permissions.has(`${this.moduleKey}-secondApprove`);
+      this.perFinalApprove = this.permissions.has(`${this.moduleKey}-finalApprove`);
     }
   }
 };

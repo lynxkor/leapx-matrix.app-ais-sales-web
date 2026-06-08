@@ -124,7 +124,7 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList } from '@/api/vehretail/orderManager/vrSpecialVehicleEquityApply/index';
+import { getList, getDecryptField } from '@/api/vehretail/orderManager/vrSpecialVehicleEquityApply/index';
 import { getTableConfig, exportTable, getEnum, vehicleModelList, listOrgStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -200,15 +200,18 @@ export default {
             label: 'VIN',
             visible: true,
             width: 200,
+            mask: true,
+            getValue: (row) => getDecryptField(row.id, 'vin'),
             buttons: [{
               click: (rowIndex, row) => {
                 if (row.vinId) {
-                  this.navigateToRoute({
-                    path: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
-                    query: {
-                      vin: row.vin
-                    }
-                  }, true);
+                  // 直接用 then，不会报错
+                  getDecryptField(row.id, 'vin').then(realVin => {
+                    this.navigateToRoute({
+                      path: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
+                      query: { vin: realVin }
+                    }, true);
+                  });
                 }
               },
               type: 'primary'
@@ -257,20 +260,15 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                this.navigateToRoute({
-                  path: '/partner/channelManagement/shopBasicsMessageDetails',
-                  query: {
-                    id: row.saleDealerId
-                  }
-                }, true);
+                window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank');
               },
               type: 'primary'
             }]
           },
-          { props: 'originalOwnerName', label: '原车主名称', visible: true, width: 150 },
-          { props: 'newOwnerName', label: '新车主名称', visible: true, width: 150 },
-          { props: 'newOwnerPhone', label: '新车主手机号', visible: true, width: 150 },
-          { props: 'newOwnerIdNumber', label: '新车主证件号码', visible: true, width: 180 },
+          { props: 'originalOwnerName', label: '原车主名称', visible: true, width: 150, mask: true, getValue: (row) => getDecryptField(row.id, 'originalOwnerName') },
+          { props: 'newOwnerName', label: '新车主名称', visible: true, width: 150, mask: true, getValue: (row) => getDecryptField(row.id, 'newOwnerName') },
+          { props: 'newOwnerPhone', label: '新车主手机号', visible: true, width: 150, mask: true, getValue: (row) => getDecryptField(row.id, 'newOwnerPhone') },
+          { props: 'newOwnerIdNumber', label: '新车主证件号码', visible: true, width: 180, mask: true, getValue: (row) => getDecryptField(row.id, 'newOwnerIdNumber') },
           { props: 'newOwnerIdTypeLabel', label: '新车主证件类型', visible: true, width: 150 },
           { props: 'ocrInvoiceDate', label: '发票识别的开票日期', visible: true, width: 180 },
           { props: 'ocrInvoiceAmount', label: '发票识别的开票金额', visible: true, width: 150, align: 'right' },

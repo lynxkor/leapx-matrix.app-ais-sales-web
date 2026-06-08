@@ -440,7 +440,7 @@ export default {
         wholesaleOrderCodeLike: query,
         pageNum: 1,
         pageSize: 20,
-        status: 3
+        orderStatus: 3
       };
       try {
         const response = await getWholesaleOrderList(params);

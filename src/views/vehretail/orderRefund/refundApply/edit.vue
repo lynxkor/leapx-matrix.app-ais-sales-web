@@ -245,7 +245,7 @@
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="商城订单编号：" prop="mallOrderCode">
                   {{ form.mallOrderCode }}
-                  <el-button size="small" type="primary" plain @click="openFinancialOrderShow">查询金融订单</el-button>
+                  <el-button v-if="vrFinanceOrder" size="small" type="primary" plain @click="openFinancialOrderShow">查询金融订单</el-button>
                 </el-form-item>
                 <el-form-item label="整车订单：" prop="retailOrderCode">
                   <el-button
@@ -298,7 +298,7 @@
                     v-if="form.materialsCode"
                     type="text">{{ form.materialsCode }}</el-button>
                   <span v-else>{{ form.materialsCode }}</span>
-                  <el-button size="small" type="primary" plain @click="openVehicleStockShow">查询库存车</el-button>
+                  <el-button v-if="vehicleVdcInventoryLedger" size="small" type="primary" plain @click="openVehicleStockShow">查询库存车</el-button>
                 </el-form-item>
                 <el-form-item label="是否停产：" prop="discontinueStatusLabel">
                   <span :class="['status-tag', form.discontinueStatus === 0 ? 'primary' : 'danger']">{{ form.discontinueStatusLabel}}</span>
@@ -349,7 +349,7 @@
 <!--                <el-form-item label="原因二级分类编码：" prop="subCateCode">-->
 <!--                  {{ form.subCateCode }}-->
 <!--                </el-form-item>-->
-                <el-form-item label="原因二级分类：" prop="subCateName">
+                <el-form-item v-if="subCateShow" label="原因二级分类：" prop="subCateName">
                   {{ form.subCateName }}
                 </el-form-item>
                 <el-form-item label="数据来源：" prop="dataSource">
@@ -613,7 +613,7 @@
                   >{{ form.optionPackageName }}</el-button>
                   <span v-else>{{ form.optionPackageName }}</span>
                 </el-form-item>
-                <el-form-item label="特殊备注：" prop="remark">
+                <el-form-item v-if="specRemarkShow" label="特殊备注：" prop="remark">
                   {{ form.specialRemark }}
                 </el-form-item>
               </el-form>
@@ -858,6 +858,13 @@ export default {
       canFinalApprove: false, // 终审
       loading: false,
       submitLoading: false,
+      // 字段权限控制
+      vrFinanceOrder: false, // 查询金融订单展示
+      vehicleVdcInventoryLedger: false, // 查询库存车展示
+      subCateShow: false, // 原因二级分类展示
+      specRemarkShow: false, // 特殊备注展示
+      preApproverShow: false, // 初审人展示
+      finalApproverShow: false, // 终审人展示
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
@@ -957,6 +964,13 @@ export default {
       this.canPreApprove = this.permissions.has(`${this.moduleKey}-preApprove`);
       this.canApprove = this.permissions.has(`${this.moduleKey}-approve`);
       this.canFinalApprove = this.permissions.has(`${this.moduleKey}-finalApprove`);
+      // 字段权限控制初始化
+      this.vrFinanceOrder = this.permissions.has(`${this.moduleKey}-vrFinanceOrder`);
+      this.vehicleVdcInventoryLedger = this.permissions.has(`${this.moduleKey}-vehicleVdcInventoryLedger`);
+      this.subCateShow = this.permissions.has(`${this.moduleKey}-subCateShow`);
+      this.specRemarkShow = this.permissions.has(`${this.moduleKey}-specRemarkShow`);
+      this.preApproverShow = this.permissions.has(`${this.moduleKey}-preApproverShow`);
+      this.finalApproverShow = this.permissions.has(`${this.moduleKey}-finalApproverShow`);
     },
     detailRequest () {
       const id = this._id;
@@ -1046,6 +1060,7 @@ export default {
     changeCategoryChange (val, selectedOption) {
       this.form.cateCode = val ? selectedOption.cateCode : '';
       this.form.cateName = val ? selectedOption.cateName : '';
+      this.form.refundReason = val ? selectedOption.refundReasonDefault : '';
       this.form.depositRefundType = val ? selectedOption.refundTypeDefault + '' : null;
       this.form.refundAttachRequired = val ? selectedOption.refundAttachRequired : null;
       this.form.refundTypeSelect = val ? selectedOption.refundTypeSelect : null;
