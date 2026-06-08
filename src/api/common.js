@@ -301,6 +301,14 @@ export function page (data) {
 }
 
 /**
+ * 工厂查询
+ * @param {*} data
+ */
+export function factoryInfoPage (data) {
+  return api.jsonPost('/zcwms/base/factoryInfo/page', data);
+}
+
+/**
  * 车型-年款-关联关系表列表查询
  * @param {*} data
  */

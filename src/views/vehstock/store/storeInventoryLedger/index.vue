@@ -321,6 +321,8 @@ export default {
           { props: 'settlementFundType', label: '结算资金类型', visible: true, width: 140 },
           { props: 'vehdeLiveriedLabel', label: '实车交车标识', visible: true, width: 140 },
           { props: 'syncSourceLabel', label: '标识来源', visible: true, width: 120 },
+          { props: 'electricity', label: '车辆电量', visible: true, width: 140 },
+          { props: 'vehMiles', label: '车联网里程', visible: true, width: 140 },
           { props: 'isFenceCrossedLabel', label: '是否异常车辆', visible: true, width: 140 },
           { props: 'fenceCrossedTypeLabel', label: '车辆异常类型', visible: true, width: 140 },
           { props: 'vehdeLiveriedOn', label: '标识记录日期', visible: true, width: 200 },
