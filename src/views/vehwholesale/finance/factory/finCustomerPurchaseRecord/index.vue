@@ -13,11 +13,11 @@
        <fetch-select
             :remote-method="getDealerParentOrgListByName"
             remote
-            v-model="form.dealerCompanyNames"
+            v-model="form.dealerCompanyCodesByNames"
             :param="form.dealerCompanyName"
             placeholder="请选择"
             labelKey="companyName"
-            valueKey="companyName"
+            valueKey="companyCode"
             clearable
             filterable
             multiple

@@ -27,10 +27,10 @@
             :remote-method="getDealerParentOrgListByName"
             remote
             :param="form.dealerCompanyName"
-            v-model="form.dealerCompanyNames"
+            v-model="form.dealerCompanyCodesByNames"
             placeholder="请选择"
             labelKey="companyName"
-            valueKey="companyName"
+            valueKey="companyCode"
             clearable
             filterable
             multiple

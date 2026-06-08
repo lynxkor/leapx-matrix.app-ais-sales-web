@@ -229,7 +229,7 @@
                  <el-form-item label="车系名称：" prop="seriesName">
                   <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
-                  <el-form-item label="是否锁零售单：" prop="allowLockRetailLabel">
+                  <el-form-item label="允许锁零售单：" prop="allowLockRetailLabel">
                   {{ form.allowLockRetailLabel }}
                 </el-form-item>
                 <el-form-item label="开始日期：" prop="startTime">
