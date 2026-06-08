@@ -180,36 +180,12 @@
                 <el-form-item label="是否允许修改退订原因：" prop="refundReasonChangedLabel">
                   {{ form.refundReasonChangedLabel }}
                 </el-form-item>
-                <el-form-item v-if="form.cateCode === '1210'" label="超时订单自动审核通过：" prop="expireOrderAutoPassLabel">
+                <el-form-item v-show="form.cateName.includes('超期订单')" label="超时订单自动审核通过：" prop="expireOrderAutoPassLabel">
                   {{ form.expireOrderAutoPassLabel }}
                 </el-form-item>
-                <el-form-item v-if="form.cateCode === '1210'" label="超时订单时间设置：" prop="expireOrderTime">
-                  {{ '【缴定金时间】距离当前超过 ' + form.expireOrderTime + ' 个月可自动审核通过' }}
+                <el-form-item v-show="form.cateName.includes('超期订单')" label="超时订单时间设置：" prop="expireOrderTime">
+                  {{ '【缴定金时间】距离当前超过 ' + (form.expireOrderTime ? form.expireOrderTime : '') + ' 个月可自动审核通过' }}
                 </el-form-item>
-<!--                <el-form-item label="主键：" prop="id">-->
-<!--                  {{ form.id }}-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="创建者：" prop="creator">-->
-<!--                  {{ form.creator }}-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="创建者名称：" prop="creatorName">-->
-<!--                  {{ form.creatorName }}-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="创建时间：" prop="createTime">-->
-<!--                  {{ form.createTime }}-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="修改者：" prop="modifier">-->
-<!--                  {{ form.modifier }}-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="修改者名称：" prop="modifierName">-->
-<!--                  {{ form.modifierName }}-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="修改时间：" prop="updateTime">-->
-<!--                  {{ form.updateTime }}-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="备注：" prop="remark">-->
-<!--                  {{ form.remark }}-->
-<!--                </el-form-item>-->
               </el-form>
             </div>
           </section>

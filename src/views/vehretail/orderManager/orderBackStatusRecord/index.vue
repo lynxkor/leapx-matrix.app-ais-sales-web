@@ -320,12 +320,14 @@ export default {
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehretail/orderManager/retailOrderInfo/edit',
-                  query: {
-                    id: row.id
-                  }
-                });
+                if (row.orderNo) {
+                  this.$router.push({
+                    path: '/vehretail/orderManager/retailOrderInfo/edit',
+                    query: {
+                      id: row.orderId
+                    }
+                  });
+                }
               },
               type: 'primary'
             }]
@@ -339,12 +341,7 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 if (row.saleDealerCode) {
-                  this.navigateToRoute({
-                    path: '/partner/channelManagement/shopDetail',
-                    query: {
-                      dealerCode: row.saleDealerCode
-                    }
-                  }, true);
+                  window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank');
                 }
               },
               type: 'primary'
@@ -379,13 +376,8 @@ export default {
             width: 180,
             buttons: [{
               click: (rowIndex, row) => {
-                if (row.originalVin) {
-                  this.navigateToRoute({
-                    path: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
-                    query: {
-                      vin: row.vin
-                    }
-                  }, true);
+                if (row.vin) {
+                  window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank');
                 }
               },
               type: 'primary'

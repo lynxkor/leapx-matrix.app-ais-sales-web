@@ -23,7 +23,7 @@
           <el-button v-if="form.status === 1" size="small" @click="handleSoldPlateInfo">添加上牌信息</el-button>
           <el-button v-if="form.status === 1" size="small" @click="openAdjustVehicleAttribute">调整车辆属性</el-button>
 <!--          <el-button v-if="form.status === 0" size="small" @click="handleAttachment">添加附件</el-button>-->
-          <el-button v-if="form.status === 0" size="small" @click="handleSubmit">提交</el-button>
+          <el-button v-if="form.status === 0" size="small" :loading="submitLoading" @click="handleSubmit">提交</el-button>
 <!--          <el-button v-if="form.status === 0" size="small" @click="handleCancel">作废</el-button>-->
 <!--          <el-button v-if="form.status === 1" size="small" @click="handleRevoke">撤回</el-button>-->
         </template>
@@ -49,15 +49,15 @@
                     :disabled="form.id && form.id.length > 0"
                   />
                 </el-form-item>
-                <el-form-item label="车型名称：" prop="modelId">
+                <el-form-item label="车型名称：" prop="modelName">
                   <fetch-select
                     filterable
                     clearable
                     remote
                     reserve-keyword
-                    v-model="form.modelId"
+                    v-model="form.modelName"
                     :remote-method="vehicleModelSearch"
-                    :params="form.modelId"
+                    :params="form.modelName"
                     @change="vehicleModelChange"
                     value-key="id"
                     label-key="name"
@@ -79,6 +79,7 @@
                     :request="fetchOptions"
                     enumCode="vehicle_purpose_type"
                     v-model="form.vehiclePurpose"
+                    @change="vehiclePurposeChange"
                     placeholder="请选择车辆用途"
                     clearable
                     filterable
@@ -119,7 +120,7 @@
                 <el-form-item label="门店库存台账：" prop="storeInventoryId">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.storeInventoryId"
+                    v-model="form.storeInventoryVin"
                     disabled
                     clearable
                   />
@@ -248,7 +249,7 @@
                   {{ form.certificateNo }}
                 </el-form-item>
                 <el-form-item label="门店库存台账：" prop="storeInventoryId">
-                  {{ form.storeInventoryId }}
+                  <el-link v-if="form.storeInventoryId" type="primary" :href="`/sales/vehstock/store/storeInventoryLedger/edit?id=${form.storeInventoryId}`" target="_blank">{{ form.storeInventoryVin }}</el-link><span v-else>{{ form.storeInventoryVin }}</span>
                 </el-form-item>
                 <el-form-item label="整车批售单号：" prop="wholesaleOrderCode">
                   <el-link v-if="form.wholesaleOrderId" type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${form.wholesaleOrderId}`" target="_blank">{{ form.wholesaleOrderCode }}</el-link><span v-else>{{ form.wholesaleOrderCode }}</span>
@@ -565,6 +566,8 @@ const defaultForm = {
   invoiceAmount: '',
   documentCode: '',
   dataSource: '',
+  reservationStatus: null,
+  storeInventoryVin: null
 };
 
 export default {
@@ -929,17 +932,7 @@ export default {
     // 提交操作
     handleSubmit () {
       // 试乘试驾车校验
-      let vehicleTypeValidateFailed = false;
-      getStoreInventory({
-        vinLike: this.form.vin,
-        pageSize: 1
-      }).then(res => {
-        // console.log(JSON.stringify(res));
-        if (res.total > 0) {
-          vehicleTypeValidateFailed = res.records[0].reservationStatus === 10 && this.form.vehiclePurpose !== 30;
-        }
-      });
-      if (vehicleTypeValidateFailed) {
+      if (this.form.reservationStatus === 10 && this.form.vehiclePurpose !== 30) {
         this.$confirm(
           '该车辆为试驾车，车辆用途请选择试乘试驾车',
           '试乘试驾车校验提醒',
@@ -973,6 +966,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.submitLoading = true;
         submitReport({ id: this.form.id }).then(() => {
           this.$message({
             type: 'success',
@@ -980,6 +974,8 @@ export default {
           });
           // 重新加载详情
           this.$refs.containerRef.loadDetail();
+        }).finally(() => {
+          this.submitLoading = false;
         });
       }).catch(() => {
         // 用户取消操作
@@ -1101,6 +1097,8 @@ export default {
       }
     },
     clearForm () {
+      this.form.reservationStatus = null;
+      this.form.storeInventoryVin = null;
       // 清空表单
       this.$refs.ruleForm.resetFields();
       this.$refs.ruleForm1.resetFields();
@@ -1121,16 +1119,53 @@ export default {
       this.form.idCardType = selectedOption.vehicleProfileOwnerResp.idcardType;
       this.form.idCardNo = selectedOption.vehicleProfileOwnerResp.idcardNo;
       this.form.address = selectedOption.vehicleProfileOwnerResp.homeAddress;
-      this.form.saleDealerCode = selectedOption.salesDealerCode + '';
+      this.form.saleDealerCode = selectedOption.salesDealerCode;
       this.form.saleDealerName = selectedOption.salesDealerName;
-      this.form.deliveryDealerCode = selectedOption.deliveryDealerCode + '';
+      this.form.deliveryDealerCode = selectedOption.deliveryDealerCode;
       this.form.deliveryDealerName = selectedOption.deliveryDealerName;
       this.form.exclusiveServiceStoreCode = selectedOption.vehicleProfileServiceResp.serviceDealerCode ? selectedOption.vehicleProfileServiceResp.serviceDealerCode + '' : '';
       this.form.exclusiveServiceStoreName = selectedOption.vehicleProfileServiceResp.serviceDealerName ? selectedOption.vehicleProfileServiceResp.serviceDealerName : '';
-      // 根据销售门店渲染专属服务、交付门店
-      // if (this.form.saleDealerCode) {
-      //   this.saleDealerSearch(selectedOption.salesDealerCode);
-      // }
+      // 获取门店库存信息
+      if (this.form.vin) {
+        this.refreshStoreInventoryLedger(this.form.vin);
+      }
+    },
+    refreshStoreInventoryLedger (vin) {
+      getStoreInventory({
+        vinLike: this.form.vin,
+        vechicleStatusList: [11, 12, 13, 16, 20, 25],
+        pageSize: 1
+      }).then(res => {
+        if (res.total > 0) {
+          if (res.records[0].reservationStatus !== 10) {
+            this.$message.error('非试驾车的批售车辆，不允许提报!');
+            this.clearForm();
+          } else {
+            this.form.storeInventoryId = res.records[0].id;
+            this.form.reservationStatus = res.records[0].reservationStatus;
+            this.form.wholesaleOrderCode = res.records[0].wholesaleOrderCode;
+            this.form.storeInventoryVin = this.form.vin;
+            this.form.vehiclePurpose = 30;
+            if (!this.form.saleDealerCode) {
+              this.form.saleDealerCode = res.records[0].saleDealerCode;
+              this.form.saleDealerName = res.records[0].saleDealerName;
+            }
+          }
+        }
+      });
+    },
+    vehiclePurposeChange (val) {
+      if (val) {
+        if (this.form.reservationStatus === 10 && val !== 30) {
+          this.$message.error('该车辆' + this.form.vin + '车辆类型为试驾车,车辆用途必须选择试驾车!');
+          this.form.vehiclePurpose = null;
+        } else {
+          if (val === 30) {
+            this.$message.error('该车辆的车辆类型不是试驾车，请核实!');
+            this.form.vehiclePurpose = null;
+          }
+        }
+      }
     },
     // 销售门店搜索并回显
     saleDealerSearch  (val) {

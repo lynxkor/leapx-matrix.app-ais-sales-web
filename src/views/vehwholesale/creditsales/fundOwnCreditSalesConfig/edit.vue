@@ -15,7 +15,7 @@
         <template #status>
         </template>
         <template #extraButtons>
-          <el-button v-if="form.auditStatus === 0 || form.auditStatus === 2" size="small" type="primary" @click="handleSubmit">提交</el-button>
+          <el-button v-if="form.auditStatus === 0 || form.auditStatus === 2" size="small" type="primary" :loading="submitLoading" @click="handleSubmit">提交</el-button>
           <el-button v-if="form.auditStatus === 1" size="small" @click="handleReview"><i class="iconfont icon-lxppc-edit"></i>复核</el-button>
         </template>
         <el-main>
@@ -444,12 +444,15 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.submitLoading = true;
         submitItem(params).then(() => {
           this.$message({
             type: 'success',
             message: '提交成功!'
           });
           this.$refs.containerRef.loadDetail();
+        }).finally(() => {
+          this.submitLoading = false;
         });
       }).catch(() => {});
     },

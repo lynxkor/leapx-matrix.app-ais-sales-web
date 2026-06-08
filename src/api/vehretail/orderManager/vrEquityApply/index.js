@@ -105,3 +105,15 @@ export function cancelApproveValid (data) {
 export function approveRecord (data) {
   return api.jsonPost(prefix + 'approveRecord', data);
 }
+
+/**
+ * 查询加密数据
+ * @param {String} id
+ * @param {String} field
+ */
+export function getDecryptField (id, field) {
+  return api.jsonPost(prefix + 'getFieldDecryptValue', {
+    id: id,
+    decryptField: field
+  });
+}

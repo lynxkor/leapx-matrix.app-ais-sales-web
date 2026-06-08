@@ -30,7 +30,7 @@
                   {{ form.transferNo }}
                 </el-form-item>
                 <el-form-item label="VIN：" prop="vin">
-                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
+                  {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
@@ -45,7 +45,7 @@
                   {{ form.sourceDealerCode }}
                 </el-form-item>
                 <el-form-item label="源门店名称：" prop="sourceDealerName">
-                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.sourceDealerCode}`" target="_blank">{{ form.sourceDealerName }}</el-link>
+                  {{ form.sourceDealerName }}
                 </el-form-item>
                 <el-form-item label="源门店地址：" prop="sourceDealerAddress">
                   {{ form.sourceDealerAddress }}
@@ -63,7 +63,7 @@
                   {{ form.targetDealerCode }}
                 </el-form-item>
                 <el-form-item label="目标门店名称：" prop="targetDealerName">
-                  <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.targetDealerCode}`" target="_blank">{{ form.targetDealerName }}</el-link>
+                 {{ form.targetDealerName }}
                 </el-form-item>
                 <el-form-item label="目标门店地址：" prop="targetDealerAddress">
                   {{ form.targetDealerAddress }}

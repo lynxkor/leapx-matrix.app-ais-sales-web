@@ -286,7 +286,7 @@ export default {
     },
     handleAdd () {
       this.$router.push({
-        path: '/vehretail/delivery/deliveryCycleTimeConfig/edit'
+        path: '/vehretail/basicConfig/deliveryCycleTimeConfig/edit'
       });
     },
     onSubmit () {

@@ -89,8 +89,9 @@
         </el-form-item>
         <el-form-item label="申请单状态">
           <fetch-select
-            :request="fetchOptions"
-            enumCode="vr_order_benefit_apply_status"
+            :options="auditStatusOptions"
+            :valueKey="'value'"
+            :labelKey="'label'"
             v-model="form.auditStatus"
             placeholder="请选择"
             clearable
@@ -242,7 +243,7 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem } from '@/api/vehretail/orderManager/vrEquityApply/index';
+import { getList, deleteItem, getDecryptField } from '@/api/vehretail/orderManager/vrEquityApply/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleModelList, listOrgStoreInfo, vehicleMaterials } from '@/api/common';
 import { getSelect as getEquityCategoryListApi } from '@/api/vehretail/basicConfig/vrEquityCategory/index';
 import FetchSelect from '@/libs/components/FetchSelect';
@@ -303,6 +304,14 @@ export default {
       exportLoading: false,
       uploadDialogVisible: false,
       clickItemId: '',
+      auditStatusOptions: [
+        { label: '草稿', value: '10' },
+        { label: '驳回', value: '20' },
+        { label: '已提交', value: '30' },
+        { label: '已初审', value: '40' },
+        { label: '已终审', value: '60' },
+        { label: '作废', value: '70' }
+      ],
       optionObj: {
         id: 'vrEquityApplyTable',
         dataList: [],
@@ -368,14 +377,7 @@ export default {
             width: 280,
             buttons: [{
               click: (rowIndex, row) => {
-                if (row.saleDealerCode) {
-                  this.navigateToRoute({
-                    path: '/partner/channelManagement/shopBasicsMessageDetails',
-                    query: {
-                      id: row.saleDealerId
-                    }
-                  }, true);
-                }
+                window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank');
               },
               type: 'primary'
             }]
@@ -399,29 +401,32 @@ export default {
             }]
           },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 500 },
-          { props: 'buyerName', label: '购车人姓名', visible: true, width: 120 },
-          { props: 'buyerPhone', label: '购车人手机号', visible: true, width: 150 },
+          { props: 'buyerName', label: '购车人姓名', visible: true, width: 120, mask: true, getValue: (row) => getDecryptField(row.id, 'buyerName') },
+          { props: 'buyerPhone', label: '购车人手机号', visible: true, width: 150, mask: true, getValue: (row) => getDecryptField(row.id, 'buyerPhone') },
           {
             props: 'originalVin',
             label: '原车VIN号',
             visible: true,
             width: 200,
+            mask: true,
+            getValue: (row) => getDecryptField(row.id, 'originalVin'),
             buttons: [{
               click: (rowIndex, row) => {
                 if (row.originalVin) {
-                  this.navigateToRoute({
-                    path: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
-                    query: {
-                      vin: row.originalVin
-                    }
-                  }, true);
+                  // 直接用 then，不会报错
+                  getDecryptField(row.id, 'originalVin').then(realVin => {
+                    this.navigateToRoute({
+                      path: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
+                      query: { vin: realVin }
+                    }, true);
+                  });
                 }
               },
               type: 'primary'
             }]
           },
-          { props: 'originalOwnerName', label: '原车车主', visible: true, width: 120 },
-          { props: 'originalOwnerPhone', label: '原车主手机号', visible: true, width: 150 },
+          { props: 'originalOwnerName', label: '原车车主', visible: true, width: 120, mask: true, getValue: (row) => getDecryptField(row.id, 'originalOwnerName') },
+          { props: 'originalOwnerPhone', label: '原车主手机号', visible: true, width: 150, mask: true, getValue: (row) => getDecryptField(row.id, 'originalOwnerPhone') },
           { props: 'firstAuditTime', label: '初审时间', visible: true, width: 180 },
           { props: 'auditTime', label: '审核时间', visible: true, width: 180 },
           { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true },

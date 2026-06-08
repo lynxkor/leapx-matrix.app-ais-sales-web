@@ -166,7 +166,7 @@ export default {
     },
     handleWholesaleEdit () {
       this.$router.push({
-        path: '/vehwholesale/basic/wholesalesaletargettracking/wholesaleEdit',
+        path: '/vehwholesale/basic/wholesaleSaleTargetTracking/wholesaleEdit',
         query: {
           id: this.$route.query.id,
           isEditing: true
@@ -175,7 +175,7 @@ export default {
     },
     handleRetailEdit () {
       this.$router.push({
-        path: '/vehwholesale/basic/wholesalesaletargettracking/retailEdit',
+        path: '/vehwholesale/basic/wholesaleSaleTargetTracking/retailEdit',
         query: {
           id: this.$route.query.id,
           isEditing: true

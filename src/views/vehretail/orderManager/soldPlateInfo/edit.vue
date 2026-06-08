@@ -31,6 +31,7 @@
 <!--          </el-button>-->
           <el-button
             @click="handleSubmit"
+            :loading="submitLoading"
             v-if="form.status === 1010 || form.status === 1040"
             size="small">
             提交审核
@@ -1310,8 +1311,11 @@ export default {
       this.$refs.uploadDialogRef.close();
     },
     handleSubmit () {
+      this.submitLoading = true;
       submit(this.form).then(() => {
         this.reloadDetail();
+      }).finally(() => {
+        this.submitLoading = false;
       });
     },
     openRevocationSubmitShow () {

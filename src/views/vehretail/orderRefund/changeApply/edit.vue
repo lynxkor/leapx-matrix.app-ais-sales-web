@@ -364,6 +364,7 @@
                     type="pho"
                     placeholder="请输入"
                     v-model="form.newBuyerPhone"
+                    maxlength="11"
                     clearable
                   />
                 </el-form-item>
@@ -443,6 +444,7 @@
             <div class="common-section-table">
               <!--附件上传组件 -->
               <AisAttachment
+                ref="attachment"
                 :businessId="_id"
                 :readonly="!_id || !(form.applyStatus === 1010 || form.applyStatus === 1040)"
                 configCode="mcs_vehorderapplylog"
@@ -1191,6 +1193,7 @@ export default {
       const params = {
         pageSize: 1000,
         changeName: val,
+        status: 1,
         changeType: this.form.changeType
       };
       return await fetchReasonLabelList(params);
