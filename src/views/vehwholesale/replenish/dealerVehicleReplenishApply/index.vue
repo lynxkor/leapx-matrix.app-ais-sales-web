@@ -127,16 +127,10 @@
           />
         </el-form-item>
         <el-form-item label="创建时间">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
+          <dateranges
             v-model="form.createTime"
-            type="daterange"
-            unlink-panels
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            :setDefault="true"
+            deftTime="最近三个月"
           />
         </el-form-item>
       </template>
@@ -231,6 +225,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import vehicleWholesaleDialog from './vehicleWholesaleDialog.vue';
 import BatchAuditInput from './BatchAuditInput.vue';
+import dateranges from '@/libs/components/dateranges';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -262,8 +257,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    BatchAuditInput
-    // Upload
+    BatchAuditInput,
+    dateranges
   },
   data () {
     return {
