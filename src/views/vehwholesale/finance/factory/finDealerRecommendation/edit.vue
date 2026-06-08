@@ -82,14 +82,11 @@
                   />
                 </el-form-item>
                 <el-form-item label="保证金比例%：" prop="depositRatio">
-                  <el-input-number
+                  <el-input
                     placeholder="请输入保证金比例"
                     v-model="form.depositRatio"
-                    :precision="2"
-                    :step="0.01"
-                    :min="0"
-                    :max="100"
-                    :controls="false"
+                    clearable
+                    @input="handleDepositRatioInput"
                   />
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
@@ -240,7 +237,7 @@ const defaultForm = {
   recFinancialOrganizationId: '',
   recAmount: '',
   recDate: new Date(),
-  depositRatio: '',
+  depositRatio: null,
   syncStatus: '10',
   syncResult: '',
   syncTime: '',
@@ -321,6 +318,27 @@ export default {
         recDate: [
           { required: true, message: '请选择推荐日期', trigger: 'change' }
         ],
+        depositRatio: [
+          {
+            validator: (_rule, value, callback) => {
+              if (value === null || value === '' || value === undefined) {
+                callback();
+                return;
+              }
+              if (!/^\d+(\.\d{1,2})?$/.test(String(value))) {
+                callback(new Error('请输入数值，小数点后最多两位'));
+                return;
+              }
+              const num = Number(value);
+              if (num < 0 || num > 100) {
+                callback(new Error('保证金比例需在 0-100 之间'));
+                return;
+              }
+              callback();
+            },
+            trigger: 'blur'
+          }
+        ],
         status: [
           { required: true, message: '请选择状态', trigger: 'change' }
         ],
@@ -388,6 +406,19 @@ export default {
     getDealerCompanyCode (dealerCompanyCode, obj) {
       this.form.dealerCompanyCode = obj.companyCode;
     },
+    // 保证金比例输入处理：只允许数值，小数点后最多两位；空值置为 null
+    handleDepositRatioInput (val) {
+      let v = String(val === null || val === undefined ? '' : val).replace(/[^\d.]/g, '');
+      const parts = v.split('.');
+      if (parts.length > 2) {
+        v = parts[0] + '.' + parts.slice(1).join('');
+      }
+      if (v.includes('.')) {
+        const [int, dec] = v.split('.');
+        v = int + '.' + (dec || '').slice(0, 2);
+      }
+      this.$set(this.form, 'depositRatio', v === '' ? null : v);
+    },
     formatIsoToDatetime (isoTime) {
       if (!isoTime) return '';
       return new Date(isoTime).toLocaleString('zh-CN', {
@@ -414,7 +445,8 @@ export default {
       let params = {
         ...this.form,
         createTime: this.formatIsoToDatetime(this.form.createTime),
-        recDate: this.formatIsoToDatetime(this.form.recDate)
+        recDate: this.formatIsoToDatetime(this.form.recDate),
+        depositRatio: this.form.depositRatio === null || this.form.depositRatio === '' ? null : Number(this.form.depositRatio)
       };
       return addOrUpdate(params);
       // return addOrUpdate({ ...this.form });
@@ -457,7 +489,7 @@ export default {
       return {
         ...data,
         recAmount: data.recAmount !== undefined && data.recAmount !== null ? Number(data.recAmount) : '',
-        depositRatio: data.depositRatio !== undefined && data.depositRatio !== null ? Number(data.depositRatio) : '',
+        depositRatio: data.depositRatio !== undefined && data.depositRatio !== null ? String(data.depositRatio) : null,
       };
     },
     async fetchOptions (code) {
