@@ -10,17 +10,17 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.permission.edit"
+        :showEditBtn="form.permission.edit && perEdit"
       >
         <template #status>
           {{ form.replenishApplyCode }}
           <span class="status primary">{{ form.auditStatusLabel }}</span>
         </template>
         <template #extraButtons>
-          <el-button size="small" @click="handleSubmit" v-if ="form.permission && form.permission.submit">提交补货申请</el-button>
-          <el-button size="small" @click="handleAuditValidForDealer()" v-if="form.permission && form.permission.dealerAudit">门店审核</el-button>
-          <el-button size="small" @click="handleAuditValidForFactory()" v-if="form.permission && form.permission.factoryAudit">厂端审核</el-button>
-          <el-button size="small" @click="handleUnused" v-if="form.permission && form.permission.cancel">作废</el-button>
+          <el-button size="small" :loading="submitLoading" @click="handleSubmit" v-if ="form.permission && form.permission.submit && perSubmit">提交补货申请</el-button>
+          <el-button size="small" @click="handleAuditValidForDealer()" v-if="form.permission && form.permission.dealerAudit && perDealerAudit">门店审核</el-button>
+          <el-button size="small" @click="handleAuditValidForFactory()" v-if="form.permission && form.permission.factoryAudit && perFactoryAudit">厂端审核</el-button>
+          <el-button size="small" @click="handleUnused" v-if="form.permission && form.permission.cancel && perCancel">作废</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -295,13 +295,13 @@
               <h2>整车门店补货明细</h2>
             </div>
             <div class="common-section-body">
-              <el-button size="small" @click="handleAddRow" style="margin-bottom: 10px;" v-show = "form.permission.edit && _id">添加补货明细</el-button>
+              <el-button size="small" @click="handleAddRow" style="margin-bottom: 10px;" v-show = "form.permission.edit && _id && perEdit">添加补货明细</el-button>
               <div class="common-section-table">
                 <component-table
                   ref="detailTableRef"
                   :tableData="form.details"
                   :columns="detailsColumns"
-                  :show-delete="form.permission.edit && _id"
+                  :show-delete="form.permission.edit && _id && perEdit"
                   @delete-row="handleDeleteDetailRow"
                   @save-row="handleSaveDetailRow"
                 >
@@ -527,6 +527,11 @@ export default {
       submitLoading: false,
       form: { ...form },
       originalForm: { ...form },
+      perEdit: false,
+      perSubmit: false,
+      perDealerAudit: false,
+      perFactoryAudit: false,
+      perCancel: false,
       tableData: [],
       columns: [
         { field: 'fundTypeDisplay', title: '资金类型', width: '12%', slots: { default: 'fundTypeDisplay' } },
@@ -615,6 +620,7 @@ export default {
   mounted () {
     this.fetchOrderCategoryOptions();
     this.fetchsettleFundTypeOptions();
+    this.initPermissions();
   },
   methods: {
     openWindow (url) {
@@ -650,25 +656,9 @@ export default {
       if (!Array.isArray(this.form.details)) {
         this.form.details = [];
       }
-      const existingDetailsMap = new Map();
-      this.form.details.forEach(detail => {
-        if (detail.materialsCode) {
-          existingDetailsMap.set(detail.materialsCode, detail);
-        }
-      });
-      const newDetails = [];
-      const updatedDetails = [...this.form.details];
-      processedDataList.forEach(dataItem => {
-        const existingDetail = existingDetailsMap.get(dataItem.materialsCode);
-        if (existingDetail) {
-          existingDetail.applyQty = (Number(existingDetail.applyQty) || 0) + (Number(dataItem.applyQty) || 0);
-        } else {
-          newDetails.push(dataItem);
-        }
-      });
-      this.form.details = [...updatedDetails, ...newDetails];
+      // 将所有数据项直接添加到明细列表中，不进行任何合并
+      this.form.details = [...this.form.details, ...processedDataList];
       this.updateApplyTotalQty();
-      // this.$refs.editLayout.closePane();
       this.submitRequest();
     },
     handleCancel () {
@@ -753,6 +743,7 @@ export default {
       return addOrUpdate(params).then(res => {
         this.isEditing = false;
         this.$refs.containerRef.loadDetail();
+        this.handleCancel();
         return res;
       }).catch(error => {
         this.$message.error('保存失败');
@@ -1012,10 +1003,20 @@ export default {
       }).catch(() => {
       });
     },
+    initPermissions () {
+      this.perEdit = this.permissions.has(`${this.moduleKey}-addOrUpdate`);
+      this.perSubmit = this.permissions.has(`${this.moduleKey}-submit`);
+      this.perDealerAudit = this.permissions.has(`${this.moduleKey}-dealerApproval`);
+      this.perFactoryAudit = this.permissions.has(`${this.moduleKey}-factoryApproval`);
+      this.perCancel = this.permissions.has(`${this.moduleKey}-invalid`);
+    },
     handleSubmit () {
+      this.submitLoading = true;
       replenishmentSubmit({ id: this._id }).then(() => {
         this.$message.success('补货申请提交成功');
         this.$refs.containerRef.loadDetail();
+      }).finally(() => {
+        this.submitLoading = false;
       });
     },
   }

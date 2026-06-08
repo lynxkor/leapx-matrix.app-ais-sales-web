@@ -301,11 +301,11 @@
             section-key="deliveryInfo"
           />
           <!-- 基础信息 -->
-          <generic-detail-display title="基础信息" :form-data="form" :fields="basicInfoFields" :label-width="labelWidth" section-key="basicInfo" />
+          <generic-detail-display title="基础信息" :form-data="form" :fields="basicInfoFields" :label-width="labelWidth" section-key="basicInfo" :getDetailDecryptField="getDetailDecryptField" />
           <!-- 预约信息 -->
           <generic-detail-display title="预约信息" :form-data="form" :fields="appointmentFields" :label-width="labelWidth" section-key="appointment" />
           <!-- 整车订单信息 -->
-          <generic-detail-display title="整车订单信息" :form-data="form" :fields="retailOrderFields" :label-width="labelWidth" section-key="retailOrder" />
+          <generic-detail-display title="整车订单信息" :form-data="form" :fields="retailOrderFields" :label-width="labelWidth" section-key="retailOrder" :getDetailDecryptField="getDetailDecryptField" />
           <!-- 实名认证信息 -->
           <generic-detail-display title="实名认证信息" :form-data="form" :fields="realNameAuthFields" :label-width="labelWidth" section-key="realNameAuth" />
           <!-- 交车确认单 -->
@@ -434,7 +434,9 @@ import {
   deliveryConfirm, // 交车确认单生成
   checkCarBuyerPhoneRegistered, pushDeliveryActive, // 校验购车人手机号是否注册零跑APP
   calculateDeliveryAmount, // 计算尾款
+  getDetailDecryptField, // 加密
 } from '@/api/vehretail/orderManager/deliveryOrder/index';
+// import { getDetailDecryptField } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import {
   getEffectiveByDeliveryOrderId
 } from '@/api/vehretail/orderManager/deliveryInvoice/index';
@@ -595,6 +597,7 @@ export default {
       buttonLoading: {},
       // 权限控制
       canAppointment: false, // 预约交车
+      canAddOrUpdate: false, // 编辑表单权限
       canDeliveryConfirm: false, // 交车确认单生成
       canChangeAppointmentTime: false, // 更改预约时间
       canCancelOrderRights: false, // 核销订单权益
@@ -715,18 +718,18 @@ export default {
         { key: 'mallOrderCode', label: '商城订单编号' },
         { key: 'orderSource', label: '订单来源' },
         { key: 'orderUserId', label: '用户 ID' },
-        { key: 'carBuyerName', label: '购车人姓名' },
-        { key: 'carBuyerPhone', label: '购车人手机' },
+        { key: 'carBuyerName', label: '购车人姓名', encrypted: true },
+        { key: 'carBuyerPhone', label: '购车人手机', encrypted: true },
         { key: 'idCardTypeLabel', label: '证件类型' },
-        { key: 'idCardNo', label: '证件号码' },
+        { key: 'idCardNo', label: '证件号码', encrypted: true },
         { key: 'agentName', label: '代办联系人' },
         { key: 'guidePrice', label: '整车指导价' },
         { key: 'depositAmount', label: '定金金额' },
         { key: 'orderMaterialCode', label: '订单物料码', link: '/sales/datacenter/materials/vehiclematerials/edit', paramKey: 'orderMaterialCode' },
-        { key: 'allocationMaterialCode', label: '配车物料码', link: '/sales/datacenter/materials/vehiclematerials/edit', paramKey: 'allocationMaterialsCode' },
+        { key: 'allocationMaterialCode', label: '配车物料码', link: '/sales/datacenter/materials/vehiclematerials/edit', paramKey: 'allocationMaterialCode' },
         { key: 'saleDealerName', label: '销售门店', link: '/partner/channelManagement/shopDetail', paramKey: 'saleDealerCode', paramName: 'dealerCode' },
         { key: 'deliveryDealerName', label: '交付门店', link: '/partner/channelManagement/shopDetail', paramKey: 'deliveryDealerCode', paramName: 'dealerCode' },
-        { key: 'deliveryVin', label: '交车VIN码' },
+        { key: 'deliveryVin', label: '交车VIN码', encrypted: true },
         { key: 'deliveryTime', label: '交车时间' },
       ],
       realNameAuthFields: [
@@ -744,7 +747,7 @@ export default {
       ],
       basicInfoFields: [
         { key: 'deliveryOrderCode', label: '交车单编号' },
-        { key: 'vin', label: 'VIN 码', link: '/service/datacenter/vehicle/vehicleProfile/edit', paramKey: 'vin', paramName: 'vin' },
+        { key: 'vin', label: 'VIN 码', encrypted: true, link: '/service/datacenter/vehicle/vehicleProfile/edit', paramKey: 'vin', paramName: 'vin' },
         { key: 'materialsCode', label: '整车物料', link: '/sales/datacenter/materials/vehiclematerials/edit', paramKey: 'materialsCode' },
         { key: 'retailOrderCode', label: '整车订单', link: '/sales/vehretail/ordermanager/retailorderinfo/edit', paramKey: 'retailOrderId' },
         { key: 'deliveryTime', label: '交车时间' },
@@ -817,6 +820,7 @@ export default {
     // 初始化权限
     initPermissions () {
       this.canAppointment = this.permissions.has(`${this.moduleKey}-appointment`);
+      this.canAddOrUpdate = this.permissions.has(`${this.moduleKey}-addOrUpdate`);
       this.canDeliveryConfirm = this.permissions.has(`${this.moduleKey}-deliveryConfirm`);
       this.canChangeAppointmentTime = this.permissions.has(`${this.moduleKey}-changeAppointmentTime`);
       this.canCancelOrderRights = this.permissions.has(`${this.moduleKey}-cancelOrderRights`);
@@ -921,6 +925,10 @@ export default {
       } finally {
         this.$delete(this.buttonLoading, actionName);
       }
+    },
+    // 字段解密（用于 generic-detail-display 中的加解密展示）
+    getDetailDecryptField (id, field) {
+      return getDetailDecryptField(id, field);
     },
     detailRequest () {
       const id = this._id;
@@ -1073,7 +1081,13 @@ export default {
         validateForm(this.$refs.ruleForm2)
       ]);
       if (!ruleForm1Valid || !ruleForm2Valid) {
-        this.$message.warning('请先填写并保存表单信息');
+        // 表单校验不通过：若有编辑权限，自动进入编辑模式；否则提示需要更新销售/交付顾问
+        if (this.canAddOrUpdate) {
+          this.isEditing = true;
+          this.$message.warning('请先完善销售/交付顾问等信息后重试');
+        } else {
+          this.$message.error('当前用户没有编辑权限，请联系相关人员更新销售/交付顾问');
+        }
         return;
       }
       // 2. 调用接口校验购车人手机号是否注册
@@ -1174,7 +1188,8 @@ export default {
           // 3. 校验是否存在未核销权益
           const unverifiedRightsParams = {
             userId: this.form.orderUserId,
-            shopCode: this.form.mallOrderCode
+            shopCode: this.form.mallOrderCode,
+            rightsStatus: 2
           };
           const unverifiedRightsResult = await openGrantQuery(unverifiedRightsParams);
           let hasUnverifiedRights = false;
@@ -1346,17 +1361,29 @@ export default {
     },
     // 收款撤回
     handlePaymentWithdraw () {
-      cancelPayment({ deliveryOrderId: this.form.deliveryOrderId, retailOrderId: this.form.retailOrderId }).then(res => {
-        this.$message.success('收款撤回成功');
-        this.getDetail();
-      }).catch(() => {});
+      this.$confirm('确认进行收款撤回操作吗？', '收款撤回提醒', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        cancelPayment({ deliveryOrderId: this.form.deliveryOrderId, retailOrderId: this.form.retailOrderId }).then(res => {
+          this.$message.success('收款撤回成功');
+          this.getDetail();
+        }).catch(() => {});
+      }).catch(() => { });
     },
     // 交车撤回
     handleDeliveryWithdraw () {
-      cancelDelivery({ deliveryOrderId: this.form.deliveryOrderId, retailOrderId: this.form.retailOrderId }).then(res => {
-        this.$message.success('交车撤回成功');
-        this.getDetail();
-      }).catch(() => {});
+      this.$confirm('确认进行交车撤回操作吗？', '交车撤回提醒', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        cancelDelivery({ deliveryOrderId: this.form.deliveryOrderId, retailOrderId: this.form.retailOrderId }).then(res => {
+          this.$message.success('交车撤回成功');
+          this.getDetail();
+        }).catch(() => {});
+      }).catch(() => { });
     },
     // 计算尾款
     async handleCalculateDeliveryAmount () {

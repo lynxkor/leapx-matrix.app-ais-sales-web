@@ -64,7 +64,6 @@
                 :inline="true"
                 class="form-detail"
                 v-show="!(isEditing || !_id)"
-                label-width="150px"
               >
                 <el-form-item label="内饰名称：">
                   {{ form.interiorName }}

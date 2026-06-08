@@ -30,8 +30,11 @@
                 <el-form-item label="金融订单状态：">
                   <span class="status-tag link">{{ form.financeOrderStatusLabel }}</span>
                 </el-form-item>
-                <el-form-item label="VIN码：">
+                <el-form-item label="交车VIN码：">
                   <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
+                </el-form-item>
+                <el-form-item label="配车VIN码：">
+                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.matchVin}`" target="_blank">{{ form.matchVin }}</el-link>
                 </el-form-item>
                 <el-form-item label="门店名称：">
                   <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>
@@ -195,7 +198,7 @@
           <h3>订单概况</h3>
           <div style="margin-top: 10px; padding: 15px; background: #f5f7fa; border-radius: 4px;">
             <div><strong>金融订单号:</strong> {{ form.code || '-' }}</div>
-            <div style="margin-top: 8px;"><strong>VIN码:</strong> {{ form.vin || '-' }}</div>
+            <div style="margin-top: 8px;"><strong>交车VIN码:</strong> {{ form.vin || '-' }}</div>
             <div style="margin-top: 8px;"><strong>车主姓名:</strong> {{ form.carOwnerName || '-' }}</div>
             <div style="margin-top: 8px;"><strong>门店名称:</strong> {{ form.dealerName || '-' }}</div>
             <div style="margin-top: 8px;"><strong>放款金额:</strong> {{ form.loanAmount || '-' }}</div>

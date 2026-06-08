@@ -148,7 +148,7 @@
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
-      <el-button size="small" @click="handleBatchSync" :disabled="selectionList.length === 0">批量同步</el-button>
+      <el-button v-permission="moduleKey+'-sync'" size="small" @click="handleBatchSync" :disabled="selectionList.length === 0">批量同步</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
@@ -299,7 +299,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode);
+                this.openWindow('/partner/channelManagement/companyDetails?companyCode=' + row.dealerCode);
               },
               type: 'primary'
             }]
@@ -309,7 +309,7 @@ export default {
             label: '经销商名称',
             visible: true,
             width: 240,
-            buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank'); }, type: 'primary' }]
+            buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCode}`, '_blank'); }, type: 'primary' }]
           },
           { props: 'unifiedSocialCreditCode', label: '统一社会信用代码', visible: true, width: 200 },
           {

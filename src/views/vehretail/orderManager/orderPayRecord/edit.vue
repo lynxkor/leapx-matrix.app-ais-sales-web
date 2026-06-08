@@ -18,7 +18,7 @@
 
         <el-main>
           <!-- 基础信息通用部分 -->
-          <section class="common-section" v-if="type === 'depositRefund'">
+          <section class="common-section" v-if="type === 'depositRefund' || type === 'all'">
             <div class="common-section-header">
               <h2>订单收款订单</h2>
             </div>
@@ -40,7 +40,7 @@
                   {{ form.outTradeNo }}
                 </el-form-item>
                 <el-form-item label="收款类型：" prop="payCategory">
-                  {{ payCategoryLabel }}
+                  {{ form.payCategoryLabel }}
                 </el-form-item>
                 <el-form-item label="付款金额：" prop="paymentAmount">
                   {{ form.paymentAmount }}
@@ -49,13 +49,13 @@
                   {{ form.paymentTime }}
                 </el-form-item>
                 <el-form-item label="支付方式：" prop="paymentType">
-                  {{ paymentTypeLabel }}
+                  {{ form.paymentTypeLabel }}
                 </el-form-item>
                 <el-form-item label="支付人：" prop="payerName">
                   {{ form.payerName }}
                 </el-form-item>
                 <el-form-item label="支付渠道：" prop="paymentWay">
-                  {{ paymentWayLabel }}
+                  {{ form.paymentWayLabel }}
                 </el-form-item>
                 <el-form-item label="支付流水号：" prop="paySerialNumber">
                   {{ form.paySerialNumber }}
@@ -80,7 +80,7 @@
           </section>
 
           <!-- 条件渲染：定金退款 -->
-          <section v-if="type === 'depositRefund'" class="common-section">
+          <section v-if="type === 'depositRefund' || type === 'all'" class="common-section">
             <div class="common-section-header">
               <h2>退订信息</h2>
             </div>
@@ -106,43 +106,43 @@
           </section>
 
           <!-- 条件渲染：权益核销 -->
-          <section v-else-if="type === 'benefitWriteOff'" class="common-section">
+          <section v-if="type === 'benefitWriteOff' || type === 'all'" class="common-section">
             <div class="common-section-header">
               <h2>权益核销</h2>
             </div>
             <div class="common-section-body">
               <el-form :inline="true" class="form-detail">
-                <el-form-item label="交车单：" prop="deliveryNote">
+                <el-form-item v-if="type !== 'all'" label="交车单：" prop="deliveryNote">
                   {{ form.deliveryNote }}
                 </el-form-item>
                 <el-form-item label="VIN码：" prop="vin">
                   <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
                 </el-form-item>
-                <el-form-item label="收款类型：" prop="payCategory">
-                  {{ payCategoryLabel }}
+                <el-form-item v-if="type !== 'all'" label="收款类型：" prop="payCategory">
+                  {{ form.payCategoryLabel }}
                 </el-form-item>
-                <el-form-item label="权益类型：" prop="rightsType">
+                <el-form-item v-if="type !== 'all'" label="权益类型：" prop="rightsType">
                   {{ rightsTypeLabel }}
                 </el-form-item>
-                <el-form-item label="付款金额：" prop="paymentAmount">
+                <el-form-item v-if="type !== 'all'" label="付款金额：" prop="paymentAmount">
                   {{ form.paymentAmount }}
                 </el-form-item>
-                <el-form-item label="权益项名称：" prop="rightsItem">
+                <el-form-item v-if="type !== 'all'" label="权益项名称：" prop="rightsItem">
                   {{ form.rightsItem }}
                 </el-form-item>
-                <el-form-item label="付款时间：" prop="paymentTime">
+                <el-form-item v-if="type !== 'all'" label="付款时间：" prop="paymentTime">
                   {{ form.paymentTime }}
                 </el-form-item>
-                <el-form-item label="权益项编号：" prop="rightsItemCode">
+                <el-form-item v-if="type !== 'all'" label="权益项编号：" prop="rightsItemCode">
                   {{ form.rightsItemCode }}
                 </el-form-item>
                 <el-form-item label="收款编号：" prop="payCode">
                   {{ form.payCode }}
                 </el-form-item>
-                <el-form-item label="整车订单：" prop="retailOrderCode">
+                <el-form-item v-if="type !== 'all'" label="整车订单：" prop="retailOrderCode">
                   <el-link v-if="form.retailOrderId" type="primary" :href="`/sales/vehretail/ordermanager/retailorderinfo/edit?id=${form.retailOrderId}`" target="_blank">{{ form.retailOrderCode }}</el-link><span v-else>{{ form.retailOrderCode }}</span>
                 </el-form-item>
-                <el-form-item label="门店：" prop="saleDealerName">
+                <el-form-item v-if="type !== 'all'" label="门店：" prop="saleDealerName">
                   <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
                 <el-form-item label="所属母公司：" prop="parentCompany">
@@ -151,11 +151,11 @@
                 <el-form-item label="交车时间：" prop="deliveryTime">
                   {{ form.deliveryTime }}
                 </el-form-item>
-                <el-form-item label="交车状态：" prop="deliveryStatus">
-                  <span class="status-tag link">{{ deliveryStatusLabel }}</span>
+                <el-form-item label="交车状态：" prop="deliveryStatusLabel">
+                  <span class="status-tag link">{{ form.deliveryStatusLabel }}</span>
                 </el-form-item>
-                <el-form-item label="缴定金时间：" prop="depositPaymentTime">
-                  {{ form.depositPaymentTime }}
+                <el-form-item label="缴定金时间：" prop="fundPaymentTime">
+                  {{ form.fundPaymentTime }}
                 </el-form-item>
                 <el-form-item label="商城订单编号：" prop="mallOrderCode">
                   {{ form.mallOrderCode }}
@@ -163,7 +163,7 @@
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
                 </el-form-item>
-                <el-form-item label="备注：" prop="remark">
+                <el-form-item v-if="type !== 'all'" label="备注：" prop="remark">
                   {{ form.remark }}
                 </el-form-item>
               </el-form>

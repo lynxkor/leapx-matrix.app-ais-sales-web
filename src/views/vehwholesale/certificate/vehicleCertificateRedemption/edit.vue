@@ -228,7 +228,6 @@
                     disabled
                   />
                 </el-form-item>
-
                  <el-form-item label="车辆售价：" prop="vehiclePrice">
                   <el-input
                     placeholder="请输入"
@@ -261,6 +260,23 @@
                      disabled
                   />
                 </el-form-item>
+                 <el-form-item label="使用现金金额：" prop="usedCashAmount">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.usedCashAmount"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="使用返利金额：" prop="usedRebateAmount">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.usedRebateAmount"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+
                 <el-form-item label="赊销欠款金额：" prop="creditDebtAmount">
                   <el-input
                     placeholder="请输入"
@@ -347,6 +363,12 @@
                 </el-form-item>
                 <el-form-item label="首付款金额：" prop="downPaymentAmount">
                   {{ form.downPaymentAmount }}
+                </el-form-item>
+                 <el-form-item label="使用现金金额：" prop="usedCashAmount">
+                  {{ form.usedCashAmount }}
+                </el-form-item>
+                <el-form-item label="使用返利金额：" prop="usedRebateAmount">
+                  {{ form.usedRebateAmount }}
                 </el-form-item>
                 <el-form-item label="赊销欠款金额：" prop="creditDebtAmount">
                   {{ form.creditDebtAmount }}

@@ -285,6 +285,11 @@
                         {{ row.seriesName }}
                       </el-link>
                     </template>
+                    <template v-else-if="column.property === 'modelLineName' && row.modelLineId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleModelLine/edit?id=${row.modelLineId}`" target="_blank">
+                        {{ row.modelLineName }}
+                      </el-link>
+                    </template>
                     <template v-else-if="column.property === 'yearTypeName' && row.yearTypeId">
                       <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${row.yearTypeId}`" target="_blank">
                         {{ row.yearTypeName }}
@@ -504,6 +509,11 @@ export default {
         {
           field: 'applyOrderCategoryLabel',
           title: '适用订单分类',
+          width: '120'
+        },
+        {
+          field: 'modelLineName',
+          title: '系列',
           width: '120'
         },
         {

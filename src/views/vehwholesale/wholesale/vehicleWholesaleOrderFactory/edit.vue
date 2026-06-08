@@ -19,7 +19,7 @@
         </template>
         <template #extraButtons >
           <el-button  v-if ="perquerySapAccount" size="small" :loading="querySapAccountLoading" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
-          <el-button  v-if ="perbatchConfirm && form.buttonControl && form.buttonControl.confirmManualButton" size="small" :loading="checkConfirmLoading" @click="handleCheckConfirm" >审核确认</el-button>
+          <el-button  v-if ="perbatchConfirm && form.buttonControl && form.buttonControl.confirmManualButton" size="small" :loading="checkConfirmLoading" @click="handleCheckConfirm" >批售确认</el-button>
           <el-button  v-if ="perbatchSetAutoAllocate && form.buttonControl && form.buttonControl.autoAllocateVehicle" size="small" :loading="autoVehicleAllocationLoading" @click="handleaAutoVehicleAllocation">自动配车</el-button>
           <el-button  v-if ="pervinAllocateVehicle && form.buttonControl && form.buttonControl.manualAllocateVehicle" size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
           <el-button  v-if ="perbatchCancelAllocate && form.buttonControl && form.buttonControl.cancelAllocateVehicle" size="small" :loading="cancelAllocateVehicleLoading" @click="handleCancelAllocateVehicle">取消配车</el-button>
@@ -384,6 +384,14 @@
                     disabled
                   />
                 </el-form-item>
+                <el-form-item label="商城订单号：" prop="mallOrderCode">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.mallOrderCode"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
                   <el-form-item label="配车方式：" prop="allocateWay">
                   <fetch-select
                       :request="fetchOptions"
@@ -653,6 +661,9 @@
                 <el-form-item label="零售订单号：" prop="retailOrderCode">
                   {{ form.retailOrderCode }}
                 </el-form-item>
+                <el-form-item label="商城订单号：" prop="mallOrderCode">
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehretail/orderManager/retailOrderInfo/edit?id=' + form.retailOrderId)">{{ form.mallOrderCode }}</el-button>
+                </el-form-item>
                   <el-form-item label="配车方式：" prop="allocateWayLabel">
                   {{ form.allocateWayLabel }}
                 </el-form-item>
@@ -797,7 +808,14 @@
                     disabled
                   />
                 </el-form-item>
-
+               <el-form-item label="批售价：" prop="wholesalePrice">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.wholesalePrice"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
                 <el-form-item label="开票类型：" prop="invoiceDiscountType">
                   <fetch-select
                     :request="fetchOptions"
@@ -813,14 +831,6 @@
                   <el-input
                     placeholder="请输入"
                     v-model="form.invoiceCoefficient"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="批售价：" prop="wholesalePrice">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.wholesalePrice"
                     clearable
                     disabled
                   />
@@ -899,14 +909,14 @@
                 <el-form-item label="零售价：" prop="retailPrice">
                   {{ form.retailPrice }}
                 </el-form-item>
+                <el-form-item label="批售价：" prop="wholesalePrice">
+                  {{ form.wholesalePrice }}
+                </el-form-item>
                 <el-form-item label="开票类型：" prop="invoiceDiscountTypeLabel">
                   {{ form.invoiceDiscountTypeLabel }}
                 </el-form-item>
                 <el-form-item label="开票系数：" prop="invoiceCoefficient">
                   {{ form.invoiceCoefficient }}
-                </el-form-item>
-                <el-form-item label="批售价：" prop="wholesalePrice">
-                  {{ form.wholesalePrice }}
                 </el-form-item>
                 <el-form-item label="返利使用类型：" prop="rebateUseTypeLabel">
                   {{ form.rebateUseTypeLabel }}
@@ -1010,7 +1020,7 @@
 </template>
 
 <script>
-import { batchCancleAllocateVehicleItem, getDetail, addOrUpdate, batchConfirmItem, batchSetAutoAllocateItem, batchCancelItem, vinAllocateVehicleSubmitItem, batchSettleSubmitItem, batchCancelSettleItem, vinAllocateVehicleCheckItem, querySAPAccountBalance } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import { batchCancleAllocateVehicleItem, getDetail, addOrUpdate, batchConfirmItem, batchCancelItem, vinAllocateVehicleSubmitItem, batchSettleSubmitItem, batchCancelSettleItem, vinAllocateVehicleCheckItem, querySAPAccountBalance, batchAllocateVehicleItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -1480,29 +1490,40 @@ export default {
       // }
     },
     handleaAutoVehicleAllocation () { // 自动配车
+      const data = {
+        idSet: [this.form.id],
+      };
+      batchAllocateVehicleItem(data).then(() => {
+        this.$message({
+          type: 'success',
+          message: '提交成功'
+        });
+        this.getDetailData();
+      });
+
       // const checkStatus = this.allAutoVehicleAllocation(this.form);
       // if (checkStatus) {
-      this.autoVehicleAllocationLoading = true;
-      this.$confirm('是否需要对批售订单进行自动配车?', '操作提醒', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        batchSetAutoAllocateItem({
-          ids: [this.form.id],
-          needAutoAllocateCar: 1
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '提交成功!'
-          });
-          this.getDetailData();
-        }).finally(() => {
-          this.autoVehicleAllocationLoading = false;
-        });
-      }).catch(() => {
-        this.autoVehicleAllocationLoading = false;
-      });
+      // this.autoVehicleAllocationLoading = true;
+      // this.$confirm('是否需要对批售订单进行自动配车?', '操作提醒', {
+      //   confirmButtonText: '确定',
+      //   cancelButtonText: '取消',
+      //   type: 'warning'
+      // }).then(() => {
+      //   batchSetAutoAllocateItem({
+      //     ids: [this.form.id],
+      //     needAutoAllocateCar: 1
+      //   }).then(() => {
+      //     this.$message({
+      //       type: 'success',
+      //       message: '提交成功!'
+      //     });
+      //     this.getDetailData();
+      //   }).finally(() => {
+      //     this.autoVehicleAllocationLoading = false;
+      //   });
+      // }).catch(() => {
+      //   this.autoVehicleAllocationLoading = false;
+      // });
       // }
     },
     handleManualVehicleAllocation () { // 手工配车
@@ -1510,7 +1531,7 @@ export default {
     },
     confirmVinSubmit (params, notice) {
       this.$confirm(notice, '操作提醒', {
-        confirmButtonText: '确定',
+        confirmButtonText: '确定配车',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {

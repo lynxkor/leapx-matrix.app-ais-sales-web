@@ -35,7 +35,7 @@
     </el-form-item>
     <el-form-item>
       <el-button size="small" @click="handleCancel">取消</el-button>
-      <el-button size="small" type="primary" @click="handleSubmit">提交</el-button>
+      <el-button size="small" type="primary" :loading="submitLoading" @click="handleSubmit">提交</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -72,6 +72,7 @@ export default {
     const form = this.getDefautlForm();
     return {
       options: [],
+      submitLoading: false,
       form: {
         ...form
       },
@@ -158,6 +159,7 @@ export default {
       });
     },
     handleSubmit () {
+      this.submitLoading = true;
       // 添加校验逻辑：确保每个分组都选择了值
       const allGroupsSelected = this.options.every(group => {
         return group.attributeValues.some(item =>
@@ -166,6 +168,7 @@ export default {
       });
 
       if (!allGroupsSelected) {
+        this.submitLoading = false;
         this.$message.error('请确保每个分组都选择了一个属性值');
         return;
       }
@@ -208,8 +211,11 @@ export default {
           productSkuAddOrUpdate(submitData).then(res => {
             this.$emit('submit');
           }).catch(() => {
+          }).finally(() => {
+            this.submitLoading = false;
           });
         } else {
+          this.submitLoading = false;
           this.$message.error('请检查表单输入');
         }
       });

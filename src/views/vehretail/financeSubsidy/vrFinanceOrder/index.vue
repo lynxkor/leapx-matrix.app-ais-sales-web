@@ -29,10 +29,10 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="VIN">
+      <el-form-item label="配车VIN">
         <el-input
           placeholder="请输入"
-          v-model="form.vin"
+          v-model="form.matchVin"
           clearable
         />
       </el-form-item>
@@ -83,6 +83,19 @@
             clearable
           />
         </el-form-item>
+        <el-form-item label="金融订单状态">
+          <fetch-select
+            :options="financeOrderStatusOptions"
+            v-model="form.financeOrderStatusList"
+            :valueKey="'value'"
+            :labelKey="'label'"
+            placeholder="请选择"
+            clearable
+            filterable
+            multiple
+            collapse-tags
+          />
+        </el-form-item>
       </template>
       <page-search-action
         v-if="canList"
@@ -121,7 +134,7 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList } from '@/api/vehretail/financeSubsidy/vrFinanceOrder/index';
+import { getList, getDecryptField } from '@/api/vehretail/financeSubsidy/vrFinanceOrder/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getRigion } from '@/api/common';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
@@ -134,13 +147,14 @@ const defaultForm = {
   installmentOrderCode: '',
   mallOrderCode: '',
   code: '',
-  vin: '',
+  matchVin: '',
   carOwnerName: '',
   phoneNumber: '',
   regionName: '',
   partnerName: '',
   dealerName: '',
-  basicCarModel: ''
+  basicCarModel: '',
+  financeOrderStatusList: []
 };
 
 const pageSize = 20;
@@ -169,6 +183,24 @@ export default {
       exportLoading: false,
       clickItemId: '',
       selectionList: [],
+      financeOrderStatusOptions: [
+        { label: '预审申请中', value: '0' },
+        { label: '预审审批中', value: '1' },
+        { label: '预审批通过', value: '2' },
+        { label: '预审拒绝', value: '3' },
+        { label: '分期审批中', value: '4' },
+        { label: '分期审批通过', value: '5' },
+        { label: '分期审批拒绝', value: '6' },
+        { label: '放款材料待补充', value: '7' },
+        { label: '待放款', value: '8' },
+        { label: '已放款', value: '9' },
+        { label: '放款拒绝', value: '10' },
+        { label: '订单取消', value: '11' },
+        { label: '订单退回', value: '12' },
+        { label: '待面签', value: '13' },
+        { label: '合同签署中', value: '14' },
+        { label: '客户经理变更', value: '101' }
+      ],
       optionObj: {
         id: 'vrFinanceOrderTable',
         dataList: [],
@@ -201,14 +233,15 @@ export default {
           { props: 'dealerHasCommissionLabel', label: '门店有无金融返佣', visible: true, width: 150 },
           { props: 'discountLabel', label: '是否贴息', visible: true, width: 120 },
           { props: 'financeOrderStatusLabel', label: '金融订单状态', visible: true, width: 150 },
-          { props: 'vin', label: 'VIN码', visible: true, width: 200 },
+          { props: 'vin', label: '交车VIN码', visible: true, width: 200, mask: true, getValue: (row) => getDecryptField(row.id, 'vin') },
+          { props: 'matchVin', label: '配车VIN码', visible: true, width: 200, mask: true, getValue: (row) => getDecryptField(row.id, 'matchVin') },
           { props: 'regionName', label: '所属区域和部门', visible: true, width: 180 },
           { props: 'cityName', label: '市', visible: true, width: 120 },
           { props: 'provinceName', label: '省', visible: true, width: 120 },
-          { props: 'carOwnerName', label: '车主姓名', visible: true, width: 120 },
-          { props: 'phoneNumber', label: '手机号码', visible: true, width: 150 },
+          { props: 'carOwnerName', label: '车主姓名', visible: true, width: 120, mask: true, getValue: (row) => getDecryptField(row.id, 'carOwnerName') },
+          { props: 'phoneNumber', label: '手机号码', visible: true, width: 150, mask: true, getValue: (row) => getDecryptField(row.id, 'phoneNumber') },
           { props: 'idTypeLabel', label: '证件类型', visible: true, width: 120 },
-          { props: 'idNumber', label: '身份证号', visible: true, width: 200 },
+          { props: 'idNumber', label: '身份证号', visible: true, width: 200, mask: true, getValue: (row) => getDecryptField(row.id, 'idNumber') },
           { props: 'basicCarModel', label: '基本车型', visible: true, width: 150 },
           { props: 'financeOrganizationName', label: '金融机构', visible: true, width: 150 },
           { props: 'discountScheme', label: '贴息方案', visible: true, width: 150 },
@@ -319,12 +352,21 @@ export default {
 
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
+          if (!res || !res.records) {
+            this.$message.warning('数据获取失败，请稍后重试');
+            this.optionObj.dataList = [];
+            this.optionObj.total = 0;
+            return;
+          }
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item
             };
           });
-          this.optionObj.total = res.total;
+          this.optionObj.total = res.total || 0;
+        }).catch(() => {
+          this.optionObj.dataList = [];
+          this.optionObj.total = 0;
         }).finally(() => {
           this.loading = false;
         });

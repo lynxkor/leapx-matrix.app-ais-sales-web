@@ -16,7 +16,7 @@
           <!-- <span >{{form.code}}</span> -->
         </template>
         <template #extraButtons>
-          <el-button size="small" @click="handleBatchSync">推送金融机构</el-button>
+          <el-button size="small" v-if ="persync" @click="handleBatchSync">推送金融机构</el-button>
         </template>
         <el-main>
           <section class="common-section">
@@ -290,6 +290,7 @@ export default {
       loading: false,
       submitLoading: false,
       yes_no_enum: YES_NO_ENUM,
+      persync: false,
       form: { ...form },
       defaultNewRow: {
         name: '',
@@ -331,7 +332,13 @@ export default {
   },
   mounted () {
   },
+  created () {
+    this.initPermissions();
+  },
   methods: {
+    initPermissions () {
+      this.persync = this.permissions.has(`${this.moduleKey}-sync`);
+    },
     openWindow (url) {
       window.open(url, '_blank');
     },
