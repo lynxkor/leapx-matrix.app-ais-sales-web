@@ -94,6 +94,10 @@
         <el-form-item label="制造工厂">
           <el-input placeholder="请输入" v-model="form.factory" clearable />
         </el-form-item>
+        <el-form-item label="制造工厂">
+          <fetch-select v-model="form.factoryCodeList" filterable clearable remote multiple reserve-keyword
+            placeholder="请选择" :remote-method="serchFactory" value-key="factoryCode" label-key="factoryName" />
+        </el-form-item>
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
         @reset="onReset" />
@@ -149,6 +153,7 @@ const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   createTime: '',
   warehouseCodeList: [],
+  factoryCodeList: [],
   vinLike: '',
   vinList: [],
   poLike: '',
@@ -205,6 +210,7 @@ export default {
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
       warehouseOptions: [], // 整车仓库
+      factoryOptions: [], // 整车工厂
       activeName: 'homePage',
       show: false,
       loading: false,
@@ -740,6 +746,17 @@ export default {
         targetStatus: status,
         apiFunc: enableItem,
         refreshFunc: this.getData
+      });
+    },
+    // 搜索工厂
+    async serchFactoryName (query) {
+      const res = await factoryInfoPage({ factoryName: query, page: 1, size: 20 });
+      return res?.records?.map(item => {
+        return {
+          ...item,
+          label: item.factoryName,
+          value: item.factoryCode,
+        };
       });
     },
     // 搜索仓库

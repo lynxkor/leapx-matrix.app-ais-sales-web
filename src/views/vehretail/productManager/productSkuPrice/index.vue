@@ -441,13 +441,18 @@ export default {
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
           console.log(res);
-          this.optionObj.dataList = res.records.map(item => {
+          this.optionObj.dataList = (res?.records || []).map(item => {
             return {
               ...item,
               deleteLoading: false
             };
           });
-          this.optionObj.total = res.total;
+          this.optionObj.total = res?.total || 0;
+        }).catch(err => {
+          console.error(err);
+          this.optionObj.dataList = [];
+          this.optionObj.total = 0;
+          this.$message.error('查询失败，请稍后重试');
         }).finally(() => {
           this.loading = false;
         });

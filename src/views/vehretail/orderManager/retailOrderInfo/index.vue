@@ -213,6 +213,7 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
        <el-button v-permission="moduleKey+'-perUnlock'" size="small" :disabled="selectionList.length !== 1 || (selectionList.length > 0 && selectionList[0].lockStatus === 0)" @click="handleUnlock">取消锁车</el-button>
+       <el-button v-permission="moduleKey+'-batchUnlock'" size="small" :disabled="selectionList.length === 0 || accountFlag !== false" @click="handleBatchUnlock">批量取消锁车</el-button>
        <el-button v-permission="moduleKey+'-changeSaleDealer'" size="small" @click="handleChangeDealer('sales')" :disabled="selectionList.length === 0">更换销售门店</el-button>
        <el-button v-permission="moduleKey+'-changeDeliveryDealer'" size="small" @click="handleChangeDealer('support')" :disabled="selectionList.length === 0">更换交付门店</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
@@ -635,6 +636,36 @@ export default {
         materialsCode: this.row.materialsCode,
         saleDealerCode: this.row.saleDealerCode
       }, param);
+    },
+    async handleBatchUnlock () {
+      // 1. 厂端校验
+      if (this.accountFlag !== false) {
+        this.$message.error('仅厂端可执行批量取消锁车');
+        return;
+      }
+      // 2. 批售状态校验（仅 wholesaleBindStatus === 1 可执行）
+      const invalidBind = this.selectionList.filter(item => item.wholesaleBindStatus !== 1);
+      if (invalidBind.length) {
+        this.$message.error('非批售状态不可以取消配车');
+        return;
+      }
+      // 3. 截取前 30 条，超出的从勾选状态中移除
+      if (this.selectionList.length > 30) {
+        const overflow = this.selectionList.slice(30);
+        overflow.forEach(row => {
+          if (this.$refs.tableRef && typeof this.$refs.tableRef.toggleRowSelection === 'function') {
+            this.$refs.tableRef.toggleRowSelection(row, false);
+          }
+        });
+        this.$message.warning(`已为您自动截取前 30 条订单，${overflow.length} 条未勾选订单已取消`);
+        this.selectionList = this.selectionList.slice(0, 30);
+      }
+      const list = this.selectionList;
+      // 4. 打开弹框（批量模式）
+      this.$refs.unlockDialog.show(
+        { mode: 'batch', list, materialsCode: list[0]?.materialsCode, saleDealerCode: list[0]?.saleDealerCode },
+        { factoryUnlockStatus: '1' }
+      );
     },
     loginUserGet () {
       loginUserGet().then(res => {
