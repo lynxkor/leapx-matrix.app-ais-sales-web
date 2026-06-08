@@ -242,3 +242,15 @@ export function pushDeliveryActive (data) {
 export function calculateDeliveryAmount (data) {
   return api.jsonPost(prefix + 'calculateDeliveryAmount', data);
 }
+
+/**
+ * 查看脱敏数据
+ * @param {String|Number} id 订单ID
+ * @param {String} field 需要解密的字段名
+ */
+export function getDetailDecryptField (id, field) {
+  return api.jsonPost(prefix + 'viewOrderDesensitizationData', {
+    id,
+    decryptFields: [field]
+  }).then(res => res[field]);
+}
