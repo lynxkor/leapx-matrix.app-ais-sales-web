@@ -240,3 +240,16 @@ export const orderPaymentRecordDisplayFields = [
   { key: 'paymentAmount', label: '付款金额', width: '25%' },
   { key: 'paymentTime', label: '付款时间', width: '25%' }
 ];
+
+// 门店承诺记录字段配置
+export const dealerCommitmentDisplayFields = [
+  { key: 'commitmentType', label: '承诺类型' },
+  { key: 'commitmentContent', label: '承诺内容' },
+  { key: 'commitmentDetailDesc', label: '承诺详细说明' },
+  { key: 'isOriginalLabel', label: '是否原厂' },
+  { key: 'fulfillStatusLabel', label: '兑现状态' },
+  { key: 'fulfillDesc', label: '待兑现说明' },
+  { key: 'creatorName', label: '登记人' },
+  { key: 'deliveryOrderCode', label: '交车单' },
+  { key: 'createTime', label: '创建时间' }
+];
