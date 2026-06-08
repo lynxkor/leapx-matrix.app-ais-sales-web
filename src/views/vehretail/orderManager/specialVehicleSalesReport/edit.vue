@@ -23,7 +23,7 @@
           <el-button v-if="form.status === 1" size="small" @click="handleSoldPlateInfo">添加上牌信息</el-button>
           <el-button v-if="form.status === 1" size="small" @click="openAdjustVehicleAttribute">调整车辆属性</el-button>
 <!--          <el-button v-if="form.status === 0" size="small" @click="handleAttachment">添加附件</el-button>-->
-          <el-button v-if="form.status === 0" size="small" @click="handleSubmit">提交</el-button>
+          <el-button v-if="form.status === 0" size="small" :loading="submitLoading" @click="handleSubmit">提交</el-button>
 <!--          <el-button v-if="form.status === 0" size="small" @click="handleCancel">作废</el-button>-->
 <!--          <el-button v-if="form.status === 1" size="small" @click="handleRevoke">撤回</el-button>-->
         </template>
@@ -966,6 +966,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.submitLoading = true;
         submitReport({ id: this.form.id }).then(() => {
           this.$message({
             type: 'success',
@@ -973,6 +974,8 @@ export default {
           });
           // 重新加载详情
           this.$refs.containerRef.loadDetail();
+        }).finally(() => {
+          this.submitLoading = false;
         });
       }).catch(() => {
         // 用户取消操作
