@@ -66,3 +66,15 @@ export function submitApply (data) {
 export function batchVoidedApply (data) {
   return api.jsonPost(prefix + 'batchVoided', data);
 }
+
+/**
+ * 获取详情解密字段
+ * @param {String|Number} id
+ * @param {String} field
+ */
+export function getDetailDecryptField (id, field) {
+  return api.jsonPost(prefix + 'viewOrderDesensitizationData', {
+    id,
+    decryptFields: [field]
+  }).then(res => res[field]);
+}
