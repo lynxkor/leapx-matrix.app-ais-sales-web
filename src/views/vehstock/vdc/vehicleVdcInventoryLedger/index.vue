@@ -750,7 +750,7 @@ export default {
     },
     // 搜索工厂
     async serchFactoryName (query) {
-      const res = await page({ factoryName: query, page: 1, size: 20 });
+      const res = await factoryInfoPage({ factoryName: query, page: 1, size: 20 });
       return res?.records?.map(item => {
         return {
           ...item,
