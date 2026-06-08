@@ -746,7 +746,7 @@ export default {
       });
     },
     // 搜索工厂
-    async serchFactoryName (query) {
+    async serchFactory (query) {
       const res = await factoryInfoPage({ factoryName: query, page: 1, size: 20 });
       return res?.records?.map(item => {
         return {
