@@ -13,11 +13,11 @@
         <fetch-select
             :remote-method="getDealerParentOrgListByName"
             remote
-            v-model="form.dealerCompanyNames"
+            v-model="form.dealerCompanyNamesCode"
             placeholder="请选择"
             :param="form.dealerCompanyName"
             labelKey="companyName"
-            valueKey="companyName"
+            valueKey="companyCode"
             clearable
             filterable
             multiple
@@ -266,6 +266,7 @@ export default {
               type: 'info'
             }, {
               name: '推送金融机构',
+              show: () => this.permissions.has(this.moduleKey + '-sync'),
               click: (rowIndex, row) => {
                 // 1. 校验状态是否可用
                 if (row.status !== 1) {
@@ -433,13 +434,18 @@ export default {
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
           console.log(res);
-          this.optionObj.dataList = res.records.map(item => {
+          this.optionObj.dataList = (res?.records || []).map(item => {
             return {
               ...item,
               deleteLoading: false
             };
           });
-          this.optionObj.total = res.total;
+          this.optionObj.total = res?.total || 0;
+        }).catch(err => {
+          console.error(err);
+          this.optionObj.dataList = [];
+          this.optionObj.total = 0;
+          this.$message.error('查询失败，请稍后重试');
         }).finally(() => {
           this.loading = false;
         });

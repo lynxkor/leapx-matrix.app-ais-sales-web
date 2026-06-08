@@ -656,7 +656,7 @@ export default {
       const submitData = { ...this.form };
 
       if (!id && this.isBatchEdit) {
-        let list = JSON.parse(localStorage.getItem('selectedIds'));
+        let list = JSON.parse(localStorage.getItem('selectedIds') || '[]');
         submitData.ids = list;
         txt = '是否需要批量更新！';
       } else {

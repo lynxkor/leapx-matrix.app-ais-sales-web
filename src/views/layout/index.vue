@@ -486,11 +486,23 @@ export default {
         }
       });
     },
+    getUserId () {
+      try {
+        const userInfo = localStorage.getItem('userInfo');
+        if (!userInfo) return null;
+        const parsed = JSON.parse(userInfo);
+        return parsed && parsed.userId ? parsed.userId : null;
+      } catch (e) {
+        return null;
+      }
+    },
     // 客服上下线操作
     getOnlineOperation (flag, type) {
-      // console.log({ userId: JSON.parse(localStorage.getItem('userInfo')).userId, flag });
+      // console.log({ userId: this.getUserId(), flag });
       // return;
-      getOnlineOperation({ userId: JSON.parse(localStorage.getItem('userInfo')).userId, flag: `${flag}`, type }).catch(() => {
+      const userId = this.getUserId();
+      if (!userId) return;
+      getOnlineOperation({ userId, flag: `${flag}`, type }).catch(() => {
         switch (type) {
           case 1:
             this.washSeats = !this.washSeats;
@@ -506,14 +518,20 @@ export default {
     // 客服上下线状态
     getServiceOnlineStatus () {
       if (this.resourceBtn.includes('B10307')) {
-        getServiceOnlineStatus({ userId: JSON.parse(localStorage.getItem('userInfo')).userId, type: 1 }).then(res => {
-          this.washSeats = res.userServiceOnlineStatus;
-        });
+        const userId1 = this.getUserId();
+        if (userId1) {
+          getServiceOnlineStatus({ userId: userId1, type: 1 }).then(res => {
+            this.washSeats = res.userServiceOnlineStatus;
+          });
+        }
       }
       if (this.resourceBtn.includes('B10308')) {
-        getServiceOnlineStatus({ userId: JSON.parse(localStorage.getItem('userInfo')).userId, type: 2 }).then(res => {
-          this.getBackSeats = res.userServiceFailOnlineStatus;
-        });
+        const userId2 = this.getUserId();
+        if (userId2) {
+          getServiceOnlineStatus({ userId: userId2, type: 2 }).then(res => {
+            this.getBackSeats = res.userServiceFailOnlineStatus;
+          });
+        }
       }
     },
     toHome (url) {

@@ -29,10 +29,10 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="VIN">
+      <el-form-item label="配车VIN">
         <el-input
           placeholder="请输入"
-          v-model="form.vin"
+          v-model="form.matchVin"
           clearable
         />
       </el-form-item>
@@ -147,7 +147,7 @@ const defaultForm = {
   installmentOrderCode: '',
   mallOrderCode: '',
   code: '',
-  vin: '',
+  matchVin: '',
   carOwnerName: '',
   phoneNumber: '',
   regionName: '',
@@ -233,7 +233,8 @@ export default {
           { props: 'dealerHasCommissionLabel', label: '门店有无金融返佣', visible: true, width: 150 },
           { props: 'discountLabel', label: '是否贴息', visible: true, width: 120 },
           { props: 'financeOrderStatusLabel', label: '金融订单状态', visible: true, width: 150 },
-          { props: 'vin', label: 'VIN码', visible: true, width: 200, mask: true, getValue: (row) => getDecryptField(row.id, 'vin') },
+          { props: 'vin', label: '交车VIN码', visible: true, width: 200, mask: true, getValue: (row) => getDecryptField(row.id, 'vin') },
+          { props: 'matchVin', label: '配车VIN码', visible: true, width: 200, mask: true, getValue: (row) => getDecryptField(row.id, 'matchVin') },
           { props: 'regionName', label: '所属区域和部门', visible: true, width: 180 },
           { props: 'cityName', label: '市', visible: true, width: 120 },
           { props: 'provinceName', label: '省', visible: true, width: 120 },

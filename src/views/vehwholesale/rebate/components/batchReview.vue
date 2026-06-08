@@ -81,7 +81,7 @@
          :prop="reviewform.passOrReject === 0 ? 'opinion' : ''"
       >
         <template #label>
-          <span v-html="reviewform.passOrReject === 0 ? '<span style=\'color: red\'>*</span> 初审意见' : '初审意见'"></span>
+          <span v-safe-html="reviewform.passOrReject === 0 ? '<span style=\'color: red\'>*</span> 初审意见' : '初审意见'"></span>
         </template>
         <el-input
           v-model="reviewform.opinion"

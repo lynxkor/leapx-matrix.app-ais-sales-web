@@ -1365,13 +1365,13 @@ export default {
 
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size, queryTab: this.tabName })
         .then(res => {
-          this.optionObj.dataList = res.records.map(item => {
+          this.optionObj.dataList = (res.records || []).map(item => {
             return {
               ...item,
               deleteLoading: false
             };
           });
-          this.optionObj.total = res.total;
+          this.optionObj.total = res.total || 0;
         }).finally(() => {
           this.loading = false;
         });

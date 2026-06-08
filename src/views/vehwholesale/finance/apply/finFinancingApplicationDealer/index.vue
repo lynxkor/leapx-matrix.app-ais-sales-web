@@ -9,6 +9,19 @@
       label-width="150px"
       class="ais-search-form"
     >
+     <el-form-item label="母公司编码">
+        <fetch-select
+            :remote-method="getDealerParentOrgListByCode"
+            remote
+            v-model="form.dealerCompanyCodes"
+            placeholder="请选择"
+            labelKey="companyCode"
+            valueKey="companyCode"
+            clearable
+            filterable
+            multiple
+            />
+      </el-form-item>
       <el-form-item label="母公司名称" >
           <fetch-select
             :remote-method="getDealerParentOrgListByName"
@@ -18,19 +31,6 @@
             placeholder="请选择"
             labelKey="companyName"
             valueKey="companyName"
-            clearable
-            filterable
-            multiple
-            />
-      </el-form-item>
-      <el-form-item label="母公司编码">
-        <fetch-select
-            :remote-method="getDealerParentOrgListByCode"
-            remote
-            v-model="form.dealerCompanyCodes"
-            placeholder="请选择"
-            labelKey="companyCode"
-            valueKey="companyCode"
             clearable
             filterable
             multiple
