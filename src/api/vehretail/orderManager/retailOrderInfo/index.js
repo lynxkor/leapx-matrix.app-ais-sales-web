@@ -129,7 +129,7 @@ export function autoLock (data) {
  */
 export function batchUnlock (data) {
   return api.jsonPost('vr/web/order/batchUnlock', data);
-}
+};
 
 /**
  * 获取零跑APP获取购车协议]
