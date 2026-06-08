@@ -244,18 +244,13 @@ export function calculateDeliveryAmount (data) {
 }
 
 /**
- * 查询加密数据
- * @param {String} id
- * @param {String} field
+ * 查看脱敏数据
+ * @param {String|Number} id 订单ID
+ * @param {String} field 需要解密的字段名
  */
 export function getDetailDecryptField (id, field) {
-  let param = {
+  return api.jsonPost(prefix + 'viewOrderDesensitizationData', {
     id,
     decryptFields: [field]
-  };
-  return new Promise(resolve => {
-    api.jsonPost(prefix + 'viewOrderDesensitizationData', param).then(res => {
-      resolve(res[field]);
-    });
-  });
+  }).then(res => res[field]);
 }

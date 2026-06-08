@@ -1,19 +1,23 @@
 <template>
   <el-dialog
     class="m-confirmdoc-dialog"
-    title="取消锁车"
+    :title="isBatch ? '批量取消锁车' : '取消锁车'"
     width="30%"
     :visible.sync="dialogVisible"
     @close="close"
     @closed="closed"
     :z-index="2001"
   >
+  <div v-if="isBatch" class="batch-tip">
+    <i class="el-icon-info"></i>
+    本次将对 <b>{{ batchList.length }}</b> 条订单执行取消锁车操作（仅厂端可用，最多 30 条）。
+  </div>
   <el-form size="small" ref="form" :model="form" :rules="rules" label-width="120px">
     <el-form-item label="申请原因：" prop="unlockReasonCode">
       <fetch-select
         style="width: 100%"
         v-model="form.unlockReasonCode"
-        :options="unlockReasonOptions"
+        :options="isBatch ? batchUnlockReasonOptions : unlockReasonOptions"
         placeholder="请选择"
         clearable
         filterable
@@ -85,7 +89,7 @@
 
 <script>
 
-import { perUnlock, checkBeforePerUnlock, getSysConfigParamValue } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { perUnlock, checkBeforePerUnlock, getSysConfigParamValue, batchUnlock } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import { getList } from '@/api/vehretail/basicConfig/retailOrderUnlockReasonConfig/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import MaterialsDialog from '../MaterialsDialog'; // 引入物料选择对话框
@@ -156,7 +160,9 @@ export default {
         ]
       },
       submitLoading: false,
-      unlockReasonOptions: []
+      unlockReasonOptions: [],
+      batchList: [],
+      mode: 'single'
     };
   },
   computed: {
@@ -171,6 +177,12 @@ export default {
     // 根据申请原因判断是否显示VIN号字段
     shouldShowVinField () {
       return ['DJY001', 'DJY002', 'DJY003'].includes(this.form.unlockReasonCode); // 更换同配置现车，提前交车 / 用户要求更换配置 / 用户要求更换同配置车辆
+    },
+    isBatch () {
+      return this.mode === 'batch';
+    },
+    batchUnlockReasonOptions () {
+      return (this.unlockReasonOptions || []).filter(item => item.unlockReasonCode === 'DJY099');
     }
   },
   methods: {
@@ -178,6 +190,22 @@ export default {
       this.$refs.vinDialog.show(this.vinForm, this.row);
     },
     handleUnlockReasonCodeChange (val, row) {
+      if (this.mode === 'batch') {
+        if (val !== 'DJY099') {
+          this.$message.error('批量取消锁车只支持申请原因为特殊情况');
+          this.$nextTick(() => {
+            this.form.unlockReasonCode = 'DJY099';
+          });
+          return;
+        }
+        // val === 'DJY099' 时，正常同步原因说明
+        const target = (this.unlockReasonOptions || []).find(item => item.unlockReasonCode === 'DJY099');
+        if (target) {
+          this.form.unlockReason = target.unlockReason;
+          this.form.reasonExplain = target.reasonExplain;
+        }
+        return;
+      }
       this.form.unlockReason = row.unlockReason;
       this.form.reasonExplain = row.reasonExplain;
       // 切换申请原因时，清空其他可能变化的字段
@@ -189,9 +217,13 @@ export default {
       this.form.orderUnlockFileReqList = [];
     },
     getList (params) {
-      getList({ ...params, pageNum: 1, status: 1 }).then(res => {
-        this.unlockReasonOptions = res.records;
-      }).catch(() => {
+      return new Promise((resolve) => {
+        getList({ ...params, pageNum: 1, status: 1 }).then(res => {
+          this.unlockReasonOptions = (res && res.records) || [];
+          resolve(this.unlockReasonOptions);
+        }).catch(() => {
+          resolve([]);
+        });
       });
     },
     // 显示物料选择对话框
@@ -222,52 +254,95 @@ export default {
     closed () {
       this.$refs.form.resetFields();
       this.form = { ...defaultForm };
+      this.batchList = [];
+      this.mode = 'single';
     },
     show (params, unlockReason) {
       this.dialogVisible = true;
+      this.mode = (params && params.mode) || 'single';
+      this.batchList = (params && params.list) || [];
       this.vinForm = params;
-      this.getList(unlockReason);
+      this.getList(unlockReason).then((records) => {
+        if (this.mode === 'batch') {
+          // 等待 getList 异步加载完成后再校验 DJY099 是否存在
+          const target = (records || []).find(item => item.unlockReasonCode === 'DJY099');
+          if (target) {
+            this.form.unlockReasonCode = 'DJY099';
+            this.form.unlockReason = target.unlockReason;
+            this.form.reasonExplain = target.reasonExplain;
+          } else {
+            this.$message.error('申请原因为特殊情况的配置缺失，无法执行批量取消锁车');
+            this.submitLoading = false;
+          }
+        }
+      });
     },
     submit () {
       this.$refs.form.validate(valid => {
-        if (valid) {
-          this.submitLoading = true;
-          const params = {
-            retailOrderId: this.businessId,
-            retailOrderCode: this.row.retailOrderCode,
-            unlockReasonCode: this.form.unlockReasonCode,
-            unlockReason: this.form.unlockReason,
-            materialsCode: this.form.materialsCode,
-            materialsDesc: this.form.materialsDesc,
-            orderHandleType: this.form.orderHandleType,
-            bindVin: this.form.bindVin,
-            remark: this.form.remark,
-            orderUnlockFileReqList: this.form.orderUnlockFileReqList,
-            changeProductSkuPriceId: this.form.changeProductSkuPriceId,
-          };
-          console.log('params:', params);
-          // 先调用弹框校验接口,根据返回的 transferVehicle 判断是否需要弹"调拨回原门店"提示
-          checkBeforePerUnlock(params).then(checkRes => {
-            const transferVehicle = checkRes && checkRes.transferVehicle;
-            if (transferVehicle) {
-              // 是调拨车辆,弹框询问是否需要调回原门店
-              const originalDealerName = (checkRes && checkRes.originalDealerName) || '';
-              this.$confirm(`订单车辆为自动调拨匹配，取消锁车是否自动调拨车辆回原门店（${originalDealerName}）`, '取消锁车', {
-                confirmButtonText: '调拨',
-                cancelButtonText: '不调拨',
-                type: 'warning'
-              }).then(() => {
-                this.doPerUnlock({ ...params, confirmTransferBack: true });
-              }).catch(() => {
-                this.doPerUnlock({ ...params, confirmTransferBack: false });
-              });
-            } else {
-              this.doPerUnlock(params);
-            }
-          }).catch(() => {
-            this.submitLoading = false;
-          });
+        if (!valid) return;
+        this.submitLoading = true;
+        if (this.mode === 'batch') {
+          this.doBatchUnlock();
+        } else {
+          this.doSingleUnlock();
         }
+      });
+    },
+    doSingleUnlock () {
+      const params = {
+        retailOrderId: this.businessId,
+        retailOrderCode: this.row.retailOrderCode,
+        unlockReasonCode: this.form.unlockReasonCode,
+        unlockReason: this.form.unlockReason,
+        materialsCode: this.form.materialsCode,
+        materialsDesc: this.form.materialsDesc,
+        orderHandleType: this.form.orderHandleType,
+        bindVin: this.form.bindVin,
+        remark: this.form.remark,
+        orderUnlockFileReqList: this.form.orderUnlockFileReqList,
+        changeProductSkuPriceId: this.form.changeProductSkuPriceId,
+      };
+      // 先调用弹框校验接口,根据返回的 transferVehicle 判断是否需要弹"调拨回原门店"提示
+      checkBeforePerUnlock(params).then(checkRes => {
+        const transferVehicle = checkRes && checkRes.transferVehicle;
+        if (transferVehicle) {
+          const originalDealerName = (checkRes && checkRes.originalDealerName) || '';
+          this.$confirm(`订单车辆为自动调拨匹配，取消锁车是否自动调拨车辆回原门店（${originalDealerName}）`, '取消锁车', {
+            confirmButtonText: '调拨',
+            cancelButtonText: '不调拨',
+            type: 'warning'
+          }).then(() => {
+            this.doPerUnlock({ ...params, confirmTransferBack: true });
+          }).catch(() => {
+            this.doPerUnlock({ ...params, confirmTransferBack: false });
+          });
+        } else {
+          this.doPerUnlock(params);
+        }
+      }).catch(() => {
+        this.submitLoading = false;
+      });
+    },
+    doBatchUnlock () {
+      // 批量：直接调 batchUnlock，跳过 checkBeforePerUnlock
+      const params = this.batchList.map(item => ({
+        retailOrderId: item.id,
+        retailOrderCode: item.retailOrderCode,
+        remark: this.form.remark
+      }));
+      if (!params.length) {
+        this.$message.warning('未选择任何订单');
+        this.submitLoading = false;
+        return;
+      }
+      batchUnlock(params).then(() => {
+        this.$message.success('批量取消锁车成功');
+        this.$emit('refresh');
+      }).catch(() => {
+        this.$message.error('批量取消锁车失败，请稍后重试');
+      }).finally(() => {
+        this.submitLoading = false;
+        this.close();
       });
     },
     doPerUnlock (params) {
@@ -295,5 +370,10 @@ export default {
   }
   .unification-input{
     // width: 215px;
+  }
+  .batch-tip {
+    padding: 0 20px 12px;
+    color: #E6A23C;
+    font-size: 12px;
   }
 </style>
