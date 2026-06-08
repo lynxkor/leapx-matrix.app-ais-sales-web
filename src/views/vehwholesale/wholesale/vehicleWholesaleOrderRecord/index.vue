@@ -12,19 +12,9 @@
        <el-form-item label="VIN码">
          <tag-input v-model="form.vins" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="取消配车时间">
-        <el-date-picker
-         :default-time="['00:00:00', '23:59:59']"
-          v-model="form.cancelAllocateTime"
-          type="daterange"
-          unlink-panels
-          :picker-options="pickerOptions"
-          range-separator="至"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        />
-      </el-form-item>
+         <el-form-item label="批售订单号">
+         <tag-input v-model="form.wholesaleOrderCodes" placeholder="请输入" />
+        </el-form-item>
       <el-form-item label="取消结算时间" v-show="this.visibleCount === 3 || show">
         <el-date-picker
          :default-time="['00:00:00', '23:59:59']"
@@ -39,6 +29,19 @@
         />
       </el-form-item>
       <template v-if="show">
+         <el-form-item label="取消配车时间">
+        <el-date-picker
+         :default-time="['00:00:00', '23:59:59']"
+          v-model="form.cancelAllocateTime"
+          type="daterange"
+          unlink-panels
+          :picker-options="pickerOptions"
+          range-separator="至"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        />
+      </el-form-item>
       <el-form-item label="操作类型" >
         <fetch-select
           :request="fetchOptions"
