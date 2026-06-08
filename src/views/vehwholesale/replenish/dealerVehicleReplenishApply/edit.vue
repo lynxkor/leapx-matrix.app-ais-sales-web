@@ -258,7 +258,7 @@
                   {{ form.auditStatusLabel }}
                 </el-form-item>
                 <el-form-item label="是否赊销：" prop="isCreditSale">
-                  {{ form.settleFundType === '1050' ? '是' : '否' }}
+                  {{ (form.settleFundType == 1050 || form.settleFundTypeLabel == '赊销-零跑') ? '是' : '否' }}
                 </el-form-item>
                 <el-form-item label="结算资金类型：" prop="settleFundTypeLabel">
                   {{ form.settleFundTypeLabel }}
