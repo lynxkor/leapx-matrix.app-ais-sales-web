@@ -24,6 +24,7 @@
           <el-button size="small" :loading="modifyConfigLoading" v-if="canOperateOrder && canChangeOrderMaterials && form.orderStatus === 3 && form.wholesaleBindStatus !== 1" @click="handleModifyConfiguration">修改配置</el-button>
           <el-button size="small" :loading="manualVehicleLoading" v-if="canOperateOrder && canManualLock && form.wholesaleBindStatus !== 1" @click="handleManualVehicleAllocation">手工配车</el-button>
           <el-button size="small" :loading="autoLockLoading" v-if="canOperateOrder && canAutoLock && form.wholesaleBindStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
+          <el-button size="small" :loading="unlockLoading" v-if="canPerUnlock" v-permission="moduleKey+'-perUnlock'" @click="handleUnlock">取消锁车</el-button>
           <el-button size="small" :loading="agreementLoading" v-if="canQuerySnapShot" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
           <el-button size="small" v-if="canOperateOrder && canRetailOrderRefund && !(form.orderStatus === 15 || form.orderStatus === 10 || (form.orderStatus === 7 && form.deliveryOrder && form.deliveryOrder.status === 5))" @click="handleOrderRefund">订单退订</el-button>
           <el-button size="small" :loading="changeApplyLoading" v-if="canOperateOrder && canRetailOrderChangeApply && form.orderStatus !== 10" @click="handleCarOwnerChangeApplication">购车人变更申请</el-button>
@@ -390,6 +391,13 @@
           <!-- 组件位置不要放在右侧栏组件 -->
            <!-- 修改配置对话框 -->
           <materials-dialog ref="materialsDialog" :row="form" @confirm="getDetailData" />
+          <unlock-dialog
+            ref="unlockDialog"
+            :businessId="_id"
+            :row="form"
+            :accountFlag="accountFlag"
+            @refresh="getDetailData"
+          />
           <!-- VIN 选择对话框 -->
           <vin-dialog ref="vinDialog" :row="form" @confirm="onVinSelected" :submitParams="{ retailOrderId: _id, retailOrderCode: form.retailOrderCode }" />
           <!-- 购车协议对话框 -->
@@ -435,7 +443,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, autoLock, querySnapShot, setSpecialRemark, getUnbindContractUrl, getDetailDecryptField } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getDetail, addOrUpdate, autoLock, querySnapShot, setSpecialRemark, getUnbindContractUrl, getDetailDecryptField, getOrderUnlockConfig, getSysConfigParamValue } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -474,6 +482,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import MaterialsDialog from './components/MaterialsDialog';
 import PurchaseAgreementDialog from './components/PurchaseAgreementDialog';
 import VinDialog from './components/VinDialog';
+import UnlockDialog from './components/UnlockDialog';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -534,7 +543,8 @@ export default {
     GenericDetailDisplay,
     EditPageLayout,
     EditBaseContainer,
-    FetchSelect
+    FetchSelect,
+    UnlockDialog
   },
   computed: {
     _id () {
@@ -550,6 +560,10 @@ export default {
     // 购车人信息 formData：直接指向 form.carOwner 引用，便于 LPEncrypted 解密后同步回 form
     carOwnerFormData () {
       return this.form.carOwner || {};
+    },
+    canPerUnlock () {
+      // 订单处于锁车状态（lockStatus === 1）时才显示取消锁车按钮
+      return this.form.lockStatus === 1;
     }
   },
   watch: {
@@ -591,6 +605,7 @@ export default {
       orderRefundLoading: false, // 订单退订的 loading 状态
       changeApplyLoading: false, // 购车人变更申请的 loading 状态
       qualityIssueLoading: false, // 质量问题解绑申请的 loading 状态
+      unlockLoading: false, // 取消锁车的 loading 状态
       // 权限控制
       canSetSpecialRemark: false, // 设置特殊标识
       canChangeOrderMaterials: false, // 修改配置
@@ -811,6 +826,35 @@ export default {
       }
       this.$refs.materialsDialog.show();
       this.modifyConfigLoading = false;
+    },
+    // 取消锁车
+    async handleUnlock () {
+      this.unlockLoading = true;
+      this.row = { ...this.form, id: this._id };
+      try {
+        const res = await getOrderUnlockConfig(this.row.retailOrderCode);
+        if (!res || res.allowUnlockStatus !== 1) {
+          this.$message.error('该门店暂无该车型取消锁车权限');
+          return;
+        }
+        const res1 = await getSysConfigParamValue({ paramCode: 'veretailUnlockConfigCount' });
+        const unlockConfigCount = res1?.paramValue !== null && res1?.paramValue !== undefined ? Number(res1.paramValue) : 1;
+        if (this.accountFlag && this.row.unlockCount >= unlockConfigCount) {
+          this.$message.error('该订单取消配车次数已达上限');
+          return;
+        }
+        const param = {
+          [this.accountFlag ? 'storeUnlockStatus' : 'factoryUnlockStatus']: '1'
+        };
+        this.$refs.unlockDialog.show(
+          { materialsCode: this.row.materialsCode, saleDealerCode: this.row.saleDealerCode },
+          param
+        );
+      } catch (error) {
+        this.$message.error('取消锁车失败，请稍后重试');
+      } finally {
+        this.unlockLoading = false;
+      }
     },
     // 初始化权限
     initPermissions () {
