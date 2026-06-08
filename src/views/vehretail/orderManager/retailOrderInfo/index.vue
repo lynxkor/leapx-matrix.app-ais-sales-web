@@ -213,6 +213,7 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
        <el-button v-permission="moduleKey+'-perUnlock'" size="small" :disabled="selectionList.length !== 1 || (selectionList.length > 0 && selectionList[0].lockStatus === 0)" @click="handleUnlock">取消锁车</el-button>
+       <el-button v-permission="moduleKey+'-batchUnlock'" size="small" :disabled="selectionList.length === 0 || accountFlag !== false" @click="handleBatchUnlock">批量取消锁车</el-button>
        <el-button v-permission="moduleKey+'-changeSaleDealer'" size="small" @click="handleChangeDealer('sales')" :disabled="selectionList.length === 0">更换销售门店</el-button>
        <el-button v-permission="moduleKey+'-changeDeliveryDealer'" size="small" @click="handleChangeDealer('support')" :disabled="selectionList.length === 0">更换交付门店</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
@@ -635,6 +636,20 @@ export default {
         materialsCode: this.row.materialsCode,
         saleDealerCode: this.row.saleDealerCode
       }, param);
+    },
+    async handleBatchUnlock () {
+      // 1. 厂端校验
+      if (this.accountFlag !== false) {
+        this.$message.error('仅厂端可执行批量取消锁车');
+        return;
+      }
+      // 2. 截取前 30 条
+      const list = this.selectionList.slice(0, 30);
+      // 3. 打开弹框（批量模式）
+      this.$refs.unlockDialog.show(
+        { mode: 'batch', list, materialsCode: list[0]?.materialsCode, saleDealerCode: list[0]?.saleDealerCode },
+        { factoryUnlockStatus: '1' }
+      );
     },
     loginUserGet () {
       loginUserGet().then(res => {
