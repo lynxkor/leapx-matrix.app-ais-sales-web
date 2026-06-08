@@ -68,18 +68,13 @@ export function batchVoidedApply (data) {
 }
 
 /**
- * 查询加密数据
- * @param {String} id
+ * 获取详情解密字段
+ * @param {String|Number} id
  * @param {String} field
  */
 export function getDetailDecryptField (id, field) {
-  let param = {
+  return api.jsonPost(prefix + 'viewOrderDesensitizationData', {
     id,
     decryptFields: [field]
-  };
-  return new Promise(resolve => {
-    api.jsonPost(prefix + 'viewOrderDesensitizationData', param).then(res => {
-      resolve(res[field]);
-    });
-  });
+  }).then(res => res[field]);
 }
