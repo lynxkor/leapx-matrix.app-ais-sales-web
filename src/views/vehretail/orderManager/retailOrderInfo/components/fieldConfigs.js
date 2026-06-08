@@ -243,6 +243,13 @@ export const orderPaymentRecordDisplayFields = [
 
 // 门店承诺记录字段配置
 export const dealerCommitmentDisplayFields = [
+  {
+    key: 'id',
+    label: '承诺结果编号',
+    encrypted: true,
+    link: '/sales/vehretail/orderManager/dealerCommitmentRecord/edit',
+    paramKey: 'id'
+  },
   { key: 'commitmentType', label: '承诺类型' },
   { key: 'commitmentContent', label: '承诺内容' },
   { key: 'commitmentDetailDesc', label: '承诺详细说明' },

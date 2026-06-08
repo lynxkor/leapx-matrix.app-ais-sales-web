@@ -473,7 +473,7 @@ import {
   orderPaymentRecordDisplayFields,
   dealerCommitmentDisplayFields
 } from './components/fieldConfigs'; // 引入字段配置
-import ComponentTable from './components/ComponentTable';
+import ComponentTable from '@/libs/components/ComponentTable';
 import GenericDetailDisplay from './components/GenericDetailDisplay';
 import NavTop from './components/NavTop';
 import { getEnum, loginUserGet, engineerList } from '@/libs/api/common';
@@ -999,7 +999,13 @@ export default {
       return displayFields.map(field => ({
         field: field.key,
         title: field.label,
-        width: field.label || 150 // 默认宽度，可根据需要调整
+        width: field.label || 150, // 默认宽度，可根据需要调整
+        // 透传跳转相关字段，ComponentTable 据此渲染可点击的链接
+        link: field.link,
+        paramKey: field.paramKey,
+        paramName: field.paramName,
+        target: field.target,
+        encrypted: field.encrypted
       }));
     },
     getDetailData () {
