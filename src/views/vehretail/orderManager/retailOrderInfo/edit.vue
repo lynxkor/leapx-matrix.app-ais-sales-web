@@ -391,13 +391,6 @@
           <!-- 组件位置不要放在右侧栏组件 -->
            <!-- 修改配置对话框 -->
           <materials-dialog ref="materialsDialog" :row="form" @confirm="getDetailData" />
-          <unlock-dialog
-            ref="unlockDialog"
-            :businessId="_id"
-            :row="form"
-            :accountFlag="accountFlag"
-            @refresh="getDetailData"
-          />
           <!-- VIN 选择对话框 -->
           <vin-dialog ref="vinDialog" :row="form" @confirm="onVinSelected" :submitParams="{ retailOrderId: _id, retailOrderCode: form.retailOrderCode }" />
           <!-- 购车协议对话框 -->
@@ -414,6 +407,13 @@
         <!-- 右侧栏组件，自行开发 -->
       </div>
     </template>
+    <unlock-dialog
+      ref="unlockDialog"
+      :businessId="_id"
+      :row="form"
+      :accountFlag="accountFlag"
+      @refresh="getDetailData"
+    />
 
     <!-- 设置特殊备注 -->
     <el-dialog
@@ -832,6 +832,10 @@ export default {
       this.unlockLoading = true;
       this.row = { ...this.form, id: this._id };
       try {
+        if (this.form.wholesaleBindStatus !== 1) {
+          this.$message.error('非批售状态不可以取消配车');
+          return;
+        }
         const res = await getOrderUnlockConfig(this.row.retailOrderCode);
         if (!res || res.allowUnlockStatus !== 1) {
           this.$message.error('该门店暂无该车型取消锁车权限');
