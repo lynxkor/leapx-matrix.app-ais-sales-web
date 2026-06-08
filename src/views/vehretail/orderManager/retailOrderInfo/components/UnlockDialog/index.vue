@@ -8,7 +8,7 @@
     @closed="closed"
     :z-index="2001"
   >
-  <div v-if="isBatch" class="batch-tip" style="padding: 0 20px 12px; color: #E6A23C; font-size: 12px;">
+  <div v-if="isBatch" class="batch-tip">
     <i class="el-icon-info"></i>
     本次将对 <b>{{ batchList.length }}</b> 条订单执行取消锁车操作（仅厂端可用，最多 30 条）。
   </div>
@@ -190,11 +190,20 @@ export default {
       this.$refs.vinDialog.show(this.vinForm, this.row);
     },
     handleUnlockReasonCodeChange (val, row) {
-      if (this.mode === 'batch' && val !== 'DJY099') {
-        this.$message.error('批量取消锁车只支持申请原因为特殊情况');
-        this.$nextTick(() => {
-          this.form.unlockReasonCode = 'DJY099';
-        });
+      if (this.mode === 'batch') {
+        if (val !== 'DJY099') {
+          this.$message.error('批量取消锁车只支持申请原因为特殊情况');
+          this.$nextTick(() => {
+            this.form.unlockReasonCode = 'DJY099';
+          });
+          return;
+        }
+        // val === 'DJY099' 时，正常同步原因说明
+        const target = (this.unlockReasonOptions || []).find(item => item.unlockReasonCode === 'DJY099');
+        if (target) {
+          this.form.unlockReason = target.unlockReason;
+          this.form.reasonExplain = target.reasonExplain;
+        }
         return;
       }
       this.form.unlockReason = row.unlockReason;
@@ -253,7 +262,16 @@ export default {
       if (this.mode === 'batch') {
         // 批量模式强制默认申请原因为 DJY099
         this.$nextTick(() => {
-          this.form.unlockReasonCode = 'DJY099';
+          // 等待 unlockReasonOptions 异步加载后再校验 DJY099 是否存在
+          const target = (this.unlockReasonOptions || []).find(item => item.unlockReasonCode === 'DJY099');
+          if (target) {
+            this.form.unlockReasonCode = 'DJY099';
+            this.form.unlockReason = target.unlockReason;
+            this.form.reasonExplain = target.reasonExplain;
+          } else {
+            this.$message.error('申请原因为特殊情况的配置缺失，无法执行批量取消锁车');
+            this.submitLoading = false;
+          }
         });
       }
     },
@@ -350,5 +368,10 @@ export default {
   }
   .unification-input{
     // width: 215px;
+  }
+  .batch-tip {
+    padding: 0 20px 12px;
+    color: #E6A23C;
+    font-size: 12px;
   }
 </style>
