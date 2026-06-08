@@ -217,9 +217,13 @@ export default {
       this.form.orderUnlockFileReqList = [];
     },
     getList (params) {
-      getList({ ...params, pageNum: 1, status: 1 }).then(res => {
-        this.unlockReasonOptions = res.records;
-      }).catch(() => {
+      return new Promise((resolve) => {
+        getList({ ...params, pageNum: 1, status: 1 }).then(res => {
+          this.unlockReasonOptions = (res && res.records) || [];
+          resolve(this.unlockReasonOptions);
+        }).catch(() => {
+          resolve([]);
+        });
       });
     },
     // 显示物料选择对话框
@@ -258,12 +262,10 @@ export default {
       this.mode = (params && params.mode) || 'single';
       this.batchList = (params && params.list) || [];
       this.vinForm = params;
-      this.getList(unlockReason);
-      if (this.mode === 'batch') {
-        // 批量模式强制默认申请原因为 DJY099
-        this.$nextTick(() => {
-          // 等待 unlockReasonOptions 异步加载后再校验 DJY099 是否存在
-          const target = (this.unlockReasonOptions || []).find(item => item.unlockReasonCode === 'DJY099');
+      this.getList(unlockReason).then((records) => {
+        if (this.mode === 'batch') {
+          // 等待 getList 异步加载完成后再校验 DJY099 是否存在
+          const target = (records || []).find(item => item.unlockReasonCode === 'DJY099');
           if (target) {
             this.form.unlockReasonCode = 'DJY099';
             this.form.unlockReason = target.unlockReason;
@@ -272,8 +274,8 @@ export default {
             this.$message.error('申请原因为特殊情况的配置缺失，无法执行批量取消锁车');
             this.submitLoading = false;
           }
-        });
-      }
+        }
+      });
     },
     submit () {
       this.$refs.form.validate(valid => {
