@@ -1,5 +1,4 @@
 <template>
-  <!-- TIPS: 如果填写项大于15项，使用类名page-common-edit替换page-common-add -->
   <div class="page-common-add">
     <el-container>
       <el-main>
@@ -8,8 +7,6 @@
             <h2>基础信息</h2>
           </div>
           <div class="common-section-body">
-            <!-- TIPS: 如果填写项大于15项，加上 :inline="true" -->
-            <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
             <el-form :model="form" :rules="rules" ref="ruleForm" label-width="150px">
               <el-form-item label="调整前配额数" prop="quotaQty">
                 <el-input-number
@@ -61,38 +58,67 @@
       <el-footer height="60px">
         <el-button size="small" @click="handleBack">取消</el-button>
         <el-button size="small" v-permission="'AISVW-wholesaleDealerTestDriveQuota-updateTestDriveQuota'" type="primary" @click="submitForm('ruleForm')" :loading="submitLoading">保存</el-button>
-        <!-- <el-button size="small" @click="handleJumpAuditLog">审核日志</el-button> -->
       </el-footer>
     </el-container>
   </div>
 </template>
 
 <script>
-import { getDetail, updateTestDriveQuota } from '@/api/vehwholesale/basic/wholesaleDealerTestDriveQuota/index';
-import { getEnum } from '@/api/common';
-import { YES_NO_ENUM } from '@/libs/constants';
+import { updateTestDriveQuota } from '@/api/vehwholesale/basic/wholesaleDealerTestDriveQuota/index';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 
 const defaultForm = {
-  // 多选时字段有变化，自行修复
   changeAfterQty: '',
   changeQty: '',
   changeDescs: '',
   changeDescFileId: '',
   id: '',
   requestQty: '',
+  quotaQty: 0, // 调整前配额数量
+  dealerCode: '',
+  vehicleYearTypeId: '',
+  vehicleModelLineId: '',
+  seriesId: '',
+  dealerName: ''
 };
 
 export default {
-  name: 'dealerDemoVehicleQuotaRecordEdit',
-  // 集中视图预留
+  name: 'QuotaEdit',
   props: {
     id: {
       type: [String, Number],
       default: null
+    },
+    initialQuotaQty: {
+      type: Number,
+      default: 0
+    },
+    initialRequestQty: {
+      type: Number,
+      default: 0
+    },
+    initialDealerCode: {
+      type: String,
+      default: ''
+    },
+    initialDealerName: {
+      type: String,
+      default: ''
+    },
+    initialVehicleYearTypeId: {
+      type: String,
+      default: ''
+    },
+    initialVehicleModelLineId: {
+      type: String,
+      default: ''
+    },
+    initialSeriesId: {
+      type: String,
+      default: ''
     }
   },
   components: {
@@ -100,61 +126,61 @@ export default {
   },
   computed: {
     _id () {
-      return this.id || this.form.id || this.$route.query.id;
+      return this.id || this.form.id;
     }
   },
   mixins: [routeGuard, permissions, commonMixins],
   data () {
-    const form = this.getDefautlForm();
     return {
-      pageTitle: '门店试驾车配额调整记录',
+      pageTitle: '门店试驾车配额调整',
       pageType: 'edit',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
       moduleKey: 'AISVW-dealerDemoVehicleQuotaRecord',
       loading: false,
       submitLoading: false,
-      yes_no_enum: YES_NO_ENUM,
-      form: { ...form },
-      originalForm: { ...form },
+      form: { ...defaultForm },
+      originalForm: { ...defaultForm },
       rules: {
-        changeBeforeQty: [
-          { required: true, message: '请输入变化前数量', trigger: 'blur' }
-        ],
         changeAfterQty: [
-          { required: true, message: '请输入变化后数量', trigger: 'blur' }
+          { required: true, message: '请输入变化后数量', trigger: 'blur' },
+          { type: 'number', min: 0, message: '数量必须大于等于0', trigger: 'blur' }
         ],
+        changeDescs: [
+          { required: true, message: '请输入调整说明', trigger: 'blur' }
+        ]
       }
     };
   },
   mounted () {
-    this.getDetailData();
+    this.initializeFormData();
   },
   methods: {
-    // 打开侧边栏
-    openPane () {
-      this.$refs.editLayout.openPane();
-    },
     handleBack () {
-      this.$router.back();
+      this.$emit('close');
     },
-    getDetailData () {
-      const id = this.id || this.$route.query.id;
-      this.$store.commit('SET_ACTIVE_BREADCRUMB', ['门店试驾车配额调整记录', `${id ? '编辑' : '新建'}`]);
-      if (id) {
-        getDetail(id).then(res => {
-          this.loading = false;
-          Object.assign(this.form, res);
-          Object.assign(this.originalForm, res);
-        });
-      }
+    initializeFormData () {
+      // 使用props传入的数据初始化表单
+      this.form = {
+        ...this.form,
+        id: this.id,
+        quotaQty: this.initialQuotaQty || 0,
+        requestQty: this.initialRequestQty || 0,
+        changeAfterQty: this.initialQuotaQty || 0, // 默认调整后配额等于调整前配额
+        dealerCode: this.initialDealerCode,
+        dealerName: this.initialDealerName,
+        vehicleYearTypeId: this.initialVehicleYearTypeId,
+        vehicleModelLineId: this.initialVehicleModelLineId,
+        seriesId: this.initialSeriesId
+      };
+
+      // 同步到原始表单
+      Object.assign(this.originalForm, this.form);
     },
-    submitForm (formName, rest = false) {
+    submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.submitLoading = true;
           const files = this.$refs.attachment.getAttachment();
           const fileData = files[0];
-          console.log('fileData', fileData);
           const fileDto = (fileData) ? {
             fileId: fileData.fileId,
             fileName: fileData.fileName,
@@ -164,64 +190,31 @@ export default {
             attachType: '配额调整说明',
             configCode: 'dealer_demo_vehicle_quota_record'
           } : null;
+
           const submitForm = {
             changeAfterQty: this.form.changeAfterQty,
             changeDesc: this.form.changeDescs,
             changeDescFileId: this.form.changeDescFileId,
-            changeBeforeQty: this.form.quotaQty,
+            changeBeforeQty: this.form.quotaQty, // 调整前配额
             relatedId: this._id,
             dealerCode: this.form.dealerCode,
+            dealerName: this.form.dealerName,
             vehicleYearTypeId: this.form.vehicleYearTypeId,
             vehicleModelLineId: this.form.vehicleModelLineId,
             seriesId: this.form.seriesId,
             file: fileDto
           };
+
           updateTestDriveQuota(submitForm).then(res => {
-            this.$message({
-              message: '保存成功',
-              type: 'success'
-            });
-            const id = this.$route.query.id;
-            if (rest || !id) {
-              this.resetForm(formName);
-            } else {
-              this.getDetailData();
-            }
+            this.$message.success('保存成功');
+            this.$emit('close');
+          }).catch(error => {
+            this.$message.error(error.message || '保存失败');
           }).finally(() => {
             this.submitLoading = false;
           });
         }
       });
-    },
-    resetForm (formName) {
-      this.$refs[formName].resetFields();
-      this.tableData = [];
-      this.form = this.getDefautlForm();
-    },
-    getDefautlForm () {
-      // TIPS: 此处可添加表单默认值，如当前用户信息等
-      // const userInfo = this.$store.state.user.userInfo;
-      return {
-        ...defaultForm,
-        changeBeforeQty: defaultForm.quotaQty,
-        // ownerId: userInfo.userId,
-        // ownerName: userInfo.userName,
-      };
-    },
-    // handleJumpAuditLog () {
-    //   this.$router.push({
-    //     path: '/xxx/auditLog',
-    //     query: {
-    //       tableCode: '',
-    //       tableId: ''
-    //     }
-    //   });
-    // },
-    async fetchOptions (code) {
-      if (code) {
-        return getEnum(code);
-      }
-      return [];
     }
   }
 };
