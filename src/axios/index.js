@@ -84,12 +84,20 @@ const responseInterceptors = (instance, forbidToast) => {
     }
   },
   error => {
-    const flag = NEED_DECRYPT(error.config.url);
+    const flag = NEED_DECRYPT(error.config?.url);
 
     const response = error.response;
+    if (!response) {
+      !forbidToast && Message({
+        message: '网络异常，请检查网络连接',
+        type: 'error',
+        duration: 3000
+      });
+      return Promise.reject(error);
+    }
     response.data = flag ? decrypt(response.data) : response.data;
 
-    if (response && response.status === 401) {
+    if (response.status === 401) {
       store.commit('USER_SIGN_OUT');
       return Promise.reject(response.data);
     } else if (response && (response.status === 403 || response.status === 405)) {
