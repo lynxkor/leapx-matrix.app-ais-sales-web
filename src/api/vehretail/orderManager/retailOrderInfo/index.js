@@ -124,6 +124,14 @@ export function autoLock (data) {
 };
 
 /**
+ * 批量取消锁车
+ * @param {Array<{retailOrderId:string,retailOrderCode:string,remark:string}>} data
+ */
+export function batchUnlock (data) {
+  return api.jsonPost('vr/web/order/batchUnlock', data);
+}
+
+/**
  * 获取零跑APP获取购车协议]
  * @param {Object} data
  */
