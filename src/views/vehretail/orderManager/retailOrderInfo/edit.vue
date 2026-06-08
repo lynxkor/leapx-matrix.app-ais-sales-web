@@ -453,6 +453,7 @@ import { getList as orderUnlockApplyList } from '@/api/vehretail/orderManager/or
 import { getList as orderLockRecordList } from '@/api/vehretail/orderManager/orderLockRecord/index';
 import { getList as refundApplyList } from '@/api/vehretail/orderRefund/refundApply/index';
 import { getList as orderPayRecordList } from '@/api/vehretail/orderManager/orderPayRecord/index';
+import { getList as dealerCommitmentList } from '@/api/vehretail/orderManager/dealerCommitmentRecord/index';
 import {
   retailOrderDisplayFields,
   carOwnerDisplayFields,
@@ -469,9 +470,10 @@ import {
   lockCarRecordDisplayFields,
   orderTransparencyTrackingDisplayFields,
   orderCancellationRecordDisplayFields,
-  orderPaymentRecordDisplayFields
+  orderPaymentRecordDisplayFields,
+  dealerCommitmentDisplayFields
 } from './components/fieldConfigs'; // 引入字段配置
-import ComponentTable from './components/ComponentTable';
+import ComponentTable from '@/libs/components/ComponentTable';
 import GenericDetailDisplay from './components/GenericDetailDisplay';
 import NavTop from './components/NavTop';
 import { getEnum, loginUserGet, engineerList } from '@/libs/api/common';
@@ -704,6 +706,13 @@ export default {
           sectionId: 'order-pay-record',
           columns: this.convertToTableColumns(orderPaymentRecordDisplayFields),
           apiMethod: orderPayRecordList // 后续引入 API 方法
+        },
+        {
+          title: '门店承诺记录',
+          // field: 'dealerCommitmentList',
+          sectionId: 'dealer-commitment-record',
+          columns: this.convertToTableColumns(dealerCommitmentDisplayFields),
+          apiMethod: dealerCommitmentList
         }
       ],
       navItems: [
@@ -724,7 +733,8 @@ export default {
         { id: 'lock-car-record', title: '锁车记录', href: '#lock-car-record' },
         { id: 'order-transparency-tracking', title: '订单透明化状态跟踪', href: '#order-transparency-tracking' },
         { id: 'order-cancellation-record', title: '订单退订记录', href: '#order-cancellation-record' },
-        { id: 'order-pay-record', title: '订单收款记录', href: '#order-pay-record' }
+        { id: 'order-pay-record', title: '订单收款记录', href: '#order-pay-record' },
+        { id: 'dealer-commitment-record', title: '门店承诺记录', href: '#dealer-commitment-record' }
       ],
       activeSection: 'basic-info',
       isNavCollapsed: false,
@@ -767,6 +777,7 @@ export default {
   },
   methods: {
     orderPayRecordList,
+    dealerCommitmentList,
     refundApplyList,
     orderLockRecordList,
     orderUnlockApplyList,
@@ -988,7 +999,13 @@ export default {
       return displayFields.map(field => ({
         field: field.key,
         title: field.label,
-        width: field.label || 150 // 默认宽度，可根据需要调整
+        width: field.label || 150, // 默认宽度，可根据需要调整
+        // 透传跳转相关字段，ComponentTable 据此渲染可点击的链接
+        link: field.link,
+        paramKey: field.paramKey,
+        paramName: field.paramName,
+        target: field.target,
+        encrypted: field.encrypted
       }));
     },
     getDetailData () {

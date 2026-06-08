@@ -92,9 +92,6 @@
           <el-input v-model.number="form.stockAgeLe" placeholder="请输入" type="number" style="width: 100%" @blur="handleStockAgeLeBlur" />
         </el-form-item>
         <el-form-item label="制造工厂">
-          <el-input placeholder="请输入" v-model="form.factory" clearable />
-        </el-form-item>
-        <el-form-item label="制造工厂">
           <fetch-select v-model="form.factoryCodeList" filterable clearable remote multiple reserve-keyword
             placeholder="请选择" :remote-method="serchFactory" value-key="factoryCode" label-key="factoryName" />
         </el-form-item>
@@ -139,7 +136,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/vdc/vehicleVdcInventoryLedger/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleSalesVersionList, page } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleSalesVersionList, page, factoryInfoPage } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -749,7 +746,7 @@ export default {
       });
     },
     // 搜索工厂
-    async serchFactoryName (query) {
+    async serchFactory (query) {
       const res = await factoryInfoPage({ factoryName: query, page: 1, size: 20 });
       return res?.records?.map(item => {
         return {
