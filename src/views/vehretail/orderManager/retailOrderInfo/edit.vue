@@ -847,10 +847,11 @@ export default {
           [this.accountFlag ? 'storeUnlockStatus' : 'factoryUnlockStatus']: '1'
         };
         this.$refs.unlockDialog.show(
-          { materialsCode: this.row.materialsCode, saleDealerCode: this.row.saleDealerCode },
+          { materialsCode: this.form.materials.materialsCode, saleDealerCode: this.row.saleDealerCode },
           param
         );
       } catch (error) {
+        console.error('handleUnlock failed', error);
         this.$message.error('取消锁车失败，请稍后重试');
       } finally {
         this.unlockLoading = false;
