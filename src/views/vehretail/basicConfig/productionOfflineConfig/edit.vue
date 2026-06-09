@@ -179,7 +179,7 @@
                 <el-form-item label="备注：" prop="remark">
                   {{ form.remark }}
                 </el-form-item>
-                <el-form-item label="状态 0-禁用;1-启用：" prop="status">
+                <el-form-item label="状态：" prop="status">
                   <span :class="['status-tag', form.status === 1 ? 'primary' : 'danger']">{{ form.statusLabel }}</span>
                 </el-form-item>
               </el-form>
@@ -313,7 +313,7 @@ export default {
       options: {},
       rules: {
         status: [
-          { required: true, message: '请选择状态 0-禁用;1-启用', trigger: 'change' },
+          { required: true, message: '请选择状态', trigger: 'change' },
         ],
         modelName: [
           { required: true, message: '请输入车型', trigger: 'change' },
