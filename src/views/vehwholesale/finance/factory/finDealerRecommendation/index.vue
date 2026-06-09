@@ -9,21 +9,7 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="母公司名称">
-        <fetch-select
-            :remote-method="getDealerParentOrgListByName"
-            remote
-            v-model="form.dealerCompanyNamesCode"
-            placeholder="请选择"
-            :param="form.dealerCompanyName"
-            labelKey="companyName"
-            valueKey="companyCode"
-            clearable
-            filterable
-            multiple
-            />
-      </el-form-item>
-      <el-form-item label="母公司编码">
+    <el-form-item label="母公司编码">
          <fetch-select
             :remote-method="getDealerParentOrgListByCode"
             remote
@@ -36,6 +22,20 @@
             multiple
             />
         </el-form-item>
+      <el-form-item label="母公司名称">
+        <fetch-select
+            :remote-method="getDealerParentOrgListByName"
+            remote
+            v-model="form.dealerCompanyCodesByNames"
+            placeholder="请选择"
+            :param="form.dealerCompanyName"
+            labelKey="companyName"
+            valueKey="companyCode"
+            clearable
+            filterable
+            multiple
+            />
+      </el-form-item>
         <el-form-item label="推荐金融机构" v-show="this.visibleCount === 3 || show">
          <fetch-select
             :remote-method="repairItemSearch"

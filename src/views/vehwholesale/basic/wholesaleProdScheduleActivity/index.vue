@@ -12,7 +12,7 @@
           :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
           start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
-      <el-form-item label="是否锁零售单" v-show="this.visibleCount === 3 || show">
+      <el-form-item label="允许锁零售单" v-show="this.visibleCount === 3 || show">
         <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.allowLockRetail" placeholder="请选择"
           clearable filterable />
       </el-form-item>
@@ -183,7 +183,7 @@ export default {
           { props: 'activityName', label: '活动名称', visible: true, width: 200 },
           { props: 'needAutoAllocateCarLabel', label: '是否需要自动配车', visible: true, width: 160 },
           { props: 'deliveryWayLabel', label: '指定发运方式', visible: true, width: 140 },
-          { props: 'allowLockRetailLabel', label: '是否锁零售单', visible: true, width: 140 },
+          { props: 'allowLockRetailLabel', label: '允许锁零售单', visible: true, width: 140 },
           { props: 'totalQuotaQty', label: '额度数量', visible: true, width: 100, align: 'right' },
           { props: 'usedQuotaQty', label: '已提报数量', visible: true, width: 100, align: 'right' },
           { props: 'startTime', label: '开始日期', visible: true, width: 160 },
