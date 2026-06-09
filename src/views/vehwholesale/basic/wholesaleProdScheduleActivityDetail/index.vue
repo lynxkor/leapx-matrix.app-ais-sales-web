@@ -78,7 +78,7 @@
         <el-form-item label="物料编码">
           <tag-input v-model="form.materialsCodes" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="是否锁零售单">
+        <el-form-item label="允许锁零售单">
           <fetch-select
             :request="fetchOptions"
             enumCode="BooleanEnum"
@@ -242,7 +242,7 @@ export default {
             }]
           },
           { props: 'deliveryWayLabel', label: '指定发运方式', visible: true, width: 140 },
-          { props: 'allowLockRetailLabel', label: '是否锁零售单', visible: true, width: 140 },
+          { props: 'allowLockRetailLabel', label: '允许锁零售单', visible: true, width: 140 },
           { props: 'startTime', label: '开始日期', visible: true, width: 160 },
           { props: 'endTime', label: '截止日期', visible: true, width: 160 },
           {

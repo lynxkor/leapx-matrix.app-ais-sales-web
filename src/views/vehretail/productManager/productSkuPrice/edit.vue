@@ -10,6 +10,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
+        :dataTransform="dataTransform"
       >
         <template #status>
           <!-- 支持primary,warning,success,danger等状态 -->
@@ -152,16 +153,16 @@
                   {{ form.purchaseTypeLabel }}
                 </el-form-item>
                 <el-form-item label="补贴前价格：">
-                  {{ form.priceBeforeSubsidy }}
+                  {{ formatMoney(form.priceBeforeSubsidy) }}
                 </el-form-item>
                 <el-form-item label="补贴金额：">
-                  {{ form.subsidyAmount }}
+                  {{ formatMoney(form.subsidyAmount) }}
                 </el-form-item>
                 <el-form-item label="补贴后价格：">
-                  {{ form.priceAfterSubsidy }}
+                  {{ formatMoney(form.priceAfterSubsidy) }}
                 </el-form-item>
                 <el-form-item label="定金：">
-                  {{ form.deposit }}
+                  {{ formatMoney(form.deposit) }}
                 </el-form-item>
                 <el-form-item label="允许改配：">
                   {{ form.allowConfigChangeLabel }}
@@ -403,6 +404,26 @@ export default {
       } else {
         this.form.priceAfterSubsidy = null;
       }
+    },
+    // 详情接口数据归一化:金额字段统一转为 number,便于后续计算与展示
+    dataTransform (data) {
+      const moneyFields = ['priceBeforeSubsidy', 'subsidyAmount', 'priceAfterSubsidy', 'deposit'];
+      const result = { ...data };
+      moneyFields.forEach((key) => {
+        if (result[key] === '' || result[key] === null || result[key] === undefined) {
+          result[key] = 0;
+        } else {
+          const num = Number(result[key]);
+          result[key] = Number.isNaN(num) ? 0 : num;
+        }
+      });
+      return result;
+    },
+    // 金额格式化:始终保留两位小数,字符串/数字都安全
+    formatMoney (val) {
+      if (val === '' || val === null || val === undefined) return '0.00';
+      const num = Number(val);
+      return Number.isNaN(num) ? '0.00' : num.toFixed(2);
     },
     getDefautlForm () {
       return {

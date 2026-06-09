@@ -373,7 +373,7 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <ButtonGroup collapse-direction="left" size="small" class="ais-button-group">
-        <el-button v-permission="moduleKey+'-batchConfirm'" size="small" :disabled="selectionList.length === 0" @click="handleBatchConfirm">确认</el-button>
+        <el-button v-permission="moduleKey+'-batchConfirm'" size="small" :disabled="selectionList.length === 0" @click="handleBatchConfirm">批售确认</el-button>
         <el-button v-permission="moduleKey+'-batchAllocateVehicle'" size="small" :disabled="selectionList.length === 0" @click="handleBatchAllocateVehicle">配车</el-button>
         <el-button v-permission="moduleKey+'-batchSettleSubmit'"  size="small" :disabled="selectionList.length === 0" @click="handleBatchSettleSubmit">结算</el-button>
         <el-button v-permission="moduleKey+'-batchCancelSettle'" :disabled="selectionList.length === 0" @click="handleBatchCancelSettle">取消结算</el-button>

@@ -61,9 +61,9 @@
           clearable
           remote
           multiple
-          v-model="form.mainDealerCompanyNames"
+          v-model="form.dealerCompanyCodesByNames"
           :remote-method="getDealerParentOrgListByName"
-          value-key="companyName"
+          value-key="companyCode"
           label-key="companyName"
         />
       </el-form-item>

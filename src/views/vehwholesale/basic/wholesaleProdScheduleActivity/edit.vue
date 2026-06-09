@@ -59,7 +59,7 @@
                       :precision="0"
                     />
                 </el-form-item>
-                 <el-form-item label="是否锁零售单：" prop="allowLockRetail">
+                 <el-form-item label="允许锁零售单：" prop="allowLockRetail">
                   <fetch-select
                       :request="fetchOptions"
                       enumCode="BooleanEnum"
@@ -202,7 +202,7 @@
                  <el-form-item label="额度数量：" prop="totalQuotaQty">
                   {{ form.totalQuotaQty }}
                 </el-form-item>
-                 <el-form-item label="是否锁零售单：" prop="allowLockRetailLabel">
+                 <el-form-item label="允许锁零售单：" prop="allowLockRetailLabel">
                   {{ form.allowLockRetailLabel }}
                 </el-form-item>
                   <el-form-item label="是否需要自动配车：" prop="needAutoAllocateCarLabel">

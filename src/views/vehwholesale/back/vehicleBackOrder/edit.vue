@@ -208,45 +208,38 @@
             </div>
                <div class="common-section-body">
               <div class="common-section-table">
-                <vxe-table
-                  ref="workTable"
-                  :data="form.details"
-                  stripe
-                  show-overflow
-                  resizable
-                  border="inner"
+                 <edit-table
+                  ref="editTable"
+                  :columns="columns"
+                  :data="tableData"
+                  :defaultNewRow="defaultNewRow"
+                  :show-toolbar="false"
+                  :show-pagination="true"
+                  :enable-single-row-save="true"
+                  :options="options"
+                  :current="pageNum"
+                  :pageSize="pageSize"
+                  :total="total"
+                  @save-row-edit="saveRowEdit"
+                  @remove-row="handleRemoveRow"
+                  @page-size-change="pageSizeChange"
+                  @current-page-change="currentPageChange"
+                  :auth="{edit: isEditing, delete: isEditing}"
                 >
-                  <!-- 业务列 -->
-                  <vxe-column field="backOrderDetailCode" title="退车明细单号" width="180">
-                    <template #default="{ row }">
+                   <template #default="{ row, column }">
+                    <template v-if="column.property === 'backOrderDetailCode' && row.backOrderDetailCode">
                       <el-link type="primary" :href="`/sales/vehwholesale/back/vehicleBackOrderDetail/edit?id=${row.backOrderDetailCode}`" target="_blank">{{ row.backOrderDetailCode }}</el-link>
                     </template>
-                  </vxe-column>
-                  <vxe-column field="backOrderCode" title="退车订单号" width="150">
-                    <template #default="{ row }">
-                      {{ row.backOrderCode }}
-                    </template>
-                  </vxe-column>
-                  <vxe-column field="vin" title="VIN" width="180" />
-                  <vxe-column field="processStatusLabel" title="车辆处理状态" width="180" />
-                  <vxe-column field="saleDealerName" title="门店名称" width="120">
-                    <template #default="{ row }">
+                    <template v-else-if="column.property === 'saleDealerName' && row.saleDealerCode">
                       <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`" target="_blank">{{ row.saleDealerName }}</el-link>
                     </template>
-                  </vxe-column>
-                  <vxe-column field="wholesaleOrderCode" title="整车批售订单号" width="210">
-                    <template #default="{ row }">
+                    <template v-else-if="column.property === 'wholesaleOrderCode' && row.wholesaleOrderCode">
                       <el-link type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${row.wholesaleOrderCode}`" target="_blank">{{ row.wholesaleOrderCode }}</el-link>
                     </template>
-                  </vxe-column>
-                  <vxe-column field="entOrderCode" title="企业客户整车订单号" width="270">
-                    <template #default="{ row }">
+                    <template v-else-if="column.property === 'entOrderCode' && row.entOrderCode">
                       <el-link type="primary" :href="`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${row.entOrderCode}`" target="_blank">{{ row.entOrderCode }}</el-link>
                     </template>
-                  </vxe-column>
-                  <!-- <vxe-column field="actualVehicleReturnLabel" title="是否实车返厂" width="150" /> -->
-                   <vxe-column title="是否实车返厂" width="180">
-                    <template #default="{ row }">
+                    <template v-else-if="column.property === 'actualVehicleReturn'">
                       <fetch-select
                         v-if="isEditing"
                         :request="fetchOptions"
@@ -258,11 +251,7 @@
                       />
                       <span v-else>{{ row.actualVehicleReturnLabel }}</span>
                     </template>
-                  </vxe-column>
-
-                  <!-- 可编辑列：销售部预留 -->
-                  <vxe-column title="销售部预留" width="180">
-                    <template #default="{ row }">
+                    <template v-else-if="column.property === 'salesDeptReserve'">
                       <fetch-select
                         v-if="isEditing"
                         :request="fetchOptions"
@@ -274,26 +263,19 @@
                       />
                       <span v-else>{{ row.salesDeptReserveLabel }}</span>
                     </template>
-                  </vxe-column>
-                   <vxe-column title="整车物流预留" width="180">
-                    <template #default="{ row }">
+                    <template v-else-if="column.property === 'vehicleLogisticsReserve'">
                       <fetch-select
-                            :request="fetchOptions"
-                            v-if="isEditing"
-                            enumCode="BooleanEnum"
-                            v-model="row.vehicleLogisticsReserve"
-                            placeholder="请选择"
-                            clearable
-                            filterable
-                          />
-                          <span v-else>{{ row.vehicleLogisticsReserveLabel }}</span>
+                        v-if="isEditing"
+                        :request="fetchOptions"
+                        enumCode="BooleanEnum"
+                        v-model="row.vehicleLogisticsReserve"
+                        placeholder="请选择"
+                        clearable
+                        filterable
+                      />
+                      <span v-else>{{ row.vehicleLogisticsReserveLabel }}</span>
                     </template>
-                  </vxe-column>
-                  <vxe-column field="originalWholesalePrice" title="原批售价格" width="150" align="right" />
-                  <vxe-column field="originalRebateAmount" title="原返利使用金额" width="210" align="right" />
-                  <vxe-column field="originalInvoicePrice" title="原开票价格" width="150" align="right" />
-                  <vxe-column field="returnPrice" title="退车价格" width="120" align="right">
-                    <template #default="{ row }">
+                    <template v-else-if="column.property === 'returnPrice'">
                       <el-input
                         v-if="isEditing"
                         v-model="row.returnPrice"
@@ -303,11 +285,7 @@
                       />
                       <span v-else>{{ row.returnPrice }}</span>
                     </template>
-                  </vxe-column>
-                  <vxe-column field="returnInvoiceAmount" title="退车开票金额" width="180" align="right"></vxe-column>
-                  <!-- 可编辑列：备注 -->
-                  <vxe-column field="remark" title="备注说明" width="200">
-                    <template #default="{ row }">
+                    <template v-else-if="column.property === 'remark'">
                       <el-input
                         v-if="isEditing"
                         v-model="row.remark"
@@ -317,42 +295,14 @@
                       />
                       <span v-else>{{ row.remark }}</span>
                     </template>
-                  </vxe-column>
-                  <vxe-column field="storeOutboundConfirmer" title="门店出库确认人" width="180" />
-                  <vxe-column field="storeOutboundTime" title="门店出库确认时间" width="160" />
-                  <vxe-column field="vdcInboundConfirmer" title="VDC入库确认人" width="180" />
-                  <vxe-column field="vdcInboundTime" title="VDC入库确认时间" width="160" />
-                  <vxe-column field="createTime" title="创建时间" width="200" />
-                   <!-- 新增：操作列 -->
-                   <vxe-column
-                    v-if="isEditing"
-                    title="操作"
-                    width="150"
-                    fixed="right"
-                    align="center"
-                  >
-                    <template #default="{ row }">
-                      <div>
-                        <el-button
-                          type="text"
-                          size="small"
-                          @click="handleSaveRow(row)"
-                          style="color: #409EFF;"
-                        >
-                          保存
-                        </el-button>
-                        <el-button
-                          type="text"
-                          size="small"
-                          @click="handleDeleteRowData(row)"
-                          style="color: #F56C6C;"
-                        >
-                          删除
-                        </el-button>
-                      </div>
+                    <template v-else-if="column.formatter">
+                      {{ column.formatter(row[column.field], row, column) }}
                     </template>
-                  </vxe-column>
-                </vxe-table>
+                    <template v-else>
+                      {{ row[column.field] }}
+                    </template>
+                  </template>
+                </edit-table>
               </div>
             </div>
           </section>
@@ -403,6 +353,7 @@ import { deleteItem, audit, cancel, getDetail, addOrUpdate, submitAudit } from '
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
+import EditTable from '@/libs/components/EditTable';
 import { getEnum, listOrgStoreInfo, getRigion } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
@@ -413,7 +364,7 @@ import { networkParentCompanyItem } from '@/api/vehwholesale/replenish/entVehicl
 import Upload from '@/libs/components/UploadDialog';
 import auditDialog from '@/libs/components/auditDialog';
 import vinAllocateVehicle from './vinAllocateVehicle.vue';
-import { addOrUpdate as detailAddOrUpdate, deleteItem as detailDeleteItem, edit } from '@/api/vehwholesale/back/vehicleBackOrderDetail/index';
+import { addOrUpdate as detailAddOrUpdate, deleteItem as detailDeleteItem, edit, getList as getDetailList } from '@/api/vehwholesale/back/vehicleBackOrderDetail/index';
 import AisAttachment from '@/libs/components/AisAttachment';
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -461,7 +412,8 @@ export default {
     Upload,
     auditDialog,
     vinAllocateVehicle,
-    AisAttachment
+    AisAttachment,
+    EditTable
   },
   computed: {
     _id () {
@@ -516,9 +468,9 @@ export default {
       fileData: [], // 附件数据
       form: { ...form },
       originalForm: { ...form },
+      backOrderCodeDetail: '',
       emptyText: '若要启用此内容，请创建记录',
-      tableData: [
-      ],
+      tableData: [],
       defaultNewRow: {
         totalQuotaQty: '',
       },
@@ -593,18 +545,17 @@ export default {
           width: '200'
         },
         {
-          field: 'actualVehicleReturnLabel',
+          field: 'actualVehicleReturn',
           title: '是否实车返厂',
           width: '150'
         },
         {
-          field: 'salesDeptReserveLabel',
+          field: 'salesDeptReserve',
           title: '销售部预留',
           width: '150',
-          editable: true,
         },
         {
-          field: 'vehicleLogisticsReserveLabel',
+          field: 'vehicleLogisticsReserve',
           title: '整车物流预留',
           width: '120',
         },
@@ -682,6 +633,11 @@ export default {
   },
   mounted () {
     this.fetchBooleanEnum();
+    setTimeout(() => {
+      if (this._id && this.backOrderCodeDetail) {
+        this.getDetailListData();
+      }
+    }, 1000);
   },
   created () {
     this.initPermissions();
@@ -723,6 +679,7 @@ export default {
         this.$message.success('保存成功');
         // 刷新详情以获取最新数据
         this.$refs.containerRef.loadDetail();
+        this.getDetailListData();
       }).catch(() => {
         this.$message.error('保存失败');
       });
@@ -730,12 +687,11 @@ export default {
 
     // 删除单行数据
     handleDeleteRowData (row) {
-      console.log('handleDeleteRow', row);
       // 如果是新增未保存的行（没有ID），直接从数组移除
       if (!row.id) {
-        const index = this.form.details.indexOf(row);
+        const index = this.tableData.indexOf(row);
         if (index > -1) {
-          this.form.details.splice(index, 1);
+          this.tableData.splice(index, 1);
         }
         return;
       }
@@ -750,6 +706,7 @@ export default {
           this.$message.success('删除成功');
           // 刷新详情以获取最新数据
           this.$refs.containerRef.loadDetail();
+          this.getDetailListData();
         }).catch(() => {
           this.$message.error('删除失败');
         });
@@ -783,6 +740,7 @@ export default {
           message: '保存成功'
         });
         this.$refs.containerRef.loadDetail();
+        this.getDetailListData();
         this.showvinAllocateVehicleDialog = false;
       });
     },
@@ -812,7 +770,6 @@ export default {
     },
     handelSubmit () {
       const allFiles = this.$refs.attachment.getFileList();
-      console.log('总附件数:', allFiles.length);
       if (allFiles.length === 0) {
         this.$message.warning('必须有附件才能操作提交!');
         return;
@@ -900,7 +857,6 @@ export default {
       return await listOrgStoreInfo({ storeName: params, isWholesaleSale: true });
     },
     getentCustomerName (val, row) {
-      console.log('getentCustomerName', row.regionCode, row.regionName);
       this.form.entCustomerName = row.companyName;
       this.form.entCustomerCode = row.companyCode;
       this.form.regionCode = row.regionCode;
@@ -911,12 +867,22 @@ export default {
     },
     pageSizeChange (pageSize) {
       this.pageSize = pageSize;
-      this.current = 1;
-      // this.getList();
+      this.pageNum = 1;
+      this.getDetailListData();
     },
     currentPageChange (pageNum) {
       this.pageNum = pageNum;
-      // this.getList();
+      this.getDetailListData();
+    },
+    getDetailListData () {
+      getDetailList({
+        backOrderCode: this.backOrderCodeDetail,
+        pageNum: this.pageNum,
+        pageSize: this.pageSize
+      }).then(res => {
+        this.tableData = res.records;
+        this.total = res.totals;
+      }).catch(() => {});
     },
     handleRemoveRow (row, index, defer) {
       if (!row.id) {
@@ -927,32 +893,32 @@ export default {
       }).then((d) => {
         defer.resolve();
         this.$message.success('删除成功');
-        this.getDetailData();
+        this.$refs.containerRef.loadDetail();
       }).catch(() => {
         defer.reject();
       });
     },
     // 行保存
     saveRowEdit (row, defer) {
-      const params = {
-        vehicleBackOrderId: this._id,
-        items: [row]
-      };
-      detailAddOrUpdate(params).then(id => {
+      edit(row).then(id => {
         defer.resolve(id);
         this.$message.success('更新成功');
-        this.getDetailData();
+        this.$refs.containerRef.loadDetail();
       }).catch(e => {
         defer.reject();
       });
     },
     loadDetail () {
       this.$refs.containerRef.loadDetail();
+      this.getDetailListData();
     },
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id);
+        return getDetail(id).then(res => {
+          this.backOrderCodeDetail = res.backOrderCode;
+          return res;
+        });
       }
     },
     submitRequest () {
@@ -978,7 +944,9 @@ export default {
         }
       }
 
-      return addOrUpdate({ ...this.form });
+      return addOrUpdate({ ...this.form }).then(() => {
+        this.$refs.containerRef.loadDetail();
+      }).finally(() => {});
     },
     // 打开侧边栏
     openPane () {

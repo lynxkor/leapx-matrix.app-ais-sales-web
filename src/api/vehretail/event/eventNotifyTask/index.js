@@ -73,6 +73,7 @@ export function updateItem (data, systemPrefix) {
  */
 export function addOrUpdate (data, systemPrefix) {
   if (data.id) {
+    console.log('修改', data, systemPrefix);
     return updateItem(data, systemPrefix);
   }
   return addItem(data, systemPrefix);
