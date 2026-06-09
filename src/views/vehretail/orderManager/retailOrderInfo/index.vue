@@ -23,6 +23,9 @@
         <tag-input v-model="form.wholesaleOrderCodeList" clearable placeholder="请输入" />
       </el-form-item>
       <template v-if="show">
+      <el-form-item label="整车订单号">
+        <tag-input v-model="form.retailOrderCodeList" clearable placeholder="请输入" />
+      </el-form-item>
       <el-form-item label="整车订单状态">
         <fetch-select
           :request="fetchOptions"
@@ -301,6 +304,7 @@ const defaultForm = {
   area: [],
   mallOrderCodeList: [],
   wholesaleOrderCodeList: [],
+  retailOrderCodeList: [],
   matchVinList: [],
   materialsCodeList: [],
   carBuyerParams: '',
