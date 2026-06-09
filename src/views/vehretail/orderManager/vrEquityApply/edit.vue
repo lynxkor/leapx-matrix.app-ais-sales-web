@@ -840,6 +840,7 @@ export default {
   mounted () {
     this.getEquityCategoryList();
     this.initPermissions();
+    this.initMallOrderCodeFromQuery();
   },
   data () {
     const form = this.getDefautlForm();
@@ -1030,6 +1031,53 @@ export default {
       });
     },
 
+    // 根据整车订单号从零售订单列表中匹配记录
+    async findRecordByRetailOrderCode (retailOrderCode) {
+      const result = await getRetailOrderList({
+        retailOrderCode,
+        pageSize: 20
+      });
+      const records = result?.records || result || [];
+      return records.find(r => r.retailOrderCode === retailOrderCode) || null;
+    },
+
+    // 根据商城订单号从远程列表中匹配记录
+    async findMallOrderRecord (mallOrderCode) {
+      const result = await this.getRetailOrderListByNo(mallOrderCode);
+      const records = result?.records || result || [];
+      return records.find(r => r.mallOrderCode === mallOrderCode) || null;
+    },
+
+    // 处理 URL 上携带的 mallOrderCode / retailOrderCode 查询参数：回填并触发选中逻辑
+    async initMallOrderCodeFromQuery () {
+      // 优先使用 mallOrderCode；如果没有，再尝试 retailOrderCode 反查
+      let mallOrderCode = this.$route.query.mallOrderCode;
+      if (!mallOrderCode) {
+        const retailOrderCode = this.$route.query.retailOrderCode;
+        if (!retailOrderCode) {
+          return;
+        }
+        const record = await this.findRecordByRetailOrderCode(retailOrderCode);
+        if (record && record.mallOrderCode) {
+          mallOrderCode = record.mallOrderCode;
+        } else {
+          this.$message.warning('未找到该整车订单号对应的商城订单，请重新选择');
+          return;
+        }
+      }
+      this.$set(this.form, 'mallOrderNo', mallOrderCode);
+      try {
+        const record = await this.findMallOrderRecord(mallOrderCode);
+        if (record) {
+          await this.handleMallOrderNoChange(mallOrderCode, record);
+        } else {
+          this.$message.warning('未找到该商城订单号对应的订单，请重新选择');
+        }
+      } catch (error) {
+        // 校验失败时 handleMallOrderNoChange 内部已清空 mallOrderNo
+      }
+    },
+
     // 获取权益类别列表
     async getEquityCategoryList () {
       const response = await getEquityCategoryListApi(
@@ -1051,8 +1099,8 @@ export default {
 
     // 权益大类变化时的处理
     async handleEquityCategoryChange (categoryId, record) {
-      await this.validateSelectedVehicleOrder();
       this.form.equityCategoryName = record?.name || '';
+      await this.validateSelectedVehicleOrder();
       // 清空原车信息
       this.form.originalVin = '';
       this.form.originalOwnerName = '';

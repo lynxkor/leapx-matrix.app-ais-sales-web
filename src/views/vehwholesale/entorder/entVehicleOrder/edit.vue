@@ -231,7 +231,15 @@
                     disabled
                   />
                 </el-form-item>
-                     <el-form-item label="验收方式：" prop="acceptanceMethodLabel">
+                <el-form-item label="VIN年份：" prop="vinYear">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.vinYear"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="验收方式：" prop="acceptanceMethodLabel">
                   <el-input
                     placeholder="请输入"
                     v-model="form.acceptanceMethodLabel"
@@ -320,6 +328,9 @@
                 </el-form-item>
                 <el-form-item label="销售市场：" prop="salesMarketLabel">
                   {{ form.salesMarketLabel }}
+                </el-form-item>
+                <el-form-item label="VIN年份：" prop="vinYear">
+                  {{ form.vinYear }}
                 </el-form-item>
                 <el-form-item label="验收方式：" prop="acceptanceMethodLabel">
                   {{ form.acceptanceMethodLabel }}

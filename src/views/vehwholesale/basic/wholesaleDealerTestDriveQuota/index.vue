@@ -174,7 +174,32 @@
         <vxe-column field="createTime" title="创建时间" width="200"></vxe-column>
       </vxe-table>
     </el-dialog>
-    <!-- TIPS: 填入项目id即可 -->
+
+    <!-- 配额调整弹窗 -->
+    <el-dialog
+      :title="adjustmentDialogTitle"
+      :visible.sync="adjustmentDialogVisible"
+      width="60%"
+      :modal-append-to-body="false"
+      :before-close="handleAdjustmentDialogClose"
+      class="dialog-with-component"
+    >
+      <component
+        :is="'QuotaEdit'"
+        v-if="adjustmentDialogVisible"
+        :id="currentRow.id"
+        :initialQuotaQty="currentRow.quotaQty"
+        :initialRequestQty="currentRow.requestQty"
+        :initialDealerCode="currentRow.dealerCode"
+        :initialDealerName="currentRow.dealerName"
+        :initialVehicleYearTypeId="currentRow.vehicleYearTypeId"
+        :initialVehicleModelLineId="currentRow.vehicleModelLineId"
+        :initialSeriesId="currentRow.seriesId"
+        @close="handleAdjustmentDialogClose"
+        ref="adjustmentComponentRef"
+      />
+    </el-dialog>
+    <!-- TIPS: 填入项目信息 -->
     <Upload
       :visible="uploadDialogVisible"
       :id="'wholesaleDealerTestDriveQuotaImport'"
@@ -187,6 +212,7 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
+import QuotaEdit from '@/views/vehwholesale/basic/wholesaleDealerTestDriveQuota/QuotaEdit.vue';
 import { getList, deleteItem, enableItem } from '@/api/vehwholesale/basic/wholesaleDealerTestDriveQuota/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo, listVehicleYearType, vehicleModelLineList, vehicleSeriesList } from '@/api/common';
 import { getList as getLogList } from '@/api/vehwholesale/basic/dealerDemoVehicleQuotaRecord/index';
@@ -222,7 +248,8 @@ export default {
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
-    Upload
+    Upload,
+    QuotaEdit
   },
   data () {
     return {
@@ -241,7 +268,9 @@ export default {
       uploadDialogVisible: false,
       logDialogVisible: false,
       logLoading: false,
-      currentRowId: null,
+      currentRow: {},
+      adjustmentDialogVisible: false,
+      adjustmentDialogTitle: '配额调整',
       optionObj: {
         id: 'wholesaleDealerTestDriveQuotaTable',
         dataList: [],
@@ -289,12 +318,7 @@ export default {
             buttons: [{
               name: '配额调整',
               click: (rowIndex, row) => {
-                this.$router.push({
-                  path: '/vehwholesale/basic/dealerDemoVehicleQuotaRecord/edit',
-                  query: {
-                    id: row.id
-                  }
-                });
+                this.openAdjustmentDialog(row);
               },
               type: 'info'
             }, {
@@ -565,6 +589,17 @@ export default {
           resolve(mockConfig);
         });
       });
+    },
+    // 配额调整弹窗相关方法
+    openAdjustmentDialog (row) {
+      this.currentRow = row;
+      this.adjustmentDialogTitle = `配额调整 - ${row.dealerName}`;
+      this.adjustmentDialogVisible = true;
+    },
+    handleAdjustmentDialogClose () {
+      this.adjustmentDialogVisible = false;
+      // 关闭时刷新列表数据
+      this.getData();
     },
   }
 };

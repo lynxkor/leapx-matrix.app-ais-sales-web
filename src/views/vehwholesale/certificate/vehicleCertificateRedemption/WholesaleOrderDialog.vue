@@ -11,7 +11,7 @@
       <div class="search-box">
         <el-input
           v-model="query"
-          placeholder="请输入关键词搜索"
+          placeholder="请输入完整的订单号或VIN码查询"
           clearable
           @keyup.enter.native="handleSearch"
           style="width: 300px; margin-right: 10px;margin-bottom: 10px;"

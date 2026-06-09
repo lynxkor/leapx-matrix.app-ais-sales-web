@@ -9,21 +9,7 @@
       label-width="150px"
       class="ais-search-form"
     >
-      <el-form-item label="母公司名称">
-        <fetch-select
-            :remote-method="getDealerParentOrgListByName"
-            remote
-            v-model="form.dealerCompanyNames"
-            placeholder="请选择"
-            :param="form.dealerCompanyName"
-            labelKey="companyName"
-            valueKey="companyName"
-            clearable
-            filterable
-            multiple
-            />
-      </el-form-item>
-      <el-form-item label="母公司编码">
+    <el-form-item label="母公司编码">
          <fetch-select
             :remote-method="getDealerParentOrgListByCode"
             remote
@@ -36,6 +22,20 @@
             multiple
             />
         </el-form-item>
+      <el-form-item label="母公司名称">
+        <fetch-select
+            :remote-method="getDealerParentOrgListByName"
+            remote
+            v-model="form.dealerCompanyCodesByNames"
+            placeholder="请选择"
+            :param="form.dealerCompanyName"
+            labelKey="companyName"
+            valueKey="companyCode"
+            clearable
+            filterable
+            multiple
+            />
+      </el-form-item>
         <el-form-item label="推荐金融机构" v-show="this.visibleCount === 3 || show">
          <fetch-select
             :remote-method="repairItemSearch"
@@ -266,6 +266,7 @@ export default {
               type: 'info'
             }, {
               name: '推送金融机构',
+              show: () => this.permissions.has(this.moduleKey + '-sync'),
               click: (rowIndex, row) => {
                 // 1. 校验状态是否可用
                 if (row.status !== 1) {
@@ -433,13 +434,18 @@ export default {
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
           console.log(res);
-          this.optionObj.dataList = res.records.map(item => {
+          this.optionObj.dataList = (res?.records || []).map(item => {
             return {
               ...item,
               deleteLoading: false
             };
           });
-          this.optionObj.total = res.total;
+          this.optionObj.total = res?.total || 0;
+        }).catch(err => {
+          console.error(err);
+          this.optionObj.dataList = [];
+          this.optionObj.total = 0;
+          this.$message.error('查询失败，请稍后重试');
         }).finally(() => {
           this.loading = false;
         });

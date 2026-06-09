@@ -47,12 +47,24 @@
             />
       </el-form-item>
       <el-form-item label="创建时间" v-show="this.visibleCount === 3 || show">
-        <dateranges
+        <!-- <dateranges
           v-model="form.createTime"
           :setDefault="true"
           deftTime="最近一周"
           :limtNum="3"
-          ref="transactionTime"/>
+          ref="transactionTime"/> -->
+           <el-date-picker
+           :default-time="['00:00:00', '23:59:59']"
+            v-model="form.createTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+
           <!-- <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
             v-model="form.createTime"
@@ -184,7 +196,6 @@ import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
-import dateranges from '@/libs/components/dateranges';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleYearType } from '@/api/common';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -213,7 +224,6 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    dateranges,
     Upload
   },
   data () {

@@ -17,7 +17,7 @@
           <span class="status primary">{{ form.auditStatusLabel }}</span>
         </template>
         <template #extraButtons>
-          <el-button size="small" @click="handleSubmit" v-if ="form.permission && form.permission.submit && perSubmit">提交补货申请</el-button>
+          <el-button size="small" :loading="submitLoading" @click="handleSubmit" v-if ="form.permission && form.permission.submit && perSubmit">提交补货申请</el-button>
           <el-button size="small" @click="handleAuditValidForDealer()" v-if="form.permission && form.permission.dealerAudit && perDealerAudit">门店审核</el-button>
           <el-button size="small" @click="handleAuditValidForFactory()" v-if="form.permission && form.permission.factoryAudit && perFactoryAudit">厂端审核</el-button>
           <el-button size="small" @click="handleUnused" v-if="form.permission && form.permission.cancel && perCancel">作废</el-button>
@@ -258,7 +258,7 @@
                   {{ form.auditStatusLabel }}
                 </el-form-item>
                 <el-form-item label="是否赊销：" prop="isCreditSale">
-                  {{ form.settleFundType === '1050' ? '是' : '否' }}
+                  {{ (form.settleFundType == 1050 || form.settleFundTypeLabel == '赊销-零跑') ? '是' : '否' }}
                 </el-form-item>
                 <el-form-item label="结算资金类型：" prop="settleFundTypeLabel">
                   {{ form.settleFundTypeLabel }}
@@ -1011,9 +1011,12 @@ export default {
       this.perCancel = this.permissions.has(`${this.moduleKey}-invalid`);
     },
     handleSubmit () {
+      this.submitLoading = true;
       replenishmentSubmit({ id: this._id }).then(() => {
         this.$message.success('补货申请提交成功');
         this.$refs.containerRef.loadDetail();
+      }).finally(() => {
+        this.submitLoading = false;
       });
     },
   }

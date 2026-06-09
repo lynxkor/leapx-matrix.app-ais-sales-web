@@ -1065,33 +1065,6 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
-      path: '/vehwholesale/basic/dealerDemoVehicleQuotaRecord',
-      name: 'dealerDemoVehicleQuotaRecord',
-      component: () => import('@/views/vehwholesale/basic/dealerDemoVehicleQuotaRecord/index.vue'),
-
-      meta: {
-        name: '整车批售-批售主数据-门店试驾车配额调整记录管理',
-        keepAlive: true
-      }
-    }, {
-      path: '/vehwholesale/basic/dealerDemoVehicleQuotaRecord/detail',
-      name: 'dealerDemoVehicleQuotaRecordDetail',
-      component: () => import('@/views/vehwholesale/basic/dealerDemoVehicleQuotaRecord/detail.vue'),
-
-      meta: {
-        name: '整车批售-批售主数据-门店试驾车配额调整记录管理详情',
-        noResourceUrl: 'true'
-      }
-    }, {
-      path: '/vehwholesale/basic/dealerDemoVehicleQuotaRecord/edit',
-      name: 'dealerDemoVehicleQuotaRecordEdit',
-      component: () => import('@/views/vehwholesale/basic/dealerDemoVehicleQuotaRecord/edit.vue'),
-
-      meta: {
-        name: '整车批售-批售主数据-门店试驾车配额调整记录管理详情',
-        noResourceUrl: 'true'
-      }
-    }, {
       path: '/vehwholesale/basic/wholesaleVehicleSaleModelConf',
       name: 'wholesaleVehicleSaleModelConf',
       component: () => import('@/views/vehwholesale/basic/wholesaleVehicleSaleModelConf/index.vue'),

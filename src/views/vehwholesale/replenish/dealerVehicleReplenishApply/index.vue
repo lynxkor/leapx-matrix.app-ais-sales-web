@@ -126,6 +126,13 @@
             filterable
           />
         </el-form-item>
+        <el-form-item label="创建时间">
+          <dateranges
+            v-model="form.createTime"
+            :setDefault="true"
+            deftTime="最近三个月"
+          />
+        </el-form-item>
       </template>
       <page-search-action
         v-if="canList"
@@ -218,6 +225,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import vehicleWholesaleDialog from './vehicleWholesaleDialog.vue';
 import BatchAuditInput from './BatchAuditInput.vue';
+import dateranges from '@/libs/components/dateranges';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -232,7 +240,8 @@ const defaultForm = {
   settleFundType: '',
   applyCategory: '',
   financialOrganizationId: '',
-  queryTab: '1'
+  queryTab: '1',
+  createTime: '',
 };
 
 const pageSize = 20;
@@ -248,8 +257,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     EditPage,
-    BatchAuditInput
-    // Upload
+    BatchAuditInput,
+    dateranges
   },
   data () {
     return {

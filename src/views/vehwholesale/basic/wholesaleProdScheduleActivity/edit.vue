@@ -59,7 +59,7 @@
                       :precision="0"
                     />
                 </el-form-item>
-                 <el-form-item label="是否锁零售单：" prop="allowLockRetail">
+                 <el-form-item label="允许锁零售单：" prop="allowLockRetail">
                   <fetch-select
                       :request="fetchOptions"
                       enumCode="BooleanEnum"
@@ -202,7 +202,7 @@
                  <el-form-item label="额度数量：" prop="totalQuotaQty">
                   {{ form.totalQuotaQty }}
                 </el-form-item>
-                 <el-form-item label="是否锁零售单：" prop="allowLockRetailLabel">
+                 <el-form-item label="允许锁零售单：" prop="allowLockRetailLabel">
                   {{ form.allowLockRetailLabel }}
                 </el-form-item>
                   <el-form-item label="是否需要自动配车：" prop="needAutoAllocateCarLabel">
@@ -283,6 +283,11 @@
                     <template v-else-if="column.property === 'seriesName' && row.seriesId">
                       <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${row.seriesId}`" target="_blank">
                         {{ row.seriesName }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'modelLineName' && row.modelLineId">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleModelLine/edit?id=${row.modelLineId}`" target="_blank">
+                        {{ row.modelLineName }}
                       </el-link>
                     </template>
                     <template v-else-if="column.property === 'yearTypeName' && row.yearTypeId">
@@ -504,6 +509,11 @@ export default {
         {
           field: 'applyOrderCategoryLabel',
           title: '适用订单分类',
+          width: '120'
+        },
+        {
+          field: 'modelLineName',
+          title: '系列',
           width: '120'
         },
         {

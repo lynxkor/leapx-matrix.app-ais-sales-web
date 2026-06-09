@@ -9,9 +9,21 @@ export const retailOrderDisplayFields = [
   { key: 'orderSource', label: '订单来源' },
   { key: 'outTradeNo', label: '外部订单号' },
   { key: 'saleModeLabel', label: '销售模式' },
-  { key: 'saleDealerName', label: '订单销售门店' },
+  {
+    key: 'saleDealerName',
+    label: '订单销售门店',
+    link: '/partner/channelManagement/shopDetail',
+    paramKey: 'saleDealerCode',
+    paramName: 'dealerCode'
+  },
   { key: 'saleUserName', label: '订单销售顾问' },
-  { key: 'deliveryDealerName', label: '订单交付门店' },
+  {
+    key: 'deliveryDealerName',
+    label: '订单交付门店',
+    link: '/partner/channelManagement/shopDetail',
+    paramKey: 'deliveryDealerCode',
+    paramName: 'dealerCode'
+  },
   { key: 'deliveryUserName', label: '订单交付顾问' },
   { key: 'preSaleOrderLabel', label: '是否预售订单' },
   { key: 'blindOrderLabel', label: '是否盲订订单' },
@@ -68,9 +80,21 @@ export const lockAllocationDisplayFields = [
   { key: 'lockTypeLabel', label: '锁车匹配类型' },
   { key: 'lockStatusLabel', label: '是否锁单' },
   { key: 'lockTime', label: '锁单时间' },
-  { key: 'materialsCode', label: '订单物料码' },
+  {
+    key: 'materialsCode',
+    label: '订单物料码',
+    link: '/sales/datacenter/materials/vehiclematerials/edit',
+    paramKey: 'materialsId'
+  },
   { key: 'allocationMaterialCode', label: '配车物料编码' },
-  { key: 'matchVin', label: '配车VIN码', encrypted: true },
+  {
+    key: 'matchVin',
+    label: '配车VIN码',
+    encrypted: true,
+    link: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
+    paramKey: 'matchVin',
+    paramName: 'vin'
+  },
   { key: 'deliveryVin', label: '交车VIN码', encrypted: true },
   { key: 'deliveryTime', label: '交车时间' },
   { key: 'orderSortTime', label: '订单排序时间' },
@@ -83,8 +107,20 @@ export const wholesaleDisplayFields = [
   { key: 'wholesaleBindStatusLabel', label: '是否绑定批售' },
   { key: 'lockWholesaleTime', label: '锁批售时间' },
   { key: 'confirmedCount', label: '批售确认次数' },
-  { key: 'wholesaleOrderCode', label: '批售订单号' },
-  { key: 'matchVin', label: '配车VIN码', encrypted: true },
+  {
+    key: 'wholesaleOrderCode',
+    label: '批售订单号',
+    link: '/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
+    paramKey: 'wholesaleOrderId'
+  },
+  {
+    key: 'matchVin',
+    label: '配车VIN码',
+    encrypted: true,
+    link: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
+    paramKey: 'matchVin',
+    paramName: 'vin'
+  },
   { key: 'wholesaleOrderStatusLabel', label: '批售订单状态' },
   { key: 'confirmStatusLabel', label: '批售确认状态' },
   { key: 'confirmTime', label: '批售确认时间' },
@@ -203,4 +239,24 @@ export const orderPaymentRecordDisplayFields = [
   { key: 'paymentTypeLabel', label: '支付方式', width: '25%' },
   { key: 'paymentAmount', label: '付款金额', width: '25%' },
   { key: 'paymentTime', label: '付款时间', width: '25%' }
+];
+
+// 门店承诺记录字段配置
+export const dealerCommitmentDisplayFields = [
+  {
+    key: 'id',
+    label: '承诺结果编号',
+    encrypted: true,
+    link: '/sales/vehretail/orderManager/dealerCommitmentRecord/edit',
+    paramKey: 'id'
+  },
+  { key: 'commitmentType', label: '承诺类型' },
+  { key: 'commitmentContent', label: '承诺内容' },
+  { key: 'commitmentDetailDesc', label: '承诺详细说明' },
+  { key: 'isOriginalLabel', label: '是否原厂' },
+  { key: 'fulfillStatusLabel', label: '兑现状态' },
+  { key: 'fulfillDesc', label: '待兑现说明' },
+  { key: 'creatorName', label: '登记人' },
+  { key: 'deliveryOrderCode', label: '交车单' },
+  { key: 'createTime', label: '创建时间' }
 ];

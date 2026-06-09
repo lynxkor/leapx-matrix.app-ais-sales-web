@@ -105,17 +105,18 @@
                     {{ form.vehicleRebatePeriodEntry }}
                   </el-form-item>
                 </el-form>
-                <vxe-table
-                  ref="vehicleRebateTableRef"
-                  stripe
-                  :data="vehicleRebateData"
-                  show-overflow
-                  resizable
-                  border="inner"
-                  size="medium"
-                  min-height="0"
-                  height="400"
-                >
+                <div v-loading="vehicleRebateLoading">
+                  <vxe-table
+                    ref="vehicleRebateTableRef"
+                    stripe
+                    :data="vehicleRebateData"
+                    show-overflow
+                    resizable
+                    border="inner"
+                    size="medium"
+                    min-height="0"
+                    height="400"
+                  >
                   <vxe-column field="serialNo" title="序号" min-width="30" />
                   <vxe-column field="dataCategoryLabel" title="数据分类" min-width="70" />
                   <vxe-column field="postingDate" title="过账日期" min-width="160" />
@@ -131,16 +132,17 @@
                   <template #empty>
                     <div class="m-vxe-table-empty-text">{{EmptyText}}</div>
                   </template>
-                </vxe-table>
-                <el-pagination
-                  @size-change="handleVehicleRebateSizeChange"
-                  @current-change="handleVehicleRebateCurrentChange"
-                  :current-page="vehicleRebatePage.currentPage"
-                  :page-sizes="[10, 20, 50, 100]"
-                  :page-size="vehicleRebatePage.pageSize"
-                  layout="total, sizes, prev, pager, next, jumper"
-                  :total="vehicleRebatePage.total">
-                </el-pagination>
+                  </vxe-table>
+                  <el-pagination
+                    @size-change="handleVehicleRebateSizeChange"
+                    @current-change="handleVehicleRebateCurrentChange"
+                    :current-page="vehicleRebatePage.currentPage"
+                    :page-sizes="[10, 20, 50, 100]"
+                    :page-size="vehicleRebatePage.pageSize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="vehicleRebatePage.total">
+                  </el-pagination>
+                </div>
               </div>
             </div>
           </section>
@@ -164,35 +166,37 @@
                     {{ form.vehicleCashPeriodEntry }}
                   </el-form-item>
                 </el-form>
-                <vxe-table
-                  ref="vehicleCashTableRef"
-                  stripe
-                  :data="vehicleCashData"
-                  show-overflow
-                  resizable
-                  border="inner"
-                  size="medium"
-                  min-height="0"
-                  height="400"
-                >
-                  <vxe-column field="serialNo" title="序号" min-width="70" />
-                  <vxe-column field="invoiceDate" title="开票日期" min-width="180" />
-                  <vxe-column field="salesOrderNo" title="销售订单号" min-width="190" />
-                  <vxe-column field="vin" title="车架号" min-width="160" />
-                  <vxe-column field="totalAmountWithTax" title="价税合计金额" min-width="120" />
-                  <vxe-column field="fundTypeSend" title="资金类型(发货)" min-width="120" />
-                  <vxe-column field="taxInvoiceNo" title="税务发票号" min-width="190" />
-                  <vxe-column field="postingDate" title="过账日期" min-width="160" />
-                  <vxe-column field="fundTypeReceive" title="资金类型(收款)" min-width="120" />
-                  <vxe-column field="cashAmount" title="现金金额" min-width="100" />
-                  <vxe-column field="bankDraftAmount" title="银票金额" min-width="100" />
-                  <vxe-column field="otherAmount" title="其他金额" min-width="100" />
-                  <vxe-column field="currentBalance" title="本期余额" min-width="100" />
-                  <vxe-column field="summary" title="摘要" min-width="200" />
-                  <template #empty>
-                    <div class="m-vxe-table-empty-text">{{EmptyText}}</div>
-                  </template>
-                </vxe-table>
+                <div v-loading="vehicleCashLoading">
+                  <vxe-table
+                    ref="vehicleCashTableRef"
+                    stripe
+                    :data="vehicleCashData"
+                    show-overflow
+                    resizable
+                    border="inner"
+                    size="medium"
+                    min-height="0"
+                    height="400"
+                  >
+                    <vxe-column field="serialNo" title="序号" min-width="70" />
+                    <vxe-column field="invoiceDate" title="开票日期" min-width="180" />
+                    <vxe-column field="salesOrderNo" title="销售订单号" min-width="190" />
+                    <vxe-column field="vin" title="车架号" min-width="160" />
+                    <vxe-column field="totalAmountWithTax" title="价税合计金额" min-width="120" />
+                    <vxe-column field="fundTypeSend" title="资金类型(发货)" min-width="120" />
+                    <vxe-column field="taxInvoiceNo" title="税务发票号" min-width="190" />
+                    <vxe-column field="postingDate" title="过账日期" min-width="160" />
+                    <vxe-column field="fundTypeReceive" title="资金类型(收款)" min-width="120" />
+                    <vxe-column field="cashAmount" title="现金金额" min-width="100" />
+                    <vxe-column field="bankDraftAmount" title="银票金额" min-width="100" />
+                    <vxe-column field="otherAmount" title="其他金额" min-width="100" />
+                    <vxe-column field="currentBalance" title="本期余额" min-width="100" />
+                    <vxe-column field="summary" title="摘要" min-width="200" />
+                    <template #empty>
+                      <div class="m-vxe-table-empty-text">{{EmptyText}}</div>
+                    </template>
+                  </vxe-table>
+                </div>
                 <el-pagination
                   @size-change="handleVehicleCashSizeChange"
                   @current-change="handleVehicleCashCurrentChange"
@@ -225,32 +229,34 @@
                     {{ form.spareCashPeriodEntry }}
                   </el-form-item>
                 </el-form>
-                <vxe-table
-                  ref="spareCashTableRef"
-                  stripe
-                  :data="spareCashData"
-                  show-overflow
-                  resizable
-                  border="inner"
-                  size="medium"
-                  min-height="0"
-                  height="400"
-                >
-                  <vxe-column field="serialNo" title="序号" min-width="30" />
-                  <vxe-column field="invoiceDate" title="开票日期" min-width="160" />
-                  <vxe-column field="salesVoucher" title="销售凭证" min-width="190" />
-                  <vxe-column field="deliveryReturnNo" title="出库/退货单" min-width="190" />
-                  <vxe-column field="taxInvoiceNo" title="税务发票号" min-width="190" />
-                  <vxe-column field="postingDate" title="过账日期" min-width="160" />
-                  <vxe-column field="totalAmountWithTax" title="价税合计金额" min-width="120" />
-                  <vxe-column field="cashAmount" title="现金金额" min-width="100" />
-                  <vxe-column field="otherAmount" title="其他金额" min-width="100" />
-                  <vxe-column field="accountsReceivableBalance" title="应收帐款余额" min-width="120" />
-                  <vxe-column field="summary" title="摘要" min-width="200" />
-                  <template #empty>
-                    <div class="m-vxe-table-empty-text">{{EmptyText}}</div>
-                  </template>
-                </vxe-table>
+                <div v-loading="spareCashLoading">
+                  <vxe-table
+                    ref="spareCashTableRef"
+                    stripe
+                    :data="spareCashData"
+                    show-overflow
+                    resizable
+                    border="inner"
+                    size="medium"
+                    min-height="0"
+                    height="400"
+                  >
+                    <vxe-column field="serialNo" title="序号" min-width="30" />
+                    <vxe-column field="invoiceDate" title="开票日期" min-width="160" />
+                    <vxe-column field="salesVoucher" title="销售凭证" min-width="190" />
+                    <vxe-column field="deliveryReturnNo" title="出库/退货单" min-width="190" />
+                    <vxe-column field="taxInvoiceNo" title="税务发票号" min-width="190" />
+                    <vxe-column field="postingDate" title="过账日期" min-width="160" />
+                    <vxe-column field="totalAmountWithTax" title="价税合计金额" min-width="120" />
+                    <vxe-column field="cashAmount" title="现金金额" min-width="100" />
+                    <vxe-column field="otherAmount" title="其他金额" min-width="100" />
+                    <vxe-column field="accountsReceivableBalance" title="应收帐款余额" min-width="120" />
+                    <vxe-column field="summary" title="摘要" min-width="200" />
+                    <template #empty>
+                      <div class="m-vxe-table-empty-text">{{EmptyText}}</div>
+                    </template>
+                  </vxe-table>
+                </div>
                 <el-pagination
                   @size-change="handleSpareCashSizeChange"
                   @current-change="handleSpareCashCurrentChange"
@@ -283,31 +289,33 @@
                     {{ form.spareRebatePeriodUsage }}
                   </el-form-item>
                 </el-form>
-                <vxe-table
-                  ref="spareRebateTableRef"
-                  stripe
-                  :data="spareRebateData"
-                  show-overflow
-                  resizable
-                  border="inner"
-                  size="medium"
-                  min-height="0"
-                  height="400"
-                >
-                  <vxe-column field="serialNo" title="序号" min-width="30" />
-                  <vxe-column field="dataCategoryLabel" title="数据分类" min-width="80"/>
-                  <vxe-column field="postingDate" title="过账日期" min-width="160" />
-                  <vxe-column field="rebateSerialNo" title="返利流水号" min-width="200" />
-                  <vxe-column field="transactionTypeLabel" title="交易类型" min-width="100" />
-                  <vxe-column field="transactionAmount" title="交易金额" min-width="100" />
-                  <vxe-column field="purchaseOrderNo" title="采购订单" min-width="200" />
-                  <vxe-column field="deliveryNoteNo" title="出库单" min-width="200" />
-                  <vxe-column field="balance" title="余额" min-width="100" />
-                  <vxe-column field="remark" title="备注" min-width="120" />
-                  <template #empty>
-                    <div class="m-vxe-table-empty-text">{{EmptyText}}</div>
-                  </template>
-                </vxe-table>
+                <div v-loading="spareRebateLoading">
+                  <vxe-table
+                    ref="spareRebateTableRef"
+                    stripe
+                    :data="spareRebateData"
+                    show-overflow
+                    resizable
+                    border="inner"
+                    size="medium"
+                    min-height="0"
+                    height="400"
+                  >
+                    <vxe-column field="serialNo" title="序号" min-width="30" />
+                    <vxe-column field="dataCategoryLabel" title="数据分类" min-width="80"/>
+                    <vxe-column field="postingDate" title="过账日期" min-width="160" />
+                    <vxe-column field="rebateSerialNo" title="返利流水号" min-width="200" />
+                    <vxe-column field="transactionTypeLabel" title="交易类型" min-width="100" />
+                    <vxe-column field="transactionAmount" title="交易金额" min-width="100" />
+                    <vxe-column field="purchaseOrderNo" title="采购订单" min-width="200" />
+                    <vxe-column field="deliveryNoteNo" title="出库单" min-width="200" />
+                    <vxe-column field="balance" title="余额" min-width="100" />
+                    <vxe-column field="remark" title="备注" min-width="120" />
+                    <template #empty>
+                      <div class="m-vxe-table-empty-text">{{EmptyText}}</div>
+                    </template>
+                  </vxe-table>
+                </div>
                 <el-pagination
                   @size-change="handleSpareRebateSizeChange"
                   @current-change="handleSpareRebateCurrentChange"
@@ -379,6 +387,7 @@ export default {
     id: {
       handler (val) {
         if (val && this.$refs.containerRef) {
+          // 使用容器的loadDetail方法加载详情数据，该方法内部会处理子表数据加载
           this.$refs.containerRef.loadDetail();
         }
       },
@@ -425,15 +434,19 @@ export default {
         currentPage: 1,
         pageSize: 10,
         total: 0
-      }
+      },
+      // 表格加载状态
+      vehicleRebateLoading: false,
+      vehicleCashLoading: false,
+      spareCashLoading: false,
+      spareRebateLoading: false
     };
   },
   mounted () {
-    // 当进入编辑页面时，如果ID存在，立即加载子表数据
+    // 当进入编辑页面时，如果ID存在，通过detailRequest加载主表数据，然后加载子表数据
+    // 注：主表数据加载完成后会在detailRequest中调用loadSubTableData，不需要在此处重复调用
     if (this._id) {
-      this.$nextTick(() => {
-        this.loadSubTableData();
-      });
+      // 此处无需额外处理，通过父组件edit-base-container调用detailRequest获取数据
     }
   },
   methods: {
@@ -442,8 +455,10 @@ export default {
       if (id) {
         // 获取主表数据
         return getDetail(id).then(mainRes => {
-          // 加载子表数据
-          this.loadSubTableData();
+          // 主表数据加载完成之后再加载子表数据
+          this.$nextTick(() => {
+            this.loadSubTableData();
+          });
           return mainRes;
         });
       }
@@ -464,6 +479,7 @@ export default {
     },
     // 加载整车返利对账流水数据
     loadVehicleRebateData () {
+      this.vehicleRebateLoading = true;
       const params = {
         dealerReconLetterId: this._id,
         pageNum: this.vehicleRebatePage.currentPage,
@@ -477,10 +493,13 @@ export default {
         console.error('加载整车返利对账流水数据失败:', error);
         this.vehicleRebateData = [];
         this.vehicleRebatePage.total = 0;
+      }).finally(() => {
+        this.vehicleRebateLoading = false;
       });
     },
     // 加载备件返利对账流水数据
     loadSpareRebateData () {
+      this.spareRebateLoading = true;
       const params = {
         dealerReconLetterId: this._id,
         pageNum: this.spareRebatePage.currentPage,
@@ -494,10 +513,13 @@ export default {
         console.error('加载备件返利对账流水数据失败:', error);
         this.spareRebateData = [];
         this.spareRebatePage.total = 0;
+      }).finally(() => {
+        this.spareRebateLoading = false;
       });
     },
     // 加载整车现金对账流水数据
     loadVehicleCashData () {
+      this.vehicleCashLoading = true;
       const params = {
         storeReconLetterId: this._id,
         pageNum: this.vehicleCashPage.currentPage,
@@ -511,10 +533,13 @@ export default {
         console.error('加载整车现金对账流水数据失败:', error);
         this.vehicleCashData = [];
         this.vehicleCashPage.total = 0;
+      }).finally(() => {
+        this.vehicleCashLoading = false;
       });
     },
     // 加载备件现金对账流水数据
     loadSpareCashData () {
+      this.spareCashLoading = true;
       const params = {
         dealerReconLetterId: this._id,
         pageNum: this.spareCashPage.currentPage,
@@ -528,6 +553,8 @@ export default {
         console.error('加载备件现金对账流水数据失败:', error);
         this.spareCashData = [];
         this.spareCashPage.total = 0;
+      }).finally(() => {
+        this.spareCashLoading = false;
       });
     },
     // 整车返利对账流水 - 每页数量改变
@@ -685,15 +712,11 @@ export default {
         // 立即显示"生成中"消息
         this.$message({
           type: 'info',
-          message: '对账单重新生成中...请稍后再查看...',
+          message: '对账单重新生成中...',
         });
 
         // 异步执行重新生成操作
         regenerateStatement(this._id).then(res => {
-          this.$message({
-            type: 'success',
-            message: '对账单重新生成成功!'
-          });
           // 刷新详情数据
           this.$refs.containerRef && this.$refs.containerRef.loadDetail();
         });

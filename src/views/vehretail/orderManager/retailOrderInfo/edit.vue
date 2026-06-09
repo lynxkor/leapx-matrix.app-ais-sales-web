@@ -24,6 +24,7 @@
           <el-button size="small" :loading="modifyConfigLoading" v-if="canOperateOrder && canChangeOrderMaterials && form.orderStatus === 3 && form.wholesaleBindStatus !== 1" @click="handleModifyConfiguration">修改配置</el-button>
           <el-button size="small" :loading="manualVehicleLoading" v-if="canOperateOrder && canManualLock && form.wholesaleBindStatus !== 1" @click="handleManualVehicleAllocation">手工配车</el-button>
           <el-button size="small" :loading="autoLockLoading" v-if="canOperateOrder && canAutoLock && form.wholesaleBindStatus !== 1" @click="handleAutoLockVehicle">自动锁车</el-button>
+          <el-button size="small" :loading="unlockLoading" v-if="canPerUnlock" v-permission="moduleKey+'-perUnlock'" @click="handleUnlock">取消锁车</el-button>
           <el-button size="small" :loading="agreementLoading" v-if="canQuerySnapShot" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
           <el-button size="small" v-if="canOperateOrder && canRetailOrderRefund && !(form.orderStatus === 15 || form.orderStatus === 10 || (form.orderStatus === 7 && form.deliveryOrder && form.deliveryOrder.status === 5))" @click="handleOrderRefund">订单退订</el-button>
           <el-button size="small" :loading="changeApplyLoading" v-if="canOperateOrder && canRetailOrderChangeApply && form.orderStatus !== 10" @click="handleCarOwnerChangeApplication">购车人变更申请</el-button>
@@ -406,6 +407,13 @@
         <!-- 右侧栏组件，自行开发 -->
       </div>
     </template>
+    <unlock-dialog
+      ref="unlockDialog"
+      :businessId="_id"
+      :row="form"
+      :accountFlag="accountFlag"
+      @refresh="getDetailData"
+    />
 
     <!-- 设置特殊备注 -->
     <el-dialog
@@ -435,7 +443,7 @@
 </template>
 
 <script>
-import { getDetail, addOrUpdate, autoLock, querySnapShot, setSpecialRemark, getUnbindContractUrl, getDetailDecryptField } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getDetail, addOrUpdate, autoLock, querySnapShot, setSpecialRemark, getUnbindContractUrl, getDetailDecryptField, getOrderUnlockConfig, getSysConfigParamValue } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -445,6 +453,7 @@ import { getList as orderUnlockApplyList } from '@/api/vehretail/orderManager/or
 import { getList as orderLockRecordList } from '@/api/vehretail/orderManager/orderLockRecord/index';
 import { getList as refundApplyList } from '@/api/vehretail/orderRefund/refundApply/index';
 import { getList as orderPayRecordList } from '@/api/vehretail/orderManager/orderPayRecord/index';
+import { getList as dealerCommitmentList } from '@/api/vehretail/orderManager/dealerCommitmentRecord/index';
 import {
   retailOrderDisplayFields,
   carOwnerDisplayFields,
@@ -461,9 +470,10 @@ import {
   lockCarRecordDisplayFields,
   orderTransparencyTrackingDisplayFields,
   orderCancellationRecordDisplayFields,
-  orderPaymentRecordDisplayFields
+  orderPaymentRecordDisplayFields,
+  dealerCommitmentDisplayFields
 } from './components/fieldConfigs'; // 引入字段配置
-import ComponentTable from './components/ComponentTable';
+import ComponentTable from '@/libs/components/ComponentTable';
 import GenericDetailDisplay from './components/GenericDetailDisplay';
 import NavTop from './components/NavTop';
 import { getEnum, loginUserGet, engineerList } from '@/libs/api/common';
@@ -474,6 +484,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import MaterialsDialog from './components/MaterialsDialog';
 import PurchaseAgreementDialog from './components/PurchaseAgreementDialog';
 import VinDialog from './components/VinDialog';
+import UnlockDialog from './components/UnlockDialog';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -534,7 +545,8 @@ export default {
     GenericDetailDisplay,
     EditPageLayout,
     EditBaseContainer,
-    FetchSelect
+    FetchSelect,
+    UnlockDialog
   },
   computed: {
     _id () {
@@ -550,6 +562,10 @@ export default {
     // 购车人信息 formData：直接指向 form.carOwner 引用，便于 LPEncrypted 解密后同步回 form
     carOwnerFormData () {
       return this.form.carOwner || {};
+    },
+    canPerUnlock () {
+      // 订单处于锁车状态（lockStatus === 1）时才显示取消锁车按钮
+      return this.form.lockStatus === 1;
     }
   },
   watch: {
@@ -591,6 +607,7 @@ export default {
       orderRefundLoading: false, // 订单退订的 loading 状态
       changeApplyLoading: false, // 购车人变更申请的 loading 状态
       qualityIssueLoading: false, // 质量问题解绑申请的 loading 状态
+      unlockLoading: false, // 取消锁车的 loading 状态
       // 权限控制
       canSetSpecialRemark: false, // 设置特殊标识
       canChangeOrderMaterials: false, // 修改配置
@@ -689,6 +706,13 @@ export default {
           sectionId: 'order-pay-record',
           columns: this.convertToTableColumns(orderPaymentRecordDisplayFields),
           apiMethod: orderPayRecordList // 后续引入 API 方法
+        },
+        {
+          title: '门店承诺记录',
+          // field: 'dealerCommitmentList',
+          sectionId: 'dealer-commitment-record',
+          columns: this.convertToTableColumns(dealerCommitmentDisplayFields),
+          apiMethod: dealerCommitmentList
         }
       ],
       navItems: [
@@ -709,7 +733,8 @@ export default {
         { id: 'lock-car-record', title: '锁车记录', href: '#lock-car-record' },
         { id: 'order-transparency-tracking', title: '订单透明化状态跟踪', href: '#order-transparency-tracking' },
         { id: 'order-cancellation-record', title: '订单退订记录', href: '#order-cancellation-record' },
-        { id: 'order-pay-record', title: '订单收款记录', href: '#order-pay-record' }
+        { id: 'order-pay-record', title: '订单收款记录', href: '#order-pay-record' },
+        { id: 'dealer-commitment-record', title: '门店承诺记录', href: '#dealer-commitment-record' }
       ],
       activeSection: 'basic-info',
       isNavCollapsed: false,
@@ -752,6 +777,7 @@ export default {
   },
   methods: {
     orderPayRecordList,
+    dealerCommitmentList,
     refundApplyList,
     orderLockRecordList,
     orderUnlockApplyList,
@@ -811,6 +837,40 @@ export default {
       }
       this.$refs.materialsDialog.show();
       this.modifyConfigLoading = false;
+    },
+    // 取消锁车
+    async handleUnlock () {
+      this.unlockLoading = true;
+      this.row = { ...this.form, id: this._id };
+      try {
+        if (this.form.wholesaleBindStatus !== 1) {
+          this.$message.error('非批售状态不可以取消配车');
+          return;
+        }
+        const res = await getOrderUnlockConfig(this.row.retailOrderCode);
+        if (!res || res.allowUnlockStatus !== 1) {
+          this.$message.error('该门店暂无该车型取消锁车权限');
+          return;
+        }
+        const res1 = await getSysConfigParamValue({ paramCode: 'veretailUnlockConfigCount' });
+        const unlockConfigCount = res1?.paramValue !== null && res1?.paramValue !== undefined ? Number(res1.paramValue) : 1;
+        if (this.accountFlag && this.row.unlockCount >= unlockConfigCount) {
+          this.$message.error('该订单取消配车次数已达上限');
+          return;
+        }
+        const param = {
+          [this.accountFlag ? 'storeUnlockStatus' : 'factoryUnlockStatus']: '1'
+        };
+        this.$refs.unlockDialog.show(
+          { materialsCode: this.form.materials.materialsCode, saleDealerCode: this.row.saleDealerCode },
+          param
+        );
+      } catch (error) {
+        console.error('handleUnlock failed', error);
+        this.$message.error('取消锁车失败，请稍后重试');
+      } finally {
+        this.unlockLoading = false;
+      }
     },
     // 初始化权限
     initPermissions () {
@@ -939,7 +999,13 @@ export default {
       return displayFields.map(field => ({
         field: field.key,
         title: field.label,
-        width: field.label || 150 // 默认宽度，可根据需要调整
+        width: field.label || 150, // 默认宽度，可根据需要调整
+        // 透传跳转相关字段，ComponentTable 据此渲染可点击的链接
+        link: field.link,
+        paramKey: field.paramKey,
+        paramName: field.paramName,
+        target: field.target,
+        encrypted: field.encrypted
       }));
     },
     getDetailData () {
