@@ -129,6 +129,7 @@
         :option-obj="optionObj"
         :get-config="getConfig"
         :save-or-update="saveOrUpdate"
+        :checkbox-config="{ checkMethod: checkBoxCheckMethod }"
         @paginationChange="paginationChange"
         @handleSelect="handleSelectionChange"
         @listSelect="handleListSelect"
@@ -263,6 +264,10 @@ export default {
     this.getData();
   },
   methods: {
+    checkBoxCheckMethod ({ row }) {
+      // executeResult 为 8 或 9 时禁用复选框
+      return row.executeResult !== 8 && row.executeResult !== 9;
+    },
     handleListSelect (row) {
       this.clickItemId = row.id;
     },
