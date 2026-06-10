@@ -373,11 +373,16 @@ export default {
       })
         .then((res) => {
           console.log(res);
-          this.optionObj.dataList = res.records.map((item) => ({
+          this.optionObj.dataList = (res?.records || []).map((item) => ({
             ...item,
             deleteLoading: false,
           }));
-          this.optionObj.total = res.total;
+          this.optionObj.total = res?.total || 0;
+        })
+        .catch((err) => {
+          console.error('获取车型交付配置列表失败:', err);
+          this.optionObj.dataList = [];
+          this.optionObj.total = 0;
         })
         .finally(() => {
           this.loading = false;

@@ -195,6 +195,7 @@ export default {
           { props: 'latestSettleDateTime', label: '最近结算时间', visible: true, width: 200 },
           { props: 'effectiveTime', label: '额度生效日期', visible: true, width: 200 },
           { props: 'expireTime', label: '额度失效日期', visible: true, width: 200 },
+          { props: 'valid', label: '额度是否有效', visible: true, width: 200, formatter: (val) => val ? '是' : '否' },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           // { props: 'creatorName', label: '创建人', visible: true, width: 200 },
@@ -314,6 +315,7 @@ export default {
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item,
+              valid: item.valid ? '是' : '否',
               deleteLoading: false
             };
           });

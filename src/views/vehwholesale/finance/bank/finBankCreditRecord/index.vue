@@ -28,10 +28,10 @@
           clearable
           remote
           multiple
-          v-model="form.dealerCompanyNames"
+          v-model="form.dealerCompanyCodesByNames"
           :param="form.dealerCompanyName"
           :remote-method="getDealerParentOrgListByName"
-          value-key="companyName"
+          value-key="companyCode"
           label-key="companyName"
         />
       </el-form-item>

@@ -343,6 +343,7 @@ export default {
       // 权限前缀
       moduleKey: 'AISVRTE-event',
       loading: false,
+      systemPrefix: 'VW',
       submitLoading: false,
       form: { ...form },
       originalForm: { ...form },
@@ -403,7 +404,7 @@ export default {
       }
     },
     submitRequest () {
-      return addOrUpdate({ ...this.form });
+      return addOrUpdate({ ...this.form }, this.$route.query.systemPrefix);
     },
     openPane () {
       this.$refs.editLayout.openPane();
