@@ -930,7 +930,11 @@ export default {
       return differentFields;
     },
     // 提交操作
-    handleSubmit () {
+    async handleSubmit () {
+      // 确保门店库存信息已加载
+      if (this.form.vin && !this.form.reservationStatus) {
+        await this.refreshStoreInventoryLedger(this.form.vin);
+      }
       // 试乘试驾车校验
       if (this.form.reservationStatus === 10 && this.form.vehiclePurpose !== 30) {
         this.$confirm(
@@ -1130,8 +1134,9 @@ export default {
         this.refreshStoreInventoryLedger(this.form.vin);
       }
     },
+    // 返回 Promise，便于在 handleSubmit 中 await，确保 reservationStatus 已同步赋值
     refreshStoreInventoryLedger (vin) {
-      getStoreInventory({
+      return getStoreInventory({
         vinLike: this.form.vin,
         vechicleStatusList: [11, 12, 13, 16, 20, 25],
         pageSize: 1
@@ -1152,6 +1157,7 @@ export default {
             }
           }
         }
+        return res;
       });
     },
     vehiclePurposeChange (val) {

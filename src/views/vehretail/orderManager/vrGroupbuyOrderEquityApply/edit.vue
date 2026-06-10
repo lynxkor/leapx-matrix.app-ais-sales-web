@@ -915,10 +915,10 @@ export default {
         auditStatus: this.form.auditStatus
       }).then(res => {
         this.auditorList = res.auditorList || [];
-      }).finally(() => {
-        this.auditorLoading = false;
       }).catch((error) => {
         this.$message.error('获取审核人员失败：' + (error.message || '未知错误'));
+      }).finally(() => {
+        this.auditorLoading = false;
       });
     },
 

@@ -844,7 +844,7 @@ export default {
       this.row = { ...this.form, id: this._id };
       try {
         if (this.form.wholesaleBindStatus !== 1) {
-          this.$message.error('非批售状态不可以取消配车');
+          this.$message.error('非锁批售状态不可以取消配车');
           return;
         }
         const res = await getOrderUnlockConfig(this.row.retailOrderCode);

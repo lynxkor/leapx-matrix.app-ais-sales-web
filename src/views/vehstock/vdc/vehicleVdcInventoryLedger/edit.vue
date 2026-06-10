@@ -603,8 +603,9 @@ export default {
         }
       }
     },
-    'form.reservedType' () {
+    'form.reservedType' (newVal, oldVal) {
       // 销售预留类型变化后,如果 allOptions 已就绪,重新过滤 options,确保下拉与销售预留联动
+      if (newVal === oldVal) return;
       if (this.allOptions && this.allOptions.length) {
         this.updateOptionsByReserved();
       }
