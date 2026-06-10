@@ -227,7 +227,7 @@
                   {{ form.activityName }}
                 </el-form-item>
                  <el-form-item label="车系名称：" prop="seriesName">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleSeries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                   <el-form-item label="允许锁零售单：" prop="allowLockRetailLabel">
                   {{ form.allowLockRetailLabel }}
@@ -254,13 +254,13 @@
                   {{ form.applyOrderCategoryLabel }}
                 </el-form-item>
                 <el-form-item label="系列名称：" prop="modelLineName">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodelline/edit?id=${form.modelLineId}`" target="_blank">{{ form.modelLineName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleModelLine/edit?id=${form.modelLineId}`" target="_blank">{{ form.modelLineName }}</el-link>
                 </el-form-item>
                   <el-form-item label="年款名称：" prop="yearTypeName">
-                     <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${form.yearTypeId}`" target="_blank">{{ form.yearTypeName }}</el-link>
+                     <el-link type="primary" :href="`/sales/datacenter/materials/vehicleYearType/edit?id=${form.yearTypeId}`" target="_blank">{{ form.yearTypeName }}</el-link>
                 </el-form-item>
                   <el-form-item label="物料编码：" prop="materialsCode">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsId}`" target="_blank">{{ form.materialsCode }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.materialsId}`" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                   <el-form-item label="物料描述：" prop="materialsDesc">
                   {{ form.materialsDesc }}

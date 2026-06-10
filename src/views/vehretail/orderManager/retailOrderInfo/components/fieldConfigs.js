@@ -83,7 +83,7 @@ export const lockAllocationDisplayFields = [
   {
     key: 'materialsCode',
     label: '订单物料码',
-    link: '/sales/datacenter/materials/vehiclematerials/edit',
+    link: '/sales/datacenter/materials/vehicleMaterials/edit',
     paramKey: 'materialsId'
   },
   { key: 'allocationMaterialCode', label: '配车物料编码' },

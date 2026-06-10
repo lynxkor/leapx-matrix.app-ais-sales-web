@@ -334,16 +334,16 @@
                   {{ form.wholesaleWayLabel }}
                 </el-form-item>
                 <el-form-item label="专项活动名称：" prop="prodScheduleActivity">
-                  <el-link type="primary" :href="`/sales/vehwholesale/basic/wholesaleprodscheduleactivity/edit?id=${form.prodScheduleActivityId}`" target="_blank">{{ form.prodScheduleActivity }}</el-link>
+                  <el-link type="primary" :href="`/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=${form.prodScheduleActivityId}`" target="_blank">{{ form.prodScheduleActivity }}</el-link>
                 </el-form-item>
                 <el-form-item label="申请类别：" prop="applyCategory">
                   {{ form.applyCategoryLabel }}
                 </el-form-item>
                 <el-form-item label="车系名称：" prop="seriesName">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleSeries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleModel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="订单分类：" prop="orderCategory">
                   {{ form.orderCategoryLabel }}
@@ -358,7 +358,7 @@
                   {{ form.applyQty }}
                 </el-form-item>
                 <el-form-item label="物料编码：" prop="materialsCode">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="物料描述：" prop="materialsDesc">
                   {{ form.materialsDesc }}

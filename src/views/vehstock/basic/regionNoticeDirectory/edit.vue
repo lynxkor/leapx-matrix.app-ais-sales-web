@@ -85,7 +85,7 @@
                   {{ form.cityName }}
                 </el-form-item>
                 <el-form-item label="销售公告车型名称：">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleregisteredmodel/edit?id=${form.vehicleRegisteredModelId}`" target="_blank">{{ form.registeredModelName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleRegisteredModel/edit?id=${form.vehicleRegisteredModelId}`" target="_blank">{{ form.registeredModelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="状态：">
                   {{ form.statusLabel }}

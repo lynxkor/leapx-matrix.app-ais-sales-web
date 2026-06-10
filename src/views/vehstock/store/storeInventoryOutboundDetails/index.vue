@@ -129,7 +129,7 @@ export default {
           { props: 'rangePowerName', label: '选配动力', visible: true, width: 120 },
           { props: 'exteriorName', label: '外观', visible: true, width: 100 },
           { props: 'interiorName', label: '内饰', visible: true, width: 100 },
-          // { props: 'seriesName', label: '车系', visible: true, width: 100, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleseries/edit?id=${row.seriesId}`, '_blank'); }, type: 'primary' }] },
+          // { props: 'seriesName', label: '车系', visible: true, width: 100, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`, '_blank'); }, type: 'primary' }] },
           { props: 'modelName', label: '车型', visible: true, width: 120 },
           { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 120 },
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },

@@ -661,7 +661,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.orderMaterialsId}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.orderMaterialsId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -673,14 +673,14 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.orderMaterialsId}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.orderMaterialsId}`, '_blank');
               },
               type: 'primary'
             }]
           },
           { props: 'allocateTime', label: '配车时间', visible: true, width: 200 },
           { props: 'settleTime', label: '结算时间', visible: true, width: 200 },
-          { props: 'materialsCode', label: '配车物料码', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'materialsCode', label: '配车物料码', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'vin', label: '配车VIN码', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }] },
           { props: 'replenishApplyCode', label: '整车补货单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/replenish/dealerVehicleReplenishApply/edit?id=${row.replenishApplyCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'regionName', label: '所属大区', visible: true, width: 200 },
@@ -710,7 +710,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehicleinterior/edit?id=${row.interiorId}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehicleInterior/edit?id=${row.interiorId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -722,7 +722,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehiclemodel/edit?id=${row.modelId}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -734,7 +734,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehicleexterior/edit?id=${row.exteriorId}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehicleExterior/edit?id=${row.exteriorId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -747,7 +747,7 @@ export default {
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  window.open(`/sales/datacenter/materials/vehiclewheelhub/edit?id=${row.wheelHubId}`, '_blank');
+                  window.open(`/sales/datacenter/materials/vehicleWheelHub/edit?id=${row.wheelHubId}`, '_blank');
                 },
                 type: 'primary'
               }
@@ -785,7 +785,7 @@ export default {
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  window.open(`/sales/datacenter/materials/vehicleyeartype/edit?id=${row.yearTypeId}`, '_blank');
+                  window.open(`/sales/datacenter/materials/vehicleYearType/edit?id=${row.yearTypeId}`, '_blank');
                 },
                 type: 'primary'
               }

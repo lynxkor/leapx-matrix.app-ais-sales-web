@@ -104,7 +104,7 @@
                 >
                   <vxe-column field="financeProductName" title="金融产品" min-width="150" />
                   <vxe-column field="installmentPeriods" title="分期期数" min-width="120" />
-                  <vxe-column field="annualRate" title="年化利率(%)" min-width="120" />
+                  <vxe-column field="annualInterestRate" title="年化利率(%)" min-width="120" />
                   <vxe-column field="feeRate" title="费率(%)" min-width="120" />
                   <vxe-column field="commissionRate" title="返佣率(%)" min-width="120" />
                   <vxe-column field="createTime" title="创建时间" min-width="180" />

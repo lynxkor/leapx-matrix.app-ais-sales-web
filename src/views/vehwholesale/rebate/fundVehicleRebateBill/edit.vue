@@ -73,7 +73,7 @@
                   <el-link type="primary" :href="`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`" target="_blank">{{ row.seriesName }}</el-link>
                 </template>
                 <template #budgetItemName="{ row }">
-                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundbudgetitem/edit?id=${row.budgetItemId}`" target="_blank">{{ row.budgetItemName }}</el-link>
+                  <el-link type="primary" :href="`/sales/vehwholesale/fund/fundBudgetItem/edit?id=${row.budgetItemId}`" target="_blank">{{ row.budgetItemName }}</el-link>
                 </template>
                 <template #feeSupportTypeName="{ row }">
                   <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFeeSupportType/edit?id=${row.feeSupportTypeId}`" target="_blank">{{ row.feeSupportTypeName }}</el-link>

@@ -283,7 +283,7 @@ export default {
             width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open('/sales/datacenter/materials/vehicleseries/edit?id=' + row.seriesId, '_blank');
+                window.open('/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId, '_blank');
               },
               type: 'primary'
             }]

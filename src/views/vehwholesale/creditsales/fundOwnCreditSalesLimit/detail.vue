@@ -74,6 +74,9 @@
             <el-form-item label="额度失效日期：" prop="expireTime">
               {{ info.expireTime  }}
             </el-form-item>
+            <el-form-item label="额度是否有效：" prop="valid">
+              {{ info.valid ? '是' : '否' }}
+            </el-form-item>
             <el-form-item label="最近结算时间：" prop="latestSettleDateTime">
               {{ info.latestSettleDateTime  }}
             </el-form-item>

@@ -127,16 +127,16 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="车系名称：" prop="seriesName">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleSeries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleModel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="年款名称：" prop="yearTypeName">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${form.yearTypeId}`" target="_blank">{{ form.yearTypeName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleYearType/edit?id=${form.yearTypeId}`" target="_blank">{{ form.yearTypeName }}</el-link>
                 </el-form-item>
                 <el-form-item label="选装包名称：" prop="optionPackageName">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleoptionpackage/edit?id=${form.optionPackageId}`" target="_blank">{{ form.optionPackageName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleOptionPackage/edit?id=${form.optionPackageId}`" target="_blank">{{ form.optionPackageName }}</el-link>
                 </el-form-item>
                 <el-form-item label="车型定义：" prop="modelDefinition">
                   {{ form.modelDefinition }}

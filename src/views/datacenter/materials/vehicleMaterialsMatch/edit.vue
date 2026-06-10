@@ -50,7 +50,7 @@
               <!-- 详情模式 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="物料编码：">
-                  <el-link v-if="form.materials?.materialsCode" type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materials.materialsCode}`" target="_blank">
+                  <el-link v-if="form.materials?.materialsCode" type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.materials.materialsCode}`" target="_blank">
                     {{ form.materials?.materialsCode }}
                   </el-link>
                   <span v-else>{{ form.materials?.materialsCode }}</span>
@@ -63,7 +63,7 @@
                   <el-link v-if="getMatchHref(field.key)" type="primary" :href="getMatchHref(field.key)" target="_blank">
                     {{ form.materials[field.key.replace('Id', 'Name')] || form.materials[field.key] || '' }}
                   </el-link>
-                  <el-link v-else-if="field.key === 'materialsDesc' && form.materials?.materialsCode" type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materials.materialsCode}`" target="_blank">
+                  <el-link v-else-if="field.key === 'materialsDesc' && form.materials?.materialsCode" type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.materials.materialsCode}`" target="_blank">
                     {{ form.materials[field.key] || '' }}
                   </el-link>
                   <span v-else>{{ form.materials[field.key] || '' }}</span>
@@ -109,7 +109,7 @@
               <!-- 详情模式 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="可配物料编码：">
-                  <el-link v-if="form.matchMaterials?.materialsCode" type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.matchMaterials.materialsCode}`" target="_blank">
+                  <el-link v-if="form.matchMaterials?.materialsCode" type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.matchMaterials.materialsCode}`" target="_blank">
                     {{ form.matchMaterials?.materialsCode }}
                   </el-link>
                   <span v-else>{{ form.matchMaterials?.materialsCode }}</span>
@@ -122,7 +122,7 @@
                   <el-link v-if="getMatchMaterialsHref(field.key)" type="primary" :href="getMatchMaterialsHref(field.key)" target="_blank">
                     {{ form.matchMaterials[field.key.replace('Id', 'Name')] || form.matchMaterials[field.key] || '' }}
                   </el-link>
-                  <el-link v-else-if="field.key === 'materialsDesc' && form.matchMaterials?.materialsCode" type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.matchMaterials.materialsCode}`" target="_blank">
+                  <el-link v-else-if="field.key === 'materialsDesc' && form.matchMaterials?.materialsCode" type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.matchMaterials.materialsCode}`" target="_blank">
                     {{ form.matchMaterials[field.key] || '' }}
                   </el-link>
                   <span v-else>{{ form.matchMaterials[field.key] || '' }}</span>
@@ -370,15 +370,15 @@ export default {
       const id = this.form.materials?.[idKey];
       if (!id) return null;
       const routeMap = {
-        seriesId: '/sales/datacenter/materials/vehicleseries/edit',
-        modelId: '/sales/datacenter/materials/vehiclemodel/edit',
-        yearTypeId: '/sales/datacenter/materials/vehicleyeartype/edit',
-        exteriorId: '/sales/datacenter/materials/vehicleexterior/edit',
-        interiorId: '/sales/datacenter/materials/vehicleinterior/edit',
-        roofId: '/sales/datacenter/materials/vehicleroof/edit',
-        wheelHubId: '/sales/datacenter/materials/vehiclewheelhub/edit',
-        optionPackageId: '/sales/datacenter/materials/vehicleoptionpackage/edit',
-        batteryCellId: '/sales/datacenter/materials/vehiclebatterycell/edit'
+        seriesId: '/sales/datacenter/materials/vehicleSeries/edit',
+        modelId: '/sales/datacenter/materials/vehicleModel/edit',
+        yearTypeId: '/sales/datacenter/materials/vehicleYearType/edit',
+        exteriorId: '/sales/datacenter/materials/vehicleExterior/edit',
+        interiorId: '/sales/datacenter/materials/vehicleInterior/edit',
+        roofId: '/sales/datacenter/materials/vehicleRoof/edit',
+        wheelHubId: '/sales/datacenter/materials/vehicleWheelHub/edit',
+        optionPackageId: '/sales/datacenter/materials/vehicleOptionPackage/edit',
+        batteryCellId: '/sales/datacenter/materials/vehicleBatteryCell/edit'
       };
       return routeMap[idKey] ? `${routeMap[idKey]}?id=${id}` : null;
     },
@@ -388,15 +388,15 @@ export default {
       const id = this.form.matchMaterials?.[idKey];
       if (!id) return null;
       const routeMap = {
-        seriesId: '/sales/datacenter/materials/vehicleseries/edit',
-        modelId: '/sales/datacenter/materials/vehiclemodel/edit',
-        yearTypeId: '/sales/datacenter/materials/vehicleyeartype/edit',
-        exteriorId: '/sales/datacenter/materials/vehicleexterior/edit',
-        interiorId: '/sales/datacenter/materials/vehicleinterior/edit',
-        roofId: '/sales/datacenter/materials/vehicleroof/edit',
-        wheelHubId: '/sales/datacenter/materials/vehiclewheelhub/edit',
-        optionPackageId: '/sales/datacenter/materials/vehicleoptionpackage/edit',
-        batteryCellId: '/sales/datacenter/materials/vehiclebatterycell/edit'
+        seriesId: '/sales/datacenter/materials/vehicleSeries/edit',
+        modelId: '/sales/datacenter/materials/vehicleModel/edit',
+        yearTypeId: '/sales/datacenter/materials/vehicleYearType/edit',
+        exteriorId: '/sales/datacenter/materials/vehicleExterior/edit',
+        interiorId: '/sales/datacenter/materials/vehicleInterior/edit',
+        roofId: '/sales/datacenter/materials/vehicleRoof/edit',
+        wheelHubId: '/sales/datacenter/materials/vehicleWheelHub/edit',
+        optionPackageId: '/sales/datacenter/materials/vehicleOptionPackage/edit',
+        batteryCellId: '/sales/datacenter/materials/vehicleBatteryCell/edit'
       };
       return routeMap[idKey] ? `${routeMap[idKey]}?id=${id}` : null;
     }

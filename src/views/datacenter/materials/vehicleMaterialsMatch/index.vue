@@ -183,7 +183,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsCode}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsCode}`, '_blank');
               },
               type: 'primary'
             }]
@@ -196,7 +196,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.matchMaterialsCode}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.matchMaterialsCode}`, '_blank');
               },
               type: 'primary'
             }]

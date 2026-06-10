@@ -261,7 +261,7 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsCode}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsCode}`, '_blank');
               },
               type: 'primary'
             }]

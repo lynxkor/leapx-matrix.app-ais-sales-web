@@ -57,7 +57,7 @@
               <!-- 详情模式 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="车系：">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleSeries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="批售目标数：">
                   {{ form.wholesaleTargetQty }}

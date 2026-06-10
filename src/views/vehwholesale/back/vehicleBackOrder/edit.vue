@@ -945,7 +945,7 @@ export default {
       }
 
       return addOrUpdate({ ...this.form }).then(() => {
-        this.$refs.containerRef.loadDetail();
+        this.loadDetail();
       }).finally(() => {});
     },
     // 打开侧边栏

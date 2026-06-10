@@ -23,6 +23,9 @@
         <tag-input v-model="form.wholesaleOrderCodeList" clearable placeholder="请输入" />
       </el-form-item>
       <template v-if="show">
+      <el-form-item label="整车订单号">
+        <tag-input v-model="form.retailOrderCodeList" clearable placeholder="请输入" />
+      </el-form-item>
       <el-form-item label="整车订单状态">
         <fetch-select
           :request="fetchOptions"
@@ -212,7 +215,7 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-       <el-button v-permission="moduleKey+'-perUnlock'" size="small" :disabled="selectionList.length !== 1 || (selectionList.length > 0 && selectionList[0].lockStatus === 0)" @click="handleUnlock">取消锁车</el-button>
+       <!-- <el-button v-permission="moduleKey+'-perUnlock'" size="small" :disabled="selectionList.length !== 1 || (selectionList.length > 0 && selectionList[0].lockStatus === 0)" @click="handleUnlock">取消锁车</el-button> -->
        <el-button v-permission="moduleKey+'-batchUnlock'" size="small" :disabled="selectionList.length === 0 || accountFlag !== false" @click="handleBatchUnlock">批量取消锁车</el-button>
        <el-button v-permission="moduleKey+'-changeSaleDealer'" size="small" @click="handleChangeDealer('sales')" :disabled="selectionList.length === 0">更换销售门店</el-button>
        <el-button v-permission="moduleKey+'-changeDeliveryDealer'" size="small" @click="handleChangeDealer('support')" :disabled="selectionList.length === 0">更换交付门店</el-button>
@@ -302,6 +305,7 @@ const defaultForm = {
   area: [],
   mallOrderCodeList: [],
   wholesaleOrderCodeList: [],
+  retailOrderCodeList: [],
   matchVinList: [],
   materialsCodeList: [],
   carBuyerParams: '',

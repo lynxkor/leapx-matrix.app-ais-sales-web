@@ -283,7 +283,7 @@
                   <el-link type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${form.wholesaleOrderCode}`" target="_blank">{{ form.wholesaleOrderCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="车系名称：" prop="seriesName">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleSeries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="企业客户整车订单号：" prop="entOrderCode">
                   <el-link type="primary" :href="`/sales/vehwholesale/entorder/entVehicleOrder/edit?id=${form.entOrderCode}`" target="_blank">{{ form.entOrderCode }}</el-link>
@@ -307,7 +307,7 @@
                   {{ form.returnRebateAmount }}
                 </el-form-item>
                 <el-form-item label="车型：" prop="modelName">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleModel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="门店出库确认人：" prop="storeOutboundConfirmer">
                   {{ form.storeOutboundConfirmer }}

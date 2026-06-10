@@ -300,7 +300,7 @@
                   {{ form.orderTime }}
                 </el-form-item>
                 <el-form-item label="订单物料编码：" prop="orderMaterialsCode">
-                    <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.orderMaterialsCode}`" target="_blank">{{ form.orderMaterialsCode }}</el-link>
+                    <el-link type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.orderMaterialsCode}`" target="_blank">{{ form.orderMaterialsCode }}</el-link>
                 </el-form-item>
                  <el-form-item label="物料描述：" prop="orderMaterialsDesc">
                    {{ form.orderMaterialsDesc }}
@@ -668,7 +668,7 @@
                   {{ form.allocateWayLabel }}
                 </el-form-item>
                 <el-form-item label="配车物料码：" prop="materialsCode">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="配车物料描述：" prop="materialsDesc">
                   {{ form.materialsDesc }}

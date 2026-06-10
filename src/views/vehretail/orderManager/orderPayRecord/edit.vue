@@ -25,7 +25,7 @@
             <div class="common-section-body">
               <el-form :inline="true" class="form-detail">
                 <el-form-item label="整车订单：" prop="retailOrderCode">
-                  <el-link v-if="form.retailOrderId" type="primary" :href="`/sales/vehretail/ordermanager/retailorderinfo/edit?id=${form.retailOrderId}`" target="_blank">{{ form.retailOrderCode }}</el-link><span v-else>{{ form.retailOrderCode }}</span>
+                  <el-link v-if="form.retailOrderId" type="primary" :href="`/sales/vehretail/orderManager/retailOrderInfo/edit?id=${form.retailOrderId}`" target="_blank">{{ form.retailOrderCode }}</el-link><span v-else>{{ form.retailOrderCode }}</span>
                 </el-form-item>
                 <el-form-item label="门店：" prop="saleDealerName">
                   <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
@@ -140,7 +140,7 @@
                   {{ form.payCode }}
                 </el-form-item>
                 <el-form-item v-if="type !== 'all'" label="整车订单：" prop="retailOrderCode">
-                  <el-link v-if="form.retailOrderId" type="primary" :href="`/sales/vehretail/ordermanager/retailorderinfo/edit?id=${form.retailOrderId}`" target="_blank">{{ form.retailOrderCode }}</el-link><span v-else>{{ form.retailOrderCode }}</span>
+                  <el-link v-if="form.retailOrderId" type="primary" :href="`/sales/vehretail/orderManager/retailOrderInfo/edit?id=${form.retailOrderId}`" target="_blank">{{ form.retailOrderCode }}</el-link><span v-else>{{ form.retailOrderCode }}</span>
                 </el-form-item>
                 <el-form-item v-if="type !== 'all'" label="门店：" prop="saleDealerName">
                   <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>

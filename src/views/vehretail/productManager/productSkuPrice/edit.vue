@@ -145,7 +145,7 @@
                   </el-link>
                 </el-form-item>
                 <el-form-item label="整车物料：">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.vehicleMaterialsId}`" target="_blank">
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.vehicleMaterialsId}`" target="_blank">
                     {{ form.materialsCode }}
                   </el-link>
                 </el-form-item>
