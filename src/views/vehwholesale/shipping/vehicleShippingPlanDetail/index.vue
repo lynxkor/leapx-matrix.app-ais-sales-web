@@ -442,7 +442,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsId}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -455,7 +455,7 @@ export default {
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  window.open(`/sales/datacenter/materials/vehicledrivingrange/edit?id=${row.drivingRangeId}`, '_blank');
+                  window.open(`/sales/datacenter/materials/vehicleDrivingRange/edit?id=${row.drivingRangeId}`, '_blank');
                 },
                 type: 'primary'
               }
@@ -469,7 +469,7 @@ export default {
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  window.open(`/sales/datacenter/materials/vehiclerangepower/edit?id=${row.rangePowerId}`, '_blank');
+                  window.open(`/sales/datacenter/materials/vehicleRangePower/edit?id=${row.rangePowerId}`, '_blank');
                 },
                 type: 'primary'
               }
@@ -483,7 +483,7 @@ export default {
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  window.open(`/sales/datacenter/materials/vehicleexterior/edit?id=${row.exteriorId}`, '_blank');
+                  window.open(`/sales/datacenter/materials/vehicleExterior/edit?id=${row.exteriorId}`, '_blank');
                 },
                 type: 'primary'
               }
@@ -497,7 +497,7 @@ export default {
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  window.open(`/sales/datacenter/materials/vehicleinterior/edit?id=${row.interiorId}`, '_blank');
+                  window.open(`/sales/datacenter/materials/vehicleInterior/edit?id=${row.interiorId}`, '_blank');
                 },
                 type: 'primary'
               }
@@ -510,7 +510,7 @@ export default {
             width: 150,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehiclemodel/edit?id=${row.modelId}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -522,7 +522,7 @@ export default {
             width: 150,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open(`/sales/datacenter/materials/vehicleseries/edit?id=${row.seriesId}`, '_blank');
+                window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`, '_blank');
               },
               type: 'primary'
             }]
@@ -535,7 +535,7 @@ export default {
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  window.open(`/sales/datacenter/materials/vehiclewheelhub/edit?id=${row.wheelHubId}`, '_blank');
+                  window.open(`/sales/datacenter/materials/vehicleWheelHub/edit?id=${row.wheelHubId}`, '_blank');
                 },
                 type: 'primary'
               }
@@ -549,7 +549,7 @@ export default {
             buttons: [
               {
                 click: (rowIndex, row) => {
-                  window.open(`/sales/datacenter/materials/vehicleoptionpackage/edit?id=${row.optionPackageId}`, '_blank');
+                  window.open(`/sales/datacenter/materials/vehicleOptionPackage/edit?id=${row.optionPackageId}`, '_blank');
                 },
                 type: 'primary'
               }

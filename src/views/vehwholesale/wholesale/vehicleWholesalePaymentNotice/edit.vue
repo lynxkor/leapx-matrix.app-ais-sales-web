@@ -133,7 +133,7 @@
                   </vxe-column>
                   <vxe-column field="materialsCode" title="物料编码">
                     <template #default="{ row }">
-                      <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsCode}`" target="_blank">{{ row.materialsCode }}</el-link>
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsCode}`" target="_blank">{{ row.materialsCode }}</el-link>
                     </template>
                   </vxe-column>
                   <vxe-column field="orderCategoryLabel" title="订单分类" />

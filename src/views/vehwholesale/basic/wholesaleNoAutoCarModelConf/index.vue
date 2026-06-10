@@ -197,7 +197,7 @@ export default {
             width: 120,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open('/sales/datacenter/materials/vehiclemodel/edit?id=' + row.modelId, '_blank');
+                window.open('/sales/datacenter/materials/vehicleModel/edit?id=' + row.modelId, '_blank');
               },
               type: 'primary'
             }]
@@ -209,7 +209,7 @@ export default {
             width: 100,
             buttons: [{
               click: (rowIndex, row) => {
-                window.open('/sales/datacenter/materials/vehicleyeartype/edit?id=' + row.vehicleYearTypeId, '_blank');
+                window.open('/sales/datacenter/materials/vehicleYearType/edit?id=' + row.vehicleYearTypeId, '_blank');
               },
               type: 'primary'
             }]

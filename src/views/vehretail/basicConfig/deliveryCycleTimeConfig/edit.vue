@@ -117,7 +117,7 @@
                   {{ form.dimensionLabel }}
                 </el-form-item>
                 <el-form-item label="车型：" prop="modelName">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleModel/edit?id=${form.modelId}`" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="城市：" prop="cityName">
                   {{ form.cityName }}

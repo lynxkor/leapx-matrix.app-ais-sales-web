@@ -326,7 +326,7 @@
                   {{ form.applyUserName }}
                 </el-form-item>
                 <el-form-item label="整车订单号：" prop="retailOrderCode">
-                  <el-link v-if="form.retailOrderId" type="primary" :href="`/sales/vehretail/ordermanager/retailorderinfo/edit?id=${form.retailOrderId}`" target="_blank">{{ form.retailOrderCode }}</el-link><span v-else>{{ form.retailOrderCode }}</span>
+                  <el-link v-if="form.retailOrderId" type="primary" :href="`/sales/vehretail/orderManager/retailOrderInfo/edit?id=${form.retailOrderId}`" target="_blank">{{ form.retailOrderCode }}</el-link><span v-else>{{ form.retailOrderCode }}</span>
                 </el-form-item>
                 <el-form-item label="订单处理方式：" prop="orderHandleType">
                   {{ form.orderHandleTypeLabel }}
@@ -335,7 +335,7 @@
                   {{ form.unlockReason }}
                 </el-form-item>
                 <el-form-item label="新配置物料编码：" prop="materialsCode">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="需要绑定VIN号：" prop="bindVin">
                   {{ form.bindVin }}
