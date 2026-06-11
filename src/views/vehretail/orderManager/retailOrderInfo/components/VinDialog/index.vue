@@ -40,8 +40,8 @@
           <vxe-column field="vin" title="VIN" width="200" show-overflow-tooltip />
           <vxe-column field="materialsDesc" title="物料描述" min-width="200" show-overflow-tooltip />
           <vxe-column field="vechicleStatusLabel" title="车辆状态" width="120" />
-          <vxe-column field="moveTypeLabel" title="入库状态" width="120" />
-          <vxe-column field="saleDealerName" title="销售门店" width="220" />
+          <vxe-column field="moveinDate" title="入库时间" width="200" />
+          <vxe-column field="saleDealerName" title="销售门店" width="200" />
           <vxe-column field="parentCompanyName" title="所属母公司" width="240" />
           <vxe-column field="deliveryDealerName" title="专属交付门店" width="240" />
           <vxe-column field="dealerWarehouseName" title="门店仓库" width="240" />
@@ -70,8 +70,7 @@
 </template>
 
 <script>
-import { getList } from '@/api/vehstock/store/storeInventoryLedger/index';
-import { manualLock } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { manualLock, storeInventoryLedgerPage } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import { getList as materialsCodeGetList } from '@/api/datacenter/materials/vehicleMaterialsMatch/index';
 
 const defaultSearchForm = {
@@ -175,7 +174,7 @@ export default {
           }
         });
 
-        const res = await getList(params);
+        const res = await storeInventoryLedgerPage(params);
         this.vinList = res.records || [];
         this.total = res.total || 0;
       } catch (error) {

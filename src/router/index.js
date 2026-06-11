@@ -3102,9 +3102,8 @@ export function getRouter () {
       } else {
         // 防止重复弹出
         if (confirmInstance) return;
-        confirmInstance = Vue.prototype.$confirm('你没有访问该页面的权限', '提示', {
+        confirmInstance = Vue.prototype.$confirm('您没有访问该页面的权限，如已经添加权限，请退出重新登录', '提示', {
           confirmButtonText: '确定',
-          showCancelButton: false,
           closeOnClickModal: false,
           closeOnPressEscape: false,
           type: 'warning'
