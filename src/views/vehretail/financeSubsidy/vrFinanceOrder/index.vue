@@ -134,14 +134,14 @@ import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   installmentOrderCode: '',
-  mallOrderCode: '',
+  mallOrderCodeList: [],
   code: '',
-  matchVin: '',
+  matchVinList: [],
   carOwnerName: '',
   phoneNumber: '',
   regionName: '',
   partnerName: '',
-  dealerName: '',
+  dealerNameList: [],
   basicCarModel: '',
   financeOrderStatusList: []
 };
@@ -392,6 +392,18 @@ export default {
           delete data[key];
         }
       });
+      if (Array.isArray(this.form.mallOrderCodeList) && this.form.mallOrderCodeList.length <= 1) {
+        delete data.mallOrderCodeList;
+        data.mallOrderCode = this.form.mallOrderCodeList[0] || '';
+      }
+      if (Array.isArray(this.form.matchVinList) && this.form.matchVinList.length <= 1) {
+        delete data.matchVinList;
+        data.matchVin = this.form.matchVinList[0] || '';
+      }
+      if (Array.isArray(this.form.dealerNameList) && this.form.dealerNameList.length <= 1) {
+        delete data.dealerNameList;
+        data.dealerName = this.form.dealerNameList[0] || '';
+      }
       data.sortColumns = this.sortColumns;
       return data;
     },
