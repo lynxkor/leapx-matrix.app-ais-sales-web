@@ -564,8 +564,8 @@ export default {
       return this.form.carOwner || {};
     },
     canPerUnlock () {
-      // 订单处于锁车状态（lockStatus === 1）时才显示取消锁车按钮
-      return this.form.lockStatus === 1;
+      // 订单处于是否绑定批售（wholesaleBindStatus === 1）时才显示取消锁车按钮
+      return this.form.wholesaleBindStatus === 1;
     }
   },
   watch: {

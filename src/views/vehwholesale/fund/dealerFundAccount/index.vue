@@ -105,7 +105,7 @@
         @handleSelect="handleSelectionChange"
       />
     </div>
-    <components-dialog ref="componentsDialog" :page-tpye="dialogTpye" />
+    <components-dialog ref="componentsDialog" :page-tpye="dialogTpye" @refresh="getData" />
     <setSettleSort ref="setSettleSort" :dealerCompanyName="dealerCompanyName" @confirm="getData" />
   </div>
 </template>
