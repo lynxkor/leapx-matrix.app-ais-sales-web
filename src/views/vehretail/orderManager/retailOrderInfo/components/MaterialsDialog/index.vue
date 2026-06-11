@@ -18,28 +18,34 @@
         label-position="right"
         class="ais-search-form"
       >
-      <el-form-item label="车系：">
-        <fetch-select
-          v-model="searchForm.seriesId"
-          v-bind="selectOptions"
-          :remote-method="remoteMethods.series"
-        />
+      <el-form-item label="物料编码：">
+        <el-input v-model="searchForm.materialsCode" placeholder="请输入" />
       </el-form-item>
-      <el-form-item label="车型：">
-        <fetch-select
-          v-model="searchForm.modelId"
-          v-bind="selectOptions"
-          :remote-method="remoteMethods.model"
-        />
+      <el-form-item label="物料描述：">
+        <el-input v-model="searchForm.materialsDesc" placeholder="请输入" />
       </el-form-item>
-        <el-form-item label="年款：" v-show="isExpanded">
+        <template v-if="isExpanded">
+        <el-form-item label="车系：">
+          <fetch-select
+            v-model="searchForm.seriesId"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.series"
+          />
+        </el-form-item>
+        <el-form-item label="车型：">
+          <fetch-select
+            v-model="searchForm.modelId"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.model"
+          />
+        </el-form-item>
+        <el-form-item label="年款：">
           <fetch-select
             v-model="searchForm.yearTypeId"
             v-bind="selectOptions"
             :remote-method="remoteMethods.yearType"
           />
         </el-form-item>
-        <template v-if="isExpanded">
         <el-form-item label="外观：">
           <fetch-select
             v-model="searchForm.exteriorId"
@@ -74,12 +80,6 @@
             v-bind="selectOptions"
             :remote-method="remoteMethods.optional"
           />
-        </el-form-item>
-        <el-form-item label="物料编码：">
-          <el-input v-model="searchForm.materialsCode" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="物料描述：" class="materials-desc">
-          <el-input v-model="searchForm.materialsDesc" placeholder="请输入" style="width: 100%;" />
         </el-form-item>
         </template>
         <el-form-item label="">
@@ -390,12 +390,6 @@ export default {
   ::v-deep .el-form-item {
     margin-bottom: 12px;
     margin-right: 15px;
-  }
-  .materials-desc {
-    width: 66.6%;
-    ::v-deep .el-form-item__content {
-      width: 75%;
-    }
   }
   .dialog-footer {
     text-align: right;
