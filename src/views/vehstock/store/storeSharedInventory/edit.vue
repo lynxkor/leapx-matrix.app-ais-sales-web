@@ -182,7 +182,7 @@ export default {
     },
     // 删除子表数据
     handleDeleteRow (index) {
-      const item = this.form.storeSharedInventoryDetailAddOrUpdateReqList[index];
+      // const item = this.form.storeSharedInventoryDetailAddOrUpdateReqList[index];
       this.form.storeSharedInventoryDetailAddOrUpdateReqList.splice(index, 1);
       // 根据需求调用接口
       // deletePartVehModel([item.id]).then(res => {
