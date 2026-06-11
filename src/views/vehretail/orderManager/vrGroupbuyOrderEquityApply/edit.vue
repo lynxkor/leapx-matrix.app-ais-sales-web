@@ -706,7 +706,7 @@
 import { getDetail, addOrUpdate, submit, invalid, firstApprove, secondApprove, finalApprove, selectedVehicleOrderValid, queryAuditor, queryStepInfo } from '@/api/vehretail/orderManager/vrGroupbuyOrderEquityApply/index';
 import { getList as getApprovalDetailList } from '@/api/vehretail/orderManager/vrGroupbuyOrderEquityApplyLog/index';
 import { getMatchingCompanyNamesBySeries as getEnterprisePolicyList } from '@/api/vehretail/orderManager/vrGroupbuyEnterprisePolicy/index';
-import { getList as getRetailOrderList, getDetail as getRetailOrderDetail } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getList as getRetailOrderList, getBaseInfo as getRetailOrderDetail } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import { getEnum } from '@/api/common';
@@ -1082,46 +1082,46 @@ export default {
       if (!id) {
         return;
       }
-      const orderInfo = await getRetailOrderDetail(
-        id,
+      const order = await getRetailOrderDetail(
+        { retailOrderId: id }
       );
       // 填充订单相关字段（公司信息除外）
-      this.$set(this.form, 'ownerOrgId', orderInfo?.saleOrgId || '');
-      this.$set(this.form, 'vehicleOrderNo', orderInfo?.retailOrderCode || '');
-      this.$set(this.form, 'orderMaterialsCode', orderInfo?.materials?.materialsCode || '');
-      this.$set(this.form, 'dealerName', orderInfo?.saleDealerName || '');
-      this.$set(this.form, 'dealerCode', orderInfo?.saleDealerCode || '');
-      this.$set(this.form, 'cooperationType', orderInfo?.cooperationType || '');
-      this.$set(this.form, 'cooperationTypeLabel', orderInfo?.cooperationTypeLabel || '');
-      this.$set(this.form, 'regionCode', orderInfo?.regionCode || '');
-      this.$set(this.form, 'regionName', orderInfo?.regionName || '');
-      this.$set(this.form, 'modelId', orderInfo?.materials?.modelId || '');
-      this.$set(this.form, 'modelName', orderInfo?.materials?.modelName || '');
-      this.$set(this.form, 'seriesId', orderInfo?.materials?.seriesId || '');
-      this.$set(this.form, 'seriesName', orderInfo?.materials?.seriesName || '');
-      this.$set(this.form, 'buyerName', orderInfo?.carOwner?.carBuyerName || '');
-      this.$set(this.form, 'buyerPhone', orderInfo?.carOwner?.carBuyerPhone || '');
-      this.$set(this.form, 'userId', orderInfo?.orderUserId || '');
-      this.$set(this.form, 'materialsCode', orderInfo?.materials?.materialsCode || '');
-      this.$set(this.form, 'materialsId', orderInfo?.materials?.materialsId || '');
-      this.$set(this.form, 'materialsDesc', orderInfo?.materialsDesc || '');
-      this.$set(this.form, 'vehicleOrderStatus', orderInfo?.orderStatus || '');
-      this.$set(this.form, 'vehicleOrderStatusLabel', orderInfo?.orderStatusLabel || '');
-      this.$set(this.form, 'orderSource', orderInfo?.orderSource || '');
-      this.$set(this.form, 'mallOrderTime', orderInfo?.orderTime || '');
-      this.$set(this.form, 'idType', orderInfo?.carOwner?.idCardType);
-      this.$set(this.form, 'idTypeLabel', orderInfo?.carOwner?.idCardTypeLabel);
-      this.$set(this.form, 'idNumber', orderInfo?.carOwner?.idCardNo);
-      this.$set(this.form, 'discountedPrice', orderInfo?.guidePrice);
-      this.$set(this.form, 'depositAmount', orderInfo?.depositAmount);
-      this.$set(this.form, 'deliveryTime', orderInfo?.deliveryTime);
-      this.$set(this.form, 'allocationMaterialsCode', orderInfo?.allocationMaterialCode);
-      this.$set(this.form, 'saleDealerCode', orderInfo?.saleDealerCode);
-      this.$set(this.form, 'saleDealerName', orderInfo?.saleDealerName);
-      this.$set(this.form, 'deliveryDealerCode', orderInfo?.deliveryDealerCode);
-      this.$set(this.form, 'deliveryDealerName', orderInfo?.deliveryDealerName);
-      this.$set(this.form, 'deliveryVin', orderInfo?.deliveryVin);
-      this.$set(this.form, 'agentContact', orderInfo?.carOwner?.agentName);
+      this.$set(this.form, 'ownerOrgId', order?.orderInfo?.saleOrgId || '');
+      this.$set(this.form, 'vehicleOrderNo', order?.orderInfo?.retailOrderCode || '');
+      this.$set(this.form, 'orderMaterialsCode', order?.orderMaterials?.materialsCode || '');
+      this.$set(this.form, 'dealerName', order?.orderInfo?.saleDealerName || '');
+      this.$set(this.form, 'dealerCode', order?.orderInfo?.saleDealerCode || '');
+      this.$set(this.form, 'cooperationType', order?.orderInfo?.cooperationType || '');
+      this.$set(this.form, 'cooperationTypeLabel', order?.orderInfo?.cooperationTypeLabel || '');
+      this.$set(this.form, 'regionCode', order?.orderInfo?.regionCode || '');
+      this.$set(this.form, 'regionName', order?.orderInfo?.regionName || '');
+      this.$set(this.form, 'modelId', order?.orderMaterials?.modelId || '');
+      this.$set(this.form, 'modelName', order?.orderMaterials?.modelName || '');
+      this.$set(this.form, 'seriesId', order?.orderMaterials?.seriesId || '');
+      this.$set(this.form, 'seriesName', order?.orderMaterials?.seriesName || '');
+      this.$set(this.form, 'buyerName', order?.orderCarOwner?.carBuyerName || '');
+      this.$set(this.form, 'buyerPhone', order?.orderCarOwner?.carBuyerPhone || '');
+      this.$set(this.form, 'userId', order?.orderInfo?.orderUserId || '');
+      this.$set(this.form, 'materialsCode', order?.orderMaterials?.materialsCode || '');
+      this.$set(this.form, 'materialsId', order?.orderMaterials?.materialsId || '');
+      this.$set(this.form, 'materialsDesc', order?.orderMaterials?.materialsDesc || '');
+      this.$set(this.form, 'vehicleOrderStatus', order?.orderInfo?.orderStatus || '');
+      this.$set(this.form, 'vehicleOrderStatusLabel', order?.orderInfo?.orderStatusLabel || '');
+      this.$set(this.form, 'orderSource', order?.orderInfo?.orderSource || '');
+      this.$set(this.form, 'mallOrderTime', order?.orderInfo?.orderTime || '');
+      this.$set(this.form, 'idType', order?.orderCarOwner?.idCardType);
+      this.$set(this.form, 'idTypeLabel', order?.orderCarOwner?.idCardTypeLabel);
+      this.$set(this.form, 'idNumber', order?.orderCarOwner?.idCardNo);
+      this.$set(this.form, 'discountedPrice', order?.orderFund?.guidePrice);
+      this.$set(this.form, 'depositAmount', order?.orderFund?.depositAmount);
+      this.$set(this.form, 'deliveryTime', order?.orderInfo?.deliveryTime);
+      this.$set(this.form, 'allocationMaterialsCode', order?.orderInfo?.allocationMaterialCode);
+      this.$set(this.form, 'saleDealerCode', order?.orderInfo?.saleDealerCode);
+      this.$set(this.form, 'saleDealerName', order?.orderInfo?.saleDealerName);
+      this.$set(this.form, 'deliveryDealerCode', order?.orderInfo?.deliveryDealerCode);
+      this.$set(this.form, 'deliveryDealerName', order?.orderInfo?.deliveryDealerName);
+      this.$set(this.form, 'deliveryVin', order?.orderInfo?.deliveryVin);
+      this.$set(this.form, 'agentContact', order?.orderCarOwner?.agentName);
     },
 
     // 根据公司信息填充公司字段

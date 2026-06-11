@@ -36,6 +36,14 @@ export function getDetail (data) {
 }
 
 /**
+ * 查询
+ * @param {Object} data
+ */
+export function getBaseInfo (data) {
+  return api.jsonPost('vr/api/order/retailOrderBaseInfo/getBaseInfo', data);
+}
+
+/**
  * 启用停用
  * @param {Object} data
  */
