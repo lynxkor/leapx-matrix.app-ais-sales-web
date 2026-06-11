@@ -145,13 +145,13 @@
                   <el-link type="primary" :href="'/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=' + form.vin" target="_blank">{{ form.vin }}</el-link>
                 </el-form-item>
                     <el-form-item label="整车物料：" prop="materialsCode">
-                  <el-link type="primary" :href="'/sales/datacenter/materials/vehiclematerials/edit?id=' + form.materialsCode" target="_blank">{{ form.materialsCode }}</el-link>
+                  <el-link type="primary" :href="'/sales/datacenter/materials/vehicleMaterials/edit?id=' + form.materialsCode" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                     <el-form-item label="车系名称：" prop="seriesName">
-                  <el-link type="primary" :href="'/sales/datacenter/materials/vehicleseries/edit?id=' + form.seriesId" target="_blank">{{ form.seriesName }}</el-link>
+                  <el-link type="primary" :href="'/sales/datacenter/materials/vehicleSeries/edit?id=' + form.seriesId" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="车型名称：" prop="modelName">
-                  <el-link type="primary" :href="'/sales/datacenter/materials/vehiclemodel/edit?id=' + form.modelId" target="_blank">{{ form.modelName }}</el-link>
+                  <el-link type="primary" :href="'/sales/datacenter/materials/vehicleModel/edit?id=' + form.modelId" target="_blank">{{ form.modelName }}</el-link>
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}

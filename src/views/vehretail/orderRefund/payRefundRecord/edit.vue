@@ -301,7 +301,7 @@
                   {{ form.retailOrderId }}
                 </el-form-item>
                 <el-form-item label="零售订单号：" prop="retailOrderCode">
-                  <el-link v-if="form.retailOrderId" type="primary" :href="`/sales/vehretail/ordermanager/retailorderinfo/edit?id=${form.retailOrderId}`" target="_blank">{{ form.retailOrderCode }}</el-link><span v-else>{{ form.retailOrderCode }}</span>
+                  <el-link v-if="form.retailOrderId" type="primary" :href="`/sales/vehretail/orderManager/retailOrderInfo/edit?id=${form.retailOrderId}`" target="_blank">{{ form.retailOrderCode }}</el-link><span v-else>{{ form.retailOrderCode }}</span>
                 </el-form-item>
                 <el-form-item label="商城订单号：" prop="mallOrderCode">
                   {{ form.mallOrderCode }}

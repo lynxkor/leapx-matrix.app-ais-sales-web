@@ -725,8 +725,8 @@ export default {
         { key: 'agentName', label: '代办联系人' },
         { key: 'guidePrice', label: '整车指导价' },
         { key: 'depositAmount', label: '定金金额' },
-        { key: 'orderMaterialCode', label: '订单物料码', link: '/sales/datacenter/materials/vehiclematerials/edit', paramKey: 'orderMaterialCode' },
-        { key: 'allocationMaterialCode', label: '配车物料码', link: '/sales/datacenter/materials/vehiclematerials/edit', paramKey: 'allocationMaterialCode' },
+        { key: 'orderMaterialCode', label: '订单物料码', link: '/sales/datacenter/materials/vehicleMaterials/edit', paramKey: 'orderMaterialCode' },
+        { key: 'allocationMaterialCode', label: '配车物料码', link: '/sales/datacenter/materials/vehicleMaterials/edit', paramKey: 'allocationMaterialCode' },
         { key: 'saleDealerName', label: '销售门店', link: '/partner/channelManagement/shopDetail', paramKey: 'saleDealerCode', paramName: 'dealerCode' },
         { key: 'deliveryDealerName', label: '交付门店', link: '/partner/channelManagement/shopDetail', paramKey: 'deliveryDealerCode', paramName: 'dealerCode' },
         { key: 'deliveryVin', label: '交车VIN码', encrypted: true },
@@ -748,8 +748,8 @@ export default {
       basicInfoFields: [
         { key: 'deliveryOrderCode', label: '交车单编号' },
         { key: 'vin', label: 'VIN 码', encrypted: true, link: '/service/datacenter/vehicle/vehicleProfile/edit', paramKey: 'vin', paramName: 'vin' },
-        { key: 'materialsCode', label: '整车物料', link: '/sales/datacenter/materials/vehiclematerials/edit', paramKey: 'materialsCode' },
-        { key: 'retailOrderCode', label: '整车订单', link: '/sales/vehretail/ordermanager/retailorderinfo/edit', paramKey: 'retailOrderId' },
+        { key: 'materialsCode', label: '整车物料', link: '/sales/datacenter/materials/vehicleMaterials/edit', paramKey: 'materialsCode' },
+        { key: 'retailOrderCode', label: '整车订单', link: '/sales/vehretail/orderManager/retailOrderInfo/edit', paramKey: 'retailOrderId' },
         { key: 'deliveryTime', label: '交车时间' },
         { key: 'statusLabel', label: '交车状态' },
         { key: 'createTime', label: '创建时间' }

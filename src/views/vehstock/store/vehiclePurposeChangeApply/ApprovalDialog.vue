@@ -183,7 +183,7 @@ export default {
     // 上传成功后的处理
     handleSuccess (res, file) {
       this.uploadLoading = false;
-      const excelModelUrl = file.response?.data?.url;
+      // const excelModelUrl = file.response?.data?.url;
       // 直接赋值
       // this.form.excelModelUrl = excelModelUrl;
 

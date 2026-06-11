@@ -255,7 +255,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.openWindow('/sales/vehwholesale/basic/wholesaleprodscheduleactivity/edit?id=' + row.prodScheduleActivityId);
+                this.openWindow('/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=' + row.prodScheduleActivityId);
               },
               type: 'primary'
             }]
@@ -268,7 +268,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.openWindow('/sales/datacenter/materials/vehicleseries/edit?id=' + row.seriesId);
+                this.openWindow('/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId);
               },
               type: 'primary'
             }]
@@ -280,7 +280,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.openWindow('/sales/datacenter/materials/vehiclemodel/edit?id=' + row.modelId);
+                this.openWindow('/sales/datacenter/materials/vehicleModel/edit?id=' + row.modelId);
               },
               type: 'primary'
             }]
@@ -308,7 +308,7 @@ export default {
             width: 200,
             buttons: [{
               click: (rowIndex, row) => {
-                this.openWindow('/sales/datacenter/materials/vehiclematerials/edit?id=' + row.materialsId);
+                this.openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.materialsId);
               },
               type: 'primary'
             }]
@@ -320,7 +320,7 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                this.openWindow('/sales/datacenter/materials/vehiclematerials/edit?id=' + row.materialsId);
+                this.openWindow('/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.materialsId);
               },
               type: 'primary'
             }]

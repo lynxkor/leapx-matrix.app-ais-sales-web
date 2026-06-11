@@ -122,13 +122,13 @@
               <!-- 详情模式 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="年款：">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${form.vehicleYearTypeId}`" target="_blank">{{ form.vehicleYearType }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleYearType/edit?id=${form.vehicleYearTypeId}`" target="_blank">{{ form.vehicleYearType }}</el-link>
                 </el-form-item>
                 <el-form-item label="系列：">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodelline/edit?id=${form.vehicleModelLineId}`" target="_blank">{{ form.vehicleModelLine }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleModelLine/edit?id=${form.vehicleModelLineId}`" target="_blank">{{ form.vehicleModelLine }}</el-link>
                 </el-form-item>
                 <el-form-item label="车系：">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleSeries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
                 <el-form-item label="数量：">
                   {{ form.quantity }}

@@ -151,8 +151,8 @@ export default {
             //   type: 'primary'
             // }]
           },
-          { props: 'materialsCode', label: '物料编码', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'materialsCode', label: '物料编码', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'stockStatStartDate', label: '入库统计开始日期', visible: true, width: 200 },
           { props: 'eopDemandTotal', label: 'EOP需求总量', visible: true, width: 140, align: 'right' },
           { props: 'eopStockedTotal', label: 'EOP累计入库数量', visible: true, width: 160, align: 'right' },
@@ -160,9 +160,9 @@ export default {
           { props: 'plannedProductionQty', label: '计划排产数量', visible: true, width: 140, align: 'right' },
           { props: 'availableStockQty', label: '可用库存数量', visible: true, width: 140, align: 'right' },
           { props: 'unmatchedVehicleQty', label: '未配车数量', visible: true, width: 140, align: 'right' },
-          { props: 'seriesName', label: '车系', visible: true, width: 100, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleseries/edit?id=${row.seriesId}`, '_blank'); }, type: 'primary' }] },
-          { props: 'modelName', label: '车型', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehiclemodel/edit?id=${row.modelId}`, '_blank'); }, type: 'primary' }] },
-          { props: 'yearTypeName', label: '年款', visible: true, width: 100, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleyeartype/edit?id=${row.yearTypeId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'seriesName', label: '车系', visible: true, width: 100, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'modelName', label: '车型', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'yearTypeName', label: '年款', visible: true, width: 100, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleYearType/edit?id=${row.yearTypeId}`, '_blank'); }, type: 'primary' }] },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'recordDate', label: '记录日期', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 160 },

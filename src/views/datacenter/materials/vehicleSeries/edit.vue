@@ -75,7 +75,7 @@
                   {{ form.seriesName }}
                 </el-form-item>
                 <el-form-item label="系列名称：">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclemodelline/edit?id=${form.modelLineId}`" target="_blank">
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleModelLine/edit?id=${form.modelLineId}`" target="_blank">
                     {{ form.modelLineName }}
                   </el-link>
                 </el-form-item>

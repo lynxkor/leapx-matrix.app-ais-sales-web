@@ -281,7 +281,7 @@
                       </el-link>
                     </template>
                     <template v-else-if="column.property === 'seriesName' && row.seriesId">
-                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleseries/edit?id=${row.seriesId}`" target="_blank">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleSeries/edit?id=${row.seriesId}`" target="_blank">
                         {{ row.seriesName }}
                       </el-link>
                     </template>
@@ -291,12 +291,12 @@
                       </el-link>
                     </template>
                     <template v-else-if="column.property === 'yearTypeName' && row.yearTypeId">
-                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleyeartype/edit?id=${row.yearTypeId}`" target="_blank">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleYearType/edit?id=${row.yearTypeId}`" target="_blank">
                         {{ row.yearTypeName }}
                       </el-link>
                     </template>
                     <template v-else-if="column.property === 'materialsCode' && row.materialsId">
-                      <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${row.materialsId}`" target="_blank">
+                      <el-link type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsId}`" target="_blank">
                         {{ row.materialsCode }}
                       </el-link>
                     </template>
@@ -522,7 +522,7 @@ export default {
           width: '120',
           // formatter: (cellValue, row) => {
           //   if (!row.seriesId || !row.seriesName || row.seriesName === 'null' || row.seriesName === 'undefined') return '';
-          //   return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/sales/datacenter/materials/vehicleseries/edit?id=' + row.seriesId + '\', \'_blank\')">' + row.seriesName + '</a>';
+          //   return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId + '\', \'_blank\')">' + row.seriesName + '</a>';
           // }
         },
         {
@@ -531,7 +531,7 @@ export default {
           width: '120',
           // formatter: (cellValue, row) => {
           //   if (!row.yearTypeId || !row.yearTypeName || row.yearTypeName === 'null' || row.yearTypeName === 'undefined') return '';
-          //   return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/sales/datacenter/materials/vehicleyeartype/edit?id=' + row.yearTypeId + '\', \'_blank\')">' + row.yearTypeName + '</a>';
+          //   return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/sales/datacenter/materials/vehicleYearType/edit?id=' + row.yearTypeId + '\', \'_blank\')">' + row.yearTypeName + '</a>';
           // }
         },
         {
@@ -540,7 +540,7 @@ export default {
           width: '180',
           // formatter: (cellValue, row) => {
           //   if (!row.materialsId || !row.materialsCode || row.materialsCode === 'null' || row.materialsCode === 'undefined') return '';
-          //   return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/sales/datacenter/materials/vehiclematerials/edit?id=' + row.materialsId + '\', \'_blank\')">' + row.materialsCode + '</a>';
+          //   return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.materialsId + '\', \'_blank\')">' + row.materialsCode + '</a>';
           // }
         },
         {

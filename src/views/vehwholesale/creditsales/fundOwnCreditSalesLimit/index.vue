@@ -315,6 +315,7 @@ export default {
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item,
+              valid: item.valid ? '是' : '否',
               deleteLoading: false
             };
           });

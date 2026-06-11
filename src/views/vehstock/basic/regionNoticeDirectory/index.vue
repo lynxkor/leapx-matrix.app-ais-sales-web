@@ -183,7 +183,7 @@ export default {
             }]
           },
           { props: 'cityName', label: '城市', visible: true, width: 120 },
-          { props: 'registeredModelName', label: '销售公告车型名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleregisteredmodel/edit?id=${row.vehicleRegisteredModelId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'registeredModelName', label: '销售公告车型名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleRegisteredModel/edit?id=${row.vehicleRegisteredModelId}`, '_blank'); }, type: 'primary' }] },
           { props: 'statusLabel', label: '状态', visible: true, width: 78 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 120 },

@@ -514,7 +514,7 @@
                   <span v-else>{{ form.materialsCode }}</span>
                 </el-form-item>
                 <el-form-item label="物料描述：" prop="materialsDesc">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehiclematerials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsDesc }}</el-link>
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsDesc }}</el-link>
                 </el-form-item>
                 <el-form-item label="选配动力：" prop="rangePowerName">
                   <el-button
