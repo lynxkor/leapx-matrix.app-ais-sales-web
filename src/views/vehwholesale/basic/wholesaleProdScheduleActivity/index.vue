@@ -70,8 +70,8 @@
             clearable :precision="0" :disabled="true" />
         </el-form-item> -->
         <el-row class="number-box">
-          <el-col :span="8">额度数量：<em>{{ changeform.beforetotalQuotaQty }}</em></el-col>
-          <el-col :span="8">已提报数量：<em>{{ changeform.requestQty }}</em></el-col>
+          <el-col :span="8">额度数量：<em>{{ changeform.beforetotalQuotaQty }} </em></el-col>
+          <el-col :span="8">已提报数量：<em>{{ changeform.usedQuotaQty }}</em></el-col>
           <el-col :span="8">剩余可用：<em>{{ changeform.remainQuotaQty }}</em></el-col>
         </el-row>
       </el-form>
