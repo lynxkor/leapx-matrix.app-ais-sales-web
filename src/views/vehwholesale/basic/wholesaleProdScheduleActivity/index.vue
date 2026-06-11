@@ -59,7 +59,7 @@
         </el-form-item> -->
         <el-form-item label="修改配额数量：" prop="totalQuotaQty">
           <el-input-number :controls="false" style="width: 100%;" placeholder="请输入" v-model="changeform.totalQuotaQty"
-            clearable :precision="0" />
+            clearable :precision="0" :min="0" />
         </el-form-item>
         <!-- <el-form-item label="已提报数量：" prop="requestQty">
           <el-input-number :controls="false" style="width: 100%;" placeholder="请输入" v-model="changeform.requestQty"
@@ -265,7 +265,7 @@ export default {
           this.submitLoading = true;
           const submitForm = {
             id: this.changeform.id,
-            totalQuotaQty: this.changeform.totalQuotaQty
+            updateQuotaQty: this.changeform.totalQuotaQty
           };
           updateQuotaQty(submitForm).then(res => {
             this.$message({

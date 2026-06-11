@@ -49,6 +49,9 @@
         <el-form-item label="配车VIN" >
            <tag-input v-model="form.vins" placeholder="请输入" />
         </el-form-item>
+         <el-form-item label="下单物料描述" >
+           <tag-input v-model="form.orderMaterialsDescs" placeholder="请输入" />
+        </el-form-item>
          <el-form-item label="订单分类">
           <fetch-select
               :options="orderCategoryOptions"
