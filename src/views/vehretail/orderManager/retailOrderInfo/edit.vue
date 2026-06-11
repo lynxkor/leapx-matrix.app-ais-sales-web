@@ -1009,26 +1009,10 @@ export default {
       }));
     },
     getDetailData () {
-      if (this._id) {
-        getDetail(this._id).then(response => {
-          const processedData = response;
-          processedData.finance = response.finance || { ...defaultForm.finance };
-          // 辅助函数：为数组中的每个对象添加 saleDealerName 字段
-          const addSaleDealerName = (array) => {
-            if (array && Array.isArray(array) && response.saleDealerName) {
-              return array.map(item => ({
-                ...item,
-                saleDealerName: response.saleDealerName,
-                paymentTime: response.paymentTime,
-              }));
-            }
-            return array || [];
-          };
-          processedData.statusTrackList = addSaleDealerName(response.statusTrackList);
-          processedData.lockRecordList = addSaleDealerName(response.lockRecordList);
-          Object.assign(this.form, processedData);
-          Object.assign(this.originalForm, processedData);
-        }).catch(() => {});
+      // 走 EditBaseContainer 的标准 refresh 流程：emit update:form + update:originalForm
+      // 避免直接 Object.assign(this.form, ...) 在 Vue 2 中对深层字段响应式不友好的问题
+      if (this.$refs.containerRef) {
+        this.$refs.containerRef.loadDetail();
       }
     },
     detailRequest () {
