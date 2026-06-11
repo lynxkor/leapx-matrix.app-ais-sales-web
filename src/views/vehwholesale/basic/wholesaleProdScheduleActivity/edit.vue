@@ -724,7 +724,9 @@ export default {
       }
     },
     submitRequest () {
-      return addOrUpdate({ ...this.form });
+      return addOrUpdate({ ...this.form }).then(() => {
+        this.getList();
+      });
     },
     // 打开侧边栏
     openPane () {
