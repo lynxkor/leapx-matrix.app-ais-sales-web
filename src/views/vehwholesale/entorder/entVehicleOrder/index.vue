@@ -43,6 +43,9 @@
         <el-form-item label="企业客户补货订单号" >
            <tag-input v-model="form.entReplenishOrderCodes" placeholder="请输入" />
         </el-form-item>
+         <el-form-item label="第七大区订单号" >
+           <tag-input v-model="form.cbuOrderCodes" placeholder="请输入" />
+        </el-form-item>
         <el-form-item label="配车VIN" >
            <tag-input v-model="form.vins" placeholder="请输入" />
         </el-form-item>

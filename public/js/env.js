@@ -15,6 +15,7 @@ window.APP_AIS_WEB_CONFIG = {
   VUE_APP_FILE_SERVICE_URL: 'https://aisfile-sit.leapmotor.com',
   VUE_APP_USERCENTER: 'https://usercenter-uat.leapmotor.com',
   VUE_APP_LEAPX_URL: 'https://portal-sit.leapmotor.com'
+<<<<<<< Updated upstream
   // ENV: 'uat',
   // VUE_APP_OSS_BUCKET: 'leapx-uat',
   // VUE_APP_ROUTER_BASE: '/sales',
@@ -23,4 +24,6 @@ window.APP_AIS_WEB_CONFIG = {
   // VUE_APP_FILE_SERVICE_URL: 'https://aisfile-uat.leapmotor.com',
   // VUE_APP_USERCENTER: 'https://usercenter-uat.leapmotor.com',
   // VUE_APP_LEAPX_URL: 'https://portal-uat.leapmotor.com'
+=======
+>>>>>>> Stashed changes
 };
