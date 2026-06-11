@@ -95,7 +95,11 @@ const responseInterceptors = (instance, forbidToast) => {
       });
       return Promise.reject(error);
     }
-    response.data = flag ? decrypt(response.data) : response.data;
+    try {
+      response.data = (flag && typeof response.data === 'string') ? decrypt(response.data) : response.data;
+    } catch (e) {
+      console.error('decrypt failed:', e);
+    }
 
     if (response.status === 401) {
       store.commit('USER_SIGN_OUT');

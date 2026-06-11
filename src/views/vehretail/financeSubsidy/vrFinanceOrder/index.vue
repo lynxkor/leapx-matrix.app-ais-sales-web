@@ -16,11 +16,7 @@
         />
       </el-form-item>
       <el-form-item label="商城订单号">
-        <el-input
-          placeholder="请输入"
-          v-model="form.mallOrderCode"
-          clearable
-        />
+        <tag-input v-model="form.mallOrderCodeList" clearable placeholder="请输入" />
       </el-form-item>
       <el-form-item label="金融订单号">
         <el-input
@@ -30,11 +26,7 @@
         />
       </el-form-item>
       <el-form-item label="配车VIN">
-        <el-input
-          placeholder="请输入"
-          v-model="form.matchVin"
-          clearable
-        />
+        <tag-input v-model="form.matchVinList" clearable placeholder="请输入" />
       </el-form-item>
       <el-form-item label="车主姓名">
         <el-input
@@ -70,11 +62,7 @@
           />
         </el-form-item>
         <el-form-item label="门店名称">
-          <el-input
-            placeholder="请输入"
-            v-model="form.dealerName"
-            clearable
-          />
+          <tag-input v-model="form.dealerNameList" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="基本车型">
           <el-input
@@ -142,6 +130,7 @@ import { downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import FetchSelect from '@/libs/components/FetchSelect';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   installmentOrderCode: '',
@@ -168,7 +157,8 @@ export default {
     PageSearchAction,
     LPVxeTable,
     EditPage,
-    FetchSelect
+    FetchSelect,
+    TagInput
   },
   data () {
     return {

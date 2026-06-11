@@ -176,6 +176,88 @@
             </div>
           </section>
 
+          <!-- 原车车主信息 -->
+          <section class="common-section" v-if="form.replacementType == 10 || form.replacementType == '10'" >
+            <div class="common-section-header">
+              <h2>原车车主信息</h2>
+            </div>
+            <div class="common-section-body">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ownerForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+                <el-form-item label="原车车主姓名：" prop="originalOwnerName">
+                  <el-input
+                    placeholder="请输入原车车主姓名"
+                    v-model="form.originalOwnerName"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="原车车主手机号：" prop="originalOwnerPhone">
+                  <el-input
+                    placeholder="请输入原车车主手机号"
+                    v-model="form.originalOwnerPhone"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="原车主证件类型：" prop="originalOwnerIdType">
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vehretail_id_card_type"
+                    v-model="form.originalOwnerIdType"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="原车主证件号码：" prop="originalOwnerIdNumber">
+                  <el-input
+                    placeholder="请输入原车主证件号码"
+                    v-model="form.originalOwnerIdNumber"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="原车物料码：" prop="originalMaterialsCode">
+                  <el-input
+                    placeholder="请输入原车物料码"
+                    v-model="form.originalMaterialsCode"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+                <el-form-item label="基本车型：" prop="originalModelName">
+                  <el-input
+                    placeholder="请输入基本车型"
+                    v-model="form.originalModelName"
+                    clearable
+                    :disabled="true"
+                  />
+                </el-form-item>
+              </el-form>
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+                <el-form-item label="原车车主姓名：">
+                  {{ form.originalOwnerName }}
+                </el-form-item>
+                <el-form-item label="原车车主手机号：">
+                  {{ form.originalOwnerPhone }}
+                </el-form-item>
+                <el-form-item label="原车主证件类型：">
+                  {{ form.originalOwnerIdTypeLabel }}
+                </el-form-item>
+                <el-form-item label="原车主证件号码：">
+                  {{ form.originalOwnerIdNumber }}
+                </el-form-item>
+                <el-form-item label="原车物料码：">
+                  {{ form.originalMaterialsCode }}
+                </el-form-item>
+                <el-form-item label="基本车型：">
+                  {{ form.originalModelName }}
+                </el-form-item>
+              </el-form>
+            </div>
+          </section>
+
           <!-- 附件材料 -->
           <section class="common-section" v-if="_id">
             <div class="common-section-header">
@@ -543,88 +625,6 @@
                 </el-form-item>
                 <el-form-item label="OA流程编号：">
                   {{ form.oaProcessNo }}
-                </el-form-item>
-              </el-form>
-            </div>
-          </section>
-
-          <!-- 原车车主信息 -->
-          <section class="common-section" v-if="form.replacementType == 10 || form.replacementType == '10'" >
-            <div class="common-section-header">
-              <h2>原车车主信息</h2>
-            </div>
-            <div class="common-section-body">
-              <el-form :inline="true" :model="form" :rules="rules" ref="ownerForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="原车车主姓名：" prop="originalOwnerName">
-                  <el-input
-                    placeholder="请输入原车车主姓名"
-                    v-model="form.originalOwnerName"
-                    clearable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="原车车主手机号：" prop="originalOwnerPhone">
-                  <el-input
-                    placeholder="请输入原车车主手机号"
-                    v-model="form.originalOwnerPhone"
-                    clearable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="原车主证件类型：" prop="originalOwnerIdType">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="vehretail_id_card_type"
-                    v-model="form.originalOwnerIdType"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="原车主证件号码：" prop="originalOwnerIdNumber">
-                  <el-input
-                    placeholder="请输入原车主证件号码"
-                    v-model="form.originalOwnerIdNumber"
-                    clearable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="原车物料码：" prop="originalMaterialsCode">
-                  <el-input
-                    placeholder="请输入原车物料码"
-                    v-model="form.originalMaterialsCode"
-                    clearable
-                    :disabled="true"
-                  />
-                </el-form-item>
-                <el-form-item label="基本车型：" prop="originalModelName">
-                  <el-input
-                    placeholder="请输入基本车型"
-                    v-model="form.originalModelName"
-                    clearable
-                    :disabled="true"
-                  />
-                </el-form-item>
-              </el-form>
-              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="原车车主姓名：">
-                  {{ form.originalOwnerName }}
-                </el-form-item>
-                <el-form-item label="原车车主手机号：">
-                  {{ form.originalOwnerPhone }}
-                </el-form-item>
-                <el-form-item label="原车主证件类型：">
-                  {{ form.originalOwnerIdTypeLabel }}
-                </el-form-item>
-                <el-form-item label="原车主证件号码：">
-                  {{ form.originalOwnerIdNumber }}
-                </el-form-item>
-                <el-form-item label="原车物料码：">
-                  {{ form.originalMaterialsCode }}
-                </el-form-item>
-                <el-form-item label="基本车型：">
-                  {{ form.originalModelName }}
                 </el-form-item>
               </el-form>
             </div>
