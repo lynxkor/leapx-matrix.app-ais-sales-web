@@ -221,6 +221,7 @@
                     placeholder="请输入"
                     v-model="form.remark"
                     clearable
+                    disabled
                   />
                 </el-form-item>
                  <el-form-item label="创建人：" prop="creatorName">

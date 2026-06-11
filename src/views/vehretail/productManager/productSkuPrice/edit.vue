@@ -149,6 +149,9 @@
                     {{ form.materialsCode }}
                   </el-link>
                 </el-form-item>
+                 <el-form-item label="物料描述：">
+                  {{ form.materialsDesc }}
+                </el-form-item>
                 <el-form-item label="购车类型：">
                   {{ form.purchaseTypeLabel }}
                 </el-form-item>

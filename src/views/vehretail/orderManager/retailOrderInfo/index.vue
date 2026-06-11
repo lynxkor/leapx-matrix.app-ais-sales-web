@@ -460,7 +460,14 @@ export default {
             getValue: (row) => getDetailDecryptField(row.id, 'idCardNo')
           },
           { props: 'saleUserName', label: '订单销售顾问', visible: true, width: 160 },
-          { props: 'matchVin', label: '配车VIN码', visible: true, width: 220 },
+          {
+            props: 'matchVin',
+            label: '配车VIN码',
+            visible: true,
+            width: 220,
+            mask: true,
+            getValue: (row) => getDetailDecryptField(row.id, 'matchVin')
+          },
           { props: 'orderStatusLabel', label: '零售订单状态', visible: true, width: 150 },
           { props: 'lockStatusLabel', label: '是否锁单', visible: true, width: 120 },
           { props: 'lockTime', label: '锁单时间', visible: true, width: 180 },
