@@ -355,6 +355,7 @@ export default {
         let message = val ? '批量启用成功' : '批量关闭成功';
         this.$message.success(message);
         this.getData();
+        this.$emit('refresh');
       }).catch(() => {});
       // }).catch(() => {});
     },
@@ -367,6 +368,7 @@ export default {
       setEntOrderSettleFlag(params).then(res => {
         this.$message.success('批量关闭成功');
         this.getData();
+        this.$emit('refresh');
       }).catch(() => {});
       // }).catch(() => {});
     },
