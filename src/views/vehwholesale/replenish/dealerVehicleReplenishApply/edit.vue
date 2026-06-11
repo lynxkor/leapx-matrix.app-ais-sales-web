@@ -957,12 +957,23 @@ export default {
       }).catch(() => {});
     },
     handelAuditForDealer (data) {
+      console.log(data);
       dealerApproval({
         ids: [this._id],
         isAudit: data.result,
         auditOpinion: data.remark
       }).then(() => {
-        this.$message.success('补货申请门店审核成功');
+        if (data.result === 1) {
+          this.$message({
+            type: 'success',
+            message: '审批成功'
+          });
+        } else if (data.result === 0) {
+          this.$message({
+            type: 'success',
+            message: '驳回成功'
+          });
+        }
         this.$refs.containerRef.loadDetail();
       });
     },
@@ -972,7 +983,17 @@ export default {
         isAudit: data.result,
         auditOpinion: data.remark
       }).then(() => {
-        this.$message.success('补货申请厂端审核成功');
+        if (data.result === 1) {
+          this.$message({
+            type: 'success',
+            message: '审批成功'
+          });
+        } else if (data.result === 0) {
+          this.$message({
+            type: 'success',
+            message: '驳回成功'
+          });
+        }
         this.$refs.containerRef.loadDetail();
       });
     },

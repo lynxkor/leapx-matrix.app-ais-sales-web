@@ -152,6 +152,15 @@
             </el-radio-group>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="9">是否允许展车批售</el-col>
+          <el-col :span="15">
+            <el-radio-group v-model="allowDisplayVehicleWholesaleConfirm">
+              <el-radio :label="1">是</el-radio>
+              <el-radio :label="0">否</el-radio>
+            </el-radio-group>
+          </el-col>
+        </el-row>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="closeSetAttr">取消</el-button>
@@ -201,6 +210,7 @@ const defaultForm = {
   allowCustomerSales: '',
   allowWholesaleConfirm: '',
   allowConfigurationModify: '',
+  allowDisplayVehicleWholesaleConfirm: '',
   discontinueStatus: '',
   statusIncludeList: ['1']
 };
@@ -361,6 +371,7 @@ export default {
       allowWholesale: '',
       allowProductionSchedule: '',
       allowWholesaleConfirm: '',
+      allowDisplayVehicleWholesaleConfirm: '',
     };
   },
   created () {
@@ -741,7 +752,8 @@ export default {
         ids,
         allowWholesale: this.allowWholesale,
         allowProductionSchedule: this.allowProductionSchedule,
-        allowWholesaleConfirm: this.allowWholesaleConfirm
+        allowWholesaleConfirm: this.allowWholesaleConfirm,
+        allowDisplayVehicleWholesaleConfirm: this.allowDisplayVehicleWholesaleConfirm
       }; batchUpdateProps(params).then(res => {
         this.$message({
           type: 'success',
@@ -750,6 +762,7 @@ export default {
         this.allowWholesale = null;
         this.allowProductionSchedule = null;
         this.allowWholesaleConfirm = null;
+        this.allowDisplayVehicleWholesaleConfirm = null;
         this.batchSetAttrVisible = false;
       }).catch(() => {
         this.batchSetAttrVisible = false;

@@ -10,7 +10,7 @@
         <fetch-select :request="fetchOptions" enumCode="vehstock_fence_crossed_type" v-model="form.fenceCrossedType"
           placeholder="请选择" clearable filterable />
       </el-form-item>
-      <el-form-item label="销售门店编码" v-show="this.visibleCount === 3 || show">
+      <el-form-item label="销售门店" v-show="this.visibleCount === 3 || show">
         <fetch-select
           filterable
           clearable

@@ -36,6 +36,14 @@ export function getDetail (data) {
 }
 
 /**
+ * 查询
+ * @param {Object} data
+ */
+export function getBaseInfo (data) {
+  return api.jsonPost('vr/api/order/retailOrderBaseInfo/getBaseInfo', data);
+}
+
+/**
  * 启用停用
  * @param {Object} data
  */
@@ -89,6 +97,14 @@ export function perUnlock (data) {
  */
 export function manualLock (data) {
   return api.jsonPost('vr/web/order/manualLock', data);
+};
+
+/**
+ * 手工配车查询门店库存台账分页查询
+ * @param {Object} data
+ */
+export function storeInventoryLedgerPage (data) {
+  return api.jsonPost('vr/web/order/retailOrderInfo/storeInventoryLedgerPage', data);
 };
 
 /**

@@ -714,7 +714,7 @@
 
 <script>
 import { getDetail, addOrUpdate, selectedVehicleOrderValid, submit, approve, firstApprove, invalid, cancelApprove, cancelApproveValid, approveRecord } from '@/api/vehretail/orderManager/vrEquityApply/index';
-import { getList as getRetailOrderList, getDetail as getRetailOrderDetail } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getList as getRetailOrderList, getBaseInfo as getRetailOrderDetail } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import { listByAuth as getEquityCategoryListApi } from '@/api/vehretail/basicConfig/vrEquityCategory/index';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -1149,41 +1149,40 @@ export default {
       let order = null;
       if (record) {
         order = await getRetailOrderDetail(
-          this.form.orderId,
+          { retailOrderId: this.form.orderId }
         );
       }
       // 更新订单相关信息
-      this.form.mallOrderNo = order?.mallOrderCode || '';
-      this.form.vehicleOrderNo = order?.retailOrderCode || '';
-      this.form.depositTime = order?.paymentTime || '';
-      this.form.lockTime = order?.lockTime || '';
-      this.form.agentContact = order?.carOwner?.agentName || '';
-      this.form.buyerName = order?.carOwner?.carBuyerName || '';
-      this.form.buyerPhone = order?.carOwner?.carBuyerPhone || '';
-      this.form.buyerIdType = order?.carOwner?.idCardType || '';
-      this.form.buyerIdNumber = order?.carOwner?.idCardNo || '';
-      this.form.orderUserId = order?.orderUserId || '';
-      this.form.ownerOrgId = order?.saleOrgId || '';
-      this.form.saleDealerName = order?.saleDealerName || '';
-      this.form.saleDealerCode = order?.saleDealerCode || '';
-      this.form.cooperationType = order?.cooperationType || '';
-      this.form.regionName = order?.regionName || '';
-      this.form.provinceName = order?.provinceName || '';
-      this.form.cityName = order?.cityName || '';
-      this.form.materialsId = order?.materials?.materialsId || '';
-      this.form.materialsCode = order?.materials?.materialsCode || '';
-      this.form.materialsDesc = order?.materials?.materialsDesc || '';
-      this.form.seriesName = order?.materials?.seriesName || '';
-      this.form.seriesId = order?.materials?.seriesId || '';
-      this.form.modelName = order?.materials?.modelName || '';
-      this.form.modelId = order?.materials?.modelId || '';
-      this.form.vehicleYearType = order?.materials?.yearTypeName || '';
-      this.form.vehicleYearTypeId = order?.materials?.yearTypeId || '';
-      this.form.optionPackageId = order?.materials?.optionPackageId || '';
-      this.form.optionPackageName = order?.materials?.optionPackageName || '';
-      this.form.orderStatus = order?.orderStatus || null;
-      this.form.originalBenefitDate = order?.rightsEnjoyDate ? formatDateTime(order.rightsEnjoyDate, 'data') : '';
-
+      this.form.mallOrderNo = order?.orderInfo?.mallOrderCode || '';
+      this.form.vehicleOrderNo = order?.orderInfo?.retailOrderCode || '';
+      this.form.depositTime = order?.orderFund?.paymentTime || '';
+      this.form.lockTime = order?.orderInfo?.lockTime || '';
+      this.form.agentContact = order?.orderCarOwner?.agentName || '';
+      this.form.buyerName = order?.orderCarOwner?.carBuyerName || '';
+      this.form.buyerPhone = order?.orderCarOwner?.carBuyerPhone || '';
+      this.form.buyerIdType = order?.orderCarOwner?.idCardType || '';
+      this.form.buyerIdNumber = order?.orderCarOwner?.idCardNo || '';
+      this.form.orderUserId = order?.orderInfo?.orderUserId || '';
+      this.form.ownerOrgId = order?.orderInfo?.saleOrgId || '';
+      this.form.saleDealerName = order?.orderInfo?.saleDealerName || '';
+      this.form.saleDealerCode = order?.orderInfo?.saleDealerCode || '';
+      this.form.cooperationType = order?.orderInfo?.cooperationType || '';
+      this.form.regionName = order?.orderInfo?.regionName || '';
+      this.form.provinceName = order?.orderInfo?.provinceName || '';
+      this.form.cityName = order?.orderInfo?.cityName || '';
+      this.form.materialsId = order?.orderMaterials?.materialsId || '';
+      this.form.materialsCode = order?.orderMaterials?.materialsCode || '';
+      this.form.materialsDesc = order?.orderMaterials?.materialsDesc || '';
+      this.form.seriesName = order?.orderMaterials?.seriesName || '';
+      this.form.seriesId = order?.orderMaterials?.seriesId || '';
+      this.form.modelName = order?.orderMaterials?.modelName || '';
+      this.form.modelId = order?.orderMaterials?.modelId || '';
+      this.form.vehicleYearType = order?.orderMaterials?.yearTypeName || '';
+      this.form.vehicleYearTypeId = order?.orderMaterials?.yearTypeId || '';
+      this.form.optionPackageId = order?.orderMaterials?.optionPackageId || '';
+      this.form.optionPackageName = order?.orderMaterials?.optionPackageName || '';
+      this.form.orderStatus = order?.orderInfo?.orderStatus || null;
+      this.form.originalBenefitDate = order?.orderInfo?.rightsEnjoyDate ? formatDateTime(order.orderInfo.rightsEnjoyDate, 'data') : '';
       // 重新查询权益类别列表，更新下拉框选项
       await this.getEquityCategoryList();
     },

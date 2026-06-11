@@ -264,6 +264,9 @@
       @cancel="showPdfItemVisible = false"
       append-to-body
     >
+      <div class="pdf-item-toolbar">
+        <el-button class="pdf-item-toolbar__btn" type="primary" size="small" :loading="pdfBtnLoading" @click="handleConfirmDownloadPDF">下载PDF</el-button>
+      </div>
       <PdfItem ref="childPdfItem" :form="form" :pdfData="pdfData"></PdfItem>
     </el-dialog>
   </edit-page-layout>
@@ -529,21 +532,27 @@ export default {
       this.fileDialogVisible = true;
     },
     async handleDownloadPDF () {
+      // 仅控制打开弹窗，并加载预览所需数据
+      this.showPdfItemVisible = true;
+      this.$nextTick(async () => {
+        this.showPdfItemLoading = true;
+        try {
+          let res = await getPdiEntryDetails(this.form.id);
+          this.pdfData = res;
+        } finally {
+          this.showPdfItemLoading = false;
+        }
+      });
+    },
+    async handleConfirmDownloadPDF () {
+      // 弹窗内下载按钮：触发 PdfItem 生成并下载 PDF
+      if (!this.$refs.childPdfItem || !this.pdfData) {
+        this.$message.warning('PDF 数据未就绪，请稍后再试');
+        return;
+      }
       this.pdfBtnLoading = true;
       try {
-        this.showPdfItemVisible = true;
-        this.$nextTick(async () => {
-          this.showPdfItemLoading = true;
-          try {
-            let res = await getPdiEntryDetails(this.form.id);
-            this.pdfData = res;
-            if (this.$refs.childPdfItem && this.pdfData) {
-              this.$refs.childPdfItem.handlePdf();
-            }
-          } finally {
-            this.showPdfItemLoading = false;
-          }
-        });
+        await this.$refs.childPdfItem.handlePdf();
       } finally {
         this.pdfBtnLoading = false;
       }
@@ -551,3 +560,17 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.pdf-item-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 12px;
+  text-align: right;
+
+  .pdf-item-toolbar__btn {
+    margin-left: auto;
+  }
+}
+</style>
