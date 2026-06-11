@@ -100,6 +100,14 @@ export function manualLock (data) {
 };
 
 /**
+ * 手工配车查询门店库存台账分页查询
+ * @param {Object} data
+ */
+export function storeInventoryLedgerPage (data) {
+  return api.jsonPost('vr/web/order/retailOrderInfo/storeInventoryLedgerPage', data);
+};
+
+/**
  * 查询订单状态接口
  * @param {Object} data
  */
