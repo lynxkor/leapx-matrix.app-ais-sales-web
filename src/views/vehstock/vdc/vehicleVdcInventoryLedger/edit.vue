@@ -775,8 +775,8 @@ export default {
         // 当 销售预留 为 否 时，只显示可售
         this.options = this.allOptions.filter(option => option.value === 1);
       } else {
-        // 当 销售预留 不为 否 时，不显示可售
-        this.options = this.allOptions.filter(option => option.value !== 1);
+        // 当 销售预留 不为 否 时，显示所有
+        this.options = this.allOptions;
       }
       // 销售预留 明确为"否"时,理论上 allOptions 中只有一条数据（可售），自动赋值
       if (isNo && this.options.length === 1) {
