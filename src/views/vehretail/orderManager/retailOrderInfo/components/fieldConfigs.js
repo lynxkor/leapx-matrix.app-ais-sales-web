@@ -188,7 +188,12 @@ export const unlockApplicationRecordDisplayFields = [
   { key: 'submitTime', label: '提交时间' },
   { key: 'unlockReason', label: '订单解绑原因' },
   { key: 'vin', label: 'VIN号' },
-  { key: 'wholesaleOrderCode', label: '批售订单号' },
+  {
+    key: 'wholesaleOrderCode',
+    label: '批售订单号',
+    link: '/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
+    paramKey: 'wholesaleOrderCode'
+  },
   { key: 'applyDesc', label: '申请说明' },
   { key: 'orderHandleTypeLabel', label: '订单处理方式' },
   { key: 'carHandleTypeLabel', label: '车辆处理方式' },
@@ -202,7 +207,12 @@ export const lockCarRecordDisplayFields = [
   { key: 'saleDealerName', label: '门店' }, // 塞入销售门店数据
   { key: 'retailOrderCode', label: '整车订单' },
   { key: 'mallOrderCode', label: '商城订单编号' },
-  { key: 'wholesaleOrderCode', label: '批售单号' },
+  {
+    key: 'wholesaleOrderCode',
+    label: '批售单号',
+    link: '/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit',
+    paramKey: 'wholesaleOrderCode'
+  },
   { key: 'lockTypeLabel', label: '锁车匹配类型' },
   { key: 'materialsCode', label: '物料编码' },
   { key: 'materialsDesc', label: '物料描述' },
