@@ -295,19 +295,19 @@
             clearable :precision="0" :min="0" />
         </el-form-item>
       </el-form>
-      <!-- <template v-slot:footer>
+      <template v-slot:footer>
         <div class="dialog-footer" style="text-align: center;">
           <el-button :loading="submitLoading" @click="changeClose()" size="small">取消</el-button>
           <el-button :loading="submitLoading" type="primary" @click="changeSure()" size="small">确认</el-button>
         </div>
-      </template> -->
+      </template>
     </el-dialog>
   </edit-page-layout>
 </template>
 
 <script>
 import { getDetail, addOrUpdate } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivity/index';
-import { getList, addOrUpdate as addOrUpdateDetail, deleteItem } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivityDetail/index';
+import { getList, addOrUpdate as addOrUpdateDetail, deleteItem, updateTotalQuotaQty } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivityDetail/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditTable from '@/libs/components/EditTable';
 import EditPageLayout from '@/libs/components/EditPageLayout';
@@ -583,6 +583,24 @@ export default {
     }
   },
   methods: {
+    changeSure () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      const submitForm = {
+        scheduleActivityId: this.form.id,
+        idSet: ids,
+        updateTotalQuotaQty: this.changeform.totalQuotaQty
+      };
+      console.log(submitForm);
+      updateTotalQuotaQty(submitForm).then(res => {
+        this.$message({
+          message: '修改成功',
+          type: 'success'
+        });
+        this.getList();
+        this.getDetailData();
+        this.totalQuotaQtyDialogVisible = false;
+      });
+    },
     changeClose () {
       this.totalQuotaQtyDialogVisible = false;
     },
