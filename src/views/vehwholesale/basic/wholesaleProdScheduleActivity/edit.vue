@@ -145,49 +145,6 @@
                     disabled
                   />
                 </el-form-item>
-
-                  <!-- <el-form-item label="创建者：" prop="creator">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.creator"
-                    clearable
-                  />
-                </el-form-item>
-
-                 <el-form-item label="主键：" prop="id">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.id"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="修改者：" prop="modifier">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.modifier"
-                    clearable
-                  />
-                </el-form-item>
-                <el-form-item label="状态：" prop="status">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
-                    v-model="form.status"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                  />
-                </el-form-item>
-                <el-form-item label="状态变更描述：" prop="statusDesc">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="xxx"
-                    v-model="form.statusDesc"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                  />
-                </el-form-item> -->
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="活动编码：" prop="activityCode">
@@ -245,6 +202,7 @@
                  <el-form>
                   <el-form-item label="">
                     <el-button size="small" @click="handleAddRow" style="margin-left: 15px;">活动明细导入</el-button>
+                     <el-button size="small" @click="handleChangeQty" style="margin-left: 15px;">配额调整</el-button>
                   </el-form-item>
                 </el-form>
               </div>
@@ -259,6 +217,7 @@
                   :show-toolbar="false"
                   :show-pagination="true"
                   :enable-single-row-save="true"
+                  :checkbox="true"
                   :options="options"
                   :current="pageNum"
                   :pageSize="pageSize"
@@ -267,6 +226,7 @@
                   @remove-row="handleRemoveRow"
                   @page-size-change="pageSizeChange"
                   @current-page-change="currentPageChange"
+                  @checkboxChange="handleCheckboxChange"
                   :auth="{edit: isEditing, delete: isEditing}"
                 >
                   <template #default="{ row, column }">
@@ -327,6 +287,21 @@
         <!-- 右侧栏组件，自行开发 -->
       </div>
     </template>
+     <el-dialog class="audit-total-dialog" title="排产专项活动明细配额调整" width="600px" :visible.sync="totalQuotaQtyDialogVisible"
+      @close="changeClose">
+      <el-form ref="changeformRef" :model="changeform" label-width="120px" size="small">
+        <el-form-item label="修改配额数量：" prop="totalQuotaQty">
+          <el-input-number :controls="false" style="width: 100%;" placeholder="请输入" v-model="changeform.totalQuotaQty"
+            clearable :precision="0" :min="0" />
+        </el-form-item>
+      </el-form>
+      <!-- <template v-slot:footer>
+        <div class="dialog-footer" style="text-align: center;">
+          <el-button :loading="submitLoading" @click="changeClose()" size="small">取消</el-button>
+          <el-button :loading="submitLoading" type="primary" @click="changeSure()" size="small">确认</el-button>
+        </div>
+      </template> -->
+    </el-dialog>
   </edit-page-layout>
 </template>
 
@@ -459,6 +434,8 @@ export default {
       loading: false,
       submitLoading: false,
       uploadDialogVisible: false,
+      changeform: {},
+      totalQuotaQtyDialogVisible: false,
       yes_no_enum: YES_NO_ENUM,
       generateCode: '',
       detailForm: { ...detailForm },
@@ -467,6 +444,7 @@ export default {
       pageNum: 1,
       pageSize: 20,
       total: 0,
+      selectionList: [],
       defaultNewRow: {
         totalQuotaQty: '',
       },
@@ -482,19 +460,11 @@ export default {
           field: 'dealerCode',
           title: '门店编码',
           width: '150',
-          // formatter: (cellValue, row) => {
-          //   if (!row.dealerCode) return '';
-          //   return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode + '\', \'_blank\')">' + row.dealerCode + '</a>';
-          // }
         },
         {
           field: 'dealerName',
           title: '门店名称',
           width: '180',
-          // formatter: (cellValue, row) => {
-          //   if (!row.dealerCode) return row.dealerName || '';
-          //   return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode + '\', \'_blank\')">' + row.dealerName + '</a>';
-          // }
         },
         {
           field: 'provinceName',
@@ -520,28 +490,16 @@ export default {
           field: 'seriesName',
           title: '车系',
           width: '120',
-          // formatter: (cellValue, row) => {
-          //   if (!row.seriesId || !row.seriesName || row.seriesName === 'null' || row.seriesName === 'undefined') return '';
-          //   return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/sales/datacenter/materials/vehicleSeries/edit?id=' + row.seriesId + '\', \'_blank\')">' + row.seriesName + '</a>';
-          // }
         },
         {
           field: 'yearTypeName',
           title: '年款',
           width: '120',
-          // formatter: (cellValue, row) => {
-          //   if (!row.yearTypeId || !row.yearTypeName || row.yearTypeName === 'null' || row.yearTypeName === 'undefined') return '';
-          //   return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/sales/datacenter/materials/vehicleYearType/edit?id=' + row.yearTypeId + '\', \'_blank\')">' + row.yearTypeName + '</a>';
-          // }
         },
         {
           field: 'materialsCode',
           title: '物料编码',
           width: '180',
-          // formatter: (cellValue, row) => {
-          //   if (!row.materialsId || !row.materialsCode || row.materialsCode === 'null' || row.materialsCode === 'undefined') return '';
-          //   return '<a class="link" style="color: #409EFF;" href="javascript:void(0);" onclick="window.open(\'/sales/datacenter/materials/vehicleMaterials/edit?id=' + row.materialsId + '\', \'_blank\')">' + row.materialsCode + '</a>';
-          // }
         },
         {
           field: 'materialsDesc',
@@ -625,6 +583,12 @@ export default {
     }
   },
   methods: {
+    changeClose () {
+      this.totalQuotaQtyDialogVisible = false;
+    },
+    handleChangeQty () {
+      this.totalQuotaQtyDialogVisible = true;
+    },
     getDetailData () {
       const id = this._id;
       if (id) {
@@ -640,6 +604,10 @@ export default {
       this.pageNum = 1; // 重置到第一页
       this.getList();
       this.getDetailData();
+    },
+    // 多选框选中数据
+    handleCheckboxChange (selection) {
+      this.selectionList = selection;
     },
     // 清空方法
     handleClear () {

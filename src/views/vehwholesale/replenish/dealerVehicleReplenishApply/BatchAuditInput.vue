@@ -53,11 +53,18 @@ export default {
         isAudit: this.isApprove,
         auditOpinion: this.auditOpinion
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '成功'
-        });
-        this.getData();
+        if (this.isApprove === false) {
+          this.$message({
+            type: 'error',
+            message: '审核驳回操作成功'
+          });
+        } else if (this.isApprove === true) {
+          this.$message({
+            type: 'success',
+            message: '审核通过操作成功'
+          });
+        }
+        this.$emit('confirm');
       }).finally(() => {
         this.dialogVisible = false;
         this.auditOpinion = '';
