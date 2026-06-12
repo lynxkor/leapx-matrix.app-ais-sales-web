@@ -359,6 +359,8 @@ export default {
           { props: 'longitude', label: '经度', visible: true, width: 200 },
           { props: 'latitude', label: '维度', visible: true, width: 200 },
           { props: 'orderTime', label: '订单时间', visible: true, width: 200 },
+          { props: 'saleUserName', label: '销售人员', visible: true, width: 200 },
+          { props: 'remark', label: '订单备注', visible: true, width: 200 },
           { props: 'allocateTime', label: '配车时间', visible: true, width: 200 },
           { props: 'outboundTime', label: '出库时间', visible: true, width: 200 },
           { props: 'standardPrice', label: '标准价格', visible: true, width: 200 },
