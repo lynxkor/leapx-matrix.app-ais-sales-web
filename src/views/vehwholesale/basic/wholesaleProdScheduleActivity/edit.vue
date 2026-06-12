@@ -201,8 +201,8 @@
               <div class="ais-actions">
                  <el-form>
                   <el-form-item label="">
-                    <el-button size="small" @click="handleAddRow" style="margin-left: 15px;">活动明细导入</el-button>
-                     <el-button size="small" @click="handleChangeQty" style="margin-left: 15px;">配额调整</el-button>
+                    <el-button v-if ='canImport' size="small" @click="handleAddRow" style="margin-left: 15px;">活动明细导入</el-button>
+                    <el-button v-if ='perupdateQuotaQty' size="small" @click="handleChangeQty" style="margin-left: 15px;">配额调整</el-button>
                   </el-form-item>
                 </el-form>
               </div>
@@ -436,6 +436,7 @@ export default {
       uploadDialogVisible: false,
       changeform: {},
       totalQuotaQtyDialogVisible: false,
+      perupdateQuotaQty: false,
       yes_no_enum: YES_NO_ENUM,
       generateCode: '',
       detailForm: { ...detailForm },
@@ -582,7 +583,13 @@ export default {
       this.getList();
     }
   },
+  created () {
+    this.initPermissions();
+  },
   methods: {
+    initPermissions () {
+      this.perupdateQuotaQty = this.permissions.has(`${this.moduleKey}-updateQuotaQty`);
+    },
     changeSure () {
       const ids = this.selectionList.map(item => item.id) || [];
       const submitForm = {
@@ -605,6 +612,7 @@ export default {
       this.totalQuotaQtyDialogVisible = false;
     },
     handleChangeQty () {
+      this.changeform = { totalQuotaQty: '' };
       this.totalQuotaQtyDialogVisible = true;
     },
     getDetailData () {
