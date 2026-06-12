@@ -1,47 +1,50 @@
 <template>
-  <div class="page-common m-order-change-list">
-    <!--  TIPS: 自行调整如下label-width，满足label不换行  -->
-    <el-form
-      :inline="true"
-      :model="form"
-      size="small"
-      label-position="right"
-      label-width="180px"
-      class="ais-search-form"
-    >
-      <el-form-item label="手机号：">
-        <el-input v-model="form.phone" placeholder="请输入"/>
-      </el-form-item>
-      <el-form-item label="VIN：" >
-        <el-input v-model="form.vin" placeholder="请输入" />
-      </el-form-item>
-      <page-search-action
-        v-if="canList"
-        v-model="show"
-        is-expandable
-        :loading="loading"
-        @submit="onSubmit"
-        @reset="onReset"
-      />
-    </el-form>
-    <div class="ais-table-c">
-      <!-- 订单信息变更申请分页表格 -->
-      <component-table
-        ref="orderChangeTableRef"
-        :tableConfig="orderChangeTableConfig"
-        :columns="orderChangeColumns"
-        :extraParams="orderChangeExtraParams"
-        :apiMethod="getOrderChangeList"
-      />
+  <edit-page-layout ref="editLayout" title="侧边栏标题" showPaneFooter>
+    <div class="page-common m-order-change-list">
+      <!--  TIPS: 自行调整如下label-width，满足label不换行  -->
+      <el-form
+        :inline="true"
+        :model="form"
+        size="small"
+        label-position="right"
+        label-width="180px"
+        class="ais-search-form"
+      >
+        <el-form-item label="手机号：">
+          <el-input v-model="form.phone" placeholder="请输入"/>
+        </el-form-item>
+        <el-form-item label="VIN：" >
+          <el-input v-model="form.vin" placeholder="请输入" />
+        </el-form-item>
+        <page-search-action
+          v-if="canList"
+          v-model="show"
+          is-expandable
+          :loading="loading"
+          @submit="onSubmit"
+          @reset="onReset"
+        />
+      </el-form>
+      <edit-base-container>
+        <el-main ref="scrollContainer">
+          <component-table
+            ref="orderChangeTableRef"
+            :tableConfig="orderChangeTableConfig"
+            :columns="orderChangeColumns"
+            :extraParams="orderChangeExtraParams"
+            :apiMethod="getRetailOrderInfoList"
+          />
+        </el-main>
+      </edit-base-container>
     </div>
-  </div>
+  </edit-page-layout>
 </template>
 
 <script>
 import debounce from 'lodash.debounce';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList } from '@/api/vehretail/orderRefund/orderChange/index';
-import { getEnum, getTableConfig, tableAddOrUpdate } from '@/api/common';
+import { fastSearchPage as retailOrderInfofastSearchPage } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getTableConfig } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
@@ -92,18 +95,13 @@ export default {
       exportLoading: false,
       uploadDialogVisible: false,
       clickItemId: '',
-      // 订单信息变更申请表格配置
+      // 门店整车订单
       orderChangeTableConfig: {
-        title: '订单信息变更申请'
+        title: '门店整车订单'
       },
       orderChangeColumns: [
-        { field: 'changeApplyCode', title: '订单变更申请编号', width: 200, align: 'center' },
-        { field: 'applyStatusLabel', title: '申请状态', width: 120, align: 'center' },
-        { field: 'changeTypeLabel', title: '变更类型', width: 120, align: 'center' },
-        { field: 'changeReason', title: '变更原因', width: 150, align: 'center' },
-        { field: 'changeExplain', title: '变更说明', width: 200, align: 'center' },
-        { field: 'deliveryStatusLabel', title: '是否完成交车', width: 120, align: 'center' },
-        { field: 'createTime', title: '创建时间', width: 180, align: 'center' }
+        { field: 'mallOrderCode', title: '商城订单编号', width: 200, align: 'center' },
+        { field: 'matchFields', title: '查询匹配字段', width: 300, align: 'center' }
       ],
       orderChangeExtraParams: {}
     };
@@ -113,52 +111,21 @@ export default {
     this.getData();
   },
   methods: {
-    handleListSelect (row) {
-      this.clickItemId = row.id;
-    },
-    handleImport () {
-      this.uploadDialogVisible = true;
-    },
-    handleUploadDialogClose () {
-      this.uploadDialogVisible = false;
-    },
-    handleAdd () {
-      this.$router.push({
-        path: '/vehretail/orderRefund/changeApply/edit'
-      });
-    },
     onSubmit () {
-      this.optionObj.form.page = 1;
       this.getData();
-      this.refreshOrderChangeTable();
     },
     onReset () {
       this.form = { ...defaultForm };
-      this.optionObj.form.page = 1;
-      this.optionObj.form.pageSize = pageSize;
       this.orderChangeExtraParams = {};
       this.getData();
-      this.$nextTick(() => {
-        this.refreshOrderChangeTable();
-      });
+      // this.$nextTick(() => {
+      //   this.refreshRetailOrderTable();
+      // });
     },
     getData () {
       this.loading = true;
-      this.selectionList = [];
-
-      getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
-        .then(res => {
-          console.log(res);
-          this.optionObj.dataList = res.records.map(item => {
-            return {
-              ...item,
-              deleteLoading: false
-            };
-          });
-          this.optionObj.total = res.total;
-        }).finally(() => {
-          this.loading = false;
-        });
+      this.refreshRetailOrderTable();
+      this.loading = false;
     },
     // 需要防抖场景时使用
     debouncedGetData: debounce(function () {
@@ -175,64 +142,18 @@ export default {
         });
       });
     },
-    saveOrUpdate (data) {
-      return tableAddOrUpdate(data);
-    },
-    paginationChange (type, num) {
-      if (type === 'page') {
-        this.optionObj.form.page = num;
-      } else {
-        this.optionObj.form.size = num;
-      }
-      this.debouncedGetData();
-    },
-    // 多选框选中数据
-    handleSelectionChange (selection) {
-      this.selectionList = selection;
-    },
     getFormData () {
       const data = { ...this.form };
-
-      Object.keys(this.form).forEach(key => {
-        if (data[key] === '' || data[key] === null) {
-          delete data[key];
-        }
-      });
-
-      if (this.form.createTime) {
-        delete data.createTime;
-        if (this.form.createTime.length > 1) {
-          data.createTimeStart = this.form.createTime[0];
-          data.createTimeEnd = this.form.createTime[1];
-        }
-      }
-      if (this.selectionList.length > 0) {
-        data.ids = this.selectionList.map(item => item.id);
-      }
-
       return data;
     },
-    async fetchOptions (code) {
-      if (code) {
-        if (code === 'vehretail_order_change_apply_status') {
-          // 对结果进行过滤
-          let res = [];
-          res = await getEnum(code);
-          return res.filter(item => !(item.code === '1025' || item.code === '1027'));
-        } else {
-          return getEnum(code);
-        }
-      }
-      return [];
-    },
     // 获取订单信息变更申请列表（供 ComponentTable 使用）
-    getOrderChangeList (params) {
+    getRetailOrderInfoList (params) {
       // 将搜索条件合并到请求参数中
       const searchParams = this.getFormData();
-      return getList({ ...searchParams, ...params });
+      return retailOrderInfofastSearchPage({ ...searchParams, ...params });
     },
     // 刷新订单信息变更申请表格
-    refreshOrderChangeTable () {
+    refreshRetailOrderTable () {
       if (this.$refs.orderChangeTableRef) {
         this.orderChangeExtraParams = this.getFormData();
         this.$refs.orderChangeTableRef.refresh();
