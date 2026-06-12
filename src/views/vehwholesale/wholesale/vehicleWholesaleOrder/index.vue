@@ -830,12 +830,24 @@ export default {
       return true;
     },
     handleBatchAllocateVehicle () {
-      this.showBatchAllocateVehicleDialog = true;
-      // const items = this.selectionList.map(item => item) || [];
-      // const allowStatus = this.allAllocateVehicleConfirm(items);
-      // if (allowStatus) {
-      //   this.showBatchAllocateVehicleDialog = true;
-      // }
+      // this.showBatchAllocateVehicleDialog = true;
+      const ids = this.selectionList.map(item => item.id) || [];
+      const data = {
+        idSet: ids
+      };
+      this.$confirm('是否确定要执行配车操作？', '操作提醒', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        batchAllocateVehicleItem(data).then(() => {
+          this.$message({
+            type: 'success',
+            message: '提交成功!'
+          });
+          this.getData();
+        });
+      }).catch(() => {});
     },
     allBatchSetAutoAllocateConfirm (items) {
       if (items.length === 0) {
