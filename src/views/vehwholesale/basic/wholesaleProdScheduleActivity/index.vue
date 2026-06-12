@@ -199,6 +199,7 @@ export default {
             fixed: 'right',
             buttons: [{
               name: '配额调整',
+              show: () => this.permissions.has(this.moduleKey + '-updateQuotaQty'),
               click: (rowIndex, row) => {
                 this.changeTotalQuotaQty(row.id);
               },
