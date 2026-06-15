@@ -326,9 +326,6 @@
                     disabled
                   />
                 </el-form-item>
-                  <el-form-item label="商城订单号：" prop="mallOrderCode">
-                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehretail/orderManager/retailOrderInfo/edit?id=' + form.retailOrderId)">{{ form.mallOrderCode }}</el-button>
-                </el-form-item>
                  <el-form-item label="商城订单号：" prop="mallOrderCode">
                   <el-input
                     placeholder="请输入"

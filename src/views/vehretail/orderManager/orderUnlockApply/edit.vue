@@ -338,7 +338,12 @@
                   <el-link type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="需要绑定VIN号：" prop="bindVin">
-                  {{ form.bindVin }}
+                  <LPEncrypted
+                    :value.sync="form.bindVin"
+                    :decryptMethod="() => getDetailDecryptField('bindVin')"
+                  >
+                    {{ form.bindVin }}
+                  </LPEncrypted>
                 </el-form-item>
                 <el-form-item label="申请说明：" prop="applyDesc">
                   {{ form.applyDesc }}
@@ -459,7 +464,7 @@ import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 import { getOptionList } from '@/api/vehretail/basicConfig/retailOrderUnlockReasonConfig/index';
-import { findCanUnlockOrderList, getDetail as getRetailOrderDetail } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { findCanUnlockOrderList, getBaseInfo as getRetailOrderDetail } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 import auditDialog from '@/libs/components/auditDialog';
 import LPEncrypted from '@/libs/components/LPEncrypted/index.vue';
@@ -626,21 +631,21 @@ export default {
     const isEditing = this.$route.query.isEditing === 'true';
     this.canEditing = isAdding || (isEditing && (this.form.applyStatus === 1040 || this.form.applyStatus === 1010));
     if (id && isAdding) {
-      getRetailOrderDetail(id).then(res => {
+      getRetailOrderDetail({ retailOrderId: id }).then(res => {
         // 直接更新表单数据
-        this.form.retailOrderId = res.id || '';
-        this.form.retailOrderCode = res.retailOrderCode || '';
-        this.form.mallOrderCode = res.mallOrderCode || '';
-        this.form.saleDealerName = res.saleDealerName || '';
-        this.form.saleDealerCode = res.saleDealerCode || '';
-        this.form.carBuyerName = res.carOwner.carBuyerName || '';
-        this.form.idCardNo = res.carOwner.idCardNo || '';
+        this.form.retailOrderId = res.orderInfo.id || '';
+        this.form.retailOrderCode = res.orderInfo.retailOrderCode || '';
+        this.form.mallOrderCode = res.orderInfo.mallOrderCode || '';
+        this.form.saleDealerName = res.orderInfo.saleDealerName || '';
+        this.form.saleDealerCode = res.orderInfo.saleDealerCode || '';
+        this.form.carBuyerName = res.orderCarOwner.carBuyerName || '';
+        this.form.idCardNo = res.orderCarOwner.idCardNo || '';
         this.form.paymentTime = res.orderFund.paymentTime || '';
-        this.form.lockTime = res.lockTime || '';
-        this.form.vin = res.matchVin || '';
-        this.form.wholesaleOrderCode = res.wholesaleOrderCode || '';
-        this.form.orderStatus = res.orderStatus || '';
-        this.form.orderStatusLabel = res.orderStatusLabel || '';
+        this.form.lockTime = res.orderInfo.lockTime || '';
+        this.form.vin = res.orderInfo.matchVin || '';
+        this.form.wholesaleOrderCode = res.orderInfo.wholesaleOrderCode || '';
+        this.form.orderStatus = res.orderInfo.orderStatus || '';
+        this.form.orderStatusLabel = res.orderInfo.orderStatusLabel || '';
         this.form.unlockReason = '车辆质量问题';
         this.form.unlockReasonCode = 'DJY006';
       });
@@ -715,20 +720,20 @@ export default {
         return;
       }
       this.form.retailOrderCode = val;
-      getRetailOrderDetail(val).then(res => {
-        this.form.retailOrderId = res.id || '';
-        this.form.retailOrderCode = res.retailOrderCode || '';
-        this.form.mallOrderCode = res.mallOrderCode || '';
-        this.form.saleDealerName = res.saleDealerName || '';
-        this.form.saleDealerCode = res.saleDealerCode || '';
-        this.form.carBuyerName = res.carOwner.carBuyerName || '';
-        this.form.idCardNo = res.carOwner.idCardNo || '';
+      getRetailOrderDetail({ retailOrderId: val }).then(res => {
+        this.form.retailOrderId = res.orderInfo.id || '';
+        this.form.retailOrderCode = res.orderInfo.retailOrderCode || '';
+        this.form.mallOrderCode = res.orderInfo.mallOrderCode || '';
+        this.form.saleDealerName = res.orderInfo.saleDealerName || '';
+        this.form.saleDealerCode = res.orderInfo.saleDealerCode || '';
+        this.form.carBuyerName = res.orderCarOwner.carBuyerName || '';
+        this.form.idCardNo = res.orderCarOwner.idCardNo || '';
         this.form.paymentTime = res.orderFund.paymentTime || '';
-        this.form.lockTime = res.lockTime || '';
-        this.form.vin = res.matchVin || '';
-        this.form.wholesaleOrderCode = res.wholesaleOrderCode || '';
-        this.form.orderStatus = res.orderStatus || '';
-        this.form.orderStatusLabel = res.orderStatusLabel || '';
+        this.form.lockTime = res.orderInfo.lockTime || '';
+        this.form.vin = res.orderInfo.matchVin || '';
+        this.form.wholesaleOrderCode = res.orderInfo.wholesaleOrderCode || '';
+        this.form.orderStatus = res.orderInfo.orderStatus || '';
+        this.form.orderStatusLabel = res.orderInfo.orderStatusLabel || '';
       });
     },
     async findCanUnlockOrderList (params) {

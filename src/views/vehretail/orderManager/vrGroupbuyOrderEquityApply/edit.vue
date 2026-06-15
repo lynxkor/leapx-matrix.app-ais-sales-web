@@ -66,10 +66,10 @@
                     :disabled="true"
                   />
                 </el-form-item>
-                <el-form-item label="订单物料码：" prop="orderMaterialsCode">
+                <el-form-item label="订单物料码：" prop="materialsCode">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.orderMaterialsCode"
+                    v-model="form.materialsCode"
                     clearable
                     :disabled="true"
                   />
@@ -155,7 +155,7 @@
                   {{ form.vehicleOrderNo || '-' }}
                 </el-form-item>
                 <el-form-item label="订单物料码：">
-                  {{ form.orderMaterialsCode }}
+                  {{ form.materialsCode }}
                 </el-form-item>
                 <el-form-item label="销售门店：">
                   <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>
@@ -473,10 +473,10 @@
                 </el-form-item>
               </el-form>
               <el-form :inline="true" :model="form" :rules="rules" ref="orderForm2" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="订单物料码：" prop="orderMaterialsCode">
+                <el-form-item label="订单物料码：" prop="materialsCode">
                   <el-input
                     placeholder="请输入"
-                    v-model="form.orderMaterialsCode"
+                    v-model="form.materialsCode"
                     clearable
                     :disabled="true"
                   />
@@ -557,7 +557,7 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="订单物料码：">
-                  {{ form.orderMaterialsCode }}
+                  {{ form.materialsCode }}
                 </el-form-item>
                 <el-form-item label="配车物料码：">
                   {{ form.allocationMaterialsCode }}
@@ -754,7 +754,6 @@ const defaultForm = {
   discountedPrice: null,
   depositAmount: null,
   deliveryTime: '',
-  orderMaterialsCode: '',
   allocationMaterialsCode: '',
   saleDealerCode: '',
   deliveryDealerCode: '',
@@ -1059,7 +1058,13 @@ export default {
     },
     // 获取审批明细
     getApprovalDetail (id) {
-      getApprovalDetailList({ groupbuyOrderEquityApplyId: id }).then(res => {
+      getApprovalDetailList({
+        groupbuyOrderEquityApplyId: id,
+        sortColumns: [{
+          column: 'create_time',
+          sort: 'DESC'
+        }]
+      }).then(res => {
         this.approvalDetailList = res.records || [];
       });
     },
@@ -1088,7 +1093,7 @@ export default {
       // 填充订单相关字段（公司信息除外）
       this.$set(this.form, 'ownerOrgId', order?.orderInfo?.saleOrgId || '');
       this.$set(this.form, 'vehicleOrderNo', order?.orderInfo?.retailOrderCode || '');
-      this.$set(this.form, 'orderMaterialsCode', order?.orderMaterials?.materialsCode || '');
+      this.$set(this.form, 'materialsCode', order?.orderMaterials?.materialsCode || '');
       this.$set(this.form, 'dealerName', order?.orderInfo?.saleDealerName || '');
       this.$set(this.form, 'dealerCode', order?.orderInfo?.saleDealerCode || '');
       this.$set(this.form, 'cooperationType', order?.orderInfo?.cooperationType || '');
@@ -1102,7 +1107,6 @@ export default {
       this.$set(this.form, 'buyerName', order?.orderCarOwner?.carBuyerName || '');
       this.$set(this.form, 'buyerPhone', order?.orderCarOwner?.carBuyerPhone || '');
       this.$set(this.form, 'userId', order?.orderInfo?.orderUserId || '');
-      this.$set(this.form, 'materialsCode', order?.orderMaterials?.materialsCode || '');
       this.$set(this.form, 'materialsId', order?.orderMaterials?.materialsId || '');
       this.$set(this.form, 'materialsDesc', order?.orderMaterials?.materialsDesc || '');
       this.$set(this.form, 'vehicleOrderStatus', order?.orderInfo?.orderStatus || '');
