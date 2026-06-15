@@ -766,6 +766,10 @@ export default {
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
           console.log(res);
+          // 后端返回 data 为 null 时，res.records 为 undefined 会导致 map 白屏，需提前守卫
+          if (!res || !res.records) {
+            return;
+          }
           this.optionObj.dataList = res.records.map(item => {
             const vehicleMaterials = item.vehicleMaterialsDo || {};
             return {
