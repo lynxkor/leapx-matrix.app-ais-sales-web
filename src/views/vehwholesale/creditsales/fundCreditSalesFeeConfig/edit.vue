@@ -278,17 +278,9 @@ export default {
       }
 
       // 获取当前日期的零点时间，用于比较日期部分
-      const now = new Date();
-      const currentDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       // 获取失效日期的零点时间
       const expireDay = new Date(value);
       expireDay.setHours(0, 0, 0, 0);
-
-      // 1. 验证失效日期必须大于当前日期
-      if (expireDay <= currentDay) {
-        callback(new Error('失效日期必须大于当前日期'));
-        return;
-      }
 
       // 2. 验证失效日期必须大于生效日期
       if (this.form.effectiveTime) {
