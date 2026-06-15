@@ -312,6 +312,7 @@ export default {
           },
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.saleDealerCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'auditStatusLabel', label: '审核状态', visible: true, width: 120 },
+          { props: 'reviewOpinion', label: '厂端审核意见', visible: true, width: 240 },
           { props: 'regionName', label: '所属大区', visible: true, width: 100 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 120 },
           {
