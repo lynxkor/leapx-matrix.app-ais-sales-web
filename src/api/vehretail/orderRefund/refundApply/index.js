@@ -106,3 +106,11 @@ export function legalVerification (data) {
 export function updateRefundRecord (data) {
   return api.jsonPost(prefix + 'updateRefundRecord', data);
 }
+
+/**
+ * 取消原因描述更新
+ * @param {Object} data
+ */
+export function cancelReasonChange (data) {
+  return api.jsonPost(prefix + 'cancelReasonChange', data);
+}
