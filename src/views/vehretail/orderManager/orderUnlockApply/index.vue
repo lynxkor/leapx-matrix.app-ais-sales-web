@@ -45,6 +45,13 @@
         />
       </el-form-item>
       <template v-if="show">
+        <el-form-item label="整车订单号">
+        <tag-input
+          placeholder="请输入"
+          v-model="form.retailOrderCodeList"
+          clearable
+        />
+      </el-form-item>
         <el-form-item label="解绑方式">
           <fetch-select
             :request="fetchOptions"

@@ -359,6 +359,8 @@ export default {
           { props: 'longitude', label: '经度', visible: true, width: 200 },
           { props: 'latitude', label: '维度', visible: true, width: 200 },
           { props: 'orderTime', label: '订单时间', visible: true, width: 200 },
+          { props: 'saleUserName', label: '销售人员', visible: true, width: 200 },
+          { props: 'remark', label: '订单备注', visible: true, width: 200 },
           { props: 'allocateTime', label: '配车时间', visible: true, width: 200 },
           { props: 'outboundTime', label: '出库时间', visible: true, width: 200 },
           { props: 'standardPrice', label: '标准价格', visible: true, width: 200 },
@@ -764,6 +766,10 @@ export default {
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
           console.log(res);
+          // 后端返回 data 为 null 时，res.records 为 undefined 会导致 map 白屏，需提前守卫
+          if (!res || !res.records) {
+            return;
+          }
           this.optionObj.dataList = res.records.map(item => {
             const vehicleMaterials = item.vehicleMaterialsDo || {};
             return {

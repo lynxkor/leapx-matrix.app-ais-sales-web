@@ -1872,6 +1872,15 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
+      path: '/vehretail/orderManager/retailOrderAggregation',
+      name: 'orderAggregationDetail',
+      component: () => import('@/views/vehretail/orderManager/retailOrderAggregation/index.vue'),
+
+      meta: {
+        name: '订单车辆聚合查询',
+        noResourceUrl: 'true'
+      }
+    }, {
       path: '/vehstock/store/storeInventoryInboundDetails',
       name: 'storeInventoryInboundDetails',
       component: () => import('@/views/vehstock/store/storeInventoryInboundDetails/index.vue'),

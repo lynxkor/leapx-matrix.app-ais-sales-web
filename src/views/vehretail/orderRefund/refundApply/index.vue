@@ -49,6 +49,16 @@
         <el-form-item label="整车订单号">
           <tag-input v-model="form.retailOrderCodeList" placeholder="请输入"  clearable/>
         </el-form-item>
+        <el-form-item label="省市区">
+          <el-cascader
+            placeholder="请选择省市区"
+            v-model="form.area"
+            :props="orgProps"
+            :options="areaOptions"
+            filterable
+            clearable>
+          </el-cascader>
+        </el-form-item>
         <el-form-item label="申请时间">
           <el-date-picker
             :default-time="['00:00:00', '23:59:59']"
@@ -79,7 +89,7 @@
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <el-button v-if="canImport" size="small" @click="handleDepositRefundTypeImport">导入定金退回方式</el-button>
       <el-button v-if="canImport" size="small" @click="handleFundResultImport">导入退订退款结果</el-button>
-      <el-button v-if="canBatchAudit && refundStatusTab !== '0'" size="small" @click="openBatchAuditShow">批量审核</el-button>
+      <el-button v-if="canBatchAudit && Number(refundStatusTab) !== 0" size="small" @click="openBatchAuditShow">批量审核</el-button>
 <!--      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>-->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
 <!--      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>-->
@@ -149,6 +159,7 @@ import EditPage from './edit.vue';
 import { fetchCategoryList } from '@/api/vehretail/orderRefund/category';
 import TagInput from '@/libs/components/TagInput';
 import auditDialog from '@/libs/components/auditDialog/index.vue';
+import { getAreaTree } from '@/utils';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -158,6 +169,7 @@ const defaultForm = {
   retailOrderCode: '',
   mallOrderCode: '',
   cateCode: '',
+  area: []
 };
 
 const pageSize = 20;
@@ -199,6 +211,14 @@ export default {
         ...defaultForm
       },
       refundStatusTab: '0',
+      orgProps: {
+        checkStrictly: true,
+        emitPath: true,
+        label: 'name',
+        value: 'code',
+        children: 'child'
+      },
+      areaOptions: getAreaTree(),
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
@@ -318,6 +338,7 @@ export default {
     };
   },
   created () {
+    this.initPermissions();
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
   },
@@ -499,6 +520,14 @@ export default {
       }
       // 排序字段
       data.sortColumns = this.sortColumns;
+      // 省市区
+      if (Array.isArray(this.form.area) && this.form.area.length > 0) {
+        delete data.area;
+        data.provinceCode = this.form.area[0];
+        if (this.form.area.length > 1) {
+          data.cityCode = this.form.area[1];
+        }
+      }
       return data;
     },
     handleCreateTimeChange (createTime) {

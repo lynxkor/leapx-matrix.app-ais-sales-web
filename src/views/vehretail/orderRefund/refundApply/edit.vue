@@ -258,9 +258,6 @@
                     })"
                     type="text">{{form.retailOrderCode}}</el-button>
                 </el-form-item>
-<!--                <el-form-item label="退订原因分类编码：" prop="cateCode">-->
-<!--                  {{ form.cateCode }}-->
-<!--                </el-form-item>-->
                 <el-form-item label="退订原因分类：" prop="cateName">
                   {{ form.cateName }}
                 </el-form-item>
@@ -340,17 +337,22 @@
                 <el-form-item label="退订方式：" prop="orderRefundTypeLabel">
                   {{ form.orderRefundTypeLabel }}
                 </el-form-item>
-<!--                <el-form-item label="退订原因分类编码：" prop="cateCode">-->
-<!--                  {{ form.cateCode }}-->
-<!--                </el-form-item>-->
-                <el-form-item label="退订原因分类：" prop="cateName">
-                  {{ form.cateName }}
-                </el-form-item>
 <!--                <el-form-item label="原因二级分类编码：" prop="subCateCode">-->
 <!--                  {{ form.subCateCode }}-->
 <!--                </el-form-item>-->
                 <el-form-item v-if="subCateShow" label="原因二级分类：" prop="subCateName">
                   {{ form.subCateName }}
+                </el-form-item>
+                <el-form-item v-if="specRemarkShow" label="特殊备注：" prop="specialRemark">
+                  {{ form.specialRemark }}
+                </el-form-item>
+                <el-form-item label="退订附件上传要求：" prop="refundAttachRequired">
+                  <el-input
+                    v-model="form.refundAttachRequired"
+                    type="textarea"
+                    disabled
+                    clearable
+                  />
                 </el-form-item>
                 <el-form-item label="数据来源：" prop="dataSource">
                   {{ form.dataSourceLabel }}
@@ -613,8 +615,8 @@
                   >{{ form.optionPackageName }}</el-button>
                   <span v-else>{{ form.optionPackageName }}</span>
                 </el-form-item>
-                <el-form-item v-if="specRemarkShow" label="特殊备注：" prop="remark">
-                  {{ form.specialRemark }}
+                <el-form-item v-if="orderSpecRemarkShow" label="特殊备注：" prop="orderSpecialRemark">
+                  {{ form.orderSpecialRemark }}
                 </el-form-item>
               </el-form>
             </div>
@@ -673,13 +675,101 @@
               </el-form>
             </div>
           </section>
-          <component-table
-                v-if="!(isEditing || !_id)"
-                :table-config="{ title: '退款记录' }"
-                :table-data-external="form.payRefundRecordList"
-                :columns="refundColumns"
-                :show-pagination="false"
-              />
+          <!-- 退款记录表格 -->
+          <section v-if="!(isEditing || !_id)" class="common-section">
+            <div class="common-section-header">
+              <h2>退款记录</h2>
+            </div>
+            <div class="common-section-body">
+              <vxe-table
+                ref="refundRecordTable"
+                :data="form.payRefundRecordList"
+                stripe
+                resizable
+                border="inner"
+                size="medium"
+                show-overflow
+              >
+                <vxe-column field="payCode" title="收款编号" width="180" align="center" />
+                <vxe-column field="paySerialNumber" title="支付流水号" width="180" align="center" />
+                <vxe-column field="payCategoryLabel" title="收款类型" width="180" align="center" />
+                <vxe-column field="paymentAmount" title="付款金额" width="180" align="center" />
+                <vxe-column field="paymentTypeLabel" title="支付方式" width="180" align="center" />
+                <vxe-column field="paymentWayLabel" title="支付渠道" width="180" align="center" />
+                <vxe-column field="paymentTime" title="付款时间" width="180" align="center" />
+                <vxe-column field="refundTime" title="退款时间" width="180" align="center">
+                  <template v-slot:default="{ row, rowIndex }">
+                    <el-date-picker
+                      v-if="editingRefundRowIndex === rowIndex"
+                      v-model="row.refundTime"
+                      type="datetime"
+                      placeholder="选择退款时间"
+                      value-format="yyyy-MM-dd HH:mm:ss"
+                      style="width: 100%"
+                    />
+                    <span v-else>{{ row.refundTime }}</span>
+                  </template>
+                </vxe-column>
+                <vxe-column field="refundResult" title="退款结果" width="180" align="center">
+                  <template v-slot:default="{ row, rowIndex }">
+                    <el-select
+                      v-if="editingRefundRowIndex === rowIndex"
+                      v-model="row.refundResult"
+                      placeholder="请选择退款结果"
+                      style="width: 100%"
+                    >
+                      <el-option
+                        v-for="item in refundResultOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                    <span v-else>{{ row.refundResultLabel }}</span>
+                  </template>
+                </vxe-column>
+                <vxe-column field="refundRemark" title="退款说明" width="180" align="center">
+                  <template v-slot:default="{ row, rowIndex }">
+                    <el-input
+                      v-if="editingRefundRowIndex === rowIndex"
+                      v-model="row.refundRemark"
+                      placeholder="请输入退款说明"
+                    />
+                    <span v-else>{{ row.refundRemark }}</span>
+                  </template>
+                </vxe-column>
+                <vxe-column v-if="form.refundStatus === 1030" title="操作" width="160" align="center" fixed="right">
+                  <template v-slot:default="{ row, rowIndex }">
+                    <el-button
+                      v-if="editingRefundRowIndex !== rowIndex"
+                      type="text"
+                      size="small"
+                      @click="handleEditRefundRecord(rowIndex)"
+                    >
+                      编辑
+                    </el-button>
+                    <template v-else>
+                      <el-button
+                        type="text"
+                        size="small"
+                        :loading="savingRefundRecord"
+                        @click="handleSaveRefundRecord(row)"
+                      >
+                        保存
+                    </el-button>
+                      <el-button
+                        type="text"
+                        size="small"
+                        @click="handleCancelEditRefundRecord"
+                      >
+                        取消
+                      </el-button>
+                    </template>
+                  </template>
+                </vxe-column>
+              </vxe-table>
+            </div>
+          </section>
           <component-table
                 v-if="!(isEditing || !_id)"
                 :table-config="{ title: '审批明细' }"
@@ -717,6 +807,7 @@ import {
   submit,
   legalVerification
 } from '@/api/vehretail/orderRefund/refundApply/index';
+import { addOrUpdate as updateRefundRecord } from '@/api/vehretail/orderRefund/payRefundRecord/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -863,6 +954,7 @@ export default {
       vehicleVdcInventoryLedger: false, // 查询库存车展示
       subCateShow: false, // 原因二级分类展示
       specRemarkShow: false, // 特殊备注展示
+      orderSpecRemarkShow: false, // 订单特殊备注展示
       preApproverShow: false, // 初审人展示
       finalApproverShow: false, // 终审人展示
       yes_no_enum: YES_NO_ENUM,
@@ -890,6 +982,14 @@ export default {
         { field: 'operateStatusLabel', title: '申请状态', minWidth: 150 },
         { field: 'operatorName', title: '操作人', width: 180 },
         { field: 'operateExplain', title: '审核意见', minWidth: 200 }
+      ],
+      // 退款记录编辑相关
+      editingRefundRowIndex: null,
+      savingRefundRecord: false,
+      originalRefundRecordData: null,
+      refundResultOptions: [
+        { label: '退款成功', value: '1010' },
+        { label: '退款失败', value: '1020' }
       ],
       rules: {
         refundCode: [
@@ -969,6 +1069,7 @@ export default {
       this.vehicleVdcInventoryLedger = this.permissions.has(`${this.moduleKey}-vehicleVdcInventoryLedger`);
       this.subCateShow = this.permissions.has(`${this.moduleKey}-subCateShow`);
       this.specRemarkShow = this.permissions.has(`${this.moduleKey}-specRemarkShow`);
+      this.orderSpecRemarkShow = this.permissions.has(`${this.moduleKey}-orderSpecRemarkShow`);
       this.preApproverShow = this.permissions.has(`${this.moduleKey}-preApproverShow`);
       this.finalApproverShow = this.permissions.has(`${this.moduleKey}-finalApproverShow`);
     },
@@ -1277,6 +1378,40 @@ export default {
             this.$message.warning('未找到物料信息');
           }
         });
+    },
+    // 编辑退款记录
+    handleEditRefundRecord (rowIndex) {
+      // 保存原始数据用于取消时恢复
+      this.originalRefundRecordData = JSON.parse(JSON.stringify(this.form.payRefundRecordList[rowIndex]));
+      this.editingRefundRowIndex = rowIndex;
+    },
+    // 取消编辑退款记录
+    handleCancelEditRefundRecord () {
+      // 恢复原始数据
+      if (this.originalRefundRecordData) {
+        this.$set(this.form.payRefundRecordList, this.editingRefundRowIndex, JSON.parse(JSON.stringify(this.originalRefundRecordData)));
+      }
+      this.editingRefundRowIndex = null;
+      this.originalRefundRecordData = null;
+    },
+    // 保存退款记录
+    handleSaveRefundRecord (row) {
+      this.savingRefundRecord = true;
+      const params = {
+        id: row.id,
+        refundTime: row.refundTime,
+        refundResult: row.refundResult,
+        refundRemark: row.refundRemark
+      };
+      updateRefundRecord(params).then(() => {
+        this.$message.success('保存成功');
+        this.editingRefundRowIndex = null;
+        this.originalRefundRecordData = null;
+        // 重新加载详情
+        this.$refs.containerRef.loadDetail();
+      }).finally(() => {
+        this.savingRefundRecord = false;
+      });
     }
   }
 };
