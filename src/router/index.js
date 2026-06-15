@@ -3097,15 +3097,6 @@ export function getRouter () {
     routes
   });
   let confirmInstance = null;
-  // 兜底：动态 import 加载失败(部署缓存/ChunkLoadError，常见报错 SyntaxError: Unexpected token '<')
-  // 时自动刷新一次，避免路由切换白屏。__chunkReloaded 防止刷新后仍失败导致死循环
-  router.onError((error) => {
-    const text = `${(error && error.message) || ''} ${(error && error.name) || ''}`;
-    if (/Loading chunk|ChunkLoadError|Unexpected token/i.test(text) && !window.__chunkReloaded) {
-      window.__chunkReloaded = true;
-      window.location.reload();
-    }
-  });
   router.beforeEach((to, from, next) => {
     if (to.matched?.some(record => record.meta.requiresAuth)) {
       // 需要登录
