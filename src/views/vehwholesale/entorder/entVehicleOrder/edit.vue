@@ -213,7 +213,6 @@
                     placeholder="请输入"
                     v-model="form.saleUserName"
                     clearable
-                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="订单备注：" prop="remark">

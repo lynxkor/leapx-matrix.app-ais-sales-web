@@ -1215,6 +1215,14 @@ export default {
       }).catch(() => {});
     },
     openCommitShow () {
+      if (this._id) {
+        // 等待一下确保文件列表已更新
+        const attachmentList = this.$refs.attachment?.getFileList() || [];
+        if (!attachmentList || attachmentList.length === 0) {
+          this.$message.warning('请上传附件信息');
+          return;
+        }
+      }
       this.$confirm('确认是否对数据进行提交审批?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

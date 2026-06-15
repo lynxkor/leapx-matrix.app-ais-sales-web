@@ -59,7 +59,7 @@
         </el-form-item> -->
         <el-form-item label="修改配额数量：" prop="totalQuotaQty">
           <el-input-number :controls="false" style="width: 100%;" placeholder="请输入" v-model="changeform.totalQuotaQty"
-            clearable :precision="0" />
+            clearable :precision="0" :min="0" />
         </el-form-item>
         <!-- <el-form-item label="已提报数量：" prop="requestQty">
           <el-input-number :controls="false" style="width: 100%;" placeholder="请输入" v-model="changeform.requestQty"
@@ -70,8 +70,8 @@
             clearable :precision="0" :disabled="true" />
         </el-form-item> -->
         <el-row class="number-box">
-          <el-col :span="8">额度数量：<em>{{ changeform.beforetotalQuotaQty }}</em></el-col>
-          <el-col :span="8">已提报数量：<em>{{ changeform.requestQty }}</em></el-col>
+          <el-col :span="8">额度数量：<em>{{ changeform.beforetotalQuotaQty }} </em></el-col>
+          <el-col :span="8">已提报数量：<em>{{ changeform.usedQuotaQty }}</em></el-col>
           <el-col :span="8">剩余可用：<em>{{ changeform.remainQuotaQty }}</em></el-col>
         </el-row>
       </el-form>
@@ -199,6 +199,7 @@ export default {
             fixed: 'right',
             buttons: [{
               name: '配额调整',
+              show: () => this.permissions.has(this.moduleKey + '-updateQuotaQty'),
               click: (rowIndex, row) => {
                 this.changeTotalQuotaQty(row.id);
               },
@@ -265,7 +266,7 @@ export default {
           this.submitLoading = true;
           const submitForm = {
             id: this.changeform.id,
-            totalQuotaQty: this.changeform.totalQuotaQty
+            updateQuotaQty: this.changeform.totalQuotaQty
           };
           updateQuotaQty(submitForm).then(res => {
             this.$message({

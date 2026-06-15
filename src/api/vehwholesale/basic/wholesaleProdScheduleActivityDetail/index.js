@@ -42,3 +42,7 @@ export function getDetail (data) {
 export function enableItem (data) {
   return api.jsonPost(prefix + 'enableOrDisable', data);
 }
+
+export function updateTotalQuotaQty (data) {
+  return api.jsonPost(prefix + 'updateTotalQuotaQty', data);
+}

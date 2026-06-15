@@ -27,7 +27,7 @@
           <el-button size="small" :loading="unlockLoading" v-if="canPerUnlock" v-permission="moduleKey+'-perUnlock'" @click="handleUnlock">取消锁车</el-button>
           <el-button size="small" :loading="agreementLoading" v-if="canQuerySnapShot" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
           <el-button size="small" v-if="canOperateOrder && canRetailOrderRefund && !(form.orderStatus === 15 || form.orderStatus === 10 || (form.orderStatus === 7 && form.deliveryOrder && form.deliveryOrder.status === 5))" @click="handleOrderRefund">订单退订</el-button>
-          <el-button size="small" :loading="changeApplyLoading" v-if="canOperateOrder && canRetailOrderChangeApply && form.orderStatus !== 10" @click="handleCarOwnerChangeApplication">购车人变更申请</el-button>
+          <el-button size="small" :loading="changeApplyLoading" v-if="canOperateOrder && canRetailOrderChangeApply && form.orderStatus !== 10 && form.orderStatus !== 99" @click="handleCarOwnerChangeApplication">购车人变更申请</el-button>
           <el-button size="small" :loading="qualityIssueLoading" v-if="canOperateOrder && canOrderUnlockApply && form.wholesaleBindStatus === 1 && (form.orderStatus === 6 || form.orderStatus === 7)" @click="handleQualityIssueUnbindApplication">质量问题解绑申请</el-button>
           <el-button size="small" v-if="canVrEquityApply && form.orderStatus !== 99" @click="handleEquityApply">权益申请</el-button>
           <!-- 团购申请: 订单确认(3)/生产中(5)/车辆在途(6)/等待交车(7)/交车完成(9)/待门店向工厂付款(30)/车辆发运准备中(40) -->
@@ -1009,26 +1009,10 @@ export default {
       }));
     },
     getDetailData () {
-      if (this._id) {
-        getDetail(this._id).then(response => {
-          const processedData = response;
-          processedData.finance = response.finance || { ...defaultForm.finance };
-          // 辅助函数：为数组中的每个对象添加 saleDealerName 字段
-          const addSaleDealerName = (array) => {
-            if (array && Array.isArray(array) && response.saleDealerName) {
-              return array.map(item => ({
-                ...item,
-                saleDealerName: response.saleDealerName,
-                paymentTime: response.paymentTime,
-              }));
-            }
-            return array || [];
-          };
-          processedData.statusTrackList = addSaleDealerName(response.statusTrackList);
-          processedData.lockRecordList = addSaleDealerName(response.lockRecordList);
-          Object.assign(this.form, processedData);
-          Object.assign(this.originalForm, processedData);
-        }).catch(() => {});
+      // 走 EditBaseContainer 的标准 refresh 流程：emit update:form + update:originalForm
+      // 避免直接 Object.assign(this.form, ...) 在 Vue 2 中对深层字段响应式不友好的问题
+      if (this.$refs.containerRef) {
+        this.$refs.containerRef.loadDetail();
       }
     },
     detailRequest () {

@@ -1872,6 +1872,15 @@ const routes = [
         noResourceUrl: 'true'
       }
     }, {
+      path: '/vehretail/orderManager/retailOrderAggregation',
+      name: 'orderAggregationDetail',
+      component: () => import('@/views/vehretail/orderManager/retailOrderAggregation/index.vue'),
+
+      meta: {
+        name: '订单车辆聚合查询',
+        noResourceUrl: 'true'
+      }
+    }, {
       path: '/vehstock/store/storeInventoryInboundDetails',
       name: 'storeInventoryInboundDetails',
       component: () => import('@/views/vehstock/store/storeInventoryInboundDetails/index.vue'),
@@ -3102,9 +3111,8 @@ export function getRouter () {
       } else {
         // 防止重复弹出
         if (confirmInstance) return;
-        confirmInstance = Vue.prototype.$confirm('你没有访问该页面的权限', '提示', {
+        confirmInstance = Vue.prototype.$confirm('您没有访问该页面的权限，如已经添加权限，请退出重新登录', '提示', {
           confirmButtonText: '确定',
-          showCancelButton: false,
           closeOnClickModal: false,
           closeOnPressEscape: false,
           type: 'warning'

@@ -12,6 +12,14 @@ export function getList (data) {
 };
 
 /**
+ * 聚合查询列表
+ * @param {Object} data
+ */
+export function fastSearchPage (data) {
+  return api.jsonPost(prefix + 'fastSearchPage', data);
+};
+
+/**
  * 新增或修改
  * @param {Object} data
  */
@@ -97,6 +105,14 @@ export function perUnlock (data) {
  */
 export function manualLock (data) {
   return api.jsonPost('vr/web/order/manualLock', data);
+};
+
+/**
+ * 手工配车查询门店库存台账分页查询
+ * @param {Object} data
+ */
+export function storeInventoryLedgerPage (data) {
+  return api.jsonPost('vr/web/order/retailOrderInfo/storeInventoryLedgerPage', data);
 };
 
 /**

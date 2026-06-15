@@ -24,7 +24,7 @@
       <dateranges
         v-model="form.createTime"
         :setDefault="true"
-        deftTime="本周"
+        deftTime="最近一周"
         :limtNum="3"
         ref="transactionTime"/>
    </el-form-item>

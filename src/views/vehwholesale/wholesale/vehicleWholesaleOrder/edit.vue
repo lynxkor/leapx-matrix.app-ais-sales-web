@@ -24,7 +24,7 @@
           <el-button  v-if = "pervinAllocateVehicle && form.buttonControl && form.buttonControl.manualAllocateVehicle" size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
           <el-button  v-if = "perbatchSettleSubmit && form.buttonControl && form.buttonControl.submitSettleButton" size="small" :loading="batchSettleSubmitLoading" @click="handleBatchSettleSubmit">提交结算</el-button>
           <el-button  v-if = "perbatchCancelSettle && form.buttonControl && form.buttonControl.cancelSettle" size="small" @click="handleBatchCancelSettle">取消结算</el-button>
-          <el-button  v-if = "perbatchCancel && form.buttonControl && form.buttonControl.cancelButton" size="small" @click="handleCancel">作废</el-button>
+          <!-- <el-button  v-if = "perbatchCancel && form.buttonControl && form.buttonControl.cancelButton" size="small" @click="handleCancel">作废</el-button> -->
         </template>
         <el-main>
           <section class="common-section">
@@ -325,9 +325,6 @@
                     clearable
                     disabled
                   />
-                </el-form-item>
-                  <el-form-item label="商城订单号：" prop="mallOrderCode">
-                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/sales/vehretail/orderManager/retailOrderInfo/edit?id=' + form.retailOrderId)">{{ form.mallOrderCode }}</el-button>
                 </el-form-item>
                  <el-form-item label="商城订单号：" prop="mallOrderCode">
                   <el-input

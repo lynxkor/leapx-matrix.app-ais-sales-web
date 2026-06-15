@@ -98,3 +98,11 @@ export function batchAudit (data) {
 export function legalVerification (data) {
   return api.jsonPost(prefix + 'legalVerification', data);
 }
+
+/**
+ * 更新退款记录
+ * @param {Object} data
+ */
+export function updateRefundRecord (data) {
+  return api.jsonPost(prefix + 'updateRefundRecord', data);
+}

@@ -218,7 +218,7 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-button v-if="canAddOrUpdate" size="small" @click="handleaAdOrUpdate">
+      <el-button v-if="canAddOrUpdate" size="small"  :loading="createShipLoading" @click="handleaAdOrUpdate">
         创建发运计划
       </el-button>
       <el-button v-permission="moduleKey+'-setSwitch'" size="small" @click="handleSwitch">
@@ -335,6 +335,7 @@ export default {
       show: false,
       loading: false,
       exportLoading: false,
+      createShipLoading: false,
       uploadDialogVisible: false,
       showSwitchFlageDialog: false,
       switchFlagStatus: false,
@@ -649,6 +650,7 @@ export default {
       return getRigion({ orgName: params });
     },
     handleaAdOrUpdate () {
+      this.createShipLoading = true;
       addOrUpdateItem({}).then(() => {
         this.$message({
           type: 'success',
@@ -660,6 +662,8 @@ export default {
           type: 'error',
           message: '创建发运计划失败!'
         });
+      }).finally(() => {
+        this.createShipLoading = false;
       });
     },
     handleSwitch () {

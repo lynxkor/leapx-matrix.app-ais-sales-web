@@ -460,7 +460,7 @@ export default {
         entOrderCodeLike: query,
         pageNum: 1,
         pageSize: 20,
-        statuses: [9, 51],
+        orderStatuses: [9, 51],
         orderSyncStatus: 1
       };
       try {

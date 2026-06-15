@@ -43,8 +43,14 @@
         <el-form-item label="企业客户补货订单号" >
            <tag-input v-model="form.entReplenishOrderCodes" placeholder="请输入" />
         </el-form-item>
+         <el-form-item label="第七大区订单号" >
+           <tag-input v-model="form.cbuOrderCodes" placeholder="请输入" />
+        </el-form-item>
         <el-form-item label="配车VIN" >
            <tag-input v-model="form.vins" placeholder="请输入" />
+        </el-form-item>
+         <el-form-item label="下单物料描述" >
+           <tag-input v-model="form.orderMaterialsDescs" placeholder="请输入" />
         </el-form-item>
          <el-form-item label="订单分类">
           <fetch-select
@@ -353,6 +359,8 @@ export default {
           { props: 'longitude', label: '经度', visible: true, width: 200 },
           { props: 'latitude', label: '维度', visible: true, width: 200 },
           { props: 'orderTime', label: '订单时间', visible: true, width: 200 },
+          { props: 'saleUserName', label: '销售人员', visible: true, width: 200 },
+          { props: 'remark', label: '订单备注', visible: true, width: 200 },
           { props: 'allocateTime', label: '配车时间', visible: true, width: 200 },
           { props: 'outboundTime', label: '出库时间', visible: true, width: 200 },
           { props: 'standardPrice', label: '标准价格', visible: true, width: 200 },
@@ -758,6 +766,10 @@ export default {
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
           console.log(res);
+          // 后端返回 data 为 null 时，res.records 为 undefined 会导致 map 白屏，需提前守卫
+          if (!res || !res.records) {
+            return;
+          }
           this.optionObj.dataList = res.records.map(item => {
             const vehicleMaterials = item.vehicleMaterialsDo || {};
             return {

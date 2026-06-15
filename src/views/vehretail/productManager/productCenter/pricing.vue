@@ -144,15 +144,13 @@ export default {
         this.total = res.total;
       });
     },
-    handleRemoveRow (row, index, defer) {
+    handleRemoveRow (row, index) {
       if (!row.id) {
         return;
       }
-      productSkuDelete([row.id]).then((d) => {
-        defer.resolve();
+      productSkuDelete([row.id]).then(() => {
         this.$message.success('删除成功');
-      }).catch(() => {
-        defer.reject();
+        this.getDetailPageApi();
       });
     },
     // 行保存
