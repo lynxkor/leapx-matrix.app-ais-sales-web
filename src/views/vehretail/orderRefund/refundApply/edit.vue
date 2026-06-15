@@ -177,6 +177,14 @@
                     disabled
                   />
                 </el-form-item>
+                <el-form-item label="大区：" prop="regionName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.regionName"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
                 <el-form-item label="基本车型：" prop="modelName">
                   <el-input
                     placeholder="请输入"
@@ -321,6 +329,9 @@
                     @click="handleRouteToStoreDetail(form.saleDealerCode)"
                     type="text">{{form.saleDealerName}}</el-button>
                   <span v-else>{{ form.saleDealerName }}</span>
+                </el-form-item>
+                <el-form-item label="大区：" prop="regionName">
+                  {{ form.regionName }}
                 </el-form-item>
 <!--                <el-form-item label="省编码：" prop="provinceCode">-->
 <!--                  {{ form.provinceCode }}-->
