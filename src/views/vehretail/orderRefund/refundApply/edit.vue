@@ -11,7 +11,7 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="form.refundStatus === 1010 || form.refundStatus === 1040"
+        :showEditBtn="form.refundStatus === 1010 || form.refundStatus === 1040 || form.refundStatus === 1030"
       >
         <template #status>
           <!-- 支持primary,warning,success,danger等状态 -->
@@ -57,7 +57,7 @@
             </div>
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="(isEditing || !_id) && form.refundStatus !== 1030">
                 <el-form-item label="商城订单编号：" prop="mallOrderCode">
                   <fetch-select
                     v-bind="selectOptions"
@@ -177,6 +177,14 @@
                     disabled
                   />
                 </el-form-item>
+                <el-form-item label="大区：" prop="regionName">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.regionName"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
                 <el-form-item label="基本车型：" prop="modelName">
                   <el-input
                     placeholder="请输入"
@@ -242,7 +250,7 @@
                   />
                 </el-form-item>
               </el-form>
-              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id) || (isEditing && form.refundStatus === 1030)">
                 <el-form-item label="商城订单编号：" prop="mallOrderCode">
                   {{ form.mallOrderCode }}
                   <el-button v-if="vrFinanceOrder" size="small" type="primary" plain @click="openFinancialOrderShow">查询金融订单</el-button>
@@ -321,6 +329,9 @@
                     @click="handleRouteToStoreDetail(form.saleDealerCode)"
                     type="text">{{form.saleDealerName}}</el-button>
                   <span v-else>{{ form.saleDealerName }}</span>
+                </el-form-item>
+                <el-form-item label="大区：" prop="regionName">
+                  {{ form.regionName }}
                 </el-form-item>
 <!--                <el-form-item label="省编码：" prop="provinceCode">-->
 <!--                  {{ form.provinceCode }}-->
@@ -479,9 +490,20 @@
                 <el-form-item label="订单取消原因：" prop="orderCancelReason">
                   {{ form.orderCancelReason }}
                 </el-form-item>
-                <el-form-item label="订单取消说明：" prop="orderCancelDescp">
+                <el-form-item v-show="form.refundStatus === 1030 && (isEditing || !_id)" label="订单取消说明：" prop="orderCancelDescp">
+                  <el-input
+                    placeholder="请输入"
+                    maxlength="100"
+                    show-word-limit
+                    v-model="form.orderCancelDescp"
+                    :disabled="!(form.refundStatus === 1030 && (isEditing || !_id))"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item v-show="!(form.refundStatus === 1030 && (isEditing || !_id))" label="订单取消说明：" prop="orderCancelDescp">
                   {{ form.orderCancelDescp }}
                 </el-form-item>
+
                 <el-form-item label="基本车系：" prop="seriesName">
                   <el-button
                     class="link"
@@ -805,6 +827,7 @@ import {
   getDetail,
   preApprove,
   submit,
+  cancelReasonChange,
   legalVerification
 } from '@/api/vehretail/orderRefund/refundApply/index';
 import { addOrUpdate as updateRefundRecord } from '@/api/vehretail/orderRefund/payRefundRecord/index';
@@ -1090,10 +1113,22 @@ export default {
           return Promise.reject(new Error('请上传退订附件'));
         }
       }
-      const res = await addOrUpdate({ ...this.form });
-      // 保存成功后退出编辑状态
-      this.isEditing = false;
-      return res;
+      // 修改取消原因
+      if (this.form.refundStatus === 1030) {
+        if (!this.form.orderCancelDescp || this.form.orderCancelDescp === '') {
+          this.$message.error('请输入取消说明!');
+          return Promise.reject(new Error('请输入取消说明!'));
+        }
+        const res = await cancelReasonChange({ ...this.form });
+        // 保存成功后退出编辑状态
+        this.isEditing = false;
+        return res;
+      } else {
+        const res = await addOrUpdate({ ...this.form });
+        // 保存成功后退出编辑状态
+        this.isEditing = false;
+        return res;
+      }
     },
     // 打开侧边栏
     openPane () {

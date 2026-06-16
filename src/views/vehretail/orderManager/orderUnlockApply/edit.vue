@@ -338,7 +338,12 @@
                   <el-link type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="需要绑定VIN号：" prop="bindVin">
-                  {{ form.bindVin }}
+                  <LPEncrypted
+                    :value.sync="form.bindVin"
+                    :decryptMethod="() => getDetailDecryptField('bindVin')"
+                  >
+                    {{ form.bindVin }}
+                  </LPEncrypted>
                 </el-form-item>
                 <el-form-item label="申请说明：" prop="applyDesc">
                   {{ form.applyDesc }}

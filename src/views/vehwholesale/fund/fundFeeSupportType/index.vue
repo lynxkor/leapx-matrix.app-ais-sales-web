@@ -70,7 +70,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="1"
+      :id="'1'"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -95,6 +95,7 @@ const defaultForm = {
   feeSupportTypeName: '',
   feeSupportTypeCode: '',
   status: '',
+  statusIncludeList: ['1']
 };
 
 const pageSize = 20;

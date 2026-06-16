@@ -59,6 +59,17 @@
             clearable>
           </el-cascader>
         </el-form-item>
+        <el-form-item label="大区">
+          <fetch-select
+            filterable
+            clearable
+            remote
+            v-model="form.regionCode"
+            :remote-method="remoteMethods.region"
+            value-key="orgCode"
+            label-key="orgName"
+          />
+        </el-form-item>
         <el-form-item label="申请时间">
           <el-date-picker
             :default-time="['00:00:00', '23:59:59']"
@@ -147,7 +158,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { batchAudit, deleteItem, enableItem, getList } from '@/api/vehretail/orderRefund/refundApply/index';
-import { exportTable, getEnum, getTableConfig, tableAddOrUpdate } from '@/api/common';
+import { exportTable, getEnum, getTableConfig, tableAddOrUpdate, getRigion, vehicleSeriesList } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -219,6 +230,14 @@ export default {
         children: 'child'
       },
       areaOptions: getAreaTree(),
+      remoteMethods: {
+        series: async (query) => {
+          return await vehicleSeriesList({ seriesNameLike: query, status: 1 });
+        },
+        region: async (query) => {
+          return await getRigion({ regionName: query, status: 1 });
+        },
+      },
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
@@ -285,6 +304,7 @@ export default {
           { props: 'saleDealerName', label: '销售门店', visible: true, width: 200, sortable: true },
           { props: 'provinceName', label: '省', visible: true, width: 200 },
           { props: 'cityName', label: '市', visible: true, width: 200 },
+          { props: 'regionName', label: '大区', visible: true, width: 200 },
           { props: 'modelName', label: '基本车型', visible: true, width: 200, sortable: true },
           { props: 'refundBank', label: '退款银行', visible: true, width: 200 },
           { props: 'refundBankUser', label: '银行开户名', visible: true, width: 200 },
