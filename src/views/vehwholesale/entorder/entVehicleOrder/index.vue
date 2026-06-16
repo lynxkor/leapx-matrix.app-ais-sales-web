@@ -364,8 +364,12 @@ export default {
           { props: 'allocateTime', label: '配车时间', visible: true, width: 200 },
           { props: 'outboundTime', label: '出库时间', visible: true, width: 200 },
           { props: 'standardPrice', label: '标准价格', visible: true, width: 200 },
-          // { props: 'standardPrice', label: '折扣金额', visible: true, width: 200 },
+          { props: 'salesPrice', label: '销售价格', visible: true, width: 200 },
           { props: 'relatedTxnExTaxPrice', label: '关联交易不含税价', visible: true, width: 200 },
+          { props: 'downPaymentRatio', label: '首付款比例', visible: true, width: 200 },
+          { props: 'usedCashAmount', label: '使用现金金额', visible: true, width: 200 },
+          { props: 'creditSalesAmount', label: '融资金额/赊销金额', visible: true, width: 200 },
+          { props: 'clearedFlagLabel', label: '是否还款', visible: true, width: 200 },
           {
             props: 'orderMaterialsCode',
             label: '订单物料编码',
