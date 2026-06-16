@@ -384,7 +384,7 @@
         <el-button v-permission="moduleKey+'-setEmergencyOrder'" size="small" :disabled="selectionList.length === 0" @click="handleSetEmergencyOrder">设置急单</el-button>
         <el-button v-permission="moduleKey+'-setEmergencyOrder'" size="small" :disabled="selectionList.length === 0" @click="handleCancelEmergencyOrder">取消急单</el-button>
         <el-button v-permission="moduleKey+'-batchSetAllowLockRetail'" size="small" :disabled="selectionList.length === 0" @click="handleLock">设置允许零售锁单</el-button>
-        <el-button v-permission="moduleKey+'-refreshPrice'" size="small" :disabled="selectionList.length === 0" @click="handleBatchRemark">批量备注</el-button>
+        <el-button v-permission="moduleKey+'-editSpecialRemark'" size="small" :disabled="selectionList.length === 0" @click="handleBatchRemark">批量备注</el-button>
         <el-button v-permission="moduleKey+'-refreshPrice'" size="small" @click="handleRefreshPriceCoefficient">刷新价格</el-button>
         <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
         <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
