@@ -161,3 +161,11 @@ export function querySAPAccountBalance (data) {
 export function batchSetAllowLockRetail (data) {
   return api.jsonPost(prefix + 'batchSetAllowLockRetail', data);
 }
+
+/**
+ * 特殊备注编辑
+ * @param {Object} data
+ */
+export function editSpecialRemark (data) {
+  return api.jsonPost(prefix + 'editSpecialRemark', data);
+}
