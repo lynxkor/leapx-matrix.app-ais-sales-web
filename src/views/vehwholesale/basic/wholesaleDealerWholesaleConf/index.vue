@@ -39,8 +39,10 @@
         <fetch-select
           filterable
           clearable
+          multiple
           remote
-          v-model="form.dealerParentOrgId"
+          collapseTags
+          v-model="form.dealerParentOrgIdList"
           :remote-method="getDealerParentOrgList"
           value-key="companyCode"
           label-key="companyName"
@@ -160,7 +162,7 @@ const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   dealerCodes: [],
   dealerNames: [],
-  dealerParentOrgId: '',
+  dealerParentOrgIdList: [],
   autoAllocationEnabled: '',
   autoSettlementEnabled: '',
   productionRequestEnabled: '',

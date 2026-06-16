@@ -41,8 +41,8 @@
           multiple
           reserve-keyword
           labelKey="organizationName"
-          valueKey="organizationCode"
-          v-model="form.fundFinancialOrganizationCodes"
+          valueKey="id"
+          v-model="form.fundFinancialOrganizationIds"
           placeholder="请选择"
           clearable
           filterable
