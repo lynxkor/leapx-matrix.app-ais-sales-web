@@ -3120,7 +3120,13 @@ export function getRouter () {
           return logout().then(() => {
             store.commit('USER_CLICK_MENU');
             store.commit('USER_SIGN_OUT');
+            // 显式跳转到登录页
+            toLoginPage(to, next);
           });
+        }).catch(() => {
+          // logout 失败也需要清理状态
+          store.commit('USER_SIGN_OUT');
+          toLoginPage(to, next);
         }).finally(() => {
           confirmInstance = null;
         });
