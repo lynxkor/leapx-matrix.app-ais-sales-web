@@ -563,6 +563,9 @@ export default {
 }
 ::v-deep .el-input-number {
   width: 100%;
+  .el-input__inner {
+    text-align: center;
+  }
 }
 .fund-form {
   margin-top: 20px;
