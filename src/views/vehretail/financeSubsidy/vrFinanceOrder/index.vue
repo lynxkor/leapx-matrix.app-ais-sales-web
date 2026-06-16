@@ -84,6 +84,112 @@
             collapse-tags
           />
         </el-form-item>
+        <el-form-item label="金融机构">
+          <fetch-select
+            :options="financeOrganizationOptions"
+            v-model="form.financeOrganizationNameList"
+            :valueKey="'financeOrganizationName'"
+            :labelKey="'financeOrganizationName'"
+            placeholder="请选择"
+            clearable
+            filterable
+            multiple
+            collapse-tags
+          />
+        </el-form-item>
+        <el-form-item label="是否贴息">
+          <fetch-select
+            :options="yes_or_no"
+            :valueKey="'value'"
+            :labelKey="'label'"
+            v-model="form.discount"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="门店有无金融返佣">
+          <fetch-select
+            :options="yes_or_no"
+            :valueKey="'value'"
+            :labelKey="'label'"
+            v-model="form.dealerHasCommission"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="分期期数">
+          <fetch-select
+            :options="installmentPeriodsOptions"
+            v-model="form.installmentPeriodsList"
+            :valueKey="'value'"
+            :labelKey="'label'"
+            placeholder="请选择"
+            clearable
+            filterable
+            multiple
+            collapse-tags
+          />
+        </el-form-item>
+        <el-form-item label="省">
+          <fetch-select
+            filterable
+            clearable
+            remote
+            v-model="form.provinceName"
+            :remote-method="getProvince"
+            value-key="name"
+            label-key="name"
+            @change="handleChangeProvince"
+          />
+        </el-form-item>
+        <el-form-item label="市">
+          <fetch-select
+            filterable
+            clearable
+            v-model="form.cityName"
+            :options="cityOptions"
+            value-key="name"
+            label-key="name"
+          />
+        </el-form-item>
+        <el-form-item label="放款日期">
+          <el-date-picker
+            v-model="form.loanDisbursementDateRange"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            value-format="yyyy-MM-dd"
+            format="yyyy-MM-dd"
+            :default-time="['00:00:00', '23:59:59']"
+          />
+        </el-form-item>
+        <el-form-item label="交车日期">
+          <el-date-picker
+            v-model="form.deliveryDateRange"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            value-format="yyyy-MM-dd"
+            format="yyyy-MM-dd"
+            :default-time="['00:00:00', '23:59:59']"
+          />
+        </el-form-item>
+        <el-form-item label="贷款申请时间">
+          <el-date-picker
+            v-model="form.loanApplicationTimeRange"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            value-format="yyyy-MM-dd"
+            format="yyyy-MM-dd"
+            :default-time="['00:00:00', '23:59:59']"
+          />
+        </el-form-item>
       </template>
       <page-search-action
         v-if="canList"
@@ -123,7 +229,9 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, getDecryptField } from '@/api/vehretail/financeSubsidy/vrFinanceOrder/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getRigion } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getRigion, getProvinceTree } from '@/api/common';
+import { YES_NO_ENUM } from '@/libs/constants';
+import { getList as getFinanceOrganizationList } from '@/api/vehretail/financeSubsidy/vrFinanceOrganization/index';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { downloadExcel } from '@/libs/utils';
@@ -143,7 +251,16 @@ const defaultForm = {
   partnerName: '',
   dealerNameList: [],
   basicCarModel: '',
-  financeOrderStatusList: []
+  financeOrderStatusList: [],
+  financeOrganizationNameList: [], // 金融机构
+  discount: '', // 是否贴息
+  dealerHasCommission: '', // 门店有无金融返佣
+  installmentPeriodsList: [], // 分期期数
+  provinceName: '', // 省
+  cityName: '', // 市
+  loanDisbursementDateRange: [], // 放款日期范围
+  deliveryDateRange: [], // 交车日期范围
+  loanApplicationTimeRange: [] // 贷款申请时间范围
 };
 
 const pageSize = 20;
@@ -191,6 +308,25 @@ export default {
         { label: '合同签署中', value: '14' },
         { label: '客户经理变更', value: '101' }
       ],
+      financeOrganizationOptions: [], // 金融机构选项
+      yes_or_no: YES_NO_ENUM.map(item => ({ label: item.message, value: item.code })), // 是否贴息选项
+      installmentPeriodsOptions: [ // 分期期数选项
+        { label: '3期', value: 3 },
+        { label: '6期', value: 6 },
+        { label: '9期', value: 9 },
+        { label: '12期', value: 12 },
+        { label: '18期', value: 18 },
+        { label: '24期', value: 24 },
+        { label: '36期', value: 36 },
+        { label: '42期', value: 42 },
+        { label: '48期', value: 48 },
+        { label: '54期', value: 54 },
+        { label: '60期', value: 60 },
+        { label: '72期', value: 72 },
+        { label: '84期', value: 84 },
+        { label: '96期', value: 96 }
+      ],
+      cityOptions: [], // 城市选项
       optionObj: {
         id: 'vrFinanceOrderTable',
         dataList: [],
@@ -274,6 +410,7 @@ export default {
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
+    this.getFinanceOrganizations(); // 获取金融机构选项
     this.getData();
   },
   methods: {
@@ -292,6 +429,51 @@ export default {
     // 多选框选中数据
     handleSelectionChange (selection) {
       this.selectionList = selection;
+    },
+    // 获取金融机构选项
+    async getFinanceOrganizations () {
+      try {
+        const response = await getFinanceOrganizationList({
+          pageNum: 1,
+          pageSize: 1000
+        });
+        if (response && response.records) {
+          this.financeOrganizationOptions = response.records.map(item => ({
+            id: item.id,
+            financeOrganizationName: item.financeOrganizationName
+          }));
+        }
+      } catch (error) {
+        console.error('获取金融机构选项失败:', error);
+      }
+    },
+    // 选择省以后带出市信息
+    handleChangeProvince (val, record) {
+      if (record && record.child && record.child.length > 0) {
+        this.cityOptions = record.child.map(city => ({
+          code: city.code,
+          name: city.name
+        })); // 选择省以后带出市信息
+        this.form.cityName = ''; // 清空已选的城市
+      } else {
+        this.cityOptions = [];
+        this.form.cityName = '';
+      }
+    },
+    // 查询省份信息
+    async getProvince (params) {
+      try {
+        const response = await getProvinceTree();
+        let list = response || [];
+        if (params && params.trim()) {
+          const searchText = params.trim().toLowerCase();
+          list = list.filter(item => item.name && item.name.toLowerCase().includes(searchText));
+        }
+        return list;
+      } catch (error) {
+        console.error('获取省份选项失败:', error);
+        return [];
+      }
     },
     onSubmit () {
       this.optionObj.form.page = 1;
@@ -403,6 +585,23 @@ export default {
       if (Array.isArray(this.form.dealerNameList) && this.form.dealerNameList.length <= 1) {
         delete data.dealerNameList;
         data.dealerName = this.form.dealerNameList[0] || '';
+      }
+      // 处理放款日期范围
+      if (Array.isArray(this.form.loanDisbursementDateRange) && this.form.loanDisbursementDateRange.length === 2) {
+        data.loanDisbursementDateStart = this.form.loanDisbursementDateRange[0];
+        data.loanDisbursementDateEnd = this.form.loanDisbursementDateRange[1];
+      }
+
+      // 处理交车日期范围
+      if (Array.isArray(this.form.deliveryDateRange) && this.form.deliveryDateRange.length === 2) {
+        data.deliveryDateStart = this.form.deliveryDateRange[0];
+        data.deliveryDateEnd = this.form.deliveryDateRange[1];
+      }
+
+      // 处理贷款申请时间范围
+      if (Array.isArray(this.form.loanApplicationTimeRange) && this.form.loanApplicationTimeRange.length === 2) {
+        data.loanApplicationTimeStart = this.form.loanApplicationTimeRange[0];
+        data.loanApplicationTimeEnd = this.form.loanApplicationTimeRange[1];
       }
       data.sortColumns = this.sortColumns;
       return data;
