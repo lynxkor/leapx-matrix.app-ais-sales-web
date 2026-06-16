@@ -271,6 +271,7 @@
                     v-model="form.address"
                     clearable
                     maxlength="300"
+                    @blur="onAddressBlur"
                   />
                 </el-form-item>
                 <el-form-item label="经度：" prop="longitude">
@@ -771,15 +772,15 @@ export default {
       },
       immediate: true
     },
-    'form.address': {
-      handler (newVal) {
-        // 大客户且地址有值时，防抖调用地址解析
-        if (newVal) {
-          this.handleParseAddress(newVal);
-        }
-      },
-      deep: true
-    },
+    // 'form.address': {
+    //   handler (newVal) {
+    //     // 大客户且地址有值时，防抖调用地址解析
+    //     if (newVal) {
+    //       this.handleParseAddress(newVal);
+    //     }
+    //   },
+    //   deep: true
+    // },
     'form.settleFundType': {
       handler (val) {
         if (val === '2010' || val === 2010) {
@@ -903,6 +904,10 @@ export default {
       this.perbatchSubmitAudit = this.permissions.has(`${this.moduleKey}-batchSubmitAudit`);
       this.perbatchAudit = this.permissions.has(`${this.moduleKey}-batchAudit`);
       this.perbatchCancel = this.permissions.has(`${this.moduleKey}-batchCancel`);
+    },
+    onAddressBlur () {
+      // 地址失焦处理逻辑
+      this.handleParseAddress(this.form.address);
     },
     openWindow (url) {
       window.open(url, '_blank');

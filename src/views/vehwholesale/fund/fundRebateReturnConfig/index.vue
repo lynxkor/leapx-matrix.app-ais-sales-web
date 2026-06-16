@@ -27,7 +27,7 @@
           filterable
         />
       </el-form-item>
-      <el-form-item label="车系名称"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="车系名称"  >
         <fetch-select
         filterable
         clearable
@@ -39,8 +39,7 @@
         multiple
         />
       </el-form-item>
-      <template v-if="show">
-        <el-form-item label="预算科目">
+      <el-form-item label="预算科目" v-show="this.visibleCount === 3 || show">
           <fetch-select
             filterable
             clearable
@@ -52,6 +51,7 @@
             multiple
         />
         </el-form-item>
+      <template v-if="show">
         <el-form-item label="费用支持类型">
           <fetch-select
             filterable
@@ -113,7 +113,7 @@
     <!-- TIPS: 填入项目id即可 -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="1"
+      :id="'1'"
       @close="handleUploadDialogClose"
     />
   </div>
@@ -143,6 +143,7 @@ const defaultForm = {
   budgetItemId: '',
   feeSupportTypeId: '',
   status: '',
+  statusIncludeList: ['1']
 };
 
 const pageSize = 20;

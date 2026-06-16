@@ -384,6 +384,7 @@
         <el-button v-permission="moduleKey+'-setEmergencyOrder'" size="small" :disabled="selectionList.length === 0" @click="handleSetEmergencyOrder">设置急单</el-button>
         <el-button v-permission="moduleKey+'-setEmergencyOrder'" size="small" :disabled="selectionList.length === 0" @click="handleCancelEmergencyOrder">取消急单</el-button>
         <el-button v-permission="moduleKey+'-batchSetAllowLockRetail'" size="small" :disabled="selectionList.length === 0" @click="handleLock">设置允许零售锁单</el-button>
+        <el-button v-permission="moduleKey+'-editSpecialRemark'" size="small" :disabled="selectionList.length === 0" @click="handleBatchRemark">批量备注</el-button>
         <el-button v-permission="moduleKey+'-refreshPrice'" size="small" @click="handleRefreshPriceCoefficient">刷新价格</el-button>
         <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
         <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
@@ -454,6 +455,11 @@
       :cancel-ids="selectionList.map(item => item.id)"
       @batchCancelSettle="batchCancelSettle"
     />
+    <batchRemark
+      :visible.sync="showBatchRemarkDialog"
+      :cancel-ids="selectionList.map(item => item.id)"
+      @confirmBatchRemark="confirmBatchRemark"
+    />
 
     <batchAllowLockRetail
       ref="auditRef"
@@ -468,7 +474,7 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, batchConfirmItem, setEmergencyOrderItem, batchCancelItem, batchAllocateVehicleItem, batchSettleSubmitItem, batchCancelSettleItem, batchSetAutoAllocateItem, refreshPriceItem, batchCancleAllocateVehicleItem, batchSetAllowLockRetail } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import { getList, deleteItem, enableItem, batchConfirmItem, setEmergencyOrderItem, batchCancelItem, batchAllocateVehicleItem, batchSettleSubmitItem, batchCancelSettleItem, batchSetAutoAllocateItem, refreshPriceItem, batchCancleAllocateVehicleItem, batchSetAllowLockRetail, editSpecialRemark } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, vehicleModelList, cityPage, getProvinceTree, getParentCompany, getRigion } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -486,6 +492,7 @@ import CancleBatchAllocateVehicleInput from './CancleBatchAllocateVehicleInput.v
 import SetEmergencyOrderInput from './SetEmergencyOrderInput.vue';
 import BatchCancelSettleInput from './BatchCancelSettleInput.vue';
 import batchAllowLockRetail from './batchAllowLockRetail.vue';
+import batchRemark from './BatchRemark';
 import { listIdNames as listWholesaleProdScheduleActivity } from '@/api/vehwholesale/basic/wholesaleProdScheduleActivity/index';
 import { listIdNames as listFundFinancialOrganization } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
 
@@ -576,6 +583,7 @@ export default {
     CancleBatchAllocateVehicleInput,
     BatchCancelSettleInput,
     batchAllowLockRetail,
+    batchRemark,
     ButtonGroup
   },
   data () {
@@ -598,6 +606,7 @@ export default {
       showBatchAllocateVehicleDialog: false,
       showCancleBatchAllocateVehicleDialog: false,
       showBatchCancelSettleDialog: false,
+      showBatchRemarkDialog: false,
       yearTypeList: [],
       options: [],
       modelList: [],
@@ -856,8 +865,31 @@ export default {
     this.fetchSettleFundTypeOptions();
   },
   methods: {
+    handleBatchRemark () {
+      if (this.selectionList.length === 0) {
+        this.$message({
+          type: 'warning',
+          message: '请选择要批量编辑备注的订单'
+        });
+        return;
+      }
+      this.showBatchRemarkDialog = true;
+    },
     handleLock () {
       this.$refs.auditRef.show();
+    },
+    confirmBatchRemark (data) {
+      let params = {
+        idSet: this.selectionList.map(item => item.id) || [],
+        specialRemark: data.remark,
+      };
+      return editSpecialRemark(params).then(() => {
+        this.$message({
+          type: 'success',
+          message: '批量编辑备注提交成功'
+        });
+        this.getData();
+      });
     },
     handleBatchLock (data) {
       let params = {
