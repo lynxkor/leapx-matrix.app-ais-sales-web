@@ -202,7 +202,7 @@
                   <vxe-column field="parentName" title="上级检查"></vxe-column>
                   <vxe-column field="name" title="检查项目"></vxe-column>
                   <vxe-column field="isUnusualLabel" title="是否异常"></vxe-column>
-                  <vxe-column field="ab" title="异常描述"  show-overflow-tooltip></vxe-column>
+                  <vxe-column field="abnormalDesc" title="异常描述"  show-overflow-tooltip></vxe-column>
                   <vxe-column field="damagedType" title="受损类型"></vxe-column>
                   <vxe-column field="isRepairedLabel" title="异常是否修复"></vxe-column>
                   <vxe-column field="repairedOn" title="异常修复时间"></vxe-column>
