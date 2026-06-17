@@ -82,3 +82,11 @@ export function move (data) {
 export function getRecord (data) {
   return api.jsonPost('vehstock/web/store/vehicleTypeChangeRecord/page', data);
 };
+
+/**
+ * 门店库存台账批量车辆类型转换
+ * @param {Object} data
+ */
+export function batchConvertType (data) {
+  return api.jsonPost(prefix + 'batchConvertType', data);
+}
