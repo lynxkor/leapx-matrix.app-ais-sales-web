@@ -287,6 +287,7 @@ export default {
           { props: 'erpInvoice', label: 'ERP发票号', visible: true, width: 200 },
           { props: 'sapSyncTime', label: '同步SAP时间', visible: true, width: 200 },
           { props: 'sapSyncStatus', label: '同步SAP状态', visible: true, width: 200 },
+          { props: 'dealerName', label: '门店名称', visible: true, width: 200 },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 140 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 140 },
