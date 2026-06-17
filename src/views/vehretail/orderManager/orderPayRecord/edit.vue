@@ -30,8 +30,8 @@
                 <el-form-item label="门店：" prop="saleDealerName">
                   <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
-                <el-form-item label="交车单：" prop="deliveryNote">
-                  {{ form.deliveryNote }}
+                <el-form-item label="交车单：" prop="deliveryOrderCode">
+                  <el-link type="primary" :href="`/sales/vehretail/orderManager/deliveryOrder/edit?id=${form.deliveryOrderId}`" target="_blank">{{ form.deliveryOrderCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="负责人：" prop="creatorName">
                   {{ form.creatorName }}
@@ -61,7 +61,7 @@
                   {{ form.paySerialNumber }}
                 </el-form-item>
                 <el-form-item label="权益类型：" prop="rightsType">
-                  {{ rightsTypeLabel }}
+                  {{ form.rightsTypeLabel }}
                 </el-form-item>
                 <el-form-item label="权益项名称：" prop="rightsItem">
                   {{ form.rightsItem }}
@@ -90,7 +90,7 @@
                   {{ form.refundCode }}
                 </el-form-item>
                 <el-form-item label="退款结果：" prop="refundResult">
-                  {{ form.refundResult }}
+                  {{ form.refundResultLabel }}
                 </el-form-item>
                 <el-form-item label="退款日期：" prop="refundTime">
                   {{ form.refundTime }}
@@ -112,8 +112,8 @@
             </div>
             <div class="common-section-body">
               <el-form :inline="true" class="form-detail">
-                <el-form-item v-if="type !== 'all'" label="交车单：" prop="deliveryNote">
-                  {{ form.deliveryNote }}
+                <el-form-item v-if="type !== 'all'" label="交车单：" prop="deliveryOrderCode">
+                  <el-link type="primary" :href="`/sales/vehretail/orderManager/deliveryOrder/edit?id=${form.deliveryOrderId}`" target="_blank">{{ form.deliveryOrderCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="VIN码：" prop="vin">
                   <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
@@ -122,7 +122,7 @@
                   {{ form.payCategoryLabel }}
                 </el-form-item>
                 <el-form-item v-if="type !== 'all'" label="权益类型：" prop="rightsType">
-                  {{ rightsTypeLabel }}
+                  {{ form.rightsTypeLabel }}
                 </el-form-item>
                 <el-form-item v-if="type !== 'all'" label="付款金额：" prop="paymentAmount">
                   {{ form.paymentAmount }}

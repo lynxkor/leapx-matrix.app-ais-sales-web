@@ -663,9 +663,19 @@ export default {
         this.$refs.containerRef.loadDetail();
       });
     },
-    handleBatchSubmit () {
+    async handleBatchSubmit () {
       const selectionList = [this.form];
-      // 弹窗确认
+      // 1) 提交前先校验所有 AisAttachment 组件(必填 / minNum / maxNum)
+      const attachmentRefs = Object.values(this.$refs).filter(ref => typeof ref?.validate === 'function');
+      for (const ref of attachmentRefs) {
+        // eslint-disable-next-line no-await-in-loop
+        const ok = await ref.validate();
+        if (!ok) {
+          // 校验失败已在 AisAttachment 内弹错,直接阻断,不弹确认框
+          return;
+        }
+      }
+      // 2) 校验通过,弹窗确认
       this.$confirm('确认提交吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -757,7 +767,18 @@ export default {
     getDetailDecryptField (field) {
       return getDetailDecryptField(this.form.id, field);
     },
-    submitRequest () {
+    async submitRequest () {
+      // 1) 批量校验页面上所有 AisAttachment 组件(必填/minNum/maxNum)
+      // const attachmentRefs = Object.values(this.$refs).filter(ref => typeof ref?.validate === 'function');
+      // for (const ref of attachmentRefs) {
+      //   const ok = await ref.validate();
+      //   if (!ok) {
+      //     // 阻断保存 + 让 EditBaseContainer 的 loading 正常复位
+      //     // EditBaseContainer 在 .then 后挂了 .catch(() => {}) + .finally(() => loading = false)
+      //     // reject 不进 then 成功分支(loadDetail / showSuccessMessage 不触发),但会进 finally 复位 loading
+      //     return Promise.reject(new Error('attachment invalid'));
+      //   }
+      // }
       return addOrUpdate({ ...this.form });
     },
     // 打开侧边栏

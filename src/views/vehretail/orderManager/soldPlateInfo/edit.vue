@@ -266,7 +266,7 @@
                   {{ form.certificateNo }}
                 </el-form-item>
                 <el-form-item label="整车开票记录：">
-                  {{ form.invoiceRecordCode }}
+                  <el-link v-if="form.deliveryInvoice && form.deliveryInvoice.invoiceNo" type="primary" :href="`/sales/vehretail/orderManager/deliveryInvoice/edit?id=${form.deliveryInvoice.id}`" target="_blank">{{ form.deliveryInvoice.invoiceNo }}</el-link>
                 </el-form-item>
                 <el-form-item label="特殊车辆销售提报：">
                   {{ form.specialReportCode }}

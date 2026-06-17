@@ -35,7 +35,10 @@
             clearable filterable />
         </el-form-item>
         <el-form-item label="退款结果">
-          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.refundResult" placeholder="请选择"
+          <fetch-select
+            :options="refundResultOptions"
+            v-model="form.refundResult"
+            placeholder="请选择"
             clearable filterable />
         </el-form-item>
         <el-form-item label="车型名称">
@@ -202,6 +205,10 @@ export default {
         ...defaultForm
       },
       selectionList: [],
+      refundResultOptions: [
+        { code: '1010', message: '退款成功' },
+        { code: '1020', message: '退款失败' }
+      ],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -263,7 +270,7 @@ export default {
           { props: 'modelName', label: '车型名称', visible: true, width: 150 },
           { props: 'orderCancelReason', label: '订单取消原因', visible: true, width: 150 },
           { props: 'refundTime', label: '退款日期', visible: true, width: 180 },
-          { props: 'refundResult', label: '退款结果', visible: true, width: 120 },
+          { props: 'refundResultLabel', label: '退款结果', visible: true, width: 120 },
           { props: 'refundRemark', label: '退款说明', visible: true, width: 150 },
           { props: 'finalApproveTime', label: '审核时间', visible: true, width: 180 },
           { props: 'paymentTypeLabel', label: '支付方式', visible: true, width: 120 },

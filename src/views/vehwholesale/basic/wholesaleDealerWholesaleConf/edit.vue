@@ -89,12 +89,12 @@
                     filterable
                   />
                 </el-form-item>
-                <el-form-item label="母公司：" prop="dealerParentOrgId">
+                <el-form-item label="母公司：" prop="dealerParentOrgCode">
                   <fetch-select
                     filterable
                     clearable
                     remote
-                    v-model="form.dealerParentOrgId"
+                    v-model="form.dealerParentOrgCode"
                     :params="form.dealerParentOrgName"
                     :remote-method="getDealerParentOrgList"
                     value-key="companyCode"
@@ -125,7 +125,7 @@
                   {{ form.spotWholesaleEnabledLabel }}
                 </el-form-item>
                 <el-form-item label="母公司：">
-                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerParentOrgId}`" target="_blank">{{ form.dealerParentOrgName }}</el-link>
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerParentOrgCode}`" target="_blank">{{ form.dealerParentOrgName }}</el-link>
                 </el-form-item>
               </el-form>
             </div>
@@ -172,7 +172,7 @@ const defaultForm = {
   status: '',
   statusDesc: '',
   dataSource: '',
-  dealerParentOrgId: '',
+  dealerParentOrgCode: '',
   ownerOrgId: '',
 };
 
