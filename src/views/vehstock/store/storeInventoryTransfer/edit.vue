@@ -53,7 +53,14 @@
                   />
                 </el-form-item>
                 <el-form-item label="调拨原因：" prop="reason">
-                  <el-input placeholder="请输入" v-model="form.reason" clearable />
+                  <fetch-select
+                    :request="fetchOptions"
+                    enumCode="vehstock_transfer_reason"
+                    v-model="form.reason"
+                    placeholder="请选择"
+                    clearable
+                    filterable
+                  />
                 </el-form-item>
                 <el-form-item label="备注：" prop="remark" style="width: 100%;">
                   <el-input placeholder="请输入" v-model="form.remark" clearable type="textarea" maxlength="500" show-word-limit/>
@@ -70,7 +77,7 @@
                   {{ form.targetDealerWarehouseName }}
                 </el-form-item>
                 <el-form-item label="调拨原因：" prop="reason" style="width: 100%;">
-                  {{ form.reason }}
+                  {{ form.reasonLabel }}
                 </el-form-item>
                 <el-form-item label="备注：" prop="remark" style="width: 100%;">
                   {{ form.remark }}
