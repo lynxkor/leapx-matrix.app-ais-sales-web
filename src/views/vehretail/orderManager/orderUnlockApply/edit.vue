@@ -757,7 +757,19 @@ export default {
     getDetailDecryptField (field) {
       return getDetailDecryptField(this.form.id, field);
     },
-    submitRequest () {
+    async submitRequest () {
+      // 1) 批量校验页面上所有 AisAttachment 组件(必填/minNum/maxNum)
+      const attachmentRefs = Object.values(this.$refs).filter(ref => typeof ref?.validate === 'function');
+      for (const ref of attachmentRefs) {
+        const ok = await ref.validate();
+        if (!ok) {
+          // 阻断保存 + 让 EditBaseContainer 的 loading 正常复位
+          // EditBaseContainer 在 .then 后挂了 .catch(() => {}) + .finally(() => loading = false)
+          // reject 不进 then 成功分支(loadDetail / showSuccessMessage 不触发),但会进 finally 复位 loading
+          return Promise.reject(new Error('attachment invalid'));
+        }
+      }
+      // 2) 校验通过,执行保存
       return addOrUpdate({ ...this.form });
     },
     // 打开侧边栏
