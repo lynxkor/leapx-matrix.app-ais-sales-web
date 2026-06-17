@@ -50,3 +50,11 @@ export function enableItem (data) {
 export function getProductSkuBySkuCode (data) {
   return api.jsonPost('vr/web/product/productSku/getProductSkuBySkuCode', data);
 }
+
+/**
+ * 设置允许改配
+ * @param {Object} data
+ */
+export function batchUpdateAllowConfigChange (data) {
+  return api.jsonPost('vr/web/product/productSkuPrice/batchUpdateAllowConfigChange', data);
+}
