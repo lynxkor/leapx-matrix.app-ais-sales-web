@@ -42,7 +42,7 @@
           multiple
           remote
           collapseTags
-          v-model="form.dealerParentOrgIdList"
+          v-model="form.dealerParentOrgCodeList"
           :remote-method="getDealerParentOrgList"
           value-key="companyCode"
           label-key="companyName"
@@ -162,7 +162,7 @@ const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   dealerCodes: [],
   dealerNames: [],
-  dealerParentOrgIdList: [],
+  dealerParentOrgCodeList: [],
   autoAllocationEnabled: '',
   autoSettlementEnabled: '',
   productionRequestEnabled: '',
@@ -249,7 +249,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerParentOrgId}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerParentOrgCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'autoAllocationEnabledLabel', label: '开启自动配车', visible: true, width: 120 },
           { props: 'autoSettlementEnabledLabel', label: '开启自动结算', visible: true, width: 120 },
           { props: 'productionRequestEnabledLabel', label: '允许排产申请', visible: true, width: 120 },

@@ -137,12 +137,12 @@
                     :precision="4"
                   />
                 </el-form-item>
-                <el-form-item label="母公司：" prop="dealerParentOrgId">
+                <el-form-item label="母公司：" prop="dealerParentOrgCode">
                   <fetch-select
                     filterable
                     clearable
                     remote
-                    v-model="form.dealerParentOrgId"
+                    v-model="form.dealerParentOrgCode"
                     :remote-method="getDealerParentOrgList"
                     value-key="companyCode"
                     label-key="companyName"
@@ -263,7 +263,7 @@ const defaultForm = {
   rebateUseType: '',
   rebateUseTypeLabel: '',
   rebateCoefficient: '',
-  dealerParentOrgId: '',
+  dealerParentOrgCode: '',
   dealerParentOrgName: '',
   startDate: '',
   endDate: '',

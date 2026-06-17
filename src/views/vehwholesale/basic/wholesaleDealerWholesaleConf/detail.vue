@@ -77,8 +77,8 @@
             <el-form-item label="数据来源，140:新销服; 老销服:10：" prop="dataSource">
               {{ info.dataSource  }}
             </el-form-item>
-            <el-form-item label="母公司ID：" prop="dealerParentOrgId">
-              {{ info.dealerParentOrgId  }}
+            <el-form-item label="母公司ID：" prop="dealerParentOrgCode">
+              {{ info.dealerParentOrgCode  }}
             </el-form-item>
             <el-form-item label="归属门店ID（组织ID），当数据权限归属到本组织以及本下级：" prop="ownerOrgId">
               {{ info.ownerOrgId  }}
