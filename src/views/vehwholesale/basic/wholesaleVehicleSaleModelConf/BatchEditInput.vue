@@ -124,7 +124,7 @@ export default {
         rebateCoefficient: [
           { required: true, message: '请输入返利使用系数', trigger: 'blur' }
         ],
-        dealerParentOrgId: [
+        dealerParentOrgCode: [
           { required: false, message: '请输入母公司ID', trigger: 'blur' }
         ],
         dealerParentOrgName: [
