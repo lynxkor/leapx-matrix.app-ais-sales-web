@@ -61,7 +61,7 @@
                   {{ form.paySerialNumber }}
                 </el-form-item>
                 <el-form-item label="权益类型：" prop="rightsType">
-                  {{ rightsTypeLabel }}
+                  {{ form.rightsTypeLabel }}
                 </el-form-item>
                 <el-form-item label="权益项名称：" prop="rightsItem">
                   {{ form.rightsItem }}
@@ -90,7 +90,7 @@
                   {{ form.refundCode }}
                 </el-form-item>
                 <el-form-item label="退款结果：" prop="refundResult">
-                  {{ form.refundResult }}
+                  {{ form.refundResultLabel }}
                 </el-form-item>
                 <el-form-item label="退款日期：" prop="refundTime">
                   {{ form.refundTime }}
@@ -122,7 +122,7 @@
                   {{ form.payCategoryLabel }}
                 </el-form-item>
                 <el-form-item v-if="type !== 'all'" label="权益类型：" prop="rightsType">
-                  {{ rightsTypeLabel }}
+                  {{ form.rightsTypeLabel }}
                 </el-form-item>
                 <el-form-item v-if="type !== 'all'" label="付款金额：" prop="paymentAmount">
                   {{ form.paymentAmount }}

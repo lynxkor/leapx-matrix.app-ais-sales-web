@@ -59,7 +59,7 @@
             filterable
             clearable
             remote
-            v-model="form.dealerParentOrgId"
+            v-model="form.dealerParentOrgCode"
             :remote-method="getDealerParentOrgList"
             value-key="companyCode"
             label-key="companyName"
@@ -151,7 +151,7 @@ const defaultForm = {
   vehicleYearTypeId: '',
   orderCategory: '',
   auditStatus: '',
-  dealerParentOrgId: '',
+  dealerParentOrgCode: '',
   updateTime: '',
 };
 

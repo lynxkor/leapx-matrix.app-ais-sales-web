@@ -44,8 +44,8 @@
             <el-form-item label="返利使用系数：" prop="rebateCoefficient">
               {{ info.rebateCoefficient  }}
             </el-form-item>
-            <!-- <el-form-item label="母公司ID：" prop="dealerParentOrgId">
-              {{ info.dealerParentOrgId  }}
+            <!-- <el-form-item label="母公司ID：" prop="dealerParentOrgCode">
+              {{ info.dealerParentOrgCode  }}
             </el-form-item> -->
             <el-form-item label="母公司：" prop="dealerParentOrgName">
               {{ info.dealerParentOrgName  }}

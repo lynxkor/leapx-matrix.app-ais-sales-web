@@ -242,7 +242,7 @@ const defaultForm = {
   wholesaleSaleTargetTrackingCode: '',
   year: '',
   month: '',
-  dealerParentOrgId: '',
+  dealerParentOrgCode: '',
   dealerParentOrgName: '',
   cooperationType: '',
   cooperationTypeLabel: '',

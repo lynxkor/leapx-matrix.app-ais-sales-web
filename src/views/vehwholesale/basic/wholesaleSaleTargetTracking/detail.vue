@@ -25,11 +25,11 @@
             <el-form-item label="月：" prop="month">
               {{ info.month  }}
             </el-form-item>
-            <!-- <el-form-item label="母公司ID：" prop="dealerParentOrgId">
-              {{ info.dealerParentOrgId  }}
+            <!-- <el-form-item label="母公司ID：" prop="dealerParentOrgCode">
+              {{ info.dealerParentOrgCode  }}
             </el-form-item> -->
             <el-form-item label="母公司：" prop="dealerParentOrgName">
-              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/companyDetails?companyCode=' + info.dealerParentOrgId)">{{ info.dealerParentOrgName }}</el-button>
+              <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/companyDetails?companyCode=' + info.dealerParentOrgCode)">{{ info.dealerParentOrgName }}</el-button>
             </el-form-item>
             <el-form-item label="合作类型：" prop="cooperationType">
               {{ info.cooperationTypeLabel  }}
