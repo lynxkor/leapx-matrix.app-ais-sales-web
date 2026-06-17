@@ -166,6 +166,7 @@
       <el-button v-permission="moduleKey+'-batchCancelReserve'" size="small" @click="batchreseRvation('cancelReserve')" :disabled="selectionList.length === 0">批量解预留</el-button>
         <el-button v-permission="moduleKey+'-outbound'" size="small" @click="batchreseRvation('car')" :disabled="selectionList.length === 0">运损车出库</el-button>
         <el-button v-permission="moduleKey+'-move'" size="small" @click="handleBatchMove" :disabled="selectionList.length === 0">同门店移库</el-button>
+        <el-button v-permission="moduleKey+'-batchConvertType'" size="small" @click="handleBatchConvertType" :disabled="selectionList.length === 0">批量车辆类型转换</el-button>
         <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <!-- <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
         :disabled="selectionList.length === 0">批量启用</el-button>
@@ -194,6 +195,12 @@
       @close="closeMoveDialog"
       @submit="submitBatchMove"
     />
+    <ConvertTypeDialog
+      :visible="convertTypeDialog"
+      :selectionId="selectionListIds"
+      @close="closeConvertTypeDialog"
+      @submit="submitBatchConvertType"
+    />
   </div>
 </template>
 
@@ -212,6 +219,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import BatchDialog from './BatchDialog.vue';
 import MoveDialog from './MoveDialog.vue';
+import ConvertTypeDialog from './ConvertTypeDialog.vue';
 import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
@@ -254,6 +262,7 @@ export default {
     EditPage,
     BatchDialog,
     MoveDialog,
+    ConvertTypeDialog,
     TagInput
   },
   data () {
@@ -275,6 +284,7 @@ export default {
       batchName: '', // 批量操作弹窗标题
       selectionListIds: [], // 批量操作选中的行
       moveDialog: false, // 同门店移库弹窗
+      convertTypeDialog: false, // 批量车辆类型转换弹窗
       dealerCode: '', // 销售门店编码
       clickItemId: '',
       optionObj: {
@@ -720,6 +730,18 @@ export default {
       this.dealerCode = '';
       this.getData();
     },
+    // 批量车辆类型转换
+    handleBatchConvertType () {
+      this.selectionListIds = this.selectionList.map(item => item.id) || [];
+      this.convertTypeDialog = true;
+    },
+    closeConvertTypeDialog () {
+      this.convertTypeDialog = false;
+    },
+    submitBatchConvertType () {
+      this.convertTypeDialog = false;
+      this.getData();
+    }
   }
 };
 </script>
