@@ -146,6 +146,7 @@
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-permission="moduleKey+'-batchUpdateAllowConfigChange'" size="small" @click="handleBatchUpdateAllowConfigChange" :disabled="selectionList.length === 0">设置允许改配</el-button>
     </div>
     <div
       class="ais-table-c"
@@ -173,6 +174,27 @@
       id="productSkuPriceImport"
       @close="handleUploadDialogClose"
     />
+    <!-- 设置允许改配弹窗 -->
+    <el-dialog
+      title="设置允许改配"
+      :visible.sync="allowConfigChangeDialog.visible"
+      width="400px"
+      :close-on-click-modal="false"
+      @close="handleAllowConfigChangeDialogClose"
+    >
+      <el-form label-width="120px">
+        <el-form-item label="是否允许改配">
+          <el-radio-group v-model="allowConfigChangeDialog.allowConfigChange">
+            <el-radio :label="1">是</el-radio>
+            <el-radio :label="0">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="allowConfigChangeDialog.visible = false">取消</el-button>
+        <el-button type="primary" :loading="allowConfigChangeDialog.loading" @click="confirmBatchUpdateAllowConfigChange">确认</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -180,7 +202,7 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehretail/productManager/productSkuPrice/index';
+import { getList, deleteItem, enableItem, batchUpdateAllowConfigChange } from '@/api/vehretail/productManager/productSkuPrice/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleModel } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -279,6 +301,11 @@ export default {
       exportLoading: false,
       uploadDialogVisible: false,
       clickItemId: '',
+      allowConfigChangeDialog: {
+        visible: false,
+        loading: false,
+        allowConfigChange: 1
+      },
       optionObj: {
         id: 'productManagerTable',
         dataList: [],
@@ -581,6 +608,41 @@ export default {
       //     });
       //   });
       // });
+    },
+    // 设置允许改配
+    handleBatchUpdateAllowConfigChange () {
+      if (this.selectionList.length === 0) {
+        return;
+      }
+      this.allowConfigChangeDialog.visible = true;
+    },
+    // 确认设置允许改配
+    confirmBatchUpdateAllowConfigChange () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      this.allowConfigChangeDialog.loading = true;
+      batchUpdateAllowConfigChange({
+        ids,
+        allowConfigChange: this.allowConfigChangeDialog.allowConfigChange
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '设置成功!'
+        });
+        this.allowConfigChangeDialog.visible = false;
+        this.getData();
+      }).catch(() => {
+        this.$message({
+          type: 'error',
+          message: '设置失败!'
+        });
+      }).finally(() => {
+        this.allowConfigChangeDialog.loading = false;
+      });
+    },
+    // 关闭设置允许改配弹窗
+    handleAllowConfigChangeDialogClose () {
+      this.allowConfigChangeDialog.allowConfigChange = 1;
+      this.allowConfigChangeDialog.loading = false;
     }
   }
 };
