@@ -41,10 +41,8 @@
 </template>
 
 <script>
-import debounce from 'lodash.debounce';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { fastSearchPage as retailOrderInfofastSearchPage } from '@/api/vehretail/orderManager/retailOrderInfo/index';
-import { getTableConfig } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
@@ -55,11 +53,6 @@ const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   phone: null,
   vin: null
-};
-
-// const pageSize = 20;
-const mockConfig = {
-  data: null
 };
 
 export default {
@@ -127,24 +120,8 @@ export default {
       this.refreshRetailOrderTable();
       this.loading = false;
     },
-    // 需要防抖场景时使用
-    debouncedGetData: debounce(function () {
-      this.getData();
-    }, 300),
-    getConfig () {
-      return new Promise((resolve, reject) => {
-        getTableConfig(this.optionObj.id).then(data => {
-          resolve({ data });
-        }).catch(err => {
-          // 容错：此处如果接口挂了，也不应该影响正常使用
-          console.error(err);
-          resolve(mockConfig);
-        });
-      });
-    },
     getFormData () {
-      const data = { ...this.form };
-      return data;
+      return { ...this.form };
     },
     // 获取订单信息变更申请列表（供 ComponentTable 使用）
     getRetailOrderInfoList (params) {
