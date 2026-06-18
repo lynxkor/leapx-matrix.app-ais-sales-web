@@ -774,17 +774,10 @@ export default {
             });
           }
         } else {
-          this.$confirm(
-            '正在导入中，是否要跳转"系统管理-文件管理-导入任务"中查看？',
-            '提示',
-            {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              type: 'warning'
-            }
-          ).then(() => {
-            window.open('/service/excelManagement/commonDataProcessExcelImportTask', '_blank');
-          }).catch(() => {});
+          this.$confirmExport(
+            () => window.open('/service/excelManagement/commonDataProcessExcelImportTask', '_blank'),
+            { message: '正在导入中，是否要跳转"系统管理-文件管理-导入任务"中查看？' }
+          );
         }
       }).catch(() => {
         this.$message.error('导出失败，请稍后重试');
