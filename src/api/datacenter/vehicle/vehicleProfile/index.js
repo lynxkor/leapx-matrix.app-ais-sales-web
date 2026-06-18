@@ -10,3 +10,11 @@ const prefix = 'datacenter/web/vehicle/vehicleProfile/';
 export function getList (data) {
   return api.jsonPost(prefix + 'listFull', data);
 };
+
+/**
+ * 快速查询列表
+ * @param {Object} data
+ */
+export function fastSearchVehicleProfilePage (data) {
+  return api.jsonPost(prefix + 'orderVehicleQuery', data);
+};

@@ -48,17 +48,55 @@
         <el-form-item label="车主信息">
           <el-input v-model="form.searchContentPc" placeholder="请输入车主姓名/电话/证件号码" clearable />
         </el-form-item>
+        <el-form-item label="交车时间">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.deliveryTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
+        <el-form-item label="上牌日期">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.plateDate"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
+        <el-form-item label="审核时间">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.auditTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
         <el-form-item label="创建时间">
           <el-date-picker
             :default-time="['00:00:00', '23:59:59']"
-            v-model="form.createTimeRange"
+            v-model="form.createTime"
             type="daterange"
             unlink-panels
             range-separator="至"
             start-placeholder="开始时间"
             end-placeholder="结束时间"
             value-format="yyyy-MM-dd HH:mm:ss"
-            @change="handleCreateTimeChange"
             clearable
           />
         </el-form-item>
@@ -118,7 +156,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import {
-  getList,
+  aggregatePage,
   deleteItem,
   enableItem,
   submitBatch,
@@ -209,6 +247,7 @@ export default {
           { props: 'statusLabel', label: '审核状态', visible: true, width: 200 },
           { props: 'autoAuditStatusLabel', label: '是否自动审核', visible: true, width: 200 },
           { props: 'auditTime', label: '审核时间', visible: true, width: 200 },
+          { props: 'deliveryTime', label: '交车时间', visible: true, width: 200 },
           { props: 'vin', label: 'VIN', visible: true, width: 200 },
           { props: 'modelName', label: '车型名称', visible: true, width: 200 },
           { props: 'carSalesVersionName', label: '公告车型', visible: true, width: 200 },
@@ -364,7 +403,7 @@ export default {
       this.loading = true;
       this.selectionList = [];
 
-      getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
+      aggregatePage({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
           console.log(res);
           this.optionObj.dataList = res.records.map(item => {
@@ -416,14 +455,16 @@ export default {
           delete data[key];
         }
       });
-
-      if (this.form.createTime) {
-        delete data.createTime;
-        if (this.form.createTime.length > 1) {
-          data.createTimeStart = this.form.createTime[0];
-          data.createTimeEnd = this.form.createTime[1];
+      const timeFields = ['createTime', 'plateDate', 'auditTime', 'deliveryTime'];
+      timeFields.forEach(field => {
+        if (this.form[field]) {
+          delete data[field];
+          if (this.form[field].length > 1) {
+            data[`${field}Start`] = this.form[field][0];
+            data[`${field}End`] = this.form[field][1];
+          }
         }
-      }
+      });
       // 排序字段
       data.sortColumns = this.sortColumns;
       return data;
