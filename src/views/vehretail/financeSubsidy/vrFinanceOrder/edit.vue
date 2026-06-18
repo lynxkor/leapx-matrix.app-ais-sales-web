@@ -30,6 +30,9 @@
                 <el-form-item label="金融订单状态：">
                   <span class="status-tag link">{{ form.financeOrderStatusLabel }}</span>
                 </el-form-item>
+                <el-form-item label="整车订单状态：">
+                  <span class="status-tag link">{{ form.retailOrderStatusLabel }}</span>
+                </el-form-item>
                 <el-form-item label="交车VIN码：">
                   <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
                 </el-form-item>
