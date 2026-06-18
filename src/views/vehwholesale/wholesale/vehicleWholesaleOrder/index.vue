@@ -487,6 +487,8 @@ const defaultForm = {
   exteriorId: '',
   replenishApplyDetailCode: '',
   wholesaleOrderId: '',
+  orderStatuses: [],
+  confirmStatuses: [],
 };
 
 const pageSize = 20;
@@ -1040,7 +1042,6 @@ export default {
     async getParentCompany (query) {
       try {
         const res = await getParentCompany({ parentCompanyName: query });
-        console.log(res);
         this.parentCompanyNames = res;
         return res;
       } catch (error) {
@@ -1249,6 +1250,17 @@ export default {
     },
     handleClickTab () {
       this.form.queryTab = this.tabName;
+      // 重置筛选条件
+      this.form.orderStatuses = [];
+      this.form.confirmStatuses = [];
+      // 待结算批售单 订单状态：已完成配车、已提交结算、SAP结算中、结算失败、取消结算
+      if (this.tabName === '4') {
+        this.form.orderStatuses = ['1', '2', '21', '4', '5'];
+      } else if (this.tabName === '5') {
+        // 待配车批售 ①确认状态：已确认；②订单状态：未配车、已提交配车、配车失败
+        this.form.orderStatuses = ['0', '10', '11'];
+        this.form.confirmStatuses = ['1020'];
+      }
       this.getData();
     },
     // 查询所有省市区
