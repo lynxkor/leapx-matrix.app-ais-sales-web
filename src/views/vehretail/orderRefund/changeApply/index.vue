@@ -354,17 +354,10 @@ export default {
             });
           }
         } else {
-          this.$confirm('正在导入中，是否要跳转"系统管理-文件管理-导入任务"中查看？', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            window.open('/service/excelManagement/commonDataProcessExcelImportTask', '_blank');
-          }).catch(() => {});
-          // this.$message({
-          //   type: 'info',
-          //   message: '请前往导出列表中查询导出结果：https://portal-sit.leapmotor.com/service/excelManagement/commonDataProcessExcelTask'
-          // });
+          this.$confirmExport(
+            () => window.open('/service/excelManagement/commonDataProcessExcelImportTask', '_blank'),
+            { message: '正在导入中，是否要跳转"系统管理-文件管理-导入任务"中查看？' }
+          );
         }
       }).finally(() => {
         this.exportLoading = false;
