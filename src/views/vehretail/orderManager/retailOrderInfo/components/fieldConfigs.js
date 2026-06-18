@@ -150,8 +150,8 @@ export const termDisplayFields = [
   { key: 'deliveryDelayFlagLabel', label: '是否延期交付' },
   { key: 'deliveryWithdrawFlagLabel', label: '是否做过交车撤回' },
   { key: 'statusRollbackFlagLabel', label: '状态是否回退过' },
-  { key: 'userPickupDeadline', label: '用户提车截止日' },
-  { key: 'deliveryDelayDays', label: '交付延期天数' },
+  // { key: 'userPickupDeadline', label: '用户提车截止日' },
+  // { key: 'deliveryDelayDays', label: '交付延期天数' },
   { key: 'rightsEnjoyDate', label: '权益享受日期' }
 ];
 
