@@ -561,6 +561,11 @@ const defaultForm = {
   exteriorId: '',
   replenishApplyDetailCode: '',
   wholesaleOrderId: '',
+  orderStatuses: [],
+  confirmStatuses: [],
+  wholesaleWays: [],
+  deliveryStatuses: [],
+  logisticsReserveRemarks: [],
 };
 
 const pageSize = 20;
@@ -860,7 +865,7 @@ export default {
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
-    this.getData();
+    this.handleClickTab();
     this.getCity();
     this.fetchSettleFundTypeOptions();
   },
@@ -1177,7 +1182,6 @@ export default {
     async getParentCompany (query) {
       try {
         const res = await getParentCompany({ parentCompanyName: query });
-        console.log(res);
         this.parentCompanyNames = res;
         return res;
       } catch (error) {
@@ -1386,6 +1390,34 @@ export default {
     },
     handleClickTab () {
       this.form.queryTab = this.tabName;
+      this.form.orderStatuses = [];
+      this.form.confirmStatuses = [];
+      this.form.wholesaleWays = [];
+      this.form.logisticsReserve = '';
+      this.form.deliveryStatuses = [];
+      this.form.logisticsReserveRemarks = [];
+      if (this.tabName === '2') {
+        // 未完成批售订单  ①确认状态：已确认；②订单状态：未配车、已提交配车、配车失败、已完成配车、已提交结算、SAP结算中、结算失败、取消结算；
+        this.form.orderStatuses = ['0', '10', '11', '1', '2', '21', '4', '5'];
+        this.form.confirmStatuses = ['1020'];
+      } else if (this.tabName === '3') {
+        // 待处理现车批售 ①批售方式：厂端现车批售；②订单状态：未配车、已提交配车、配车失败、已完成配车、已提交结算、SAP结算中、结算失败、取消结算
+        this.form.orderStatuses = ['0', '10', '11', '1', '2', '21', '4', '5'];
+        this.form.wholesaleWays = ['30'];
+      } else if (this.tabName === '4') {
+        // 待结算批售单 订单状态：已完成配车、已提交结算、SAP结算中、结算失败、取消结算
+        this.form.orderStatuses = ['1', '2', '21', '4', '5'];
+      } else if (this.tabName === '5') {
+        // 待配车批售 ①确认状态：已确认；②订单状态：未配车、已提交配车、配车失败
+        this.form.orderStatuses = ['0', '10', '11'];
+        this.form.confirmStatuses = ['1020'];
+      } else if (this.tabName === '6') {
+        // 未出质量 ①订单状态：已完成配车、已提交结算、SAP结算中、结算失败、取消结算、结算成功；②车辆交付状态：VDC入库、计划发运；③整车物流预留：是；④整车物流预留备注：质量问题（模糊查询）
+        this.form.orderStatuses = ['1', '2', '21', '4', '5', '3'];
+        this.form.logisticsReserve = '1';
+        this.form.logisticsReserveRemarks = ['质量问题'];
+        this.form.deliveryStatuses = ['3', '4'];
+      }
       this.getData();
     },
     // 查询所有省市区
