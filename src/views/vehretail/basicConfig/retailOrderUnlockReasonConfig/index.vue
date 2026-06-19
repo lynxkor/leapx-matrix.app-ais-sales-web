@@ -289,7 +289,7 @@ export default {
               type: 'warning'
             }
           ).then(() => {
-                window.open('/service/excelManagement/commonDataProcessExcelImportTask', '_blank');
+            window.open('/service/excelManagement/commonDataProcessExcelImportTask', '_blank');
           }).catch(() => {});
         }
       }).finally(() => {
