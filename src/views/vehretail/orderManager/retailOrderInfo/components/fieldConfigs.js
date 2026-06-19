@@ -16,7 +16,7 @@ export const retailOrderDisplayFields = [
     paramKey: 'saleDealerCode',
     paramName: 'dealerCode'
   },
-  { key: 'saleUserName', label: '订单销售顾问' },
+  { key: 'saleUserName', label: '订单销售顾问', eventName: 'viewUser', paramKey: 'saleUserId' },
   {
     key: 'deliveryDealerName',
     label: '订单交付门店',
@@ -24,7 +24,7 @@ export const retailOrderDisplayFields = [
     paramKey: 'deliveryDealerCode',
     paramName: 'dealerCode'
   },
-  { key: 'deliveryUserName', label: '订单交付顾问' },
+  { key: 'deliveryUserName', label: '订单交付顾问', eventName: 'viewUser', paramKey: 'deliveryUserId' },
   { key: 'preSaleOrderLabel', label: '是否预售订单' },
   { key: 'blindOrderLabel', label: '是否盲订订单' },
   { key: 'orderRemark', label: '订单备注' },
