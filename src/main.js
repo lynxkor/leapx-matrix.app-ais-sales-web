@@ -15,6 +15,7 @@ import '@leapmotor/splitpanes/dist/splitpanes.css';
 import AuditLogPlugin from '@/libs/plugins/auditLog.js';
 import PrintPlugin from '@/libs/plugins/print.js';
 import VideoPlugin from '@/libs/plugins/video.js';
+import UserDialogPlugin from '@/libs/plugins/userDialog.js';
 /* -------------------- 注册vxe-table ----------------- */
 import {
   VxeUi,
@@ -61,6 +62,7 @@ Vue.use(Vuex);
 Vue.use(AuditLogPlugin);
 Vue.use(PrintPlugin);
 Vue.use(VideoPlugin);
+Vue.use(UserDialogPlugin);
 
 /* -------------------- 注册指令 ----------------- */
 
