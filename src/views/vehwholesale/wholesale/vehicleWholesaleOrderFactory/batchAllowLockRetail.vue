@@ -6,7 +6,7 @@
     width="560px"
     @close="close"
   >
-    <el-form ref="auditForm" :model="auditForm" :rules="rules" label-width="120px" size="small" style="padding: 10px 0">
+    <el-form ref="auditForm" :model="auditForm" label-width="150px" size="small" style="padding: 10px 0">
       <el-form-item
         v-if="auditDataList && auditDataList.length > 0"
         :label="auditDataList && auditDataList.length > 1 ? '允许零售锁单' : '允许零售锁单'"
@@ -29,6 +29,16 @@
           <el-radio :label="0">否</el-radio>
         </el-radio-group>
       </el-form-item>
+      <el-form-item label="允许锁零售节点：">
+            <fetch-select
+              :request="fetchOptions"
+              enumCode="vw_allow_lock_node_type"
+              v-model="auditForm.allowLockNode"
+              placeholder="请选择"
+              clearable
+              filterable
+            />
+      </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="close" size="small"> 取消 </el-button>
@@ -38,6 +48,8 @@
 </template>
 
 <script>
+import { getEnum } from '@/api/common';
+import FetchSelect from '@/libs/components/FetchSelect';
 export default {
   name: 'AuditDialog',
   props: {
@@ -54,12 +66,16 @@ export default {
       default: 500
     }
   },
+  components: {
+    FetchSelect
+  },
+
   data () {
     return {
       auditShow: false,
       auditForm: {
         result: '',
-        remark: ''
+        allowLockNode: ''
       },
       rules: {
         result: [
@@ -96,7 +112,7 @@ export default {
     },
     close () {
       this.auditShow = false;
-      this.auditForm = { result: '', remark: '' };
+      this.auditForm = { result: '', allowLockNode: '' };
       this.$nextTick(() => {
         this.$refs.auditForm.clearValidate();
       });
@@ -105,13 +121,17 @@ export default {
      * 审核操作
      */
     auditFun () {
-      this.$refs.auditForm.validate((valid) => {
-        if (valid) {
-          // 将审核数据列表也传递给父组件
-          this.$emit('audit', { ...this.auditForm, auditDataList: this.auditDataList });
-          this.close();
-        }
-      });
+      if (!this.auditForm.result && !this.auditForm.allowLockNode) {
+        return this.$message.error('请选择审核结果和允许锁零售节点');
+      }
+      this.$emit('audit', { ...this.auditForm });
+      this.close();
+    },
+    async fetchOptions (code) {
+      if (code) {
+        return getEnum(code);
+      }
+      return [];
     }
   }
 };
