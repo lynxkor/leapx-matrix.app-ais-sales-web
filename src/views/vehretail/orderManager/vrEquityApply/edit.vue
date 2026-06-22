@@ -148,13 +148,13 @@
                 <el-form-item label="整车订单编号：">
                   {{ form.vehicleOrderNo }}
                 </el-form-item>
-                <el-form-item label="原车VIN号：">
+                <el-form-item label="原车VIN号：" v-if="form.replacementType == 10 || form.replacementType == '10'">
                   {{ form.originalVin }}
                 </el-form-item>
                 <el-form-item label="权益大类：">
                   {{ form.equityCategoryName }}
                 </el-form-item>
-                <el-form-item label="置换类型：">
+                <el-form-item label="置换类型：" v-if="form.equityCategoryName === '增换购券'">
                   {{ form.replacementTypeLabel }}
                 </el-form-item>
                 <el-form-item label="优惠金额：">
