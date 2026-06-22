@@ -268,6 +268,8 @@
             :title="'基础信息'"
             :formData="form"
             :fields="displayFields"
+            :getDetailDecryptField="getDetailDecryptField"
+            @field-click="handleFieldClick"
             v-if="!(isEditing || !_id)"
           />
           <generic-detail-display
@@ -1050,6 +1052,11 @@ export default {
     // 字段解密（用于 generic-detail-display 中的加解密展示）
     getDetailDecryptField (id, field) {
       return getDetailDecryptField(id, field);
+    },
+    // generic-detail-display 字段点击事件：根据事件类型触发对应行为
+    handleFieldClick (id) {
+      // 当前统一处理为打开用户信息弹框（按 userId）
+      this.$userDialog.show({ userId: id });
     },
     // 打开侧边栏
     openPane () {

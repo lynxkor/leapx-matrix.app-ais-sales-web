@@ -26,6 +26,12 @@
             :href="getLinkUrl(field)"
             :target="field.target || '_blank'"
           >{{ displayValue(field) }}</el-link>
+          <el-link
+            v-else-if="field.eventName"
+            type="primary"
+            :underline="false"
+            @click="handleFieldClick(field)"
+          >{{ displayValue(field) }}</el-link>
           <span v-else>{{ displayValue(field) }}</span>
         </LPEncrypted>
         <a v-else-if="field.download" class="el-link el-link--primary" :href="displayValue(field)" target="_blank" download>{{ displayValue(field) }}</a>
@@ -34,6 +40,12 @@
           type="primary"
           :href="getLinkUrl(field)"
           :target="field.target || '_blank'"
+        >{{ displayValue(field) }}</el-link>
+        <el-link
+          v-else-if="field.eventName"
+          type="primary"
+          :underline="false"
+          @click="handleFieldClick(field)"
         >{{ displayValue(field) }}</el-link>
         <span v-else>{{ displayValue(field) }}</span>
       </el-form-item>
@@ -116,12 +128,20 @@ export default {
       let url = field.link;
       if (field.paramKey) {
         const paramName = field.paramName || 'id';
-        const paramValue = this.formData[field.paramKey];
+        // 加密字段优先使用解密后的本地展示值，避免链接携带密文
+        const paramValue = field.encrypted
+          ? (this.encryptedDisplay[field.paramKey] || this.formData[field.paramKey])
+          : this.formData[field.paramKey];
         if (paramValue) {
           url += `?${paramName}=${paramValue}`;
         }
       }
       return url;
+    },
+    // 字段点击事件：按 field.paramKey 取 formData 中的 id 抛出，由父组件决定如何处理（如打开弹框）
+    handleFieldClick (field) {
+      const id = field && field.paramKey ? this.formData[field.paramKey] : null;
+      this.$emit('field-click', id);
     },
     displayValue (field) {
       if (field.encrypted) {

@@ -6,26 +6,27 @@ import store from './store';
 import ElementUI from 'element-ui';
 import Vuex from 'vuex';
 import '@/libs/directive/index.js';
-import AuditLogPlugin from '@/libs/plugins/auditLog.js';
-import PrintPlugin from '@/libs/plugins/print.js';
-
+import { confirmExport } from '@/libs/utils';
 import '@/common/css/element-variables.scss';
 import '@/common/css/base.css';
 import '@/libs/assets/styles/index.scss';
 import '@/libs/assets/iconfont/iconfont.css';
 import '@leapmotor/splitpanes/dist/splitpanes.css';
-
+import AuditLogPlugin from '@/libs/plugins/auditLog.js';
+import PrintPlugin from '@/libs/plugins/print.js';
+import VideoPlugin from '@/libs/plugins/video.js';
+import UserDialogPlugin from '@/libs/plugins/userDialog.js';
 /* -------------------- 注册vxe-table ----------------- */
 import {
   VxeUi,
   VxeTooltip,
-  VxeButton
+  VxeButton,
 } from 'vxe-pc-ui';
 
 import {
   VxeTable,
   VxeColumn,
-  VxeToolbar
+  VxeToolbar,
 } from 'vxe-table';
 
 // 导入主题变量，也可以重写主题变量
@@ -38,6 +39,9 @@ import zhCN from 'vxe-table/lib/locale/lang/zh-CN';
 
 VxeUi.setI18n('zh-CN', zhCN);
 VxeUi.setLanguage('zh-CN');
+VxeUi.setConfig({
+  zIndex: 2999 // 解决弹出框表格内的提示信息被遮挡问题
+});
 
 Vue.use(VxeTable);
 Vue.use(VxeTooltip);
@@ -57,6 +61,10 @@ Vue.use(Vuex);
 /* -------------------- 注册插件 ----------------- */
 Vue.use(AuditLogPlugin);
 Vue.use(PrintPlugin);
+Vue.use(VideoPlugin);
+Vue.use(UserDialogPlugin);
+
+/* -------------------- 注册指令 ----------------- */
 
 // 监听全局分辨率
 const onResize = () => {
@@ -78,6 +86,7 @@ window.addEventListener('resize', () => {
 });
 window.onresize = onResize;
 onResize();
+Vue.prototype.$confirmExport = confirmExport;
 
 const windowDevice = window.devicePixelRatio;
 if (windowDevice === 1.5) {
@@ -113,7 +122,6 @@ export async function mount (props) {
 export async function unmount () {
   console.log('子应用卸载');
   instance.$destroy();
-  instance.$el.innerHTML = '';
   instance = null;
   router = null;
 };

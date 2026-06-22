@@ -637,6 +637,14 @@ export default {
   },
   mounted () {
   },
+  created () {
+    // 通过 vin 进入编辑页(无 id)时,mixin 会把面包屑设成"新建"
+    // 这里覆盖成与 id 入口一致的标题(详情/编辑),避免显示错误
+    if (this._vin && !this._id) {
+      const breadcrumbValue = [this.pageTitle, this.breadcrumbTitle];
+      this.$store.commit('SET_ACTIVE_BREADCRUMB', breadcrumbValue);
+    }
+  },
   methods: {
     changereservedType (val, row) {
       this.form.reservedType = val;
