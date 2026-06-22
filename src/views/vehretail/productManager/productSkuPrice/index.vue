@@ -143,6 +143,7 @@
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <el-button v-permission="moduleKey+'-financeExport'" :loading="financeExportLoading" size="small" @click="financeExport">金融数据导出</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
@@ -299,6 +300,7 @@ export default {
       show: false,
       loading: false,
       exportLoading: false,
+      financeExportLoading: false,
       uploadDialogVisible: false,
       clickItemId: '',
       allowConfigChangeDialog: {
@@ -452,13 +454,64 @@ export default {
             });
           }
         } else {
-          this.$message({
-            type: 'info',
-            message: '请前往导出列表中查询导出结果'
-          });
+          this.$confirmExport(
+            () => window.open('/service/excelManagement/commonDataProcessExcelTask', '_blank'),
+            { message: '正在导出中，是否要跳转"系统管理-文件管理-导出任务"中查看？' }
+          );
         }
       }).finally(() => {
         this.exportLoading = false;
+      });
+    },
+    // 金融数据导出
+    financeExport () {
+      this.financeExportLoading = true;
+      const reqParams = this.getFormData() || {};
+      if (this.selectionList.length > 0) {
+        const ids = this.selectionList.map(item => item.id) || [];
+        reqParams.ids = ids;
+      }
+      // 金融数据导出固定字段映射（与表格列无关）
+      const titleMap = {
+        materialsCode: '整车物料码',
+        skuCode: 'SKU编码',
+        productCode: '商品编码',
+        materialsDesc: '物料描述',
+        vehiclePrice: '整车价格',
+        yearTypeName: '车辆年型',
+        seriesName: '基本车系',
+        modelName: '基本车型',
+        exteriorName: '外饰风格',
+        wheelHubName: '选配轮毂',
+        optionPackageName: '选装包',
+        seriesId: '车系id',
+        modelId: '车型id',
+        exteriorId: '外观颜色id'
+      };
+      exportTable({
+        businessType: '商品SKU价格维护管理-金融数据导出',
+        dataFetchPath: '/vr/web/product/productSkuPrice/page',
+        reqParams,
+        titleMap,
+        httpMethod: 'POST'
+      }).then(async res => {
+        if (res && res.excelUrl) {
+          try {
+            await downloadExcel(res.excelUrl, '商品SKU价格维护管理-金融数据导出.xlsx');
+          } catch (error) {
+            this.$message({
+              type: 'error',
+              message: '文件导出失败'
+            });
+          }
+        } else {
+          this.$confirmExport(
+            () => window.open('/service/excelManagement/commonDataProcessExcelTask', '_blank'),
+            { message: '正在导出中，是否要跳转"系统管理-文件管理-导出任务"中查看？' }
+          );
+        }
+      }).finally(() => {
+        this.financeExportLoading = false;
       });
     },
     getData () {
