@@ -69,6 +69,16 @@
                       filterable
                     />
                 </el-form-item>
+                <el-form-item label="允许锁零售节点：" prop="allowLockNode">
+                  <fetch-select
+                      :request="fetchOptions"
+                      enumCode="vw_allow_lock_node_type"
+                      v-model="form.allowLockNode"
+                      placeholder="请选择"
+                      clearable
+                      filterable
+                    />
+                </el-form-item>
                  <el-form-item label="是否需要自动配车：" prop="needAutoAllocateCar">
                    <fetch-select
                       :request="fetchOptions"
@@ -79,7 +89,7 @@
                       filterable
                     />
                 </el-form-item>
-                    <el-form-item label="指定发运方式：" prop="deliveryWay">
+                  <el-form-item label="指定发运方式：" prop="deliveryWay">
                   <fetch-select
                     :request="fetchOptions"
                     enumCode="vehstock_ship_via"
@@ -161,6 +171,9 @@
                 </el-form-item>
                  <el-form-item label="允许锁零售单：" prop="allowLockRetailLabel">
                   {{ form.allowLockRetailLabel }}
+                </el-form-item>
+                 <el-form-item label="允许锁零售节点：" prop="allowLockNodeLabel">
+                  {{ form.allowLockNodeLabel }}
                 </el-form-item>
                   <el-form-item label="是否需要自动配车：" prop="needAutoAllocateCarLabel">
                   {{ form.needAutoAllocateCarLabel }}
@@ -341,6 +354,7 @@ const defaultForm = {
   allowLockRetail: '',
   totalQuotaQty: '',
   usedQuotaQty: '',
+  allowLockNode: 10
 };
 
 export default {
@@ -570,6 +584,9 @@ export default {
         totalQuotaQty: [
           { required: true, message: '请输入额度数量', trigger: 'change' },
           { validator: validateTotalQuotaQty, trigger: 'change' }
+        ],
+        allowLockNode: [
+          { required: true, message: '请输入允许锁零售节点', trigger: 'change' }
         ],
         usedQuotaQty: [
           { required: true, message: '请输入已提报数量', trigger: 'change' },

@@ -243,6 +243,16 @@
                       :disabled = 'form.orderStatus === 99 || form.orderStatus === "99"'
                     />
                 </el-form-item>
+                <el-form-item label="允许锁零售节点：" prop="allowLockNode">
+                  <fetch-select
+                      :request="fetchOptions"
+                      enumCode="vw_allow_lock_node_type"
+                      v-model="form.allowLockNode"
+                      placeholder="请选择允许锁零售节点"
+                      clearable
+                      filterable
+                    />
+                </el-form-item>
                    <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
                   <el-input
                     placeholder="请输入"
@@ -337,6 +347,9 @@
                 </el-form-item>
                 <el-form-item label="允许锁零售单：" prop="allowLockRetailLabel">
                   {{ form.allowLockRetailLabel }}
+                </el-form-item>
+                <el-form-item label="允许锁零售节点：" prop="allowLockNodeLabel">
+                  {{ form.allowLockNodeLabel }}
                 </el-form-item>
                  <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
                   <el-link type="primary" :href="`/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=${form.replenishApplyDetailId}`" target="_blank">{{ form.replenishApplyDetailCode }}</el-link>
