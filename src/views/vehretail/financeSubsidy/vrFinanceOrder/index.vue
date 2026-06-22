@@ -42,6 +42,18 @@
           clearable
         />
       </el-form-item>
+      <el-form-item label="整车订单状态">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="vr_order_status"
+          v-model="form.retailOrderStatusList"
+          placeholder="请选择"
+          clearable
+          filterable
+          multiple
+          collapse-tags
+        />
+      </el-form-item>
       <template v-if="show">
         <el-form-item label="所属区域或部门">
           <fetch-select
@@ -229,7 +241,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, getDecryptField } from '@/api/vehretail/financeSubsidy/vrFinanceOrder/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getRigion, getProvinceTree } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getRigion, getProvinceTree, getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import { getList as getFinanceOrganizationList } from '@/api/vehretail/financeSubsidy/vrFinanceOrganization/index';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -260,7 +272,8 @@ const defaultForm = {
   cityName: '', // 市
   loanDisbursementDateRange: [], // 放款日期范围
   deliveryDateRange: [], // 交车日期范围
-  loanApplicationTimeRange: [] // 贷款申请时间范围
+  loanApplicationTimeRange: [], // 贷款申请时间范围
+  retailOrderStatusList: []
 };
 
 const pageSize = 20;
@@ -359,6 +372,7 @@ export default {
           { props: 'dealerHasCommissionLabel', label: '门店有无金融返佣', visible: true, width: 150 },
           { props: 'discountLabel', label: '是否贴息', visible: true, width: 120 },
           { props: 'financeOrderStatusLabel', label: '金融订单状态', visible: true, width: 150 },
+          { props: 'retailOrderStatusLabel', label: '整车订单状态', visible: true, width: 150 },
           { props: 'vin', label: '交车VIN码', visible: true, width: 200, mask: true, getValue: (row) => getDecryptField(row.id, 'vin') },
           { props: 'matchVin', label: '配车VIN码', visible: true, width: 200, mask: true, getValue: (row) => getDecryptField(row.id, 'matchVin') },
           { props: 'regionName', label: '所属区域和部门', visible: true, width: 180 },
@@ -608,6 +622,12 @@ export default {
     },
     async getRegionList (params) {
       return getRigion({ orgName: params });
+    },
+    async fetchOptions (code) {
+      if (code) {
+        return getEnum(code);
+      }
+      return [];
     },
   }
 };
