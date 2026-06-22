@@ -643,6 +643,33 @@ export default {
     },
     handleClickTab () {
       this.form.queryTab = this.tabName;
+      this.form.auditStatus = '';
+      this.form.wholesaleWay = '';
+      this.form.orderCategory = '';
+      if (this.tabName === '2') {
+        this.form.auditStatus = '2';
+        // 待门店审核
+      } else if (this.tabName === '3') {
+        // 待审现车批售
+        this.form.auditStatus = '3';
+        this.form.wholesaleWay = '30';
+        this.form.orderCategory = '0';
+      } else if (this.tabName === '4') {
+        // 待审排产商品车
+        this.form.auditStatus = '3';
+        this.form.wholesaleWay = '10';
+        this.form.orderCategory = '0';
+      } else if (this.tabName === '5') {
+        // 待审展车
+        this.form.auditStatus = '3';
+        this.form.wholesaleWay = '10';
+        this.form.orderCategory = '20';
+      } else if (this.tabName === '6') {
+        this.form.auditStatus = '3';
+        this.form.wholesaleWay = '10';
+        this.form.orderCategory = '2';
+        // 待审试驾车
+      }
       this.getData();
     },
     factoryAuditValid (data) {
