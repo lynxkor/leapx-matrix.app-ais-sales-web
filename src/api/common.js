@@ -97,7 +97,7 @@ export function listStoreInfo (data) {
  * @param {*} data
  */
 export function listOrgStoreInfo (data) {
-  return api.jsonPost('/network/portal/store/pageWithAuth', data);
+  return api.jsonPost('/vw/network/dealer/list', data);
 }
 
 /**

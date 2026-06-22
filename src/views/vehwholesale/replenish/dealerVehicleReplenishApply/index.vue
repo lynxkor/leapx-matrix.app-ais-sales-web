@@ -381,13 +381,7 @@ export default {
             }]
           }
         ],
-        total: 0,
-        sortColumns: [
-          {
-            column: 'create_time',
-            sort: 'DESC'
-          }
-        ]
+        total: 0
       }
     };
   },
@@ -569,7 +563,7 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
-      if (this.form.replenishApplyCodes && this.form.createTime.length === 1) {
+      if (this.form.replenishApplyCodes && this.form.replenishApplyCodes.length === 1) {
         data.replenishApplyCodeLike = this.form.replenishApplyCodes[0];
         delete data.replenishApplyCodes;
       }
@@ -585,10 +579,19 @@ export default {
           {
             column: 'audit_date_time',
             sort: 'DESC'
+          },
+          {
+            column: 'create_time',
+            sort: 'DESC'
           }
         ];
       } else {
-        data.sortColumns = this.sortColumns;
+        data.sortColumns = [
+          {
+            column: 'create_time',
+            sort: 'DESC'
+          }
+        ];
       }
       return data;
     },
