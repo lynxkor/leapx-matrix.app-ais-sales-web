@@ -115,6 +115,7 @@
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
 <!--      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>-->
       <el-button size="small" @click="handleBatchSubmit">提交审核</el-button>
+      <el-button size="small" @click="openBatchAuditShow">批量审核</el-button>
       <el-button size="small" @click="handleBatchCancel">作废</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
 <!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>-->
@@ -140,6 +141,12 @@
       >
         <EditPage slot="centralizedViewSlot" :id="clickItemId"/>
       </LPVxeTable>
+
+      <audit-dialog
+        ref="auditRef"
+        :maxlength="100"
+        @audit="handleBatchAudit"
+      />
     </div>
     <!-- TIPS: 填入项目id即可 -->
     <Upload
@@ -161,7 +168,7 @@ import {
   enableItem,
   submitBatch,
   // revocation,
-  revocationBatch, cancelBatch
+  revocationBatch, cancelBatch, auditBatch
 } from '@/api/vehretail/orderManager/soldPlateInfo/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
@@ -173,6 +180,7 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
+import auditDialog from '@/libs/components/auditDialog/index.vue';
 
 const defaultForm = {
   vin: '',
@@ -195,6 +203,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    auditDialog,
     TagInput,
     PageSearchAction,
     LPVxeTable,
@@ -591,6 +600,35 @@ export default {
         });
         this.getData();
       }).catch(() => {
+      });
+    },
+    openBatchAuditShow () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      if (ids.length === 0) {
+        this.$message({
+          type: 'warning',
+          message: '请选择要审核的项'
+        });
+        return;
+      }
+      // 判断状态只能为 1020
+      const errorStatusIds = this.selectionList.filter(item => item.status !== 1020).map(item => item.soldPlateCode);
+      if (errorStatusIds && errorStatusIds.length > 0) {
+        this.$message({
+          type: 'warning',
+          message: `单据状态不为已提交状态不允许操作：${errorStatusIds.join(',')}`
+        });
+        return;
+      }
+      this.$refs.auditRef.show();
+    },
+    // 提交审批结果
+    handleBatchAudit (auditForm) {
+      auditForm.ids = this.form.ids;
+      auditForm.auditResult = auditForm.result;
+      auditForm.auditRemark = auditForm.remark;
+      auditBatch(auditForm).then(() => {
+        this.getData();
       });
     },
     // 批量启用停用
