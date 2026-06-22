@@ -900,19 +900,13 @@ export default {
       let params = {
         ids: this.selectionList.map(item => item.id) || [],
         allowLockRetailOrder: data.result,
+        allowLockNode: data.allowLockNode
       };
       return batchSetAllowLockRetail(params).then(() => {
-        if (params.allowLockRetailOrder === 1) {
-          this.$message({
-            type: 'success',
-            message: '允许零售锁单提交成功'
-          });
-        } else if (params.allowLockRetailOrder === 0) {
-          this.$message({
-            type: 'success',
-            message: '不允许零售锁单提交成功'
-          });
-        }
+        this.$message({
+          type: 'success',
+          message: '提交成功'
+        });
         this.getData();
       });
     },
