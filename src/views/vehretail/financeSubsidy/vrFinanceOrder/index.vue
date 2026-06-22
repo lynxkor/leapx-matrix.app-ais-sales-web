@@ -241,7 +241,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, getDecryptField } from '@/api/vehretail/financeSubsidy/vrFinanceOrder/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getRigion, getProvinceTree } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getRigion, getProvinceTree, getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import { getList as getFinanceOrganizationList } from '@/api/vehretail/financeSubsidy/vrFinanceOrganization/index';
 import responsiveSearchForm from '@/libs/mixins/responsive';
@@ -622,6 +622,12 @@ export default {
     },
     async getRegionList (params) {
       return getRigion({ orgName: params });
+    },
+    async fetchOptions (code) {
+      if (code) {
+        return getEnum(code);
+      }
+      return [];
     },
   }
 };
