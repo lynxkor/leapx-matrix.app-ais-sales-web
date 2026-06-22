@@ -30,8 +30,8 @@
                 <el-form-item label="门店：" prop="saleDealerName">
                   <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.saleDealerCode}`" target="_blank">{{ form.saleDealerName }}</el-link>
                 </el-form-item>
-                <el-form-item label="交车单：" prop="deliveryNote">
-                  {{ form.deliveryNote }}
+                <el-form-item label="交车单：" prop="deliveryOrderCode">
+                  <el-link type="primary" :href="`/sales/vehretail/orderManager/deliveryOrder/edit?id=${form.deliveryOrderId}`" target="_blank">{{ form.deliveryOrderCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="负责人：" prop="creatorName">
                   {{ form.creatorName }}
@@ -112,8 +112,8 @@
             </div>
             <div class="common-section-body">
               <el-form :inline="true" class="form-detail">
-                <el-form-item v-if="type !== 'all'" label="交车单：" prop="deliveryNote">
-                  {{ form.deliveryNote }}
+                <el-form-item v-if="type !== 'all'" label="交车单：" prop="deliveryOrderCode">
+                  <el-link type="primary" :href="`/sales/vehretail/orderManager/deliveryOrder/edit?id=${form.deliveryOrderId}`" target="_blank">{{ form.deliveryOrderCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="VIN码：" prop="vin">
                   <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>

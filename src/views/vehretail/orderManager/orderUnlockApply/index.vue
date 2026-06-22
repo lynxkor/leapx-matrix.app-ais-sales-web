@@ -108,7 +108,7 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
       <el-button v-permission="moduleKey+'-voided'" size="small" @click="handleBatchVoided" :disabled="selectionList.length === 0">作废</el-button>
-      <el-button v-permission="moduleKey+'-submit'" size="small" @click="handleBatchSubmit" :disabled="selectionList.length === 0">提交</el-button>
+      <!-- <el-button v-permission="moduleKey+'-submit'" size="small" @click="handleBatchSubmit" :disabled="selectionList.length === 0">提交</el-button> -->
       <el-button v-permission="moduleKey+'-audit'" size="small" @click="handleBatchAudit" :disabled="selectionList.length === 0">审核</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>

@@ -198,13 +198,6 @@ export default {
             visible: true,
             fixed: 'right',
             buttons: [{
-              name: '配额调整',
-              show: () => this.permissions.has(this.moduleKey + '-updateQuotaQty'),
-              click: (rowIndex, row) => {
-                this.changeTotalQuotaQty(row.id);
-              },
-              type: 'info'
-            }, {
               name: '编辑',
               click: (rowIndex, row) => {
                 this.$router.push({
