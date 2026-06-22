@@ -46,6 +46,10 @@
           <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.allowLockRetail" placeholder="请选择"
             clearable filterable />
         </el-form-item>
+        <el-form-item label="允许锁单节点">
+          <fetch-select :request="fetchOptions" enumCode="vw_allow_lock_node_type" v-model="form.allowLockNode"
+            placeholder="请选择" clearable filterable />
+        </el-form-item>
         <el-form-item label="发运方式">
           <fetch-select :request="fetchOptions" enumCode="vehstock_ship_via" v-model="form.shipVia" placeholder="请选择"
             clearable filterable />
@@ -178,6 +182,7 @@ const defaultForm = {
   factory: '',
   stockAgeGe: null,
   stockAgeLe: null,
+  allowLockNode: null,
   outboundDateTime: []
 };
 
@@ -258,6 +263,7 @@ export default {
           { props: 'batteryCellName', label: '电池电芯', visible: true, width: 140, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleBatteryCell/edit?id=${row.batteryCellId}`, '_blank'); }, type: 'primary' }] },
           { props: 'returnLabelLabel', label: '退车标识', visible: true, width: 120 },
           { props: 'allowLockRetailLabel', label: '允许锁零售单', visible: true, width: 140 },
+          { props: 'allowLockNodeLabel', label: '允许锁单节点', visible: true, width: 140 },
           { props: 'vehicleRegisteredModelName', label: '公告车型', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleRegisteredModel/edit?id=${row.vehicleRegisteredModelId}`, '_blank'); }, type: 'primary' }] },
           { props: 'electricity', label: '电量（%）', visible: true, align: 'right', width: 120 },
           { props: 'electricityon', label: '电量获取时间', visible: true, width: 200 },
@@ -382,6 +388,7 @@ export default {
           { props: 'batteryCellName', label: '电池电芯', visible: true, width: 140 },
           { props: 'returnLabelLabel', label: '退车标识', visible: true, width: 120 },
           { props: 'allowLockRetailLabel', label: '允许锁零售单', visible: true, width: 140 },
+          { props: 'allowLockNodeLabel', label: '允许锁单节点', visible: true, width: 140 },
           { props: 'vehicleRegisteredModelName', label: '公告车型', visible: true, width: 140 },
           { props: 'salesRemark', label: '销售备注', visible: true, width: 200 },
           { props: 'specialReserveRemark', label: '特殊预留备注', visible: true, width: 200 },
