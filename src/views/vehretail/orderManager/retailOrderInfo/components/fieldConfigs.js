@@ -106,7 +106,7 @@ export const lockAllocationDisplayFields = [
 export const wholesaleDisplayFields = [
   { key: 'wholesaleBindStatusLabel', label: '是否绑定批售' },
   { key: 'lockWholesaleTime', label: '锁批售时间' },
-  { key: 'confirmedCount', label: '批售确认次数' },
+  { key: 'soConfirmTimes', label: '批售确认次数' },
   {
     key: 'wholesaleOrderCode',
     label: '批售订单号',
