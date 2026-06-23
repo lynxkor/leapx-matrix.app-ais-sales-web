@@ -356,6 +356,11 @@ export default {
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
           console.log(res);
+          if (!res || !res.records) {
+            this.optionObj.dataList = [];
+            this.optionObj.total = 0;
+            return;
+          }
           this.optionObj.dataList = res.records.map(item => {
             return {
               ...item,
@@ -363,6 +368,10 @@ export default {
             };
           });
           this.optionObj.total = res.total;
+        }).catch(err => {
+          console.error('获取门店库存调拨列表失败:', err);
+          this.optionObj.dataList = [];
+          this.optionObj.total = 0;
         }).finally(() => {
           this.loading = false;
         });
