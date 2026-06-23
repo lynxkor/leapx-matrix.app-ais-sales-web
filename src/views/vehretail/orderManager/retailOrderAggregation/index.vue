@@ -17,7 +17,6 @@
           <el-input v-model="form.vin" placeholder="请输入" />
         </el-form-item>
         <page-search-action
-          v-if="canList"
           v-model="show"
           is-expandable
           :loading="loading"
@@ -25,14 +24,34 @@
           @reset="onReset"
         />
       </el-form>
-      <edit-base-container>
+      <edit-base-container
+        ref="containerRef"
+        :id="'1'"
+        :showEditBtn="false"
+        :isEditing="false"
+        :canLog="false"
+      >
         <el-main ref="scrollContainer">
           <component-table
-            ref="orderChangeTableRef"
-            :tableConfig="orderChangeTableConfig"
-            :columns="orderChangeColumns"
-            :extraParams="orderChangeExtraParams"
+            ref="retailOrderInfoTableRef"
+            :tableConfig="retailOrderInfoTableConfig"
+            :columns="retailOrderInfoColumns"
+            :extraParams="retailOrderInfoExtraParams"
             :apiMethod="getRetailOrderInfoList"
+          />
+          <component-table
+            ref="entVehicleOrderTableRef"
+            :tableConfig="entVehicleOrderTableConfig"
+            :columns="entVehicleOrderColumns"
+            :extraParams="entVehicleOrderExtraParams"
+            :apiMethod="getEntVehicleOrderList"
+          />
+          <component-table
+            ref="vehicleProfileTableRef"
+            :tableConfig="vehicleProfileTableConfig"
+            :columns="vehicleProfileColumns"
+            :extraParams="vehicleProfileExtraParams"
+            :apiMethod="getVehicleProfileList"
           />
         </el-main>
       </edit-base-container>
@@ -42,23 +61,23 @@
 
 <script>
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { fastSearchPage as retailOrderInfofastSearchPage } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { fastSearchPage as retailOrderInfoFastSearchPage } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { fastSearchVehicleProfilePage } from '@/api/datacenter/vehicle/vehicleProfile/index.js';
+import { fastSearchPage as entVehicleOrderFastSearchPage } from '@/api/vehwholesale/entorder/entVehicleOrder/index.js';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import EditPageLayout from '@/libs/components/EditPageLayout';
+import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import ComponentTable from '@/libs/components/ComponentTable';
-
-const defaultForm = {
-  // TIPS:多选时字段名称会有变化，自行校对
-  phone: null,
-  vin: null
-};
 
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
     PageSearchAction,
+    EditBaseContainer,
+    EditPageLayout,
     ComponentTable
   },
   data () {
@@ -77,9 +96,10 @@ export default {
       pageTitle: '订单车辆聚合查询',
       pageType: 'list',
       // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISVRROCA-retailOrderChangeApply',
+      moduleKey: 'AISVR-retailOrderAggregation',
       form: {
-        ...defaultForm
+        phone: null,
+        vin: null
       },
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
@@ -89,35 +109,60 @@ export default {
       uploadDialogVisible: false,
       clickItemId: '',
       // 门店整车订单
-      orderChangeTableConfig: {
+      retailOrderInfoTableConfig: {
         title: '门店整车订单'
       },
-      orderChangeColumns: [
-        { field: 'mallOrderCode', title: '商城订单编号', width: 200, align: 'center' },
-        { field: 'matchFields', title: '查询匹配字段', width: 300, align: 'center' }
+      retailOrderInfoColumns: [
+        { field: 'mallOrderCode', title: '商城订单编号', width: 200, align: 'center', link: '/sales/vehretail/orderManager/retailOrderInfo/edit', paramKey: 'id' },
+        { field: 'matchFields', title: '查询匹配字段', width: 300, align: 'center' },
+        { field: 'id', title: 'ID', width: 300, align: 'center', visible: false }
       ],
-      orderChangeExtraParams: {}
+      retailOrderInfoExtraParams: {},
+      // 车辆档案
+      vehicleProfileTableConfig: {
+        title: '车辆档案'
+      },
+      vehicleProfileColumns: [
+        { field: 'vin', title: 'VIN号', width: 200, align: 'center', link: '/service/datacenter/vehicle/vehicleProfile/edit', paramKey: 'id' },
+        { field: 'matchedFields', title: '查询匹配字段', width: 300, align: 'center' },
+        { field: 'id', title: 'ID', width: 300, align: 'center', visible: false }
+      ],
+      vehicleProfileExtraParams: {},
+      // 企业客户订单
+      entVehicleOrderTableConfig: {
+        title: '企业客户订单'
+      },
+      entVehicleOrderColumns: [
+        { field: 'entOrderCode', title: '企业订单编号', width: 200, align: 'center', link: '/sales/vehwholesale/entorder/entVehicleOrder/edit', paramKey: 'id' },
+        { field: 'matchedFields', title: '查询匹配字段', width: 300, align: 'center' },
+        { field: 'id', title: 'ID', width: 300, align: 'center', visible: false }
+      ],
+      entVehicleOrderExtraParams: {}
     };
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
-    this.getData();
+    // this.getData();
   },
   methods: {
     onSubmit () {
+      const searchParams = this.getFormData();
+      if (!searchParams.phone && !searchParams.vin) {
+        this.$message.warning('请至少输入一个查询条件');
+      }
       this.getData();
     },
     onReset () {
-      this.form = { ...defaultForm };
-      this.orderChangeExtraParams = {};
+      this.retailOrderInfoExtraParams = {};
+      this.entVehicleOrderExtraParams = {};
+      this.vehicleProfileExtraParams = {};
       this.getData();
-      // this.$nextTick(() => {
-      //   this.refreshRetailOrderTable();
-      // });
     },
     getData () {
       this.loading = true;
       this.refreshRetailOrderTable();
+      this.refreshEntVehicleOrderTable();
+      this.refreshVehicleProfileTable();
       this.loading = false;
     },
     getFormData () {
@@ -127,13 +172,45 @@ export default {
     getRetailOrderInfoList (params) {
       // 将搜索条件合并到请求参数中
       const searchParams = this.getFormData();
-      return retailOrderInfofastSearchPage({ ...searchParams, ...params });
+      if (!searchParams.phone && !searchParams.vin) {
+        return [];
+      }
+      return retailOrderInfoFastSearchPage(searchParams);
     },
     // 刷新订单信息变更申请表格
     refreshRetailOrderTable () {
-      if (this.$refs.orderChangeTableRef) {
-        this.orderChangeExtraParams = this.getFormData();
-        this.$refs.orderChangeTableRef.refresh();
+      if (this.$refs.retailOrderInfoTableRef) {
+        this.$refs.retailOrderInfoTableRef.refresh();
+      }
+    },
+    // 获取订单信息变更申请列表（供 ComponentTable 使用）
+    getVehicleProfileList (params) {
+      // 将搜索条件合并到请求参数中
+      const searchParams = this.getFormData();
+      if (!searchParams.phone && !searchParams.vin) {
+        return [];
+      }
+      return fastSearchVehicleProfilePage(searchParams);
+    },
+    // 刷新订单信息变更申请表格
+    refreshVehicleProfileTable () {
+      if (this.$refs.vehicleProfileTableRef) {
+        this.$refs.vehicleProfileTableRef.refresh();
+      }
+    },
+    // 获取企业客户订单列表（供 ComponentTable 使用）
+    getEntVehicleOrderList (params) {
+      // 将搜索条件合并到请求参数中
+      const searchParams = this.getFormData();
+      if (!searchParams.phone && !searchParams.vin) {
+        return [];
+      }
+      return entVehicleOrderFastSearchPage(searchParams);
+    },
+    // 刷新企业客户订单表格
+    refreshEntVehicleOrderTable () {
+      if (this.$refs.entVehicleOrderTableRef) {
+        this.$refs.entVehicleOrderTableRef.refresh();
       }
     }
   }

@@ -12,6 +12,14 @@ export function getList (data) {
 };
 
 /**
+ * 聚合查询列表
+ * @param {Object} data
+ */
+export function fastSearchPage (data) {
+  return api.jsonPost(prefix + 'fastSearch', data);
+};
+
+/**
  * 新增或修改
  * @param {Object} data
  */

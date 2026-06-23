@@ -862,7 +862,7 @@ export default {
         ],
         changeExplain: [
           {
-            required: true,
+            required: false,
             message: '请输入变更说明',
             trigger: 'change',
           },
