@@ -113,8 +113,9 @@ export default {
         title: '门店整车订单'
       },
       retailOrderInfoColumns: [
-        { field: 'mallOrderCode', title: '商城订单编号', width: 200, align: 'center' },
-        { field: 'matchFields', title: '查询匹配字段', width: 300, align: 'center' }
+        { field: 'mallOrderCode', title: '商城订单编号', width: 200, align: 'center', link: '/sales/vehretail/orderManager/retailOrderInfo/edit', paramKey: 'id' },
+        { field: 'matchFields', title: '查询匹配字段', width: 300, align: 'center' },
+        { field: 'id', title: 'ID', width: 300, align: 'center', visible: false }
       ],
       retailOrderInfoExtraParams: {},
       // 车辆档案
@@ -122,8 +123,9 @@ export default {
         title: '车辆档案'
       },
       vehicleProfileColumns: [
-        { field: 'vin', title: 'VIN号', width: 200, align: 'center' },
-        { field: 'matchedFields', title: '查询匹配字段', width: 300, align: 'center' }
+        { field: 'vin', title: 'VIN号', width: 200, align: 'center', link: '/service/datacenter/vehicle/vehicleProfile/edit', paramKey: 'id' },
+        { field: 'matchedFields', title: '查询匹配字段', width: 300, align: 'center' },
+        { field: 'id', title: 'ID', width: 300, align: 'center', visible: false }
       ],
       vehicleProfileExtraParams: {},
       // 企业客户订单
@@ -131,8 +133,9 @@ export default {
         title: '企业客户订单'
       },
       entVehicleOrderColumns: [
-        { field: 'entOrderCode', title: '企业订单编号', width: 200, align: 'center' },
-        { field: 'matchedFields', title: '查询匹配字段', width: 300, align: 'center' }
+        { field: 'entOrderCode', title: '企业订单编号', width: 200, align: 'center', link: '/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit', paramKey: 'id' },
+        { field: 'matchedFields', title: '查询匹配字段', width: 300, align: 'center' },
+        { field: 'id', title: 'ID', width: 300, align: 'center', visible: false }
       ],
       entVehicleOrderExtraParams: {}
     };
