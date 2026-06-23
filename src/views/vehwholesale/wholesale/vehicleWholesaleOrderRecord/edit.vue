@@ -39,8 +39,8 @@
                 <el-form-item label="取消配车时间：" prop="cancelAllocateTime">
                   {{ form.cancelAllocateTime }}
                 </el-form-item>
-                <el-form-item label="取消配车说明：" prop="cancelAllocateRemark">
-                  {{ form.cancelAllocateRemark }}
+                <el-form-item label="取消配车说明：" prop="remark">
+                  {{ form.remark }}
                 </el-form-item>
                  <el-form-item label="取消配车类型：" prop="cancelAllocateVehicleTypeLabel">
                   {{ form.cancelAllocateVehicleTypeLabel }}
