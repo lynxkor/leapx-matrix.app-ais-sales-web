@@ -243,7 +243,12 @@
                   :auth="{edit: isEditing, delete: isEditing}"
                 >
                   <template #default="{ row, column }">
-                    <template v-if="column.property === 'dealerCode' && row.dealerCode">
+                    <template v-if="column.property === 'activityDetailCode' && row.id">
+                      <el-link type="primary" :href="`/sales/vehwholesale/basic/wholesaleProdScheduleActivityDetail/edit?id=${row.id}`" target="_blank">
+                        {{ row.activityDetailCode }}
+                      </el-link>
+                    </template>
+                    <template v-else-if="column.property === 'dealerCode' && row.dealerCode">
                       <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`" target="_blank">
                         {{ row.dealerCode }}
                       </el-link>
@@ -471,6 +476,11 @@ export default {
       },
       // TIPS: 复杂的表格输入项，参考 /dealerTeam/edit.vue
       columns: [
+        {
+          field: 'activityDetailCode',
+          title: '活动明细编码',
+          width: '150',
+        },
         {
           field: 'dealerCode',
           title: '门店编码',
