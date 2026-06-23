@@ -46,6 +46,10 @@
           <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.allowLockRetail" placeholder="请选择"
             clearable filterable />
         </el-form-item>
+        <el-form-item label="允许锁单节点">
+          <fetch-select :request="fetchOptions" enumCode="vw_allow_lock_node_type" v-model="form.allowLockNode"
+            placeholder="请选择" clearable filterable />
+        </el-form-item>
         <el-form-item label="发运方式">
           <fetch-select :request="fetchOptions" enumCode="vehstock_ship_via" v-model="form.shipVia" placeholder="请选择"
             clearable filterable />
@@ -115,6 +119,8 @@
         :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)"
         :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button size="small" @click="handleBatchUpdateAllowLockNode"
+        :disabled="selectionList.length === 0">批量更新锁单节点</el-button>
     </div>
     <div class="ais-table-c" v-if="activeName === 'homePage'">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed :option-obj="optionObj"
@@ -128,6 +134,18 @@
     </div>
     <!-- TIPS: 填入项目id即可 -->
     <Upload :visible="uploadDialogVisible" :id="'vehicleVdcInventoryLedgerImport'" @close="handleUploadDialogClose" />
+    <el-dialog title="批量更新允许锁单节点" :visible.sync="batchUpdateAllowLockNodeVisible" width="400px">
+      <el-form label-width="120px">
+        <el-form-item label="允许锁单节点：">
+          <fetch-select :request="fetchOptions" enumCode="vw_allow_lock_node_type" v-model="batchUpdateAllowLockNodeValue"
+            placeholder="请选择" clearable filterable />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="batchUpdateAllowLockNodeVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="confirmBatchUpdateAllowLockNode" size="small">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -135,7 +153,7 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem } from '@/api/vehstock/vdc/vehicleVdcInventoryLedger/index';
+import { getList, deleteItem, enableItem, batchUpdateAllowLockNode } from '@/api/vehstock/vdc/vehicleVdcInventoryLedger/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleSalesVersionList, page, factoryInfoPage } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -178,6 +196,7 @@ const defaultForm = {
   factory: '',
   stockAgeGe: null,
   stockAgeLe: null,
+  allowLockNode: null,
   outboundDateTime: []
 };
 
@@ -213,6 +232,8 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      batchUpdateAllowLockNodeVisible: false,
+      batchUpdateAllowLockNodeValue: null,
       optionObj: {
         id: 'vehicleVdcInventoryLedgerTable',
         dataList: [],
@@ -258,6 +279,7 @@ export default {
           { props: 'batteryCellName', label: '电池电芯', visible: true, width: 140, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleBatteryCell/edit?id=${row.batteryCellId}`, '_blank'); }, type: 'primary' }] },
           { props: 'returnLabelLabel', label: '退车标识', visible: true, width: 120 },
           { props: 'allowLockRetailLabel', label: '允许锁零售单', visible: true, width: 140 },
+          { props: 'allowLockNodeLabel', label: '允许锁单节点', visible: true, width: 140 },
           { props: 'vehicleRegisteredModelName', label: '公告车型', visible: true, width: 160, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleRegisteredModel/edit?id=${row.vehicleRegisteredModelId}`, '_blank'); }, type: 'primary' }] },
           { props: 'electricity', label: '电量（%）', visible: true, align: 'right', width: 120 },
           { props: 'electricityon', label: '电量获取时间', visible: true, width: 200 },
@@ -382,6 +404,7 @@ export default {
           { props: 'batteryCellName', label: '电池电芯', visible: true, width: 140 },
           { props: 'returnLabelLabel', label: '退车标识', visible: true, width: 120 },
           { props: 'allowLockRetailLabel', label: '允许锁零售单', visible: true, width: 140 },
+          { props: 'allowLockNodeLabel', label: '允许锁单节点', visible: true, width: 140 },
           { props: 'vehicleRegisteredModelName', label: '公告车型', visible: true, width: 140 },
           { props: 'salesRemark', label: '销售备注', visible: true, width: 200 },
           { props: 'specialReserveRemark', label: '特殊预留备注', visible: true, width: 200 },
@@ -790,6 +813,33 @@ export default {
         query: {
           list: 1
         }
+      });
+    },
+    // 批量更新允许锁单节点
+    handleBatchUpdateAllowLockNode () {
+      if (this.selectionList.length === 0) {
+        this.$message.warning('请选择要更新的记录');
+        return;
+      }
+      this.batchUpdateAllowLockNodeValue = null;
+      this.batchUpdateAllowLockNodeVisible = true;
+    },
+    // 确认批量更新允许锁单节点
+    confirmBatchUpdateAllowLockNode () {
+      if (this.batchUpdateAllowLockNodeValue === null || this.batchUpdateAllowLockNodeValue === '') {
+        this.$message.warning('请选择允许锁单节点');
+        return;
+      }
+      const ids = this.selectionList.map(item => item.id);
+      batchUpdateAllowLockNode({
+        ids,
+        allowLockNode: Number(this.batchUpdateAllowLockNodeValue)
+      }).then(() => {
+        this.$message.success('批量更新成功');
+        this.batchUpdateAllowLockNodeVisible = false;
+        this.getData();
+      }).catch(() => {
+        this.$message.error('批量更新失败');
       });
     },
     // 处理库龄最小天数失焦

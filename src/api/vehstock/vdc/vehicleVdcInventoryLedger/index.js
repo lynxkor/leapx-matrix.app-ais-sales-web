@@ -58,3 +58,11 @@ export function batchEdit (data) {
 export function getByVin (data) {
   return api.jsonPost(prefix + 'getByVin', data);
 }
+
+/**
+ * 批量更新允许锁单节点
+ * @param {Object} data
+ */
+export function batchUpdateAllowLockNode (data) {
+  return api.jsonPost(prefix + 'batchUpdateAllowLockNode', data);
+}
