@@ -164,19 +164,20 @@ import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import {
   aggregatePage,
+  auditBatch,
+  cancelBatch,
   deleteItem,
   enableItem,
-  submitBatch,
-  // revocation,
-  revocationBatch, cancelBatch, auditBatch
-} from '@/api/vehretail/orderManager/soldPlateInfo/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel } from '@/api/common';
+  revocationBatch,
+  submitBatch
+} from '@/api/vehretail/orderManager/soldPlateInfo';
+import { exportTable, getEnum, getTableConfig, listVehicleModel, tableAddOrUpdate } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
+import { downloadExcel, handleBatchStatusChange } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
@@ -624,7 +625,7 @@ export default {
     },
     // 提交审批结果
     handleBatchAudit (auditForm) {
-      auditForm.ids = this.form.ids;
+      auditForm.ids = this.selectionList.map(item => item.id) || [];
       auditForm.auditResult = auditForm.result;
       auditForm.auditRemark = auditForm.remark;
       auditBatch(auditForm).then(() => {
