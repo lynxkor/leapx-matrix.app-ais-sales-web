@@ -133,7 +133,7 @@ export default {
         title: '企业客户订单'
       },
       entVehicleOrderColumns: [
-        { field: 'entOrderCode', title: '企业订单编号', width: 200, align: 'center', link: '/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit', paramKey: 'id' },
+        { field: 'entOrderCode', title: '企业订单编号', width: 200, align: 'center', link: '/sales/vehwholesale/entorder/entVehicleOrder/edit', paramKey: 'id' },
         { field: 'matchedFields', title: '查询匹配字段', width: 300, align: 'center' },
         { field: 'id', title: 'ID', width: 300, align: 'center', visible: false }
       ],
