@@ -357,7 +357,7 @@
                   {{ form.factory }}
                 </el-form-item>
                 <el-form-item label="VIN：" prop="vin">
-                  <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
+                  {{ form.vin }}
                 </el-form-item>
                 <el-form-item label="计划收车时间：" prop="planReceiveCarTime">
                   {{ form.planReceiveCarTime }}
