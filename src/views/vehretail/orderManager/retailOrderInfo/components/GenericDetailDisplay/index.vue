@@ -145,9 +145,11 @@ export default {
     },
     displayValue (field) {
       if (field.encrypted) {
-        return this.encryptedDisplay[field.key] || '';
+        const v = this.encryptedDisplay[field.key];
+        return v === undefined || v === null ? '' : v;
       }
-      return (this.formData && this.formData[field.key]) || '';
+      const v = this.formData && this.formData[field.key];
+      return v === undefined || v === null ? '' : v;
     },
     // 字段解密方法：由父组件通过 prop 注入具体的解密实现
     decryptMethod (field) {
