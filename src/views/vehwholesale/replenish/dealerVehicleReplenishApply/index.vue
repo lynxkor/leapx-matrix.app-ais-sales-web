@@ -10,12 +10,7 @@
       class="ais-search-form"
     >
       <el-form-item label="整车补货单号">
-        <el-input
-          placeholder="请输入"
-          v-model="form.replenishApplyCodeLike"
-          clearable
-          @blur="handleReplenishCodeBlur"
-        />
+        <tag-input v-model="form.replenishApplyCodes" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="销售门店">
         <fetch-select
@@ -126,6 +121,11 @@
             filterable
           />
         </el-form-item>
+        <el-form-item label="审批时间">
+          <dateranges
+            v-model="form.auditDateTime"
+          />
+        </el-form-item>
         <el-form-item label="创建时间">
           <dateranges
             v-model="form.createTime"
@@ -226,10 +226,11 @@ import EditPage from './edit.vue';
 import vehicleWholesaleDialog from './vehicleWholesaleDialog.vue';
 import BatchAuditInput from './BatchAuditInput.vue';
 import dateranges from '@/libs/components/dateranges';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
-  replenishApplyCodeLike: '',
+  replenishApplyCodes: [],
   saleDealerCodes: [],
   auditStatus: '',
   regionCodes: [],
@@ -241,6 +242,7 @@ const defaultForm = {
   applyCategory: '',
   financialOrganizationId: '',
   queryTab: '1',
+  auditDateTime: '',
   createTime: '',
 };
 
@@ -258,7 +260,8 @@ export default {
     FetchSelect,
     EditPage,
     BatchAuditInput,
-    dateranges
+    dateranges,
+    TagInput
   },
   data () {
     return {
@@ -560,7 +563,36 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
-
+      if (this.form.replenishApplyCodes && this.form.replenishApplyCodes.length === 1) {
+        data.replenishApplyCodeLike = this.form.replenishApplyCodes[0];
+        delete data.replenishApplyCodes;
+      }
+      if (this.form.auditDateTime) {
+        delete data.auditDateTime;
+        if (this.form.auditDateTime.length > 1) {
+          data.auditDateTimeStart = this.form.auditDateTime[0];
+          data.auditDateTimeEnd = this.form.auditDateTime[1];
+        }
+      }
+      if (this.form.queryTab !== '1' && this.form.queryTab !== '2') {
+        data.sortColumns = [
+          {
+            column: 'audit_date_time',
+            sort: 'DESC'
+          },
+          {
+            column: 'create_time',
+            sort: 'DESC'
+          }
+        ];
+      } else {
+        data.sortColumns = [
+          {
+            column: 'create_time',
+            sort: 'DESC'
+          }
+        ];
+      }
       return data;
     },
     async fetchOptions (code) {
@@ -681,11 +713,6 @@ export default {
         };
       });
     },
-    handleReplenishCodeBlur () {
-      if (this.form.replenishApplyCodeLike) {
-        this.form.replenishApplyCodeLike = this.form.replenishApplyCodeLike.replace(/\s/g, '');
-      }
-    }
   }
 };
 </script>
