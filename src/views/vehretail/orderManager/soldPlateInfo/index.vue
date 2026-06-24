@@ -274,6 +274,22 @@ export default {
           { props: 'provinceName', label: '上牌省份', visible: true, width: 200 },
           { props: 'cityName', label: '上牌城市', visible: true, width: 200 },
           { props: 'saleDealerName', label: '门店', visible: true, width: 200 },
+          // 门店信息
+          { props: 'storeAddress', label: '门店地址', visible: true, width: 200 },
+          { props: 'parentCompanyName', label: '所属母公司', visible: true, width: 200 },
+          { props: 'storeProvinceName', label: '门店省', visible: true, width: 120 },
+          { props: 'storeCityName', label: '门店市', visible: true, width: 120 },
+          { props: 'storeCountryName', label: '门店区', visible: true, width: 120 },
+          { props: 'receivingAddress', label: '收货地址', visible: true, width: 200 },
+          // 车辆信息
+          { props: 'batterySerialNumber', label: '电池序列号', visible: true, width: 200 },
+          { props: 'electricnumberBefore', label: '电驱序列号(前)', visible: true, width: 200 },
+          { props: 'electricnumberAfter', label: '电驱序列号(后)', visible: true, width: 200 },
+          { props: 'manufacturingDate', label: '制造日期', visible: true, width: 150 },
+          { props: 'enginenModel', label: '发动机型号', visible: true, width: 200 },
+          // 实名认证信息
+          { props: 'iccId', label: '卡ICCID', visible: true, width: 200 },
+          { props: 'msisdn', label: '卡MSISDN', visible: true, width: 200 },
           { props: 'drivingLicenseNumber', label: '行驶证编号', visible: true, width: 200 },
           { props: 'vehiclePurpose', label: '车辆用途', visible: true, width: 200 },
           { props: 'auditRemark', label: '审核意见', visible: true, width: 200 },
@@ -385,7 +401,7 @@ export default {
       }
       exportTable({
         businessType: '已售上牌车辆资料管理',
-        dataFetchPath: '/vr/web/delivery/soldPlateInfo/page',
+        dataFetchPath: '/vr/web/delivery/soldPlateInfo/aggregatePage',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
