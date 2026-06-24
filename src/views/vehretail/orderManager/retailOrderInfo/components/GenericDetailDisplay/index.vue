@@ -113,7 +113,7 @@ export default {
         const next = {};
         this.fields.forEach(f => {
           if (f.encrypted) {
-            next[f.key] = val && val[f.key] != null ? val[f.key] : '';
+            next[f.key] = val && val[f.key] !== null ? val[f.key] : '';
           }
         });
         this.encryptedDisplay = next;

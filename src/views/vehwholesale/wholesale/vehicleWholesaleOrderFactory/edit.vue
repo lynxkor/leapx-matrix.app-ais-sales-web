@@ -778,7 +778,7 @@
                 <el-form-item label="结算资金类型：" prop="settleFundType">
                   <fetch-select
                    :options="fundTypeList"
-                    v-model="form.settleFundTypeLabel"
+                    v-model="form.settleFundType"
                     placeholder="请选择"
                     clearable
                     filterable
@@ -1621,7 +1621,7 @@ export default {
               if (account.fundType !== 1020 && account.validIfCreditSaleAccount === true) {
                 uniqueLabels.add(
                   {
-                    fundType: account.fundType,
+                    fundType: String(account.fundType),
                     fundTypeLabel: account.fundTypeLabel,
                   }
                 );
@@ -1653,7 +1653,7 @@ export default {
       }
     },
     clearCache (val, row) {
-      this.form.settleFundType = row.fundType;
+      // this.form.settleFundType = row.fundType;
       this.form.settleFundTypeLabel = row.fundTypeLabel;
       this.form.financialOrganizationId = '';
       this.form.financialOrganizationName = '';
