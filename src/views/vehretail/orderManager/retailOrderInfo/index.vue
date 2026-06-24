@@ -219,6 +219,8 @@
        <el-button v-permission="moduleKey+'-batchUnlock'" size="small" :disabled="selectionList.length === 0 || accountFlag !== false" @click="handleBatchUnlock">批量取消锁车</el-button>
        <el-button v-permission="moduleKey+'-changeSaleDealer'" size="small" @click="handleChangeDealer('sales')" :disabled="selectionList.length === 0">更换销售门店</el-button>
        <el-button v-permission="moduleKey+'-changeDeliveryDealer'" size="small" @click="handleChangeDealer('support')" :disabled="selectionList.length === 0">更换交付门店</el-button>
+<!--      <el-button v-permission="moduleKey+'-presaleBlindImport'" size="small" @click="handleImportPreOrBlind">预售盲定导入</el-button>-->
+      <el-button size="small" @click="handleImportPreOrBlind">预售盲定导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div class="ais-active">
@@ -266,6 +268,11 @@
       :dataList="selectionList"
       @changeDealer="changeDealerFun"
     />
+    <Upload
+      :visible="uploadDialogVisible"
+      :id="'retailOrderPreOrBlindImport'"
+      @close="handleImportPreOrBlindUploadDialogClose"
+    />
   </div>
 </template>
 
@@ -273,7 +280,7 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, getOrderUnlockConfig, batchReplaceStore, getDetailDecryptField, getSysConfigParamValue } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { getList, getOrderUnlockConfig, batchReplaceStore, getDetailDecryptField, getSysConfigParamValue } from '@/api/vehretail/orderManager/retailOrderInfo';
 import {
   getTableConfig,
   tableAddOrUpdate,
@@ -298,6 +305,7 @@ import TagInput from '@/libs/components/TagInput';
 import UnlockDialog from './components/UnlockDialog';
 import MaterialsDialog from './components/MaterialsDialog';
 import ChangeDealer from './components/ChangeDealer';
+import Upload from '@/libs/components/UploadDialog/index.vue';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -362,6 +370,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    Upload,
     UnlockDialog,
     MaterialsDialog,
     TagInput,
@@ -397,6 +406,7 @@ export default {
       show: false,
       loading: false,
       exportLoading: false,
+      uploadDialogVisible: false,
       clickItemId: '',
       modelList: [],
       yearModelList: [],
@@ -557,6 +567,12 @@ export default {
     this.loginUserGet();
   },
   methods: {
+    handleImportPreOrBlind () {
+      this.uploadDialogVisible = true;
+    },
+    handleImportPreOrBlindUploadDialogClose () {
+      this.uploadDialogVisible = false;
+    },
     handleChangeArea (val) {
       console.log('handleChangeArea', val);
     },
