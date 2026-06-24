@@ -121,8 +121,8 @@ export default {
      * 审核操作
      */
     auditFun () {
-      if (!this.auditForm.result && !this.auditForm.allowLockNode) {
-        return this.$message.error('请选择审核结果和允许锁零售节点');
+      if (this.auditForm.result === '' && !this.auditForm.allowLockNode) {
+        return this.$message.error('请选择审核结果或允许锁零售节点');
       }
       this.$emit('audit', { ...this.auditForm });
       this.close();

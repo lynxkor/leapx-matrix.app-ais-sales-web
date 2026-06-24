@@ -1459,7 +1459,7 @@ export default {
           // 2. 处理 dealerFundAccounts
           if (res.dealerFundAccounts && Array.isArray(res.dealerFundAccounts)) {
             res.dealerFundAccounts = res.dealerFundAccounts.map(account => {
-              if (account.fundTypeLabel !== '现金' && account.validIfCreditSaleAccount === true) {
+              if (account.fundType !== 1020 && account.validIfCreditSaleAccount === true) {
                 uniqueLabels.add(
                   {
                     fundType: account.fundType,
