@@ -791,7 +791,7 @@
                    <el-form-item label="金融机构名称：" prop="financialOrganizationId">
                     <fetch-select
                    :options="financialOrganizationList"
-                    v-model="form.financialOrganizationName"
+                    v-model="form.financialOrganizationId"
                     placeholder="请选择"
                     clearable
                     filterable
@@ -1626,7 +1626,7 @@ export default {
                   }
                 );
               }
-              if ((account.fundType === '2010' || account.fundType === 2010) && account.financialOrganizationId && account.financialOrganizationName) {
+              if (account.fundType === 2010 && account.financialOrganizationId && account.financialOrganizationName) {
                 // 检查是否已存在，避免重复
                 const exists = this.financialOrganizationList.some(item => item.id === account.financialOrganizationId);
                 if (!exists) {
@@ -1653,12 +1653,21 @@ export default {
       }
     },
     clearCache (val, row) {
-      // this.form.settleFundType = row.fundType;
       this.form.settleFundTypeLabel = row.fundTypeLabel;
-      this.form.financialOrganizationId = '';
-      this.form.financialOrganizationName = '';
+      this.form.settleFundType = row.fundType;
+      if (row.fundType === 2010 || row.fundType === '2010') {
+        // 如果资金类型是 融资【2010】，需要选择融资机构，开启融资按钮的编辑
+        this.form.settleFundType = 2010;
+      } else {
+        // 其他，清空融资机构
+        this.form.financialOrganizationId = '';
+        this.form.financialOrganizationName = '';
+      }
     },
     getNewfinancialOrganization (val, row) {
+      if (!val) {
+        return;
+      }
       this.form.financialOrganizationId = row.id;
       this.form.financialOrganizationName = row.name;
     },
