@@ -1,4 +1,5 @@
 <template>
+  <!-- eslint-disable vue/no-mutating-props -->
   <section class="common-section">
     <div class="common-section-header">
       <h2>{{ isEditing ? '编辑信息' : '查看信息' }}</h2>
@@ -14,7 +15,6 @@
         label-width="150px"
         class="form-edit"
       >
-        <!-- eslint-disable-next-line vue/no-mutating-props -->
         <el-form-item label="批售目标数：" prop="wholesaleTargetQty">
           <el-input-number
             :controls="false"
@@ -25,7 +25,6 @@
             :precision="0"
           />
         </el-form-item>
-        <!-- eslint-disable-next-line vue/no-mutating-props -->
         <el-form-item label="批售备注：" prop="wholesaleRemark">
           <el-input
             placeholder="请输入"
@@ -45,6 +44,7 @@
       </el-form>
     </div>
   </section>
+  <!-- eslint-enable vue/no-mutating-props -->
 </template>
 
 <script>
