@@ -662,7 +662,7 @@
                    <el-form-item label="金融机构名称：" prop="financialOrganizationId">
                     <fetch-select
                    :options="financialOrganizationList"
-                    v-model="form.financialOrganizationName"
+                    v-model="form.financialOrganizationId"
                     placeholder="请选择"
                     clearable
                     filterable
@@ -1460,6 +1460,7 @@ export default {
           if (res.dealerFundAccounts && Array.isArray(res.dealerFundAccounts)) {
             res.dealerFundAccounts = res.dealerFundAccounts.map(account => {
               if (account.fundType !== 1020 && account.validIfCreditSaleAccount === true) {
+                // 除【返利】之外 【有效】的其他资金类型
                 uniqueLabels.add(
                   {
                     fundType: String(account.fundType),
@@ -1495,12 +1496,21 @@ export default {
       }
     },
     clearCache (val, row) {
-      // this.form.settleFundType = row.fundType;
       this.form.settleFundTypeLabel = row.fundTypeLabel;
-      this.form.financialOrganizationId = '';
-      this.form.financialOrganizationName = '';
+      this.form.settleFundType = row.fundType;
+      if (row.fundType === 2010 || row.fundType === '2010') {
+        // 如果资金类型是 融资【2010】，需要选择融资机构，开启融资按钮的编辑
+        this.form.settleFundType = 2010;
+      } else {
+        // 其他，清空融资机构
+        this.form.financialOrganizationId = '';
+        this.form.financialOrganizationName = '';
+      }
     },
     getNewfinancialOrganization (val, row) {
+      if (!val) {
+        return;
+      }
       this.form.financialOrganizationId = row.id;
       this.form.financialOrganizationName = row.name;
     },
