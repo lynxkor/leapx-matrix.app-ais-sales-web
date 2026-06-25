@@ -268,6 +268,9 @@
                 <el-form-item label="允许锁零售单：" prop="allowLockRetailLabel">
                   {{ form.allowLockRetailLabel }}
                 </el-form-item>
+                <el-form-item label="允许锁单节点：" prop="allowLockNodeLabel">
+                  {{ form.allowLockNodeLabel }}
+                </el-form-item>
                 <el-form-item label="ERP销售订单号：" prop="erpSalesOrder">
                   {{ form.erpSalesOrder }}
                 </el-form-item>
