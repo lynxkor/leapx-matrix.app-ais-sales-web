@@ -105,7 +105,7 @@
                     :remote-method="remoteMethods.optional"
                   />
                 </el-form-item>
-                <el-form-item label="电池电芯：" prop="batteryCellId">
+                <el-form-item label="电池电芯：" prop="batteryCellId" v-permission="moduleKey+'-checkBatteryCell'">
                   <fetch-select
                     v-model="form.batteryCellId"
                     :params="form.batteryCellName"
@@ -156,7 +156,7 @@
                 <el-form-item label="选装包：">
                   <el-link type="primary" :href="`/sales/datacenter/materials/vehicleOptionPackage/edit?id=${form.optionPackageId}`" target="_blank">{{ form.optionPackageName }}</el-link>
                 </el-form-item>
-                <el-form-item label="电池电芯：">
+                <el-form-item label="电池电芯：" v-permission="moduleKey+'-checkBatteryCell'">
                   <el-link type="primary" :href="`/sales/datacenter/materials/vehicleBatteryCell/edit?id=${form.batteryCellId}`" target="_blank">{{ form.batteryCellName }}</el-link>
                 </el-form-item>
                 <el-form-item label="状态：">
@@ -509,6 +509,18 @@ export default {
           this.modelList = [{ label: detail.modelName, value: detail.modelId }];
           this.yearTypeList = [{ label: detail.yearTypeName, value: detail.yearTypeId }];
         }
+        // 兜底：props 字段按权限返回，可能为 null。统一为对象，避免
+        // 模板 v-model="form.props[item.prop]" 报 Cannot read properties of null
+        detail.props = detail.props || {
+          allowWholesale: null,
+          allowProductionSchedule: null,
+          allowDisplayVehicleWholesale: null,
+          allowTestDriveVehicleWholesale: null,
+          allowCustomerSales: null,
+          allowWholesaleConfirm: null,
+          allowConfigurationModify: null,
+          discontinueStatus: null
+        };
         return detail;
       }
       return {};
