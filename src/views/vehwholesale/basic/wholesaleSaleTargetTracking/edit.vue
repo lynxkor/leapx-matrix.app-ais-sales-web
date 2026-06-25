@@ -79,13 +79,148 @@
               </el-form>
             </div>
           </section>
-          <!-- 模式特定字段（动态加载子组件） -->
-          <component
-            :is="mode === 'retail' ? 'RetailFields' : 'WholesaleFields'"
-            :form.sync="form"
-            :is-editing="isEditing"
-            :rules="rules"
-          />
+          <!-- 模式特定字段（批售模式） -->
+          <section v-if="mode === 'wholesale'" class="common-section">
+            <div class="common-section-header">
+              <h2>{{ isEditing ? '编辑信息' : '查看信息' }}</h2>
+            </div>
+            <div class="common-section-body">
+              <!-- 编辑模式 -->
+              <el-form
+                v-if="isEditing"
+                :inline="true"
+                :model="form"
+                :rules="rules"
+                ref="ruleForm"
+                label-width="150px"
+                class="form-edit"
+              >
+                <el-form-item label="批售目标数：" prop="wholesaleTargetQty">
+                  <el-input-number
+                    :controls="false"
+                    placeholder="请输入"
+                    v-model="form.wholesaleTargetQty"
+                    clearable
+                    :min="0"
+                    :precision="0"
+                  />
+                </el-form-item>
+                <el-form-item label="批售备注：" prop="wholesaleRemark">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.wholesaleRemark"
+                    clearable
+                  />
+                </el-form-item>
+              </el-form>
+              <!-- 详情模式 -->
+              <el-form v-else :inline="true" class="form-detail">
+                <el-form-item label="批售目标数：">
+                  {{ form.wholesaleTargetQty }}
+                </el-form-item>
+                <el-form-item label="批售备注：">
+                  {{ form.wholesaleRemark }}
+                </el-form-item>
+              </el-form>
+            </div>
+          </section>
+          <!-- 模式特定字段（零售模式） -->
+          <section v-else class="common-section">
+            <div class="common-section-header">
+              <h2>{{ isEditing ? '编辑信息' : '查看信息' }}</h2>
+            </div>
+            <div class="common-section-body">
+              <!-- 编辑模式 -->
+              <el-form
+                v-if="isEditing"
+                :inline="true"
+                :model="form"
+                :rules="rules"
+                ref="ruleForm"
+                label-width="150px"
+                class="form-edit"
+              >
+                <el-form-item label="新增缴定订单数：" prop="newOrderQty">
+                  <el-input-number
+                    :controls="false"
+                    placeholder="请输入"
+                    v-model="form.newOrderQty"
+                    clearable
+                    :min="0"
+                    :precision="0"
+                  />
+                </el-form-item>
+                <el-form-item label="新增锁单目标数：" prop="newLockTargetQty">
+                  <el-input-number
+                    :controls="false"
+                    placeholder="请输入"
+                    v-model="form.newLockTargetQty"
+                    clearable
+                    :min="0"
+                    :precision="0"
+                  />
+                </el-form-item>
+                <el-form-item label="净增锁单目标数：" prop="netLockTargetQty">
+                  <el-input-number
+                    :controls="false"
+                    placeholder="请输入"
+                    v-model="form.netLockTargetQty"
+                    clearable
+                    :min="0"
+                    :precision="0"
+                  />
+                </el-form-item>
+                <el-form-item label="批售考核目标数：" prop="wholesaleAssessmentTargetQty">
+                  <el-input-number
+                    :controls="false"
+                    placeholder="请输入"
+                    v-model="form.wholesaleAssessmentTargetQty"
+                    clearable
+                    :min="0"
+                    :precision="0"
+                  />
+                </el-form-item>
+                <el-form-item label="交付目标数：" prop="deliveryTargetQty">
+                  <el-input-number
+                    :controls="false"
+                    placeholder="请输入"
+                    v-model="form.deliveryTargetQty"
+                    clearable
+                    :min="0"
+                    :precision="0"
+                  />
+                </el-form-item>
+                <el-form-item label="零售备注：" prop="retailRemark">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.retailRemark"
+                    clearable
+                  />
+                </el-form-item>
+              </el-form>
+              <!-- 详情模式 -->
+              <el-form v-else :inline="true" class="form-detail">
+                <el-form-item label="新增缴定订单数：">
+                  {{ form.newOrderQty }}
+                </el-form-item>
+                <el-form-item label="新增锁单目标数：">
+                  {{ form.newLockTargetQty }}
+                </el-form-item>
+                <el-form-item label="净增锁单目标数：">
+                  {{ form.netLockTargetQty }}
+                </el-form-item>
+                <el-form-item label="批售考核目标数：">
+                  {{ form.wholesaleAssessmentTargetQty }}
+                </el-form-item>
+                <el-form-item label="交付目标数：">
+                  {{ form.deliveryTargetQty }}
+                </el-form-item>
+                <el-form-item label="零售备注：">
+                  {{ form.retailRemark }}
+                </el-form-item>
+              </el-form>
+            </div>
+          </section>
         </el-main>
       </edit-base-container>
     </template>
@@ -101,8 +236,6 @@
 import { getDetail, addOrUpdate } from '@/api/vehwholesale/basic/wholesaleSaleTargetTracking/index';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import WholesaleFields from './components/WholesaleFields.vue';
-import RetailFields from './components/RetailFields.vue';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
@@ -179,8 +312,6 @@ export default {
   components: {
     EditPageLayout,
     EditBaseContainer,
-    WholesaleFields,
-    RetailFields,
   },
   props: {
     id: {
@@ -219,17 +350,11 @@ export default {
     };
   },
   watch: {
-    // 当路由 query.isEditing 变化时重新计算
     '$route.query.isEditing' () {
       this.isEditing = this.computeInitialEditing();
     }
   },
   methods: {
-    computeInitialEditing () {
-      const id = this.id || this.$route.query.id;
-      if (this.$route.query.isEditing === undefined) return !id;
-      return this.$route.query.isEditing === 'true' || this.$route.query.isEditing === true;
-    },
     openPane () {
       this.$refs.editLayout.openPane();
     },
@@ -270,6 +395,11 @@ export default {
       return {
         ...defaultForm
       };
+    },
+    computeInitialEditing () {
+      const id = this.id || this.$route.query.id;
+      if (this.$route.query.isEditing === undefined) return !id;
+      return this.$route.query.isEditing === 'true' || this.$route.query.isEditing === true;
     }
   }
 };
