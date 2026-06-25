@@ -1,5 +1,26 @@
 <template>
   <edit-page-layout ref="editLayout" title="侧边栏标题" showPaneFooter>
+    <!-- 顶部操作区（详情模式下显示） -->
+    <div v-if="!isEditing" class="detail-actions">
+      <el-button
+        v-if="canAddOrUpdate"
+        size="small"
+        type="primary"
+        plain
+        @click="handleWholesaleEdit"
+      >
+        <i class="iconfont icon-lxppc-edit"></i>批售编辑
+      </el-button>
+      <el-button
+        v-if="canAddOrUpdate"
+        size="small"
+        type="primary"
+        plain
+        @click="handleRetailEdit"
+      >
+        <i class="iconfont icon-lxppc-edit"></i>零售编辑
+      </el-button>
+    </div>
     <template #left>
       <edit-base-container
         ref="containerRef"
@@ -21,7 +42,7 @@
               <h2>基础信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" ref="ruleForm">
+              <el-form :inline="true" ref="ruleForm" class="form-detail">
                 <el-form-item label="编号：">
                   {{ form.wholesaleSaleTargetTrackingCode }}
                 </el-form-item>
@@ -214,6 +235,26 @@ export default {
     },
     openWindow (url) {
       window.open(url, '_blank');
+    },
+    handleWholesaleEdit () {
+      this.$router.push({
+        path: '/vehwholesale/basic/wholesaleSaleTargetTracking/edit',
+        query: {
+          id: this._id,
+          type: 'wholesale',
+          isEditing: true
+        }
+      });
+    },
+    handleRetailEdit () {
+      this.$router.push({
+        path: '/vehwholesale/basic/wholesaleSaleTargetTracking/edit',
+        query: {
+          id: this._id,
+          type: 'retail',
+          isEditing: true
+        }
+      });
     },
     detailRequest () {
       const id = this._id;
