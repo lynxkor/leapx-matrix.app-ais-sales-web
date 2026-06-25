@@ -904,27 +904,9 @@ const routes = [
         keepAlive: true
       }
     }, {
-      path: '/vehwholesale/basic/wholesaleSaleTargetTracking/detail',
-      name: 'wholesaleSaleTargetTrackingDetail',
-      component: () => import('@/views/vehwholesale/basic/wholesaleSaleTargetTracking/detail.vue'),
-
-      meta: {
-        name: '整车批售-批售主数据-销售目标跟踪管理详情',
-        noResourceUrl: 'true'
-      }
-    }, {
-      path: '/vehwholesale/basic/wholesaleSaleTargetTracking/wholesaleEdit',
-      name: 'wholesaleSaleTargetTrackingWholesaleEdit',
-      component: () => import('@/views/vehwholesale/basic/wholesaleSaleTargetTracking/wholesaleEdit.vue'),
-
-      meta: {
-        name: '整车批售-批售主数据-销售目标跟踪管理详情',
-        noResourceUrl: 'true'
-      }
-    }, {
-      path: '/vehwholesale/basic/wholesaleSaleTargetTracking/retailEdit',
-      name: 'wholesaleSaleTargetTrackingRetailEdit',
-      component: () => import('@/views/vehwholesale/basic/wholesaleSaleTargetTracking/retailEdit.vue'),
+      path: '/vehwholesale/basic/wholesaleSaleTargetTracking/edit',
+      name: 'wholesaleSaleTargetTrackingEdit',
+      component: () => import('@/views/vehwholesale/basic/wholesaleSaleTargetTracking/edit.vue'),
 
       meta: {
         name: '整车批售-批售主数据-销售目标跟踪管理详情',
