@@ -1,42 +1,44 @@
 <template>
   <edit-page-layout ref="editLayout" title="侧边栏标题" showPaneFooter>
-    <!-- 顶部操作区（详情模式下显示） -->
-    <div v-if="!isEditing" class="detail-actions">
-      <el-button
-        v-if="canAddOrUpdate"
-        size="small"
-        type="primary"
-        plain
-        @click="handleWholesaleEdit"
-      >
-        <i class="iconfont icon-lxppc-edit"></i>批售编辑
-      </el-button>
-      <el-button
-        v-if="canAddOrUpdate"
-        size="small"
-        type="primary"
-        plain
-        @click="handleRetailEdit"
-      >
-        <i class="iconfont icon-lxppc-edit"></i>零售编辑
-      </el-button>
-    </div>
     <template #left>
       <edit-base-container
         ref="containerRef"
         :id="_id"
         :title="title"
-        :isEditing.sync="isEditing"
+        :is-editing.sync="isEditing"
         :form.sync="form"
-        :originalForm.sync="originalForm"
-        :submitRequest="submitRequest"
-        :detailRequest="detailRequest"
+        :original-form.sync="originalForm"
+        :submit-request="submitRequest"
+        :detail-request="detailRequest"
+        :show-edit-btn="showEditBtn"
+        @cancel="handleCancel"
       >
         <template #status>
           <span class="status primary">{{ form.cooperationTypeLabel }}</span>
         </template>
+        <!-- 仅 detail 模式显示批售编辑/零售编辑按钮，替代默认的"编辑"按钮 -->
+        <template v-if="mode === 'detail'" #extraButtons>
+          <el-button
+            v-if="canAddOrUpdate"
+            size="small"
+            type="primary"
+            plain
+            @click="handleWholesaleEdit"
+          >
+            <i class="iconfont icon-lxppc-edit"></i>批售编辑
+          </el-button>
+          <el-button
+            v-if="canAddOrUpdate"
+            size="small"
+            type="primary"
+            plain
+            @click="handleRetailEdit"
+          >
+            <i class="iconfont icon-lxppc-edit"></i>零售编辑
+          </el-button>
+        </template>
         <el-main>
-          <!-- 基础信息区（只读，两模式共用） -->
+          <!-- 基础信息区（只读，三模式共用） -->
           <section class="common-section">
             <div class="common-section-header">
               <h2>基础信息</h2>
@@ -79,7 +81,7 @@
               </el-form>
             </div>
           </section>
-          <!-- 模式特定字段（批售模式） -->
+          <!-- 模式特定字段 - 批售模式 -->
           <section v-if="mode === 'wholesale'" class="common-section">
             <div class="common-section-header">
               <h2>{{ isEditing ? '编辑信息' : '查看信息' }}</h2>
@@ -124,8 +126,8 @@
               </el-form>
             </div>
           </section>
-          <!-- 模式特定字段（零售模式） -->
-          <section v-else class="common-section">
+          <!-- 模式特定字段 - 零售模式 -->
+          <section v-else-if="mode === 'retail'" class="common-section">
             <div class="common-section-header">
               <h2>{{ isEditing ? '编辑信息' : '查看信息' }}</h2>
             </div>
@@ -200,6 +202,40 @@
               </el-form>
               <!-- 详情模式 -->
               <el-form v-else :inline="true" class="form-detail">
+                <el-form-item label="新增缴定订单数：">
+                  {{ form.newOrderQty }}
+                </el-form-item>
+                <el-form-item label="新增锁单目标数：">
+                  {{ form.newLockTargetQty }}
+                </el-form-item>
+                <el-form-item label="净增锁单目标数：">
+                  {{ form.netLockTargetQty }}
+                </el-form-item>
+                <el-form-item label="批售考核目标数：">
+                  {{ form.wholesaleAssessmentTargetQty }}
+                </el-form-item>
+                <el-form-item label="交付目标数：">
+                  {{ form.deliveryTargetQty }}
+                </el-form-item>
+                <el-form-item label="零售备注：">
+                  {{ form.retailRemark }}
+                </el-form-item>
+              </el-form>
+            </div>
+          </section>
+          <!-- 模式特定字段 - 详情模式（全部字段展示，仅只读） -->
+          <section v-else class="common-section">
+            <div class="common-section-header">
+              <h2>查看信息</h2>
+            </div>
+            <div class="common-section-body">
+              <el-form :inline="true" class="form-detail">
+                <el-form-item label="批售目标数：">
+                  {{ form.wholesaleTargetQty }}
+                </el-form-item>
+                <el-form-item label="批售备注：">
+                  {{ form.wholesaleRemark }}
+                </el-form-item>
                 <el-form-item label="新增缴定订单数：">
                   {{ form.newOrderQty }}
                 </el-form-item>
@@ -324,15 +360,27 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     mode () {
-      // route.query.type: 'wholesale' (默认) | 'retail'
-      return this.$route.query.type === 'retail' ? 'retail' : 'wholesale';
+      // route.query.type: 'detail' (默认) | 'wholesale' | 'retail'
+      const type = this.$route.query.type;
+      if (type === 'wholesale' || type === 'retail') return type;
+      return 'detail';
     },
     title () {
-      const prefix = this.mode === 'retail' ? '销售目标跟踪（零售）' : '销售目标跟踪（批售）';
-      return prefix + '：' + (this.form.wholesaleSaleTargetTrackingCode || '');
+      const prefixMap = {
+        detail: '销售目标跟踪',
+        wholesale: '销售目标跟踪（批售）',
+        retail: '销售目标跟踪（零售）'
+      };
+      return prefixMap[this.mode] + '：' + (this.form.wholesaleSaleTargetTrackingCode || '');
     },
     rules () {
-      return this.mode === 'retail' ? retailRules : wholesaleRules;
+      if (this.mode === 'retail') return retailRules;
+      if (this.mode === 'wholesale') return wholesaleRules;
+      return {}; // detail 模式不需要校验
+    },
+    showEditBtn () {
+      // detail 模式不显示默认的"编辑"按钮（用 extraButtons 替代）
+      return this.mode !== 'detail';
     }
   },
   mixins: [routeGuard, permissions, commonMixins],
@@ -378,6 +426,15 @@ export default {
           id: this._id,
           type: 'retail',
           isEditing: true
+        }
+      });
+    },
+    handleCancel () {
+      // 取消编辑，回到详情页（detail 模式）
+      this.$router.push({
+        path: '/vehwholesale/basic/wholesaleSaleTargetTracking/edit',
+        query: {
+          id: this._id
         }
       });
     },
