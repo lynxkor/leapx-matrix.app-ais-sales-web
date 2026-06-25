@@ -241,10 +241,10 @@ export default {
             buttons: [{
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/basic/wholesaleSaleTargetTracking/detail',
+                  path: '/vehwholesale/basic/wholesaleSaleTargetTracking/edit',
                   query: {
                     id: row.id,
-                    isEditing: false
+                    type: 'wholesale'
                   }
                 });
               },
@@ -309,9 +309,10 @@ export default {
               name: '批售编辑',
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/basic/wholesaleSaleTargetTracking/wholesaleEdit',
+                  path: '/vehwholesale/basic/wholesaleSaleTargetTracking/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    type: 'wholesale'
                   }
                 });
               },
@@ -321,9 +322,10 @@ export default {
               name: '零售编辑',
               click: (rowIndex, row) => {
                 this.$router.push({
-                  path: '/vehwholesale/basic/wholesaleSaleTargetTracking/retailEdit',
+                  path: '/vehwholesale/basic/wholesaleSaleTargetTracking/edit',
                   query: {
-                    id: row.id
+                    id: row.id,
+                    type: 'retail'
                   }
                 });
               },
