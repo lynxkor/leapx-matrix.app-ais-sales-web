@@ -14,6 +14,7 @@
         label-width="150px"
         class="form-edit"
       >
+        <!-- eslint-disable-next-line vue/no-mutating-props -->
         <el-form-item label="新增缴定订单数：" prop="newOrderQty">
           <el-input-number
             :controls="false"
@@ -24,6 +25,7 @@
             :precision="0"
           />
         </el-form-item>
+        <!-- eslint-disable-next-line vue/no-mutating-props -->
         <el-form-item label="新增锁单目标数：" prop="newLockTargetQty">
           <el-input-number
             :controls="false"
@@ -34,6 +36,7 @@
             :precision="0"
           />
         </el-form-item>
+        <!-- eslint-disable-next-line vue/no-mutating-props -->
         <el-form-item label="净增锁单目标数：" prop="netLockTargetQty">
           <el-input-number
             :controls="false"
@@ -44,6 +47,7 @@
             :precision="0"
           />
         </el-form-item>
+        <!-- eslint-disable-next-line vue/no-mutating-props -->
         <el-form-item label="批售考核目标数：" prop="wholesaleAssessmentTargetQty">
           <el-input-number
             :controls="false"
@@ -54,6 +58,7 @@
             :precision="0"
           />
         </el-form-item>
+        <!-- eslint-disable-next-line vue/no-mutating-props -->
         <el-form-item label="交付目标数：" prop="deliveryTargetQty">
           <el-input-number
             :controls="false"
@@ -64,6 +69,7 @@
             :precision="0"
           />
         </el-form-item>
+        <!-- eslint-disable-next-line vue/no-mutating-props -->
         <el-form-item label="零售备注：" prop="retailRemark">
           <el-input
             placeholder="请输入"

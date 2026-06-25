@@ -14,6 +14,7 @@
         label-width="150px"
         class="form-edit"
       >
+        <!-- eslint-disable-next-line vue/no-mutating-props -->
         <el-form-item label="批售目标数：" prop="wholesaleTargetQty">
           <el-input-number
             :controls="false"
@@ -24,6 +25,7 @@
             :precision="0"
           />
         </el-form-item>
+        <!-- eslint-disable-next-line vue/no-mutating-props -->
         <el-form-item label="批售备注：" prop="wholesaleRemark">
           <el-input
             placeholder="请输入"
