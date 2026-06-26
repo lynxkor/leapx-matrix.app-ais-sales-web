@@ -17,7 +17,7 @@
         </template>
         <el-main>
           <!-- 基础信息 -->
-          <section class="common-section" v-permission="moduleKey+'-checkBatteryCell'">
+          <section class="common-section">
             <div class="common-section-header">
               <h2>基础信息</h2>
             </div>
