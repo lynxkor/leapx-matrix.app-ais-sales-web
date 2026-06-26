@@ -342,7 +342,6 @@
                   ref="editTable"
                   :columns="columns"
                   :data="form.detailList"
-                  :defaultNewRow="defaultNewRow"
                   :show-toolbar="false"
                   :options="options"
                   :auth="{edit: false, delete: false}"
@@ -458,9 +457,6 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
-      defaultNewRow: {
-        name: '',
-      },
       tableData: [
       ],
       options: {
