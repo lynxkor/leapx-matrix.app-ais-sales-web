@@ -657,6 +657,72 @@
           </div>
         </section>
         <section class="common-section">
+          <div class="common-section-header">
+            <h2>门店信息</h2>
+          </div>
+          <div class="common-section-body">
+            <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form-item label="门店地址：">
+                {{ form.storeAddress }}
+              </el-form-item>
+              <el-form-item label="所属母公司：">
+                {{ form.parentCompanyName }}
+              </el-form-item>
+              <el-form-item label="门店省：">
+                {{ form.storeProvinceName }}
+              </el-form-item>
+              <el-form-item label="门店市：">
+                {{ form.storeCityName }}
+              </el-form-item>
+              <el-form-item label="门店区：">
+                {{ form.storeCountryName }}
+              </el-form-item>
+              <el-form-item label="收货地址：">
+                {{ form.receivingAddress }}
+              </el-form-item>
+            </el-form>
+          </div>
+        </section>
+        <section class="common-section">
+          <div class="common-section-header">
+            <h2>车辆信息</h2>
+          </div>
+          <div class="common-section-body">
+            <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form-item label="电池序列号：">
+                {{ form.batterySerialNumber }}
+              </el-form-item>
+              <el-form-item label="电驱序列号(前)：">
+                {{ form.electricnumberBefore }}
+              </el-form-item>
+              <el-form-item label="电驱序列号(后)：">
+                {{ form.electricnumberAfter }}
+              </el-form-item>
+              <el-form-item label="制造日期：">
+                {{ form.manufacturingDate }}
+              </el-form-item>
+              <el-form-item label="发动机型号：">
+                {{ form.enginenModel }}
+              </el-form-item>
+            </el-form>
+          </div>
+        </section>
+        <section class="common-section">
+          <div class="common-section-header">
+            <h2>实名认证信息</h2>
+          </div>
+          <div class="common-section-body">
+            <el-form :inline="true" class="form-detail">
+              <el-form-item label="卡ICCID：">
+                {{ form.iccId }}
+              </el-form-item>
+              <el-form-item label="卡MSISDN：">
+                {{ form.msisdn }}
+              </el-form-item>
+            </el-form>
+          </div>
+        </section>
+        <section class="common-section">
           <div class="common-section-header" v-if="_id">
             <h2>附件材料(请上传发票、行驶证、有效身份证件并以中文命名)</h2>
           </div>
