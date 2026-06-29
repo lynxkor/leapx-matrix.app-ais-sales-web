@@ -319,7 +319,7 @@
         <el-button v-permission="moduleKey+'-batchAllocateVehicle'" size="small" :disabled="selectionList.length === 0" @click="handleBatchAllocateVehicle">配车</el-button>
         <el-button v-permission="moduleKey+'-batchSettleSubmit'"  size="small" :disabled="selectionList.length === 0" @click="handleBatchSettleSubmit">结算</el-button>
         <el-button v-permission="moduleKey+'-batchCancelSettle'" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancelSettle">取消结算</el-button>
-        <el-button v-permission="moduleKey+'-batchCancel'" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancel">作废</el-button>
+        <!-- <el-button v-permission="moduleKey+'-batchCancel'" size="small" :disabled="selectionList.length === 0" @click="handleBatchCancel">作废</el-button> -->
         <el-button v-permission="moduleKey+'-batchSetAutoAllocate'"  size="small" :disabled="selectionList.length === 0" @click="handleBatchCancelAllocateVehicle">取消配车</el-button>
         <el-button v-permission="moduleKey+'-batchSetAutoAllocate'"  size="small" :disabled="selectionList.length === 0" @click="handleBatchSetAutoAllocate">设置自动配车</el-button>
         <el-button v-permission="moduleKey+'-batchSetAutoAllocate'" size="small" :disabled="selectionList.length === 0" @click="handleBatchSetNotAutoAllocate">设置不自动配车</el-button>
