@@ -120,7 +120,7 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-        <el-dropdown trigger="click" style="margin: 0 10px;" @command="handleAdd">
+        <el-dropdown trigger="click" style="margin: 0 10px;" @command="handleAdd" v-if="canAddOrUpdate">
         <el-button size="small" type="primary" @click="showDropdown">
           {{ dropdownLoading ? '加载中...' : '企业客户补货订单' }}
           <i class="iconfont icon-lxppc-down" />
