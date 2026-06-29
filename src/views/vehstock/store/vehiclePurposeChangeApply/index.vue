@@ -350,13 +350,17 @@ export default {
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
           console.log(res);
-          this.optionObj.dataList = res.records.map(item => {
+          const records = (res && res.records) || [];
+          this.optionObj.dataList = records.map(item => {
             return {
               ...item,
               deleteLoading: false
             };
           });
-          this.optionObj.total = res.total;
+          this.optionObj.total = (res && res.total) || 0;
+        }).catch(err => {
+          console.error('获取列表数据失败:', err);
+          this.$message.error('获取列表数据失败，请重试');
         }).finally(() => {
           this.loading = false;
         });
