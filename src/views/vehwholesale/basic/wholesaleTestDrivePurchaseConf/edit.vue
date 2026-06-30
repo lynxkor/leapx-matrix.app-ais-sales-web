@@ -46,7 +46,6 @@
                     :remote-method="getVehicleSeriesList"
                     value-key="id"
                     label-key="name"
-                    @change="(val, record) => {form.seriesName = record?.name || ''}"
                     :disabled="!!_id"
                   />
                 </el-form-item>
@@ -60,7 +59,6 @@
                     :remote-method="getModelIdList"
                     value-key="id"
                     label-key="name"
-                    @change="handleModelChange"
                     :disabled="!!_id"
                   />
                 </el-form-item>
@@ -73,13 +71,13 @@
                     value-key="value"
                     label-key="label"
                     :disabled="!!_id"
-                    @change="(val, record) => {form.vehicleYearType = record?.label || ''}"
                   />
                 </el-form-item>
                 <el-form-item label="年款：" prop="vehicleYearTypeId" v-show="!!_id">
                   <el-input
                     :value="form.vehicleYearType"
                     disabled
+                    placeholder="请选择"
                   />
                 </el-form-item>
                 <el-form-item label="选装包：" prop="optionPackageId">
@@ -92,7 +90,6 @@
                     :remote-method="getOptionPackageList"
                     value-key="id"
                     label-key="name"
-                    @change="(val, record) => {form.optionPackageName = record?.name || ''}"
                     :disabled="!!_id"
                   />
                 </el-form-item>
@@ -233,12 +230,6 @@ export default {
         materialsCode: [
           { required: true, message: '请选择物料编码', trigger: 'change' }
         ],
-        seriesId: [
-          { required: true, message: '请选择车系', trigger: 'change' }
-        ],
-        vehicleYearType: [
-          { required: true, message: '请选择年款', trigger: 'change' }
-        ],
         allowTestDriveWholesale: [
           { required: true, message: '请选择允许试驾车批售', trigger: 'change' }
         ],
@@ -279,25 +270,6 @@ export default {
     },
     async getVehicleMaterialsList (params) {
       return vehicleMaterials({ materialsCodeLike: params, status: 1 });
-    },
-    async handleModelChange (val, record) {
-      if (record) {
-        this.form.modelName = record.name;
-      } else {
-        this.form.modelId = null;
-        this.form.modelName = null;
-      }
-      this.yearTypeList = [];
-      this.form.vehicleYearTypeId = null;
-      this.form.vehicleYearType = null;
-      const res = await vehicleModelYearTypeRelation({ modelIdList: [this.form.modelId], size: 1000 });
-      this.yearTypeList = res.map(item => {
-        return {
-          ...item,
-          label: item.yearTypeName,
-          value: item.yearTypeId
-        };
-      });
     },
     getDefautlForm () {
       return {
