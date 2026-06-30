@@ -107,8 +107,8 @@
 <!--      <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>-->
 <!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>-->
 <!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>-->
-      <el-button size="small" @click="openBatchCancel">作废</el-button>
-      <el-button size="small" @click="handleBatchRevoke">撤回</el-button>
+      <el-button v-permission="moduleKey+'-cancel'" size="small" @click="openBatchCancel">作废</el-button>
+      <el-button v-permission="moduleKey+'-revocation'" size="small" @click="handleBatchRevoke">撤回</el-button>
     </div>
     <div
       class="ais-table-c"
