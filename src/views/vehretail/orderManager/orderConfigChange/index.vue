@@ -63,6 +63,15 @@
             filterable
           />
         </el-form-item>
+        <el-form-item label="修改前车系名称">
+          <fetch-select
+            :remote-method="remoteMethods.serials"
+            v-model="form.seriesIdBefore"
+            v-bind="selectOptions"
+            clearable
+            filterable
+          />
+        </el-form-item>
         <el-form-item label="修改后物料编码">
           <el-input
             placeholder="请输入"
@@ -92,6 +101,17 @@
             placeholder="请选择"
             labelKey="label"
             valueKey="value"
+            clearable
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="修改后车系名称">
+          <fetch-select
+            :remote-method="remoteMethods.serials"
+            v-model="form.seriesIdAfter"
+            v-bind="selectOptions"
+            labelKey="name"
+            valueKey="id"
             clearable
             filterable
           />
@@ -159,7 +179,17 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/orderManager/orderConfigChange/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listOrgStoreInfo, listVehicleYearType, listVehicleModel, vehicleModelYearTypeRelationDistinctYeayType } from '@/api/common';
+import {
+  getTableConfig,
+  tableAddOrUpdate,
+  exportTable,
+  getEnum,
+  listOrgStoreInfo,
+  listVehicleYearType,
+  listVehicleModel,
+  vehicleModelYearTypeRelationDistinctYeayType,
+  vehicleSeriesList
+} from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -241,10 +271,12 @@ export default {
           { props: 'modelNameBefore', label: '修改前车型名称', visible: true, width: 200 },
           { props: 'yearTypeNameBefore', label: '修改前年款名称', visible: true, width: 200 },
           { props: 'materialsDescBefore', label: '修改前物料描述', visible: true, width: 200 },
+          { props: 'seriesNameBefore', label: '修改前车系名称', visible: true, width: 200 },
           { props: 'materialsCodeAfter', label: '修改后物料编码', visible: true, width: 200 },
           { props: 'modelNameAfter', label: '修改后车型名称', visible: true, width: 200 },
           { props: 'yearTypeNameAfter', label: '修改后年款名称', visible: true, width: 200 },
           { props: 'materialsDescAfter', label: '修改后物料描述', visible: true, width: 200 },
+          { props: 'seriesNameAfter', label: '修改后车系名称', visible: true, width: 200 },
           { props: 'remark', label: '备注', visible: true, width: 200 },
           {
             props: 'operate',
@@ -293,9 +325,14 @@ export default {
         yearType: async (query) => {
           return await listVehicleYearType({ yearTypeNameLike: query, modelId: this.form.modelId });
         },
+        serials: async (query) => {
+          return await vehicleSeriesList({ seriesNameLike: query });
+        },
       },
       yearModelBeforeList: [],
-      yearModelAfterList: []
+      yearModelAfterList: [],
+      serialsBeforeList: [],
+      serialsAfterList: [],
     };
   },
   created () {
