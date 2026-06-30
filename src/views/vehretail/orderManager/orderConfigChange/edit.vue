@@ -40,6 +40,9 @@
                 <el-form-item label="修改前年款名称：" prop="yearTypeNameBefore">
                   {{ form.yearTypeNameBefore }}
                 </el-form-item>
+                <el-form-item label="修改前车系名称：" prop="seriesNameBefore">
+                  {{ form.seriesNameBefore }}
+                </el-form-item>
               </el-form>
             </div>
           </section>
@@ -60,6 +63,9 @@
                 </el-form-item>
                 <el-form-item label="修改后年款名称：" prop="yearTypeNameAfter">
                   {{ form.yearTypeNameAfter }}
+                </el-form-item>
+                <el-form-item label="修改后车系名称：" prop="seriesNameAfter">
+                  {{ form.seriesNameAfter }}
                 </el-form-item>
               </el-form>
             </div>

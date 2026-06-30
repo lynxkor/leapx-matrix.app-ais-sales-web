@@ -162,10 +162,14 @@
                   />
                 </el-form-item>
                 <!-- 第4行：银行开户名 | 陪伴礼账号 | 销售门店 -->
-                <el-form-item label="银行开户名：" prop="refundBankUser">
+                <el-form-item
+                  v-show="form.depositRefundType === '15'"
+                  label="银行开户名：" prop="refundBankUser"
+                  :rules="form.depositRefundType === '15' ? rules.refundBankUser: []">
                   <el-input
                     placeholder="请输入"
                     v-model="form.refundBankUser"
+                    :disabled="form.depositRefundType !== '15'"
                     clearable
                   />
                 </el-form-item>
@@ -185,10 +189,14 @@
                   />
                 </el-form-item>
                 <!-- 第5行：退款银行 | 大区 | 省 | 市 -->
-                <el-form-item label="退款银行：" prop="refundBank">
+                <el-form-item
+                  v-show="form.depositRefundType === '15'"
+                  label="退款银行：" prop="refundBank"
+                  :rules="form.depositRefundType === '15' ? rules.refundBank: []">
                   <el-input
                     placeholder="请输入"
                     v-model="form.refundBank"
+                    :disabled="form.depositRefundType !== '15'"
                     clearable
                   />
                 </el-form-item>
@@ -217,10 +225,15 @@
                   />
                 </el-form-item>
                 <!-- 第6行：退款银行账号 | 原因二级分类 | 特殊备注 | 退订附件上传要求 -->
-                <el-form-item label="退款银行账号：" prop="refundBankAccount">
+                <el-form-item
+                  v-show="form.depositRefundType === '15'"
+                  label="退款银行账号："
+                  prop="refundBankAccount"
+                  :rules="form.depositRefundType === '15' ? rules.refundBankAccount: []">
                   <el-input
                     placeholder="请输入"
                     v-model="form.refundBankAccount"
+                    :disabled="form.depositRefundType !== '15'"
                     clearable
                   />
                 </el-form-item>
@@ -415,7 +428,17 @@
                 <el-form-item label="证件类型：" prop="idCardTypeLabel">
                   {{ form.idCardTypeLabel }}
                 </el-form-item>
-                <el-form-item label="订单取消说明：" prop="orderCancelDescp">
+                <el-form-item v-show="form.refundStatus === 1030 && (isEditing || !_id)" label="订单取消说明：" prop="orderCancelDescp">
+                  <el-input
+                    placeholder="请输入"
+                    maxlength="100"
+                    show-word-limit
+                    v-model="form.orderCancelDescp"
+                    :disabled="!(form.refundStatus === 1030 && (isEditing || !_id))"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item v-show="!(form.refundStatus === 1030 && (isEditing || !_id))" label="订单取消说明：" prop="orderCancelDescp">
                   {{ form.orderCancelDescp }}
                 </el-form-item>
                 <!-- 第3行：交付门店 | 购车人名称 | 代办联系人 | 订单取消时间 -->

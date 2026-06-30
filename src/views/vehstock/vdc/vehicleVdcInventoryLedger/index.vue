@@ -113,14 +113,10 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleEdit"
-        :disabled="selectionList.length === 0">批量编辑</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
-        :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)"
-        :disabled="selectionList.length === 0">批量停用</el-button>
-      <el-button size="small" @click="handleBatchUpdateAllowLockNode"
-        :disabled="selectionList.length === 0">批量更新锁单节点</el-button>
+      <el-button v-permission="moduleKey+'-batchEdit'" size="small" @click="handleEdit" :disabled="selectionList.length === 0">批量编辑</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-permission="moduleKey+'-batchUpdateAllowLockNode'" size="small" @click="handleBatchUpdateAllowLockNode" :disabled="selectionList.length === 0">批量更新锁单节点</el-button>
     </div>
     <div class="ais-table-c" v-if="activeName === 'homePage'">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed :option-obj="optionObj"
