@@ -289,12 +289,13 @@ export default {
       this.loading = true;
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
-          this.optionObj.dataList = res.records.map(item => {
+          const records = (res && res.records) || [];
+          this.optionObj.dataList = records.map(item => {
             return {
               ...item
             };
           });
-          this.optionObj.total = res.total;
+          this.optionObj.total = res.total || 0;
         }).finally(() => {
           this.loading = false;
         });
