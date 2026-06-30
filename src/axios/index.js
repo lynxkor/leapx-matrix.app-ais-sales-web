@@ -147,6 +147,7 @@ function buildRequestConfig (method, config, sign, url) {
   const contentType = contentTypeMap[method] || 'application/x-www-form-urlencoded';
   return {
     baseURL: resolveBaseURL(url, sign),
+    timeout: 30000,
     ...config,
     headers: { 'Content-Type': contentType, ...config?.headers }
   };
