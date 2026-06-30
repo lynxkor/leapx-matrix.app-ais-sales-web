@@ -338,6 +338,8 @@ export default {
           { props: 'vehdeLiveriedOn', label: '标识记录日期', visible: true, width: 200 },
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
           { props: 'deliveryDealerName', label: '交付门店名称', visible: true, width: 200 },
+          { props: 'secondNetStoreCode', label: '二网门店编码', visible: true, width: 160 },
+          { props: 'secondNetStoreName', label: '二网门店名称', visible: true, width: 200 },
           { props: 'poentryDealerName', label: '采购入库门店名称', visible: true, width: 200 },
           { props: 'poentryOn', label: '采购入库时间', visible: true, width: 200 },
           { props: 'inboundTimeLyLabel', label: '入库是否及时', visible: true, width: 140 },
