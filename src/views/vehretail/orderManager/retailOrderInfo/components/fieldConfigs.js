@@ -33,7 +33,8 @@ export const retailOrderDisplayFields = [
   { key: 'deliveryCycleMaxWeek', label: '交付周期上限(周)' },
   { key: 'dynamicDeliveryCycleDesc', label: '动态交付周期说明' },
   { key: 'initialDeliveryCycleDesc', label: '初始交付周期说明' },
-  { key: 'secondNetStoreName', label: '二网门店' }
+  { key: 'secondNetStoreName', label: '二网门店' },
+  { key: 'approvalStatusLabel', label: '审批状态' }
 ];
 
 // 购车人信息字段配置
