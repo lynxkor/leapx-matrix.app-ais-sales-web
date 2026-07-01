@@ -91,13 +91,13 @@
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <!-- <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button> -->
       <!-- <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button> -->
       <el-button v-permission="moduleKey+'-batchEdit'" size="small" @click="handleBatchEditValid" :disabled="selectionList.length === 0">批量编辑</el-button>
       <el-button v-permission="moduleKey+'-batchSubmit'" size="small" @click="handleBatchSubmitValid" :disabled="selectionList.length === 0">批量提交</el-button>
       <el-button v-permission="moduleKey+'-batchAudit'" size="small" @click="handleBatchAuditValid" :disabled="selectionList.length === 0">批量审核</el-button>
       <el-button v-if="canDelete" size="small" @click="handleBatchDelete" :disabled="selectionList.length === 0">批量删除</el-button>
+      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
     </div>
     <div
@@ -116,6 +116,11 @@
         @handleSelect="handleSelectionChange"
       />
     </div>
+    <Upload
+      :visible="uploadDialogVisible"
+      :id="'wholesaleVehicleSaleModelConfImport'"
+      @close="handleUploadDialogClose"
+    />
     <audit-dialog
       ref="auditRef"
       @audit="handleBatchAudit"
@@ -144,6 +149,7 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import auditDialog from '@/libs/components/auditDialog';
 import BatchEditInput from './BatchEditInput.vue';
+import Upload from '@/libs/components/UploadDialog';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -167,7 +173,8 @@ export default {
     LPVxeTable,
     FetchSelect,
     auditDialog,
-    BatchEditInput
+    BatchEditInput,
+    Upload
   },
   data () {
     return {
