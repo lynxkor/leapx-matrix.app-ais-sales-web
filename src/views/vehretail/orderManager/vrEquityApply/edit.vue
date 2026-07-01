@@ -21,7 +21,7 @@
         <template #extraButtons>
           <el-button size="small" @click="auditLog">申请记录</el-button>
           <el-button v-if = "form.permissions.cancel && perCancel" size="small" @click="handleCancel">作废</el-button>
-          <el-button v-if = "form.permissions.submit && perSubmit" size="small" @click="handleSubmitApproval">提交审批</el-button>
+          <el-button v-if = "form.permissions.submit && perSubmit" size="small" :loading="submitLoading" :disabled="submitLoading" @click="handleSubmitApproval">提交审批</el-button>
           <el-button v-if = "form.permissions.firstAudit && perFirstAudit" size="small" @click="handleAudit(1)">初审</el-button>
           <el-button v-if = "form.permissions.audit && perAudit" size="small" @click="handleAudit(2)">审核</el-button>
           <el-button v-if = "form.permissions.auditRevoke && perAuditRevoke" size="small" @click="handleRecall">审核撤回</el-button>
@@ -971,12 +971,14 @@ export default {
       });
     },
     async handleSubmitApproval () {
+      if (this.submitLoading) return;
       const allFiles = this.$refs.attachment.getFileList();
       console.log('总附件数:', allFiles.length);
       if (allFiles.length === 0) {
         this.$message.error('附件不能为空！');
         throw new Error('附件不能为空！');
       }
+      this.submitLoading = true;
       this.$confirm('确认要提交审批吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -985,6 +987,10 @@ export default {
         await submit(this._id);
         this.$message.success('提交成功');
         this.$refs.containerRef.loadDetail();
+      }).catch(err => {
+        console.error('提交审批失败:', err);
+      }).finally(() => {
+        this.submitLoading = false;
       });
     },
     async handleAudit (value) {
