@@ -325,6 +325,7 @@
         <el-button v-permission="moduleKey+'-batchSetAutoAllocate'" size="small" :disabled="selectionList.length === 0" @click="handleBatchSetNotAutoAllocate">设置不自动配车</el-button>
         <el-button v-permission="moduleKey+'-setEmergencyOrder'"  size="small" :disabled="selectionList.length === 0" @click="handleSetEmergencyOrder">设置急单</el-button>
         <el-button v-permission="moduleKey+'-setEmergencyOrder'" size="small" :disabled="selectionList.length === 0" @click="handleCancelEmergencyOrder">取消急单</el-button>
+        <el-button v-permission="moduleKey+'-adjustWarehouse'" size="small" :disabled="selectionList.length === 0" @click="handleAdjustWarehouse">调整门店仓库</el-button>
         <el-button v-permission="moduleKey+'-refreshPrice'" size="small" @click="handleRefreshPriceCoefficient">刷新价格</el-button>
         <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
         <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
@@ -394,6 +395,36 @@
       :cancel-ids="selectionList.map(item => item.id)"
       @batchCancelSettle="batchCancelSettle"
     />
+
+    <el-dialog title="调整门店仓库" width="900px" top="10vh" :visible.sync="showAdjustWarehouseDialog">
+      <div class="adjust-warehouse">
+        <el-table
+          ref="warehouseTable"
+          :data="warehouseList"
+          :highlight-current-row="true"
+          @row-click="handleWarehouseSelect"
+          border
+          size="medium"
+          max-height="400px"
+        >
+          <el-table-column label="选择" width="60" align="center">
+            <template slot-scope="scope">
+              <span class="radio-wrapper">
+                <el-radio v-model="selectedWarehouse" :label="scope.row.warehouseCode">
+                </el-radio>
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="warehouseCode" label="仓库编码" width="200" />
+          <el-table-column prop="warehouseName" label="仓库名称" />
+          <el-table-column prop="warehouseDetailAddress" label="仓库地址" min-width="200" show-overflow-tooltip />
+        </el-table>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="medium" @click="closeAdjustWarehouseDialog">取消</el-button>
+        <el-button size="medium" type="primary" :disabled="!selectedWarehouse" @click="confirmAdjustWarehouse">确认调整</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -401,8 +432,8 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, batchConfirmItem, setEmergencyOrderItem, batchCancelItem, batchAllocateVehicleItem, batchSettleSubmitItem, batchCancelSettleItem, batchSetAutoAllocateItem, refreshPriceItem, batchCancleAllocateVehicleItem } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, vehicleModelList, cityPage, getProvinceTree, getParentCompany, getRigion } from '@/api/common';
+import { getList, deleteItem, enableItem, batchConfirmItem, setEmergencyOrderItem, batchCancelItem, batchAllocateVehicleItem, batchSettleSubmitItem, batchCancelSettleItem, batchSetAutoAllocateItem, refreshPriceItem, batchCancleAllocateVehicleItem, adjustWarehouse } from '@/api/vehwholesale/wholesale/vehicleWholesaleOrder/index';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleYearType, vehicleModelList, cityPage, getProvinceTree, getParentCompany, getRigion, listOrgWarehouseStoreInfo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -533,6 +564,9 @@ export default {
       showBatchAllocateVehicleDialog: false,
       showCancleBatchAllocateVehicleDialog: false,
       showBatchCancelSettleDialog: false,
+      showAdjustWarehouseDialog: false,
+      warehouseList: [],
+      selectedWarehouse: null,
       yearTypeList: [],
       options: [],
       modelList: [],
@@ -587,6 +621,7 @@ export default {
               }
             ]
           },
+          { props: 'deliveryDealerName', label: '交付门店', visible: true, width: 200 },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 100 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 120 },
           {
@@ -1537,6 +1572,7 @@ export default {
       //       message: '操作成功!'
       //     });
       //     this.getData();
+      //     });
       //   }).catch(() => {
       //     this.$message({
       //       type: 'error',
@@ -1544,6 +1580,87 @@ export default {
       //     });
       //   });
       // });
+    },
+    async handleAdjustWarehouse () {
+      const items = this.selectionList || [];
+      if (items.length === 0) {
+        this.$message({
+          type: 'error',
+          message: '请选择需要操作的数据！'
+        });
+        return;
+      }
+      const deliveryDealerCodes = [...new Set(items.map(item => item.deliveryDealerCode))];
+      if (deliveryDealerCodes.length > 1) {
+        this.$message({
+          type: 'error',
+          message: '选择的订单交付门店必须相同！'
+        });
+        return;
+      }
+      for (const item of items) {
+        if (item.createShipPlanFlag === 1) {
+          this.$message({
+            type: 'error',
+            message: '存在已创建发运计划的订单，无法进行调整！'
+          });
+          return;
+        }
+      }
+      const deliveryDealerCode = deliveryDealerCodes[0];
+      const params = {
+        storeCode: deliveryDealerCode,
+        size: 500,
+        freeze: 0
+      };
+      const res = await listOrgWarehouseStoreInfo(params);
+      if (res && res.records) {
+        this.warehouseList = res.records;
+      } else if (res && res.data && res.data.records) {
+        this.warehouseList = res.data.records;
+      } else if (Array.isArray(res)) {
+        this.warehouseList = res;
+      } else {
+        this.warehouseList = [];
+      }
+      this.selectedWarehouse = null;
+      this.showAdjustWarehouseDialog = true;
+    },
+    closeAdjustWarehouseDialog () {
+      this.showAdjustWarehouseDialog = false;
+      this.warehouseList = [];
+      this.selectedWarehouse = null;
+    },
+    async confirmAdjustWarehouse () {
+      if (!this.selectedWarehouse) {
+        this.$message({
+          type: 'error',
+          message: '请选择门店仓库！'
+        });
+        return;
+      }
+      if (!this.selectionList || this.selectionList.length === 0) {
+        this.$message({
+          type: 'error',
+          message: '请先选择要调整的订单！'
+        });
+        return;
+      }
+      const selectedWarehouseData = this.warehouseList.find(item => item.warehouseCode === this.selectedWarehouse);
+      const ids = this.selectionList.map(item => item.id);
+      const params = {
+        ids,
+        warehouseCode: this.selectedWarehouse,
+        warehouseName: selectedWarehouseData?.warehouseName || ''
+      };
+      adjustWarehouse(params).then(() => {
+        this.$message({
+          type: 'success',
+          message: '修改成功!'
+        });
+        this.getData();
+        this.closeAdjustWarehouseDialog();
+      }).catch(() => {});
     }
   }
 };
@@ -1553,6 +1670,11 @@ export default {
 .m-order-list {
   ::v-deep .m-vxe-table-options{
     top: -102px;
+  }
+}
+.radio-wrapper {
+  ::v-deep .el-radio__label {
+    display: none;
   }
 }
 </style>
