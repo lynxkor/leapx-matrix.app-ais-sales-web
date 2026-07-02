@@ -779,15 +779,16 @@ export default {
           type: 'success',
           message: '操作成功!'
         });
-        this.allowWholesale = null;
-        this.allowProductionSchedule = null;
-        this.allowWholesaleConfirm = null;
-        this.allowDisplayVehicleWholesale = null;
+        this.allowWholesale = '';
+        this.allowProductionSchedule = '';
+        this.allowWholesaleConfirm = '';
+        this.allowDisplayVehicleWholesale = '';
+        this.allowCustomerSales = '';
         this.batchSetAttrVisible = false;
+        this.getData();
       }).catch(() => {
         this.batchSetAttrVisible = false;
       });
-      this.getData();
     }
   }
 };
