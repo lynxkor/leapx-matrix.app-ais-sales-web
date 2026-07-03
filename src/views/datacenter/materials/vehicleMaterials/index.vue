@@ -174,7 +174,7 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="closeSetAttr">取消</el-button>
-        <el-button size="small" type="primary" @click="confirmSetAttr">确定</el-button>
+        <el-button size="small" type="primary" :disabled="!hasSelectedAttrs" @click="confirmSetAttr">确定</el-button>
       </div>
     </el-dialog>
 
@@ -213,13 +213,13 @@ const defaultForm = {
   roofName: '',
   optionPackageName: '',
   batteryCellName: '',
-  allowWholesale: '',
-  allowProductionSchedule: '',
-  allowDisplayVehicleWholesale: '',
-  allowTestDriveVehicleWholesale: '',
-  allowCustomerSales: '',
-  allowWholesaleConfirm: '',
-  allowConfigurationModify: '',
+  allowWholesale: null,
+  allowProductionSchedule: null,
+  allowDisplayVehicleWholesale: null,
+  allowTestDriveVehicleWholesale: null,
+  allowCustomerSales: null,
+  allowWholesaleConfirm: null,
+  allowConfigurationModify: null,
   discontinueStatus: '',
   statusIncludeList: ['1']
 };
@@ -377,12 +377,21 @@ export default {
       batteryCellList: [],
       roofList: [],
       batchSetAttrVisible: false,
-      allowWholesale: '',
-      allowProductionSchedule: '',
-      allowWholesaleConfirm: '',
-      allowDisplayVehicleWholesale: '',
-      allowCustomerSales: '',
+      allowWholesale: null,
+      allowProductionSchedule: null,
+      allowWholesaleConfirm: null,
+      allowDisplayVehicleWholesale: null,
+      allowCustomerSales: null,
     };
+  },
+  computed: {
+    hasSelectedAttrs () {
+      return this.allowWholesale !== null ||
+             this.allowProductionSchedule !== null ||
+             this.allowWholesaleConfirm !== null ||
+             this.allowDisplayVehicleWholesale !== null ||
+             this.allowCustomerSales !== null;
+    }
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
@@ -783,11 +792,12 @@ export default {
         this.allowProductionSchedule = null;
         this.allowWholesaleConfirm = null;
         this.allowDisplayVehicleWholesale = null;
+        this.allowCustomerSales = null;
         this.batchSetAttrVisible = false;
+        this.getData();
       }).catch(() => {
         this.batchSetAttrVisible = false;
       });
-      this.getData();
     }
   }
 };
