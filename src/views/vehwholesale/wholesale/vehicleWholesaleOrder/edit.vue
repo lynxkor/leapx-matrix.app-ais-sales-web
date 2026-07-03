@@ -18,13 +18,13 @@
           <!-- {{ form.wholesaleOrderCode }} -->
         </template>
         <template #extraButtons >
-          <el-button  v-if = "perquerySapAccount" size="small" :loading="querySapAccountLoading" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
-          <el-button  v-if = "perbatchConfirm && form.buttonControl && form.buttonControl.confirmManualButton" size="small" :loading="checkConfirmLoading" @click="handleCheckConfirm" >批售确认</el-button>
-          <el-button  v-if = "perbatchSetAutoAllocate && form.buttonControl && form.buttonControl.autoAllocateVehicle" size="small" :loading="autoVehicleAllocationLoading" @click="handleaAutoVehicleAllocation">自动配车</el-button>
-          <el-button  v-if = "pervinAllocateVehicle && form.buttonControl && form.buttonControl.manualAllocateVehicle" size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
-          <el-button  v-if = "perbatchSettleSubmit && form.buttonControl && form.buttonControl.submitSettleButton" size="small" :loading="batchSettleSubmitLoading" @click="handleBatchSettleSubmit">提交结算</el-button>
-          <el-button  v-if = "perbatchCancelSettle && form.buttonControl && form.buttonControl.cancelSettle" size="small" @click="handleBatchCancelSettle">取消结算</el-button>
-          <!-- <el-button  v-if = "perbatchCancel && form.buttonControl && form.buttonControl.cancelButton" size="small" @click="handleCancel">作废</el-button> -->
+          <el-button v-if="perquerySapAccount" size="small" :loading="querySapAccountLoading" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
+          <el-button v-if="perbatchConfirm && form.buttonControl && form.buttonControl.confirmManualButton" size="small" :loading="checkConfirmLoading" @click="handleCheckConfirm" >批售确认</el-button>
+          <el-button v-if="perbatchSetAutoAllocate && form.buttonControl && form.buttonControl.autoAllocateVehicle" size="small" :loading="autoVehicleAllocationLoading" @click="handleaAutoVehicleAllocation">自动配车</el-button>
+          <el-button v-if="pervinAllocateVehicle && form.buttonControl && form.buttonControl.manualAllocateVehicle" size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
+          <el-button v-if="perbatchSettleSubmit && form.buttonControl && form.buttonControl.submitSettleButton" size="small" :loading="batchSettleSubmitLoading" @click="handleBatchSettleSubmit">提交结算</el-button>
+          <el-button v-if="perbatchCancelSettle && form.buttonControl && form.buttonControl.cancelSettle" size="small" @click="handleBatchCancelSettle">取消结算</el-button>
+          <!-- <el-button v-if="perbatchCancel && form.buttonControl && form.buttonControl.cancelButton" size="small" @click="handleCancel">作废</el-button> -->
         </template>
         <el-main>
           <section class="common-section">
@@ -1083,8 +1083,6 @@ export default {
     return {
       pageTitle: '整车批售订单',
       pageType: 'edit',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISVW-vehicleWholesaleOrder',
       loading: false,
       submitLoading: false,
       showManualVehicleDialog: false,
@@ -1104,7 +1102,6 @@ export default {
       fundTypeList: [],
       needAutoAllocateCarStatus: [1, 2, 10, 21, 99, 3],
       accountData: [],
-      // 权限控制
       perquerySapAccount: false,
       perbatchConfirm: false,
       perbatchSetAutoAllocate: false,
@@ -1176,13 +1173,14 @@ export default {
   },
   methods: {
     initPermissions () {
-      this.perquerySapAccount = this.permissions.has(`${this.moduleKey}-querySapAccount`); // 查询整车账户余额
-      this.perbatchConfirm = this.permissions.has(`${this.moduleKey}-batchConfirm`); // 审核确认
-      this.perbatchSetAutoAllocate = this.permissions.has(`${this.moduleKey}-batchSetAutoAllocate`); // 自动配车
-      this.pervinAllocateVehicle = this.permissions.has(`${this.moduleKey}-vinAllocateVehicle`); // 手工配车
-      this.perbatchSettleSubmit = this.permissions.has(`${this.moduleKey}-batchSettleSubmit`); // 提交结算
-      this.perbatchCancelSettle = this.permissions.has(`${this.moduleKey}-batchCancelSettle`); // 取消结算
-      this.perbatchCancel = this.permissions.has(`${this.moduleKey}-batchCancel`); // 作废
+      const moduleKey = 'AISVW-vehicleWholesaleOrder';
+      this.perquerySapAccount = this.permissions.has(`${moduleKey}-querySapAccount`);
+      this.perbatchConfirm = this.permissions.has(`${moduleKey}-batchConfirm`);
+      this.perbatchSetAutoAllocate = this.permissions.has(`${moduleKey}-batchSetAutoAllocate`);
+      this.pervinAllocateVehicle = this.permissions.has(`${moduleKey}-vinAllocateVehicle`);
+      this.perbatchSettleSubmit = this.permissions.has(`${moduleKey}-batchSettleSubmit`);
+      this.perbatchCancelSettle = this.permissions.has(`${moduleKey}-batchCancelSettle`);
+      this.perbatchCancel = this.permissions.has(`${moduleKey}-batchCancel`);
     },
     openWindow (url) {
       window.open(url, '_blank');

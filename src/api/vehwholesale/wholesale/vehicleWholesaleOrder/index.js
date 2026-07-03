@@ -169,3 +169,11 @@ export function batchSetAllowLockRetail (data) {
 export function editSpecialRemark (data) {
   return api.jsonPost(prefix + 'editSpecialRemark', data);
 }
+
+/**
+ * 调整门店仓库
+ * @param {Object} data
+ */
+export function adjustWarehouse (data) {
+  return api.jsonPost(prefix + 'adjustWarehouse', data);
+}
