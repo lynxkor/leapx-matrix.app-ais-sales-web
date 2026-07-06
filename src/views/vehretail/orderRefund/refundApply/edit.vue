@@ -401,7 +401,151 @@
               <h2>订单信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail">
+              <!-- 订单信息 - 编辑表单（全部禁用） -->
+              <el-form :inline="true" :model="form" label-width="150px" class="form-edit" v-show="(isEditing || !_id) && form.refundStatus !== 1030">
+                <!-- 第1行：整车订单状态 | 商城订单编号 | 购车人手机号码 | 订单取消原因 -->
+                <el-form-item label="整车订单状态：" prop="orderStatusLabel">
+                  <el-input
+                    v-model="form.orderStatusLabel"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="商城订单编号：" prop="mallOrderCode">
+                  <el-input
+                    v-model="form.mallOrderCode"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="购车人手机号码：" prop="buyerPhone">
+                  <el-input
+                    v-model="form.buyerPhone"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="订单取消原因：" prop="orderCancelReason">
+                  <el-input
+                    v-model="form.orderCancelReason"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <!-- 第2行：销售门店 | 缴定金时间 | 证件类型 | 订单取消说明 -->
+                <el-form-item label="销售门店：" prop="saleDealerName">
+                  <el-input
+                    v-model="form.saleDealerName"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="缴定金时间：" prop="paymentTime">
+                  <el-input
+                    v-model="form.paymentTime"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="证件类型：" prop="idCardTypeLabel">
+                  <el-input
+                    v-model="form.idCardTypeLabel"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item v-if="form.refundStatus === 1030" label="订单取消说明：" prop="orderCancelDescp">
+                  <el-input
+                    v-model="form.orderCancelDescp"
+                    maxlength="100"
+                    show-word-limit
+                    :disabled="!(form.refundStatus === 1030 && (isEditing || !_id))"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item v-else label="订单取消说明：" prop="orderCancelDescp">
+                  <el-input
+                    v-model="form.orderCancelDescp"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <!-- 第3行：交付门店 | 购车人名称 | 代办联系人 | 订单取消时间 -->
+                <el-form-item label="交付门店：" prop="deliveryDealerName">
+                  <el-input
+                    v-model="form.deliveryDealerName"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="购车人名称：" prop="buyerName">
+                  <el-input
+                    v-model="form.buyerName"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="代办联系人：" prop="agentName">
+                  <el-input
+                    v-model="form.agentName"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="订单取消时间：" prop="orderCancelTime">
+                  <el-input
+                    v-model="form.orderCancelTime"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <!-- 第4行：订单来源 | 证件号码 | 定金金额 | 基本车型 -->
+                <el-form-item label="订单来源：" prop="orderSource">
+                  <el-input
+                    v-model="form.orderSource"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="证件号码：" prop="idCardNo">
+                  <el-input
+                    v-model="form.idCardNo"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="定金金额：" prop="depositAmount">
+                  <el-input
+                    v-model="form.depositAmount"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="基本车型：" prop="modelName">
+                  <el-input
+                    v-model="form.modelName"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <!-- 第5行：特殊备注 | 物料描述 -->
+                <el-form-item v-if="orderSpecRemarkShow" label="特殊备注：" prop="orderSpecialRemark">
+                  <el-input
+                    v-model="form.orderSpecialRemark"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="物料描述：" prop="materialsDesc">
+                  <el-input
+                    v-model="form.materialsDesc"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+              </el-form>
+              <!-- 订单信息 - 详情展示 -->
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id) || (isEditing && form.refundStatus === 1030)">
                 <!-- 第1行：整车订单状态 | 商城订单编号 | 购车人手机号码 | 订单取消原因 -->
                 <el-form-item label="整车订单状态：" prop="orderStatus">
                   <span class="status-tag link">{{ form.orderStatusLabel }}</span>
@@ -489,11 +633,11 @@
             </div>
           </section>
           <section class="common-section">
-            <div class="common-section-header" v-show="!(isEditing || !_id)">
+            <div class="common-section-header" v-show="!(isEditing || !_id) || (isEditing && form.refundStatus === 1030)">
               <h2>审批信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id) || (isEditing && form.refundStatus === 1030)">
                 <el-form-item label="申请人：" prop="creator">
                   {{ form.creatorName }}
                 </el-form-item>
@@ -543,7 +687,7 @@
             </div>
           </section>
           <!-- 退款记录表格 -->
-          <section v-if="!(isEditing || !_id)" class="common-section">
+          <section v-if="!(isEditing || !_id) || (isEditing && form.refundStatus === 1030)" class="common-section">
             <div class="common-section-header">
               <h2>退款记录</h2>
             </div>
@@ -638,7 +782,7 @@
             </div>
           </section>
           <component-table
-                v-if="!(isEditing || !_id)"
+                v-if="!(isEditing || !_id) || (isEditing && form.refundStatus === 1030)"
                 :table-config="{ title: '审批明细' }"
                 :table-data-external="form.approveLogList"
                 :columns="approveColumns"
