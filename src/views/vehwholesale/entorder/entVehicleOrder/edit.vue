@@ -472,7 +472,7 @@
                     :options="financialOrganizationList"
                     labelKey="name"
                     valueKey="id"
-                    v-model="form.financialOrganizationName"
+                    v-model="form.financialOrganizationId"
                     placeholder="请选择"
                     clearable
                     filterable
