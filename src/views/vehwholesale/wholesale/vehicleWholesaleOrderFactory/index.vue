@@ -82,12 +82,7 @@
             <tag-input v-model="form.saleDealerNames" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="整车补货单号">
-          <el-input
-          placeholder="请输入"
-          v-model="form.replenishApplyCodeLike"
-          clearable
-        />
-          <!-- <tag-input v-model="form.replenishApplyCodes" placeholder="请输入" /> -->
+          <tag-input v-model="form.replenishApplyCodes" placeholder="请输入" />
         </el-form-item>
       <el-form-item label="订单时间"  v-show="this.visibleCount === 3 || show">
         <el-date-picker
@@ -668,6 +663,7 @@ export default {
           },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 120 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 120 },
+          { props: 'prodScheduleActivityName', label: '专项活动', visible: true, width: 200 },
           {
             props: 'orderMaterialsCode',
             label: '物料编码',
