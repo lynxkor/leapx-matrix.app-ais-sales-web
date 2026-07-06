@@ -12,18 +12,9 @@
       <el-form-item label="整车补货单号">
         <tag-input v-model="form.replenishApplyCodes" placeholder="请输入" />
       </el-form-item>
+
       <el-form-item label="销售门店">
-        <fetch-select
-          filterable
-          clearable
-          multiple
-          remote
-          collapseTags
-          v-model="form.saleDealerCodes"
-          :remote-method="getDealerListByName"
-          value-key="storeCode"
-          label-key="storeName"
-        />
+        <tag-input v-model="form.saleDealerNames" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="审核状态"  v-show="this.visibleCount === 3 || show">
         <fetch-select
