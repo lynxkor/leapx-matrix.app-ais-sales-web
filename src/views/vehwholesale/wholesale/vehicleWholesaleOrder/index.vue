@@ -415,7 +415,7 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column prop="warehouseCode" label="仓库编码" width="200" />
+          <el-table-column prop="warehouseCode" label="仓库编码" width="120" />
           <el-table-column prop="warehouseName" label="仓库名称" />
           <el-table-column prop="warehouseDetailAddress" label="仓库地址" min-width="200" show-overflow-tooltip />
         </el-table>
