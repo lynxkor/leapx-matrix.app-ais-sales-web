@@ -130,3 +130,27 @@ export function vinAllocateVehicleItem (data) {
 export function querySAPAccountBalance (data) {
   return api.jsonPost(prefix + 'querySAPAccountBalance', data);
 }
+
+/**
+ * 整车批售-企业客户订单-编辑备注
+ * @param {Object} data
+ */
+export function editRemark (data) {
+  return api.jsonPost(prefix + 'editRemark', data);
+}
+
+/**
+ * 整车批售-企业客户订单-设置资金类型弹框查询可用的资金账户类型
+ * @param {Object} data
+ */
+export function queryEntCustomerFundTypes (data) {
+  return api.jsonPost(prefix + 'queryEntCustomerFundTypes', data);
+}
+
+/**
+ * 整车批售-企业客户订单-设置资金类型
+ * @param {Object} data
+ */
+export function setSettleFundType (data) {
+  return api.jsonPost(prefix + 'setSettleFundType', data);
+}
