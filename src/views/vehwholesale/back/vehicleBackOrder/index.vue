@@ -180,7 +180,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, audit, cancel } from '@/api/vehwholesale/back/vehicleBackOrder/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getRigion, listOrgStoreInfo } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getRigion, listOrgStoreInfo, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -190,8 +190,6 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import auditDialog from '@/libs/components/auditDialog';
-import { networkParentCompanyItem } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
-
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   createTime: '',
@@ -399,7 +397,7 @@ export default {
       return getRigion({ orgName: params });
     },
     async listNetworkParentCompany (query) {
-      return networkParentCompanyItem({ parentCompanyName: query, pageNum: 1, pageSize: 20 });
+      return getParentCompany({ parentCompanyName: query });
     },
     handleBatchAudit (data) {
       let params = {
