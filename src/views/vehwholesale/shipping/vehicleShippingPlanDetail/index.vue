@@ -266,7 +266,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, addOrUpdateItem, setSwitchItem, getSwitchItem } from '@/api/vehwholesale/shipping/vehicleShippingPlanDetail/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, getRigion, listOrgStoreInfo } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, getRigion, listOrgStoreInfo, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -278,7 +278,6 @@ import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
 import SwitchFlag from './SwitchFlag.vue';
 import { listIdNames } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
-import { networkParentCompanyItem } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
@@ -641,7 +640,7 @@ export default {
   },
   methods: {
     async listNetworkParentCompany (query) {
-      return networkParentCompanyItem({ parentCompanyName: query, pageNum: 1, pageSize: 20 });
+      return getParentCompany({ parentCompanyName: query });
     },
     async getDealerListByName (params) {
       return listOrgStoreInfo({ storeName: params, isSales: true });
