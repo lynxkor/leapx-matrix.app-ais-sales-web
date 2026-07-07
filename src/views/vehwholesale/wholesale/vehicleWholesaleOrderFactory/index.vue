@@ -82,12 +82,7 @@
             <tag-input v-model="form.saleDealerNames" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="整车补货单号">
-          <el-input
-          placeholder="请输入"
-          v-model="form.replenishApplyCodeLike"
-          clearable
-        />
-          <!-- <tag-input v-model="form.replenishApplyCodes" placeholder="请输入" /> -->
+          <tag-input v-model="form.replenishApplyCodes" placeholder="请输入" />
         </el-form-item>
       <el-form-item label="订单时间"  v-show="this.visibleCount === 3 || show">
         <el-date-picker
@@ -668,6 +663,7 @@ export default {
           },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 120 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 120 },
+          { props: 'prodScheduleActivityName', label: '专项活动', visible: true, width: 200 },
           {
             props: 'orderMaterialsCode',
             label: '物料编码',
@@ -1274,10 +1270,10 @@ export default {
         return false;
       };
       for (const item of items) {
-        if (item.confirmStatus !== 1010) {
+        if (item.confirmStatus !== 1020) {
           this.$message({
             type: 'error',
-            message: '选择的数据中[确认状态]必须为[未确认]!'
+            message: '请选择订单[确认状态]为非[已确认]的订单!'
           });
           return false;
         };
@@ -1362,25 +1358,28 @@ export default {
     // 批量确认
     handleBatchConfirm () {
       const ids = this.selectionList.map(item => item.id) || [];
-      const items = this.selectionList.map(item => item) || [];
-      const allowStatus = this.allAllowConfirm(items);
-      if (allowStatus) {
-        this.$confirm('是否需要对批售订单进行批售确认? 注意：确认订单结算资金类型', '操作提醒', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          batchConfirmItem({
-            idSet: ids
-          }).then(() => {
-            this.$message({
-              type: 'success',
-              message: '提交成功!'
-            });
-            this.getData();
-          });
-        }).catch(() => {});
+      if (ids.length === 0) {
+        this.$message({
+          type: 'error',
+          message: '请选择需要操作的数据！'
+        });
+        return false;
       }
+      this.$confirm('是否需要对批售订单进行批售确认? 注意：确认订单结算资金类型', '操作提醒', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        batchConfirmItem({
+          idSet: ids
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '提交成功!'
+          });
+          this.getData();
+        });
+      }).catch(() => {});
     },
     handleClickTab () {
       this.form.queryTab = this.tabName;

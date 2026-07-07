@@ -140,20 +140,20 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-        <el-dropdown trigger="click" style="margin-right: 10px;" @command="handleAdd">
-        <el-button size="small" type="primary" @click="showDropdown">
-          {{ dropdownLoading ? '加载中...' : '新增车辆合格证赎回' }}
-          <i class="iconfont icon-lxppc-down" />
-        </el-button>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item
-            v-for="(item, index) in validatedOrderategoryList"
-            :key="index"
-            :command="item.code">
-            {{ item.message }}
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
+        <el-dropdown trigger="click" style="margin-right: 10px;" v-if="canAddOrUpdate" @command="handleAdd">
+          <el-button size="small" type="primary" @click="showDropdown">
+            {{ dropdownLoading ? '加载中...' : '新增车辆合格证赎回' }}
+            <i class="iconfont icon-lxppc-down" />
+          </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item
+              v-for="(item, index) in validatedOrderategoryList"
+              :key="index"
+              :command="item.code">
+              {{ item.message }}
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       <!-- <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button> -->
       <el-button v-permission="moduleKey+'-confirmReceive'"  size="small" :loading="confirmSignLoading" @click="handleconfirmSign" :disabled="selectionList.length === 0">签收合格证</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>

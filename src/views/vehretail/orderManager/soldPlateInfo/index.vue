@@ -48,17 +48,55 @@
         <el-form-item label="车主信息">
           <el-input v-model="form.searchContentPc" placeholder="请输入车主姓名/电话/证件号码" clearable />
         </el-form-item>
+        <el-form-item label="交车时间">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.deliveryTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
+        <el-form-item label="上牌日期">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.plateDate"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
+        <el-form-item label="审核时间">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.auditTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
         <el-form-item label="创建时间">
           <el-date-picker
             :default-time="['00:00:00', '23:59:59']"
-            v-model="form.createTimeRange"
+            v-model="form.createTime"
             type="daterange"
             unlink-panels
             range-separator="至"
             start-placeholder="开始时间"
             end-placeholder="结束时间"
             value-format="yyyy-MM-dd HH:mm:ss"
-            @change="handleCreateTimeChange"
             clearable
           />
         </el-form-item>
@@ -76,8 +114,9 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i class="iconfont icon-lxppc-plus"></i>新增</el-button>
 <!--      <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>-->
-      <el-button size="small" @click="handleBatchSubmit">提交审核</el-button>
-      <el-button size="small" @click="handleBatchCancel">作废</el-button>
+      <el-button v-permission="moduleKey +'-submitBatch'" size="small" @click="handleBatchSubmit">提交审核</el-button>
+      <el-button v-permission="moduleKey +'-auditBatch'" size="small" @click="openBatchAuditShow">批量审核</el-button>
+      <el-button v-permission="moduleKey +'-cancelBatch'" size="small" @click="handleBatchCancel">作废</el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
 <!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>-->
 <!--      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>-->
@@ -102,6 +141,12 @@
       >
         <EditPage slot="centralizedViewSlot" :id="clickItemId"/>
       </LPVxeTable>
+
+      <audit-dialog
+        ref="auditRef"
+        :maxlength="100"
+        @audit="handleBatchAudit"
+      />
     </div>
     <!-- TIPS: 填入项目id即可 -->
     <Upload
@@ -118,23 +163,25 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import {
-  getList,
+  aggregatePage,
+  auditBatch,
+  cancelBatch,
   deleteItem,
   enableItem,
-  submitBatch,
-  // revocation,
-  revocationBatch, cancelBatch
-} from '@/api/vehretail/orderManager/soldPlateInfo/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, listVehicleModel } from '@/api/common';
+  revocationBatch,
+  submitBatch
+} from '@/api/vehretail/orderManager/soldPlateInfo';
+import { exportTable, getEnum, getTableConfig, listVehicleModel, tableAddOrUpdate } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
 import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
-import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
+import { downloadExcel, handleBatchStatusChange } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import TagInput from '@/libs/components/TagInput';
+import auditDialog from '@/libs/components/auditDialog/index.vue';
 
 const defaultForm = {
   vin: '',
@@ -157,6 +204,7 @@ const mockConfig = {
 export default {
   mixins: [responsiveSearchForm, permissions, commonMixins],
   components: {
+    auditDialog,
     TagInput,
     PageSearchAction,
     LPVxeTable,
@@ -209,6 +257,7 @@ export default {
           { props: 'statusLabel', label: '审核状态', visible: true, width: 200 },
           { props: 'autoAuditStatusLabel', label: '是否自动审核', visible: true, width: 200 },
           { props: 'auditTime', label: '审核时间', visible: true, width: 200 },
+          { props: 'deliveryTime', label: '交车时间', visible: true, width: 200 },
           { props: 'vin', label: 'VIN', visible: true, width: 200 },
           { props: 'modelName', label: '车型名称', visible: true, width: 200 },
           { props: 'carSalesVersionName', label: '公告车型', visible: true, width: 200 },
@@ -225,6 +274,22 @@ export default {
           { props: 'provinceName', label: '上牌省份', visible: true, width: 200 },
           { props: 'cityName', label: '上牌城市', visible: true, width: 200 },
           { props: 'saleDealerName', label: '门店', visible: true, width: 200 },
+          // 门店信息
+          { props: 'storeAddress', label: '门店地址', visible: true, width: 200 },
+          { props: 'parentCompanyName', label: '所属母公司', visible: true, width: 200 },
+          { props: 'storeProvinceName', label: '门店省', visible: true, width: 120 },
+          { props: 'storeCityName', label: '门店市', visible: true, width: 120 },
+          { props: 'storeCountryName', label: '门店区', visible: true, width: 120 },
+          { props: 'receivingAddress', label: '收货地址', visible: true, width: 200 },
+          // 车辆信息
+          { props: 'batterySerialNumber', label: '电池序列号', visible: true, width: 200 },
+          { props: 'electricnumberBefore', label: '电驱序列号(前)', visible: true, width: 200 },
+          { props: 'electricnumberAfter', label: '电驱序列号(后)', visible: true, width: 200 },
+          { props: 'manufacturingDate', label: '制造日期', visible: true, width: 150 },
+          { props: 'enginenModel', label: '发动机型号', visible: true, width: 200 },
+          // 实名认证信息
+          { props: 'iccId', label: '卡ICCID', visible: true, width: 200 },
+          { props: 'msisdn', label: '卡MSISDN', visible: true, width: 200 },
           { props: 'drivingLicenseNumber', label: '行驶证编号', visible: true, width: 200 },
           { props: 'vehiclePurpose', label: '车辆用途', visible: true, width: 200 },
           { props: 'auditRemark', label: '审核意见', visible: true, width: 200 },
@@ -336,7 +401,7 @@ export default {
       }
       exportTable({
         businessType: '已售上牌车辆资料管理',
-        dataFetchPath: '/vr/web/delivery/soldPlateInfo/page',
+        dataFetchPath: '/vr/web/delivery/soldPlateInfo/aggregatePage',
         reqParams,
         titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
         httpMethod: 'POST'
@@ -364,7 +429,7 @@ export default {
       this.loading = true;
       this.selectionList = [];
 
-      getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
+      aggregatePage({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
           console.log(res);
           this.optionObj.dataList = res.records.map(item => {
@@ -416,14 +481,16 @@ export default {
           delete data[key];
         }
       });
-
-      if (this.form.createTime) {
-        delete data.createTime;
-        if (this.form.createTime.length > 1) {
-          data.createTimeStart = this.form.createTime[0];
-          data.createTimeEnd = this.form.createTime[1];
+      const timeFields = ['createTime', 'plateDate', 'auditTime', 'deliveryTime'];
+      timeFields.forEach(field => {
+        if (this.form[field]) {
+          delete data[field];
+          if (this.form[field].length > 1) {
+            data[`${field}Start`] = this.form[field][0];
+            data[`${field}End`] = this.form[field][1];
+          }
         }
-      }
+      });
       // 排序字段
       data.sortColumns = this.sortColumns;
       return data;
@@ -550,6 +617,35 @@ export default {
         });
         this.getData();
       }).catch(() => {
+      });
+    },
+    openBatchAuditShow () {
+      const ids = this.selectionList.map(item => item.id) || [];
+      if (ids.length === 0) {
+        this.$message({
+          type: 'warning',
+          message: '请选择要审核的项'
+        });
+        return;
+      }
+      // 判断状态只能为 1020
+      const errorStatusIds = this.selectionList.filter(item => item.status !== 1020).map(item => item.soldPlateCode);
+      if (errorStatusIds && errorStatusIds.length > 0) {
+        this.$message({
+          type: 'warning',
+          message: `单据状态不为已提交状态不允许操作：${errorStatusIds.join(',')}`
+        });
+        return;
+      }
+      this.$refs.auditRef.show();
+    },
+    // 提交审批结果
+    handleBatchAudit (auditForm) {
+      auditForm.ids = this.selectionList.map(item => item.id) || [];
+      auditForm.auditResult = auditForm.result;
+      auditForm.auditRemark = auditForm.remark;
+      auditBatch(auditForm).then(() => {
+        this.getData();
       });
     },
     // 批量启用停用

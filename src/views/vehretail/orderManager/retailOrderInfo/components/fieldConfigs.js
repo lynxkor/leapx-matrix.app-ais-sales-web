@@ -33,7 +33,8 @@ export const retailOrderDisplayFields = [
   { key: 'deliveryCycleMaxWeek', label: '交付周期上限(周)' },
   { key: 'dynamicDeliveryCycleDesc', label: '动态交付周期说明' },
   { key: 'initialDeliveryCycleDesc', label: '初始交付周期说明' },
-  { key: 'secondNetStoreName', label: '二网门店' }
+  { key: 'secondNetStoreName', label: '二网门店' },
+  { key: 'approvalStatusLabel', label: '审批状态' }
 ];
 
 // 购车人信息字段配置
@@ -106,7 +107,7 @@ export const lockAllocationDisplayFields = [
 export const wholesaleDisplayFields = [
   { key: 'wholesaleBindStatusLabel', label: '是否绑定批售' },
   { key: 'lockWholesaleTime', label: '锁批售时间' },
-  { key: 'confirmedCount', label: '批售确认次数' },
+  { key: 'soConfirmTimes', label: '批售确认次数' },
   {
     key: 'wholesaleOrderCode',
     label: '批售订单号',

@@ -18,13 +18,13 @@
           <!-- {{ form.wholesaleOrderCode }} -->
         </template>
         <template #extraButtons >
-          <el-button  v-if = "perquerySapAccount" size="small" :loading="querySapAccountLoading" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
-          <el-button  v-if = "perbatchConfirm && form.buttonControl && form.buttonControl.confirmManualButton" size="small" :loading="checkConfirmLoading" @click="handleCheckConfirm" >批售确认</el-button>
-          <el-button  v-if = "perbatchSetAutoAllocate && form.buttonControl && form.buttonControl.autoAllocateVehicle" size="small" :loading="autoVehicleAllocationLoading" @click="handleaAutoVehicleAllocation">自动配车</el-button>
-          <el-button  v-if = "pervinAllocateVehicle && form.buttonControl && form.buttonControl.manualAllocateVehicle" size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
-          <el-button  v-if = "perbatchSettleSubmit && form.buttonControl && form.buttonControl.submitSettleButton" size="small" :loading="batchSettleSubmitLoading" @click="handleBatchSettleSubmit">提交结算</el-button>
-          <el-button  v-if = "perbatchCancelSettle && form.buttonControl && form.buttonControl.cancelSettle" size="small" @click="handleBatchCancelSettle">取消结算</el-button>
-          <!-- <el-button  v-if = "perbatchCancel && form.buttonControl && form.buttonControl.cancelButton" size="small" @click="handleCancel">作废</el-button> -->
+          <el-button v-if="perquerySapAccount" size="small" :loading="querySapAccountLoading" @click="handlequerySAPAccountBalance" >查询整车账户余额</el-button>
+          <el-button v-if="perbatchConfirm && form.buttonControl && form.buttonControl.confirmManualButton" size="small" :loading="checkConfirmLoading" @click="handleCheckConfirm" >批售确认</el-button>
+          <el-button v-if="perbatchSetAutoAllocate && form.buttonControl && form.buttonControl.autoAllocateVehicle" size="small" :loading="autoVehicleAllocationLoading" @click="handleaAutoVehicleAllocation">自动配车</el-button>
+          <el-button v-if="pervinAllocateVehicle && form.buttonControl && form.buttonControl.manualAllocateVehicle" size="small" @click="handleManualVehicleAllocation">手工配车</el-button>
+          <el-button v-if="perbatchSettleSubmit && form.buttonControl && form.buttonControl.submitSettleButton" size="small" :loading="batchSettleSubmitLoading" @click="handleBatchSettleSubmit">提交结算</el-button>
+          <el-button v-if="perbatchCancelSettle && form.buttonControl && form.buttonControl.cancelSettle" size="small" @click="handleBatchCancelSettle">取消结算</el-button>
+          <!-- <el-button v-if="perbatchCancel && form.buttonControl && form.buttonControl.cancelButton" size="small" @click="handleCancel">作废</el-button> -->
         </template>
         <el-main>
           <section class="common-section">
@@ -649,11 +649,11 @@
                 <el-form-item label="结算资金类型：" prop="settleFundType">
                   <fetch-select
                    :options="fundTypeList"
-                    v-model="form.settleFundTypeLabel"
+                    v-model="form.settleFundType"
                     placeholder="请选择"
                     clearable
                     filterable
-                     labelKey="fundTypeLabel"
+                    labelKey="fundTypeLabel"
                     valueKey="fundType"
                     :disabled="needAutoAllocateCarStatus.includes(form.orderStatus)"
                     @change="clearCache"
@@ -662,7 +662,7 @@
                    <el-form-item label="金融机构名称：" prop="financialOrganizationId">
                     <fetch-select
                    :options="financialOrganizationList"
-                    v-model="form.financialOrganizationName"
+                    v-model="form.financialOrganizationId"
                     placeholder="请选择"
                     clearable
                     filterable
@@ -1083,8 +1083,6 @@ export default {
     return {
       pageTitle: '整车批售订单',
       pageType: 'edit',
-      // TIPS: 权限前缀 AISMC，根据实际情况修改
-      moduleKey: 'AISVW-vehicleWholesaleOrder',
       loading: false,
       submitLoading: false,
       showManualVehicleDialog: false,
@@ -1104,7 +1102,6 @@ export default {
       fundTypeList: [],
       needAutoAllocateCarStatus: [1, 2, 10, 21, 99, 3],
       accountData: [],
-      // 权限控制
       perquerySapAccount: false,
       perbatchConfirm: false,
       perbatchSetAutoAllocate: false,
@@ -1176,13 +1173,14 @@ export default {
   },
   methods: {
     initPermissions () {
-      this.perquerySapAccount = this.permissions.has(`${this.moduleKey}-querySapAccount`); // 查询整车账户余额
-      this.perbatchConfirm = this.permissions.has(`${this.moduleKey}-batchConfirm`); // 审核确认
-      this.perbatchSetAutoAllocate = this.permissions.has(`${this.moduleKey}-batchSetAutoAllocate`); // 自动配车
-      this.pervinAllocateVehicle = this.permissions.has(`${this.moduleKey}-vinAllocateVehicle`); // 手工配车
-      this.perbatchSettleSubmit = this.permissions.has(`${this.moduleKey}-batchSettleSubmit`); // 提交结算
-      this.perbatchCancelSettle = this.permissions.has(`${this.moduleKey}-batchCancelSettle`); // 取消结算
-      this.perbatchCancel = this.permissions.has(`${this.moduleKey}-batchCancel`); // 作废
+      const moduleKey = 'AISVW-vehicleWholesaleOrder';
+      this.perquerySapAccount = this.permissions.has(`${moduleKey}-querySapAccount`);
+      this.perbatchConfirm = this.permissions.has(`${moduleKey}-batchConfirm`);
+      this.perbatchSetAutoAllocate = this.permissions.has(`${moduleKey}-batchSetAutoAllocate`);
+      this.pervinAllocateVehicle = this.permissions.has(`${moduleKey}-vinAllocateVehicle`);
+      this.perbatchSettleSubmit = this.permissions.has(`${moduleKey}-batchSettleSubmit`);
+      this.perbatchCancelSettle = this.permissions.has(`${moduleKey}-batchCancelSettle`);
+      this.perbatchCancel = this.permissions.has(`${moduleKey}-batchCancel`);
     },
     openWindow (url) {
       window.open(url, '_blank');
@@ -1459,10 +1457,11 @@ export default {
           // 2. 处理 dealerFundAccounts
           if (res.dealerFundAccounts && Array.isArray(res.dealerFundAccounts)) {
             res.dealerFundAccounts = res.dealerFundAccounts.map(account => {
-              if (account.fundTypeLabel !== '现金' && account.validIfCreditSaleAccount === true) {
+              if (account.fundType !== 1020 && account.validIfCreditSaleAccount === true) {
+                // 除【返利】之外 【有效】的其他资金类型
                 uniqueLabels.add(
                   {
-                    fundType: account.fundType,
+                    fundType: String(account.fundType),
                     fundTypeLabel: account.fundTypeLabel,
                   }
                 );
@@ -1495,12 +1494,21 @@ export default {
       }
     },
     clearCache (val, row) {
-      this.form.settleFundType = row.fundType;
       this.form.settleFundTypeLabel = row.fundTypeLabel;
-      this.form.financialOrganizationId = '';
-      this.form.financialOrganizationName = '';
+      this.form.settleFundType = row.fundType;
+      if (row.fundType === 2010 || row.fundType === '2010') {
+        // 如果资金类型是 融资【2010】，需要选择融资机构，开启融资按钮的编辑
+        this.form.settleFundType = 2010;
+      } else {
+        // 其他，清空融资机构
+        this.form.financialOrganizationId = '';
+        this.form.financialOrganizationName = '';
+      }
     },
     getNewfinancialOrganization (val, row) {
+      if (!val) {
+        return;
+      }
       this.form.financialOrganizationId = row.id;
       this.form.financialOrganizationName = row.name;
     },

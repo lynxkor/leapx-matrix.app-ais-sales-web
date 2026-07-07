@@ -45,6 +45,12 @@
                 <el-form-item label="交付门店编码：" prop="deliveryDealerCode">
                   {{ form.deliveryDealerCode }}
                 </el-form-item>
+                <el-form-item label="二网门店编码：" prop="secondNetStoreCode">
+                  {{ form.secondNetStoreCode }}
+                </el-form-item>
+                <el-form-item label="二网门店名称：" prop="secondNetStoreName">
+                  {{ form.secondNetStoreName }}
+                </el-form-item>
                 <el-form-item label="仓库编码：" prop="dealerWarehouseCode">
                   {{ form.dealerWarehouseCode }}
                 </el-form-item>
@@ -406,6 +412,8 @@ const defaultForm = {
   ownerOrgId: '',
   saleDealerCode: '',
   saleDealerName: '',
+  secondNetStoreCode: '',
+  secondNetStoreName: '',
   deliveryDealerCode: '',
   deliveryDealerName: '',
   poentryDealerCode: '',

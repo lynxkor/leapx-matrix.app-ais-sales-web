@@ -382,7 +382,7 @@ export default {
       if (!selectedValue) {
         // 如果清空选择，清空相关信息
         this.form.enterpriseCustomerName = '';
-        this.form.enterpriseCustomerId = '';
+        this.form.enterpriseCustomerCode = '';
         this.form.vin = '';
         return;
       }
@@ -391,7 +391,7 @@ export default {
       if (response) {
         // 带出企业客户信息
         this.form.enterpriseOrderId = response.id || '';
-        this.form.enterpriseCustomerId = response.entCustomerCode || '';
+        this.form.enterpriseCustomerCode = response.entCustomerCode || '';
         this.form.enterpriseCustomerName = response.entCustomerName || '';
         this.form.vin = response.vin;
       }

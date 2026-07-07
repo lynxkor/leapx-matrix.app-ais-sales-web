@@ -161,10 +161,20 @@
             </el-radio-group>
           </el-col>
         </el-row>
+
+         <el-row>
+          <el-col :span="9">是否允许企业客户销售</el-col>
+          <el-col :span="15">
+            <el-radio-group v-model="allowCustomerSales">
+              <el-radio :label="1">是</el-radio>
+              <el-radio :label="0">否</el-radio>
+            </el-radio-group>
+          </el-col>
+        </el-row>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="closeSetAttr">取消</el-button>
-        <el-button size="small" type="primary" @click="confirmSetAttr">确定</el-button>
+        <el-button size="small" type="primary" :disabled="!hasSelectedAttrs" @click="confirmSetAttr">确定</el-button>
       </div>
     </el-dialog>
 
@@ -203,13 +213,13 @@ const defaultForm = {
   roofName: '',
   optionPackageName: '',
   batteryCellName: '',
-  allowWholesale: '',
-  allowProductionSchedule: '',
-  allowDisplayVehicleWholesale: '',
-  allowTestDriveVehicleWholesale: '',
-  allowCustomerSales: '',
-  allowWholesaleConfirm: '',
-  allowConfigurationModify: '',
+  allowWholesale: null,
+  allowProductionSchedule: null,
+  allowDisplayVehicleWholesale: null,
+  allowTestDriveVehicleWholesale: null,
+  allowCustomerSales: null,
+  allowWholesaleConfirm: null,
+  allowConfigurationModify: null,
   discontinueStatus: '',
   statusIncludeList: ['1']
 };
@@ -367,11 +377,21 @@ export default {
       batteryCellList: [],
       roofList: [],
       batchSetAttrVisible: false,
-      allowWholesale: '',
-      allowProductionSchedule: '',
-      allowWholesaleConfirm: '',
-      allowDisplayVehicleWholesale: '',
+      allowWholesale: null,
+      allowProductionSchedule: null,
+      allowWholesaleConfirm: null,
+      allowDisplayVehicleWholesale: null,
+      allowCustomerSales: null,
     };
+  },
+  computed: {
+    hasSelectedAttrs () {
+      return this.allowWholesale !== null ||
+             this.allowProductionSchedule !== null ||
+             this.allowWholesaleConfirm !== null ||
+             this.allowDisplayVehicleWholesale !== null ||
+             this.allowCustomerSales !== null;
+    }
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
@@ -750,6 +770,8 @@ export default {
       this.allowWholesale = null;
       this.allowProductionSchedule = null;
       this.allowWholesaleConfirm = null;
+      this.allowDisplayVehicleWholesale = null;
+      this.allowCustomerSales = null;
       this.batchSetAttrVisible = false;
     },
     async confirmSetAttr () {
@@ -759,7 +781,8 @@ export default {
         allowWholesale: this.allowWholesale,
         allowProductionSchedule: this.allowProductionSchedule,
         allowWholesaleConfirm: this.allowWholesaleConfirm,
-        allowDisplayVehicleWholesale: this.allowDisplayVehicleWholesale
+        allowDisplayVehicleWholesale: this.allowDisplayVehicleWholesale,
+        allowCustomerSales: this.allowCustomerSales
       }; batchUpdateProps(params).then(res => {
         this.$message({
           type: 'success',
@@ -769,11 +792,12 @@ export default {
         this.allowProductionSchedule = null;
         this.allowWholesaleConfirm = null;
         this.allowDisplayVehicleWholesale = null;
+        this.allowCustomerSales = null;
         this.batchSetAttrVisible = false;
+        this.getData();
       }).catch(() => {
         this.batchSetAttrVisible = false;
       });
-      this.getData();
     }
   }
 };

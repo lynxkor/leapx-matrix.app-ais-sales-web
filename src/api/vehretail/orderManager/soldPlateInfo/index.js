@@ -12,6 +12,14 @@ export function getList (data) {
 };
 
 /**
+ * 查询列表
+ * @param {Object} data
+ */
+export function aggregatePage (data) {
+  return api.jsonPost(prefix + 'aggregatePage', data);
+};
+
+/**
  * 新增或修改
  * @param {Object} data
  */
@@ -93,6 +101,13 @@ export function submitBatch (data) {
  * */
 export function audit (data) {
   return api.jsonPost(prefix + 'audit', data);
+}
+
+/**
+ * 批量审核
+ * */
+export function auditBatch (data) {
+  return api.jsonPost(prefix + 'auditBatch', data);
 }
 
 /**

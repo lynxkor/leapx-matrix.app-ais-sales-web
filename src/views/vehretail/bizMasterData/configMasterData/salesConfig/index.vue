@@ -191,6 +191,29 @@
                     />
                   </el-select>
                 </el-form-item>
+                <el-form-item label="交车实名认证校验：" prop="realNameAuth">
+                  <el-tooltip
+                    content="开启后，当整车开票记录上传附件时会校验购车人是否完成实名认证"
+                    placement="top"
+                    effect="light"
+                  >
+                    <el-select
+                      v-model="formData.realNameAuth"
+                      placeholder="请选择"
+                      clearable
+                      filterable
+                      :disabled="!showEditBtn"
+                      @change="(val) => handleChange(val, 'realNameAuth')"
+                    >
+                      <el-option
+                        v-for="item in yes_no_enum"
+                        :key="item.code"
+                        :label="item.message"
+                        :value="item.code"
+                      />
+                    </el-select>
+                  </el-tooltip>
+                </el-form-item>
               </el-form>
             </div>
           </section>
@@ -304,6 +327,9 @@ export default {
         deliveryAssignmentStatus: [
           { required: true, message: '交车单分派通知', trigger: 'blur' }
         ],
+        realNameAuth: [
+          { required: true, message: '请选择交车实名认证校验', trigger: 'change' }
+        ],
       }
     };
   },
@@ -393,6 +419,13 @@ export default {
             },
             {
               salesConfigGroup: 'deliveryConfig',
+              salesConfigKey: 'realNameAuth',
+              salesConfigName: '交车实名认证校验',
+              salesConfigType: 'single',
+              saleConfigValue: JSON.stringify([{ roleCode: '', roleName: '' }])
+            },
+            {
+              salesConfigGroup: 'deliveryConfig',
               salesConfigKey: 'deliveryAssignment',
               salesConfigName: '交车单分派通知',
               salesConfigType: 'multiple',
@@ -427,6 +460,7 @@ export default {
         creditStatus: this.getConfigValue('credit'),
         financeStatus: this.getConfigValue('finance'),
         phoneRegisterStatus: this.getConfigValue('phoneRegister'),
+        realNameAuth: this.getConfigValue('realNameAuth'),
         deliveryAssignmentStatus: this.getConfigValue('deliveryAssignment')
       };
       // 初始化 tooltip 内容

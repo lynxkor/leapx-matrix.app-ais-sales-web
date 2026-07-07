@@ -12,18 +12,9 @@
       <el-form-item label="整车补货单号">
         <tag-input v-model="form.replenishApplyCodes" placeholder="请输入" />
       </el-form-item>
+
       <el-form-item label="销售门店">
-        <fetch-select
-          filterable
-          clearable
-          multiple
-          remote
-          collapseTags
-          v-model="form.saleDealerCodes"
-          :remote-method="getDealerListByName"
-          value-key="storeCode"
-          label-key="storeName"
-        />
+        <tag-input v-model="form.saleDealerNames" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="审核状态"  v-show="this.visibleCount === 3 || show">
         <fetch-select
@@ -145,7 +136,7 @@
     </el-form>
     <div class="ais-actions">
       <!--  TIPS:根据产品增删功能按钮  -->
-      <el-dropdown trigger="click" style="margin-right: 10px;" @command="handleAdd">
+      <el-dropdown trigger="click" style="margin-right: 10px;" @command="handleAdd" v-if="canAddOrUpdate">
         <el-button size="small" type="primary" @click="showDropdown">
           {{ dropdownLoading ? '加载中...' : '创建排产申请' }}
           <i class="iconfont icon-lxppc-down" />
@@ -675,6 +666,33 @@ export default {
     },
     handleClickTab () {
       this.form.queryTab = this.tabName;
+      this.form.auditStatus = '';
+      this.form.wholesaleWay = '';
+      this.form.orderCategory = '';
+      if (this.tabName === '2') {
+        this.form.auditStatus = '2';
+        // 待门店审核
+      } else if (this.tabName === '3') {
+        // 待审现车批售
+        this.form.auditStatus = '3';
+        this.form.wholesaleWay = '30';
+        this.form.orderCategory = '0';
+      } else if (this.tabName === '4') {
+        // 待审排产商品车
+        this.form.auditStatus = '3';
+        this.form.wholesaleWay = '10';
+        this.form.orderCategory = '0';
+      } else if (this.tabName === '5') {
+        // 待审展车
+        this.form.auditStatus = '3';
+        this.form.wholesaleWay = '10';
+        this.form.orderCategory = '20';
+      } else if (this.tabName === '6') {
+        this.form.auditStatus = '3';
+        this.form.wholesaleWay = '10';
+        this.form.orderCategory = '2';
+        // 待审试驾车
+      }
       this.getData();
     },
     factoryAuditValid (data) {

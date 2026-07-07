@@ -862,7 +862,7 @@ export default {
         ],
         changeExplain: [
           {
-            required: true,
+            required: false,
             message: '请输入变更说明',
             trigger: 'change',
           },
@@ -1141,7 +1141,7 @@ export default {
     },
     async retailOrderSearch (val) {
       const params = {
-        pageSize: 1000,
+        pageSize: 20,
         orderStatusExcludeList: [0, 99],
         mallOrderCodeLike: val,
       };
