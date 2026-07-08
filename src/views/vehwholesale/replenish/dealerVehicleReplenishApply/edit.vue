@@ -301,7 +301,9 @@
                   ref="detailTableRef"
                   :tableData="form.details"
                   :columns="detailsColumns"
-                  :show-delete="form.permission.edit && _id && perEdit"
+                  :can-edit="form.permission.edit && _id && perEdit"
+                  :can-edit-detail="form.permission.editDetail && _id && perEdit"
+                  :can-delete="form.permission.edit && _id && perEdit"
                   @delete-row="handleDeleteDetailRow"
                   @save-row="handleSaveDetailRow"
                 >
@@ -456,7 +458,14 @@ const defaultForm = {
   reviewUserId: '',
   reviewTime: '',
   reviewOpinion: '',
-  permission: '',
+  permission: {
+    cancel: false,
+    dealerAudit: false,
+    edit: false,
+    editDetail: false,
+    factoryAudit: false,
+    submit: false
+  },
   isCreditSale: 0,
   dealerWarehouseAddress: '',
   auditDateTime: '',
