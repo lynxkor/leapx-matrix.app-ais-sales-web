@@ -59,6 +59,7 @@
                       :precision="0"
                     />
                 </el-form-item>
+                <!-- 允许锁零售单：选择【否】时，下方【允许锁零售节点】自动默认为【门店收车】(值=10)；选择【是】时清空节点 -->
                  <el-form-item label="允许锁零售单：" prop="allowLockRetail">
                   <fetch-select
                       :request="fetchOptions"
@@ -67,8 +68,10 @@
                       placeholder="请选择"
                       clearable
                       filterable
+                      @change="handleAllowLockRetailChange"
                     />
                 </el-form-item>
+                <!-- 允许锁零售节点：受【允许锁零售单】联动控制，非必填 -->
                 <el-form-item label="允许锁零售节点：" prop="allowLockNode">
                   <fetch-select
                       :request="fetchOptions"
@@ -596,7 +599,6 @@ export default {
           { validator: validateTotalQuotaQty, trigger: 'change' }
         ],
         allowLockNode: [
-          { required: true, message: '请输入允许锁零售节点', trigger: 'change' }
         ],
         usedQuotaQty: [
           { required: true, message: '请输入已提报数量', trigger: 'change' },
@@ -616,6 +618,15 @@ export default {
   methods: {
     initPermissions () {
       this.perupdateQuotaQty = this.permissions.has(`${this.moduleKey}-updateQuotaQty`);
+    },
+    handleAllowLockRetailChange (val) {
+      // BooleanEnum：1=是，0=否（FetchSelect 会将数字 code 转成字符串，所以需兼容 '0'/'1'）
+      // 选择【是】时清空节点；选择【否】时默认【门店收车】(值=10)
+      if (val === 1 || val === '1' || val === true || val === 'true') {
+        this.form.allowLockNode = '';
+      } else {
+        this.form.allowLockNode = 10;
+      }
     },
     changeSure () {
       const ids = this.selectionList.map(item => item.id) || [];
