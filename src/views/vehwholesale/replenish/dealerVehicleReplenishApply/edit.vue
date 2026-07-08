@@ -403,6 +403,7 @@
 
 <script>
 import { getDetail, addOrUpdate, dealerAuditValid, factoryAuditValid, dealerApproval, factoryApproval, unusedApply, replenishmentSubmit } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
+import { addOrUpdate as addOrUpdateDetail } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -647,9 +648,22 @@ export default {
       }).catch(() => {
       });
     },
-    handleSaveDetailRow () {
+    handleSaveDetailRow (row) {
+      // 仅 editDetail 权限：调用明细行级接口 addOrUpdateDetail，成功后刷新详情
+      if (this.form.permission.editDetail && !this.form.permission.edit) {
+        this.$set(row, 'replenishApplyId', this._id);
+        return addOrUpdateDetail(row).then(() => {
+          this.$message.success('开票信息保存成功');
+          this.$refs.containerRef.loadDetail();
+          return true;
+        }).catch(() => {
+          this.$message.error('开票信息保存失败');
+          return false;
+        });
+      }
+      // edit 权限：维持原有整单保存逻辑
       this.updateApplyTotalQty();
-      this.submitRequest();
+      return this.submitRequest();
     },
     handleSave () {
       const dataList = this.$refs.addCommercialVehicle.tableList;
