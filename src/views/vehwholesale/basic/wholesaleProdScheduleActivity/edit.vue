@@ -80,6 +80,7 @@
                       placeholder="请选择"
                       clearable
                       filterable
+                      @change="handleAllowLockNodeChange"
                     />
                 </el-form-item>
                  <el-form-item label="是否需要自动配车：" prop="needAutoAllocateCar">
@@ -621,12 +622,16 @@ export default {
     },
     handleAllowLockRetailChange (val) {
       // BooleanEnum：1=是，0=否（FetchSelect 会将数字 code 转成字符串，所以需兼容 '0'/'1'）
-      // 选择【是】时清空节点；选择【否】时默认【门店收车】(值=10)
+      // 选择【是】时节点默认不选为空，非必填；选择【否】时默认【门店收车】(值=10)
       if (val === 1 || val === '1' || val === true || val === 'true') {
         this.form.allowLockNode = '';
       } else {
         this.form.allowLockNode = 10;
       }
+    },
+    handleAllowLockNodeChange (val) {
+      // 显式同步节点值，确保清空操作能正确写入 form（避免 v-model 未及时同步导致旧值提交）
+      this.form.allowLockNode = (val === null || val === undefined) ? '' : val;
     },
     changeSure () {
       const ids = this.selectionList.map(item => item.id) || [];
