@@ -402,7 +402,7 @@
             </div>
             <div class="common-section-body">
               <!-- 订单信息 - 编辑表单（全部禁用） -->
-              <el-form :inline="true" :model="form" label-width="150px" class="form-edit" v-show="(isEditing || !_id) && form.refundStatus !== 1030">
+              <el-form :inline="true" :model="form" label-width="150px" class="form-edit" v-show="(isEditing || !_id) && form.refundStatus === 1030">
                 <!-- 第1行：整车订单状态 | 商城订单编号 | 购车人手机号码 | 订单取消原因 -->
                 <el-form-item label="整车订单状态：" prop="orderStatusLabel">
                   <el-input
@@ -545,7 +545,7 @@
                 </el-form-item>
               </el-form>
               <!-- 订单信息 - 详情展示 -->
-              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id) || (isEditing && form.refundStatus === 1030)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id) || (isEditing && form.refundStatus !== 1030)">
                 <!-- 第1行：整车订单状态 | 商城订单编号 | 购车人手机号码 | 订单取消原因 -->
                 <el-form-item label="整车订单状态：" prop="orderStatus">
                   <span class="status-tag link">{{ form.orderStatusLabel }}</span>
@@ -553,8 +553,13 @@
                 <el-form-item label="商城订单编号：" prop="mallOrderCode">
                   {{ form.mallOrderCode }}
                 </el-form-item>
-                <el-form-item label="购车人手机号码：" prop="buyerPhone">
-                  {{ form.buyerPhone }}
+                <el-form-item label="购车人手机号码：" prop="buyerPhoneEncrypt">
+                  <LPEncrypted
+                    :value.sync="form.buyerPhoneEncrypt"
+                    :decryptMethod="() => form.buyerPhone"
+                  >
+                    {{ form.buyerPhoneEncrypt }}
+                  </LPEncrypted>
                 </el-form-item>
                 <el-form-item label="订单取消原因：" prop="orderCancelReason">
                   {{ form.orderCancelReason }}
@@ -592,11 +597,24 @@
                     @click="handleRouteToStoreDetail(form.deliveryDealerCode)"
                     type="text">{{form.deliveryDealerName}}</el-button>
                 </el-form-item>
-                <el-form-item label="购车人名称：" prop="buyerName">
-                  {{ form.buyerName }}
+                <el-form-item label="购车人名称：" prop="buyerNameEncrypt">
+                  <LPEncrypted
+                    :value.sync="form.buyerNameEncrypt"
+                    :decryptMethod="() => { return form.buyerName }"
+                  >
+                    {{ form.buyerNameEncrypt }}
+                  </LPEncrypted>
                 </el-form-item>
                 <el-form-item label="代办联系人：" prop="agentName">
                   {{ form.agentName }}
+                </el-form-item>
+                <el-form-item label="代办人电话：" prop="agentPhoneEncrypt">
+                  <LPEncrypted
+                    :value.sync="form.agentPhoneEncrypt"
+                    :decryptMethod="() => { return form.agentPhone }"
+                  >
+                    {{ form.agentPhoneEncrypt }}
+                  </LPEncrypted>
                 </el-form-item>
                 <el-form-item label="订单取消时间：" prop="orderCancelTime">
                   {{ form.orderCancelTime }}
@@ -605,8 +623,13 @@
                 <el-form-item label="订单来源：" prop="orderSource">
                   {{ form.orderSource }}
                 </el-form-item>
-                <el-form-item label="证件号码：" prop="idCardNo">
-                  {{ form.idCardNo }}
+                <el-form-item label="证件号码：" prop="idCardNoEncrypt">
+                  <LPEncrypted
+                    :value.sync="form.idCardNoEncrypt"
+                    :decryptMethod="() => { return form.idCardNo }"
+                  >
+                    {{ form.idCardNoEncrypt }}
+                  </LPEncrypted>
                 </el-form-item>
                 <el-form-item label="定金金额：" prop="depositAmount">
                   {{ form.depositAmount }}
@@ -650,8 +673,13 @@
                 <el-form-item label="提交时间：" prop="submitTime">
                   {{ form.submitTime }}
                 </el-form-item>
-                <el-form-item label="初审人：" prop="preApproveUser">
-                  {{ form.preApproveUser }}
+                <el-form-item label="初审人：" prop="preApproveUserEncrypt">
+                  <LPEncrypted
+                    :value.sync="form.preApproveUserEncrypt"
+                    :decryptMethod="() => form.preApproveUser"
+                  >
+                    {{ form.preApproveUserEncrypt }}
+                  </LPEncrypted>
                 </el-form-item>
                 <el-form-item label="初审时间：" prop="preApproveTime">
                   {{ form.preApproveTime }}
@@ -668,8 +696,13 @@
                 <el-form-item label="审核意见：" prop="approveRemark">
                   {{ form.approveRemark }}
                 </el-form-item>
-                <el-form-item label="终审人：" prop="finalApproveUser">
-                  {{ form.finalApproveUser }}
+                <el-form-item label="终审人：" prop="finalApproveUserEncrypt">
+                  <LPEncrypted
+                    :value.sync="form.finalApproveUserEncrypt"
+                    :decryptMethod="() => form.finalApproveUser"
+                  >
+                    {{ form.finalApproveUserEncrypt }}
+                  </LPEncrypted>
                 </el-form-item>
                 <el-form-item label="终审时间：" prop="finalApproveTime">
                   {{ form.finalApproveTime }}
@@ -837,6 +870,7 @@ import { getList as getMaterialInfoList } from '@/api/datacenter/materials/vehic
 import FinancialOrderDialog from './components/FinancialOrderDialog.vue';
 import VehicleStockDialog from './components/VehicleStockDialog.vue';
 import navigate from '@/libs/utils/navigate';
+import LPEncrypted from '@/libs/components/LPEncrypted/index.vue';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -882,6 +916,17 @@ const defaultForm = {
   discontinueStatusLabel: '',
   payRefundRecordList: [],
   approveLogList: [],
+  // 加密字段
+  buyerName: '',
+  buyerNameEncrypt: '',
+  buyerPhone: '',
+  buyerPhoneEncrypt: '',
+  idCardNo: '',
+  idCardNoEncrypt: '',
+  agentPhone: '',
+  agentPhoneEncrypt: '',
+  preApproveUserEncrypt: '',
+  finalApproveUserEncrypt: '',
 };
 
 export default {
@@ -895,6 +940,7 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
+    LPEncrypted,
     VehicleStockDialog,
     FinancialOrderDialog,
     RefundApplyAuditDialog,
@@ -1230,6 +1276,7 @@ export default {
       this.form.idCardTypeLabel = val ? selectedOption.idCardTypeLabel : null;
       this.form.idCardNo = val ? selectedOption.idCardNo : '';
       this.form.agentName = val ? selectedOption.agentName : '';
+      this.form.agentPhone = val ? selectedOption.agentPhone : '';
       this.form.saleDealerCode = val ? selectedOption.saleDealerCode : '';
       this.form.saleDealerName = val ? selectedOption.saleDealerName : '';
       this.form.saleUserName = val ? selectedOption.saleUserName : '';

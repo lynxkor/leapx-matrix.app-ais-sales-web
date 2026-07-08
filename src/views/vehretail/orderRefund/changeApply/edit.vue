@@ -193,17 +193,32 @@
               </el-form>
               <!-- 原订单信息 - 详情展示 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="原购车人名称：" prop="originalBuyerName">
-                  {{ form.originalBuyerName }}
+                <el-form-item label="原购车人名称：" prop="originalBuyerNameEncrypt">
+                  <LPEncrypted
+                    :value.sync="form.originalBuyerNameEncrypt"
+                    :decryptMethod="() => { return form.originalBuyerName }"
+                  >
+                    {{ form.originalBuyerNameEncrypt }}
+                  </LPEncrypted>
                 </el-form-item>
-                <el-form-item label="原购车人手机号码：" prop="originalBuyerPhone">
-                  {{ form.originalBuyerPhone }}
+                <el-form-item label="原购车人手机号码：" prop="originalBuyerPhoneEncrypt">
+                  <LPEncrypted
+                    :value.sync="form.originalBuyerPhoneEncrypt"
+                    :decryptMethod="() => { return form.originalBuyerPhone }"
+                  >
+                    {{ form.originalBuyerPhoneEncrypt }}
+                  </LPEncrypted>
                 </el-form-item>
                 <el-form-item label="原购车人证件类型：" prop="originalIdCardType">
                   {{ form.originalIdCardTypeLabel }}
                 </el-form-item>
-                <el-form-item label="原购车人证件号码：" prop="originalIdCardNo">
-                  {{ form.originalIdCardNo }}
+                <el-form-item label="原购车人证件号码：" prop="originalIdCardNoEncrypt">
+                  <LPEncrypted
+                    :value.sync="form.originalIdCardNoEncrypt"
+                    :decryptMethod="() => { return form.originalIdCardNo }"
+                  >
+                    {{ form.originalIdCardNoEncrypt }}
+                  </LPEncrypted>
                 </el-form-item>
                 <el-form-item label="原代办人：" prop="originalAgentName">
                   {{ form.originalAgentName }}
@@ -337,17 +352,32 @@
                 </el-form-item>
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="变更后购车人名称：" prop="newBuyerName">
-                  {{ form.newBuyerName }}
+                <el-form-item label="变更后购车人名称：" prop="newBuyerNameEncrypt">
+                  <LPEncrypted
+                    :value.sync="form.newBuyerNameEncrypt"
+                    :decryptMethod="() => { return form.newBuyerName }"
+                  >
+                    {{ form.newBuyerNameEncrypt }}
+                  </LPEncrypted>
                 </el-form-item>
-                <el-form-item label="变更后购车人手机号码：" prop="newBuyerPhone">
-                  {{ form.newBuyerPhone }}
+                <el-form-item label="变更后购车人手机号码：" prop="newBuyerPhoneEncrypt">
+                  <LPEncrypted
+                    :value.sync="form.newBuyerPhoneEncrypt"
+                    :decryptMethod="() => { return form.newBuyerPhone }"
+                  >
+                    {{ form.newBuyerPhoneEncrypt }}
+                  </LPEncrypted>
                 </el-form-item>
                 <el-form-item label="变更后购车人证件类型：" prop="newIdCardType">
                   {{ form.newIdCardTypeLabel }}
                 </el-form-item>
-                <el-form-item label="变更后购车人证件号码：" prop="newIdCardNo">
-                  {{ form.newIdCardNo }}
+                <el-form-item label="变更后购车人证件号码：" prop="newIdCardNoEncrypt">
+                  <LPEncrypted
+                    :value.sync="form.newIdCardNoEncrypt"
+                    :decryptMethod="() => { return form.newIdCardNo }"
+                  >
+                    {{ form.newIdCardNoEncrypt }}
+                  </LPEncrypted>
                 </el-form-item>
                 <el-form-item label="变更后代办人：" prop="newAgentName">
                   {{ form.newAgentName }}
@@ -468,6 +498,7 @@ import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 import auditDialog from '@/libs/components/auditDialog/index.vue';
+import LPEncrypted from '@/libs/components/LPEncrypted/index.vue';
 import { getEnum, listOrgStoreInfo } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
@@ -527,7 +558,14 @@ const defaultForm = {
   auditorName: '',
   auditTime: '',
   dataSource: 150,
-  logList: []
+  logList: [],
+  // 加密字段
+  originalBuyerNameEncrypt: '',
+  originalBuyerPhoneEncrypt: '',
+  originalIdCardNoEncrypt: '',
+  newBuyerNameEncrypt: '',
+  newBuyerPhoneEncrypt: '',
+  newIdCardNoEncrypt: '',
 };
 
 export default {
@@ -546,7 +584,8 @@ export default {
     // EditTable,
     AisAttachment,
     FetchSelect,
-    auditDialog
+    auditDialog,
+    LPEncrypted,
   },
   computed: {
     _id () {
