@@ -149,128 +149,49 @@
               <h2>原订单信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm1" label-width="180px" class="form-edit"
-                       v-show="isEditing || !_id">
+              <!-- 原订单信息 - 编辑表单（全部禁用，label-width=150px） -->
+              <el-form :inline="true" :model="form" label-width="150px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="原购车人名称：" prop="originalBuyerName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.originalBuyerName"
-                    clearable
-                    disabled
-                  />
+                  <el-input v-model="form.originalBuyerName" disabled clearable />
                 </el-form-item>
                 <el-form-item label="原购车人手机号码：" prop="originalBuyerPhone">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.originalBuyerPhone"
-                    clearable
-                    disabled
-                  />
+                  <el-input v-model="form.originalBuyerPhone" disabled clearable />
                 </el-form-item>
                 <el-form-item label="原购车人证件类型：" prop="originalIdCardType">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="vehretail_id_card_type"
-                    v-model="form.originalIdCardType"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                    disabled
-                  />
+                  <el-input v-model="form.originalIdCardTypeLabel" disabled clearable />
                 </el-form-item>
                 <el-form-item label="原购车人证件号码：" prop="originalIdCardNo">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.originalIdCardNo"
-                    clearable
-                    disabled
-                  />
+                  <el-input v-model="form.originalIdCardNo" disabled clearable />
                 </el-form-item>
                 <el-form-item label="原代办人：" prop="originalAgentName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.originalAgentName"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="是否完成交车：" prop="deliveryStatus">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="BooleanEnum"
-                    v-model="form.deliveryStatus"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="缴定金时间：" prop="paymentTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.paymentTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="交车时间：" prop="deliveryTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.deliveryTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="订单销售门店：" prop="saleDealerName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.saleDealerName"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="整车订单状态：" prop="originalOrderStatus">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="vehretail_order_status"
-                    v-model="form.originalOrderStatus"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="原订单物料码：" prop="originalMaterialsCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.originalMaterialsCode"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="基本车型：" prop="modelName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.modelName"
-                    clearable
-                    disabled
-                  />
+                  <el-input v-model="form.originalAgentName" disabled clearable />
                 </el-form-item>
                 <el-form-item label="原销售门店：" prop="originalSaleDealerName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.originalSaleDealerName"
-                    clearable
-                    disabled
-                  />
+                  <el-input v-model="form.originalSaleDealerName" disabled clearable />
+                </el-form-item>
+                <el-form-item label="整车订单状态：" prop="originalOrderStatus">
+                  <el-input v-model="form.originalOrderStatusLabel" disabled clearable />
+                </el-form-item>
+                <el-form-item label="原订单物料码：" prop="originalMaterialsCode">
+                  <el-input v-model="form.originalMaterialsCode" disabled clearable />
+                </el-form-item>
+                <el-form-item label="订单销售门店：" prop="saleDealerName">
+                  <el-input v-model="form.saleDealerName" disabled clearable />
+                </el-form-item>
+                <el-form-item label="缴定金时间：" prop="paymentTime">
+                  <el-input v-model="form.paymentTime" disabled clearable />
+                </el-form-item>
+                <el-form-item label="是否完成交车：" prop="deliveryStatus">
+                  <el-input v-model="form.deliveryStatusLabel" disabled clearable />
+                </el-form-item>
+                <el-form-item label="交车时间：" prop="deliveryTime">
+                  <el-input v-model="form.deliveryTime" disabled clearable />
+                </el-form-item>
+                <el-form-item label="基本车型：" prop="modelName">
+                  <el-input v-model="form.modelName" disabled clearable />
                 </el-form-item>
               </el-form>
+              <!-- 原订单信息 - 详情展示 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="原购车人名称：" prop="originalBuyerName">
                   {{ form.originalBuyerName }}
