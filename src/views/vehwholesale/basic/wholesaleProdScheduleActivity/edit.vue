@@ -59,6 +59,7 @@
                       :precision="0"
                     />
                 </el-form-item>
+                <!-- 允许锁零售单：选择【否】时，下方【允许锁零售节点】自动默认为【门店收车】(值=10)；选择【是】时清空节点 -->
                  <el-form-item label="允许锁零售单：" prop="allowLockRetail">
                   <fetch-select
                       :request="fetchOptions"
@@ -67,8 +68,10 @@
                       placeholder="请选择"
                       clearable
                       filterable
+                      @change="handleAllowLockRetailChange"
                     />
                 </el-form-item>
+                <!-- 允许锁零售节点：受【允许锁零售单】联动控制，非必填 -->
                 <el-form-item label="允许锁零售节点：" prop="allowLockNode">
                   <fetch-select
                       :request="fetchOptions"
@@ -215,7 +218,7 @@
                  <el-form>
                   <el-form-item label="">
                     <el-button v-if ='canImport' size="small" @click="handleAddRow" style="margin-left: 15px;">活动明细导入</el-button>
-                    <el-button v-if ='perupdateQuotaQty' size="small" @click="handleChangeQty" style="margin-left: 15px;">配额调整</el-button>
+                    <el-button v-if ='perupdateQuotaQty' size="small" :disabled="selectionList.length === 0" @click="handleChangeQty" style="margin-left: 15px;">配额调整</el-button>
                   </el-form-item>
                 </el-form>
               </div>
@@ -596,7 +599,6 @@ export default {
           { validator: validateTotalQuotaQty, trigger: 'change' }
         ],
         allowLockNode: [
-          { required: true, message: '请输入允许锁零售节点', trigger: 'change' }
         ],
         usedQuotaQty: [
           { required: true, message: '请输入已提报数量', trigger: 'change' },
@@ -617,6 +619,15 @@ export default {
     initPermissions () {
       this.perupdateQuotaQty = this.permissions.has(`${this.moduleKey}-updateQuotaQty`);
     },
+    handleAllowLockRetailChange (val) {
+      // BooleanEnum：1=是，0=否（FetchSelect 会将数字 code 转成字符串，所以需兼容 '0'/'1'）
+      // 选择【是】时清空节点；选择【否】时默认【门店收车】(值=10)
+      if (val === 1 || val === '1' || val === true || val === 'true') {
+        this.form.allowLockNode = '';
+      } else {
+        this.form.allowLockNode = 10;
+      }
+    },
     changeSure () {
       const ids = this.selectionList.map(item => item.id) || [];
       const submitForm = {
@@ -630,6 +641,12 @@ export default {
           message: '修改成功',
           type: 'success'
         });
+        // 清空选中状态，避免下次编辑仍带选中的明细ID
+        this.selectionList = [];
+        if (this.$refs.editTable && this.$refs.editTable.clearSelection) {
+          this.$refs.editTable.clearSelection();
+        }
+        this.changeform = { totalQuotaQty: '' };
         this.getList();
         this.getDetailData();
         this.totalQuotaQtyDialogVisible = false;
@@ -745,7 +762,11 @@ export default {
       }
     },
     submitRequest () {
-      return addOrUpdate({ ...this.form }).then(() => {
+      // 后端约定：空值传 null 而非空串
+      const submitForm = { ...this.form };
+      if (submitForm.allowLockRetail === '') submitForm.allowLockRetail = null;
+      if (submitForm.allowLockNode === '') submitForm.allowLockNode = null;
+      return addOrUpdate(submitForm).then(() => {
         this.getList();
       });
     },
