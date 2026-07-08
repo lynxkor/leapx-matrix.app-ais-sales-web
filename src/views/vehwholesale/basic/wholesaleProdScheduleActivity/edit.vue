@@ -218,7 +218,7 @@
                  <el-form>
                   <el-form-item label="">
                     <el-button v-if ='canImport' size="small" @click="handleAddRow" style="margin-left: 15px;">活动明细导入</el-button>
-                    <el-button v-if ='perupdateQuotaQty' size="small" @click="handleChangeQty" style="margin-left: 15px;">配额调整</el-button>
+                    <el-button v-if ='perupdateQuotaQty' size="small" :disabled="selectionList.length === 0" @click="handleChangeQty" style="margin-left: 15px;">配额调整</el-button>
                   </el-form-item>
                 </el-form>
               </div>
@@ -641,6 +641,12 @@ export default {
           message: '修改成功',
           type: 'success'
         });
+        // 清空选中状态，避免下次编辑仍带选中的明细ID
+        this.selectionList = [];
+        if (this.$refs.editTable && this.$refs.editTable.clearSelection) {
+          this.$refs.editTable.clearSelection();
+        }
+        this.changeform = { totalQuotaQty: '' };
         this.getList();
         this.getDetailData();
         this.totalQuotaQtyDialogVisible = false;
@@ -756,7 +762,11 @@ export default {
       }
     },
     submitRequest () {
-      return addOrUpdate({ ...this.form }).then(() => {
+      // 后端约定：空值传 null 而非空串
+      const submitForm = { ...this.form };
+      if (submitForm.allowLockRetail === '') submitForm.allowLockRetail = null;
+      if (submitForm.allowLockNode === '') submitForm.allowLockNode = null;
+      return addOrUpdate(submitForm).then(() => {
         this.getList();
       });
     },
