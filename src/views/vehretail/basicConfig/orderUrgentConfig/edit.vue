@@ -183,7 +183,7 @@ const defaultForm = {
   modifierName: '',
   updateTime: '',
   remark: '',
-  status: '',
+  status: 1,
   statusDesc: '',
   seriesId: '',
   seriesName: '',
