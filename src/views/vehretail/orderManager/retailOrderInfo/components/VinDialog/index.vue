@@ -125,19 +125,23 @@ export default {
     };
   },
   methods: {
+    // 根据外部参数构建 searchForm：若包含 materialsCode，则转换为 materialsCodeList
+    async buildSearchForm (params) {
+      const { materialsCode, saleDealerCode } = params;
+      if (materialsCode) {
+        const matchRes = await materialsCodeGetList({ materialsCode: materialsCode, status: 1 });
+        const materialsCodeList = (matchRes.records || []).map(item => item.matchMaterialsCode);
+        return { ...defaultSearchForm, materialsCodeList: [...materialsCodeList, materialsCode], saleDealerCode: saleDealerCode };
+      }
+      return { ...defaultSearchForm, ...params };
+    },
+
     // 打开对话框
     async show (params, data) {
       this.dialogVisible = true;
       // 保存外部传入的固定参数，重置时需要保留
       this.externalParams = { ...params };
-      const { materialsCode, saleDealerCode } = params;
-      if (materialsCode) {
-        const matchRes = await materialsCodeGetList({ materialsCode: materialsCode, status: 1 });
-        const materialsCodeList = (matchRes.records || []).map(item => item.matchMaterialsCode);
-        this.searchForm = { ...defaultSearchForm, materialsCodeList: [...materialsCodeList, materialsCode], saleDealerCode: saleDealerCode };
-      } else {
-        this.searchForm = { ...defaultSearchForm, ...params };
-      }
+      this.searchForm = await this.buildSearchForm(params);
       this.data = data;
       this.loadData();
     },
@@ -189,8 +193,8 @@ export default {
     },
 
     // 重置
-    handleReset () {
-      this.searchForm = { ...defaultSearchForm, ...this.externalParams };
+    async handleReset () {
+      this.searchForm = await this.buildSearchForm(this.externalParams);
       this.currentPage = 1;
       this.loadData();
     },
