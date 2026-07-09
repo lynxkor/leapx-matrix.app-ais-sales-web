@@ -573,17 +573,16 @@
                 <el-form-item label="证件类型：" prop="idCardTypeLabel">
                   {{ form.idCardTypeLabel }}
                 </el-form-item>
-                <el-form-item v-show="form.refundStatus === 1030 && (isEditing || !_id)" label="订单取消说明：" prop="orderCancelDescp">
+                <el-form-item v-show="canOrderCancelDescp && form.refundStatus === 1030 && (isEditing || !_id)" label="订单取消说明：" prop="orderCancelDescp">
                   <el-input
                     placeholder="请输入"
                     maxlength="100"
                     show-word-limit
                     v-model="form.orderCancelDescp"
-                    :disabled="!(form.refundStatus === 1030 && (isEditing || !_id))"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item v-show="!(form.refundStatus === 1030 && (isEditing || !_id))" label="订单取消说明：" prop="orderCancelDescp">
+                <el-form-item v-show="!(canOrderCancelDescp && form.refundStatus === 1030 && (isEditing || !_id))" label="订单取消说明：" prop="orderCancelDescp">
                   {{ form.orderCancelDescp }}
                 </el-form-item>
                 <!-- 第3行：交付门店 | 购车人名称 | 代办联系人 | 订单取消时间 -->
@@ -1001,6 +1000,7 @@ export default {
       canPreApprove: false, // 初审
       canApprove: false, // 审核
       canFinalApprove: false, // 终审
+      canOrderCancelDescp: false, // 终审
       loading: false,
       submitLoading: false,
       // 字段权限控制
@@ -1118,6 +1118,7 @@ export default {
       this.canPreApprove = this.permissions.has(`${this.moduleKey}-preApprove`);
       this.canApprove = this.permissions.has(`${this.moduleKey}-approve`);
       this.canFinalApprove = this.permissions.has(`${this.moduleKey}-finalApprove`);
+      this.canOrderCancelDescp = this.permissions.has(`${this.moduleKey}-orderCancelDescp`);
       // 字段权限控制初始化
       this.vrFinanceOrder = this.permissions.has(`${this.moduleKey}-vrFinanceOrder`);
       this.vehicleVdcInventoryLedger = this.permissions.has(`${this.moduleKey}-vehicleVdcInventoryLedger`);
