@@ -1405,11 +1405,12 @@ export default {
         this.form.orderStatuses = ['0', '10', '11'];
         this.form.confirmStatuses = ['1020'];
       } else if (this.tabName === '6') {
-        // 未出质量 ①订单状态：已完成配车、已提交结算、SAP结算中、结算失败、取消结算、结算成功；②车辆交付状态：VDC入库、计划发运；③整车物流预留：是；④整车物流预留备注：质量问题（模糊查询）
+        // 未出质量 ①订单状态：已完成配车、已提交结算、SAP结算中、结算失败、取消结算、结算成功；
+        // ②车辆交付状态：VDC入库、计划发运、VDC出库 ；③整车物流预留：是；④整车物流预留备注：质量问题（模糊查询）
         this.form.orderStatuses = ['1', '2', '21', '4', '5', '3'];
         this.form.logisticsReserve = '1';
         this.form.logisticsReserveRemarks = ['质量问题'];
-        this.form.deliveryStatuses = ['3', '4'];
+        this.form.deliveryStatuses = ['3', '4', '5'];
       }
       this.getData();
     },
