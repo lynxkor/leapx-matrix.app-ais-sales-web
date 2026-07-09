@@ -1424,7 +1424,7 @@ export default {
         // ②车辆交付状态：VDC入库、计划发运、VDC出库 ；③整车物流预留：是；④整车物流预留备注：质量问题（模糊查询）
         this.form.orderStatuses = ['1', '2', '21', '4', '5', '3'];
         this.form.logisticsReserve = '1';
-        this.form.logisticsReserveRemarks = ['质量问题'];
+        this.form.logisticsReserveRemarks = ['质量', '追溯'];
         this.form.deliveryStatuses = ['3', '4', '5'];
       }
       this.getData();
