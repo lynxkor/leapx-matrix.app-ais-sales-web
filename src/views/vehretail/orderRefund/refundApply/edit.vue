@@ -98,6 +98,7 @@
                     placeholder="请输入"
                     v-model="form.refundReason"
                     type="textarea"
+                    :disabled="!form.refundReasonChanged || form.refundReasonChanged === 0"
                     clearable
                   />
                 </el-form-item>
@@ -370,13 +371,8 @@
                 <el-form-item v-if="specRemarkShow" label="特殊备注：" prop="specialRemark">
                   {{ form.specialRemark }}
                 </el-form-item>
-                <el-form-item label="退订附件上传要求：" prop="refundAttachRequired">
-                  <el-input
-                    v-model="form.refundAttachRequired"
-                    type="textarea"
-                    disabled
-                    clearable
-                  />
+                <el-form-item v-if="specRemarkShow" label="退订附件上传要求：" prop="refundAttachRequired">
+                  {{ form.refundAttachRequired }}
                 </el-form-item>
               </el-form>
             </div>
@@ -1232,6 +1228,7 @@ export default {
       this.form.cateCode = val ? selectedOption.cateCode : '';
       this.form.cateName = val ? selectedOption.cateName : '';
       this.form.refundReason = val ? selectedOption.refundReasonDefault : '';
+      this.form.refundReasonChanged = val ? selectedOption.refundReasonChanged : 0;
       this.form.depositRefundType = val ? selectedOption.refundTypeDefault + '' : null;
       this.form.refundAttachRequired = val ? selectedOption.refundAttachRequired : null;
       this.form.refundTypeSelect = val ? selectedOption.refundTypeSelect : null;
