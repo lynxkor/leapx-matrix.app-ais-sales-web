@@ -150,14 +150,14 @@
             </div>
             <div class="common-section-body">
               <!-- 原订单信息 - 编辑表单（全部禁用，label-width=150px） -->
-              <el-form :inline="true" :model="form" label-width="150px" class="form-edit" v-show="isEditing || !_id">
+              <el-form :inline="true" :model="form" ref="ruleForm1" label-width="180px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="原购车人名称：" prop="originalBuyerName">
                   <el-input v-model="form.originalBuyerName" disabled clearable />
                 </el-form-item>
                 <el-form-item label="原购车人手机号码：" prop="originalBuyerPhone">
                   <el-input v-model="form.originalBuyerPhone" disabled clearable />
                 </el-form-item>
-                <el-form-item label="原购车人证件类型：" prop="originalIdCardType">
+                <el-form-item label="原购车人证件类型：" prop="originalIdCardTypeLabel">
                   <el-input v-model="form.originalIdCardTypeLabel" disabled clearable />
                 </el-form-item>
                 <el-form-item label="原购车人证件号码：" prop="originalIdCardNo">
@@ -169,7 +169,7 @@
                 <el-form-item label="原销售门店：" prop="originalSaleDealerName">
                   <el-input v-model="form.originalSaleDealerName" disabled clearable />
                 </el-form-item>
-                <el-form-item label="整车订单状态：" prop="originalOrderStatus">
+                <el-form-item label="整车订单状态：" prop="originalOrderStatusLabel">
                   <el-input v-model="form.originalOrderStatusLabel" disabled clearable />
                 </el-form-item>
                 <el-form-item label="原订单物料码：" prop="originalMaterialsCode">
@@ -181,7 +181,7 @@
                 <el-form-item label="缴定金时间：" prop="paymentTime">
                   <el-input v-model="form.paymentTime" disabled clearable />
                 </el-form-item>
-                <el-form-item label="是否完成交车：" prop="deliveryStatus">
+                <el-form-item label="是否完成交车：" prop="deliveryStatusLabel">
                   <el-input v-model="form.deliveryStatusLabel" disabled clearable />
                 </el-form-item>
                 <el-form-item label="交车时间：" prop="deliveryTime">
@@ -1108,22 +1108,14 @@ export default {
       return await retailOrderPage(params);
     },
     retailOrderChange (val, selectedOption) {
+      this.$refs.ruleForm.resetFields();
+      this.$refs.ruleForm1.resetFields();
+      this.$refs.ruleForm2.resetFields();
       if (val) {
         legalVerification(selectedOption.retailOrderCode)
           .then(res => {
-            retailOrderInfo(selectedOption.id).then(res => {
-              this.refreshOrderInfo(val, res);
-            });
-          })
-          .catch(() => {
-            this.$refs.ruleForm.resetFields();
-            this.$refs.ruleForm1.resetFields();
-            this.$refs.ruleForm2.resetFields();
+            this.refreshOrderInfo(val, selectedOption);
           });
-      } else {
-        this.$refs.ruleForm.resetFields();
-        this.$refs.ruleForm1.resetFields();
-        this.$refs.ruleForm2.resetFields();
       }
     },
     refreshOrderInfo (val, selectedOption) {
@@ -1137,17 +1129,19 @@ export default {
       this.form.modelName = val ? selectedOption.modelName : '';
       this.form.originalBuyerName = val ? selectedOption.carBuyerName : '';
       this.form.originalBuyerPhone = val ? selectedOption.carBuyerPhone : '';
-      this.form.originalIdCardType = val ? selectedOption.carOwner.idCardType : 1;
-      this.form.originalIdCardNo = val ? selectedOption.carOwner.idCardNo : '';
-      this.form.originalAgentName = val ? selectedOption.carOwner.agentName : '';
+      this.form.originalIdCardType = val ? selectedOption.idCardType : null;
+      this.form.originalIdCardNo = val ? selectedOption.idCardNo : '';
+      this.form.originalAgentName = val ? selectedOption.agentName : '';
       this.form.originalSaleDealerCode = val ? selectedOption.saleDealerCode : '';
       this.form.originalSaleDealerName = val ? selectedOption.saleDealerName : '';
-      this.form.originalMaterialsCode = val ? selectedOption.materials.materialsCode : '';
+      this.form.originalMaterialsCode = val ? selectedOption.materialsCode : '';
       this.form.paymentTime = val ? selectedOption.paymentTime : '';
       this.form.deliveryTime = val ? selectedOption.deliveryTime : '';
       this.form.deliveryStatus = val && selectedOption.deliveryTime ? 1 : 0;
+      this.form.deliveryStatusLabel = val && selectedOption.deliveryTime ? '是' : '否';
       this.form.dataSource = val ? selectedOption.dataSource : null;
       this.form.originalOrderStatus = val ? selectedOption.orderStatus : null;
+      this.form.originalOrderStatusLabel = val ? selectedOption.orderStatusLabel : null;
     },
     async changeReasonSearch (val) {
       const params = {

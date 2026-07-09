@@ -1242,16 +1242,12 @@ export default {
       return await retailOrderPage(params);
     },
     retailOrderChange (val, selectedOption) {
+      this.$refs.ruleForm.resetFields();
       if (val) {
         legalVerification(selectedOption.retailOrderCode)
           .then(res => {
             this.refreshOrderInfo(val, selectedOption);
-          })
-          .catch(() => {
-            this.$refs.ruleForm.resetFields();
           });
-      } else {
-        this.$refs.ruleForm.resetFields();
       }
     },
     refreshOrderInfo (val, selectedOption) {
