@@ -859,6 +859,21 @@ export default {
       }
     };
   },
+  watch: {
+    show (newVal) {
+      if (newVal) {
+        // TagInput 组件挂载时不会同步已有 value（其 value watcher 未设置 immediate），
+        // 需要重新触发赋值才能让物流预留备注回填
+        const remarks = this.form.logisticsReserveRemarks;
+        if (remarks && remarks.length) {
+          this.form.logisticsReserveRemarks = [];
+          this.$nextTick(() => {
+            this.form.logisticsReserveRemarks = remarks;
+          });
+        }
+      }
+    }
+  },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.handleClickTab();

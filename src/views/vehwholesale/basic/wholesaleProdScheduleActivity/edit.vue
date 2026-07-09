@@ -363,7 +363,7 @@ const defaultForm = {
   allowLockRetail: '',
   totalQuotaQty: '',
   usedQuotaQty: '',
-  allowLockNode: 10
+  allowLockNode: ''
 };
 
 export default {
