@@ -707,6 +707,7 @@ import {
   deleteItem,
   getDetail
 } from '@/api/vehretail/orderManager/deliveryInvoice/index';
+import { getByCode } from '@/libs/api/attachment/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -990,8 +991,28 @@ export default {
     };
   },
   mounted () {
+    this.loadAttachmentConfig();
   },
   methods: {
+    // 初始化时调用 getByCode 获取附件配置，覆盖 attachmentList 中的 required/maxNum/minNum
+    async loadAttachmentConfig () {
+      try {
+        const configRes = await getByCode({ configCode: 'mcs_vehnetwork' });
+        const detailList = configRes?.data?.detailList || [];
+        this.attachmentList = this.attachmentList.map(item => {
+          const detail = detailList.find(d => d.attachType === item.attachType);
+          if (!detail) return item;
+          return {
+            ...item,
+            required: String(detail.required) === '1',
+            maxNum: Number(detail.maxNum) || 0,
+            minNum: Number(detail.minNum) || 0
+          };
+        });
+      } catch (e) {
+        console.error('附件配置加载失败，沿用本地默认配置:', e);
+      }
+    },
     // 附件上传loading变化
     handleUploadLoadingChange (loading) {
       if (loading) {
@@ -1162,7 +1183,25 @@ export default {
         return getDetail(id);
       }
     },
-    submitRequest () {
+    async submitRequest () {
+      // 按 attachmentList 中由后端覆盖后的 required/minNum/maxNum 进行校验
+      const errorList = [];
+      this.attachmentList.forEach((item, index) => {
+        const refName = 'attachment' + index;
+        const fileLength = this.$refs[refName]?.[0]?.getFileList?.()?.length || 0;
+        const { required, minNum = 0, maxNum = 0 } = item;
+        if (required && fileLength < 1) {
+          errorList.push(`【${item.label}】为必填附件，请上传`);
+        } else if (minNum > 0 && fileLength < minNum) {
+          errorList.push(`【${item.label}】至少上传 ${minNum} 个附件`);
+        } else if (maxNum > 0 && fileLength > maxNum) {
+          errorList.push(`【${item.label}】最多上传 ${maxNum} 个附件`);
+        }
+      });
+      if (errorList.length > 0) {
+        this.$message.error(errorList.join('；'));
+        throw new Error('附件校验未通过');
+      }
       return addOrUpdate({ ...this.form });
     },
     // 打开侧边栏
