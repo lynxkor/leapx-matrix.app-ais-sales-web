@@ -504,7 +504,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-import { getList as retailOrderPage, getDetail as retailOrderInfo } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { pageNoDesensitize as retailOrderPage, getDetail as retailOrderInfo } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import { fetchReasonLabelList } from '@/api/vehretail/orderRefund/changeReason';
 
 const defaultForm = {

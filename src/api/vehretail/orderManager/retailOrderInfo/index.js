@@ -12,6 +12,14 @@ export function getList (data) {
 };
 
 /**
+ * 查询列表
+ * @param {Object} data
+ */
+export function pageNoDesensitize (data) {
+  return api.jsonPost(prefix + 'pageNoDesensitize', data);
+};
+
+/**
  * 聚合查询列表
  * @param {Object} data
  */
