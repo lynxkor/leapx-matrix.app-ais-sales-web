@@ -162,6 +162,8 @@
         <el-button v-permission="moduleKey+'-setAutoAllocate'" size="small" :disabled="selectionList.length === 0" @click="handleBatchSetNotAutoAllocate">批量设置不自动配车</el-button>
         <el-button v-permission="moduleKey+'-setEmergencyOrder'" size="small" :disabled="selectionList.length === 0" @click="handleSetEmergencyOrder">设置急单</el-button>
         <el-button v-permission="moduleKey+'-setEmergencyOrder'" size="small" :disabled="selectionList.length === 0" @click="handleCancelEmergencyOrder">取消急单</el-button>
+        <el-button v-permission="moduleKey+'-editRemark'" size="small" :disabled="selectionList.length === 0" @click="handleEditRemark">订单备注</el-button>
+        <el-button v-permission="moduleKey+'-setSettleFundType'" size="small" :disabled="selectionList.length === 0" @click="handleSetSettleFundType">资金类型设置</el-button>
         <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       </button-group>
     </div>
@@ -203,6 +205,37 @@
       :emergency-ids="selectionList.map(item => item.id)"
       @confirm="emergencyApproval"
     />
+
+    <el-dialog title="订单备注" width="400px" :visible.sync="showEditRemarkDialog">
+      <el-form :model="remarkForm" label-position="top">
+        <el-form-item>
+          <el-input type="textarea" v-model="remarkForm.remark" placeholder="请输入备注内容" rows="4" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" @click="showEditRemarkDialog = false">取消</el-button>
+        <el-button size="small" type="primary" :disabled="!remarkForm.remark.trim()" @click="confirmEditRemark">确定</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="资金类型设置" width="450px" :visible.sync="showSetSettleFundTypeDialog">
+      <el-form :model="settleFundTypeForm" label-position="right" label-width="120px">
+        <el-form-item label="结算资金类型">
+          <el-select v-model="settleFundTypeForm.settleFundType" placeholder="请选择结算资金类型" style="width: 250px">
+            <el-option v-for="item in fundTypeList" :key="item.id" :label="item.name" :value="item.id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="settleFundTypeForm.settleFundType === '2010'" label="融资机构">
+          <el-select v-model="settleFundTypeForm.financialOrganizationId" placeholder="请选择融资机构" style="width: 250px">
+            <el-option v-for="item in financialOrgList" :key="item.id" :label="item.name" :value="item.id" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" @click="showSetSettleFundTypeDialog = false">取消</el-button>
+        <el-button size="small" type="primary" :disabled="!canSubmitSettleFundType" @click="confirmSetSettleFundType">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -210,8 +243,8 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, batchAllocateSubmit, batchCancelAllocateSubmit, batchCancelOrders, batchCancelSettleSubmit, batchSettleSubmit, setAutoAllocate, setEmergencyOrder } from '@/api/vehwholesale/entorder/entVehicleOrder/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { setSettleFundType, queryEntCustomerFundTypes, getList, deleteItem, enableItem, batchAllocateSubmit, batchCancelAllocateSubmit, batchCancelOrders, batchCancelSettleSubmit, batchSettleSubmit, setAutoAllocate, setEmergencyOrder, editRemark } from '@/api/vehwholesale/entorder/entVehicleOrder/index';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -221,7 +254,6 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import { getList as fundGetList } from '@/api/vehwholesale/fund/fundFinancialOrganization/index';
-import { networkParentCompanyItem } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
 import { getList as companyList } from '@/api/vehwholesale/fund/fundSaleCompany/index';
 import BatchCancelInput from './BatchCancelInput.vue';
 import SetEmergencyOrderInput from './SetEmergencyOrderInput.vue';
@@ -276,6 +308,17 @@ export default {
       settleStatusOptions: [],
       showBatchCancelDialog: false,
       showSetEmergencyOrderDialog: false,
+      showEditRemarkDialog: false,
+      remarkForm: {
+        remark: ''
+      },
+      showSetSettleFundTypeDialog: false,
+      settleFundTypeForm: {
+        settleFundType: '',
+        financialOrganizationId: ''
+      },
+      fundTypeList: [],
+      financialOrgList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -482,6 +525,17 @@ export default {
       ]
     };
   },
+  computed: {
+    canSubmitSettleFundType () {
+      if (!this.settleFundTypeForm.settleFundType) {
+        return false;
+      }
+      if (this.settleFundTypeForm.settleFundType === '2010') {
+        return !!this.settleFundTypeForm.financialOrganizationId;
+      }
+      return true;
+    }
+  },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.getData();
@@ -563,6 +617,74 @@ export default {
     },
     handleSetEmergencyOrder () {
       this.showSetEmergencyOrderDialog = true;
+    },
+    handleEditRemark () {
+      this.showEditRemarkDialog = true;
+      this.remarkForm.remark = '';
+    },
+    async confirmEditRemark () {
+      const ids = this.selectionList.map(item => item.id);
+
+      try {
+        await editRemark({
+          ids,
+          remark: this.remarkForm.remark
+        });
+        this.$message({
+          type: 'success',
+          message: '操作成功!'
+        });
+        this.showEditRemarkDialog = false;
+        this.getData();
+      } catch (error) {
+        console.error('editRemark error:', error);
+      }
+    },
+    handleSetSettleFundType () {
+      const customerCodes = [...new Set(this.selectionList.map(item => item.entCustomerCode))];
+      if (customerCodes.length > 1) {
+        this.$message({
+          type: 'error',
+          message: '请选择同一企业客户的订单!'
+        });
+        return;
+      }
+      this.settleFundTypeForm = {
+        settleFundType: '',
+        financialOrganizationId: ''
+      };
+      const ids = this.selectionList.map(item => item.id);
+      queryEntCustomerFundTypes({ ids }).then(res => {
+        this.fundTypeList = res.fundTypeList || [];
+        this.financialOrgList = res.financialOrgList || [];
+        this.showSetSettleFundTypeDialog = true;
+      }).catch(() => {
+        this.$message({
+          type: 'error',
+          message: '查询资金类型失败!'
+        });
+      });
+    },
+    confirmSetSettleFundType () {
+      const ids = this.selectionList.map(item => item.id);
+      const params = {
+        ids,
+        settleFundType: this.settleFundTypeForm.settleFundType,
+        financialOrganizationId: this.settleFundTypeForm.settleFundType === '2010' ? this.settleFundTypeForm.financialOrganizationId : undefined
+      };
+      setSettleFundType(params).then(() => {
+        this.$message({
+          type: 'success',
+          message: '操作成功!'
+        });
+        this.showSetSettleFundTypeDialog = false;
+        this.getData();
+      }).catch(() => {
+        this.$message({
+          type: 'error',
+          message: '操作失败!'
+        });
+      });
     },
     handleBatchSetNotAutoAllocate () {
       const ids = this.selectionList.map(item => item.id) || [];
@@ -679,7 +801,7 @@ export default {
       }).catch(() => {});
     },
     async listNetworkParentCompany (query) {
-      return networkParentCompanyItem({ parentCompanyName: query, pageNum: 1, pageSize: 20 });
+      return getParentCompany({ parentCompanyName: query });
     },
     async repairItemSearch (query) {
       return fundGetList({ organizationNameLike: query, status: 1 });
