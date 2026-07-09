@@ -398,7 +398,7 @@
             </div>
             <div class="common-section-body">
               <!-- 订单信息 - 编辑表单（全部禁用） -->
-              <el-form :inline="true" :model="form" label-width="150px" class="form-edit" v-show="(isEditing || !_id) && form.refundStatus === 1030">
+              <el-form :inline="true" :model="form" label-width="150px" class="form-edit" v-show="(isEditing || !_id) && (!form.refundStatus || form.refundStatus !== 1030)">
                 <!-- 第1行：整车订单状态 | 商城订单编号 | 购车人手机号码 | 订单取消原因 -->
                 <el-form-item label="整车订单状态：" prop="orderStatusLabel">
                   <el-input
@@ -541,7 +541,7 @@
                 </el-form-item>
               </el-form>
               <!-- 订单信息 - 详情展示 -->
-              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id) || (isEditing && form.refundStatus !== 1030)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id) || (isEditing && form.refundStatus === 1030)">
                 <!-- 第1行：整车订单状态 | 商城订单编号 | 购车人手机号码 | 订单取消原因 -->
                 <el-form-item label="整车订单状态：" prop="orderStatus">
                   <span class="status-tag link">{{ form.orderStatusLabel }}</span>
@@ -859,7 +859,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-import { getList as retailOrderPage } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { pageNoDesensitize as retailOrderPage } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import { fetchCategoryList } from '@/api/vehretail/orderRefund/category';
 import RefundApplyAuditDialog from '@/views/vehretail/orderRefund/refundApply/auditDialog';
 import { getList as getMaterialInfoList } from '@/api/datacenter/materials/vehicleMaterials/index';
