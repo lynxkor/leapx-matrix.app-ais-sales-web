@@ -301,7 +301,9 @@
                   ref="detailTableRef"
                   :tableData="form.details"
                   :columns="detailsColumns"
-                  :show-delete="form.permission.edit && _id && perEdit"
+                  :can-edit="form.permission.edit && _id && perEdit"
+                  :can-edit-detail="form.permission.editDetail && _id && perEdit"
+                  :can-delete="form.permission.edit && _id && perEdit"
                   @delete-row="handleDeleteDetailRow"
                   @save-row="handleSaveDetailRow"
                 >
@@ -401,6 +403,7 @@
 
 <script>
 import { getDetail, addOrUpdate, dealerAuditValid, factoryAuditValid, dealerApproval, factoryApproval, unusedApply, replenishmentSubmit } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApply/index';
+import { addOrUpdate as addOrUpdateDetail } from '@/api/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/index';
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
@@ -456,7 +459,14 @@ const defaultForm = {
   reviewUserId: '',
   reviewTime: '',
   reviewOpinion: '',
-  permission: '',
+  permission: {
+    cancel: false,
+    dealerAudit: false,
+    edit: false,
+    editDetail: false,
+    factoryAudit: false,
+    submit: false
+  },
   isCreditSale: 0,
   dealerWarehouseAddress: '',
   auditDateTime: '',
@@ -638,9 +648,22 @@ export default {
       }).catch(() => {
       });
     },
-    handleSaveDetailRow () {
+    handleSaveDetailRow (row) {
+      // 仅 editDetail 权限：调用明细行级接口 addOrUpdateDetail，成功后刷新详情
+      if (this.form.permission.editDetail && !this.form.permission.edit) {
+        this.$set(row, 'replenishApplyId', this._id);
+        return addOrUpdateDetail(row).then(() => {
+          this.$message.success('开票信息保存成功');
+          this.$refs.containerRef.loadDetail();
+          return true;
+        }).catch(() => {
+          this.$message.error('开票信息保存失败');
+          return false;
+        });
+      }
+      // edit 权限：维持原有整单保存逻辑
       this.updateApplyTotalQty();
-      this.submitRequest();
+      return this.submitRequest();
     },
     handleSave () {
       const dataList = this.$refs.addCommercialVehicle.tableList;
@@ -687,6 +710,8 @@ export default {
           if (data && data.orderCategory !== undefined && data.orderCategory !== null) {
             data.orderCategory = String(data.orderCategory);
           }
+          // 兜底 permission：后端可能返回 null/空字符串/部分字段，避免覆盖默认对象导致模板中 form.permission.edit 抛错
+          data.permission = { ...defaultForm.permission, ...(data.permission || {}) };
           if (data && data.dealerFundAccounts) {
             data.dealerFundAccounts = data.dealerFundAccounts.map(account => {
               // 处理原有的信用额度逻辑

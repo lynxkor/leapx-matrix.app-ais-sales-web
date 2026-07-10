@@ -20,10 +20,12 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_replenish_audit_status"
-          v-model="form.auditStatus"
+          v-model="form.auditStatusList"
           placeholder="请选择"
           clearable
           filterable
+          multiple
+          collapse-tags
         />
       </el-form-item>
       <template v-if="show">
@@ -73,30 +75,36 @@
         <el-form-item label="订单分类">
           <fetch-select
             :options="orderCategoryOptions"
-            v-model="form.orderCategory"
+            v-model="form.orderCategoryList"
             placeholder="请选择"
             clearable
             filterable
+            multiple
+            collapse-tags
           />
         </el-form-item>
         <el-form-item label="申请类别">
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_replenish_apply_type"
-            v-model="form.applyCategory"
+            v-model="form.applyCategoryList"
             placeholder="请选择"
             clearable
             filterable
+            multiple
+            collapse-tags
           />
         </el-form-item>
         <el-form-item label="结算资金类型">
           <fetch-select
             :options="settleFundTypeOptions"
             enumCode="vw_fundtype"
-            v-model="form.settleFundType"
+            v-model="form.settleFundTypeList"
             placeholder="请选择"
             clearable
             filterable
+            multiple
+            collapse-tags
           />
         </el-form-item>
         <el-form-item label="金融机构">
@@ -106,10 +114,12 @@
             reserve-keyword
             labelKey="name"
             valueKey="id"
-            v-model="form.financialOrganizationId"
+            v-model="form.financialOrganizationIdList"
             placeholder="请选择"
             clearable
             filterable
+            multiple
+            collapse-tags
           />
         </el-form-item>
         <el-form-item label="审批时间">
@@ -222,16 +232,16 @@ import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   replenishApplyCodes: [],
-  saleDealerCodes: [],
-  auditStatus: '',
+  saleDealerNames: [],
+  auditStatusList: [],
   regionCodes: [],
   wholesaleWay: '',
   prodScheduleActivityId: '',
   serials: '',
-  orderCategory: '',
-  settleFundType: '',
-  applyCategory: '',
-  financialOrganizationId: '',
+  orderCategoryList: [],
+  settleFundTypeList: [],
+  applyCategoryList: [],
+  financialOrganizationIdList: [],
   queryTab: '1',
   auditDateTime: '',
   createTime: '',
@@ -557,6 +567,10 @@ export default {
       if (this.form.replenishApplyCodes && this.form.replenishApplyCodes.length === 1) {
         data.replenishApplyCodeLike = this.form.replenishApplyCodes[0];
         delete data.replenishApplyCodes;
+      }
+      if (this.form.saleDealerNames && this.form.saleDealerNames.length === 1) {
+        data.saleDealerNameLike = this.form.saleDealerNames[0];
+        delete data.saleDealerNames;
       }
       if (this.form.auditDateTime) {
         delete data.auditDateTime;
