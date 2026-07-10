@@ -710,6 +710,8 @@ export default {
           if (data && data.orderCategory !== undefined && data.orderCategory !== null) {
             data.orderCategory = String(data.orderCategory);
           }
+          // 兜底 permission：后端可能返回 null/空字符串/部分字段，避免覆盖默认对象导致模板中 form.permission.edit 抛错
+          data.permission = { ...defaultForm.permission, ...(data.permission || {}) };
           if (data && data.dealerFundAccounts) {
             data.dealerFundAccounts = data.dealerFundAccounts.map(account => {
               // 处理原有的信用额度逻辑
