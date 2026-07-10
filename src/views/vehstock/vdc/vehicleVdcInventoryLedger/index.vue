@@ -195,7 +195,6 @@ const defaultForm = {
   materialsCodeList: [],
   seriesIdList: [],
   modelIdList: [],
-
   shipVia: '',
   vdcCommonCompositeQuery: '',
   lowBatteryCar: 0,
