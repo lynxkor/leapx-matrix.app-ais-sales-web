@@ -372,19 +372,44 @@ export default {
   },
   methods: {
     getExteriorName (val, obj) {
-      this.form.exteriorName = obj.name;
+      if (val) {
+        this.form.exteriorName = obj.name;
+      } else {
+        this.form.exteriorName = null;
+        this.form.exteriorId = null;
+      }
     },
     getInteriorName (val, obj) {
-      this.form.interiorName = obj.name;
+      if (val) {
+        this.form.interiorName = obj.name;
+      } else {
+        this.form.interiorName = null;
+        this.form.interiorId = null;
+      }
     },
     getWheelName (val, obj) {
-      this.form.wheelHubName = obj.name;
+      if (val) {
+        this.form.wheelHubName = obj.name;
+      } else {
+        this.form.wheelHubName = null;
+        this.form.wheelHubId = null;
+      }
     },
     getOptionalName (val, obj) {
-      this.form.optionPackageName = obj.name;
+      if (val) {
+        this.form.optionPackageName = obj.name;
+      } else {
+        this.form.optionPackageName = null;
+        this.form.optionPackageId = null;
+      }
     },
     getCityCode (val, obj) {
-      this.form.cityCode = obj.areaCode;
+      if (val) {
+        this.form.cityCode = obj.areaCode;
+      } else {
+        this.form.cityCode = null;
+        this.form.cityName = null;
+      }
     },
     async getCityList (params) {
       return cityListByName({ cityName: params });
