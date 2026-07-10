@@ -32,6 +32,13 @@
         <el-form-item label="车系">
           <fetch-select v-model="form.seriesIdList" v-bind="selectOptions" :remote-method="remoteMethods.series" />
         </el-form-item>
+        <el-form-item label="车型">
+          <fetch-select
+            v-model="form.modelIdList"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.model"
+          />
+        </el-form-item>
         <el-form-item label="特殊预留备注">
           <el-input placeholder="请输入" v-model="form.specialReserveRemarkLike" clearable />
         </el-form-item>
@@ -154,7 +161,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchUpdateAllowLockNode } from '@/api/vehstock/vdc/vehicleVdcInventoryLedger/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleSalesVersionList, page, factoryInfoPage } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleSalesVersionList, page, factoryInfoPage, listVehicleModel } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -187,6 +194,8 @@ const defaultForm = {
   materialsCodeLike: '',
   materialsCodeList: [],
   seriesIdList: [],
+  modelIdList: [],
+
   shipVia: '',
   vdcCommonCompositeQuery: '',
   lowBatteryCar: 0,
@@ -494,11 +503,25 @@ export default {
         series: async (query) => {
           return await vehicleSeriesList({ seriesNameLike: query });
         },
+        model: async (query) => {
+          return await this.searchModel(query);
+        },
         announcement: async (query) => {
           return await vehicleSalesVersionList({ registeredModelNameLike: query });
         }
       }
     };
+  },
+  watch: {
+    'form.seriesIdList': {
+      handler (newVal) {
+        // 车系变化时清空车型选择
+        this.form.modelIdList = [];
+        this.searchModel();
+      },
+      deep: true,
+      immediate: true
+    }
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
@@ -515,6 +538,20 @@ export default {
       this.$router.push({
         path: '/vehstock/vdc/vehicleVdcInventoryLedger/edit'
       });
+    },
+    // 车型支持车系 ID 和 车型输入 方法
+    async searchModel (query) {
+      const params = {};
+
+      if (query) {
+        params.modelNameLike = query;
+      }
+
+      if (this.form.seriesIdList?.length) {
+        params.seriesIds = this.form.seriesIdList;
+      }
+
+      return await listVehicleModel(params);
     },
     onSubmit () {
       // 重置到第一页
