@@ -10,43 +10,13 @@
       class="ais-search-form"
     >
       <el-form-item label="门店编码">
-        <fetch-select
-          filterable
-          clearable
-          multiple
-          remote
-          collapseTags
-          v-model="form.dealerCodes"
-          :remote-method="getDealerListByCode"
-          value-key="storeCode"
-          label-key="storeCode"
-        />
+        <tag-input v-model="form.dealerCodes" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="门店名称">
-        <fetch-select
-          filterable
-          clearable
-          multiple
-          remote
-          collapseTags
-          v-model="form.dealerNames"
-          :remote-method="getDealerListByName"
-          value-key="storeName"
-          label-key="storeName"
-        />
+        <tag-input v-model="form.dealerNames" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="母公司"  v-show="this.visibleCount === 3 || show">
-        <fetch-select
-          filterable
-          clearable
-          multiple
-          remote
-          collapseTags
-          v-model="form.dealerParentOrgCodeList"
-          :remote-method="getDealerParentOrgList"
-          value-key="companyCode"
-          label-key="companyName"
-        />
+        <tag-input v-model="form.dealerParentOrgNameList" placeholder="请输入" />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="开启自动配车">
@@ -157,12 +127,13 @@ import responsiveSearchForm from '@/libs/mixins/responsive';
 import permissions from '@/libs/mixins/permissions';
 import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
+import TagInput from '@/libs/components/TagInput';
 
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   dealerCodes: [],
   dealerNames: [],
-  dealerParentOrgCodeList: [],
+  dealerParentOrgNameList: [],
   autoAllocationEnabled: '',
   autoSettlementEnabled: '',
   productionRequestEnabled: '',
@@ -181,7 +152,8 @@ export default {
     PageSearchAction,
     LPVxeTable,
     FetchSelect,
-    Upload
+    Upload,
+    TagInput
   },
   data () {
     return {
@@ -416,6 +388,18 @@ export default {
           data.updateTimeStart = this.form.updateTime[0];
           data.updateTimeEnd = this.form.updateTime[1];
         }
+      }
+      if (this.form.dealerParentOrgNameList && this.form.dealerParentOrgNameList.length === 1) {
+        data.dealerParentOrgNameLike = this.form.dealerParentOrgNameList[0];
+        delete data.dealerParentOrgNameList;
+      }
+      if (this.form.dealerCodes && this.form.dealerCodes.length === 1) {
+        data.dealerCodeLike = this.form.dealerCodes[0];
+        delete data.dealerCodes;
+      }
+      if (this.form.dealerNames && this.form.dealerNames.length === 1) {
+        data.dealerNameLike = this.form.dealerNames[0];
+        delete data.dealerNames;
       }
 
       return data;
