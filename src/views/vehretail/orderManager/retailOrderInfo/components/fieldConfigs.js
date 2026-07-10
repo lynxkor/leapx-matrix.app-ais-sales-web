@@ -184,7 +184,12 @@ export const orderChangeApplicationDisplayFields = [
 
 // 锁车解绑申请记录字段配置
 export const unlockApplicationRecordDisplayFields = [
-  { key: 'unlockApplyCode', label: '申请单号' },
+  {
+    key: 'unlockApplyCode',
+    label: '申请单号',
+    link: '/sales/vehretail/orderManager/orderUnlockApply/edit',
+    paramKey: 'id'
+  },
   { key: 'submitTime', label: '提交时间' },
   { key: 'unlockReason', label: '订单解绑原因' },
   { key: 'vin', label: 'VIN号' },

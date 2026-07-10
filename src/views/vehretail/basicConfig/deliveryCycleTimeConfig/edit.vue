@@ -174,7 +174,7 @@ const defaultForm = {
   provinceName: '',
   regionName: '',
   timeValue: '',
-  adjustValue: '',
+  adjustValue: null,
   remark: '',
   statusDesc: '',
   id: '',
@@ -260,7 +260,7 @@ export default {
           { required: true, message: '请选择时效值', trigger: 'change' }
         ],
         adjustValue: [
-          { required: true, message: '请输入调整值', trigger: 'change' }
+          { required: false, message: '请输入调整值', trigger: 'change' }
         ],
         remark: [
           { required: true, message: '请输入备注', trigger: 'change' }
