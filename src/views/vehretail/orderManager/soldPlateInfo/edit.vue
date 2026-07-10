@@ -781,6 +781,8 @@ import { getAreaTree } from '@/utils';
 import { getList as getVehicleProfileList } from '@/api/datacenter/vehicle/vehicleProfile';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 import auditDialog from '@/libs/components/auditDialog/index.vue';
+import { getByCode } from '@/libs/api/attachment/index';
+import { validateAttachments } from '@/libs/utils';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -1134,6 +1136,7 @@ export default {
     };
   },
   mounted () {
+    this.loadAttachmentConfig();
   },
   methods: {
     // 附件上传loading变化
@@ -1173,7 +1176,38 @@ export default {
       return res;
     },
     submitRequest () {
+      // 附件必填与数量上下限校验，逻辑统一在 @/libs/utils -> validateAttachments
+      const { valid, errors } = validateAttachments({
+        attachmentList: this.attachmentList,
+        refs: this.$refs
+      });
+      if (!valid) {
+        this.$message.error(errors.join('；'));
+        return Promise.reject(new Error('附件校验未通过'));
+      }
       return addOrUpdate({ ...this.form });
+    },
+    // 初始化时调用 getByCode 获取附件配置，覆盖 attachmentList 中的 required/maxNum/minNum
+    async loadAttachmentConfig () {
+      try {
+        const configRes = await getByCode({ configCode: 'mcs_subsidies' });
+        // 说明：getByCode 接口经 api.jsonPost 封装的两次 .data 取值后，
+        // 拿到的就是后端的 data 字段本体（顶层是 configCode/configName/detailList，没有再包一层 code/data）。
+        // 因此 detailList 直接挂在 configRes 上，不需要再 .data。
+        const detailList = configRes?.detailList || [];
+        this.attachmentList = this.attachmentList.map(item => {
+          const detail = detailList.find(d => d.attachType === item.attachType);
+          if (!detail) return item;
+          return {
+            ...item,
+            required: String(detail.required) === '1',
+            maxNum: Number(detail.maxNum) || 0,
+            minNum: Number(detail.minNum) || 0
+          };
+        });
+      } catch (e) {
+        console.error('附件配置加载失败，沿用本地默认配置:', e);
+      }
     },
     // 打开侧边栏
     openPane () {

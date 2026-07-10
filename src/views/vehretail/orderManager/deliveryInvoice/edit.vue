@@ -717,6 +717,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
+import { validateAttachments } from '@/libs/utils';
 
 // import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 
@@ -861,132 +862,24 @@ export default {
         { id: 2, name: '李四', age: 30, email: 'lisi@example.com' }
       ],
       rules: {
-        status: [
-          { required: true, message: '请选择整车开票状态', trigger: 'change' }
-        ],
-        deliveryInvoiceCode: [
-          { required: false, message: '请输入开票记录编码', trigger: 'change' }
-        ],
-        deliveryOrderId: [
-          { required: false, message: '请输入交车单ID', trigger: 'change' }
-        ],
-        deliveryOrderCode: [
-          { required: true, message: '请输入交车单', trigger: 'change' }
-        ],
-        retailOrderId: [
-          { required: false, message: '请输入零售订单ID', trigger: 'change' }
-        ],
-        retailOrderCode: [
-          { required: false, message: '请输入零售订单号', trigger: 'change' }
-        ],
-        invoiceCode: [
-          { required: false, message: '请输入发票代码', trigger: 'change' }
-        ],
-        invoiceNo: [
-          { required: true, message: '请输入发票号码', trigger: 'change' }
-        ],
-        invoiceName: [
-          { required: false, message: '请输入开票名称', trigger: 'change' }
-        ],
-        invoiceTime: [
-          { required: true, message: '请选择开票时间', trigger: 'change' }
-        ],
-        invoiceAmount: [
-          { required: false, message: '请输入发票金额', trigger: 'change' }
-        ],
-        vin: [
-          { required: false, message: '请输入发票VIN码', trigger: 'change' }
-        ],
-        certificateNo: [
-          { required: false, message: '请输入发票合格证号', trigger: 'change' }
-        ],
-        engineNumber: [
-          { required: false, message: '请输入发票发动机号', trigger: 'change' }
-        ],
-        brandModel: [
-          { required: false, message: '请输入发票厂牌型号', trigger: 'change' }
-        ],
-        vehiclePlaceOrigin: [
-          { required: false, message: '请输入产地', trigger: 'change' }
-        ],
-        carBuyerName: [
-          { required: false, message: '请输入证件识别的客户姓名', trigger: 'change' }
-        ],
-        idCardNo: [
-          { required: false, message: '请输入证件识别的证件号码', trigger: 'change' }
-        ],
-        vehicleAttribute: [
-          { required: true, message: '请输入车辆属性', trigger: 'change' }
-        ],
-        saleDealerCode: [
-          { required: false, message: '请输入销售门店编码', trigger: 'change' }
-        ],
-        saleDealerName: [
-          { required: true, message: '请输入销售门店', trigger: 'change' }
-        ],
-        deliveryDealerCode: [
-          { required: false, message: '请输入交付门店编码', trigger: 'change' }
-        ],
-        deliveryDealerName: [
-          { required: true, message: '请输入交付门店', trigger: 'change' }
-        ],
-        dataSource: [
-          { required: false, message: '请输入数据来源，150-新销服; 10-老销服', trigger: 'change' }
-        ],
-        orderStatus: [
-          { required: true, message: '请选择零售订单状态', trigger: 'change' }
-        ],
-        depositAmount: [
-          { required: true, message: '请输入定金金额', trigger: 'change' }
-        ],
-        orderSource: [
-          { required: true, message: '请输入订单来源', trigger: 'change' }
-        ],
-        orderTime: [
-          { required: true, message: '请选择商城下单时间', trigger: 'change' }
-        ],
-        orderUserId: [
-          { required: false, message: '请输入用户ID', trigger: 'change' }
-        ],
-        orderCarBuyerName: [
-          { required: true, message: '请输入购车人姓名', trigger: 'change' }
-        ],
-        orderCarBuyerPhone: [
-          { required: true, message: '请输入购车人手机号', trigger: 'change' }
-        ],
-        carIdCardType: [
-          { required: true, message: '请选择车主证件类型', trigger: 'change' }
-        ],
-        orderIdCardType: [
-          { required: false, message: '请选择证件类型标签', trigger: 'change' }
-        ],
-        agentName: [
-          { required: false, message: '请输入代办姓名', trigger: 'change' }
-        ],
-        agentPhone: [
-          { required: false, message: '请输入代办人电话', trigger: 'change' }
-        ],
-        priceAfterSubsidy: [
-          { required: false, message: '请输入补贴后价格', trigger: 'change' }
-        ],
-        materialsCode: [
-          { required: true, message: '请输入订单物料编码', trigger: 'change' }
-        ],
-        allocationMaterialCode: [
-          { required: true, message: '请输入配车物料编码', trigger: 'change' }
-        ],
-        deliveryVin: [
-          { required: false, message: '请输入交车VIN码', trigger: 'change' }
-        ],
-        deliveryTime: [
-          { required: false, message: '请选择交车时间', trigger: 'change' }
-        ],
-        matchVin: [
-          { required: true, message: '请输入配车VIN码', trigger: 'change' }
-        ],
-        paymentTime: [
-          { required: false, message: '请选择缴定金时间', trigger: 'change' }
-        ]
+        // 仅保留实际生效的 required:true 规则；required:false 的不会触发校验，对应字段多为 disabled 输入或后端自动回填
+        status: [{ required: true, message: '请选择整车开票状态', trigger: 'change' }],
+        deliveryOrderCode: [{ required: true, message: '请输入交车单', trigger: 'change' }],
+        invoiceNo: [{ required: true, message: '请输入发票号码', trigger: 'change' }],
+        invoiceTime: [{ required: true, message: '请选择开票时间', trigger: 'change' }],
+        vehicleAttribute: [{ required: true, message: '请输入车辆属性', trigger: 'change' }],
+        saleDealerName: [{ required: true, message: '请输入销售门店', trigger: 'change' }],
+        deliveryDealerName: [{ required: true, message: '请输入交付门店', trigger: 'change' }],
+        orderStatus: [{ required: true, message: '请选择零售订单状态', trigger: 'change' }],
+        depositAmount: [{ required: true, message: '请输入定金金额', trigger: 'change' }],
+        orderSource: [{ required: true, message: '请输入订单来源', trigger: 'change' }],
+        orderTime: [{ required: true, message: '请选择商城下单时间', trigger: 'change' }],
+        orderCarBuyerName: [{ required: true, message: '请输入购车人姓名', trigger: 'change' }],
+        orderCarBuyerPhone: [{ required: true, message: '请输入购车人手机号', trigger: 'change' }],
+        carIdCardType: [{ required: true, message: '请选择车主证件类型', trigger: 'change' }],
+        materialsCode: [{ required: true, message: '请输入订单物料编码', trigger: 'change' }],
+        allocationMaterialCode: [{ required: true, message: '请输入配车物料编码', trigger: 'change' }],
+        matchVin: [{ required: true, message: '请输入配车VIN码', trigger: 'change' }]
       }
     };
   },
@@ -998,7 +891,7 @@ export default {
     async loadAttachmentConfig () {
       try {
         const configRes = await getByCode({ configCode: 'mcs_vehnetwork' });
-        const detailList = configRes?.data?.detailList || [];
+        const detailList = configRes?.detailList || [];
         this.attachmentList = this.attachmentList.map(item => {
           const detail = detailList.find(d => d.attachType === item.attachType);
           if (!detail) return item;
@@ -1184,22 +1077,13 @@ export default {
       }
     },
     async submitRequest () {
-      // 按 attachmentList 中由后端覆盖后的 required/minNum/maxNum 进行校验
-      const errorList = [];
-      this.attachmentList.forEach((item, index) => {
-        const refName = 'attachment' + index;
-        const fileLength = this.$refs[refName]?.[0]?.getFileList?.()?.length || 0;
-        const { required, minNum = 0, maxNum = 0 } = item;
-        if (required && fileLength < 1) {
-          errorList.push(`【${item.label}】为必填附件，请上传`);
-        } else if (minNum > 0 && fileLength < minNum) {
-          errorList.push(`【${item.label}】至少上传 ${minNum} 个附件`);
-        } else if (maxNum > 0 && fileLength > maxNum) {
-          errorList.push(`【${item.label}】最多上传 ${maxNum} 个附件`);
-        }
+      // 附件必填与数量上下限校验，逻辑统一在 @/libs/utils -> validateAttachments
+      const { valid, errors } = validateAttachments({
+        attachmentList: this.attachmentList,
+        refs: this.$refs
       });
-      if (errorList.length > 0) {
-        this.$message.error(errorList.join('；'));
+      if (!valid) {
+        this.$message.error(errors.join('；'));
         throw new Error('附件校验未通过');
       }
       return addOrUpdate({ ...this.form });
