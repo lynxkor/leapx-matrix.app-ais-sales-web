@@ -56,14 +56,17 @@
                   /> -->
                 </el-form-item>
                 <el-form-item label="订单状态：" prop="orderStatus">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="vr_order_status"
-                    v-model="form.orderStatus"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                  />
+                  <el-select v-model="form.orderStatus">
+                    <el-option
+                      v-for="item in orderStatusSelector"
+                      :key="item.code"
+                      :label="item.message"
+                      :value="item.code"
+                      placeholder="请选择"
+                      clearable
+                      filterable
+                    />
+                  </el-select>
                 </el-form-item>
                 <el-form-item label="允许门店取消锁车：" prop="allowUnlockStatus">
                   <fetch-select
@@ -214,6 +217,15 @@ export default {
       form: { ...form },
       originalForm: { ...form },
       yearModelList: [],
+      // 订单状态 零售订单状态 3-订单确认;5-生产中;30-待门店向工厂付款;40-车辆发运准备中;6-车辆在途;7-等待交车;
+      orderStatusSelector:[
+        { code: 3, message: '订单确认' },
+        { code: 5, message: '生产中' },
+        { code: 30, message: '待门店向工厂付款' },
+        { code: 40, message: '车辆发运准备中' },
+        { code: 6, message: '车辆在途' },
+        { code: 7, message: '等待交车' },
+      ],
       // 提取公共配置
       selectOptions: {
         placeholder: '请选择',
