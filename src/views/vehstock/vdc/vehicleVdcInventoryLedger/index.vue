@@ -32,13 +32,6 @@
         <el-form-item label="车系">
           <fetch-select v-model="form.seriesIdList" v-bind="selectOptions" :remote-method="remoteMethods.series" />
         </el-form-item>
-        <el-form-item label="车型">
-          <fetch-select
-            v-model="form.modelIdList"
-            v-bind="selectOptions"
-            :remote-method="remoteMethods.model"
-          />
-        </el-form-item>
         <el-form-item label="特殊预留备注">
           <el-input placeholder="请输入" v-model="form.specialReserveRemarkLike" clearable />
         </el-form-item>
@@ -46,6 +39,13 @@
           <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.outboundDateTime" type="daterange"
             unlink-panels :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期" end-placeholder="结束日期" />
+        </el-form-item>
+        <el-form-item label="车型">
+          <fetch-select
+            v-model="form.modelIdList"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.model"
+          />
         </el-form-item>
         <el-form-item label="整车物流预留">
           <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.logisticsReserved"
