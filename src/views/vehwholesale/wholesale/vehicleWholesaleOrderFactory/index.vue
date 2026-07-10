@@ -82,12 +82,7 @@
             <tag-input v-model="form.saleDealerNames" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="整车补货单号">
-          <el-input
-          placeholder="请输入"
-          v-model="form.replenishApplyCodeLike"
-          clearable
-        />
-          <!-- <tag-input v-model="form.replenishApplyCodes" placeholder="请输入" /> -->
+          <tag-input v-model="form.replenishApplyCodes" placeholder="请输入" />
         </el-form-item>
       <el-form-item label="订单时间"  v-show="this.visibleCount === 3 || show">
         <el-date-picker
@@ -668,6 +663,7 @@ export default {
           },
           { props: 'orderCategoryLabel', label: '订单分类', visible: true, width: 120 },
           { props: 'wholesaleWayLabel', label: '批售方式', visible: true, width: 120 },
+          { props: 'prodScheduleActivityName', label: '专项活动', visible: true, width: 200 },
           {
             props: 'orderMaterialsCode',
             label: '物料编码',
@@ -862,6 +858,21 @@ export default {
         total: 0
       }
     };
+  },
+  watch: {
+    show (newVal) {
+      if (newVal) {
+        // TagInput 组件挂载时不会同步已有 value（其 value watcher 未设置 immediate），
+        // 需要重新触发赋值才能让物流预留备注回填
+        const remarks = this.form.logisticsReserveRemarks;
+        if (remarks && remarks.length) {
+          this.form.logisticsReserveRemarks = [];
+          this.$nextTick(() => {
+            this.form.logisticsReserveRemarks = remarks;
+          });
+        }
+      }
+    }
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
@@ -1409,11 +1420,12 @@ export default {
         this.form.orderStatuses = ['0', '10', '11'];
         this.form.confirmStatuses = ['1020'];
       } else if (this.tabName === '6') {
-        // 未出质量 ①订单状态：已完成配车、已提交结算、SAP结算中、结算失败、取消结算、结算成功；②车辆交付状态：VDC入库、计划发运；③整车物流预留：是；④整车物流预留备注：质量问题（模糊查询）
+        // 未出质量 ①订单状态：已完成配车、已提交结算、SAP结算中、结算失败、取消结算、结算成功；
+        // ②车辆交付状态：VDC入库、计划发运、VDC出库 ；③整车物流预留：是；④整车物流预留备注：质量问题（模糊查询）
         this.form.orderStatuses = ['1', '2', '21', '4', '5', '3'];
         this.form.logisticsReserve = '1';
-        this.form.logisticsReserveRemarks = ['质量问题'];
-        this.form.deliveryStatuses = ['3', '4'];
+        this.form.logisticsReserveRemarks = ['质量', '追溯'];
+        this.form.deliveryStatuses = ['3', '4', '5'];
       }
       this.getData();
     },
