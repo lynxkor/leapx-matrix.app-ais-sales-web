@@ -89,12 +89,7 @@
             <tag-input v-model="form.saleDealerNames" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="整车补货单号">
-          <el-input
-          placeholder="请输入"
-          v-model="form.replenishApplyCodeLike"
-          clearable
-        />
-          <!-- <tag-input v-model="form.replenishApplyCodes" placeholder="请输入" /> -->
+           <tag-input v-model="form.replenishApplyCodes" placeholder="请输入" />
         </el-form-item>
       <el-form-item label="创建时间" >
         <el-date-picker

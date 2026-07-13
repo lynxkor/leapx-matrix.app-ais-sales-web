@@ -279,8 +279,8 @@ export default {
             }]
           },
           { props: 'refundStatusLabel', label: '申请状态', visible: true, width: 200, sortable: true },
-          { props: 'buyerName', label: '购车人名称', visible: true, width: 200, sortable: true },
-          { props: 'buyerPhone', label: '购车人手机', visible: true, width: 200, sortable: true },
+          { props: 'buyerNameEncrypt', label: '购车人名称', visible: true, width: 200, sortable: true, mask: true, getValue: (row) => Promise.resolve(row.buyerName) },
+          { props: 'buyerPhoneEncrypt', label: '购车人手机', visible: true, width: 200, sortable: true, mask: true, getValue: (row) => Promise.resolve(row.buyerPhone) },
           { props: 'saleUserName', label: '订单销售顾问', visible: true, width: 200, sortable: true },
           {
             props: 'applyTime',
