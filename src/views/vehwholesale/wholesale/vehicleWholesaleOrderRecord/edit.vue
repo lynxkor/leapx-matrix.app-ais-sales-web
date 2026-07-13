@@ -36,6 +36,9 @@
                  <el-form-item label="操作类型：" prop="operateTypeLabel">
                   {{ form.operateTypeLabel }}
                 </el-form-item>
+                <el-form-item label="配车方式：" prop="allocateWayLabel">
+                  {{ form.allocateWayLabel }}
+                </el-form-item>
                 <el-form-item label="取消配车时间：" prop="cancelAllocateTime">
                   {{ form.cancelAllocateTime }}
                 </el-form-item>
