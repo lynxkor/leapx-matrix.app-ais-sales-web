@@ -717,6 +717,8 @@ import auditDialog from '@/libs/components/auditDialog';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 import FetchSelect from '@/libs/components/FetchSelect';
 import NavTop from './components/NavTop';
+import { getByCode } from '@/libs/api/attachment/index';
+import { validateAttachments } from '@/libs/utils';
 
 const defaultForm = {
   id: '',
@@ -857,6 +859,7 @@ export default {
     }
     this.initPermissions();
     this.initMallOrderCodeFromQuery();
+    this.loadAttachmentConfig();
   },
   methods: {
     async detailRequest () {
@@ -1017,24 +1020,39 @@ export default {
       });
     },
     handleConfirm () {
-      // 校验必填项
-      const missingRequired = [];
-      this.attachmentList.forEach((item, index) => {
-        if (item.required) {
-          const refName = 'attachment' + index;
-          const fileLength = this.$refs[refName]?.[0]?.getFileList?.()?.length || 0;
-          if (fileLength === 0) {
-            missingRequired.push(item.label);
-          }
-        }
+      // 附件必填与数量上下限校验，逻辑统一在 @/libs/utils -> validateAttachments
+      const { valid, errors } = validateAttachments({
+        attachmentList: this.attachmentList,
+        refs: this.$refs
       });
-
-      if (missingRequired.length > 0) {
-        this.$message.error(`以下必填项未上传：${missingRequired.join('、')}`);
-        throw new Error(`以下必填项未上传：${missingRequired.join('、')}`);
+      if (!valid) {
+        this.$message.error(errors.join('；'));
+        throw new Error(errors.join('；'));
       }
 
       this.$emit('confirm');
+    },
+    // 初始化时调用 getByCode 获取附件配置，覆盖 attachmentList 中的 required/maxNum/minNum
+    async loadAttachmentConfig () {
+      try {
+        const configRes = await getByCode({ configCode: 'vr_groupbuy_order_equity_apply' });
+        // 说明：getByCode 接口经 api.jsonPost 封装的两次 .data 取值后，
+        // 拿到的就是后端的 data 字段本体（顶层是 configCode/configName/detailList，没有再包一层 code/data）。
+        // 因此 detailList 直接挂在 configRes 上，不需要再 .data。
+        const detailList = configRes?.detailList || [];
+        this.attachmentList = this.attachmentList.map(item => {
+          const detail = detailList.find(d => d.attachType === item.attachType);
+          if (!detail) return item;
+          return {
+            ...item,
+            required: String(detail.required) === '1',
+            maxNum: Number(detail.maxNum) || 0,
+            minNum: Number(detail.minNum) || 0
+          };
+        });
+      } catch (e) {
+        console.error('附件配置加载失败，沿用本地默认配置:', e);
+      }
     },
     // 审批
     async handleAudit (value) {
