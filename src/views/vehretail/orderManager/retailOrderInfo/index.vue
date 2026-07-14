@@ -626,7 +626,7 @@ export default {
         const res1 = await getSysConfigParamValue({ paramCode: 'veretailChangeConfigCount' });
         const veretailChangeConfigCount = res1?.paramValue !== null && res1?.paramValue !== undefined ? Number(res1.paramValue) : 1;
         if (this.accountFlag && this.row.changeConfigCount >= veretailChangeConfigCount) {
-          this.$message.error('该订单修改配车次数已达上限');
+          this.$message.error('该订单修改配置次数已达上限');
           return;
         }
         this.$refs.materialsDialog.show();
