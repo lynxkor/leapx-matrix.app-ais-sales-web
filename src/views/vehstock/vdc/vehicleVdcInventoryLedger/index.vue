@@ -102,6 +102,9 @@
           <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.returnLabel" placeholder="请选择"
             clearable filterable />
         </el-form-item>
+        <el-form-item label="销售备注">
+          <el-input placeholder="请输入" v-model="form.salesRemarkLike" clearable />
+        </el-form-item>
         <el-form-item label="常用复合查询">
           <fetch-select :request="fetchOptions" enumCode="vehstock_vdc_common_composite_query"
             v-model="form.vdcCommonCompositeQuery" placeholder="请选择" clearable filterable />
@@ -200,6 +203,7 @@ const defaultForm = {
   lowBatteryCar: 0,
   inboundDateTime: [],
   specialReserveRemarkLike: '',
+  salesRemarkLike: '',
   vehicleLogisticsReserveRemarkLike: '',
   factory: '',
   stockAgeGe: null,

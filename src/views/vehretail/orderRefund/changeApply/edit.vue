@@ -1115,33 +1115,66 @@ export default {
         legalVerification(selectedOption.retailOrderCode)
           .then(res => {
             this.refreshOrderInfo(val, selectedOption);
+          }).catch(() => {
+            // 校验失败时清空，避免脏数据残留
+            this.refreshOrderInfo('', null);
           });
+      } else {
+        // val 为空（清空场景），重置右侧所有关联字段
+        this.refreshOrderInfo('', null);
       }
     },
     refreshOrderInfo (val, selectedOption) {
-      this.form.retailOrderId = val ? selectedOption.id : '';
-      this.form.retailOrderCode = val ? selectedOption.retailOrderCode : '';
-      this.form.mallOrderCode = val ? selectedOption.mallOrderCode : '';
-      this.form.saleOrgId = val ? selectedOption.saleOrgId : '';
-      this.form.saleDealerCode = val ? selectedOption.saleDealerCode : '';
-      this.form.saleDealerName = val ? selectedOption.saleDealerName : '';
-      this.form.modelId = val ? selectedOption.modelId : '';
-      this.form.modelName = val ? selectedOption.modelName : '';
-      this.form.originalBuyerName = val ? selectedOption.carBuyerName : '';
-      this.form.originalBuyerPhone = val ? selectedOption.carBuyerPhone : '';
-      this.form.originalIdCardType = val ? selectedOption.idCardType : null;
-      this.form.originalIdCardNo = val ? selectedOption.idCardNo : '';
-      this.form.originalAgentName = val ? selectedOption.agentName : '';
-      this.form.originalSaleDealerCode = val ? selectedOption.saleDealerCode : '';
-      this.form.originalSaleDealerName = val ? selectedOption.saleDealerName : '';
-      this.form.originalMaterialsCode = val ? selectedOption.materialsCode : '';
-      this.form.paymentTime = val ? selectedOption.paymentTime : '';
-      this.form.deliveryTime = val ? selectedOption.deliveryTime : '';
-      this.form.deliveryStatus = val && selectedOption.deliveryTime ? 1 : 0;
-      this.form.deliveryStatusLabel = val && selectedOption.deliveryTime ? '是' : '否';
-      this.form.dataSource = val ? selectedOption.dataSource : null;
-      this.form.originalOrderStatus = val ? selectedOption.orderStatus : null;
-      this.form.originalOrderStatusLabel = val ? selectedOption.orderStatusLabel : null;
+      if (!val || !selectedOption) {
+        // val 或 selectedOption 为空（清空场景），重置所有关联字段
+        this.form.retailOrderId = '';
+        this.form.retailOrderCode = '';
+        this.form.mallOrderCode = '';
+        this.form.saleOrgId = '';
+        this.form.saleDealerCode = '';
+        this.form.saleDealerName = '';
+        this.form.modelId = '';
+        this.form.modelName = '';
+        this.form.originalBuyerName = '';
+        this.form.originalBuyerPhone = '';
+        this.form.originalIdCardType = null;
+        this.form.originalIdCardNo = '';
+        this.form.originalAgentName = '';
+        this.form.originalSaleDealerCode = '';
+        this.form.originalSaleDealerName = '';
+        this.form.originalMaterialsCode = '';
+        this.form.paymentTime = '';
+        this.form.deliveryTime = '';
+        this.form.deliveryStatus = 0;
+        this.form.deliveryStatusLabel = '否';
+        this.form.dataSource = null;
+        this.form.originalOrderStatus = null;
+        this.form.originalOrderStatusLabel = null;
+        return;
+      }
+      this.form.retailOrderId = selectedOption.id;
+      this.form.retailOrderCode = selectedOption.retailOrderCode;
+      this.form.mallOrderCode = selectedOption.mallOrderCode;
+      this.form.saleOrgId = selectedOption.saleOrgId;
+      this.form.saleDealerCode = selectedOption.saleDealerCode;
+      this.form.saleDealerName = selectedOption.saleDealerName;
+      this.form.modelId = selectedOption.modelId;
+      this.form.modelName = selectedOption.modelName;
+      this.form.originalBuyerName = selectedOption.carBuyerName;
+      this.form.originalBuyerPhone = selectedOption.carBuyerPhone;
+      this.form.originalIdCardType = selectedOption.idCardType;
+      this.form.originalIdCardNo = selectedOption.idCardNo;
+      this.form.originalAgentName = selectedOption.agentName;
+      this.form.originalSaleDealerCode = selectedOption.saleDealerCode;
+      this.form.originalSaleDealerName = selectedOption.saleDealerName;
+      this.form.originalMaterialsCode = selectedOption.materialsCode;
+      this.form.paymentTime = selectedOption.paymentTime;
+      this.form.deliveryTime = selectedOption.deliveryTime;
+      this.form.deliveryStatus = selectedOption.deliveryTime ? 1 : 0;
+      this.form.deliveryStatusLabel = selectedOption.deliveryTime ? '是' : '否';
+      this.form.dataSource = selectedOption.dataSource;
+      this.form.originalOrderStatus = selectedOption.orderStatus;
+      this.form.originalOrderStatusLabel = selectedOption.orderStatusLabel;
     },
     async changeReasonSearch (val) {
       const params = {

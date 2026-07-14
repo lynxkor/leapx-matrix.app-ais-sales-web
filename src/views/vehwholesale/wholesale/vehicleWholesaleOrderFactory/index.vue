@@ -157,7 +157,7 @@
             filterable
           />
         </el-form-item>
-        <el-form-item label="锁单节点">
+        <el-form-item label="允许锁单节点">
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_allow_lock_node_type"
