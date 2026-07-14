@@ -57,6 +57,50 @@
             :options="yearTypeList"
           />
         </el-form-item>
+        <el-form-item label="外观名称：">
+          <fetch-select
+            v-model="form.exteriorId"
+            clearable
+            filterable
+            remote
+            label-key="name"
+            value-key="id"
+            :remote-method="remoteMethods.exterior"
+          />
+        </el-form-item>
+        <el-form-item label="内饰名称：">
+          <fetch-select
+            v-model="form.interiorId"
+            clearable
+            filterable
+            remote
+            label-key="name"
+            value-key="id"
+            :remote-method="remoteMethods.interior"
+          />
+        </el-form-item>
+        <el-form-item label="轮毂名称：">
+          <fetch-select
+            v-model="form.wheelHubId"
+            clearable
+            filterable
+            remote
+            label-key="name"
+            value-key="id"
+            :remote-method="remoteMethods.wheel"
+          />
+        </el-form-item>
+        <el-form-item label="选装包名称：">
+          <fetch-select
+            v-model="form.optionPackageId"
+            clearable
+            filterable
+            remote
+            label-key="name"
+            value-key="id"
+            :remote-method="remoteMethods.optional"
+          />
+        </el-form-item>
         <el-form-item label="状态">
           <fetch-select
             :request="fetchOptions"
@@ -159,7 +203,7 @@ import {
   getEnum,
   cityListByName,
   listVehicleModel,
-  listVehicleYearType,
+  listVehicleYearType, vehicleExterior, vehicleInterior, vehicleWheelHub, vehicleOptionPackage,
 } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -199,6 +243,18 @@ export default {
         model: async (query) => {
           return await listVehicleModel({ modelNameLike: query });
         },
+        exterior: async (query) => {
+          return await vehicleExterior({ exteriorNameLike: query });
+        },
+        interior: async (query) => {
+          return await vehicleInterior({ interiorNameLike: query });
+        },
+        wheel: async (query) => {
+          return await vehicleWheelHub({ wheelHubNameLike: query });
+        },
+        optional: async (query) => {
+          return await vehicleOptionPackage({ optionPackageNameLike: query });
+        }
       },
       pageTitle: '车型交付配置',
       pageType: 'list',
@@ -245,6 +301,10 @@ export default {
           { props: 'cityName', label: '城市', visible: true, width: 200 },
           // { props: 'modelName', label: '车型名称', visible: true, width: 200 },
           { props: 'yearTypeName', label: '年款名称', visible: true, width: 200 },
+          { props: 'exteriorName', label: '外观名称', visible: true, width: 200 },
+          { props: 'interiorName', label: '内饰名称', visible: true, width: 200 },
+          { props: 'optionPackageName', label: '选装包名称', visible: true, width: 200 },
+          { props: 'wheelHubName', label: '轮毂名称', visible: true, width: 200 },
           { props: 'openDeliveryStatusLabel', label: '是否开启交付', visible: true, width: 200 },
           { props: 'openDeliveryDate', label: '开启交付日期', visible: true, width: 200 },
           { props: 'noOpenDeliveryText', label: '未开启交付文案', visible: true, width: 200 },

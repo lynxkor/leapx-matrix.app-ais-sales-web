@@ -366,8 +366,8 @@
                 <el-form-item label="商城订单编号：" prop="mallOrderCode">
                   {{ form.mallOrderCode }}
                 </el-form-item>
-                <el-form-item label="销售门店：" prop="salesDealerName">
-                  {{ form.salesDealerName }}
+                <el-form-item label="销售门店：" prop="saleDealerName">
+                  {{ form.saleDealerName }}
                 </el-form-item>
                 <el-form-item label="购车人姓名：" prop="carBuyerName">
                   <LPEncrypted
