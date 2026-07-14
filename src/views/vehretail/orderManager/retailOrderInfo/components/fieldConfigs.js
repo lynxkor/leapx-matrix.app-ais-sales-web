@@ -33,8 +33,7 @@ export const retailOrderDisplayFields = [
   { key: 'deliveryCycleMaxWeek', label: '交付周期上限(周)' },
   { key: 'dynamicDeliveryCycleDesc', label: '动态交付周期说明' },
   { key: 'initialDeliveryCycleDesc', label: '初始交付周期说明' },
-  { key: 'secondNetStoreName', label: '二网门店' },
-  { key: 'approvalStatusLabel', label: '审批状态' }
+  { key: 'secondNetStoreName', label: '二网门店' }
 ];
 
 // 购车人信息字段配置
@@ -185,7 +184,12 @@ export const orderChangeApplicationDisplayFields = [
 
 // 锁车解绑申请记录字段配置
 export const unlockApplicationRecordDisplayFields = [
-  { key: 'unlockApplyCode', label: '申请单号' },
+  {
+    key: 'unlockApplyCode',
+    label: '申请单号',
+    link: '/sales/vehretail/orderManager/orderUnlockApply/edit',
+    paramKey: 'id'
+  },
   { key: 'submitTime', label: '提交时间' },
   { key: 'unlockReason', label: '订单解绑原因' },
   { key: 'vin', label: 'VIN号' },

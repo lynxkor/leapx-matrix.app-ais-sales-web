@@ -28,7 +28,7 @@
             <div class="common-section-body">
               <!-- TIPS: 自行调整label-width="150px"，使得label不换行 -->
               <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm" label-width="150px" class="form-edit" v-show="isEditing || !_id">
-                <el-form-item label="时效指标：" prop="timeIndexLabel">
+                <el-form-item label="时效指标：" prop="timeIndex">
                   <el-input
                     placeholder="请输入"
                     v-model="form.timeIndexLabel"
@@ -36,7 +36,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="维度：" prop="dimensionLabel">
+                <el-form-item label="维度：" prop="dimension">
                   <el-input
                     placeholder="请输入"
                     v-model="form.dimensionLabel"
@@ -174,7 +174,7 @@ const defaultForm = {
   provinceName: '',
   regionName: '',
   timeValue: '',
-  adjustValue: '',
+  adjustValue: null,
   remark: '',
   statusDesc: '',
   id: '',
@@ -245,67 +245,67 @@ export default {
           { required: true, message: '请输入维度 10-车型;20-城市;30-省份;40-大区;50-全国', trigger: 'change' }
         ],
         modelName: [
-          { required: true, message: '请输入车型名称', trigger: 'change' }
+          { required: false, message: '请输入车型名称', trigger: 'change' }
         ],
         cityName: [
-          { required: true, message: '请输入市', trigger: 'change' }
+          { required: false, message: '请输入市', trigger: 'change' }
         ],
         provinceName: [
-          { required: true, message: '请输入省', trigger: 'change' }
+          { required: false, message: '请输入省', trigger: 'change' }
         ],
         regionName: [
-          { required: true, message: '请输入大区', trigger: 'change' }
+          { required: false, message: '请输入大区', trigger: 'change' }
         ],
         timeValue: [
           { required: true, message: '请选择时效值', trigger: 'change' }
         ],
         adjustValue: [
-          { required: true, message: '请输入调整值', trigger: 'change' }
+          { required: false, message: '请输入调整值', trigger: 'change' }
         ],
         remark: [
-          { required: true, message: '请输入备注', trigger: 'change' }
+          { required: false, message: '请输入备注', trigger: 'change' }
         ],
         statusDesc: [
-          { required: true, message: '请选择状态变更描述', trigger: 'change' }
+          { required: false, message: '请选择状态变更描述', trigger: 'change' }
         ],
         id: [
-          { required: true, message: '请输入主键', trigger: 'change' }
+          { required: false, message: '请输入主键', trigger: 'change' }
         ],
         creator: [
-          { required: true, message: '请输入创建者', trigger: 'change' }
+          { required: false, message: '请输入创建者', trigger: 'change' }
         ],
         creatorName: [
-          { required: true, message: '请输入创建者名称', trigger: 'change' }
+          { required: false, message: '请输入创建者名称', trigger: 'change' }
         ],
         createTime: [
-          { required: true, message: '请选择创建时间', trigger: 'change' }
+          { required: false, message: '请选择创建时间', trigger: 'change' }
         ],
         modifier: [
-          { required: true, message: '请输入修改者', trigger: 'change' }
+          { required: false, message: '请输入修改者', trigger: 'change' }
         ],
         modifierName: [
-          { required: true, message: '请输入修改者名称', trigger: 'change' }
+          { required: false, message: '请输入修改者名称', trigger: 'change' }
         ],
         updateTime: [
-          { required: true, message: '请选择修改时间', trigger: 'change' }
+          { required: false, message: '请选择修改时间', trigger: 'change' }
         ],
         status: [
           { required: true, message: '请选择状态 0-禁用;1-启用', trigger: 'change' }
         ],
         modelId: [
-          { required: true, message: '请输入车型ID', trigger: 'change' }
+          { required: false, message: '请输入车型ID', trigger: 'change' }
         ],
         regionCode: [
-          { required: true, message: '请输入大区组织编码', trigger: 'change' }
+          { required: false, message: '请输入大区组织编码', trigger: 'change' }
         ],
         provinceCode: [
-          { required: true, message: '请输入省组织编码', trigger: 'change' }
+          { required: false, message: '请输入省组织编码', trigger: 'change' }
         ],
         cityCode: [
-          { required: true, message: '请输入市组织编码', trigger: 'change' }
+          { required: false, message: '请输入市组织编码', trigger: 'change' }
         ],
         dataSource: [
-          { required: true, message: '请输入数据来源，150-新销服; 10-老销服', trigger: 'change' }
+          { required: false, message: '请输入数据来源，150-新销服; 10-老销服', trigger: 'change' }
         ],
       }
     };

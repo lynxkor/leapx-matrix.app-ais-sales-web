@@ -173,8 +173,8 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, networkParentCompanyItem } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getList, deleteItem, enableItem } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getParentCompany } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -392,7 +392,7 @@ export default {
       }
     },
     async listNetworkParentCompany (query) {
-      return networkParentCompanyItem({ parentCompanyName: query, pageNum: 1, pageSize: 20 });
+      return getParentCompany({ parentCompanyName: query });
     },
     async fetchOrderCategoryOptions () {
       const response = await getEnum('vw_eordertype');

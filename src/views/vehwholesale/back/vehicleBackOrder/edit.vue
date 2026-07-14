@@ -354,13 +354,12 @@ import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import EditTable from '@/libs/components/EditTable';
-import { getEnum, listOrgStoreInfo, getRigion } from '@/api/common';
+import { getEnum, listOrgStoreInfo, getRigion, getParentCompany } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
 // import EditTable from '@/libs/components/EditTable';
-import { networkParentCompanyItem } from '@/api/vehwholesale/replenish/entVehicleReplenishOrder/index';
 import Upload from '@/libs/components/UploadDialog';
 import auditDialog from '@/libs/components/auditDialog';
 import vinAllocateVehicle from './vinAllocateVehicle.vue';
@@ -863,7 +862,7 @@ export default {
       this.form.regionName = row.regionName;
     },
     async listNetworkParentCompany (query) {
-      return networkParentCompanyItem({ parentCompanyName: query, pageNum: 1, pageSize: 20 });
+      return getParentCompany({ parentCompanyName: query });
     },
     pageSizeChange (pageSize) {
       this.pageSize = pageSize;

@@ -8,6 +8,13 @@
       label-width="150px"
       class="ais-search-form"
     >
+      <el-form-item label="权益申请编号">
+        <el-input
+          placeholder="请输入"
+          v-model="form.codeLike"
+          clearable
+        />
+      </el-form-item>
       <el-form-item label="商城订单号">
         <el-input
           placeholder="请输入"
@@ -151,6 +158,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 
 const defaultForm = {
+  codeLike: '',
   mallOrderCode: '',
   materialsCode: '',
   modelId: '',

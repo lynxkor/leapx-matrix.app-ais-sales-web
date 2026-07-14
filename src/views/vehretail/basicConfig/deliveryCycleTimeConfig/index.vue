@@ -413,7 +413,7 @@ export default {
       }
       return [];
     },
-    getModelList (query) { return getVehicleModelList({ nameLike: query }); },
+    getModelList (query) { return getVehicleModelList({ modelNameLike: query }); },
     async getCityList (params) {
       return cityListByName({ cityName: params });
     },
