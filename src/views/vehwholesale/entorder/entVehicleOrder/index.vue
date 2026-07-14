@@ -214,7 +214,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="showEditRemarkDialog = false">取消</el-button>
-        <el-button size="small" type="primary" :disabled="!remarkForm.remark?.trim()" @click="confirmEditRemark">确定</el-button>
+        <el-button size="small" type="primary" :disabled="!(remarkForm.remark && remarkForm.remark.trim())" @click="confirmEditRemark">确定</el-button>
       </div>
     </el-dialog>
 
