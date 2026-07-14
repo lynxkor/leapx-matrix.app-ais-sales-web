@@ -266,9 +266,9 @@ export default {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     const userInfo = this.$store.state.user.userInfo;
     if (userInfo && userInfo.userId) {
-      this.form.creator = userInfo.userId;
+      this.form.creator = String(userInfo.userId);
       this.creatorOptions = [{
-        userId: userInfo.userId,
+        userId: String(userInfo.userId),
         username: userInfo.userName || userInfo.username
       }];
     }
