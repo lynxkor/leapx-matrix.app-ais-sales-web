@@ -31,7 +31,7 @@
               <span>{{ {'1': '待生效', '2': '可使用', '3': '已锁定', '4': '已使用', '5': '已失效', '6': '已回收'}[row.rightsStatus] || row.rightsStatus }}</span>
             </template>
           </vxe-column>
-          <vxe-column field="rightsDesc" title="权益说明" width="200" :resizable="false">
+          <vxe-column field="rightsDesc" title="权益说明" width="600" :resizable="false">
             <template v-slot="{ row }">
                 <span v-safe-html=" row.rightsDesc" />
             </template>
