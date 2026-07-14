@@ -35,6 +35,9 @@
         <el-form-item label="特殊预留备注">
           <el-input placeholder="请输入" v-model="form.specialReserveRemarkLike" clearable />
         </el-form-item>
+        <el-form-item label="销售备注">
+          <el-input placeholder="请输入" v-model="form.salesRemarkLike" clearable />
+        </el-form-item>
         <el-form-item label="VDC出库时间">
           <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.outboundDateTime" type="daterange"
             unlink-panels :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
@@ -200,6 +203,7 @@ const defaultForm = {
   lowBatteryCar: 0,
   inboundDateTime: [],
   specialReserveRemarkLike: '',
+  salesRemarkLike: '',
   vehicleLogisticsReserveRemarkLike: '',
   factory: '',
   stockAgeGe: null,
