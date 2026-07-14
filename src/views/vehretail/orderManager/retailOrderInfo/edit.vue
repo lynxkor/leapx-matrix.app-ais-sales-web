@@ -832,7 +832,9 @@ export default {
       this.row = this.form;
       // const res = await getOrderUnlockConfig(this.row.retailOrderCode);
       // 检查 accountFlag 和 changeConfigCount 的关系
-      if (this.accountFlag && this.row.changeConfigCount >= 1) {
+      const res1 = await getSysConfigParamValue({ paramCode: 'veretailChangeConfigCount' });
+      const unlockConfigCount = res1?.paramValue !== null && res1?.paramValue !== undefined ? Number(res1.paramValue) : 1;
+      if (this.accountFlag && this.row.changeConfigCount >= unlockConfigCount) {
         this.$message.error('该订单修改配置次数已达上限');
         this.modifyConfigLoading = false;
         return;
