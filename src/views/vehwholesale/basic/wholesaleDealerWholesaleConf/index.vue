@@ -36,17 +36,16 @@
         />
       </el-form-item>
       <el-form-item label="母公司"  v-show="this.visibleCount === 3 || show">
-        <fetch-select
-          filterable
-          clearable
-          multiple
-          remote
-          collapseTags
-          v-model="form.dealerParentOrgCodeList"
-          :remote-method="getDealerParentOrgList"
-          value-key="companyCode"
-          label-key="companyName"
-        />
+        <tag-input v-model="form.dealerParentOrgNameList" placeholder="请输入" />
+      </el-form-item>
+      <el-form-item label="大区">
+        <tag-input v-model="form.regionNames" placeholder="请输入" />
+      </el-form-item>
+      <el-form-item label="省份">
+        <tag-input v-model="form.provinceNames" placeholder="请输入" />
+      </el-form-item>
+      <el-form-item label="城市">
+        <tag-input v-model="form.cityNames" placeholder="请输入" />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="开启自动配车">
@@ -162,7 +161,10 @@ const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   dealerCodes: [],
   dealerNames: [],
-  dealerParentOrgCodeList: [],
+  dealerParentOrgNameList: [],
+  regionNames: [],
+  provinceNames: [],
+  cityNames: [],
   autoAllocationEnabled: '',
   autoSettlementEnabled: '',
   productionRequestEnabled: '',
@@ -210,7 +212,7 @@ export default {
             props: 'wholesaleDealerWholesaleConfName',
             label: '名称',
             visible: true,
-            width: 150,
+            width: 180,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -229,7 +231,7 @@ export default {
             props: 'dealerCode',
             label: '门店编码',
             visible: true,
-            width: 150,
+            width: 120,
             buttons: [{
               click: (rowIndex, row) => {
                 window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank');
@@ -241,7 +243,7 @@ export default {
             props: 'dealerName',
             label: '门店名称',
             visible: true,
-            width: 180,
+            width: 240,
             buttons: [{
               click: (rowIndex, row) => {
                 window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank');
@@ -249,7 +251,10 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerParentOrgCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'regionName', label: '大区', visible: true, width: 150 },
+          { props: 'provinceName', label: '省份', visible: true, width: 150 },
+          { props: 'cityName', label: '城市', visible: true, width: 150 },
+          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 280, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerParentOrgCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'autoAllocationEnabledLabel', label: '开启自动配车', visible: true, width: 120 },
           { props: 'autoSettlementEnabledLabel', label: '开启自动结算', visible: true, width: 120 },
           { props: 'productionRequestEnabledLabel', label: '允许排产申请', visible: true, width: 120 },
@@ -416,6 +421,30 @@ export default {
           data.updateTimeStart = this.form.updateTime[0];
           data.updateTimeEnd = this.form.updateTime[1];
         }
+      }
+      if (this.form.dealerParentOrgNameList && this.form.dealerParentOrgNameList.length === 1) {
+        data.dealerParentOrgNameLike = this.form.dealerParentOrgNameList[0];
+        delete data.dealerParentOrgNameList;
+      }
+      if (this.form.dealerCodes && this.form.dealerCodes.length === 1) {
+        data.dealerCodeLike = this.form.dealerCodes[0];
+        delete data.dealerCodes;
+      }
+      if (this.form.dealerNames && this.form.dealerNames.length === 1) {
+        data.dealerNameLike = this.form.dealerNames[0];
+        delete data.dealerNames;
+      }
+      if (this.form.regionNames && this.form.regionNames.length === 1) {
+        data.regionNameLike = this.form.regionNames[0];
+        delete data.regionNames;
+      }
+      if (this.form.provinceNames && this.form.provinceNames.length === 1) {
+        data.provinceNameLike = this.form.provinceNames[0];
+        delete data.provinceNames;
+      }
+      if (this.form.cityNames && this.form.cityNames.length === 1) {
+        data.cityNameLike = this.form.cityNames[0];
+        delete data.cityNames;
       }
 
       return data;
