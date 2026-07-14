@@ -12,56 +12,28 @@
       <el-form-item label="批售订单号">
         <tag-input v-model="form.wholesaleOrderCodes" placeholder="请输入" />
       </el-form-item>
-        <el-form-item label="配车VIN码">
-          <tag-input v-model="form.vins" placeholder="请输入" />
-        </el-form-item>
-         <el-form-item label="订单时间"  v-show="this.visibleCount === 3 || show">
-        <dateranges
-          v-model="form.orderTime"
-          :setDefault="true"
-          deftTime="最近一年"
-          ref="transactionTime"/>
-        </el-form-item>
-      <template v-if="show">
-        <el-form-item label="订单状态">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="vw_wholesale_order_status"
-          v-model="form.orderStatuses"
-          placeholder="请选择"
-          clearable
-          multiple
-          filterable
-        />
+      <el-form-item label="配车VIN码">
+        <tag-input v-model="form.vins" placeholder="请输入" />
       </el-form-item>
-        <el-form-item label="物料描述">
-          <tag-input v-model="form.orderMaterialDescs" placeholder="请输入" />
-        </el-form-item>
-         <el-form-item label="商城订单号">
+      <template v-if="show">
+        <el-form-item label="商城订单号">
           <tag-input v-model="form.mallOrderCodes" placeholder="请输入" />
         </el-form-item>
-         <el-form-item label="ERP发票是否开票">
+        <el-form-item label="整车补货单号">
+          <tag-input v-model="form.replenishApplyCodes" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="订单状态">
           <fetch-select
             :request="fetchOptions"
-            enumCode="BooleanEnum"
-            v-model="form.invoiceFlag"
+            enumCode="vw_wholesale_order_status"
+            v-model="form.orderStatuses"
             placeholder="请选择"
             clearable
+            multiple
             filterable
           />
         </el-form-item>
-          <el-form-item label="订单分类">
-            <fetch-select
-              :remote-method="getWholesaleEorderTyprList"
-              remote
-              v-model="form.orderCategories"
-              placeholder="请选择"
-              clearable
-              multiple
-              filterable
-            />
-        </el-form-item>
-            <el-form-item label="确认状态">
+        <el-form-item label="确认状态">
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_wholesale_confirm_status"
@@ -72,146 +44,14 @@
             filterable
           />
         </el-form-item>
-         <el-form-item label="所属大区">
+        <el-form-item label="订单分类">
           <fetch-select
-            filterable
-            clearable
+            :remote-method="getWholesaleEorderTyprList"
             remote
-            multiple
-            collapse-tags
-            v-model="form.regionCodes"
-            :remote-method="getRegionList"
-            value-key="orgCode"
-            label-key="orgName"
-          />
-        </el-form-item>
-        <el-form-item label="销售门店">
-            <tag-input v-model="form.saleDealerNames" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="整车补货单号">
-           <tag-input v-model="form.replenishApplyCodes" placeholder="请输入" />
-        </el-form-item>
-      <el-form-item label="创建时间" >
-        <el-date-picker
-         :default-time="['00:00:00', '23:59:59']"
-          v-model="form.createTime"
-          type="daterange"
-          unlink-panels
-          :picker-options="pickerOptions"
-          range-separator="至"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        />
-      </el-form-item>
-          <el-form-item label="配车时间">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.allocateTime"
-            type="daterange"
-            unlink-panels
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
-        </el-form-item>
-        <el-form-item label="结算时间">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.settleTime"
-            type="daterange"
-            unlink-panels
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
-        </el-form-item>
-            <el-form-item label="年款名称">
-              <fetch-select
-                :remote-method="listVehicleYearType"
-                remote
-                v-model="form.yearTypeIds"
-                placeholder="请选择"
-                labelKey="name"
-                valueKey="id"
-                clearable
-                multiple
-                collapseTags
-                filterable
-                :options="yearTypeList"
-              />
-        </el-form-item>
-         <el-form-item label="车型名称">
-          <fetch-select
-            :remote-method="modelSearch"
-            remote
-            reserve-keyword
-            :options="modelList" v-model="form.modelIds" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable
-            />
-        </el-form-item>
-           <el-form-item label="专项活动">
-            <fetch-select
-            :remote-method="prodScheduleActivitySearch"
-            remote
-            reserve-keyword
-            labelKey="name"
-            valueKey="id"
-            v-model="form.prodScheduleActivityIds"
+            v-model="form.orderCategories"
             placeholder="请选择"
             clearable
             multiple
-            filterable
-          />
-        </el-form-item>
-
-         <el-form-item label="省份">
-            <fetch-select
-              filterable
-              clearable
-              remote
-              v-model="form.provinceCode"
-              :remote-method="getProvince"
-              value-key="code"
-              label-key="name"
-              @change="handleChangeProvince"
-            />
-        </el-form-item>
-          <el-form-item label="城市">
-            <fetch-select
-            filterable
-            clearable
-            v-model="form.cityCode"
-            :options="cityOptions"
-            value-key="code"
-            label-key="name"
-          />
-        </el-form-item>
-         <el-form-item label="所属母公司">
-           <fetch-select
-                  :remote-method="getParentCompany"
-                  remote
-                  v-model="form.dealerCompanyCodes"
-                  placeholder="请选择"
-                  labelKey="companyName"
-                  valueKey="companyCode"
-                  multiple
-                  clearable
-                  filterable
-                  />
-
-          <!-- <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" /> -->
-        </el-form-item>
-        <el-form-item label="允许锁零售单">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="BooleanEnum"
-            v-model="form.allowLockRetail"
-            placeholder="请选择"
-            clearable
             filterable
           />
         </el-form-item>
@@ -226,15 +66,155 @@
             filterable
           />
         </el-form-item>
-          <el-form-item label="结算资金类型">
-            <fetch-select
-                   :options="settleFundTypeOptions"
-                    v-model="form.settleFundTypes"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                    multiple
-                  />
+        <el-form-item label="专项活动">
+          <fetch-select
+            :remote-method="prodScheduleActivitySearch"
+            remote
+            reserve-keyword
+            labelKey="name"
+            valueKey="id"
+            v-model="form.prodScheduleActivityIds"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="物料描述">
+          <tag-input v-model="form.orderMaterialDescs" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="车型名称">
+          <fetch-select
+            :remote-method="modelSearch"
+            remote
+            reserve-keyword
+            :options="modelList"
+            v-model="form.modelIds"
+            placeholder="请选择"
+            labelKey="label"
+            valueKey="value"
+            clearable
+            multiple
+            collapseTags
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="年款名称">
+          <fetch-select
+            :remote-method="listVehicleYearType"
+            remote
+            v-model="form.yearTypeIds"
+            placeholder="请选择"
+            labelKey="name"
+            valueKey="id"
+            clearable
+            multiple
+            collapseTags
+            filterable
+            :options="yearTypeList"
+          />
+        </el-form-item>
+        <el-form-item label="是否已锁定">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.lockStatus"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="允许锁零售单">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.allowLockRetail"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="销售门店">
+          <tag-input v-model="form.saleDealerNames" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="所属母公司">
+          <fetch-select
+            :remote-method="getParentCompany"
+            remote
+            v-model="form.dealerCompanyCodes"
+            placeholder="请选择"
+            labelKey="companyName"
+            valueKey="companyCode"
+            multiple
+            clearable
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="所属大区">
+          <fetch-select
+            filterable
+            clearable
+            remote
+            multiple
+            collapse-tags
+            v-model="form.regionCodes"
+            :remote-method="getRegionList"
+            value-key="orgCode"
+            label-key="orgName"
+          />
+        </el-form-item>
+        <el-form-item label="省份">
+          <fetch-select
+            filterable
+            clearable
+            remote
+            v-model="form.provinceCode"
+            :remote-method="getProvince"
+            value-key="code"
+            label-key="name"
+            @change="handleChangeProvince"
+          />
+        </el-form-item>
+        <el-form-item label="城市">
+          <fetch-select
+            filterable
+            clearable
+            v-model="form.cityCode"
+            :options="cityOptions"
+            value-key="code"
+            label-key="name"
+          />
+        </el-form-item>
+        <el-form-item label="车辆交付状态">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vehstock_vehicle_delivery_status"
+            v-model="form.deliveryStatuses"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="ERP发票是否开票">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.invoiceFlag"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="结算资金类型">
+          <fetch-select
+            :options="settleFundTypeOptions"
+            v-model="form.settleFundTypes"
+            placeholder="请选择"
+            clearable
+            filterable
+            multiple
+          />
         </el-form-item>
         <el-form-item label="金融机构名称">
           <fetch-select
@@ -250,9 +230,48 @@
             filterable
           />
         </el-form-item>
+        <el-form-item label="初始交付周期说明">
+          <tag-input v-model="form.initDeliveryCycleDescs" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="动态交付周期说明">
+          <tag-input v-model="form.dynamicDeliveryCycleDescs" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="订单时间" v-show="this.visibleCount === 3 || show">
+          <dateranges
+            v-model="form.orderTime"
+            :setDefault="true"
+            deftTime="最近一年"
+            ref="transactionTime"/>
+        </el-form-item>
+        <el-form-item label="配车时间">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.allocateTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
+        <el-form-item label="结算时间">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.settleTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
         <el-form-item label="确认时间">
           <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
+            :default-time="['00:00:00', '23:59:59']"
             v-model="form.confirmTime"
             type="daterange"
             unlink-panels
@@ -263,39 +282,18 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <!-- <el-form-item label="销售门店编码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.saleDealerCodes"
-            clearable
+        <el-form-item label="创建时间">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.createTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
           />
-        </el-form-item> -->
-          <el-form-item label="是否已锁定">
-            <fetch-select
-            :request="fetchOptions"
-            enumCode="BooleanEnum"
-            v-model="form.lockStatus"
-            placeholder="请选择"
-            clearable
-            filterable
-          />
-        </el-form-item>
-        <el-form-item label="车辆交付状态">
-          <fetch-select
-            :request="fetchOptions"
-            enumCode="vehstock_vehicle_delivery_status"
-            v-model="form.deliveryStatuses"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
-          />
-        </el-form-item>
-        <el-form-item label="初始交付周期说明">
-          <tag-input v-model="form.initDeliveryCycleDescs" placeholder="请输入" />
-        </el-form-item>
-          <el-form-item label="动态交付周期说明">
-            <tag-input v-model="form.dynamicDeliveryCycleDescs" placeholder="请输入" />
         </el-form-item>
       </template>
       <page-search-action
