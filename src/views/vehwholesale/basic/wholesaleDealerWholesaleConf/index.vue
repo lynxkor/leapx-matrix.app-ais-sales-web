@@ -10,30 +10,10 @@
       class="ais-search-form"
     >
       <el-form-item label="门店编码">
-        <fetch-select
-          filterable
-          clearable
-          multiple
-          remote
-          collapseTags
-          v-model="form.dealerCodes"
-          :remote-method="getDealerListByCode"
-          value-key="storeCode"
-          label-key="storeCode"
-        />
+        <tag-input v-model="form.dealerCodes" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="门店名称">
-        <fetch-select
-          filterable
-          clearable
-          multiple
-          remote
-          collapseTags
-          v-model="form.dealerNames"
-          :remote-method="getDealerListByName"
-          value-key="storeName"
-          label-key="storeName"
-        />
+        <tag-input v-model="form.dealerNames" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="母公司"  v-show="this.visibleCount === 3 || show">
         <tag-input v-model="form.dealerParentOrgNameList" placeholder="请输入" />
