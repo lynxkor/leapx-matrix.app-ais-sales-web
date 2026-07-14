@@ -92,6 +92,10 @@
           <fetch-select :request="fetchOptions" enumCode="vw_allow_lock_node_type" v-model="form.allowLockNodes" placeholder="请选择"
             clearable filterable multiple />
         </el-form-item>
+        <el-form-item label="指定发运方式">
+          <fetch-select :request="fetchOptions" enumCode="vehstock_ship_via" v-model="form.deliveryWays"
+            placeholder="请选择" clearable multiple filterable />
+        </el-form-item>
       </template>
         <!-- v-if="canList" -->
       <page-search-action
@@ -160,7 +164,8 @@ const defaultForm = {
   seriesId: '',
   modelLineId: '',
   materialsCode: '',
-  allowLockNodes: []
+  allowLockNodes: [],
+  deliveryWays: []
 };
 
 const pageSize = 20;
