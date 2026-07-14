@@ -1288,6 +1288,7 @@ export default {
       this.form.provinceName = val ? selectedOption.provinceName : '';
       this.form.cityCode = val ? selectedOption.cityCode : '';
       this.form.cityName = val ? selectedOption.cityName : '';
+      this.form.regionName = val ? selectedOption.regionName : '';
       this.form.depositAmount = val ? selectedOption.depositAmount : '';
       this.form.rangePowerId = val ? selectedOption.rangePowerId : '';
       this.form.rangePowerName = val ? selectedOption.rangePowerName : '';

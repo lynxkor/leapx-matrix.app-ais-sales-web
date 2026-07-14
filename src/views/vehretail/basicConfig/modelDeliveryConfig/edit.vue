@@ -56,6 +56,54 @@
                      @change="getYearName"
                   />
                 </el-form-item>
+                <el-form-item label="外观名称：">
+                  <fetch-select
+                    v-model="form.exteriorId"
+                    clearable
+                    filterable
+                    remote
+                    label-key="name"
+                    value-key="id"
+                    :remote-method="remoteMethods.exterior"
+                    @change="getExteriorName"
+                  />
+                </el-form-item>
+                <el-form-item label="内饰名称：">
+                  <fetch-select
+                    v-model="form.interiorId"
+                    clearable
+                    filterable
+                    remote
+                    label-key="name"
+                    value-key="id"
+                    :remote-method="remoteMethods.interior"
+                    @change="getInteriorName"
+                  />
+                </el-form-item>
+                <el-form-item label="轮毂名称：">
+                  <fetch-select
+                    v-model="form.wheelHubId"
+                    clearable
+                    filterable
+                    remote
+                    label-key="name"
+                    value-key="id"
+                    :remote-method="remoteMethods.wheel"
+                    @change="getWheelName"
+                  />
+                </el-form-item>
+                <el-form-item label="选装包名称：">
+                  <fetch-select
+                    v-model="form.optionPackageId"
+                    clearable
+                    filterable
+                    remote
+                    label-key="name"
+                    value-key="id"
+                    :remote-method="remoteMethods.optional"
+                    @change="getOptionalName"
+                  />
+                </el-form-item>
                  <el-form-item label="城市：" >
                   <fetch-select
                     filterable
@@ -121,6 +169,18 @@
                 <el-form-item label="年款名称：" prop="yearTypeName">
                   <el-link type="primary" :href="`/sales/datacenter/materials/vehicleYearType/edit?id=${form.yearTypeId}`" target="_blank">{{ form.yearTypeName }}</el-link>
                 </el-form-item>
+                <el-form-item label="外观名称：" prop="exteriorName">
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleExterior/edit?id=${form.exteriorId}`" target="_blank">{{ form.exteriorName }}</el-link>
+                </el-form-item>
+                <el-form-item label="内饰名称：" prop="interiorName">
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleInterior/edit?id=${form.interiorId}`" target="_blank">{{ form.interiorName }}</el-link>
+                </el-form-item>
+                <el-form-item label="轮毂名称：" prop="wheelHubName">
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleWheelHub/edit?id=${form.wheelHubId}`" target="_blank">{{ form.wheelHubName }}</el-link>
+                </el-form-item>
+                <el-form-item label="选装包名称：" prop="optionPackageName">
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleOptionPackage/edit?id=${form.optionPackageId}`" target="_blank">{{ form.optionPackageName }}</el-link>
+                </el-form-item>
                 <el-form-item label="城市：" prop="cityName">
                   {{ form.cityName }}
                 </el-form-item>
@@ -158,7 +218,14 @@ import { getDetail, addOrUpdate } from '@/api/vehretail/basicConfig/modelDeliver
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum, listVehicleModel, listVehicleYearType, cityListByName } from '@/api/common';
+import {
+  getEnum,
+  listVehicleModel,
+  listVehicleYearType,
+  cityListByName,
+  vehicleExterior,
+  vehicleInterior, vehicleWheelHub, vehicleOptionPackage
+} from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -240,6 +307,18 @@ export default {
         model: async (query) => {
           return await listVehicleModel({ modelNameLike: query });
         },
+        exterior: async (query) => {
+          return await vehicleExterior({ exteriorNameLike: query });
+        },
+        interior: async (query) => {
+          return await vehicleInterior({ interiorNameLike: query });
+        },
+        wheel: async (query) => {
+          return await vehicleWheelHub({ wheelHubNameLike: query });
+        },
+        optional: async (query) => {
+          return await vehicleOptionPackage({ optionPackageNameLike: query });
+        }
       },
       pageTitle: '车型交付配置',
       pageType: 'edit',
@@ -292,8 +371,45 @@ export default {
   mounted () {
   },
   methods: {
+    getExteriorName (val, obj) {
+      if (val) {
+        this.form.exteriorName = obj.name;
+      } else {
+        this.form.exteriorName = null;
+        this.form.exteriorId = null;
+      }
+    },
+    getInteriorName (val, obj) {
+      if (val) {
+        this.form.interiorName = obj.name;
+      } else {
+        this.form.interiorName = null;
+        this.form.interiorId = null;
+      }
+    },
+    getWheelName (val, obj) {
+      if (val) {
+        this.form.wheelHubName = obj.name;
+      } else {
+        this.form.wheelHubName = null;
+        this.form.wheelHubId = null;
+      }
+    },
+    getOptionalName (val, obj) {
+      if (val) {
+        this.form.optionPackageName = obj.name;
+      } else {
+        this.form.optionPackageName = null;
+        this.form.optionPackageId = null;
+      }
+    },
     getCityCode (val, obj) {
-      this.form.cityCode = obj.areaCode;
+      if (val) {
+        this.form.cityCode = obj.areaCode;
+      } else {
+        this.form.cityCode = null;
+        this.form.cityName = null;
+      }
     },
     async getCityList (params) {
       return cityListByName({ cityName: params });
