@@ -33,9 +33,7 @@
           </vxe-column>
           <vxe-column field="rightsDesc" title="权益说明" width="200" :resizable="false">
             <template v-slot="{ row }">
-              <el-tooltip :content="stripHtml(row.rightsDesc)" placement="top">
-                <span class="rights-desc-cell">{{ stripHtml(row.rightsDesc) }}</span>
-              </el-tooltip>
+                <span v-safe-html=" row.rightsDesc" />
             </template>
           </vxe-column>
           <!-- <vxe-column field="applicableVehicle" title="适用车型" min-width="150" /> -->
@@ -344,11 +342,6 @@ export default {
     // 关闭结果弹框
     handleCloseResult () {
       this.closeResult();
-    },
-    // 去除 HTML 标签
-    stripHtml (html) {
-      if (!html) return '';
-      return html.replace(/<[^>]+>/g, '');
     }
   }
 };
@@ -384,16 +377,6 @@ export default {
     padding: 2px 8px;
     border-radius: 4px;
     font-size: 12px;
-  }
-
-  // 权益说明列 - 文本截断显示省略号，悬浮显示完整内容
-  ::v-deep .rights-desc-cell {
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    cursor: pointer;
-    max-width: 180px;
   }
 
   // 修复 VXE Table overflow 提示被遮挡问题
