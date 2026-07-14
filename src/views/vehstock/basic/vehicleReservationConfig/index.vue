@@ -53,7 +53,6 @@
           v-model="form.creator"
           value-key="userId"
           label-key="username"
-          :options="creatorOptions"
           @change="handleCreatorChange"
         />
       </el-form-item>
