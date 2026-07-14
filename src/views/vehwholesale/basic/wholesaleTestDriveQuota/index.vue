@@ -215,7 +215,7 @@ export default {
             props: 'code',
             label: '编码',
             visible: true,
-            width: 150,
+            width: 240,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -267,7 +267,7 @@ export default {
             }]
           },
           { props: 'quantity', label: '数量', visible: true, width: 100, align: 'right' },
-          { props: 'mcDealerTypeLabel', label: '建店类型', visible: true, width: 120 },
+          { props: 'mcDealerTypeLabel', label: '建店类型', visible: true, width: 180 },
           { props: 'cityName', label: '城市', visible: true, width: 120 },
           { props: 'startDate', label: '开始日期', visible: true, width: 160 },
           { props: 'endDate', label: '截止日期', visible: true, width: 160 },

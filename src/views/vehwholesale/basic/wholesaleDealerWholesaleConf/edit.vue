@@ -35,7 +35,7 @@
                     :disabled="!!_id"
                   />
                 </el-form-item>
-                <el-form-item label="门店名称：" prop="dealerName" v-show="!!_id">
+                <el-form-item label="门店名称：" prop="dealerName">
                   <fetch-select
                     filterable
                     clearable
@@ -47,6 +47,30 @@
                     label-key="storeName"
                     @change="handleChangeDealer"
                     :disabled="!!_id"
+                  />
+                </el-form-item>
+                <el-form-item label="大区：">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.regionName"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="省份：">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.provinceName"
+                    clearable
+                    disabled
+                  />
+                </el-form-item>
+                <el-form-item label="城市：">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="form.cityName"
+                    clearable
+                    disabled
                   />
                 </el-form-item>
                 <el-form-item label="开启自动配车：" prop="autoAllocationEnabled">
@@ -112,6 +136,15 @@
                 <el-form-item label="门店名称：">
                   <el-link type="primary" :href="`/partner/channelManagement/shopDetail?dealerCode=${form.dealerCode}`" target="_blank">{{ form.dealerName }}</el-link>
                 </el-form-item>
+                <el-form-item label="大区：">
+                  {{ form.regionName }}
+                </el-form-item>
+                <el-form-item label="省份：">
+                  {{ form.provinceName }}
+                </el-form-item>
+                <el-form-item label="城市：">
+                  {{ form.cityName }}
+                </el-form-item>
                 <el-form-item label="开启自动配车：">
                   {{ form.autoAllocationEnabledLabel }}
                 </el-form-item>
@@ -174,6 +207,12 @@ const defaultForm = {
   dataSource: '',
   dealerParentOrgCode: '',
   ownerOrgId: '',
+  regionName: '',
+  provinceName: '',
+  cityName: '',
+  regionId: '',
+  provinceCode: '',
+  cityCode: '',
 };
 
 export default {
@@ -264,6 +303,12 @@ export default {
       if (val) {
         this.form.dealerCode = selectedOption?.storeCode || '';
         this.form.dealerName = selectedOption?.storeName || '';
+        this.form.regionId = selectedOption?.regionCode || '';
+        this.form.regionName = selectedOption?.region || '';
+        this.form.provinceCode = selectedOption?.provinceCode || '';
+        this.form.provinceName = selectedOption?.provinceName || '';
+        this.form.cityName = selectedOption?.cityName || '';
+        this.form.cityCode = selectedOption?.cityCode || '';
       }
     },
     getDefautlForm () {
