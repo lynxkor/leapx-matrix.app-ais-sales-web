@@ -833,7 +833,7 @@ export default {
       // const res = await getOrderUnlockConfig(this.row.retailOrderCode);
       // 检查 accountFlag 和 changeConfigCount 的关系
       if (this.accountFlag && this.row.changeConfigCount >= 1) {
-        this.$message.error('该订单修改配车次数已达上限');
+        this.$message.error('该订单修改配置次数已达上限');
         this.modifyConfigLoading = false;
         return;
       }
