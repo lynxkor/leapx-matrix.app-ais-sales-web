@@ -260,6 +260,7 @@ export default {
             }]
           },
           { props: 'repaymentAmount', label: '还款金额', visible: true, width: 120, align: 'right' },
+          { props: 'repaymentDate', label: '还款日期', visible: true, width: 160 },
           { props: 'creditOccupiedExposure', label: '授信占用敞口', visible: true, width: 150, align: 'right' },
           { props: 'creditAvailableExposure', label: '授信可用敞口', visible: true, width: 150, align: 'right' },
           { props: 'financingApplicationCode', label: '融资申请编码', visible: true, width: 200 },
