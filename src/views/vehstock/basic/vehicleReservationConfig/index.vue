@@ -50,6 +50,7 @@
           filterable
           clearable
           :remote-method="getCreatorUser"
+          :params="form.creatorName"
           v-model="form.creator"
           value-key="userId"
           label-key="username"
@@ -267,6 +268,7 @@ export default {
     const userInfo = this.$store.state.user.userInfo;
     if (userInfo && userInfo.userId) {
       this.form.creator = String(userInfo.userId);
+      this.form.creatorName = userInfo.userName;
       this.creatorOptions = [{
         userId: String(userInfo.userId),
         username: userInfo.userName || userInfo.username
