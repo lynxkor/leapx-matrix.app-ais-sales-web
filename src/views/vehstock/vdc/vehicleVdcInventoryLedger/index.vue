@@ -35,9 +35,6 @@
         <el-form-item label="特殊预留备注">
           <el-input placeholder="请输入" v-model="form.specialReserveRemarkLike" clearable />
         </el-form-item>
-        <el-form-item label="销售备注">
-          <el-input placeholder="请输入" v-model="form.salesRemarkLike" clearable />
-        </el-form-item>
         <el-form-item label="VDC出库时间">
           <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.outboundDateTime" type="daterange"
             unlink-panels :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
@@ -104,6 +101,9 @@
         <el-form-item label="退车标识">
           <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.returnLabel" placeholder="请选择"
             clearable filterable />
+        </el-form-item>
+        <el-form-item label="销售备注">
+          <el-input placeholder="请输入" v-model="form.salesRemarkLike" clearable />
         </el-form-item>
         <el-form-item label="常用复合查询">
           <fetch-select :request="fetchOptions" enumCode="vehstock_vdc_common_composite_query"
