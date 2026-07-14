@@ -970,7 +970,7 @@ export default {
       });
       if (!valid) {
         this.$message.error(errors.join('；'));
-        return;
+        return Promise.reject(new Error('附件校验未通过'));
       }
       // 确保门店库存信息已加载
       if (this.form.vin && !this.form.reservationStatus) {
