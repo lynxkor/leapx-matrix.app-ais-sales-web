@@ -134,7 +134,7 @@
         @handleSelect="handleSelectionChange"
         @listSelect="handleListSelect"
       >
-        <EditPage slot="centralizedViewSlot" :id="clickItemId" />
+        <EditPage slot="centralizedViewSlot" :id="clickItemId" :prefix="form.systemPrefix"/>
       </LPVxeTable>
     </div>
   </div>

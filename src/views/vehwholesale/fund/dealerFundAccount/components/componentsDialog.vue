@@ -409,9 +409,12 @@ export default {
       this.selectionList = [];
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
-          console.log(res);
-          this.tableData = res.records;
-          this.total = res.total;
+          this.tableData = res?.records || [];
+          this.total = res?.total || 0;
+        }).catch(err => {
+          console.error('获取经销商资金账户列表失败:', err);
+          this.tableData = [];
+          this.total = 0;
         }).finally(() => {
           this.loading = false;
         });

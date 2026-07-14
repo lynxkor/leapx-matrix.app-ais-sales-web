@@ -301,6 +301,7 @@ export default {
           { props: 'auditOpinion', label: '退车审核说明', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 100 },
           { props: 'createTime', label: '创建时间', visible: true, width: 160 },
+          { props: 'updateTime', label: '更新时间', visible: true, width: 160 },
           {
             props: 'operate',
             label: '操作',
