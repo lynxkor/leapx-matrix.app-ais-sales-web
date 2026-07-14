@@ -17,7 +17,7 @@
           clearable filterable />
       </el-form-item>
       <el-form-item label="允许锁零售单节点" v-show="this.visibleCount === 4 || show">
-        <fetch-select :request="fetchOptions" enumCode="vw_allow_lock_node_type" v-model="form.allowLockRetail" placeholder="请选择"
+        <fetch-select :request="fetchOptions" enumCode="vw_allow_lock_node_type" v-model="form.allowLockNodes" placeholder="请选择"
           clearable filterable multiple />
       </el-form-item>
       <template v-if="show">
