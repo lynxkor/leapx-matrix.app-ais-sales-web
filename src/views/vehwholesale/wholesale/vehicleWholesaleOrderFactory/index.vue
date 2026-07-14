@@ -709,6 +709,7 @@ export default {
           { props: 'cityName', label: '城市', visible: true, width: 200 },
           { props: 'prodScheduleActivityName', label: '专项活动', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=${row.prodScheduleActivityId}`, '_blank'); }, type: 'primary' }] },
           { props: 'allowLockRetailLabel', label: '允许锁零售单', visible: true, width: 200 },
+          { props: 'allowLockNodesLabel', label: '锁单节点', visible: true, width: 200 },
           { props: 'retailPrice', label: '零售价', visible: true, width: 120, align: 'right' },
           { props: 'invoiceDiscountTypeLabel', label: '开票类型', visible: true, width: 120 },
           { props: 'invoiceCoefficient', label: '开票系数', visible: true, width: 120, align: 'right' },
