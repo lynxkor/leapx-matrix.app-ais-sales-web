@@ -53,6 +53,8 @@
           v-model="form.creator"
           value-key="userId"
           label-key="username"
+          :options="creatorOptions"
+          @change="handleCreatorChange"
         />
       </el-form-item>
       </template>
@@ -402,6 +404,11 @@ export default {
     },
     async getCreatorUser (params) {
       return getUserByNameOrNo({ name: params });
+    },
+    handleCreatorChange (val, selectedOption) {
+      if (selectedOption && !this.creatorOptions.find(item => item.userId === val)) {
+        this.creatorOptions = [...this.creatorOptions, selectedOption];
+      }
     },
     async fetchOptions (code) {
       if (code) {
