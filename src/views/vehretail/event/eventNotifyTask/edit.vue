@@ -309,6 +309,10 @@ export default {
     id: {
       type: [String, Number],
       default: null
+    },
+    prefix: {
+      type: [String, Number],
+      default: null
     }
   },
   mixins: [routeGuard, permissions, commonMixins],
@@ -323,6 +327,9 @@ export default {
     },
     title () {
       return '业务标识编号：' + (this.form.bizNo || '');
+    },
+    systemPrefix () {
+      return this.prefix || this.$route.query.systemPrefix || 'VW';
     }
   },
   watch: {
@@ -343,7 +350,6 @@ export default {
       // 权限前缀
       moduleKey: 'AISVRTE-event',
       loading: false,
-      systemPrefix: 'VW',
       submitLoading: false,
       form: { ...form },
       originalForm: { ...form },
@@ -400,11 +406,11 @@ export default {
     detailRequest () {
       const id = this._id;
       if (id) {
-        return getDetail(id, this.$route.query.systemPrefix);
+        return getDetail(id, this.systemPrefix);
       }
     },
     submitRequest () {
-      return addOrUpdate({ ...this.form }, this.$route.query.systemPrefix);
+      return addOrUpdate({ ...this.form }, this.systemPrefix);
     },
     openPane () {
       this.$refs.editLayout.openPane();
