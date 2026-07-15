@@ -238,7 +238,7 @@
                 <el-form-item label="销售预留类型：" prop="reservedTypeLabel">
                   {{ form.reservedTypeLabel }}
                 </el-form-item>
-                <el-form-item label="整车物流预留备注：" prop="vehicleLogisticsReserveRemark" style="width: 100%;">
+                <el-form-item label="整车物流预留备注：" prop="vehicleLogisticsReserveRemark">
                   {{ form.vehicleLogisticsReserveRemark }}
                 </el-form-item>
                 <el-form-item label="订单状态：" prop="poStatusLabel">
@@ -247,7 +247,7 @@
                 <el-form-item label="ERP发票号：" prop="erpInvoice">
                   {{ form.erpInvoice }}
                 </el-form-item>
-                <el-form-item label="特殊预留备注：" prop="specialReserveRemark" style="width: 100%;">
+                <el-form-item label="特殊预留备注：" prop="specialReserveRemark">
                   {{ form.specialReserveRemark }}
                 </el-form-item>
                 <el-form-item label="整车物流操作时间：" prop="vehicleLogisticsOperationTime">
@@ -259,7 +259,7 @@
                 <el-form-item label="ERP交货单：" prop="erpDeliverOrder">
                   {{ form.erpDeliverOrder }}
                 </el-form-item>
-                <el-form-item label="销售备注：" prop="salesRemark" style="width: 100%;">
+                <el-form-item label="销售备注：" prop="salesRemark">
                   {{ form.salesRemark }}
                 </el-form-item>
                 <el-form-item label="整车物流操作人：" prop="vehicleLogisticsOperatorName">
@@ -268,7 +268,7 @@
                 <el-form-item label="门店入库时间：" prop="dealerinTime">
                   {{ form.dealerinTime }}
                 </el-form-item>
-                <el-form-item label="同步SAP状态：" prop="sapSyncStatus" style="width: 100%;">
+                <el-form-item label="同步SAP状态：" prop="sapSyncStatus">
                   {{ form.sapSyncStatus }}
                 </el-form-item>
                 <el-form-item label="销售预留操作人：" prop="salesReservationOperatorName">
