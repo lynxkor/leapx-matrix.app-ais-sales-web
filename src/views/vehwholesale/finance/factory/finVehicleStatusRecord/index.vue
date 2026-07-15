@@ -291,7 +291,7 @@ export default {
           { props: 'financingAmount', label: '融资金额', visible: true, width: 120, align: 'right' },
           { props: 'taxIncludedPrice', label: '含税价格', visible: true, width: 120, align: 'right' },
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 280, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           {
             props: 'dealerCode',
             label: '经销商编码',
@@ -308,7 +308,7 @@ export default {
             props: 'dealerName',
             label: '经销商名称',
             visible: true,
-            width: 240,
+            width: 280,
             buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCode}`, '_blank'); }, type: 'primary' }]
           },
           { props: 'unifiedSocialCreditCode', label: '统一社会信用代码', visible: true, width: 200 },
@@ -336,7 +336,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 350 },
           { props: 'shipmentDate', label: '发车日期', visible: true, width: 180 },
           { props: 'receiveDate', label: '收车日期', visible: true, width: 180 },
           { props: 'syncStatusLabel', label: '同步状态', visible: true, width: 120 },

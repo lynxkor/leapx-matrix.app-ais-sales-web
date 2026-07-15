@@ -137,7 +137,7 @@ export default {
             props: 'wholesaleTargetDefaultQuotaName',
             label: '名称',
             visible: true,
-            width: 150,
+            width: 200,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
