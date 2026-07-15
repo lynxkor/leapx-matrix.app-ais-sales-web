@@ -30,7 +30,7 @@
             start-placeholder="开始日期" end-placeholder="结束日期" />
         </el-form-item>
         <el-form-item label="车系">
-          <fetch-select v-model="form.seriesIdList" v-bind="selectOptions" :remote-method="remoteMethods.series" @change="seriesListChange" />
+          <fetch-select v-model="form.seriesIdList" v-bind="selectOptions" :remote-method="remoteMethods.series" />
         </el-form-item>
         <el-form-item label="特殊预留备注">
           <el-input placeholder="请输入" v-model="form.specialReserveRemarkLike" clearable />
@@ -41,21 +41,11 @@
             start-placeholder="开始日期" end-placeholder="结束日期" />
         </el-form-item>
         <el-form-item label="车型">
-          <el-select
+          <fetch-select
             v-model="form.modelIdList"
-            clearable
-            filterable
-            remote
-            multiple
-            collapse-tags
-            @change="modelListChange"
-          >
-            <el-option
-            v-for="item in modelList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"/>
-          </el-select>
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.model"
+          />
         </el-form-item>
         <el-form-item label="整车物流预留">
           <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.logisticsReserved"
@@ -174,7 +164,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchUpdateAllowLockNode } from '@/api/vehstock/vdc/vehicleVdcInventoryLedger/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleSalesVersionList, page, factoryInfoPage, vehicleModelList } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleSalesVersionList, page, factoryInfoPage, listVehicleModel } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -256,7 +246,6 @@ export default {
       uploadDialogVisible: false,
       batchUpdateAllowLockNodeVisible: false,
       batchUpdateAllowLockNodeValue: null,
-      modelList: [],
       optionObj: {
         id: 'vehicleVdcInventoryLedgerTable',
         dataList: [],
@@ -517,16 +506,29 @@ export default {
         series: async (query) => {
           return await vehicleSeriesList({ seriesNameLike: query });
         },
+        model: async (query) => {
+          return await this.searchModel(query);
+        },
         announcement: async (query) => {
           return await vehicleSalesVersionList({ registeredModelNameLike: query });
         }
       }
     };
   },
+  watch: {
+    'form.seriesIdList': {
+      handler (newVal) {
+        // 车系变化时清空车型选择
+        this.form.modelIdList = [];
+        this.searchModel();
+      },
+      deep: true,
+      immediate: true
+    }
+  },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.refreshTableData();
-    this.modelSearch();
   },
   methods: {
     handleImport () {
@@ -548,49 +550,11 @@ export default {
         params.modelNameLike = query;
       }
 
-      if (this.form.seriesIdList?.length === 1) {
-        params.seriesId = this.form.seriesIdList[0];
+      if (this.form.seriesIdList?.length) {
+        params.seriesIds = this.form.seriesIdList;
       }
 
-      return await vehicleModelList(params);
-    },
-    async modelSearch () {
-      let allModels = [];
-
-      if (!this.form.seriesIdList?.length) {
-        // 未选择车系，查询全部车型
-        const res = await vehicleModelList({ status: 1 });
-        allModels = res || [];
-      } else if (this.form.seriesIdList.length === 1) {
-        // 单选车系
-        const res = await vehicleModelList({ seriesId: this.form.seriesIdList[0], status: 1 });
-        allModels = res || [];
-      } else {
-        // 多选车系，分别请求后取交集
-        const results = await Promise.all(
-          this.form.seriesIdList.map(seriesId => vehicleModelList({ seriesId, status: 1 }))
-        );
-        const modelSets = results.map(res => (res || []).map(m => m.id));
-        const commonIds = modelSets.reduce((acc, set) => acc.filter(id => set.includes(id)));
-        allModels = (results[0] || []).filter(m => commonIds.includes(m.id));
-      }
-
-      if (allModels.length) {
-        this.modelList = allModels.map(item => ({
-          ...item,
-          label: item.name,
-          value: item.id
-        }));
-      } else {
-        this.modelList = [];
-      }
-    },
-    seriesListChange (val) {
-      this.form.modelIdList = [];
-      this.modelSearch();
-    },
-    modelListChange () {
-      // 车型变化时的处理
+      return await listVehicleModel(params);
     },
     onSubmit () {
       // 重置到第一页
