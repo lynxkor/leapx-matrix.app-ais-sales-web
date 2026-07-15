@@ -393,7 +393,7 @@
                     :value.sync="form.vin"
                     :decryptMethod="() => getDetailDecryptField('vin')"
                   >
-                    <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.vin}`" target="_blank">{{ form.vin }}</el-link>
+                    <el-link type="primary" :href="`/sales/vehstock/store/storeInventoryLedger/edit?vin=${form.storeInventoryId}`" target="_blank">{{ form.vin }}</el-link>
                   </LPEncrypted>
                 </el-form-item>
                 <el-form-item label="批售订单号：" prop="wholesaleOrderCode">
