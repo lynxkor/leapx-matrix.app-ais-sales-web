@@ -225,7 +225,7 @@ export default {
             props: 'dealerName',
             label: '门店名称',
             visible: true,
-            width: 240,
+            width: 250,
             buttons: [{
               click: (rowIndex, row) => {
                 window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank');
@@ -234,7 +234,7 @@ export default {
             }]
           },
           { props: 'regionName', label: '大区', visible: true, width: 150 },
-          { props: 'provinceName', label: '省份', visible: true, width: 150 },
+          { props: 'provinceName', label: '省份', visible: true, width: 180 },
           { props: 'cityName', label: '城市', visible: true, width: 150 },
           { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 280, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerParentOrgCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'autoAllocationEnabledLabel', label: '开启自动配车', visible: true, width: 120 },
