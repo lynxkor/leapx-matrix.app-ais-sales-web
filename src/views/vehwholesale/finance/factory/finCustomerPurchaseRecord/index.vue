@@ -240,12 +240,12 @@ export default {
             }]
           },
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 280, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           {
             props: 'dealerCode',
             label: '经销商编码',
             visible: true,
-            width: 200,
+            width: 280,
             buttons: [{
               click: (rowIndex, row) => {
                 this.openWindow('/partner/channelManagement/companyDetails?companyCode=' + row.dealerCode);
@@ -253,7 +253,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerName', label: '经销商名称', visible: true, width: 240 },
+          { props: 'dealerName', label: '经销商名称', visible: true, width: 280 },
           { props: 'unifiedSocialCreditCode', label: '统一社会信用代码', visible: true, width: 180 },
           { props: 'cooperationDate', label: '合作时间', visible: true, width: 140 },
           { props: 'hasFixedBusinessPremisesLabel', label: '是否有固定经营场所', visible: true, width: 180 },

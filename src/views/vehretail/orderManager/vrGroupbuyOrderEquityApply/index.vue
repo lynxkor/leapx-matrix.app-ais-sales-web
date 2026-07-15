@@ -267,7 +267,7 @@ export default {
           { props: 'companyName', label: '公司名称', visible: true, width: 300 },
           { props: 'modelName', label: '车型', visible: true, width: 240 },
           { props: 'seriesName', label: '车系', visible: true, width: 240 },
-          { props: 'couponName', label: '优惠券', visible: true, width: 120 },
+          { props: 'couponName', label: '优惠券', visible: true, width: 240 },
           { props: 'discountAmount', label: '优惠金额', visible: true, width: 120, align: 'right' },
           { props: 'submitTime', label: '提交时间', visible: true, width: 180 },
           { props: 'firstAuditTime', label: '初审时间', visible: true, width: 180 },

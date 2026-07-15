@@ -921,6 +921,28 @@ export default {
       }
     },
     submitRequest () {
+      // 遍历明细，检查必填字段
+      if (this._id && this.form.details && this.form.details.length > 0) {
+        for (let i = 0; i < this.form.details.length; i++) {
+          const row = this.form.details[i];
+          // 检查是否实车返厂
+          if (row.actualVehicleReturn === null || row.actualVehicleReturn === undefined || row.actualVehicleReturn === '') {
+            this.$message.error(`第 ${i + 1} 条明细的“是否实车返厂”不能为空`);
+            return;
+          }
+          // 检查销售部预留
+          if (row.salesDeptReserve === null || row.salesDeptReserve === undefined || row.salesDeptReserve === '') {
+            this.$message.error(`第 ${i + 1} 条明细的“销售部预留”不能为空`);
+            return;
+          }
+          // 检查整车物流预留
+          if (row.vehicleLogisticsReserve === null || row.vehicleLogisticsReserve === undefined || row.vehicleLogisticsReserve === '') {
+            this.$message.error(`第 ${i + 1} 条明细的“整车物流预留”不能为空`);
+            return;
+          }
+        }
+      }
+
       return addOrUpdate({ ...this.form });
     },
     // 打开侧边栏

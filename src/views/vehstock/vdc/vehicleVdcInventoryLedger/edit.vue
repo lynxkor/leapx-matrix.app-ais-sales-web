@@ -34,14 +34,35 @@
                 <el-form-item label="物料编码：" prop="materialsCode">
                   <el-link type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
+                <el-form-item label="VDC入库时间：" prop="inboundDateTime">
+                  {{ form.inboundDateTime }}
+                </el-form-item>
+                <el-form-item label="下线时间：" prop="offlineTime">
+                  {{ form.offlineTime }}
+                </el-form-item>
+                <el-form-item label="车辆交付状态：" prop="vehicleDeliveryStatusLabel">
+                  {{ form.vehicleDeliveryStatusLabel }}
+                </el-form-item>
                 <el-form-item label="车系：" prop="seriesName">
                   <el-link type="primary" :href="`/sales/datacenter/materials/vehicleSeries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
+                </el-form-item>
+                <el-form-item label="VDC出库时间：" prop="outboundDateTime">
+                  {{ form.outboundDateTime }}
                 </el-form-item>
                 <el-form-item label="产地：" prop="productarea">
                   {{ form.productarea }}
                 </el-form-item>
-                <el-form-item label="车辆交付状态：" prop="vehicleDeliveryStatusLabel">
-                  {{ form.vehicleDeliveryStatusLabel }}
+                <el-form-item label="库存状态：" prop="vdcInventoryStatusLabel">
+                  {{ form.vdcInventoryStatusLabel }}
+                </el-form-item>
+                <el-form-item label="整车仓库：" prop="warehouseName">
+                  {{ form.warehouseName }}
+                </el-form-item>
+                <el-form-item label="最近入库时间：" prop="lastInboundTime">
+                  {{ form.lastInboundTime }}
+                </el-form-item>
+                <el-form-item label="电量（%）：" prop="electricity">
+                  {{ form.electricity }}
                 </el-form-item>
                 <el-form-item label="是否配车：" prop="carAllocatedLabel">
                   {{ form.carAllocatedLabel }}
@@ -49,32 +70,11 @@
                 <el-form-item label="制造工厂：" prop="factory">
                   {{ form.factory }}
                 </el-form-item>
-                <el-form-item label="整车仓库：" prop="warehouseName">
-                  {{ form.warehouseName }}
-                </el-form-item>
-                <el-form-item label="库存状态：" prop="vdcInventoryStatusLabel">
-                  {{ form.vdcInventoryStatusLabel }}
-                </el-form-item>
-                <el-form-item label="电量（%）：" prop="electricity">
-                  {{ form.electricity }}
+                <el-form-item label="最近出库时间：" prop="lastOutboundTime">
+                  {{ form.lastOutboundTime }}
                 </el-form-item>
                 <el-form-item label="电量获取时间：" prop="electricityon">
                   {{ form.electricityon }}
-                </el-form-item>
-                <el-form-item label="下线时间：" prop="offlineTime">
-                  {{ form.offlineTime }}
-                </el-form-item>
-                <el-form-item label="VDC入库时间：" prop="inboundDateTime">
-                  {{ form.inboundDateTime }}
-                </el-form-item>
-                <el-form-item label="VDC出库时间：" prop="outboundDateTime">
-                  {{ form.outboundDateTime }}
-                </el-form-item>
-                <el-form-item label="最近入库时间：" prop="lastInboundTime">
-                  {{ form.lastInboundTime }}
-                </el-form-item>
-                <el-form-item label="最近出库时间：" prop="lastOutboundTime">
-                  {{ form.lastOutboundTime }}
                 </el-form-item>
               </el-form>
             </div>
@@ -223,44 +223,53 @@
                 :inline="true"
                 class="form-detail"
               >
-                <el-form-item label="订单编号：" prop="po">
-                  {{ form.po }}
-                </el-form-item>
                 <el-form-item label="销售预留：" prop="reservedLabel">
                   {{ form.reservedLabel }}
                 </el-form-item>
                 <el-form-item label="整车物流预留：" prop="logisticsReservedLabel">
                   {{ form.logisticsReservedLabel }}
                 </el-form-item>
-                <el-form-item label="订单状态：" prop="poStatusLabel">
-                  {{ form.poStatusLabel }}
+                <el-form-item label="订单编号：" prop="po">
+                  {{ form.po }}
+                </el-form-item>
+                <el-form-item label="ERP销售订单号：" prop="erpSalesOrder">
+                  {{ form.erpSalesOrder }}
                 </el-form-item>
                 <el-form-item label="销售预留类型：" prop="reservedTypeLabel">
                   {{ form.reservedTypeLabel }}
                 </el-form-item>
-                <el-form-item label="门店：" prop="dealerName">
-                  {{ form.dealerName }}
+                <el-form-item label="整车物流预留备注：" prop="vehicleLogisticsReserveRemark">
+                  {{ form.vehicleLogisticsReserveRemark }}
                 </el-form-item>
-                <el-form-item label="销售解除预留时间：" prop="salesCancelReservedon">
-                  {{ form.salesCancelReservedon }}
+                <el-form-item label="订单状态：" prop="poStatusLabel">
+                  {{ form.poStatusLabel }}
+                </el-form-item>
+                <el-form-item label="ERP发票号：" prop="erpInvoice">
+                  {{ form.erpInvoice }}
+                </el-form-item>
+                <el-form-item label="特殊预留备注：" prop="specialReserveRemark">
+                  {{ form.specialReserveRemark }}
                 </el-form-item>
                 <el-form-item label="整车物流操作时间：" prop="vehicleLogisticsOperationTime">
                   {{ form.vehicleLogisticsOperationTime }}
                 </el-form-item>
-                <el-form-item label="门店入库时间：" prop="dealerinTime">
-                  {{ form.dealerinTime }}
+                <el-form-item label="门店：" prop="dealerName">
+                  {{ form.dealerName }}
                 </el-form-item>
-                <el-form-item label="销售预留时间：" prop="salesReservedon">
-                  {{ form.salesReservedon }}
+                <el-form-item label="ERP交货单：" prop="erpDeliverOrder">
+                  {{ form.erpDeliverOrder }}
+                </el-form-item>
+                <el-form-item label="销售备注：" prop="salesRemark">
+                  {{ form.salesRemark }}
                 </el-form-item>
                 <el-form-item label="整车物流操作人：" prop="vehicleLogisticsOperatorName">
                   {{ form.vehicleLogisticsOperatorName }}
                 </el-form-item>
-                <el-form-item label="订单类型：" prop="orderType">
-                  {{ form.orderType }}
+                <el-form-item label="门店入库时间：" prop="dealerinTime">
+                  {{ form.dealerinTime }}
                 </el-form-item>
-                <el-form-item label="退车标识：" prop="returnLabelLabel">
-                  {{ form.returnLabelLabel }}
+                <el-form-item label="同步SAP状态：" prop="sapSyncStatus">
+                  {{ form.sapSyncStatus }}
                 </el-form-item>
                 <el-form-item label="销售预留操作人：" prop="salesReservationOperatorName">
                   {{ form.salesReservationOperatorName }}
@@ -268,32 +277,23 @@
                 <el-form-item label="允许锁零售单：" prop="allowLockRetailLabel">
                   {{ form.allowLockRetailLabel }}
                 </el-form-item>
-                <el-form-item label="允许锁单节点：" prop="allowLockNodeLabel">
-                  {{ form.allowLockNodeLabel }}
-                </el-form-item>
-                <el-form-item label="ERP销售订单号：" prop="erpSalesOrder">
-                  {{ form.erpSalesOrder }}
-                </el-form-item>
-                <el-form-item label="ERP交货单：" prop="erpDeliverOrder">
-                  {{ form.erpDeliverOrder }}
-                </el-form-item>
-                <el-form-item label="ERP发票号：" prop="erpInvoice">
-                  {{ form.erpInvoice }}
+                <el-form-item label="订单类型：" prop="orderType">
+                  {{ form.orderType }}
                 </el-form-item>
                 <el-form-item label="同步SAP时间：" prop="sapSyncTime">
                   {{ form.sapSyncTime }}
                 </el-form-item>
-                <el-form-item label="同步SAP状态：" prop="sapSyncStatus" style="width: 100%;">
-                  {{ form.sapSyncStatus }}
+                <el-form-item label="销售解除预留时间：" prop="salesCancelReservedon">
+                  {{ form.salesCancelReservedon }}
                 </el-form-item>
-                <el-form-item label="整车物流预留备注：" prop="vehicleLogisticsReserveRemark" style="width: 100%;">
-                  {{ form.vehicleLogisticsReserveRemark }}
+                <el-form-item label="允许锁单节点：" prop="allowLockNodeLabel">
+                  {{ form.allowLockNodeLabel }}
                 </el-form-item>
-                <el-form-item label="特殊预留备注：" prop="specialReserveRemark" style="width: 100%;">
-                  {{ form.specialReserveRemark }}
+                <el-form-item label="退车标识：" prop="returnLabelLabel">
+                  {{ form.returnLabelLabel }}
                 </el-form-item>
-                <el-form-item label="销售备注：" prop="salesRemark" style="width: 100%;">
-                  {{ form.salesRemark }}
+                <el-form-item label="销售预留时间：" prop="salesReservedon">
+                  {{ form.salesReservedon }}
                 </el-form-item>
               </el-form>
             </div>

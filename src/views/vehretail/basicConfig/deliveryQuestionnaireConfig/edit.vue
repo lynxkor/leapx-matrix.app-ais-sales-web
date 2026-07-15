@@ -174,7 +174,7 @@ export default {
       return this.id || this.$route.query.id || this.form.id;
     },
     title () {
-      return '车系名称：' + this.form.seriesName;
+      return '车系名称：' + this.form.seriesName || '';
     }
   },
   watch: {
@@ -231,7 +231,11 @@ export default {
   },
   methods: {
     seriesListChange (val, obj) {
-      this.form.seriesName = obj.name;
+      if (val) {
+        this.form.seriesName = obj.name;
+      } else {
+        this.form.seriesName = '';
+      }
     },
     detailRequest () {
       const id = this._id;
