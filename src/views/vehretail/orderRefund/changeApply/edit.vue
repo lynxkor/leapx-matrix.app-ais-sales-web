@@ -460,7 +460,7 @@
                 size="medium"
               >
                 <vxe-column type="seq" title="序号" width="80" fixed="left"></vxe-column>
-                <vxe-column field="creatorName" title="操作人" min-width="150"></vxe-column>
+                <vxe-column field="operatorName" title="操作人" min-width="150"></vxe-column>
                 <vxe-column field="operateStatusLabel" title="操作状态" min-width="150"></vxe-column>
                 <vxe-column field="operateExplain" title="操作描述" min-width="200"></vxe-column>
                 <vxe-column field="createTime" title="创建时间" min-width="180"></vxe-column>
