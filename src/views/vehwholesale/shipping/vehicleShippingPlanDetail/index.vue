@@ -761,7 +761,8 @@ export default {
       this.selectionList = [];
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
-          this.optionObj.dataList = res.records.map(item => {
+          const records = res?.records || [];
+          this.optionObj.dataList = records.map(item => {
             return {
               ...item,
               drivingRangeName: item.vehicleMaterials?.drivingRangeName || '',
@@ -784,7 +785,9 @@ export default {
               deleteLoading: false
             };
           });
-          this.optionObj.total = res.total;
+          this.optionObj.total = res?.total || 0;
+        }).catch(err => {
+          console.error('获取发运计划明细列表失败:', err);
         }).finally(() => {
           this.loading = false;
         });
