@@ -158,7 +158,7 @@
                   {{ form.replacementTypeLabel }}
                 </el-form-item>
                 <el-form-item label="优惠金额：">
-                  {{ form.discountAmount }}
+                  {{ form.discountAmount !== null && form.discountAmount !== undefined ? parseFloat(form.discountAmount).toFixed(2) : '' }}
                 </el-form-item>
                 <el-form-item label="其他品牌：">
                   {{ form.otherBrand }}
@@ -678,7 +678,7 @@
             <div style="margin-top: 8px;"><strong>商城订单:</strong> {{ form.mallOrderNo || '-' }}</div>
             <div style="margin-top: 8px;"><strong>权益大类:</strong> {{ form.equityCategoryName || '-' }}</div>
             <div style="margin-top: 8px;"><strong>置换类型:</strong> {{ form.replacementTypeLabel || '-' }}</div>
-            <div style="margin-top: 8px;"><strong>优惠金额:</strong> {{ form.discountAmount || '-' }}</div>
+            <div style="margin-top: 8px;"><strong>优惠金额:</strong> {{ form.discountAmount !== null && form.discountAmount !== undefined ? parseFloat(form.discountAmount).toFixed(2) : '-' }}</div>
             <div style="margin-top: 8px;"><strong>销售门店:</strong> {{ form.saleDealerName || '-' }}</div>
             <div style="margin-top: 8px;"><strong>提交时间:</strong> {{ form.submitTime || '-' }}</div>
           </div>
@@ -709,7 +709,7 @@
         <vxe-column field="auditStatusLabel" title="申请单状态" min-width="100"></vxe-column>
         <vxe-column field="equityCategoryName" title="权益大类" min-width="100"></vxe-column>
         <vxe-column field="replacementTypeLabel" title="置换类型" min-width="100"></vxe-column>
-        <vxe-column field="discountAmount" title="优惠金额" min-width="100"></vxe-column>
+        <vxe-column field="discountAmount" title="优惠金额" min-width="100" :formatter="formatDiscountAmount"></vxe-column>
         <vxe-column field="isIssuedLabel" title="是否发放" min-width="100"></vxe-column>
         <vxe-column field="expectedIssueDate" title="发放日期" min-width="120"></vxe-column>
         <vxe-column field="issueTypeLabel" title="发放类型" min-width="100"></vxe-column>
@@ -1229,6 +1229,13 @@ export default {
         this.form.originalModelName = record.vehicleModelName || '';
         this.form.originalModelId = record.vehicleModelId || '';
       }
+    },
+
+    formatDiscountAmount ({ cellValue }) {
+      if (cellValue !== null && cellValue !== undefined && cellValue !== '') {
+        return parseFloat(cellValue).toFixed(2);
+      }
+      return '-';
     },
 
     // 查看申请记录
