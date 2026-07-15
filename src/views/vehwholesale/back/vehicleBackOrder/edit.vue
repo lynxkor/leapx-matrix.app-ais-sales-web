@@ -943,9 +943,7 @@ export default {
         }
       }
 
-      return addOrUpdate({ ...this.form }).then(() => {
-        this.loadDetail();
-      }).finally(() => {});
+      return addOrUpdate({ ...this.form });
     },
     // 打开侧边栏
     openPane () {

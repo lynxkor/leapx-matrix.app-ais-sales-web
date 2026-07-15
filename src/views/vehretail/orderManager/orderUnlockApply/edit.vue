@@ -186,30 +186,30 @@
                   />
                 </el-form-item>
                 <el-form-item label="购车人姓名：" prop="carBuyerName">
-                  <LPEncrypted
+                  <!-- <LPEncrypted
                     :value.sync="form.carBuyerName"
                     :decryptMethod="() => getDetailDecryptField('carBuyerName')"
                     :disabled="!_id"
-                  >
+                  > -->
                     <el-input
                       v-model="form.carBuyerName"
                       clearable
                       disabled
                     />
-                  </LPEncrypted>
+                  <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="购车人证件号码：" prop="idCardNo">
-                  <LPEncrypted
+                  <!-- <LPEncrypted
                     :value.sync="form.idCardNo"
                     :decryptMethod="() => getDetailDecryptField('idCardNo')"
                     :disabled="!_id"
-                  >
+                  > -->
                     <el-input
                       v-model="form.idCardNo"
                       clearable
                       disabled
                     />
-                  </LPEncrypted>
+                  <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="缴定金时间：" prop="paymentTime">
                   <el-date-picker
@@ -234,17 +234,17 @@
                   />
                 </el-form-item>
                 <el-form-item label="VIN号：" prop="vin">
-                  <LPEncrypted
+                  <!-- <LPEncrypted
                     :value.sync="form.vin"
                     :decryptMethod="() => getDetailDecryptField('vin')"
                     :disabled="!_id"
-                  >
+                  > -->
                     <el-input
                       v-model="form.vin"
                       clearable
                       disabled
                     />
-                  </LPEncrypted>
+                  <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="批售订单号：" prop="wholesaleOrderCode">
                   <el-input
@@ -338,12 +338,12 @@
                   <el-link type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsCode }}</el-link>
                 </el-form-item>
                 <el-form-item label="需要绑定VIN号：" prop="bindVin">
-                  <LPEncrypted
+                  <!-- <LPEncrypted
                     :value.sync="form.bindVin"
                     :decryptMethod="() => getDetailDecryptField('bindVin')"
-                  >
+                  > -->
                     {{ form.bindVin }}
-                  </LPEncrypted>
+                  <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="申请说明：" prop="applyDesc">
                   {{ form.applyDesc }}
@@ -370,31 +370,31 @@
                   {{ form.saleDealerName }}
                 </el-form-item>
                 <el-form-item label="购车人姓名：" prop="carBuyerName">
-                  <LPEncrypted
+                  <!-- <LPEncrypted
                     :value.sync="form.carBuyerName"
                     :decryptMethod="() => getDetailDecryptField('carBuyerName')"
-                  >
+                  > -->
                     {{ form.carBuyerName }}
-                  </LPEncrypted>
+                  <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="购车人证件号码：" prop="idCardNo">
-                  <LPEncrypted
+                  <!-- <LPEncrypted
                     :value.sync="form.idCardNo"
                     :decryptMethod="() => getDetailDecryptField('idCardNo')"
-                  >
+                  > -->
                     {{ form.idCardNo }}
-                  </LPEncrypted>
+                  <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="缴定金时间：" prop="paymentTime">
                   {{ form.paymentTime }}
                 </el-form-item>
                 <el-form-item label="VIN号：" prop="vin">
-                  <LPEncrypted
+                  <!-- <LPEncrypted
                     :value.sync="form.vin"
                     :decryptMethod="() => getDetailDecryptField('vin')"
-                  >
-                    <el-link type="primary" :href="`/sales/vehstock/store/storeInventoryLedger/edit?vin=${form.storeInventoryId}`" target="_blank">{{ form.vin }}</el-link>
-                  </LPEncrypted>
+                  > -->
+                    <el-link type="primary" :href="`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${form.storeInventoryId}`" target="_blank">{{ form.vin }}</el-link>
+                  <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="批售订单号：" prop="wholesaleOrderCode">
                   <el-link v-if="form.wholesaleOrderId" type="primary" :href="`/sales/vehwholesale/wholesale/vehicleWholesaleOrder/edit?id=${form.wholesaleOrderId}`" target="_blank">{{ form.wholesaleOrderCode }}</el-link><span v-else>{{ form.wholesaleOrderCode }}</span>
@@ -467,7 +467,7 @@ import { getOptionList } from '@/api/vehretail/basicConfig/retailOrderUnlockReas
 import { findCanUnlockOrderList, getBaseInfo as getRetailOrderDetail } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 import auditDialog from '@/libs/components/auditDialog';
-import LPEncrypted from '@/libs/components/LPEncrypted/index.vue';
+// import LPEncrypted from '@/libs/components/LPEncrypted/index.vue';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -533,7 +533,7 @@ export default {
     FetchSelect,
     AisAttachment,
     auditDialog,
-    LPEncrypted
+    // LPEncrypted
   },
   computed: {
     _id () {
