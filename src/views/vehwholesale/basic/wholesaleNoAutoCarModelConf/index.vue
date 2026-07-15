@@ -194,7 +194,7 @@ export default {
             props: 'modelName',
             label: '车型',
             visible: true,
-            width: 120,
+            width: 200,
             buttons: [{
               click: (rowIndex, row) => {
                 window.open('/sales/datacenter/materials/vehicleModel/edit?id=' + row.modelId, '_blank');
