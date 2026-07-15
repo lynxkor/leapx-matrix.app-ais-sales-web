@@ -231,7 +231,11 @@ export default {
   },
   methods: {
     seriesListChange (val, obj) {
-      this.form.seriesName = obj.name;
+      if (val) {
+        this.form.seriesName = obj.name;
+      } else {
+        this.form.seriesName = '';
+      }
     },
     detailRequest () {
       const id = this._id;
