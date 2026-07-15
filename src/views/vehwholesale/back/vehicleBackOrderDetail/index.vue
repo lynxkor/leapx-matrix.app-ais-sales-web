@@ -24,32 +24,12 @@
             label-key="orgName"
           />
         </el-form-item>
-        <el-form-item label="门店名称"  v-show="this.visibleCount === 3 || show">
-          <fetch-select
-          filterable
-          clearable
-          remote
-          collapseTags
-          v-model="form.saleDealerCodes"
-          :remote-method="getDealerListByName"
-          value-key="storeCode"
-          label-key="storeName"
-          multiple
-        />
-      </el-form-item>
+        <el-form-item label="门店名称">
+          <tag-input v-model="form.saleDealerNames" placeholder="请输入" />
+        </el-form-item>
       <template v-if="show">
         <el-form-item label="母公司名称">
-          <fetch-select
-                  :remote-method="getParentCompany"
-                  remote
-                  v-model="form.dealerCompanyNames"
-                  placeholder="请选择"
-                  labelKey="companyName"
-                  valueKey="companyName"
-                  clearable
-                  filterable
-                  multiple
-                  />
+          <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
         </el-form-item>
          <el-form-item label="车辆处理状态">
         <fetch-select
@@ -156,10 +136,10 @@ const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   createTime: '',
   status: '',
-  saleDealerName: '',
+  saleDealerNames: [],
   regionName: '',
-  vin: '',
-  dealerCompanyName: '',
+  vins: [],
+  dealerCompanyNames: [],
   modelName: '',
 };
 

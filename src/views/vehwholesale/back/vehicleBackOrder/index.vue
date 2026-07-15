@@ -9,17 +9,8 @@
       label-width="150px"
       class="ais-search-form"
     >
-    <el-form-item label="经销商"  >
-       <fetch-select
-          filterable
-          clearable
-          remote
-            v-model="form.dealerCompanyCodes"
-            :remote-method="listNetworkParentCompany"
-            labelKey="companyName"
-            valueKey="companyCode"
-            multiple
-        />
+    <el-form-item label="经销商">
+        <tag-input v-model="form.dealerCompanyNames" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="单据类型">
           <fetch-select
@@ -32,19 +23,8 @@
             filterable
           />
         </el-form-item>
-        <el-form-item label="企业客户名称" v-show="this.visibleCount === 3 || show">
-          <fetch-select
-              :remote-method="listNetworkParentCompany"
-              remote
-              v-model="form.entCustomerCodes"
-              placeholder="请选择"
-              labelKey="companyName"
-              valueKey="companyCode"
-              clearable
-              collapseTags
-              filterable
-              multiple
-        />
+        <el-form-item label="企业客户名称">
+          <tag-input v-model="form.entCustomerNames" placeholder="请输入" />
         </el-form-item>
       <template v-if="show">
         <el-form-item label="退车日期">
@@ -190,12 +170,13 @@ import { handleBatchStatusChange, downloadExcel } from '@/libs/utils';
 import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 import auditDialog from '@/libs/components/auditDialog';
+import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   createTime: '',
   status: '',
-  dealerCompanyName: '',
-  entCustomerName: '',
+  dealerCompanyNames: [],
+  entCustomerNames: [],
   returnTime: '',
   regionName: '',
   returnType: '',
@@ -216,7 +197,8 @@ export default {
     FetchSelect,
     EditPage,
     Upload,
-    auditDialog
+    auditDialog,
+    TagInput
   },
   data () {
     return {
@@ -301,6 +283,7 @@ export default {
           { props: 'auditOpinion', label: '退车审核说明', visible: true, width: 200 },
           { props: 'creatorName', label: '创建人', visible: true, width: 100 },
           { props: 'createTime', label: '创建时间', visible: true, width: 160 },
+          { props: 'updateTime', label: '更新时间', visible: true, width: 160 },
           {
             props: 'operate',
             label: '操作',
