@@ -236,7 +236,7 @@ export default {
             props: 'wholesaleSaleTargetTrackingCode',
             label: '编号',
             visible: true,
-            width: 150,
+            width: 200,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -252,7 +252,7 @@ export default {
           },
           { props: 'year', label: '年', visible: true, width: 80 },
           { props: 'month', label: '月', visible: true, width: 60 },
-          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open('/partner/channelManagement/companyDetails?companyCode=' + row.dealerParentOrgCode, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open('/partner/channelManagement/companyDetails?companyCode=' + row.dealerParentOrgCode, '_blank'); }, type: 'primary' }] },
           { props: 'cooperationTypeLabel', label: '合作类型', visible: true, width: 120 },
           {
             props: 'dealerCode',
@@ -270,10 +270,10 @@ export default {
             props: 'dealerName',
             label: '门店名称',
             visible: true,
-            width: 180,
+            width: 240,
           },
           { props: 'regionName', label: '大区', visible: true, width: 100 },
-          { props: 'provinceName', label: '省份', visible: true, width: 100 },
+          { props: 'provinceName', label: '省份', visible: true, width: 120 },
           { props: 'cityName', label: '城市', visible: true, width: 100 },
           {
             props: 'seriesName',

@@ -205,7 +205,7 @@ export default {
             props: 'code',
             label: '编码',
             visible: true,
-            width: 150,
+            width: 200,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -224,7 +224,7 @@ export default {
             props: 'modelName',
             label: '车型',
             visible: true,
-            width: 120,
+            width: 200,
             buttons: [{
               click: (rowIndex, row) => {
                 window.open(`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`, '_blank');
@@ -250,7 +250,7 @@ export default {
           { props: 'invoiceCoefficient', label: '开票系数', visible: true, width: 100, align: 'right' },
           { props: 'rebateUseTypeLabel', label: '返利使用类型', visible: true, width: 150 },
           { props: 'rebateCoefficient', label: '返利使用系数', visible: true, width: 100, align: 'right' },
-          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 180 },
+          { props: 'dealerParentOrgName', label: '母公司', visible: true, width: 240 },
           { props: 'startDate', label: '开始日期', visible: true, width: 160 },
           { props: 'endDate', label: '截止日期', visible: true, width: 160 },
           { props: 'submitterName', label: '提交人', visible: true, width: 100 },

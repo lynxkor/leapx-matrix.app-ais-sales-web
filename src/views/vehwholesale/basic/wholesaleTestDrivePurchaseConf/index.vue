@@ -188,7 +188,7 @@ export default {
             props: 'code',
             label: '编码',
             visible: true,
-            width: 150,
+            width: 200,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -207,7 +207,7 @@ export default {
             props: 'materialsCode',
             label: '物料编码',
             visible: true,
-            width: 160,
+            width: 200,
             buttons: [{
               click: (rowIndex, row) => {
                 window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsId}`, '_blank');
@@ -215,7 +215,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 300 },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 500 },
           {
             props: 'seriesName',
             label: '车系',
@@ -232,7 +232,7 @@ export default {
             props: 'modelName',
             label: '车型',
             visible: true,
-            width: 120,
+            width: 180,
             buttons: [{
               click: (rowIndex, row) => {
                 window.open(`/sales/datacenter/materials/vehicleModel/edit?id=${row.modelId}`, '_blank');
