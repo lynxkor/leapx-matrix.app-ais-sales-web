@@ -1016,7 +1016,9 @@ export default {
       // 走 EditBaseContainer 的标准 refresh 流程：emit update:form + update:originalForm
       // 避免直接 Object.assign(this.form, ...) 在 Vue 2 中对深层字段响应式不友好的问题
       if (this.$refs.containerRef) {
-        this.$refs.containerRef.loadDetail();
+        setTimeout(() => {
+          this.$refs.containerRef.loadDetail();
+        }, 500);
       }
     },
     detailRequest () {
