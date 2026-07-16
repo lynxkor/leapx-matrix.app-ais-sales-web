@@ -340,13 +340,19 @@ export default {
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
           console.log(res);
-          this.optionObj.dataList = res.records.map(item => {
+          const records = (res && res.records) || [];
+          this.optionObj.dataList = records.map(item => {
             return {
               ...item,
               deleteLoading: false
             };
           });
-          this.optionObj.total = res.total;
+          this.optionObj.total = (res && res.total) || 0;
+        }).catch(err => {
+          console.error('车辆白名单列表查询失败:', err);
+          this.optionObj.dataList = [];
+          this.optionObj.total = 0;
+          this.$message.error('车辆白名单列表查询失败，请重试');
         }).finally(() => {
           this.loading = false;
         });
