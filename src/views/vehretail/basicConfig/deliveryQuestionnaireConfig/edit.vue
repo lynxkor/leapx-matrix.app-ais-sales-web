@@ -55,6 +55,7 @@
                     remote
                     clearable
                     filterable
+                    @change="yearTypeChange"
                   />
                 </el-form-item>
                 <el-form-item label="问卷编码：" prop="questionnaireCode">
@@ -259,6 +260,13 @@ export default {
       } else {
         this.form.seriesName = '';
         this.form.yearTypeId = '';
+        this.form.yearTypeName = '';
+      }
+    },
+    yearTypeChange (val, obj) {
+      if (val) {
+        this.form.yearTypeName = obj.name;
+      } else {
         this.form.yearTypeName = '';
       }
     },
