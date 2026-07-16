@@ -170,7 +170,7 @@ const defaultForm = {
   statusDesc: '',
   seriesId: '',
   dataSource: '',
-  yearType: '',
+  yearTypeId: '',
   yearTypeName: '',
 };
 
@@ -245,7 +245,7 @@ export default {
           return await vehicleSeriesList({ seriesNameLike: query, status: 1 });
         },
         yearType: async (query) => {
-          return await listVehicleYearType({ yearTypeNameLike: query, modelId: this.form.modelId });
+          return await listVehicleYearType({ yearTypeNameLike: query, status: 1 });
         },
       },
     };
