@@ -155,6 +155,9 @@
       >
         批量停用
       </el-button>
+      <el-button v-if="canImport" :loading="exportLoading" size="small" @click="handleImport">
+        导入
+      </el-button>
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">
         导出
       </el-button>
@@ -181,7 +184,7 @@
     <!-- TIPS: Fill in project ID here -->
     <Upload
       :visible="uploadDialogVisible"
-      :id="'1'"
+      :id="'modelDeliveryConfigImport'"
       @close="handleUploadDialogClose"
       @get-data="getData"
     />
