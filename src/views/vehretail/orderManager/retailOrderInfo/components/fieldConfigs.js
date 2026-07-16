@@ -90,7 +90,6 @@ export const lockAllocationDisplayFields = [
   {
     key: 'matchVin',
     label: '配车VIN码',
-    encrypted: true,
     link: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
     paramKey: 'matchVin',
     paramName: 'vin'
@@ -116,7 +115,6 @@ export const wholesaleDisplayFields = [
   {
     key: 'matchVin',
     label: '配车VIN码',
-    encrypted: true,
     link: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
     paramKey: 'matchVin',
     paramName: 'vin'
@@ -261,7 +259,6 @@ export const dealerCommitmentDisplayFields = [
   {
     key: 'id',
     label: '承诺结果编号',
-    encrypted: true,
     link: '/sales/vehretail/orderManager/dealerCommitmentRecord/edit',
     paramKey: 'id'
   },
