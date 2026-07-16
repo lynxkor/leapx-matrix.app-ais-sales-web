@@ -29,7 +29,7 @@
           filterable
         />
       </el-form-item>
-      <el-form-item label="车型"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="车型" v-show="this.visibleCount === 3 || show">
         <fetch-select
           filterable
           clearable
