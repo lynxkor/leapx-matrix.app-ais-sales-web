@@ -41,7 +41,16 @@
           <tag-input v-model="form.saleDealerNameList" placeholder="请输入"  clearable/>
         </el-form-item>
         <el-form-item label="基础车型">
-          <el-input v-model="form.modelName" placeholder="请输入"  clearable/>
+          <fetch-select
+            :remote-method="remoteMethods.model"
+            v-model="form.modelId"
+            placeholder="请选择"
+            clearable
+            label-key="name"
+            value-key="id"
+            filterable
+            remote
+          />
         </el-form-item>
         <el-form-item label="商城订单编号">
           <tag-input v-model="form.mallOrderCodeList" placeholder="请输入"  clearable/>
@@ -158,7 +167,15 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { batchAudit, deleteItem, enableItem, getList } from '@/api/vehretail/orderRefund/refundApply/index';
-import { exportTable, getEnum, getTableConfig, tableAddOrUpdate, getRigion, vehicleSeriesList } from '@/api/common';
+import {
+  exportTable,
+  getEnum,
+  getTableConfig,
+  tableAddOrUpdate,
+  getRigion,
+  vehicleSeriesList,
+  listVehicleModel
+} from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -231,6 +248,9 @@ export default {
       },
       areaOptions: getAreaTree(),
       remoteMethods: {
+        model: async (query) => {
+          return await listVehicleModel({ modelNameLike: query });
+        },
         series: async (query) => {
           return await vehicleSeriesList({ seriesNameLike: query, status: 1 });
         },

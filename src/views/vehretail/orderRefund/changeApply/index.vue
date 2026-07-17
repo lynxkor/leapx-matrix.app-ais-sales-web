@@ -72,10 +72,15 @@
           />
         </el-form-item>
         <el-form-item label="基本车型">
-          <el-input
-            placeholder="请输入"
-            v-model="form.modelName"
+          <fetch-select
+            :remote-method="remoteMethods.model"
+            v-model="form.modelId"
+            placeholder="请选择"
             clearable
+            label-key="name"
+            value-key="id"
+            filterable
+            remote
           />
         </el-form-item>
         <el-form-item label="变更类型">
@@ -147,7 +152,14 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { deleteItem, enableItem, getList } from '@/api/vehretail/orderRefund/orderChange/index';
-import { exportTable, getEnum, getTableConfig, tableAddOrUpdate } from '@/api/common';
+import {
+  exportTable,
+  getEnum, getRigion,
+  getTableConfig,
+  listVehicleModel,
+  tableAddOrUpdate,
+  vehicleSeriesList
+} from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -211,6 +223,17 @@ export default {
       moduleKey: 'AISVRROCA-retailOrderChangeApply',
       form: {
         ...defaultForm
+      },
+      remoteMethods: {
+        model: async (query) => {
+          return await listVehicleModel({ modelNameLike: query });
+        },
+        series: async (query) => {
+          return await vehicleSeriesList({ seriesNameLike: query, status: 1 });
+        },
+        region: async (query) => {
+          return await getRigion({ regionName: query, status: 1 });
+        },
       },
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
