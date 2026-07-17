@@ -292,7 +292,7 @@
                     maxlength="20"
                     show-word-limit
                     clearable
-                    :disabled="form.originalOrderStatus >= 9"
+                    :disabled="[9, 10, 15, 99].includes(form.originalOrderStatus)"
                   />
                 </el-form-item>
                 <el-form-item label="变更后购车人手机号码：" prop="newBuyerPhone">
