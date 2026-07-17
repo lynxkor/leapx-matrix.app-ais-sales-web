@@ -21,24 +21,36 @@
           filterable
         />
       </el-form-item>
-      <el-form-item label="问卷编码">
+      <el-form-item label="年款名称">
+        <fetch-select
+          :remote-method="remoteMethods.yearType"
+          v-model="form.yearTypeId"
+          placeholder="请选择"
+          labelKey="name"
+          valueKey="id"
+          remote
+          clearable
+          filterable
+        />
+      </el-form-item>
+      <el-form-item label="问卷编码" v-show="this.visibleCount === 3 || show">
         <el-input
           placeholder="请输入"
           v-model="form.questionnaireCodeLike"
           clearable
         />
       </el-form-item>
-      <el-form-item label="状态">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="StatusEnum"
-          v-model="form.status"
-          placeholder="请选择"
-          clearable
-          filterable
-        />
-      </el-form-item>
       <template v-if="show">
+        <el-form-item label="状态">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="StatusEnum"
+            v-model="form.status"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
         <el-form-item label="创建时间">
           <el-date-picker
            :default-time="['00:00:00', '23:59:59']"
@@ -105,7 +117,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehretail/basicConfig/deliveryQuestionnaireConfig/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, listVehicleYearType } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -124,6 +136,7 @@ const defaultForm = {
   remark: '',
   status: '',
   createTime: '',
+  yearTypeId: '',
 };
 
 const pageSize = 20;
@@ -182,6 +195,7 @@ export default {
               type: 'primary'
             }]
           },
+          { props: 'yearTypeName', label: '年款名称', visible: true, width: 200 },
           { props: 'questionnaireCode', label: '问卷编码', visible: true, width: 200 },
           { props: 'effectiveDate', label: '生效日期', visible: true, width: 200 },
           { props: 'invalidDate', label: '失效日期', visible: true, width: 200 },
@@ -222,6 +236,9 @@ export default {
         // 初始方法
         series: async (query) => {
           return await vehicleSeriesList({ seriesNameLike: query, status: 1 });
+        },
+        yearType: async (query) => {
+          return await listVehicleYearType({ yearTypeNameLike: query });
         },
       },
     };

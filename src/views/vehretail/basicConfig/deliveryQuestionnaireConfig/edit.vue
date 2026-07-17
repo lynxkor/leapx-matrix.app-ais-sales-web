@@ -42,6 +42,22 @@
                     @change="seriesListChange"
                   />
                 </el-form-item>
+                <el-form-item label="年款名称：" prop="yearTypeName">
+                  <fetch-select
+                    ref="yearTypeSelectRef"
+                    :disabled="!form.seriesId"
+                    :remote-method="remoteMethods.yearType"
+                    v-model="form.yearTypeId"
+                    :params="form.yearTypeName"
+                    placeholder="请选择"
+                    labelKey="name"
+                    valueKey="id"
+                    remote
+                    clearable
+                    filterable
+                    @change="yearTypeChange"
+                  />
+                </el-form-item>
                 <el-form-item label="问卷编码：" prop="questionnaireCode">
                   <el-input
                     placeholder="请输入"
@@ -91,6 +107,9 @@
                 <el-form-item label="车系名称：" prop="seriesName">
                   <el-link type="primary" :href="`/sales/datacenter/materials/vehicleSeries/edit?id=${form.seriesId}`" target="_blank">{{ form.seriesName }}</el-link>
                 </el-form-item>
+                <el-form-item label="年款名称：" prop="yearTypeName">
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleYearType/edit?id=${form.yearTypeId}`" target="_blank">{{ form.yearTypeName }}</el-link>
+                </el-form-item>
                 <el-form-item label="问卷编码：" prop="questionnaireCode">
                   {{ form.questionnaireCode }}
                 </el-form-item>
@@ -128,7 +147,7 @@ import { getDetail, addOrUpdate } from '@/api/vehretail/basicConfig/deliveryQues
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum, vehicleSeriesList } from '@/api/common';
+import { getEnum, vehicleSeriesList, listVehicleYearType } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -152,6 +171,8 @@ const defaultForm = {
   statusDesc: '',
   seriesId: '',
   dataSource: '',
+  yearTypeId: '',
+  yearTypeName: '',
 };
 
 export default {
@@ -224,6 +245,9 @@ export default {
         series: async (query) => {
           return await vehicleSeriesList({ seriesNameLike: query, status: 1 });
         },
+        yearType: async (query) => {
+          return await listVehicleYearType({ yearTypeNameLike: query, status: 1 });
+        },
       },
     };
   },
@@ -235,6 +259,15 @@ export default {
         this.form.seriesName = obj.name;
       } else {
         this.form.seriesName = '';
+        this.form.yearTypeId = '';
+        this.form.yearTypeName = '';
+      }
+    },
+    yearTypeChange (val, obj) {
+      if (val) {
+        this.form.yearTypeName = obj.name;
+      } else {
+        this.form.yearTypeName = '';
       }
     },
     detailRequest () {
