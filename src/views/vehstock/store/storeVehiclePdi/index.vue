@@ -113,7 +113,8 @@
     <div class="ais-table-c">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed centralized
         :option-obj="optionObj" :get-config="getConfig" :save-or-update="saveOrUpdate"
-        @paginationChange="paginationChange" @handleSelect="handleSelectionChange" @listSelect="handleListSelect">
+        @paginationChange="paginationChange" @handleSelect="handleSelectionChange" @listSelect="handleListSelect"
+        @sortChange="handleSortChange">
         <EditPage slot="centralizedViewSlot" :id="clickItemId" />
       </LPVxeTable>
     </div>
@@ -227,11 +228,11 @@ export default {
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
           { props: 'deliveryDealerName', label: '交付门店名称', visible: true, width: 200 },
           { props: 'pdiSubmitBy', label: 'PDI提交人', visible: true, width: 160 },
-          { props: 'pdiSubmitOn', label: 'PDI提交时间', visible: true, width: 200 },
+          { props: 'pdiSubmitOn', label: 'PDI提交时间', visible: true, width: 200, sortable: true },
           { props: 'repairedBy', label: '异常修复确认人', visible: true, width: 160 },
-          { props: 'repairedOn', label: '异常修复确认时间', visible: true, width: 200 },
+          { props: 'repairedOn', label: '异常修复确认时间', visible: true, width: 200, sortable: true },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 160 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 160 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
@@ -245,6 +246,7 @@ export default {
         ],
         total: 0
       },
+      sortColumns: [],
       // 提取公共配置
       selectOptions: {
         placeholder: '请选择',
@@ -276,6 +278,21 @@ export default {
     this.getData();
   },
   methods: {
+    handleSortChange (value) {
+      const list = value || [];
+      if (!list.length) {
+        this.sortColumns = [];
+        this.getData();
+        return;
+      }
+      const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
+      const def = this.optionObj.dataProp.find(item => item.props === latest.field) || {};
+      this.sortColumns = [{
+        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+        sort: (latest.order || '').toUpperCase()
+      }];
+      this.getData();
+    },
     handleListSelect (row) {
       this.clickItemId = row.id;
     },
@@ -442,6 +459,7 @@ export default {
         data.buildStoreType = ['16', '17', '15', '3', '13', '8'];
         data.isSupportDeliver = true;
       }
+      data.sortColumns = this.sortColumns;
       return data;
     },
     async fetchOptions (code) {

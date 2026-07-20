@@ -130,7 +130,7 @@ export default {
           { props: 'electricity', label: '车辆电量(%)', visible: true, width: 140, align: 'right' },
           { props: 'fenceCrossedTypeLabel', label: '车辆异常类型', visible: true, width: 140 },
           { props: 'continuousLowBatteryDays', label: '连续低电量天数', visible: true, width: 150, align: 'right' },
-          { props: 'abnormalRecordTime', label: '异常记录时间', visible: true, width: 200 },
+          { props: 'abnormalRecordTime', label: '异常记录时间', visible: true, width: 200, sortable: true },
           { props: 'vechicleStatusLabel', label: '车辆状态', visible: true, width: 100 },
           { props: 'saleDealerName', label: '销售门店', visible: true, width: 200 },
           { props: 'dealerWarehouseName', label: '门店仓库', visible: true, width: 200 },
@@ -138,7 +138,7 @@ export default {
           { props: 'vehicleArrivalOn', label: '物流到店日期', visible: true, width: 200 },
           { props: 'poentryOn', label: '采购入库时间', visible: true, width: 200 },
           { props: 'syncSourceLabel', label: '标识来源', visible: true, width: 140 },
-          { props: 'vehdeLiveriedOn', label: '标识记录日期', visible: true, width: 200 },
+          { props: 'vehdeLiveriedOn', label: '标识记录日期', visible: true, width: 200, sortable: true },
           { props: 'actualVehicleLongitude', label: '实车位置经度', visible: true, width: 140 },
           { props: 'actualVehicleLatitude', label: '实车位置纬度', visible: true, width: 140 },
           { props: 'warehouseLongitude', label: '仓库位置经度', visible: true, width: 140 },
@@ -161,12 +161,7 @@ export default {
         ],
         total: 0
       },
-      sortColumns: [
-        // {
-        // column: 'create_time',
-        // sort: 'DESC'
-        // }
-      ]
+      sortColumns: []
     };
   },
   created () {
@@ -176,12 +171,18 @@ export default {
   methods: {
     // 排序
     handleSortChange (value) {
-      this.sortColumns = (value || []).map(item => {
-        return {
-          column: (item.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
-          sort: (item.order || '').toUpperCase()
-        };
-      });
+      const list = value || [];
+      if (!list.length) {
+        this.sortColumns = [];
+        this.getData();
+        return;
+      }
+      const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
+      const def = this.optionObj.dataProp.find(item => item.props === latest.field) || {};
+      this.sortColumns = [{
+        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+        sort: (latest.order || '').toUpperCase()
+      }];
       this.getData();
     },
     handleListSelect (row) {
