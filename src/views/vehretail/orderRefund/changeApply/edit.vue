@@ -399,7 +399,6 @@
                 :businessId="_id"
                 :readonly="!_id || !(form.applyStatus === 1010 || form.applyStatus === 1040)"
                 configCode="mcs_vehorderapplylog"
-                attachType="订单信息变更申请附件"
               />
             </div>
           </section>
