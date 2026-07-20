@@ -154,11 +154,11 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="开票时间：" prop="invoiceTime">
+                <el-form-item label="开票日期：" prop="invoiceTime">
                   <el-date-picker
                     type="date"
                     v-model="form.invoiceTime"
-                    value-format="yyyy-MM-dd HH:mm:ss"
+                    value-format="yyyy-MM-dd"
                   />
                 </el-form-item>
                 <el-form-item label="车主证件号码：" prop="carIdCardNo">
@@ -234,7 +234,7 @@
                 <el-form-item label="开票名称：">
                   {{ form.invoiceName }}
                 </el-form-item>
-                <el-form-item label="开票时间：">
+                <el-form-item label="开票日期：">
                   {{ form.invoiceTime }}
                 </el-form-item>
                 <el-form-item label="车主证件号码：">
@@ -843,11 +843,11 @@ export default {
       ],
       // 附件列表配置
       attachmentList: [
-        { label: '车主身份证件', required: true, configCode: 'mcs_vehnetwork', attachType: '车主身份证件' },
-        { label: '车辆销售发票', required: true, configCode: 'mcs_vehnetwork', attachType: '车辆销售发票' },
-        { label: '车辆合格证', required: true, configCode: 'mcs_vehnetwork', attachType: '车辆合格证' },
-        { label: '尾款支付凭证', required: true, configCode: 'mcs_vehnetwork', attachType: '尾款支付凭证' },
-        { label: '销售合同', required: true, configCode: 'mcs_vehnetwork', attachType: '销售合同' },
+        { label: '车主身份证件', configCode: 'mcs_vehnetwork', attachType: '车主身份证件' },
+        { label: '车辆销售发票', configCode: 'mcs_vehnetwork', attachType: '车辆销售发票' },
+        { label: '车辆合格证', configCode: 'mcs_vehnetwork', attachType: '车辆合格证' },
+        { label: '尾款支付凭证', configCode: 'mcs_vehnetwork', attachType: '尾款支付凭证' },
+        { label: '销售合同', configCode: 'mcs_vehnetwork', attachType: '销售合同' },
         { label: '交车仪式照片', required: false, configCode: 'mcs_vehnetwork', attachType: '交车仪式照片' },
         { label: '贷款证明', required: false, configCode: 'mcs_vehnetwork', attachType: '贷款证明' },
         { label: '交车确认书', required: false, configCode: 'mcs_vehnetwork', attachType: '交车确认书' }
@@ -866,7 +866,7 @@ export default {
         status: [{ required: true, message: '请选择整车开票状态', trigger: 'change' }],
         deliveryOrderCode: [{ required: true, message: '请输入交车单', trigger: 'change' }],
         invoiceNo: [{ required: true, message: '请输入发票号码', trigger: 'change' }],
-        invoiceTime: [{ required: true, message: '请选择开票时间', trigger: 'change' }],
+        invoiceTime: [{ required: true, message: '请选择开票日期', trigger: 'change' }],
         vehicleAttribute: [{ required: true, message: '请输入车辆属性', trigger: 'change' }],
         saleDealerName: [{ required: true, message: '请输入销售门店', trigger: 'change' }],
         deliveryDealerName: [{ required: true, message: '请输入交付门店', trigger: 'change' }],
