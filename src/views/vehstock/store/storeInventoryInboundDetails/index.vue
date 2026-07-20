@@ -49,7 +49,8 @@
     <div class="ais-table-c">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed centralized
         :option-obj="optionObj" :get-config="getConfig" :save-or-update="saveOrUpdate"
-        @paginationChange="paginationChange" @handleSelect="handleSelectionChange" @listSelect="handleListSelect">
+        @paginationChange="paginationChange" @handleSelect="handleSelectionChange" @listSelect="handleListSelect"
+        @sortChange="handleSortChange">
       </LPVxeTable>
     </div>
     <!-- TIPS: 填入项目id即可 -->
@@ -134,9 +135,9 @@ export default {
           { props: 'saleDealerName', label: '销售门店名称', visible: true, width: 200 },
           { props: 'dealerWarehouseName', label: '门店仓库名称', visible: true, width: 200 },
           { props: 'moveTypeLabel', label: '入库类型', visible: true, width: 120 },
-          { props: 'moveinDate', label: '入库时间', visible: true, width: 200 },
+          { props: 'moveinDate', label: '入库时间', visible: true, width: 200, sortable: true },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 160 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 160 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
@@ -149,7 +150,8 @@ export default {
           }
         ],
         total: 0
-      }
+      },
+      sortColumns: []
     };
   },
   created () {
@@ -157,6 +159,21 @@ export default {
     this.getData();
   },
   methods: {
+    handleSortChange (value) {
+      const list = value || [];
+      if (!list.length) {
+        this.sortColumns = [];
+        this.getData();
+        return;
+      }
+      const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
+      const def = this.optionObj.dataProp.find(item => item.props === latest.field) || {};
+      this.sortColumns = [{
+        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+        sort: (latest.order || '').toUpperCase()
+      }];
+      this.getData();
+    },
     handleListSelect (row) {
       this.clickItemId = row.id;
     },
@@ -282,6 +299,7 @@ export default {
         delete data.materialsCodeList;
         data.materialsCodeLike = this.form.materialsCodeList[0] || '';
       }
+      data.sortColumns = this.sortColumns;
       return data;
     },
     async fetchOptions (code) {

@@ -495,10 +495,10 @@
                     clearable
                   />
                 </el-form-item>
-                <!-- 第4行：订单来源 | 证件号码 | 定金金额 | 基本车型 -->
-                <el-form-item label="订单来源：" prop="orderSource">
+                <!-- 第4行：定金金额 | 证件号码  | 物料描述 | 订单来源 -->
+                <el-form-item label="定金金额：" prop="depositAmount">
                   <el-input
-                    v-model="form.orderSource"
+                    v-model="form.depositAmount"
                     disabled
                     clearable
                   />
@@ -510,21 +510,21 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="定金金额：" prop="depositAmount">
+                <el-form-item label="物料描述：" prop="materialsDesc">
                   <el-input
-                    v-model="form.depositAmount"
+                    v-model="form.materialsDesc"
                     disabled
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="基本车型：" prop="modelName">
+                <el-form-item label="订单来源：" prop="orderSource">
                   <el-input
-                    v-model="form.modelName"
+                    v-model="form.orderSource"
                     disabled
                     clearable
                   />
                 </el-form-item>
-                <!-- 第5行：特殊备注 | 物料描述 -->
+                <!-- 第5行：特殊备注 | 基本车型 -->
                 <el-form-item v-if="orderSpecRemarkShow" label="特殊备注：" prop="orderSpecialRemark">
                   <el-input
                     v-model="form.orderSpecialRemark"
@@ -532,9 +532,9 @@
                     clearable
                   />
                 </el-form-item>
-                <el-form-item label="物料描述：" prop="materialsDesc">
+                <el-form-item label="基本车型：" prop="modelName">
                   <el-input
-                    v-model="form.materialsDesc"
+                    v-model="form.modelName"
                     disabled
                     clearable
                   />
@@ -549,12 +549,12 @@
                 <el-form-item label="商城订单编号：" prop="mallOrderCode">
                   {{ form.mallOrderCode }}
                 </el-form-item>
-                <el-form-item label="购车人手机号码：" prop="buyerPhoneEncrypt">
+                <el-form-item label="购车人手机号码：" prop="buyerPhone">
                   <!-- <LPEncrypted
-                    :value.sync="form.buyerPhoneEncrypt"
+                    :value.sync="form.buyerPhone"
                     :decryptMethod="() => form.buyerPhone"
                   > -->
-                    {{ form.buyerPhoneEncrypt }}
+                    {{ form.buyerPhone }}
                   <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="订单取消原因：" prop="orderCancelReason">
@@ -592,42 +592,49 @@
                     @click="handleRouteToStoreDetail(form.deliveryDealerCode)"
                     type="text">{{form.deliveryDealerName}}</el-button>
                 </el-form-item>
-                <el-form-item label="购车人名称：" prop="buyerNameEncrypt">
+                <el-form-item label="购车人名称：" prop="buyerName">
                   <!-- <LPEncrypted
-                    :value.sync="form.buyerNameEncrypt"
+                    :value.sync="form.buyerName"
                     :decryptMethod="() => { return form.buyerName }"
                   > -->
-                    {{ form.buyerNameEncrypt }}
+                    {{ form.buyerName }}
                   <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="代办联系人：" prop="agentName">
                   {{ form.agentName }}
                 </el-form-item>
-                <el-form-item label="代办人电话：" prop="agentPhoneEncrypt">
+<!--                <el-form-item label="代办人电话：" prop="agentPhone">-->
                   <!-- <LPEncrypted
-                    :value.sync="form.agentPhoneEncrypt"
+                    :value.sync="form.agentPhone"
                     :decryptMethod="() => { return form.agentPhone }"
                   > -->
-                    {{ form.agentPhoneEncrypt }}
+<!--                    {{ form.agentPhone }}-->
                   <!-- </LPEncrypted> -->
-                </el-form-item>
+<!--                </el-form-item>-->
                 <el-form-item label="订单取消时间：" prop="orderCancelTime">
                   {{ form.orderCancelTime }}
                 </el-form-item>
-                <!-- 第4行：订单来源 | 证件号码 | 定金金额 | 基本车型 -->
+                <!-- 第4行：定金金额 | 证件号码  | 物料描述 | 订单来源 -->
+                <el-form-item label="定金金额：" prop="depositAmount">
+                  {{ form.depositAmount }}
+                </el-form-item>
+                <el-form-item label="证件号码：" prop="idCardNo">
+                  <!-- <LPEncrypted
+                    :value.sync="form.idCardNo"
+                    :decryptMethod="() => { return form.idCardNo }"
+                  > -->
+                  {{ form.idCardNo }}
+                  <!-- </LPEncrypted> -->
+                </el-form-item>
+                <el-form-item label="物料描述：" prop="materialsDesc">
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsDesc }}</el-link>
+                </el-form-item>
                 <el-form-item label="订单来源：" prop="orderSource">
                   {{ form.orderSource }}
                 </el-form-item>
-                <el-form-item label="证件号码：" prop="idCardNoEncrypt">
-                  <!-- <LPEncrypted
-                    :value.sync="form.idCardNoEncrypt"
-                    :decryptMethod="() => { return form.idCardNo }"
-                  > -->
-                    {{ form.idCardNoEncrypt }}
-                  <!-- </LPEncrypted> -->
-                </el-form-item>
-                <el-form-item label="定金金额：" prop="depositAmount">
-                  {{ form.depositAmount }}
+                <!-- 第5行：特殊备注 | 物料描述 -->
+                <el-form-item v-if="orderSpecRemarkShow" label="特殊备注：" prop="orderSpecialRemark">
+                  {{ form.orderSpecialRemark }}
                 </el-form-item>
                 <el-form-item label="基本车型：" prop="modelName">
                   <el-button
@@ -639,13 +646,6 @@
                       },
                     })"
                     type="text">{{form.modelName}}</el-button>
-                </el-form-item>
-                <!-- 第5行：特殊备注 | 物料描述 -->
-                <el-form-item v-if="orderSpecRemarkShow" label="特殊备注：" prop="orderSpecialRemark">
-                  {{ form.orderSpecialRemark }}
-                </el-form-item>
-                <el-form-item label="物料描述：" prop="materialsDesc">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsDesc }}</el-link>
                 </el-form-item>
               </el-form>
             </div>
@@ -668,12 +668,12 @@
                 <el-form-item label="提交时间：" prop="submitTime">
                   {{ form.submitTime }}
                 </el-form-item>
-                <el-form-item label="初审人：" prop="preApproveUserEncrypt">
+                <el-form-item label="初审人：" prop="preApproveUser">
                   <!-- <LPEncrypted
-                    :value.sync="form.preApproveUserEncrypt"
+                    :value.sync="form.preApproveUser"
                     :decryptMethod="() => form.preApproveUser"
                   > -->
-                    {{ form.preApproveUserEncrypt }}
+                    {{ form.preApproveUser }}
                   <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="初审时间：" prop="preApproveTime">
@@ -691,12 +691,12 @@
                 <el-form-item label="审核意见：" prop="approveRemark">
                   {{ form.approveRemark }}
                 </el-form-item>
-                <el-form-item label="终审人：" prop="finalApproveUserEncrypt">
+                <el-form-item label="终审人：" prop="finalApproveUser">
                   <!-- <LPEncrypted
-                    :value.sync="form.finalApproveUserEncrypt"
+                    :value.sync="form.finalApproveUser"
                     :decryptMethod="() => form.finalApproveUser"
                   > -->
-                    {{ form.finalApproveUserEncrypt }}
+                    {{ form.finalApproveUser }}
                   <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="终审时间：" prop="finalApproveTime">
@@ -913,15 +913,9 @@ const defaultForm = {
   approveLogList: [],
   // 加密字段
   buyerName: '',
-  buyerNameEncrypt: '',
   buyerPhone: '',
-  buyerPhoneEncrypt: '',
   idCardNo: '',
-  idCardNoEncrypt: '',
-  agentPhone: '',
-  agentPhoneEncrypt: '',
-  preApproveUserEncrypt: '',
-  finalApproveUserEncrypt: '',
+  agentPhone: ''
 };
 
 export default {

@@ -84,6 +84,14 @@
             clearable
           />
         </el-form-item>
+        <el-form-item label="事件数据快照">
+          <el-input
+            type="text"
+            placeholder="请输入"
+            v-model="form.dataParam"
+            clearable
+          />
+        </el-form-item>
         <el-form-item label="创建时间">
           <el-date-picker
             v-model="form.eventAtRange"

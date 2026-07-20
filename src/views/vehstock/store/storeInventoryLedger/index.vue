@@ -177,7 +177,7 @@
     <div class="ais-table-c">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed centralized
         :option-obj="optionObj" :get-config="getConfig" :save-or-update="saveOrUpdate"
-        @paginationChange="paginationChange" @handleSelect="handleSelectionChange" @listSelect="handleListSelect">
+        @paginationChange="paginationChange" @handleSelect="handleSelectionChange" @listSelect="handleListSelect" @sortChange="handleSortChange">
         <EditPage slot="centralizedViewSlot" :id="clickItemId" />
       </LPVxeTable>
     </div>
@@ -315,7 +315,7 @@ export default {
           },
           { props: 'vechicleStatusLabel', label: '车辆状态', visible: true, width: 120 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
-          { props: 'moveoutDate', label: '出库时间', visible: true, width: 200 },
+          { props: 'moveoutDate', label: '出库时间', visible: true, width: 200, sortable: true },
           { props: 'moveoutTypeLabel', label: '出库类型', visible: true, width: 120 },
           { props: 'moveTypeLabel', label: '入库类型', visible: true, width: 120 },
           { props: 'logisticStatusLabel', label: '车辆物流状态', visible: true, width: 140 },
@@ -341,7 +341,7 @@ export default {
           { props: 'secondNetStoreCode', label: '二网门店编码', visible: true, width: 160 },
           { props: 'secondNetStoreName', label: '二网门店名称', visible: true, width: 200 },
           { props: 'poentryDealerName', label: '采购入库门店名称', visible: true, width: 200 },
-          { props: 'poentryOn', label: '采购入库时间', visible: true, width: 200 },
+          { props: 'poentryOn', label: '采购入库时间', visible: true, width: 200, sortable: true },
           { props: 'inboundTimeLyLabel', label: '入库是否及时', visible: true, width: 140 },
           { props: 'materialsCode', label: '物料编码', visible: true, width: 160 },
           { props: 'seriesName', label: '车系', visible: true, width: 100 },
@@ -358,10 +358,24 @@ export default {
           { props: 'modifierName', label: '修改者名称', visible: true, width: 160 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 160 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
         ],
         total: 0
       },
+      sortColumns: [
+        // {
+        //   column: 'poentry_on',
+        //   sort: 'DESC'
+        // },
+        // {
+        //   column: 'create_time',
+        //   sort: 'DESC'
+        // },
+        // {
+        //   column: 'moveout_date',
+        //   sort: 'DESC'
+        // }
+      ],
       // 提取公共配置
       selectOptions: {
         placeholder: '请选择',
@@ -423,6 +437,24 @@ export default {
     this.getData();
   },
   methods: {
+    handleSortChange (value) {
+      console.log('handleSortChange', value);
+
+      const list = value || [];
+      if (!list.length) {
+        this.sortColumns = [];
+        this.getData();
+        return;
+      }
+      const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
+      const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
+      this.sortColumns = [{
+        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+        sort: (latest.order || '').toUpperCase()
+      }];
+      this.getData();
+    },
+
     // 车型支持车系 ID 和 车型输入 方法
     async searchModel (query) {
       const params = {};
@@ -610,6 +642,7 @@ export default {
         data.buildStoreType = ['16', '17', '15', '3', '13', '8'];
         data.isSupportDeliver = true;
       }
+      data.sortColumns = this.sortColumns;
       return data;
     },
     async fetchOptions (code) {

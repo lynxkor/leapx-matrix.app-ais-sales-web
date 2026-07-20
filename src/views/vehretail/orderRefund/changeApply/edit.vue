@@ -193,31 +193,31 @@
               </el-form>
               <!-- 原订单信息 - 详情展示 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="原购车人名称：" prop="originalBuyerNameEncrypt">
+                <el-form-item label="原购车人名称：" prop="originalBuyerName">
                   <!-- <LPEncrypted
-                    :value.sync="form.originalBuyerNameEncrypt"
+                    :value.sync="form.originalBuyerName"
                     :decryptMethod="() => { return form.originalBuyerName }"
                   > -->
-                    {{ form.originalBuyerNameEncrypt }}
+                    {{ form.originalBuyerName }}
                   <!-- </LPEncrypted> -->
                 </el-form-item>
-                <el-form-item label="原购车人手机号码：" prop="originalBuyerPhoneEncrypt">
+                <el-form-item label="原购车人手机号码：" prop="originalBuyerPhone">
                   <!-- <LPEncrypted
-                    :value.sync="form.originalBuyerPhoneEncrypt"
+                    :value.sync="form.originalBuyerPhone"
                     :decryptMethod="() => { return form.originalBuyerPhone }"
                   > -->
-                    {{ form.originalBuyerPhoneEncrypt }}
+                    {{ form.originalBuyerPhone }}
                   <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="原购车人证件类型：" prop="originalIdCardType">
                   {{ form.originalIdCardTypeLabel }}
                 </el-form-item>
-                <el-form-item label="原购车人证件号码：" prop="originalIdCardNoEncrypt">
+                <el-form-item label="原购车人证件号码：" prop="originalIdCardNo">
                   <!-- <LPEncrypted
-                    :value.sync="form.originalIdCardNoEncrypt"
+                    :value.sync="form.originalIdCardNo"
                     :decryptMethod="() => { return form.originalIdCardNo }"
                   > -->
-                    {{ form.originalIdCardNoEncrypt }}
+                    {{ form.originalIdCardNo }}
                   <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="原代办人：" prop="originalAgentName">
@@ -292,7 +292,7 @@
                     maxlength="20"
                     show-word-limit
                     clearable
-                    :disabled="form.originalOrderStatus >= 9"
+                    :disabled="[9, 10, 15, 99].includes(form.originalOrderStatus)"
                   />
                 </el-form-item>
                 <el-form-item label="变更后购车人手机号码：" prop="newBuyerPhone">
@@ -352,31 +352,31 @@
                 </el-form-item>
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
-                <el-form-item label="变更后购车人名称：" prop="newBuyerNameEncrypt">
+                <el-form-item label="变更后购车人名称：" prop="newBuyerName">
                   <!-- <LPEncrypted
-                    :value.sync="form.newBuyerNameEncrypt"
+                    :value.sync="form.newBuyerName"
                     :decryptMethod="() => { return form.newBuyerName }"
                   > -->
-                    {{ form.newBuyerNameEncrypt }}
+                    {{ form.newBuyerName }}
                   <!-- </LPEncrypted> -->
                 </el-form-item>
-                <el-form-item label="变更后购车人手机号码：" prop="newBuyerPhoneEncrypt">
+                <el-form-item label="变更后购车人手机号码：" prop="newBuyerPhone">
                   <!-- <LPEncrypted
-                    :value.sync="form.newBuyerPhoneEncrypt"
+                    :value.sync="form.newBuyerPhone"
                     :decryptMethod="() => { return form.newBuyerPhone }"
                   > -->
-                    {{ form.newBuyerPhoneEncrypt }}
+                    {{ form.newBuyerPhone }}
                   <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="变更后购车人证件类型：" prop="newIdCardType">
                   {{ form.newIdCardTypeLabel }}
                 </el-form-item>
-                <el-form-item label="变更后购车人证件号码：" prop="newIdCardNoEncrypt">
+                <el-form-item label="变更后购车人证件号码：" prop="newIdCardNo">
                   <!-- <LPEncrypted
-                    :value.sync="form.newIdCardNoEncrypt"
+                    :value.sync="form.newIdCardNo"
                     :decryptMethod="() => { return form.newIdCardNo }"
                   > -->
-                    {{ form.newIdCardNoEncrypt }}
+                    {{ form.newIdCardNo }}
                   <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="变更后代办人：" prop="newAgentName">
@@ -460,7 +460,7 @@
                 size="medium"
               >
                 <vxe-column type="seq" title="序号" width="80" fixed="left"></vxe-column>
-                <vxe-column field="creatorName" title="操作人" min-width="150"></vxe-column>
+                <vxe-column field="operatorName" title="操作人" min-width="150"></vxe-column>
                 <vxe-column field="operateStatusLabel" title="操作状态" min-width="150"></vxe-column>
                 <vxe-column field="operateExplain" title="操作描述" min-width="200"></vxe-column>
                 <vxe-column field="createTime" title="创建时间" min-width="180"></vxe-column>
@@ -504,7 +504,7 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-import { pageNoDesensitize as retailOrderPage, getDetail as retailOrderInfo } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { pageNoDesensitize as retailOrderPage } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import { fetchReasonLabelList } from '@/api/vehretail/orderRefund/changeReason';
 
 const defaultForm = {
@@ -558,14 +558,7 @@ const defaultForm = {
   auditorName: '',
   auditTime: '',
   dataSource: 150,
-  logList: [],
-  // 加密字段
-  originalBuyerNameEncrypt: '',
-  originalBuyerPhoneEncrypt: '',
-  originalIdCardNoEncrypt: '',
-  newBuyerNameEncrypt: '',
-  newBuyerPhoneEncrypt: '',
-  newIdCardNoEncrypt: '',
+  logList: []
 };
 
 export default {

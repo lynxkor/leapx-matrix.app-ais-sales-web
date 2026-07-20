@@ -161,16 +161,16 @@ export default {
           { props: 'sourceDealerAddress', label: '源门店地址', visible: true, width: 200 },
           { props: 'targetDealerName', label: '目标门店名称', visible: true, width: 200 },
           { props: 'targetDealerAddress', label: '目标门店地址', visible: true, width: 200 },
-          { props: 'moveoutTime', label: '移出时间', visible: true, width: 200 },
-          { props: 'moveinTime', label: '移入时间', visible: true, width: 200 },
-          { props: 'applyTime', label: '申请时间', visible: true, width: 200 },
+          { props: 'moveoutTime', label: '移出时间', visible: true, width: 200, sortable: true },
+          { props: 'moveinTime', label: '移入时间', visible: true, width: 200, sortable: true },
+          { props: 'applyTime', label: '申请时间', visible: true, width: 200, sortable: true },
           { props: 'auditStatusLabel', label: '单据状态', visible: true, width: 120 },
           { props: 'outApprovalLabel', label: '调出审批', visible: true, width: 100 },
           { props: 'outRemark', label: '调出意见', visible: true, width: 200 },
           { props: 'inApprovalLabel', label: '调入审批', visible: true, width: 100 },
           { props: 'inRemark', label: '调入意见', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 160 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 160 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
@@ -266,12 +266,7 @@ export default {
         ],
         total: 0
       },
-      sortColumns: [
-        // {
-        // column: 'create_time',
-        // sort: 'DESC'
-        // }
-      ]
+      sortColumns: []
     };
   },
   async created () {
@@ -284,12 +279,18 @@ export default {
   methods: {
     // 排序
     handleSortChange (value) {
-      this.sortColumns = (value || []).map(item => {
-        return {
-          column: (item.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
-          sort: (item.order || '').toUpperCase()
-        };
-      });
+      const list = value || [];
+      if (!list.length) {
+        this.sortColumns = [];
+        this.getData();
+        return;
+      }
+      const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
+      const def = this.optionObj.dataProp.find(item => item.props === latest.field) || {};
+      this.sortColumns = [{
+        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+        sort: (latest.order || '').toUpperCase()
+      }];
       this.getData();
     },
     handleListSelect (row) {
