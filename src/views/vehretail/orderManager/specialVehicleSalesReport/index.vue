@@ -276,6 +276,7 @@ export default {
           { props: 'address', label: '车主详细地址', visible: true, width: 150 },
           { props: 'invoiceNo', label: '发票号码', visible: true, width: 180, sortable: true },
           { props: 'invoiceDate', label: '开票日期', visible: true, width: 180, sortable: true },
+          { props: 'submitTime', label: '提交时间', visible: true, width: 180, sortable: true },
           { props: 'invoiceAmount', label: '发票金额', visible: true, width: 180, sortable: true, align: 'right' },
           { props: 'createTime', label: '创建时间', visible: true, width: 180, sortable: true },
           {

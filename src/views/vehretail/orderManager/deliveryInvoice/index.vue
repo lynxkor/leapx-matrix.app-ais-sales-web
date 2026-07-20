@@ -238,7 +238,7 @@ export default {
           },
           { props: 'matchVin', label: 'VIN', visible: true, width: 200 },
           { props: 'statusLabel', label: '整车开票状态', visible: true, width: 200 },
-          { props: 'invoiceTime', label: '开票时间', visible: true, width: 200 },
+          { props: 'invoiceTime', label: '开票日期', visible: true, width: 200, sortable: true },
           { props: 'invoiceName', label: '开票名称', visible: true, width: 200 },
           { props: 'vehicleAttributeLabel', label: '车辆属性', visible: true, width: 200 },
           { props: 'orderCarBuyerPhone', label: '购车人手机号码', visible: true, width: 200 },
