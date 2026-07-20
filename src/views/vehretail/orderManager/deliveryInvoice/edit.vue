@@ -1077,14 +1077,16 @@ export default {
       }
     },
     async submitRequest () {
-      // 附件必填与数量上下限校验，逻辑统一在 @/libs/utils -> validateAttachments
-      const { valid, errors } = validateAttachments({
-        attachmentList: this.attachmentList,
-        refs: this.$refs
-      });
-      if (!valid) {
-        this.$message.error(errors.join('；'));
-        throw new Error('附件校验未通过');
+      if (this.form.id) {
+        // 附件必填与数量上下限校验，逻辑统一在 @/libs/utils -> validateAttachments
+        const { valid, errors } = validateAttachments({
+          attachmentList: this.attachmentList,
+          refs: this.$refs
+        });
+        if (!valid) {
+          this.$message.error(errors.join('；'));
+          throw new Error('附件校验未通过');
+        }
       }
       return addOrUpdate({ ...this.form });
     },
