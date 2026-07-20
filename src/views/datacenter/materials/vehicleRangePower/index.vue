@@ -88,7 +88,7 @@ import TagInput from '@/libs/components/TagInput';
 const defaultForm = {
   // TIPS:多选时字段名称会有变化，自行校对
   rangePowerName: '',
-  status: '',
+  status: '1',
   remark: '',
   creatorName: '',
   createTime: '',
