@@ -267,7 +267,7 @@ export default {
             }]
           },
           { props: 'statusLabel', label: '交车状态', visible: true, width: 200 },
-          { props: 'appointmentTime', label: '预约提车时间', visible: true, width: 200 },
+          { props: 'appointmentTime', label: '预约提车时间', visible: true, width: 200, sortable: true },
           { props: 'vin', label: 'VIN', visible: true, width: 200, mask: true, getValue: (row) => getDetailDecryptField(row.id, 'vin') },
           { props: 'modelName', label: '车型名称', visible: true, width: 200 },
           { props: 'carBuyerName', label: '购车人姓名', visible: false, width: 200, mask: true, getValue: (row) => getDetailDecryptField(row.id, 'carBuyerName') },
@@ -279,13 +279,13 @@ export default {
           { props: 'paymentTime', label: '缴定金时间', visible: false, width: 200 },
           { props: 'lockTime', label: '锁单时间', visible: false, width: 200 },
           { props: 'deliveryNoticeTime', label: '触发交付通知时间', visible: false, width: 200 },
-          { props: 'deliveryTime', label: '交车时间', visible: false, width: 200 },
+          { props: 'deliveryTime', label: '交车时间', visible: false, width: 200, sortable: true },
           { props: 'saleDealerName', label: '订单销售门店', visible: false, width: 200 },
           { props: 'deliveryDealerName', label: '订单交付门店', visible: false, width: 200 },
           { props: 'deliveryUserName', label: '订单交付顾问', visible: false, width: 200 },
           { props: 'deliveryBatteryPower', label: '交车时电量', visible: false, width: 200, align: 'right' },
           { props: 'deliveryMileage', label: '交车时里程', visible: false, width: 200, align: 'right' },
-          { props: 'createTime', label: '创建时间', visible: false, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: false, width: 200, sortable: true },
           {
             props: 'operate',
             label: '操作',
@@ -312,12 +312,7 @@ export default {
         ],
         total: 0
       },
-      sortColumns: [
-        // {
-        // column: 'create_time',
-        // sort: 'DESC'
-        // }
-      ]
+      sortColumns: []
     };
   },
   computed: {
@@ -338,12 +333,18 @@ export default {
   methods: {
     // 排序
     handleSortChange (value) {
-      this.sortColumns = (value || []).map(item => {
-        return {
-          column: (item.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
-          sort: (item.order || '').toUpperCase()
-        };
-      });
+      const list = value || [];
+      if (!list.length) {
+        this.sortColumns = [];
+        this.getData();
+        return;
+      }
+      const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
+      const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
+      this.sortColumns = [{
+        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+        sort: (latest.order || '').toUpperCase()
+      }];
       this.getData();
     },
     handleListSelect (row) {
@@ -383,6 +384,7 @@ export default {
       // 重置后保留创建时间默认最近三个月
       const { startTime, endTime } = getTimeRangeByTypeFormat('最近三个月');
       this.form.createTime = [startTime, endTime];
+      this.sortColumns = [];
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
       this.getData();

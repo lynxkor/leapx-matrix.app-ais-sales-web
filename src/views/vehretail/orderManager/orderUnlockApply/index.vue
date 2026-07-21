@@ -141,6 +141,7 @@
         @paginationChange="paginationChange"
         @handleSelect="handleSelectionChange"
         @listSelect="handleListSelect"
+        @sortChange="handleSortChange"
       >
         <EditPage slot="centralizedViewSlot" :id="clickItemId"/>
       </LPVxeTable>
@@ -210,6 +211,7 @@ export default {
         ...defaultForm
       },
       selectionList: [],
+      sortColumns: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -253,11 +255,11 @@ export default {
           { props: 'materialsCode', label: '新配置物料编码', visible: true, width: 200 },
           { props: 'unlockReason', label: '订单解锁原因', visible: true, width: 200 },
           { props: 'vin', label: 'VIN号', visible: true, width: 200, mask: true, getValue: (row) => getDetailDecryptField(row.id, 'vin') },
-          { props: 'lockTime', label: '锁车时间', visible: true, width: 200 },
-          { props: 'submitTime', label: '提交时间', visible: true, width: 200 },
+          { props: 'lockTime', label: '锁车时间', visible: true, width: 200, sortable: true },
+          { props: 'submitTime', label: '提交时间', visible: true, width: 200, sortable: true },
           { props: 'refundApplyCode', label: '退订申请单号', visible: true, width: 200 },
           { props: 'autoGenerateStatusLabel', label: '是否自动生成', visible: true, width: 200 },
-          { props: 'paymentTime', label: '缴定金时间', visible: true, width: 200 },
+          { props: 'paymentTime', label: '缴定金时间', visible: true, width: 200, sortable: true },
           { props: 'auditUserName', label: '审核人名称', visible: true, width: 200 },
           { props: 'auditRemark', label: '审核意见', visible: true, width: 200 },
           { props: 'unlockTypeLabel', label: '解绑方式', visible: true, width: 200 },
@@ -358,6 +360,7 @@ export default {
       this.form = { ...defaultForm };
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
+      this.sortColumns = [];
       this.getData();
     },
     exportExcel () {
@@ -441,6 +444,21 @@ export default {
     handleSelectionChange (selection) {
       this.selectionList = selection;
     },
+    handleSortChange (value) {
+      const list = value || [];
+      if (!list.length) {
+        this.sortColumns = [];
+        this.getData();
+        return;
+      }
+      const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
+      const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
+      this.sortColumns = [{
+        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+        sort: (latest.order || '').toUpperCase()
+      }];
+      this.getData();
+    },
     getFormData () {
       const data = { ...this.form };
 
@@ -464,6 +482,8 @@ export default {
           data.auditTimeEnd = this.form.auditTime[1];
         }
       }
+
+      data.sortColumns = this.sortColumns;
 
       return data;
     },

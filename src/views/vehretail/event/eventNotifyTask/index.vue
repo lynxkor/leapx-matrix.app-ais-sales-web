@@ -92,14 +92,24 @@
             clearable
           />
         </el-form-item>
+        <el-form-item label="失败原因">
+          <el-input
+            type="text"
+            placeholder="请输入"
+            v-model="form.failedReason"
+            clearable
+          />
+        </el-form-item>
         <el-form-item label="创建时间">
           <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
             v-model="form.eventAtRange"
             type="daterange"
             unlink-panels
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
+            :picker-options="pickerOptions"
             value-format="yyyy-MM-dd HH:mm:ss"
             @change="handleEventAtRangeChange"
             clearable

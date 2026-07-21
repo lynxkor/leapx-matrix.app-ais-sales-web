@@ -211,14 +211,14 @@ export default {
           { props: 'saleDealerName', label: '销售门店', visible: true, width: 160 },
           { props: 'saleUserName', label: '销售顾问', visible: true, width: 120 },
           { props: 'deliveryUserName', label: '交付顾问', visible: true, width: 120 },
-          { props: 'deliveryTime', label: '交车时间', visible: true, width: 160 },
+          { props: 'deliveryTime', label: '交车时间', visible: true, width: 160, sortable: true },
           { props: 'commitmentType', label: '承诺类型', visible: true, width: 160 },
           { props: 'commitmentContent', label: '承诺内容', visible: true, width: 200 },
           { props: 'commitmentDetailDesc', label: '承诺详细说明', visible: true, width: 200 },
           { props: 'isOriginalLabel', label: '是否原厂', visible: true, width: 120 },
           { props: 'fulfillStatusLabel', label: '兑现状态', visible: true, width: 120 },
           { props: 'fulfillDesc', label: '待兑现说明', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 160 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 160, sortable: true },
           {
             props: 'operate',
             label: '操作',
@@ -244,12 +244,7 @@ export default {
         ],
         total: 0
       },
-      sortColumns: [
-        // {
-        // column: 'create_time',
-        // sort: 'DESC'
-        // }
-      ]
+      sortColumns: []
     };
   },
   created () {
@@ -259,12 +254,18 @@ export default {
   methods: {
     // 排序
     handleSortChange (value) {
-      this.sortColumns = (value || []).map(item => {
-        return {
-          column: (item.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
-          sort: (item.order || '').toUpperCase()
-        };
-      });
+      const list = value || [];
+      if (!list.length) {
+        this.sortColumns = [];
+        this.getData();
+        return;
+      }
+      const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
+      const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
+      this.sortColumns = [{
+        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+        sort: (latest.order || '').toUpperCase()
+      }];
       this.getData();
     },
     handleListSelect (row) {
@@ -289,6 +290,7 @@ export default {
       this.form = { ...defaultForm };
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
+      this.sortColumns = [];
       this.getData();
     },
     exportExcel () {

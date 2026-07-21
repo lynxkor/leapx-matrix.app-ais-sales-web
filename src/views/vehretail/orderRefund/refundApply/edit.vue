@@ -388,7 +388,6 @@
                 :businessId="_id"
                 :readonly="!_id || !(form.refundStatus === 1010 || form.refundStatus === 1040)"
                 configCode="mcs_vehorderrefund"
-                attachType="订单信息变更申请附件"
               />
             </div>
           </section>
