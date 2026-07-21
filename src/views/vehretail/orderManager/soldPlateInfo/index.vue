@@ -9,6 +9,9 @@
       label-width="150px"
       class="ais-search-form"
     >
+      <el-form-item label="已售上牌资料编号">
+        <tag-input v-model="form.soldPlateCodeList" placeholder="请输入"/>
+      </el-form-item>
       <el-form-item label="VIN">
         <tag-input v-model="form.vinList" placeholder="请输入VIN" clearable />
       </el-form-item>
@@ -17,15 +20,6 @@
           :request="fetchOptions"
           enumCode="vehretail_order_change_apply_status"
           v-model="form.status"
-          placeholder="请选择"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item label="是否自动审核">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="BooleanEnum"
-          v-model="form.autoAuditStatus"
           placeholder="请选择"
           clearable
         />
@@ -45,6 +39,30 @@
         />
       </el-form-item>
       <template v-if="show">
+        <el-form-item label="是否自动审核">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.autoAuditStatus"
+            placeholder="请选择"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="销售门店">
+          <fetch-select
+            filterable
+            clearable
+            remote
+            v-model="form.saleDealerCode"
+            :remote-method="saleDealerSearch"
+            value-key="storeCode"
+            label-key="storeName"
+            placeholder="请选择"
+          />
+        </el-form-item>
+        <el-form-item label="母公司">
+          <el-input v-model="form.dealerCompanyName" placeholder="请输入" clearable />
+        </el-form-item>
         <el-form-item label="车主信息">
           <el-input v-model="form.searchContentPc" placeholder="请输入车主姓名/电话/证件号码" clearable />
         </el-form-item>
@@ -171,7 +189,7 @@ import {
   revocationBatch,
   submitBatch
 } from '@/api/vehretail/orderManager/soldPlateInfo';
-import { exportTable, getEnum, getTableConfig, listVehicleModel, tableAddOrUpdate } from '@/api/common';
+import { exportTable, getEnum, getTableConfig, listOrgStoreInfo, listVehicleModel, tableAddOrUpdate } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -502,6 +520,13 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    async saleDealerSearch (val) {
+      const params = {
+        keyword: val,
+        pageSize: 5000
+      };
+      return await listOrgStoreInfo(params);
     },
     vehicleModelSearch (val) {
       const params = {
