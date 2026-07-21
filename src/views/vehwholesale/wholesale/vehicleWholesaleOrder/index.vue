@@ -1377,10 +1377,26 @@ export default {
       this.optionObj.form.page = 1;
       this.getData();
     },
+    handleSortChange (value) {
+      const list = value || [];
+      if (!list.length) {
+        this.sortColumns = [];
+        this.getData();
+        return;
+      }
+      const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
+      const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
+      this.sortColumns = [{
+        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+        sort: (latest.order || '').toUpperCase()
+      }];
+      this.getData();
+    },
     onReset () {
       this.form = { ...defaultForm };
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
+      this.sortColumns = [];
       this.getData();
     },
     exportExcel () {
@@ -1511,6 +1527,8 @@ export default {
           data.allocateTimeEnd = this.form.allocateTime[1];
         }
       }
+
+      data.sortColumns = this.sortColumns;
 
       return data;
     },
