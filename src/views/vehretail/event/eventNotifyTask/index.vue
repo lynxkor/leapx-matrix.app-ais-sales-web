@@ -92,6 +92,14 @@
             clearable
           />
         </el-form-item>
+        <el-form-item label="失败原因">
+          <el-input
+            type="text"
+            placeholder="请输入"
+            v-model="form.failedReason"
+            clearable
+          />
+        </el-form-item>
         <el-form-item label="创建时间">
           <el-date-picker
             :default-time="['00:00:00', '23:59:59']"
