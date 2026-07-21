@@ -1027,6 +1027,41 @@ export default {
       });
     },
     saveRowEdit (row, defer) {
+      // 折扣校验：销售价格 / 标准价格
+      const salesPrice = parseFloat(row.salesPrice);
+      const standardPrice = parseFloat(row.standardPrice);
+
+      // 检查是否为有效数字，避免 NaN、Infinity 等异常
+      const isSalesPriceValid = !isNaN(salesPrice) && isFinite(salesPrice) && salesPrice > 0;
+      const isStandardPriceValid = !isNaN(standardPrice) && isFinite(standardPrice) && standardPrice > 0;
+
+      if (isStandardPriceValid && isSalesPriceValid) {
+        const discount = salesPrice / standardPrice;
+        // 检查折扣是否为有效数字，避免溢出等异常
+        if (isFinite(discount) && (discount < 0.85 || discount > 1)) {
+          this.$confirm(
+            '销售价格不在常规折扣0.85到1的范围内，是否继续录入',
+            '提示',
+            {
+              confirmButtonText: '是',
+              cancelButtonText: '否',
+              type: 'warning'
+            }
+          ).then(() => {
+            // 用户选择【是】，继续保存
+            this.doSaveRowEdit(row, defer);
+          }).catch(() => {
+            // 用户选择【否】，取消保存
+            defer.reject();
+          });
+          return;
+        }
+      }
+
+      // 折扣在允许范围内，或价格无效时直接保存
+      this.doSaveRowEdit(row, defer);
+    },
+    doSaveRowEdit (row, defer) {
       addOrUpdateDetail(row).then(id => {
         defer.resolve(id);
         this.$message.success('添加成功');
