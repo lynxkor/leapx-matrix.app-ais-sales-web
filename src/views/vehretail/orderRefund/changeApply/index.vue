@@ -16,7 +16,16 @@
         <tag-input v-model="form.mallOrderCodeList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="订单销售门店">
-        <tag-input v-model="form.saleDealerNameList" placeholder="请输入" />
+        <fetch-select
+          filterable
+          clearable
+          remote
+          v-model="form.saleDealerCode"
+          :remote-method="saleDealerSearch"
+          value-key="storeCode"
+          label-key="storeName"
+          placeholder="请选择"
+        />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="申请状态">
@@ -155,7 +164,7 @@ import { deleteItem, enableItem, getList } from '@/api/vehretail/orderRefund/ord
 import {
   exportTable,
   getEnum, getRigion,
-  getTableConfig,
+  getTableConfig, listOrgStoreInfo,
   listVehicleModel,
   tableAddOrUpdate,
   vehicleSeriesList
@@ -421,6 +430,13 @@ export default {
     },
     saveOrUpdate (data) {
       return tableAddOrUpdate(data);
+    },
+    async saleDealerSearch (val) {
+      const params = {
+        keyword: val,
+        pageSize: 5000
+      };
+      return await listOrgStoreInfo(params);
     },
     paginationChange (type, num) {
       if (type === 'page') {
