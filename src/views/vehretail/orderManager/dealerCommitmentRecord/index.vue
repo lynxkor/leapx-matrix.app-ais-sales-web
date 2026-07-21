@@ -244,12 +244,7 @@ export default {
         ],
         total: 0
       },
-      sortColumns: [
-        // {
-        // column: 'create_time',
-        // sort: 'DESC'
-        // }
-      ]
+      sortColumns: []
     };
   },
   created () {
@@ -259,12 +254,18 @@ export default {
   methods: {
     // 排序
     handleSortChange (value) {
-      this.sortColumns = (value || []).map(item => {
-        return {
-          column: (item.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
-          sort: (item.order || '').toUpperCase()
-        };
-      });
+      const list = value || [];
+      if (!list.length) {
+        this.sortColumns = [];
+        this.getData();
+        return;
+      }
+      const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
+      const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
+      this.sortColumns = [{
+        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+        sort: (latest.order || '').toUpperCase()
+      }];
       this.getData();
     },
     handleListSelect (row) {
@@ -289,6 +290,7 @@ export default {
       this.form = { ...defaultForm };
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
+      this.sortColumns = [];
       this.getData();
     },
     exportExcel () {

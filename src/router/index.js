@@ -1514,7 +1514,7 @@ const routes = [
       component: () => import('@/views/vehwholesale/wholesale/vehicleWholesaleOrderFactory/index.vue'),
 
       meta: {
-        name: '整车批售-批售主数据-整车批售订单管理',
+        name: '整车批售-批售主数据-整车批售订单管理(厂端)',
         keepAlive: true
       }
     }, {
