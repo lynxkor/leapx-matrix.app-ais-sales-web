@@ -244,6 +244,7 @@
         @paginationChange="paginationChange"
         @handleSelect="handleSelectionChange"
         @listSelect="handleListSelect"
+        @sortChange="handleSortChange"
       >
         <EditPage slot="centralizedViewSlot" :id="clickItemId"/>
       </LPVxeTable>
@@ -400,6 +401,7 @@ export default {
       },
       areaOptions: getAreaTree(),
       selectionList: [],
+      sortColumns: [],
       yes_no_enum: YES_NO_ENUM,
       activeTab: 'all',
       show: false,
@@ -479,7 +481,7 @@ export default {
           },
           { props: 'orderStatusLabel', label: '零售订单状态', visible: true, width: 150 },
           { props: 'lockStatusLabel', label: '是否锁单', visible: true, width: 120 },
-          { props: 'lockTime', label: '锁单时间', visible: true, width: 180 },
+          { props: 'lockTime', label: '锁单时间', visible: true, width: 180, sortable: true },
           { props: 'wholesaleOrderCode', label: '批售订单号', visible: true, width: 200 },
           { props: 'wholesaleBindStatusLabel', label: '是否绑定批售', visible: true, width: 140 },
           { props: 'priceAfterSubsidy', label: '补贴后价格', visible: true, width: 140, align: 'right' },
@@ -507,7 +509,7 @@ export default {
           { props: 'retailOrderCode', label: '订单编码', visible: true, width: 200 },
           { props: 'outTradeNo', label: '外部订单号', visible: true, width: 200 },
           { props: 'orderTime', label: '商城下单时间', visible: true, width: 200 },
-          { props: 'paymentTime', label: '缴定金时间', visible: true, width: 200 },
+          { props: 'paymentTime', label: '缴定金时间', visible: true, width: 200, sortable: true },
           { props: 'rightsEnjoyDate', label: '权益享受日期', visible: true, width: 200 },
           { props: 'wholesaleOrderStatusLabel', label: '批售订单状态', visible: true, width: 160 },
           { props: 'unlockCount', label: '解绑次数', visible: true, width: 120 },
@@ -516,8 +518,8 @@ export default {
           { props: 'deliveryCycleMaxWeek', label: '交付周期上限', visible: true, width: 160 },
           { props: 'initialDeliveryCycleDesc', label: '初始交付周期说明', visible: true, width: 180 },
           { props: 'dynamicDeliveryCycleDesc', label: '动态交付周期说明', visible: true, width: 180 },
-          { props: 'orderSortTime', label: '订单排序时间', visible: true, width: 160 },
-          { props: 'deliveryTime', label: '交车时间', visible: true, width: 200 },
+          { props: 'orderSortTime', label: '订单排序时间', visible: true, width: 160, sortable: true },
+          { props: 'deliveryTime', label: '交车时间', visible: true, width: 200, sortable: true },
           { props: 'orderUserId', label: '下单人UserID', visible: true, width: 180 },
           { props: 'createTime', label: '创建时间', visible: true, width: 200 },
           { props: 'idCardTypeLabel', label: '证据类型', visible: true, width: 200 },
@@ -761,8 +763,24 @@ export default {
     onReset () {
       this.form = { ...defaultForm };
       this.activeTab = 'all';
+      this.sortColumns = [];
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
+      this.getData();
+    },
+    handleSortChange (value) {
+      const list = value || [];
+      if (!list.length) {
+        this.sortColumns = [];
+        this.getData();
+        return;
+      }
+      const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
+      const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
+      this.sortColumns = [{
+        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+        sort: (latest.order || '').toUpperCase()
+      }];
       this.getData();
     },
     exportExcel () {
@@ -884,6 +902,8 @@ export default {
           data.cityCode = this.form.area[1];
         }
       }
+
+      data.sortColumns = this.sortColumns;
 
       return data;
     },
