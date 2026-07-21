@@ -314,7 +314,7 @@ export default {
           { props: 'exteriorName', label: '外观', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleExterior/edit?id=${row.exteriorId}`, '_blank'); }, type: 'primary' }] },
           { props: 'interiorName', label: '内饰', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleInterior/edit?id=${row.interiorId}`, '_blank'); }, type: 'primary' }] },
           { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 140, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleWheelHub/edit?id=${row.wheelHubId}`, '_blank'); }, type: 'primary' }] },
-          { props: 'outboundDateTime', label: 'VDC出库时间', visible: true, width: 200 },
+          { props: 'outboundDateTime', label: 'VDC出库时间', visible: true, width: 200, sortable: true },
           { props: 'bulkoutLabel', label: '是否批量出库', visible: true, width: 140 },
           { props: 'offlineTime', label: '下线时间', visible: true, width: 200 },
           { props: 'lastInboundTime', label: '最近入库时间', visible: true, width: 200 },
