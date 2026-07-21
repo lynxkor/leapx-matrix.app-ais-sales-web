@@ -256,7 +256,7 @@ export default {
           },
           { props: 'statusLabel', label: '审核状态', visible: true, width: 200 },
           { props: 'autoAuditStatusLabel', label: '是否自动审核', visible: true, width: 200 },
-          { props: 'auditTime', label: '审核时间', visible: true, width: 200 },
+          { props: 'auditTime', label: '审核时间', visible: true, width: 200, sortable: true },
           { props: 'deliveryTime', label: '交车时间', visible: true, width: 200 },
           { props: 'vin', label: 'VIN', visible: true, width: 200 },
           { props: 'modelName', label: '车型名称', visible: true, width: 200 },
@@ -270,7 +270,7 @@ export default {
           { props: 'invoiceAmount', label: '发票金额', visible: true, width: 200, align: 'right' },
           { props: 'plateNo', label: '车牌号码', visible: true, width: 200 },
           { props: 'vehicleRegisterAddress', label: '车辆注册地址', visible: true, width: 200 },
-          { props: 'plateDate', label: '上牌日期', visible: true, width: 200 },
+          { props: 'plateDate', label: '上牌日期', visible: true, width: 200, sortable: true },
           { props: 'provinceName', label: '上牌省份', visible: true, width: 200 },
           { props: 'cityName', label: '上牌城市', visible: true, width: 200 },
           { props: 'saleDealerName', label: '门店', visible: true, width: 200 },
@@ -293,8 +293,8 @@ export default {
           { props: 'drivingLicenseNumber', label: '行驶证编号', visible: true, width: 200 },
           { props: 'vehiclePurpose', label: '车辆用途', visible: true, width: 200 },
           { props: 'auditRemark', label: '审核意见', visible: true, width: 200 },
-          { props: 'submitTime', label: '提交时间', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'submitTime', label: '提交时间', visible: true, width: 200, sortable: true },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
           // 以下字段不在指定列表中，设置为隐藏
           { props: 'deliveryOrderId', label: '交车单ID', visible: false, width: 200 },
           { props: 'retailOrderId', label: '零售订单ID', visible: false, width: 200 },
@@ -345,12 +345,7 @@ export default {
         ],
         total: 0
       },
-      sortColumns: [
-        // {
-        // column: 'create_time',
-        // sort: 'DESC'
-        // }
-      ]
+      sortColumns: []
     };
   },
   created () {
@@ -360,12 +355,18 @@ export default {
   methods: {
     // 排序
     handleSortChange (value) {
-      this.sortColumns = (value || []).map(item => {
-        return {
-          column: (item.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
-          sort: (item.order || '').toUpperCase()
-        };
-      });
+      const list = value || [];
+      if (!list.length) {
+        this.sortColumns = [];
+        this.getData();
+        return;
+      }
+      const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
+      const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
+      this.sortColumns = [{
+        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+        sort: (latest.order || '').toUpperCase()
+      }];
       this.getData();
     },
     handleListSelect (row) {
@@ -388,6 +389,7 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
+      this.sortColumns = [];
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
       this.getData();

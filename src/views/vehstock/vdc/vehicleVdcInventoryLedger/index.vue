@@ -400,12 +400,7 @@ export default {
               type: 'primary'
             }]
           },
-          {
-            props: 'inboundDateTime',
-            label: 'VDC入库时间',
-            visible: true,
-            width: 200,
-          },
+          { props: 'inboundDateTime', label: 'VDC入库时间', visible: true, width: 200, sortable: true },
           { props: 'stockAge', label: '库龄（天）', visible: true, align: 'right', width: 120 },
           { props: 'warehouseName', label: '整车仓库', visible: true, width: 120 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
@@ -493,10 +488,10 @@ export default {
         total: 0
       },
       sortColumns: [
-        // {
-        //   column: 'inbound_date_time',
-        //   sort: 'DESC'
-        // },
+        {
+          column: 'inbound_date_time',
+          sort: 'DESC'
+        },
         // {
         //   column: 'create_time',
         //   sort: 'DESC'
@@ -608,6 +603,7 @@ export default {
         this.optionDdl.form.page = 1;
         this.optionDdl.form.pageSize = pageSize;
       }
+      this.sortColumns = [{ column: 'inbound_date_time', sort: 'DESC' }];
       this.$nextTick(() => {
         this.getData();
       });

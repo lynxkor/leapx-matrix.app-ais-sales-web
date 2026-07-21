@@ -347,6 +347,7 @@
         :get-config="getConfig"
         :save-or-update="saveOrUpdate"
         @paginationChange="paginationChange"
+        @sortChange="handleSortChange"
         @handleSelect="handleSelectionChange"
         @listSelect="handleListSelect"
       >
@@ -548,6 +549,7 @@ export default {
       },
       tabName: '1',
       selectionList: [],
+      sortColumns: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -598,7 +600,7 @@ export default {
             }]
           },
           { props: 'orderStatusLabel', label: '订单状态', visible: true, width: 100 },
-          { props: 'orderTime', label: '订单时间', visible: true, width: 200 },
+          { props: 'orderTime', label: '订单时间', visible: true, width: 200, sortable: true },
           { props: 'confirmTime', label: '确认时间', visible: true, width: 200 },
           {
             props: 'saleDealerName',
@@ -641,8 +643,8 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'allocateTime', label: '配车时间', visible: true, width: 200 },
-          { props: 'settleTime', label: '结算时间', visible: true, width: 200 },
+          { props: 'allocateTime', label: '配车时间', visible: true, width: 200, sortable: true },
+          { props: 'settleTime', label: '结算时间', visible: true, width: 200, sortable: true },
           { props: 'materialsCode', label: '配车物料码', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'vin', label: '配车VIN码', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }] },
           { props: 'replenishApplyCode', label: '整车补货单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/replenish/dealerVehicleReplenishApply/edit?id=${row.replenishApplyCode}`, '_blank'); }, type: 'primary' }] },
@@ -780,7 +782,7 @@ export default {
           { props: 'logisticsReserve', label: '物流说明', visible: true, width: 200 },
           { props: 'initDeliveryCycleDesc', label: '初始交付周期说明', visible: true, width: 200 },
           { props: 'dynamicDeliveryCycleDesc', label: '动态交付周期说明', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
           {
             props: 'operate',
             label: '操作',

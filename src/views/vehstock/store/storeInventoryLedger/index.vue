@@ -248,6 +248,11 @@ const defaultForm = {
   moveinDate: '',
 };
 
+// 默认排序：创建时间倒序。data() 和 onReset 复用同一份常量，避免两份硬编码不一致。
+const DEFAULT_SORT_COLUMNS = [
+  { column: 'create_time', sort: 'DESC' }
+];
+
 const pageSize = 20;
 const mockConfig = {
   data: null
@@ -362,20 +367,7 @@ export default {
         ],
         total: 0
       },
-      sortColumns: [
-        // {
-        //   column: 'poentry_on',
-        //   sort: 'DESC'
-        // },
-        // {
-        //   column: 'create_time',
-        //   sort: 'DESC'
-        // },
-        // {
-        //   column: 'moveout_date',
-        //   sort: 'DESC'
-        // }
-      ],
+      sortColumns: [...DEFAULT_SORT_COLUMNS],
       // 提取公共配置
       selectOptions: {
         placeholder: '请选择',
@@ -438,8 +430,6 @@ export default {
   },
   methods: {
     handleSortChange (value) {
-      console.log('handleSortChange', value);
-
       const list = value || [];
       if (!list.length) {
         this.sortColumns = [];
@@ -499,6 +489,7 @@ export default {
       this.form = { ...defaultForm };
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
+      this.sortColumns = [...DEFAULT_SORT_COLUMNS];
       this.getData();
     },
     exportExcel () {
