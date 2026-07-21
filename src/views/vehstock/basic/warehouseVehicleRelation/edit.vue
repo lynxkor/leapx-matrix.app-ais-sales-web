@@ -56,7 +56,7 @@
                     disabled
                   />
                 </el-form-item>
-                <el-form-item label="省：" prop="provinceCode">
+                <el-form-item label="省：">
                   <fetch-select
                     v-model="form.provinceCode"
                     placeholder="请选择"
@@ -67,9 +67,10 @@
                     @change="handleChangeProvince"
                   />
                 </el-form-item>
-                <el-form-item label="市：" prop="cityCode">
+                <el-form-item label="市：">
                   <fetch-select
                     v-model="form.cityCode"
+                    :disabled="!form.provinceCode"
                     placeholder="请选择"
                     :options="cityOptions"
                     value-key="code"
@@ -161,7 +162,7 @@ const defaultForm = {
   provinceName: '',
   cityName: '',
   priority: '',
-  status: '',
+  status: '1',
   statusLabel: '',
   creatorName: '',
   createTime: '',
@@ -272,7 +273,19 @@ export default {
       return {};
     },
     submitRequest () {
-      return addOrUpdate({ ...this.form });
+      return addOrUpdate({ ...this.form }).then(res => {
+        // 仅新增场景保存成功后回到列表页
+        // 阻断 edit-base-container 的 success 回调（避免 replace 到带 id 的编辑页）
+        // 业务自己弹成功提示并跳回列表页
+        if (!this._id) {
+          this.$message.success('保存成功');
+          this.$nextTick(() => {
+            this.$router.back();
+          });
+          return Promise.reject(new Error('新增保存后返回列表页，主动阻断容器 success 回调'));
+        }
+        return res;
+      });
     },
     async fetchOptions (code) {
       if (code) {
