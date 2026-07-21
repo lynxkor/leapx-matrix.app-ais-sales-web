@@ -28,7 +28,7 @@
                   <el-input placeholder="请输入" v-model="form.materialsCode" clearable maxlength="30" />
                 </el-form-item>
                 <el-form-item label="物料描述：" prop="materialsDesc" :style="{ width: visibleCount === 3 ? '75%' : '65%' }">
-                  <el-input placeholder="请输入" v-model="form.materialsDesc" clearable disabled maxlength="100" />
+                  <el-input placeholder="请输入" v-model="form.materialsDesc" clearable :disabled="!_id" maxlength="100" />
                 </el-form-item>
                 <el-form-item label="车系：" prop="seriesId">
                   <fetch-select
