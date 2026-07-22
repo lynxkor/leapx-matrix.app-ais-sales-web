@@ -12,6 +12,14 @@ export function getList (data) {
 };
 
 /**
+ * 新导出接口
+ * @param {Object} data
+ */
+export function postExport (data) {
+  return api.jsonPost(prefix + 'export', data);
+};
+
+/**
  * 新增或修改
  * @param {Object} data
  */
