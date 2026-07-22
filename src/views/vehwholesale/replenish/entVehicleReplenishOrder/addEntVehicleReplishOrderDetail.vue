@@ -19,7 +19,7 @@
 
         <el-form-item label="标准价格：" prop="standardPrice">
           <el-input-number :controls="false" style="width: 100%;" placeholder="请输入"
-            v-model="materialsform.standardPrice" clearable :precision="4" />
+            v-model="materialsform.standardPrice" clearable :precision="4" disabled />
         </el-form-item>
 
         <el-form-item label="物料描述：" prop="materialsDesc">
