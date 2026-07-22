@@ -271,7 +271,7 @@ export default {
           { props: 'wholesaleOrderCode', label: '整车批售单号', visible: true, width: 150 },
           { props: 'carBuyerName', label: '车主姓名', visible: true, width: 150 },
           { props: 'carBuyerPhone', label: '车主手机号码', visible: true, width: 150 },
-          { props: 'idCardType', label: '车主证件类型', visible: true, width: 150 },
+          { props: 'idCardTypeLabel', label: '车主证件类型', visible: true, width: 150 },
           { props: 'idCardNo', label: '车主证件号码', visible: true, width: 150 },
           { props: 'address', label: '车主详细地址', visible: true, width: 150 },
           { props: 'invoiceNo', label: '发票号码', visible: true, width: 180 },
