@@ -64,6 +64,7 @@
                     value-key="code"
                     label-key="name"
                     filterable
+                    clearable
                     @change="handleChangeProvince"
                   />
                 </el-form-item>
@@ -76,6 +77,7 @@
                     value-key="code"
                     label-key="name"
                     filterable
+                    clearable
                     @change="handleChangeCity"
                   />
                 </el-form-item>
@@ -327,12 +329,20 @@ export default {
         this.cityOptions = selectedOption?.child || [];
         this.form.cityCode = '';
         this.form.cityName = '';
+      } else {
+        this.cityOptions = [];
+        this.form.cityCode = '';
+        this.form.cityName = '';
+        this.form.provinceName = '';
       }
     },
     handleChangeCity (val, selectedOption) {
       if (val) {
         this.form.cityCode = selectedOption?.code || '';
         this.form.cityName = selectedOption?.name || '';
+      } else {
+        this.form.cityCode = '';
+        this.form.cityName = '';
       }
     },
     getDefautlForm () {
