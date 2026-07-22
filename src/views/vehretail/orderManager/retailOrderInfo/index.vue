@@ -330,7 +330,7 @@ const defaultForm = {
   depositAmount: '',
   agentName: '',
   cooperationTypeLabel: '',
-  saleDealerCode: '',
+  saleDealerNameList: [],
   provinceName: '',
   cityName: '',
   regionName: '',
