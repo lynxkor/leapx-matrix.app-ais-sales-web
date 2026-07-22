@@ -261,6 +261,9 @@
                 <el-form-item label="异常记录时间：" prop="fenceCrossedOn">
                   {{ form.fenceCrossedOn }}
                 </el-form-item>
+                <el-form-item label="制造日期：" prop="manufacturingDate">
+                  {{ form.manufacturingDate }}
+                </el-form-item>
               </el-form>
             </div>
           </section>
