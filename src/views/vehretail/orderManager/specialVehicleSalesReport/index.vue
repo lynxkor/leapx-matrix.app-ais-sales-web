@@ -274,7 +274,7 @@ export default {
           { props: 'idCardType', label: '车主证件类型', visible: true, width: 150 },
           { props: 'idCardNo', label: '车主证件号码', visible: true, width: 150 },
           { props: 'address', label: '车主详细地址', visible: true, width: 150 },
-          { props: 'invoiceNo', label: '发票号码', visible: true, width: 180, sortable: true },
+          { props: 'invoiceNo', label: '发票号码', visible: true, width: 180 },
           { props: 'invoiceDate', label: '开票日期', visible: true, width: 180, sortable: true },
           { props: 'submitTime', label: '提交时间', visible: true, width: 180, sortable: true },
           { props: 'invoiceAmount', label: '发票金额', visible: true, width: 180, sortable: true, align: 'right' },
@@ -328,12 +328,18 @@ export default {
   methods: {
     // 排序
     handleSortChange (value) {
-      this.sortColumns = (value || []).map(item => {
-        return {
-          column: (item.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
-          sort: (item.order || '').toUpperCase()
-        };
-      });
+      const list = value || [];
+      if (!list.length) {
+        this.sortColumns = [];
+        this.getData();
+        return;
+      }
+      const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
+      const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
+      this.sortColumns = [{
+        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+        sort: (latest.order || '').toUpperCase()
+      }];
       this.getData();
     },
     handleListSelect (row) {
