@@ -41,7 +41,7 @@
           <tag-input v-model="form.matchVinList" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="销售门店">
-          <tag-input v-model="form.saleDealerCodeList" clearable placeholder="请输入" />
+          <tag-input v-model="form.saleDealerNameList" clearable placeholder="请输入" />
           <!-- <fetch-select
             filterable
             clearable
