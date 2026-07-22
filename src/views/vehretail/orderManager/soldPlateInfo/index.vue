@@ -9,6 +9,9 @@
       label-width="150px"
       class="ais-search-form"
     >
+      <el-form-item label="已售上牌资料编号">
+        <tag-input v-model="form.soldPlateCodeList" placeholder="请输入"/>
+      </el-form-item>
       <el-form-item label="VIN">
         <tag-input v-model="form.vinList" placeholder="请输入VIN" clearable />
       </el-form-item>
@@ -17,15 +20,6 @@
           :request="fetchOptions"
           enumCode="vehretail_order_change_apply_status"
           v-model="form.status"
-          placeholder="请选择"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item label="是否自动审核">
-        <fetch-select
-          :request="fetchOptions"
-          enumCode="BooleanEnum"
-          v-model="form.autoAuditStatus"
           placeholder="请选择"
           clearable
         />
@@ -45,6 +39,30 @@
         />
       </el-form-item>
       <template v-if="show">
+        <el-form-item label="是否自动审核">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.autoAuditStatus"
+            placeholder="请选择"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="销售门店">
+          <fetch-select
+            filterable
+            clearable
+            remote
+            v-model="form.saleDealerCode"
+            :remote-method="saleDealerSearch"
+            value-key="storeCode"
+            label-key="storeName"
+            placeholder="请选择"
+          />
+        </el-form-item>
+        <el-form-item label="母公司">
+          <el-input v-model="form.dealerCompanyName" placeholder="请输入" clearable />
+        </el-form-item>
         <el-form-item label="车主信息">
           <el-input v-model="form.searchContentPc" placeholder="请输入车主姓名/电话/证件号码" clearable />
         </el-form-item>
@@ -171,7 +189,7 @@ import {
   revocationBatch,
   submitBatch
 } from '@/api/vehretail/orderManager/soldPlateInfo';
-import { exportTable, getEnum, getTableConfig, listVehicleModel, tableAddOrUpdate } from '@/api/common';
+import { exportTable, getEnum, getTableConfig, listOrgStoreInfo, listVehicleModel, tableAddOrUpdate } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -263,7 +281,7 @@ export default {
           { props: 'carSalesVersionName', label: '公告车型', visible: true, width: 200 },
           { props: 'carBuyerName', label: '车主姓名', visible: true, width: 200 },
           { props: 'carBuyerPhone', label: '车主电话', visible: true, width: 200 },
-          { props: 'idCardType', label: '证件类型', visible: true, width: 200 },
+          { props: 'idCardTypeLabel', label: '证件类型', visible: true, width: 200 },
           { props: 'idCardNo', label: '证件号码', visible: true, width: 200 },
           { props: 'invoiceNo', label: '发票号码', visible: true, width: 200 },
           { props: 'invoiceTime', label: '开票日期', visible: true, width: 200 },
@@ -291,7 +309,7 @@ export default {
           { props: 'iccId', label: '卡ICCID', visible: true, width: 200 },
           { props: 'msisdn', label: '卡MSISDN', visible: true, width: 200 },
           { props: 'drivingLicenseNumber', label: '行驶证编号', visible: true, width: 200 },
-          { props: 'vehiclePurpose', label: '车辆用途', visible: true, width: 200 },
+          { props: 'vehiclePurposeLabel', label: '车辆用途', visible: true, width: 200 },
           { props: 'auditRemark', label: '审核意见', visible: true, width: 200 },
           { props: 'submitTime', label: '提交时间', visible: true, width: 200, sortable: true },
           { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
@@ -304,7 +322,7 @@ export default {
           { props: 'saleOrgId', label: '门店id', visible: false, width: 200 },
           { props: 'saleDealerCode', label: '门店编码', visible: false, width: 200 },
           { props: 'carSaleSversionId', label: '公告车型ID', visible: false, width: 200 },
-          { props: 'vehiclePlaceOriginLabel', label: '产地', visible: false, width: 200 },
+          { props: 'vehiclePlaceOrigin', label: '产地', visible: false, width: 200 },
           { props: 'enginenNumber', label: '发动机号', visible: false, width: 200 },
           { props: 'certificateNo', label: '合格证号', visible: false, width: 200 },
           { props: 'invoiceRecordCode', label: '整车开票记录编号', visible: false, width: 200 },
@@ -502,6 +520,13 @@ export default {
         return getEnum(code);
       }
       return [];
+    },
+    async saleDealerSearch (val) {
+      const params = {
+        keyword: val,
+        pageSize: 5000
+      };
+      return await listOrgStoreInfo(params);
     },
     vehicleModelSearch (val) {
       const params = {

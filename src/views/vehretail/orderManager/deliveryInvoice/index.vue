@@ -9,6 +9,9 @@
       label-width="150px"
       class="ais-search-form"
     >
+      <el-form-item label="开票记录编号">
+        <tag-input v-model="form.deliveryInvoiceCodeList" placeholder="请输入"/>
+      </el-form-item>
       <el-form-item label="VIN码">
         <tag-input
           placeholder="请输入"
