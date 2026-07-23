@@ -331,7 +331,11 @@ export default {
       exportTable({
         businessType: this.exportExcelData[type].businessType,
         dataFetchPath: this.exportExcelData[type].dataFetchPath,
-        reqParams: type === 'productInfoImport' ? this.getFormData() : { productIds: this.selectionList.map(ele => ele.id) },
+        reqParams: type !== 'productInfoImport'
+          ? { productIds: this.selectionList.map(ele => ele.id) }
+          : this.selectionList.length
+            ? { ids: this.selectionList.map(ele => ele.id) }
+            : this.getFormData(),
         titleMap: type === 'productInfoImport' ? Object.fromEntries(this.$refs.tableRef.getVisibleCols())
           : {
             productCode: '商品编码',
