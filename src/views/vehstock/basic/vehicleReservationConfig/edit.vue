@@ -156,6 +156,29 @@
               </el-form>
             </div>
           </section>
+          <ComponentTable
+            v-if="_id" class="common-section"
+            ref="reserveDetailTable"
+            :table-config="{ title: '预留明细' }"
+            :apiMethod="fetchReserveDetailList"
+            :columns="reserveDetailColumns"
+            :page-sizes="[10, 20, 50, 100]"
+          >
+            <template #code="{ row }">
+              <el-link
+                type="primary"
+                :href="'/vehstock/basic/vehicleReservationDetail/detail?id=' + row.id"
+                target="_blank"
+              >{{ row.code }}</el-link>
+            </template>
+            <template #vin="{ row }">
+              <el-link
+                type="primary"
+                :href="'/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=' + row.vin"
+                target="_blank"
+              >{{ row.vin }}</el-link>
+            </template>
+          </ComponentTable>
         </el-main>
       </edit-base-container>
     </template>
@@ -174,6 +197,8 @@ import { getEnum } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
+import ComponentTable from '@/libs/components/ComponentTable';
+import { getList as getDetailList } from '@/api/vehstock/basic/vehicleReservationDetail/index';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
@@ -223,7 +248,8 @@ export default {
   components: {
     FetchSelect,
     EditPageLayout,
-    EditBaseContainer
+    EditBaseContainer,
+    ComponentTable
   },
   data () {
     const form = this.getDefautlForm();
@@ -236,6 +262,25 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
+      reserveDetailColumns: [
+        { field: 'code', title: '车辆预留编号', width: 200, fixed: 'left', slots: { default: 'code' } },
+        { field: 'bizCode', title: '业务编号', width: 120 },
+        { field: 'vin', title: 'VIN', width: 180, slots: { default: 'vin' } },
+        { field: 'reserveTime', title: '预留时间', width: 180 },
+        { field: 'reserveNum', title: '需预留数', width: 100, align: 'right' },
+        { field: 'reservedNum', title: '已预留数', width: 100, align: 'right' },
+        { field: 'reservedLabel', title: '销售预留', width: 120 },
+        { field: 'reservedTypeLabel', title: '销售预留类型', width: 120 },
+        { field: 'logisticsReservedLabel', title: '整车物流预留', width: 120 },
+        { field: 'vehicleDeliveryStatusLabel', title: '车辆交付状态', width: 120 },
+        { field: 'vdcInventoryStatusLabel', title: '库存状态', width: 120 },
+        { field: 'inboundDateTime', title: 'VDC入库时间', width: 180 },
+        { field: 'remark', title: '备注', width: 200 },
+        { field: 'creatorName', title: '创建者名称', width: 120 },
+        { field: 'createTime', title: '创建时间', width: 200 },
+        { field: 'modifierName', title: '修改者名称', width: 120 },
+        { field: 'updateTime', title: '修改时间', width: 200 }
+      ],
       rules: {
         type: [
           { required: true, message: '请选择类型', trigger: 'change' }
@@ -267,6 +312,17 @@ export default {
       }
     };
   },
+  watch: {
+    'form.code': {
+      handler (newVal) {
+        // form.code 从空变成真实值（detail 接口加载完成后容器赋值）时，refresh ComponentTable
+        // 这样能确保 refresh 时 fetchReserveDetailList 读到的 form.code 已经是真实值
+        if (newVal && this.$refs.reserveDetailTable) {
+          this.$refs.reserveDetailTable.refresh();
+        }
+      }
+    }
+  },
   methods: {
     openPane () {
       this.$refs.editLayout.openPane();
@@ -291,6 +347,13 @@ export default {
       return {
         ...defaultForm
       };
+    },
+    fetchReserveDetailList (params) {
+      // 用函数式取值，避免模板字面量在 detail 返回前就把 form.code 当作空字符串传给 ComponentTable
+      return getDetailList({
+        ...params,
+        code: this.form.code
+      });
     }
   }
 };

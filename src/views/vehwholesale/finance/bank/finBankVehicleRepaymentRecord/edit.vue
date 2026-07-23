@@ -81,12 +81,12 @@
                 <el-form-item label="还款车辆记录编号：" prop="vehicleRepaymentRecordCode">
                   {{ form.vehicleRepaymentRecordCode }}
                 </el-form-item>
-                <el-form-item label="经销商名称：" prop="dealerCompanyName">
-                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
-                </el-form-item>
                 <!-- <el-form-item label="经销商名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
                 </el-form-item> -->
+                <el-form-item label="经销商名称：" prop="dealerName">
+                  {{ form.dealerName }}
+                </el-form-item>
               </el-form>
             </div>
           </section>
