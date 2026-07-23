@@ -422,7 +422,7 @@
                 </el-form-item>
                 <el-form-item label="订单取消原因：" prop="orderCancelReason">
                   <el-input
-                    v-model="form.orderCancelReason"
+                    v-model="form.orderCancelReasonLabel"
                     disabled
                     clearable
                   />
@@ -557,7 +557,7 @@
                   <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="订单取消原因：" prop="orderCancelReason">
-                  {{ form.orderCancelReason }}
+                  {{ form.orderCancelReasonLabel }}
                 </el-form-item>
                 <!-- 第2行：销售门店 | 缴定金时间 | 证件类型 | 订单取消说明 -->
                 <el-form-item label="销售门店：" prop="saleDealerName">
