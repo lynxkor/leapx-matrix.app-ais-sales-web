@@ -127,7 +127,7 @@ export const wholesaleDisplayFields = [
 
 // 订单取消信息字段配置
 export const refundDisplayFields = [
-  { key: 'cancelReasonLabel', label: '订单取消原因' },
+  { key: 'orderCancelReasonLabel', label: '订单取消原因' },
   { key: 'cancelExplain', label: '订单取消说明' },
   { key: 'cancelTime', label: '订单取消时间' }
 ];
