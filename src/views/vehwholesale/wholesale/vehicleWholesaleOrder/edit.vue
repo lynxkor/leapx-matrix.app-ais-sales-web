@@ -192,6 +192,9 @@
                       @click="openWindow('/sales/vehwholesale/replenish/dealerVehicleReplenishApplyDetail/edit?id=' + form.replenishApplyDetailId)">{{
                         form.replenishApplyDetailCode }}</el-button>
                   </el-form-item>
+                   <el-form-item label="创建时间：" prop="createTime">
+                    {{ form.createTime }}
+                  </el-form-item>
                 </el-form>
               </div>
             </section>

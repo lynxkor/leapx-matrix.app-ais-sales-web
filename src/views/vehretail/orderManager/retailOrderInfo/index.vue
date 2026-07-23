@@ -41,7 +41,7 @@
           <tag-input v-model="form.matchVinList" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="销售门店">
-          <tag-input v-model="form.saleDealerCodeList" clearable placeholder="请输入" />
+          <tag-input v-model="form.saleDealerNameList" clearable placeholder="请输入" />
           <!-- <fetch-select
             filterable
             clearable
@@ -65,17 +65,28 @@
         <el-form-item label="车系名称">
           <fetch-select
             :remote-method="remoteMethods.series"
-            v-model="form.seriesId"
+            v-model="form.seriesIdList"
             placeholder="请选择"
             labelKey="name"
             valueKey="id"
             clearable
             filterable
-            remote
-            @change="seriesListChange" />
+            multiple
+            remote/>
+            <!-- @change="seriesListChange"  -->
         </el-form-item>
         <el-form-item label="车型名称">
-          <el-select
+          <fetch-select
+            :remote-method="remoteMethods.model"
+            v-model="form.modelIdList"
+            placeholder="请选择"
+            labelKey="name"
+            valueKey="id"
+            clearable
+            filterable
+            multiple
+            remote/>
+          <!-- <el-select
             v-model="form.modelId"
             clearable
             filterable
@@ -87,10 +98,20 @@
             :key="item.value"
             :label="item.label"
             :value="item.value"/>
-          </el-select>
+          </el-select> -->
         </el-form-item>
         <el-form-item label="年款名称">
-          <el-select
+          <fetch-select
+            :remote-method="remoteMethods.yearType"
+            v-model="form.yearTypeIdList"
+            placeholder="请选择"
+            labelKey="name"
+            valueKey="id"
+            clearable
+            filterable
+            multiple
+            remote/>
+          <!-- <el-select
             v-model="form.yearTypeId"
             clearable
             filterable
@@ -102,7 +123,7 @@
             :key="item.value"
             :label="item.label"
             :value="item.value"/>
-          </el-select>
+          </el-select> -->
         </el-form-item>
         <el-form-item label="大区">
           <fetch-select
@@ -292,6 +313,8 @@ import {
   getEnum,
   listOrgStoreInfo,
   vehicleSeriesList,
+  listVehicleModel,
+  listVehicleYearType,
   vehicleModelList,
   vehicleModelYearTypeRelationDistinctYeayType,
   getRigion,
@@ -330,13 +353,13 @@ const defaultForm = {
   depositAmount: '',
   agentName: '',
   cooperationTypeLabel: '',
-  saleDealerCode: '',
+  saleDealerNameList: [],
   provinceName: '',
   cityName: '',
   regionName: '',
   dealerCompanyName: '',
   deliveryDealerName: '',
-  seriesId: '',
+  seriesIdList: [],
   modelName: '',
   yearTypeName: '',
   materialsDesc: '',
@@ -418,6 +441,12 @@ export default {
       remoteMethods: {
         series: async (query) => {
           return await vehicleSeriesList({ seriesNameLike: query, status: 1 });
+        },
+        model: async (query) => {
+          return await listVehicleModel({ modelNameLike: query, status: 1 });
+        },
+        yearType: async (query) => {
+          return await listVehicleYearType({ yearTypeNameLike: query });
         },
         region: async (query) => {
           return await getRigion({ seriesNameLike: query, status: 1 });
