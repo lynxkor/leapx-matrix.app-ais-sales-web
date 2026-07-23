@@ -24,8 +24,8 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i
           class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <!-- <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete"
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete"
         :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
         :disabled="selectionList.length === 0">批量启用</el-button>
@@ -55,7 +55,7 @@
 import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
-import { getList, deleteItem, enableItem, storeSubmit, storeInvalid } from '@/api/vehstock/store/storeInventoryTransfer/index';
+import { getList, deleteItem, enableItem, storeSubmit, storeInvalid, postExport } from '@/api/vehstock/store/storeInventoryTransfer/index';
 import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
@@ -332,9 +332,29 @@ export default {
       }
       exportTable({
         businessType: '门店库存调拨管理',
-        dataFetchPath: 'vehstock/web/store/storeInventoryTransfer/page',
+        dataFetchPath: 'vehstock/web/store/storeInventoryTransfer/export',
         reqParams,
-        titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
+        titleMap: {
+          transferNo: '整车调拨单号',
+          vin: 'VIN',
+          transferPrice: '调拨价格',
+          sourceDealerName: '源门店名称',
+          sourceDealerAddress: '源门店地址',
+          targetDealerName: '目标门店名称',
+          targetDealerAddress: '目标门店地址',
+          moveoutTime: '移出时间',
+          moveinTime: '移入时间',
+          applyTime: '申请时间',
+          auditStatusLabel: '单据状态',
+          outApprovalLabel: '调出审批',
+          outRemark: '调出意见',
+          inApprovalLabel: '调入审批',
+          inRemark: '调入意见',
+          creatorName: '创建者名称',
+          createTime: '创建时间',
+          modifierName: '修改者名称',
+          updateTime: '修改时间'
+        },
         httpMethod: 'POST'
       }).then(async res => {
         if (res && res.excelUrl) {

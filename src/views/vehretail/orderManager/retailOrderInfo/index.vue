@@ -30,9 +30,10 @@
         <fetch-select
           :request="fetchOptions"
           enumCode="vr_order_status"
-          v-model="form.orderStatus"
+          v-model="form.orderStatusList"
           placeholder="请选择"
           clearable
+          multiple
           filterable
         />
       </el-form-item>
@@ -40,7 +41,8 @@
           <tag-input v-model="form.matchVinList" clearable placeholder="请输入" />
         </el-form-item>
         <el-form-item label="销售门店">
-          <fetch-select
+          <tag-input v-model="form.saleDealerNameList" clearable placeholder="请输入" />
+          <!-- <fetch-select
             filterable
             clearable
             remote
@@ -48,7 +50,7 @@
             :remote-method="getIsSalesCode"
             value-key="storeCode"
             label-key="storeName"
-          />
+          /> -->
         </el-form-item>
         <el-form-item label="物料编码">
           <tag-input v-model="form.materialsCodeList" clearable placeholder="请输入" />
@@ -107,7 +109,8 @@
             filterable
             clearable
             remote
-            v-model="form.regionCode"
+            multiple
+            v-model="form.regionCodeList"
             :remote-method="remoteMethods.region"
             value-key="orgCode"
             label-key="orgName"
@@ -134,10 +137,11 @@
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_wholesale_order_status"
-            v-model="form.wholesaleOrderStatus"
+            v-model="form.wholesaleOrderStatusList"
             placeholder="请选择"
             clearable
             filterable
+            multiple
           />
         </el-form-item>
         <el-form-item label="订单排序时间">
@@ -326,7 +330,7 @@ const defaultForm = {
   depositAmount: '',
   agentName: '',
   cooperationTypeLabel: '',
-  saleDealerCode: '',
+  saleDealerNameList: [],
   provinceName: '',
   cityName: '',
   regionName: '',
