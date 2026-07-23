@@ -99,7 +99,7 @@
                   <el-form-item label="允许锁零售单：" prop="allowLockRetail">
                     <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.allowLockRetail"
                       placeholder="请选择" clearable filterable
-                      :disabled='form.orderStatus === 99 || form.orderStatus === "99"' />
+                      :disabled='form.orderStatus === 99 || form.orderStatus === "99" || accountFlag' />
                   </el-form-item>
                   <el-form-item label="整车补货单明细号：" prop="replenishApplyDetailCode">
                     <el-input placeholder="请输入" v-model="form.replenishApplyDetailCode" clearable disabled />
@@ -610,7 +610,7 @@ import { getDetail, addOrUpdate, batchConfirmItem, batchCancelItem, vinAllocateV
 import FetchSelect from '@/libs/components/FetchSelect';
 import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
-import { getEnum } from '@/api/common';
+import { getEnum, loginUserGet } from '@/api/common';
 import { YES_NO_ENUM, TRUE_FALSE_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
@@ -807,6 +807,7 @@ export default {
       perbatchCancelSettle: false,
       perbatchCancel: false,
       canAddOrUpdate: false,
+      accountFlag: null, // 是否是厂端 true店端 false是厂端
       detailsColumns: [
         { field: 'dealerCompanyName', title: '销售公司' },
         { field: 'gtext', title: '资金类型' },
@@ -868,8 +869,15 @@ export default {
   },
   created () {
     this.initPermissions();
+    this.loginUserGet();
   },
   methods: {
+    loginUserGet () {
+      loginUserGet().then(res => {
+        // true 店端 false厂端
+        this.accountFlag = res.accountFlag;
+      }).catch(() => {});
+    },
     initPermissions () {
       this.perquerySapAccount = this.permissions.has(`${this.moduleKey}-querySapAccount`);
       this.perbatchConfirm = this.permissions.has(`${this.moduleKey}-batchConfirm`);
