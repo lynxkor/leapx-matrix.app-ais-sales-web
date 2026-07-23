@@ -68,7 +68,8 @@ export default {
       visible: false,
       loading: false,
       form: {
-        materialsCode: ''
+        materialsCode: '',
+        materialsCodeList: []
       },
       optionObj: {
         dataList: [],
@@ -92,10 +93,10 @@ export default {
     };
   },
   methods: {
-    show (materialsCode) {
+    show (materialsCodeList) {
       this.visible = true;
-      if (materialsCode) {
-        this.form.materialsCode = materialsCode;
+      if (materialsCodeList) {
+        this.form.materialsCodeList = materialsCodeList;
       }
       this.$nextTick(() => {
         this.getData();
@@ -107,9 +108,13 @@ export default {
     getData () {
       this.loading = true;
       const params = {
-        materialsCodeList: this.form.materialsCode ? [this.form.materialsCode] : [],
+        materialsCodeList: this.form.materialsCodeList,
         pageNum: this.optionObj.form.page,
         vehicleDeliveryStatus: 3,
+        vdcInventoryStatus: 3,
+        carAllocated: 1,
+        logisticsReserved: 1,
+        reserved: 1,
         pageSize: this.optionObj.form.size
       };
       // 过滤空值
