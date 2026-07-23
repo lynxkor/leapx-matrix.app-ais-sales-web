@@ -492,7 +492,7 @@
                     placeholder="请输入"
                     v-model="form.standardPrice"
                     clearable
-                    disabled
+                    :disabled="true"
                   />
                 </el-form-item>
                 <el-form-item label="销售价格：" prop="salesPrice">

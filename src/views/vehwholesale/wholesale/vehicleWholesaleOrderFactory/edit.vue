@@ -133,6 +133,9 @@
                   <el-form-item label="指定发运方式：" prop="deliveryWay">
                     <el-input placeholder="请输入" v-model="form.deliveryWay" clearable disabled />
                   </el-form-item>
+                   <el-form-item label="创建时间：" prop="createTime">
+                    {{ form.createTime }}
+                  </el-form-item>
                 </el-form>
                 <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                   <!-- <el-form-item label="批售订单号：" prop="wholesaleOrderCode">
@@ -225,6 +228,9 @@
                   </el-form-item>
                   <el-form-item label="指定发运方式：" prop="deliveryWayLabel">
                     {{ form.deliveryWayLabel }}
+                  </el-form-item>
+                  <el-form-item label="创建时间：" prop="createTime">
+                    {{ form.createTime }}
                   </el-form-item>
                 </el-form>
               </div>
