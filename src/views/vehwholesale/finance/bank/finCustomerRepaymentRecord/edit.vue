@@ -61,11 +61,8 @@
                 <el-form-item label="授信可用敞口：" prop="creditAvailableExposure">
                   {{ form.creditAvailableExposure }}
                 </el-form-item>
-                <el-form-item label="经销商编码：" prop="dealerCompanyCode">
-                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyCode }}</el-link>
-                </el-form-item>
-                <el-form-item label="经销商名称：" prop="dealerCompanyName">
-                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
+                <el-form-item label="经销商名称：" prop="dealerName">
+                  {{ form.dealerName }}
                 </el-form-item>
                 <el-form-item label="创建时间：" prop="createTime">
                   {{ form.createTime }}
