@@ -861,6 +861,7 @@ import { pageNoDesensitize as retailOrderPage } from '@/api/vehretail/orderManag
 import { fetchCategoryList } from '@/api/vehretail/orderRefund/category';
 import RefundApplyAuditDialog from '@/views/vehretail/orderRefund/refundApply/auditDialog';
 import { getList as getMaterialInfoList } from '@/api/datacenter/materials/vehicleMaterials/index';
+import { getList as getVehicleMaterialsMatchList } from '@/api/datacenter/materials/vehicleMaterialsMatch/index';
 import FinancialOrderDialog from './components/FinancialOrderDialog.vue';
 import VehicleStockDialog from './components/VehicleStockDialog.vue';
 import navigate from '@/libs/utils/navigate';
@@ -1324,7 +1325,13 @@ export default {
       this.$refs.financialOrderDialog.show(this.form.mallOrderCode);
     },
     openVehicleStockShow () {
-      this.$refs.vehicleStockDialog.show(this.form.materialsCode);
+      // 获取可配物料关系
+      getVehicleMaterialsMatchList({ materialsCodeLike: this.form.materialsCode, pageSize: 1 })
+        .then(res => {
+          const materialCodeArray = res.records.map(item => item.matchMaterialsCode);
+          materialCodeArray.push(this.form.materialsCode);
+          this.$refs.vehicleStockDialog.show(materialCodeArray);
+        });
     },
     openCancelShow () {
       this.$confirm('确认是否对数据进行作废?', '提示', {

@@ -127,7 +127,7 @@ export const wholesaleDisplayFields = [
 
 // 订单取消信息字段配置
 export const refundDisplayFields = [
-  { key: 'cancelReason', label: '订单取消原因' },
+  { key: 'cancelReasonLabel', label: '订单取消原因' },
   { key: 'cancelExplain', label: '订单取消说明' },
   { key: 'cancelTime', label: '订单取消时间' }
 ];
@@ -242,8 +242,8 @@ export const orderCancellationRecordDisplayFields = [
   { key: 'applyTime', label: '申请时间' },
   { key: 'creatorName', label: '申请人' },
   { key: 'orderRefundTypeLabel', label: '退订方式' },
-  { key: 'subCateName', label: '退订原因分类' },
-  { key: 'refundReason', label: '退订原因说明' }
+  { key: 'cateName', label: '退订原因分类' },
+  { key: 'orderCancelDescp', label: '退订原因说明' }
 ];
 
 // 订单收款记录字段配置
