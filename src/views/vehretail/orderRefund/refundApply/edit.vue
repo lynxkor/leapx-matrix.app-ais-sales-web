@@ -672,7 +672,7 @@
                     :value.sync="form.preApproveUser"
                     :decryptMethod="() => form.preApproveUser"
                   > -->
-                    {{ form.preApproveUser }}
+                    {{ form.preApproveUserEncrypt }}
                   <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="初审时间：" prop="preApproveTime">
@@ -695,7 +695,7 @@
                     :value.sync="form.finalApproveUser"
                     :decryptMethod="() => form.finalApproveUser"
                   > -->
-                    {{ form.finalApproveUser }}
+                    {{ form.finalApproveUserEncrypt }}
                   <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="终审时间：" prop="finalApproveTime">
