@@ -272,16 +272,10 @@ export default {
           { props: 'vehicleStatusLabel', label: '车辆状态', visible: true, width: 120 },
           { props: 'vehicleRepaymentRecordCode', label: '还款车辆记录编号', visible: true, width: 180 },
           {
-            props: 'dealerCompanyName',
+            props: 'dealerName',
             label: '经销商名称',
             visible: true,
-            width: 280,
-            buttons: [{
-              click: (rowIndex, row) => {
-                this.openWindow('/partner/channelManagement/companyDetails?companyCode=' + row.dealerCompanyCode);
-              },
-              type: 'primary'
-            }]
+            width: 280
           },
           { props: 'statusLabel', label: '状态', visible: true, width: 100 },
           { props: 'statusDesc', label: '说明', visible: true, width: 200 },

@@ -245,7 +245,19 @@ export default {
     },
     submitRequest () {
       const vinList = this.form.vinList.map(item => item.vin);
-      return addOrUpdate({ ...this.form, vinList });
+      return addOrUpdate({ ...this.form, vinList }).then(res => {
+        // 仅新增场景保存成功后回到列表页
+        // 阻断 edit-base-container 的 success 回调（避免 replace 到带 id 的编辑页）
+        // 业务自己弹成功提示并跳回列表页
+        if (!this._id) {
+          this.$message.success('保存成功');
+          this.$nextTick(() => {
+            this.$router.back();
+          });
+          return Promise.reject(new Error('新增保存后返回列表页，主动阻断容器 success 回调'));
+        }
+        return res;
+      });
     },
     // 打开侧边栏
     openPane () {
