@@ -1326,7 +1326,7 @@ export default {
     },
     openVehicleStockShow () {
       // 获取可配物料关系
-      getVehicleMaterialsMatchList({ materialsCodeLike: this.form.materialsCode, pageSize: 1 })
+      getVehicleMaterialsMatchList({ materialsCodeLike: this.form.materialsCode, pageSize: 100 })
         .then(res => {
           const materialCodeArray = res.records.map(item => item.matchMaterialsCode);
           materialCodeArray.push(this.form.materialsCode);
