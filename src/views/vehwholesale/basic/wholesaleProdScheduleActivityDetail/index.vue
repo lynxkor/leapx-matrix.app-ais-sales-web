@@ -88,6 +88,14 @@
             filterable
           />
         </el-form-item>
+        <el-form-item label="允许锁零售单节点">
+          <fetch-select :request="fetchOptions" enumCode="vw_allow_lock_node_type" v-model="form.allowLockNodes" placeholder="请选择"
+            clearable filterable multiple />
+        </el-form-item>
+        <el-form-item label="指定发运方式">
+          <fetch-select :request="fetchOptions" enumCode="vehstock_ship_via" v-model="form.deliveryWays"
+            placeholder="请选择" clearable multiple filterable />
+        </el-form-item>
       </template>
         <!-- v-if="canList" -->
       <page-search-action
@@ -156,6 +164,8 @@ const defaultForm = {
   seriesId: '',
   modelLineId: '',
   materialsCode: '',
+  allowLockNodes: [],
+  deliveryWays: []
 };
 
 const pageSize = 20;
@@ -203,7 +213,7 @@ export default {
             props: 'activityDetailCode',
             label: '活动明细编码',
             visible: true,
-            width: 150,
+            width: 200,
             fixed: 'left',
             buttons: [{
               click: (rowIndex, row) => {
@@ -243,6 +253,7 @@ export default {
           },
           { props: 'deliveryWayLabel', label: '指定发运方式', visible: true, width: 140 },
           { props: 'allowLockRetailLabel', label: '允许锁零售单', visible: true, width: 140 },
+          { props: 'allowLockNodeLabel', label: '允许锁零售单节点', visible: true, width: 140 },
           { props: 'startTime', label: '开始日期', visible: true, width: 160 },
           { props: 'endTime', label: '截止日期', visible: true, width: 160 },
           {
@@ -257,7 +268,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'dealerName', label: '门店名称', visible: true, width: 180 },
+          { props: 'dealerName', label: '门店名称', visible: true, width: 240 },
           { props: 'provinceName', label: '省份', visible: true, width: 100 },
           { props: 'cityName', label: '城市', visible: true, width: 100 },
           { props: 'applyOrderCategoryLabel', label: '适用订单分类', visible: true, width: 150 },
@@ -289,7 +300,7 @@ export default {
             props: 'materialsCode',
             label: '物料编码',
             visible: true,
-            width: 160,
+            width: 200,
             buttons: [{
               click: (rowIndex, row) => {
                 window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsId}`, '_blank');
@@ -297,7 +308,7 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'materialsDesc', label: '物料描述', visible: true, width: 300 },
+          { props: 'materialsDesc', label: '物料描述', visible: true, width: 400 },
           { props: 'totalQuotaQty', label: '额度数量', visible: true, width: 120, align: 'right' },
           { props: 'usedQuotaQty', label: '已提报数量', visible: true, width: 120, align: 'right' },
           { props: 'remainQuotaQty', label: '剩余可用', visible: true, width: 120, align: 'right' },

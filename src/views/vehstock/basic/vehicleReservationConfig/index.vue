@@ -44,6 +44,19 @@
           filterable
         />
       </el-form-item>
+      <el-form-item label="创建者">
+        <fetch-select
+          remote
+          filterable
+          clearable
+          :remote-method="getCreatorUser"
+          :params="form.creatorName"
+          v-model="form.creator"
+          value-key="userId"
+          label-key="username"
+          @change="handleCreatorChange"
+        />
+      </el-form-item>
       </template>
       <page-search-action
         v-model="show"
@@ -91,7 +104,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem } from '@/api/vehstock/basic/vehicleReservationConfig/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, getUserByNameOrNo } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -106,6 +119,7 @@ const defaultForm = {
   type: '',
   code: '',
   isCompleted: '',
+  creator: '',
 };
 
 const pageSize = 20;
@@ -135,6 +149,7 @@ export default {
       loading: false,
       exportLoading: false,
       uploadDialogVisible: false,
+      creatorOptions: [],
       optionObj: {
         id: 'vehicleReservationConfigTable',
         dataList: [],
@@ -250,6 +265,15 @@ export default {
   },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
+    const userInfo = this.$store.state.user.userInfo;
+    if (userInfo && userInfo.userId) {
+      this.form.creator = String(userInfo.userId);
+      this.form.creatorName = userInfo.userName;
+      this.creatorOptions = [{
+        userId: String(userInfo.userId),
+        username: userInfo.userName || userInfo.username
+      }];
+    }
     this.getData();
   },
   methods: {
@@ -378,6 +402,14 @@ export default {
       }
 
       return data;
+    },
+    async getCreatorUser (params) {
+      return getUserByNameOrNo({ name: params });
+    },
+    handleCreatorChange (val, selectedOption) {
+      if (selectedOption && !this.creatorOptions.find(item => item.userId === val)) {
+        this.creatorOptions = [...this.creatorOptions, selectedOption];
+      }
     },
     async fetchOptions (code) {
       if (code) {

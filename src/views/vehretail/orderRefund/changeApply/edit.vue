@@ -149,140 +149,76 @@
               <h2>原订单信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" :model="form" :rules="rules" ref="ruleForm1" label-width="180px" class="form-edit"
-                       v-show="isEditing || !_id">
+              <!-- 原订单信息 - 编辑表单（全部禁用，label-width=150px） -->
+              <el-form :inline="true" :model="form" ref="ruleForm1" label-width="180px" class="form-edit" v-show="isEditing || !_id">
                 <el-form-item label="原购车人名称：" prop="originalBuyerName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.originalBuyerName"
-                    clearable
-                    disabled
-                  />
+                  <el-input v-model="form.originalBuyerName" disabled clearable />
                 </el-form-item>
                 <el-form-item label="原购车人手机号码：" prop="originalBuyerPhone">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.originalBuyerPhone"
-                    clearable
-                    disabled
-                  />
+                  <el-input v-model="form.originalBuyerPhone" disabled clearable />
                 </el-form-item>
-                <el-form-item label="原购车人证件类型：" prop="originalIdCardType">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="vehretail_id_card_type"
-                    v-model="form.originalIdCardType"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                    disabled
-                  />
+                <el-form-item label="原购车人证件类型：" prop="originalIdCardTypeLabel">
+                  <el-input v-model="form.originalIdCardTypeLabel" disabled clearable />
                 </el-form-item>
                 <el-form-item label="原购车人证件号码：" prop="originalIdCardNo">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.originalIdCardNo"
-                    clearable
-                    disabled
-                  />
+                  <el-input v-model="form.originalIdCardNo" disabled clearable />
                 </el-form-item>
                 <el-form-item label="原代办人：" prop="originalAgentName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.originalAgentName"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="是否完成交车：" prop="deliveryStatus">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="BooleanEnum"
-                    v-model="form.deliveryStatus"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="缴定金时间：" prop="paymentTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.paymentTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="交车时间：" prop="deliveryTime">
-                  <el-date-picker
-                    :default-time="['00:00:00', '23:59:59']"
-                    v-model="form.deliveryTime"
-                    :picker-options="pickerOptions"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="订单销售门店：" prop="saleDealerName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.saleDealerName"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="整车订单状态：" prop="originalOrderStatus">
-                  <fetch-select
-                    :request="fetchOptions"
-                    enumCode="vehretail_order_status"
-                    v-model="form.originalOrderStatus"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="原订单物料码：" prop="originalMaterialsCode">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.originalMaterialsCode"
-                    clearable
-                    disabled
-                  />
-                </el-form-item>
-                <el-form-item label="基本车型：" prop="modelName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.modelName"
-                    clearable
-                    disabled
-                  />
+                  <el-input v-model="form.originalAgentName" disabled clearable />
                 </el-form-item>
                 <el-form-item label="原销售门店：" prop="originalSaleDealerName">
-                  <el-input
-                    placeholder="请输入"
-                    v-model="form.originalSaleDealerName"
-                    clearable
-                    disabled
-                  />
+                  <el-input v-model="form.originalSaleDealerName" disabled clearable />
+                </el-form-item>
+                <el-form-item label="整车订单状态：" prop="originalOrderStatusLabel">
+                  <el-input v-model="form.originalOrderStatusLabel" disabled clearable />
+                </el-form-item>
+                <el-form-item label="原订单物料码：" prop="originalMaterialsCode">
+                  <el-input v-model="form.originalMaterialsCode" disabled clearable />
+                </el-form-item>
+                <el-form-item label="订单销售门店：" prop="saleDealerName">
+                  <el-input v-model="form.saleDealerName" disabled clearable />
+                </el-form-item>
+                <el-form-item label="缴定金时间：" prop="paymentTime">
+                  <el-input v-model="form.paymentTime" disabled clearable />
+                </el-form-item>
+                <el-form-item label="是否完成交车：" prop="deliveryStatusLabel">
+                  <el-input v-model="form.deliveryStatusLabel" disabled clearable />
+                </el-form-item>
+                <el-form-item label="交车时间：" prop="deliveryTime">
+                  <el-input v-model="form.deliveryTime" disabled clearable />
+                </el-form-item>
+                <el-form-item label="基本车型：" prop="modelName">
+                  <el-input v-model="form.modelName" disabled clearable />
                 </el-form-item>
               </el-form>
+              <!-- 原订单信息 - 详情展示 -->
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="原购车人名称：" prop="originalBuyerName">
-                  {{ form.originalBuyerName }}
+                  <!-- <LPEncrypted
+                    :value.sync="form.originalBuyerName"
+                    :decryptMethod="() => { return form.originalBuyerName }"
+                  > -->
+                    {{ form.originalBuyerName }}
+                  <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="原购车人手机号码：" prop="originalBuyerPhone">
-                  {{ form.originalBuyerPhone }}
+                  <!-- <LPEncrypted
+                    :value.sync="form.originalBuyerPhone"
+                    :decryptMethod="() => { return form.originalBuyerPhone }"
+                  > -->
+                    {{ form.originalBuyerPhone }}
+                  <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="原购车人证件类型：" prop="originalIdCardType">
                   {{ form.originalIdCardTypeLabel }}
                 </el-form-item>
                 <el-form-item label="原购车人证件号码：" prop="originalIdCardNo">
-                  {{ form.originalIdCardNo }}
+                  <!-- <LPEncrypted
+                    :value.sync="form.originalIdCardNo"
+                    :decryptMethod="() => { return form.originalIdCardNo }"
+                  > -->
+                    {{ form.originalIdCardNo }}
+                  <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="原代办人：" prop="originalAgentName">
                   {{ form.originalAgentName }}
@@ -356,7 +292,7 @@
                     maxlength="20"
                     show-word-limit
                     clearable
-                    :disabled="form.originalOrderStatus >= 9"
+                    :disabled="[9, 10, 15, 99].includes(form.originalOrderStatus)"
                   />
                 </el-form-item>
                 <el-form-item label="变更后购车人手机号码：" prop="newBuyerPhone">
@@ -417,16 +353,31 @@
               </el-form>
               <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
                 <el-form-item label="变更后购车人名称：" prop="newBuyerName">
-                  {{ form.newBuyerName }}
+                  <!-- <LPEncrypted
+                    :value.sync="form.newBuyerName"
+                    :decryptMethod="() => { return form.newBuyerName }"
+                  > -->
+                    {{ form.newBuyerName }}
+                  <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="变更后购车人手机号码：" prop="newBuyerPhone">
-                  {{ form.newBuyerPhone }}
+                  <!-- <LPEncrypted
+                    :value.sync="form.newBuyerPhone"
+                    :decryptMethod="() => { return form.newBuyerPhone }"
+                  > -->
+                    {{ form.newBuyerPhone }}
+                  <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="变更后购车人证件类型：" prop="newIdCardType">
                   {{ form.newIdCardTypeLabel }}
                 </el-form-item>
                 <el-form-item label="变更后购车人证件号码：" prop="newIdCardNo">
-                  {{ form.newIdCardNo }}
+                  <!-- <LPEncrypted
+                    :value.sync="form.newIdCardNo"
+                    :decryptMethod="() => { return form.newIdCardNo }"
+                  > -->
+                    {{ form.newIdCardNo }}
+                  <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="变更后代办人：" prop="newAgentName">
                   {{ form.newAgentName }}
@@ -448,7 +399,6 @@
                 :businessId="_id"
                 :readonly="!_id || !(form.applyStatus === 1010 || form.applyStatus === 1040)"
                 configCode="mcs_vehorderapplylog"
-                attachType="订单信息变更申请附件"
               />
             </div>
           </section>
@@ -509,7 +459,7 @@
                 size="medium"
               >
                 <vxe-column type="seq" title="序号" width="80" fixed="left"></vxe-column>
-                <vxe-column field="creatorName" title="操作人" min-width="150"></vxe-column>
+                <vxe-column field="operatorName" title="操作人" min-width="150"></vxe-column>
                 <vxe-column field="operateStatusLabel" title="操作状态" min-width="150"></vxe-column>
                 <vxe-column field="operateExplain" title="操作描述" min-width="200"></vxe-column>
                 <vxe-column field="createTime" title="创建时间" min-width="180"></vxe-column>
@@ -547,12 +497,13 @@ import EditPageLayout from '@/libs/components/EditPageLayout';
 import EditBaseContainer from '@/libs/components/EditBaseContainer';
 import AisAttachment from '@/libs/components/AisAttachment/index.vue';
 import auditDialog from '@/libs/components/auditDialog/index.vue';
+// import LPEncrypted from '@/libs/components/LPEncrypted/index.vue';
 import { getEnum, listOrgStoreInfo } from '@/api/common';
 import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-import { getList as retailOrderPage, getDetail as retailOrderInfo } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { pageNoDesensitize as retailOrderPage } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import { fetchReasonLabelList } from '@/api/vehretail/orderRefund/changeReason';
 
 const defaultForm = {
@@ -625,7 +576,8 @@ export default {
     // EditTable,
     AisAttachment,
     FetchSelect,
-    auditDialog
+    auditDialog,
+    // LPEncrypted,
   },
   computed: {
     _id () {
@@ -1148,46 +1100,73 @@ export default {
       return await retailOrderPage(params);
     },
     retailOrderChange (val, selectedOption) {
+      this.$refs.ruleForm.resetFields();
+      this.$refs.ruleForm1.resetFields();
+      this.$refs.ruleForm2.resetFields();
       if (val) {
         legalVerification(selectedOption.retailOrderCode)
           .then(res => {
-            retailOrderInfo(selectedOption.id).then(res => {
-              this.refreshOrderInfo(val, res);
-            });
-          })
-          .catch(() => {
-            this.$refs.ruleForm.resetFields();
-            this.$refs.ruleForm1.resetFields();
-            this.$refs.ruleForm2.resetFields();
+            this.refreshOrderInfo(val, selectedOption);
+          }).catch(() => {
+            // 校验失败时清空，避免脏数据残留
+            this.refreshOrderInfo('', null);
           });
       } else {
-        this.$refs.ruleForm.resetFields();
-        this.$refs.ruleForm1.resetFields();
-        this.$refs.ruleForm2.resetFields();
+        // val 为空（清空场景），重置右侧所有关联字段
+        this.refreshOrderInfo('', null);
       }
     },
     refreshOrderInfo (val, selectedOption) {
-      this.form.retailOrderId = val ? selectedOption.id : '';
-      this.form.retailOrderCode = val ? selectedOption.retailOrderCode : '';
-      this.form.mallOrderCode = val ? selectedOption.mallOrderCode : '';
-      this.form.saleOrgId = val ? selectedOption.saleOrgId : '';
-      this.form.saleDealerCode = val ? selectedOption.saleDealerCode : '';
-      this.form.saleDealerName = val ? selectedOption.saleDealerName : '';
-      this.form.modelId = val ? selectedOption.modelId : '';
-      this.form.modelName = val ? selectedOption.modelName : '';
-      this.form.originalBuyerName = val ? selectedOption.carBuyerName : '';
-      this.form.originalBuyerPhone = val ? selectedOption.carBuyerPhone : '';
-      this.form.originalIdCardType = val ? selectedOption.carOwner.idCardType : 1;
-      this.form.originalIdCardNo = val ? selectedOption.carOwner.idCardNo : '';
-      this.form.originalAgentName = val ? selectedOption.carOwner.agentName : '';
-      this.form.originalSaleDealerCode = val ? selectedOption.saleDealerCode : '';
-      this.form.originalSaleDealerName = val ? selectedOption.saleDealerName : '';
-      this.form.originalMaterialsCode = val ? selectedOption.materials.materialsCode : '';
-      this.form.paymentTime = val ? selectedOption.paymentTime : '';
-      this.form.deliveryTime = val ? selectedOption.deliveryTime : '';
-      this.form.deliveryStatus = val && selectedOption.deliveryTime ? 1 : 0;
-      this.form.dataSource = val ? selectedOption.dataSource : null;
-      this.form.originalOrderStatus = val ? selectedOption.orderStatus : null;
+      if (!val || !selectedOption) {
+        // val 或 selectedOption 为空（清空场景），重置所有关联字段
+        this.form.retailOrderId = '';
+        this.form.retailOrderCode = '';
+        this.form.mallOrderCode = '';
+        this.form.saleOrgId = '';
+        this.form.saleDealerCode = '';
+        this.form.saleDealerName = '';
+        this.form.modelId = '';
+        this.form.modelName = '';
+        this.form.originalBuyerName = '';
+        this.form.originalBuyerPhone = '';
+        this.form.originalIdCardType = null;
+        this.form.originalIdCardNo = '';
+        this.form.originalAgentName = '';
+        this.form.originalSaleDealerCode = '';
+        this.form.originalSaleDealerName = '';
+        this.form.originalMaterialsCode = '';
+        this.form.paymentTime = '';
+        this.form.deliveryTime = '';
+        this.form.deliveryStatus = 0;
+        this.form.deliveryStatusLabel = '否';
+        this.form.dataSource = null;
+        this.form.originalOrderStatus = null;
+        this.form.originalOrderStatusLabel = null;
+        return;
+      }
+      this.form.retailOrderId = selectedOption.id;
+      this.form.retailOrderCode = selectedOption.retailOrderCode;
+      this.form.mallOrderCode = selectedOption.mallOrderCode;
+      this.form.saleOrgId = selectedOption.saleOrgId;
+      this.form.saleDealerCode = selectedOption.saleDealerCode;
+      this.form.saleDealerName = selectedOption.saleDealerName;
+      this.form.modelId = selectedOption.modelId;
+      this.form.modelName = selectedOption.modelName;
+      this.form.originalBuyerName = selectedOption.carBuyerName;
+      this.form.originalBuyerPhone = selectedOption.carBuyerPhone;
+      this.form.originalIdCardType = selectedOption.idCardType;
+      this.form.originalIdCardNo = selectedOption.idCardNo;
+      this.form.originalAgentName = selectedOption.agentName;
+      this.form.originalSaleDealerCode = selectedOption.saleDealerCode;
+      this.form.originalSaleDealerName = selectedOption.saleDealerName;
+      this.form.originalMaterialsCode = selectedOption.materialsCode;
+      this.form.paymentTime = selectedOption.paymentTime;
+      this.form.deliveryTime = selectedOption.deliveryTime;
+      this.form.deliveryStatus = selectedOption.deliveryTime ? 1 : 0;
+      this.form.deliveryStatusLabel = selectedOption.deliveryTime ? '是' : '否';
+      this.form.dataSource = selectedOption.dataSource;
+      this.form.originalOrderStatus = selectedOption.orderStatus;
+      this.form.originalOrderStatusLabel = selectedOption.orderStatusLabel;
     },
     async changeReasonSearch (val) {
       const params = {

@@ -27,7 +27,7 @@
           <el-button size="small" :loading="unlockLoading" v-if="canPerUnlock" v-permission="moduleKey+'-perUnlock'" @click="handleUnlock">取消锁车</el-button>
           <el-button size="small" :loading="agreementLoading" v-if="canQuerySnapShot" @click="handleViewPurchaseAgreement">查看购车协议</el-button>
           <el-button size="small" v-if="canOperateOrder && canRetailOrderRefund && !(form.orderStatus === 15 || form.orderStatus === 10 || (form.orderStatus === 7 && form.deliveryOrder && form.deliveryOrder.status === 5))" @click="handleOrderRefund">订单退订</el-button>
-          <el-button size="small" :loading="changeApplyLoading" v-if="canOperateOrder && canRetailOrderChangeApply && form.orderStatus !== 10 && form.orderStatus !== 99" @click="handleCarOwnerChangeApplication">购车人变更申请</el-button>
+          <el-button size="small" :loading="changeApplyLoading" v-if="canRetailOrderChangeApply && form.orderStatus !== 10 && form.orderStatus !== 99" @click="handleCarOwnerChangeApplication">购车人变更申请</el-button>
           <el-button size="small" :loading="qualityIssueLoading" v-if="canOperateOrder && canOrderUnlockApply && form.wholesaleBindStatus === 1 && (form.orderStatus === 6 || form.orderStatus === 7)" @click="handleQualityIssueUnbindApplication">质量问题解绑申请</el-button>
           <el-button size="small" v-if="canVrEquityApply && form.orderStatus !== 99" @click="handleEquityApply">权益申请</el-button>
           <!-- 团购申请: 订单确认(3)/生产中(5)/车辆在途(6)/等待交车(7)/交车完成(9)/待门店向工厂付款(30)/车辆发运准备中(40) -->
@@ -832,8 +832,10 @@ export default {
       this.row = this.form;
       // const res = await getOrderUnlockConfig(this.row.retailOrderCode);
       // 检查 accountFlag 和 changeConfigCount 的关系
-      if (this.accountFlag && this.row.changeConfigCount >= 1) {
-        this.$message.error('该订单修改配车次数已达上限');
+      const res1 = await getSysConfigParamValue({ paramCode: 'veretailChangeConfigCount' });
+      const unlockConfigCount = res1?.paramValue !== null && res1?.paramValue !== undefined ? Number(res1.paramValue) : 1;
+      if (this.accountFlag && this.row.changeConfigCount >= unlockConfigCount) {
+        this.$message.error('该订单修改配置次数已达上限');
         this.modifyConfigLoading = false;
         return;
       }
@@ -857,7 +859,7 @@ export default {
         const res1 = await getSysConfigParamValue({ paramCode: 'veretailUnlockConfigCount' });
         const unlockConfigCount = res1?.paramValue !== null && res1?.paramValue !== undefined ? Number(res1.paramValue) : 1;
         if (this.accountFlag && this.row.unlockCount >= unlockConfigCount) {
-          this.$message.error('该订单取消配车次数已达上限');
+          this.$message.error('该订单取消锁车次数已达上限');
           return;
         }
         const param = {
@@ -1014,7 +1016,9 @@ export default {
       // 走 EditBaseContainer 的标准 refresh 流程：emit update:form + update:originalForm
       // 避免直接 Object.assign(this.form, ...) 在 Vue 2 中对深层字段响应式不友好的问题
       if (this.$refs.containerRef) {
-        this.$refs.containerRef.loadDetail();
+        setTimeout(() => {
+          this.$refs.containerRef.loadDetail();
+        }, 500);
       }
     },
     detailRequest () {

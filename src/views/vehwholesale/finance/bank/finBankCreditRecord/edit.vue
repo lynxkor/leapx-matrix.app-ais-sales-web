@@ -11,10 +11,8 @@
         :originalForm.sync="originalForm"
         :submitRequest="submitRequest"
         :detailRequest="detailRequest"
-        :showEditBtn="false"
       >
         <template #status>
-          <span>{{ form.code }}</span>
         </template>
         <el-main>
           <section class="common-section">
@@ -48,9 +46,44 @@
                 <el-form-item label="经销商名称：" prop="dealerCompanyName">
                   <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/companyDetails?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
                 </el-form-item>
-                <!-- <el-form-item label="经销商名称：" prop="dealerCompanyName">
-                  {{ form.dealerCompanyName }}
-                </el-form-item> -->
+                <el-form-item label="备注：" prop="remark">
+                  {{ form.remark }}
+                </el-form-item>
+              </el-form>
+
+              <el-form :inline="true" class="form-edit" v-show="isEditing || !_id">
+                <el-form-item label="母公司编码：" prop="dealerCompanyCode">
+                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/companyDetails?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyCode }}</el-button>
+                </el-form-item>
+                <el-form-item label="母公司名称：" prop="dealerCompanyName">
+                  <el-link type="primary" :href="`/partner/channelManagement/companyDetails?companyCode=${form.dealerCompanyCode}`" target="_blank">{{ form.dealerCompanyName }}</el-link>
+                </el-form-item>
+                <el-form-item label="融资金融机构：" prop="fundFinancialOrganizationName">
+                   <el-link type="primary" :href="`/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=${form.fundFinancialOrganizationId}`" target="_blank">{{ form.fundFinancialOrganizationName }}</el-link>
+                </el-form-item>
+                <el-form-item label="状态：" prop="status">
+                  {{ form.statusLabel }}
+                </el-form-item>
+                <el-form-item label="创建时间：" prop="createTime">
+                  {{ form.createTime }}
+                </el-form-item>
+                <el-form-item label="编号：" prop="code">
+                  {{ form.code }}
+                </el-form-item>
+                <el-form-item label="说明：" prop="statusDesc">
+                  {{ form.statusDesc }}
+                </el-form-item>
+                <el-form-item label="经销商名称：" prop="dealerName">
+                  {{ form.dealerName }}
+                </el-form-item>
+                <el-form-item label="备注：" prop="remark">
+                  <el-input
+                    type="textarea"
+                    placeholder="请输入"
+                    v-model="form.remark"
+                    clearable
+                  />
+                </el-form-item>
               </el-form>
             </div>
           </section>
@@ -96,8 +129,44 @@
                 <el-form-item label="授信记录编码：" prop="creditRecordCode">
                   {{ form.creditRecordCode }}
                 </el-form-item>
-                <el-form-item label="备注：" prop="remark">
-                  {{ form.remark }}
+              </el-form>
+
+              <el-form :inline="true" class="form-edit" v-show="isEditing || !_id">
+                <el-form-item label="授信额度：" prop="creditLimit">
+                  {{ form.creditLimit }}
+                </el-form-item>
+                <el-form-item label="已用额度：" prop="usedLimit">
+                  {{ form.usedLimit }}
+                </el-form-item>
+                <el-form-item label="剩余可用额度：" prop="availableLimit">
+                  {{ form.availableLimit }}
+                </el-form-item>
+                <el-form-item label="批复敞口额度：" prop="wholesaleExposureLimit">
+                  {{ form.wholesaleExposureLimit }}
+                </el-form-item>
+                <el-form-item label="占用敞口额度：" prop="occupiedExposureLimit">
+                  {{ form.occupiedExposureLimit }}
+                </el-form-item>
+                <el-form-item label="可用敞口额度：" prop="usedExposureLimit">
+                  {{ form.usedExposureLimit }}
+                </el-form-item>
+                <el-form-item label="最高授信额度：" prop="maxCreditLimit">
+                  {{ form.maxCreditLimit }}
+                </el-form-item>
+                <el-form-item label="保证金比例%：" prop="depositRatio">
+                  {{ form.depositRatio }}
+                </el-form-item>
+                <el-form-item label="额度生效日期：" prop="limitEffectiveDate">
+                  {{ form.limitEffectiveDate }}
+                </el-form-item>
+                <el-form-item label="额度失效日期：" prop="limitExpiryDate">
+                  {{ form.limitExpiryDate }}
+                </el-form-item>
+                <el-form-item label="业务模式：" prop="businessMode">
+                  {{ form.businessModeLabel }}
+                </el-form-item>
+                <el-form-item label="授信记录编码：" prop="creditRecordCode">
+                  {{ form.creditRecordCode }}
                 </el-form-item>
               </el-form>
             </div>
@@ -154,10 +223,11 @@ const defaultForm = {
   modifierName: '',
   dataSource: '',
   ownerOrgId: '',
+  dealerName: '',
 };
 
 export default {
-  name: 'bankEdit',
+  name: 'finBankCreditRecordEdit',
   // 集中视图预留
   props: {
     id: {
@@ -173,6 +243,9 @@ export default {
   computed: {
     _id () {
       return this.id || this.form.id || this.$route.query.id;
+    },
+    title () {
+      return '银行授信记录：' + (this.form.code || '');
     }
   },
   watch: {
@@ -190,7 +263,6 @@ export default {
     return {
       pageTitle: '银行授信记录',
       pageType: 'edit',
-      title: '编码：' + form.code,
       // TIPS: 权限前缀 AISVW，根据实际情况修改
       moduleKey: 'AISVW-finBankCreditRecord',
       loading: false,
@@ -198,6 +270,11 @@ export default {
       yes_no_enum: YES_NO_ENUM,
       form: { ...form },
       originalForm: { ...form },
+      rules: {
+        remark: [
+          { required: false, message: '请输入备注', trigger: 'change' }
+        ]
+      }
     };
   },
   mounted () {

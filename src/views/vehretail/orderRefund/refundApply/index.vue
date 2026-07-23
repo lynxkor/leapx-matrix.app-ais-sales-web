@@ -38,10 +38,28 @@
           <el-input v-model="form.buyerPhone" placeholder="请输入"  clearable/>
         </el-form-item>
         <el-form-item label="销售门店">
-          <tag-input v-model="form.saleDealerNameList" placeholder="请输入"  clearable/>
+          <fetch-select
+            filterable
+            clearable
+            remote
+            v-model="form.saleDealerCode"
+            :remote-method="saleDealerSearch"
+            value-key="storeCode"
+            label-key="storeName"
+            placeholder="请选择"
+          />
         </el-form-item>
         <el-form-item label="基础车型">
-          <el-input v-model="form.modelName" placeholder="请输入"  clearable/>
+          <fetch-select
+            :remote-method="remoteMethods.model"
+            v-model="form.modelId"
+            placeholder="请选择"
+            clearable
+            label-key="name"
+            value-key="id"
+            filterable
+            remote
+          />
         </el-form-item>
         <el-form-item label="商城订单编号">
           <tag-input v-model="form.mallOrderCodeList" placeholder="请输入"  clearable/>
@@ -82,6 +100,71 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             @change="handleCreateTimeChange"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="提交时间">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.submitTimeRange"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="初审人">
+          <el-input v-model="form.preApproveUser" placeholder="请输入" clearable/>
+        </el-form-item>
+        <el-form-item label="初审时间">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.preApproveTimeRange"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="审核人">
+          <el-input v-model="form.approveUser" placeholder="请输入" clearable/>
+        </el-form-item>
+        <el-form-item label="审核时间">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.approveTimeRange"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="终审人">
+          <el-input v-model="form.finalApproveUser" placeholder="请输入" clearable/>
+        </el-form-item>
+        <el-form-item label="终审时间">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.finalApproveTimeRange"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
             clearable
           />
         </el-form-item>
@@ -158,7 +241,15 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { batchAudit, deleteItem, enableItem, getList } from '@/api/vehretail/orderRefund/refundApply/index';
-import { exportTable, getEnum, getTableConfig, tableAddOrUpdate, getRigion, vehicleSeriesList } from '@/api/common';
+import {
+  exportTable,
+  getEnum,
+  getTableConfig,
+  tableAddOrUpdate,
+  getRigion,
+  vehicleSeriesList,
+  listVehicleModel, listOrgStoreInfo
+} from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -180,7 +271,14 @@ const defaultForm = {
   retailOrderCode: '',
   mallOrderCode: '',
   cateCode: '',
-  area: []
+  area: [],
+  submitTimeRange: null,
+  preApproveUser: '',
+  preApproveTimeRange: null,
+  approveUser: '',
+  approveTimeRange: null,
+  finalApproveUser: '',
+  finalApproveTimeRange: null
 };
 
 const pageSize = 20;
@@ -231,6 +329,9 @@ export default {
       },
       areaOptions: getAreaTree(),
       remoteMethods: {
+        model: async (query) => {
+          return await listVehicleModel({ modelNameLike: query });
+        },
         series: async (query) => {
           return await vehicleSeriesList({ seriesNameLike: query, status: 1 });
         },
@@ -279,8 +380,8 @@ export default {
             }]
           },
           { props: 'refundStatusLabel', label: '申请状态', visible: true, width: 200, sortable: true },
-          { props: 'buyerName', label: '购车人名称', visible: true, width: 200, sortable: true },
-          { props: 'buyerPhone', label: '购车人手机', visible: true, width: 200, sortable: true },
+          { props: 'buyerNameEncrypt', label: '购车人名称', visible: true, width: 200, sortable: true, mask: true, getValue: (row) => Promise.resolve(row.buyerName) },
+          { props: 'buyerPhoneEncrypt', label: '购车人手机', visible: true, width: 200, sortable: true, mask: true, getValue: (row) => Promise.resolve(row.buyerPhone) },
           { props: 'saleUserName', label: '订单销售顾问', visible: true, width: 200, sortable: true },
           {
             props: 'applyTime',
@@ -296,8 +397,12 @@ export default {
             width: 200
           },
           { props: 'submitTime', label: '提交时间', visible: true, width: 200, sortable: true },
+          { props: 'preApproveUserEncrypt', label: '初审人', visible: true, width: 200, sortable: false },
+          { props: 'preApproveTime', label: '初审时间', visible: true, width: 200, sortable: true },
           { props: 'approveUser', label: '审核人', visible: true, width: 200, sortable: false },
           { props: 'approveTime', label: '审核时间', visible: true, width: 200, sortable: true },
+          { props: 'finalApproveUser', label: '终审人', visible: true, width: 200, sortable: false },
+          { props: 'finalApproveTime', label: '终审时间', visible: true, width: 200, sortable: true },
           { props: 'orderRefundTypeLabel', label: '退订方式', visible: true, width: 200 },
           { props: 'cateName', label: '退订原因分类', visible: true, width: 200, sortable: true },
           { props: 'refundReason', label: '退订原因说明', visible: true, width: 200 },
@@ -535,6 +640,30 @@ export default {
           data.createTimeEnd = this.form.createTime[1];
         }
       }
+      // 提交时间
+      if (this.form.submitTimeRange && this.form.submitTimeRange.length > 1) {
+        delete data.submitTimeRange;
+        data.submitTimeStart = this.form.submitTimeRange[0];
+        data.submitTimeEnd = this.form.submitTimeRange[1];
+      }
+      // 初审时间
+      if (this.form.preApproveTimeRange && this.form.preApproveTimeRange.length > 1) {
+        delete data.preApproveTimeRange;
+        data.preApproveTimeStart = this.form.preApproveTimeRange[0];
+        data.preApproveTimeEnd = this.form.preApproveTimeRange[1];
+      }
+      // 审核时间
+      if (this.form.approveTimeRange && this.form.approveTimeRange.length > 1) {
+        delete data.approveTimeRange;
+        data.approveTimeStart = this.form.approveTimeRange[0];
+        data.approveTimeEnd = this.form.approveTimeRange[1];
+      }
+      // 终审时间
+      if (this.form.finalApproveTimeRange && this.form.finalApproveTimeRange.length > 1) {
+        delete data.finalApproveTimeRange;
+        data.finalApproveTimeStart = this.form.finalApproveTimeRange[0];
+        data.finalApproveTimeEnd = this.form.finalApproveTimeRange[1];
+      }
       if (this.selectionList.length > 0) {
         data.ids = this.selectionList.map(item => item.id);
       }
@@ -558,6 +687,13 @@ export default {
         this.form.createTimeStart = null;
         this.form.createTimeEnd = null;
       }
+    },
+    async saleDealerSearch (val) {
+      const params = {
+        keyword: val,
+        pageSize: 5000
+      };
+      return await listOrgStoreInfo(params);
     },
     async changeCategorySearch (val) {
       return await fetchCategoryList({ pageSize: 1000, cateName: val });

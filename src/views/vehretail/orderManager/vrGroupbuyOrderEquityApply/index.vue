@@ -8,6 +8,13 @@
       label-width="150px"
       class="ais-search-form"
     >
+      <el-form-item label="权益申请编号">
+        <el-input
+          placeholder="请输入"
+          v-model="form.codeLike"
+          clearable
+        />
+      </el-form-item>
       <el-form-item label="商城订单号">
         <el-input
           placeholder="请输入"
@@ -151,6 +158,7 @@ import commonMixins from '@/libs/mixins/commonMixins';
 import EditPage from './edit.vue';
 
 const defaultForm = {
+  codeLike: '',
   mallOrderCode: '',
   materialsCode: '',
   modelId: '',
@@ -259,7 +267,7 @@ export default {
           { props: 'companyName', label: '公司名称', visible: true, width: 300 },
           { props: 'modelName', label: '车型', visible: true, width: 240 },
           { props: 'seriesName', label: '车系', visible: true, width: 240 },
-          { props: 'couponName', label: '优惠券', visible: true, width: 120 },
+          { props: 'couponName', label: '优惠券', visible: true, width: 240 },
           { props: 'discountAmount', label: '优惠金额', visible: true, width: 120, align: 'right' },
           { props: 'submitTime', label: '提交时间', visible: true, width: 180 },
           { props: 'firstAuditTime', label: '初审时间', visible: true, width: 180 },

@@ -106,9 +106,9 @@
             />
           </el-select>
         </el-form-item>
-
-        <!-- 更改时间原因/超时原因 -->
+<!-- 更改时间原因/超时原因：根据是否超时整项隐藏 -->
         <el-form-item
+          v-if="isOvertime"
           :label="currentMode === 'change' ? '更改时间原因：' : '超时原因：'"
           prop="changeReason"
           :required="isChangeReasonRequired"
@@ -118,6 +118,7 @@
             placeholder="请选择"
             clearable
             style="width: 220px;"
+            @change="handleChangeReasonChange"
           >
             <el-option
               v-for="item in changeReasonOptions"
@@ -127,7 +128,11 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="预约备注：">
+        <el-form-item
+          label="预约备注："
+          prop="remark"
+          :rules="remarkRules"
+        >
           <el-input
             v-model="appointmentForm.remark"
             type="textarea"
@@ -326,6 +331,14 @@ export default {
           return false;
         }
       };
+    },
+    // 预约备注动态校验规则：仅在超时场景下，原因选择为"其他原因"时必填
+    remarkRules () {
+      const needRequired = this.isOvertime && this.appointmentForm.changeReason === '其他原因';
+      if (!needRequired) return [];
+      return [
+        { required: true, message: '请输入备注', trigger: 'blur' }
+      ];
     }
   },
   methods: {
@@ -486,6 +499,14 @@ export default {
     // 处理时间变更
     handleTimeChange () {
       this.checkTimeout();
+    },
+    // 处理更改/超时原因变更：触发 remark 字段重新校验
+    handleChangeReasonChange () {
+      this.$nextTick(() => {
+        if (this.$refs.appointmentForm) {
+          this.$refs.appointmentForm.clearValidate('remark');
+        }
+      });
     },
     // 生成时间段选项
     async generateTimeSlots () {

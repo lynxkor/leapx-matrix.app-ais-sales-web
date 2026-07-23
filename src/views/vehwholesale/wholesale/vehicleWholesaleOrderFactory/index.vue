@@ -12,10 +12,10 @@
       <el-form-item label="批售订单号">
         <tag-input v-model="form.wholesaleOrderCodes" placeholder="请输入" />
       </el-form-item>
-        <el-form-item label="配车VIN码">
-          <tag-input v-model="form.vins" placeholder="请输入" />
-        </el-form-item>
-      <el-form-item label="订单状态" v-show="this.visibleCount === 3 || show">
+      <el-form-item label="配车VIN码">
+        <tag-input v-model="form.vins" placeholder="请输入" />
+      </el-form-item>
+      <el-form-item label="订单状态">
         <fetch-select
           :request="fetchOptions"
           enumCode="vw_wholesale_order_status"
@@ -26,35 +26,120 @@
           filterable
         />
       </el-form-item>
+      <el-form-item label="物料描述">
+        <tag-input v-model="form.orderMaterialDescs" placeholder="请输入" />
+      </el-form-item>
+      <el-form-item label="销售门店">
+        <tag-input v-model="form.saleDealerNames" placeholder="请输入" />
+      </el-form-item>
+      <el-form-item label="订单分类">
+        <fetch-select
+          :remote-method="getWholesaleEorderTyprList"
+          remote
+          v-model="form.orderCategories"
+          placeholder="请选择"
+          clearable
+          multiple
+          filterable
+        />
+      </el-form-item>
+      <el-form-item label="车型">
+        <fetch-select
+          :remote-method="modelSearch"
+          remote
+          reserve-keyword
+          :options="modelList"
+          v-model="form.modelIds"
+          placeholder="请选择"
+          labelKey="label"
+          valueKey="value"
+          clearable
+          multiple
+          collapseTags
+          filterable
+        />
+      </el-form-item>
+      <el-form-item label="所属母公司">
+        <fetch-select
+          :remote-method="getParentCompany"
+          remote
+          v-model="form.dealerCompanyCodes"
+          placeholder="请选择"
+          labelKey="companyName"
+          valueKey="companyCode"
+          multiple
+          clearable
+          filterable
+        />
+      </el-form-item>
+      <el-form-item label="批售方式">
+        <fetch-select
+          :request="fetchOptions"
+          enumCode="vw_wholesale_way"
+          v-model="form.wholesaleWays"
+          placeholder="请选择"
+          clearable
+          multiple
+          filterable
+        />
+      </el-form-item>
+      <el-form-item label="订单物料编码">
+        <tag-input v-model="form.orderMaterialCodes" placeholder="请输入" />
+      </el-form-item>
+      <el-form-item label="所属大区">
+        <fetch-select
+          filterable
+          clearable
+          remote
+          multiple
+          collapse-tags
+          v-model="form.regionCodes"
+          :remote-method="getRegionList"
+          value-key="orgCode"
+          label-key="orgName"
+        />
+      </el-form-item>
+      <el-form-item label="专项活动">
+        <fetch-select
+          :remote-method="prodScheduleActivitySearch"
+          remote
+          reserve-keyword
+          labelKey="name"
+          valueKey="id"
+          v-model="form.prodScheduleActivityIds"
+          placeholder="请选择"
+          clearable
+          multiple
+          filterable
+        />
+      </el-form-item>
+      <el-form-item label="年款">
+        <fetch-select
+          :remote-method="listVehicleYearType"
+          remote
+          v-model="form.yearTypeIds"
+          placeholder="请选择"
+          labelKey="name"
+          valueKey="id"
+          clearable
+          multiple
+          collapseTags
+          filterable
+          :options="yearTypeList"
+        />
+      </el-form-item>
       <template v-if="show">
-        <el-form-item label="物料描述">
-          <tag-input v-model="form.orderMaterialDescs" placeholder="请输入" />
-        </el-form-item>
-         <el-form-item label="商城订单号">
-          <tag-input v-model="form.mallOrderCodes" placeholder="请输入" />
-        </el-form-item>
-         <el-form-item label="ERP发票是否开票">
+        <el-form-item label="城市">
           <fetch-select
-            :request="fetchOptions"
-            enumCode="BooleanEnum"
-            v-model="form.invoiceFlag"
-            placeholder="请选择"
-            clearable
             filterable
+            clearable
+            v-model="form.cityCode"
+            :options="cityOptions"
+            value-key="code"
+            label-key="name"
           />
         </el-form-item>
-          <el-form-item label="订单分类">
-            <fetch-select
-              :remote-method="getWholesaleEorderTyprList"
-              remote
-              v-model="form.orderCategories"
-              placeholder="请选择"
-              clearable
-              multiple
-              filterable
-            />
-        </el-form-item>
-            <el-form-item label="确认状态">
+        <el-form-item label="确认状态">
           <fetch-select
             :request="fetchOptions"
             enumCode="vw_wholesale_confirm_status"
@@ -65,168 +150,96 @@
             filterable
           />
         </el-form-item>
-         <el-form-item label="所属大区">
+        <el-form-item label="电池电芯(订单物料)">
+          <tag-input v-model="form.orderBatteryCellNames" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="省份">
           <fetch-select
             filterable
             clearable
             remote
-            multiple
-            collapse-tags
-            v-model="form.regionCodes"
-            :remote-method="getRegionList"
-            value-key="orgCode"
-            label-key="orgName"
+            v-model="form.provinceCode"
+            :remote-method="getProvince"
+            value-key="code"
+            label-key="name"
+            @change="handleChangeProvince"
           />
         </el-form-item>
-        <el-form-item label="销售门店">
-            <tag-input v-model="form.saleDealerNames" placeholder="请输入" />
+        <el-form-item label="车辆交付状态">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vehstock_vehicle_delivery_status"
+            v-model="form.deliveryStatuses"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="电池电芯(配车物料)">
+          <tag-input v-model="form.batteryCellNames" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="整车物流预留">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.logisticsReserve"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
         </el-form-item>
         <el-form-item label="整车补货单号">
           <tag-input v-model="form.replenishApplyCodes" placeholder="请输入" />
         </el-form-item>
-      <el-form-item label="订单时间"  v-show="this.visibleCount === 3 || show">
-        <el-date-picker
-         :default-time="['00:00:00', '23:59:59']"
-          v-model="form.orderTime"
-          type="daterange"
-          unlink-panels
-          :picker-options="pickerOptions"
-          range-separator="至"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        />
-      </el-form-item>
-          <el-form-item label="配车时间">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.allocateTime"
-            type="daterange"
-            unlink-panels
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
-        </el-form-item>
-        <el-form-item label="结算时间">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.settleTime"
-            type="daterange"
-            unlink-panels
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
-        </el-form-item>
-            <el-form-item label="年款">
-              <fetch-select
-                :remote-method="listVehicleYearType"
-                remote
-                v-model="form.yearTypeIds"
-                placeholder="请选择"
-                labelKey="name"
-                valueKey="id"
-                clearable
-                multiple
-                collapseTags
-                filterable
-                :options="yearTypeList"
-              />
-        </el-form-item>
-         <el-form-item label="车型">
-          <fetch-select
-            :remote-method="modelSearch"
-            remote
-            reserve-keyword
-            :options="modelList" v-model="form.modelIds" placeholder="请选择" labelKey="label" valueKey="value" clearable multiple collapseTags filterable
-            />
-        </el-form-item>
-           <el-form-item label="专项活动">
-            <fetch-select
-            :remote-method="prodScheduleActivitySearch"
-            remote
-            reserve-keyword
-            labelKey="name"
-            valueKey="id"
-            v-model="form.prodScheduleActivityIds"
-            placeholder="请选择"
-            clearable
-            multiple
-            filterable
-          />
-        </el-form-item>
-        <el-form-item label="省份">
-            <fetch-select
-              filterable
-              clearable
-              remote
-              v-model="form.provinceCode"
-              :remote-method="getProvince"
-              value-key="code"
-              label-key="name"
-              @change="handleChangeProvince"
-            />
-        </el-form-item>
-          <el-form-item label="城市">
-            <fetch-select
-            filterable
-            clearable
-            v-model="form.cityCode"
-            :options="cityOptions"
-            value-key="code"
-            label-key="name"
-          />
-        </el-form-item>
-         <el-form-item label="所属母公司">
-           <fetch-select
-                  :remote-method="getParentCompany"
-                  remote
-                  v-model="form.dealerCompanyCodes"
-                  placeholder="请选择"
-                  labelKey="companyName"
-                  valueKey="companyCode"
-                  multiple
-                  clearable
-                  filterable
-                  />
-
-          <!-- <tag-input v-model="form.dealerCompanyCodes" placeholder="请输入" /> -->
-        </el-form-item>
-        <el-form-item label="允许锁零售单">
+        <el-form-item label="ERP发票是否开票">
           <fetch-select
             :request="fetchOptions"
             enumCode="BooleanEnum"
-            v-model="form.allowLockRetail"
+            v-model="form.invoiceFlag"
             placeholder="请选择"
             clearable
             filterable
           />
         </el-form-item>
-        <el-form-item label="批售方式">
+        <el-form-item label="物流预留备注">
+          <tag-input v-model="form.logisticsReserveRemarks" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="商城订单号">
+          <tag-input v-model="form.mallOrderCodes" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="结算资金类型">
+          <fetch-select
+            :options="settleFundTypeOptions"
+            v-model="form.settleFundTypes"
+            placeholder="请选择"
+            clearable
+            filterable
+            multiple
+          />
+        </el-form-item>
+        <el-form-item label="订单时间" v-show="this.visibleCount === 3 || show">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.orderTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
+        <el-form-item label="是否已锁定">
           <fetch-select
             :request="fetchOptions"
-            enumCode="vw_wholesale_way"
-            v-model="form.wholesaleWays"
+            enumCode="BooleanEnum"
+            v-model="form.lockStatus"
             placeholder="请选择"
             clearable
-            multiple
             filterable
           />
-        </el-form-item>
-          <el-form-item label="结算资金类型">
-            <fetch-select
-                   :options="settleFundTypeOptions"
-                    v-model="form.settleFundTypes"
-                    placeholder="请选择"
-                    clearable
-                    filterable
-                    multiple
-                  />
         </el-form-item>
         <el-form-item label="金融机构名称">
           <fetch-select
@@ -242,10 +255,10 @@
             filterable
           />
         </el-form-item>
-            <el-form-item label="确认时间">
+        <el-form-item label="配车时间">
           <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.confirmTime"
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.allocateTime"
             type="daterange"
             unlink-panels
             :picker-options="pickerOptions"
@@ -253,36 +266,6 @@
             value-format="yyyy-MM-dd HH:mm:ss"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-          />
-        </el-form-item>
-        <!-- <el-form-item label="销售门店编码">
-          <el-input
-            placeholder="请输入"
-            v-model="form.saleDealerCodes"
-            clearable
-          />
-        </el-form-item> -->
-        <el-form-item label="创建时间">
-          <el-date-picker
-           :default-time="['00:00:00', '23:59:59']"
-            v-model="form.createTime"
-            type="daterange"
-            unlink-panels
-            :picker-options="pickerOptions"
-            range-separator="至"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
-        </el-form-item>
-          <el-form-item label="是否已锁定">
-            <fetch-select
-            :request="fetchOptions"
-            enumCode="BooleanEnum"
-            v-model="form.lockStatus"
-            placeholder="请选择"
-            clearable
-            filterable
           />
         </el-form-item>
         <el-form-item label="是否紧急订单">
@@ -295,65 +278,92 @@
             filterable
           />
         </el-form-item>
-         <el-form-item label="指定发运方式">
-            <fetch-select
-              :request="fetchOptions"
-              enumCode="vehstock_ship_via"
-              v-model="form.deliveryWays"
-              placeholder="请选择"
-              clearable
-              multiple
-              filterable
-            />
+        <el-form-item label="初始交付周期说明">
+          <tag-input v-model="form.initDeliveryCycleDescs" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="车辆交付状态">
+        <el-form-item label="结算时间">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.settleTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
+        <el-form-item label="是否需要自动配车">
           <fetch-select
             :request="fetchOptions"
-            enumCode="vehstock_vehicle_delivery_status"
-            v-model="form.deliveryStatuses"
+            enumCode="BooleanEnum"
+            v-model="form.needAutoAllocateCar"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="动态交付周期说明">
+          <tag-input v-model="form.dynamicDeliveryCycleDescs" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="确认时间">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.confirmTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
+        <el-form-item label="允许锁零售单">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="BooleanEnum"
+            v-model="form.allowLockRetail"
+            placeholder="请选择"
+            clearable
+            filterable
+          />
+        </el-form-item>
+        <el-form-item label="指定发运方式">
+          <fetch-select
+            :request="fetchOptions"
+            enumCode="vehstock_ship_via"
+            v-model="form.deliveryWays"
             placeholder="请选择"
             clearable
             multiple
             filterable
           />
         </el-form-item>
-        <el-form-item label="订单物料编码">
-          <tag-input v-model="form.orderMaterialCodes" placeholder="请输入" />
+        <el-form-item label="创建时间">
+          <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
+            v-model="form.createTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="至"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
         </el-form-item>
-           <el-form-item label="是否需要自动配车">
-             <fetch-select
-                :request="fetchOptions"
-                enumCode="BooleanEnum"
-                v-model="form.needAutoAllocateCar"
-                placeholder="请选择"
-                clearable
-                filterable
-              />
-        </el-form-item>
-         <el-form-item label="整车物流预留">
+        <el-form-item label="允许锁零售节点">
           <fetch-select
-              :request="fetchOptions"
-              enumCode="BooleanEnum"
-              v-model="form.logisticsReserve"
-              placeholder="请选择"
-              clearable
-              filterable
-            />
-        </el-form-item>
-         <el-form-item label="物流预留备注">
-          <tag-input v-model="form.logisticsReserveRemarks" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="初始交付周期说明">
-          <tag-input v-model="form.initDeliveryCycleDescs" placeholder="请输入" />
-        </el-form-item>
-          <el-form-item label="动态交付周期说明">
-            <tag-input v-model="form.dynamicDeliveryCycleDescs" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="电池电芯(订单物料)">
-            <tag-input v-model="form.orderBatteryCellNames" placeholder="请输入" />
-        </el-form-item>
-          <el-form-item label="电池电芯(配车物料)">
-            <tag-input v-model="form.batteryCellNames" placeholder="请输入" />
+            :request="fetchOptions"
+            enumCode="vw_allow_lock_node_type"
+            v-model="form.allowLockNodes"
+            placeholder="请选择"
+            clearable
+            multiple
+            filterable
+          />
         </el-form-item>
       </template>
       <page-search-action
@@ -411,6 +421,7 @@
         @paginationChange="paginationChange"
         @handleSelect="handleSelectionChange"
         @listSelect="handleListSelect"
+        @sortChange="handleSortChange"
       >
         <EditPage slot="centralizedViewSlot" :id="clickItemId"/>
       </LPVxeTable>
@@ -559,6 +570,7 @@ const defaultForm = {
   orderStatuses: [],
   confirmStatuses: [],
   wholesaleWays: [],
+  allowLockNodes: [],
   deliveryStatuses: [],
   logisticsReserveRemarks: [],
 };
@@ -597,6 +609,7 @@ export default {
       },
       tabName: '2',
       selectionList: [],
+      sortColumns: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
       loading: false,
@@ -645,7 +658,7 @@ export default {
             }]
           },
           { props: 'orderStatusLabel', label: '订单状态', visible: true, width: 100 },
-          { props: 'orderTime', label: '订单时间', visible: true, width: 180 },
+          { props: 'orderTime', label: '订单时间', visible: true, width: 180, sortable: true },
           { props: 'confirmTime', label: '确认时间', visible: true, width: 180 },
           {
             props: 'saleDealerName',
@@ -688,8 +701,8 @@ export default {
               type: 'primary'
             }]
           },
-          { props: 'allocateTime', label: '配车时间', visible: true, width: 200 },
-          { props: 'settleTime', label: '结算时间', visible: true, width: 200 },
+          { props: 'allocateTime', label: '配车时间', visible: true, width: 200, sortable: true },
+          { props: 'settleTime', label: '结算时间', visible: true, width: 200, sortable: true },
           { props: 'materialsCode', label: '配车物料码', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleMaterials/edit?id=${row.materialsCode}`, '_blank'); }, type: 'primary' }] },
           { props: 'vin', label: '配车VIN码', visible: true, width: 180, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit?vin=${row.vin}`, '_blank'); }, type: 'primary' }] },
           { props: 'replenishApplyCode', label: '整车补货单号', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/replenish/dealerVehicleReplenishApply/edit?id=${row.replenishApplyCode}`, '_blank'); }, type: 'primary' }] },
@@ -698,6 +711,7 @@ export default {
           { props: 'cityName', label: '城市', visible: true, width: 200 },
           { props: 'prodScheduleActivityName', label: '专项活动', visible: true, width: 200, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/vehwholesale/basic/wholesaleProdScheduleActivity/edit?id=${row.prodScheduleActivityId}`, '_blank'); }, type: 'primary' }] },
           { props: 'allowLockRetailLabel', label: '允许锁零售单', visible: true, width: 200 },
+          { props: 'allowLockNodesLabel', label: '锁单节点', visible: true, width: 200 },
           { props: 'retailPrice', label: '零售价', visible: true, width: 120, align: 'right' },
           { props: 'invoiceDiscountTypeLabel', label: '开票类型', visible: true, width: 120 },
           { props: 'invoiceCoefficient', label: '开票系数', visible: true, width: 120, align: 'right' },
@@ -838,7 +852,7 @@ export default {
           { props: 'dynamicDeliveryCycleDesc', label: '动态交付周期说明', visible: true, width: 200 },
           { props: 'orderBatteryCellName', label: '电池电芯(订单物料)', visible: true, width: 200 },
           { props: 'batteryCellName', label: '电池电芯(配车物料)', visible: true, width: 200 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
           {
             props: 'operate',
             label: '操作',
@@ -859,8 +873,30 @@ export default {
       }
     };
   },
+  watch: {
+    show (newVal) {
+      if (newVal) {
+        // TagInput 组件挂载时不会同步已有 value（其 value watcher 未设置 immediate），
+        // 需要重新触发赋值才能让物流预留备注回填
+        const remarks = this.form.logisticsReserveRemarks;
+        if (remarks && remarks.length) {
+          this.form.logisticsReserveRemarks = [];
+          this.$nextTick(() => {
+            this.form.logisticsReserveRemarks = remarks;
+          });
+        }
+      }
+    }
+  },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
+    // 订单时间默认最近1年
+    const now = new Date();
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    const pad = (n) => String(n).padStart(2, '0');
+    const fmtDate = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    this.form.orderTime = [`${fmtDate(oneYearAgo)} 00:00:00`, `${fmtDate(now)} 23:59:59`];
     this.handleClickTab();
     this.getCity();
     this.fetchSettleFundTypeOptions();
@@ -1405,11 +1441,12 @@ export default {
         this.form.orderStatuses = ['0', '10', '11'];
         this.form.confirmStatuses = ['1020'];
       } else if (this.tabName === '6') {
-        // 未出质量 ①订单状态：已完成配车、已提交结算、SAP结算中、结算失败、取消结算、结算成功；②车辆交付状态：VDC入库、计划发运；③整车物流预留：是；④整车物流预留备注：质量问题（模糊查询）
+        // 未出质量 ①订单状态：已完成配车、已提交结算、SAP结算中、结算失败、取消结算、结算成功；
+        // ②车辆交付状态：VDC入库、计划发运、VDC出库 ；③整车物流预留：是；④整车物流预留备注：质量问题（模糊查询）
         this.form.orderStatuses = ['1', '2', '21', '4', '5', '3'];
         this.form.logisticsReserve = '1';
-        this.form.logisticsReserveRemarks = ['质量问题'];
-        this.form.deliveryStatuses = ['3', '4'];
+        this.form.logisticsReserveRemarks = ['质量', '追溯'];
+        this.form.deliveryStatuses = ['3', '4', '5'];
       }
       this.getData();
     },
@@ -1496,8 +1533,24 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
+      this.sortColumns = [];
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
+      this.getData();
+    },
+    handleSortChange (value) {
+      const list = value || [];
+      if (!list.length) {
+        this.sortColumns = [];
+        this.getData();
+        return;
+      }
+      const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
+      const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
+      this.sortColumns = [{
+        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+        sort: (latest.order || '').toUpperCase()
+      }];
       this.getData();
     },
     exportExcel () {
@@ -1629,6 +1682,8 @@ export default {
           data.allocateTimeEnd = this.form.allocateTime[1];
         }
       }
+
+      data.sortColumns = this.sortColumns;
 
       return data;
     },

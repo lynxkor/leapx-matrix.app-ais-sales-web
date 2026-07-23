@@ -225,7 +225,7 @@ export default {
             width: 240,
             buttons: [{
               click: (rowIndex, row) => {
-                this.openWindow('/partner/channelManagement/shopDetail?dealerCode=' + row.dealerCode);
+                window.open(`/partner/channelManagement/shopDetail?dealerCode=${row.dealerCode}`, '_blank');
               },
               type: 'primary'
             }]
@@ -397,14 +397,18 @@ export default {
 
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size })
         .then(res => {
-          console.log(res);
-          this.optionObj.dataList = res.records.map(item => {
+          const records = res?.records || [];
+          this.optionObj.dataList = records.map(item => {
             return {
               ...item,
               deleteLoading: false
             };
           });
-          this.optionObj.total = res.total;
+          this.optionObj.total = res?.total || 0;
+        }).catch(err => {
+          console.error('获取返利核算单列表失败:', err);
+          this.optionObj.dataList = [];
+          this.optionObj.total = 0;
         }).finally(() => {
           this.loading = false;
         });

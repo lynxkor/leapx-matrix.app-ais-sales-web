@@ -29,7 +29,7 @@
           filterable
         />
       </el-form-item>
-      <el-form-item label="车型"  v-show="this.visibleCount === 3 || show">
+      <el-form-item label="车型" v-show="this.visibleCount === 3 || show">
         <fetch-select
           filterable
           clearable
@@ -413,7 +413,7 @@ export default {
       }
       return [];
     },
-    getModelList (query) { return getVehicleModelList({ nameLike: query }); },
+    getModelList (query) { return getVehicleModelList({ modelNameLike: query }); },
     async getCityList (params) {
       return cityListByName({ cityName: params });
     },

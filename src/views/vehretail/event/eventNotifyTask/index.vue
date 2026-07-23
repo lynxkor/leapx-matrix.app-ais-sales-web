@@ -84,14 +84,32 @@
             clearable
           />
         </el-form-item>
+        <el-form-item label="事件数据快照">
+          <el-input
+            type="text"
+            placeholder="请输入"
+            v-model="form.dataParam"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="失败原因">
+          <el-input
+            type="text"
+            placeholder="请输入"
+            v-model="form.failedReason"
+            clearable
+          />
+        </el-form-item>
         <el-form-item label="创建时间">
           <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
             v-model="form.eventAtRange"
             type="daterange"
             unlink-panels
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
+            :picker-options="pickerOptions"
             value-format="yyyy-MM-dd HH:mm:ss"
             @change="handleEventAtRangeChange"
             clearable
@@ -134,7 +152,7 @@
         @handleSelect="handleSelectionChange"
         @listSelect="handleListSelect"
       >
-        <EditPage slot="centralizedViewSlot" :id="clickItemId" />
+        <EditPage slot="centralizedViewSlot" :id="clickItemId" :prefix="form.systemPrefix"/>
       </LPVxeTable>
     </div>
   </div>
@@ -292,13 +310,16 @@ export default {
       this.optionObj.dataList = [];
       getList({ ...this.getFormData(), pageNum: this.optionObj.form.page, pageSize: this.optionObj.form.size }, this.form.systemPrefix)
         .then(res => {
-          this.optionObj.dataList = res.records.map(item => {
+          const records = res?.records || [];
+          this.optionObj.dataList = records.map(item => {
             return {
               ...item,
               deleteLoading: false
             };
           });
-          this.optionObj.total = res.total;
+          this.optionObj.total = res?.total || 0;
+        }).catch(err => {
+          console.error('获取事件通知任务列表失败:', err);
         }).finally(() => {
           this.loading = false;
         });

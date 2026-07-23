@@ -9,95 +9,105 @@
       <el-form-item label="物料描述">
         <tag-input v-model="form.materialsDescList" placeholder="请输入" />
       </el-form-item>
-      <el-form-item label="VDC入库时间" v-show="this.visibleCount === 3 || show">
-        <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.inboundDateTime" type="daterange"
-        unlink-panels
-          :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
-          start-placeholder="开始日期" end-placeholder="结束日期" />
+      <el-form-item label="销售预留">
+        <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.reserved" placeholder="请选择" clearable
+          filterable />
       </el-form-item>
       <template v-if="show">
+        <el-form-item label="订单编号">
+          <tag-input v-model="form.poList" placeholder="请输入" />
+        </el-form-item>
         <el-form-item label="物料编码">
           <tag-input v-model="form.materialsCodeList" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="销售预留类型">
+          <fetch-select :request="fetchOptions" enumCode="vehstock_reserved_type" v-model="form.reservedType"
+            placeholder="请选择" clearable filterable />
+        </el-form-item>
+        <el-form-item label="VDC入库时间" v-show="this.visibleCount === 3 || show">
+          <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.inboundDateTime" type="daterange"
+            unlink-panels :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期" end-placeholder="结束日期" />
         </el-form-item>
         <el-form-item label="车系">
           <fetch-select v-model="form.seriesIdList" v-bind="selectOptions" :remote-method="remoteMethods.series" />
         </el-form-item>
-        <el-form-item label="是否配车">
-          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.carAllocated" placeholder="请选择"
+        <el-form-item label="特殊预留备注">
+          <el-input placeholder="请输入" v-model="form.specialReserveRemarkLike" clearable />
+        </el-form-item>
+        <el-form-item label="VDC出库时间">
+          <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.outboundDateTime" type="daterange"
+            unlink-panels :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
+            start-placeholder="开始日期" end-placeholder="结束日期" />
+        </el-form-item>
+        <el-form-item label="车型">
+          <fetch-select
+            v-model="form.modelIdList"
+            v-bind="selectOptions"
+            :remote-method="remoteMethods.model"
+          />
+        </el-form-item>
+        <el-form-item label="整车物流预留">
+          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.logisticsReserved"
+            placeholder="请选择" clearable filterable />
+        </el-form-item>
+        <el-form-item label="制造工厂">
+          <fetch-select v-model="form.factoryCodeList" filterable clearable remote multiple reserve-keyword
+            placeholder="请选择" :remote-method="serchFactory" value-key="factoryCode" label-key="factoryName" />
+        </el-form-item>
+        <el-form-item label="库龄最小天数">
+          <el-input v-model.number="form.stockAgeGe" placeholder="请输入" type="number" style="width: 100%"
+            @blur="handleStockAgeGeBlur" />
+        </el-form-item>
+        <el-form-item label="整车物流预留备注">
+          <el-input placeholder="请输入" v-model="form.vehicleLogisticsReserveRemarkLike" clearable />
+        </el-form-item>
+        <el-form-item label="整车仓库">
+          <fetch-select v-model="form.warehouseCodeList" filterable clearable remote multiple reserve-keyword
+            placeholder="请选择" :remote-method="serchWarehouse" value-key="warehouseCode" label-key="warehouseName" />
+        </el-form-item>
+        <el-form-item label="库龄最大天数">
+          <el-input v-model.number="form.stockAgeLe" placeholder="请输入" type="number" style="width: 100%"
+            @blur="handleStockAgeLeBlur" />
+        </el-form-item>
+        <el-form-item label="是否允许现车批售">
+          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.allowWholesale" placeholder="请选择"
+            clearable filterable />
+        </el-form-item>
+        <el-form-item label="发运方式">
+          <fetch-select :request="fetchOptions" enumCode="vehstock_ship_via" v-model="form.shipVia" placeholder="请选择"
             clearable filterable />
         </el-form-item>
         <el-form-item label="车辆交付状态">
           <fetch-select :request="fetchOptions" enumCode="vehstock_vehicle_delivery_status"
             v-model="form.vehicleDeliveryStatusList" placeholder="请选择" clearable multiple filterable />
         </el-form-item>
-        <el-form-item label="整车物流预留">
-          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.logisticsReserved"
+        <el-form-item label="允许锁单节点">
+          <fetch-select :request="fetchOptions" enumCode="vw_allow_lock_node_type" v-model="form.allowLockNode"
             placeholder="请选择" clearable filterable />
         </el-form-item>
-        <el-form-item label="整车仓库">
-          <fetch-select v-model="form.warehouseCodeList" filterable clearable remote multiple reserve-keyword
-            placeholder="请选择" :remote-method="serchWarehouse" value-key="warehouseCode" label-key="warehouseName" />
+        <el-form-item label="公告车型">
+          <fetch-select v-model="form.vehicleRegisteredModelIdList" v-bind="selectOptions"
+            :remote-method="remoteMethods.announcement" />
         </el-form-item>
-        <el-form-item label="退车标识">
-          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.returnLabel" placeholder="请选择"
+        <el-form-item label="是否配车">
+          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.carAllocated" placeholder="请选择"
             clearable filterable />
         </el-form-item>
         <el-form-item label="允许锁零售单">
           <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.allowLockRetail" placeholder="请选择"
             clearable filterable />
         </el-form-item>
-        <el-form-item label="允许锁单节点">
-          <fetch-select :request="fetchOptions" enumCode="vw_allow_lock_node_type" v-model="form.allowLockNode"
-            placeholder="请选择" clearable filterable />
-        </el-form-item>
-        <el-form-item label="发运方式">
-          <fetch-select :request="fetchOptions" enumCode="vehstock_ship_via" v-model="form.shipVia" placeholder="请选择"
+        <el-form-item label="退车标识">
+          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.returnLabel" placeholder="请选择"
             clearable filterable />
         </el-form-item>
-        <el-form-item label="公告车型">
-          <fetch-select v-model="form.vehicleRegisteredModelIdList" v-bind="selectOptions"
-            :remote-method="remoteMethods.announcement" />
+        <el-form-item label="销售备注">
+          <el-input placeholder="请输入" v-model="form.salesRemarkLike" clearable />
         </el-form-item>
         <el-form-item label="常用复合查询">
           <fetch-select :request="fetchOptions" enumCode="vehstock_vdc_common_composite_query"
             v-model="form.vdcCommonCompositeQuery" placeholder="请选择" clearable filterable />
-        </el-form-item>
-        <el-form-item label="订单编号">
-          <tag-input v-model="form.poList" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="销售预留">
-          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.reserved"
-            placeholder="请选择" clearable filterable />
-        </el-form-item>
-        <el-form-item label="销售预留类型">
-          <fetch-select :request="fetchOptions" enumCode="vehstock_reserved_type" v-model="form.reservedType"
-            placeholder="请选择" clearable filterable />
-        </el-form-item>
-        <el-form-item label="特殊预留备注">
-          <el-input placeholder="请输入" v-model="form.specialReserveRemarkLike" clearable />
-        </el-form-item>
-        <el-form-item label="整车物流预留备注">
-          <el-input placeholder="请输入" v-model="form.vehicleLogisticsReserveRemarkLike" clearable />
-        </el-form-item>
-        <el-form-item label="VDC出库时间">
-          <el-date-picker :default-time="['00:00:00', '23:59:59']" v-model="form.outboundDateTime" type="daterange"
-          unlink-panels
-            :picker-options="pickerOptions" range-separator="至" value-format="yyyy-MM-dd HH:mm:ss"
-            start-placeholder="开始日期" end-placeholder="结束日期" />
-        </el-form-item>
-        <el-form-item label="是否允许现车批售">
-          <fetch-select :request="fetchOptions" enumCode="BooleanEnum" v-model="form.allowWholesale"
-            placeholder="请选择" clearable filterable />
-        </el-form-item>
-        <el-form-item label="库龄最小天数">
-          <el-input v-model.number="form.stockAgeGe" placeholder="请输入" type="number" style="width: 100%" @blur="handleStockAgeGeBlur" />
-        </el-form-item>
-        <el-form-item label="库龄最大天数">
-          <el-input v-model.number="form.stockAgeLe" placeholder="请输入" type="number" style="width: 100%" @blur="handleStockAgeLeBlur" />
-        </el-form-item>
-        <el-form-item label="制造工厂">
-          <fetch-select v-model="form.factoryCodeList" filterable clearable remote multiple reserve-keyword
-            placeholder="请选择" :remote-method="serchFactory" value-key="factoryCode" label-key="factoryName" />
         </el-form-item>
       </template>
       <page-search-action v-if="canList" v-model="show" is-expandable :loading="loading" @submit="onSubmit"
@@ -113,28 +123,34 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
       <el-button v-if="canImport" size="small" @click="handleImport">导入</el-button>
-      <el-button v-permission="moduleKey+'-batchEdit'" size="small" @click="handleEdit" :disabled="selectionList.length === 0">批量编辑</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)" :disabled="selectionList.length === 0">批量启用</el-button>
-      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)" :disabled="selectionList.length === 0">批量停用</el-button>
-      <el-button v-permission="moduleKey+'-batchUpdateAllowLockNode'" size="small" @click="handleBatchUpdateAllowLockNode" :disabled="selectionList.length === 0">批量更新锁单节点</el-button>
+      <el-button v-permission="moduleKey + '-batchEdit'" size="small" @click="handleEdit"
+        :disabled="selectionList.length === 0">批量编辑</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
+        :disabled="selectionList.length === 0">批量启用</el-button>
+      <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(0)"
+        :disabled="selectionList.length === 0">批量停用</el-button>
+      <el-button v-permission="moduleKey + '-batchUpdateAllowLockNode'" size="small"
+        @click="handleBatchUpdateAllowLockNode" :disabled="selectionList.length === 0">批量更新锁单节点</el-button>
     </div>
     <div class="ais-table-c" v-if="activeName === 'homePage'">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed :option-obj="optionObj"
         :get-config="getConfig" :save-or-update="saveOrUpdate" @paginationChange="paginationChange"
-        @handleSelect="handleSelectionChange" />
+        @handleSelect="handleSelectionChange"
+        @sortChange="handleSortChange" />
     </div>
     <div class="ais-table-c" v-if="activeName === 'lowBattery'">
       <LPVxeTable ref="tableRef" v-loading="loading" is-checkbox is-page checkboxFixed :option-obj="optionDdl"
         :get-config="getConfigDl" :save-or-update="saveOrUpdate" @paginationChange="paginationChangeDl"
-        @handleSelect="handleSelectionChange" />
+        @handleSelect="handleSelectionChange"
+        @sortChange="handleSortChange" />
     </div>
     <!-- TIPS: 填入项目id即可 -->
     <Upload :visible="uploadDialogVisible" :id="'vehicleVdcInventoryLedgerImport'" @close="handleUploadDialogClose" />
     <el-dialog title="批量更新允许锁单节点" :visible.sync="batchUpdateAllowLockNodeVisible" width="400px">
       <el-form label-width="120px">
         <el-form-item label="允许锁单节点：">
-          <fetch-select :request="fetchOptions" enumCode="vw_allow_lock_node_type" v-model="batchUpdateAllowLockNodeValue"
-            placeholder="请选择" clearable filterable />
+          <fetch-select :request="fetchOptions" enumCode="vw_allow_lock_node_type"
+            v-model="batchUpdateAllowLockNodeValue" placeholder="请选择" clearable filterable />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -150,7 +166,7 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { getList, deleteItem, enableItem, batchUpdateAllowLockNode } from '@/api/vehstock/vdc/vehicleVdcInventoryLedger/index';
-import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleSalesVersionList, page, factoryInfoPage } from '@/api/common';
+import { getTableConfig, tableAddOrUpdate, exportTable, getEnum, vehicleSeriesList, vehicleSalesVersionList, page, factoryInfoPage, listVehicleModel } from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -183,11 +199,13 @@ const defaultForm = {
   materialsCodeLike: '',
   materialsCodeList: [],
   seriesIdList: [],
+  modelIdList: [],
   shipVia: '',
   vdcCommonCompositeQuery: '',
   lowBatteryCar: 0,
   inboundDateTime: [],
   specialReserveRemarkLike: '',
+  salesRemarkLike: '',
   vehicleLogisticsReserveRemarkLike: '',
   factory: '',
   stockAgeGe: null,
@@ -261,6 +279,7 @@ export default {
             label: 'VDC入库时间',
             visible: true,
             width: 160,
+            sortable: true
           },
           { props: 'stockAge', label: '库龄（天）', visible: true, align: 'right', width: 120 },
           { props: 'warehouseName', label: '整车仓库', visible: true, width: 120 },
@@ -295,7 +314,7 @@ export default {
           { props: 'exteriorName', label: '外观', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleExterior/edit?id=${row.exteriorId}`, '_blank'); }, type: 'primary' }] },
           { props: 'interiorName', label: '内饰', visible: true, width: 120, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleInterior/edit?id=${row.interiorId}`, '_blank'); }, type: 'primary' }] },
           { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 140, buttons: [{ click: (rowIndex, row) => { window.open(`/sales/datacenter/materials/vehicleWheelHub/edit?id=${row.wheelHubId}`, '_blank'); }, type: 'primary' }] },
-          { props: 'outboundDateTime', label: 'VDC出库时间', visible: true, width: 200 },
+          { props: 'outboundDateTime', label: 'VDC出库时间', visible: true, width: 200, sortable: true },
           { props: 'bulkoutLabel', label: '是否批量出库', visible: true, width: 140 },
           { props: 'offlineTime', label: '下线时间', visible: true, width: 200 },
           { props: 'lastInboundTime', label: '最近入库时间', visible: true, width: 200 },
@@ -309,7 +328,7 @@ export default {
           { props: 'modifierName', label: '修改者名称', visible: true, width: 140 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 140 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
           {
             props: 'operate',
             label: '操作',
@@ -381,12 +400,7 @@ export default {
               type: 'primary'
             }]
           },
-          {
-            props: 'inboundDateTime',
-            label: 'VDC入库时间',
-            visible: true,
-            width: 200,
-          },
+          { props: 'inboundDateTime', label: 'VDC入库时间', visible: true, width: 200, sortable: true },
           { props: 'stockAge', label: '库龄（天）', visible: true, align: 'right', width: 120 },
           { props: 'warehouseName', label: '整车仓库', visible: true, width: 120 },
           { props: 'materialsDesc', label: '物料描述', visible: true, width: 200 },
@@ -418,7 +432,7 @@ export default {
           { props: 'interiorName', label: '内饰', visible: true, width: 120 },
           { props: 'wheelHubName', label: '选配轮毂', visible: true, width: 140 },
           { props: 'vdcInventoryStatusLabel', label: '库存状态', visible: true, width: 120 },
-          { props: 'outboundDateTime', label: 'VDC出库时间', visible: true, width: 200 },
+          { props: 'outboundDateTime', label: 'VDC出库时间', visible: true, width: 200, sortable: true },
           { props: 'bulkoutLabel', label: '是否批量出库', visible: true, width: 140 },
           { props: 'offlineTime', label: '下线时间', visible: true, width: 200 },
           { props: 'lastInboundTime', label: '最近入库时间', visible: true, width: 200 },
@@ -430,7 +444,7 @@ export default {
           { props: 'modifierName', label: '修改者名称', visible: true, width: 140 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 140 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
           {
             props: 'operate',
             label: '操作',
@@ -473,6 +487,20 @@ export default {
         ],
         total: 0
       },
+      sortColumns: [
+        {
+          column: 'inbound_date_time',
+          sort: 'DESC'
+        },
+        // {
+        //   column: 'create_time',
+        //   sort: 'DESC'
+        // },
+        // {
+        //   column: 'outbound_date_time',
+        //   sort: 'DESC'
+        // }
+      ],
       // 提取公共配置
       selectOptions: {
         placeholder: '请选择',
@@ -490,17 +518,46 @@ export default {
         series: async (query) => {
           return await vehicleSeriesList({ seriesNameLike: query });
         },
+        model: async (query) => {
+          return await this.searchModel(query);
+        },
         announcement: async (query) => {
           return await vehicleSalesVersionList({ registeredModelNameLike: query });
         }
       }
     };
   },
+  watch: {
+    'form.seriesIdList': {
+      handler (newVal) {
+        // 车系变化时清空车型选择
+        this.form.modelIdList = [];
+        this.searchModel();
+      },
+      deep: true,
+      immediate: true
+    }
+  },
   created () {
     this.$store.commit('SET_ACTIVE_BREADCRUMB', [this.pageTitle]);
     this.refreshTableData();
   },
   methods: {
+    handleSortChange (value) {
+      const list = value || [];
+      if (!list.length) {
+        this.sortColumns = [];
+        this.refreshTableData();
+        return;
+      }
+      const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
+      const def = this.optionObj.dataProp.find(d => d.props === latest.field) || {};
+      this.sortColumns = [{
+        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+        sort: (latest.order || '').toUpperCase()
+      }];
+      this.refreshTableData();
+    },
     handleImport () {
       this.uploadDialogVisible = true;
     },
@@ -511,6 +568,20 @@ export default {
       this.$router.push({
         path: '/vehstock/vdc/vehicleVdcInventoryLedger/edit'
       });
+    },
+    // 车型支持车系 ID 和 车型输入 方法
+    async searchModel (query) {
+      const params = {};
+
+      if (query) {
+        params.modelNameLike = query;
+      }
+
+      if (this.form.seriesIdList?.length) {
+        params.seriesIds = this.form.seriesIdList;
+      }
+
+      return await listVehicleModel(params);
     },
     onSubmit () {
       // 重置到第一页
@@ -532,6 +603,7 @@ export default {
         this.optionDdl.form.page = 1;
         this.optionDdl.form.pageSize = pageSize;
       }
+      this.sortColumns = [{ column: 'inbound_date_time', sort: 'DESC' }];
       this.$nextTick(() => {
         this.getData();
       });
@@ -723,6 +795,7 @@ export default {
       if (data.stockAgeLe === 0 || data.stockAgeLe === null || data.stockAgeLe === undefined || data.stockAgeLe === '') {
         delete data.stockAgeLe;
       }
+      data.sortColumns = this.sortColumns;
 
       return data;
     },
@@ -869,9 +942,11 @@ export default {
   .ais-search-form {
     border: 0;
   }
+
   .ais-actions {
     margin: 0px 0 16px 0;
   }
+
   .ais-table-c {
     height: calc(100% - 168px);
   }

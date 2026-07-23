@@ -24,8 +24,8 @@
       <!--  TIPS:根据产品增删功能按钮  -->
       <el-button v-if="canAddOrUpdate" size="small" type="primary" @click="handleAdd"><i
           class="iconfont icon-lxppc-plus"></i>新增</el-button>
-      <!-- <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
-      <el-button v-if="canDelete" size="small" @click="handleBatchDelete"
+      <el-button v-if="canExport" :loading="exportLoading" size="small" @click="exportExcel">导出</el-button>
+      <!-- <el-button v-if="canDelete" size="small" @click="handleBatchDelete"
         :disabled="selectionList.length === 0">批量删除</el-button>
       <el-button v-if="canEnableOrDisable" size="small" @click="handleBatchEnable(1)"
         :disabled="selectionList.length === 0">批量启用</el-button>
@@ -77,6 +77,11 @@ const defaultForm = {
   targetDealerCode: '',
   auditStatus: '',
 };
+
+// 默认排序：创建时间倒序。data() 和 onReset 复用同一份常量，避免两份硬编码不一致。
+const DEFAULT_SORT_COLUMNS = [
+  { column: 'create_time', sort: 'DESC' }
+];
 
 const pageSize = 20;
 const mockConfig = {
@@ -161,16 +166,16 @@ export default {
           { props: 'sourceDealerAddress', label: '源门店地址', visible: true, width: 200 },
           { props: 'targetDealerName', label: '目标门店名称', visible: true, width: 200 },
           { props: 'targetDealerAddress', label: '目标门店地址', visible: true, width: 200 },
-          { props: 'moveoutTime', label: '移出时间', visible: true, width: 200 },
-          { props: 'moveinTime', label: '移入时间', visible: true, width: 200 },
-          { props: 'applyTime', label: '申请时间', visible: true, width: 200 },
+          { props: 'moveoutTime', label: '移出时间', visible: true, width: 200, sortable: true },
+          { props: 'moveinTime', label: '移入时间', visible: true, width: 200, sortable: true },
+          { props: 'applyTime', label: '申请时间', visible: true, width: 200, sortable: true },
           { props: 'auditStatusLabel', label: '单据状态', visible: true, width: 120 },
           { props: 'outApprovalLabel', label: '调出审批', visible: true, width: 100 },
           { props: 'outRemark', label: '调出意见', visible: true, width: 200 },
           { props: 'inApprovalLabel', label: '调入审批', visible: true, width: 100 },
           { props: 'inRemark', label: '调入意见', visible: true, width: 200 },
           { props: 'creatorName', label: '创建者名称', visible: true, width: 160 },
-          { props: 'createTime', label: '创建时间', visible: true, width: 200 },
+          { props: 'createTime', label: '创建时间', visible: true, width: 200, sortable: true },
           { props: 'modifierName', label: '修改者名称', visible: true, width: 160 },
           { props: 'updateTime', label: '修改时间', visible: true, width: 200 },
           {
@@ -266,12 +271,7 @@ export default {
         ],
         total: 0
       },
-      sortColumns: [
-        // {
-        // column: 'create_time',
-        // sort: 'DESC'
-        // }
-      ]
+      sortColumns: [...DEFAULT_SORT_COLUMNS]
     };
   },
   async created () {
@@ -284,12 +284,18 @@ export default {
   methods: {
     // 排序
     handleSortChange (value) {
-      this.sortColumns = (value || []).map(item => {
-        return {
-          column: (item.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
-          sort: (item.order || '').toUpperCase()
-        };
-      });
+      const list = value || [];
+      if (!list.length) {
+        this.sortColumns = [];
+        this.getData();
+        return;
+      }
+      const latest = list.reduce((acc, cur) => (cur.sortTime || 0) > (acc.sortTime || 0) ? cur : acc);
+      const def = this.optionObj.dataProp.find(item => item.props === latest.field) || {};
+      this.sortColumns = [{
+        column: def.sortField || (latest.field || '').replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, ''),
+        sort: (latest.order || '').toUpperCase()
+      }];
       this.getData();
     },
     handleListSelect (row) {
@@ -312,6 +318,7 @@ export default {
     },
     onReset () {
       this.form = { ...defaultForm };
+      this.sortColumns = [...DEFAULT_SORT_COLUMNS];
       this.optionObj.form.page = 1;
       this.optionObj.form.pageSize = pageSize;
       this.getData();
@@ -325,9 +332,29 @@ export default {
       }
       exportTable({
         businessType: '门店库存调拨管理',
-        dataFetchPath: 'vehstock/web/store/storeInventoryTransfer/page',
+        dataFetchPath: 'vehstock/web/store/storeInventoryTransfer/export',
         reqParams,
-        titleMap: Object.fromEntries(this.$refs.tableRef.getVisibleCols()),
+        titleMap: {
+          transferNo: '整车调拨单号',
+          vin: 'VIN',
+          transferPrice: '调拨价格',
+          sourceDealerName: '源门店名称',
+          sourceDealerAddress: '源门店地址',
+          targetDealerName: '目标门店名称',
+          targetDealerAddress: '目标门店地址',
+          moveoutTime: '移出时间',
+          moveinTime: '移入时间',
+          applyTime: '申请时间',
+          auditStatusLabel: '单据状态',
+          outApprovalLabel: '调出审批',
+          outRemark: '调出意见',
+          inApprovalLabel: '调入审批',
+          inRemark: '调入意见',
+          creatorName: '创建者名称',
+          createTime: '创建时间',
+          modifierName: '修改者名称',
+          updateTime: '修改时间'
+        },
         httpMethod: 'POST'
       }).then(async res => {
         if (res && res.excelUrl) {

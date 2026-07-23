@@ -16,7 +16,16 @@
         <tag-input v-model="form.mallOrderCodeList" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="订单销售门店">
-        <tag-input v-model="form.saleDealerNameList" placeholder="请输入" />
+        <fetch-select
+          filterable
+          clearable
+          remote
+          v-model="form.saleDealerCode"
+          :remote-method="saleDealerSearch"
+          value-key="storeCode"
+          label-key="storeName"
+          placeholder="请选择"
+        />
       </el-form-item>
       <template v-if="show">
         <el-form-item label="申请状态">
@@ -72,10 +81,15 @@
           />
         </el-form-item>
         <el-form-item label="基本车型">
-          <el-input
-            placeholder="请输入"
-            v-model="form.modelName"
+          <fetch-select
+            :remote-method="remoteMethods.model"
+            v-model="form.modelId"
+            placeholder="请选择"
             clearable
+            label-key="name"
+            value-key="id"
+            filterable
+            remote
           />
         </el-form-item>
         <el-form-item label="变更类型">
@@ -147,7 +161,14 @@ import debounce from 'lodash.debounce';
 import LPVxeTable from '@leapmotor/design/packages/table/index.vue';
 import PageSearchAction from '@/libs/components/AisPageSearchAction';
 import { deleteItem, enableItem, getList } from '@/api/vehretail/orderRefund/orderChange/index';
-import { exportTable, getEnum, getTableConfig, tableAddOrUpdate } from '@/api/common';
+import {
+  exportTable,
+  getEnum, getRigion,
+  getTableConfig, listOrgStoreInfo,
+  listVehicleModel,
+  tableAddOrUpdate,
+  vehicleSeriesList
+} from '@/api/common';
 import FetchSelect from '@/libs/components/FetchSelect';
 import Upload from '@/libs/components/UploadDialog';
 import { YES_NO_ENUM } from '@/libs/constants';
@@ -212,6 +233,17 @@ export default {
       form: {
         ...defaultForm
       },
+      remoteMethods: {
+        model: async (query) => {
+          return await listVehicleModel({ modelNameLike: query });
+        },
+        series: async (query) => {
+          return await vehicleSeriesList({ seriesNameLike: query, status: 1 });
+        },
+        region: async (query) => {
+          return await getRigion({ regionName: query, status: 1 });
+        },
+      },
       selectionList: [],
       yes_no_enum: YES_NO_ENUM,
       show: false,
@@ -257,17 +289,17 @@ export default {
           { props: 'changeTypeLabel', label: '变更类型', visible: true, width: 200 },
           { props: 'changeReason', label: '变更原因', visible: true, width: 200 },
           { props: 'changeExplain', label: '变更说明', visible: true, width: 200 },
-          { props: 'originalBuyerName', label: '原购车人名称', visible: true, width: 200 },
-          { props: 'originalBuyerPhone', label: '原购车人手机号码', visible: true, width: 200 },
-          { props: 'originalIdCardNo', label: '原购车人证件号码', visible: true, width: 200 },
+          { props: 'originalBuyerNameEncrypt', label: '原购车人名称', visible: true, width: 200, mask: true, getValue: (row) => Promise.resolve(row.originalBuyerName) },
+          { props: 'originalBuyerPhoneEncrypt', label: '原购车人手机号码', visible: true, width: 200, mask: true, getValue: (row) => Promise.resolve(row.originalBuyerPhone) },
+          { props: 'originalIdCardNoEncrypt', label: '原购车人证件号码', visible: true, width: 200, mask: true, getValue: (row) => Promise.resolve(row.originalIdCardNo) },
           { props: 'originalIdCardTypeLabel', label: '原购车人证件类型', visible: true, width: 200 },
           { props: 'originalAgentName', label: '原代办人', visible: true, width: 200 },
           // { props: 'originalSaleDealerCode', label: '原销售门店编码', visible: false, width: 200 },
           { props: 'originalSaleDealerName', label: '原销售门店', visible: true, width: 200 },
           { props: 'deliveryStatusLabel', label: '是否完成交车', visible: true, width: 200 },
-          { props: 'newBuyerName', label: '变更后购车人姓名', visible: true, width: 200 },
-          { props: 'newBuyerPhone', label: '变更后购车人手机号码', visible: true, width: 200 },
-          { props: 'newIdCardNo', label: '变更后购车人证件号码', visible: true, width: 200 },
+          { props: 'newBuyerNameEncrypt', label: '变更后购车人姓名', visible: true, width: 200, mask: true, getValue: (row) => Promise.resolve(row.newBuyerName) },
+          { props: 'newBuyerPhoneEncrypt', label: '变更后购车人手机号码', visible: true, width: 200, mask: true, getValue: (row) => Promise.resolve(row.newBuyerPhone) },
+          { props: 'newIdCardNoEncrypt', label: '变更后购车人证件号码', visible: true, width: 200, mask: true, getValue: (row) => Promise.resolve(row.newIdCardNo) },
           { props: 'newIdCardTypeLabel', label: '变更后购车人证件类型', visible: true, width: 200 },
           { props: 'newAgentName', label: '变更后代办人', visible: true, width: 200 },
           // { props: 'newSaleDealerCode', label: '变更后销售门店编码', visible: false, width: 200 },
@@ -398,6 +430,13 @@ export default {
     },
     saveOrUpdate (data) {
       return tableAddOrUpdate(data);
+    },
+    async saleDealerSearch (val) {
+      const params = {
+        keyword: val,
+        pageSize: 5000
+      };
+      return await listOrgStoreInfo(params);
     },
     paginationChange (type, num) {
       if (type === 'page') {

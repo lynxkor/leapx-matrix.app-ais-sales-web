@@ -98,6 +98,7 @@
                     placeholder="请输入"
                     v-model="form.refundReason"
                     type="textarea"
+                    :disabled="!form.refundReasonChanged || form.refundReasonChanged === 0"
                     clearable
                   />
                 </el-form-item>
@@ -370,13 +371,8 @@
                 <el-form-item v-if="specRemarkShow" label="特殊备注：" prop="specialRemark">
                   {{ form.specialRemark }}
                 </el-form-item>
-                <el-form-item label="退订附件上传要求：" prop="refundAttachRequired">
-                  <el-input
-                    v-model="form.refundAttachRequired"
-                    type="textarea"
-                    disabled
-                    clearable
-                  />
+                <el-form-item v-if="specRemarkShow" label="退订附件上传要求：" prop="refundAttachRequired">
+                  {{ form.refundAttachRequired }}
                 </el-form-item>
               </el-form>
             </div>
@@ -392,7 +388,6 @@
                 :businessId="_id"
                 :readonly="!_id || !(form.refundStatus === 1010 || form.refundStatus === 1040)"
                 configCode="mcs_vehorderrefund"
-                attachType="订单信息变更申请附件"
               />
             </div>
           </section>
@@ -401,7 +396,151 @@
               <h2>订单信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail">
+              <!-- 订单信息 - 编辑表单（全部禁用） -->
+              <el-form :inline="true" :model="form" label-width="150px" class="form-edit" v-show="(isEditing || !_id) && (!form.refundStatus || form.refundStatus !== 1030)">
+                <!-- 第1行：整车订单状态 | 商城订单编号 | 购车人手机号码 | 订单取消原因 -->
+                <el-form-item label="整车订单状态：" prop="orderStatusLabel">
+                  <el-input
+                    v-model="form.orderStatusLabel"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="商城订单编号：" prop="mallOrderCode">
+                  <el-input
+                    v-model="form.mallOrderCode"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="购车人手机号码：" prop="buyerPhone">
+                  <el-input
+                    v-model="form.buyerPhone"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="订单取消原因：" prop="orderCancelReason">
+                  <el-input
+                    v-model="form.orderCancelReason"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <!-- 第2行：销售门店 | 缴定金时间 | 证件类型 | 订单取消说明 -->
+                <el-form-item label="销售门店：" prop="saleDealerName">
+                  <el-input
+                    v-model="form.saleDealerName"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="缴定金时间：" prop="paymentTime">
+                  <el-input
+                    v-model="form.paymentTime"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="证件类型：" prop="idCardTypeLabel">
+                  <el-input
+                    v-model="form.idCardTypeLabel"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item v-if="form.refundStatus === 1030" label="订单取消说明：" prop="orderCancelDescp">
+                  <el-input
+                    v-model="form.orderCancelDescp"
+                    maxlength="100"
+                    show-word-limit
+                    :disabled="!(form.refundStatus === 1030 && (isEditing || !_id))"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item v-else label="订单取消说明：" prop="orderCancelDescp">
+                  <el-input
+                    v-model="form.orderCancelDescp"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <!-- 第3行：交付门店 | 购车人名称 | 代办联系人 | 订单取消时间 -->
+                <el-form-item label="交付门店：" prop="deliveryDealerName">
+                  <el-input
+                    v-model="form.deliveryDealerName"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="购车人名称：" prop="buyerName">
+                  <el-input
+                    v-model="form.buyerName"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="代办联系人：" prop="agentName">
+                  <el-input
+                    v-model="form.agentName"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="订单取消时间：" prop="orderCancelTime">
+                  <el-input
+                    v-model="form.orderCancelTime"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <!-- 第4行：定金金额 | 证件号码  | 物料描述 | 订单来源 -->
+                <el-form-item label="定金金额：" prop="depositAmount">
+                  <el-input
+                    v-model="form.depositAmount"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="证件号码：" prop="idCardNo">
+                  <el-input
+                    v-model="form.idCardNo"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="物料描述：" prop="materialsDesc">
+                  <el-input
+                    v-model="form.materialsDesc"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="订单来源：" prop="orderSource">
+                  <el-input
+                    v-model="form.orderSource"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <!-- 第5行：特殊备注 | 基本车型 -->
+                <el-form-item v-if="orderSpecRemarkShow" label="特殊备注：" prop="orderSpecialRemark">
+                  <el-input
+                    v-model="form.orderSpecialRemark"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="基本车型：" prop="modelName">
+                  <el-input
+                    v-model="form.modelName"
+                    disabled
+                    clearable
+                  />
+                </el-form-item>
+              </el-form>
+              <!-- 订单信息 - 详情展示 -->
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id) || (isEditing && form.refundStatus === 1030)">
                 <!-- 第1行：整车订单状态 | 商城订单编号 | 购车人手机号码 | 订单取消原因 -->
                 <el-form-item label="整车订单状态：" prop="orderStatus">
                   <span class="status-tag link">{{ form.orderStatusLabel }}</span>
@@ -410,7 +549,12 @@
                   {{ form.mallOrderCode }}
                 </el-form-item>
                 <el-form-item label="购车人手机号码：" prop="buyerPhone">
-                  {{ form.buyerPhone }}
+                  <!-- <LPEncrypted
+                    :value.sync="form.buyerPhone"
+                    :decryptMethod="() => form.buyerPhone"
+                  > -->
+                    {{ form.buyerPhone }}
+                  <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="订单取消原因：" prop="orderCancelReason">
                   {{ form.orderCancelReason }}
@@ -428,17 +572,16 @@
                 <el-form-item label="证件类型：" prop="idCardTypeLabel">
                   {{ form.idCardTypeLabel }}
                 </el-form-item>
-                <el-form-item v-show="form.refundStatus === 1030 && (isEditing || !_id)" label="订单取消说明：" prop="orderCancelDescp">
+                <el-form-item v-show="canOrderCancelDescp && form.refundStatus === 1030 && (isEditing || !_id)" label="订单取消说明：" prop="orderCancelDescp">
                   <el-input
                     placeholder="请输入"
                     maxlength="100"
                     show-word-limit
                     v-model="form.orderCancelDescp"
-                    :disabled="!(form.refundStatus === 1030 && (isEditing || !_id))"
                     clearable
                   />
                 </el-form-item>
-                <el-form-item v-show="!(form.refundStatus === 1030 && (isEditing || !_id))" label="订单取消说明：" prop="orderCancelDescp">
+                <el-form-item v-show="!(canOrderCancelDescp && form.refundStatus === 1030 && (isEditing || !_id))" label="订单取消说明：" prop="orderCancelDescp">
                   {{ form.orderCancelDescp }}
                 </el-form-item>
                 <!-- 第3行：交付门店 | 购车人名称 | 代办联系人 | 订单取消时间 -->
@@ -449,23 +592,48 @@
                     type="text">{{form.deliveryDealerName}}</el-button>
                 </el-form-item>
                 <el-form-item label="购车人名称：" prop="buyerName">
-                  {{ form.buyerName }}
+                  <!-- <LPEncrypted
+                    :value.sync="form.buyerName"
+                    :decryptMethod="() => { return form.buyerName }"
+                  > -->
+                    {{ form.buyerName }}
+                  <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="代办联系人：" prop="agentName">
                   {{ form.agentName }}
                 </el-form-item>
+<!--                <el-form-item label="代办人电话：" prop="agentPhone">-->
+                  <!-- <LPEncrypted
+                    :value.sync="form.agentPhone"
+                    :decryptMethod="() => { return form.agentPhone }"
+                  > -->
+<!--                    {{ form.agentPhone }}-->
+                  <!-- </LPEncrypted> -->
+<!--                </el-form-item>-->
                 <el-form-item label="订单取消时间：" prop="orderCancelTime">
                   {{ form.orderCancelTime }}
                 </el-form-item>
-                <!-- 第4行：订单来源 | 证件号码 | 定金金额 | 基本车型 -->
+                <!-- 第4行：定金金额 | 证件号码  | 物料描述 | 订单来源 -->
+                <el-form-item label="定金金额：" prop="depositAmount">
+                  {{ form.depositAmount }}
+                </el-form-item>
+                <el-form-item label="证件号码：" prop="idCardNo">
+                  <!-- <LPEncrypted
+                    :value.sync="form.idCardNo"
+                    :decryptMethod="() => { return form.idCardNo }"
+                  > -->
+                  {{ form.idCardNo }}
+                  <!-- </LPEncrypted> -->
+                </el-form-item>
+                <el-form-item label="物料描述：" prop="materialsDesc">
+                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsDesc }}</el-link>
+                </el-form-item>
                 <el-form-item label="订单来源：" prop="orderSource">
                   {{ form.orderSource }}
                 </el-form-item>
-                <el-form-item label="证件号码：" prop="idCardNo">
-                  {{ form.idCardNo }}
-                </el-form-item>
-                <el-form-item label="定金金额：" prop="depositAmount">
-                  {{ form.depositAmount }}
+                <!-- 第5行：特殊备注 | 物料描述 -->
+                <el-form-item v-if="orderSpecRemarkShow" label="特殊备注：" prop="orderSpecialRemark">
+                  {{ form.orderSpecialRemark }}
                 </el-form-item>
                 <el-form-item label="基本车型：" prop="modelName">
                   <el-button
@@ -478,22 +646,15 @@
                     })"
                     type="text">{{form.modelName}}</el-button>
                 </el-form-item>
-                <!-- 第5行：特殊备注 | 物料描述 -->
-                <el-form-item v-if="orderSpecRemarkShow" label="特殊备注：" prop="orderSpecialRemark">
-                  {{ form.orderSpecialRemark }}
-                </el-form-item>
-                <el-form-item label="物料描述：" prop="materialsDesc">
-                  <el-link type="primary" :href="`/sales/datacenter/materials/vehicleMaterials/edit?id=${form.materialsCode}`" target="_blank">{{ form.materialsDesc }}</el-link>
-                </el-form-item>
               </el-form>
             </div>
           </section>
           <section class="common-section">
-            <div class="common-section-header" v-show="!(isEditing || !_id)">
+            <div class="common-section-header" v-show="!(isEditing || !_id) || (isEditing && form.refundStatus === 1030)">
               <h2>审批信息</h2>
             </div>
             <div class="common-section-body">
-              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id)">
+              <el-form :inline="true" class="form-detail" v-show="!(isEditing || !_id) || (isEditing && form.refundStatus === 1030)">
                 <el-form-item label="申请人：" prop="creator">
                   {{ form.creatorName }}
                 </el-form-item>
@@ -507,7 +668,12 @@
                   {{ form.submitTime }}
                 </el-form-item>
                 <el-form-item label="初审人：" prop="preApproveUser">
-                  {{ form.preApproveUser }}
+                  <!-- <LPEncrypted
+                    :value.sync="form.preApproveUser"
+                    :decryptMethod="() => form.preApproveUser"
+                  > -->
+                    {{ form.preApproveUser }}
+                  <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="初审时间：" prop="preApproveTime">
                   {{ form.preApproveTime }}
@@ -525,7 +691,12 @@
                   {{ form.approveRemark }}
                 </el-form-item>
                 <el-form-item label="终审人：" prop="finalApproveUser">
-                  {{ form.finalApproveUser }}
+                  <!-- <LPEncrypted
+                    :value.sync="form.finalApproveUser"
+                    :decryptMethod="() => form.finalApproveUser"
+                  > -->
+                    {{ form.finalApproveUser }}
+                  <!-- </LPEncrypted> -->
                 </el-form-item>
                 <el-form-item label="终审时间：" prop="finalApproveTime">
                   {{ form.finalApproveTime }}
@@ -543,7 +714,7 @@
             </div>
           </section>
           <!-- 退款记录表格 -->
-          <section v-if="!(isEditing || !_id)" class="common-section">
+          <section v-if="!(isEditing || !_id) || (isEditing && form.refundStatus === 1030)" class="common-section">
             <div class="common-section-header">
               <h2>退款记录</h2>
             </div>
@@ -638,7 +809,7 @@
             </div>
           </section>
           <component-table
-                v-if="!(isEditing || !_id)"
+                v-if="!(isEditing || !_id) || (isEditing && form.refundStatus === 1030)"
                 :table-config="{ title: '审批明细' }"
                 :table-data-external="form.approveLogList"
                 :columns="approveColumns"
@@ -686,13 +857,15 @@ import { YES_NO_ENUM } from '@/libs/constants';
 import routeGuard from '@/libs/mixins/routeGuard';
 import permissions from '@/libs/mixins/permissions';
 import commonMixins from '@/libs/mixins/commonMixins';
-import { getList as retailOrderPage } from '@/api/vehretail/orderManager/retailOrderInfo/index';
+import { pageNoDesensitize as retailOrderPage } from '@/api/vehretail/orderManager/retailOrderInfo/index';
 import { fetchCategoryList } from '@/api/vehretail/orderRefund/category';
 import RefundApplyAuditDialog from '@/views/vehretail/orderRefund/refundApply/auditDialog';
 import { getList as getMaterialInfoList } from '@/api/datacenter/materials/vehicleMaterials/index';
+import { getList as getVehicleMaterialsMatchList } from '@/api/datacenter/materials/vehicleMaterialsMatch/index';
 import FinancialOrderDialog from './components/FinancialOrderDialog.vue';
 import VehicleStockDialog from './components/VehicleStockDialog.vue';
 import navigate from '@/libs/utils/navigate';
+// import LPEncrypted from '@/libs/components/LPEncrypted/index.vue';
 
 const defaultForm = {
   // 多选时字段有变化，自行修复
@@ -738,6 +911,11 @@ const defaultForm = {
   discontinueStatusLabel: '',
   payRefundRecordList: [],
   approveLogList: [],
+  // 加密字段
+  buyerName: '',
+  buyerPhone: '',
+  idCardNo: '',
+  agentPhone: ''
 };
 
 export default {
@@ -751,6 +929,7 @@ export default {
   },
   mixins: [routeGuard, permissions, commonMixins],
   components: {
+    // LPEncrypted,
     VehicleStockDialog,
     FinancialOrderDialog,
     RefundApplyAuditDialog,
@@ -815,6 +994,7 @@ export default {
       canPreApprove: false, // 初审
       canApprove: false, // 审核
       canFinalApprove: false, // 终审
+      canOrderCancelDescp: false, // 终审
       loading: false,
       submitLoading: false,
       // 字段权限控制
@@ -932,6 +1112,7 @@ export default {
       this.canPreApprove = this.permissions.has(`${this.moduleKey}-preApprove`);
       this.canApprove = this.permissions.has(`${this.moduleKey}-approve`);
       this.canFinalApprove = this.permissions.has(`${this.moduleKey}-finalApprove`);
+      this.canOrderCancelDescp = this.permissions.has(`${this.moduleKey}-orderCancelDescp`);
       // 字段权限控制初始化
       this.vrFinanceOrder = this.permissions.has(`${this.moduleKey}-vrFinanceOrder`);
       this.vehicleVdcInventoryLedger = this.permissions.has(`${this.moduleKey}-vehicleVdcInventoryLedger`);
@@ -1042,6 +1223,7 @@ export default {
       this.form.cateCode = val ? selectedOption.cateCode : '';
       this.form.cateName = val ? selectedOption.cateName : '';
       this.form.refundReason = val ? selectedOption.refundReasonDefault : '';
+      this.form.refundReasonChanged = val ? selectedOption.refundReasonChanged : 0;
       this.form.depositRefundType = val ? selectedOption.refundTypeDefault + '' : null;
       this.form.refundAttachRequired = val ? selectedOption.refundAttachRequired : null;
       this.form.refundTypeSelect = val ? selectedOption.refundTypeSelect : null;
@@ -1055,16 +1237,12 @@ export default {
       return await retailOrderPage(params);
     },
     retailOrderChange (val, selectedOption) {
+      this.$refs.ruleForm.resetFields();
       if (val) {
         legalVerification(selectedOption.retailOrderCode)
           .then(res => {
             this.refreshOrderInfo(val, selectedOption);
-          })
-          .catch(() => {
-            this.$refs.ruleForm.resetFields();
           });
-      } else {
-        this.$refs.ruleForm.resetFields();
       }
     },
     refreshOrderInfo (val, selectedOption) {
@@ -1086,6 +1264,7 @@ export default {
       this.form.idCardTypeLabel = val ? selectedOption.idCardTypeLabel : null;
       this.form.idCardNo = val ? selectedOption.idCardNo : '';
       this.form.agentName = val ? selectedOption.agentName : '';
+      this.form.agentPhone = val ? selectedOption.agentPhone : '';
       this.form.saleDealerCode = val ? selectedOption.saleDealerCode : '';
       this.form.saleDealerName = val ? selectedOption.saleDealerName : '';
       this.form.saleUserName = val ? selectedOption.saleUserName : '';
@@ -1103,6 +1282,7 @@ export default {
       this.form.provinceName = val ? selectedOption.provinceName : '';
       this.form.cityCode = val ? selectedOption.cityCode : '';
       this.form.cityName = val ? selectedOption.cityName : '';
+      this.form.regionName = val ? selectedOption.regionName : '';
       this.form.depositAmount = val ? selectedOption.depositAmount : '';
       this.form.rangePowerId = val ? selectedOption.rangePowerId : '';
       this.form.rangePowerName = val ? selectedOption.rangePowerName : '';
@@ -1145,7 +1325,13 @@ export default {
       this.$refs.financialOrderDialog.show(this.form.mallOrderCode);
     },
     openVehicleStockShow () {
-      this.$refs.vehicleStockDialog.show(this.form.materialsCode);
+      // 获取可配物料关系
+      getVehicleMaterialsMatchList({ materialsCodeLike: this.form.materialsCode, pageSize: 1 })
+        .then(res => {
+          const materialCodeArray = res.records.map(item => item.matchMaterialsCode);
+          materialCodeArray.push(this.form.materialsCode);
+          this.$refs.vehicleStockDialog.show(materialCodeArray);
+        });
     },
     openCancelShow () {
       this.$confirm('确认是否对数据进行作废?', '提示', {

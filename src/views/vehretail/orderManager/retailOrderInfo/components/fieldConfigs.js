@@ -33,16 +33,15 @@ export const retailOrderDisplayFields = [
   { key: 'deliveryCycleMaxWeek', label: '交付周期上限(周)' },
   { key: 'dynamicDeliveryCycleDesc', label: '动态交付周期说明' },
   { key: 'initialDeliveryCycleDesc', label: '初始交付周期说明' },
-  { key: 'secondNetStoreName', label: '二网门店' },
-  { key: 'approvalStatusLabel', label: '审批状态' }
+  { key: 'secondNetStoreName', label: '二网门店' }
 ];
 
 // 购车人信息字段配置
 export const carOwnerDisplayFields = [
-  { key: 'carBuyerName', label: '购车人姓名', encrypted: true },
-  { key: 'carBuyerPhone', label: '购车人手机', encrypted: true },
+  { key: 'carBuyerName', label: '购车人姓名' },
+  { key: 'carBuyerPhone', label: '购车人手机' },
   { key: 'idCardTypeLabel', label: '证件类型' },
-  { key: 'idCardNo', label: '证件号码', encrypted: true },
+  { key: 'idCardNo', label: '证件号码' },
   { key: 'agentName', label: '代办联系人' },
   { key: 'orderUserName', label: '下单人姓名' },
   { key: 'orderUserPhone', label: '下单人手机号' },
@@ -91,12 +90,11 @@ export const lockAllocationDisplayFields = [
   {
     key: 'matchVin',
     label: '配车VIN码',
-    encrypted: true,
     link: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
     paramKey: 'matchVin',
     paramName: 'vin'
   },
-  { key: 'deliveryVin', label: '交车VIN码', encrypted: true },
+  { key: 'deliveryVin', label: '交车VIN码' },
   { key: 'deliveryTime', label: '交车时间' },
   { key: 'orderSortTime', label: '订单排序时间' },
   { key: 'changeConfigCount', label: '改配次数' },
@@ -117,7 +115,6 @@ export const wholesaleDisplayFields = [
   {
     key: 'matchVin',
     label: '配车VIN码',
-    encrypted: true,
     link: '/sales/vehstock/vdc/vehicleVdcInventoryLedger/edit',
     paramKey: 'matchVin',
     paramName: 'vin'
@@ -130,7 +127,7 @@ export const wholesaleDisplayFields = [
 
 // 订单取消信息字段配置
 export const refundDisplayFields = [
-  { key: 'cancelReason', label: '订单取消原因' },
+  { key: 'cancelReasonLabel', label: '订单取消原因' },
   { key: 'cancelExplain', label: '订单取消说明' },
   { key: 'cancelTime', label: '订单取消时间' }
 ];
@@ -185,7 +182,12 @@ export const orderChangeApplicationDisplayFields = [
 
 // 锁车解绑申请记录字段配置
 export const unlockApplicationRecordDisplayFields = [
-  { key: 'unlockApplyCode', label: '申请单号' },
+  {
+    key: 'unlockApplyCode',
+    label: '申请单号',
+    link: '/sales/vehretail/orderManager/orderUnlockApply/edit',
+    paramKey: 'id'
+  },
   { key: 'submitTime', label: '提交时间' },
   { key: 'unlockReason', label: '订单解绑原因' },
   { key: 'vin', label: 'VIN号' },
@@ -240,8 +242,8 @@ export const orderCancellationRecordDisplayFields = [
   { key: 'applyTime', label: '申请时间' },
   { key: 'creatorName', label: '申请人' },
   { key: 'orderRefundTypeLabel', label: '退订方式' },
-  { key: 'subCateName', label: '退订原因分类' },
-  { key: 'refundReason', label: '退订原因说明' }
+  { key: 'cateName', label: '退订原因分类' },
+  { key: 'orderCancelDescp', label: '退订原因说明' }
 ];
 
 // 订单收款记录字段配置
@@ -257,7 +259,6 @@ export const dealerCommitmentDisplayFields = [
   {
     key: 'id',
     label: '承诺结果编号',
-    encrypted: true,
     link: '/sales/vehretail/orderManager/dealerCommitmentRecord/edit',
     paramKey: 'id'
   },

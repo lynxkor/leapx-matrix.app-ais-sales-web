@@ -246,12 +246,12 @@ export default {
             }]
           },
           { props: 'dealerCompanyCode', label: '母公司编码', visible: true, width: 140, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
-          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 240, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
+          { props: 'dealerCompanyName', label: '母公司名称', visible: true, width: 280, buttons: [{ click: (rowIndex, row) => { window.open(`/partner/channelManagement/companyDetails?companyCode=${row.dealerCompanyCode}`, '_blank'); }, type: 'primary' }] },
           {
             props: 'fundFinancialOrganizationName',
             label: '融资金融机构',
             visible: true,
-            width: 120,
+            width: 150,
             buttons: [{
               click: (rowIndex, row) => {
                 this.openWindow('/sales/vehwholesale/fund/fundFinancialOrganization/edit?id=' + row.fundFinancialOrganizationId);
@@ -260,6 +260,7 @@ export default {
             }]
           },
           { props: 'repaymentAmount', label: '还款金额', visible: true, width: 120, align: 'right' },
+          { props: 'repaymentDate', label: '还款日期', visible: true, width: 160 },
           { props: 'creditOccupiedExposure', label: '授信占用敞口', visible: true, width: 150, align: 'right' },
           { props: 'creditAvailableExposure', label: '授信可用敞口', visible: true, width: 150, align: 'right' },
           { props: 'financingApplicationCode', label: '融资申请编码', visible: true, width: 200 },
