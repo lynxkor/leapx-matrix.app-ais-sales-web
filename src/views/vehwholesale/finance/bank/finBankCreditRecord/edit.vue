@@ -73,9 +73,8 @@
                 <el-form-item label="说明：" prop="statusDesc">
                   {{ form.statusDesc }}
                 </el-form-item>
-                <!--  经销商和母公司一致 -->
-                <el-form-item label="经销商名称：" prop="dealerCompanyName">
-                  <el-button class="link" style="padding: 0;" type="text" @click="openWindow('/partner/channelManagement/companyDetails?companyCode=' + form.dealerCompanyCode)">{{ form.dealerCompanyName }}</el-button>
+                <el-form-item label="经销商名称：" prop="dealerName">
+                  {{ form.dealerName }}
                 </el-form-item>
                 <el-form-item label="备注：" prop="remark">
                   <el-input
@@ -224,6 +223,7 @@ const defaultForm = {
   modifierName: '',
   dataSource: '',
   ownerOrgId: '',
+  dealerName: '',
 };
 
 export default {
